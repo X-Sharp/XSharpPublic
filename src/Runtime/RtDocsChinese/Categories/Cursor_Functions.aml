@@ -44,7 +44,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the table alias of the current or specified work area.
+    </para>
             </entry>
           </row>
           <row>

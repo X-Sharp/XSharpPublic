@@ -198,7 +198,7 @@ internal class SqlDbTableCommandBuilder
         // to calculate the correct pagenumber !
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        if SELF:_oTable:HasServerFilter
+        if SELF:_oTable:HasServerFilter .and. !String.IsNullOrEmpty(_oTable:ServerFilter)
             whereClauses:Add(_oTable:ServerFilter)
         endif
         if currentOrder != null
@@ -213,9 +213,9 @@ internal class SqlDbTableCommandBuilder
         endif
         var sWhereClause := SELF:CombineWhereClauses(whereClauses)
         sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
-
+        
         sb:Append(Provider:RowNumberStatement)
-
+        
         // not sure if this is a clever solution,
         // but WhereMacro is already used for nRec
         var cFromWhere := Provider:QuoteIdentifier(self:_oTable:RealName)
@@ -223,7 +223,7 @@ internal class SqlDbTableCommandBuilder
             cFromWhere += SqlDbProvider.WhereClause+sWhereClause
         endif
         sb:Replace(SqlDbProvider.TableNameMacro, cFromWhere)
-
+        
         var cOrderby := Functions.List2String(_oRdd:CurrentOrder:OrderList)
         if SELF:_oTable:HasRecnoColumn
             if ! String.IsNullOrEmpty(cOrderby)

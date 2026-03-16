@@ -178,7 +178,7 @@ FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS D
         ACopy(aResult, ArrayName)
     ENDIF
     RETURN ALen(aResult)
-
+/// <exclude />
 FUNCTION SqlParameters( nStatementHandle AS LONG, oParams AS OBJECT) AS LONG
     RETURN SqlFunctions.SqlParameters(nStatementHandle, oParams)
 

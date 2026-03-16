@@ -55,11 +55,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Memlines(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MemLines(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of lines in a memo field.
+    </para>
             </entry>
           </row>
           <row>
@@ -234,11 +236,14 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Mline(System.String,System.UInt32,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MLine(System.String,System.UInt32,System.UInt32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a specific line from a Memo field as a character string.
+      MLINE( ) is primarily a text processing function; therefore, the results from processing binary values might not be as expected. For example, MLINE( ) might return different results depending on the SET MEMOWIDTH setting. MLINE( ) might interpret binary values as line breaks or truncate binary values unexpectedly. It is recommended that you use the ALINES( ) function instead to manipulate binary values.
+    </para>
             </entry>
           </row>
           <row>

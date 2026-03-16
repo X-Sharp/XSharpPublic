@@ -48,7 +48,7 @@ END ENUM
 FUNCTION MessageBoxShow(lpText AS STRING, lpCaption AS STRING, uType AS DWORD) AS INT
     RETURN Win32.MessageBox(IntPtr.Zero, lpText, lpCaption, uType)
 
-INTERNAL CLASS Win32
+INTERNAL PARTIAL STATIC CLASS Win32
     [DllImport("User32.dll")];
     STATIC METHOD MessageBox(hwnd AS IntPtr, lpText AS STRING, lpCaption AS STRING, uType AS DWORD) AS INT
 END CLASS

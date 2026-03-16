@@ -1,22 +1,22 @@
 /// <include file="SQL.xml" path="doc/SQLListTables/*" />
 CLASS SQLListTables INHERIT SQLCatalogQuery
-	EXPORT Qualifier AS STRING
-	EXPORT Owner     AS STRING
-	EXPORT TableName AS STRING
-	EXPORT TableType AS STRING
-
-
-
-
+    EXPORT Qualifier AS STRING
+    EXPORT Owner     AS STRING
+    EXPORT TableName AS STRING
+    EXPORT TableType AS STRING
+    
+    
+    
+    
 /// <include file="SQL.xml" path="doc/SQLListTables.Execute/*" />
 METHOD Execute() 
-	LOCAL   nRet    AS INT
+    LOCAL   nRet    AS INT
     LOCAL psz1, psz2, psz3, psz4 AS PSZ
-    #IFDEF __DEBUG__
-        __SQLOutputDebug( "** SQLListTables:Execute()" )
-    #ENDIF
-
-
+#IFDEF __DEBUG__
+    __SQLOutputDebug( "** SQLListTables:Execute()" )
+#ENDIF
+    
+    
     IF  oStmt:StatementHandle = SQL_NULL_HSTMT
         SELF:__AllocStmt()
     ENDIF       
@@ -37,74 +37,74 @@ METHOD Execute()
     
     
     nRet := SQLTables(  oStmt:StatementHandle,                       ;
-                    psz1, _SLen( SELF:Qualifier ), ;
-                    psz2, _SLen( SELF:Owner ),         ;
-                    psz3, _SLen( SELF:TableName ), ;
-                    psz4, _SLen( SELF:TableType ) )
-
-
-	IF nRet != SQL_SUCCESS
-		oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
-										#Execute,                   ;
-										oStmt:__Connection:EnvHandle, ;
-										oStmt:__Connection:ConnHandle,;
-										oStmt:StatementHandle       }
-		RETURN FALSE
-	ENDIF
-
-
-	RETURN SUPER:Execute()
-
-
+        psz1, _SLen( SELF:Qualifier ), ;
+        psz2, _SLen( SELF:Owner ),         ;
+        psz3, _SLen( SELF:TableName ), ;
+        psz4, _SLen( SELF:TableType ) )
+    
+    
+    IF nRet != SQL_SUCCESS
+        oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
+            __FUNCTION__,                   ;
+            oStmt:__Connection:EnvHandle, ;
+            oStmt:__Connection:ConnHandle,;
+            oStmt:StatementHandle       }
+        RETURN FALSE
+    ENDIF
+    
+    
+    RETURN SUPER:Execute()
+    
+    
 /// <include file="SQL.xml" path="doc/SQLListTables.ctor/*" />
 CONSTRUCTOR( cQualifier, cOwner, cTableName, cTableType, oSQLConnection ) 
-
-
-	SUPER( oSQLConnection )
-
-
-	#IFDEF __DEBUG__
-		__SQLOutputDebug( "** SQLListTables:Init( "+AsString( cQualifier )+","+   ;
-							AsString( cOwner )+","+        ;
-							AsString( cTableName )+","+    ;
-							AsString( cTableType )+" )" )
-	#ENDIF
-
-
-	IF IsString( cQualifier )
-		SELF:Qualifier := cQualifier
-	ELSE
-		SELF:Qualifier := NULL_STRING
-	ENDIF
-
-
-	IF IsString( cOwner )
-		SELF:Owner := cOwner
-	ELSE
-		SELF:Owner := NULL_STRING
-	ENDIF
-
-
-	IF IsString( cTableName )
-		SELF:TableName := cTableName
-	ELSE
-		SELF:TableName := NULL_STRING
-	ENDIF
-
-
-	IF  IsString( cTableType )
-		SELF:TableType := cTableType
-	ELSE
-		SELF:TableType := NULL_STRING
-	ENDIF
-
-
-	SELF:Execute()
-	RETURN 
-
-
-
-
+    
+    
+    SUPER( oSQLConnection )
+    
+    
+#IFDEF __DEBUG__
+    __SQLOutputDebug( "** SQLListTables:Init( "+AsString( cQualifier )+","+   ;
+        AsString( cOwner )+","+        ;
+        AsString( cTableName )+","+    ;
+        AsString( cTableType )+" )" )
+#ENDIF
+    
+    
+    IF IsString( cQualifier )
+        SELF:Qualifier := cQualifier
+    ELSE
+        SELF:Qualifier := NULL_STRING
+    ENDIF
+    
+    
+    IF IsString( cOwner )
+        SELF:Owner := cOwner
+    ELSE
+        SELF:Owner := NULL_STRING
+    ENDIF
+    
+    
+    IF IsString( cTableName )
+        SELF:TableName := cTableName
+    ELSE
+        SELF:TableName := NULL_STRING
+    ENDIF
+    
+    
+    IF  IsString( cTableType )
+        SELF:TableType := cTableType
+    ELSE
+        SELF:TableType := NULL_STRING
+    ENDIF
+    
+    
+    SELF:Execute()
+    RETURN 
+    
+    
+    
+    
 END CLASS
 
 

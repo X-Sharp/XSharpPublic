@@ -10,7 +10,7 @@ FUNCTION Evaluate(cString AS STRING) AS USUAL
     RETURN XSharp.RT.Functions.Evaluate(cString)
 
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/execscript/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/execscript/*" />
 [FoxProFunction("EXECSCRIPT", FoxFunctionCategory.General, FoxEngine.Macro, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION ExecScript(cExpression, eParameter1, eParameter2, eParameterN) AS USUAL CLIPPER
     RETURN XSharp.RT.Functions.ExecScript(cExpression, eParameter1, eParameter2, eParameterN)

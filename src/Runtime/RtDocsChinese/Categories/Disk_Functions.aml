@@ -55,11 +55,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Curdir(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CurDir(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current directory.
+    </para>
             </entry>
           </row>
           <row>
@@ -132,7 +134,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Locates the specified directory.
+    </para>
             </entry>
           </row>
           <row>
@@ -276,11 +280,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Diskspace(System.String,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DiskSpace(System.String,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Retrieves the number of bytes with the specified type that are available on the default or specified hard disk drive or volume.
+    </para>
             </entry>
           </row>
           <row>
@@ -374,19 +380,6 @@
             </entry>
             <entry>
               <para>Returns the stem name (the file name before the extension) from a complete path and file name.</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MkDir(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>

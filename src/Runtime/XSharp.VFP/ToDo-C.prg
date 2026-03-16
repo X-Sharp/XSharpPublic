@@ -4,10 +4,10 @@
 // See License.txt in the project root for license information.
 //
 
+#pragma options("vo15", on)
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/candidate/*" />
-#pragma options("vo15", on)
 [FoxProFunction("CANDIDATE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION Candidate (nIndexNumber , uArea)
     THROW NotImplementedException{}

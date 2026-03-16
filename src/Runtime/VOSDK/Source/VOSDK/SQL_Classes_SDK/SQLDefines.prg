@@ -1,62 +1,62 @@
 #region defines
 DEFINE _assert  := TRUE
 DEFINE __CAVO_SQL_TXN_READ_COMMITTED := SQL_TXN_READ_COMMITTED
-   //
-   // Connect option: Isolation level between concurring accesses.
-   // Possible values are: (not all are supported by any driver)
-   //
-   // SQL_TXN_READ_UNCOMMITTED
-   // SQL_TXN_READ_COMMITTED
-   // SQL_TXN_REPEATABLE_READ
-   // SQL_TXN_SERIALIZABLE
-   // SQL_TXN_VERSIONING
-   //
+//
+// Connect option: Isolation level between concurring accesses.
+// Possible values are: (not all are supported by any driver)
+//
+// SQL_TXN_READ_UNCOMMITTED
+// SQL_TXN_READ_COMMITTED
+// SQL_TXN_REPEATABLE_READ
+// SQL_TXN_SERIALIZABLE
+// SQL_TXN_VERSIONING
+//
 DEFINE __CAVO_SQL_SIMULATE_CURSOR := SQL_SC_TRY_UNIQUE
-   //
-   // SQL_SIMULATE_CURSOR options. Possible values are:
-   //
-   // SQL_SC_NON_UNIQUE
-   // SQL_SC_TRY_UNIQUE
-   // SQL_SC_UNIQUE
-   //
+//
+// SQL_SIMULATE_CURSOR options. Possible values are:
+//
+// SQL_SC_NON_UNIQUE
+// SQL_SC_TRY_UNIQUE
+// SQL_SC_UNIQUE
+//
 DEFINE __CAVO_SQL_CURSOR_TYPE := SQL_CURSOR_KEYSET_DRIVEN
-   //
-   // SQL_CURSOR_TYPE options. Possible values are:
-   //
-   // SQL_CURSOR_FORWARD_ONLY
-   // SQL_CURSOR_KEYSET_DRIVEN
-   // SQL_CURSOR_DYNAMIC
-   // SQL_CURSOR_STATIC
-   //
+//
+// SQL_CURSOR_TYPE options. Possible values are:
+//
+// SQL_CURSOR_FORWARD_ONLY
+// SQL_CURSOR_KEYSET_DRIVEN
+// SQL_CURSOR_DYNAMIC
+// SQL_CURSOR_STATIC
+//
 DEFINE __CAVO_SQL_CONCURRENCY := SQL_CONCUR_ROWVER
-   //
-   // SQL_CONCURRENCY options. Possible values are:
-   //
-   // SQL_CONCUR_READ_ONLY
-   // SQL_CONCUR_LOCK
-   // SQL_CONCUR_ROWVER
-   // SQL_CONCUR_VALUES
-   //
+//
+// SQL_CONCURRENCY options. Possible values are:
+//
+// SQL_CONCUR_READ_ONLY
+// SQL_CONCUR_LOCK
+// SQL_CONCUR_ROWVER
+// SQL_CONCUR_VALUES
+//
 // DEFINE __CAVO_SQL_ODBC_CURSORS := SQL_CUR_USE_IF_NEEDED
 DEFINE __CAVO_SQL_ODBC_CURSORS := SQL_CUR_USE_IF_NEEDED    
-   //
-   // Connect option: Use ODBC or driver cursors.
-   // Possible values are:
-   //
-   // SQL_CUR_USE_IF_NEEDED      my suggestion
-   // SQL_CUR_USE_ODBC           CAVO 2.0 default
-   // SQL_CUR_USE_DRIVER
-   //
-   // Notes:
-   //
+//
+// Connect option: Use ODBC or driver cursors.
+// Possible values are:
+//
+// SQL_CUR_USE_IF_NEEDED      my suggestion
+// SQL_CUR_USE_ODBC           CAVO 2.0 default
+// SQL_CUR_USE_DRIVER
+//
+// Notes:
+//
 DEFINE __CAVO_SQL_MODE_READ_WRITE := SQL_MODE_READ_WRITE
-   //
-   // Connect option: Allow read only or read and write access.
-   // Possible values are:
-   //
-   // SQL_MODE_READ_ONLY
-   // SQL_MODE_READ_WRITE
-   //
+//
+// Connect option: Allow read only or read and write access.
+// Possible values are:
+//
+// SQL_MODE_READ_ONLY
+// SQL_MODE_READ_WRITE
+//
 DEFINE MAX_CONNECT_INFO_STRING  := 256
 DEFINE MAX_LONGVARCHAR          := 32000
 DEFINE MAX_LONGVARCHAR_EXT      := 100000

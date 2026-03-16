@@ -119,7 +119,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a character expression and returns the result.
+    </para>
             </entry>
           </row>
           <row>

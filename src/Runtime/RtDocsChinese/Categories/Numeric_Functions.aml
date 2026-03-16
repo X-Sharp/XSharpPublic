@@ -89,7 +89,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the absolute value of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -203,11 +205,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Acos(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ACos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the arc cosine of a specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -246,11 +250,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Asin(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASin(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns in radians the arc sine of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -274,11 +280,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Atan(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATan(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns in radians the arc tangent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -306,7 +314,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the arc tangent in all four quadrants from specified values.
+    </para>
             </entry>
           </row>
           <row>
@@ -364,7 +374,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the cosine of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -416,11 +428,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtor(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts degrees to radians.
+    </para>
             </entry>
           </row>
           <row>
@@ -463,7 +477,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the value of ex where x is a specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -549,7 +565,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the nearest integer that is less than or equal to the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -652,7 +670,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a numeric expression and returns the integer portion of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -845,7 +865,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines the number of characters in a character expression, indicating the length of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -884,11 +906,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Log(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LOG(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the natural logarithm (base e) of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -916,7 +940,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the common logarithm (base 10) of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -981,19 +1007,6 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAKEROP4(System.UInt16,System.UInt16)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>
@@ -1047,7 +1060,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a set of expressions and returns the expression with the maximum value.
+    </para>
             </entry>
           </row>
           <row>
@@ -1075,7 +1090,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a set of expressions and returns the expression with the minimum value.
+    </para>
             </entry>
           </row>
           <row>
@@ -1118,7 +1135,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Divides one numeric expression by another numeric expression and returns the remainder.
+    </para>
             </entry>
           </row>
           <row>
@@ -1202,11 +1221,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Pi</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PI</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the numeric constant pi.
+    </para>
             </entry>
           </row>
           <row>
@@ -1264,7 +1285,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a random number between 0 and 1.
+    </para>
             </entry>
           </row>
           <row>
@@ -1322,7 +1345,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric expression rounded to a specified number of decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -1347,11 +1372,14 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rtod(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
             </entry>
           </row>
           <row>
@@ -1394,7 +1422,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the sine of an angle.
+    </para>
             </entry>
           </row>
           <row>
@@ -1418,11 +1448,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sqrt(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SQrt(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the square root of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1450,7 +1482,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1508,7 +1542,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在单字节、双字节、UNICODE 和特定区域表示之间转换字符表达式。
+        </para>
             </entry>
           </row>
           <row>
@@ -1729,7 +1765,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      This trigonometric function returns the tangent of an angle.
+    </para>
             </entry>
           </row>
           <row>
@@ -1772,7 +1810,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
           <row>

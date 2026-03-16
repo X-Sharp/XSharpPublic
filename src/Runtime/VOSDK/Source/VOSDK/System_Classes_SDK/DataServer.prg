@@ -10,7 +10,7 @@ CLASS DataServer
     PROTECT nLastLock		AS DWORD
 
 
- /// <exclude />
+/// <exclude />
 METHOD __ClearLocks( ) AS VOID STRICT
     SWITCH nCCMode
     CASE ccStable
@@ -25,17 +25,17 @@ METHOD __ClearLocks( ) AS VOID STRICT
     RETURN
 
 
- /// <exclude />
+/// <exclude />
 METHOD __DataField (nFieldPosition AS DWORD) AS DataField
     RETURN aDataFields[ nFieldPosition ]
 
 
- /// <exclude />
+/// <exclude />
 ACCESS __Clients AS ARRAY STRICT
     RETURN SELF:aClients
 
 
- /// <exclude />
+/// <exclude />
 METHOD __SetupLocks( ) AS VOID STRICT
 
 
@@ -60,7 +60,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
             oHLStatus := SELF:Status
         ENDIF
     OTHERWISE
-        BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
     END SWITCH
 
@@ -86,7 +86,7 @@ ACCESS BoF
 /// <include file="System.xml" path="doc/DataServer.Clients/*" />
 ACCESS Clients
     // DHer: 18/12/2008
-   RETURN SELF:aClients
+    RETURN SELF:aClients
 
 
 /// <include file="System.xml" path="doc/DataServer.Clients/*" />
@@ -96,7 +96,7 @@ ASSIGN Clients(aNewClients)
         SELF:aClients := aNewClients
     ENDIF
     SELF:nClients := ALen(SELF:aClients)
-RETURN
+    RETURN
 
 
 /// <include file="System.xml" path="doc/DataServer.Close/*" />
@@ -137,7 +137,7 @@ ASSIGN ConcurrencyControl( nMode)
         CASE "CCFILE"
             newMode := ccFile
         OTHERWISE
-            BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+            BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                 __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
         END SWITCH
     ENDIF
@@ -393,23 +393,23 @@ METHOD SetDataField( nFieldPosition, oDataField )
 
 
     IF aDataFields = NULL_ARRAY
-        BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_SEQUENCE, ;
             __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
     ELSEIF IsNil( nFieldPosition) .OR. ! IsNumeric( nFieldPosition ) .OR.   ;
-        wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
-        BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
+            wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSEIF ! (__Usual.ToObject(oDataField) IS DataField)
-        BREAK DbError{ SELF, #SetDataField, EG_ARG,   ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG,   ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSE
         LOCAL oField := oDataField				AS DataField
         LOCAL oDF								AS DataField
         oDF := aDataFields[ wFieldPosition ]
         IF oField:Name == oDF:Name .AND.    ;
-            oField:__FieldSpec:UsualType == oDF:__FieldSpec:UsualType .AND.     ;
-            oField:__FieldSpec:Length    == oDF:__FieldSpec:Length .AND.   ;
-            oField:__FieldSpec:Decimals  == oDF:__FieldSpec:Decimals
+                oField:__FieldSpec:UsualType == oDF:__FieldSpec:UsualType .AND.     ;
+                oField:__FieldSpec:Length    == oDF:__FieldSpec:Length .AND.   ;
+                oField:__FieldSpec:Decimals  == oDF:__FieldSpec:Decimals
             aDataFields[ wFieldPosition ] := oField
             RETURN TRUE
         ELSE

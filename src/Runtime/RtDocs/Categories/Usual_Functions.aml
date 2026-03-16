@@ -59,7 +59,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Determines whether an expression is blank.
+        </para>
             </entry>
           </row>
           <row>

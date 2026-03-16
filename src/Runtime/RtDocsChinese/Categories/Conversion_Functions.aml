@@ -162,7 +162,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -413,7 +415,7 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>-- todo --</para>
             </entry>
           </row>
           <row>
@@ -439,7 +441,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts an expression from one data type to another.
+    </para>
             </entry>
           </row>
           <row>
@@ -463,11 +467,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDoW(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the day of the week from a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -495,7 +501,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -523,7 +531,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether or not a character is present in the keyboard buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -566,7 +576,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -622,7 +634,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts a character expression to a date expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -736,11 +750,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dow(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DoW(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric day-of-the-week value from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -764,11 +780,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToC(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a Character-type date from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -818,11 +836,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtor(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts degrees to radians.
+    </para>
             </entry>
           </row>
           <row>
@@ -850,7 +870,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1291,11 +1313,14 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rtod(XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
             </entry>
           </row>
           <row>
@@ -1323,7 +1348,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1381,7 +1408,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在单字节、双字节、UNICODE 和特定区域表示之间转换字符表达式。
+        </para>
             </entry>
           </row>
           <row>
@@ -1557,7 +1586,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
           <row>
@@ -1613,7 +1644,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the year from the specified date or datetime expression.
+    </para>
             </entry>
           </row>
         </table>

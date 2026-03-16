@@ -122,17 +122,17 @@ FUNCTION ATCLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
 FUNCTION ATLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
     RETURN XSharp.Core.Functions.ATLine(cSearch, cTarget)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padl/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/padl/*" />
 [FoxProFunction("PADL", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION PadL(uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING) AS STRING
     RETURN XSharp.RT.Functions.PadL(uValue, nLength, cFillChar)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padr/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/padr/*" />
 [FoxProFunction("PADR", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION PadR(uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING) AS STRING
     RETURN XSharp.RT.Functions.PadR(uValue, nLength, cFillChar)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padc/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/padc/*" />
 [FoxProFunction("PADC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION PadC(uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING) AS STRING
     RETURN XSharp.RT.Functions.PadC(uValue, nLength, cFillChar)
@@ -348,7 +348,7 @@ FUNCTION IsDigit(pszString AS STRING) AS LOGIC
 FUNCTION IsLower(pszString AS STRING) AS LOGIC
      RETURN XSharp.Core.Functions.IsLower(pszString)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isupper/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/isupper/*" />
 [FoxProFunction("ISUPPER", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION IsUpper(pszString AS STRING) AS LOGIC
     RETURN XSharp.Core.Functions.IsUpper(pszString)

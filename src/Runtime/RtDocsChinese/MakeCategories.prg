@@ -20,7 +20,7 @@ FUNCTION Start AS VOID
     // in the doc file
     var base := "E:\XSharp\Dev\"
     gsBinPath    := base+"Artifacts\DocChinese\net46\"
-    gsDocPath := base+"src\Runtime\RtDocs\"
+    gsDocPath := base+"src\Runtime\RtDocsChinese\"
     gsCatPath := gsDOcPath+"Categories\"
     documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}
     TRY
@@ -410,7 +410,9 @@ FUNCTION ReadFunctionList() AS SortedDictionary<STRING, FunctionInfo>
                     groups[i] := aElements[i+2]
                 NEXT
                 info:Categories := groups
-                aInfo:Add(info:Key, info)
+                if ! aInfo:ContainsKey(info:Key)
+                    aInfo:Add(info:Key, info)
+                endif
             ENDIF
         NEXT
     ENDIF

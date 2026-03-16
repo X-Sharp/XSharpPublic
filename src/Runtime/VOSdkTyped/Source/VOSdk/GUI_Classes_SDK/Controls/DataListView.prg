@@ -52,7 +52,7 @@ class DataListView inherit ListView implements IDataBrowser
             local sValue as string
             oColumn := oCol:Tag
             symCol := oColumn:NameSym
-            uValue := oDLVServer:FIELDGET(symCol)
+            uValue := oDLVServer:FieldGet(symCol)
             oFs    := oDLVServer:FieldSpec(symCol)
             oItem:SetValue(uValue, symCol)
 
@@ -206,9 +206,9 @@ class DataListView inherit ListView implements IDataBrowser
             symCol  := oCol:NameSym
             oFS     := oCol:FieldSpec
             if (oFS != null_object)
-                sVal := oFS:Transform(self:FIELDGET(symCol))
+                sVal := oFS:Transform(self:FieldGet(symCol))
             else
-                sVal := AsString(self:FIELDGET(symCol))
+                sVal := AsString(self:FieldGet(symCol))
             endif
             aCache[iIndex, j] := sVal
         next
@@ -353,7 +353,7 @@ class DataListView inherit ListView implements IDataBrowser
 
 
         if (oDLVServer != null_object)
-            return oDLVServer:FIELDGET(nFieldPos)
+            return oDLVServer:FieldGet(nFieldPos)
         endif
         return nil
 

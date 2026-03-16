@@ -44,7 +44,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            允许您在运行时从变量、表格和其他文本中执行多行代码。
+        </para>
             </entry>
           </row>
           <row>

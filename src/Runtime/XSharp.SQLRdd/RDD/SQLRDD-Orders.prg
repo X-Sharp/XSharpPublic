@@ -414,10 +414,9 @@ partial class SQLRDD
             endif
         case DBOI_KEYCOUNT
             self:_ForceOpen()
-            info:Result := self:RowCount
+            info:Result := self:OrderKeyCount
         case DBOI_POSITION
-            self:_ForceOpen()
-            info:Result := self:OrderKeyNo
+            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize

@@ -74,6 +74,22 @@ partial class SQLRDD inherit Workarea
             end try
         end get
     end property
+    /// <summary>A numeric value representing the number of records in the current order.
+    /// When the table is in natural order or not in table mode 0 is returned</summary>
+    public property OrderKeyCount as dword
+        get
+            if self:_tableMode != TableMode.Table .or.;
+                self:CurrentOrder = null
+                return 0
+            endif
+            try
+                return self:_builder:GetOrderKeyCount()
+            catch as Exception
+                return 0
+            end try
+        end get
+    end property
+
     #endregion
 
 
@@ -530,7 +546,13 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         SELF:_ClearTable()
-        var nPage       := SELF:RecCount / self:_oTd:PageSize
+        local nMaxRecNo as dword
+        if self:CurrentOrder = Null
+            nMaxRecNo := self:_builder:GetRecCount()
+        else
+            nMaxRecNo := self:OrderKeyCount
+        endif
+        var nPage       := nMaxRecNo / self:_oTd:PageSize
         if SELF:RecCount % self:_oTd:PageSize != 0
             nPage += 1
         ENDIF

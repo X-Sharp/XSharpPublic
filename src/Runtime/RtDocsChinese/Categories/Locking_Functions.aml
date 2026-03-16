@@ -289,11 +289,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLock(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      在共享数据库文件中锁定记录，可选择保留先前的记录锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -317,11 +319,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRUnLock(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRUnLock(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      释放所有或指定的记录锁。
+    </para>
             </entry>
           </row>
           <row>
@@ -461,7 +465,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FLock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Flock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -534,13 +538,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      Attempts to lock a table record or records.
-    </para>
+              <para />
             </entry>
           </row>
           <row>

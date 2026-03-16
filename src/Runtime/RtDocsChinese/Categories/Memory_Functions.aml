@@ -100,11 +100,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemCheckPtr</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemCheckPtr(System.Void*,System.UInt32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      检查指向内存缓冲区的指针的有效性。
+    </para>
             </entry>
           </row>
           <row>

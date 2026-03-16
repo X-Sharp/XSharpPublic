@@ -51,7 +51,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.ApplicationExec(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.ApplicationExec(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -325,11 +325,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.Enable3dControls(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.Enable3dControls</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>确定是否使用三维外观来显示 windows 创建的控件.</para>
             </entry>
           </row>
           <row>
@@ -377,7 +377,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.Get__WCControlProcPtr(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.Get__WCControlProcPtr</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -513,11 +513,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsAltPressed(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsAltPressed</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>获取 Alt 键的当前状态</para>
             </entry>
           </row>
           <row>
@@ -539,7 +539,20 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsControlPressed(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsControlPressed</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>获取 Ctrl 键的当前状态</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOGUIClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsCtl3dEnabled</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -552,24 +565,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsCtl3dEnabled(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsShiftPressed</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>VOGUIClasses</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.IsShiftPressed(XSharp.__Usual[])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
+              <para>获取 Shift 键的当前状态</para>
             </entry>
           </row>
           <row>
@@ -851,7 +851,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.WCGetCoordinateSystem(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.WCGetCoordinateSystem</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -877,7 +877,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.WCNewControlsAvailable(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.WCNewControlsAvailable</codeEntityReference>
               </para>
             </entry>
             <entry>

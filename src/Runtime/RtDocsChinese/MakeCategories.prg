@@ -24,10 +24,10 @@ FUNCTION Start AS VOID
     gsCatPath := gsDOcPath+"Categories\"
     documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}
     TRY
-        //CreateClassList()
-        //CreateClassSectionFiles()
-        //CreateFunctionList()
-        //CreateFunctionSectionFiles()
+        CreateClassList()
+        CreateClassSectionFiles()
+        CreateFunctionList()
+        CreateFunctionSectionFiles()
         WriteFunctionTopics()
         WriteClassTopics()
     CATCH e AS Exception
@@ -410,7 +410,9 @@ FUNCTION ReadFunctionList() AS SortedDictionary<STRING, FunctionInfo>
                     groups[i] := aElements[i+2]
                 NEXT
                 info:Categories := groups
-                aInfo:Add(info:Key, info)
+                if ! aInfo:ContainsKey(info:Key)
+                    aInfo:Add(info:Key, info)
+                endif
             ENDIF
         NEXT
     ENDIF

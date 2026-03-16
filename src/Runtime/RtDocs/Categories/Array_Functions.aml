@@ -696,19 +696,6 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASortFunc(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,System.Func`3[[XSharp.__Usual, XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586],[XSharp.__Usual, XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.VFP</para>
             </entry>
             <entry>

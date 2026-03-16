@@ -24,6 +24,7 @@ XSharp.RT.DLL,_NGet
 XSharp.RT.DLL,_NPut
 XSharp.RT.DLL;_Send
 XSharp.RT.DLL,_SendClassParams
+XSharp.RT.DLL,ASortFunc
 XSharp.RT.DLL,DoEvents
 XSharp.RT.DLL,MyDalFloatVal
 XSharp.RT.DLL,VO_Sprintf
@@ -38,3 +39,4 @@ XSharp.VFP.DLL;_cmdDirChange
 XSharp.VFP.DLL;_cmdDirMake
 XSharp.VFP.DLL;_cmdDirRemove
 XSharp.VFP.DLL;MkDir
+

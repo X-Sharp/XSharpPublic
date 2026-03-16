@@ -1007,19 +1007,6 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAKEROP4(System.UInt16,System.UInt16)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>

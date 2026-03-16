@@ -410,7 +410,9 @@ FUNCTION ReadFunctionList() AS SortedDictionary<STRING, FunctionInfo>
                     groups[i] := aElements[i+2]
                 NEXT
                 info:Categories := groups
-                aInfo:Add(info:Key, info)
+                if ! aInfo:ContainsKey(info:Key)
+                    aInfo:Add(info:Key, info)
+                endif
             ENDIF
         NEXT
     ENDIF

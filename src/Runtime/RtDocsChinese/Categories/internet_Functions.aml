@@ -350,7 +350,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.WinSockInit(XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.WinSockInit</codeEntityReference>
               </para>
             </entry>
             <entry>

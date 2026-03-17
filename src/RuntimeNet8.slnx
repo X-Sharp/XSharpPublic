@@ -54,6 +54,8 @@
   </Folder>
   <Folder Name="/VOSDK/">
     <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5cb418c0-2dce-46fe-86e5-e3cb8fd28a25" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d7079298-1712-4b03-ad76-4ec53bfe8356" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
   </Folder>
   <Folder Name="/VOSDKTyped/">
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="273a5f69-9a7c-44d1-b84b-f01685167adb" />

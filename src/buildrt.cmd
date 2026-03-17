@@ -23,11 +23,11 @@ Echo Building Runtime %1 Configuration
 if not "%XSHARPDEV%" == "" Echo Using X# development compiler in "%XSHARPDEV%"
 if /i "%1" == "Documentation" goto Docs
 if /i "%1" == "DocChinese"    goto Docs
-msbuild Runtime.sln 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
+msbuild Runtime.slnx 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
 msbuild RuntimeNet8.slnx    /fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
 goto Rest
 :Docs
-msbuild RuntimeDocs.sln 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
+msbuild RuntimeDocs.slnx 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
 rem /v:q /nologo 
 :Rest
 if exist buildRt%1.log del buildRt%1.log

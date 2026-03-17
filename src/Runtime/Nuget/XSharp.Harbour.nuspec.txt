@@ -28,5 +28,6 @@
     <file src="Readme.Harbour.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.Harbour.dll" target="lib\$TFM\XSharp.Harbour.dll" />
     <file src="$XmlFolder\XSharp.Harbour.xml" target="lib\$TFM\XSharp.Harbour.xml" />
+	<file src="$XmlCnFolder\XSharp.Harbour.xml" target="lib\$TFM\zh-Hans\XSharp.Harbour.xml" />
   </files>
 </package>

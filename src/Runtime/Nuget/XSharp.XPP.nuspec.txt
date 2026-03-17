@@ -28,5 +28,6 @@
     <file src="Readme.XPP.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.XPP.dll" target="lib\$TFM\XSharp.XPP.dll" />
     <file src="$XmlFolder\XSharp.XPP.xml" target="lib\$TFM\XSharp.XPP.xml" />
+	<file src="$XmlCnFolder\XSharp.XPP.xml" target="lib\$TFM\zh-Hans\XSharp.XPP.xml" />
   </files>
 </package>

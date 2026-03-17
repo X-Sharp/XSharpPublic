@@ -26,7 +26,8 @@
   <files>
     <file src="icon\Xsharp.png"                 target= "icon\Xsharp.png" />
     <file src="Readme.VOSDK.md"                 target="Readme.md" />
-    <file src="$SourceFolder\XSharp.VO*.dll"  exclude="$SourceFolder\XSharp.VO.DLL" target= "lib\$TFM" />
-    <file src="$XmlFolder\XSharp.VO*.xml"  exclude="$XmlFolder\XSharp.VO.xml" target= "lib\$TFM" />
+    <file src="$SourceFolder\XSharp.VO*.dll"  	exclude="$SourceFolder\XSharp.VO.DLL" 	target= "lib\$TFM" />
+    <file src="$XmlFolder\XSharp.VO*.xml"  		exclude="$XmlFolder\XSharp.VO.xml" 		target= "lib\$TFM" />
+	<file src="$XmlCnFolder\XSharp.VO*.xml"  	exclude="$XmlCnFolder\XSharp.VO.xml" 	target= "lib\$TFM\zh-Hans" />
   </files>
 </package>

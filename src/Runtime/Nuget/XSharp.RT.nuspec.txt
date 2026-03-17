@@ -35,5 +35,9 @@
     <file src="$XmlFolder\XSharp.RT.xml" target="lib\$TFM\XSharp.RT.xml" />
     <file src="$XmlFolder\XSharp.Data.xml" target="lib\$TFM\XSharp.Data.xml" />
     <file src="$XmlFolder\XSharp.RT.Debugger.xml" target="lib\$TFM\XSharp.RT.Debugger.xml" />
+	<file src="$XmlCnFolder\XSharp.RDD.xml" target="lib\$TFM\zh-Hans\XSharp.RDD.xml" />
+	<file src="$XmlCnFolder\XSharp.RT.xml" target="lib\$TFM\zh-Hans\XSharp.RT.xml" />
+	<file src="$XmlCnFolder\XSharp.Data.xml" target="lib\$TFM\zh-Hans\XSharp.Data.xml" />
+	<file src="$XmlCnFolder\XSharp.RT.Debugger.xml" target="lib\$TFM\zh-Hans\XSharp.RT.Debugger.xml" />
   </files>
 </package>

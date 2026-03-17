@@ -307,5 +307,5 @@ FUNCTION OemToAnsi(cOemString AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/set/*" />
 [FoxProFunction("SET", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Set(nDefine AS USUAL, newValue AS USUAL) AS USUAL
-    RETURN XSharp.RT.Functions.Set(nDefine, newValue)
+FUNCTION Set(cSETCommand AS USUAL, newValue AS USUAL) AS USUAL
+    RETURN XSharp.RT.Functions.Set(cSETCommand, newValue)

@@ -527,7 +527,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
 #region implementation IComparable<T>
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
+    /// <include file="RTComments.xml" path="Comments/UsualCompareTo/*" />
     [NODEBUG] ;
     PUBLIC METHOD CompareTo(rhs AS __Usual) AS LONG
         IF SELF:_usualType == rhs:_usualType

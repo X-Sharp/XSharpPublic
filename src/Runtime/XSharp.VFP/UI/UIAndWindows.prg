@@ -41,5 +41,5 @@ FUNCTION ChrSaw(nSeconds := 0 AS REAL8) AS LOGIC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rgb/*" />
 [FoxProFunction("RGB", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION RGB(bRed AS BYTE, bGreen AS BYTE, bBlue AS BYTE) AS DWORD
-    RETURN XSharp.Core.Functions.RGB(bRed, bGreen, bBlue)
+FUNCTION RGB(nRedValue AS BYTE, nGreenValue AS BYTE, nBlueValue AS BYTE) AS DWORD
+    RETURN XSharp.Core.Functions.RGB(nRedValue, nGreenValue, nBlueValue)

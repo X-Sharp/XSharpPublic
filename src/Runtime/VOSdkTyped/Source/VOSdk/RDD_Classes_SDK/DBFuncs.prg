@@ -91,7 +91,7 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, cD
     ENDIF
 
 
-    aRdds := _RDDList( cDriver, aRDD )
+    aRdds := __RDDList( cDriver, aRDD )
     rddList := __AllocRddList( aRdds )
     lRetCode := VoDbUseArea( TRUE, rddList, cFile, __UniqueAlias( cFile ), TRUE, TRUE )
 
@@ -350,7 +350,7 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  c
         ENDIF
 
 
-        aRdds := _RDDList( cDriver, aRDD )
+        aRdds := __RDDList( cDriver, aRDD )
         rddList := __AllocRddList( aRdds )
 
 
@@ -633,7 +633,7 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
     ENDIF
 
 
-    aRdds := _RDDList( cRDD )
+    aRdds := __RDDList( cRDD )
     rddList := __AllocRddList( aRdds )
 
 
@@ -759,7 +759,7 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aS
     fnSortNames := __allocNames( aFields )
 
 
-    aRdds := _RDDList( cRDD )
+    aRdds := __RDDList( cRDD )
     rddList := __AllocRddList( aRdds )
 
 
@@ -863,7 +863,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
     fldNames := _AllocFieldNames( aStruct )
 
 
-    aRdds := _RDDList( cRDD )
+    aRdds := __RDDList( cRDD )
     rddList := __AllocRddList( aRdds )
 
 

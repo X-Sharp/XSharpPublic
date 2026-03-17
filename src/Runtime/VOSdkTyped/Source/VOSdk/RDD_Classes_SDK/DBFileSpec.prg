@@ -464,7 +464,7 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRdds ) AS USUAL CLIPPE
 
 
 
-        aRdds := _RDDList( cDriver, aRdds )
+        aRdds := __RDDList( cDriver, aRdds )
         rddList := __AllocRddList( aRdds )
 
 
@@ -567,7 +567,7 @@ METHOD DBFSGetInfo( xRDDs, aHidden ) AS USUAL CLIPPER
             IF ! IsString( xRDDs )
                 xRDDs := SELF:cRDD_Name
             ENDIF
-            xRDDs := _RDDList( xRDDs, aHidden )
+            xRDDs := __RDDList( xRDDs, aHidden )
         ENDIF
 
 

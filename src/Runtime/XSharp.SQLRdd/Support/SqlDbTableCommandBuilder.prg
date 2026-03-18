@@ -67,6 +67,7 @@ internal class SqlDbTableCommandBuilder
                     if !String.IsNullOrEmpty(tag:Condition)
                         oTag:SetCondition(tag:Condition)
                     endif
+                    oTag:Descending := tag:Descending
                     oBag:Add(oTag)
                 next
                 SELF:OrderBagList:Add(oBag)
@@ -198,7 +199,7 @@ internal class SqlDbTableCommandBuilder
         // to calculate the correct pagenumber !
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        if SELF:_oTable:HasServerFilter .and. !String.IsNullOrEmpty(_oTable:ServerFilter)
+        if SELF:_oTable:HasServerFilter
             whereClauses:Add(_oTable:ServerFilter)
         endif
         if currentOrder != null
@@ -213,9 +214,9 @@ internal class SqlDbTableCommandBuilder
         endif
         var sWhereClause := SELF:CombineWhereClauses(whereClauses)
         sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
-        
+
         sb:Append(Provider:RowNumberStatement)
-        
+
         // not sure if this is a clever solution,
         // but WhereMacro is already used for nRec
         var cFromWhere := Provider:QuoteIdentifier(self:_oTable:RealName)
@@ -223,11 +224,14 @@ internal class SqlDbTableCommandBuilder
             cFromWhere += SqlDbProvider.WhereClause+sWhereClause
         endif
         sb:Replace(SqlDbProvider.TableNameMacro, cFromWhere)
-        
+
         var cOrderby := Functions.List2String(_oRdd:CurrentOrder:OrderList)
         if SELF:_oTable:HasRecnoColumn
             if ! String.IsNullOrEmpty(cOrderby)
                 cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                if _oRdd:CurrentOrder:Descending
+                    cOrderby += " DESC"
+                endif
             else
                 cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
             endif

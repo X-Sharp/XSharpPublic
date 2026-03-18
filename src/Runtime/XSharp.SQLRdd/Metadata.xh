@@ -33,12 +33,6 @@
     /// </summary>
     property RecnoColumn    as string auto
     /// <summary>
-    /// Specifies whether a seek operation should return a subset of the records in the table.
-    /// This defaults to TRUE which means that only the matching rows are returned.
-    /// When FALSE then all rows are returned, and a seek operation positions on the first matching row
-    /// </summary>
-    property SeekReturnsSubset as logic auto
-    /// <summary>
     /// Should trailing spaces for string columns be trimmed?
     /// </summary>
     property TrimTrailingSpaces as logic auto

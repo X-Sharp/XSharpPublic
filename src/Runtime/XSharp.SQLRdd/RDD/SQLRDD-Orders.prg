@@ -457,7 +457,7 @@ partial class SQLRDD
         // save PageSize
         var nPageSize := SELF:_oTd:PageSize
         SELF:_oTd:PageSize := 1
-        
+
         if seekInfo:Last
             CurrentOrder:Descending := !CurrentOrder:Descending
         endif
@@ -465,7 +465,7 @@ partial class SQLRDD
         if seekInfo:Last
             CurrentOrder:Descending := !CurrentOrder:Descending
         endif
-        
+
         SELF:_oTd:PageSize := nPageSize
         IF SELF:DataTable:Rows:Count = 0
             RETURN SELF:GoTo(0)
@@ -474,10 +474,8 @@ partial class SQLRDD
 
 
 
-        IF !SELF:_oTd:SeekReturnsSubset
-            var nRec := SELF:RecNo
-            SELF:_GotoRecord(nRec)
-        ENDIF
+        var nRec := SELF:RecNo
+        SELF:_GotoRecord(nRec)
         IF SELF:RowCount > 0
             SELF:_Found := TRUE
             SELF:_SetEOF(FALSE)
@@ -486,13 +484,6 @@ partial class SQLRDD
             SELF:_Found := FALSE
             SELF:_SetEOF(TRUE)
             SELF:_SetBOF(FALSE)
-        ENDIF
-        IF SELF:_oTd:SeekReturnsSubset
-            if seekInfo:Last
-                SELF:RowNumber := SELF:RowCount
-            else
-                SELF:RowNumber := 1
-            endif
         ENDIF
         return true
     end method

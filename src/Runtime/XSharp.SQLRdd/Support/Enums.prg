@@ -70,8 +70,8 @@ enum SqlRDDEventReason
     member Condition
 /// <summary>Specifies if the index tag is unique</summary>
     member Unique
-/// <summary>Should a seek return a subset (TRUE) or all rows (FALSE) </summary>
-    member SeekReturnsSubset
+/// <summary>Specifies if the index tag is descending</summary>
+    member Descending
 /// <summary>Retrieve TagName</summary>
     member TagName
 /// <summary>Retrieve Buffersize in pages</summary>

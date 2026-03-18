@@ -105,7 +105,7 @@ IF !RunNuget( Tool, Version, OutputFolder )
 	ErrorMessage( "Something went wrong...." )
 ENDIF
 File.Copy("XSAddNugetSource.prgx", Path.Combine(OutputFolder, "XSAddNugetSource.prgx"), true)
-InfoMessage( "Done." )
+File.Copy("NuGetSign.bat", Path.Combine(OutputFolder, "NuGetSign.bat"), true)
 
 FUNCTION GetBuildNumber( versionFile AS STRING ) AS String
 	VAR version := "3.0.0"
@@ -144,10 +144,10 @@ FUNCTION CheckNuGet() AS LOGIC
 			result := execResult:Contains( "Microsoft.NuGet" )
 		END USING
 	END USING
-RETURN result
+RETURN result 
 
 PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, version AS STRING, xmlFolder AS STRING, xmlcnFolder AS STRING)
-	VAR source := "XSharp." + tool + ".nuspec.txt"
+	VAR source := "XSharp." + tool + ".nuspec.xml"
 	VAR destination := "XSharp." + tool + "." + version +".nuspec"
 	VAR content := ""
 	VAR tfmList := tfm:Split('+')

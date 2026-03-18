@@ -33,6 +33,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal(TRUE, nAttrib != 0)
 			Assert.Equal(TRUE, nSize > 0)
 			Assert.Equal(FALSE, String.IsNullOrEmpty(cTime))
+			LOCAL dt AS DateTime
+			dt := System.IO.FileInfo{"XSharp.Core.dll"}:LastWriteTime
+			Assert.Equal( dt:Hour:ToString("00") + ":" + dt:Minute:ToString("00") + ":" + dt:Second:ToString("00") , cTime)
 			lOk := FNext()
 			Assert.Equal(lOk, FALSE)
 			cName := FName()

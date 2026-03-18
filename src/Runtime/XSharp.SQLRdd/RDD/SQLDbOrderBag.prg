@@ -154,9 +154,11 @@ internal class SqlDbOrderBag INHERIT BaseIndex
         var cExpression := oIni:GetString(section, EXPRESSION, "")
         var cCondition := oIni:GetString(section, CONDITION, "")
         var lUnique     := oIni:GetLogic(section, UNIQUE, FALSE)
+        var lDescending := oIni:GetLogic(section, DESCEND, FALSE)
         oOrder := SqlDbOrder{SELF:RDD,  cTagName, cExpression, SELF}
         oOrder:Condition := cCondition
         oOrder:Unique := lUnique
+        oOrder:Descending   := lDescending
         return oOrder
     end method
 
@@ -181,6 +183,7 @@ internal class SqlDbOrderBag INHERIT BaseIndex
             oIni:WriteString(cPreFix+tag:Name, EXPRESSION, tag:Expression)
             oIni:WriteString(cPreFix+tag:Name, CONDITION, tag:Condition+" ")
             oIni:WriteString(cPreFix+tag:Name, UNIQUE, tag:Unique:ToString())
+            oIni:WriteString(cPreFix+tag:Name, DESCEND, tag:Descending:ToString())
         next
         oIni:WriteString(INDEXPREFIX+SELF:LogicalName, TAGS,cTags)
         return
@@ -219,6 +222,7 @@ internal class SqlDbOrderBag INHERIT BaseIndex
     internal const EXPRESSION  := "Expression" as string
     internal const CONDITION   := "Condition" as string
     internal const UNIQUE      := "Unique" as string
+    internal const DESCEND     := "Descending" as string
 #endregion
 end class
 end namespace // XSharp.RDD.SqlRDD

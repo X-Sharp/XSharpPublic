@@ -58,6 +58,7 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
     INTERNAL CONST DEFAULT_SERVERFILTER := "" AS STRING
     INTERNAL CONST DEFAULT_TAGS:= "" AS STRING
     INTERNAL CONST DEFAULT_UNIQUE:= FALSE AS LOGIC
+    INTERNAL CONST DEFAULT_DESCENDING:= FALSE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATABLECOLUMNS:= "*" AS STRING
     /// <inheritdoc />
     /// <remarks>The abstract implementation does nothing.</remarks>
@@ -83,7 +84,6 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
             _connection:RecnoColumn         := SELF:GetString(oPar, SqlRDDEventReason.RecnoColumn, _connection:RecnoColumn)
             _connection:DeletedColumn       := SELF:GetString(oPar, SqlRDDEventReason.DeletedColumn, _connection:DeletedColumn)
             _connection:CompareMemo         := SELF:GetLogic(oPar,  SqlRDDEventReason.CompareMemo, _connection:CompareMemo)
-            _connection:SeekReturnsSubset   := SELF:GetLogic(oPar,  SqlRDDEventReason.SeekReturnsSubset, _connection:SeekReturnsSubset)
             hasDefaults := TRUE
         ENDIF
         RETURN
@@ -102,7 +102,6 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
         oTable:RecnoColumn       := SELF:GetString(oPar,  SqlRDDEventReason.RecnoColumn,   _connection:RecnoColumn)
         oTable:TrimTrailingSpaces:= SELF:GetLogic(oPar,   SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(oPar,   SqlRDDEventReason.CompareMemo,   _connection:CompareMemo)
-        oTable:SeekReturnsSubset := SELF:GetLogic(oPar,   SqlRDDEventReason.SeekReturnsSubset,   _connection:SeekReturnsSubset)
         // these fields have no connection level defaults
         oTable:ServerFilter      := SELF:GetString(oPar, SqlRDDEventReason.ServerFilter, DEFAULT_SERVERFILTER)
         oTable:ColumnList        := SELF:GetString(oPar, SqlRDDEventReason.ColumnList, DEFAULT_COLUMNLIST)

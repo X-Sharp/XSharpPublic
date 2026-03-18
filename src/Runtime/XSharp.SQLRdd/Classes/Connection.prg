@@ -185,8 +185,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:RecnoColumn := strValue
             case "updateallcolumns"
                 self:UpdateAllColumns := isTrue
-           case "seekreturnssubset"
-                self:SeekReturnsSubset := isTrue
            case "trimtrailingspaces"
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
@@ -261,7 +259,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         BufferSize         := DEFAULT_BUFFERSIZE
         DeletedColumn      := DEFAULT_DELETEDCOLUMN
         RecnoColumn        := DEFAULT_RECNOCOLUMN
-        SeekReturnsSubset  := DEFAULT_SEEKRETURNSSUBSET
         cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
@@ -807,7 +804,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
-    INTERNAL CONST DEFAULT_SEEKRETURNSSUBSET := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_MAXRECNOASRECCOUNT := FALSE AS LOGIC
     #region Events
     /// <summary>

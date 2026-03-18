@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-03-17T11:39:41.999Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-03-18T15:36:27.208Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -28,8 +28,13 @@
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">The implementation of several UI related functions, such as MessageBox(), have been moved from XSharp.VFP to XSharp.VFP.UI.</text><br/><text styleclass="Normal">These functions will now output to the console window when XSharp.VFP.UI cannot be found.</text></li>
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">The XSharp.VFP assembly now contains function definitions for all functions from VFP, even the ones that exist in XSharp.Core and XSharp.RT. These functions will delegate the work to the implementation in the other assemblies.</text></li>
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">Fixed an issue in the Macrocompiler for .Net 8</text></li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">We have now also included VOConsoleClasses.dll, VOSystemClasses.dll and VORDDCLasses.dll for .Net 8</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">The NuGet packages for the X# runtime now also contain the Chinese XML files.</text></li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">The NuGet packages for the X# runtime now also contain the Chinese XML files.(#1813)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">We have added implicit conversion operators from USUAL to nullable value types(#1748, #1807)</text></li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">VOSDK</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -44,7 +49,7 @@
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">For SDK projects File Foo.xh is now by default depending on Foo.prg when they both appear in the same folder</text></li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">VS Integration</text></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed an issue where the first Build inside VS with a solution that has X# projects would seem to freeze VS. After pressing Cancel a second Build (or Rebuild) would work.</li>
       <li styleclass="Normal">The “ToggleComment” command now takes the comment status of the first line of a block of lines to decide if the block needs to be commented or uncommented. When a line inside a block is already commented then it may end up being double commented after a comment operation. And when a block containing a double commented line is uncommented, than that line will become single commented afterwards.</li>
       <li styleclass="Normal">We no longer add ProjectGuid properties to SDK projects. Guids are also removed from project references inside SDK projects.(#1819)</li>
@@ -62,18 +67,18 @@
     <para styleclass="Heading1">Changes in 3.0.0.1</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Calibri Light&apos;; font-size:11pt; color:#000000;">This build contains some bug fixes and new features compared to 3.0.0.0</text></para>
     <para styleclass="Heading1"><text styleclass="Heading3">Compiler</text></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The compiler now automatically generates a __XSHARP3__ define</li>
       <li styleclass="Normal">Fixed an “Failed to emit module” error when the code contains an expression in the form of “UnnamedType.Property” or “UnnamedType.Method()” when the “allowdot” compiler option is enabled.</li>
       <li styleclass="Normal">The range expression rule in the compiler ( a .. b) allowed both sides of the dots to be empty. This has been fixed. The compiler now supports “a .. b”, “a .. “ and “ .. b” </li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Build System</text></para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed an error reported by Stefan Hirsch, was caused by automatically adding an OSPlatformAttribute to the output assemblies</li>
       <li styleclass="Normal">Fixed a NuGet error about listing “win-x86” as runtime identifier for Old style projects with package references (#1801)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">VS Integration</text></para>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The Output window in Visual Studio was not always showing progress. <br/>This has been fixed (reported by Trevor)</li>
       <li styleclass="Normal">The Build/Cancel button was not visible when a X# project was selected and another project was being built. (#1799)</li>
       <li styleclass="Normal">The include-files node could sometimes show files, even after the /nostddef compiler option was selected on the project properties page. We recommend a touch of all the files in a project to completely refresh (clear) the include list. (#1805)</li>
@@ -87,17 +92,17 @@
     <para styleclass="Normal">XSharp 3 is a MAJOR update from XSharp 2. All elements of the product have been touched during the last couple of months. X# 3 has some breaking changes, so you should take the time to recompile and test all your existing projects and solutions.</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Breaking changes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading3">Compiler</text></para>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The compiler no longer supports &quot;Bring Your Own Runtime&quot;. If you want to compile in the VO or Vulcan dialect you will HAVE to include references to XSharp.Core and XSharp.RT.<br/>That does not mean that you can&apos;t link your program against the Vulcan runtime DLLs, but we no longer map our Xbase types to the types in these DLLs. So USUAL will not be mapped to Vulcan.__Usual. You can still use the types, functions and classes on these DLLs, but they will no longer be treated specially. If you want to call a function from the Vulcan Runtime yuou will have to use the syntax for static methods</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Runtime</text></para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The signature for several functions and methods in the XSharp Runtime has been changed. We have used the new IN keyword for many that use parameters defined AS USUAL. The new IN USUAL tells the compiler to pass the variable by reference, which should make the code slightly faster. It also tells the compiler that the parameter will not be changed by the code in the function / method</li>
       <li styleclass="Normal">We have also moved several functions and types between Runtime DLLs, because they were not in the best possible location. </li>
       <li styleclass="Normal">X# 3 comes with runtime DLLs for both .net 46 and .net 8. Not all VOSDK Dlls have been ported to .Net 8 because they contain code that does not work in an AnyCPU environment.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text><br/><text styleclass="Heading3">New Features</text></para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">GLOBAL USING</li>
       <li styleclass="Normal">File wide NAMESPACE</li>
       <li styleclass="Normal">RECORD modifier for classes and structures</li>
@@ -105,7 +110,7 @@
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Bug fixes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Build System</text><br/><text styleclass="Heading3">New Features</text></para>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The Build system now supports the new SDK style projects</li>
       <li styleclass="Normal">We have added a task to generate source code for GLOBAL USING values declared in the project files. Please note that the VS integration does not have a page to declare the GLOBAL USING values for a project. That will follow.</li>
       <li styleclass="Normal">The XAML files in the Rules subfolder of the MsBuild folder are no longer used and have been deleted. Also the references to these files in the .props and .targets files have been removed</li>
@@ -114,7 +119,7 @@
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Bug fixes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text><br/><text styleclass="Heading3">New Features</text></para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">We are now including .Net 8 versions of most of our runtime DLLs.</li>
       <li styleclass="Normal">The Runtime is now delivered in both DLL format as well as Nuget Packages. See the separate topic about the Runtime in this help file for a description of these packages and DLLs</li>
       <li styleclass="Normal">Several functions in the FoxPro Runtime have been added</li>
@@ -122,7 +127,7 @@
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Bug fixes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text><br/><text styleclass="Heading3">New Features</text></para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">We are now supporting SDK style projects. To do so many changes were made all over the Visual Studio support code</li>
       <li styleclass="Normal">We are now fully supporting Visual Studio 2026</li>
       <li styleclass="Normal"><text style="font-weight:bold; text-decoration:underline;">We are no longer supporting Visual Studio 2017.</text></li>

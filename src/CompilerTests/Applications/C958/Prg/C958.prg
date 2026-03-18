@@ -4,7 +4,7 @@
 FUNCTION Start() AS VOID
 	LOCAL i AS INT?
 	LOCAL u := NIL AS USUAL
-	i := (INT?)u
+	i := u
 	? i:HasValue
 	? IsNil(i)
 	xAssert(i:HasValue == FALSE)

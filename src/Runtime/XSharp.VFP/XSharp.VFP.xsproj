@@ -68,7 +68,6 @@
     <Compile Include="GatherScatter.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="Keyboard.prg" />
-    <Compile Include="MacroWrappers.prg" />
     <Compile Include="NotSupported.prg" />
     <Compile Include="PrinterFunctions.prg" />
     <Compile Include="RuntimeCoreWrappers.prg" />

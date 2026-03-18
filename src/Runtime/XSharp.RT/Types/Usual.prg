@@ -2995,6 +2995,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             END SWITCH
         ELSE
             VAR o := __Usual.ToObject(SELF)
+            if o == null
+                return o
+            endif
             IF conversionType:IsAssignableFrom(o:GetType())
                 RETURN o
             ELSEIF o IS IConvertible VAR ic

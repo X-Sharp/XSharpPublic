@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-09T14:04:11.913Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>历史XSharp 2</title>
+<topic template="Default" modified="2026-03-19T20:10:15.829+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>历史：XSharp 2</title>
   <keywords>
     <keyword>Changes</keyword>
     <keyword>Runtime chapter</keyword>
@@ -11,7 +11,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">历史XSharp 2</para>
+      <para styleclass="Heading1">历史：XSharp 2</para>
     </header>
     <para styleclass="Heading1">Changes in 2.24.0.1</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text><br/><text styleclass="Heading3">Bug修复</text></para>

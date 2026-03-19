@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-09T14:16:32.828Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-03-19T19:46:24.144+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>安装</title>
   <keywords>
     <keyword>component</keyword>
@@ -290,7 +290,7 @@
         <td style="width:666px;">
           <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>是 2019。</li>
-            <li styleclass="Normal"><text style="font-weight:bold;">&lt;版本&gt; </text>可能为 Professional、Community、Enterprise 或 Buildtools 之一。您的计算机<br/>上可能安装了多个版本的 VS2017/VS2019。安装程序将显示所有检测到的实例。</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;版本&gt; </text>可能为 Professional、Community、Enterprise 或 Buildtools 之一。您的计算机<br/>上可能安装了多个版本的 VS2019。安装程序将显示所有检测到的实例。</li>
           </list>
         </td>
       </tr>

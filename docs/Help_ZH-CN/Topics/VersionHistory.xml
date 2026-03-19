@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-03-17T11:40:44.371Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-03-19T19:43:21.677+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -16,14 +16,14 @@
     <para styleclass="Heading1">3.0.0.2版本变更</para>
     <para styleclass="Heading1"><text styleclass="Heading3">编译器</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修改了RECALL命令的UDC，因为FoxPro在执行该命令期间会暂时关闭SetDeleted()设置（#1838）</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修改了RECALL命令的UDC，因为FoxPro在执行该命令期间会暂时关闭SetDeleted()设置（</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1838" target="_blank" styleclass="Normal">#1838</link><text styleclass="Normal">）</text></li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">运行时</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">添加了 AUsed() 函数的实现（VFP）</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修复了在两个不同的工作区中打开同一张表时，若文件名仅大小写不同，DBF缓存出现的问题（#1828）</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修复了 FoxPro 表中包含自动编号字段时 DBF 头文件锁定的问题（#1829）</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">DBFVFP 驱动程序现支持包含 Trim()、Ltrim()、RTrim() 等函数的索引表达式 (#1837)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修复了在两个不同的工作区中打开同一张表时，若文件名仅大小写不同，DBF缓存出现的问题（</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1828" target="_blank" styleclass="Normal">#1828</link><text styleclass="Normal">）</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修复了 FoxPro 表中包含自动编号字段时 DBF 头文件锁定的问题（</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1829" target="_blank" styleclass="Normal">#1829</link><text styleclass="Normal">）</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">DBFVFP 驱动程序现支持包含 Trim()、Ltrim()、RTrim() 等函数的索引表达式 (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1837" target="_blank" styleclass="Normal">#1837</link><text styleclass="Normal">)</text></li>
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">若干 UI 相关函数（如 MessageBox()）的实现已从 XSharp.VFP 移至 XSharp.VFP.UI。当无法找到 XSharp.VFP.UI 时</text><br/><text styleclass="Normal">，这些函数现在将输出到控制台窗口。</text></li>
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">XSharp.VFP 程序集现已包含 VFP 中所有函数的定义，即使这些函数存在于 XSharp.Core 和 XSharp.RT 中。这些函数将把工作委托给其他程序集中的实现。</text></li>
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修复了 .Net 8 宏编译器中的一个问题</text></li>
@@ -45,14 +45,14 @@
     <para styleclass="Heading1"><text styleclass="Heading3">VS集成</text></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">&quot;ToggleComment&quot;命令现根据代码块首行的注释状态决定是否对整个代码块进行注释/取消注释。若代码块内某行已注释，执行注释操作后可能导致该行被双重注释；反之，若对包含双重注释行的代码块取消注释，该行将变为单行注释。</li>
-      <li styleclass="Normal">不再向SDK项目添加ProjectGuid属性。同时移除了SDK项目内部引用中的GUID值。(#1819)</li>
-      <li styleclass="Normal">修复了解决方案资源管理器窗口中引用名称重复的问题(#1816)</li>
+      <li styleclass="Normal">不再向SDK项目添加ProjectGuid属性。同时移除了SDK项目内部引用中的GUID值。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1819" target="_blank">#1819</link>)</li>
+      <li styleclass="Normal">修复了解决方案资源管理器窗口中引用名称重复的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1816" target="_blank">#1816</link>)</li>
       <li styleclass="Normal">当项目存在多个指向同一外部项目的引用时可能引发问题，现已修复。第二个引用将被（静默）忽略。</li>
-      <li styleclass="Normal">IDE 已为菜单选项做好准备，可将传统项目转换为新的 SDK 项目文件格式（#1823）。该菜单选项目前尚未启用。</li>
-      <li styleclass="Normal">修复了添加程序集引用时偶发的VS崩溃问题(#1814)</li>
+      <li styleclass="Normal">IDE 已为菜单选项做好准备，可将传统项目转换为新的 SDK 项目文件格式（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1823" target="_blank">#1823</link>）。该菜单选项目前尚未启用。</li>
+      <li styleclass="Normal">修复了添加程序集引用时偶发的VS崩溃问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1814" target="_blank">#1814</link>)</li>
     </list>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">文档格式化器现在会排除属于 TEXT ... ENDTEXT 结构的行 </li>
+      <li styleclass="Normal">文档格式化器现在会排除 TEXT ... ENDTEXT 结构内的代码行 </li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">模板</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -69,14 +69,14 @@
     <para styleclass="Heading1"><text styleclass="Heading3">构建系统</text></para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了由Stefan Hirsch报告的错误，该错误由输出程序集自动添加OSPlatformAttribute引起</li>
-      <li styleclass="Normal">修复了NuGet错误：旧式项目使用包引用时将&quot;win-x86&quot;列为运行时标识符的问题(#1801)</li>
+      <li styleclass="Normal">修复了NuGet错误：旧式项目使用包引用时将&quot;win-x86&quot;列为运行时标识符的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1801" target="_blank">#1801</link>)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">VS集成</text></para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Visual Studio 的输出窗口有时无法显示进度。<br/>此问题已修复（由 Trevor 报告）</li>
-      <li styleclass="Normal">当选中X#项目时，若正在构建其他项目，&quot;构建/取消&quot;按钮不可见（#1799）</li>
-      <li styleclass="Normal">即使在项目属性页选择/nostddef编译器选项后，include-files节点仍可能显示文件。建议触发项目内所有文件以完全刷新（清除）包含列表（#1805）</li>
-      <li styleclass="Normal">修复在VS2026加载项目时出现的&quot;类型初始化器&apos;XSharp.Project.ErrorListManager&apos;抛出异常&quot;错误（#1800）</li>
+      <li styleclass="Normal">当选中X#项目时，若正在构建其他项目，&quot;构建/取消&quot;按钮不可见（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1799" target="_blank">#1799</link>）</li>
+      <li styleclass="Normal">即使在项目属性页选择/nostddef编译器选项后，include-files节点仍可能显示文件。建议触发项目内所有文件以完全刷新（清除）包含列表（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1805" target="_blank">#1805</link>）</li>
+      <li styleclass="Normal">修复在VS2026加载项目时出现的&quot;类型初始化器&apos;XSharp.Project.ErrorListManager&apos;抛出异常&quot;错误（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1800" target="_blank">#1800</link>）</li>
       <li styleclass="Normal">语言服务现支持全局USING语法 </li>
       <li styleclass="Normal">更新了Windows Forms和WPF SDK模板</li>
       <li styleclass="Normal">SDK项目自动添加的程序集在属性窗口中显示更多属性。</li>

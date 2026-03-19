@@ -25,6 +25,12 @@ if /i "%1" == "Documentation" goto Docs
 if /i "%1" == "DocChinese"    goto Docs
 msbuild Runtime.slnx 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
 msbuild RuntimeNet8.slnx    /fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
+cd Runtime\NuGet
+if /i "%1" == "Debug"  call CreateAllNuget.bat Debug
+if /i "%1" == "Release"  call CreateAllNuget.bat Release
+call CleanNuget.bat
+cd..
+cd..
 goto Rest
 :Docs
 msbuild RuntimeDocs.slnx 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m

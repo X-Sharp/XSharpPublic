@@ -14,7 +14,7 @@ global OleDbConnStr := "Provider=sqloledb;Data Source=LEDA;Initial Catalog=North
 global showEvents := true as logic
 
 function Start as void
-    TestBeta3()
+    //TestBeta3()
     //TestProviders()
     //TestSqlServer()
     //TestODBC()
@@ -29,7 +29,7 @@ function Start as void
 //     TestParametersODBC()
 //     TestParametersSQL()
 //     TestParametersOLEDB()
-    //TestTable()
+    TestTable()
     //TestCreateIndex()
     //TestServerFilter()
     //TestTableRecno()
@@ -113,27 +113,28 @@ function TestTable() as void
     var handle := SqlDbOpenConnection(SqlConnStr)
     var conn   := SqlDbGetConnection(handle)
     //conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-    conn:CallBack += @@EventHandler
+    //conn:CallBack += @@EventHandler
     ? handle
     VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
-    ? Cdx(1)
-    DbSetIndex("Customers.sdx")
-    ? Cdx(2)
+    //? Cdx(1)
+    //DbSetIndex("Customers.sdx")
+    //? Cdx(2)
     DumpIndexes()
 
     ? "SetDeleted(TRUE)"
+    DbSetOrder("PK")
     SetDeleted(true)
-    DbGoTop()
-    do while ! Eof() .and. Recno() < 10
+    DbGoBottom()
+    do while ! Bof()
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
-        DbSkip(1)
+        DbSkip(-1)
     enddo
     wait
     Cls()
     ? "SetDeleted(FALSE)"
     SetDeleted(false)
     DbGoTop()
-    do while ! Eof() .and. Recno() < 10
+    do while ! Eof()
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
         DbSkip(1)
     enddo
@@ -142,7 +143,7 @@ function TestTable() as void
     ? "Order by address"
     DbSetOrder("Address")
     DbGoTop()
-    do while ! Eof() .and. Recno() < 10
+    do while ! Eof()
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3),  FieldGetSym(#Country),  FieldGetSym(#City)
         DbSkip(1)
     enddo
@@ -163,7 +164,7 @@ function TestTable() as void
     DbGoTop()
     var nI := 0
     ? "By city"
-    DO WHILE ! Eof() .and. ++nI < 10
+    DO WHILE ! Eof()
         ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
         DbSkip(1)
     ENDDO
@@ -171,7 +172,15 @@ function TestTable() as void
     ? DbSetOrder("Name")
     DbGoTop()
     nI := 0
-    DO WHILE ! Eof() .and. ++nI < 10
+    DO WHILE ! Eof()
+        ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
+        DbSkip(1)
+    ENDDO
+    ? DbSetOrder(5)
+    ? "Index tag Alfred"
+    DbGoTop()
+    nI := 0
+    DO WHILE ! Eof()
         ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
         DbSkip(1)
     ENDDO
@@ -561,7 +570,7 @@ function DumpStructure(oTd as SqlDbTableInfo) as VOID
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     // Tags default
     switch e:Reason
-        
+
     case SqlRDDEventReason.Condition
         e:Value := ""
     case SqlRDDEventReason.Unique
@@ -604,7 +613,7 @@ function TestProviders as void
         if SqlDbSetProvider(strProv)
             oProv := SqlDbGetProvider()
             ? "Name      ", oProv:Name
-            ? "TopStmt   ", oProv:SelectTopStatement
+            ? "Paging    ", oProv:PagingClause
             ? "Left()    ", oProv:GetFunction("LEFT(%1%,%2%)")
             ? "Alltrim() ", oProv:GetFunction("ALLTRIM(%1%)")
             ? "DTOS()    ", oProv:GetFunction("DTOS(%1%)")

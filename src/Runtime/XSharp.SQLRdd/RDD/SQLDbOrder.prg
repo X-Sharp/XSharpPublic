@@ -81,6 +81,7 @@ internal class SqlDbOrder inherit SqlDbObject
         self:ClearCache()
         return
     end method
+    
     METHOD ClearCache() as void
         SELF:_KeyCache      := null
     end method

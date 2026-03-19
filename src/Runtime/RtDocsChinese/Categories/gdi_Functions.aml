@@ -228,11 +228,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rgb(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RGB(System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a single color value from a set of red, green, and blue color components.
+    </para>
             </entry>
           </row>
           <row>

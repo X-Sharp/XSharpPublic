@@ -18,7 +18,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC PRIVATE isAtEnd		:= TRUE AS LOGIC
     STATIC Worker := FileSearchWorker AS FileSearcher
 
-    CONST timeFormat := "HH:MM:ss" AS STRING
+    CONST timeFormat := "HH:mm:ss" AS STRING
 
     INTERNAL STATIC METHOD FFCount( filespec AS STRING , attributes AS DWORD ) AS DWORD
         FindFirst(filespec,attributes)

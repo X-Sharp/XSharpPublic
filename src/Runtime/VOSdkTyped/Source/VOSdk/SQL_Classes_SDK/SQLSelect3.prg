@@ -198,7 +198,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 				SELF:Notify( NOTIFYFIELDCHANGE, oDf:NameSym )
 			ENDIF
 		CATCH e AS Exception
-			SELF:Error(Error{e}, #FIELDPUT)
+			SELF:Error(Error{e}, __FUNCTION__)
 		END TRY
 		RETURN uValue
 
@@ -300,7 +300,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			wField := (INT) SELF:__GetColIndex( uFieldID ,TRUE)
 			IF wField <= 0 .OR. wField > SELF:nNumCols
 				oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #GetData )
-				SELF:Error( oStmt:ErrInfo ,#GetData)
+				SELF:Error( oStmt:ErrInfo ,__FUNCTION__)
 				RETURN NIL
 			ENDIF
 			IF SELF:lEof .OR. SELF:lBof
@@ -319,7 +319,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			// Vulcan.NET Suppress errors for unknown field types
 			// but return NIL in stead
 			IF wField <= 0 .OR. wField > SELF:nNumCols
-				SELF:Error(Error{e}, #FIELDGET)
+				SELF:Error(Error{e}, __FUNCTION__)
 			ENDIF
 		END TRY
 		RETURN uValue

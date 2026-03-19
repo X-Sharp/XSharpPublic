@@ -215,6 +215,11 @@ namespace XSharp.LanguageService
                             continue;
                         }
                     }
+                    if (_document.HasLineState(lineNumber, LineFlags.TextBlock))
+                    {
+                        _expectedIndent[lineNumber] = -1;
+                        continue;
+                    }
                     if (_document.HasLineState(lineNumber, LineFlags.DocComments))
                     {
                         if (_firstDoccomment == -1)

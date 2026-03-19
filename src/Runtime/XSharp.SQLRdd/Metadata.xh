@@ -19,26 +19,19 @@
     /// <summary>
     /// Can field names longer than 10 characters be used (true) or should they be truncated (false)
     /// </summary>
-    property LongFieldNames as logic auto
-    /// <summary>
-    /// Specifies whether the maximum value in the Recno column should be used as the RecCount property.
-    /// This defaults to FALSE which means that the RecCount property returns the number of records in the table
-    /// </summary>
-    property MaxRecnoAsRecCount as logic auto
-    /// <summary>
-    /// What is the maximum number of records that the RDD should fetch when unfiltered.
-    /// </summary>
-    property MaxRecords as long auto
+    PROPERTY LongFieldNames AS LOGIC AUTO
+   /// <summary>
+   /// The # of records in a buffer page
+   /// </summary>
+   PROPERTY PageSize AS LONG AUTO
+   /// <summary>
+   /// The # of buffer pages
+   /// </summary>
+   PROPERTY BufferSize AS LONG AUTO
     /// <summary>
     /// Name of the Recno column. When empty then the relative row number is the record number
     /// </summary>
     property RecnoColumn    as string auto
-    /// <summary>
-    /// Specifies whether a seek operation should return a subset of the records in the table.
-    /// This defaults to TRUE which means that only the matching rows are returned.
-    /// When FALSE then all rows are returned, and a seek operation positions on the first matching row
-    /// </summary>
-    property SeekReturnsSubset as logic auto
     /// <summary>
     /// Should trailing spaces for string columns be trimmed?
     /// </summary>

@@ -14,14 +14,14 @@
     <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
     <tags>XSharp, Runtime</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
- <dependencies>
-    <group targetFramework=".NETFramework4.6">
-	  <dependency id="XSharp.Core" version="$Version"  include="All"/>
-	</group>
-    <group targetFramework="net8.0">
-	  <dependency id="XSharp.Core" version="$Version"  include="All"/>
-	</group>
-  </dependencies>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="XSharp.Core" version="$Version"  include="All"/>
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="XSharp.Core" version="$Version"  include="All"/>
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
@@ -35,5 +35,9 @@
     <file src="$XmlFolder\XSharp.RT.xml" target="lib\$TFM\XSharp.RT.xml" />
     <file src="$XmlFolder\XSharp.Data.xml" target="lib\$TFM\XSharp.Data.xml" />
     <file src="$XmlFolder\XSharp.RT.Debugger.xml" target="lib\$TFM\XSharp.RT.Debugger.xml" />
+    <file src="$XmlCnFolder\XSharp.RDD.xml" target="lib\$TFM\zh-Hans\XSharp.RDD.xml" />
+    <file src="$XmlCnFolder\XSharp.RT.xml" target="lib\$TFM\zh-Hans\XSharp.RT.xml" />
+    <file src="$XmlCnFolder\XSharp.Data.xml" target="lib\$TFM\zh-Hans\XSharp.Data.xml" />
+    <file src="$XmlCnFolder\XSharp.RT.Debugger.xml" target="lib\$TFM\zh-Hans\XSharp.RT.Debugger.xml" />
   </files>
 </package>

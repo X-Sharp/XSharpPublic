@@ -331,7 +331,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenOperand.WasCompilerGenerated = true;
                 return ConversionKind.Identity;
             }
-            if (rewrittenType.IsNullableType())
+            /*if (rewrittenType.IsNullableType())
             {
                 var underlyingType = rewrittenType.GetNullableUnderlyingType();
                 m = getImplicitOperatorByReturnType(usualType, underlyingType);
@@ -341,7 +341,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     rewrittenOperand.WasCompilerGenerated = true;
                     return ConversionKind.Boxing;
                 }
-            }
+            }*/
             if (rewrittenType.SpecialType == SpecialType.System_Decimal)
             {
                 // X# runtime should not get here. There is an implicit operator

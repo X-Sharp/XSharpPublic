@@ -15,14 +15,14 @@ FUNCTION CntPad(cMenuName AS STRING) AS INT
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/col/*" />
-[FoxProFunction("COL", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
+[FoxProFunction("COL", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Col() AS INT
-    THROW NotImplementedException{}
+    RETURN XSharp.RT.Functions.Col()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/row/*" />
-[FoxProFunction("ROW", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
+[FoxProFunction("ROW", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Row() AS INT
-    THROW NotImplementedException{}
+    RETURN XSharp.RT.Functions.Row()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mcol/*" />
 [FoxProFunction("MCOL", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
@@ -40,6 +40,6 @@ FUNCTION ChrSaw(nSeconds := 0 AS REAL8) AS LOGIC
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rgb/*" />
-[FoxProFunction("RGB", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION Rgb(nRedValue AS INT, nGreenValue AS INT, nBlueValue AS INT) AS INT
-    THROW NotImplementedException{}
+[FoxProFunction("RGB", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION RGB(nRedValue AS BYTE, nGreenValue AS BYTE, nBlueValue AS BYTE) AS DWORD
+    RETURN XSharp.Core.Functions.RGB(nRedValue, nGreenValue, nBlueValue)

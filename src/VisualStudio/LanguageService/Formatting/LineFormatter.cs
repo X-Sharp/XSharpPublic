@@ -86,6 +86,10 @@ namespace XSharp.LanguageService
         {
             if (line.Length == 0)
                 return true;
+            if (_document.HasLineState(line.LineNumber, LineFlags.TextBlock))
+            {
+                return false;
+            }
             var tokens = _document.GetTokensInSingleLine(line, true);
             if (tokens.Count > 0)
             {
@@ -119,7 +123,7 @@ namespace XSharp.LanguageService
                 this.FormatLineCase(editSession, previousLine);
             }
             // calculate the indentation from the new current line
-            if (line.Length == 0 || CanChangeLine(line))
+            if (CanChangeLine(line) && line.Length == 0)
             {
                 var indentation = GetDesiredIndentation(line);
                 SetIndentation(editSession, line, indentation);
@@ -147,6 +151,8 @@ namespace XSharp.LanguageService
             if (line.Length == 0)
                 return;
             if (_document.HasLineState(line.LineNumber, LineFlags.MultiLineComments))
+                return;
+            if (_document.HasLineState(line.LineNumber, LineFlags.TextBlock))
                 return;
             var tokens = _document.GetTokensInSingleLine(line, false);
             IToken lastToken = null;

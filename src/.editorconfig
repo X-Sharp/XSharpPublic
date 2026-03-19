@@ -1,7 +1,7 @@
 # EditorConfig is awesome: https://EditorConfig.org
 
 # top-most EditorConfig file
-root = true 
+root = true
 
 
 # default settings for all file types.
@@ -51,7 +51,7 @@ udc_case = true
 identifier_case = false
 indent_namespace = false
 indent_entity_content = true
-indent_type_members = true
+indent_type_members = false
 indent_block_content = true
 indent_statements = true
 indent_case_content = true

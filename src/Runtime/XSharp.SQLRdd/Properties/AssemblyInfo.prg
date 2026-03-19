@@ -23,8 +23,8 @@ USING XSharp.Internal
 [ASSEMBLY: AssemblyCopyright(XSharp.Constants.Copyright)]
 [ASSEMBLY: AssemblyCulture("")]
 
-[ASSEMBLY: AssemblyVersion("1.0.0.4")]
-[ASSEMBLY: AssemblyFileVersion("1.0.0.4")]
-[assembly: AssemblyInformationalVersion("1.0.0.4 - beta 4")]
+[ASSEMBLY: AssemblyVersion("1.0.0.5")]
+[ASSEMBLY: AssemblyFileVersion("1.0.0.5")]
+[assembly: AssemblyInformationalVersion("1.0.0.5 - beta 5")]
 [assembly: ImplicitNamespace("XSharp.RDD.SqlRDD")]
 [assembly: ImplicitNamespace("XSharp.RDD.SqlRDD.Providers")]

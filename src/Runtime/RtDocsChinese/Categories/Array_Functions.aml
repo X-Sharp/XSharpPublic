@@ -89,7 +89,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Copies elements from one array to another array.
+    </para>
             </entry>
           </row>
           <row>
@@ -176,7 +178,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Places information about files into an array and then returns the number of files.
+    </para>
             </entry>
           </row>
           <row>
@@ -254,6 +258,21 @@
       注意：
       AFields() 是一个兼容性函数，因此不推荐使用。
       它已被 DBStruct() 取代，后者不需要在调用前存在任何数组，并返回一个包含当前数据库文件结构的多维数组。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AFields(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Retrieves and stores information about the structure of the table in a specified work area, specified by a table alias, or in the currently selected work area in an array and returns the number of fields in the table.
     </para>
             </entry>
           </row>
@@ -342,7 +361,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将字符表达式或备注字段中的每一行复制到数组的对应行中。
+        </para>
             </entry>
           </row>
           <row>
@@ -550,7 +571,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Searches an array for an element containing the same data and data type as an expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -651,7 +674,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Sorts elements in an array in ascending or descending order.
+    </para>
             </entry>
           </row>
           <row>
@@ -667,19 +692,6 @@
               <para>
       Sort an array.
     </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASortFunc(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,System.Func`3[[XSharp.__Usual, XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586],[XSharp.__Usual, XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -750,7 +762,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将数据会话的表别名和工作区放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>

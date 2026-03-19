@@ -164,6 +164,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             switch key:ToLower()
             case "allowupdates"
                 self:AllowUpdates := isTrue
+            case "buffersize"
+                if Int32.TryParse(strValue, out var bufsize)
+                    self:BufferSize := bufsize
+                endif
             case "comparememo"
                 self:CompareMemo := isTrue
             case "deletedcolumn"
@@ -173,17 +177,14 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             case "longfieldnames"
                 self:LongFieldNames := isTrue
             case "maxrecords"
+            case "pagesize"
                 if Int32.TryParse(strValue, out var max)
-                    self:MaxRecords := max
+                    self:PageSize := max
                 endif
-            case "maxrecnoasreccount"
-                self:MaxRecnoAsRecCount := isTrue
             case "recnocolumn"
                 self:RecnoColumn := strValue
             case "updateallcolumns"
                 self:UpdateAllColumns := isTrue
-           case "seekreturnssubset"
-                self:SeekReturnsSubset := isTrue
            case "trimtrailingspaces"
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
@@ -254,11 +255,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         UseNulls           := DEFAULT_USENULLS
         LongFieldNames     := DEFAULT_LONGFIELDNAMES
         TrimTrailingSpaces := DEFAULT_TRIMTRAILINGSPACES
-        MaxRecords         := DEFAULT_MAXRECORDS
+        PageSize           := DEFAULT_PAGESIZE
+        BufferSize         := DEFAULT_BUFFERSIZE
         DeletedColumn      := DEFAULT_DELETEDCOLUMN
         RecnoColumn        := DEFAULT_RECNOCOLUMN
-        SeekReturnsSubset  := DEFAULT_SEEKRETURNSSUBSET
-        MaxRecnoAsRecCount := DEFAULT_MAXRECNOASRECCOUNT
         cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
@@ -273,7 +273,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         ELSE
             SELF:MetadataProvider := SqlMetadataProviderIni{SELF}
         endif
-        Connections.Add(self)
+        Connections:Add(self)
         _datasourceProperties := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         _commands := List<SqlDbCommand>{}
         _command  := SqlDbCommand{"Worker", self}
@@ -306,7 +306,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             endif
         next
         self:CloseConnection()
-        Connections.Remove(self)
+        Connections:Remove(self)
         return true
     end method
 
@@ -798,12 +798,12 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_DELETEDCOLUMN := "" AS STRING
     INTERNAL CONST DEFAULT_LEGACYFIELDTYPES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_LONGFIELDNAMES := FALSE AS LOGIC
-    INTERNAL CONST DEFAULT_MAXRECORDS := 1000 AS INT
+    INTERNAL CONST DEFAULT_PAGESIZE := 100 AS INT
+    INTERNAL CONST DEFAULT_BUFFERSIZE := 1 AS INT
     INTERNAL CONST DEFAULT_RECNOCOLUMN := "" AS STRING
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
-    INTERNAL CONST DEFAULT_SEEKRETURNSSUBSET := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_MAXRECNOASRECCOUNT := FALSE AS LOGIC
     #region Events
     /// <summary>

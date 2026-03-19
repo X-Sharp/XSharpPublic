@@ -38,11 +38,11 @@
         <param name="nRecordCount">Number of rows to skip</param>
         <returns>TRUE when successful.</returns>
     </SQLCatalogQuery.Skip>
-    <SQLCatalogQuery.FIELDPUT>
+    <SQLCatalogQuery.FieldPut>
         <summary>
             This method is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery; therefore it generates an error and returns FALSE.
         </summary>
-    </SQLCatalogQuery.FIELDPUT>
+    </SQLCatalogQuery.FieldPut>
     <SQLCatalogQuery.TableName>
         <summary>
             This property is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery.
@@ -1626,7 +1626,7 @@
             <note type="tip">ODBC does not support the use of both SQLSelect:Fetch() and SQLSelect:ExtendedFetch() within the same select.</note>
         </remarks>
     </SQLSelect.Fetch>
-    <SQLSelect.FIELDGET>
+    <SQLSelect.FieldGet>
         <summary>
             Retrieve the contents of the specified column.
         </summary>
@@ -1709,7 +1709,7 @@
                 </item>
             </list>
         </returns>
-    </SQLSelect.FIELDGET>
+    </SQLSelect.FieldGet>
     <SQLSelect.FieldGetFormatted>
         <summary>
             Retrieve the contents of the specified column according to the formatting specifications of its field specification.
@@ -1795,7 +1795,7 @@
             The position of the specified column if successful; otherwise, 0.
         </returns>
     </SQLSelect.FieldPos>
-    <SQLSelect.FIELDPUT>
+    <SQLSelect.FieldPut>
         <summary>
             Assign a value to a column in a data server.
         </summary>
@@ -1807,7 +1807,7 @@
         <remarks>
             Sends a NotifyRecordChange message, if successful.
         </remarks>
-    </SQLSelect.FIELDPUT>
+    </SQLSelect.FieldPut>
     <SQLSelect.FieldSpec>
         <summary>
             Return the field specification object for the indicated column.
@@ -2046,7 +2046,7 @@
             The identification of the event, specified as one of the following constants:
             symbol describing the event.  Used only with some notification types, as described above.
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </SQLSelect.Notify>
     <SQLSelect.NullAsBlank>
@@ -2693,7 +2693,7 @@
         <summary>
             Provide a method that is automatically called by the action methods of the server after completion of some significant event:  a column has changed, the server position has changed, some operation has been completed.  Its standard implementation is to broadcast the same notification to its attached clients.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </SQLTable.Notify>
     <SQLTable.OrderBy>

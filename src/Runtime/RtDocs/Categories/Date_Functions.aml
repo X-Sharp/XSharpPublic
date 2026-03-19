@@ -55,7 +55,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDoW(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -250,7 +250,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -280,7 +280,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dow(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DoW(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -325,7 +325,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToC(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -385,7 +385,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(System.DateTime,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(XSharp.__Date,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>

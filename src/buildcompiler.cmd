@@ -17,9 +17,9 @@ goto Error
 Echo Restore nuget packages once for all builds
 dotnet restore %xssolution%  -p:Configuration=Release
 SET XSHARPBUILDNESTED=1
+call BuildCompiler Public
 call BuildCompiler Debug
 call BuildCompiler Release
-call BuildCompiler Public
 call BuildMacroCompiler.cmd
 SET XSHARPBUILDNESTED=
 Goto End

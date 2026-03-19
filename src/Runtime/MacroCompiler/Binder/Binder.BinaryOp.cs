@@ -215,6 +215,15 @@ namespace XSharp.MacroCompiler
             var method = m.Method;
             if (!m.Method.IsStatic || (options.HasFlag(BindOptions.Special) && !m.Method.IsSpecialName))
                 return false;
+            if (m.Method.IsVirtual)
+            {
+                // TODO (nvk): We don't support C#12 virtual static interfaces yet.
+                //             These should result in a constrained call against type arg,
+                //             e.g. for I<T>:
+                //                 IL_0001: constrained. !!T
+                //                 IL_0007: call object I::MyMethod()
+                return false;
+            }
             var parameters = method.GetParameters();
             if (parameters.Length != 2)
                 return false;

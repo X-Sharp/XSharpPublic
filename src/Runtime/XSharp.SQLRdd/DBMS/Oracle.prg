@@ -32,7 +32,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
     /// <inheritdoc />
     override property GetRowCount            as string => "select SQL%ROWCOUNT"
     /// <inheritdoc />
-    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
+    override property PagingClause     as string => " limit "+PagesizeMacro+" offset "+StartRecMacro
 
 
     constructor()
@@ -69,7 +69,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo.Length}) default ''"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo:Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause

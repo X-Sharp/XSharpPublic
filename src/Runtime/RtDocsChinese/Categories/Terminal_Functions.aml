@@ -90,7 +90,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Included for backward compatibility. Use the CurrentX, CurrentY Properties.
+
+      Returns the current column position of the cursor.
+    </para>
             </entry>
           </row>
           <row>
@@ -148,7 +152,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Included for backward compatibility. Use the CurrentX, CurrentY Properties.
+
+      Returns the current row position of the cursor.
+    </para>
             </entry>
           </row>
           <row>

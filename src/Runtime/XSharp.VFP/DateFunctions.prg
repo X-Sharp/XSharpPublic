@@ -168,6 +168,7 @@ FUNCTION MDY ( dExpression AS DATE ) AS STRING
 			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
+[FoxProFunction("DMY", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION DMY ( uExpression  AS USUAL ) AS STRING
     IF IsDate(uExpression)
         RETURN DMY( (DATE) uExpression )

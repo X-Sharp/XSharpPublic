@@ -527,7 +527,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
 #region implementation IComparable<T>
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
+    /// <include file="RTComments.xml" path="Comments/UsualCompareTo/*" />
     [NODEBUG] ;
     PUBLIC METHOD CompareTo(rhs AS __Usual) AS LONG
         IF SELF:_usualType == rhs:_usualType
@@ -2662,6 +2662,84 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             THROW OverflowError(ex, "FLOAT", TYPEOF(FLOAT), u)
         END TRY
 
+#command GETNULLABLE <u> <t> => IF <u>:IsNull  .or. <u>:IsNil; RETURN null; ENDIF; return (<t>) <u>
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS BYTE?
+        GETNULLABLE u BYTE
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS SHORT?
+        GETNULLABLE u SHORT
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS LONG?
+        GETNULLABLE u LONG
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS int64?
+        GETNULLABLE u INT64
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS SByte?
+        GETNULLABLE u SByte
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS word?
+        GETNULLABLE u WORD
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS dword?
+        GETNULLABLE u DWORD
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS uint64?
+        GETNULLABLE u UINT64
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL4?
+        GETNULLABLE u REAL4
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL8?
+        GETNULLABLE u REAL8
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT?
+        GETNULLABLE u FLOAT
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS currency?
+        GETNULLABLE u CURRENCY
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS Decimal?
+        GETNULLABLE u DECIMAL
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS Date?
+        GETNULLABLE u DATE
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS DateTime?
+        GETNULLABLE u DateTime
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS Logic?
+        GETNULLABLE u LOGIC
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS IntPtr?
+        GETNULLABLE u IntPtr
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS UIntPtr?
+        GETNULLABLE u UIntPtr
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS Symbol?
+        GETNULLABLE u Symbol
+
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
     STATIC OPERATOR IMPLICIT(u AS __Usual) AS Currency
@@ -2995,6 +3073,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             END SWITCH
         ELSE
             VAR o := __Usual.ToObject(SELF)
+            if o == null
+                return o
+            endif
             IF conversionType:IsAssignableFrom(o:GetType())
                 RETURN o
             ELSEIF o IS IConvertible VAR ic
@@ -3005,6 +3086,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 RETURN o
             ENDIF
         ENDIF
+
 
     /// <inheritdoc />
     [NODEBUG];

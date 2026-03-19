@@ -10888,7 +10888,7 @@
     <summary>
       Returns the name and version number of the operating system under which X# is running.
     </summary>
-    <param name="nValue">
+    <param name="nType">
 
       Specifies the item to return, according to the following table.
       <b>nValues</b>
@@ -11963,534 +11963,430 @@
     <param name="cSETCommand">
 
       Specifies a character expression of the <b>SET</b> command for which you want to return information. The current setting of the specified command is returned as a character or numeric string.
+    </param>
+    <param name="newValue">
       1 | cExpression| 2 | 3 | 4
-      Specifies additional information to return about a <b>SET</b> command. The values 1 and cExpression are identical. cExpression can be any expression that evaluates to a character type value.
-      Including an argument does not return additional information for all <b>SET</b> commands. Only those that specify values of 1, 2, 3, or 4 in the following table return additional information.
+    </param>
+    <remarks>
+
+      SET command  Value returned
       ALTERNATE
       ON or OFF
-      ALTERNATE, 1
-    </param>
-    <param name="FileName">
 
-    </param>
-    <param name="FileName">
+      ALTERNATE, 1
+      FileName
 
       ANSI
       ON or OFF
-      ASSERTS
-      AUTOINCERROR
-      AUTOSAVE
-      BELL, 1
-    </param>
-    <param name="cWAVFileName">
 
-    </param>
-    <param name="cWAVFileName">
+      ASSERTS
+      ON or OFF
+
+      AUTOINCERROR
+      ON or OFF
+
+      AUTOSAVE
+      ON or OFF
+
+      BELL, 1
+      cWAVFileName
 
       BLOCKSIZE
-    </param>
-    <param name="nBlockSize">
-
-    </param>
-    <param name="nBlockSize">
+      nBlockSize
 
       BROWSEIME
       ON or OFF
-      CARRY
-      CENTURY
-      CENTURY, 1
-    </param>
-    <param name="nCentury">
 
-    </param>
-    <param name="nCentury">
+      CARRY
+      ON or OFF
+
+      CENTURY
+      ON or OFF
+
+      CENTURY, 1
+      nCentury
 
       CENTURY, 2
       ROLLOVER nYear
+
       CENTURY, 3
       System Regional Calendar setting
-      CLASSLIB
-    </param>
-    <param name="cClassLibName">
 
-    </param>
-    <param name="cClassLibName">
+      CLASSLIB
+      cClassLibName
 
       CLOCK
       ON or OFF
-      CLOCK, 1
-    </param>
-    <param name="nRow and nColumn">
 
-    </param>
-    <param name="nRow and nColumn">
+      CLOCK, 1
+      nRow and nColumn
+
       COLLATE
       ON or OFF
-      COLOR OF SCHEME
-    </param>
-    <param name="cR, cG, cB">
 
-    </param>
-    <param name="cR, cG, cB">
+      COLOR OF SCHEME
+      cR, cG, cB
 
       COLOR SET
-    </param>
-    <param name="cNameOfColorSet">
-
-    </param>
-    <param name="cNameOfColorSet">
+      cNameOfColorSet
 
       COMPATIBLE
       ON or OFF
+
       COMPATIBLE, 1
       PROMPT or NOPROMPT
-      CONFIRM
-      CONSOLE
-      COVERAGE
-      COVERAGE, 1
-    </param>
-    <param name="FileName">
 
-    </param>
-    <param name="FileName">
+      CONFIRM
+      ON or OFF
+
+      CONSOLE
+      ON or OFF
+
+      COVERAGE
+      ON or OFF
+
+      COVERAGE, 1
+      FileName
 
       CPCOMPILE
-    </param>
-    <param name="nCodePage">
-
-    </param>
-    <param name="nCodePage">
+      nCodePage
 
       CPDIALOG
       ON or OFF
+
       CURRENCY
       LEFT or RIGHT
-      CURRENCY, 1
-    </param>
-    <param name="cCurrencySymbol">
 
-    </param>
-    <param name="cCurrencySymbol">
+      CURRENCY, 1
+      cCurrencySymbol
 
       CURSOR
       ON or OFF
-      DATABASE
-    </param>
-    <param name="cDatabase">
 
-    </param>
-    <param name="cDatabase">
+      DATABASE
+      cDatabase
 
       DATASESSION
-    </param>
-    <param name="nDataSession">
-
-    </param>
-    <param name="nDataSession">
+      nDataSession
 
       DATE
       AMERICAN, ANSI, BRITISH/FRENCH, GERMAN, ITALIAN, JAPAN, USA, MDY, DMY, or YMD
+
       DATE, 1
       Date Ordering:0 – MDY1 – DMY2 – YMD
+
       DEBUG
       ON or OFF
-      DEBUGOUT
-    </param>
-    <param name="cFileName">
 
-    </param>
-    <param name="cFileName">
+      DEBUGOUT
+      cFileName
 
       DECIMALS
-    </param>
-    <param name="nDecimals">
-
-    </param>
-    <param name="nDecimals">
+      nDecimals
 
       DEFAULT
-    </param>
-    <param name="cDirectory">
-
-    </param>
-    <param name="cDirectory">
+      cDirectory
 
       DELETED
       ON or OFF
-      DELIMITERS
-      DELIMITERS, 1
-    </param>
-    <param name="cDelimiters">
 
-    </param>
-    <param name="cDelimiters">
+      DELIMITERS
+      ON or OFF
+
+      DELIMITERS, 1
+      cDelimiters
 
       DEVELOPMENT
       ON or OFF
+
       DEVICE
       SCREEN, PRINTER, or FILE
-      DEVICE, 1
-    </param>
-    <param name="cFileName">
 
-    </param>
-    <param name="cFileName">
+      DEVICE, 1
+      cFileName
 
       DIRECTORY
-    </param>
-    <param name="cDirectory">
-
-    </param>
-    <param name="cDirectory">
+      cDirectory
 
       DOHISTORY
       ON or OFF
-      ENGINEBEHAVIOR
-    </param>
-    <param name="nVersionNumber">
 
-    </param>
-    <param name="nVersionNumber">
+      ENGINEBEHAVIOR
+      nVersionNumber
 
       ESCAPE
       ON or OFF
+
       EVENTLIST
       comma delimited list of events
-      EVENTTRACKING
-      EVENTTRACKING, 1
-    </param>
-    <param name="FileName">
 
-    </param>
-    <param name="FileName">
+      EVENTTRACKING
+      ON or OFF
+
+      EVENTTRACKING, 1
+      FileName
 
       EXACT
       ON or OFF
-      EXCLUSIVE
-      FDOW
-    </param>
-    <param name="nDayofWeek">
 
-    </param>
-    <param name="nDayofWeek">
+      EXCLUSIVE
+      ON or OFF
+
+      FDOW
+      nDayofWeek
 
       FIELDS
       ON or OFF
-      FIELDS, 1
-    </param>
-    <param name="FieldName1, FieldName2, ...">
 
-    </param>
-    <param name="FieldName1, FieldName2, ...">
+      FIELDS, 1
+      FieldName1, FieldName2, ...
+
       FIELDS, 2
       LOCAL or GLOBAL
-      FILTER
-    </param>
-    <param name="cFilterExpression">
 
-    </param>
-    <param name="cFilterExpression">
+      FILTER
+      cFilterExpression
 
       FIXED
       ON or OFF
-      FULLPATH
-      FWEEK
-    </param>
-    <param name="nWeekNumber">
 
-    </param>
-    <param name="nWeekNumber">
+      FULLPATH
+      ON or OFF
+
+      FWEEK
+      nWeekNumber
 
       HEADINGS
       ON or OFF
-      HELP
-      HELP, 1
-    </param>
-    <param name="cFileName">
 
-    </param>
-    <param name="cFileName">
+      HELP
+      ON or OFF
+
+      HELP, 1
+      cFileName
 
       HELP, 2
-    </param>
-    <param name="cCollectionURL">
-
-    </param>
-    <param name="cCollectionURL">
+      cCollectionURL
 
       HELP, 3
-    </param>
-    <param name="SYSTEM">
-
-    </param>
-    <param name="SYSTEM">
+      SYSTEM
 
       HOURS
       12 or 24
-      INDEX
-    </param>
-    <param name="cIndexExpression">
 
-    </param>
-    <param name="cIndexExpression">
+      INDEX
+      cIndexExpression
 
       KEY
-    </param>
-    <param name="eExpression2, eExpression3">
+      eExpression2, eExpression3
 
-    </param>
-    <param name="eExpression2, eExpression3">
       KEY, 1
-    </param>
-    <param name="eExpression2">
-
-    </param>
-    <param name="eExpression2">
+      eExpression2
 
       KEY, 2
-    </param>
-    <param name="eExpression3">
-
-    </param>
-    <param name="eExpression3">
+      eExpression3
 
       KEYCOMP
       DOS or WINDOWS
-      LIBRARY
-    </param>
-    <param name="cNameOfLibrary">
 
-    </param>
-    <param name="cNameOfLibrary">
+      LIBRARY
+      cNameOfLibrary
 
       LOCK
       ON or OFF
-      LOGERRORS
-      MACKEY
-    </param>
-    <param name="cKey">
 
-    </param>
-    <param name="cKey">
+      LOGERRORS
+      ON or OFF
+
+      MACKEY
+      cKey
 
       MARGIN
-    </param>
-    <param name="nMargin">
-
-    </param>
-    <param name="nMargin">
+      nMargin
 
       MEMOWIDTH
-    </param>
-    <param name="nWidth">
-
-    </param>
-    <param name="nWidth">
+      nWidth
 
       MESSAGE
-    </param>
-    <param name="nRow">
-
-    </param>
-    <param name="nRow">
+      nRow
 
       MESSAGE, 1
-    </param>
-    <param name="cMessageText">
-
-    </param>
-    <param name="cMessageText">
+      cMessageText
 
       MOUSE
       ON or OFF
-      MOUSE, 1
-    </param>
-    <param name="nSensitivity">
 
-    </param>
-    <param name="nSensitivity">
+      MOUSE, 1
+      nSensitivity
 
       MULTILOCKS
       ON or OFF
+
       NEAR
+      ON or OFF
+
       NOCPTRANS
       comma delimited list of fields
-      NOTIFY
-      NOTIFY, 1
-      NULL
-      NULLDISPLAY
-    </param>
-    <param name="cDisplayString">
 
-    </param>
-    <param name="cDisplayString">
+      NOTIFY
+      ON or OFF
+
+      NOTIFY, 1
+      ON or OFF
+
+      NULL
+      ON or OFF
+
+      NULLDISPLAY
+      cDisplayString
 
       ODOMETER
-    </param>
-    <param name="nNumberOfRecords">
-
-    </param>
-    <param name="nNumberOfRecords">
+      nNumberOfRecords
 
       OLEOBJECT
       ON or OFF
+
       OPTIMIZE
+      ON or OFF
+
       ORDER
       TAG TagName OF CDXFileName, IDXFileName, or blank
-      PALETTE
-      PATH
-    </param>
-    <param name="cPath">
 
-    </param>
-    <param name="cPath">
+      PALETTE
+      ON or OFF
+
+      PATH
+      cPath
 
       PDSETUP
-    </param>
-    <param name="cPrinterDriverName">
-
-    </param>
-    <param name="cPrinterDriverName">
+      cPrinterDriverName
 
       POINT
-    </param>
-    <param name="cDecimalPtChar">
-
-    </param>
-    <param name="cDecimalPtChar">
+      cDecimalPtChar
 
       PRINTER
       ON or OFF
-      PRINTER, 1
-    </param>
-    <param name="FileName or PortName">
 
-    </param>
-    <param name="FileName or PortName">
+      PRINTER, 1
+      FileName or PortName
+
       PRINTER, 2
       Default Windows printer name
-      PRINTER, 3
-      Default X# printer name(specified in the X# Print or Print Setup dialog boxes)
-      PROCEDURE
-    </param>
-    <param name="cPathAndName">
 
-    </param>
-    <param name="cPathAndName">
+      PRINTER, 3
+      Default Visual FoxPro printer name(specified in the Visual FoxPro Print or Print Setup dialog boxes)
+
+      PROCEDURE
+      cPathAndName
 
       READBORDER
       ON or OFF
-      REFRESH
-    </param>
-    <param name="nSeconds1">
 
-    </param>
-    <param name="nSeconds1">
+      REFRESH
+      nSeconds1
 
       REFRESH, 1
-    </param>
-    <param name="nseconds2">
-
-    </param>
-    <param name="nseconds2">
+      nseconds2
 
       REPORTBEHAVIOR
-    </param>
-    <param name="nVersionNumber">
-
-    </param>
-    <param name="nVersionNumber">
+      nVersionNumber
 
       REPROCESS
       Current session setting
+
       REPROCESS, 1
       System session setting
+
       REPROCESS, 2
       Current session setting type
+
       0 is returned if REPROCESS is set to attempts.
+
       1 is returned if REPROCESS is set to seconds.
+
       REPROCESS, 3
       System session setting type
+
+      0 is returned if REPROCESS is set to attempts.
+
+      1 is returned if REPROCESS is set to seconds.
+
       RESOURCE
       ON or OFF
-      RESOURCE, 1
-    </param>
-    <param name="FileName">
 
-    </param>
-    <param name="FileName">
+      RESOURCE, 1
+      FileName
 
       SAFETY
       ON or OFF
-      SECONDS
-      SEPARATOR
-    </param>
-    <param name="cSeparatorChar">
 
-    </param>
-    <param name="cSeparatorChar">
+      SECONDS
+      ON or OFF
+
+      SEPARATOR
+      cSeparatorChar
 
       SPACE
       ON or OFF
+
       SQLBUFFERING
+      ON or OFF
+
       STATUS
+      ON or OFF
+
       STATUS BAR
+      ON or OFF
+
       STRICTDATE
+      ON or OFF
+
       SYSFORMATS
+      ON or OFF
+
       SYSMENU
       ON, OFF, or AUTOMATIC
-      TABLEPROMPT
-      TABLEVALIDATE
-    </param>
-    <param name="nLevel">
 
-    </param>
-    <param name="nLevel">
+      TABLEPROMPT
+      ON or OFF
+
+      TABLEVALIDATE
+      nLevel
 
       TALK
       ON or OFF
+
       TALK, 1
       WINDOW, NOWINDOW or WindowName
+
       TEXTMERGE
+      ON or OFF
+
       TEXTMERGE, 1
-    </param>
-    <param name="cLeftDelimiter and cRightDelimiter">
+      cLeftDelimiter and cRightDelimiter
 
-    </param>
-    <param name="cLeftDelimiter and cRightDelimiter">
       TEXTMERGE, 2
-    </param>
-    <param name="cFileName">
-
-    </param>
-    <param name="cFileName">
+      cFileName
 
       TEXTMERGE, 3
       SHOW/NOSHOW
+
       TEXTMERGE, 4
       Evaluate source of TEXT ... ENDTEXT call and return TEXTMERGE nesting level.
+
       TOPIC
-    </param>
-    <param name="cHelpTopicName | lExpression">
+      cHelpTopicName | lExpression
 
-    </param>
-    <param name="cHelpTopicName | lExpression">
       TOPIC, 1
-    </param>
-    <param name="NContextID">
-
-    </param>
-    <param name="NContextID">
+      NContextID
 
       UDFPARMS
       VALUE or REFERENCE
+
       UNIQUE
       ON or OFF
-    </param>
-    <returns>
-      Character or Numeric data type. <b>SET( )</b> returns the value of a <b>SET</b> command.
-    </returns>
-    <remarks>
+
+
 
       <b>SET( )</b> recognizes the 4-character abbreviation for all X# <b>SET</b> keywords, with the exception of <b>HELPFILTER</b>, which can be abbreviated to 5 characters. For example, you can use <b>STAT</b> and <b>PRIN</b> for <b>SET STATUS </b><b>SET PRINTER</b>, respectively.
       The <b>SET( )</b> function is identical to <b>SYS(2001)</b>.
@@ -13845,5 +13741,5 @@
       </code>
     </example>
   </year>
-
+  
 </Runtimefunctions>

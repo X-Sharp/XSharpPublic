@@ -433,7 +433,7 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     Default(REF nDecimals, 0)
     RETURN XSharp.RT.Functions.Str(nNumber, nLength, nDecimals)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strextract/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/strextract/*" />
 [FoxProFunction("STREXTRACT", FoxFunctionCategory.StringAndCharacter, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDelim := "" as string, nOccurrence := 1 as int, nFlag := 0 as int) AS STRING
     if String.IsNullOrEmpty(cSearchExpression) || String.IsNullOrEmpty(cBeginDelim)
@@ -509,7 +509,7 @@ FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDeli
 
 END FUNCTION
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/difference/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/difference/*" />
 [FoxProFunction("DIFFERENCE", FoxFunctionCategory.StringAndCharacter, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION Difference( cExpression1 as string, cExpression2 as string) as int
     if String.IsNullOrEmpty(cExpression1) || String.IsNullOrEmpty(cExpression2)
@@ -531,7 +531,7 @@ FUNCTION Difference( cExpression1 as string, cExpression2 as string) as int
     return nDiff
 END FUNCTION
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strconv/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/strconv/*" />
 [FoxProFunction("STRCONV", FoxFunctionCategory.StringAndCharacter, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION StrConv(cExpression AS USUAL, nConversionSetting AS INT, nRegionalIdentifier := 0 AS INT, nRegionalIDType := 0 AS INT) AS USUAL
 

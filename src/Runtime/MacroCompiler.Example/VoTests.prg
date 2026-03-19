@@ -440,7 +440,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"_XOR(7,7,7)", Args(), 7, typeof(INT))
         TestMacro(mc, e"{|a| (int)a }", Args(7), 7, typeof(INT))
         TestMacro(mc, e"999999999999999999999999", Args(), NULL, NULL, ErrorCode.LiteralIntegerOverflow)
-        TestMacro(mc, e"9.99999e999999999999999999", Args(), NULL, NULL, ErrorCode.LiteralFloatOverflow)
+        IF System.Environment.Version:Major == 4
+            TestMacro(mc, e"9.99999e999999999999999999", Args(), NULL, NULL, ErrorCode.LiteralFloatOverflow)
+        ELSE
+            TestMacro(mc, e"9.99999e999999999999999999", Args(), Double.PositiveInfinity, typeof(FLOAT))
+        END
         TestMacro(mc, e"{|a,b| 1[2]}", Args(), NULL, NULL, ErrorCode.UnExpected)
         TestMacro(mc, "ArgCount(1,nil)", Args(), NULL, NULL, ErrorCode.BadNumArgs)
         TestMacro(mc, "ArgCount()", Args(), 0, typeof(INT))

@@ -75,32 +75,6 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirMake(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirRemove(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -127,19 +101,6 @@
               <para>
       Return a pointer to the command line used to invoke the application.
     </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._GetInst</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -207,19 +168,6 @@
             </entry>
             <entry>
               <para>Execute a Windows or DOS application, a batch file, or a DOS command.</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Send(System.Object,System.Reflection.MethodInfo,XSharp.__Usual[])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -321,7 +269,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Creates an array containing information about files with Windows version resources such as .exe, .dll, and .fll files, or automation servers created in X#.
+            For a X# automation server to have Windows version resources, you must specify a value for at least one item in the EXE Version dialog box.
+            For more information, see EXE Version Dialog Box.
+        </para>
             </entry>
           </row>
           <row>
@@ -334,7 +286,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Places the names of properties, procedures, and member objects for an object into a variable array.
+        </para>
             </entry>
           </row>
           <row>
@@ -388,7 +342,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Places table aliases and work areas for a data session into a variable array.
+        </para>
             </entry>
           </row>
           <row>
@@ -691,7 +647,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Returns an integer, 0 through 4, which represents the relative phonetic difference between two character expressions.
+        </para>
             </entry>
           </row>
           <row>
@@ -982,7 +940,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para>
             </entry>
           </row>
           <row>
@@ -2019,7 +1979,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Determines whether the first character in a character expression is an uppercase alphabetic character.
+        </para>
             </entry>
           </row>
           <row>
@@ -2548,7 +2510,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Os(System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.OS(System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2740,7 +2702,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rgb(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RGB(System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -3009,9 +2971,7 @@
             <entry>
               <para>
             Returns the data type of an expression.
-            VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation
-                marks to enclose the expression for which the data type is returned.
-            </para>
+        </para>
             </entry>
           </row>
           <row>

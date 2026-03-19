@@ -67,6 +67,7 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
         oTag:Expression    := SELF:GetString(cSection, SqlRDDEventReason.Expression , DEFAULT_EXPRESSION)
         oTag:Condition     := SELF:GetString(cSection, SqlRDDEventReason.Condition , DEFAULT_CONDITION)
         oTag:Unique        := SELF:GetLogic(cSection, SqlRDDEventReason.Unique , DEFAULT_UNIQUE)
+        oTag:Descending    := SELF:GetLogic(cSection, SqlRDDEventReason.Descending , DEFAULT_DESCENDING)
         oIndex:Tags:Add(oTag)
         RETURN oTag
     END METHOD

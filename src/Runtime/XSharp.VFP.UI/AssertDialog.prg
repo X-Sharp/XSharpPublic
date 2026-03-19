@@ -1,6 +1,6 @@
 ﻿USING System
 USING System.Windows.Forms
-BEGIN NAMESPACE XSharp.VFP
+BEGIN NAMESPACE XSharp.VFP.UI
 
     PUBLIC PARTIAL CLASS AssertDialog ;
         INHERIT System.Windows.Forms.Form

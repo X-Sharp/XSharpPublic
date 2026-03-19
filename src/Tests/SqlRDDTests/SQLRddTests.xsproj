@@ -50,6 +50,7 @@
     <InitLocals>false</InitLocals>
     <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
     <Allowdot>false</Allowdot>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -120,11 +121,6 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
@@ -133,11 +129,6 @@
     <ProjectReference Include="..\..\Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj">
       <Name>XSharp.SQLRDD</Name>
       <Project>{e83c6c8c-773f-4b01-a597-3d38398a9373}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

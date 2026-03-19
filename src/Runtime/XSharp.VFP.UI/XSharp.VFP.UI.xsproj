@@ -56,6 +56,11 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.Drawing.dll</AssemblyName>
     </Reference>
+    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Management</Name>
+      <AssemblyName>System.Management.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
@@ -72,6 +77,13 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="AEventsDefinition.prg" />
+    <Compile Include="AssertDialog.designer.prg">
+      <DependentUpon>AssertDialog.prg</DependentUpon>
+    </Compile>
+    <Compile Include="AssertDialog.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoCloseMessageBox.prg" />
     <Compile Include="Generated\CheckBox.generated.prg" />
     <Compile Include="Generated\_Interfaces.prg" />
     <Compile Include="Generated\Column.generated.prg" />
@@ -153,6 +165,8 @@
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
     <Compile Include="VFPTools.prg" />
+    <Compile Include="VfpUIProvider.prg" />
+    <Compile Include="Win32UI.prg" />
     <Compile Include="_OtherClasses.prg" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +232,11 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <CustomTool>ResXFileCodeGenerator</CustomTool>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AssertDialog.resx">
+      <DependentUpon>AssertDialog.prg</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

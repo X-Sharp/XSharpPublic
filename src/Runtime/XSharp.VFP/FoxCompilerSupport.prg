@@ -14,7 +14,7 @@ USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.Collections.Generic
 USING System.Reflection
-
+/// <exclude />
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     oVFPErrorMessage := __VfpStr
     XSharp.RuntimeState.DialectChanged += DialectChanged
@@ -62,7 +62,9 @@ IF oldDialect != newDialect
 ENDIF
 
 
+
 // Automatically lock a record in the FoxPro dialect
+/// <exclude />
 FUNCTION __FoxAutoLock() AS VOID
     LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
     IF oRdd != null .and. oRdd:Shared
@@ -80,6 +82,7 @@ FUNCTION __FoxAutoLock() AS VOID
     RETURN
 
 // Automatically unlock a record in the FoxPro dialect
+/// <exclude />
 FUNCTION __FoxAutoUnLock() AS VOID
     LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
     IF oRdd != null .and. oRdd:Shared

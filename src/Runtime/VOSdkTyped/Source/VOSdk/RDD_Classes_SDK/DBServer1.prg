@@ -44,7 +44,7 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 			SELF:Notify( NOTIFYAPPEND )
 		ELSE
 			lRetCode := FALSE
-			SELF:__SetStatusHL( #Append, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+			SELF:__SetStatusHL( __FUNCTION__, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -161,7 +161,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 
 		ELSE
 			lRetCode := FALSE
-			SELF:__SetStatusHL( #AppendDB, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+			SELF:__SetStatusHL( __FUNCTION__, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -264,7 +264,7 @@ METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBl
 
 		ELSE
 			lRetCode := FALSE
-			SELF:__SetStatusHL( #AppendDelimited,  ;
+			SELF:__SetStatusHL( __FUNCTION__,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr(__CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
@@ -395,7 +395,7 @@ METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC C
 
 		ELSE
 			lRetCode := FALSE
-			SELF:__SetStatusHL ( #AppendSDF, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+			SELF:__SetStatusHL ( __FUNCTION__, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -439,7 +439,7 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
-			BREAK DbError{ SELF, #Average, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
+			BREAK DbError{ SELF, __FUNCTION__, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
 		IF ! IsArray( acbExpression )
 			acbExpression := { acbExpression }
@@ -454,7 +454,7 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 			ELSEIF IsSymbol( acbExpression[w] ) .OR. IsInstanceOfUsual( acbExpression[w], #DataField )
 				acbExpr[w] := &( "{ || " + AsString( acbExpression[w] ) + " }" )
 			ELSE
-				BREAK DbError{ SELF, #Average, EG_ARG,  ;
+				BREAK DbError{ SELF, __FUNCTION__, EG_ARG,  ;
 					VO_Sprintf( __CAVOSTR_DBFCLASS_BADEXPRESSION,  ;
 					AllTrim( Str( w ) ) ), acbExpression[w], "acbExpression" }
 			ENDIF
@@ -496,7 +496,7 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 			uValue := uSelectionValue
 			cbKey := cbSelectionIndexingExpression
 			IF !VoDbSeek( uSelectionValue, FALSE )
-				BREAK DbError{ SELF, #Average, EG_ARG, VO_Sprintf( __CAVOSTR_DBFCLASS_NOSEEK ) }
+				BREAK DbError{ SELF, __FUNCTION__, EG_ARG, VO_Sprintf( __CAVOSTR_DBFCLASS_NOSEEK ) }
 			ENDIF
 			SELF:__DbServerEval( { || iCount += 1, __IterateForSum( acbExpr, aResults ) },  ;
 				NIL,                   ;
@@ -537,7 +537,7 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 
 
 		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oError, #Average )
+		SELF:Error( oError, __FUNCTION__)
 		oErrorInfo := oError
 		oHLTemp := oHLStatus
 		aResults := NULL_ARRAY
@@ -637,7 +637,7 @@ METHOD BLOBDirectGet( nPointer AS LONG, nStart AS LONG, nCount AS LONG) AS USUAL
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #BLOBDirectGet )
+		SELF:Error( oErrorInfo, __FUNCTION__)
 		uRetVal := NIL
 	END SEQUENCE
 
@@ -672,7 +672,7 @@ METHOD BLOBDirectImport( nPointer AS LONG, cSource AS STRING) AS USUAL
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #BLOBDirectImport )
+		SELF:Error( oErrorInfo, __FUNCTION__)
 		uRetVal := NIL
 	END SEQUENCE
 
@@ -700,7 +700,7 @@ METHOD BLOBDirectPut( nPointer AS LONG, uBlob AS USUAL ) AS USUAL
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #BLOBDirectPut )
+		SELF:Error( oErrorInfo, __FUNCTION__)
 		uRetVal := NIL
 	END SEQUENCE
 
@@ -728,7 +728,7 @@ METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVER
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
 		IF wPos == 0
-			BREAK DbError{ SELF, #BLOBExport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
+			BREAK DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
         ENDIF
         LOCAL uMode := kMode AS USUAL
@@ -771,7 +771,7 @@ METHOD BLOBGet( uField AS USUAL, nStart AS LONG, nCount AS LONG) AS USUAL
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) == 0
-			BREAK DbError{ SELF, #BLOBGet, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
+			BREAK DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
 		uRetVal := { wPos,nStart,nCount }
@@ -783,7 +783,7 @@ METHOD BLOBGet( uField AS USUAL, nStart AS LONG, nCount AS LONG) AS USUAL
 
 	RECOVER USING oError
 		oErrorInfo := oError
-		SELF:Error( oErrorInfo, #BLOBGet )
+		SELF:Error( oErrorInfo, __FUNCTION__ )
 		__DBSSetSelect( dwCurrentWorkArea )
 		uRetVal := NIL
 	END SEQUENCE
@@ -810,7 +810,7 @@ METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) == 0
-			BREAK DbError{ SELF, #BLOBImport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
+			BREAK DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
 		IF IsObject(oFSSource) .AND. __Usual.ToObject(oFSSource) IS FileSpec VAR oFsParam
@@ -831,7 +831,7 @@ METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 				ENDIF
 			ELSE
 				IF oErrorInfo == NULL_OBJECT
-					BREAK DbError{ SELF, #BLOBImport, EG_LOCK,  ;
+					BREAK DbError{ SELF, __FUNCTION__, EG_LOCK,  ;
 						__CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED ) }
 				ELSE
 					BREAK oErrorInfo
@@ -877,7 +877,7 @@ METHOD BLOBRootGet( ) AS USUAL STRICT
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #BLOBRootGet )
+		SELF:Error( oErrorInfo, __FUNCTION__ )
 		uRetVal := NIL
 	END SEQUENCE
 
@@ -967,7 +967,7 @@ METHOD BLOBRootUnlock( ) AS USUAL STRICT
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #BLOBRootUnlock )
+		SELF:Error( oErrorInfo, __FUNCTION__ )
 		uRetVal := NIL
 	END SEQUENCE
 
@@ -1303,7 +1303,7 @@ METHOD Continue( ) AS LOGIC STRICT
 			SELF:__ProcessConcurrency(  TRUE )
 		ELSE
 			lRetCode := FALSE
-			SELF:__SetStatusHL( #Continue, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+			SELF:__SetStatusHL( __FUNCTION__, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr(__CAVOSTR_DBFCLASS_INTENTTOMOVE) )
 			oHLTemp := oHLStatus
 		ENDIF

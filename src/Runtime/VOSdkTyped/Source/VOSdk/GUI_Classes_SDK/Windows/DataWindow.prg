@@ -549,7 +549,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
                     oOle:ValueChanged :=TRUE
                     oOle:Modified :=TRUE
                     oAttachedServer:RLOCK()
-                    SELF:FIELDPUT(oOle:__GetDataFldPos, oOle)
+                    SELF:FieldPut(oOle:__GetDataFldPos, oOle)
                     oOle:__Scatter() // ???!!! correct ??
                     oAttachedServer:Unlock()
                 ELSE
@@ -1552,7 +1552,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
             RETURN SUPER:Expose(oExposeEvent)
 
 
-        /// <include file="Gui.xml" path="doc/DataWindow.FIELDGET/*" />
+        /// <include file="Gui.xml" path="doc/DataWindow.FieldGet/*" />
         METHOD FieldGet(uFieldID AS USUAL)  AS USUAL
             LOCAL oError AS USUAL
             LOCAL oFieldObject AS OBJECT
@@ -1574,7 +1574,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
                 IF oFieldObject == NULL_OBJECT
                     IF oAttachedServer != NULL_OBJECT
-                        uRetVal := oAttachedServer:FIELDGET(uFieldID)
+                        uRetVal := oAttachedServer:FieldGet(uFieldID)
                     ELSE
                         uRetVal := NIL
                     ENDIF
@@ -1596,7 +1596,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
             RETURN uRetVal
 
 
-        /// <include file="Gui.xml" path="doc/DataWindow.FIELDPUT/*" />
+        /// <include file="Gui.xml" path="doc/DataWindow.FieldPut/*" />
         METHOD FieldPut(uFieldId AS USUAL, uNewValue AS USUAL) AS USUAL
             // Retrieves the current value of the indicated string
             // uFieldPosition is numeric, symbol or string: the field position as numeric,
@@ -1629,7 +1629,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
                 // Field object should contain control or column
                 IF IsNil(oFieldObject)
                     IF oAttachedServer != NULL_OBJECT
-                        uRetVal := oAttachedServer:FIELDPUT(uFieldId, uNewValue)
+                        uRetVal := oAttachedServer:FieldPut(uFieldId, uNewValue)
                     ELSE
                         uRetVal := NIL
                     ENDIF

@@ -154,12 +154,6 @@
       <Build Solution="DocChinese|*" Project="false" />
       <Build Solution="Documentation|*" Project="false" />
     </Project>
-    <Project Path="Tests/GeneralTestsVulcan/GeneralTestsVulcan.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="8d4ef4d6-bfd2-4e3f-99ce-c9cae902e1ae">
-      <BuildType Solution="DocChinese|*" Project="Debug" />
-      <BuildType Solution="Documentation|*" Project="Debug" />
-      <Build Solution="DocChinese|*" Project="false" />
-      <Build Solution="Documentation|*" Project="false" />
-    </Project>
     <Project Path="Tests/MemoTest/MemoTest.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="68a869e2-dcab-4fdf-a460-eda80a7fcfcb">
       <BuildType Solution="DocChinese|*" Project="Debug" />
       <BuildType Solution="Documentation|*" Project="Debug" />

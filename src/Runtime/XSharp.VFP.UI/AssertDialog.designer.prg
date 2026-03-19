@@ -4,14 +4,14 @@
 //     Runtime version: 4.0.30319.42000
 //     Generator      : XSharp.CodeDomProvider 2.13.2.2
 //     Timestamp      : 10/11/2022 14:12:10
-//     
+//
 //     Changes to this file may cause incorrect behavior and may be lost if
 //     the code is regenerated.
 //  </auto-generated>
 //------------------------------------------------------------------------------
 USING System.Windows.Forms
 USING System
-BEGIN NAMESPACE XSharp.VFP
+BEGIN NAMESPACE XSharp.VFP.UI
     PUBLIC PARTIAL CLASS AssertDialog ;
         INHERIT System.Windows.Forms.Form
 
@@ -26,9 +26,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:pictureBox1 := System.Windows.Forms.PictureBox{}
             ((System.ComponentModel.ISupportInitialize)(SELF:pictureBox1)):BeginInit()
             SELF:SuspendLayout()
-            // 
+            //
             // cmdDebug
-            // 
+            //
             SELF:cmdDebug:Location := System.Drawing.Point{26, 150}
             SELF:cmdDebug:Name := "cmdDebug"
             SELF:cmdDebug:Size := System.Drawing.Size{80, 25}
@@ -36,9 +36,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:cmdDebug:Text := "&Debug"
             SELF:cmdDebug:UseVisualStyleBackColor := true
             SELF:cmdDebug:Click += System.EventHandler{ SELF, @cmdDebug_Click() }
-            // 
+            //
             // cmdCancel
-            // 
+            //
             SELF:cmdCancel:Location := System.Drawing.Point{181, 150}
             SELF:cmdCancel:Name := "cmdCancel"
             SELF:cmdCancel:Size := System.Drawing.Size{80, 25}
@@ -46,9 +46,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:cmdCancel:Text := "&Quit"
             SELF:cmdCancel:UseVisualStyleBackColor := true
             SELF:cmdCancel:Click += System.EventHandler{ SELF, @cmdCancel_Click() }
-            // 
+            //
             // cmdIgnore
-            // 
+            //
             SELF:cmdIgnore:Location := System.Drawing.Point{336, 150}
             SELF:cmdIgnore:Name := "cmdIgnore"
             SELF:cmdIgnore:Size := System.Drawing.Size{80, 25}
@@ -56,9 +56,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:cmdIgnore:Text := "&Ignore"
             SELF:cmdIgnore:UseVisualStyleBackColor := true
             SELF:cmdIgnore:Click += System.EventHandler{ SELF, @cmdIgnore_Click() }
-            // 
+            //
             // cmdIgnoreAll
-            // 
+            //
             SELF:cmdIgnoreAll:Location := System.Drawing.Point{491, 150}
             SELF:cmdIgnoreAll:Name := "cmdIgnoreAll"
             SELF:cmdIgnoreAll:Size := System.Drawing.Size{80, 25}
@@ -66,9 +66,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:cmdIgnoreAll:Text := "Ignore &All"
             SELF:cmdIgnoreAll:UseVisualStyleBackColor := true
             SELF:cmdIgnoreAll:Click += System.EventHandler{ SELF, @cmdIgnoreAll_Click() }
-            // 
+            //
             // lblMessage
-            // 
+            //
             SELF:lblMessage:BackColor := System.Drawing.SystemColors.Control
             SELF:lblMessage:Location := System.Drawing.Point{126, 24}
             SELF:lblMessage:Name := "lblMessage"
@@ -76,9 +76,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:lblMessage:TabIndex := 4
             SELF:lblMessage:Text := "Default Message"
             SELF:lblMessage:TextAlign := System.Drawing.ContentAlignment.MiddleCenter
-            // 
+            //
             // pictureBox1
-            // 
+            //
             SELF:pictureBox1:ErrorImage := NULL
             SELF:pictureBox1:Image := ((System.Drawing.Image)(resources:GetObject("pictureBox1.Image")))
             SELF:pictureBox1:InitialImage := NULL
@@ -88,9 +88,9 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:pictureBox1:SizeMode := System.Windows.Forms.PictureBoxSizeMode.Zoom
             SELF:pictureBox1:TabIndex := 5
             SELF:pictureBox1:TabStop := false
-            // 
+            //
             // AssertDialog
-            // 
+            //
             SELF:AutoScaleDimensions := System.Drawing.SizeF{6, 13}
             SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
             SELF:ClientSize := System.Drawing.Size{597, 211}
@@ -131,5 +131,5 @@ BEGIN NAMESPACE XSharp.VFP
         RETURN
     END METHOD
 
-    END CLASS 
+    END CLASS
 END NAMESPACE

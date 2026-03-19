@@ -34,6 +34,7 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     INTERNAL _Ansi  AS LOGIC
     INTERNAL _HasMemo AS LOGIC
     INTERNAL _fieldCount AS LONG
+    INTERNAL _Extension as STRING
     PRIVATE  _syncSettings AS LOGIC
     PRIVATE  _syncDeleted  AS LOGIC
     PRIVATE  _syncFolders  AS LOGIC
@@ -58,6 +59,8 @@ CONSTRUCTOR()
     SELF:_syncDeleted    := TRUE
     SELF:_syncSettings   := TRUE
     SELF:_syncFolders    := TRUE
+    SELF:_IsFileBased    := FALSE
+    SELF:_Extension      := ".dbf"
 
 
     RuntimeState.StateChanged += StateChanged
@@ -352,6 +355,7 @@ OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
     LOCAL fileName AS STRING
     //
     openmode := 0
+    SELF:SetOpenInfo(info, SELF:_Extension, FALSE)
     SELF:_CheckRDDInfo()
     alias := Path.GetFileNameWithoutExtension(info:Alias)
     // both Clipper and XPP use weight tables
@@ -469,10 +473,7 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
     LOCAL length AS WORD
     //
     strFieldDef     := String.Empty
-    SELF:_Alias     := info:Alias
-    SELF:_Area      := info:Workarea
-    SELF:_Shared    := info:Shared
-    SELF:_ReadOnly  := info:ReadOnly
+    SELF:SetOpenInfo(info, SELF:_Extension, TRUE)
     SELF:_Ansi      := RuntimeState.Ansi
 
     IF !SELF:_GetFieldInfo(REF strFieldDef)

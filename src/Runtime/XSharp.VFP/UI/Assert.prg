@@ -16,18 +16,18 @@ FUNCTION __FoxAssert(lExpression as LOGIC, cExpression as STRING, uMessage := NI
         LOCAL sProc := ProcName(1) AS STRING
         LOCAL nLine := ProcLine(1) AS DWORD
         local strMessage as STRING
+
         if IsString(uMessage)
             strMessage := (STRING) uMessage
         else
             strMessage := "Assertion failed in "+sProc+" line "+nLine:ToString()
         endif
         strMessage  := "Expression: "+cExpression+Environment.NewLine+strMessage
-        LOCAL oDlg as AssertDialog
-        oDlg := AssertDialog{}
-        oDlg:Text := "Assertion failed"
-        oDlg:Message := strMessage
-        oDlg:ShowDialog()
-        SWITCH oDlg:Result
+
+        LOCAL eResult AS AssertResult
+        eResult := VfpUIService.Provider:ShowAssertDialog(cExpression, strMessage)
+
+        SWITCH eResult
         CASE AssertResult.None
             NOP
         CASE AssertResult.Debug
@@ -40,4 +40,4 @@ FUNCTION __FoxAssert(lExpression as LOGIC, cExpression as STRING, uMessage := NI
             glIgnoreAll := TRUE
         END SWITCH
     ENDIF
-    RETURN
+END FUNCTION

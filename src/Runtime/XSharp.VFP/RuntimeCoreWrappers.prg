@@ -156,6 +156,35 @@ FUNCTION FSeek(nFileHandle AS INT64, nBytesMoved AS INT, nRelativePosition := 0 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fsize/*" />
 [FoxProFunction("FSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
+    VAR lCompatible := FALSE
+    VAR uComp := XSharp.RT.Functions.Set(Set.Compatible)
+
+    IF IsString(uComp)
+        lCompatible := ((STRING)uComp):ToUpper() == "ON" || ((STRING)uComp):ToUpper() == "DB4"
+    ELSEIF IsLogic(uComp)
+        lCompatible := (LOGIC) uComp
+    ENDIF
+
+    // VFP behavior: SET COMPATIBLE ON
+    IF lCompatible
+        IF IsNil(eWorkArea)
+            VAR cSearchFile := cFieldName
+            IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cSearchFile)) AND XSharp.Core.Functions.File(cSearchFile + ".dbf")
+                cSearchFile += ".dbf"
+            ENDIF
+
+            IF XSharp.Core.Functions.File(cSearchFile)
+                VAR cFullPath := XSharp.Core.Functions.FPathName()
+                VAR info := System.IO.FileInfo{cFullPath}
+                RETURN (INT) info:Length
+            ELSE
+                RETURN 0
+            ENDIF
+        ENDIF
+    ENDIF
+
+
+    // Default behavior
     LOCAL nArea AS DWORD
     IF IsNil(eWorkArea)
         nArea := XSharp.RuntimeState.CurrentWorkarea
@@ -184,6 +213,9 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
     ENDIF
 
     RETURN 0
+
+FUNCTION FSize(cFieldName AS STRING) AS INT
+    RETURN FSize(cFieldName, NULL)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fwrite/*" />
 [FoxProFunction("FWRITE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];

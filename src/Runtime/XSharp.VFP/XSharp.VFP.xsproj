@@ -194,6 +194,9 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />

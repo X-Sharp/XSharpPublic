@@ -288,12 +288,32 @@ FUNCTION DToC(dDate AS DATE) AS STRING
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fdate/*" />
 [FoxProFunction("FDATE", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FDate(cFileName AS STRING, nType := 0 AS INT) AS USUAL
-    RETURN XSharp.Core.Functions.FDate()
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        IF nType == 1
+            RETURN info:LastWriteTime
+        ELSE
+            RETURN (DATE) info:LastWriteTime
+        ENDIF
+    ENDIF
+
+    IF nType == 1
+        RETURN System.DateTime.MinValue
+    ELSE
+        RETURN NULL_DATE
+    ENDIF
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ftime/*" />
 [FoxProFunction("FTIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FTime(cFileName AS STRING) AS STRING
-    RETURN XSharp.Core.Functions.FTime()
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        RETURN info:LastWriteTime:ToString("HH:mm:ss")
+    ENDIF
+    RETURN ""
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/time/*" />
 [FoxProFunction("TIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];

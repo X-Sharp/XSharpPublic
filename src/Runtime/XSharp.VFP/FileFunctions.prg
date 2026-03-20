@@ -281,3 +281,23 @@ FUNCTION FullPath( cFileName1 as string, cFileName2 := "" as STRING) AS STRING
 //     var cFilePath := Path.GetDirectoryName(cFileName2)
 //     RETURN Path.GetRelativePath(cFileName1, cFilePath)
     RETURN cFileName1
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fname/*" />
+[FoxProFunction("FNAME", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium, "X# Extension")];
+FUNCTION FName(cFileName AS STRING) AS STRING
+    IF XSharp.Core.Functions.File(cFileName)
+        RETURN System.IO.Path.GetFileName(XSharp.Core.Functions.FPathName())
+    ENDIF
+
+    RETURN ""
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fattrib/*" />
+[FoxProFunction("FATTRIB", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium, "X# Extension")];
+FUNCTION FAttrib(cFileName AS STRING) AS DWORD
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        RETURN (DWORD) info:Attributes
+    ENDIF
+
+    RETURN 0

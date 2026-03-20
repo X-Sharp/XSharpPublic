@@ -8,109 +8,88 @@ USING System.Threading
 USING System.Security.Permissions
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mballtrim/*" />
-/// <remarks><note type="tip">This function is the same as AllTrim() since .Net has unicode strings</note></remarks>
 FUNCTION MBAllTrim(cMBString AS STRING) AS STRING
 	RETURN AllTrim(cMBString)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbat/*" />
-/// <remarks><note type="tip">This function is the same as At() since .Net has unicode strings</note></remarks>
 FUNCTION MBAt(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 	RETURN At( cMBSearch, cMBTarget )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbat2/*" />
-/// <remarks><note type="tip">This function is the same as At2() since .Net has unicode strings</note></remarks>
 FUNCTION MBAt2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 	RETURN At2( cMBSearch, cMBTarget )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbat3/*" />
-/// <remarks><note type="tip">This function is the same as At3() since .Net has unicode strings</note></remarks>
 FUNCTION MBAt3(cMBSearch AS STRING,cMBTarget AS STRING,wOffset AS DWORD) AS DWORD
 	RETURN At3( cMBSearch, cMBTarget, wOffset )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatc/*" />
-/// <remarks><note type="tip">This function is the same as AtC() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtC(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 	RETURN AtC(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatc2/*" />
-/// <remarks><note type="tip">This function is the same as AtC2() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtC2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 	RETURN AtC2(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatline/*" />
-/// <remarks><note type="tip">This function is the same as AtLine() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtLine(cMBSearch AS STRING,cMBTarget AS STRING) AS LONGINT
 	RETURN (LONG) ATLine(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatline2/*" />
-/// <remarks><note type="tip">This function is the same as AtLine2() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtLine2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 	RETURN ATLine2(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbleft/*" />
-/// <remarks><note type="tip">This function is the same as Left() since .Net has unicode strings</note></remarks>
 FUNCTION MBLEFT(cMBString AS STRING,wCount AS DWORD) AS STRING
 	RETURN Left(cMBString, wCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mblen/*" />
-/// <remarks><note type="tip">This function is the same as SLen() since .Net has unicode strings</note></remarks>
 FUNCTION MBLen(uMBValue AS STRING) AS DWORD
 	RETURN SLen(uMBValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbltrim/*" />
-/// <remarks><note type="tip">This function is the same as Ltrim() since .Net has unicode strings</note></remarks>
 FUNCTION MBLTrim(cMBString AS STRING) AS STRING
 	RETURN LTrim(cMBString)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbrat/*" />
-/// <remarks><note type="tip">This function is the same as Rat() since .Net has unicode strings</note></remarks>
 FUNCTION MBRat(cMBSearch AS STRING,cMBTarget AS STRING) AS LONGINT
 	RETURN (LONG) RAt(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbrat2/*" />
-/// <remarks><note type="tip">This function is the same as Rat2() since .Net has unicode strings</note></remarks>
 FUNCTION MBRat2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 	RETURN RAt2(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbrat3/*" />
-/// <remarks><note type="tip">This function is the same as Rat3() since .Net has unicode strings</note></remarks>
 FUNCTION MBRat3(cMBSearch AS STRING,cMBTarget AS STRING,wOffset AS DWORD) AS DWORD
 	RETURN RAt3(cMBSearch, cMBTarget, wOffset)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbright/*" />
-/// <remarks><note type="tip">This function is the same as Right() since .Net has unicode strings</note></remarks>
 FUNCTION MBRight(cMbString AS STRING,wCount AS DWORD) AS STRING
 	RETURN Right(cMbString, wCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbrtrim/*" />
-/// <remarks><note type="tip">This function is the same as RTrim() since .Net has unicode strings</note></remarks>
 FUNCTION MBRTrim(cMbString AS STRING) AS STRING
 	RETURN RTrim(cMbString)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbslen/*" />
-/// <remarks><note type="tip">This function is the same as Slen() since .Net has unicode strings</note></remarks>
 FUNCTION MBSLen(cMbString AS STRING) AS DWORD
 	RETURN SLen(cMbString)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbstuff/*" />
-/// <remarks><note type="tip">This function is the same as Stuff() since .Net has unicode strings</note></remarks>
 FUNCTION MBStuff(cMBTarget AS STRING,wStart AS DWORD,wDelete AS DWORD,cMBInsert AS STRING) AS STRING
 	RETURN Stuff(cMBTarget, wStart, wDelete, cMBInsert)
 
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbsubstr2/*" />
-/// <remarks><note type="tip">This function is the same as Substr2() since .Net has unicode strings</note></remarks>
 FUNCTION MBSubstr2(cMBTarget AS STRING,wStart AS DWORD) AS STRING
 	RETURN SubStr2(cMBTarget, wStart)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbsubstr3/*" />
-/// <remarks><note type="tip">This function is the same as Substr3() since .Net has unicode strings</note></remarks>
 FUNCTION MBSubstr3(cMBTarget AS STRING,wStart AS DWORD,wCount AS DWORD) AS STRING
 	RETURN SubStr3(cMBTarget, wStart, wCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbtrim/*" />
-/// <remarks><note type="tip">This function is the same as Trim() since .Net has unicode strings</note></remarks>
 FUNCTION MBTrim(cMBString AS STRING) AS STRING
 	RETURN Trim(cMBString)
 
@@ -131,32 +110,21 @@ FUNCTION SetAppLocaleID(uiNewLocale AS DWORD) AS DWORD
 	RETURN uiNewLocale
 
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="pFunc"></param>
-/// <returns>
-/// </returns>
+/// <exclude/>
+[Obsolete];
 FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
-	THROW NotImplementedException{}
-	//RETURN IntPtr.Zero
+	RETURN IntPtr.Zero
 
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="n"></param>
-/// <returns>
-/// </returns>
+/// <exclude/>
+[Obsolete];
 FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
-	THROW NotImplementedException{}
-	//RETURN 0
+	RETURN 0
 
-/// <summary>This function is not implemented yet</summary>
-/// <summary>
-/// </summary>
-/// <param name="pFunc"></param>
-/// <returns>
-/// </returns>
+/// <exclude/>
+[Obsolete];
 FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
-	THROW NotImplementedException{}
-	//RETURN IntPtr.Zero
+	RETURN IntPtr.Zero
 
 /// <exclude />
 [Obsolete];
@@ -168,11 +136,10 @@ FUNCTION NationInit(dwInst AS DWORD) AS INT
 FUNCTION NationExit() AS INT
 	RETURN 0
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nversion/*" />
+[Obsolete];
 FUNCTION NVersion() AS STRING
-	THROW NotImplementedException{}
-	//RETURN String.Empty
+	RETURN "Unicode"
 
 /// <exclude />
 FUNCTION MAKELANGID( p AS WORD, s AS WORD ) AS WORD

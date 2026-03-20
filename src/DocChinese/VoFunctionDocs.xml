@@ -15611,7 +15611,7 @@
       一个修剪后的字符串，前导和尾随空格已被删除。
     </returns>
     <remarks>
-      此函数的功能与 AllTrim() 相同，但它处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与AllTrim()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15632,7 +15632,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAt() 返回零。
     </returns>
     <remarks>
-      此函数类似于 At()，但它处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与At()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15660,7 +15660,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAt2() 返回零。
     </returns>
     <remarks>
-      此函数类似于 MBAt()，但返回 WORD 类型。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与At2()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15684,7 +15684,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAt3() 返回零。
     </returns>
     <remarks>
-      此函数与 MBAt() 相同，但允许您指定开始搜索的偏移量。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与At3()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15705,7 +15705,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAtC() 返回零。
     </returns>
     <remarks>
-      此函数类似于 AtC()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与AtC()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15726,7 +15726,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAtC2() 返回零。
     </returns>
     <remarks>
-      此函数类似于 MBAtC()，但返回 WORD 类型。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与AtC2()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15745,7 +15745,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAtLine() 返回零。
     </returns>
     <remarks>
-      此函数与 AtLine() 类似，但它处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与ATLine()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15767,7 +15767,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBAtLine2() 返回零。
     </returns>
     <remarks>
-      此函数与 MBAtLine() 类似，但返回 WORD 类型。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与ATLine2()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15787,7 +15787,7 @@
       如果<paramref name="wCount" />大于字符串的长度，MBLeft()返回整个字符串。
     </returns>
     <remarks>
-      此函数类似于Left()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与Left()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15813,7 +15813,7 @@
       <paramref name="uMBValue" /> 的长度，其中每个双字节字符计为一个字符。
     </returns>
     <remarks>
-      此函数类似于Len()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与Len()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15832,7 +15832,7 @@
       如果<paramref name="cMBString" />是NULL_STRING或全是空格，MBLTrim()返回NULL_STRING。
     </returns>
     <remarks>
-      此函数类似于LTrim()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与LTrim()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15854,7 +15854,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBRAt() 返回零。
     </returns>
     <remarks>
-      此函数类似于 RAt()，但它处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与RAt()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15878,7 +15878,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBRAt2() 返回零。
     </returns>
     <remarks>
-      此函数类似于 MBRAt()，但返回 DWORD 类型。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与RAt2()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15902,7 +15902,7 @@
       如果未找到 <paramref name="cMBSearch" />，则 MBRAt3() 返回零。
     </returns>
     <remarks>
-      此函数类似于 MBRAt()，但允许您指定开始搜索的偏移量。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与RAt3()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15923,7 +15923,7 @@
       如果 <paramref name="wCount" /> 大于字符串的长度，MBRight() 返回 <paramref name="cMBString" />。
     </returns>
     <remarks>
-      此函数类似于 Right()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与Right()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15945,7 +15945,7 @@
       如果 <paramref name="cMBString" /> 是 NULL_STRING 或全是空格，MBRTrim() 返回 NULL_STRING。
     </returns>
     <remarks>
-      此函数类似于 RTrim()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与RTrim()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15966,7 +15966,7 @@
       如果字符串是 NULL_STRING，MBSLen() 返回零。
     </returns>
     <remarks>
-      此函数类似于 SLen()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与SLen()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -15992,7 +15992,7 @@
       <paramref name="cMBTarget" /> 删除指定字符并插入 <paramref name="cMBInsert" /> 后的结果。
     </returns>
     <remarks>
-      此函数类似于 Stuff()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与Stuff()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -16024,7 +16024,7 @@
       如果未找到子字符串，或者如果您指定 <paramref name="nStart" /> 为零，则 MBSubstr() 返回 NULL_STRING。
     </returns>
     <remarks>
-      此函数类似于 Substr()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与SubStr()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -16050,9 +16050,7 @@
       如果未找到子字符串，或者如果您指定 <paramref name="wStart" /> 为零，则 MBSubstr2() 返回 NULL_STRING。
     </returns>
     <remarks>
-      MBSubstr2() 是 MBSubstr() 的类型化版本。<br/>
-      MBSubstr() 的第三个参数（计数字符数）不允许。相反，此函数从指定位置开始，提取到字符串的末尾。<br/>
-      由于 <paramref name="wStart" /> 不能为负，MBSubstr2() 无法相对于 <paramref name="cMBTarget" /> 的最右字符提取子字符串，正如 MBSubstr() 所能做到的那样。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与SubStr2()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -16082,7 +16080,7 @@
       如果未找到子字符串，或者如果您指定 <paramref name="wStart" /> 为零，则 MBSubstr3() 返回 NULL_STRING。
     </returns>
     <remarks>
-      MBSubstr3() 是 MBSubstr() 的类型化版本，其中所有三个参数都是必需的。由于 <paramref name="wStart" /> 不能为负，MBSubstr3() 无法相对于 <paramref name="cMBTarget" /> 的最右字符提取子字符串，正如 MBSubstr() 所能做到的那样。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与SubStr3()函数相同。</note>
     </remarks>
     <example>
     </example>
@@ -16105,7 +16103,7 @@
       如果 <paramref name="cMBString" /> 是 NULL_STRING 或全是空格，MBTrim() 返回 NULL_STRING。
     </returns>
     <remarks>
-      此函数类似于 Trim()，但处理包含双字节字符的字符串。
+      <note type="tip">由于.NET支持Unicode字符串，因此该函数与Trim()函数相同。</note>
     </remarks>
     <example>
     </example>

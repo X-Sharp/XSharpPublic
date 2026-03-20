@@ -15864,7 +15864,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAt() returns zero.
     </returns>
     <remarks>
-      This function is like At() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as At() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -15892,7 +15892,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAt2() returns zero.
     </returns>
     <remarks>
-      This function is like MBAt() except that it returns a WORD.
+      <note type="tip">This function is the same as At2() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -15916,7 +15916,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAt3() returns zero.
     </returns>
     <remarks>
-      This function is the same as MBAt(), except that you can specify an offset that tells where to start searching.
+      <note type="tip">This function is the same as At3() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -15937,7 +15937,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAtC() returns zero.
     </returns>
     <remarks>
-      This function is like AtC() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as AtC() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -15958,7 +15958,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAtC2() returns zero.
     </returns>
     <remarks>
-      This function is like MBAtC() except that it returns a WORD.
+      <note type="tip">This function is the same as AtC2() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -15977,7 +15977,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAtLine() returns zero.
     </returns>
     <remarks>
-      This function is like AtLine() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as AtLine() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -15999,7 +15999,7 @@
       If <paramref name="cMBSearch" /> is not found, MBAtLine2() returns zero.
     </returns>
     <remarks>
-      This function is like MBAtLine() except that it returns a WORD.
+      <note type="tip">This function is the same as AtLine2() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16019,7 +16019,7 @@
       If <paramref name="wCount" /> is larger than the length of the string, MBLeft() returns the entire string.
     </returns>
     <remarks>
-      This function is like Left() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as Left() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16045,7 +16045,7 @@
       The length of <paramref name="uMBValue" /> in which each double-byte character counts as one character.
     </returns>
     <remarks>
-      This function is like Len() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as Len() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16086,7 +16086,7 @@
       If <paramref name="cMBSearch" /> is not found, MBRAt() returns zero.
     </returns>
     <remarks>
-      This function is like RAt() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as RAt() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16134,7 +16134,7 @@
       If <paramref name="cMBSearch" /> is not found, MBRAt3() returns zero.
     </returns>
     <remarks>
-      This function is like MBRAt(), except that you can specify an offset that tells where to start searching.
+      <note type="tip">This function is the same as RAt2() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16155,7 +16155,7 @@
       If <paramref name="wCount" /> is larger than the length of the string, MBRight() returns <paramref name="cMBString" />.
     </returns>
     <remarks>
-      This function is like Right() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as Right() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16177,7 +16177,7 @@
       If <paramref name="cMBString" /> is a NULL_STRING or all spaces, MBRTrim() returns a NULL_STRING.
     </returns>
     <remarks>
-      This function is like RTrim() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as RTrim() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16198,7 +16198,7 @@
       If the string is a NULL_STRING, MBSLen() returns zero.
     </returns>
     <remarks>
-      This function is like SLen() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as SLen() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16224,7 +16224,7 @@
       <paramref name="cMBTarget" /> with the specified characters deleted and <paramref name="cMBInsert" /> inserted.
     </returns>
     <remarks>
-      This function is like Stuff() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as Stuff() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16256,7 +16256,7 @@
       If the substring is not present, or if you specify <paramref name="nStart" /> as zero, MBSubstr() returns a NULL_STRING.
     </returns>
     <remarks>
-      This function is like Substr() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as SubStr() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16282,9 +16282,7 @@
       If the substring is not present, or if you specify <paramref name="wStart" /> as zero, MBSubstr2() returns a NULL_STRING.
     </returns>
     <remarks>
-      MBSubstr2() is a typed version of MBSubstr().<br/>
-      The third argument of MBSubstr() which counts the number of characters is not allowed.  Instead, this function starts at the specified location and extracts to the end of the string.<br/>
-      Also, because <paramref name="wStart" /> cannot be negative, MBSubstr2() cannot extract a substring relative to the rightmost character of <paramref name="cMBTarget" /> as can MBSubstr().
+      <note type="tip">This function is the same as SubStr2() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16314,7 +16312,7 @@
       If the substring is not present, or if you specify <paramref name="wStart" /> as zero, MBSubstr3() returns a NULL_STRING.
     </returns>
     <remarks>
-      MBSubstr3() is a typed version of MBSubstr() in which all three arguments are required.  Because <paramref name="wStart" /> cannot be negative, MBSubstr3() cannot extract a substring relative to the rightmost character of <paramref name="cMBTarget" /> as can MBSubstr().
+      <note type="tip">This function is the same as SubStr3() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>
@@ -16337,7 +16335,7 @@
       If <paramref name="cMBString" /> is a NULL_STRING or all spaces, MBTrim() returns a NULL_STRING.
     </returns>
     <remarks>
-      This function is like Trim() except that it handles strings containing double-byte characters.
+      <note type="tip">This function is the same as Trim() since .Net has unicode strings</note>
     </remarks>
     <example>
     </example>

@@ -25,6 +25,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
             // REF USUAL is not allowed
             TypeWithAnnotations elementType;
+            if (!allowUnexpandedForm)
+            {
+                // X# 3: for some reason allowUnexpandedForm is false when we are calling a Clipper calling convention function with 1 argument of type NULL_OBJECT
+                // In that case we want to allow the unexpanded form as well
+                if (arguments.Arguments.Count == 1 && member.HasClipperCallingConvention() && arguments.Arguments[0].IsLiteralNull())
+                {
+                    allowUnexpandedForm = true;
+                }
+            }
             if (allowUnexpandedForm && normalResult.Result.IsValid && IsValidParams(_binder, leastOverriddenMember, true, out elementType) && Compilation.Options.HasRuntime)
             {
                 // Find Params argument

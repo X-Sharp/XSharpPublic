@@ -25,12 +25,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY HighlightBackColor AS LONG AUTO
         PROPERTY HighlightForeColor AS LONG AUTO
 
-
-
-
         PRIVATE _oldRowIndex AS LONG
         PRIVATE _oldColIndex AS LONG
         PRIVATE _rowColChange AS LONG
+
+        // GridLines property backing field
+        // Values: 0=None, 1=Horizontal, 2=Vertical, 3=Both
+        PRIVATE _gridLines := 0 AS INT
 
         #include "Generated\VFPContainer.xh"
         #include "XSharp\VFPProperties.xh"
@@ -49,9 +50,30 @@ BEGIN NAMESPACE XSharp.VFP.UI
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
             SELF:CurrentCellChanged += System.EventHandler{ SELF, @VFPCurrentCellChanged() }
+            // Add handler for column header clicks to enable sorting
+            SELF:ColumnHeaderMouseClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderClick() }
             SELF:Size := System.Drawing.Size{320, 200}
 
+            // Initialize grid properties with defaults
+            SELF:ApplyGridLineStyle()
+
             RETURN
+
+        /// <summary>
+        /// Handle column header clicks for sorting
+        /// </summary>
+        PRIVATE METHOD OnColumnHeaderClick(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID
+            // Click on a column header initiates sorting
+            IF e:ColumnIndex >= 0
+                // Toggle sort order if clicking same column, otherwise sort ascending
+                IF _sortColumn == e:ColumnIndex
+                    _sortAscending := !_sortAscending
+                ELSE
+                    _sortAscending := TRUE
+                ENDIF
+                SELF:Sort(e:ColumnIndex, _sortAscending)
+            ENDIF
+        END METHOD
 
         PUBLIC METHOD Column( i AS INT ) AS Column
             // Looking for a Column
@@ -77,8 +99,232 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END SET
         END PROPERTY
 
+        // ============================================================================
+        // GridLines Property - Controls visibility of grid lines
+        // Values: 0=None, 1=Horizontal, 2=Vertical, 3=Both
+        // Reference: VFP Help - GridLines determines which grid lines are visible
+        // ============================================================================
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Controls the display of grid lines (0=None, 1=Horizontal, 2=Vertical, 3=Both)")];
+        [System.ComponentModel.DefaultValue(0)];
+        PROPERTY GridLines AS INT
+            GET
+                RETURN _gridLines
+            END GET
+            SET
+                _gridLines := VALUE
+                SELF:ApplyGridLineStyle()
+            END SET
+        END PROPERTY
 
-        // Override ColumnCount
+        /// <summary>
+        /// Internal method to apply grid line style based on GridLines property
+        /// </summary>
+        PRIVATE METHOD ApplyGridLineStyle() AS VOID
+            SWITCH _gridLines
+                CASE 0
+                    // None - no grid lines
+                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.None
+                    SELF:GridColor := System.Drawing.Color.LightGray
+                CASE 1
+                    // Horizontal only
+                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.SingleHorizontal
+                    SELF:GridColor := System.Drawing.Color.LightGray
+                CASE 2
+                    // Vertical only
+                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.SingleVertical
+                    SELF:GridColor := System.Drawing.Color.LightGray
+                CASE 3
+                    // Both horizontal and vertical
+                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.Single
+                    SELF:GridColor := System.Drawing.Color.LightGray
+                OTHERWISE
+                    // Default to both if invalid value
+                    _gridLines := 3
+                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.Single
+            END SWITCH
+        END METHOD
+
+        // ============================================================================
+        // Column Freezing Support
+        // ============================================================================
+        PRIVATE _frozenColumnCount := 0 AS INT
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Number of leftmost columns to freeze")];
+        [System.ComponentModel.DefaultValue(0)];
+        PROPERTY FrozenColumnCount AS INT
+            GET
+                RETURN _frozenColumnCount
+            END GET
+            SET
+                IF VALUE >= 0 .AND. VALUE <= SELF:ColumnCount
+                    _frozenColumnCount := VALUE
+                    SELF:ApplyColumnFreeze()
+                ENDIF
+            END SET
+        END PROPERTY
+
+        /// <summary>
+        /// Freeze specified number of columns (locked from horizontal scrolling)
+        /// </summary>
+        PUBLIC METHOD FreezeColumns(columnCount AS INT) AS VOID
+            SELF:FrozenColumnCount := columnCount
+        END METHOD
+
+        /// <summary>
+        /// Internal method to apply column freezing
+        /// </summary>
+        PRIVATE METHOD ApplyColumnFreeze() AS VOID
+            TRY
+                LOCAL i AS INT
+                FOR i := 0 UPTO SELF:ColumnCount - 1
+                    IF i < _frozenColumnCount
+                        SELF:Columns[i]:Frozen := TRUE
+                    ELSE
+                        SELF:Columns[i]:Frozen := FALSE
+                    ENDIF
+                NEXT
+            CATCH
+                // Silently handle any errors during freezing
+                NOP
+            END TRY
+        END METHOD
+
+        // ============================================================================
+        // Sorting Support
+        // ============================================================================
+        PRIVATE _sortColumn := -1 AS INT
+        PRIVATE _sortAscending := TRUE AS LOGIC
+
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Index of column used for sorting")];
+        [System.ComponentModel.DefaultValue(-1)];
+        PROPERTY SortColumn AS INT
+            GET
+                RETURN _sortColumn
+            END GET
+            SET
+                _sortColumn := VALUE
+            END SET
+        END PROPERTY
+
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Sort order (TRUE=Ascending, FALSE=Descending)")];
+        [System.ComponentModel.DefaultValue(TRUE)];
+        PROPERTY SortAscending AS LOGIC
+            GET
+                RETURN _sortAscending
+            END GET
+            SET
+                _sortAscending := VALUE
+            END SET
+        END PROPERTY
+
+        /// <summary>
+        /// Apply sorting to the grid based on specified column
+        /// </summary>
+        PUBLIC METHOD Sort(columnIndex AS INT, ascending AS LOGIC) AS VOID
+            _sortColumn := columnIndex
+            _sortAscending := ascending
+
+            TRY
+                IF SELF:_bindingSource != NULL
+                    IF columnIndex >= 0 .AND. columnIndex < SELF:ColumnCount
+                        VAR columnName := SELF:Columns[columnIndex]:DataPropertyName
+                        IF !String.IsNullOrEmpty(columnName)
+                            VAR sortOrder := IF(ascending, " ASC", " DESC")
+                            SELF:_bindingSource:Sort := columnName + sortOrder
+                        ENDIF
+                    ENDIF
+                ENDIF
+            CATCH
+                // Silently handle sort errors
+                NOP
+            END TRY
+        END METHOD
+
+        // ============================================================================
+        // Filtering Support
+        // ============================================================================
+        PRIVATE _filterExpression := "" AS STRING
+
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Filter expression for data rows")];
+        [System.ComponentModel.DefaultValue("")];
+        PROPERTY FilterExpression AS STRING
+            GET
+                RETURN _filterExpression
+            END GET
+            SET
+                _filterExpression := VALUE
+                SELF:ApplyFilter()
+            END SET
+        END PROPERTY
+
+        /// <summary>
+        /// Apply filter to the grid data
+        /// </summary>
+        PUBLIC METHOD ApplyFilter() AS VOID
+            TRY
+                IF SELF:_bindingSource != NULL
+                    IF String.IsNullOrEmpty(_filterExpression)
+                        SELF:_bindingSource:Filter := NULL
+                    ELSE
+                        SELF:_bindingSource:Filter := _filterExpression
+                    ENDIF
+                ENDIF
+            CATCH
+                // Reset filter on error
+                TRY
+                    IF SELF:_bindingSource != NULL
+                        SELF:_bindingSource:Filter := NULL
+                    ENDIF
+                CATCH
+                    NOP
+                END TRY
+            END TRY
+        END METHOD
+
+        // ============================================================================
+        // Additional Visual Properties
+        // ============================================================================
+        PRIVATE _headerHeight := 21 AS INT
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Height of column headers in pixels")];
+        [System.ComponentModel.DefaultValue(21)];
+        PROPERTY HeaderHeight AS INT
+            GET
+                RETURN _headerHeight
+            END GET
+            SET
+                _headerHeight := VALUE
+                SELF:ColumnHeadersHeight := VALUE
+            END SET
+        END PROPERTY
+
+        PRIVATE _highlightRow := FALSE AS LOGIC
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("When TRUE, highlights entire row when selected")];
+        [System.ComponentModel.DefaultValue(FALSE)];
+        PROPERTY HighlightRow AS LOGIC
+            GET
+                RETURN _highlightRow
+            END GET
+            SET
+                _highlightRow := VALUE
+                IF VALUE
+                    SELF:SelectionMode := DataGridViewSelectionMode.FullRowSelect
+                ELSE
+                    SELF:SelectionMode := DataGridViewSelectionMode.CellSelect
+                ENDIF
+            END SET
+        END PROPERTY
+
+        PRIVATE _alternatingRowColor := System.Drawing.Color.White AS System.Drawing.Color
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Background color for alternating rows")];
+        PROPERTY AlternatingRowColor AS System.Drawing.Color
+            GET
+                RETURN _alternatingRowColor
+            END GET
+            SET
+                _alternatingRowColor := VALUE
+                SELF:AlternatingRowsDefaultCellStyle:BackColor := VALUE
+            END SET
+        END PROPERTY
+
         PUBLIC NEW PROPERTY ColumnCount AS LONG
             GET
                 RETURN Columns:Count

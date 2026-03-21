@@ -56,7 +56,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET
 				IF !IsNil(VALUE)
 					SELF:_uValue := VALUE
-					SELF:Text := VALUE:ToString()
+					SELF:Text := Str( VALUE )
 				ENDIF
 			END SET
 		END PROPERTY

@@ -232,7 +232,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// Selects an item by its value (searching in BoundColumn).
 		/// </summary>
 		PRIVATE METHOD SelectByValue(value AS USUAL) AS VOID
-			VAR valueStr := value:ToString()
+			VAR valueStr := Str( value )
 			FOR VAR i := 0 TO SELF:Items:Count - 1
 				IF SELF:Items[i]:ToString() == valueStr
 					SELF:SelectedIndex := i

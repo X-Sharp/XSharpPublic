@@ -96,8 +96,8 @@ BEGIN NAMESPACE VFPXPorterLib
 				ELSE
 					ConversionList:Add( "_currentobject_", "SELF:" + SELF:Name )
 				ENDIF
-            CATCH
-                nop
+            CATCH e AS Exception
+                XPorterLogger.Instance:Verbose("AddSpecialProperties: '_currentobject_' property already exists in conversion list for item: " + SELF:Name)
 			END TRY
 
 		/// <summary>

@@ -123,8 +123,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDDO
             CATCH ex AS Exception
                 success := FALSE
-                XPorterLogger.Instance:Error( "Use PJX File" )
-                XPorterLogger.Instance:Error( ex:Message )
+                XPorterLogger.Instance:Error("LoadProject: Failed to process PJX file: " + SELF:pjxFilePath)
+                XPorterLogger.Instance:Error("Exception: " + ex:Message)
             FINALLY
                 DbCloseArea()
             END TRY
@@ -136,39 +136,39 @@ BEGIN NAMESPACE VFPXPorterLib
                 // Build some Result Info
                 XPorterLogger.Instance:Information( "Project : " + SELF:Project:Name )
                 XPorterLogger.Instance:Information( "HomeDir : " + SELF:Project:HomeDir )
-                XPorterLogger.Instance:Information( "Forms : " )
+                XPorterLogger.Instance:Information( "Forms : " + SELF:Project:Forms:Count:ToString() )
                 FOREACH form AS ProjectItem IN SELF:Project:Forms
-                    XPorterLogger.Instance:Information( form:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + form:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Libraries/Dependencies : " )
+                XPorterLogger.Instance:Information( "Libraries/Dependencies : " + SELF:Project:Libraries:Count:ToString() )
                 FOREACH lib AS ProjectItem IN SELF:Project:Libraries
-                    XPorterLogger.Instance:Information( lib:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + lib:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Menus : " )
+                XPorterLogger.Instance:Information( "Menus : " + SELF:Project:Menus:Count:ToString() )
                 FOREACH lib AS ProjectItem IN SELF:Project:Menus
-                    XPorterLogger.Instance:Information( lib:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + lib:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Reports : " )
+                XPorterLogger.Instance:Information( "Reports : " + SELF:Project:Reports:Count:ToString() )
                 FOREACH report AS ProjectItem IN SELF:Project:Reports
-                    XPorterLogger.Instance:Information( report:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + report:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Programs : " )
+                XPorterLogger.Instance:Information( "Programs : " + SELF:Project:Programs:Count:ToString() )
                 FOREACH prg AS ProjectItem IN SELF:Project:Programs
-                    XPorterLogger.Instance:Information( prg:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + prg:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "DataBases : " )
+                XPorterLogger.Instance:Information( "DataBases : " + SELF:Project:Databases:Count:ToString() )
                 FOREACH dbc AS ProjectItem IN SELF:Project:Databases
-                    XPorterLogger.Instance:Information( dbc:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + dbc:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "FreeTables : " )
+                XPorterLogger.Instance:Information( "FreeTables : " + SELF:Project:FreeTables:Count:ToString() )
                 FOREACH dbf AS ProjectItem IN SELF:Project:FreeTables
-                    XPorterLogger.Instance:Information( dbf:Name )
+                    XPorterLogger.Instance:Verbose( "  - " + dbf:Name )
                 NEXT
             ENDIF
             RETURN success
@@ -290,9 +290,10 @@ BEGIN NAMESPACE VFPXPorterLib
                             generatedNamespaces:Add( xPorter:NamespaceDefinition )
                         ENDIF
                         SELF:GeneratedFiles:AddRange( xPorter:GeneratedFiles )
-                    ELSE
-                        XPorterLogger.Instance:Error( form:Name + " : Processing raised an Error." )
-                    ENDIF
+                        ELSE
+                            XPorterLogger.Instance:Error("ExportProject: Failed to export form: " + form:Name)
+                            XPorterLogger.Instance:Error("Details: " + xPorter:ResultText)
+                        ENDIF
                 NEXT
                 IF !exitExport
                     // Then the libraries
@@ -324,7 +325,8 @@ BEGIN NAMESPACE VFPXPorterLib
                             ENDIF
                             SELF:GeneratedLibFiles:AddRange( xPorter:GeneratedFiles )
                         ELSE
-                            XPorterLogger.Instance:Error( libName + " : Processing raised an Error." )
+                            XPorterLogger.Instance:Error("ExportProject: Failed to export library: " + libName)
+                            XPorterLogger.Instance:Error("Details: " + xPorter:ResultText)
                         ENDIF
                     NEXT
                     IF !exitExport
@@ -445,8 +447,9 @@ BEGIN NAMESPACE VFPXPorterLib
                                         SELF:GeneratedFiles:Add( GeneratedFile{destFile, FileAction.CopyAlways })
                                     CATCH e AS Exception
                                         // Log any trouble
-                                        XPorterLogger.Instance:Error( "Copy Other Files" )
-                                        XPorterLogger.Instance:Error( e.Message )
+                                        XPorterLogger.Instance:Error("ExportProject: Failed to copy file: " + orgFile)
+                                        XPorterLogger.Instance:Error("Destination: " + destFile)
+                                        XPorterLogger.Instance:Error("Exception: " + e:Message)
                                     END TRY
                                 ELSE
                                     XPorterLogger.Instance:Information( "Unknown file " + orgFile )
@@ -557,8 +560,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
             CATCH e AS Exception
                 //
-                XPorterLogger.Instance:Error("Export Project")
-                XPorterLogger.Instance:Error( e.Message)
+                XPorterLogger.Instance:Error("ExportProject: Failed to complete project export")
+                XPorterLogger.Instance:Error("Exception: " + e.Message)
                 THROW e
             FINALLY
                 XPorterLogger.CloseLogger()

@@ -371,8 +371,10 @@ BEGIN NAMESPACE VFPXPorterLib
             TRY
                 lOk := TRUE
                 SELF:ExportWindow( dest, entity:Item, entity:DataEnvironment )
-            CATCH
+            CATCH e AS Exception
                 lOk := FALSE
+                XPorterLogger.Instance:Error("ExportAsWindowAndDesigner: Failed to export window form")
+                XPorterLogger.Instance:Error("Exception: " + e:Message)
             FINALLY
                 dest:Close()
             END TRY
@@ -387,8 +389,10 @@ BEGIN NAMESPACE VFPXPorterLib
                 TRY
                     lOk := TRUE
                     SELF:ExportDesigner( dest, entity:Item, entity:DataEnvironment )
-                CATCH
+                CATCH e AS Exception
                     lOk := FALSE
+                    XPorterLogger.Instance:Error("ExportAsWindowAndDesigner: Failed to export designer for form")
+                    XPorterLogger.Instance:Error("Exception: " + e:Message)
                 FINALLY
                     dest:Close()
                 END TRY
@@ -410,8 +414,10 @@ BEGIN NAMESPACE VFPXPorterLib
             TRY
                 lOk := TRUE
                 SELF:ExportSingleFile( dest, entity:Item, entity:DataEnvironment )
-            CATCH
+            CATCH e AS Exception
                 lOk := FALSE
+                XPorterLogger.Instance:Error("ExportAsSingleFile: Failed to export single file form")
+                XPorterLogger.Instance:Error("Exception: " + e:Message)
             FINALLY
                 dest:Close()
             END TRY

@@ -49,8 +49,8 @@ BEGIN NAMESPACE VFPXPorterLib
         METHOD Analyze( doBackup := FALSE AS LOGIC ) AS LOGIC
             //
             IF SELF:_fileName == NULL  .OR. !File.Exists(SELF:_fileName)
-                XPorterLogger.Instance:Error( "Unknown File : " )
-                XPorterLogger.Instance:Error( IIF(SELF:_fileName==NULL, "NULL", SELF:_fileName) )
+                VAR fileName := IIF(SELF:_fileName==NULL, "NULL", SELF:_fileName)
+                XPorterLogger.Instance:Error("Analyze: Unknown or missing file: " + fileName)
                 RETURN FALSE
             ENDIF
             //

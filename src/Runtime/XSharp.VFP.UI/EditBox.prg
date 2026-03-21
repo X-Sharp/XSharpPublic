@@ -104,6 +104,75 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// Finds the first occurrence of a search string in the EditBox text.
+		/// Equivalent to VFP's FindText method.
+		/// </summary>
+		/// <param name="cSearchString">The text to search for.</param>
+		/// <param name="nStartPosition">Optional starting position (0-based). Default is 0 (from beginning).</param>
+		/// <param name="lIgnoreCase">Optional case-sensitivity flag. Default is TRUE (case-insensitive).</param>
+		/// <returns>The 0-based position of the found text, or -1 if not found.</returns>
+		/// <remarks>
+		/// Searches for cSearchString within the EditBox text starting at nStartPosition.
+		/// Returns the 0-based character position where the text was found.
+		/// </remarks>
+		PUBLIC METHOD FindText(cSearchString AS STRING, nStartPosition AS INT := 0, lIgnoreCase AS LOGIC := TRUE) AS INT STRICT
+			IF String.IsNullOrEmpty(cSearchString) .OR. String.IsNullOrEmpty(SELF:Text)
+				RETURN -1
+			ENDIF
+
+			VAR compareOption := IF(lIgnoreCase, System.StringComparison.OrdinalIgnoreCase, System.StringComparison.Ordinal)
+			VAR position := SELF:Text.IndexOf(cSearchString, nStartPosition, compareOption)
+			RETURN position
+		END METHOD
+
+		/// <summary>
+		/// Finds and replaces text in the EditBox.
+		/// Equivalent to VFP's ReplaceText method.
+		/// </summary>
+		/// <param name="cSearchString">The text to search for.</param>
+		/// <param name="cReplacementString">The replacement text.</param>
+		/// <param name="nStartPosition">Optional starting position (0-based). Default is 0 (from beginning).</param>
+		/// <param name="lReplaceAll">Optional flag to replace all occurrences. Default is FALSE (first only).</param>
+		/// <param name="lIgnoreCase">Optional case-sensitivity flag. Default is TRUE (case-insensitive).</param>
+		/// <returns>The number of replacements made.</returns>
+		/// <remarks>
+		/// Replaces cSearchString with cReplacementString, starting at nStartPosition.
+		/// If lReplaceAll is TRUE, replaces all occurrences; otherwise replaces first match only.
+		/// </remarks>
+		PUBLIC METHOD ReplaceText(cSearchString AS STRING, cReplacementString AS STRING, nStartPosition AS INT := 0, lReplaceAll AS LOGIC := FALSE, lIgnoreCase AS LOGIC := TRUE) AS INT STRICT
+			IF String.IsNullOrEmpty(cSearchString) .OR. String.IsNullOrEmpty(SELF:Text)
+				RETURN 0
+			ENDIF
+
+			VAR text := SELF:Text
+			VAR replaceCount := 0
+			VAR currentPos := nStartPosition
+			VAR compareOption := IF(lIgnoreCase, System.StringComparison.OrdinalIgnoreCase, System.StringComparison.Ordinal)
+
+			DO WHILE currentPos < text:Length
+				VAR foundPos := text:IndexOf(cSearchString, currentPos, compareOption)
+				IF foundPos == -1
+					EXIT
+				ENDIF
+
+				text := text:Remove(foundPos, cSearchString:Length):Insert(foundPos, cReplacementString)
+				replaceCount++
+				currentPos := foundPos + cReplacementString:Length
+
+				IF !lReplaceAll
+					EXIT
+				ENDIF
+			ENDDO
+
+			IF replaceCount > 0
+				SELF:Text := text
+				SELF:_uValue := text
+			ENDIF
+
+			RETURN replaceCount
+		END METHOD
+
 	END CLASS
 
 END NAMESPACE

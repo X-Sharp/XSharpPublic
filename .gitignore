@@ -247,3 +247,5 @@ XSharp/src/Setup/Preprocessed.iss
 /src/Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.dll
 /Artifact/SqlRddHelp
 /src/Runtime/Nuget/*.nuspec
+/src/Tools/VFPXPorter/IMPLEMENTATION_DOCS
+/src/Tools/VFPXPorter/Source/Perspective

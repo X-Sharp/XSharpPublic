@@ -14,48 +14,134 @@
     "Icon": "System.Drawing.Icon{??<@Icon@>??}",
     "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
     "ShowInTaskBar": "ShowInTaskbar",
-    "ShowWindow": "ShowWindowState"
+    "ShowWindow": "ShowWindowState",
+    "AutoCenter": "::SetAutoCenter(<@AutoCenter@>)",
+    "Movable": "::SetMovable(<@Movable@>)",
+    "WindowType": "::SetWindowType(<@WindowType@>)",
+    "ScrollBars": "::SetScrollBars(<@ScrollBars@>)",
+    "BorderStyle": "::SetBorderStyle(<@BorderStyle@>)",
+    "ShowWindowState": "::SetShowWindowState(<@ShowWindowState@>)",
+    "ScaleMode": "",
+    "ColorSource": "",
+    "MaxButton": "::SetMaxButton(<@MaxButton@>)",
+    "MinButton": "::SetMinButton(<@MinButton@>)",
+    "Closable": "::SetClosable(<@Closable@>)",
+    "TitleBar": "::SetTitleBar(<@TitleBar@>)",
+    "MDIForm": "::SetMDIForm(<@MDIForm@>)",
+    "BindControls": "::SetBindControls(<@BindControls@>)"
   },
 
   "CommandButton": {
-    "Margin": "System.Windows.Forms.Padding{0,0,0,0}"
-  },
-
-  "OptionGroup": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
-    "^Option99": "Buttons(99)"
+    "Caption": "Text",
+    "Picture": "::SetButtonPicture(<@Picture@>)",
+    "DisabledPicture": "::SetDisabledPicture(<@DisabledPicture@>)",
+    "DownPicture": "::SetDownPicture(<@DownPicture@>)",
+    "Default": "::SetDefault(<@Default@>)",
+    "Cancel": "::SetCancel(<@Cancel@>)",
+    "Style": "::SetStyle(<@Style@>)",
+    "FontName": "??<@FontName@>??",
+    "FontSize": "<@FontSize@>",
+    "FontBold": "<@FontBold@>",
+    "FontItalic": "<@FontItalic@>"
   },
 
   "TextBox": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)",
-    "Value": "!Value"
+    "Value": "!Value",
+    "Format": "::SetFormat(<@Format@>)",
+    "InputMask": "::SetInputMask(<@InputMask@>)",
+    "SelectOnEntry": "::SetSelectOnEntry(<@SelectOnEntry@>)",
+    "Style": "",
+    "Alignment": "::SetAlignment(<@Alignment@>)",
+    "ReadOnly": "",
+    "MaxLength": "",
+    "PasswordChar": "",
+    "MultiLine": "",
+    "ScrollBars": "::SetScrollBars(<@ScrollBars@>)",
+    "WordWrap": ""
   },
 
   "EditBox": {
-    "Scrollbars": "VFPScrollbars"
+    "Scrollbars": "VFPScrollbars",
+    "Value": "!Value",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "AddLineFeeds": "::SetAddLineFeeds(<@AddLineFeeds@>)",
+    "AllowTabs": "::SetAllowTabs(<@AllowTabs@>)"
   },
 
   "Label": {
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
-    "WordWrap": "",
-    "BackStyle": ""
+    "WordWrap": "::SetWordWrap(<@WordWrap@>)",
+    "BackStyle": "::SetBackStyle(<@BackStyle@>)",
+    "Caption": "Text",
+    "Alignment": "::SetAlignment(<@Alignment@>)",
+    "AutoSize": "::SetAutoSize(<@AutoSize@>)",
+    "FontName": "??<@FontName@>??",
+    "FontSize": "<@FontSize@>",
+    "FontBold": "<@FontBold@>",
+    "Rotation": "::SetRotation(<@Rotation@>)"
+  },
+
+  "Image": {
+    "Picture": "::SetPicture(<@Picture@>)",
+    "Stretch": "::SetStretch(<@Stretch@>)",
+    "Centered": "::SetCentered(<@Centered@>)"
+  },
+
+  "Spinner": {
+    "Value": "!Value",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "Increment": "::SetIncrement(<@Increment@>)",
+    "InputMask": "::SetInputMask(<@InputMask@>)",
+    "SpinnerHighValue": "::SetSpinnerHighValue(<@SpinnerHighValue@>)",
+    "SpinnerLowValue": "::SetSpinnerLowValue(<@SpinnerLowValue@>)",
+    "KeyboardHighValue": "::SetKeyboardHighValue(<@KeyboardHighValue@>)",
+    "KeyboardLowValue": "::SetKeyboardLowValue(<@KeyboardLowValue@>)"
+  },
+
+  "Timer": {
+    "Interval": "::SetInterval(<@Interval@>)",
+    "Enabled": "::SetEnabled(<@Enabled@>)",
+    "Name": "::SetName(<@Name@>)"
+  },
+
+  "CommandGroup": {
+    "Value": "::SetValue(<@Value@>)",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "^Button99": "Buttons(99)"
   },
 
   "Shape": {
-    "FillColor": ""
+    "Style": "::SetStyle(<@Style@>)",
+    "BorderColor": "::SetBorderColor(<@BorderColor@>)",
+    "BorderWidth": "::SetBorderWidth(<@BorderWidth@>)",
+    "FillColor": "::SetFillColor(<@FillColor@>)",
+    "FillStyle": "::SetFillStyle(<@FillStyle@>)",
+    "Curvature": "::SetCurvature(<@Curvature@>)"
   },
 
   "Line": {
-    "Size": "System.Drawing.Size{<@Width@>, 2}"
+    "BorderColor": "::SetBorderColor(<@BorderColor@>)",
+    "BorderWidth": "::SetBorderWidth(<@BorderWidth@>)",
+    "LineSlant": "::SetLineSlant(<@LineSlant@>)"
+  },
+
+  "Container": {
+    "BackStyle": "::SetBackStyle(<@BackStyle@>)",
+    "BorderColor": "::SetBorderColor(<@BorderColor@>)"
   },
 
   "DataEnvironment": {
     "Top": "",
     "Left": "",
     "Width": "",
-    "Height": ""
+    "Height": "",
+    "AutoOpenTables": "::SetAutoOpenTables(<@AutoOpenTables@>)",
+    "AutoCloseTables": "::SetAutoCloseTables(<@AutoCloseTables@>)",
+    "InitialSelectedAlias": "::SetInitialSelectedAlias(<@InitialSelectedAlias@>)"
   },
 
   "Cursor": {
@@ -67,27 +153,73 @@
     "ClientSize": ""
   },
 
-  "Timer": {
-    "Location": "",
-    "Name": "",
-    "Size": ""
+   "Panel": {
+     "MouseIcon": "??<@MouseIcon@>??"
+   },
+
+   "CheckBox": {
+    "Caption": "Text",
+    "Value": "!Value",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "Alignment": "::SetAlignment(<@Alignment@>)",
+    "Style": "::SetStyle(<@Style@>)",
+    "ReadOnly": "::SetReadOnly(<@ReadOnly@>)",
+    "WordWrap": "::SetWordWrap(<@WordWrap@>)"
   },
 
-  "Container": {
+  "OptionButton": {
+    "Caption": "Text",
+    "Value": "!Value",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "Alignment": "::SetAlignment(<@Alignment@>)",
+    "Style": "::SetStyle(<@Style@>)"
   },
 
-  "Panel": {
-    "MouseIcon": "??<@MouseIcon@>??"
+  "OptionGroup": {
+    "Value": "::SetValue(<@Value@>)",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "^Button99": "Buttons(99)"
   },
 
-  "Image": {
-    "SizeMode": "VFPTools.ImageStrechConvert(<@Stretch@>)",
-    "Stretch": ""
+  "ListBox": {
+    "Value": "!Value",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "RowSource": "::SetRowSource(<@RowSource@>)",
+    "RowSourceType": "::SetRowSourceType(<@RowSourceType@>)",
+    "ColumnCount": "::SetColumnCount(<@ColumnCount@>)",
+    "ColumnWidths": "::SetColumnWidths(<@ColumnWidths@>)",
+    "BoundColumn": "::SetBoundColumn(<@BoundColumn@>)",
+    "MultiSelect": "::SetMultiSelect(<@MultiSelect@>)"
+  },
+
+  "ComboBox": {
+    "Value": "!Value",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "RowSource": "::SetRowSource(<@RowSource@>)",
+    "RowSourceType": "::SetRowSourceType(<@RowSourceType@>)",
+    "ColumnCount": "::SetColumnCount(<@ColumnCount@>)",
+    "BoundColumn": "::SetBoundColumn(<@BoundColumn@>)",
+    "Style": "::SetStyle(<@Style@>)",
+    "ListIndex": "::SetListIndex(<@ListIndex@>)",
+    "DisplayCount": "::SetDisplayCount(<@DisplayCount@>)"
   },
 
   "Grid": {
     "^Column99": "Column(99)",
-    "Scrollbars": "VFPScrollbars"
+    "Scrollbars": "VFPScrollbars",
+    "RecordSource": "::SetRecordSource(<@RecordSource@>)",
+    "RecordSourceType": "::SetRecordSourceType(<@RecordSourceType@>)",
+    "ColumnCount": "::SetColumnCount(<@ColumnCount@>)",
+    "DeleteMark": "::SetDeleteMark(<@DeleteMark@>)",
+    "RecordMark": "::SetRecordMark(<@RecordMark@>)",
+    "GridLines": "::SetGridLines(<@GridLines@>)",
+    "SplitBar": "::SetSplitBar(<@SplitBar@>)",
+    "AllowAddNew": "::SetAllowAddNew(<@AllowAddNew@>)",
+    "AllowRowSizing": "::SetAllowRowSizing(<@AllowRowSizing@>)",
+    "AllowColumnSizing": "::SetAllowColumnSizing(<@AllowColumnSizing@>)",
+    "ReadOnly": "::SetReadOnly(<@ReadOnly@>)",
+    "HighlightBackColor": "::SetHighlightBackColor(<@HighlightBackColor@>)",
+    "HighlightForeColor": "::SetHighlightForeColor(<@HighlightForeColor@>)"
   },
 
   "Common": {

@@ -15,31 +15,13 @@
     "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
     "ShowInTaskBar": "ShowInTaskbar",
     "ShowWindow": "ShowWindowState",
-    "AutoCenter": "::SetAutoCenter(<@AutoCenter@>)",
-    "Movable": "::SetMovable(<@Movable@>)",
-    "WindowType": "::SetWindowType(<@WindowType@>)",
-    "ScrollBars": "::SetScrollBars(<@ScrollBars@>)",
-    "BorderStyle": "::SetBorderStyle(<@BorderStyle@>)",
-    "ShowWindowState": "::SetShowWindowState(<@ShowWindowState@>)",
     "ScaleMode": "",
-    "ColorSource": "",
-    "MaxButton": "::SetMaxButton(<@MaxButton@>)",
-    "MinButton": "::SetMinButton(<@MinButton@>)",
-    "Closable": "::SetClosable(<@Closable@>)",
-    "TitleBar": "::SetTitleBar(<@TitleBar@>)",
-    "MDIForm": "::SetMDIForm(<@MDIForm@>)",
-    "BindControls": "::SetBindControls(<@BindControls@>)"
+    "ColorSource": ""
   },
 
   "CommandButton": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "Caption": "Text",
-    "Picture": "::SetButtonPicture(<@Picture@>)",
-    "DisabledPicture": "::SetDisabledPicture(<@DisabledPicture@>)",
-    "DownPicture": "::SetDownPicture(<@DownPicture@>)",
-    "Default": "::SetDefault(<@Default@>)",
-    "Cancel": "::SetCancel(<@Cancel@>)",
-    "Style": "::SetStyle(<@Style@>)",
     "FontName": "??<@FontName@>??",
     "FontSize": "<@FontSize@>",
     "FontBold": "<@FontBold@>",
@@ -51,97 +33,53 @@
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)",
     "Value": "!Value",
-    "Format": "::SetFormat(<@Format@>)",
-    "InputMask": "::SetInputMask(<@InputMask@>)",
-    "SelectOnEntry": "::SetSelectOnEntry(<@SelectOnEntry@>)",
-    "Style": "",
-    "Alignment": "::SetAlignment(<@Alignment@>)",
-    "ReadOnly": "",
-    "MaxLength": "",
-    "PasswordChar": "",
-    "MultiLine": "",
-    "ScrollBars": "::SetScrollBars(<@ScrollBars@>)",
-    "WordWrap": ""
+    "Style": ""
   },
 
   "EditBox": {
     "Scrollbars": "VFPScrollbars",
     "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "AddLineFeeds": "::SetAddLineFeeds(<@AddLineFeeds@>)",
-    "AllowTabs": "::SetAllowTabs(<@AllowTabs@>)"
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
   },
 
   "Label": {
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
-    "WordWrap": "::SetWordWrap(<@WordWrap@>)",
-    "BackStyle": "::SetBackStyle(<@BackStyle@>)",
     "Caption": "Text",
-    "Alignment": "::SetAlignment(<@Alignment@>)",
-    "AutoSize": "::SetAutoSize(<@AutoSize@>)",
     "FontName": "??<@FontName@>??",
     "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>",
-    "Rotation": "::SetRotation(<@Rotation@>)"
+    "FontBold": "<@FontBold@>"
   },
 
   "Image": {
-    "Picture": "::SetPicture(<@Picture@>)",
-    "Stretch": "::SetStretch(<@Stretch@>)",
-    "Centered": "::SetCentered(<@Centered@>)"
   },
 
   "Spinner": {
     "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "Increment": "::SetIncrement(<@Increment@>)",
-    "InputMask": "::SetInputMask(<@InputMask@>)",
-    "SpinnerHighValue": "::SetSpinnerHighValue(<@SpinnerHighValue@>)",
-    "SpinnerLowValue": "::SetSpinnerLowValue(<@SpinnerLowValue@>)",
-    "KeyboardHighValue": "::SetKeyboardHighValue(<@KeyboardHighValue@>)",
-    "KeyboardLowValue": "::SetKeyboardLowValue(<@KeyboardLowValue@>)"
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
   },
 
   "Timer": {
-    "Interval": "::SetInterval(<@Interval@>)",
-    "Enabled": "::SetEnabled(<@Enabled@>)",
-    "Name": "::SetName(<@Name@>)"
   },
 
   "CommandGroup": {
-    "Value": "::SetValue(<@Value@>)",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "^Button99": "Buttons(99)"
   },
 
   "Shape": {
-    "Style": "::SetStyle(<@Style@>)",
-    "BorderColor": "::SetBorderColor(<@BorderColor@>)",
-    "BorderWidth": "::SetBorderWidth(<@BorderWidth@>)",
-    "FillColor": "::SetFillColor(<@FillColor@>)",
-    "FillStyle": "::SetFillStyle(<@FillStyle@>)",
-    "Curvature": "::SetCurvature(<@Curvature@>)"
   },
 
   "Line": {
-    "BorderColor": "::SetBorderColor(<@BorderColor@>)",
-    "BorderWidth": "::SetBorderWidth(<@BorderWidth@>)",
-    "LineSlant": "::SetLineSlant(<@LineSlant@>)"
   },
 
   "Container": {
-    "BackStyle": "::SetBackStyle(<@BackStyle@>)",
-    "BorderColor": "::SetBorderColor(<@BorderColor@>)"
   },
 
   "DataEnvironment": {
     "Top": "",
     "Left": "",
     "Width": "",
-    "Height": "",
-    "AutoOpenTables": "::SetAutoOpenTables(<@AutoOpenTables@>)",
-    "AutoCloseTables": "::SetAutoCloseTables(<@AutoCloseTables@>)",
-    "InitialSelectedAlias": "::SetInitialSelectedAlias(<@InitialSelectedAlias@>)"
+    "Height": ""
   },
 
   "Cursor": {
@@ -153,56 +91,35 @@
     "ClientSize": ""
   },
 
-   "Panel": {
-     "MouseIcon": "??<@MouseIcon@>??"
+    "Panel": {
+    },
+
+    "CheckBox": {
+     "Caption": "Text",
+     "Value": "!Value",
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
    },
 
-   "CheckBox": {
-    "Caption": "Text",
-    "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "Alignment": "::SetAlignment(<@Alignment@>)",
-    "Style": "::SetStyle(<@Style@>)",
-    "ReadOnly": "::SetReadOnly(<@ReadOnly@>)",
-    "WordWrap": "::SetWordWrap(<@WordWrap@>)"
-  },
+   "OptionButton": {
+     "Caption": "Text",
+     "Value": "!Value",
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+   },
 
-  "OptionButton": {
-    "Caption": "Text",
-    "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "Alignment": "::SetAlignment(<@Alignment@>)",
-    "Style": "::SetStyle(<@Style@>)"
-  },
+   "OptionGroup": {
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+     "^Button99": "Buttons(99)"
+   },
 
-  "OptionGroup": {
-    "Value": "::SetValue(<@Value@>)",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "^Button99": "Buttons(99)"
-  },
+   "ListBox": {
+     "Value": "!Value",
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+   },
 
-  "ListBox": {
-    "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "RowSource": "::SetRowSource(<@RowSource@>)",
-    "RowSourceType": "::SetRowSourceType(<@RowSourceType@>)",
-    "ColumnCount": "::SetColumnCount(<@ColumnCount@>)",
-    "ColumnWidths": "::SetColumnWidths(<@ColumnWidths@>)",
-    "BoundColumn": "::SetBoundColumn(<@BoundColumn@>)",
-    "MultiSelect": "::SetMultiSelect(<@MultiSelect@>)"
-  },
-
-  "ComboBox": {
-    "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "RowSource": "::SetRowSource(<@RowSource@>)",
-    "RowSourceType": "::SetRowSourceType(<@RowSourceType@>)",
-    "ColumnCount": "::SetColumnCount(<@ColumnCount@>)",
-    "BoundColumn": "::SetBoundColumn(<@BoundColumn@>)",
-    "Style": "::SetStyle(<@Style@>)",
-    "ListIndex": "::SetListIndex(<@ListIndex@>)",
-    "DisplayCount": "::SetDisplayCount(<@DisplayCount@>)"
-  },
+   "ComboBox": {
+     "Value": "!Value",
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+   },
 
     "Grid": {
       "^Column99": "Column(99)",
@@ -215,32 +132,27 @@
       "HeaderColor": "System.Drawing.Color.FromArgb(<@HeaderColor@>)"
      },
 
-   "Common": {
-    "Caption": "Text",
-    "Comment": "",
-    "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",
-    "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
-    "Top": "",
-    "Left": "",
-    "Width": "",
-    "Height": "",
-    "ForeColor": "System.Drawing.Color.FromArgb(<@ForeColor@>)",
-    "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
-    "SelectedForeColor": "System.Drawing.Color.FromArgb(<@SelectedForeColor@>)",
-    "SelectedBackColor": "System.Drawing.Color.FromArgb(<@SelectedBackColor@>)",
-    "DisabledForeColor": "",
-    "DisabledBackColor": "",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
-    "Image": "VFPTools.ImageFromFile(??<@Picture@>??)",
-    "Picture": "??<@Picture@>??",
-    "OLEDragPicture": "??<@OLEDragPicture@>??",
-    "DragIcon": "??<@DragIcon@>??",
-    "MouseIcon": "??<@MouseIcon@>??",
-    "BorderColor": "",
-    "FontName": "??<@FontName@>??",
-    "TextAlign": "VFPTools.AlignmentConvert(<@Alignment@>)",
-    "Alignment": "",
-    "ToolTipText": ""
-  }
+    "Common": {
+     "Caption": "Text",
+     "Comment": "",
+     "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",
+     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
+     "Top": "",
+     "Left": "",
+     "Width": "",
+     "Height": "",
+     "ForeColor": "System.Drawing.Color.FromArgb(<@ForeColor@>)",
+     "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
+     "SelectedForeColor": "System.Drawing.Color.FromArgb(<@SelectedForeColor@>)",
+     "SelectedBackColor": "System.Drawing.Color.FromArgb(<@SelectedBackColor@>)",
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+     "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
+     "Image": "VFPTools.ImageFromFile(??<@Picture@>??)",
+     "Picture": "??<@Picture@>??",
+     "OLEDragPicture": "??<@OLEDragPicture@>??",
+     "DragIcon": "??<@DragIcon@>??",
+     "MouseIcon": "??<@MouseIcon@>??",
+     "FontName": "??<@FontName@>??",
+     "TextAlign": "VFPTools.AlignmentConvert(<@Alignment@>)"
+   }
 }

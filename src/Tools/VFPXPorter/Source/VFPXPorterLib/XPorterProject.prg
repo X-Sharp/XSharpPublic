@@ -542,8 +542,10 @@ BEGIN NAMESPACE VFPXPorterLib
                                     start:AppendLine( "{} )" )
                                 ENDIF
                                 //
-                                code := code:Replace( "<@startcode@>", start:ToString())
-                                dest:Write( code:ToString() )
+                                VAR projectReplacements := Dictionary<STRING, STRING>{}
+                                projectReplacements["startcode"] := start:ToString()
+                                VAR resultCode := TemplateHelper.ReplaceAndValidate(code:ToString(), "StartBlock", projectReplacements)
+                                dest:Write( resultCode )
                                 dest:Close()
                                 //
                                 SELF:GeneratedFiles:Add( GeneratedFile{destFile})

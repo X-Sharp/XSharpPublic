@@ -7,7 +7,7 @@
 
 
 #include "ControlProperties.xh"
-
+#include "ControlFocus.xh"
 
 
 					PRIVATE _backStyle := 1 AS INT

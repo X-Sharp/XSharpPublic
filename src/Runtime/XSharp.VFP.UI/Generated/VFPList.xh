@@ -13,7 +13,7 @@ METHOD AddListItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
 	RETURN
 METHOD Clear AS VOID CLIPPER
 	RETURN
-PROPERTY BoundColumn AS LONG AUTO
+// BoundColumn - defined in Listbox.prg with custom implementation
 PROPERTY BoundTo AS LOGIC AUTO
 PROPERTY DisplayValue AS USUAL AUTO
 PROPERTY FirstElement AS LONG AUTO
@@ -29,8 +29,8 @@ METHOD ItemIDToIndex(nItemId as LONG) AS LONG
 	RETURN -1
 PROPERTY ItemTips AS LOGIC AUTO
 PROPERTY List AS ARRAY AUTO
-PROPERTY ListCount AS LONG AUTO
-PROPERTY ListIndex AS LONG AUTO
+// ListCount - defined in Listbox.prg with custom implementation
+// ListIndex - defined in Listbox.prg with custom implementation
 // Todo: ListItem property
 //PROPERTY ListItem[nRow as INT, nCol as INT] AS USUAL AUTO
 PROPERTY ListItemID AS LONG AUTO
@@ -40,8 +40,8 @@ METHOD RemoveListItem(nIndex AS LONG) AS VOID
 	RETURN
 		METHOD Requery AS VOID STRICT
 			RETURN
-PROPERTY RowSource  AS STRING AUTO
-PROPERTY RowSourceType AS LONG AUTO
+// RowSource - defined in Listbox.prg with custom implementation
+// RowSourceType - defined in Listbox.prg with custom implementation
 		//PROPERTY Selected[nItem AS LONG] AS LOGIC  GET SET
 		//PROPERTY SelectedID[nItem AS LONG] AS LOGIC GET SET
 

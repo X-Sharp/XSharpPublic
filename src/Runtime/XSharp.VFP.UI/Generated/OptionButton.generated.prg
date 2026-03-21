@@ -5,10 +5,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "VFPControl.xh"
 #include "VFPImage.xh"
 
-		PROPERTY Style AS LONG AUTO
+		// Style - defined in OptionButton.prg with custom implementation
 
 
 		PROPERTY WordWrap AS LOGIC AUTO
 
 	END CLASS
-	END NAMESPACE      
+	END NAMESPACE

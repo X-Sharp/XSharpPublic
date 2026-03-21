@@ -33,7 +33,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
             SELF:Size := Size{100,24}
 
 #include "Headers\ControlProperties.xh"
-
+#include "Headers\ControlFocus.xh"
 #include "Headers\ControlSource.xh"
 
 		//Todo: See how we can map this to the NumericUpdown
@@ -47,6 +47,23 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		PROPERTY KeyboardHighValue AS LONG GET (LONG) SUPER:Maximum SET SUPER:Maximum := Value
 		PROPERTY KeyboardLowValue AS LONG GET (LONG) SUPER:Minimum SET SUPER:Minimum := Value
 
+		/// <summary>
+		/// Gets or sets the increment value for the spinner buttons.
+		/// Equivalent to VFP's Increment property.
+		/// </summary>
+		/// <value>The increment value. Default is 1.</value>
+		[Category("VFP Properties"), Description("Increment value for spinner buttons")];
+		[DefaultValue(1)];
+		PROPERTY Increment AS INT AUTO
+
+		/// <summary>
+		/// Gets or sets the input mask for the spinner.
+		/// Equivalent to VFP's InputMask property.
+		/// </summary>
+		/// <value>The input mask string.</value>
+		[Category("VFP Properties"), Description("Input mask for formatting")];
+		[DefaultValue("")];
+		PROPERTY InputMask AS STRING AUTO
 
 	END CLASS
 END NAMESPACE // xsVFPLibrary

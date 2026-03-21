@@ -242,5 +242,94 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			NEXT
 		END METHOD
 
+		/// <summary>
+		/// Adds a new item to the list at the specified 1-based position.
+		/// Equivalent to VFP's AddItem method.
+		/// </summary>
+		/// <param name="cItem">The item text to add.</param>
+		/// <param name="nIndex">Optional 1-based position (default: append to end). Use -1 to append.</param>
+		/// <remarks>
+		/// VFP uses 1-based indexing; this method converts to 0-based for .NET ComboBox.
+		/// If nIndex is out of range, item is appended to the end.
+		/// </remarks>
+		PUBLIC METHOD AddItem(cItem AS STRING, nIndex AS INT := -1) AS VOID STRICT
+			IF String.IsNullOrEmpty(cItem)
+				cItem := ""
+			ENDIF
+
+			// Convert VFP 1-based index to 0-based .NET index
+			IF nIndex <= 0 .OR. nIndex > SELF:Items:Count + 1
+				// Append to end
+				SELF:Items:Add(cItem)
+			ELSE
+				// Insert at specific position (convert 1-based to 0-based)
+				SELF:Items:Insert(nIndex - 1, cItem)
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Removes an item from the list by its 1-based index.
+		/// Equivalent to VFP's RemoveItem method.
+		/// </summary>
+		/// <param name="nIndex">The 1-based index of the item to remove.</param>
+		/// <remarks>
+		/// VFP uses 1-based indexing; this method converts to 0-based for .NET ComboBox.
+		/// If nIndex is out of range, nothing happens.
+		/// </remarks>
+		PUBLIC METHOD RemoveItem(nIndex AS INT) AS VOID STRICT
+			// Convert VFP 1-based index to 0-based .NET index
+			VAR zeroBasedIndex := nIndex - 1
+			IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Items:Count
+				SELF:Items:RemoveAt(zeroBasedIndex)
+				// If removed item was selected, update ListIndex
+				IF SELF:SelectedIndex >= SELF:Items:Count .AND. SELF:Items:Count > 0
+					SELF:SelectedIndex := SELF:Items:Count - 1
+				ENDIF
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Removes all items from the list.
+		/// Equivalent to VFP's Clear method.
+		/// </summary>
+		/// <remarks>
+		/// Clears the Items collection, resets ListIndex to -1, and clears the text field.
+		/// </remarks>
+		PUBLIC METHOD Clear() AS VOID STRICT
+			SELF:Items:Clear()
+			SELF:_listIndex := -1
+			SELF:_uValue := NIL
+			SELF:Text := ""
+		END METHOD
+
+		/// <summary>
+		/// Finds an item in the list that matches the search string.
+		/// Equivalent to VFP's FindString method.
+		/// </summary>
+		/// <param name="cSearchString">The text to search for (case-insensitive, partial match).</param>
+		/// <param name="nStartIndex">Optional 0-based starting index. Default is 0 (start from beginning).</param>
+		/// <returns>The 1-based index of the found item, or -1 if not found.</returns>
+		/// <remarks>
+		/// Searches for items that start with cSearchString (case-insensitive).
+		/// Returns VFP 1-based index (add 1 to .NET 0-based index).
+		/// </remarks>
+		PUBLIC METHOD FindString(cSearchString AS STRING, nStartIndex AS INT := 0) AS INT STRICT
+			IF String.IsNullOrEmpty(cSearchString)
+				RETURN -1
+			ENDIF
+
+			VAR searchUpper := cSearchString:ToUpper()
+			FOR VAR i := nStartIndex TO SELF:Items:Count - 1
+				VAR itemText := SELF:Items[i]:ToString():ToUpper()
+				IF itemText:StartsWith(searchUpper)
+					// Return 1-based index
+					RETURN i + 1
+				ENDIF
+			NEXT
+
+			// Not found
+			RETURN -1
+		END METHOD
+
 	END CLASS
 END NAMESPACE // XSharp.VFP.UI

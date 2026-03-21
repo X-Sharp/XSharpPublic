@@ -161,25 +161,27 @@ BEGIN NAMESPACE VFPXPorterLib
             // The Code template file
             LOCAL code AS STRING
             code := SELF:MenuContainer
-            // The name of the Menu, is the name of the .mnx file
-            code := code:Replace( "<@MenuName@>", Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath) )
+            // Build replacements dictionary for Menu template
+            VAR menuReplacements := Dictionary<STRING, STRING>{}
+            menuReplacements["MenuName"] := Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath)
             // The declaration part to be generated
             LOCAL declaration AS STRING
             // Create the List of Declaration(s)
             declaration := SELF:ProcessDeclarations( SELF:Items, typeList )
             IF !SELF:Canceled
-                code := code:Replace( "<@MenuDeclaration@>", declaration )
+                menuReplacements["MenuDeclaration"] := declaration
                 LOCAL initMenu AS STRING
                 initMenu := ""
                 initMenu := SELF:ProcessInits( SELF:Items, typeList )
                 IF !SELF:Canceled
-                    code := code:Replace( "<@MenuInit@>", initMenu )
+                    menuReplacements["MenuInit"] := initMenu
                     LOCAL events AS STRING
                     events := ""
                     events := SELF:ProcessEvents( SELF:Items )
                     IF !SELF:Canceled
-                        code := code:Replace( "<@MenuCode@>", events )
+                        menuReplacements["MenuCode"] := events
                         //
+                        code := SELF:ReplaceAndValidate(SELF:MenuContainer, "MenuContainer", menuReplacements)
                         dest:Write( code )
                     ENDIF
                 ENDIF

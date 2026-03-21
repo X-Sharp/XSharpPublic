@@ -774,38 +774,40 @@ BEGIN NAMESPACE VFPXPorterLib
                         formProp:Append(prop:Value)
                         formProp:Append(Environment.NewLine)
                     ENDIF
-                NEXT
-            ENDIF
-            //
-            code:Replace( "<@formName@>", oneItem:Name )
-            code:Replace( "<@superName@>", oneItem:ClassName )
-            // Declaration of Childrens (Sub-Controls)
-            VAR declaration := StringBuilder{}
-            FOREACH VAR subItem IN oneItem:Childs
-                LOCAL scxSubItem AS SCXVCXItem
-                scxSubItem := (SCXVCXItem) subItem
-                scxSubItem:ConvertClassName( SELF:_typeList )
-                declaration:Append( SELF:Settings:Modifier )
-                declaration:Append(" ")
-                declaration:Append(scxSubItem:Name)
-                declaration:Append(" AS ")
-                declaration:Append(scxSubItem:FullyQualifiedName)
-                declaration:Append(Environment.NewLine)
-            NEXT
-            // Declaration of User-Defined Properties (If Any)
-            IF oneItem:UserDefItems != NULL
-                FOREACH VAR userDefItem IN oneItem:UserDefItems
-                    // Here, only Field and FieldArray
-                    IF userDefItem:Kind != UserDefinition.ItemKind.Method
-                        declaration:Append( userDefItem:Declaration )
-                        declaration:Append(Environment.NewLine)
-                    ENDIF
-                NEXT
-            ENDIF
-            //
-            code:Replace( "<@dataenvironment@>", declareDataEnv:ToString() )
-            code:Replace( "<@childsDeclaration@>", declaration:ToString() )
-            dest:Write( code:ToString() )
+             NEXT
+             ENDIF
+             //
+             // Build replacements for FormStartType
+             VAR singleFileStartReplacements := Dictionary<STRING, STRING>{}
+             singleFileStartReplacements["formName"] := oneItem:Name
+             singleFileStartReplacements["superName"] := oneItem:ClassName
+             // Declaration of Childrens (Sub-Controls)
+             VAR declaration := StringBuilder{}
+             FOREACH VAR subItem IN oneItem:Childs
+                 LOCAL scxSubItem AS SCXVCXItem
+                 scxSubItem := (SCXVCXItem) subItem
+                 scxSubItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxSubItem:Name)
+                 declaration:Append(" AS ")
+                 declaration:Append(scxSubItem:FullyQualifiedName)
+                 declaration:Append(Environment.NewLine)
+             NEXT
+             // Declaration of User-Defined Properties (If Any)
+             IF oneItem:UserDefItems != NULL
+                 FOREACH VAR userDefItem IN oneItem:UserDefItems
+                     // Here, only Field and FieldArray
+                     IF userDefItem:Kind != UserDefinition.ItemKind.Method
+                         declaration:Append( userDefItem:Declaration )
+                         declaration:Append(Environment.NewLine)
+                     ENDIF
+                 NEXT
+             ENDIF
+             singleFileStartReplacements["dataenvironment"] := declareDataEnv:ToString()
+             singleFileStartReplacements["childsDeclaration"] := declaration:ToString()
+             code := StringBuilder{SELF:ReplaceAndValidate(SELF:FormStartType, "FormStartType", singleFileStartReplacements)}
+             dest:Write( code:ToString() )
             // Now, Instantiation of these Childrens
             VAR containerHandlers := StringBuilder{}
             VAR Grids := List<SCXVCXItem>{ }
@@ -866,51 +868,46 @@ BEGIN NAMESPACE VFPXPorterLib
                     RETURN
                 ENDIF
                 //
-            NEXT
-            IF oneItem:XPortedCode != NULL
-                formProp:Append( oneItem:CreateEventHandlers( FALSE , SELF:Settings ) )
-            ENDIF
-            // Now, put the code at the right places
-            code:Replace( "<@childsInstantiate@>", instantiate:ToString())
-            code:Replace( "<@childsInitialize@>", initChilds:ToString())
-            code:Replace( "<@addChildsToParent@>", addCtrl:ToString() )
-            // Now, set the Parent Properties, usually in InitializeComponent()
-            code:Replace( "<@formProps@>", formProp:ToString() )
-            code:Replace( "<@userdefProps@>", userdefProp:ToString() )
-            //
-            IF oneItem:IsForm
-                code:Replace( "<@setdataenvironment@>", setDataEnv:ToString() )
-            ELSE
-                code:Replace( "<@setdataenvironment@>", "" )
-            ENDIF
-            // Add EventHandlers
-            VAR handlers := StringBuilder{}
-            FOREACH VAR subItem IN oneItem:Childs
-                //
-                handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
-            NEXT
-            // Any event for the Form ?
-            handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
-            //
-            code:Replace("<@InitContainers@>", containerHandlers:ToString() )
-            // Now, check the Grids
-            VAR columnSettings := SELF:GenerateGrids( Grids )
-            code:Replace("<@InitGrids@>", columnSettings:ToString() )
-            //
-            code:Replace( "<@EventHandlers@>", handlers:ToString() )
-            dest:Write( code:ToString() )
-            // Do we need to push some Extra Code ?
-            IF needBinding
-                dest:Write( SELF:BindingCode )
-            ENDIF
-            // Now, push the Closing definition
-            dest:Write( SELF:FormEndType )
-            IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
-                dest.WriteLine( "END NAMESPACE " )
-            ENDIF
-            //
-            RETURN
-        END METHOD
+             NEXT
+             IF oneItem:XPortedCode != NULL
+                 formProp:Append( oneItem:CreateEventHandlers( FALSE , SELF:Settings ) )
+             ENDIF
+             // Build replacements for FormInitType
+             VAR singleFileInitReplacements := Dictionary<STRING, STRING>{}
+             singleFileInitReplacements["childsInstantiate"] := instantiate:ToString()
+             singleFileInitReplacements["childsInitialize"] := initChilds:ToString()
+             singleFileInitReplacements["addChildsToParent"] := addCtrl:ToString()
+             singleFileInitReplacements["formProps"] := formProp:ToString()
+             singleFileInitReplacements["userdefProps"] := userdefProp:ToString()
+             singleFileInitReplacements["setdataenvironment"] := IIF(oneItem:IsForm, setDataEnv:ToString(), "")
+             // Add EventHandlers
+             VAR handlers := StringBuilder{}
+             FOREACH VAR subItem IN oneItem:Childs
+                 //
+                 handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
+             NEXT
+             // Any event for the Form ?
+             handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
+             //
+             singleFileInitReplacements["InitContainers"] := containerHandlers:ToString()
+             // Now, check the Grids
+             VAR columnSettings := SELF:GenerateGrids( Grids )
+             singleFileInitReplacements["InitGrids"] := columnSettings:ToString()
+             singleFileInitReplacements["EventHandlers"] := handlers:ToString()
+             code := StringBuilder{SELF:ReplaceAndValidate(SELF:FormInitType, "FormInitType", singleFileInitReplacements)}
+             dest:Write( code:ToString() )
+             // Do we need to push some Extra Code ?
+             IF needBinding
+                 dest:Write( SELF:BindingCode )
+             ENDIF
+             // Now, push the Closing definition
+             dest:Write( SELF:FormEndType )
+             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
+                 dest.WriteLine( "END NAMESPACE " )
+             ENDIF
+             //
+             RETURN
+         END METHOD
 
 
         PROTECTED METHOD GetOutputFilename( item AS BaseItem ) AS STRING
@@ -1362,96 +1359,6 @@ BEGIN NAMESPACE VFPXPorterLib
         /// </summary>
         /// <param name="template">The template string to analyze</param>
         /// <returns>HashSet of placeholder names found (without the <@ @> delimiters)</returns>
-        PROTECTED METHOD ExtractPlaceholders(template AS STRING) AS HashSet<STRING>
-            LOCAL placeholders := HashSet<STRING>{}
-            IF String.IsNullOrEmpty(template)
-                RETURN placeholders
-            ENDIF
-            LOCAL regex := Regex{"<@(\w+)@>"}
-            FOREACH VAR match IN regex:Matches(template)
-                IF match:Groups:Count > 1
-                    placeholders:Add(match:Groups[1]:Value)
-                ENDIF
-            NEXT
-            RETURN placeholders
-
-        /// <summary>
-        /// Validates that all required placeholders exist in a template.
-        /// </summary>
-        /// <param name="template">The template string to validate</param>
-        /// <param name="templateName">Name of template for error messages</param>
-        /// <param name="requiredPlaceholders">Collection of required placeholder names</param>
-        /// <throws>Exception if any required placeholder is missing</throws>
-        PROTECTED METHOD ValidateTemplate(template AS STRING, templateName AS STRING, ;
-            requiredPlaceholders AS IEnumerable<STRING>) AS VOID
-            
-            IF String.IsNullOrEmpty(template)
-                THROW Exception{"Template '" + templateName + "' is empty"}
-            ENDIF
-            
-            LOCAL missing := List<STRING>{}
-            FOREACH VAR placeholder IN requiredPlaceholders
-                LOCAL marker := "<@" + placeholder + "@>"
-                IF !template:Contains(marker)
-                    missing:Add(placeholder)
-                ENDIF
-            NEXT
-            
-            IF missing:Count > 0
-                THROW Exception{"Template '" + templateName + "' is missing required placeholders: " + ;
-                    String.Join(", ", missing:Select(p => "<@" + p + "@>"):ToList())}
-            ENDIF
-
-        /// <summary>
-        /// Replaces all placeholders in a template and validates that all placeholders were replaced.
-        /// Throws an exception if the template contains unreplaced placeholders or has placeholders not in the replacements dictionary.
-        /// </summary>
-        /// <param name="template">The template string with placeholders</param>
-        /// <param name="templateName">Name of template for error messages</param>
-        /// <param name="replacements">Dictionary of placeholder->replacement pairs (without the <@ @> delimiters)</param>
-        /// <returns>Template string with all placeholders replaced</returns>
-        /// <throws>Exception if validation fails</throws>
-        PROTECTED METHOD ReplaceAndValidate(template AS STRING, templateName AS STRING, ;
-            replacements AS Dictionary<STRING, STRING>) AS STRING
-            
-            IF String.IsNullOrEmpty(template)
-                RETURN template
-            ENDIF
-            
-            // Extract all placeholders in the template
-            LOCAL foundPlaceholders := SELF:ExtractPlaceholders(template)
-            
-            // Check for unrequested placeholders (likely typos in template or code)
-            LOCAL unrequested := HashSet<STRING>{}
-            FOREACH VAR placeholder IN foundPlaceholders
-                IF !replacements:ContainsKey(placeholder)
-                    unrequested:Add(placeholder)
-                ENDIF
-            NEXT
-            
-            IF unrequested:Count > 0
-                THROW Exception{"Template '" + templateName + "' contains unexpected placeholders not provided: " + ;
-                    String.Join(", ", unrequested:Select(p => "<@" + p + "@>"):ToList()) + ;
-                    ". This may indicate a typo in the template or missing replacement data."}
-            ENDIF
-            
-            // Perform replacements
-            LOCAL result := template
-            FOREACH VAR kvp IN replacements
-                LOCAL placeholder := "<@" + kvp:Key + "@>"
-                result := result:Replace(placeholder, kvp:Value)
-            NEXT
-            
-            // Final check: ensure no unreplaced placeholders remain
-            IF result:Contains("<@")
-                LOCAL remaining := SELF:ExtractPlaceholders(result)
-                THROW Exception{"Template '" + templateName + "' still contains unreplaced placeholders: " + ;
-                    String.Join(", ", remaining:Select(p => "<@" + p + "@>"):ToList()) + ;
-                    ". This indicates a replacement value was null or empty, which should not occur."}
-            ENDIF
-            
-            RETURN result
-
 #region vfpxporter
         PROTECTED _worker AS BackgroundWorker
         PROPERTY Worker AS BackgroundWorker

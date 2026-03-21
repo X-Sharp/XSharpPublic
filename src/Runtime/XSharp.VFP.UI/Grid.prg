@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         #include "XSharp\VFPProperties.xh"
 
         #include ".\Headers\ControlProperties.xh"
-
+        #include ".\Headers\ControlFocus.xh"
 
         CONSTRUCTOR(  ) STRICT
             SUPER()

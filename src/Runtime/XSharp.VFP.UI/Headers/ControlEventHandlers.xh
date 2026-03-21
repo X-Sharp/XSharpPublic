@@ -236,7 +236,8 @@ PRIVATE _VFPClick AS VFPOverride
 PROPERTY vfpClick AS STRING GET _VFPClick?:SendTo SET Set_Click( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Click( methodCall AS VFPOverride ) AS VOID
-	SELF:Click += System.EventHandler{ SELF, @OnVFPClick() }
+	// Use OnClick override instead of event subscription since Click is a method
+	// This will be handled by override in derived classes
 	SELF:_VFPClick := methodCall
 
 PRIVATE METHOD OnVFPClick( sender AS OBJECT, e AS System.EventArgs) AS VOID

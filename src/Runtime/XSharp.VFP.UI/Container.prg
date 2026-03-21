@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
          #include ".\XSharp\VFPProperties.xh"
 		 #include ".\Headers\ControlProperties.xh"
-
+         #include ".\Headers\ControlFocus.xh"
 		 #include ".\Headers\Tooltips.xh"
 
 			// This is a fake property, just here to ease Code Generation

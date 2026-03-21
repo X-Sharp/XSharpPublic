@@ -20,7 +20,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		METHOD SetFocus() AS VOID STRICT
 			//SELF:Focus()
 
-
+		// IVFPList interface implementation
+		PROPERTY BoundColumn AS LONG AUTO
+		PROPERTY ListCount AS LONG AUTO
+		PROPERTY ListIndex AS LONG AUTO
+		PROPERTY RowSource AS STRING AUTO
+		PROPERTY RowSourceType AS LONG AUTO
 
 	END CLASS
 	PARTIAL CLASS OLEBoundControl  INHERIT OleControl

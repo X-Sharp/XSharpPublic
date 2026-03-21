@@ -271,6 +271,30 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// Centers the form on the screen.
+		/// Equivalent to VFP's Center() method.
+		/// </summary>
+		[Category("VFP Properties"), Description("Center the form on the screen")];
+		PUBLIC METHOD Center() AS VOID
+			SELF:CenterToScreen()
+
+		/// <summary>
+		/// Hides the form without closing it.
+		/// Equivalent to VFP's Hide() method.
+		/// </summary>
+		[Category("VFP Properties"), Description("Hide the form without closing")];
+		PUBLIC METHOD Hide() AS VOID
+			SELF:Visible := FALSE
+
+		/// <summary>
+		/// Activates the form (brings it to the front).
+		/// Equivalent to VFP's Activate() method.
+		/// </summary>
+		[Category("VFP Properties"), Description("Activate the form")];
+		PUBLIC METHOD DoActivate() AS VOID
+			SELF:BringToFront()
+
 	END CLASS
 
 END NAMESPACE

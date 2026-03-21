@@ -168,6 +168,8 @@
     <Compile Include="VfpUIProvider.prg" />
     <Compile Include="Win32UI.prg" />
     <Compile Include="_OtherClasses.prg" />
+    <Compile Include="Page.prg" />
+    <Compile Include="PageFrame.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Headers" />
@@ -182,6 +184,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Headers\ControlFocus.xh" />
     <None Include="Generated\VFPItems.xh" />
     <None Include="Generated\VFPContainer.xh" />
     <None Include="Generated\VFPImage.xh" />

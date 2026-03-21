@@ -57,6 +57,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROPERTY WordWrap AS LOGIC AUTO
 
+        // BackStyle is defined in TextControlProperties.xh
+
         PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID STRICT
             IF SELF:Rotation != 0
                 var b := SolidBrush{ SELF:ForeColor }

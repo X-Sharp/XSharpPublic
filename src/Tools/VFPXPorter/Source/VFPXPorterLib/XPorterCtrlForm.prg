@@ -476,7 +476,7 @@ BEGIN NAMESPACE VFPXPorterLib
             formStartReplacements["superName"] := oneItem:FullyQualifiedName
             formStartReplacements["dataenvironment"] := declareDataEnv:ToString()
             formStartReplacements["childsDeclaration"] := declaration:ToString()
-            code := StringBuilder{SELF:ReplaceAndValidate(SELF:FormStartType, "FormStartType", formStartReplacements)}
+            code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormStartType, "FormStartType", formStartReplacements)}
 //             ELSE
 //                 code:Replace( "<@formName@>", SELF:FormNameOverride )
 //             ENDIF
@@ -537,7 +537,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 formInitReplacements["userdefProps"] := ""
             ENDIF
             formInitReplacements["EventHandlers"] := handlers:ToString()
-            code := StringBuilder{SELF:ReplaceAndValidate(SELF:FormInitType, "FormInitType", formInitReplacements)}
+            code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormInitType, "FormInitType", formInitReplacements)}
             dest:Write( code:ToString() )
             //
             dest:Write( SELF:FormEndType )
@@ -600,7 +600,7 @@ BEGIN NAMESPACE VFPXPorterLib
                  declaration:Append(Environment.NewLine)
              NEXT
              designerStartReplacements["childsDeclaration"] := declaration:ToString()
-             code := StringBuilder{SELF:ReplaceAndValidate(SELF:DesignerStartType, "DesignerStartType", designerStartReplacements)}
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:DesignerStartType, "DesignerStartType", designerStartReplacements)}
              dest:Write( code:ToString() )
              // Now, Instantiation of these Childrens
              VAR controlStack := Stack<STRING>{}
@@ -653,7 +653,7 @@ BEGIN NAMESPACE VFPXPorterLib
                  formProp:Append( oneItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
              ENDIF
              designerInitReplacements["formProps"] := formProp:ToString()
-             code := StringBuilder{SELF:ReplaceAndValidate(SELF:DesignerInitType, "DesignerInitType", designerInitReplacements)}
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:DesignerInitType, "DesignerInitType", designerInitReplacements)}
              dest:Write( code:ToString() )
             //
             dest:Write( SELF:DesignerEndType )
@@ -806,7 +806,7 @@ BEGIN NAMESPACE VFPXPorterLib
              ENDIF
              singleFileStartReplacements["dataenvironment"] := declareDataEnv:ToString()
              singleFileStartReplacements["childsDeclaration"] := declaration:ToString()
-             code := StringBuilder{SELF:ReplaceAndValidate(SELF:FormStartType, "FormStartType", singleFileStartReplacements)}
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormStartType, "FormStartType", singleFileStartReplacements)}
              dest:Write( code:ToString() )
             // Now, Instantiation of these Childrens
             VAR containerHandlers := StringBuilder{}
@@ -894,7 +894,7 @@ BEGIN NAMESPACE VFPXPorterLib
              VAR columnSettings := SELF:GenerateGrids( Grids )
              singleFileInitReplacements["InitGrids"] := columnSettings:ToString()
              singleFileInitReplacements["EventHandlers"] := handlers:ToString()
-             code := StringBuilder{SELF:ReplaceAndValidate(SELF:FormInitType, "FormInitType", singleFileInitReplacements)}
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormInitType, "FormInitType", singleFileInitReplacements)}
              dest:Write( code:ToString() )
              // Do we need to push some Extra Code ?
              IF needBinding

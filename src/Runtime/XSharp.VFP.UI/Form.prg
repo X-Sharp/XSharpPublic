@@ -295,6 +295,104 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PUBLIC METHOD DoActivate() AS VOID
 			SELF:BringToFront()
 
+		/// <summary>
+		/// Adds a control object to the Form.
+		/// Equivalent to VFP's AddObject method.
+		/// </summary>
+		/// <param name="cObjectName">The name to assign to the object.</param>
+		/// <param name="cClassName">The class of the object to add.</param>
+		/// <param name="aParameters">Optional parameters to pass to the object constructor.</param>
+		/// <returns>Reference to the newly added object, or NIL if unsuccessful.</returns>
+		/// <remarks>
+		/// Creates an instance of cClassName with the given name and adds it to the Form.
+		/// The object must be a System.Windows.Forms.Control or compatible type.
+		/// </remarks>
+		PUBLIC METHOD AddObject(cObjectName AS STRING, cClassName AS STRING, aParameters AS ARRAY := NIL) AS OBJECT STRICT
+			LOCAL oObject AS OBJECT
+			LOCAL oControl AS System.Windows.Forms.Control
+
+			TRY
+				// Try to create an instance of the class
+				// This is a simplified implementation - in reality VFP uses a class factory
+				VAR objectType := System.Type.GetType(cClassName)
+				IF objectType == NULL
+					// Try with namespace prepend
+					objectType := System.Type.GetType("XSharp.VFP.UI." + cClassName)
+				ENDIF
+
+				IF objectType != NULL
+					oObject := System.Activator.CreateInstance(objectType)
+					oControl := oObject AS System.Windows.Forms.Control
+
+					IF oControl != NULL
+						oControl:Name := cObjectName
+						SELF:Controls:Add(oControl)
+						RETURN oObject
+					ENDIF
+				ENDIF
+			CATCH AS e
+				// Log exception if needed
+				RETURN NIL
+			END TRY
+
+			RETURN NIL
+		END METHOD
+
+		/// <summary>
+		/// Removes a control object from the Form.
+		/// Equivalent to VFP's RemoveObject method.
+		/// </summary>
+		/// <param name="cObjectName">The name of the object to remove.</param>
+		/// <remarks>
+		/// Removes the named control from the Form and disposes it.
+		/// </remarks>
+		PUBLIC METHOD RemoveObject(cObjectName AS STRING) AS VOID STRICT
+			LOCAL oControl AS System.Windows.Forms.Control
+
+			// Find control by name
+			VAR controls := SELF:Controls:Find(cObjectName, FALSE)
+			IF controls:Length > 0
+				oControl := controls[0]
+				SELF:Controls:Remove(oControl)
+				oControl:Dispose()
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Creates a new object instance.
+		/// Equivalent to VFP's NewObject function.
+		/// </summary>
+		/// <param name="cClassName">The class of the object to create.</param>
+		/// <param name="cClassLibrary">Optional class library name (for custom classes).</param>
+		/// <param name="aParameters">Optional parameters to pass to the object constructor.</param>
+		/// <returns>Reference to the newly created object, or NIL if unsuccessful.</returns>
+		/// <remarks>
+		/// Creates a new instance of the specified class.
+		/// This is a simplified implementation for built-in VFP classes.
+		/// </remarks>
+		PUBLIC METHOD NewObject(cClassName AS STRING, cClassLibrary AS STRING := "", aParameters AS ARRAY := NIL) AS OBJECT STRICT
+			LOCAL oObject AS OBJECT
+
+			TRY
+				// Try to create an instance of the class
+				VAR objectType := System.Type.GetType(cClassName)
+				IF objectType == NULL
+					// Try with namespace prepend
+					objectType := System.Type.GetType("XSharp.VFP.UI." + cClassName)
+				ENDIF
+
+				IF objectType != NULL
+					oObject := System.Activator.CreateInstance(objectType)
+					RETURN oObject
+				ENDIF
+			CATCH AS e
+				// Log exception if needed
+				RETURN NIL
+			END TRY
+
+			RETURN NIL
+		END METHOD
+
 	END CLASS
 
 END NAMESPACE

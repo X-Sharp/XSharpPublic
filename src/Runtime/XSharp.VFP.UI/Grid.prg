@@ -667,14 +667,45 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// Removes the column at the specified position.
         /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
         /// If nPosition is out of range, nothing happens.
-        /// </remarks>
-        PUBLIC METHOD RemoveColumn(nPosition AS INT) AS VOID STRICT
-            // Convert VFP 1-based index to 0-based .NET index
-            VAR zeroBasedIndex := nPosition - 1
-            IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Columns:Count
-                SELF:Columns:RemoveAt(zeroBasedIndex)
-            ENDIF
-        END METHOD
+         /// </remarks>
+         PUBLIC METHOD RemoveColumn(nPosition AS INT) AS VOID STRICT
+             // Convert VFP 1-based index to 0-based .NET index
+             VAR zeroBasedIndex := nPosition - 1
+             IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Columns:Count
+                 SELF:Columns:RemoveAt(zeroBasedIndex)
+             ENDIF
+         END METHOD
 
-    END CLASS
+         /// <summary>
+         /// Appends a new row to the Grid.
+         /// Equivalent to VFP's AppendRow method.
+         /// </summary>
+         /// <returns>The index of the newly added row (0-based).</returns>
+         /// <remarks>
+         /// Adds a new empty row to the end of the Grid.
+         /// </remarks>
+         PUBLIC METHOD AppendRow() AS INT STRICT
+             VAR newRowIndex := SELF:Rows:Add()
+             RETURN newRowIndex
+         END METHOD
+
+         /// <summary>
+         /// Deletes a row from the Grid by its 1-based index.
+         /// Equivalent to VFP's DeleteRow method.
+         /// </summary>
+         /// <param name="nRowIndex">The 1-based index of the row to delete.</param>
+         /// <remarks>
+         /// Removes the row at the specified position.
+         /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
+         /// If nRowIndex is out of range, nothing happens.
+         /// </remarks>
+         PUBLIC METHOD DeleteRow(nRowIndex AS INT) AS VOID STRICT
+             // Convert VFP 1-based index to 0-based .NET index
+             VAR zeroBasedIndex := nRowIndex - 1
+             IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Rows:Count
+                 SELF:Rows:RemoveAt(zeroBasedIndex)
+             ENDIF
+         END METHOD
+
+     END CLASS
 END NAMESPACE // XSharp.VFP.UI

@@ -36,6 +36,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_uValue := NIL
 			RETURN
 
+		OVERRIDE PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
+			// Handle AllowTabs property
+			IF e:KeyCode == Keys.Tab .AND. !SELF:AllowTabs
+				e:SuppressKeyPress := TRUE
+				e:Handled := TRUE
+				RETURN
+			ENDIF
+			SUPER:OnKeyDown(e)
+		END METHOD
+
 		#include ".\Headers\ControlProperties.xh"
         #include ".\Headers\ControlFocus.xh"
 		#include ".\Headers\ControlSource.xh"

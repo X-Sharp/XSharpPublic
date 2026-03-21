@@ -568,95 +568,93 @@ BEGIN NAMESPACE VFPXPorterLib
                 dest.WriteLine( "BEGIN NAMESPACE " + SELF:NamespaceDefinition )
                 dest.WriteLine("")
             ENDIF
-            LOCAL code AS StringBuilder
-            VAR formProp := StringBuilder{}
-            //
-            SELF:UpdateProgress()
-            // Form class definition
-            code := StringBuilder{ SELF:DesignerStartType }
-            oneItem:ConvertClassName( SELF:_typeList )
-            // We can be here from a Library, and this item is maybe not a Form....
-            // Retrieve the Form Conversion rule
-            VAR formRules := SELF:BuildControlRules( SELF:_propertiesRules, oneItem:FullyQualifiedFoxClassName ) //:FoxClassName )
-            oneItem:ConvertProperties( formRules, SELF:_defaultValues )
-            formProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 1 ))
+             LOCAL code AS StringBuilder
+             VAR formProp := StringBuilder{}
+             //
+             SELF:UpdateProgress()
+             // Form class definition
+             code := StringBuilder{ SELF:DesignerStartType }
+             oneItem:ConvertClassName( SELF:_typeList )
+             // We can be here from a Library, and this item is maybe not a Form....
+             // Retrieve the Form Conversion rule
+             VAR formRules := SELF:BuildControlRules( SELF:_propertiesRules, oneItem:FullyQualifiedFoxClassName ) //:FoxClassName )
+             oneItem:ConvertProperties( formRules, SELF:_defaultValues )
+             formProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 1 ))
 
-//             IF String.IsNullOrEmpty( SELF:FormNameOverride )
-                code:Replace( "<@formName@>", IIF( String.IsNullOrEmpty(oneItem:Parent),oneItem:Name, oneItem:Parent + "_" + oneItem:Name ))
-//             ELSE
-//                 code:Replace( "<@formName@>",  SELF:FormNameOverride )
-//             ENDIF
-            // NameSpace addition ??
-            code:Replace( "<@superName@>", oneItem:FullyQualifiedName )
-            // Declaration of Childrens (Sub-Controls)
-            VAR declaration := StringBuilder{}
-            FOREACH VAR subItem IN oneItem:Childs
-                LOCAL scxSubItem AS SCXVCXItem
-                scxSubItem := (SCXVCXItem) subItem
-                scxSubItem:ConvertClassName( SELF:_typeList )
-                declaration:Append( SELF:Settings:Modifier )
-                declaration:Append(" ")
-                declaration:Append(subItem:Name)
-                declaration:Append(" AS ")
-                // NameSpace addition ??
-                declaration:Append(subItem:FullyQualifiedName)
-                declaration:Append(Environment.NewLine)
-            NEXT
-            code:Replace( "<@childsDeclaration@>", declaration:ToString() )
-            dest:Write( code:ToString() )
-            // Now, Instantiation of these Childrens
-            VAR controlStack := Stack<STRING>{}
-            VAR instantiate := StringBuilder{}
-            VAR initChilds := StringBuilder{}
-            code := StringBuilder{ SELF:DesignerInitType }
-            FOREACH VAR subItem IN oneItem:Childs
-                LOCAL scxSubItem AS SCXVCXItem
-                scxSubItem := (SCXVCXItem) subItem
-                SELF:UpdateProgress()
-                //
-                instantiate:Append("SELF:")
-                instantiate:Append(scxSubItem:Name)
-                instantiate:Append(" := ")
-                instantiate:Append(scxSubItem:FullyQualifiedName)
-                instantiate:Append("{}")
-                instantiate:Append(Environment.NewLine)
+             // Build replacements for DesignerStartType
+             VAR designerStartReplacements := Dictionary<STRING, STRING>{}
+             designerStartReplacements["formName"] := IIF( String.IsNullOrEmpty(oneItem:Parent), oneItem:Name, oneItem:Parent + "_" + oneItem:Name )
+             designerStartReplacements["superName"] := oneItem:FullyQualifiedName
+             // Declaration of Childrens (Sub-Controls)
+             VAR declaration := StringBuilder{}
+             FOREACH VAR subItem IN oneItem:Childs
+                 LOCAL scxSubItem AS SCXVCXItem
+                 scxSubItem := (SCXVCXItem) subItem
+                 scxSubItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(subItem:Name)
+                 declaration:Append(" AS ")
+                 // NameSpace addition ??
+                 declaration:Append(subItem:FullyQualifiedName)
+                 declaration:Append(Environment.NewLine)
+             NEXT
+             designerStartReplacements["childsDeclaration"] := declaration:ToString()
+             code := StringBuilder{SELF:ReplaceAndValidate(SELF:DesignerStartType, "DesignerStartType", designerStartReplacements)}
+             dest:Write( code:ToString() )
+             // Now, Instantiation of these Childrens
+             VAR controlStack := Stack<STRING>{}
+             VAR instantiate := StringBuilder{}
+             VAR initChilds := StringBuilder{}
+             code := StringBuilder{ SELF:DesignerInitType }
+             FOREACH VAR subItem IN oneItem:Childs
+                 LOCAL scxSubItem AS SCXVCXItem
+                 scxSubItem := (SCXVCXItem) subItem
+                 SELF:UpdateProgress()
+                 //
+                 instantiate:Append("SELF:")
+                 instantiate:Append(scxSubItem:Name)
+                 instantiate:Append(" := ")
+                 instantiate:Append(scxSubItem:FullyQualifiedName)
+                 instantiate:Append("{}")
+                 instantiate:Append(Environment.NewLine)
 
-                // Set of Rules
-                ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
-                // Apply Rules to Properties
-                scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
-                initChilds:Append(scxSubItem:ApplyPropertiesRules( TRUE ))
-                // Add EventHandlers
-                IF scxSubItem:XPortedCode != NULL
-                    initChilds:Append( scxSubItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
-                ENDIF
-                initChilds:Append("//")
-                initChilds:Append(Environment.NewLine)
+                 // Set of Rules
+                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
+                 // Apply Rules to Properties
+                 scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 initChilds:Append(scxSubItem:ApplyPropertiesRules( TRUE ))
+                 // Add EventHandlers
+                 IF scxSubItem:XPortedCode != NULL
+                     initChilds:Append( scxSubItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
+                 ENDIF
+                 initChilds:Append("//")
+                 initChilds:Append(Environment.NewLine)
 
-                IF scxSubItem:AddToControls
-                    controlStack:Push(scxSubItem:Name)
-                ENDIF
-            NEXT
-            // Controls must be added in reverse order
-            VAR addCtrl := StringBuilder{}
-            WHILE controlStack:Count > 0
-                addCtrl:Append("SELF:Controls:Add(SELF:")
-                addCtrl:Append(controlStack:Pop())
-                addCtrl:Append(")")
-                addCtrl:Append(Environment.NewLine)
-            ENDDO
-            // Now, put the code at the right places
-            code:Replace( "<@childsInstantiate@>", instantiate:ToString())
-            code:Replace( "<@childsInitialize@>", initChilds:ToString())
-            code:Replace( "<@addChildsToParent@>", addCtrl:ToString() )
-            // Now, set the Parent Properties
-
-            // Add EventHandlers
-            IF oneItem:XPortedCode != NULL
-                formProp:Append( oneItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
-            ENDIF
-            code:Replace( "<@formProps@>", formProp:ToString() )
-            dest:Write( code:ToString() )
+                 IF scxSubItem:AddToControls
+                     controlStack:Push(scxSubItem:Name)
+                 ENDIF
+             NEXT
+             // Controls must be added in reverse order
+             VAR addCtrl := StringBuilder{}
+             WHILE controlStack:Count > 0
+                 addCtrl:Append("SELF:Controls:Add(SELF:")
+                 addCtrl:Append(controlStack:Pop())
+                 addCtrl:Append(")")
+                 addCtrl:Append(Environment.NewLine)
+             ENDDO
+             // Build replacements for DesignerInitType
+             VAR designerInitReplacements := Dictionary<STRING, STRING>{}
+             designerInitReplacements["childsInstantiate"] := instantiate:ToString()
+             designerInitReplacements["childsInitialize"] := initChilds:ToString()
+             designerInitReplacements["addChildsToParent"] := addCtrl:ToString()
+             // Add EventHandlers
+             IF oneItem:XPortedCode != NULL
+                 formProp:Append( oneItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
+             ENDIF
+             designerInitReplacements["formProps"] := formProp:ToString()
+             code := StringBuilder{SELF:ReplaceAndValidate(SELF:DesignerInitType, "DesignerInitType", designerInitReplacements)}
+             dest:Write( code:ToString() )
             //
             dest:Write( SELF:DesignerEndType )
             //

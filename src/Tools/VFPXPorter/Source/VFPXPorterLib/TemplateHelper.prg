@@ -7,6 +7,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Text.RegularExpressions
+USING System.Linq
 
 BEGIN NAMESPACE VFPXPorterLib
 
@@ -23,12 +24,12 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <param name="template">The template string to extract placeholders from</param>
         /// <returns>HashSet containing all unique placeholder names (without delimiters)</returns>
         PUBLIC STATIC METHOD ExtractPlaceholders(template AS STRING) AS HashSet<STRING>
-            LOCAL placeholders := HashSet<STRING>{}
+            VAR placeholders := HashSet<STRING>{}
             IF String.IsNullOrEmpty(template)
                 RETURN placeholders
             ENDIF
-            LOCAL regex := Regex{"<@(\w+)@>"}
-            FOREACH VAR match IN regex:Matches(template)
+            VAR regex := Regex{"<@(\w+)@>"}
+            FOREACH match AS Match IN regex:Matches(template)
                 IF match:Groups:Count > 1
                     placeholders:Add(match:Groups[1]:Value)
                 ENDIF
@@ -49,9 +50,9 @@ BEGIN NAMESPACE VFPXPorterLib
                 THROW Exception{"Template '" + templateName + "' is empty"}
             ENDIF
             
-            LOCAL missing := List<STRING>{}
+            VAR missing := List<STRING>{}
             FOREACH VAR placeholder IN requiredPlaceholders
-                LOCAL marker := "<@" + placeholder + "@>"
+                VAR marker := "<@" + placeholder + "@>"
                 IF !template:Contains(marker)
                     missing:Add(placeholder)
                 ENDIF
@@ -59,7 +60,7 @@ BEGIN NAMESPACE VFPXPorterLib
             
             IF missing:Count > 0
                 THROW Exception{"Template '" + templateName + "' is missing required placeholders: " + ;
-                    String.Join(", ", missing:Select(p => "<@" + p + "@>"):ToList())}
+                    String.Join(", ", missing:Select( { p => "<@" + p + "@>" } ):ToList())}
             ENDIF
 
         /// <summary>
@@ -79,10 +80,10 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             
             // Extract all placeholders in the template
-            LOCAL foundPlaceholders := TemplateHelper.ExtractPlaceholders(template)
+            VAR foundPlaceholders := TemplateHelper.ExtractPlaceholders(template)
             
             // Check for unrequested placeholders (likely typos in template or code)
-            LOCAL unrequested := HashSet<STRING>{}
+            VAR unrequested := HashSet<STRING>{}
             FOREACH VAR placeholder IN foundPlaceholders
                 IF !replacements:ContainsKey(placeholder)
                     unrequested:Add(placeholder)
@@ -91,22 +92,22 @@ BEGIN NAMESPACE VFPXPorterLib
             
             IF unrequested:Count > 0
                 THROW Exception{"Template '" + templateName + "' contains unexpected placeholders not provided: " + ;
-                    String.Join(", ", unrequested:Select(p => "<@" + p + "@>"):ToList()) + ;
+                    String.Join(", ", unrequested:Select( {p => "<@" + p + "@>"}):ToList()) + ;
                     ". This may indicate a typo in the template or missing replacement data."}
             ENDIF
             
             // Perform replacements
-            LOCAL result := template
+            VAR result := template
             FOREACH VAR kvp IN replacements
-                LOCAL placeholder := "<@" + kvp:Key + "@>"
+                VAR placeholder := "<@" + kvp:Key + "@>"
                 result := result:Replace(placeholder, kvp:Value)
             NEXT
             
             // Final check: ensure no unreplaced placeholders remain
             IF result:Contains("<@")
-                LOCAL remaining := TemplateHelper.ExtractPlaceholders(result)
+                VAR remaining := TemplateHelper.ExtractPlaceholders(result)
                 THROW Exception{"Template '" + templateName + "' still contains unreplaced placeholders: " + ;
-                    String.Join(", ", remaining:Select(p => "<@" + p + "@>"):ToList()) + ;
+                    String.Join(", ", remaining:Select({p => "<@" + p + "@>"}):ToList()) + ;
                     ". This indicates a replacement value was null or empty, which should not occur."}
             ENDIF
             

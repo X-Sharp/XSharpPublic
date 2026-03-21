@@ -55,7 +55,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		METHOD Reset AS VOID Strict
-			// TODO: Implement Reset
+			/// <summary>
+			/// Restarts the timer by disabling and re-enabling it.
+			/// Equivalent to VFP's Reset method.
+			/// </summary>
+			/// <remarks>
+			/// Reset restarts the timer, causing the next Timer event to occur after the Interval.
+			/// If the timer is disabled, Reset will not enable it.
+			/// </remarks>
+			VAR wasEnabled := SELF:Enabled
+			IF wasEnabled
+				SELF:Enabled := FALSE
+				SELF:Enabled := TRUE
+			ENDIF
 			RETURN
 
 	END CLASS

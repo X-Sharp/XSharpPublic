@@ -86,19 +86,23 @@ BEGIN NAMESPACE VFPXPorterLib
 		/// </summary>
 		/// <param name="ConversionList"></param>
 		/// <param name="asChild"></param>
-		PROTECTED METHOD AddSpecialProperties( ConversionList AS Dictionary<STRING,STRING>, asChild := FALSE AS LOGIC ) AS VOID
-			//
-			TRY
-				// Checking if we are in the Form (We should check if we are a parent..??)
-				//IF (String.Compare( SELF:BaseClassName, "form", TRUE ) == 0 )
-				IF !asChild
-					ConversionList:Add( "_currentobject_", "SELF" )
-				ELSE
-					ConversionList:Add( "_currentobject_", "SELF:" + SELF:Name )
-				ENDIF
-            CATCH e AS Exception
-                XPorterLogger.Instance:Verbose("AddSpecialProperties: '_currentobject_' property already exists in conversion list for item: " + SELF:Name)
-			END TRY
+	PROTECTED METHOD AddSpecialProperties( ConversionList AS Dictionary<STRING,STRING>, asChild := FALSE AS LOGIC ) AS VOID
+		//
+		IF String.IsNullOrEmpty(SELF:Name)
+			XPorterLogger.Instance:Error("AddSpecialProperties: Item has no Name, cannot add special properties")
+			RETURN
+		ENDIF
+		TRY
+			// Checking if we are in the Form (We should check if we are a parent..??)
+			//IF (String.Compare( SELF:BaseClassName, "form", TRUE ) == 0 )
+			IF !asChild
+				ConversionList:Add( "_currentobject_", "SELF" )
+			ELSE
+				ConversionList:Add( "_currentobject_", "SELF:" + SELF:Name )
+			ENDIF
+        CATCH e AS Exception
+            XPorterLogger.Instance:Verbose("AddSpecialProperties: '_currentobject_' property already exists in conversion list for item: " + SELF:Name)
+		END TRY
 
 		/// <summary>
 		/// Convert the dictionary of Properties, applying all replacement rules.
@@ -153,7 +157,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							FOREACH token AS STRING IN tokenList
 								IF defaultValues:ContainsKey( token )
 									// Get the value of this "Fox" Property
-									VAR data := propList:Item[ token ]
+									VAR data := defaultValues:Item[ token ]
 									// and put that value at the replaceable position
 									newProp := SELF:ReplaceCaseInsensitive( newProp, "<@"+token+"@>", data)
 									Found := TRUE
@@ -162,8 +166,17 @@ BEGIN NAMESPACE VFPXPorterLib
 							// Still missing ?
 							IF newProp:Contains("<@" )
 								// Forget it
+								VAR remaining := SELF:BuildTokenList( newProp )
+								XPorterLogger.Instance:Warning("ConvertProperties: Property '" + conversion:Key + "' has unresolved tokens: " + ;
+									String.Join(", ", remaining:Select({t => "<@" + t + "@>"})))
 								Found := FALSE
 							ENDIF
+						ELSE
+							// No tokens found in propList or defaultValues - discard silently
+							VAR unresolved := SELF:BuildTokenList( newProp )
+							XPorterLogger.Instance:Verbose("ConvertProperties: Property '" + conversion:Key + "' missing all required tokens: " + ;
+								String.Join(", ", unresolved:Select({t => "<@" + t + "@>"})))
+							Found := FALSE
 						ENDIF
 					ENDIF
 					IF Found
@@ -211,12 +224,19 @@ BEGIN NAMESPACE VFPXPorterLib
 									prop := e"\"" + prop + e"\""
 								ENDIF
 							ENDIF
-							//
-							IF conversion:Value:EndsWith(")") .OR. conversion:Value:EndsWith("}")
-								// Oh !! The Property has been replaced by a Constructor or Method Call !
-								// Ok, recreate the Property, but set the "new" value
-								propList:Add( conversionKey, conversion:Value )
-							ELSE
+						//
+						IF conversion:Value:EndsWith(")") .OR. conversion:Value:EndsWith("}")
+							// Oh !! The Property has been replaced by a Constructor or Method Call !
+							// Validate that the value looks like valid code
+							IF !conversion:Value:Contains("(") .AND. conversion:Value:EndsWith(")")
+								XPorterLogger.Instance:Warning("ConvertProperties: Constructor/method call missing opening paren: '" + conversion:Value + "'")
+							ENDIF
+							IF !conversion:Value:Contains("{") .AND. conversion:Value:EndsWith("}")
+								XPorterLogger.Instance:Warning("ConvertProperties: Constructor missing opening brace: '" + conversion:Value + "'")
+							ENDIF
+							// Ok, recreate the Property, but set the "new" value
+							propList:Add( conversionKey, conversion:Value )
+						ELSE
 								// We simply replace Key with the new one, and keep the actual value
 								IF forceUsual
 									propList:Add( "!"+conversion:Value, prop )

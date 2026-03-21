@@ -35,16 +35,20 @@ BEGIN NAMESPACE VFPXPorterLib
         PRIVATE FormInitTypeFile AS STRING
         PRIVATE BindingCodeFile AS STRING
 
+        // Template cache dictionaries to avoid repeated disk I/O
+        PRIVATE _templateCache AS Dictionary<STRING, STRING>
+        PRIVATE _jsonCache AS Dictionary<STRING, Dictionary<STRING, Dictionary<STRING,STRING>>>
 
-        PROPERTY DesignerPrefix AS STRING GET File.ReadAllText(DesignerPrefixFile)
-        PROPERTY DesignerStartType AS STRING GET File.ReadAllText(DesignerStartTypeFile)
-        PROPERTY DesignerEndType AS STRING GET File.ReadAllText(DesignerEndTypeFile)
-        PROPERTY DesignerInitType AS STRING GET File.ReadAllText(DesignerInitTypeFile)
-        PROPERTY FormPrefix AS STRING GET File.ReadAllText(FormPrefixFile)
-        PROPERTY FormStartType AS STRING GET File.ReadAllText(FormStartTypeFile)
-        PROPERTY FormEndType AS STRING GET File.ReadAllText(FormEndTypeFile)
-        PROPERTY FormInitType AS STRING GET File.ReadAllText(FormInitTypeFile)
-        PROPERTY BindingCode AS STRING GET File.ReadAllText(BindingCodeFile)
+
+        PROPERTY DesignerPrefix AS STRING GET SELF:GetTemplateFromCache(DesignerPrefixFile)
+        PROPERTY DesignerStartType AS STRING GET SELF:GetTemplateFromCache(DesignerStartTypeFile)
+        PROPERTY DesignerEndType AS STRING GET SELF:GetTemplateFromCache(DesignerEndTypeFile)
+        PROPERTY DesignerInitType AS STRING GET SELF:GetTemplateFromCache(DesignerInitTypeFile)
+        PROPERTY FormPrefix AS STRING GET SELF:GetTemplateFromCache(FormPrefixFile)
+        PROPERTY FormStartType AS STRING GET SELF:GetTemplateFromCache(FormStartTypeFile)
+        PROPERTY FormEndType AS STRING GET SELF:GetTemplateFromCache(FormEndTypeFile)
+        PROPERTY FormInitType AS STRING GET SELF:GetTemplateFromCache(FormInitTypeFile)
+        PROPERTY BindingCode AS STRING GET SELF:GetTemplateFromCache(BindingCodeFile)
 
         PROPERTY NamespaceDefinition AS STRING AUTO
 
@@ -77,31 +81,31 @@ BEGIN NAMESPACE VFPXPorterLib
         /// Rules that applies to Properties (Caption->Text, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY PropRules AS STRING GET File.ReadAllText( PropRulesFile )
+        PROPERTY PropRules AS STRING GET SELF:GetJsonFromCache( PropRulesFile )
 
         /// <summary>
         /// Rules that applies to Events (DblClick->DoubleClick, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY EventRules AS STRING GET File.ReadAllText( EventRulesFile )
+        PROPERTY EventRules AS STRING GET SELF:GetJsonFromCache( EventRulesFile )
 
         /// <summary>
         /// Type convertion table (Button->VFPCommandButton, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY ConvertTable AS STRING GET File.ReadAllText( ConvertTableFile )
+        PROPERTY ConvertTable AS STRING GET SELF:GetJsonFromCache( ConvertTableFile )
 
         /// <summary>
         /// List of Statements than will need () at the end (.Refresh->.Refresh(), ...)
         /// </summary>
         /// <value></value>
-        PROPERTY Statements AS STRING GET File.ReadAllText( StatementsFile )
+        PROPERTY Statements AS STRING GET SELF:GetJsonFromCache( StatementsFile )
 
         /// <summary>
         /// List of VFP language elements and their traduction (Parent->_Parent,this->thisObject, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY VFPElements AS STRING GET File.ReadAllText( VFPElementsFile )
+        PROPERTY VFPElements AS STRING GET SELF:GetJsonFromCache( VFPElementsFile )
 
 
         /// <summary>
@@ -135,6 +139,9 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:ConvertTableFile	:= XPorterSettings.ConvertTableFile
             SELF:StatementsFile		:= XPorterSettings.StatementsFile
             SELF:VFPElementsFile	:= XPorterSettings.VFPElementsFile
+            // Initialize caches
+            SELF:_templateCache := Dictionary<STRING, STRING>{}
+            SELF:_jsonCache := Dictionary<STRING, Dictionary<STRING, Dictionary<STRING,STRING>>>{}
             //
             SELF:Items := List<BaseItem>{ }
             SELF:CustomControls := Dictionary<STRING, SCXVCXItem>{}
@@ -1326,7 +1333,31 @@ BEGIN NAMESPACE VFPXPorterLib
             BindingCodeFile			:= XPorterSettings.BindingCodeFile
             RETURN
 
+        /// <summary>
+        /// Gets template file content from cache, loading from disk only if not cached.
+        /// Caching significantly reduces disk I/O for repeated template access.
+        /// </summary>
+        PROTECTED METHOD GetTemplateFromCache(filePath AS STRING) AS STRING
+            LOCAL content AS STRING
+            IF SELF:_templateCache:ContainsKey(filePath)
+                RETURN SELF:_templateCache[filePath]
+            ENDIF
+            content := File.ReadAllText(filePath)
+            SELF:_templateCache[filePath] := content
+            RETURN content
 
+        /// <summary>
+        /// Gets JSON configuration file content from cache, loading from disk only if not cached.
+        /// Reduces disk I/O when the same JSON files are accessed repeatedly across conversions.
+        /// </summary>
+        PROTECTED METHOD GetJsonFromCache(filePath AS STRING) AS STRING
+            LOCAL content AS STRING
+            IF SELF:_templateCache:ContainsKey(filePath)
+                RETURN SELF:_templateCache[filePath]
+            ENDIF
+            content := File.ReadAllText(filePath)
+            SELF:_templateCache[filePath] := content
+            RETURN content
 
 #region vfpxporter
         PROTECTED _worker AS BackgroundWorker

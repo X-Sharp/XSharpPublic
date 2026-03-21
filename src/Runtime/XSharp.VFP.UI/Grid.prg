@@ -626,5 +626,55 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY AllowAutoColumnFit AS LONG AUTO
         PROPERTY Themes AS LOGIC AUTO
 
+        /// <summary>
+        /// Adds a new column to the Grid at the specified 1-based position.
+        /// Equivalent to VFP's AddColumn method.
+        /// </summary>
+        /// <param name="cColumnName">The name of the new column.</param>
+        /// <param name="nPosition">Optional 1-based position for the column. Default is append to end.</param>
+        /// <returns>The newly created Column object.</returns>
+        /// <remarks>
+        /// Creates a new TextBoxColumn and inserts it at the specified position.
+        /// If nPosition is out of range, appends to the end.
+        /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
+        /// </remarks>
+        PUBLIC METHOD AddColumn(cColumnName AS STRING, nPosition AS INT := -1) AS Column STRICT
+            VAR newColumn := Column{}
+            newColumn:Name := cColumnName
+            newColumn:HeaderText := cColumnName
+            newColumn:CellTemplate := System.Windows.Forms.DataGridViewTextBoxCell{}
+            newColumn:AutoSizeMode := DataGridViewAutoSizeColumnMode.None
+            newColumn:Width := 100
+
+            // Convert VFP 1-based index to 0-based .NET index
+            IF nPosition <= 0 .OR. nPosition > SELF:Columns:Count + 1
+                // Append to end
+                SELF:Columns:Add(newColumn)
+            ELSE
+                // Insert at specific position (convert 1-based to 0-based)
+                SELF:Columns:Insert(nPosition - 1, newColumn)
+            ENDIF
+
+            RETURN newColumn
+        END METHOD
+
+        /// <summary>
+        /// Removes a column from the Grid by its 1-based index.
+        /// Equivalent to VFP's RemoveColumn method.
+        /// </summary>
+        /// <param name="nPosition">The 1-based position of the column to remove.</param>
+        /// <remarks>
+        /// Removes the column at the specified position.
+        /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
+        /// If nPosition is out of range, nothing happens.
+        /// </remarks>
+        PUBLIC METHOD RemoveColumn(nPosition AS INT) AS VOID STRICT
+            // Convert VFP 1-based index to 0-based .NET index
+            VAR zeroBasedIndex := nPosition - 1
+            IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Columns:Count
+                SELF:Columns:RemoveAt(zeroBasedIndex)
+            ENDIF
+        END METHOD
+
     END CLASS
 END NAMESPACE // XSharp.VFP.UI

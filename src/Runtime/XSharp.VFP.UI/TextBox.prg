@@ -264,6 +264,99 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "ControlSource.xh"
 
+		/// <summary>
+		/// Selects all text in the TextBox.
+		/// Equivalent to VFP's SelectAll method.
+		/// </summary>
+		/// <remarks>
+		/// Selects all text and moves cursor to the beginning.
+		/// </remarks>
+		PUBLIC METHOD SelectAll() AS VOID STRICT
+			SUPER:SelectAll()
+		END METHOD
+
+		/// <summary>
+		/// Clears all text from the TextBox.
+		/// Equivalent to VFP's Clear method.
+		/// </summary>
+		/// <remarks>
+		/// Removes all text and resets the Value property.
+		/// </remarks>
+		PUBLIC METHOD Clear() AS VOID STRICT
+			SELF:Text := ""
+			SELF:_uValue := NIL
+		END METHOD
+
+		/// <summary>
+		/// Copies selected text to the clipboard.
+		/// Equivalent to VFP's Copy method.
+		/// </summary>
+		/// <remarks>
+		/// Copies the currently selected text. If no text is selected, does nothing.
+		/// </remarks>
+		PUBLIC METHOD Copy() AS VOID STRICT
+			IF SELF:SelectionLength > 0
+				System.Windows.Forms.Clipboard.SetText(SELF:SelectedText)
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Cuts selected text to the clipboard.
+		/// Equivalent to VFP's Cut method.
+		/// </summary>
+		/// <remarks>
+		/// Cuts the currently selected text (copies and deletes).
+		/// If ReadOnly is TRUE, does nothing.
+		/// </remarks>
+		PUBLIC METHOD Cut() AS VOID STRICT
+			IF !SELF:ReadOnly .AND. SELF:SelectionLength > 0
+				System.Windows.Forms.Clipboard.SetText(SELF:SelectedText)
+				SELF:SelectedText := ""
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Pastes text from the clipboard.
+		/// Equivalent to VFP's Paste method.
+		/// </summary>
+		/// <remarks>
+		/// Inserts clipboard contents at the cursor position, replacing any selection.
+		/// If ReadOnly is TRUE, does nothing.
+		/// </remarks>
+		PUBLIC METHOD Paste() AS VOID STRICT
+			IF !SELF:ReadOnly
+				IF System.Windows.Forms.Clipboard.ContainsText()
+					SELF:SelectedText := System.Windows.Forms.Clipboard.GetText()
+				ENDIF
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Undoes the last editing operation.
+		/// Equivalent to VFP's Undo method.
+		/// </summary>
+		/// <remarks>
+		/// Reverts the TextBox to its previous state if undo is available.
+		/// </remarks>
+		PUBLIC METHOD Undo() AS VOID STRICT
+			IF SELF:CanUndo
+				SUPER:Undo()
+			ENDIF
+		END METHOD
+
+		/// <summary>
+		/// Redoes the last undone editing operation.
+		/// Equivalent to VFP's Redo method.
+		/// </summary>
+		/// <remarks>
+		/// Reapplies the last undone action if redo is available.
+		/// </remarks>
+		PUBLIC METHOD Redo() AS VOID STRICT
+			IF SELF:CanRedo
+				SUPER:Redo()
+			ENDIF
+		END METHOD
+
 	END CLASS
 
 END NAMESPACE

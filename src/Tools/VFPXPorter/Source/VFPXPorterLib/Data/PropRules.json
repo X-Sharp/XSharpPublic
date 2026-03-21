@@ -204,25 +204,18 @@
     "DisplayCount": "::SetDisplayCount(<@DisplayCount@>)"
   },
 
-  "Grid": {
-    "^Column99": "Column(99)",
-    "Scrollbars": "VFPScrollbars",
-    "RecordSource": "::SetRecordSource(<@RecordSource@>)",
-    "RecordSourceType": "::SetRecordSourceType(<@RecordSourceType@>)",
-    "ColumnCount": "::SetColumnCount(<@ColumnCount@>)",
-    "DeleteMark": "::SetDeleteMark(<@DeleteMark@>)",
-    "RecordMark": "::SetRecordMark(<@RecordMark@>)",
-    "GridLines": "::SetGridLines(<@GridLines@>)",
-    "SplitBar": "::SetSplitBar(<@SplitBar@>)",
-    "AllowAddNew": "::SetAllowAddNew(<@AllowAddNew@>)",
-    "AllowRowSizing": "::SetAllowRowSizing(<@AllowRowSizing@>)",
-    "AllowColumnSizing": "::SetAllowColumnSizing(<@AllowColumnSizing@>)",
-    "ReadOnly": "::SetReadOnly(<@ReadOnly@>)",
-    "HighlightBackColor": "::SetHighlightBackColor(<@HighlightBackColor@>)",
-    "HighlightForeColor": "::SetHighlightForeColor(<@HighlightForeColor@>)"
-  },
+    "Grid": {
+      "^Column99": "Column(99)",
+      "Scrollbars": "VFPScrollbars",
+      "FrozenColumnCount": "::FreezeColumns(<@FrozenColumnCount@>)",
+      "AlternatingRowColor": "System.Drawing.Color.FromArgb(<@AlternatingRowColor@>)"
+     },
 
-  "Common": {
+    "header": {
+      "HeaderColor": "System.Drawing.Color.FromArgb(<@HeaderColor@>)"
+     },
+
+   "Common": {
     "Caption": "Text",
     "Comment": "",
     "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",

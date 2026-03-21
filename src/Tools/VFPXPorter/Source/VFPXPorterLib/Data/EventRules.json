@@ -27,9 +27,10 @@
     "InteractiveChange": [ "vfpInteractiveChange:=", "", "" ]
   },
 
-  "grid": {
-    "AfterRowColChange": [ "vfpAfterRowColChange:=", "", "" ]
-  },
+   "grid": {
+     "AfterRowColChange": [ "vfpAfterRowColChange:=", "", "" ],
+     "OnColumnHeaderClick": [ "vfpColumnHeaderClick:=", "", "" ]
+   },
 
   "form": {
     "QueryUnload": [ "vfpQueryUnload:=", "", "" ],

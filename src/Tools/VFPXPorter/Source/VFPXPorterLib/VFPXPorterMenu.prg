@@ -66,7 +66,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDDO
             CATCH e AS Exception
                 success := FALSE
-                XPorterLogger.Instance:Error("Analyze: Failed to analyze menu file: " + SELF:inputFilePath)
+                XPorterLogger.Instance:Error("Analyze: Failed to analyze menu file: " + SELF:Settings:ItemsPath)
                 XPorterLogger.Instance:Error("Exception: " + e.Message)
             FINALLY
                 DbCloseArea()

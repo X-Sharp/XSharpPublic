@@ -2,6 +2,7 @@
 USING System.Collections.Generic
 USING System.Text
 USING System.Xml.Serialization
+USING System.Linq
 
 BEGIN NAMESPACE VFPXPorterLib
 

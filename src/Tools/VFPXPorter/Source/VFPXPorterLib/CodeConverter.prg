@@ -320,7 +320,10 @@ BEGIN NAMESPACE VFPXPorterLib
 						inSearch := 0
 					ENDIF
 				ENDDO
-			CATCH
+			CATCH e AS Exception
+				XPorterLogger.Instance:Warning("SearchAndReplace: Failed to convert line, using original")
+				XPorterLogger.Instance:Verbose("Original line: " + org)
+				XPorterLogger.Instance:Verbose("Exception: " + e:Message)
 				line := org
 			END TRY
 			//

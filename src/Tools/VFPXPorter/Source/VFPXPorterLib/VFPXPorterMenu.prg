@@ -66,7 +66,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDDO
             CATCH e AS Exception
                 success := FALSE
-                XPorterLogger.Instance:Error( e.Message )
+                XPorterLogger.Instance:Error("Analyze: Failed to analyze menu file: " + SELF:inputFilePath)
+                XPorterLogger.Instance:Error("Exception: " + e.Message)
             FINALLY
                 DbCloseArea()
             END TRY
@@ -409,12 +410,10 @@ BEGIN NAMESPACE VFPXPorterLib
 
         VIRTUAL PROTECT METHOD EnumItems( itemList AS List<MNXItem>, indent AS STRING ) AS VOID
             FOREACH VAR item IN itemList
-                XPorterLogger.Instance:Information(indent + "Item : "+ item:Name + "/" + item:PROMPT )
+                XPorterLogger.Instance:Verbose(indent + "Item : "+ item:Name + "/" + item:PROMPT )
                 IF item:Childs:Count > 0
-                    XPorterLogger.Instance:Information( indent + "----------" )
-                    XPorterLogger.Instance:Information( indent + "Contains "+ item:Childs:Count:ToString() + " item(s)." )
-                    SELF:EnumItems( item:Childs, indent + "   " )
-                    XPorterLogger.Instance:Information( indent + "----------" )
+                    XPorterLogger.Instance:Verbose( indent + "  Contains "+ item:Childs:Count:ToString() + " item(s)" )
+                    SELF:EnumItems( item:Childs, indent + "  " )
                 ENDIF
             NEXT
             //

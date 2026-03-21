@@ -8,6 +8,7 @@ USING System.Text
 USING System.IO
 USING System.Text.RegularExpressions
 USING System.Linq
+USING Serilog
 
 BEGIN NAMESPACE VFPXPorterLib
 
@@ -26,6 +27,7 @@ BEGIN NAMESPACE VFPXPorterLib
         PUBLIC STATIC METHOD ExtractPlaceholders(template AS STRING) AS HashSet<STRING>
             VAR placeholders := HashSet<STRING>{}
             IF String.IsNullOrEmpty(template)
+                XPorterLogger.Instance:Verbose("ExtractPlaceholders: Template is empty")
                 RETURN placeholders
             ENDIF
             VAR regex := Regex{"<@(\w+)@>"}
@@ -34,6 +36,8 @@ BEGIN NAMESPACE VFPXPorterLib
                     placeholders:Add(match:Groups[1]:Value)
                 ENDIF
             NEXT
+            XPorterLogger.Instance:Verbose("ExtractPlaceholders: Found " + placeholders:Count:ToString() + " placeholders: " + ;
+                String.Join(", ", placeholders:Select({p => "<@" + p + "@>"})))
             RETURN placeholders
 
         /// <summary>
@@ -47,8 +51,12 @@ BEGIN NAMESPACE VFPXPorterLib
             requiredPlaceholders AS IEnumerable<STRING>) AS VOID
             
             IF String.IsNullOrEmpty(template)
+                XPorterLogger.Instance:Error("ValidateTemplate '" + templateName + "': Template is empty")
                 THROW Exception{"Template '" + templateName + "' is empty"}
             ENDIF
+            
+            XPorterLogger.Instance:Verbose("ValidateTemplate '" + templateName + "': Validating " + ;
+                requiredPlaceholders:Count():ToString() + " required placeholders")
             
             VAR missing := List<STRING>{}
             FOREACH VAR placeholder IN requiredPlaceholders
@@ -59,9 +67,12 @@ BEGIN NAMESPACE VFPXPorterLib
             NEXT
             
             IF missing:Count > 0
-                THROW Exception{"Template '" + templateName + "' is missing required placeholders: " + ;
-                    String.Join(", ", missing:Select( { p => "<@" + p + "@>" } ):ToList())}
+                VAR missingText := String.Join(", ", missing:Select( { p => "<@" + p + "@>" } ):ToList())
+                XPorterLogger.Instance:Error("ValidateTemplate '" + templateName + "': Missing placeholders: " + missingText)
+                THROW Exception{"Template '" + templateName + "' is missing required placeholders: " + missingText}
             ENDIF
+            
+            XPorterLogger.Instance:Verbose("ValidateTemplate '" + templateName + "': All required placeholders present")
 
         /// <summary>
         /// Replaces all placeholders in a template and validates that all placeholders were replaced.
@@ -76,8 +87,12 @@ BEGIN NAMESPACE VFPXPorterLib
             replacements AS Dictionary<STRING, STRING>) AS STRING
             
             IF String.IsNullOrEmpty(template)
+                XPorterLogger.Instance:Verbose("ReplaceAndValidate '" + templateName + "': Template is empty, returning as-is")
                 RETURN template
             ENDIF
+            
+            XPorterLogger.Instance:Information("ReplaceAndValidate '" + templateName + "': Starting replacement with " + ;
+                replacements:Count:ToString() + " placeholders")
             
             // Extract all placeholders in the template
             VAR foundPlaceholders := TemplateHelper.ExtractPlaceholders(template)
@@ -91,8 +106,10 @@ BEGIN NAMESPACE VFPXPorterLib
             NEXT
             
             IF unrequested:Count > 0
+                VAR unrequestedText := String.Join(", ", unrequested:Select( {p => "<@" + p + "@>"}):ToList())
+                XPorterLogger.Instance:Error("ReplaceAndValidate '" + templateName + "': Unexpected placeholders: " + unrequestedText)
                 THROW Exception{"Template '" + templateName + "' contains unexpected placeholders not provided: " + ;
-                    String.Join(", ", unrequested:Select( {p => "<@" + p + "@>"}):ToList()) + ;
+                    unrequestedText + ;
                     ". This may indicate a typo in the template or missing replacement data."}
             ENDIF
             
@@ -101,16 +118,20 @@ BEGIN NAMESPACE VFPXPorterLib
             FOREACH VAR kvp IN replacements
                 VAR placeholder := "<@" + kvp:Key + "@>"
                 result := result:Replace(placeholder, kvp:Value)
+                XPorterLogger.Instance:Verbose("ReplaceAndValidate '" + templateName + "': Replaced <@" + kvp:Key + "@>")
             NEXT
             
             // Final check: ensure no unreplaced placeholders remain
             IF result:Contains("<@")
                 VAR remaining := TemplateHelper.ExtractPlaceholders(result)
+                VAR remainingText := String.Join(", ", remaining:Select({p => "<@" + p + "@>"}):ToList())
+                XPorterLogger.Instance:Error("ReplaceAndValidate '" + templateName + "': Unreplaced placeholders remain: " + remainingText)
                 THROW Exception{"Template '" + templateName + "' still contains unreplaced placeholders: " + ;
-                    String.Join(", ", remaining:Select({p => "<@" + p + "@>"}):ToList()) + ;
+                    remainingText + ;
                     ". This indicates a replacement value was null or empty, which should not occur."}
             ENDIF
             
+            XPorterLogger.Instance:Information("ReplaceAndValidate '" + templateName + "': Successfully completed")
             RETURN result
 
     END CLASS

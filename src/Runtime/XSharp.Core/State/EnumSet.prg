@@ -982,7 +982,7 @@ CASE Set.IdleRepeat
 RETURN 0L
 
 CASE Set.Compatible
-RETURN "OFF"
+RETURN FALSE
 
 CASE Set.AutoOrder
 RETURN 1L

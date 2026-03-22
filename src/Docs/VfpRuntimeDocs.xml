@@ -603,6 +603,18 @@
             </code>
         </example>
     </dtot>
+    <fattrib>
+      <summary>
+            Returns the attributes of a specified file. (X# Extension for VFP Dialect).
+      </summary>
+      <param name="cFileName">
+            Specifies the name of the file whose attributes FAttrib( ) returns.
+      </param>
+      <remarks>
+        This function is an X# extension for the Visual FoxPro dialect.
+        It mirrors the functionality of the traditional XBase FAttrib() function but operates directly on a given file path.          
+      </remarks>
+    </fattrib>    
     <fldcount>
         <summary>
             This function is a synonym to FCount() Function.
@@ -736,6 +748,15 @@
             </code>
         </example>
     </filter>
+    <fname>
+      <summary>Returns the file name of a specified file path. (X# Extension for VFP Dialect).</summary>
+      <param name="cFilePath">Specifies the file path from which <b>FName()</b> returns the file name.</param>
+      <returns>A Character string containing the file name.</returns>
+      <remarks>
+        This function is an X# extension for the Visual FoxPro dialect.
+        It mirrors the functionality of the traditional XBase FName() function but extracts the name directly from the given file path.
+      </remarks>
+    </fname>
     <for>
         <summary>
             Returns the index filter expression, in uppercase, of an open single-entry index (.idx) file or an index tag.

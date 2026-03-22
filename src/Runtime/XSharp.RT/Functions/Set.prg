@@ -83,6 +83,13 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             ELSEIF IsLogic(newValue)
                 RETURN SetCentury(newValue)
             ENDIF
+        CASE Set.Compatible
+            IF IsString(newValue)
+                VAR cComp := ((STRING)newValue):ToUpper()
+                RETURN SetCompatible(cComp == "ON" || cComp == "DB4")
+            ELSEIF IsLogic(newValue)
+                RETURN SetCompatible(newValue)
+            ENDIF
         CASE Set.DateCountry
             IF IsNumeric(newValue)
                 RETURN SetDateCountry(newValue )

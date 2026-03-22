@@ -156,12 +156,24 @@ FUNCTION FSeek(nFileHandle AS INT64, nBytesMoved AS INT, nRelativePosition := 0 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fsize/*" />
 [FoxProFunction("FSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
-    LOCAL nArea AS DWORD
-    IF IsNil(eWorkArea)
-        nArea := XSharp.RuntimeState.CurrentWorkarea
-    ELSE
-        nArea := (DWORD) XSharp.RT.Functions.Select(eWorkArea)
+    // VFP Behavior: SET COMPATIBLE ON
+    IF XSharp.RuntimeState.Compatible .AND. IsNil(eWorkArea)
+        VAR cSearchFile := cFieldName
+
+        IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cSearchFile)) AND XSharp.Core.Functions.File(cSearchFile + ".dbf")
+            cSearchFile += ".dbf"
+        ENDIF
+
+        IF XSharp.Core.Functions.File(cSearchFile)
+            RETURN (INT) System.IO.FileInfo{XSharp.Core.Functions.FPathName()}:Length
+        ENDIF
+        RETURN 0
     ENDIF
+
+    // Default behavior
+    LOCAL nArea AS DWORD
+    nArea := IIF(IsNil(eWorkArea), XSharp.RuntimeState.CurrentWorkarea, ;
+        (DWORD) XSharp.RT.Functions.Select(eWorkArea))
 
     IF nArea == 0 || !XSharp.RT.Functions.Used(nArea)
         RETURN 0
@@ -177,10 +189,7 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
         FINALLY
             XSharp.RuntimeState.CurrentWorkarea := nOldArea
         END TRY
-
-        IF IsNumeric(uLen)
-            RETURN (INT) uLen
-        ENDIF
+        RETURN IIF(IsNumeric(uLen), (INT) uLen, 0)
     ENDIF
 
     RETURN 0

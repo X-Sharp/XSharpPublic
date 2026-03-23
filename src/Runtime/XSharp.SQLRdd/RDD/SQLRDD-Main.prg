@@ -783,6 +783,19 @@ partial class SQLRDD inherit Workarea
         return super:Pack()
     end method
 
+    OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+        var cbFilter := info:FilterBlock
+        if cbFilter != NULL
+            try
+                SELF:EvalFilter(cbFilter)
+            catch ex as Exception
+                SELF:_dbfError(ex, Subcodes.EDB_SETFILTER,Gencode.EG_ARG,"SQLRDD.SetFilter",FALSE)
+                return false
+            end try
+        endif
+        RETURN SUPER:SetFilter(info)
+    end method
+
 end class
 
 end namespace // XSharp.RDD.SqlRDD

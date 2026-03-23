@@ -62,6 +62,7 @@ CLASS VSProject
     /// reference the project file using a stable relative path.
     /// </remarks>
     PROPERTY RelativePath AS STRING AUTO
+    PROPERTY ProjectFileNameFullPath AS STRING AUTO
 
     PROPERTY FrameworkVersion AS STRING AUTO
     PROPERTY XmlDoc as XmlDocument AUTO
@@ -193,6 +194,7 @@ CLASS VSProject
             NEXT
         ENDIF
         //
+        SELF:ProjectFileNameFullPath := projectFileNameFullPath
         SELF:XmlDoc:Save( projectFileNameFullPath )
         RETURN
 

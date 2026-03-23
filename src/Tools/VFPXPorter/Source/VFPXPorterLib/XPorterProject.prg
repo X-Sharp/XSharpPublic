@@ -476,7 +476,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 File.Copy(toolFile, destFile, TRUE )
                                 IF toolFile:EndsWith( ".xh" )
                                     IF !stdDef:ToLower():EndsWith( "vfpxporter.xh" )
-                                        stdDef := "$(Solutiondir)"+GetRelativePath(SELF:outputPath,destFile)
+                                        stdDef := "$(projectdir)"+GetRelativePath(SELF:outputPath,destFile)
                                         vfpxporterPath := destFile
                                     ENDIF
                                 ENDIF
@@ -618,6 +618,14 @@ BEGIN NAMESPACE VFPXPorterLib
                 VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj")
                 // Save the MSBuild file for the Libraries
                 xsLibs:Save( libProjPath, stdDef )
+                LOCAL relativeLibPath AS STRING
+                IF SELF:Settings:PlaceSolutionInSameDirectory
+                    relativeLibPath := "ClassLibraries.xsproj"
+                ELSE
+                    relativeLibPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:pjxFilePath ), "ClassLibraries.xsproj")
+                ENDIF
+                // Set for Solution
+                xsLibs:RelativePath := relativeLibPath
             ENDIF
 
             // Now the Main Project
@@ -688,7 +696,7 @@ BEGIN NAMESPACE VFPXPorterLib
             IF existing != NULL
                 xsSolution:Projects:Remove(existing)
             ENDIF
-            
+
             xsProj:RelativePath := relativeProjPath
             xsSolution:Projects:Add( xsProj )
 

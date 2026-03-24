@@ -786,8 +786,7 @@ function _Str3(f as float,dwLen as dword,dwDec as dword) as string
     endif
     return result
 
-/// <inheritdoc cref="Val" />
-/// <returns>The numeric value as a FLOAT.</returns>
+/// <exclude />
 function StrToFloat(c as string) as float
     return (float) Val(c)
 

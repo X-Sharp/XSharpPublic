@@ -195,6 +195,18 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 
         END METHOD
+
+        [Fact, Trait("Category", "UIAndWindows")];
+        METHOD TestMessageBoxBell() AS VOID
+
+            VAR cWaveSet := SET("BELL", 1)
+            Assert.Equal("", cWaveSet)
+
+            SET BELL ON
+            VAR lBellState := SET("BELL")
+            Assert.True(lBellState)
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

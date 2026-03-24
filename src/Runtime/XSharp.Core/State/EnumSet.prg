@@ -339,12 +339,10 @@ ENUM Set
     // MEMBER TopicID
     // MEMBER TrBetween
     // MEMBER UdfParams
-	/// <summary>Show seconds in time display</summary>
-	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/Set.Hours/*" />
 	MEMBER Hours				:= 147
 
-	/// <summary>Show seconds in time display</summary>
-	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/Set.Seconds/*" />
 	MEMBER Seconds				:= 148
 
     // Xbase++ defines

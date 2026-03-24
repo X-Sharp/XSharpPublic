@@ -3,13 +3,13 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-/// <summary>Helper class for the BREAK statement</summary>
+/// <include file="XSharp.CoreDocs.xml" path="doc/WrappedException/*" />
 CLASS XSharp.Internal.WrappedException INHERIT Exception
 	PRIVATE INITONLY _value AS OBJECT
-	/// <summary>The property that is passed by the BREAK statement</summary>
+	/// <include file="XSharp.CoreDocs.xml" path="doc/WrappedException.Value/*" />
 	PROPERTY @@Value AS OBJECT GET _value
 	
-	/// <summary></summary>	
+	/// <include file="XSharp.CoreDocs.xml" path="doc/WrappedException.ctor/*" />
     CONSTRUCTOR(@@Value AS OBJECT)
 		_value := @@Value
 	

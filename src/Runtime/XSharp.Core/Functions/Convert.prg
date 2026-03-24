@@ -78,11 +78,7 @@ FUNCTION Bin2Int64(cSignedInt AS STRING) AS INT64
 FUNCTION Bin2Logic(pszLogical AS STRING) AS LOGIC
     RETURN pszLogical != NULL .AND. pszLogical[0] != 0
 
-/// <summary>
-/// Convert a intptr to a string
-/// </summary>
-/// <include file="CoreComments.xml" path="Comments/PtrBin/*" />
-/// <seealso cref='Bin2Ptr' >Bin2Ptr</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/Ptr2Bin/*" />
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
     IF IntPtr.Size == 4
         RETURN L2Bin( p:ToInt32())
@@ -90,11 +86,7 @@ FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
         RETURN I642Bin( p:ToInt64())
     ENDIF
 
-/// <summary>
-/// </summary>
-/// <param name="cPointer"></param>
-/// <include file="CoreComments.xml" path="Comments/PtrBin/*" />
-/// <seealso cref='Ptr2Bin' >Ptr2Bin</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/Bin2Ptr/*" />
 FUNCTION Bin2Ptr(cPointer AS STRING) AS IntPtr
     IF IntPtr.Size == 4
         RETURN (IntPtr) Bin2L(cPointer)
@@ -166,16 +158,7 @@ FUNCTION CTOL(c AS STRING) AS LOGIC
     ENDIF
     RETURN FALSE
 
-/// <summary>Convert a string value to a hexadecimal string.</summary>
-/// <param name="cSource">String to convert</param>
-/// <param name="lAddSpace">When TRUE then the inidividual characters are separated with a space in the result string</param>
-/// <returns>A string with the hex representation of the value</returns>
-/// <example>
-///  ? _C2Hex("abcdef", TRUE)                // 61 62 63 64 65 66<br/>
-///  ? _C2Hex("abcdef", FALSE)               // 616263646566<br/>
-/// </example>
-/// <seealso cref='M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)' >AsHexString</seealso>
-/// <seealso cref='C2Hex' >C2Hex</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/_C2Hex/*" />
 FUNCTION _C2Hex(cSource AS STRING, lAddSpace as LOGIC) AS STRING
     LOCAL sb AS StringBuilder
     sb := StringBuilder{cSource:Length*2}
@@ -188,14 +171,7 @@ FUNCTION _C2Hex(cSource AS STRING, lAddSpace as LOGIC) AS STRING
     NEXT
     RETURN sb:ToString()
 
-/// <summary>Convert a string value to a hexadecimal string.</summary>
-/// <param name="cSource">String to convert</param>
-/// <returns>A string with the hex representation of the value</returns>
-/// <example>
-///  ? C2Hex("abcdef")               // 616263646566<br/>
-/// </example>
-/// <seealso cref='M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)' >AsHexString</seealso>
-/// <seealso cref='_C2Hex' >_C2Hex</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/C2Hex/*" />
 FUNCTION C2Hex(cSource AS STRING) AS STRING
     RETURN _C2Hex(cSource, FALSE)
 
@@ -225,8 +201,7 @@ FUNCTION HiWord(dwValue AS DWORD) AS WORD
     RETURN (WORD) (dwValue >> 16)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/i2bin/*" />
-/// <seealso cref='Bin2I' >Bin2I</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/I2Bin/*" />
 FUNCTION I2Bin(siValue AS SHORT) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( siValue ) AS BYTE[]
     RETURN _bytes2String(byteArray)

@@ -20,39 +20,39 @@ BEGIN NAMESPACE XSharp.RDD
         // That is handled in the DBF class which inherits from RddBase
         #region Fields
         PROTECTED _Disposed     AS LOGIC
-        /// <summary>Workarea Number (1 based) </summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Area/*" />
         PROTECTED _Area			AS DWORD
-        /// <summary> Unique Alias </summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Alias/*" />
         PROTECTED _Alias			AS STRING
         PROTECTED _FileName		AS STRING
-        /// <summary>List of Fields</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Fields/*" />
         PUBLIC _Fields		    AS RddFieldInfo[]
         PROTECTED _fieldNames   AS Dictionary<STRING, INT>
         PRIVATE _currentField   AS LONG
-        /// <summary>Is at BOF ?</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._BoF/*" />
         PROTECTED _BoF			    AS LOGIC
         PROTECTED _Bottom		    AS LOGIC
         PROTECTED _Closed           AS LOGIC
         PROTECTED _EoF			    AS LOGIC
         PROTECTED _Found			AS LOGIC
         PROTECTED _Top			    AS LOGIC
-        /// <summary>Result of last macro evaluation</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Result/*" />
         PROTECTED _Result		    AS OBJECT
-        /// <summary>Current Scope</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._ScopeInfo/*" />
         PROTECTED _ScopeInfo		AS DbScopeInfo
         PROTECTED _FilterInfo	    AS DbFilterInfo
         PROTECTED _OpenInfo		    AS DbOpenInfo
         PROTECTED _OrderCondInfo	AS DbOrderCondInfo
-		/// <summary>List of children</summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Relations/*" />
         PROTECTED _Relations       AS List<DbRelInfo>
-        /// <summary># of parents</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Parents/*" />
         PROTECTED _Parents		    AS LONG
-        /// <summary>Maximum fieldname length (Advantage supports field names > 10 characters)</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._MaxFieldNameLength/*" />
         PROTECTED _MaxFieldNameLength AS LONG	//
 
         // Some flags that are stored here but managed in subclasses
         PROTECTED _TransRec		AS LOGIC
-        /// <summary>Size of record</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._RecordLength/*" />
         PROTECTED _RecordLength	AS LONG
         PROTECTED _RecordBuffer	AS BYTE[]
         /// <summary>Field delimiter (for DELIM RDD)</summary>
@@ -60,24 +60,24 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>String delimiter (for DELIM RDD)</summary>
         PROTECTED _Separator	:= e"\""  AS STRING
         PROTECTED _ReadOnly		AS LOGIC
-        /// <summary> Is the file opened Shared ?</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Shared/*" />
         PROTECTED _Shared			AS LOGIC
-        /// <summary>File handle of the current file</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._hFile/*" />
         PROTECTED _hFile			AS IntPtr
-        /// <summary>Should the file be flushed (it is dirty) ?</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Flush/*" />
         PROTECTED _Flush			AS LOGIC
         PROTECTED _IsFileBased      AS LOGIC
 
         // Memo and Order Implementation
         PROTECTED _Memo			AS IMemo
-        /// <summary>Current index implementation.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._Order/*" />
         PROTECTED _Order			AS IOrder
 
-        /// <summary>Result of the last Block evaluation.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea._EvalResult/*" />
         PROTECTED _EvalResult    AS OBJECT
-        /// <summary>Has the workarea been closed.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Closed/*" />
         PUBLIC PROPERTY Closed as LOGIC => SELF:_Closed
-        /// <summary>File information from the Open/Create methods</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OpenInfo/*" />
         PUBLIC PROPERTY OpenInfo AS DbOpenInfo => SELF:_OpenInfo
         PUBLIC PROPERTY Properties AS DatabasePropertyCollection
             GET
@@ -91,9 +91,9 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
-        /// <summary>Does the workarea have properties.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.HasProperties/*" />
         PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
-        /// <summary>Does the workarea have relations.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.HasRelations/*" />
         PROPERTY HasRelations   AS LOGIC GET _Relations:Count > 0
         #endregion
             /// <exclude />
@@ -147,7 +147,7 @@ BEGIN NAMESPACE XSharp.RDD
             GC.SuppressFinalize(SELF)
             RETURN
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.DbEval/*" />
         VIRTUAL METHOD DbEval(info AS DbEvalInfo) AS LOGIC
             // fetch locals from info
             LOCAL nRecno   := 0 AS DWORD
@@ -210,23 +210,23 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
             RETURN 0
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GoTop/*" />
         VIRTUAL METHOD GoTop( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GoBottom/*" />
         VIRTUAL METHOD GoBottom( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GoTo/*" />
         VIRTUAL METHOD GoTo(nRec AS DWORD) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GoToId/*" />
         VIRTUAL METHOD GoToId(oRec AS OBJECT) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Skip/*" />
         VIRTUAL METHOD Skip(nToSkip AS INT) AS LOGIC
             LOCAL lToSkip AS LONG
             IF nToSkip == 0
@@ -257,7 +257,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SkipFilter/*" />
         VIRTUAL METHOD SkipFilter(nToSkip AS INT) AS LOGIC
             LOCAL fromBottom   AS LOGIC
             LOCAL fromTop      AS LOGIC
@@ -314,11 +314,11 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN result
 
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SkipRaw/*" />
         VIRTUAL METHOD SkipRaw(nToSkip AS INT) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SkipScope/*" />
         VIRTUAL METHOD SkipScope(nToSkip AS INT) AS LOGIC
             LOCAL lFound    := FALSE AS LOGIC
             LOCAL lContinue := TRUE AS LOGIC
@@ -403,35 +403,35 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Found := lFound .AND. ! SELF:EoF
             RETURN result
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Append/*" />
         VIRTUAL METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Delete/*" />
         VIRTUAL METHOD Delete( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GetRec/*" />
         VIRTUAL METHOD GetRec( ) AS BYTE[]
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Pack/*" />
         VIRTUAL METHOD Pack( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.PutRec/*" />
         VIRTUAL METHOD PutRec(aRec AS BYTE[]) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Recall/*" />
         VIRTUAL METHOD Recall( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Zap/*" />
         VIRTUAL METHOD Zap( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Close/*" />
         VIRTUAL METHOD Close( ) AS LOGIC
             SELF:ClearFilter()
             SELF:ClearRel()
@@ -448,15 +448,15 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Closed := TRUE
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Create/*" />
         VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Open/*" />
         VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ClearFilter/*" />
         VIRTUAL METHOD ClearFilter( ) AS LOGIC
             IF SELF:_FilterInfo != NULL
                 SELF:_FilterInfo:Clear()
@@ -465,7 +465,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ClearScope/*" />
         VIRTUAL METHOD ClearScope( ) AS LOGIC
             IF SELF:_ScopeInfo != NULL
                 SELF:_ScopeInfo:Clear()
@@ -474,7 +474,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Continue/*" />
         VIRTUAL METHOD Continue( ) AS LOGIC
             LOCAL result := FALSE AS LOGIC
             IF SELF:_ScopeInfo:ForBlock != NULL
@@ -485,14 +485,14 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GetScope/*" />
         VIRTUAL METHOD GetScope( ) AS DbScopeInfo
             IF SELF:_ScopeInfo != NULL_OBJECT
                 RETURN SELF:_ScopeInfo:Clone()
             ENDIF
             RETURN DbScopeInfo{}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SetFilter/*" />
         VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
             SELF:ClearFilter()
             IF info != NULL_OBJECT
@@ -503,7 +503,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN TRUE
-        /// <summary>Set the Number of Fields the AddField Method will add.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SetFieldExtent/*" />
         VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
             SELF:_Fields        := RddFieldInfo[]{ fieldCount }
             SELF:_fieldNames	:= Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
@@ -511,7 +511,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_currentField  := 0
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SetScope/*" />
         VIRTUAL METHOD SetScope(info AS DbScopeInfo) AS LOGIC
             SELF:ClearScope()
             IF info != NULL_OBJECT
@@ -523,7 +523,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT VIRTUAL METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.AddField/*" />
         VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
             LOCAL result AS LOGIC
             result := SELF:FieldIndex(info:Name) == 0
@@ -556,7 +556,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.CreateFields/*" />
         VIRTUAL METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
             // fills the field list from the aFields array
             LOCAL fieldCount AS LONG
@@ -575,7 +575,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN result
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FieldIndex/*" />
         VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
             if self:_fieldNames:TryGetValue(fieldName, out var fieldPos)
                 return fieldPos+1
@@ -592,7 +592,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FieldInfo/*" />
         VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             // Note that nFldPos is 1 based
             IF SELF:_FieldIndexValidate(nFldPos)
@@ -688,11 +688,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         END PROPERTY
 
-        /// <summary>
-        /// Return the (1 based) RddFieldInfo object for the specified field
-        /// </summary>
-        /// <param name="nFldPos">1 based index</param>
-        /// <returns>FieldInfo object or NULL when the index is not valid</returns>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GetField/*" />
         VIRTUAL METHOD GetField(nFldPos AS INT) AS RddFieldInfo
             IF SELF:_FieldIndexValidate(nFldPos)
                 RETURN SELF:_Fields[nFldPos-1]
@@ -700,7 +696,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN NULL
 
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FieldName/*" />
         VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
             // Note that nFldPos is 1 based
             IF SELF:_FieldIndexValidate(nFldPos)
@@ -708,73 +704,73 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN String.Empty
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GetValue/*" />
         VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
             // Note that nFldPos is 1 based
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GetValueFile/*" />
         VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             // Note that nFldPos is 1 based
             RETURN _Memo:GetValueFile(nFldPos, fileName )
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GetValueLength/*" />
         VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
             // Note that nFldPos is 1 based
             RETURN _Memo:GetValueLength(nFldPos )
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Flush/*" />
         VIRTUAL METHOD Flush( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Refresh/*" />
         VIRTUAL METHOD Refresh( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GoCold/*" />
         VIRTUAL METHOD GoCold( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.GoHot/*" />
         VIRTUAL METHOD GoHot( ) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.PutValue/*" />
         VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // Note that nFldPos is 1 based
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.PutValueFile/*" />
         VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             // Note that nFldPos is 1 based
             RETURN _Memo:PutValueFile(nFldPos, fileName )
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.AppendLock/*" />
         VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.HeaderLock/*" />
         VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Lock/*" />
         VIRTUAL METHOD Lock(uiMode REF DbLockInfo) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.UnLock/*" />
         VIRTUAL METHOD UnLock(oRecId AS OBJECT) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.CloseMemFile/*" />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
             RETURN SELF:_Memo:CloseMemFile()
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.CreateMemFile/*" />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             RETURN SELF:_Memo:CreateMemFile(info)
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OpenMemFile/*" />
         VIRTUAL METHOD OpenMemFile( info AS DbOpenInfo) AS LOGIC
             RETURN SELF:_Memo:OpenMemFile(info )
 
@@ -782,42 +778,42 @@ BEGIN NAMESPACE XSharp.RDD
 
 
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderCondition/*" />
             VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
                 RETURN SELF:_Order:OrderCondition(info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderCreate/*" />
             VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
                 RETURN SELF:_Order:OrderCreate(info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderDestroy/*" />
             VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
                 RETURN SELF:_Order:OrderDestroy(info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderInfo/*" />
             VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
                 /* CA-Cl*pper does not generate RT error when default ORDERINFO() method
                 * is called
                 */
                 RETURN SELF:_Order:OrderInfo(nOrdinal, info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderListAdd/*" />
             VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
                 RETURN SELF:_Order:OrderListAdd(info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderListDelete/*" />
             VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
                 RETURN SELF:_Order:OrderListDelete(info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderListFocus/*" />
             VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
                 RETURN SELF:_Order:OrderListFocus(info)
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderListRebuild/*" />
             VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
                 RETURN SELF:_Order:OrderListRebuild()
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Seek/*" />
             VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
                 RETURN SELF:_Order:Seek(info)
                 #endregion
@@ -825,17 +821,17 @@ BEGIN NAMESPACE XSharp.RDD
 
             #region Relations
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ChildEnd/*" />
             VIRTUAL METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
                 SELF:_Parents--
                 RETURN TRUE
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ChildStart/*" />
             VIRTUAL METHOD ChildStart(info AS DbRelInfo) AS LOGIC
                 SELF:_Parents++
                 RETURN TRUE
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ChildSync/*" />
             VIRTUAL METHOD ChildSync(info AS DbRelInfo) AS LOGIC
                 THROW NotImplementedException{__ENTITY__}
 
@@ -843,7 +839,7 @@ BEGIN NAMESPACE XSharp.RDD
                 // Is Child ?
                 RETURN ( info:Child == SELF )
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ClearRel/*" />
             VIRTUAL METHOD ClearRel( ) AS LOGIC
                 LOCAL isOk AS LOGIC
                 //
@@ -857,11 +853,11 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN isOk
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ForceRel/*" />
             VIRTUAL METHOD ForceRel( ) AS LOGIC
                 THROW NotImplementedException{__ENTITY__}
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RelArea/*" />
             VIRTUAL METHOD RelArea(nRelNum AS DWORD) AS DWORD
                 LOCAL areaNum := 0 AS DWORD
                 IF SELF:HasRelations
@@ -871,7 +867,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN areaNum
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RelEval/*" />
             VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
                 // Evaluate block in the Area of the Parent
                 VAR originalArea := XSharp.RuntimeState.CurrentWorkarea
@@ -884,7 +880,7 @@ BEGIN NAMESPACE XSharp.RDD
                 END TRY
                 RETURN SELF:_EvalResult != NULL
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RelText/*" />
             VIRTUAL METHOD RelText(nRelNum AS DWORD) AS STRING
                 LOCAL textRelation := "" AS STRING
                 IF SELF:HasRelations
@@ -894,7 +890,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN textRelation
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SetRel/*" />
             VIRTUAL METHOD SetRel(info AS DbRelInfo) AS LOGIC
                 IF !SELF:_Relations:Contains( info )
                     SELF:_Relations:Add( info )
@@ -902,7 +898,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN info:Child:ChildStart( info )
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.SyncChildren/*" />
             VIRTUAL METHOD SyncChildren( ) AS LOGIC
                 LOCAL isOk AS LOGIC
                 //
@@ -922,7 +918,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             #region Trans not implemented
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Trans/*" />
             VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
                 LOCAL cbFor     := info:Scope:ForBlock AS ICodeblock
                 LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeblock
@@ -975,7 +971,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDDO
                 RETURN result
 
-                /// <inheritdoc />
+                /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.TransRec/*" />
             VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
                 LOCAL oDest  AS IRdd
                 LOCAL result AS LOGIC
@@ -1003,7 +999,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN result
                 #endregion
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.BlobInfo/*" />
         VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
             THROW NotImplementedException{__ENTITY__}
 
@@ -1028,7 +1024,7 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
             RETURN
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Compile/*" />
         VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
             LOCAL oBlock := NULL AS ICodeblock
             TRY
@@ -1064,7 +1060,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             RETURN oBlock
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.EvalBlock/*" />
         VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
                 LOCAL currentWk AS DWORD
                 currentWk := XSharp.RuntimeState.DataSession:CurrentWorkareaNO
@@ -1089,14 +1085,14 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN SELF:_EvalResult
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.EvalFilter/*" />
         VIRTUAL METHOD EvalFilter(oBlock AS ICodeblock) AS LOGIC
             // Refer to EvalBlock for compatibility.
             // Can be overriden by children to support
             // features like filtered record lists.
             RETURN (LOGIC) SELF:EvalBlock(oBlock)
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Info/*" />
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             // todo check basic implementation of Workarea.Info
@@ -1183,79 +1179,79 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN oResult
 
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RecInfo/*" />
         VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
 
             RETURN NULL
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Sort/*" />
         VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
             THROW NotImplementedException{__ENTITY__}
 
-            /// <inheritdoc />
+            /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Alias/*" />
         VIRTUAL PROPERTY Alias AS STRING GET _Alias SET _Alias := value
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Area/*" />
         VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := VALUE
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.BoF/*" />
         VIRTUAL PROPERTY BoF AS LOGIC GET _BoF  PROTECTED SET _BoF := @@value
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Deleted/*" />
         VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Driver/*" />
         VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.EoF/*" />
         VIRTUAL PROPERTY EoF AS LOGIC GET _EoF  PROTECTED SET _EoF := @@value
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Exclusive/*" />
         VIRTUAL PROPERTY Exclusive AS LOGIC GET FALSE
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FieldCount/*" />
         VIRTUAL PROPERTY FieldCount AS LONG GET _Fields?:Length DEFAULT 0
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FilterText/*" />
         VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText DEFAULT String.Empty
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Found/*" />
         VIRTUAL PROPERTY Found AS LOGIC GET _Found SET _Found := value
 
-        /// <summary>Current memo implementation.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Memo/*" />
         PROPERTY Memo  AS IMemo GET _Memo SET _Memo := @@value
 
-        /// <summary>Current Order condition</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.OrderCondInfo/*" />
         PROPERTY OrderCondInfo AS DbOrderCondInfo GET _OrderCondInfo SET _OrderCondInfo := @@value
 
-        /// <summary>File name of the main file</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FileName/*" />
         PROPERTY FileName AS STRING GET _FileName
 
-        /// <summary>Current Filter</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.FilterInfo/*" />
         PROPERTY FilterInfo AS DbFilterInfo GET _FilterInfo
 
-        /// <summary>Current Record</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RecordBuffer/*" />
         PROPERTY RecordBuffer AS BYTE[] GET _RecordBuffer
 
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RecCount/*" />
         VIRTUAL PROPERTY RecCount AS DWORD GET 0
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RecId/*" />
         VIRTUAL PROPERTY RecId AS OBJECT GET RecNo
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.RecNo/*" />
         VIRTUAL PROPERTY RecNo AS DWORD GET   0
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Shared/*" />
         VIRTUAL PROPERTY Shared AS LOGIC GET _Shared
 
-        /// <summary> Is the file opened ReadOnly ?</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.ReadOnly/*" />
         VIRTUAL PROPERTY ReadOnly AS LOGIC GET _ReadOnly
 
-        /// <summary>Is at top?</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Top/*" />
         PROPERTY Top    AS LOGIC GET _Top       SET _Top    := @@value
 
-        /// <summary>Is at bottom ?</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/Workarea.Bottom/*" />
         PROPERTY Bottom AS LOGIC GET _Bottom    SET _Bottom := @@value
 
 

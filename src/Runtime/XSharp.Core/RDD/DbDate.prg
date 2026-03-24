@@ -4,27 +4,25 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary>
-/// <seealso cref="T:XSharp.IDate"/>
-/// <seealso cref="T:XSharp.__Date"/>
+/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate/*" />
 STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
-	/// <inheritdoc />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Year/*" />
 	PROPERTY Year		AS INT AUTO GET PRIVATE SET
-	/// <inheritdoc />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Month/*" />
 	PROPERTY Month		AS INT AUTO GET PRIVATE SET
-	/// <inheritdoc />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Day/*" />
 	PROPERTY Day		AS INT AUTO GET PRIVATE SET
-	/// <inheritdoc />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Value/*" />
 	PROPERTY @@Value		AS DateTime GET DateTime{Year, Month, Day}
-	/// <inheritdoc />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.IsEmpty/*" />
 	PROPERTY IsEmpty	AS LOGIC GET Month == 0
-    /// <summary></summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.ctor/*" />
 	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)
 		Year	:= nYear
 		Month   := nMonth
 		Day     := nDay
 		RETURN
-	/// <inheritdoc />
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.ToString/*" />
 	OVERRIDE METHOD ToString() AS STRING
         IF IsEmpty
             RETURN "    -  -  "

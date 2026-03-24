@@ -4,91 +4,89 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary>
-/// <seealso cref="T:XSharp.IFloat"/>
-/// <seealso cref="T:XSharp.__Float"/>
+/// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat/*" />
 STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.Value/*" />
     PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.Digits/*" />
     PROPERTY Digits		AS INT AUTO GET PRIVATE SET
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.Decimals/*" />
     PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
-    /// <summary></summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.ctor/*" />
     CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
         @@Value := val
         Digits  := len
         Decimals := dec
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.ToString/*" />
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Value:ToString()
 
 #region IConvertible INTERFACE
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.GetTypeCode/*" />
     METHOD GetTypeCode() AS TypeCode
         RETURN TypeCode.Object
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToBoolean/*" />
     METHOD IConvertible.ToBoolean(provider AS IFormatProvider ) AS LOGIC
         RETURN @@Value != 0.0
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToByte/*" />
     METHOD IConvertible.ToByte(provider AS IFormatProvider ) AS BYTE
         RETURN Convert.ToByte(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToChar/*" />
     METHOD IConvertible.ToChar(provider AS IFormatProvider ) AS CHAR
         RETURN Convert.ToChar(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToDateTime/*" />
     METHOD IConvertible.ToDateTime(provider AS IFormatProvider ) AS System.DateTime
         RETURN Convert.ToDateTime(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToDecimal/*" />
     METHOD IConvertible.ToDecimal(provider AS IFormatProvider ) AS DECIMAL
         RETURN Convert.ToDecimal(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToDouble/*" />
     METHOD IConvertible.ToDouble(provider AS IFormatProvider ) AS Double
         RETURN @@Value
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToInt16/*" />
     METHOD IConvertible.ToInt16(provider AS IFormatProvider ) AS SHORT
         RETURN Convert.ToInt16(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToInt32/*" />
     METHOD IConvertible.ToInt32(provider AS IFormatProvider ) AS INT
         RETURN Convert.ToInt32(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToInt64/*" />
     METHOD IConvertible.ToInt64(provider AS IFormatProvider ) AS INT64
         RETURN Convert.ToInt64(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToSByte/*" />
     METHOD IConvertible.ToSByte(provider AS IFormatProvider ) AS SByte
         RETURN Convert.ToSByte(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToSingle/*" />
     METHOD IConvertible.ToSingle(provider AS IFormatProvider ) AS REAL4
         RETURN Convert.ToSingle(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToString/*" />
     METHOD IConvertible.ToString(provider AS IFormatProvider ) AS STRING
         RETURN String.Format("{0}", @@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToType/*" />
     METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
         RETURN Convert.ChangeType(@@Value,conversionType)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToUInt16/*" />
     METHOD IConvertible.ToUInt16(provider AS IFormatProvider ) AS WORD
         RETURN Convert.ToUInt16(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToUInt32/*" />
     METHOD IConvertible.ToUInt32(provider AS IFormatProvider ) AS DWORD
         RETURN Convert.ToUInt32(@@Value)
 
-    /// <inheritdoc/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DbFloat.IConvertible.ToUInt64/*" />
     METHOD IConvertible.ToUInt64(provider AS IFormatProvider ) AS UINT64
         RETURN Convert.ToUInt64(@@Value)
 

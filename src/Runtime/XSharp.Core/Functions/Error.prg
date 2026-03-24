@@ -24,10 +24,7 @@ FUNCTION DosErrString(dwError AS DWORD) AS STRING
 
 
 
-/// <summary>Return a descriptive name (in upper case) for a X# (Usual) Type</summary>
-/// <param name="dwType">Type number to check for</param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.CoreDocs.xml" path="doc/TypeString/*" />
 FUNCTION TypeString( nType AS DWORD ) AS STRING
    LOCAL ret AS STRING
    SWITCH (__UsualType) nType

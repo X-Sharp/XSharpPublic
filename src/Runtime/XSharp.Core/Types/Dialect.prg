@@ -7,7 +7,7 @@
 
 
 BEGIN NAMESPACE XSharp
-    /// <summary>This enum lists the various dialects possible in XSharp. The enum MUST match the dialect values inside the compiler </summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/XSharpDialect/*" />
     ENUM XSharpDialect
         MEMBER Core     := 0
         MEMBER VO       := 1

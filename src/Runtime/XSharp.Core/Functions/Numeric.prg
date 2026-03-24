@@ -61,12 +61,7 @@ FUNCTION SwapLong(liSwap AS LONG) AS LONG
 	RETURN liSwap
 
 
-/// <summary>
-/// Exchange the right and left halves of a Int64
-/// </summary>
-/// <param name="i64"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.CoreDocs.xml" path="doc/SwapInt64/*" />
 FUNCTION SwapInt64( i64 AS INT64 ) AS INT64
    RETURN (INT64)  ( i64 << 32 ) | ( i64 >> 32 ) 
 

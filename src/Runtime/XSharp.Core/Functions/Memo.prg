@@ -334,11 +334,7 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	LOCAL dPos := 0 AS INT
 	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoread/*" />
-/// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
-/// Use MemoReadBinary() in stead .</remarks>
-/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
-/// <seealso cref='MemoWrit' >MemoWrit</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/MemoRead/*" />
 FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
@@ -388,8 +384,7 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	END TRY
 	RETURN bResult
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />
-/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
+/// <include file="XSharp.CoreDocs.xml" path="doc/MemoWrit/*" />
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY

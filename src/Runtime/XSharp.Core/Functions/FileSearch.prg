@@ -218,14 +218,7 @@ INTERNAL FUNCTION FileSearchWorker(cFile AS STRING) AS STRING
     NEXT
     RETURN ""
 
-    /// <summary>
-    /// Register Worker function for File Search API.
-    /// </summary>
-    /// <param name="newWorker">Function that implements the worker. Must implement the FileSearcher delegate, so take STRING parameter and return a STRING</param>
-    /// <returns>
-    /// current Worker function
-    /// </returns>
-    /// <seealso cref="FileSearcher">FileSearcher Delegate </seealso>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/RegisterFileSearch/*" />
 FUNCTION RegisterFileSearch(newWorker AS FileSearcher) AS FileSearcher
     LOCAL oldWorker AS FileSearcher
     oldWorker := XSharp.FileSearch.Worker

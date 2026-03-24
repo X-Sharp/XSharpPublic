@@ -21,79 +21,78 @@ FUNCTION UseBufferedFileStream(lUse AS LOGIC) AS LOGIC
     XsFileStream.UseBufferedFileStream := lUse
     RETURN lOld
 
-/// <summary>Retrieve the buffered File IO setting for the runtime</summary>
-/// <returns>Current setting for the buffered file IO</returns>
+/// <include file="XSharp.CoreDocs.xml" path="doc/UseBufferedFileStream/*" />
 FUNCTION UseBufferedFileStream() AS LOGIC
     RETURN XsFileStream.UseBufferedFileStream
 
 
 BEGIN NAMESPACE XSharp.IO
-    /// <summary>Special Filestream class that sets the runtime IO Errorstate when an error occurs. </summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream/*" />
     CLASS XsFileStream INHERIT FileStream
         STATIC INTERNAL UseBufferedFileStream := TRUE AS LOGIC
-        /// <summary>The name of the file opened in the stream.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.FileName/*" />
         PROPERTY FileName as STRING AUTO
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.ctor/*" />
         CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
             SUPER(path, mode, faccess, share, bufferSize, options)
             SELF:FileName := path
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Seek/*" />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             LOCAL result := -1 AS INT64
             STARTIO
             result := SUPER:Seek(offset, origin)
             ENDIO
             RETURN result
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.SetLength/*" />
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
             STARTIO
             SUPER:SetLength(length)
             ENDIO
             RETURN
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Read/*" />
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             LOCAL result := -1 AS INT
             STARTIO
             result := SUPER:Read(bytes, offset, count)
             ENDIO
             RETURN result
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Write/*" />
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
             STARTIO
             SUPER:Write(bytes, offset, count)
             ENDIO
             RETURN
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.WriteByte/*" />
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
             STARTIO
             SUPER:WriteByte(b)
             ENDIO
             RETURN
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Lock/*" />
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
             STARTIO
             SUPER:Lock(position, length)
             ENDIO
             RETURN
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Unlock/*" />
         PUBLIC OVERRIDE METHOD Unlock(position AS INT64, length AS INT64)  AS VOID
             STARTIO
             SUPER:Unlock(position, length)
             ENDIO
         RETURN
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Flush/*" />
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
             STARTIO
             SUPER:Flush(lCommit)
             ENDIO
         RETURN
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Flush_2/*" />
         PUBLIC OVERRIDE METHOD Flush() AS VOID
             SELF:Flush(FALSE)
             RETURN
 
         #region Construct the filestream
-        /// <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.CreateFileStream/*" />
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             IF share != FileShare.None
                 IF RuntimeState.RunningOnWindows

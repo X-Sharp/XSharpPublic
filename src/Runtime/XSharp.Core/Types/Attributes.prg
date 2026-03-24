@@ -13,9 +13,9 @@ BEGIN NAMESPACE XSharp.Internal
 	[AttributeUsage(AttributeTargets.Parameter)];
 	SEALED CLASS ActualTypeAttribute INHERIT Attribute
 		PRIVATE INITONLY _value AS System.Type
-		///<summary>The actual type of the parameter.</summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ActualTypeAttribute.Value/*" />
 		PROPERTY @@Value AS System.Type GET _value
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ActualTypeAttribute.ctor/*" />
 		CONSTRUCTOR(@@Value AS System.Type)
 			_value := @@Value
 
@@ -28,11 +28,11 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS ClassLibraryAttribute INHERIT Attribute
 		PRIVATE INITONLY _globalClassName AS STRING
 		PRIVATE INITONLY _defaultNameSpace AS STRING
-		///<summary>Name of the class where functions, defines and globals are stored.</summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ClassLibraryAttribute.GlobalClassName/*" />
 		PROPERTY GlobalClassName AS STRING GET _globalClassName
-        ///<summary>Default namespace of the assembly.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/ClassLibraryAttribute.DefaultNameSpace/*" />
 		PROPERTY DefaultNameSpace AS STRING GET _defaultNameSpace
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ClassLibraryAttribute.ctor/*" />
 		CONSTRUCTOR(globalClassName AS STRING, defaultNameSpace AS STRING)
 			_globalClassName := globalClassName
 			_defaultNameSpace := defaultNameSpace
@@ -48,9 +48,9 @@ BEGIN NAMESPACE XSharp.Internal
     [AttributeUsage(AttributeTargets.Method|AttributeTargets.Constructor|AttributeTargets.Delegate)];
 	SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
 		PRIVATE INITONLY _parameterNames AS STRING[]
-		///<summary>List of parameter names for the method or constructor </summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ClipperCallingConventionAttribute.ParameterNames/*" />
 		PROPERTY ParameterNames AS STRING[] GET _parameterNames
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ClipperCallingConventionAttribute.ctor/*" />
 		CONSTRUCTOR(parameterNames AS STRING[])
 			_parameterNames := parameterNames
 
@@ -63,48 +63,26 @@ BEGIN NAMESPACE XSharp.Internal
 	[AttributeUsage(AttributeTargets.Assembly)];
 	SEALED CLASS CompilerVersionAttribute INHERIT Attribute
 		PRIVATE INITONLY _version AS STRING
-	    ///<summary>The version and dialect of the compiler that created the assembly.</summary>
+	    /// <include file="XSharp.CoreDocs.xml" path="doc/CompilerVersionAttribute.Version/*" />
 		PROPERTY Version AS STRING GET _version
 
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/CompilerVersionAttribute.ctor/*" />
 		CONSTRUCTOR(version AS STRING)
 			_version := version
 
 	END CLASS
 
 
-	/// <summary>
-	/// this class is used to mark default parameter values in the middle of a parameter list.
-    /// </summary>
-    /// <remarks>
-    /// It is used when compiling in VO or Vulcan mode.
-    /// And only for parameters that are followed by parameters without default value (because that is not supported by the .Net framework).<br/>
-    /// The X# compiler will find this attribute at compile time and will insert its value into the argument list.
-    /// </remarks>
+	/// <include file="XSharp.CoreDocs.xml" path="doc/DefaultParameterValueAttribute/*" />
 	SEALED CLASS DefaultParameterValueAttribute INHERIT Attribute
 		PRIVATE INITONLY _value AS OBJECT
 		PRIVATE INITONLY _flag  AS INT
-		/// <summary>Value of the default parameter</summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/DefaultParameterValueAttribute.Value/*" />
 		PROPERTY @@Value AS OBJECT GET _value
-        /// <summary>Flag indicating the type of the default parameter</summary>
-        /// <remarks>
-        /// <list type="table">
-        /// <listheader>
-        /// <term>Value</term>
-        /// <description>Description</description>
-        /// </listheader>
-	    /// <item><term>0</term><description>Regular .Net default value</description></item>
-	    /// <item><term>1</term><description>NIL</description></item>
-	    /// <item><term>2</term><description>Date (value is LONG ticks, empty for NULL_DATE)</description></item>
-	    /// <item><term>3</term><description>Symbol, value can be empty or a string</description></item>
-	    /// <item><term>4</term><description>PSZ, null = empty, or a string</description></item>
-	    /// <item><term>5</term><description>IntPtr (can be 0 for NullPtr)</description></item>
-        /// <item><term>6</term><description>Decimal (stored as string without 'm' suffix)</description></item>
-        /// </list>
-	    /// </remarks>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/DefaultParameterValueAttribute.Flag/*" />
 		PROPERTY Flag  AS INT    GET _flag
 
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/DefaultParameterValueAttribute.ctor/*" />
 		CONSTRUCTOR(oValue AS OBJECT, flag AS INT)
 			_value := oValue
 			_flag  := flag
@@ -120,12 +98,12 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS VoStructAttribute INHERIT Attribute
 		PRIVATE _size				AS INT
 		PRIVATE _largestMemberSize  AS INT
-		///<summary>Total size of the VOSTRUCT or UNION.</summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/VoStructAttribute.Size/*" />
 		PROPERTY Size				AS INT GET _size
-        ///<summary>Size of the largest member.</summary>
+        /// <include file="XSharp.CoreDocs.xml" path="doc/VoStructAttribute.LargestMemberSize/*" />
 		PROPERTY LargestMemberSize	AS INT GET _largestMemberSize
 
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/VoStructAttribute.ctor/*" />
 		CONSTRUCTOR(size AS INT, largestMemberSize AS INT)
 			_size := size
 			_largestMemberSize := largestMemberSize
@@ -138,7 +116,7 @@ BEGIN NAMESPACE XSharp.Internal
 	[AttributeUsage(AttributeTargets.Field)];
 	SEALED CLASS IsInstanceAttribute INHERIT Attribute
 
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/IsInstanceAttribute.ctor/*" />
 		CONSTRUCTOR()
 			SUPER()
 			RETURN
@@ -175,7 +153,7 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS NeedsAccessToLocalsAttribute INHERIT Attribute
         PRIVATE _writesToLocals := FALSE AS LOGIC
         PROPERTY WritesToLocals AS LOGIC GET _writesToLocals
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/NeedsAccessToLocalsAttribute.ctor/*" />
 		CONSTRUCTOR(lWrites AS LOGIC)
             _writesToLocals := lWrites
 
@@ -210,10 +188,10 @@ BEGIN NAMESPACE XSharp
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple := true)];
 	SEALED CLASS ImplicitNamespaceAttribute INHERIT Attribute
 		PRIVATE INITONLY _namespace AS STRING
-	    ///<summary>Name of the implicit namespace.</summary>
+	    /// <include file="XSharp.CoreDocs.xml" path="doc/ImplicitNamespaceAttribute.Namespace/*" />
 		PROPERTY Namespace AS STRING GET _namespace
 
-		/// <summary></summary>
+		/// <include file="XSharp.CoreDocs.xml" path="doc/ImplicitNamespaceAttribute.ctor/*" />
 		CONSTRUCTOR(namespace AS STRING)
 			_namespace := namespace
 

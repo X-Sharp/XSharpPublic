@@ -19,27 +19,20 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
     CONSTRUCTOR()
         SUPER()
 
-    /// <summary>Add a property - value pair to the collection.</summary>
-    /// <param name="key">Propery to store.</param>
-    /// <param name="val">Value to store</param>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DatabasePropertyCollection.Add/*" />
     NEW METHOD Add(key as DatabasePropertyType, val as OBJECT) AS VOID
         // Duplicate keys simply replace the existing value
         SELF[key] := val
         RETURN
 
-    /// <summary>Get the value for a property or an empty value when the property has not been defined </summary>
-    /// <param name="key">Property to look for.</param>
-    /// <typeparam name="T">Expected return type for the value</typeparam>
-    /// <returns>The value from the collection or an empty value of the right type.</returns>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DatabasePropertyCollection.GetValue_T_/*" />
     METHOD GetValue<T> (key as DatabasePropertyType) AS T
         if self:TryGetValue(key, out var result)
             return (T) result
         ENDIF
         RETURN default(T)
 
-    /// <summary>Get the value for a property</summary>
-    /// <param name="cProp">Property name to look for.</param>
-    /// <returns>The value from the collection or an empty value of the right type.</returns>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/DatabasePropertyCollection.GetValue/*" />
     METHOD GetValue(cProp as STRING) AS OBJECT
         var prop := GetDatabasePropertyNumber(cProp)
         if prop != 0

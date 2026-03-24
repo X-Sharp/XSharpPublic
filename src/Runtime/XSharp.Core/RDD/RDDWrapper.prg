@@ -82,38 +82,38 @@ BEGIN NAMESPACE XSharp.RDD
         // Record Movement
         //-------------------------------------------------------
         #region Record Movement
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.DbEval/*" />
         VIRTUAL METHOD DbEval(info AS DbEvalInfo)		AS LOGIC
             RETURN oRdd:DbEval(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GoTop/*" />
         VIRTUAL METHOD GoTop()							AS LOGIC
             RETURN oRdd:GoTop()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GoBottom/*" />
         VIRTUAL METHOD GoBottom()						AS LOGIC
             RETURN oRdd:GoBottom()
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GoTo/*" />
         VIRTUAL METHOD GoTo(nRec AS DWORD)				AS LOGIC
             RETURN oRdd:GoTo(nRec)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GoToId/*" />
         VIRTUAL METHOD GoToId(oRec AS OBJECT)			AS LOGIC
             RETURN oRdd:GoToId(oRec)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Skip/*" />
         VIRTUAL METHOD Skip(nToSkip AS INT)				AS LOGIC
             RETURN oRdd:Skip(nToSkip)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SkipFilter/*" />
         VIRTUAL METHOD SkipFilter(nToSkip AS INT)		AS LOGIC
             RETURN oRdd:SkipFilter(nToSkip)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SkipRaw/*" />
         VIRTUAL METHOD SkipRaw(nToSkip AS INT)			AS LOGIC
             RETURN oRdd:SkipRaw(nToSkip)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SkipScope/*" />
         VIRTUAL METHOD SkipScope(nToSkip AS INT)		AS LOGIC
             RETURN oRdd:SkipScope(nToSkip)
         #endregion
@@ -122,43 +122,43 @@ BEGIN NAMESPACE XSharp.RDD
         // Read / Write
         //-------------------------------------------------------
         #region Read / Write
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Append/*" />
         VIRTUAL METHOD Append(lReleaseLock AS LOGIC)	AS LOGIC
             RETURN oRdd:Append(lReleaseLock)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Delete/*" />
         VIRTUAL METHOD Delete()							AS LOGIC
             RETURN oRdd:Delete()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GetRec/*" />
         VIRTUAL METHOD GetRec()							AS BYTE[]
             RETURN oRdd:GetRec()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Pack/*" />
         VIRTUAL METHOD Pack()							AS LOGIC
             RETURN oRdd:Pack()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.PutRec/*" />
         VIRTUAL METHOD PutRec(aRec AS BYTE[])			AS LOGIC
             RETURN oRdd:PutRec(aRec)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Recall/*" />
         VIRTUAL METHOD Recall()							AS LOGIC
             RETURN oRdd:Recall()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Zap/*" />
         VIRTUAL METHOD Zap()							AS LOGIC
             RETURN oRdd:Zap()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Close/*" />
         VIRTUAL METHOD Close() 							AS LOGIC
             RETURN oRdd:Close()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Create/*" />
         VIRTUAL METHOD Create(info AS DbOpenInfo)		AS LOGIC
             RETURN oRdd:Create(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Open/*" />
         VIRTUAL METHOD Open(info AS DbOpenInfo)			AS LOGIC
             RETURN oRdd:Open(info)
 
@@ -167,27 +167,27 @@ BEGIN NAMESPACE XSharp.RDD
         // Record Selection - Scoping
         //-------------------------------------------------------
         #region Record Selection - Scoping
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ClearFilter/*" />
         VIRTUAL METHOD ClearFilter() 					AS LOGIC
             RETURN oRdd:ClearFilter()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ClearScope/*" />
         VIRTUAL METHOD ClearScope() 					AS LOGIC
             RETURN oRdd:ClearScope()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Continue/*" />
         VIRTUAL METHOD Continue()						AS LOGIC
             RETURN oRdd:Continue()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GetScope/*" />
         VIRTUAL METHOD GetScope()						AS DbScopeInfo
             RETURN oRdd:GetScope()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SetFilter/*" />
         VIRTUAL METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC
             RETURN oRdd:SetFilter(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SetScope/*" />
         VIRTUAL METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
             RETURN oRdd:SetScope(info)
         #endregion
@@ -196,15 +196,15 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
 
         #region Creation
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SetFieldExtent/*" />
         VIRTUAL METHOD SetFieldExtent(fieldCount AS LONG)	AS LOGIC
             RETURN oRdd:SetFieldExtent(fieldCount)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.AddField/*" />
         VIRTUAL METHOD AddField(info AS RddFieldInfo)	AS LOGIC
             RETURN oRdd:AddField(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.CreateFields/*" />
         VIRTUAL METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
             RETURN oRdd:CreateFields(aFields)
         #endregion
@@ -214,39 +214,39 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
 
         #region Field Related
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.FieldIndex/*" />
         VIRTUAL METHOD FieldIndex(fieldName AS STRING)	AS LONG
             RETURN oRdd:FieldIndex(fieldName)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.FieldInfo/*" />
         VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             RETURN oRdd:FieldInfo(nFldPos,nOrdinal,oNewValue)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.FieldName/*" />
         VIRTUAL METHOD FieldName(nFldPos AS LONG)		AS STRING
             RETURN oRdd:FieldName(nFldPos)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GetField/*" />
         VIRTUAL METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
             RETURN oRdd:GetField(nFldPos)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GetValue/*" />
         VIRTUAL METHOD GetValue(nFldPos AS LONG)		AS OBJECT
             RETURN oRdd:GetValue(nFldPos)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GetValueFile/*" />
         VIRTUAL METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
             RETURN oRdd:GetValueFile(nFldPos, fileName)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GetValueLength/*" />
         VIRTUAL METHOD GetValueLength(nFldPos AS LONG)	AS LONG
             RETURN oRdd:GetValueLength(nFldPos)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.PutValue/*" />
         VIRTUAL METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             RETURN oRdd:PutValue(nFldPos, oValue)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.PutValueFile/*" />
         VIRTUAL METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
             RETURN oRdd:PutValueFile(nFldPos, fileName)
 
@@ -256,19 +256,19 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Hot and Cold
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Flush/*" />
         VIRTUAL METHOD Flush() 							AS LOGIC
             RETURN oRdd:Flush()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GoCold/*" />
         VIRTUAL METHOD GoCold()							AS LOGIC
             RETURN oRdd:GoCold()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.GoHot/*" />
         VIRTUAL METHOD GoHot()							AS LOGIC
             RETURN oRdd:GoHot()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Refresh/*" />
         VIRTUAL METHOD Refresh() 							AS LOGIC
             RETURN oRdd:Refresh()
 
@@ -278,19 +278,19 @@ BEGIN NAMESPACE XSharp.RDD
         // Locking
         //-------------------------------------------------------
         #region Locking
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.AppendLock/*" />
         VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
             RETURN oRdd:AppendLock(uiMode)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.HeaderLock/*" />
         VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
             RETURN oRdd:HeaderLock(uiMode)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Lock/*" />
         VIRTUAL METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC
             RETURN oRdd:Lock(REF uiMode)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.UnLock/*" />
         VIRTUAL METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
             RETURN oRdd:UnLock(oRecId)
 
@@ -301,15 +301,15 @@ BEGIN NAMESPACE XSharp.RDD
 
         #region MemoFiles
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.CloseMemFile/*" />
         VIRTUAL METHOD CloseMemFile() 					AS LOGIC
             RETURN oRdd:CloseMemFile()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.CreateMemFile/*" />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             RETURN oRdd:CreateMemFile(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OpenMemFile/*" />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC
             RETURN oRdd:OpenMemFile(info )
 
@@ -318,39 +318,39 @@ BEGIN NAMESPACE XSharp.RDD
         // Indexes and orders
         //-------------------------------------------------------
         #region Indexes and orders
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderCondition/*" />
         VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             RETURN oRdd:OrderCondition(info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderCreate/*" />
         VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             RETURN oRdd:OrderCreate(info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderDestroy/*" />
         VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderDestroy(info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderInfo/*" />
         VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
             RETURN oRdd:OrderInfo(nOrdinal, info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderListAdd/*" />
         VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderListAdd(info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderListDelete/*" />
         VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderListDelete(info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderListFocus/*" />
         VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderListFocus(info )
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.OrderListRebuild/*" />
         VIRTUAL METHOD OrderListRebuild() AS LOGIC
             RETURN oRdd:OrderListRebuild()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Seek/*" />
         VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
             RETURN oRdd:Seek(info)
 
@@ -359,43 +359,43 @@ BEGIN NAMESPACE XSharp.RDD
         // Relations
         //-------------------------------------------------------
         #region Relations
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ChildEnd/*" />
         VIRTUAL METHOD ChildEnd(info AS DbRelInfo)				AS LOGIC
             RETURN oRdd:ChildEnd(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ChildStart/*" />
         VIRTUAL METHOD ChildStart(info AS DbRelInfo)			AS LOGIC
             RETURN oRdd:ChildStart(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ChildSync/*" />
         VIRTUAL METHOD ChildSync(info AS DbRelInfo)				AS LOGIC
             RETURN oRdd:ChildSync(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ClearRel/*" />
         VIRTUAL METHOD ClearRel()								AS LOGIC
             RETURN oRdd:ClearRel()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.ForceRel/*" />
         VIRTUAL METHOD ForceRel()								AS LOGIC
             RETURN oRdd:ForceRel()
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RelArea/*" />
         VIRTUAL METHOD RelArea(nRelNum AS DWORD)					AS DWORD
             RETURN oRdd:RelArea(nRelNum)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RelEval/*" />
         VIRTUAL METHOD RelEval(info AS DbRelInfo)				AS LOGIC
             RETURN oRdd:RelEval(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RelText/*" />
         VIRTUAL METHOD RelText(nRelNum AS DWORD)					AS STRING
             RETURN oRdd:RelText(nRelNum)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SetRel/*" />
         VIRTUAL METHOD SetRel(info AS DbRelInfo)				AS LOGIC
             RETURN oRdd:SetRel(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.SyncChildren/*" />
         VIRTUAL METHOD SyncChildren()							AS LOGIC
             RETURN oRdd:SyncChildren()
 
@@ -405,19 +405,19 @@ BEGIN NAMESPACE XSharp.RDD
         // Bulk Sort and Copy
         //-------------------------------------------------------
         #region Bulk Sort and Copy
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Sort/*" />
         VIRTUAL METHOD Sort(info AS DbSortInfo)					AS LOGIC
             RETURN oRdd:Sort(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Trans/*" />
         VIRTUAL METHOD Trans(info AS DbTransInfo) 				AS LOGIC
             RETURN oRdd:Trans(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.TransRec/*" />
         VIRTUAL METHOD TransRec(info AS DbTransInfo) 			AS LOGIC
             RETURN oRdd:TransRec(info)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.BlobInfo/*" />
         VIRTUAL METHOD BlobInfo(uiPos AS DWORD, nOrdinal AS DWORD) AS OBJECT
             RETURN oRdd:BlobInfo(uiPos, nOrdinal)
         #endregion
@@ -425,11 +425,11 @@ BEGIN NAMESPACE XSharp.RDD
         // Macro compiler
         //-------------------------------------------------------
         #region Macro compiler
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Compile/*" />
         VIRTUAL METHOD Compile(sBlock AS STRING)				AS ICodeblock
             RETURN oRdd:Compile(sBlock)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.EvalBlock/*" />
         VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT
             RETURN oRdd:EvalBlock(oBlock)
         #endregion
@@ -437,11 +437,11 @@ BEGIN NAMESPACE XSharp.RDD
         // Info
         //-------------------------------------------------------
         #region Info
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Info/*" />
         VIRTUAL METHOD Info(nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             RETURN oRdd:Info(nOrdinal, oNewValue)
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RecInfo/*" />
         VIRTUAL METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
             RETURN oRdd:RecInfo(nOrdinal, oRecID, oNewValue)
         #endregion
@@ -449,33 +449,33 @@ BEGIN NAMESPACE XSharp.RDD
         // Properties
         //-------------------------------------------------------
         #region Properties
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Alias/*" />
         VIRTUAL PROPERTY Alias 		AS STRING	GET oRdd:Alias SET oRdd:Alias := value
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Area/*" />
         VIRTUAL PROPERTY Area		AS DWORD	GET oRdd:Area  SET oRdd:Area := value
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.BoF/*" />
         VIRTUAL PROPERTY BoF 		AS LOGIC	GET oRdd:BoF
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Deleted/*" />
         VIRTUAL PROPERTY Deleted 	AS LOGIC	GET oRdd:Deleted
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Driver/*" />
         VIRTUAL PROPERTY Driver     AS STRING	GET oRdd:Driver
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.EoF/*" />
         VIRTUAL PROPERTY EoF 		AS LOGIC	GET oRdd:EoF
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Exclusive/*" />
         VIRTUAL PROPERTY Exclusive	AS LOGIC	GET oRdd:Exclusive
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.FieldCount/*" />
         VIRTUAL PROPERTY FieldCount AS LONG		GET oRdd:FieldCount
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.FilterText/*" />
         VIRTUAL PROPERTY FilterText	AS STRING	GET oRdd:FilterText
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Found/*" />
         VIRTUAL PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := value
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RecCount/*" />
         VIRTUAL PROPERTY RecCount	AS DWORD	GET oRdd:RecCount
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RecId/*" />
         VIRTUAL PROPERTY RecId		AS OBJECT	GET	oRdd:RecId
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.RecNo/*" />
         VIRTUAL PROPERTY RecNo		AS DWORD	GET oRdd:RecNo
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/WrapperRDD.Shared/*" />
         VIRTUAL PROPERTY Shared		AS LOGIC	GET oRdd:Shared
 
         #endregion

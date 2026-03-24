@@ -10,33 +10,31 @@ USING System.Text
 USING System.Reflection
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp
-  /// <summary>XSharp Runtime base Error class</summary>
+  /// <include file="XSharp.CoreDocs.xml" path="doc/Error/*" />
   CLASS Error INHERIT Exception
-    /// <summary>A string representing the name of the subsystem generating the error.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.SubSystem/*" />
     VIRTUAL PROPERTY SubSystem AS STRING AUTO  := "BASE"
-    /// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
-    /// <Seealso cref="Gencode"/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Gencode/*" />
     VIRTUAL PROPERTY Gencode AS DWORD AUTO    := EG_UNKNOWN
-    /// <summary>An string containing the description of the Gencode.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.GenCodeText/*" />
     VIRTUAL PROPERTY GenCodeText AS STRING GET IIF (Gencode != 0, ErrString(Gencode), "Unknown GenCode")
-    /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.SubCode/*" />
     VIRTUAL PROPERTY SubCode AS DWORD AUTO    := 0
-    /// <summary>An string containing the description of the SubCode.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.SubCodeText/*" />
     VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_Subcode), _Subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := value
     PRIVATE _Subcode as STRING
-    /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.FuncSym/*" />
     VIRTUAL PROPERTY FuncSym AS STRING AUTO   := ""
-    /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.FileName/*" />
     VIRTUAL PROPERTY FileName AS STRING AUTO  := ""
-    /// <summary>A constant indicating the severity of the error condition.</summary>
-    /// <Seealso cref="Severity"/>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Severity/*" />
     VIRTUAL PROPERTY Severity AS DWORD AUTO   := ES_ERROR
-    /// <summary>A string that describes the error condition.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Description/*" />
     VIRTUAL PROPERTY Description		AS STRING AUTO := ""
-    /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Arg/*" />
     VIRTUAL PROPERTY Arg				AS STRING AUTO := ""
     PRIVATE  _ArgType			AS DWORD
-    /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ArgType/*" />
     VIRTUAL PROPERTY ArgType			AS DWORD
       GET
         RETURN _ArgType
@@ -47,7 +45,7 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     PRIVATE  _ArgTypeType 		:= NULL AS System.Type
-    /// <summary>The system type representing the data type of the argument that raised the error.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ArgTypeType/*" />
     VIRTUAL PROPERTY ArgTypeType		AS System.Type
       GET
         RETURN _ArgTypeType
@@ -59,7 +57,7 @@ BEGIN NAMESPACE XSharp
     END PROPERTY
 
     PRIVATE _ArgTypeReq		AS DWORD
-    /// <summary>A numeric value representing the expected type of the argument that raised the error.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ArgTypeReq/*" />
     VIRTUAL PROPERTY ArgTypeReq			AS DWORD
       GET
         RETURN _ArgTypeReq
@@ -70,7 +68,7 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     PRIVATE  _ArgTypeReqType := NULL	AS System.Type
-    /// <summary>The system type representing the expected type of the argument that raised the error.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ArgTypeReqType/*" />
     VIRTUAL PROPERTY ArgTypeReqType		AS System.Type
       GET
         RETURN _ArgTypeReqType
@@ -80,42 +78,41 @@ BEGIN NAMESPACE XSharp
         _ArgTypeReq 	 := (DWORD) TypeToUsualType(value)
       END SET
     END PROPERTY
-    /// <summary>A numeric value representing the type of the new result that the error handler substitutes for the operation that produced the error condition.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.SubstituteType/*" />
     VIRTUAL PROPERTY SubstituteType     AS DWORD AUTO
-    /// <summary>A numeric value representing the number of the argument supplied to an operator or function when an argument error occurs.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ArgNum/*" />
     VIRTUAL PROPERTY ArgNum				AS DWORD AUTO
-    /// <summary>An object representing the SELF of the method in which the error occurred.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.MethodSelf/*" />
     VIRTUAL PROPERTY MethodSelf			AS OBJECT AUTO
-    /// <summary>A symbol representing the calling function of the function in which the error occurred.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.CallFuncSym/*" />
     VIRTUAL PROPERTY CallFuncSym		AS STRING AUTO
-    /// <summary>An array of the arguments supplied to an operator or function when an argument error occurs.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Args/*" />
     VIRTUAL PROPERTY Args				AS OBJECT[] AUTO
-    /// <summary>An integer numeric value representing the number of times the failed operation has been attempted.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Tries/*" />
     VIRTUAL PROPERTY Tries				AS INT AUTO := 0
-    /// <summary>A logical value indicating whether the subsystem can perform default error recovery for the error condition.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.CanDefault/*" />
     VIRTUAL PROPERTY CanDefault         AS LOGIC AUTO
-    /// <summary>A logical value indicating whether the subsystem can retry the operation that caused the error condition.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.CanRetry/*" />
     VIRTUAL PROPERTY CanRetry           AS LOGIC AUTO
-    /// <summary>A logical value indicating whether a new result can be substituted for the operation that produced the error condition.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.CanSubstitute/*" />
     VIRTUAL PROPERTY CanSubstitute      AS LOGIC AUTO
-    /// <summary>A string that describes the operation being attempted when the error occurred.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Operation/*" />
     VIRTUAL PROPERTY Operation          AS STRING AUTO := ""
-    /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.OSCode/*" />
     VIRTUAL PROPERTY OSCode				AS DWORD AUTO := 0
-    /// <summary>Descripion of the OSCode</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.OSCodeText/*" />
     VIRTUAL PROPERTY OSCodeText			AS STRING GET IIF(OSCode == 0, "", DosErrString(OSCode))
-    /// <summary>A numeric value representing the file handle supplied to a function when an file error occurs.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.FileHandle/*" />
     VIRTUAL PROPERTY FileHandle         AS DWORD AUTO
-    /// <summary>A numeric value representing a boundary condition for an operation (such as string overflow or array bound error).</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.MaxSize/*" />
     VIRTUAL PROPERTY MaxSize			AS DWORD AUTO
-    /// <summary>A pointer to the function in which the error occurred.</summary>
-    /// <remarks><em>Note</em> This property is for compatibility only. It is not being used in the X# runtime.</remarks>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.FuncPtr/*" />
     VIRTUAL PROPERTY FuncPtr            AS IntPtr AUTO := IntPtr.Zero
 
 
-    /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Cargo/*" />
     VIRTUAL PROPERTY Cargo              AS OBJECT AUTO
-    /// <summary>Call stack from the moment where the error object was created</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Stack/*" />
     VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:SetStackTrace(VALUE)
 
 	PRIVATE _StackTrace AS STRING
@@ -139,12 +136,12 @@ BEGIN NAMESPACE XSharp
         ENDIF
         RETURN
 
-    /// <summary>Create an Error Object</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor/*" />
     CONSTRUCTOR()
     SELF:setDefaultValues()
     RETURN
 
-    /// <summary>Create an Error Object with the specified Description</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_2/*" />
     CONSTRUCTOR (msg AS STRING)
     SUPER(msg)
     SELF:setDefaultValues()
@@ -152,7 +149,7 @@ BEGIN NAMESPACE XSharp
     SELF:Gencode     := EG_EXCEPTION
     RETURN
 
-    /// <summary>Create an Error Object with the Innner Exception</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_3/*" />
     CONSTRUCTOR (ex AS Exception)
     SUPER(ex:Message,ex)
     SELF:setDefaultValues()
@@ -208,7 +205,7 @@ BEGIN NAMESPACE XSharp
             SELF:Gencode     := EG_EXCEPTION
         ENDIF
 
-    /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_4/*" />
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
     SUPER(ex:Message,ex)
     SELF:setDefaultValues()
@@ -219,7 +216,7 @@ BEGIN NAMESPACE XSharp
     SELF:Args		 := aArgs
 
 
-    /// <summary>Create an Error Object for a Gencode and Argument Name.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_5/*" />
     CONSTRUCTOR (dwGenCode AS DWORD, cArg AS STRING)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
@@ -227,7 +224,7 @@ BEGIN NAMESPACE XSharp
     SELF:Arg	 := cArg
     SELF:Description := ErrString( dwGenCode )
 
-    /// <summary>Create an Error Object for a Gencode, Argument Name and Description.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_6/*" />
     CONSTRUCTOR (dwGenCode AS DWORD, cArg AS STRING, cDescription AS STRING)
     SUPER(cDescription)
     SELF:setDefaultValues()
@@ -236,7 +233,7 @@ BEGIN NAMESPACE XSharp
     SELF:Description	:= cDescription
 
 
-    /// <summary>Create an Error Object.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_7/*" />
     CONSTRUCTOR (dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
@@ -247,7 +244,7 @@ BEGIN NAMESPACE XSharp
     SELF:ArgNum      := iArgNum
     SELF:Description := ErrString( dwGenCode )
 
-    /// <summary>Create an Error Object.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ctor_8/*" />
     CONSTRUCTOR (dwGenCode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
@@ -261,7 +258,7 @@ BEGIN NAMESPACE XSharp
         endif
         return cString+e" :\t"
 
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ToString/*" />
     OVERRIDE METHOD ToString() AS STRING
       LOCAL sb AS StringBuilder
       LOCAL nGenCode AS Gencode
@@ -331,7 +328,7 @@ BEGIN NAMESPACE XSharp
       RETURN sb:ToString()
 
 
-    /// <summary>Throw the error.</summary>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.Throw/*" />
     VIRTUAL METHOD Throw AS VOID STRICT
         THROW SELF
 

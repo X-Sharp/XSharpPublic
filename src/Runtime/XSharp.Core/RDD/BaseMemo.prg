@@ -6,8 +6,7 @@
 USING System.Text
 USING XSharp.RDD.Support
 
-/// <summary>Base Memo class. Does not implement anything. </summary>
-/// <seealso cref="IMemo"/>
+/// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo/*" />
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
     PROTECTED _oArea AS Workarea
     VIRTUAL PROPERTY FullPath as STRING
@@ -18,52 +17,51 @@ CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
 
 
 
-    /// <summary>Create the BaseMemo object</summary>
-    /// <param name="oArea">Workarea object that 'owns' this memo object </param>
+    /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.ctor/*" />
     CONSTRUCTOR(oArea AS Workarea)
         _oArea := oArea
 
     VIRTUAL PROPERTY LastWrittenBlockNumber AS LONG AUTO GET SET
 
     // Read & Write
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.GetValue/*" />
     VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.GetValueFile/*" />
     VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.GetValueLength/*" />
     VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.Flush/*" />
     VIRTUAL METHOD Flush() 			AS LOGIC
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.PutValue/*" />
     VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.PutValueFile/*" />
     VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
         THROW NotImplementedException{}
 
         // Memo File Access
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.CloseMemFile/*" />
     VIRTUAL METHOD CloseMemFile( ) AS LOGIC
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.CreateMemFile/*" />
     VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
         THROW NotImplementedException{}
 
-        /// <inheritdoc />
+        /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.OpenMemFile/*" />
     VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
         THROW NotImplementedException{}
 
-    /// <inheritdoc />
+    /// <include file="XSharp.CoreDocs.xml" path="doc/BaseMemo.Zap/*" />
     VIRTUAL METHOD Zap() AS LOGIC
         THROW NotImplementedException{}
 

@@ -149,7 +149,7 @@ namespace XSharp.LanguageService
         {
             try
             {
-                Logger.Information("OpenDocumentAsync: {file} {line} {column} {preview}");
+                Logger.Information($"OpenDocumentAsync: {file} {line} {column} {preview}");
 
                 DocumentView view;
                 if (preview)

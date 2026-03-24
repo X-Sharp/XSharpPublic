@@ -94,12 +94,6 @@
     <XsBufferedFileStream.XWrite>
         <summary>Bypass the buffered Write mechanism and call the original Write() method in the base class</summary>
     </XsBufferedFileStream.XWrite>
-    <XsBufferedFileStream.Position>
-        <inheritdoc />
-    </XsBufferedFileStream.Position>
-    <XsBufferedFileStream.Length>
-        <inheritdoc />
-    </XsBufferedFileStream.Length>
     <XsBufferedFileStream.Read>
         <inheritdoc />
         <remarks>This method overrides the normal behavior of the FileStream class and reads the data from an inmemory cache, when possible </remarks>
@@ -120,9 +114,6 @@
         <inheritdoc />
         <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Close() method.</remarks>
     </XsBufferedFileStream.Close>
-    <XsBufferedFileStream.Seek>
-        <inheritdoc />
-    </XsBufferedFileStream.Seek>
     <XSharpDialect>
         <summary>This enum lists the various dialects possible in XSharp. The enum MUST match the dialect values inside the compiler </summary>
     </XSharpDialect>
@@ -249,9 +240,6 @@
     <Error.ctor_8>
         <summary>Create an Error Object.</summary>
     </Error.ctor_8>
-    <Error.ToString>
-        <inheritdoc />
-    </Error.ToString>
     <Error.Throw>
         <summary>Throw the error.</summary>
     </Error.Throw>
@@ -283,36 +271,6 @@
     <XsFileStream.FileName>
         <summary>The name of the file opened in the stream.</summary>
     </XsFileStream.FileName>
-    <XsFileStream.ctor>
-        <inheritdoc />
-    </XsFileStream.ctor>
-    <XsFileStream.Seek>
-        <inheritdoc />
-    </XsFileStream.Seek>
-    <XsFileStream.SetLength>
-        <inheritdoc />
-    </XsFileStream.SetLength>
-    <XsFileStream.Read>
-        <inheritdoc />
-    </XsFileStream.Read>
-    <XsFileStream.Write>
-        <inheritdoc />
-    </XsFileStream.Write>
-    <XsFileStream.WriteByte>
-        <inheritdoc />
-    </XsFileStream.WriteByte>
-    <XsFileStream.Lock>
-        <inheritdoc />
-    </XsFileStream.Lock>
-    <XsFileStream.Unlock>
-        <inheritdoc />
-    </XsFileStream.Unlock>
-    <XsFileStream.Flush>
-        <inheritdoc />
-    </XsFileStream.Flush>
-    <XsFileStream.Flush_2>
-        <inheritdoc />
-    </XsFileStream.Flush_2>
     <XsFileStream.CreateFileStream>
         <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
     </XsFileStream.CreateFileStream>
@@ -504,9 +462,6 @@
         <inheritdoc />
         <remarks>This method calls the Windows FlushFileBuffers() function directly.</remarks>
     </XsWin32FileStream.Flush>
-    <XsWin32FileStream.Flush_2>
-        <inheritdoc />
-    </XsWin32FileStream.Flush_2>
     <FileStreamExensions.SafeReadAt>
         <summary>Read data at a location in the file. Makes sure that file locations are >= 0</summary>
         <include file="CoreComments.xml" path="Comments/StreamRead/*" />
@@ -1344,39 +1299,6 @@
         <summary>Base Index class. Does not implement anything. </summary>
         <seealso cref="IOrder"/>
     </BaseIndex>
-    <BaseIndex.OrderCondition>
-        <inheritdoc />
-    </BaseIndex.OrderCondition>
-    <BaseIndex.OrderCreate>
-        <inheritdoc />
-    </BaseIndex.OrderCreate>
-    <BaseIndex.OrderDestroy>
-        <inheritdoc />
-    </BaseIndex.OrderDestroy>
-    <BaseIndex.OrderInfo>
-        <inheritdoc />
-    </BaseIndex.OrderInfo>
-    <BaseIndex.OrderListAdd>
-        <inheritdoc />
-    </BaseIndex.OrderListAdd>
-    <BaseIndex.OrderListDelete>
-        <inheritdoc />
-    </BaseIndex.OrderListDelete>
-    <BaseIndex.OrderListFocus>
-        <inheritdoc />
-    </BaseIndex.OrderListFocus>
-    <BaseIndex.OrderListRebuild>
-        <inheritdoc />
-    </BaseIndex.OrderListRebuild>
-    <BaseIndex.Seek>
-        <inheritdoc />
-    </BaseIndex.Seek>
-    <BaseIndex.Found>
-        <inheritdoc />
-    </BaseIndex.Found>
-    <BaseIndex.Flush>
-        <inheritdoc />
-    </BaseIndex.Flush>
     <BaseMemo>
         <summary>Base Memo class. Does not implement anything. </summary>
         <seealso cref="IMemo"/>
@@ -1385,36 +1307,6 @@
         <summary>Create the BaseMemo object</summary>
         <param name="oArea">Workarea object that 'owns' this memo object </param>
     </BaseMemo.ctor>
-    <BaseMemo.GetValue>
-        <inheritdoc />
-    </BaseMemo.GetValue>
-    <BaseMemo.GetValueFile>
-        <inheritdoc />
-    </BaseMemo.GetValueFile>
-    <BaseMemo.GetValueLength>
-        <inheritdoc />
-    </BaseMemo.GetValueLength>
-    <BaseMemo.Flush>
-        <inheritdoc />
-    </BaseMemo.Flush>
-    <BaseMemo.PutValue>
-        <inheritdoc />
-    </BaseMemo.PutValue>
-    <BaseMemo.PutValueFile>
-        <inheritdoc />
-    </BaseMemo.PutValueFile>
-    <BaseMemo.CloseMemFile>
-        <inheritdoc />
-    </BaseMemo.CloseMemFile>
-    <BaseMemo.CreateMemFile>
-        <inheritdoc />
-    </BaseMemo.CreateMemFile>
-    <BaseMemo.OpenMemFile>
-        <inheritdoc />
-    </BaseMemo.OpenMemFile>
-    <BaseMemo.Zap>
-        <inheritdoc />
-    </BaseMemo.Zap>
     <CoreDb>
         <summary>
         The CoreDb class contains the methods to manipulate Workareas. <br/>
@@ -1721,9 +1613,6 @@
         <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
         <remarks><include file="RTComments.xml" path="Comments/RddInfoRemarks/*" /></remarks>
     </CoreDb.RddInfo>
-    <CoreDb.RddInfo_2>
-        <inheritdoc cref="RddInfo" />
-    </CoreDb.RddInfo_2>
     <CoreDb.RddList>
         <summary>Returns list of RDD names that are in use at this moment</summary>
         <remarks><note type="tip">VoDbRddList() and CoreDb.RddList() are aliases</note></remarks>
@@ -2123,163 +2012,25 @@
         <seealso cref="T:XSharp.ICurrency"/>
         <seealso cref="T:XSharp.__Currency"/>
     </DbCurrency>
-    <DbCurrency.Value>
-        <inheritdoc />
-    </DbCurrency.Value>
     <DbCurrency.ctor>
         <summary></summary>
     </DbCurrency.ctor>
-    <DbCurrency.ToString>
-        <inheritdoc />
-    </DbCurrency.ToString>
-    <DbCurrency.GetTypeCode>
-        <inheritdoc/>
-    </DbCurrency.GetTypeCode>
-    <DbCurrency.IConvertible.ToBoolean>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToBoolean>
-    <DbCurrency.IConvertible.ToByte>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToByte>
-    <DbCurrency.IConvertible.ToChar>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToChar>
-    <DbCurrency.IConvertible.ToDateTime>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToDateTime>
-    <DbCurrency.IConvertible.ToDecimal>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToDecimal>
-    <DbCurrency.IConvertible.ToDouble>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToDouble>
-    <DbCurrency.IConvertible.ToInt16>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToInt16>
-    <DbCurrency.IConvertible.ToInt32>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToInt32>
-    <DbCurrency.IConvertible.ToInt64>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToInt64>
-    <DbCurrency.IConvertible.ToSByte>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToSByte>
-    <DbCurrency.IConvertible.ToSingle>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToSingle>
-    <DbCurrency.IConvertible.ToString>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToString>
-    <DbCurrency.IConvertible.ToType>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToType>
-    <DbCurrency.IConvertible.ToUInt16>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToUInt16>
-    <DbCurrency.IConvertible.ToUInt32>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToUInt32>
-    <DbCurrency.IConvertible.ToUInt64>
-        <inheritdoc/>
-    </DbCurrency.IConvertible.ToUInt64>
     <DbDate>
         <summary>Implementation of the IDate interface that can be used by the RDD system. </summary>
         <seealso cref="T:XSharp.IDate"/>
         <seealso cref="T:XSharp.__Date"/>
     </DbDate>
-    <DbDate.Year>
-        <inheritdoc />
-    </DbDate.Year>
-    <DbDate.Month>
-        <inheritdoc />
-    </DbDate.Month>
-    <DbDate.Day>
-        <inheritdoc />
-    </DbDate.Day>
-    <DbDate.Value>
-        <inheritdoc />
-    </DbDate.Value>
-    <DbDate.IsEmpty>
-        <inheritdoc />
-    </DbDate.IsEmpty>
     <DbDate.ctor>
         <summary></summary>
     </DbDate.ctor>
-    <DbDate.ToString>
-        <inheritdoc />
-    </DbDate.ToString>
     <DbFloat>
         <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary>
         <seealso cref="T:XSharp.IFloat"/>
         <seealso cref="T:XSharp.__Float"/>
     </DbFloat>
-    <DbFloat.Value>
-        <inheritdoc />
-    </DbFloat.Value>
-    <DbFloat.Digits>
-        <inheritdoc />
-    </DbFloat.Digits>
-    <DbFloat.Decimals>
-        <inheritdoc />
-    </DbFloat.Decimals>
     <DbFloat.ctor>
         <summary></summary>
     </DbFloat.ctor>
-    <DbFloat.ToString>
-        <inheritdoc />
-    </DbFloat.ToString>
-    <DbFloat.GetTypeCode>
-        <inheritdoc/>
-    </DbFloat.GetTypeCode>
-    <DbFloat.IConvertible.ToBoolean>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToBoolean>
-    <DbFloat.IConvertible.ToByte>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToByte>
-    <DbFloat.IConvertible.ToChar>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToChar>
-    <DbFloat.IConvertible.ToDateTime>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToDateTime>
-    <DbFloat.IConvertible.ToDecimal>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToDecimal>
-    <DbFloat.IConvertible.ToDouble>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToDouble>
-    <DbFloat.IConvertible.ToInt16>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToInt16>
-    <DbFloat.IConvertible.ToInt32>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToInt32>
-    <DbFloat.IConvertible.ToInt64>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToInt64>
-    <DbFloat.IConvertible.ToSByte>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToSByte>
-    <DbFloat.IConvertible.ToSingle>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToSingle>
-    <DbFloat.IConvertible.ToString>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToString>
-    <DbFloat.IConvertible.ToType>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToType>
-    <DbFloat.IConvertible.ToUInt16>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToUInt16>
-    <DbFloat.IConvertible.ToUInt32>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToUInt32>
-    <DbFloat.IConvertible.ToUInt64>
-        <inheritdoc/>
-    </DbFloat.IConvertible.ToUInt64>
     <DbcManager>
         <summary>This classes manages open database. Both databases that are opened explicitely and also databases that are opened
         for "free" tables that have a backlink to a database</summary>
@@ -3401,273 +3152,6 @@
     <_RddList.ctor_2>
         <summary>Construct _RddList from list of names.</summary>
     </_RddList.ctor_2>
-    <WrapperRDD.DbEval>
-        <inheritdoc />
-    </WrapperRDD.DbEval>
-    <WrapperRDD.GoTop>
-        <inheritdoc />
-    </WrapperRDD.GoTop>
-    <WrapperRDD.GoBottom>
-        <inheritdoc />
-    </WrapperRDD.GoBottom>
-    <WrapperRDD.GoTo>
-        <inheritdoc />
-    </WrapperRDD.GoTo>
-    <WrapperRDD.GoToId>
-        <inheritdoc />
-    </WrapperRDD.GoToId>
-    <WrapperRDD.Skip>
-        <inheritdoc />
-    </WrapperRDD.Skip>
-    <WrapperRDD.SkipFilter>
-        <inheritdoc />
-    </WrapperRDD.SkipFilter>
-    <WrapperRDD.SkipRaw>
-        <inheritdoc />
-    </WrapperRDD.SkipRaw>
-    <WrapperRDD.SkipScope>
-        <inheritdoc />
-    </WrapperRDD.SkipScope>
-    <WrapperRDD.Append>
-        <inheritdoc />
-    </WrapperRDD.Append>
-    <WrapperRDD.Delete>
-        <inheritdoc />
-    </WrapperRDD.Delete>
-    <WrapperRDD.GetRec>
-        <inheritdoc />
-    </WrapperRDD.GetRec>
-    <WrapperRDD.Pack>
-        <inheritdoc />
-    </WrapperRDD.Pack>
-    <WrapperRDD.PutRec>
-        <inheritdoc />
-    </WrapperRDD.PutRec>
-    <WrapperRDD.Recall>
-        <inheritdoc />
-    </WrapperRDD.Recall>
-    <WrapperRDD.Zap>
-        <inheritdoc />
-    </WrapperRDD.Zap>
-    <WrapperRDD.Close>
-        <inheritdoc />
-    </WrapperRDD.Close>
-    <WrapperRDD.Create>
-        <inheritdoc />
-    </WrapperRDD.Create>
-    <WrapperRDD.Open>
-        <inheritdoc />
-    </WrapperRDD.Open>
-    <WrapperRDD.ClearFilter>
-        <inheritdoc />
-    </WrapperRDD.ClearFilter>
-    <WrapperRDD.ClearScope>
-        <inheritdoc />
-    </WrapperRDD.ClearScope>
-    <WrapperRDD.Continue>
-        <inheritdoc />
-    </WrapperRDD.Continue>
-    <WrapperRDD.GetScope>
-        <inheritdoc />
-    </WrapperRDD.GetScope>
-    <WrapperRDD.SetFilter>
-        <inheritdoc />
-    </WrapperRDD.SetFilter>
-    <WrapperRDD.SetScope>
-        <inheritdoc />
-    </WrapperRDD.SetScope>
-    <WrapperRDD.SetFieldExtent>
-        <inheritdoc />
-    </WrapperRDD.SetFieldExtent>
-    <WrapperRDD.AddField>
-        <inheritdoc />
-    </WrapperRDD.AddField>
-    <WrapperRDD.CreateFields>
-        <inheritdoc />
-    </WrapperRDD.CreateFields>
-    <WrapperRDD.FieldIndex>
-        <inheritdoc />
-    </WrapperRDD.FieldIndex>
-    <WrapperRDD.FieldInfo>
-        <inheritdoc />
-    </WrapperRDD.FieldInfo>
-    <WrapperRDD.FieldName>
-        <inheritdoc />
-    </WrapperRDD.FieldName>
-    <WrapperRDD.GetField>
-        <inheritdoc />
-    </WrapperRDD.GetField>
-    <WrapperRDD.GetValue>
-        <inheritdoc />
-    </WrapperRDD.GetValue>
-    <WrapperRDD.GetValueFile>
-        <inheritdoc />
-    </WrapperRDD.GetValueFile>
-    <WrapperRDD.GetValueLength>
-        <inheritdoc />
-    </WrapperRDD.GetValueLength>
-    <WrapperRDD.PutValue>
-        <inheritdoc />
-    </WrapperRDD.PutValue>
-    <WrapperRDD.PutValueFile>
-        <inheritdoc />
-    </WrapperRDD.PutValueFile>
-    <WrapperRDD.Flush>
-        <inheritdoc />
-    </WrapperRDD.Flush>
-    <WrapperRDD.GoCold>
-        <inheritdoc />
-    </WrapperRDD.GoCold>
-    <WrapperRDD.GoHot>
-        <inheritdoc />
-    </WrapperRDD.GoHot>
-    <WrapperRDD.Refresh>
-        <inheritdoc />
-    </WrapperRDD.Refresh>
-    <WrapperRDD.AppendLock>
-        <inheritdoc />
-    </WrapperRDD.AppendLock>
-    <WrapperRDD.HeaderLock>
-        <inheritdoc />
-    </WrapperRDD.HeaderLock>
-    <WrapperRDD.Lock>
-        <inheritdoc />
-    </WrapperRDD.Lock>
-    <WrapperRDD.UnLock>
-        <inheritdoc />
-    </WrapperRDD.UnLock>
-    <WrapperRDD.CloseMemFile>
-        <inheritdoc />
-    </WrapperRDD.CloseMemFile>
-    <WrapperRDD.CreateMemFile>
-        <inheritdoc />
-    </WrapperRDD.CreateMemFile>
-    <WrapperRDD.OpenMemFile>
-        <inheritdoc />
-    </WrapperRDD.OpenMemFile>
-    <WrapperRDD.OrderCondition>
-        <inheritdoc />
-    </WrapperRDD.OrderCondition>
-    <WrapperRDD.OrderCreate>
-        <inheritdoc />
-    </WrapperRDD.OrderCreate>
-    <WrapperRDD.OrderDestroy>
-        <inheritdoc />
-    </WrapperRDD.OrderDestroy>
-    <WrapperRDD.OrderInfo>
-        <inheritdoc />
-    </WrapperRDD.OrderInfo>
-    <WrapperRDD.OrderListAdd>
-        <inheritdoc />
-    </WrapperRDD.OrderListAdd>
-    <WrapperRDD.OrderListDelete>
-        <inheritdoc />
-    </WrapperRDD.OrderListDelete>
-    <WrapperRDD.OrderListFocus>
-        <inheritdoc />
-    </WrapperRDD.OrderListFocus>
-    <WrapperRDD.OrderListRebuild>
-        <inheritdoc />
-    </WrapperRDD.OrderListRebuild>
-    <WrapperRDD.Seek>
-        <inheritdoc />
-    </WrapperRDD.Seek>
-    <WrapperRDD.ChildEnd>
-        <inheritdoc />
-    </WrapperRDD.ChildEnd>
-    <WrapperRDD.ChildStart>
-        <inheritdoc />
-    </WrapperRDD.ChildStart>
-    <WrapperRDD.ChildSync>
-        <inheritdoc />
-    </WrapperRDD.ChildSync>
-    <WrapperRDD.ClearRel>
-        <inheritdoc />
-    </WrapperRDD.ClearRel>
-    <WrapperRDD.ForceRel>
-        <inheritdoc />
-    </WrapperRDD.ForceRel>
-    <WrapperRDD.RelArea>
-        <inheritdoc />
-    </WrapperRDD.RelArea>
-    <WrapperRDD.RelEval>
-        <inheritdoc />
-    </WrapperRDD.RelEval>
-    <WrapperRDD.RelText>
-        <inheritdoc />
-    </WrapperRDD.RelText>
-    <WrapperRDD.SetRel>
-        <inheritdoc />
-    </WrapperRDD.SetRel>
-    <WrapperRDD.SyncChildren>
-        <inheritdoc />
-    </WrapperRDD.SyncChildren>
-    <WrapperRDD.Sort>
-        <inheritdoc />
-    </WrapperRDD.Sort>
-    <WrapperRDD.Trans>
-        <inheritdoc />
-    </WrapperRDD.Trans>
-    <WrapperRDD.TransRec>
-        <inheritdoc />
-    </WrapperRDD.TransRec>
-    <WrapperRDD.BlobInfo>
-        <inheritdoc />
-    </WrapperRDD.BlobInfo>
-    <WrapperRDD.Compile>
-        <inheritdoc />
-    </WrapperRDD.Compile>
-    <WrapperRDD.EvalBlock>
-        <inheritdoc />
-    </WrapperRDD.EvalBlock>
-    <WrapperRDD.Info>
-        <inheritdoc />
-    </WrapperRDD.Info>
-    <WrapperRDD.RecInfo>
-        <inheritdoc />
-    </WrapperRDD.RecInfo>
-    <WrapperRDD.Alias>
-        <inheritdoc />
-    </WrapperRDD.Alias>
-    <WrapperRDD.Area>
-        <inheritdoc />
-    </WrapperRDD.Area>
-    <WrapperRDD.BoF>
-        <inheritdoc />
-    </WrapperRDD.BoF>
-    <WrapperRDD.Deleted>
-        <inheritdoc />
-    </WrapperRDD.Deleted>
-    <WrapperRDD.Driver>
-        <inheritdoc />
-    </WrapperRDD.Driver>
-    <WrapperRDD.EoF>
-        <inheritdoc />
-    </WrapperRDD.EoF>
-    <WrapperRDD.Exclusive>
-        <inheritdoc />
-    </WrapperRDD.Exclusive>
-    <WrapperRDD.FieldCount>
-        <inheritdoc />
-    </WrapperRDD.FieldCount>
-    <WrapperRDD.FilterText>
-        <inheritdoc />
-    </WrapperRDD.FilterText>
-    <WrapperRDD.Found>
-        <inheritdoc />
-    </WrapperRDD.Found>
-    <WrapperRDD.RecCount>
-        <inheritdoc />
-    </WrapperRDD.RecCount>
-    <WrapperRDD.RecId>
-        <inheritdoc />
-    </WrapperRDD.RecId>
-    <WrapperRDD.RecNo>
-        <inheritdoc />
-    </WrapperRDD.RecNo>
-    <WrapperRDD.Shared>
-        <inheritdoc />
-    </WrapperRDD.Shared>
     <DbOrder_Info.DBOI_STRICTREAD>
         <summary>The following numbers are reserved but not implemented yet.</summary>
     </DbOrder_Info.DBOI_STRICTREAD>
@@ -4017,96 +3501,9 @@
     <Workarea.HasRelations>
         <summary>Does the workarea have relations.</summary>
     </Workarea.HasRelations>
-    <Workarea.DbEval>
-        <inheritdoc />
-    </Workarea.DbEval>
-    <Workarea.GoTop>
-        <inheritdoc />
-    </Workarea.GoTop>
-    <Workarea.GoBottom>
-        <inheritdoc />
-    </Workarea.GoBottom>
-    <Workarea.GoTo>
-        <inheritdoc />
-    </Workarea.GoTo>
-    <Workarea.GoToId>
-        <inheritdoc />
-    </Workarea.GoToId>
-    <Workarea.Skip>
-        <inheritdoc />
-    </Workarea.Skip>
-    <Workarea.SkipFilter>
-        <inheritdoc />
-    </Workarea.SkipFilter>
-    <Workarea.SkipRaw>
-        <inheritdoc />
-    </Workarea.SkipRaw>
-    <Workarea.SkipScope>
-        <inheritdoc />
-    </Workarea.SkipScope>
-    <Workarea.Append>
-        <inheritdoc />
-    </Workarea.Append>
-    <Workarea.Delete>
-        <inheritdoc />
-    </Workarea.Delete>
-    <Workarea.GetRec>
-        <inheritdoc />
-    </Workarea.GetRec>
-    <Workarea.Pack>
-        <inheritdoc />
-    </Workarea.Pack>
-    <Workarea.PutRec>
-        <inheritdoc />
-    </Workarea.PutRec>
-    <Workarea.Recall>
-        <inheritdoc />
-    </Workarea.Recall>
-    <Workarea.Zap>
-        <inheritdoc />
-    </Workarea.Zap>
-    <Workarea.Close>
-        <inheritdoc />
-    </Workarea.Close>
-    <Workarea.Create>
-        <inheritdoc />
-    </Workarea.Create>
-    <Workarea.Open>
-        <inheritdoc />
-    </Workarea.Open>
-    <Workarea.ClearFilter>
-        <inheritdoc />
-    </Workarea.ClearFilter>
-    <Workarea.ClearScope>
-        <inheritdoc />
-    </Workarea.ClearScope>
-    <Workarea.Continue>
-        <inheritdoc />
-    </Workarea.Continue>
-    <Workarea.GetScope>
-        <inheritdoc />
-    </Workarea.GetScope>
-    <Workarea.SetFilter>
-        <inheritdoc />
-    </Workarea.SetFilter>
     <Workarea.SetFieldExtent>
         <summary>Set the Number of Fields the AddField Method will add.</summary>
     </Workarea.SetFieldExtent>
-    <Workarea.SetScope>
-        <inheritdoc />
-    </Workarea.SetScope>
-    <Workarea.AddField>
-        <inheritdoc />
-    </Workarea.AddField>
-    <Workarea.CreateFields>
-        <inheritdoc />
-    </Workarea.CreateFields>
-    <Workarea.FieldIndex>
-        <inheritdoc />
-    </Workarea.FieldIndex>
-    <Workarea.FieldInfo>
-        <inheritdoc />
-    </Workarea.FieldInfo>
     <Workarea.GetField>
         <summary>
         Return the (1 based) RddFieldInfo object for the specified field
@@ -4114,171 +3511,6 @@
         <param name="nFldPos">1 based index</param>
         <returns>FieldInfo object or NULL when the index is not valid</returns>
     </Workarea.GetField>
-    <Workarea.FieldName>
-        <inheritdoc />
-    </Workarea.FieldName>
-    <Workarea.GetValue>
-        <inheritdoc />
-    </Workarea.GetValue>
-    <Workarea.GetValueFile>
-        <inheritdoc />
-    </Workarea.GetValueFile>
-    <Workarea.GetValueLength>
-        <inheritdoc />
-    </Workarea.GetValueLength>
-    <Workarea.Flush>
-        <inheritdoc />
-    </Workarea.Flush>
-    <Workarea.Refresh>
-        <inheritdoc />
-    </Workarea.Refresh>
-    <Workarea.GoCold>
-        <inheritdoc />
-    </Workarea.GoCold>
-    <Workarea.GoHot>
-        <inheritdoc />
-    </Workarea.GoHot>
-    <Workarea.PutValue>
-        <inheritdoc />
-    </Workarea.PutValue>
-    <Workarea.PutValueFile>
-        <inheritdoc />
-    </Workarea.PutValueFile>
-    <Workarea.AppendLock>
-        <inheritdoc />
-    </Workarea.AppendLock>
-    <Workarea.HeaderLock>
-        <inheritdoc />
-    </Workarea.HeaderLock>
-    <Workarea.Lock>
-        <inheritdoc />
-    </Workarea.Lock>
-    <Workarea.UnLock>
-        <inheritdoc />
-    </Workarea.UnLock>
-    <Workarea.CloseMemFile>
-        <inheritdoc />
-    </Workarea.CloseMemFile>
-    <Workarea.CreateMemFile>
-        <inheritdoc />
-    </Workarea.CreateMemFile>
-    <Workarea.OpenMemFile>
-        <inheritdoc />
-    </Workarea.OpenMemFile>
-    <Workarea.OrderCondition>
-        <inheritdoc />
-    </Workarea.OrderCondition>
-    <Workarea.OrderCreate>
-        <inheritdoc />
-    </Workarea.OrderCreate>
-    <Workarea.OrderDestroy>
-        <inheritdoc />
-    </Workarea.OrderDestroy>
-    <Workarea.OrderInfo>
-        <inheritdoc />
-    </Workarea.OrderInfo>
-    <Workarea.OrderListAdd>
-        <inheritdoc />
-    </Workarea.OrderListAdd>
-    <Workarea.OrderListDelete>
-        <inheritdoc />
-    </Workarea.OrderListDelete>
-    <Workarea.OrderListFocus>
-        <inheritdoc />
-    </Workarea.OrderListFocus>
-    <Workarea.OrderListRebuild>
-        <inheritdoc />
-    </Workarea.OrderListRebuild>
-    <Workarea.Seek>
-        <inheritdoc />
-    </Workarea.Seek>
-    <Workarea.ChildEnd>
-        <inheritdoc />
-    </Workarea.ChildEnd>
-    <Workarea.ChildStart>
-        <inheritdoc />
-    </Workarea.ChildStart>
-    <Workarea.ChildSync>
-        <inheritdoc />
-    </Workarea.ChildSync>
-    <Workarea.ClearRel>
-        <inheritdoc />
-    </Workarea.ClearRel>
-    <Workarea.ForceRel>
-        <inheritdoc />
-    </Workarea.ForceRel>
-    <Workarea.RelArea>
-        <inheritdoc />
-    </Workarea.RelArea>
-    <Workarea.RelEval>
-        <inheritdoc />
-    </Workarea.RelEval>
-    <Workarea.RelText>
-        <inheritdoc />
-    </Workarea.RelText>
-    <Workarea.SetRel>
-        <inheritdoc />
-    </Workarea.SetRel>
-    <Workarea.SyncChildren>
-        <inheritdoc />
-    </Workarea.SyncChildren>
-    <Workarea.Trans>
-        <inheritdoc />
-    </Workarea.Trans>
-    <Workarea.TransRec>
-        <inheritdoc />
-    </Workarea.TransRec>
-    <Workarea.BlobInfo>
-        <inheritdoc />
-    </Workarea.BlobInfo>
-    <Workarea.Compile>
-        <inheritdoc />
-    </Workarea.Compile>
-    <Workarea.EvalBlock>
-        <inheritdoc />
-    </Workarea.EvalBlock>
-    <Workarea.EvalFilter>
-        <inheritdoc />
-    </Workarea.EvalFilter>
-    <Workarea.Info>
-        <inheritdoc />
-    </Workarea.Info>
-    <Workarea.RecInfo>
-        <inheritdoc />
-    </Workarea.RecInfo>
-    <Workarea.Sort>
-        <inheritdoc />
-    </Workarea.Sort>
-    <Workarea.Alias>
-        <inheritdoc />
-    </Workarea.Alias>
-    <Workarea.Area>
-        <inheritdoc />
-    </Workarea.Area>
-    <Workarea.BoF>
-        <inheritdoc />
-    </Workarea.BoF>
-    <Workarea.Deleted>
-        <inheritdoc />
-    </Workarea.Deleted>
-    <Workarea.Driver>
-        <inheritdoc />
-    </Workarea.Driver>
-    <Workarea.EoF>
-        <inheritdoc />
-    </Workarea.EoF>
-    <Workarea.Exclusive>
-        <inheritdoc />
-    </Workarea.Exclusive>
-    <Workarea.FieldCount>
-        <inheritdoc />
-    </Workarea.FieldCount>
-    <Workarea.FilterText>
-        <inheritdoc />
-    </Workarea.FilterText>
-    <Workarea.Found>
-        <inheritdoc />
-    </Workarea.Found>
     <Workarea.Memo>
         <summary>Current memo implementation.</summary>
     </Workarea.Memo>
@@ -4294,18 +3526,6 @@
     <Workarea.RecordBuffer>
         <summary>Current Record</summary>
     </Workarea.RecordBuffer>
-    <Workarea.RecCount>
-        <inheritdoc />
-    </Workarea.RecCount>
-    <Workarea.RecId>
-        <inheritdoc />
-    </Workarea.RecId>
-    <Workarea.RecNo>
-        <inheritdoc />
-    </Workarea.RecNo>
-    <Workarea.Shared>
-        <inheritdoc />
-    </Workarea.Shared>
     <Workarea.ReadOnly>
         <summary> Is the file opened ReadOnly ?</summary>
     </Workarea.ReadOnly>
@@ -4608,20 +3828,11 @@
         </remarks>
         <include file="CoreComments.xml" path="Comments/File/*" />
     </FSeek3>
-    <FSeek64>
-        <inheritdoc cref="FSeek3" />
-    </FSeek64>
     <FTell>
         <include file="VoFunctionDocs.xml" path="Runtimefunctions/ftell/*" />
         <include file="CoreComments.xml" path="Comments/File/*" />
     </FTell>
-    <FTell64>
-        <inheritdoc cref="FTell" />
-    </FTell64>
     <FWrite>
-        <inheritdoc cref="FWrite" />
-    </FWrite>
-    <FWrite_2>
         <overloads>
         <summary>
         Write a string to an open file
@@ -4630,11 +3841,11 @@
         </overloads>
         <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwrite/*" />
         <include file="CoreComments.xml" path="Comments/File/*" />
-    </FWrite_2>
-    <FWrite_3>
+    </FWrite>
+    <FWrite_2>
         <inheritdoc cref="FWrite" />
         <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
-    </FWrite_3>
+    </FWrite_2>
     <FWrite3>
         <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwrite3/*" />
         <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
@@ -4879,12 +4090,9 @@
         <seealso cref="Ansi2OemBuff" />
     </Ansi2Oem>
     <Ansi2Oem_2>
-        <inheritdoc cref="Ansi2Oem" />
-    </Ansi2Oem_2>
-    <Ansi2Oem_3>
         <inheritdoc cref="Ansi2Oem(System.Byte[])" />
         <param name="iLen">Length of the source array</param>
-    </Ansi2Oem_3>
+    </Ansi2Oem_2>
     <Ansi2OemA>
         <overloads>
         <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>

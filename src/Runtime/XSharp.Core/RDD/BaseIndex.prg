@@ -15,7 +15,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	CONSTRUCTOR(oArea AS Workarea)
 		_oArea := oArea
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderCondition/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 		IF info = NULL
             info := DbOrderCondInfo{}
@@ -25,15 +25,15 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
         _oArea:OrderCondInfo := info
         RETURN TRUE
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderCreate/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderDestroy/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderInfo/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 		SWITCH nOrdinal
         CASE DBOI_NUMBER
@@ -88,30 +88,30 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
         END SWITCH
         RETURN info:Result
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderListAdd/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderListDelete/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderListFocus/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.OrderListRebuild/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.Seek/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.Found/*" />
+	/// <inheritdoc />
 	VIRTUAL PROPERTY Found AS LOGIC	GET _oArea:Found SET _oArea:Found := value
 
-	/// <include file="XSharp.CoreDocs.xml" path="doc/BaseIndex.Flush/*" />
+	/// <inheritdoc />
 	VIRTUAL METHOD Flush() 							AS LOGIC
 		THROW NotImplementedException{}
 

@@ -1339,7 +1339,7 @@ CLASS XSharp.CoreDb
         RETURN result
 
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/CoreDb.RddInfo_2/*" />
+    /// <inheritdoc cref="RddInfo" />
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RuntimeState.SetValue((XSharp.Set) nOrdinal, oValue)

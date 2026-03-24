@@ -699,7 +699,7 @@ FUNCTION FRewind(ptrHandle AS IntPtr) AS LOGIC
 FUNCTION FSeek3(ptrHandle AS IntPtr,liOffset AS LONG, dwOrigin AS DWORD) AS LONG
     RETURN (LONG) XSharp.IO.File.Seek(ptrHandle, (INT64) liOffset, dwOrigin)
 
-/// <include file="XSharp.CoreDocs.xml" path="doc/FSeek64/*" />
+/// <inheritdoc cref="FSeek3" />
 FUNCTION FSeek64(ptrHandle AS IntPtr,liOffset AS INT64, dwOrigin AS DWORD) AS INT64
     RETURN XSharp.IO.File.Seek(ptrHandle, liOffset, dwOrigin)
 
@@ -707,12 +707,12 @@ FUNCTION FSeek64(ptrHandle AS IntPtr,liOffset AS INT64, dwOrigin AS DWORD) AS IN
 FUNCTION FTell(ptrHandle AS IntPtr) AS DWORD
     RETURN (DWORD) XSharp.IO.File.Tell(ptrHandle)
 
-/// <include file="XSharp.CoreDocs.xml" path="doc/FTell64/*" />
+/// <inheritdoc cref="FTell" />
 FUNCTION FTell64(pFile AS IntPtr) AS INT64
     RETURN XSharp.IO.File.Tell(pFile)
 
 
-/// <include file="XSharp.CoreDocs.xml" path="doc/FWrite/*" />
+/// <inheritdoc cref="FWrite" />
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
     RETURN (DWORD) XSharp.IO.File.Write( pFile, c,  c:Length, TRUE )
 
@@ -727,11 +727,11 @@ FUNCTION FClearErrorState() AS VOID
     RETURN
 
 
-/// <include file="XSharp.CoreDocs.xml" path="doc/FWrite_2/*" />
+/// <include file="XSharp.CoreDocs.xml" path="doc/FWrite/*" />
 FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD ) AS DWORD
     RETURN FWrite( ptrHandle, cBuffer, nBytes, TRUE)
 
-/// <include file="XSharp.CoreDocs.xml" path="doc/FWrite_3/*" />
+/// <include file="XSharp.CoreDocs.xml" path="doc/FWrite_2/*" />
 FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD, lAnsi AS LOGIC) AS DWORD
     RETURN (DWORD) XSharp.IO.File.Write(ptrHandle, cBuffer, (INT) nBytes, lAnsi)
 

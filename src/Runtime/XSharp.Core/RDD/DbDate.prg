@@ -6,15 +6,15 @@
 
 /// <include file="XSharp.CoreDocs.xml" path="doc/DbDate/*" />
 STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
-	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Year/*" />
+	/// <inheritdoc />
 	PROPERTY Year		AS INT AUTO GET PRIVATE SET
-	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Month/*" />
+	/// <inheritdoc />
 	PROPERTY Month		AS INT AUTO GET PRIVATE SET
-	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Day/*" />
+	/// <inheritdoc />
 	PROPERTY Day		AS INT AUTO GET PRIVATE SET
-	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.Value/*" />
+	/// <inheritdoc />
 	PROPERTY @@Value		AS DateTime GET DateTime{Year, Month, Day}
-	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.IsEmpty/*" />
+	/// <inheritdoc />
 	PROPERTY IsEmpty	AS LOGIC GET Month == 0
     /// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.ctor/*" />
 	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)
@@ -22,7 +22,7 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 		Month   := nMonth
 		Day     := nDay
 		RETURN
-	/// <include file="XSharp.CoreDocs.xml" path="doc/DbDate.ToString/*" />
+	/// <inheritdoc />
 	OVERRIDE METHOD ToString() AS STRING
         IF IsEmpty
             RETURN "    -  -  "

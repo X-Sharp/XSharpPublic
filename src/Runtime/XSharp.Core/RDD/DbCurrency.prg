@@ -6,82 +6,82 @@
 
 /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency/*" />
 STRUCTURE XSharp.RDD.DbCurrency IMPLEMENTS ICurrency, IConvertible
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.Value/*" />
+    /// <inheritdoc />
     PROPERTY @@Value AS System.Decimal AUTO GET PRIVATE SET
     /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.ctor/*" />
     CONSTRUCTOR (curValue AS System.Decimal)
         @@Value := curValue
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.ToString/*" />
+    /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Value:ToString()
 
 #region IConvertible INTERFACE
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.GetTypeCode/*" />
+    /// <inheritdoc/>
     METHOD GetTypeCode() AS TypeCode
         RETURN TypeCode.Object
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToBoolean/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToBoolean(provider AS IFormatProvider ) AS LOGIC
         RETURN @@Value != Decimal.Zero
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToByte/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToByte(provider AS IFormatProvider ) AS BYTE
         RETURN Convert.ToByte(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToChar/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToChar(provider AS IFormatProvider ) AS CHAR
         RETURN Convert.ToChar(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToDateTime/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToDateTime(provider AS IFormatProvider ) AS System.DateTime
         RETURN Convert.ToDateTime(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToDecimal/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToDecimal(provider AS IFormatProvider ) AS DECIMAL
         RETURN @@Value
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToDouble/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToDouble(provider AS IFormatProvider ) AS Double
         RETURN Convert.ToDouble(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToInt16/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToInt16(provider AS IFormatProvider ) AS SHORT
         RETURN Convert.ToInt16(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToInt32/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToInt32(provider AS IFormatProvider ) AS INT
         RETURN Convert.ToInt32(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToInt64/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToInt64(provider AS IFormatProvider ) AS INT64
         RETURN Convert.ToInt64(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToSByte/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToSByte(provider AS IFormatProvider ) AS SByte
         RETURN Convert.ToSByte(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToSingle/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToSingle(provider AS IFormatProvider ) AS REAL4
         RETURN Convert.ToSingle(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToString/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToString(provider AS IFormatProvider ) AS STRING
         RETURN String.Format("{0}", @@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToType/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
         RETURN Convert.ChangeType(@@Value,conversionType)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToUInt16/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToUInt16(provider AS IFormatProvider ) AS WORD
         RETURN Convert.ToUInt16(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToUInt32/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToUInt32(provider AS IFormatProvider ) AS DWORD
         RETURN Convert.ToUInt32(@@Value)
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/DbCurrency.IConvertible.ToUInt64/*" />
+    /// <inheritdoc/>
     METHOD IConvertible.ToUInt64(provider AS IFormatProvider ) AS UINT64
         RETURN Convert.ToUInt64(@@Value)
 

@@ -32,61 +32,61 @@ BEGIN NAMESPACE XSharp.IO
         STATIC INTERNAL UseBufferedFileStream := TRUE AS LOGIC
         /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.FileName/*" />
         PROPERTY FileName as STRING AUTO
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.ctor/*" />
+        /// <inheritdoc />
         CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
             SUPER(path, mode, faccess, share, bufferSize, options)
             SELF:FileName := path
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Seek/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             LOCAL result := -1 AS INT64
             STARTIO
             result := SUPER:Seek(offset, origin)
             ENDIO
             RETURN result
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.SetLength/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
             STARTIO
             SUPER:SetLength(length)
             ENDIO
             RETURN
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Read/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             LOCAL result := -1 AS INT
             STARTIO
             result := SUPER:Read(bytes, offset, count)
             ENDIO
             RETURN result
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Write/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
             STARTIO
             SUPER:Write(bytes, offset, count)
             ENDIO
             RETURN
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.WriteByte/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
             STARTIO
             SUPER:WriteByte(b)
             ENDIO
             RETURN
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Lock/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
             STARTIO
             SUPER:Lock(position, length)
             ENDIO
             RETURN
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Unlock/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Unlock(position AS INT64, length AS INT64)  AS VOID
             STARTIO
             SUPER:Unlock(position, length)
             ENDIO
         RETURN
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Flush/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
             STARTIO
             SUPER:Flush(lCommit)
             ENDIO
         RETURN
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsFileStream.Flush_2/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush() AS VOID
             SELF:Flush(FALSE)
             RETURN

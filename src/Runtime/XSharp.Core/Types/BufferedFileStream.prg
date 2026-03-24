@@ -205,7 +205,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:_callOriginalMethods := FALSE
             RETURN TRUE
 
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsBufferedFileStream.Position/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE PROPERTY Position AS INT64
             GET
                 IF SELF:_callOriginalMethods
@@ -221,7 +221,7 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
             END SET
         END PROPERTY
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsBufferedFileStream.Length/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE PROPERTY Length   AS INT64
             GET
                 IF SELF:_callOriginalMethods
@@ -342,7 +342,7 @@ BEGIN NAMESPACE XSharp.IO
             SUPER:Close()
             RETURN
 
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsBufferedFileStream.Seek/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             IF SELF:_callOriginalMethods
                 RETURN SUPER:Seek(offset, origin)

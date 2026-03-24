@@ -450,12 +450,12 @@ FUNCTION Ansi2Oem(cAnsiString AS STRING) AS STRING
 /// </summary>
 /// <param name="bSource">String in Ansi format</param>
 // <inheritdoc cref="Ansi2Oem" />
-/// <include file="XSharp.CoreDocs.xml" path="doc/Ansi2Oem_2/*" />
+/// <inheritdoc cref="Ansi2Oem" />
 FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
-/// <include file="XSharp.CoreDocs.xml" path="doc/Ansi2Oem_3/*" />
+/// <include file="XSharp.CoreDocs.xml" path="doc/Ansi2Oem_2/*" />
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}

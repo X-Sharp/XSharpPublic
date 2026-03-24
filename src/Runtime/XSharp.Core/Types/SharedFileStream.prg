@@ -142,7 +142,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
         RETURN
         
-        /// <include file="XSharp.CoreDocs.xml" path="doc/XsWin32FileStream.Flush_2/*" />
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush() AS VOID
             // Note that GetDangerousFileHandle() calls Flush before we have the file handle
             IF SELF:hFile == NULL

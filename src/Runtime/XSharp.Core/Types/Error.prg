@@ -258,7 +258,7 @@ BEGIN NAMESPACE XSharp
         endif
         return cString+e" :\t"
 
-    /// <include file="XSharp.CoreDocs.xml" path="doc/Error.ToString/*" />
+    /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
       LOCAL sb AS StringBuilder
       LOCAL nGenCode AS Gencode

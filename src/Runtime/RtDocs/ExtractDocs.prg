@@ -7,6 +7,7 @@
 // Rules:
 //   - Single-line /// <exclude .../> tags are left as-is in the source.
 //   - Single-line /// <include .../> tags are left as-is (already external).
+//   - Single-line /// <inheritdoc .../> tags are left as-is.
 //   - Every other doc block (with actual content) is extracted.
 //   - Entity names containing the X# @@ keyword-escape prefix are
 //     normalised (e.g. @@Value -> Value) so the XML element name is valid.
@@ -331,12 +332,12 @@ FUNCTION ShouldExtract(docLines AS List<STRING>) AS LOGIC
     IF docLines:Count == 0
         RETURN FALSE
     ENDIF
-    // single-line: leave <exclude .../> and <include .../> in place
+    // single-line: leave <exclude .../>, <include .../>, and <inheritdoc .../> in place
     IF docLines:Count == 1
         VAR content := docLines[0]:Trim():TrimStart({'/'})
         content := content:TrimStart({'/'})
         content := content:Trim()
-        IF content:StartsWith("<exclude") .OR. content:StartsWith("<include ")
+        IF content:StartsWith("<exclude") .OR. content:StartsWith("<include ") .OR. content:StartsWith("<inheritdoc")
             RETURN FALSE
         ENDIF
     ENDIF

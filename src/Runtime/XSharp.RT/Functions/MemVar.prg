@@ -164,6 +164,10 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	LOCAL cName AS STRING
     LOCAL lFoxPro as LOGIC
     lFoxPro := XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+    IF cMask:Length > 2 .and. cMask:StartsWith("""") .and. cMask:EndsWith("""")
+    	// VFP does not allow any spaces between quotes and mask, so we are not trimming
+    	cMask := cMask:Substring(1, cMask:Length - 2)
+    END IF
 	// Case INsensitive comparison. Symbols are all in UPPER case
 	cMask := Upper(cMask)
 	cName := _PrivateFirst(TRUE)

@@ -57,9 +57,9 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         METHOD TypeTests()  AS VOID
             var state := XSharp.RuntimeState.Dialect
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
-             Assert.True(type ( "x" ) == "U")
+             Assert.True(Type ( "x" ) == "U")
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
-             Assert.True(type ( "x" ) == "UE")
+             Assert.True(Type ( "x" ) == "UE")
              XSharp.RuntimeState.Dialect := state
 
         [Fact, Trait("Category", "Other")];
@@ -70,8 +70,41 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True( EVL("abc",123) == "abc")
             Assert.True( EVL(0,123) == 123)
             Assert.True( EVL(123,456) == 123)
-            Assert.True( EVL(NULL_DATE,ToDay()) == ToDay())
-            Assert.True( EVL(2000.01.01,ToDay()) == 2000.01.01)
+            Assert.True( EVL(NULL_DATE,Today()) == Today())
+            Assert.True( EVL(2000.01.01,Today()) == 2000.01.01)
+
+        [Fact, Trait("Category", "Other")];
+        METHOD ReleaseTests()  AS VOID
+        	PUBLIC ppp,ccc
+        	ccc := "test"
+        	ppp := 123
+        	ppp ++
+            Assert.True( ppp == 124 )
+            RELEASE ALL LIKE p*
+            Assert.ThrowsAny<Exception>( { => ppp ++ })
+
+			ppp := 1
+			ppp ++
+            Assert.True( ppp == 2 )
+            RELEASE ALL LIKE "p*"
+            Assert.ThrowsAny<Exception>( { => ppp ++ })
+
+            Assert.True( ccc == "test" )
+            
+            RELEASE ALL
+            LOCAL c AS STRING
+            Assert.ThrowsAny<Exception>( { => c := ccc })
+            
+            ccc := "testing"
+            ppp := 100
+            RELEASE ALL LIKE "c?c"
+            Assert.ThrowsAny<Exception>( { => c := ccc })
+            
+            Assert.True( ppp == 100 )
+
+            RELEASE ALL
+            Assert.ThrowsAny<Exception>( { => ppp ++ })
+            Assert.ThrowsAny<Exception>( { => c := ccc })
 
 	END CLASS
 

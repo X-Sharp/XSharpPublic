@@ -2,18 +2,18 @@
 <doc>
     <Crypt>
         <summary>
-        Encrypt or decrypt an array of bytes.
+        对字节数组进行加密或解密。
         </summary>
         <param name="bSource"/>
         <param name="cKey"/>
     </Crypt>
     <CryptRaw>
         <summary>
-        Encrypt or decrypt a string handling its characters as single bytes (high order byte is ignored)
+        对字符串进行加密或解密，将其字符作为单字节处理（高位字节被忽略）
         </summary>
-        <param name="cSource">Text that must be encrypted</param>
-        <param name="cKey">Key to use for the encryption</param>
-        <returns>Encrypted text. This has the same length as the original text</returns>
+        <param name="cSource">必须加密的文本</param>
+        <param name="cKey">用于加密的密钥</param>
+        <returns>加密后的文本。其长度与原始文本相同</returns>
     </CryptRaw>
     <DoSendMail>
         <summary>
@@ -26,7 +26,7 @@
     </DoSendMail>
     <LoadResString>
         <summary>
-        Look up an identifier in a string table and returns its corresponding string.
+        在字符串表中查找标识符并返回其对应的字符串。
         </summary>
         <param name="cDef"/>
         <param name="id"/>
@@ -36,7 +36,7 @@
     </LoadResString>
     <MBSubstr>
         <summary>
-        Extract a substring from a string — both the substring and the string can contain double-byte characters.
+        从字符串中提取子字符串——子字符串和原字符串都可以包含双字节字符。
         </summary>
         <param name="c"/>
         <param name="iStart"/>
@@ -45,66 +45,66 @@
         </returns>
     </MBSubstr>
     <NamedArg>
-        <summary>VO Compatible type to allow name/value pairs for Ole Automation parameters</summary>
+        <summary>与VO兼容的类型，用于OLE自动化参数的名称/值对</summary>
     </NamedArg>
     <NamedArg.ArgName>
-        <summary>Argument name.</summary>
+        <summary>参数名称。</summary>
     </NamedArg.ArgName>
     <NamedArg.ctor>
-        <summary>Construct a NamedArg object</summary>
+        <summary>构造一个NamedArg对象</summary>
     </NamedArg.ctor>
   <NamedArg.Value>
-        <summary>Argument value.</summary>
+        <summary>参数值。</summary>
     </NamedArg.Value>
     <OleAutoObject>
-    <summary>VO Compatible OLE Automation class</summary>
+    <summary>与VO兼容的OLE自动化类</summary>
   </OleAutoObject>
     <OleAutoObject.ctor>
-        <summary>Construct an OleAutoObject</summary>
+        <summary>构造一个OleAutoObject</summary>
     </OleAutoObject.ctor>
   <OleAutoObjectFromFile>
-    <summary>VO Compatible class to create an OLEAutObject from a file on disk.</summary>
+    <summary>与VO兼容的类，用于从磁盘上的文件创建OLEAutObject。</summary>
   </OleAutoObjectFromFile>
     <OleDateTime>
-        <summary>VO Compatible class to store DateTime values in OLE Automation</summary>
+        <summary>与VO兼容的类，用于在OLE自动化中存储DateTime值</summary>
     </OleDateTime>
     <OleDateTime.AsReal8>
-        <summary>Returns the DateTime value as Real8 (the format that is used in COM).</summary>
+        <summary>以Real8格式返回DateTime值（COM中使用的格式）。</summary>
     </OleDateTime.AsReal8>
     <OleDateTime.AsString>
-        <summary>Returns the dateTime value as a String.</summary>
+        <summary>以字符串形式返回dateTime值。</summary>
     </OleDateTime.AsString>
     <OleDateTime.ctor>
-        <summary>Construct an OleDateTime object</summary>
-      <param name="uDate">This can be a Number, Date or String. A Number will be seen as a REAL8 value in OADate form, Date = Date part and String = TimePart.</param>
-        <param name="val">Initial value as System.DateTime.</param>
+        <summary>构造一个OleDateTime对象</summary>
+      <param name="uDate">可以是数字、日期或字符串。数字将被视为OADate格式的REAL8值，Date表示日期部分，String表示时间部分。</param>
+        <param name="val">System.DateTime格式的初始值。</param>
     </OleDateTime.ctor>
     <OleDateTime.DateTime>
-        <summary>The value as a .Net DateTime type.</summary>
+        <summary>作为.Net DateTime类型的值。</summary>
     </OleDateTime.DateTime>
     <OleDateTime.DateVal>
-        <summary>The value of the date part of the DateTime object as a Date.</summary>
+        <summary>DateTime对象的日期部分，以Date类型表示。</summary>
     </OleDateTime.DateVal>
     <OleDateTime.TimeString>
-        <summary>The value of the time part of the DateTime object as a String.	</summary>
+        <summary>DateTime对象的时间部分，以字符串形式表示。	</summary>
     </OleDateTime.TimeString>
     <OleDateTime.TimeVal>
-        <summary>The value of the time part of the DateTime object as a float.	</summary>
+        <summary>DateTime对象的时间部分，以浮点数形式表示。	</summary>
     </OleDateTime.TimeVal>
     <OleDateTimeAsDate>
-        <summary>Set and/or Retrieve the setting that determines if OLE date values should be returned as VO date values or as DateTime values</summary>
-        <param name="lSet">The new setting. FALSE allows the return values to be instances of the OleDateTime class, TRUE forces all OLE  DateTime values to be VO dates . The default is FALSE.</param>
+        <summary>设置和/或检索用于确定OLE日期值是否应作为VO日期值或DateTime值返回的设置</summary>
+        <param name="lSet">新设置。FALSE允许返回值为OleDateTime类的实例，TRUE强制所有OLE DateTime值为VO日期。默认值为FALSE。</param>
     </OleDateTimeAsDate>
     <VObject>
-        <summary>Base class for many types used in the VO SDK Classes</summary>
+        <summary>VO SDK类中许多类型使用的基类</summary>
     </VObject>
     <VObject.ctor>
         <summary/>
     </VObject.ctor>
     <VObject.Destroy>
-        <summary>Free memory resources allocated for a VObject object and its derived objects.</summary>
+        <summary>释放为VObject对象及其派生对象分配的内存资源。</summary>
     </VObject.Destroy>
   <VObject.oCargo>
-    <summary>Cargo slot.</summary>
+    <summary>货物槽。</summary>
   </VObject.oCargo>
 </doc>

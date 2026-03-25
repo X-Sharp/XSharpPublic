@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <doc>
   <__CheckParams>
     <summary>
-      Return public members of a type with a specific name (case insensitive)
+      以不区分大小写的方式返回具有特定名称的类型的公共成员
     </summary>
     <param name="oObj"/>
     <param name="cName"/>
@@ -10,44 +10,43 @@
   </__CheckParams>
   <__FoxArray>
     <summary>
-      Internal type that implements the FoxPro Compatible ARRAY type.<br/>
-      This type has methods and properties that normally are never directly called from user code.
+      实现FoxPro兼容ARRAY类型的内部类型。<br/>
+      此类型包含通常不会从用户代码中直接调用的方法和属性。
     </summary>
     <remarks>
-      FoxPro arrays can be one dimensional or two dimensional.
-      Two dimensional arrays are implemented as a projection
-      on top of a one dimensional array. <br/>
-      So a two dimensional array of 4 x 3 elements will be implemented as an array of 12 elements.
-      The elements 1-3 represent row 1, 4-6 row 2 etc.
+      FoxPro数组可以是一维或二维的。
+      二维数组是作为一维数组的投影实现的。<br/>
+      因此，4 x 3 元素的二维数组将实现为12个元素的数组。
+      元素1-3表示第1行，4-6表示第2行，以此类推。
     </remarks>
     <seealso cref="IIndexer"/>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
   </__FoxArray>
   <__FoxArray.DeleteColumn>
-    <summary>Delete a column from a multi dimensional array.</summary>
-    <param name="nColumn">1 based column number to delete</param>
+    <summary>从多维数组中删除一列。</summary>
+    <param name="nColumn">要删除的列号（从1开始）</param>
     <remarks>
-      When no columns are defined then nothing happens. <br/>
-      When an array has columns then the elements are deleted and shifted.<br/>
-      Assume a 4 x 4 array. When DeleteColumn() is called with column 2 then the elements 2,6,10 and 14 are deleted
-      and the elements 3 &amp; 4, 7 &amp; 8, 11 &amp; 12 and 15 &amp; 16 are shifted to the left.
-      New empty elements are inserted on locations 4,8,12 and 16.
+      当未定义列时，不执行任何操作。<br/>
+      当数组有列时，相应元素将被删除并移位。<br/>
+      假设有一个4 x 4数组，当使用列2调用DeleteColumn()时，元素2、6、10和14将被删除，
+      元素3和4、7和8、11和12以及15和16将向左移动。
+      新的空元素将插入到位置4、8、12和16。
     </remarks>
   </__FoxArray.DeleteColumn>
   <__FoxArray.DeleteRow>
-    <summary>Delete a row from a multi dimensional array.</summary>
-    <param name="nRow">1 based row number to delete</param>
-    <remarks>Deleting rows will shift other rows up and will add a blank row at the bottom of the array</remarks>
+    <summary>从多维数组中删除一行。</summary>
+    <param name="nRow">要删除的行号（从1开始）</param>
+    <remarks>删除行将使其他行上移，并在数组底部添加一个空行</remarks>
   </__FoxArray.DeleteRow>
   <__FoxArray.InsertColumn>
-    <summary>Insert a column into a multi dimensional array.</summary>
-    <param name="nColumn">1 based column number to insert</param>
-    <remarks>Inserting columns deletes columns at the end of each row.</remarks>
+    <summary>向多维数组中插入一列。</summary>
+    <param name="nColumn">要插入的列号（从1开始）</param>
+    <remarks>插入列会删除每行末尾的列。</remarks>
   </__FoxArray.InsertColumn>
   <__FoxArray.InsertRow>
-    <summary>Insert a row into a multi dimensional array.</summary>
-    <param name="nRow">1 based row number to insert</param>
-    <remarks>Inserting rows shifts rows up and deletes a row at the end of the array: FoxPro arrays do not grow automatically</remarks>
+    <summary>向多维数组中插入一行。</summary>
+    <param name="nRow">要插入的行号（从1开始）</param>
+    <remarks>插入行会使行上移并删除数组末尾的一行：FoxPro数组不会自动增长</remarks>
   </__FoxArray.InsertRow>
   <__FoxArray.SELF_index>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
@@ -60,258 +59,257 @@
     <param name="indices">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    <returns>存储在数组指定位置的元素的属性值。</returns>
   </__FoxArray.SELF_index>
   <__FoxArrayAccess>
     <summary>
-      Access an element in a FoxPro array with 2 dimensions
+      访问二维FoxPro数组中的元素
     </summary>
   </__FoxArrayAccess>
   <__FoxArrayAccess_2>
     <summary>
-      Access an element in a FoxPro array with 1 dimension
+      访问一维FoxPro数组中的元素
     </summary>
   </__FoxArrayAccess_2>
   <__FoxAssign>
     <summary>
-      This function gets called for assignments in FoxPro, so aFoo := 42 will will the complete array when aFoo is an array
+      此函数在FoxPro中用于赋值操作，因此当aFoo是数组时，aFoo := 42将填充整个数组
     </summary>
   </__FoxAssign>
   <__FoxFillArray>
     <summary>
-      Fill a FoxPro array
+      填充FoxPro数组
     </summary>
   </__FoxFillArray>
   <__FoxGetWithExpression>
     <summary>
-      Retrieve an element from the FoxPro With stack
+      从FoxPro With栈中检索元素
     </summary>
   </__FoxGetWithExpression>
   <__FoxMemVarPut>
     <summary>
-      This function replaces the normal MemVarPut to make sure that arrays are filled when they are assigned
+      此函数替代普通的MemVarPut，以确保数组在赋值时被填充
     </summary>
   </__FoxMemVarPut>
   <__FoxPopWithBlock>
     <summary>
-      Pop element from the FoxPro With stack
+      从FoxPro With栈中弹出元素
     </summary>
   </__FoxPopWithBlock>
   <__FoxPushWithBlock>
     <summary>
-      Push element to the FoxPro With stack
+      将元素压入FoxPro With栈
     </summary>
   </__FoxPushWithBlock>
   <__FoxRedim>
     <summary>
-      Resize a FoxPro array
+      调整FoxPro数组的大小
     </summary>
   </__FoxRedim>
   <__GetFoxWithStack>
     <summary>
-      Retrieve the With Stack for the FoxPro dialect (so you can call methods or properties outside of the scope of the WITH block)
+      检索FoxPro方言的With栈（以便在WITH块范围之外调用方法或属性）
     </summary>
   </__GetFoxWithStack>
   <__IVarGetOrSend>
     <summary>
-      Call a method or retrieve an indexed property from an object.
+      调用方法或从对象中检索索引属性。
     </summary>
   </__IVarGetOrSend>
   <__IVarGetOrSend_2>
     <summary>
-      Call a method or retrieve an indexed property from an object.
+      调用方法或从对象中检索索引属性。
     </summary>
   </__IVarGetOrSend_2>
   <_ASCIICOLS>
-    <summary>Specifies the number of columns in an ASCII text file created with the ASCII keyword in the REPORT FORM command.</summary>
+    <summary>指定使用REPORT FORM命令中的ASCII关键字创建的ASCII文本文件中的列数。</summary>
   </_ASCIICOLS>
   <_ASCIIROWS>
-    <summary>Specifies the number of rows in an ASCII text file created with the ASCII keyword in the REPORT FORM command.</summary>
+    <summary>指定使用REPORT FORM命令中的ASCII关键字创建的ASCII文本文件中的行数。</summary>
   </_ASCIIROWS>
   <_MLINE>
-    <summary>Contains the memo field offset for the MLINE( ) function.</summary>
+    <summary>包含MLINE()函数的备注字段偏移量。</summary>
   </_MLINE>
   <_PAGENO>
-    <summary>Contains the current page number.</summary>
+    <summary>包含当前页码。</summary>
   </_PAGENO>
   <_PAGETOTAL>
-    <summary>Contains the total number of pages in a report.</summary>
+    <summary>包含报告中的总页数。</summary>
   </_PAGETOTAL>
   <_PRETEXT>
-    <summary>Specifies a character expression to preface text merge lines.</summary>
+    <summary>指定用于在文本合并行前面添加的字符表达式。</summary>
   </_PRETEXT>
   <_TALLY>
-    <summary>Contains the number of records processed by the most recently executed table command.</summary>
+    <summary>包含最近执行的表命令处理的记录数。</summary>
   </_TALLY>
   <_TEXT>
-    <summary>File handle for the output file for the TEXT .. ENDTEXT and \ and \\ commands.</summary>
+    <summary>TEXT .. ENDTEXT命令以及\和\\命令的输出文件的文件句柄。</summary>
     <seealso cref="SetTextFile"/>
   </_TEXT>
   <_TRIGGERLEVEL>
-    <summary>Contains a numeric value indicating the current trigger procedure nesting level.</summary>
+    <summary>包含表示当前触发器过程嵌套级别的数值。</summary>
   </_TRIGGERLEVEL>
   <Abstract>
     <summary>
-      The Abstract class.
+      Abstract类。
     </summary>
   </Abstract>
   <ADel>
     <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*"/>
-    <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+    <remarks>此函数的参数是"通用数组"。该函数在运行时确定数组是FoxPro数组还是"通用"数组</remarks>
   </ADel>
   <AIns>
     <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*"/>
-    <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+    <remarks>此函数的参数是"通用数组"。该函数在运行时确定数组是FoxPro数组还是"通用"数组</remarks>
   </AIns>
   <CreateObject>
-    <summary>Creates an object from a class definition or an Automation-enabled application.</summary>
-    <param name="cClassName">Specifies the class or OLE object from which the new object is created.</param>
+    <summary>从类定义或支持自动化的应用程序创建对象。</summary>
+    <param name="cClassName">指定从中创建新对象的类或OLE对象。</param>
     <param name="_args">
-      These optional parameters are used to pass values to the Init event procedure for the class.
-      The Init event is executed when you issue CREATEOBJECT( ) and allows you to initialize the object.
+      这些可选参数用于向类的Init事件过程传递值。
+      当执行CREATEOBJECT()时会触发Init事件，允许您初始化对象。
     </param>
-    <returns>The object that was created</returns>
+    <returns>已创建的对象</returns>
     <seealso cref="CreateInstance">CreateInstance</seealso>
   </CreateObject>
 
 <DialectChanged>
     <summary>
-      This event handler is attached to the DialectChanged event of the RuntimeState, to initialize the FoxPro state
+      此事件处理程序附加到RuntimeState的DialectChanged事件，用于初始化FoxPro状态
     </summary>
   </DialectChanged>
   <EmptyClass>
     <summary>
-      The FoxPro Empty class.
+      FoxPro Empty类。
     </summary>
   </EmptyClass>
   <FoxCollations>
-    <summary>List of possible index collations for VFP DBF files. For each of these collations there is a weight table in the XSharp.VFP assembly.</summary>
+    <summary>VFP DBF文件可能的索引排序规则列表。XSharp.VFP程序集中为每种排序规则提供了一个权重表。</summary>
   </FoxCollations>
   <FoxCollations.CZECH>
-    <summary>CZech collation. Supported are codepages 852, 895 and 1250</summary>
+    <summary>捷克语排序规则。支持的代码页：852、895和1250</summary>
   </FoxCollations.CZECH>
   <FoxCollations.DUTCH>
-    <summary>Dutch collation. Supported are codepages 437, 850 and 1252</summary>
+    <summary>荷兰语排序规则。支持的代码页：437、850和1252</summary>
   </FoxCollations.DUTCH>
   <FoxCollations.GENERAL>
-    <summary>General collation. Supported are codepages 437, 620, 850,852,857,861,865,895,1250,1252 and 1254</summary>
+    <summary>通用排序规则。支持的代码页：437、620、850、852、857、861、865、895、1250、1252和1254</summary>
   </FoxCollations.GENERAL>
   <FoxCollations.GERMAN>
     <summary>
-      German phone book order (DIN) collation. Supported are codepages 437, and 1252<br/>
-      This collation is used for English, French, German, Modern Spanish, Portuguese, and other Western European languages
+      德语电话簿排序（DIN）规则。支持的代码页：437和1252<br/>
+      此排序规则用于英语、法语、德语、现代西班牙语、葡萄牙语及其他西欧语言
     </summary>
   </FoxCollations.GERMAN>
   <FoxCollations.GREEK>
-    <summary>Greek collation. Supported are codepages 737, and 1253</summary>
+    <summary>希腊语排序规则。支持的代码页：737和1253</summary>
   </FoxCollations.GREEK>
   <FoxCollations.HUNGARY>
-    <summary>Hungarian collation. Supported are codepages 852, and 1250</summary>
+    <summary>匈牙利语排序规则。支持的代码页：852和1250</summary>
   </FoxCollations.HUNGARY>
   <FoxCollations.ICELAND>
-    <summary>Icelandic collation. Supported are codepages 437,, 850, 861 and 1252</summary>
+    <summary>冰岛语排序规则。支持的代码页：437、850、861和1252</summary>
   </FoxCollations.ICELAND>
   <FoxCollations.MACHINE>
-    <summary>Machine collation. Supported are codepages 437, 620, 850,852,857,861,865,895,1250,1251,1252,1253 and 1254</summary>
+    <summary>机器排序规则。支持的代码页：437、620、850、852、857、861、865、895、1250、1251、1252、1253和1254</summary>
   </FoxCollations.MACHINE>
   <FoxCollations.NORDAN>
-    <summary>Norwegian, Danish collation. Supported are codepages 437, 850, 865 and 1252.</summary>
+    <summary>挪威语、丹麦语排序规则。支持的代码页：437、850、865和1252。</summary>
   </FoxCollations.NORDAN>
   <FoxCollations.POLISH>
-    <summary>Polish collation. Supported are codepages 620, 852 and 1250</summary>
+    <summary>波兰语排序规则。支持的代码页：620、852和1250</summary>
   </FoxCollations.POLISH>
   <FoxCollations.RUSSIAN>
-    <summary>Russian collation. Supported are codepages 866 and 1251</summary>
+    <summary>俄语排序规则。支持的代码页：866和1251</summary>
   </FoxCollations.RUSSIAN>
   <FoxCollations.SLOVAK>
-    <summary>Slovakian collation. Supported are codepages 852, 895 and 1250</summary>
+    <summary>斯洛伐克语排序规则。支持的代码页：852、895和1250</summary>
   </FoxCollations.SLOVAK>
   <FoxCollations.SPANISH>
-    <summary>Traditional Spanish collation. Supported are codepages 437, 850 and 1252</summary>
+    <summary>传统西班牙语排序规则。支持的代码页：437、850和1252</summary>
   </FoxCollations.SPANISH>
   <FoxCollations.SWEFIN>
-    <summary>Swedish/Finnish collation. Supported are codepages 437, 850, 865 and 1252</summary>
+    <summary>瑞典语/芬兰语排序规则。支持的代码页：437、850、865和1252</summary>
   </FoxCollations.SWEFIN>
   <FoxCollations.TURKISH>
-    <summary>Turkish collation. Supported are codepages 857 and 1254</summary>
+    <summary>土耳其语排序规则。支持的代码页：857和1254</summary>
   </FoxCollations.TURKISH>
   <FoxCollations.UNIQWT>
-    <summary>Unique Weight collation. Supported are codepages 437, 850 and 1252</summary>
+    <summary>唯一权重排序规则。支持的代码页：437、850和1252</summary>
   </FoxCollations.UNIQWT>
   <FoxCriticality>
     <summary>
-      Fox Functions Weight
+      Fox函数权重
     </summary>
   </FoxCriticality>
   <FoxEngine>
     <summary>
-      FoxPro engine
+      FoxPro引擎
     </summary>
   </FoxEngine>
   <FoxFunctionCategory>
     <summary>
-      Official functional categories of Visual FoxPro
+      Visual FoxPro官方功能分类
     </summary>
   </FoxFunctionCategory>
   <FoxFunctionStatus>
     <summary>
-      FoxPro feature support level in X#
+      X#中FoxPro功能支持级别
     </summary>
   </FoxFunctionStatus>
   <FoxProFunctionAttribute>
     <summary>
-      Attribute to instrument the FoxPro dialect functions
-      vital for generating the compatibility metrics report via Reflection
+      用于标记FoxPro方言函数的属性，对通过反射生成兼容性指标报告至关重要
     </summary>
   </FoxProFunctionAttribute>
   <SetTextFile>
     <summary>
-      Open/Close the file to which TEXT .. ENDTEXT values are written
+      打开/关闭用于写入TEXT .. ENDTEXT值的文件
     </summary>
-    <param name="cFile">Name of the file to create. When this name is NULL or Empty then the file will be closed when it is open</param>
-    <returns>TRUE when the file was succesfully opened / closed.</returns>
-    <remarks>The file handle for the file will be stored in the _TEXT system variable.</remarks>
+    <param name="cFile">要创建的文件名。当名称为NULL或空时，将关闭已打开的文件</param>
+    <returns>文件成功打开/关闭时返回TRUE。</returns>
+    <remarks>文件的文件句柄将存储在_TEXT系统变量中。</remarks>
     <seealso cref="_TEXT"/>
   </SetTextFile>
   <SetTextMerge>
     <summary>
-      Retrieve the setting that determines if TextMerge is active
+      检索确定TextMerge是否处于活动状态的设置
     </summary>
     <param name="lSet"/>
-    <returns>The current setting</returns>
+    <returns>当前设置</returns>
   </SetTextMerge>
   <SetTextMerge_2>
     <summary>
-      Change the setting that determines if TextMerge is active
+      更改确定TextMerge是否处于活动状态的设置
     </summary>
-    <param name="lSet">TRUE when Merge must be used for TEXT .. ENDTEXT expressions without TEXTMERGE clause and for the \ and \\ commands.</param>
-    <returns>The current setting</returns>
+    <param name="lSet">当必须对不带TEXTMERGE子句的TEXT .. ENDTEXT表达式及\和\\命令使用合并时为TRUE。</param>
+    <returns>当前设置</returns>
   </SetTextMerge_2>
   <SetTextMergeDelimiters>
     <summary>
-      Change the TextMerge delimiters
+      更改TextMerge分隔符
     </summary>
-    <param name="cLeft">Left delimiter for expressions.</param>
-    <param name="cRight">Left delimiter for expressions.</param>
-    <returns>The current setting</returns>
+    <param name="cLeft">表达式的左分隔符。</param>
+    <param name="cRight">表达式的右分隔符。</param>
+    <returns>当前设置</returns>
   </SetTextMergeDelimiters>
   <SetTextMergeDelimiters_2>
     <summary>
-      Read the TextMerge delimiters
+      读取TextMerge分隔符
     </summary>
-    <returns>The current setting</returns>
+    <returns>当前设置</returns>
   </SetTextMergeDelimiters_2>
   <SqlGetProp>
     <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*"/>
     <param name="nSetting">
-      Specifies the setting. For a list of the settings you can specify see the <see cref="SQLProperty">SQLProperty Enum</see>.
+      指定设置。可指定的设置列表，请参阅<see cref="SQLProperty">SQLProperty枚举</see>。
     </param>
     <seealso cref="SQLProperty"/>
   </SqlGetProp>
   <SqlSetProp>
     <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*"/>
     <param name="nSetting">
-      Specifies the setting. For a list of the settings you can specify see the <see cref="SQLProperty">SQLProperty Enum</see>.
+      指定设置。可指定的设置列表，请参阅<see cref="SQLProperty">SQLProperty枚举</see>。
     </param>
     <seealso cref="SQLProperty"/>
   </SqlSetProp>

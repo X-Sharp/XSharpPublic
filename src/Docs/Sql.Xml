@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members/>
     <DToCSQL>
         <summary>Convert a date to a string in "YYYY-MM-DD" format</summary>
         <param name="dDate">Date to convert</param>
@@ -14,6 +13,7 @@
         <returns>A timestamp string in "YYYY-MM-DD HH:MM:SS.NNN" format</returns>
         <seealso cred="O:VOSQLClasses.Functions.DToCSQL"/>
     </MakeTimeStamp>
+    <members/>
     <SQLCatalogQuery>
         <summary>
             Provide the base class from which all X# catalog classes are subclassed.

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-  <members>
-  </members>
   <AdsSQLServer>
     <summary>ADS Compatible DbServer class that received a Sql Select statement in its constructor</summary>
   </AdsSQLServer>
@@ -3737,7 +3735,9 @@
   <DbSetRestoreWorkarea>
     <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
   </DbSetRestoreWorkarea>
-<OrderSpec>
+<members>
+  </members>
+  <OrderSpec>
     <summary>
       OrderSpec class was designed to model index information at the order level - not file level - and complement the DBFileSpec class.
     </summary>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members/>
     <DToCSQL>
         <summary>将日期转换为"YYYY-MM-DD"格式的字符串</summary>
         <param name="dDate">要转换的日期</param>
@@ -15,6 +14,7 @@
         <seealso cred="O:VOSQLClasses.Functions.DToCSQL"/>
     </MakeTimeStamp>
     
+    <members/>
     <SQLCatalogQuery>
         <summary>
             提供所有 X# 目录类的基类，这些类都是 SQLCatalogQuery 的子类。

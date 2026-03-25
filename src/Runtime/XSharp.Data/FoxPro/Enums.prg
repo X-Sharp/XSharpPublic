@@ -1,9 +1,7 @@
-
-/// <summary>List of error codes used in the XSharp VTP support. <br />
-/// Each error code represents a translatable string in the string table inside XSharp.Core.
-/// </summary>
+﻿
 
 
+/// <include file="XSharp.Data.Docs.xml" path="doc/VFPErrorMessage/*" />
 DELEGATE VFPErrorMessage( resid AS DWORD , args PARAMS OBJECT[]) AS STRING
 GLOBAL oVFPErrorMessage AS VFPErrorMessage
 

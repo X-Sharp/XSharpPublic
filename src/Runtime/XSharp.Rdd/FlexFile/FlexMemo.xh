@@ -18,7 +18,7 @@ USING STATIC XSharp.Conversions
 using XSharp.RDD.FlexFile
 
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>FPT Memo class. Implements the FTP support.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/MEMOCLASS/*" />
 // To also support FPT files created with FlexFile we also need to read the FlexFile header and decode that.
 INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
    INTERNAL _area AS FlexArea
@@ -98,8 +98,7 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
       ENDIF
       RETURN block
 
-   /// <summary></summary>
-   /// <param name="nFldPos">One based field number</param>
+   /// <include file="XSharp.RDD.Docs.xml" path="doc/Flex.GetValue/*" />
    OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
       LOCAL block := SELF:GetRawValueWithHeader(nFldPos) AS BYTE[]
       if block != NULL
@@ -109,8 +108,7 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
       endif
       RETURN block
 
-   /// <inheritdoc />
-   /// <param name="nFldPos">One based field number</param>
+   /// <include file="XSharp.RDD.Docs.xml" path="doc/Flex.GetValueFile/*" />
    OVERRIDE METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
       IF SELF:_oRdd:_isMemoField( nFldPos )
          // At this level, the return value is the raw Data, in BYTE[]
@@ -123,8 +121,7 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
       ENDIF
       RETURN SUPER:GetValueFile(nFldPos, fileName)
 
-   /// <inheritdoc />
-   /// <param name="nFldPos">One based field number</param>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/Flex.GetValueLength/*" />
    OVERRIDE METHOD GetValueLength(nFldPos AS INT) AS LONG
       var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
       var dataLen := _area:GetDataLen(blockNbr)
@@ -133,9 +130,7 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
       ENDIF
       RETURN dataLen
 
-   /// <summary>Write value to field.</summary>
-   /// <param name="nFldPos">One based field number</param>
-   /// <param name="oValue">Data to write. Should be BYTE[] and include the header with the type</param>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/Flex.PutValue/*" />
    OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
       IF SELF:IsOpen .and. oValue IS BYTE[] VAR bytes
          TRY

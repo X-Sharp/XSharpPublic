@@ -10,9 +10,7 @@ using System.Text
 
 
 
-/// <summary>
-/// The Abstract class.
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/Abstract/*" />
 abstract class XSharp.VFP.Abstract inherit XSharp.VFP.Empty
     property Name       as string auto
     property BaseClass  as string auto

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,7 +12,7 @@ USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.IO
 USING System.Reflection
-/// <summary>Advantage Index support.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSIndex/*" />
 CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PRIVATE oRDD AS ADSRDD
     PRIVATE _CallbackFn AS CallbackFn

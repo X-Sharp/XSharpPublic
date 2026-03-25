@@ -10,18 +10,18 @@ USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.RDD
 // Inspired by Harbour
-/// <summary>This structure holds the various settings for locking models</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking/*" />
 STRUCTURE DbfLocking
-    /// <summary>Offset of the Locking </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.Offset/*" />
 	PUBLIC Offset AS INT64
-    /// <summary>Length for File locks </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.FileSize/*" />
 	PUBLIC FileSize AS INT64
-    /// <summary>Length for Record locks </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.RecordSize/*" />
 	PUBLIC RecordSize AS LONG
-    /// <summary>Direction of locking, used to calculate file lock offsets and record lock offsets</summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.Direction/*" />
 	PUBLIC Direction AS LONG
 
-/// <summary>Set various numbers based on a locking model.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.Initialize/*" />
 METHOD Initialize( model AS DbfLockingModel ) AS VOID
 	SWITCH model
 	CASE DbfLockingModel.Clipper52
@@ -60,7 +60,7 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
 		SELF:RecordSize := 1
 		SELF:Direction  := 1
 	END SWITCH
-    /// <summary>File Lock offsets </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.FileLockOffSet/*" />
     PROPERTY FileLockOffSet AS INT64
         GET
             VAR iOffset := SELF:Offset
@@ -72,7 +72,7 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
             RETURN iOffset
         END GET
     END PROPERTY
-    /// <summary>Calculate the record offset based </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLocking.RecnoOffSet/*" />
     METHOD RecnoOffSet(recordNbr AS DWORD, recSize AS LONG, headerLength AS LONG) AS INT64
 	    VAR iOffset := SELF:Offset
 	    IF SELF:Direction < 0

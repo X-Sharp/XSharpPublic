@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -33,14 +33,11 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
     STATIC CONSTRUCTOR
         classObjects := ConcurrentDictionary<System.Type, ClassObject>{}
 
-    /// <summary>Retrieves the name of the class an object belongs to.</summary>
-    /// <returns>The method returns a character string representing the name of a class.</returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.ClassName/*" />
     METHOD ClassName() AS STRING
         RETURN SELF:GetType():Name
 
-    /// <summary>Retrieves the class object (System.Type) of a class.</summary>
-    /// <returns>The method returns the class object of a class.</returns>
-    /// <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.ClassObject/*" />
     METHOD ClassObject() AS OBJECT STRICT
         RETURN Abstract.GetClassObject(SELF:GetType())
 
@@ -129,24 +126,16 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         var oError := Error.VOError( EG_NOVARMETHOD, __FUNCTION__, nameof(cName), 2, <object>{self, cName} )
         oError:Description := oError:Message+" '"+cName+"'"
         throw oError
-    /// <summary>Handles assign operations to undefined instance variables. </summary>
-    /// <param name="cName">The fieldname to assign.</param>
-    /// <param name="uValue">The value of an assignment. </param>
-    /// <returns>The return value of the method is ignored.</returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.SetNoIVar/*" />
     METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID
         SELF:NoIvarPut(cName, uValue)
         RETURN
 
-    /// <summary>Handles access operations to undefined instance variables. </summary>
-    /// <param name="cName">The fieldname to access.</param>
-    /// <returns></returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.GetNoIVar/*" />
     METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
         RETURN SELF:NoIvarGet(cName)
 
-    /// <summary>Handles calls to undefined methods.</summary>
-    /// <param name="uParams">The parameters to send to the method.</param>
-    /// <returns>The return value will be interpreted as the return value of the called undefined method. </returns>
-    /// <remarks>If an undefined method is called, a runtime error is raised.</remarks>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.NoMethod/*" />
 #ifdef DOC
     VIRTUAL METHOD NoMethod() AS USUAL CLIPPER
 #else
@@ -180,17 +169,11 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
             THROW Error.VOError( EG_NOMETHOD, __ENTITY__, cMethod, 1, <OBJECT>{cMethod} )
         ENDIF
 
-    /// <summary>Receives notifications from DatabaseEngines </summary>
-    /// <param name="nEvent">This parameter receives a numeric value that corresponds with a constant listed in APPEVENT.CH.</param>
-    /// <param name="nNotification">The second parameter identifies the situation for which an object is notified. The file DMLB.CH lists define constants that can be used to test in a program which situation occurred. </param>
-    /// <remarks>There is no need in X# to include the header files. The defines are included as part of the X# runtime.</remarks>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.Notify/*" />
     METHOD Notify(nEvent, nNotification) AS USUAL CLIPPER
         RETURN SELF
 
-    /// <summary>Checks if an object belongs to or is derived from a particular class.</summary>
-    /// <param name="uParent">A character string containing the name of the class an object belongs to or is derived from. Alternatively, the class object (System.Type) can be passed instead of the class name.</param>
-    /// <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
-    /// <remarks>This method is used to check if an unknown object has features of a known class. This is especially useful for event driven programming or when classes are inherited from other classes.</remarks>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.IsDerivedFrom/*" />
     METHOD IsDerivedFrom(uParent) AS LOGIC CLIPPER
         LOCAL oType AS System.Type
         IF IsString(uParent)

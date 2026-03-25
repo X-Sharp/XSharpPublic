@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -90,8 +90,7 @@ FUNCTION ADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 A
     RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
 
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/ADel/*" />
 FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
         RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
@@ -179,8 +178,7 @@ INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertTy
     XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
     RETURN 1
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/AIns/*" />
 FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
         RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)

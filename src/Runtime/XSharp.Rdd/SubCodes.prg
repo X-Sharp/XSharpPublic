@@ -5,7 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>Common RDD Error numbers</summary> 
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ERDD/*" />
 ENUM ERDD
 	MEMBER MIN                  := 1100
 	MEMBER OPEN_FILE			

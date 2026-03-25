@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -110,12 +110,7 @@ end class
         Classes    := ConcurrentDictionary<string, DynamicClassObject>{StringComparer.OrdinalIgnoreCase}
         OldClasses := ConcurrentDictionary<int, DynamicClassObject>{}
 
-    /// <summary>
-    /// Find the ClassObject for a class
-    /// </summary>
-    /// <param name="cClassName"></param>
-    /// <param name="lIncludeDeleted"></param>
-    /// <returns></returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassHelpers.FindClass/*" />
     static method FindClass(cClassName as string, lIncludeDeleted as logic) as ClassObject
         if !String.IsNullOrEmpty(cClassName) .and. Classes:TryGetValue(cClassName, out var result)
             return result
@@ -194,7 +189,7 @@ end class
         return mb
 
 
-    /// Delegate to filter types in the DynamicAssembly
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassHelpers.FullNameTypeFilter/*" />
     internal static method FullNameTypeFilter(t as Type, oParam as object) as logic
         return t:FullName == (string) oParam
 
@@ -502,7 +497,7 @@ end class
 end class
 
 
-/// <summary>The worker class to help create classes at runtime.</summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/DynamicClassObject/*" />
 [DebuggerDisplay("DynamicClassObject {Name}")];
 class XSharp.XPP.DynamicClassObject inherit ClassObject
 

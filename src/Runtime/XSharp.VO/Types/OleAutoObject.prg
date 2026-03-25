@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -17,7 +17,7 @@ using System.Runtime.Versioning
 using System.Security
 #endif
 
-/// <summary>VO Compatible OLE Automation class</summary>
+/// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject/*" />
 [AllowLateBinding];
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
 CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
@@ -38,7 +38,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         self:lDateTimeAsDate    := OleDateTimeAsDate()
         return
 
-    /// <summary>Construct an OleAutoObject</summary>
+    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(cProgId as string)
         self()
         oComObject        := OleCreateObject(cProgId)
@@ -48,7 +48,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         endif
         return
 
-    /// <summary>Construct an OleAutoObject</summary>
+    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(cProgId as string, fRotCheck as logic)
         self()
         if fRotCheck
@@ -65,7 +65,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
 
 
     // Builds an OleAutoObject on Any OBJECT (including another AutoObject)
-    /// <summary>Construct an OleAutoObject</summary>
+    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(oObject as object)
         self()
         oComObject :=  OleUnWrapObject(oObject)
@@ -76,7 +76,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         return
 
         // Builds an OleAutoObject on Any OBJECT (including another AutoObject). Type already known
-    /// <summary>Construct an OleAutoObject</summary>
+    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(oObject as object, _type as System.Type)
         self()
         oComObject	:=  OleUnWrapObject(oObject)
@@ -179,8 +179,8 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
     #endregion
 
     #region VO Compatibility Accesses
-        /// <exclude />
 
+        /// <exclude />
     access dwFuncs  as long
         if (lOk)
             local t as System.Type
@@ -217,8 +217,8 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
     #region	INTERNAL Properties
 
     // Access to OBJECT inside AutoObject
-    /// <exclude />
 
+    /// <exclude />
     access __ComObject as object
         return self:oComObject
 
@@ -438,8 +438,8 @@ static method  __OleIVarPut(oComObject as object, oType as System.Type, cName as
     return
 
     #endregion
-    /// <exclude />
 
+    /// <exclude />
 static method  OleSend(oComObject as object, oType as System.Type, cName as string, args as usual[]) as object
     local mi       as MethodInfo
     local pi       as ParameterInfo[]

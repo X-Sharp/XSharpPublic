@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,7 +8,7 @@
 USING System
 USING XSharp.RDD
 
-/// <summary>This class allows to open the proprietry ADT format using the Advantage driver</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSADT/*" />
 CLASS XSharp.ADS.ADSADT INHERIT ADSRDD
 CONSTRUCTOR()
 	SUPER()
@@ -18,7 +18,7 @@ CONSTRUCTOR()
     SELF:_Extension := ".adt"
 END CLASS
 
-/// <summary>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AXSQLADT/*" />
 CLASS XSharp.ADS.AXSQLADT INHERIT AXSQLRDD
 CONSTRUCTOR()
 	SUPER()

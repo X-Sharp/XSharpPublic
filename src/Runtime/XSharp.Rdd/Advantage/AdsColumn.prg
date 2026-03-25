@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,7 +12,7 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.ADS
-    /// <summary>Class for Ads Column reading / writing </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsColumn/*" />
     CLASS AdsColumn INHERIT RddFieldInfo
         INTERNAL RDD        AS XSharp.ADS.ADSRDD
         INTERNAL AdsType    as AdsFieldType
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN i"{cType} value expected for column '{ColumnName}' but received the value ({oValue}) of type {oValue.GetType()}"
     END CLASS
 
-    /// <summary>Class for reading / writing String Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsCharacterColumn/*" />
     CLASS AdsCharacterColumn INHERIT AdsColumn
 
          CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
@@ -207,7 +207,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN String.Empty
 
     END CLASS
-    /// <summary>Class for reading / writing Date Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsDateColumn/*" />
     CLASS AdsDateColumn INHERIT AdsColumn
 
          CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
@@ -286,7 +286,7 @@ BEGIN NAMESPACE XSharp.ADS
 
     END CLASS
 
-    /// <summary>Class for reading / writing Logic Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsLogicColumn/*" />
     CLASS AdsLogicColumn INHERIT AdsColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
@@ -318,7 +318,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0
     END CLASS
 
-    /// <summary>Class for reading / writing Numeric Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsNumericColumn/*" />
     CLASS AdsNumericColumn INHERIT AdsColumn
 
     CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
@@ -398,7 +398,7 @@ BEGIN NAMESPACE XSharp.ADS
 
     END CLASS
 
-    /// <summary>Class for reading / writing Memo Columns. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsMemoColumn/*" />
     CLASS AdsMemoColumn INHERIT AdsColumn
         // AdsFieldType.MEMO
         // AdsFieldType.NMEMO

@@ -9,9 +9,8 @@ USING XSharp.RDD
 USING System.Data
 USING System.Reflection
 
-/// <summary>Create a DbDataTable object with the data from the current workarea</summary>
-/// <returns>A DbDataTable object, or NULL when the current workarea is not in use.</returns>
 
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataTable/*" />
 Function DbDataTable() As DbDataTable
 LOCAL oResult := NULL AS OBJECT
 IF CoreDb.Info(DBI_RDD_OBJECT,REF oResult)
@@ -25,9 +24,8 @@ ENDIF
 RETURN NULL
 
 
-/// <summary>Create a DbDataSource object attached to the current workarea</summary>
-/// <returns>A DbDataSource object, or NULL when the current workarea is not in use.</returns>
 
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource/*" />
 FUNCTION DbDataSource() AS DbDataSource
 LOCAL oResult := NULL AS OBJECT
 IF CoreDb.Info(DBI_RDD_OBJECT,REF oResult)

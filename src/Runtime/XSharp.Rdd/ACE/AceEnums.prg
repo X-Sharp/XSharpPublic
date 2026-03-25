@@ -1,11 +1,11 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 BEGIN NAMESPACE XSharp.ADS
-/// <summary>List of possible Advantage Error codes</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AceError/*" />
 ENUM AceError AS WORD
 	MEMBER SUCCESS := ACE.AE_SUCCESS
 	MEMBER ALLOCATION_FAILED := ACE.AE_ALLOCATION_FAILED
@@ -238,8 +238,8 @@ ENUM AceError AS WORD
     MEMBER ROWVERSION_REQUIRED := ACE.AE_ROWVERSION_REQUIRED
 
 END ENUM
-/// <summary>List of possible Trigger event codes</summary>
 
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AceTrigEvent/*" />
 ENUM AceTrigEvent AS DWORD
     MEMBER INSERT       := ACE.ADS_TRIGEVENT_INSERT
     MEMBER UPDATE       := ACE.ADS_TRIGEVENT_UPDATE
@@ -251,7 +251,7 @@ ENUM AceTrigEvent AS DWORD
 
 END ENUM
 
-/// <summary>List of possible Trigger type codes</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AceTrigType/*" />
 ENUM AceTrigType  AS DWORD
     MEMBER BEFORE       := ACE.ADS_TRIGTYPE_BEFORE
     MEMBER INSTEADOF    := ACE.ADS_TRIGTYPE_INSTEADOF
@@ -259,7 +259,7 @@ ENUM AceTrigType  AS DWORD
     MEMBER CONFLICTON   := ACE.ADS_TRIGTYPE_CONFLICTON
 END ENUM
 
-/// <summary>List of possible Trigger option codes</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AceTrigOptions/*" />
 ENUM AceTrigOptions AS DWORD
     MEMBER NO_VALUES            := ACE.ADS_TRIGOPTIONS_NO_VALUES
     MEMBER WANT_VALUES          := ACE.ADS_TRIGOPTIONS_WANT_VALUES
@@ -269,7 +269,7 @@ ENUM AceTrigOptions AS DWORD
 END ENUM
 
 
-/// <summary>List of possible Validation codes</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AceValidate/*" />
 ENUM AceValidate AS WORD
 	MEMBER NO           := ACE.ADS_NO_VALIDATE
 	MEMBER NO_SAVE      := ACE.ADS_VALIDATE_NO_SAVE
@@ -279,17 +279,8 @@ ENUM AceValidate AS WORD
 END ENUM
 
 
-/// <summary>
-/// List of possible character types and collations. <br/>
-/// </summary>
-/// <remarks>
-/// The collations with VFP in their name match the Visual FoxPro collations. <br/>
-/// CI in the name means Case Insensitive <br/>
-/// AS in the name means Accent Sensitive <br/>
-/// BIN in the name means Binary <br/>
-/// The names match the entries in "adscollate.adt "
-/// </remarks>
 
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AdsCharTypes/*" />
 PUBLIC ENUM AdsCharTypes AS WORD
 	MEMBER ADS_ANSI := 1
 	MEMBER ADS_OEM
@@ -361,65 +352,65 @@ PUBLIC ENUM AdsCharTypes AS WORD
 	MEMBER SLOVAK_VFP_CI_AS_895
 END ENUM
 
-/// <summary>List of possible field types.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType/*" />
 PUBLIC ENUM AdsFieldType
-    /// <summary>1 byte logical value</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.LOGICAL/*" />
     MEMBER LOGICAL              := ACE.ADS_LOGICAL
-    /// <summary>DBF character style numeric</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.NUMERIC/*" />
     MEMBER NUMERIC              := ACE.ADS_NUMERIC
-    /// <summary>Date field.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.DATE/*" />
     MEMBER DATE                 := ACE.ADS_DATE
-    /// <summary>Character data</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.STRING/*" />
     MEMBER STRING               := ACE.ADS_STRING
-    /// <summary>Variable length character data</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.MEMO/*" />
     MEMBER MEMO                 := ACE.ADS_MEMO
-    /// <summary>BLOB - any data</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.BINARY/*" />
     MEMBER BINARY               := ACE.ADS_BINARY
-    /// <summary>BLOB - bitmap</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.IMAGE/*" />
     MEMBER IMAGE                := ACE.ADS_IMAGE
-    /// <summary>variable length character FIELD </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.VARCHAR/*" />
     MEMBER VARCHAR              := ACE.ADS_VARCHAR
-    /// <summary>DBF date represented with 3 bytes </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.COMPACTDATE/*" />
     MEMBER COMPACTDATE          := ACE.ADS_COMPACTDATE
-    /// <summary>IEEE 8 byte floating point </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.DOUBLE/*" />
     MEMBER DOUBLE               := ACE.ADS_DOUBLE
-    /// <summary>IEEE 4 byte signed long integer </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.INTEGER/*" />
     MEMBER INTEGER              := ACE.ADS_INTEGER
-    /// <summary>IEEE 2 byte signed short integer </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.SHORTINT/*" />
     MEMBER SHORTINT             := ACE.ADS_SHORTINT
-    /// <summary>4 byte long integer representing milliseconds since midnight </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.TIME/*" />
     MEMBER TIME                 := ACE.ADS_TIME
-    /// <summary>8 bytes.  High order 4 bytes are a long integer representing Julian date.Low order 4 bytes are a long integer representing milliseconds since midnight </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.TIMESTAMP/*" />
     MEMBER TIMESTAMP            := ACE.ADS_TIMESTAMP
-    /// <summary>4 byte auto-increment value </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.AUTOINC/*" />
     MEMBER AUTOINC              := ACE.ADS_AUTOINC
-    /// <summary>Untranslated data </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.RAW/*" />
     MEMBER RAW                  := ACE.ADS_RAW
-    /// <summary>IEEE 8 byte floating point currency </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.CURDOUBLE/*" />
     MEMBER CURDOUBLE            := ACE.ADS_CURDOUBLE
-    /// <summary>8 byte, 4 implied decimal Currency Field </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.MONEY/*" />
     MEMBER MONEY                := ACE.ADS_MONEY
-    /// <summary>8 byte integer </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.INT64/*" />
     MEMBER INT64                := ACE.ADS_INT64
-    /// <summary>CaSe INSensiTIVE character data </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.CISTRING/*" />
     MEMBER CISTRING             := ACE.ADS_CISTRING
-    /// <summary>8 byte integer, incremented for every update, unique to entire table </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.ROWVERSION/*" />
     MEMBER ROWVERSION           := ACE.ADS_ROWVERSION
-    /// <summary>8 byte timestamp, updated when record is updated </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.MODTIME/*" />
     MEMBER MODTIME              := ACE.ADS_MODTIME
-    /// <summary>Visual FoxPro varchar field </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.VARCHAR_FOX/*" />
     MEMBER VARCHAR_FOX          := ACE.ADS_VARCHAR_FOX
-    /// <summary>Visual FoxPro varbinary field </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.VARBINARY_FOX/*" />
     MEMBER VARBINARY_FOX        := ACE.ADS_VARBINARY_FOX
-    /// <summary>For internal usage </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.SYSTEM_FIELD/*" />
     MEMBER SYSTEM_FIELD         := ACE.ADS_SYSTEM_FIELD
-    /// <summary>Unicode Character data </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.NCHAR/*" />
     MEMBER NCHAR                := ACE.ADS_NCHAR
-    /// <summary>Unpadded Unicode Character data </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.NVARCHAR/*" />
     MEMBER NVARCHAR             := ACE.ADS_NVARCHAR
-    /// <summary>Variable Length Unicode Data </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.NMEMO/*" />
     MEMBER NMEMO                := ACE.ADS_NMEMO
-    /// <summary>16-byte binary data </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsFieldType.GUID/*" />
     MEMBER GUID                 := ACE.ADS_GUID
 END ENUM
 

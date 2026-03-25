@@ -20,8 +20,7 @@ USING STATIC XSharp.Conversions
 using XSharp.RDD.FlexFile
 
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
-
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFBLOB/*" />
 [DebuggerDisplay("{Driver,q} ({Alias,nq})")];
 CLASS DBFBLOB INHERIT Workarea
     INTERNAL _area              as FlexArea

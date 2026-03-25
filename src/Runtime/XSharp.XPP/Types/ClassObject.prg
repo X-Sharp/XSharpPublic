@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -9,12 +9,7 @@ using System.Diagnostics
 using XSharp.RT
 #pragma options("az", on)
 
-/// <summary>
-/// This class returns the ClasssObject for classes, both the classes created at compile time
-/// as well as the classes created at runtime.
-/// This object allows to access static members and methods late bound
-/// Such as <code>Example():Fieldname</code>
-/// </summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject/*" />
 [DebuggerDisplay("ClassObject {Type.FullName}")];
 abstract class XSharp.XPP.ClassObject implements ILateBound
     protected _Type as System.Type
@@ -23,18 +18,11 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
     constructor(t as System.Type)
         self:_Type := t
 
-    /// <summary>
-    /// Create a new instance of the class.
-    /// </summary>
-    /// <returns>new object</returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.New/*" />
     virtual method New() as object clipper
         return _CreateInstance(self:_Type, _Args())
 
-    /// <summary>
-    /// Late bound access to class/static vars
-    /// </summary>
-    /// <param name="cName">Name of the property/field to read</param>
-    /// <returns>the result of reading the property or field</returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIvarGet/*" />
     virtual method NoIvarGet(cName as string) as usual
         var mem := OOPHelpers.GetFieldOrProperty(_Type, cName)
         if mem is FieldInfo var fld .and. fld:IsStatic
@@ -49,12 +37,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
         oError:Description := oError:Message+" '"+cName+"'"
         throw oError
 
-    /// <summary>
-    /// Late bound assign for class/static vars
-    /// </summary>
-    /// <param name="cName">Name of the property/field to update</param>
-    /// <param name="uValue">New value for the property</param>
-    /// <returns>uValue</returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIvarPut/*" />
     virtual method NoIvarPut(cName as string, uValue as usual) as void
         local oValue as object
         // get member from cache
@@ -76,10 +59,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
         throw oError
 
 
-    /// <summary>
-    /// Late bound calls for Static/Class methods.
-    /// </summary>
-    /// <returns>Result of Method Call</returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoMethod/*" />
     virtual method NoMethod() as usual clipper
         // Lookup class method and call it.
         // when method not found in the class, then walk the base class

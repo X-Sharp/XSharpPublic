@@ -13,8 +13,7 @@ USING System.Diagnostics
 USING System.Reflection
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a List of Object values as backing collection for the data.</summary>
-
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBFVFPSQL/*" />
     [DebuggerDisplay("DBFVFPSQL ({Alias,nq})")];
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _table as DataTable

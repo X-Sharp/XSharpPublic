@@ -11,9 +11,8 @@ using System.Text
 using System.Linq
 using System.Diagnostics
 using XSharp.Internal
-/// <summary>
-/// The FoxPro Empty class.
-/// </summary>
+
+/// <include file="XSharp.VFP.Docs.xml" path="doc/EmptyClass/*" />
 [AllowLateBinding];
 [DebuggerTypeProxy(TYPEOF(EmptyDebugView))];
 class XSharp.VFP.Empty implements XSharp.IDynamicProperties, XSharp.IDynamicProperties2

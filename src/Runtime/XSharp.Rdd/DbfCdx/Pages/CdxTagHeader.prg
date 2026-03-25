@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -36,10 +36,7 @@ USING System.Runtime.CompilerServices
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-	/// <summary>
-	/// The CdxTagHeader class. = Class that maps the Tag Header to memory
-    /// The logic around this is in the CdxTag class
-	/// </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTagHeader/*" />
 	INTERNAL CLASS CdxTagHeader INHERIT CdxPage
         // TagHeader consists of 2 pages. One with flags and one with Expressions
         // so therefore allocate extra 2nd page

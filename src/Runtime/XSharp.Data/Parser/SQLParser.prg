@@ -12,9 +12,7 @@ USING System.Text
 using XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.Parsers
-/// <summary>
-/// The SQLParser class.
-/// </summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/SQLParser/*" />
 CLASS SQLParser
     PRIVATE _list as XTokenList
     PRIVATE _Error as STRING

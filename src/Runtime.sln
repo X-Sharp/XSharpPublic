@@ -25,6 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-7
 		Docs\VOSDK.Xml = Docs\VOSDK.Xml
 		Docs\XPPComments.Xml = Docs\XPPComments.Xml
 		Docs\XSharp.CoreDefines.xml = Docs\XSharp.CoreDefines.xml
+		Docs\XSharp.Data.Docs.xml = Docs\XSharp.Data.Docs.xml
+		Docs\XSharp.RDD.Docs.xml = Docs\XSharp.RDD.Docs.xml
+		Docs\XSharp.VFP.Docs.xml = Docs\XSharp.VFP.Docs.xml
+		Docs\XSharp.VO.Docs.xml = Docs\XSharp.VO.Docs.xml
+		Docs\XSharp.XPP.Docs.xml = Docs\XSharp.XPP.Docs.xml
 		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
 	EndProjectSection
 EndProject

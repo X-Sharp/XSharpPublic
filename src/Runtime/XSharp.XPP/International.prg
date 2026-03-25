@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,11 +7,7 @@
 
 USING System.Reflection
 
-/// <summary>Query current and/or set new active collation.</summary>
-/// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
-/// <returns>The numeric identifier of the active collation table </returns>
-/// <seealso cref='XppCollations' />
-/// <seealso cref='SetCollationTable' />
+/// <include file="XSharp.XPP.Docs.xml" path="doc/SetCollation/*" />
 FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     LOCAL nOld := @@Set(Set.Collation) AS LONG
     IF PCount() > 0 
@@ -26,13 +22,7 @@ FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     RETURN nOld
 
 
-/// <summary>Query current and/or set user defined collation table .</summary>
-/// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
-/// <param name="aTable">a one dimensional array with 256 elements. It must contain numeric values representing the weighing factors for single characters.
-/// The ASCII value of a character plus 1 defines the array element that contains the weighing factor for that character. </param>
-/// <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
-/// <seealso cref='XppCollations' />
-/// <seealso cref='SetCollation' />
+/// <include file="XSharp.XPP.Docs.xml" path="doc/SetCollationTable/*" />
 FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
     LOCAL liEnum AS LONG
     LOCAL aCollation AS ARRAY

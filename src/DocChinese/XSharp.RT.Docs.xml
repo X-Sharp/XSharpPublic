@@ -1,0 +1,2311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <__Array>
+    <summary>
+      Internal type that implements the VO Compatible ARRAY type.<br/>
+      This type has methods and properties that normally are never directly called from user code.
+    </summary>
+    <seealso cref="IIndexer"/>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
+  </__Array>
+  <__Array.__GetElement>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="indices">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The element stored at the specified location in the array.</returns>
+  </__Array.__GetElement>
+  <__Array.__SetElement>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="indices">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The element stored at the specified location in the array.</returns>
+  </__Array.__SetElement>
+  <__Array.ctor>
+    <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
+  </__Array.ctor>
+  <__Array.DefaultValue>
+    <summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
+  </__Array.DefaultValue>
+  <__Array.IMPLICIT>
+    <summary>Implicit conversion to OBJECT[]. SubArrays become nested OBJECT[] arrays.</summary>
+  </__Array.IMPLICIT>
+  <__Array.SELF_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+  </__Array.SELF_index>
+  <__Array.SELF_indices>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="indices">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+  </__Array.SELF_indices>
+  <__ArrayBase_T_>
+    <summary>
+      Internal type that implements the new TYPED ARRAY type.<br/>
+      This type has methods and properties that normally are never directly called from user code.
+    </summary>
+    <typeparam name="T">Type of the elements inside the array </typeparam>
+  </__ArrayBase_T_>
+  <__ArrayBase_T_.__GetElement>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The element stored at the specified location in the array.</returns>
+  </__ArrayBase_T_.__GetElement>
+  <__ArrayBase_T_.__SetElement>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="e">New element to store in the array at the position specified</param>
+    <returns>The new element</returns>
+  </__ArrayBase_T_.__SetElement>
+  <__ArrayBase_T_.Count>
+    <summary>Length of the array.</summary>
+  </__ArrayBase_T_.Count>
+  <__ArrayBase_T_.ctor>
+    <summary>Create an empty array</summary>
+  </__ArrayBase_T_.ctor>
+  <__ArrayBase_T_.ctor_2>
+    <summary>Create an array with a certain capacity.</summary>
+  </__ArrayBase_T_.ctor_2>
+  <__ArrayBase_T_.ctor_3>
+    <summary>Create an array with a certain capacity and specify if it should be filled with default values.</summary>
+  </__ArrayBase_T_.ctor_3>
+  <__ArrayBase_T_.ctor_4>
+    <summary>Create an array and fill it with elements from an existing collection.</summary>
+  </__ArrayBase_T_.ctor_4>
+  <__ArrayBase_T_.ctor_5>
+    <summary>Create an array and fill it with elements from an existing .Net array of objects. Note that the objects must be of the right type.</summary>
+  </__ArrayBase_T_.ctor_5>
+  <__ArrayBase_T_.ctor_6>
+    <summary>Create an array and fill it with elements from an existing .Net array.</summary>
+  </__ArrayBase_T_.ctor_6>
+  <__ArrayBase_T_.DefaultValue>
+    <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
+  </__ArrayBase_T_.DefaultValue>
+  <__ArrayBase_T_.EXPLICIT>
+    <summary>Implicitely convert a typed array to an array of USUALs.</summary>
+  </__ArrayBase_T_.EXPLICIT>
+  <__ArrayBase_T_.IMPLICIT>
+    <summary>Implicitely convert an array of USUALs to a typed array. Note that the usuals must contain a value of the correct type.</summary>
+  </__ArrayBase_T_.IMPLICIT>
+  <__ArrayBase_T_.IMPLICIT_2>
+    <summary>Implicitely convert a typed Array to an OBJECT[].</summary>
+  </__ArrayBase_T_.IMPLICIT_2>
+  <__ArrayBase_T_.IsEmpty>
+    <summary>Is the array empty.</summary>
+  </__ArrayBase_T_.IsEmpty>
+  <__ArrayBase_T_.Length>
+    <summary>Length of the array.</summary>
+  </__ArrayBase_T_.Length>
+  <__ArrayBase_T_.SELF_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="name">
+      <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*"/>
+    </param>
+    <returns>The element stored at the indicated location in the collection.</returns>
+  </__ArrayBase_T_.SELF_index>
+  <__Binary>
+    <summary>
+      Internal type that implements the FoxPro Compatible BINARY type.<br/>
+      This type has many operators and implicit converters that normally are never directly called from user code.
+      The data in this type is stored as an array of Bytes<br/>
+      Conversions from and to String are supported and they use the current active windows codepage.
+    </summary>
+  </__Binary>
+  <__Binary.ctor>
+    <include file="RTComments.xml" path="Comments/Constructor/*"/>
+    <param name="b">Byte[] value that has the bytes that define the binary</param>
+    <param name="s">STRING that will be converted to bytes using the current windows codepage.</param>
+    <remarks>
+      <remarks>
+        When you create a Binary from a string, then accented characters and characters outside the current windows codepage may be replaced with a question mark.
+        and when the current codepage is a so called multi byte codepage than one character may be mapped to more than one byte in the result
+      </remarks>
+
+    </remarks>
+
+  </__Binary.ctor>
+  <__Binary.Value>
+    <summary>Binary value as array of Bytes</summary>
+  </__Binary.Value>
+  <__Currency>
+    <summary>
+      Internal type that implements the FoxPro Compatible CURRENCY type.
+      This type has many operators and implicit converters that normally are never directly called from user code.
+      The data in this type is stored as a System.Decimal with 4 decimal places
+    </summary>
+    <seealso cref="__Float"/>
+    <seealso cref="System.Decimal"/>
+  </__Currency>
+  <__Currency.ctor>
+    <include file="RTComments.xml" path="Comments/Constructor/*"/>
+    <param name="r8">Real8 value to convert to a CURRENCY</param>
+    <param name="d">Decimal value to convert to a CURRENCY</param>
+    <param name="f">Float value to convert to a CURRENCY</param>
+    <param name="c">ICurrency value to convert to a CURRENCY</param>
+  </__Currency.ctor>
+  <__Currency.Value>
+    <summary>Decimal (System.Decimal) value</summary>
+  </__Currency.Value>
+  <__Date>
+    <summary>
+      Internal type that implements the VO Compatible DATE type<br/>
+      This type has many operators and implicit converters that normally are never directly called from user code.
+      It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic.
+      There are implicit converters between Date and DateTime.
+    </summary>
+    <seealso cref="IDate"/>
+    <seealso cref="T:XSharp.RDD.DbDate"/>
+  </__Date>
+  <__Date.ctor>
+    <summary>Create a Date Value</summary>
+    <param name="dt">DateTime value to convert to a DATE</param>
+    <param name="iDate">Date value to convert to a DATE</param>
+    <param name="ticks">Ticks value to convert to a DATE</param>
+    <param name="strDate">String value to convert to a DATE</param>
+    <param name="strFormat">
+      Format specifier for <paramref name="strDate"/> value
+    </param>
+    <param name="year">Year value to convert to a DATE</param>
+    <param name="month">Month  value to convert to a DATE</param>
+    <param name="day">Day  value to convert to a DATE</param>
+  </__Date.ctor>
+  <__Date.Value>
+    <summary>Return DATE value as DateTime.</summary>
+  </__Date.Value>
+  <__Float>
+    <summary>
+      Internal type that implements the XBase Compatible FLOAT type.
+      This type has many operators and implicit converters that normally are never directly called from user code.
+    </summary>
+    <seealso cref="IFloat"/>
+    <seealso cref="RDD.DbFloat"/>
+  </__Float>
+  <__Float.ctor>
+    <include file="RTComments.xml" path="Comments/Constructor/*"/>
+    <param name="r8">Real8 value to convert to a FLOAT</param>
+    <param name="decimals">Number of significant decimals of the FLOAT</param>
+    <param name="length">Length of the FLOAT</param>
+    <param name="Value">IFLoat value to copy into the FLOAT</param>
+  </__Float.ctor>
+
+  <__Float.Decimals>
+    <summary>Number of decimals</summary>
+  </__Float.Decimals>
+  <__Float.Digits>
+    <summary>Width </summary>
+  </__Float.Digits>
+  <__Float.Value>
+    <summary>REAL8 (System.Double) value</summary>
+  </__Float.Value>
+  <__Psz>
+    <summary>
+      Internal type that implements the XBase Compatible PSZ type.<br/>
+      This type has many operators and implicit converters that normally are never directly called from user code.
+    </summary>
+    <include file="RTComments.xml" path="Comments/PSZ/*"/>
+  </__Psz>
+  <__Symbol>
+    <summary>
+      Internal type that implements the XBase Compatible SYMBOL type.<br/>
+      This type has many operators and implicit converters that normally are never directly called from user code.<br/>
+      There are also some operators that handle implicit conversions between Symbols and Strings in your code.
+    </summary>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </__Symbol>
+  <__Symbol.ctor>
+    <include file="RTComments.xml" path="Comments/Constructor/*"/>
+    <param name="sValue">String value to convert to a SYMBOL</param>
+    <param name="upperCase">Should the symbol be converted to Uppercase</param>
+    <param name="dwValue">Position of an existing symbol in the symbol table.</param>
+  </__Symbol.ctor>
+  <__Usual>
+    <summary>
+      Internal type that implements the XBase Compatible USUAL type.<br/>
+      This type has many operators and implicit converters that normally are never directly called from user code.
+    </summary>
+  </__Usual>
+  <__Usual.__InexactEquals>
+    <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
+    <param name="lhs">Left hand side of the comparison</param>
+    <param name="rhs">Right hand side of the comparison</param>
+    <returns>TRUE when the values are equal</returns>
+    <remarks>This method takes the SetExact() setting into account when comparing string values.</remarks>
+  </__Usual.__InexactEquals>
+  <__Usual.__InexactNotEquals>
+    <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
+    <param name="lhs">Left hand side of the comparison</param>
+    <param name="rhs">Right hand side of the comparison</param>
+    <returns>TRUE when the values are NOT equal</returns>
+    <remarks>This method takes the SetExact() setting into account when comparing string values.</remarks>
+  </__Usual.__InexactNotEquals>
+  <__Usual.CompareTo>
+    <summary>This method is needed to implement the IComparable interface.</summary>
+  </__Usual.CompareTo>
+  <__Usual.ctor>
+    <summary>This constructor is used in code generated by the compiler when needed.</summary>
+    <param name="o">object that will be stored inside the usual.</param>
+    <remarks>When the object is a value type, the the value will be stored inside the usual. Otherwise a reference to the value will be stored.</remarks>
+  </__Usual.ctor>
+  <__Usual.IsArray>
+    <summary>This property returns TRUE when the USUAL is of type Array</summary>
+  </__Usual.IsArray>
+  <__Usual.IsBinary>
+    <summary>This property returns TRUE when the USUAL is of type Binary</summary>
+  </__Usual.IsBinary>
+  <__Usual.IsByRef>
+    <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
+  </__Usual.IsByRef>
+  <__Usual.IsCodeblock>
+    <summary>This property returns TRUE when the USUAL is of type Codeblock</summary>
+  </__Usual.IsCodeblock>
+  <__Usual.IsCurrency>
+    <summary>This property returns TRUE when the USUAL is of type Currency</summary>
+  </__Usual.IsCurrency>
+  <__Usual.IsDate>
+    <summary>This property returns TRUE when the USUAL is of type Date</summary>
+  </__Usual.IsDate>
+  <__Usual.IsDateTime>
+    <summary>This property returns TRUE when the USUAL is of type DateTime</summary>
+  </__Usual.IsDateTime>
+  <__Usual.IsDecimal>
+    <summary>This property returns TRUE when the USUAL is of type Decimal</summary>
+  </__Usual.IsDecimal>
+  <__Usual.IsEmpty>
+    <summary>This property returns TRUE when the USUAL is Empty. </summary>
+  </__Usual.IsEmpty>
+<__Usual.IsFloat>
+    <summary>This property returns TRUE when the USUAL is of type FLOAT </summary>
+  </__Usual.IsFloat>
+  <__Usual.IsFractional>
+    <summary>This property returns TRUE when the USUAL is of type FLOAT, Decimal or Currency</summary>
+  </__Usual.IsFractional>
+  <__Usual.IsInt64>
+    <summary>This property returns TRUE when the USUAL is of type Int64 </summary>
+  </__Usual.IsInt64>
+  <__Usual.IsInteger>
+    <summary>This property returns TRUE when the USUAL is of type LONG or INT64 </summary>
+  </__Usual.IsInteger>
+  <__Usual.IsLogic>
+    <summary>This property returns TRUE when the USUAL is of type LOGIC </summary>
+  </__Usual.IsLogic>
+  <__Usual.IsLong>
+    <summary>This property returns TRUE when the USUAL is of type Long </summary>
+  </__Usual.IsLong>
+  <__Usual.IsNil>
+    <summary>This property returns TRUE when the USUAL is NIL, or when the usual is a reference type and NULL or when the isual is a PTR type and IntPtr.Zero</summary>
+  </__Usual.IsNil>
+  <__Usual.IsNull>
+    <summary>This property returns TRUE when the USUAL is of type NULL</summary>
+  </__Usual.IsNull>
+  <__Usual.IsNumeric>
+    <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
+  </__Usual.IsNumeric>
+  <__Usual.IsObject>
+    <summary>This property returns TRUE when the USUAL is of type Object</summary>
+  </__Usual.IsObject>
+  <__Usual.IsPsz>
+    <summary>This property returns TRUE when the USUAL is of type Psz</summary>
+  </__Usual.IsPsz>
+  <__Usual.IsPtr>
+    <summary>This property returns TRUE when the USUAL is of type Ptr (IntPtr)</summary>
+  </__Usual.IsPtr>
+  <__Usual.IsReferenceType>
+    <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
+  </__Usual.IsReferenceType>
+  <__Usual.IsString>
+    <summary>This property returns TRUE when the USUAL is of type String</summary>
+  </__Usual.IsString>
+  <__Usual.IsSymbol>
+    <summary>This property returns TRUE when the USUAL is of type Symbol</summary>
+  </__Usual.IsSymbol>
+  <__Usual.SELF_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The element stored at the indicated location in the array.</returns>
+    <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
+  </__Usual.SELF_index>
+  <__Usual.SELF_name>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="name">
+      <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*"/>
+    </param>
+    <returns>The element stored at the indicated location in the collection.</returns>
+    <remarks>When the contents of the USUAL is not an array or does not name based indexing  then a runtime error is generated.</remarks>
+  </__Usual.SELF_name>
+  <__Usual.SystemType>
+    <summary>This property returns the System.Type that represents the value of the usual.</summary>
+  </__Usual.SystemType>
+  <__Usual.Type>
+    <summary>This property returns the __UsualType of the USUAL </summary>
+  </__Usual.Type>
+  <__Usual.Value>
+    <summary>Return the value of the USUAL as object. NIL values are shown as a NIL string.</summary>
+  </__Usual.Value>
+  <__UsualEnumerator>
+    <summary>Create an enumerator for the USUAL type or throw a runtime exception.</summary>
+    <param name="name">Name of the Usual</param>
+    <remarks>This function is automatically called by code generated by the compiler when enumerating an untyped variable</remarks>
+  </__UsualEnumerator>
+  <__WinBool>
+    <summary>Internal type that implements the WIN32 Compatible LOGIC type in UNIONs and VOSTRUCTs</summary>
+  </__WinBool>
+  <__WinBool.ctor>
+    <summary>This constructor is used in code generated by the compiler when needed.</summary>
+  </__WinBool.ctor>
+  <__WinBool.Value>
+    <summary>Value as Logic</summary>
+  </__WinBool.Value>
+  <__WinDate>
+    <summary>Internal type that implements the XBase Compatible DATE type in UNIONs and VOSTRUCTs</summary>
+  </__WinDate>
+  <__WinDate.ctor>
+    <summary>This constructor is used in code generated by the compiler when needed.</summary>
+  </__WinDate.ctor>
+  <__WinDate.JulianValue>
+    <summary>Value as Julian Number, 0 for NULL_DATE</summary>
+  </__WinDate.JulianValue>
+  <__WinDate.Value>
+    <summary>Value as Date</summary>
+  </__WinDate.Value>
+  <_ArrayToObjectArray>
+    <summary>Helper function to convert ARRAY to OBJECT[]</summary>
+    <param name="args">X# array to convert</param>
+    <returns>OBJECT Array</returns>
+    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+  </_ArrayToObjectArray>
+  <_ArrayToUsualArray>
+    <summary>Helper function to convert ARRAY to USUAL[]</summary>
+    <param name="args">X# array to convert</param>
+    <returns>USUAL Array</returns>
+    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+  </_ArrayToUsualArray>
+  <_CallClipFunc>
+    <summary>Call a clipper function by name</summary>
+    <param name="symFunction">The name of the function to call.</param>
+    <param name="aArgs">The list of arguments to pass to the function</param>
+    <param name="uArgs">The list of arguments to pass to the function</param>
+    <returns>The return value of the function</returns>
+    <remarks>Note that X# allows to call functions that are overloaded.</remarks>
+  </_CallClipFunc>
+  <_Codeblock>
+    <summary>
+      Internal type that is the base class for macro compiled codeblocks.
+    </summary>
+    <seealso cref="ICodeblock"/>
+    <seealso cref="IMacroCompiler"/>
+    <seealso cref="Codeblock"/>
+  </_Codeblock>
+  <_Codeblock.ctor>
+    <summary>This constructor is used by the Macro Compiler</summary>
+    <param name="innerBlock">Compiled codeblock created by the macro compiler.</param>
+    <param name="cMacro">Macro string that was used to create the codeblock.</param>
+    <param name="lIsBlock">Did the macro string start with "{|".</param>
+    <param name="lAddsMemvars">Does the macro create Memvars .</param>
+  </_Codeblock.ctor>
+  <_Codeblock.Eval>
+    <summary>
+      Executes the codeblock.
+    </summary>
+    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+    <returns>
+      The value of the last expression within the codeblock as a USUAL.
+      If the last expression in the codeblock is of type VOID, then the codeblock
+      returns NIL.
+    </returns>
+  </_Codeblock.Eval>
+  <_Codeblock.IsBlock>
+    <summary>Was the codeblock created from a string that started with "{|" </summary>
+  </_Codeblock.IsBlock>
+  <_Codeblock.ToString>
+    <summary>
+      Returns the original string that was used to create the macro compiled codeblock.
+    </summary>
+  </_Codeblock.ToString>
+  <_MClear>
+    <summary>
+      Clear all memory variables (all public variables and the private variables of the current thread)
+    </summary>
+    <include file="RTComments.xml" path="Comments/Memvar/*"/>
+  </_MClear>
+  <_MRelease>
+    <summary>
+      Release variables that match a certain wildcard pattern
+    </summary>
+    <param name="cMask">The wildcard pattern to use when releasing the memvars. May contain * and ? characters.</param>
+    <param name="lMatch">Indicates if the variables that need to be released should match (TRUE) or NOT match (FALSE) the pattern.</param>
+    <remarks>
+      For most dialects the variables are not removed but their values are replaced with NIL.
+    </remarks>
+    <include file="RTComments.xml" path="Comments/Memvar/*"/>
+    dsAccessToLocals(TRUE)];
+    TION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
+  </_MRelease>
+  <_MRestore>
+    <summary>
+      Recreate public and private variables previously saved to a file and initialize them with their former values.
+    </summary>
+    <param name="cFileName">The name of the memory file to read. The default extension is .MEM </param>
+    <param name="lAdditive">When set to TRUE then the existing memory variables will be saved. Otherwise all memory variables will be deleted first.</param>
+    <param name="cSkel">(Optional) Wildcard pattern to use when saving. This can include literal characters as well as the standard wildcard characters, * and ?. </param>
+    <param name="lLike">(Optional) When set to TRUE then variables matching the pattern are restored. When set to FALSE then the variables that do NOT match the pattern are restored.</param>
+    <remarks>
+      When memory variables are restored, they are recreated as private variables with the scope of the current procedure or function
+      unless they exist as public variables and you specify the ADDITIVE clause .  If ADDITIVE is specified, public and private variables
+      with the same names are overwritten unless hidden with PRIVATE.  If ADDITIVE is not specified, all public and private variables are
+      released before the memory file is loaded. In that case all restored variables will become private variables.
+    </remarks>
+  </_MRestore>
+  <_MSave>
+    <summary>
+      Copy public and private memory variables visible within the current routine to a disk file.
+    </summary>
+    <param name="cFileName">The name of the file, including an optional drive, directory, and extension. The default extension is .MEM </param>
+    <param name="cSkel">Wildcard pattern to use when saving. This can include literal characters as well as the standard wildcard characters, * and ?. </param>
+    <param name="lLike">When set to TRUE then variables matching the pattern are saved. When set to FALSE then the variables that do NOT match the pattern are saved.</param>
+    <remarks>
+      An existing MEM file will be overwritten. When an existing file is ReadOnly then an exception will be thrown.
+    </remarks>
+  </_MSave>
+  <_MxRelease>
+    <summary>
+      Release one or more memory variables variables.
+    </summary>
+    <param name="var1">Variable 1</param>
+    <param name="var2">Variable 2</param>
+    <param name="var3">Variable 3</param>
+    <param name="var4">Variable 4</param>
+    <param name="varn">Variable n</param>
+    <remarks>
+      The variables are not removed but their values are replaced with NIL.
+    </remarks>
+    <include file="RTComments.xml" path="Comments/Memvar/*"/>
+  </_MxRelease>
+  <_ObjectArrayToUsualArray>
+    <summary>Helper function to convert OBJECT[] to USUAL[]</summary>
+    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+    <param name="args">OBJECT array to convert</param>
+    <returns>USUAL Array</returns>
+  </_ObjectArrayToUsualArray>
+  <_PrivateCount>
+    <summary>
+      Count private variables
+    </summary>
+  </_PrivateCount>
+  <_PrivateEnum>
+    <summary>
+      Enumerate private variables
+    </summary>
+  </_PrivateEnum>
+  <_PrivateFirst>
+    <summary>
+      Enumerate private variables
+    </summary>
+  </_PrivateFirst>
+  <_PrivateNext>
+    <summary>
+      Enumerate private variables
+    </summary>
+  </_PrivateNext>
+  <_PublicCount>
+    <summary>
+      Count public variables
+    </summary>
+  </_PublicCount>
+  <_PublicEnum>
+    <summary>
+      Enumerate public variables
+    </summary>
+  </_PublicEnum>
+  <_PublicFirst>
+    <summary>
+      Enumerate public variables
+    </summary>
+  </_PublicFirst>
+  <_PublicNext>
+    <summary>
+      Enumerate public variables
+    </summary>
+  </_PublicNext>
+  <_SequenceError>
+    <summary>
+      This function is automatically inserted by the compiler in a RECOVER USING block and gets called when the
+      RECOVER USING block is reached because of an exception.
+    </summary>
+    <param name="e">The exception that triggered the jump into the RECOVER USING block</param>
+    <remarks>
+      The default implementation of this function (in the XSharp.RT assembly) called the installed error handler
+      that is installed with ErrorBlock()
+      The function should then have the following prototype
+      <code language="X#">
+        FUNCTION _SequenceError(e as Exception) AS VOID
+      </code>
+    </remarks>
+    <returns>The result of the call to the error handler installed in the ErrorBlock</returns>
+    <seealso cref="O:XSharp.RT.Functions._Break">Break Function</seealso>
+    <seealso cref="O:XSharp.RT.Functions.ErrorBlock">Break Function</seealso>
+  </_SequenceError>
+  <_SequenceRecover>
+    <summary>
+      This function is automatically inserted by the compiler in a compiler generated
+      RECOVER USING block when you have a BEGIN SEQUENCE .. END SEQUENCE in your code
+      without RECOVER USING clause
+    </summary>
+    <param name="u">The parameter that was passed in the BREAK statement or the call to the _Break function</param>
+    <remarks>
+      If a REAL exception occurs then this function is NOT called. The function is only called when
+      the (generated) RECOVER USING block is called with a value from a BREAK statement. <br/>
+      The default implementation of this function (in the XSharp.RT assembly) does nothing.
+      You can override this function in your own code if you want.
+      The function should then have the following prototype
+      <code language="X#">
+        FUNCTION _SequenceRecover(u as USUAL) AS VOID
+      </code>
+    </remarks>
+    <seealso cref="O:XSharp.RT.Functions._Break">Break Function</seealso>
+  </_SequenceRecover>
+  <_Str>
+    <inheritdoc cref="Str"/>
+    <returns>The returned string with always have a DOT as decimal separator.</returns>
+  </_Str>
+  <_Str3>
+    <inheritdoc cref="Str3"/>
+    <returns>A string with DOT as decimal separator.</returns>
+  </_Str3>
+  <_TextRestore>
+    <summary>
+      This function is used by the TEXT TO FILE UDC
+    </summary>
+  </_TextRestore>
+  <_TextSave>
+    <summary>
+      This function is used by the TEXT TO FILE UDC
+    </summary>
+    <param name="cFile">FileName specified in the TEXT TO FILE UDC</param>
+  </_TextSave>
+  <_UsualArrayToObjectArray>
+    <summary>Helper function to convert USUAL[] to OBJECT[]</summary>
+    <param name="args">USUAL array to convert</param>
+    <returns>OBJECT Array</returns>
+    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+  </_UsualArrayToObjectArray>
+  <_VoDbErrInfoPtr>
+    <inheritdoc cref="CoreDb._ErrInfoPtr"/>
+    <seealso cref="CoreDb._ErrInfoPtr"/>
+  </_VoDbErrInfoPtr>
+  <AAdd_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </AAdd_T_>
+  <AClone_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </AClone_T_>
+  <ACloneShallow_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ACloneShallow_T_>
+  <ADel_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ADel_T_>
+  <ADim>
+    <summary>Calculate the # of dimensions in an array</summary>
+    <param name="a"/>
+    <returns>Number of dimensions in an array</returns>
+  </ADim>
+  <ADimPic>
+    <summary>Calculate a string that represents the dimensions in an array</summary>
+    <param name="a"/>
+    <returns>String that displays the dimensions in an array</returns>
+  </ADimPic>
+  <AEval_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </AEval_T_>
+  <AEvalA_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </AEvalA_T_>
+  <AIns_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </AIns_T_>
+  <ALen_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ALen_T_>
+  <ArrayCreate_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayCreate_T_>
+  <ArrayDeProtect_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayDeProtect_T_>
+  <ArrayGet_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayGet_T_>
+  <ArrayNew_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayNew_T_>
+  <ArrayProtect_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayProtect_T_>
+  <ArrayPut_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayPut_T_>
+  <ArrayStore_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArrayStore_T_>
+  <ArraySwap_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ArraySwap_T_>
+  <AScan_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+    <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
+  </AScan_T_>
+  <AsHexString>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*"/>
+    <seealso cref="C2Hex(System.String)">C2Hex</seealso>
+    <seealso cref="_C2Hex(System.String,System.Boolean)">_C2Hex</seealso>
+  </AsHexString>
+  <ASize_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ASize_T_>
+  <ASort_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ASort_T_>
+  <ATail_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ATail_T_>
+  <ATrueDel_T_>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*"/>
+    <typeparam name="T">The type of the array elements</typeparam>
+  </ATrueDel_T_>
+  <BlobData>
+    <summary>
+      This class is used to write BLOB data to a FPT file.
+    </summary>
+  </BlobData>
+  <CanBreak>
+    <summary>
+      Check if a BEGIN SEQUENCE...END construct is active.
+    </summary>
+    <returns>
+    </returns>
+  </CanBreak>
+  <Codeblock>
+    <summary>
+      Internal type that implements the VO Compatible CODEBLOCK type<br/>
+      This type has methods that normally are never directly called from user code.
+    </summary>
+    <seealso cref="ICodeblock"/>
+  </Codeblock>
+  <Codeblock.ctor>
+    <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
+    <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
+  </Codeblock.ctor>
+  <Codeblock.Eval>
+    <summary>
+      Executes the codeblock.
+    </summary>
+    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+    <returns>
+      The value of the last expression within the codeblock as a USUAL.
+      If the last expression in the codeblock is of type VOID, then the codeblock
+      returns NIL.
+    </returns>
+    <remarks>
+      This method is abstract and is implemented in the derived classes
+      created by the compiler.
+    </remarks>
+  </Codeblock.Eval>
+  <Codeblock.EvalBlock>
+    <summary>
+      Eval method that can be called from code that does not "know" about the USUAL type.
+      such as the code in the RDD classes.
+    </summary>
+    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+  </Codeblock.EvalBlock>
+  <Codeblock.PCount>
+    <summary>Returns the number of parameters in the codeblock</summary>
+  </Codeblock.PCount>
+  <Codeblock.ToString>
+    <summary>
+      Return a string that contains the # of parameters for display in the debugger.
+    </summary>
+  </Codeblock.ToString>
+  <CompilerServices>
+    <summary>
+      This class contains helper code that is called by the compiler to support various XBase language constructs, such as the
+      automatic memory management of PSZ values created with String2Psz().
+    </summary>
+  </CompilerServices>
+  <CompilerServices.CanBreak>
+    <summary>
+      Determine if we are inside a BEGIN SEQUENCE .. END by looking at the SEQUENCE counter in the runtime.
+    </summary>
+  </CompilerServices.CanBreak>
+  <CompilerServices.EnterBeginSequence>
+    <summary>
+      Increment the SEQUENCE counter for a BEGIN SEQUENCE statement
+    </summary>
+  </CompilerServices.EnterBeginSequence>
+  <CompilerServices.ExitBeginSequence>
+    <summary>
+      Decrement the SEQUENCE counter for a BEGIN SEQUENCE statement
+    </summary>
+  </CompilerServices.ExitBeginSequence>
+  <CompilerServices.String2Psz>
+    <summary>
+      Allocate a PSZ and add it to the list
+    </summary>
+  </CompilerServices.String2Psz>
+  <CompilerServices.String2PszRelease>
+    <summary>
+      Free all PSZ values in the List
+    </summary>
+  </CompilerServices.String2PszRelease>
+  <CompilerServices.StringSubtract>
+    <summary>
+      Subtract 2 strings.
+    </summary>
+  </CompilerServices.StringSubtract>
+  <ConcatAtom>
+    <summary>
+      Concatenate two Symbols.
+    </summary>
+    <param name="s1"/>
+    <param name="s2"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </ConcatAtom>
+  <ConcatAtom3>
+    <summary>
+      Concatenate three Symbols.
+    </summary>
+    <param name="s1"/>
+    <param name="s2"/>
+    <param name="s3"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </ConcatAtom3>
+  <ConcatAtom4>
+    <summary>
+    </summary>
+    <param name="s1"/>
+    <param name="s2"/>
+    <param name="s3"/>
+    <param name="s4"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </ConcatAtom4>
+  <ConcatAtom5>
+    <summary>
+    </summary>
+    <param name="s1"/>
+    <param name="s2"/>
+    <param name="s3"/>
+    <param name="s4"/>
+    <param name="s5"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </ConcatAtom5>
+  <CParamCount>
+    <summary>
+      Return the number of arguments that a code block is expecting.
+    </summary>
+    <param name="uCodeBlock"/>
+    <returns>
+    </returns>
+  </CParamCount>
+  <CToD>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*"/>
+    <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
+  </CToD>
+  <DbAutoLock>
+    <summary>Automatically lock a record in the FoxPro dialect </summary>
+  </DbAutoLock>
+  <DbAutoLockArea>
+    <summary>Automatically lock a record in the FoxPro dialect </summary>
+  </DbAutoLockArea>
+  <DbAutoUnLock>
+    <summary>Automatically unlock a record in the FoxPro dialect </summary>
+  </DbAutoUnLock>
+  <DbAutoUnLockArea>
+    <summary>Automatically unlock a record in the FoxPro dialect </summary>
+  </DbAutoUnLockArea>
+  <DbBuffRefresh>
+    <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
+    <returns>
+    </returns>
+  </DbBuffRefresh>
+  <DbClearScope>
+    <summary>Clears the top and/or bottom scope. </summary>
+    <param name="nScope">
+      An optional constant that indicates which scope needs to be set.<br/>
+      <include file="RTComments.xml" path="Comments/ScopeParams/*"/>
+    </param>
+    <returns>TRUE when the scope was cleared succesfully, otherwise FALSE.</returns>
+    <seealso cref="DbSetScope"/>
+    <seealso cref="DbScope"/>
+  </DbClearScope>
+  <DbJoinAppend>
+    <summary>
+    </summary>
+    <returns>
+    </returns>
+  </DbJoinAppend>
+  <DbOrderInfo>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dborderinfo/*"/>
+    <seealso cref="XSharp.RDD.Enums.DbOrder_Info">DbOrder_Info ENUM</seealso>
+  </DbOrderInfo>
+  <DbRecordInfo>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecordinfo/*"/>
+    <seealso cref="XSharp.RDD.Enums.DbRecordInfo">DbRecordInfo ENUM</seealso>
+  </DbRecordInfo>
+  <DbScope>
+    <summary>Checks if a scope is set in a work area.</summary>
+    <param name="uScope">
+      An optional constant that indicates which scope needs to be set.<br/>
+      <include file="RTComments.xml" path="Comments/ScopeParams/*"/> <br/>
+    </param>
+    <returns>
+      <include file="RTComments.xml" path="Comments/ScopeReturn/*"/>
+    </returns>
+    <seealso cref="DbSetScope"/>
+    <seealso cref="DbClearScope"/>
+  </DbScope>
+  <DbSetIndex>
+    <param name="uOrder">Order in the index file to activate. When not specified then the first order in the file becomes active.</param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetindex/*"/>
+  </DbSetIndex>
+  <DbSetRelation>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetrelation/*"/>
+    <param name="cName">An optional name for the relation. Defaults to ParentName + "_" + ChildName.</param>
+  </DbSetRelation>
+  <DbSetScope>
+    <summary>Sets scope values.</summary>
+    <param name="nScope">
+      A constant that indicates which scope needs to be set.<br/>
+      <include file="RTComments.xml" path="Comments/ScopeParams/*"/>
+    </param>
+    <param name="uValue">
+      The value that needs to be set.
+      The type of the value must match the type of the index expression.
+    </param>
+    <returns>TRUE when the scope was set succesfully and when the record pointer has been successfully moved to the first record in the scope, otherwise FALSE.</returns>
+    <remarks>The record pointer is moved to the first record in the scope when setting of the scope was succesfull.</remarks>
+    <seealso cref="DbClearScope"/>
+    <seealso cref="DbScope"/>
+  </DbSetScope>
+  <DebOut>
+    <summary>
+      Write information to the Debug Terminal Program
+    </summary>
+    <param name="args">List of values to display on the debug terminal</param>
+  </DebOut>
+  <DOY>
+    <summary>
+      Return the Day of Year
+    </summary>
+    <param name="dDate">Date for which to calculate the Date</param>
+    <returns/>
+  </DOY>
+  <Empty>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*"/>
+    <remarks>For Object values the 'emptyness' is determined by Comparing to NULL_OBJECT and comparign to DBNull.Value</remarks>
+  </Empty>
+  <EmptyPSZ>
+    <summary>
+    </summary>
+    <param name="PSZValue"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/PSZ/*"/>
+  </EmptyPSZ>
+  <EnableArrayIndexCheck>
+    <summary>Suppress Array Index check to be compatible with Visual Objects</summary>
+    <param name="lCheck">TRUE to enable the array index checks. </param>
+    <returns>The previous setting of the flag</returns>
+    <summary>
+      In some situations Visual Objects did not throw a runtime error when you were accessing a non existing array element. <br/>
+      You can enable this (mis)behaviour in X# by disabling the array index checks.<br/>
+      The default behavior is to generate an error when you access array indices out of the existing range.
+    </summary>
+    <example>
+      // The following code does not throw a runtime error but displays NIL for u[1,1]
+      // To get the same behavior in X# you need to call EnableArrayIndexCheck(FALSE)
+      FUNCTION Start
+      LOCAL u AS USUAL
+      u := {1,2,3}
+      ? u[1,1]
+      WAIT
+      RETURN TRUE
+    </example>
+  </EnableArrayIndexCheck>
+  <Eval>
+    <summary>
+      Evaluate a code block or an objects Eval() method.
+    </summary>
+    <param name="obj">Object or block to evaluate</param>
+    <param name="uCodeBlock">Block to evaluate</param>
+    <param name="args">List of arguments</param>
+    <returns>Result of the evaluation</returns>
+  </Eval>
+  <FieldGetBytes>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*"/>
+    <summary>Read an array of bytes direct from the workarea buffer.</summary>
+    <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
+    <returns>
+      The value of the field.`
+      IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldGetBytes() will generate an error.
+    </returns>
+  </FieldGetBytes>
+  <FieldPutBytes>
+    <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
+    <summary>Write an array of bytes direct to the workarea buffer.</summary>
+    <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
+    <param name="aBytes">The value to write to the field</param>
+    <returns>
+      The value assigned TO the field.
+      IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
+    </returns>
+  </FieldPutBytes>
+  <FindClass>
+    <summary>
+      Find a class in the referenced assemblies
+    </summary>
+    <param name="cClassName">Classname to find</param>
+    <returns>System.Type object or NULL </returns>
+  </FindClass>
+  <FixedMemBlockEnd>
+    <summary>Guard Block following MemAlloc return value</summary>
+  </FixedMemBlockEnd>
+  <FixedMemBlockEnd.dwMagic>
+    <summary>Checksum</summary>
+  </FixedMemBlockEnd.dwMagic>
+  <FixedMemBlockEnd.dwZero>
+    <summary>Zero terminator</summary>
+  </FixedMemBlockEnd.dwZero>
+  <FixedMemBlockStart>
+    <summary>Guard Block preceding MemAlloc return value</summary>
+  </FixedMemBlockStart>
+  <FixedMemBlockStart.dwCargo>
+    <summary>Cargo slot</summary>
+  </FixedMemBlockStart.dwCargo>
+  <FixedMemBlockStart.dwGroup>
+    <summary>Group number</summary>
+  </FixedMemBlockStart.dwGroup>
+  <FixedMemBlockStart.dwMagic>
+    <summary>Checksum</summary>
+  </FixedMemBlockStart.dwMagic>
+  <FixedMemBlockStart.dwSize>
+    <summary>Size</summary>
+  </FixedMemBlockStart.dwSize>
+  <Float2Long>
+    <summary>
+    </summary>
+    <param name="f"/>
+    <returns>
+    </returns>
+  </Float2Long>
+  <FParamCount>
+    <summary>Return the number of local arguments that a function is expecting.</summary>
+    <param name="symFunction">The name of the function to examine.</param>
+    <returns>The number of arguments that a method is expecting.</returns>
+    <remarks>
+      Note that you can't use this for functions that are overloaded.<br/>
+      And unlike in VO this function can also be used to return the number of parameters for typed functions.
+    </remarks>
+  </FParamCount>
+  <FReadText3>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext/*"/>
+    <param name="pData">A block of memory to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+    <include file="RTComments.xml" path="Comments/FileCompat/*"/>
+  </FReadText3>
+  <GetRTFullPath>
+    <summary>
+    </summary>
+    <returns>
+    </returns>
+  </GetRTFullPath>
+  <GetThreadCount>
+    <summary>
+    </summary>
+    <returns>
+    </returns>
+  </GetThreadCount>
+  <GetTickCountLow>
+    <summary>
+      Get the number of 1/10000 seconds that have elapsed since Windows was started.
+    </summary>
+    <returns>
+    </returns>
+  </GetTickCountLow>
+  <Globals>
+    <summary>
+      Support class to support runtime access to globals declared in the loaded X# assemblies
+    </summary>
+  </Globals>
+  <Globals.Find>
+    <summary>
+      Find the Global Field with a name
+    </summary>
+    <param name="cVarName">Name of the global to find</param>
+    <returns/>
+  </Globals.Find>
+  <Globals.Get>
+    <summary>
+      Return the value of a Global
+    </summary>
+    <param name="cVarName">Name of the global to find</param>
+    <param name="uValue">Value</param>
+    <returns>TRUE when a global with the name exists, FALSE when it does not exist</returns>
+  </Globals.Get>
+  <Globals.GetAllGlobals>
+    <summary>
+      Return a list of all Global Fields. This is used in the Globals Debugger Window
+    </summary>
+    <returns>List of Globals</returns>
+  </Globals.GetAllGlobals>
+  <Globals.Put>
+    <summary>
+      Assign a value to a Global
+    </summary>
+    <param name="cVarName">Name of the global to assign</param>
+    <param name="uValue">New value</param>
+    <returns>TRUE when a global with the name exists, and the value was successfully assigned. FALSE when it does not exist or when there was an error assigning the value.,</returns>
+  </Globals.Put>
+  <IDynamicProperties>
+    <summary>
+      This interface is used for objects that implement a special mechanism
+      for reading / writing properties at runtime.
+    </summary>
+  </IDynamicProperties>
+  <IDynamicProperties.GetPropertyNames>
+    <summary>Retrieve an array of the property names that exist.</summary>
+  </IDynamicProperties.GetPropertyNames>
+  <IDynamicProperties.NoIvarGet>
+    <summary>Retrieve the value of a property by name.</summary>
+    <param name="cName">Property Name</param>
+    <returns>The current value of the property </returns>
+    <remarks>Accessing a property that does not exist will result in a runtime error.</remarks>
+  </IDynamicProperties.NoIvarGet>
+  <IDynamicProperties.NoIvarPut>
+    <summary>Update the value of a property by name.</summary>
+    <param name="cName">Property Name</param>
+    <param name="uValue">New value of the property</param>
+    <remarks>
+      Assigning a property that does not exist may result in a runtime error. <br/>
+      However the class may also decide to "silently" add the property.
+    </remarks>
+  </IDynamicProperties.NoIvarPut>
+  <IIndexedProperties>
+    <summary>
+      This interface can be used to access any object with an indexer.
+      This is mostly used for elements inside typed arrays of the 'ARRAY OF' class.
+      If you implement the interface on the elements you can use an array syntax to
+      assess fields/properties in the elements of the array by name or ordinal.
+    </summary>
+    <seealso cref="INamedIndexer"/>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
+  </IIndexedProperties>
+  <IIndexedProperties.self_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+  </IIndexedProperties.self_index>
+  <IIndexedProperties.self_name>
+    <summary>Get/Set array elements with a name.</summary>
+    <param name="name">Name which will be used to lookup a property</param>
+  </IIndexedProperties.self_name>
+  <IIndexer>
+    <summary>
+      This interface is used to index a collection using the VO Array syntax.
+      The interface is implemented by the ARRAY type in the runtime, but you can also use it for your custom types.
+    </summary>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
+    <seealso cref="T:XSharp.__Array"/>
+  </IIndexer>
+  <IIndexer.self_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+  </IIndexer.self_index>
+  <IIndexer.self_index1>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index1">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+  </IIndexer.self_index1>
+  <ILateBound>
+    <summary>
+      This interface described the methods needed for a LateBound object <br/>
+      When an object implements this interface then the X# runtime will not use
+      reflection to implement late bound calls to properties or methods
+      but will call these methods instead.
+    </summary>
+  </ILateBound>
+  <ILateBound.NoIvarGet>
+    <summary>
+      Method to read a field or property late bound.
+    </summary>
+    <param name="cName">Field/Property Name</param>
+    <returns>Current value of Field/Property</returns>
+  </ILateBound.NoIvarGet>
+  <ILateBound.NoIvarPut>
+    <summary>
+      Method to update a field or property late bound.
+    </summary>
+    <param name="cName">Field/Property Name</param>
+    <param name="uValue">New value for field/property</param>
+  </ILateBound.NoIvarPut>
+  <ILateBound.NoMethod>
+    <summary>
+      Call a method in the type late bound. Arguments are passed as Clipper calling convention parameters.
+      The method name is passed as first parameter.
+    </summary>
+    <returns>Result of MethodCall</returns>
+  </ILateBound.NoMethod>
+  <IMacroCompilerUsual>
+    <summary>
+      This interface defines and extension to the Macro compiler subsystem
+    </summary>
+    <seealso cref="T:XSharp.IMacroCompiler"/>
+    <seealso cref="T:XSharp.IMacroCompiler2"/>
+  </IMacroCompilerUsual>
+  <IMacroCompilerUsual.CompileCodeblock>
+    <summary>Compile a string into a runtime codeblock.</summary>
+    <param name="macro">String to compile</param>
+    <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
+    <param name="module">Module of the main app</param>
+    <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
+    <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
+    <returns>A compiled codeblock</returns>
+    <seealso cref="T:XSharp._Codeblock"/>
+  </IMacroCompilerUsual.CompileCodeblock>
+  <INamedIndexer>
+    <summary>
+      This interface is used to index a collection using a numeric and a string index and is implemented by the
+      typed array class ('ARRAY OF'). If your elements inside the collection implement the IIndexProperties interface then
+      the lookup of the property inside array element will be resolved with a call to the named indexer on that object.
+    </summary>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
+    <seealso cref="T:XSharp.IIndexedProperties"/>
+    <seealso cref="T:XSharp.__ArrayBase`1"/>
+  </INamedIndexer>
+  <INamedIndexer.self_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="name">
+      <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*"/>
+    </param>
+  </INamedIndexer.self_index>
+  <InList>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*"/>
+    <remarks>
+      InList() determines whether an expression is found in a series of expressions.
+      The first expression is compared to each of the other expressions until either a match is
+      found or the entire list has been traversed.
+      For exact matching, use InListExact().
+    </remarks>
+    <seealso cref="M:XSharp.RT.Functions.InListExact(XSharp.__Usual,XSharp.__Usual[])">InListExact</seealso>
+  </InList>
+  <InListExact>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*"/>
+    <remarks>
+      InListExact() determines whether an expression is found in a series of expressions.
+      The first expression is compared to each of the other expressions until either a match is
+      found or the entire list has been traversed.
+      InListExact() is the same as InList() except that <c>==</c> is used for matching instead of <c>=</c>.
+      There is no difference between InList() and InListExact() for non string datatypes.
+    </remarks>
+    <seealso cref="O:XSharp.RT.Functions.InList">InList</seealso>
+    <example>
+      This example compares InList() and InListExact() when the left operand in a comparison is longer than the right operand of a comparison:
+      <code language="X#">
+        ? InList("longer", "long")		// TRUE
+        ? InList("long  ", "long")		// TRUE
+        ? InListExact("longer", "long")	// FALSE
+        ? InListExact("long  ", "long")	// FALSE
+      </code>
+      This example compares InList() and InListExact() when the right operand in a comparison is longer than the left operand of a comparison:
+      <code language="X#">
+        ? InList("long", "longer")		// FALSE
+        ? InList("long", "long  ")		// FALSE
+        ? InListExact("long", "longer")	// FALSE
+        ? InListExact("long", "long  ")	// FALSE
+      </code>
+    </example>
+    <seealso cref="M:XSharp.RT.Functions.InList(XSharp.__Usual,XSharp.__Usual[])">InList</seealso>
+  </InListExact>
+  <IRtCodeblock>
+    <summary>
+      This interface Extended the ICodeblock interface and adds support for usual
+      parameters and return values
+    </summary>
+    <seealso cref="T:XSharp.ICodeblock"/>
+  </IRtCodeblock>
+  <IRtCodeblock.Eval>
+    <summary>
+      Executes the codeblock.
+    </summary>
+    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+    <returns>The value of the last expression in the codeblock.</returns>
+  </IRtCodeblock.Eval>
+  <IRtCodeblock.IsBlock>
+    <summary>Was the codeblock created from a string that started with "{|" </summary>
+  </IRtCodeblock.IsBlock>
+  <IsAlNum>
+    <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
+  </IsAlNum>
+  <IsAlpha>
+    <summary>Determine if the leftmost character in a PSZ is alphabetic.</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character is alphabetic.</returns>
+  </IsAlpha>
+  <IsAlphaNum>
+    <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character is alphanumeric.</returns>
+  </IsAlphaNum>
+  <IsBDigit>
+    <summary>Determine if the leftmost character in a PSZ is a binary digit  (0 or 1)).</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
+  </IsBDigit>
+  <IsBinary>
+    <summary>
+      Determine if a value is a Binary.
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a Binary data type; otherwise, FALSE. </returns>
+  </IsBinary>
+  <IsByRef>
+    <summary>
+      Determine if a value is passed by reference
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>
+    </returns>
+  </IsByRef>
+  <IsCurrency>
+    <summary>
+      Determine if a value is a Currency.
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a Currency data type; otherwise, FALSE. </returns>
+  </IsCurrency>
+  <IsDateTime>
+    <summary>
+      Determine if a value is a DateTime.
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a DATETIME data type; otherwise, FALSE. </returns>
+  </IsDateTime>
+  <IsDecimal>
+    <summary>
+      Determine if a value is a Decimal.
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a Decimal data type; otherwise, FALSE. </returns>
+  </IsDecimal>
+  <IsFractional>
+    <summary>
+      Determine if a value is a Decimal or a Float
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a Decimal, Currency or Float data type; otherwise, FALSE. </returns>
+  </IsFractional>
+  <IsInt64>
+    <summary>
+      Determine if a value is a INT64.
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a INT64 data type; otherwise, FALSE. </returns>
+  </IsInt64>
+  <IsInteger>
+    <summary>
+      Determine if a value is an integer (LONG or INT64).
+    </summary>
+    <param name="uVal">The value to examine.</param>
+    <returns>TRUE if the value is a LONG or INT64 data type; otherwise, FALSE. </returns>
+  </IsInteger>
+  <IsLower>
+    <summary>Determine if the leftmost character in a PSZ is lower.</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
+  </IsLower>
+  <IsNumeric>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnumeric/*"/>
+    <returns>TRUE if the value is a LONG, FLOAT, IN64 or DECIMAL data type; otherwise, FALSE. </returns>
+  </IsNumeric>
+  <IsSpace>
+    <summary>Determine if the leftmost character in a PSZ is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
+  </IsSpace>
+  <IsUpper>
+    <summary>Determine if the leftmost character in a PSZ is uppercase.</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
+  </IsUpper>
+  <IsXDigit>
+    <summary>Determine if the leftmost character in a PSZ is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
+    <param name="pszSource">The string to examine.</param>
+    <returns>TRUE if the first character is hex otherwise FALSE.</returns>
+  </IsXDigit>
+  <JCDOW>
+    <summary>
+    </summary>
+    <param name="d"/>
+    <returns>
+    </returns>
+  </JCDOW>
+  <JCMONTH>
+    <summary>
+    </summary>
+    <param name="d"/>
+    <returns>
+    </returns>
+  </JCMONTH>
+  <JCYEAR>
+    <summary>
+    </summary>
+    <param name="d"/>
+    <returns>
+    </returns>
+  </JCYEAR>
+  <MaxAtom>
+    <summary>
+      Determine the number of Symbols in the atom table.
+    </summary>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </MaxAtom>
+  <MCompile>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*"/>
+    <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
+    <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
+    <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
+    <seealso cref="_Codeblock"/>
+  </MCompile>
+  <MemGrpCAlloc>
+    <inheritdoc cref="MemCAlloc"/>
+    <param name="wGroup">The group to which the newly allocated memory buffer will belong. This group should have already been opened by MemGrpOpen().</param>
+    <include file="RTComments.xml" path="Comments/StaticMemory/*"/>
+  </MemGrpCAlloc>
+  <MemGrpEnum>
+    <summary>
+      Enumerate all the pointers allocated in a memory group
+    </summary>
+    <param name="dwGroup">The group you want to compact</param>
+    <param name="pEnum">MemWalker Delegate</param>
+    <returns>TRUE when all delegate calls return TRUE</returns>
+  </MemGrpEnum>
+  <MemLen>
+    <summary>
+    </summary>
+    <param name="dwGroup"/>
+    <returns>
+    </returns>
+  </MemLen>
+  <MemLower>
+    <summary>
+    </summary>
+    <param name="pMemory"/>
+    <param name="dwCount"/>
+    <returns>
+    </returns>
+  </MemLower>
+  <MemRealloc>
+    <summary>
+      ReAllocate a static memory buffer of a specified size.
+    </summary>
+    <param name="pBuffer"/>
+    <param name="nSize"/>
+    <returns>
+      Returns the original pointer when the nSize parameter is smaller or equal to the current size.<br/>
+      Extraneous bytes are zeroed out. Returns a new buffer when the requesed size is bigger than the original size.
+    </returns>
+    <include file="RTComments.xml" path="Comments/StaticMemory/*"/>
+  </MemRealloc>
+  <MemTrace>
+    <summary>Enable / disable memory tracing</summary>
+  </MemTrace>
+  <MemUpper>
+    <summary>
+    </summary>
+    <param name="pMemory"/>
+    <param name="dwCount"/>
+    <returns>
+    </returns>
+  </MemUpper>
+  <MemVar>
+    <summary>
+      Internal type that implements the Dynamic Memory Variables.<br/>
+    </summary>
+    <include file="RTComments.xml" path="Comments/Memvar/*"/>
+  </MemVar>
+  <MemVar._Get>
+    <summary>Get the value of a local, private or public (in that order). Throws an exception when the variable does not exist.</summary>
+    <returns>The value of the memory variable.</returns>
+    <param name="cName">The name of the memory variable</param>
+  </MemVar._Get>
+  <MemVar._GetSafe>
+    <summary>Get the value of a local, private or public (in that order). Returns NIL if the value does not exist.</summary>
+    <returns>The value of the memory variable or NIL when it does not exist.</returns>
+    <param name="cName">The name of the memory variable</param>
+    <remarks>When a private and a public exist with the same name then the private has preference</remarks>
+  </MemVar._GetSafe>
+  <MemVar._Put>
+    <summary>
+      Updates the value of a local, private or public (in that order).
+      If the value does not exist than a new variable at the current level is created.
+    </summary>
+    <returns>The value of the memory variable.</returns>
+    <param name="cName">The name of the memory variable.</param>
+    <param name="uValue">The value to assign.</param>
+  </MemVar._Put>
+  <MemVar.Add>
+    <summary>Add a public memvar or a private memvar to the current level.</summary>
+    <param name="cName">The name of the memory variable</param>
+    <param name="lPrivate">Should the variable be created as private</param>
+  </MemVar.Add>
+  <MemVar.Clear>
+    <summary>Clear a variable by name. Tries to clear a private first and when that is not found then a public</summary>
+    <param name="cName">The name of the memory variable.</param>
+    <remarks>
+      Clear does not remove the variable but sets its value to NIL.<br/>
+      In the FoxPro dialect Clear does not clear local variables when these are visible.
+    </remarks>
+  </MemVar.Clear>
+  <MemVar.ClearAll>
+    <summary>
+      Clear all memvar name/value pairs.
+      Does not remove locals. Does not remove privates stack levels.
+    </summary>
+  </MemVar.ClearAll>
+  <MemVar.GetHigherLevelPrivate>
+    <summary>Get a memvar object from the stack (if it exists)</summary>
+  </MemVar.GetHigherLevelPrivate>
+  <MemVar.Getter>
+    <summary>Delegate for reading memvars.</summary>
+    <param name="name">Name of the Memvar for which the value has to be retrieved</param>
+    <returns>The value of the memory variable. </returns>
+  </MemVar.Getter>
+  <MemVar.Name>
+    <summary>Name of the memory variable.</summary>
+  </MemVar.Name>
+  <MemVar.PrivateFind>
+    <summary>Find a private variable. Try on the current level on the stack first and when not found then walk the stack.</summary>
+  </MemVar.PrivateFind>
+  <MemVar.PrivatePut>
+    <summary>Update a private variable. Does NOT add a new variable</summary>
+  </MemVar.PrivatePut>
+  <MemVar.PrivatesCount>
+    <summary>Get the total number of unique private variable names.</summary>
+  </MemVar.PrivatesCount>
+  <MemVar.PrivatesEnum>
+    <summary>Get an enumerator for all the unique names of private variables</summary>
+  </MemVar.PrivatesEnum>
+  <MemVar.PrivatesFirst>
+    <summary>Get the first unique private variable name.</summary>
+  </MemVar.PrivatesFirst>
+  <MemVar.PrivatesNext>
+    <summary>Get the next unique private variable name.</summary>
+  </MemVar.PrivatesNext>
+  <MemVar.PublicFind>
+    <summary>Find a public variable</summary>
+    <param name="cName">The name of the memory variable.</param>
+  </MemVar.PublicFind>
+  <MemVar.PublicPut>
+    <summary>Update a public variable. Does NOT create a new public when there is no variable with that name.</summary>
+    <param name="cName">The name of the memory variable.</param>
+    <param name="uValue">The value to assign.</param>
+  </MemVar.PublicPut>
+  <MemVar.PublicsCount>
+    <summary>Gets the total number of public variables.</summary>
+  </MemVar.PublicsCount>
+  <MemVar.PublicsEnum>
+    <summary>Get an enumerator for all the unique names of public variables</summary>
+  </MemVar.PublicsEnum>
+  <MemVar.PublicsFirst>
+    <summary>Gets the name of the first public variable.</summary>
+  </MemVar.PublicsFirst>
+  <MemVar.PublicsNext>
+    <summary>Gets the name of the next public variable.</summary>
+  </MemVar.PublicsNext>
+  <MemVar.Putter>
+    <summary>Delegate for writing memvars.</summary>
+    <param name="name">Name of the Memvar for which the value has to be retrieved</param>
+    <param name="value">Value to assign to the memory variable</param>
+    <remarks>When the variable does not exist then a new memory variable may be created.</remarks>
+  </MemVar.Putter>
+  <MemVar.Release>
+    <summary>Release a private variable</summary>
+  </MemVar.Release>
+  <MemVar.ReleaseAll>
+    <summary>Assign NIL to all visible private variables. Hidden privates are not affected.</summary>
+  </MemVar.ReleaseAll>
+  <MemVar.ReleasePrivates>
+    <summary>Release all privates at a certain level and higher</summary>
+  </MemVar.ReleasePrivates>
+  <MemVar.TryGet>
+    <summary>Try to retrieve the value of a local, private or public (in that order).</summary>
+    <param name="cName">The name of the memory variable</param>
+    <param name="uValue">Value of the variable, or NIL whe the variable does not exist.</param>
+    <returns>TRUE when the variable was found. Otherwise FALSE</returns>
+  </MemVar.TryGet>
+  <MemVar.Value>
+    <summary>Value of the memory variable. The default is NIL for PRIVATEs and FALSE for PUBLICs.</summary>
+  </MemVar.Value>
+  <MemVarBlockSym>
+    <inheritdoc cref="MemVarBlock"/>
+    <param name="symVar">The name of the variable .</param>
+  </MemVarBlockSym>
+  <MemVarClear>
+    <summary>Release a memory variable</summary>
+    <param name="symVar">The name of the variable you want to clear. </param>
+    <remarks>The value of this variable will be set to NIL. The variable is NOT deleted.</remarks>
+    <include file="RTComments.xml" path="Comments/Memvar/*"/>
+  </MemVarClear>
+  <MemVarRelease>
+    <summary>Release a memory variable</summary>
+    <param name="symVar">The name of the variable you want to release. </param>
+    <include file="RTComments.xml" path="Comments/Memvar/*"/>
+  </MemVarRelease>
+  <MemWalk>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/memwalk/*"/>
+    <remarks>Only memory blocks that were allocated while MemTrace was set to TRUE will be included.</remarks>
+  </MemWalk>
+  <MemWalker>
+    <summary>Delegate that a client needs to implement to use MemWalk.</summary>
+  </MemWalker>
+  <Object2Float>
+    <summary>
+      Convert an object containing a numeric value to a FLOAT
+    </summary>
+    <param name="oValue">Object containing the numeric value to convert.</param>
+    <returns>The value in the form of a float. </returns>
+    <exception cref="System.InvalidCastException"> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
+  </Object2Float>
+  <OOPHelpers.ConvertFromNull>
+    <summary>
+      Convert a null value to the correct value for the type
+    </summary>
+  </OOPHelpers.ConvertFromNull>
+  <OOPHelpers.CountNonDefaultParameters>
+    <summary>
+      Count the number of parameters that do not have a default value
+    </summary>
+    <param name="pars"/>
+    <returns/>
+  </OOPHelpers.CountNonDefaultParameters>
+  <OOPHelpers.IsInternalVisible>
+    <summary>
+      This method returns TRUE when the assembly from which an IVarGet()
+      or IVarPut() was called is the same assembly in which a property was defined.
+    </summary>
+    <param name="propInfo">Property that we are checking</param>
+    <returns>
+      TRUE when the first stackframe outside of XSharp.RT is in the same assembly as <paramref name="propInfo"/>
+    </returns>
+  </OOPHelpers.IsInternalVisible>
+  <OrdCount>
+    <summary>Determines the number of orders for the current work area.  </summary>
+    <returns>
+      OrdCount() returns the number of open indexes as a numeric value.
+      When no index is open or when no file is open in the current workarea, the return value is 0.
+    </returns>
+  </OrdCount>
+  <OrdList>
+    <summary>Return a list of all tag names for the current work area. </summary>
+    <returns>
+      OrdList() returns a one dimensional array holding strings with the tag names of all open indexes.
+      When no index is open, an empty array is returned.
+    </returns>
+  </OrdList>
+  <Set>
+    <summary>
+      Changes and/or reads a system setting.
+    </summary>
+    <param name="nDefine">
+      Is a positive integer identifying a system setting or system variable.
+      This should match the values from the Set enumerated type.
+    </param>
+    <param name="newValue">
+      The optional expression can specify a new value for a system setting.
+      The data type is dependent on the system setting designated by <paramref name="nDefine"/>.
+    </param>
+    <returns>
+      When Set() is called without the argument <paramref name="newValue"/> ,
+      the function returns the current system setting designated by <paramref name="nDefine"/> .
+      If <paramref name="newValue"/> is specified, the corresponding system setting is set to <paramref name="newValue"/>
+      and the value of the old setting is returned.
+    </returns>
+    <seealso cref="T:XSharp.Set"/>
+    <remarks>
+      If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine"/>
+      because there are some differences between the values in this header file and the values used inside X#.
+    </remarks>
+  </Set>
+  <ShowArray>
+    <summary>Dump the contents of an array to the terminal window</summary>
+    <param name="aTest">Array to dump</param>
+    <param name="cPrefix">Name to show before the array brackets. Defaults to 'a'</param>
+    <returns>Nothing</returns>
+    <remarks>
+      This dumps the information to the terminal window.
+      This will only work if the main application is a console application.
+    </remarks>
+  </ShowArray>
+  <ShowObject>
+    <summary>Dump the contents of an object to the terminal window</summary>
+    <param name="oObject">Object to dump</param>
+    <param name="cPrefix">Name to show before the field names. Defaults to 'o'</param>
+    <returns>Nothing</returns>
+    <remarks>
+      This dumps the information to the terminal window.
+      This will only work if the main application is a console application.
+    </remarks>
+  </ShowObject>
+  <ShowPrivates>
+    <summary>Dump the currently defined privates to the terminal window</summary>
+    <param name="lCurrentOnly">Only dump the privates from the current level on the evaluation stack.</param>
+    <returns>Nothing</returns>
+    <remarks>
+      This dumps the information to the terminal window.
+      This will only work if the main application is a console application.
+    </remarks>
+  </ShowPrivates>
+  <ShowPublics>
+    <summary>Dump the currently defined publics to the terminal window</summary>
+    <returns>Nothing</returns>
+    <remarks>
+      This dumps the information to the terminal window.
+      This will only work if the main application is a console application.
+    </remarks>
+  </ShowPublics>
+  <Str2>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/str2/*"/>
+    <returns>A string representation of the value.</returns>
+    <seealso cref="Str"/>
+    <seealso cref="Str1"/>
+    <seealso cref="Str3"/>
+  </Str2>
+  <Str3>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/str3/*"/>
+    <seealso cref="Str"/>
+    <seealso cref="Str1"/>
+    <seealso cref="Str2"/>
+  </Str3>
+  <String2Atom>
+    <summary>
+      Convert a string to a Symbol.
+    </summary>
+    <param name="c"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </String2Atom>
+  <String2Symbol>
+    <summary>
+      Convert a string to an uppercase Symbol.
+    </summary>
+    <param name="c"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </String2Symbol>
+  <Symbol2String>
+    <summary>
+      Convert a symbol to string
+    </summary>
+    <param name="s"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </Symbol2String>
+  <SysAddAtom>
+    <summary>
+      Convert a string to a Symbol and add it to the atom table.
+    </summary>
+    <param name="s"/>
+    <param name="p"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </SysAddAtom>
+  <SysAddAtomUpperA>
+    <summary>
+      Convert a string to an uppercase Symbol and add it to the atom table.
+    </summary>
+    <param name="s"/>
+    <param name="p"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </SysAddAtomUpperA>
+  <SysCompAtom>
+    <summary>
+    </summary>
+    <param name="s1"/>
+    <param name="s2"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </SysCompAtom>
+  <SysFindAtom>
+    <summary>
+      Determine whether a Symbol is in the atom table.
+    </summary>
+    <param name="p"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </SysFindAtom>
+  <SysGetAtomName>
+    <summary>
+      Convert a Symbol to a null-terminated string.
+    </summary>
+    <param name="s"/>
+    <returns>
+    </returns>
+    <include file="RTComments.xml" path="Comments/Symbol/*"/>
+  </SysGetAtomName>
+  <UnRegisterAxit>
+    <summary>
+      Terminate the registration of an object that has been registered with RegisterAxit().
+    </summary>
+    <param name="oSource"/>
+    <returns>
+    </returns>
+  </UnRegisterAxit>
+  <UsualType>
+    <summary>
+      Determine the data type of an expression.
+    </summary>
+    <param name="x"/>
+    <returns>
+    </returns>
+  </UsualType>
+  <UsualVal>
+    <summary>
+      Access contents of an address, whether it is passed by reference or not.
+    </summary>
+    <param name="u"/>
+    <returns/>
+  </UsualVal>
+  <ValType>
+    <summary>Determine the data type of an expression.</summary>
+    <param name="u"/>
+    <returns/>
+  </ValType>
+  <Version>
+    <summary>
+      Returns the version of X# you are using.
+    </summary>
+    <returns>
+    </returns>
+  </Version>
+  <VoDb>
+    <summary>
+      The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
+      All other methods are identical and inherited from the CoreDb class.
+    </summary>
+  </VoDb>
+  <VoDb.Info>
+    <inheritdoc cref="CoreDb.Info"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.Info"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note>
+    </remarks>
+  </VoDb.Info>
+  <VoDb.OrderInfo>
+    <inheritdoc cref="CoreDb.OrderInfo"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.OrderInfo"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note>
+    </remarks>
+  </VoDb.OrderInfo>
+  <VoDb.RddInfo>
+    <inheritdoc cref="CoreDb.RddInfo"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.RddInfo"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDb.RddInfo and CoreDb.RddInfo is that VoDb.RddInfo takes a USUAL parameter</note>
+    </remarks>
+  </VoDb.RddInfo>
+  <VoDb.RecordInfo>
+    <inheritdoc cref="CoreDb.RecordInfo"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.RecordInfo"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note>
+    </remarks>
+  </VoDb.RecordInfo>
+  <VoDb.Select>
+    <inheritdoc cref="CoreDb.Select"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.Select"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDb.Select and CoreDb.Select is that VoDb.Select takes a USUAL parameter</note>
+    </remarks>
+  </VoDb.Select>
+  <VoDb.SetFilter>
+    <inheritdoc cref="CoreDb.SetFilter"/>
+    <remarks>
+      <note type="tip">The difference between VoDb.SetFilter and CoreDb.SetFilter is that VoDb.SetFilter takes a USUAL parameter</note>
+    </remarks>
+  </VoDb.SetFilter>
+  <VoDbAlias>
+    These functions all map to the static methods inside VoDb (and CoreDb)
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbalias/*"/>
+    <seealso cref="CoreDb.Alias"/>
+  </VoDbAlias>
+  <VoDbAliasSym>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbaliassym/*"/>
+    <seealso cref="CoreDb.Alias"/>
+  </VoDbAliasSym>
+  <VoDbAppend>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbappend/*"/>
+    <seealso cref="CoreDb.Append"/>
+  </VoDbAppend>
+  <VoDbBof>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbbof/*"/>
+    <seealso cref="CoreDb.Bof"/>
+  </VoDbBof>
+  <VoDbBuffRefresh>
+    <inheritdoc cref="CoreDb.BuffRefresh"/>
+    <seealso cref="CoreDb.BuffRefresh"/>
+  </VoDbBuffRefresh>
+  <VoDbClearFilter>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbclearfilter/*"/>
+    <seealso cref="CoreDb.ClearFilter"/>
+  </VoDbClearFilter>
+  <VoDbClearLocate>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbclearlocate/*"/>
+    <seealso cref="CoreDb.ClearLocate"/>
+  </VoDbClearLocate>
+  <VoDbClearRelation>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbclearrelation/*"/>
+    <seealso cref="CoreDb.ClearRelation"/>
+  </VoDbClearRelation>
+  <VoDbClearScope>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbclearscope/*"/>
+    <seealso cref="CoreDb.ClearScope"/>
+  </VoDbClearScope>
+  <VoDbCloseAll>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbcloseall/*"/>
+    <seealso cref="CoreDb.CloseAll"/>
+  </VoDbCloseAll>
+  <VoDbCloseArea>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbclosearea/*"/>
+    <seealso cref="CoreDb.CloseArea"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.CloseArea"/>
+      <br/>
+      <br/>
+      <note type="tip">VoDbCloseArea() is an alias for CoreDbCloseArea()</note>
+    </remarks>
+  </VoDbCloseArea>
+  <VoDbCommit>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbcommit/*"/>
+    <seealso cref="CoreDb.Commit"/>
+  </VoDbCommit>
+  <VoDbCommitAll>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbcommitall/*"/>
+    <seealso cref="CoreDb.CommitAll"/>
+  </VoDbCommitAll>
+  <VoDbContinue>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbcontinue/*"/>
+    <seealso cref="CoreDb.Continue"/>
+  </VoDbContinue>
+  <VoDbCreate>
+    <inheritdoc cref="CoreDb.Create"/>
+    <param name="aStruct">Array with structure to use when creating the file.</param>
+    <param name="oRddType">Type of the RDDs to use when creating the file</param>
+    <param name="aList">structure that describes the list of RDDs to use</param>
+    <remarks>
+      <inheritdoc cref="CoreDb.Create"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDbCreate and CoreDb.Create is that VoDbCreate takes a ARRAY parameter</note>
+    </remarks>
+  </VoDbCreate>
+  <VoDbDelete>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbdelete/*"/>
+    <seealso cref="CoreDb.Delete"/>
+  </VoDbDelete>
+  <VoDbDeleted>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbdeleted/*"/>
+    <seealso cref="CoreDb.Deleted"/>
+  </VoDbDeleted>
+  <VoDbEof>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbeof/*"/>
+    <seealso cref="CoreDb.Eof"/>
+  </VoDbEof>
+  <VoDbEval>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbeval/*"/>
+    <seealso cref="CoreDb.Eval"/>
+  </VoDbEval>
+  <VoDbFieldGet>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldget/*"/>
+    <seealso cref="CoreDb.FieldGet"/>
+  </VoDbFieldGet>
+  <VoDbFieldGetBytes>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldget/*"/>
+    <seealso cref="CoreDb.FieldGet"/>
+  </VoDbFieldGetBytes>
+  <VoDbFieldInfo>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldinfo/*"/>
+    <param name="uValue">New value to assign to the Field.</param>
+    <seealso cref="O:CoreDb.FieldInfo"/>
+  </VoDbFieldInfo>
+  <VoDbFieldPut>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldput/*"/>
+    <seealso cref="CoreDb.FieldPut"/>
+  </VoDbFieldPut>
+  <VoDbFieldPutBytes>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldput/*"/>
+    <seealso cref="CoreDb.FieldPut"/>
+  </VoDbFieldPutBytes>
+  <VoDbFileGet>
+    <inheritdoc cref="CoreDb.FileGet"/>
+    <seealso cref="CoreDb.FileGet"/>
+  </VoDbFileGet>
+  <VoDbFilePut>
+    <inheritdoc cref="CoreDb.FilePut"/>
+    <seealso cref="CoreDb.FilePut"/>
+  </VoDbFilePut>
+  <VoDbFilter>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfilter/*"/>
+    <seealso cref="CoreDb.Filter"/>
+  </VoDbFilter>
+  <VoDbFlock>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbflock/*"/>
+    <seealso cref="CoreDb.Flock"/>
+  </VoDbFlock>
+  <VoDbFound>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfound/*"/>
+    <seealso cref="CoreDb.Found"/>
+  </VoDbFound>
+  <VoDbGetScope>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetscope/*"/>
+    <seealso cref="CoreDb.SetScope"/>
+    <seealso cref="VoDbSetScope"/>
+  </VoDbGetScope>
+  <VoDbGetSelect>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetselect/*"/>
+    <seealso cref="CoreDb.GetSelect"/>
+  </VoDbGetSelect>
+  <VoDbGoBottom>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgobottom/*"/>
+    <seealso cref="CoreDb.GoBottom"/>
+  </VoDbGoBottom>
+  <VoDbGoto>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*"/>
+    <seealso cref="CoreDb.GoTo"/>
+  </VoDbGoto>
+  <VoDbGotoId>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*"/>
+    <seealso cref="CoreDb.GoToId"/>
+  </VoDbGotoId>
+  <VoDbGoTop>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgotop/*"/>
+    <seealso cref="CoreDb.GoTop"/>
+  </VoDbGoTop>
+  <VoDbInfo>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbinfo/*"/>
+    <seealso cref="O:CoreDb.Info"/>
+  </VoDbInfo>
+  <VoDbJoinAppend>
+    <inheritdoc cref="CoreDb.JoinAppend"/>
+    <seealso cref="CoreDb.JoinAppend"/>
+  </VoDbJoinAppend>
+  <VoDbLastRec>
+    <inheritdoc cref="CoreDb.LastRec"/>
+    <seealso cref="CoreDb.LastRec"/>
+  </VoDbLastRec>
+  <VoDbLocate>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodblocate/*"/>
+    <seealso cref="CoreDb.Locate"/>
+  </VoDbLocate>
+  <VoDbMemoExt>
+    <inheritdoc cref="CoreDb.MemoExt"/>
+    <seealso cref="CoreDb.MemoExt"/>
+  </VoDbMemoExt>
+  <VoDbOrdBagExt>
+    <inheritdoc cref="CoreDb.OrdBagExt"/>
+    <seealso cref="CoreDb.OrdBagExt"/>
+  </VoDbOrdBagExt>
+  <VoDbOrdCondSet>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordcondset/*"/>
+    <seealso cref="CoreDb.OrdCondSet"/>
+  </VoDbOrdCondSet>
+  <VoDbOrdCreate>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreateorder/*"/>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordcreate/*"/>
+    <seealso cref="CoreDb.OrdCreate"/>
+  </VoDbOrdCreate>
+  <VoDbOrdDestroy>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdeleteorder/*"/>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodborddestroy/*"/>
+    <seealso cref="CoreDb.OrdDestroy"/>
+  </VoDbOrdDestroy>
+  <VoDbOrderInfo>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodborderinfo/*"/>
+    <param name="uValue">New value to assign to the Order.</param>
+    <seealso cref="CoreDb.OrderInfo"/>
+  </VoDbOrderInfo>
+  <VoDbOrdListAdd>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetindex/*"/>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordlistadd/*"/>
+    <seealso cref="CoreDb.OrdListAdd"/>
+  </VoDbOrdListAdd>
+  <VoDbOrdListClear>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearindex/*"/>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordlistclear/*"/>
+    <seealso cref="CoreDb.OrdListClear"/>
+  </VoDbOrdListClear>
+  <VoDbOrdListRebuild>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbreindex/*"/>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordlistrebuild/*"/>
+    <seealso cref="CoreDb.OrdListRebuild"/>
+  </VoDbOrdListRebuild>
+  <VoDbOrdSetFocus>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetorder/*"/>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordsetfocus/*"/>
+    <param name="cOrder">This returns the previous order that was selected.</param>
+    <seealso cref="CoreDb.OrdSetFocus"/>
+  </VoDbOrdSetFocus>
+  <VoDbPack>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbpack/*"/>
+    <seealso cref="CoreDb.Pack"/>
+  </VoDbPack>
+  <VoDbRddCount>
+    <inheritdoc cref="CoreDb.RddCount"/>
+    <seealso cref="CoreDb.RddCount"/>
+  </VoDbRddCount>
+  <VoDbRddInfo>
+    <inheritdoc cref="CoreDb.RddInfo"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.RddInfo"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDbRddInfo and CoreDb.RddInfo is that VoDbRddInfo takes a USUAL parameter</note>
+    </remarks>
+    <seealso cref="CoreDb.RddInfo"/>
+  </VoDbRddInfo>
+  <VoDbRddList>
+    <inheritdoc cref="CoreDb.RddList"/>
+    <seealso cref="O:CoreDb.RddList"/>
+  </VoDbRddList>
+  <VoDbRddName>
+    <inheritdoc cref="CoreDb.RddName"/>
+    <seealso cref="O:CoreDb.RddName"/>
+  </VoDbRddName>
+  <VoDbRddSetDefault>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrddsetdefault/*"/>
+    <seealso cref="CoreDb.RddSetDefault"/>
+  </VoDbRddSetDefault>
+  <VoDbRecall>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrecall/*"/>
+    <seealso cref="CoreDb.Recall"/>
+  </VoDbRecall>
+  <VoDbRecno>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrecno/*"/>
+    <seealso cref="CoreDb.Recno"/>
+  </VoDbRecno>
+  <VoDbRecordGet>
+    <inheritdoc cref="CoreDb.RecordGet"/>
+    <seealso cref="CoreDb.RecordGet"/>
+  </VoDbRecordGet>
+  <VoDbRecordInfo>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrecordinfo/*"/>
+    <seealso cref="O:CoreDb.RecordInfo"/>
+  </VoDbRecordInfo>
+  <VoDbRecordPut>
+    <inheritdoc cref="CoreDb.RecordPut"/>
+    <seealso cref="O:CoreDb.RecordPut"/>
+  </VoDbRecordPut>
+  <VoDbRelation>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrelation/*"/>
+    <seealso cref="O:CoreDb.Relation"/>
+  </VoDbRelation>
+  <VoDbRlock>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrlock/*"/>
+    <seealso cref="O:CoreDb.RLock"/>
+  </VoDbRlock>
+  <VoDbRSelect>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrselect/*"/>
+    <seealso cref="O:CoreDb.RSelect"/>
+  </VoDbRSelect>
+  <VoDbSeek>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbseek/*"/>
+    <seealso cref="O:CoreDb.Seek"/>
+  </VoDbSeek>
+  <VoDbSelect>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbselect/*"/>
+    <seealso cref="CoreDb.Select"/>
+  </VoDbSelect>
+  <VoDbSetFilter>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetfilter/*"/>
+    <seealso cref="CoreDb.SetFilter"/>
+  </VoDbSetFilter>
+  <VoDbSetFound>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetfound/*"/>
+    <seealso cref="CoreDb.SetFound"/>
+  </VoDbSetFound>
+  <VoDbSetLocate>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetlocate/*"/>
+    <seealso cref="CoreDb.SetLocate"/>
+  </VoDbSetLocate>
+  <VoDbSetRelation>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetrelation/*"/>
+    <seealso cref="CoreDb.SetRelation"/>
+  </VoDbSetRelation>
+  <VoDbSetScope>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetscope/*"/>
+    <seealso cref="CoreDb.SetScope"/>
+    <seealso cref="VoDbGetScope"/>
+  </VoDbSetScope>
+  <VoDbSetSelect>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetselect/*"/>
+    <seealso cref="CoreDb.SetSelect"/>
+  </VoDbSetSelect>
+  <VoDbSkip>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbskip/*"/>
+    <seealso cref="CoreDb.Skip"/>
+  </VoDbSkip>
+  <VoDbSkipScope>
+    <inheritdoc cref="CoreDb.SkipScope"/>
+    <seealso cref="CoreDb.SkipScope"/>
+  </VoDbSkipScope>
+  <VoDbSort>
+    <param name="fldNames">List of field names to copy</param>
+    <param name="fnSortNames">List of field names to sort on</param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*"/>
+    <seealso cref="CoreDb.Sort"/>
+  </VoDbSort>
+  <VoDbSymSelect>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsymselect/*"/>
+    <seealso cref="CoreDb.SymSelect"/>
+  </VoDbSymSelect>
+  <VoDbTrans>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtrans/*"/>
+    <seealso cref="CoreDb.Trans"/>
+    <param name="fldNames">List of field names to copy </param>
+  </VoDbTrans>
+  <VoDbTransRec>
+    <inheritdoc cref="CoreDb.TransRec"/>
+    <seealso cref="CoreDb.TransRec"/>
+  </VoDbTransRec>
+  <VoDbUnlock>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlock/*"/>
+    <remarks>
+      <inheritdoc cref="CoreDb.Unlock"/>
+      <br/>
+      <br/>
+      <note type="tip">The difference between VoDbUnlock and CoreDb.UnLock is that VoDbUnlock takes USUAL parameters</note>
+    </remarks>
+  </VoDbUnlock>
+  <VoDbUnLockAll>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlockall/*"/>
+    <seealso cref="CoreDb.UnlockAll"/>
+  </VoDbUnLockAll>
+  <VoDbUseArea>
+    <overloads>
+      <summary>
+        Open a file
+      </summary>
+      <seealso cref="CoreDb.UseArea"/>
+    </overloads>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbusearea/*"/>
+    <seealso cref="CoreDb.UseArea"/>
+    <param name="rddlist">List of RDDs to use.</param>
+    <param name="rddName">Name of the RDD to use.</param>
+    <param name="rddType">Type of the RDD to use.</param>
+  </VoDbUseArea>
+  <VoDbZap>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbzap/*"/>
+    <seealso cref="CoreDb.Zap"/>
+  </VoDbZap>
+  <XSharpLoadLibrary>
+    <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>
+    <param name="cLibFileName">The full path of the library to load.</param>
+    <returns>The Assembly object of the loaded library.</returns>
+  </XSharpLoadLibrary>
+  </doc>

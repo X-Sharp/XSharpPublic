@@ -243,6 +243,23 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(0, Difference("", "abc"))
         end method
 
+        [Fact, Trait("Category", "StringFunctions")];
+        METHOD TestNormalize() AS VOID
+            Assert.Equal("GROSSESCHRIFT", NORMALIZE("GroSSescHrifT"))
+            VAR cExpr := "UPPE(customer->name) = 'John Doe' AND NOT empty(customer->id)"
+            VAR cExpected := "UPPER(CUSTOMER.NAME)='John Doe'.AND..NOT.EMPTY(CUSTOMER.ID)"
+
+            // NOTE: The replacement for UPPE to UPPER depends on a keyword parser
+            // this implementation handles the Upper() and -> functions which are
+            // the most critical.
+            VAR cResult := NORMALIZE(cExpr)
+
+            Assert.Contains("CUSTOMER.NAME", cResult)
+            Assert.Contains(".AND.", cResult)
+            Assert.Contains(".NOT.", cResult)
+            Assert.Contains("'John Doe'", cResult) // Strings remains intact.
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

@@ -12,6 +12,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Globalization
+USING System.Text.RegularExpressions
 
 INTERNAL STATIC CLASS PathHelpers
     INTERNAL STATIC PROPERTY PathChar AS STRING AUTO
@@ -715,3 +716,90 @@ INTERNAL STATIC CLASS StrConvHelpers
 
 END CLASS
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/normalize/*" />
+[FoxProFunction("NORMALIZE", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.Low)];
+FUNCTION Normalize( cExpression AS STRING) AS STRING
+    IF String.IsNullOrEmpty(cExpression)
+        RETURN ""
+    ENDIF
+
+    VAR sb := StringBuilder{cExpression:Length}
+
+    VAR lInString1 := FALSE // Single quotes '
+    VAR lInString2 := FALSE // Double quotes "
+    VAR lInString3 := FALSE // Brackets [ ]
+
+    VAR nLen := cExpression:Length
+    LOCAL cChar AS CHAR
+    LOCAL cNext AS CHAR
+
+    FOR VAR i := 0 TO nLen - 1
+        cChar := cExpression[i]
+        cNext := IIF(i < nLen - 1, cExpression[i+1], c'0')
+
+        IF !lInString1 .AND. !lInString2 .AND. !lInString3
+            IF cChar == c'\''
+                lInString1 := TRUE
+                sb:Append(cChar)
+                LOOP
+            ELSEIF cChar == c'"'
+                lInString2 := TRUE
+                sb:Append(cChar)
+                LOOP
+            ELSEIF cChar == c'['
+                lInString3 := TRUE
+                sb:Append(cChar)
+                LOOP
+            ENDIF
+
+            IF cChar == c'-' .AND. cNext == c'>'
+                sb:Append('.')
+                i++
+                LOOP
+            ENDIF
+
+            sb:Append(Char.ToUpper(cChar))
+        ELSE
+            sb:Append(cChar)
+            IF lInString1 .AND. cChar == c'\''
+                lInString1 := FALSE
+            ELSEIF lInString2 .AND. cChar == c'"'
+                lInString2 := FALSE
+            ELSEIF lInString3 .AND. cChar == c']'
+                lInString3 := FALSE
+            ENDIF
+        ENDIF
+    NEXT
+
+    VAR cResult := sb:ToString()
+
+    LOCAL evalLogics AS MatchEvaluator
+    evalLogics := { m as Match =>
+        IF m:Groups[(INT)1]:Success
+            RETURN m:Groups[(INT)1]:Value
+        ENDIF
+        RETURN "." + m:Groups[(INT)2]:Value + "."
+    }
+
+    VAR patternLogics := "(""[^""]*""|'[^']*'|\[[^\]]*\])|(?<!\.)\b(AND|OR|NOT)\b(?!\.)"
+    cResult := Regex.Replace(cResult, patternLogics, evalLogics)
+
+    LOCAL evalSpaces AS MatchEvaluator
+    evalSpaces := {m AS Match =>
+        IF m:Groups[(INT)1]:Success
+            RETURN m:Groups[(INT)1]:Value
+        ENDIF
+
+        IF m:Groups[(INT)2]:Success
+            RETURN m:Groups[(INT)2]:Value
+        ELSEIF m:Groups[(INT)3]:Success
+            RETURN m:Groups[(INT)3]:Value
+        ELSE
+            RETURN m:Groups[(INT)4]:Value
+        ENDIF
+    }
+
+    VAR patternSpaces := "(""[^""]*""|'[^']*'|\[[^\]]*\])|\s+([=<>!])\s+|\s+([=<>!])|([=<>!])\s+"
+    cResult := Regex.Replace(cResult, patternSpaces, evalSpaces)
+
+    RETURN cResult

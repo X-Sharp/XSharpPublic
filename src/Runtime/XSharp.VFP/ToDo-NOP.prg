@@ -15,13 +15,6 @@ FUNCTION NewObject( cClassName ,_args) AS OBJECT
     // RETURN NULL_OBJECT
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/normalize/*" />
-[FoxProFunction("NORMALIZE", FoxFunctionCategory.General, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION Normalize( cExpression ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/oldval/*" />
 [FoxProFunction("OLDVAL", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION OldVal( cExpression , uArea ) AS USUAL

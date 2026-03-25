@@ -208,7 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 // NOTE: we may modify the values of cref attributes, so don't do this until AFTER we've
-                // made a copy.  Also, we only care if we're included text - otherwise we've already 
+                // made a copy.  Also, we only care if we're included text - otherwise we've already
                 // processed the cref.
                 if (container.NodeType == XmlNodeType.Element && originatingSyntax != null)
                 {
@@ -260,7 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             /// <remarks>
-            /// This method boils down to Rewrite(XDocument.Load(fileAttrValue).XPathSelectElements(pathAttrValue)).  
+            /// This method boils down to Rewrite(XDocument.Load(fileAttrValue).XPathSelectElements(pathAttrValue)).
             /// Everything else is error handling.
             /// </remarks>
             private XNode[] RewriteIncludeElement(XElement includeElement, string currentXmlFilePath, CSharpSyntaxNode originatingSyntax, out string commentMessage)
@@ -506,10 +506,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // CONSIDER: It would be easy to construct an XmlLocation from the XAttribute, so that
                 // we could point the user at the actual problem.
                 Location sourceLocation = originatingSyntax.Location;
+#if XSHARP
+                MemberDeclarationSyntax member = null;
+                if (!sourceLocation.IsInSource && originatingSyntax.Parent is DocumentationCommentTriviaSyntax dcts)
+                {
+                    member = (MemberDeclarationSyntax)dcts.OriginalNode;
+                    sourceLocation = member.GetLocation();
+                }
+#endif
 
                 RecordSyntaxDiagnostics(crefSyntax, sourceLocation); // Respects DocumentationMode.
 
                 MemberDeclarationSyntax memberDeclSyntax = BinderFactory.GetAssociatedMemberForXmlSyntax(originatingSyntax);
+#if XSHARP
+                if (memberDeclSyntax == null)
+                {
+                    memberDeclSyntax = member;
+                }
+#endif
                 Debug.Assert(memberDeclSyntax != null,
                     "Why are we processing a documentation comment that is not attached to a member declaration?");
 
@@ -612,8 +626,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             private static XmlNameAttributeSyntax ParseNameAttribute(string attributeText, string elementName)
             {
-                // NOTE: Rather than introducing a new code path that will have to be kept in 
-                // sync with other mode changes distributed throughout Lexer, SyntaxParser, and 
+                // NOTE: Rather than introducing a new code path that will have to be kept in
+                // sync with other mode changes distributed throughout Lexer, SyntaxParser, and
                 // DocumentationCommentParser, we'll just wrap the text in some lexable syntax
                 // and then extract the piece we want.
                 string commentText = string.Format(@"/// <{0} {1}/>", elementName, attributeText);

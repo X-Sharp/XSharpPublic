@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-  <members></members>
+  <members/>
   <ReportQueue>
     <summary>
       管理报表编辑器的报表活动，以及报表编辑器窗口的外观。
@@ -9,39 +9,6 @@
       ReportQueue 类允许应用程序使用报表编辑器创建、编辑、打印、预览和保存使用报表定义文件 (*.RET) 创建和格式化的报表。
     </remarks>
   </ReportQueue>
-
-  <ReportQueue.ctor>
-    <summary>
-      构造一个报表队列。
-    </summary>
-    <param name="oOwner">拥有 ReportQueue 对象的窗口。</param>
-    <param name="cServerName">
-      要使用的报表编辑器服务器。如果未指定，则默认值为“报表编辑器”，即报表编辑器运行时引擎。
-    </param>
-    <remarks>
-      <note type="tip">
-        报表编辑器是唯一支持的服务器。
-      </note> ReportQueue:Init() 
-      创建一个由窗口拥有的 ReportQueue 对象。然后可以使用此对象进行顺序报表任务。 
-    </remarks>
-    <example> 
-      此示例创建一个包含 ReportQueue 对象的 shell 窗口： 
-      <code language="X#">
-        CLASS MyShellWindow INHERIT ShellWindow
-            HIDDEN oRQ AS OBJECT
-
-            METHOD Start() CLASS App
-                LOCAL oSW := MyShellWind{}
-                oSW:Show()
-                SELF:Exec()
-
-            METHOD Init() CLASS MyShellWind
-                SUPER:Init()
-                // 初始化服务器
-                oRQ := ReportQueue{SELF,"Report Editor"}
-      </code>
-    </example>
-  </ReportQueue.ctor>
 
   <ReportQueue.ActiveFile>
     <summary>
@@ -101,9 +68,42 @@
     <example> 以下示例连接到“CA Xbase”数据源： <code language="X#">oRQ:ConnectToDB("CA Xbase")</code></example>
   </ReportQueue.ConnectToDB>
 
+  <ReportQueue.ctor>
+    <summary>
+      构造一个报表队列。
+    </summary>
+    <param name="oOwner">拥有 ReportQueue 对象的窗口。</param>
+    <param name="cServerName">
+      要使用的报表编辑器服务器。如果未指定，则默认值为“报表编辑器”，即报表编辑器运行时引擎。
+    </param>
+    <remarks>
+      <note type="tip">
+        报表编辑器是唯一支持的服务器。
+      </note> ReportQueue:Init() 
+      创建一个由窗口拥有的 ReportQueue 对象。然后可以使用此对象进行顺序报表任务。 
+    </remarks>
+    <example> 
+      此示例创建一个包含 ReportQueue 对象的 shell 窗口： 
+      <code language="X#">
+        CLASS MyShellWindow INHERIT ShellWindow
+            HIDDEN oRQ AS OBJECT
+
+            METHOD Start() CLASS App
+                LOCAL oSW := MyShellWind{}
+                oSW:Show()
+                SELF:Exec()
+
+            METHOD Init() CLASS MyShellWind
+                SUPER:Init()
+                // 初始化服务器
+                oRQ := ReportQueue{SELF,"Report Editor"}
+      </code>
+    </example>
+  </ReportQueue.ctor>
+
   <ReportQueue.DataUpdate>
     <summary> 
-      处理 DataUpdateEvent（如果发生）。如果需要特殊处理事件，请在派生的 ReportQueue 类中提供此事件处理程序。 <br />
+      处理 DataUpdateEvent（如果发生）。如果需要特殊处理事件，请在派生的 ReportQueue 类中提供此事件处理程序。 <br/>
       重要！您不应尝试调用或提供此方法的替代实现。相反，您可以在派生版本的
       AppWindow:ReportNotification() 中提供额外的事件处理。 
     </summary>
@@ -250,7 +250,7 @@
       报表参数数组，由报表编辑器报表文件理解。这些报表参数可以由报表编辑器插入到报表文本中，和/或用作报表查询中的选择条件。使用逗号默认任何未使用的参数或重新使用先前提供的参数。</param>
     <param name="cPreviewTitle">表示预览窗口标题的字符串。如果省略，窗口标题栏中不会显示标题。</param>
     <param name="lMDIChild">逻辑值，指示预览窗口是否为 MDI 子窗口（TRUE）或不是（FALSE）。如果省略，默认值为 FALSE。</param>
-    <remarks> 方法的状态发送到所有者窗口的状态栏，显示“<paramref name="ServerName" /> 已完成报表。” 参数在 Preview()
+    <remarks> 方法的状态发送到所有者窗口的状态栏，显示“<paramref name="ServerName"/> 已完成报表。” 参数在 Preview()
       方法之前传输到报表编辑器，并将由后续的 Print() 方法使用。您可以更喜欢将是否打印报表的决定留给预览的人，而不是让程序请求打印。 </remarks>
     <example> 
       以下示例在打印之前在屏幕上预览文件： 

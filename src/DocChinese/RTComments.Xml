@@ -8,229 +8,13 @@
     </span>
   </CollationTable>
 
-  <FileAtrChanged>
-    <span>
-      与早期的 Xbase 版本相比，Directory() 的返回值已经发生了变化:<br />
-      Directory() 现在返回的每个子数组都包含一些额外的值，比如创建日期和最后访问日期。
-      正常的 F_DATE 和 F_TIME 元素代表最后写入的日期和时间。
-    </span>
-  </FileAtrChanged>
+  <Constructor>
+    <summary>这个构造函数在需要时由编译器生成的代码中使用。</summary>
+  </Constructor>
 
-  <FileAttributes>
-    <span>
-      <include file="RTComments.xml" path="Comments/FileAtrChanged/*" />
-      <list type="table">
-        <listheader>
-          <term>常量</term>
-          <description>描述</description>
-        </listheader>
-        <item>
-          <term>F_ATTR</term>
-          <description>文件属性（作为字符串）</description>
-        </item>
-        <item>
-          <term>F_DATE</term>
-          <description>最后更新的日期（作为日期）</description>
-        </item>
-        <item>
-          <term>F_NAME</term>
-          <description>文件名（作为字符串）</description>
-        </item>
-        <item>
-          <term>F_SIZE</term>
-          <description>文件大小（作为数字）</description>
-        </item>
-        <item>
-          <term>F_TIME</term>
-          <description>最后更新的时间（作为字符串）</description>
-        </item>
-        <item>
-          <term>F_WRITE_DATE</term>
-          <description>最后写入文件的日期（作为日期）</description>
-        </item>
-        <item>
-          <term>F_WRITE_TIME</term>
-          <description>最后写入文件的时间（作为字符串）</description>
-        </item>
-        <item>
-          <term>F_CREATION_DATE</term>
-          <description>文件创建的日期（作为日期）</description>
-        </item>
-        <item>
-          <term>F_CREATION_TIME</term>
-          <description>文件创建的时间（作为字符串）</description>
-        </item>
-        <item>
-          <term>F_ACCESS_DATE</term>
-          <description>最后访问的日期（作为日期）</description>
-        </item>
-        <item>
-          <term>F_ACCESS_TIME</term>
-          <description>最后访问的时间（作为字符串）</description>
-        </item>
-        <item>
-          <term>F_EA_SIZE</term>
-          <description>.Net 文件属性</description>
-        </item>
-      </list>
-    </span>
-  </FileAttributes>
-
-  <DbStruct_Constants>
-    <span>
-      <list type="table">
-        <listheader>
-          <term>常量</term>
-          <description>描述</description>
-        </listheader>
-        <item>
-          <term>DBS_NAME</term>
-          <description>返回字段的名称。</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>返回字段的数据类型。</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>返回字段的长度。</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>返回字段的小数位数。</description>
-        </item>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>cAlias</description>
-        </item>
-      </list>
-    </span>
-  </DbStruct_Constants>
-
-  <DBS_Constants>
-    <span>
-      <list type="table">
-        <listheader>
-          <term>常量</term>
-          <description>描述</description>
-        </listheader>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>
-            返回并可选地更改一个字段可以被引用的备用名称（或别名）（默认情况下，与 DBS_NAME 相同）。
-            使用 <paramref name="uNewSetting" /> 参数，您可以指定一个字符串，随后可以使用该字符串来访问指定的字段。
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_LEN</term>
-          <description>
-            以无符号长整数的形式返回 BLOB 中的数据长度，而不引用特定的备注字段。对于字符串，返回值是字符串的字节长度；
-            对于数组，它是第一维中的元素数；对于所有其他数据类型，它返回 -1。
-            使用此常量，您必须使用 BLOBDirectPut()、BLOBDirectImport() 或 FieldInfo(DBS_BLOB_POINTER, ...) 获取的数值指针来指定 BLOB。
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_TYPE</term>
-          <description>
-            用于确定 BLOB 数据类型，而不引用特定的备注字段。使用 DBS_BLOB_DIRECT_TYPE。使用此常量，您必须使用
-            BLOBDirectPut()、BLOBDirectImport() 或 FieldInfo(DBS_BLOB_POINTER, ...) 获取的数值指针来指定 BLOB。
-          </description>
-        </item>
-        <item>
-          <term></term>
-          <description>请参阅 DBS_BLOB_TYPE 以获取可能的返回值的表。</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_LEN</term>
-          <description>
-            以无符号长整数的形式返回备注字段中的 BLOB
-            数据的长度。对于字符串，返回值是字符串的字节长度；对于数组，它是第一维中的元素数；对于所有其他数据类型，它返回 -1。
-            <note type="tip">
-              使用 DBS_BLOB_LEN 优于检索值并使用 Len() 函数。
-            </note>
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_POINTER</term>
-          <description>返回与备注字段关联的 BLOB 数据的数值指针。</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_TYPE</term>
-          <description>
-            与在 .DBT 文件中维护的备注字段不同，BLOB 文件允许您在备注字段中存储许多不同类型的数据。然而，用于确定数据类型的标准函数，如
-            ValType()，简单地将 BLOB 字段视为常规备注字段。要确定备注字段中存储的实际 BLOB 数据的类型，使用 DBS_BLOB_TYPE。<br />
-            返回值的数据类型是字符串，可以使用此表进行解释：
-            <list type="table">
-              <listheader>
-                <term>返回值</term>
-                <description>含义</description>
-              </listheader>
-              <item>
-                <term>?</term>
-                <description>空（未初始化的字段）</description>
-              </item>
-              <item>
-                <term>A</term>
-                <description>数组</description>
-              </item>
-              <item>
-                <term>C</term>
-                <description>字符串</description>
-              </item>
-              <item>
-                <term>D</term>
-                <description>日期</description>
-              </item>
-              <item>
-                <term>E</term>
-                <description>错误</description>
-              </item>
-              <item>
-                <term>L</term>
-                <description>逻辑</description>
-              </item>
-              <item>
-                <term>N</term>
-                <description>数值</description>
-              </item>
-              <item>
-                <term>U</term>
-                <description>未定义（NIL 已存储）</description>
-              </item>
-            </list>
-          </description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>返回字段的小数位数。</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>返回字段的长度。</description>
-        </item>
-        <item>
-          <term>DBS_NAME</term>
-          <description>返回字段的名称。</description>
-        </item>
-        <item>
-          <term>DBS_PROPERTIES</term>
-          <description>返回字段定义的属性数。</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>返回字段的数据类型。</description>
-        </item>
-        <item>
-          <term>DBS_USER</term>
-          <description>用户定义值的开始。</description>
-        </item>
-      </list>
-      <note type="tip">
-        DBS_USER 是一个常量，返回第三方 RDD 开发人员可以用于自定义的最小值。
-        小于 DBS_USER 的值保留给 X# 开发。
-      </note>
-    </span>
-  </DBS_Constants>
+  <Converter>
+    <summary>这个转换器在需要时由编译器生成的代码中使用。</summary>
+  </Converter>
 
   <DBI_Constants>
     <span>
@@ -259,13 +43,13 @@
           </description>
         </item>
         <item>
-          <term></term>
+          <term/>
           <description>如果完整性检查失败，您可以运行 Info(DBI_BLOB_RECOVER)，它将自动纠正 BLOB 文件的表，但会放弃一些空间，否则会被重新使用。</description>
         </item>
         <item>
-          <term></term>
+          <term/>
           <description>
-            <br />重要！ DBServer:Info(DBI_BLOB_INTEGRITY) 是一个磁盘密集型操作，可能会显著减慢数据服务器的处理速度，特别是在繁忙的网络上。 </description>
+            <br/>重要！ DBServer:Info(DBI_BLOB_INTEGRITY) 是一个磁盘密集型操作，可能会显著减慢数据服务器的处理速度，特别是在繁忙的网络上。 </description>
         </item>
         <item>
           <term>DBI_BLOB_RECOVER</term>
@@ -429,9 +213,9 @@
           <term>DBOI_CUSTOM</term>
           <description>
             返回并可选地设置指定顺序是否为自定义构建（对于支持自定义构建顺序的 RDD）。请注意，
-            虽然您可以通过在 <paramref name="uNewSetting" /> 参数中指定 TRUE 来为标准顺序打开自定义构建标志，
+            虽然您可以通过在 <paramref name="uNewSetting"/> 参数中指定 TRUE 来为标准顺序打开自定义构建标志，
             但您不能将自定义构建顺序转换为标准顺序。
-            指定 FALSE 为 <paramref name="uNewSetting" /> 的值与不指定参数一样—在更改参数之前返回当前设置。
+            指定 FALSE 为 <paramref name="uNewSetting"/> 的值与不指定参数一样—在更改参数之前返回当前设置。
           </description>
         </item>
         <item>
@@ -600,7 +384,7 @@
     </span>
   </DBRI_Constants>
 
-  <Scope_Constants>
+  <DBS_Constants>
     <span>
       <list type="table">
         <listheader>
@@ -608,16 +392,251 @@
           <description>描述</description>
         </listheader>
         <item>
-          <term>DBSCOPEALL</term>
-          <description> 作用域是表中的所有记录。这是 <b>默认</b>，尽管如果指定 WHILE 条件，作用域将变为 DBSCOPEREST。 </description>
+          <term>DBS_ALIAS</term>
+          <description>
+            返回并可选地更改一个字段可以被引用的备用名称（或别名）（默认情况下，与 DBS_NAME 相同）。
+            使用 <paramref name="uNewSetting"/> 参数，您可以指定一个字符串，随后可以使用该字符串来访问指定的字段。
+          </description>
         </item>
         <item>
-          <term>DBSCOPEREST</term>
-          <description>作用域是从当前位置开始的表中剩余的记录。</description>
+          <term>DBS_BLOB_DIRECT_LEN</term>
+          <description>
+            以无符号长整数的形式返回 BLOB 中的数据长度，而不引用特定的备注字段。对于字符串，返回值是字符串的字节长度；
+            对于数组，它是第一维中的元素数；对于所有其他数据类型，它返回 -1。
+            使用此常量，您必须使用 BLOBDirectPut()、BLOBDirectImport() 或 FieldInfo(DBS_BLOB_POINTER, ...) 获取的数值指针来指定 BLOB。
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_DIRECT_TYPE</term>
+          <description>
+            用于确定 BLOB 数据类型，而不引用特定的备注字段。使用 DBS_BLOB_DIRECT_TYPE。使用此常量，您必须使用
+            BLOBDirectPut()、BLOBDirectImport() 或 FieldInfo(DBS_BLOB_POINTER, ...) 获取的数值指针来指定 BLOB。
+          </description>
+        </item>
+        <item>
+          <term/>
+          <description>请参阅 DBS_BLOB_TYPE 以获取可能的返回值的表。</description>
+        </item>
+        <item>
+          <term>DBS_BLOB_LEN</term>
+          <description>
+            以无符号长整数的形式返回备注字段中的 BLOB
+            数据的长度。对于字符串，返回值是字符串的字节长度；对于数组，它是第一维中的元素数；对于所有其他数据类型，它返回 -1。
+            <note type="tip">
+              使用 DBS_BLOB_LEN 优于检索值并使用 Len() 函数。
+            </note>
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_POINTER</term>
+          <description>返回与备注字段关联的 BLOB 数据的数值指针。</description>
+        </item>
+        <item>
+          <term>DBS_BLOB_TYPE</term>
+          <description>
+            与在 .DBT 文件中维护的备注字段不同，BLOB 文件允许您在备注字段中存储许多不同类型的数据。然而，用于确定数据类型的标准函数，如
+            ValType()，简单地将 BLOB 字段视为常规备注字段。要确定备注字段中存储的实际 BLOB 数据的类型，使用 DBS_BLOB_TYPE。<br/>
+            返回值的数据类型是字符串，可以使用此表进行解释：
+            <list type="table">
+              <listheader>
+                <term>返回值</term>
+                <description>含义</description>
+              </listheader>
+              <item>
+                <term>?</term>
+                <description>空（未初始化的字段）</description>
+              </item>
+              <item>
+                <term>A</term>
+                <description>数组</description>
+              </item>
+              <item>
+                <term>C</term>
+                <description>字符串</description>
+              </item>
+              <item>
+                <term>D</term>
+                <description>日期</description>
+              </item>
+              <item>
+                <term>E</term>
+                <description>错误</description>
+              </item>
+              <item>
+                <term>L</term>
+                <description>逻辑</description>
+              </item>
+              <item>
+                <term>N</term>
+                <description>数值</description>
+              </item>
+              <item>
+                <term>U</term>
+                <description>未定义（NIL 已存储）</description>
+              </item>
+            </list>
+          </description>
+        </item>
+        <item>
+          <term>DBS_DEC</term>
+          <description>返回字段的小数位数。</description>
+        </item>
+        <item>
+          <term>DBS_LEN</term>
+          <description>返回字段的长度。</description>
+        </item>
+        <item>
+          <term>DBS_NAME</term>
+          <description>返回字段的名称。</description>
+        </item>
+        <item>
+          <term>DBS_PROPERTIES</term>
+          <description>返回字段定义的属性数。</description>
+        </item>
+        <item>
+          <term>DBS_TYPE</term>
+          <description>返回字段的数据类型。</description>
+        </item>
+        <item>
+          <term>DBS_USER</term>
+          <description>用户定义值的开始。</description>
+        </item>
+      </list>
+      <note type="tip">
+        DBS_USER 是一个常量，返回第三方 RDD 开发人员可以用于自定义的最小值。
+        小于 DBS_USER 的值保留给 X# 开发。
+      </note>
+    </span>
+  </DBS_Constants>
+
+  <DbStruct_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>DBS_NAME</term>
+          <description>返回字段的名称。</description>
+        </item>
+        <item>
+          <term>DBS_TYPE</term>
+          <description>返回字段的数据类型。</description>
+        </item>
+        <item>
+          <term>DBS_LEN</term>
+          <description>返回字段的长度。</description>
+        </item>
+        <item>
+          <term>DBS_DEC</term>
+          <description>返回字段的小数位数。</description>
+        </item>
+        <item>
+          <term>DBS_ALIAS</term>
+          <description>cAlias</description>
         </item>
       </list>
     </span>
-  </Scope_Constants>
+  </DbStruct_Constants>
+
+  <FileAtrChanged>
+    <span>
+      与早期的 Xbase 版本相比，Directory() 的返回值已经发生了变化:<br/>
+      Directory() 现在返回的每个子数组都包含一些额外的值，比如创建日期和最后访问日期。
+      正常的 F_DATE 和 F_TIME 元素代表最后写入的日期和时间。
+    </span>
+  </FileAtrChanged>
+
+  <FileAttributes>
+    <span>
+      <include file="RTComments.xml" path="Comments/FileAtrChanged/*"/>
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>F_ATTR</term>
+          <description>文件属性（作为字符串）</description>
+        </item>
+        <item>
+          <term>F_DATE</term>
+          <description>最后更新的日期（作为日期）</description>
+        </item>
+        <item>
+          <term>F_NAME</term>
+          <description>文件名（作为字符串）</description>
+        </item>
+        <item>
+          <term>F_SIZE</term>
+          <description>文件大小（作为数字）</description>
+        </item>
+        <item>
+          <term>F_TIME</term>
+          <description>最后更新的时间（作为字符串）</description>
+        </item>
+        <item>
+          <term>F_WRITE_DATE</term>
+          <description>最后写入文件的日期（作为日期）</description>
+        </item>
+        <item>
+          <term>F_WRITE_TIME</term>
+          <description>最后写入文件的时间（作为字符串）</description>
+        </item>
+        <item>
+          <term>F_CREATION_DATE</term>
+          <description>文件创建的日期（作为日期）</description>
+        </item>
+        <item>
+          <term>F_CREATION_TIME</term>
+          <description>文件创建的时间（作为字符串）</description>
+        </item>
+        <item>
+          <term>F_ACCESS_DATE</term>
+          <description>最后访问的日期（作为日期）</description>
+        </item>
+        <item>
+          <term>F_ACCESS_TIME</term>
+          <description>最后访问的时间（作为字符串）</description>
+        </item>
+        <item>
+          <term>F_EA_SIZE</term>
+          <description>.Net 文件属性</description>
+        </item>
+      </list>
+    </span>
+  </FileAttributes>
+
+  <FileCompat>
+    <remarks>
+      <note type="tip">
+        这个函数是为了兼容性而包含的。我们不建议使用静态内存进行文件 I/O 操作。
+        我们建议您使用接受字节数组参数的函数重载。
+      </note>
+    </remarks>
+  </FileCompat>
+
+  <Memvar>
+    <remarks>
+      <note type="tip">
+        动态内存变量（PUBLIC、PRIVATE、PARAMETERS）仅在 X# 语言和运行时中用于兼容性。<br/>
+        在大多数情况下，类型可以和应该被替换为词法作用域变量，如 LOCAL 和 GLOBAL。
+      </note>
+    </remarks>
+  </Memvar>
+
+  <NameBasedIndexParam>
+    <span>
+      存储在位置索引中的元素的属性的名称。如果元素实现了 IIndexedProperties 接口，
+      那么在这个元素上带有字符串参数的索引器将被调用。否则，运行时将使用反射来找到
+      元素上的字段或属性，并返回它的值
+    </span>
+  </NameBasedIndexParam>
+
+  <Operator>
+    <summary>这个运算符在编译器生成的代码中使用，当需要时。</summary>
+  </Operator>
 
   <OrderScope_Constants>
     <span>
@@ -642,182 +661,27 @@
     </span>
   </OrderScope_Constants>
 
-  <StaticMemory>
-    <remarks>
-      <note type="tip">
-        静态内存函数（MemAlloc、MemSet 等）仅用于兼容性。 在大多数情况下，静态内存块可以（并且应该）用字节数组替换。<br />
-        运行时中的许多函数，如接受内存块作为参数的低级 IO 函数，现在有接受字节数组作为参数的重载。<br />
-        我们建议您使用这些重载，因为它们的性能稍微更好。
-      </note>
-    </remarks>
-  </StaticMemory>
+  <OrderScopeParams>
+    <span>
+      提供与记录处理命令的 ALL、REST 和 NEXT 子句相同的功能，用于处理的记录范围。
+      <include file="RTComments.xml" path="Comments/OrderScope_Constants/*"/>
+    </span>
+  </OrderScopeParams>
 
   <PSZ>
     <remarks>
       <note type="tip">
-        PSZ 类型仅用于兼容性。在大多数情况下，类型可以和应该被替换为普通字符串。<br />
+        PSZ 类型仅用于兼容性。在大多数情况下，类型可以和应该被替换为普通字符串。<br/>
         如果需要与期望 ANSI 字符串的 Win32 API 函数进行接口，通常也有一个接受 Unicode 字符串的替代方案。我们建议尽可能使用该替代方案。
       </note>
     </remarks>
   </PSZ>
 
-  <Symbol>
-    <remarks>
-      <note type="tip">
-        SYMBOL 类型仅用于兼容性。在大多数情况下，类型可以和应该被替换为普通字符串。
-      </note>
-    </remarks>
-  </Symbol>
-
-  <Memvar>
-    <remarks>
-      <note type="tip">
-        动态内存变量（PUBLIC、PRIVATE、PARAMETERS）仅在 X# 语言和运行时中用于兼容性。<br />
-        在大多数情况下，类型可以和应该被替换为词法作用域变量，如 LOCAL 和 GLOBAL。
-      </note>
-    </remarks>
-  </Memvar>
-
-  <Operator>
-    <summary>这个运算符在编译器生成的代码中使用，当需要时。</summary>
-  </Operator>
-
-  <UsualCompare>
-    <param name="lhs">比较的左侧</param>
-    <param name="rhs">比较的右侧</param>
-    <remarks>
-      当比较两个不同类型的 usual 时，左侧的类型被视为“主导”类型。
-      例如，当将一个 LHS 类型为 DATE 的 usual 与一个 RHS 类型为 DateTime 的 usual 进行比较时，
-      首先将 RHS 的 DateTime 转换为 DATE（去除时间），然后再进行比较。 <br />
-      与 .NULL.（DBNull.Value）的比较总是返回 FALSE。在 FoxPro 中，这会返回 .NULL.，但 .Net 不支持这样的返回值。
-    </remarks>
-    <returns>一个逻辑值</returns>
-  </UsualCompare>
-
-  <UsualCompareTo>
-    <param name="lhs">比较的左侧</param>
-    <param name="rhs">比较的右侧</param>
-    <remarks>
-      当比较两个不同类型的 usual 时，左侧的类型被视为“主导”类型。
-      例如，当将一个 LHS 类型为 DATE 的 usual 与一个 RHS 类型为 DateTime 的 usual 进行比较时，
-      首先将 RHS 的 DateTime 转换为 DATE（去除时间），然后再进行比较。 <br />
-      与 .NULL.（DBNull.Value）的比较总是返回 FALSE。在 FoxPro 中，这会返回 .NULL.，但 .Net 不支持这样的返回值。
-    </remarks>
-    <returns>整数值</returns>
-  </UsualCompareTo>
-  <UsualBinary>
-    <param name="lhs">二进制操作的左侧</param>
-    <param name="rhs">二进制操作的右侧</param>
-    <returns>一个与二进制运算符匹配的类型的 usual 值。例如，当操作涉及整数和浮点数时，结果将是一个浮点数</returns>
-    <remarks>
-      在处理 usual 类型的二进制操作时，如果左右两侧的类型不同，运行时会遵循“特殊” 规则来处理这些。 <br />
-      例如，当将整数与分数（float、decimal 或 currency）相加时，结果总是一个分数，分数类型的分数。<br />
-      二进制操作中，一个或两个侧面是 .NULL.（DBNull.Value）时，总是返回 .NULL.
-    </remarks>
-  </UsualBinary>
-
-  <Converter>
-    <summary>这个转换器在需要时由编译器生成的代码中使用。</summary>
-  </Converter>
-
-  <Constructor>
-    <summary>这个构造函数在需要时由编译器生成的代码中使用。</summary>
-  </Constructor>
-
-  <FileCompat>
-    <remarks>
-      <note type="tip">
-        这个函数是为了兼容性而包含的。我们不建议使用静态内存进行文件 I/O 操作。
-        我们建议您使用接受字节数组参数的函数重载。
-      </note>
-    </remarks>
-  </FileCompat>
-
-  <ZeroBasedIndex>
-    <remarks>
-      这个类型的索引器是基于<em>零</em>的，但是在你的 PRG 代码中，你可以使用<em>一</em>为基础的数组索引。
-      当编译器检测到对实现了这个接口的类的索引操作时，编译器会自动 调整索引（减去一），除非启用了/az编译器选项。
-    </remarks>
-  </ZeroBasedIndex>
-
-  <ZeroBasedIndexParam>
-    <span>
-    这个索引器是基于<em>零</em>的，但是在你的 PRG 代码中，你可以使用<em>一</em>为基础的数组索引。
-    编译器会识别到这个属性是实现了一个特殊接口的类型的一部分并且会从索引中减去一，除非启用了/az编译器选项。
-    </span>
-  </ZeroBasedIndexParam>
-
-  <NameBasedIndexParam>
-    <span>
-      存储在位置索引中的元素的属性的名称。如果元素实现了 IIndexedProperties 接口，
-      那么在这个元素上带有字符串参数的索引器将被调用。否则，运行时将使用反射来找到
-      元素上的字段或属性，并返回它的值
-    </span>
-  </NameBasedIndexParam>
-
-  <ZeroBasedIndexProperty>
-    <summary> 使用<em>零</em>为基础的数组索引来获取/设置数组元素。 </summary>
-    <remarks>
-      在你的 PRG 代码中，你可以使用<em>一</em>为基础的数组索引来访问元素。 编译器会识别到这个属性是实现了一个特殊接口的类型的一部分
-      并且会从索引中减去一，除非启用了/az编译器选项。
-    </remarks>
-  </ZeroBasedIndexProperty>
-
-  <ScopeParams>
-    <span>
-      提供与记录处理命令的 ALL、REST 和 NEXT 子句相同的功能，用于处理的记录范围。
-    </span>
-  </ScopeParams>
-
-  <OrderScopeParams>
-    <span>
-      提供与记录处理命令的 ALL、REST 和 NEXT 子句相同的功能，用于处理的记录范围。
-      <include file="RTComments.xml" path="Comments/OrderScope_Constants/*" />
-    </span>
-  </OrderScopeParams>
-
-  <ScopeReturn>
-    <span>
-      返回值取决于传入的参数：<br />
-      <list type="table">
-        <listheader>
-          <term>parameter</term>
-          <description>返回值</description>
-        </listheader>
-        <item>
-          <term>no parameter</term>
-          <description>如果定义了范围，则返回 .T.（true），否则返回 .F.（false）。</description>
-        </item>
-        <item>
-          <term>SCOPE_TOP</term>
-          <description>返回顶部范围的值，如果没有设置顶部范围，则返回 NIL。</description>
-        </item>
-        <item>
-          <term>SCOPE_BOTTOM</term>
-          <description>返回底部范围的值，如果没有设置底部范围，则返回 NIL。</description>
-        </item>
-        <item>
-          <term>SCOPE_BOTH</term>
-          <description>
-            返回一个包含两个元素的数组，第一个元素是顶部范围，第二个元素是底部范围。
-            当没有设置范围时，数组中存储的是 NIL
-          </description>
-        </item>
-      </list>
-    </span>
-  </ScopeReturn>
-
-  <SerializeConstructor>
-    <summary>从序列化数据构造一个值</summary>
-    <param name="info">一个 SerializationInfo 对象，包含构造值所需的信息。</param>
-    <param name="context">一个 StreamingContext 对象，包含与值关联的序列化流的源和目的地。</param>
-  </SerializeConstructor>
-
   <RddInfoParam>
     <span>
-      常量在下面的常量部分中描述。 <br />
-      设置的初始默认值取决于 RDD。<br />
-      常量在下面的常量部分中描述。 请注意，不是所有的 RDD 都支持所有的常量。<br />
+      常量在下面的常量部分中描述。 <br/>
+      设置的初始默认值取决于 RDD。<br/>
+      常量在下面的常量部分中描述。 请注意，不是所有的 RDD 都支持所有的常量。<br/>
       重要！ _SET_USER 是一个常量，返回第三方 RDD 开发人员可以用于自定义的最小值。 小于 _SET_USER 的值保留给 X# 开发。
     </span>
   </RddInfoParam>
@@ -844,9 +708,9 @@
       <item>
         <term>_SET_AUTOSHARE</term>
         <description>
-          返回并可选地更改一个数值设置，该设置确定自动共享模式。 <br /> 设置为 0 完全禁用自动共享控制。这主要在独立环境中开发网络应用程序时有用。 <br />
+          返回并可选地更改一个数值设置，该设置确定自动共享模式。 <br/> 设置为 0 完全禁用自动共享控制。这主要在独立环境中开发网络应用程序时有用。 <br/>
           设置为 1 会导致 RDD 在运行时确定应用程序是否在网络环境中运行。如果不是，RDD
-          会自动以独占模式打开所有文件。这样，您可以编写网络感知的代码，同时在应用程序在单用户模式下运行时获得最佳性能。 <br />
+          会自动以独占模式打开所有文件。这样，您可以编写网络感知的代码，同时在应用程序在单用户模式下运行时获得最佳性能。 <br/>
           设置为 2 会以独占模式打开所有文件，无论当前环境如何。使用这种模式，您可以轻松地将设计为网络环境的应用程序转换为单用户应用程序。
           如果您更喜欢交付应用程序的独立和 LAN 版本，这是有用的。
         </description>
@@ -855,7 +719,7 @@
         <term>_SET_BLOB_CIRCULAR_ARRAY_REF</term>
         <description>
           返回并可选地设置一个逻辑标志，该标志指示在将数组存储到和从 BLOB 字段中检索数组时，是否检查循环数组引用。
-          设置为 FALSE 表示 RDD 不会检查循环引用。 <br />
+          设置为 FALSE 表示 RDD 不会检查循环引用。 <br/>
           存储/检索数组的算法使用递归过程，如果数组具有循环引用，它将无限调用自身，快速耗尽程序的堆栈。
           您可以设置 DBServer:RDDInfo(_SET_BLOB_CIRCULAR_ARRAY_REF, TRUE) 来导致算法检查和正确处理循环引用。
           请注意，检查需要额外的时间，除非存在循环引用，否则是不必要的。
@@ -895,14 +759,150 @@
       <item>
         <term>_SET_STRICTREAD</term>
         <description>
-          返回并可选地更改一个逻辑标志，该标志确定在创建顺序时，RDD 是否会直接从磁盘读取记录。 <br />
-          设置为 FALSE 表示在创建顺序时，RDD 会直接从磁盘读取记录，这是最有效的设置。 <br />
+          返回并可选地更改一个逻辑标志，该标志确定在创建顺序时，RDD 是否会直接从磁盘读取记录。 <br/>
+          设置为 FALSE 表示在创建顺序时，RDD 会直接从磁盘读取记录，这是最有效的设置。 <br/>
           但是，如果您使用的是加密数据库文件的 DBF RDD 层，这个设置会导致错误的结果，
-          因为 RDD 会看到加密值，而不是记录的实际值。 <br />
-          为了使用带有加密包的 RDD，使用 DBServer:RDDInfo(_SET_STRICTREAD, TRUE)。 <br />
+          因为 RDD 会看到加密值，而不是记录的实际值。 <br/>
+          为了使用带有加密包的 RDD，使用 DBServer:RDDInfo(_SET_STRICTREAD, TRUE)。 <br/>
           这个设置让 DBF RDD 层在创建顺序时读取记录。
         </description>
       </item>
     </list>
   </RddInfoRemarks>
-</Comments>
+<Scope_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>DBSCOPEALL</term>
+          <description> 作用域是表中的所有记录。这是 <b>默认</b>，尽管如果指定 WHILE 条件，作用域将变为 DBSCOPEREST。 </description>
+        </item>
+        <item>
+          <term>DBSCOPEREST</term>
+          <description>作用域是从当前位置开始的表中剩余的记录。</description>
+        </item>
+      </list>
+    </span>
+  </Scope_Constants>
+
+  <ScopeParams>
+    <span>
+      提供与记录处理命令的 ALL、REST 和 NEXT 子句相同的功能，用于处理的记录范围。
+    </span>
+  </ScopeParams>
+
+  <ScopeReturn>
+    <span>
+      返回值取决于传入的参数：<br/>
+      <list type="table">
+        <listheader>
+          <term>parameter</term>
+          <description>返回值</description>
+        </listheader>
+        <item>
+          <term>no parameter</term>
+          <description>如果定义了范围，则返回 .T.（true），否则返回 .F.（false）。</description>
+        </item>
+        <item>
+          <term>SCOPE_TOP</term>
+          <description>返回顶部范围的值，如果没有设置顶部范围，则返回 NIL。</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTTOM</term>
+          <description>返回底部范围的值，如果没有设置底部范围，则返回 NIL。</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTH</term>
+          <description>
+            返回一个包含两个元素的数组，第一个元素是顶部范围，第二个元素是底部范围。
+            当没有设置范围时，数组中存储的是 NIL
+          </description>
+        </item>
+      </list>
+    </span>
+  </ScopeReturn>
+
+  <SerializeConstructor>
+    <summary>从序列化数据构造一个值</summary>
+    <param name="info">一个 SerializationInfo 对象，包含构造值所需的信息。</param>
+    <param name="context">一个 StreamingContext 对象，包含与值关联的序列化流的源和目的地。</param>
+  </SerializeConstructor>
+
+  <StaticMemory>
+    <remarks>
+      <note type="tip">
+        静态内存函数（MemAlloc、MemSet 等）仅用于兼容性。 在大多数情况下，静态内存块可以（并且应该）用字节数组替换。<br/>
+        运行时中的许多函数，如接受内存块作为参数的低级 IO 函数，现在有接受字节数组作为参数的重载。<br/>
+        我们建议您使用这些重载，因为它们的性能稍微更好。
+      </note>
+    </remarks>
+  </StaticMemory>
+
+  <Symbol>
+    <remarks>
+      <note type="tip">
+        SYMBOL 类型仅用于兼容性。在大多数情况下，类型可以和应该被替换为普通字符串。
+      </note>
+    </remarks>
+  </Symbol>
+
+  <UsualBinary>
+    <param name="lhs">二进制操作的左侧</param>
+    <param name="rhs">二进制操作的右侧</param>
+    <returns>一个与二进制运算符匹配的类型的 usual 值。例如，当操作涉及整数和浮点数时，结果将是一个浮点数</returns>
+    <remarks>
+      在处理 usual 类型的二进制操作时，如果左右两侧的类型不同，运行时会遵循“特殊” 规则来处理这些。 <br/>
+      例如，当将整数与分数（float、decimal 或 currency）相加时，结果总是一个分数，分数类型的分数。<br/>
+      二进制操作中，一个或两个侧面是 .NULL.（DBNull.Value）时，总是返回 .NULL.
+    </remarks>
+  </UsualBinary>
+
+  <UsualCompare>
+    <param name="lhs">比较的左侧</param>
+    <param name="rhs">比较的右侧</param>
+    <remarks>
+      当比较两个不同类型的 usual 时，左侧的类型被视为“主导”类型。
+      例如，当将一个 LHS 类型为 DATE 的 usual 与一个 RHS 类型为 DateTime 的 usual 进行比较时，
+      首先将 RHS 的 DateTime 转换为 DATE（去除时间），然后再进行比较。 <br/>
+      与 .NULL.（DBNull.Value）的比较总是返回 FALSE。在 FoxPro 中，这会返回 .NULL.，但 .Net 不支持这样的返回值。
+    </remarks>
+    <returns>一个逻辑值</returns>
+  </UsualCompare>
+
+  <UsualCompareTo>
+    <param name="lhs">比较的左侧</param>
+    <param name="rhs">比较的右侧</param>
+    <remarks>
+      当比较两个不同类型的 usual 时，左侧的类型被视为“主导”类型。
+      例如，当将一个 LHS 类型为 DATE 的 usual 与一个 RHS 类型为 DateTime 的 usual 进行比较时，
+      首先将 RHS 的 DateTime 转换为 DATE（去除时间），然后再进行比较。 <br/>
+      与 .NULL.（DBNull.Value）的比较总是返回 FALSE。在 FoxPro 中，这会返回 .NULL.，但 .Net 不支持这样的返回值。
+    </remarks>
+    <returns>整数值</returns>
+  </UsualCompareTo>
+  <ZeroBasedIndex>
+    <remarks>
+      这个类型的索引器是基于<em>零</em>的，但是在你的 PRG 代码中，你可以使用<em>一</em>为基础的数组索引。
+      当编译器检测到对实现了这个接口的类的索引操作时，编译器会自动 调整索引（减去一），除非启用了/az编译器选项。
+    </remarks>
+  </ZeroBasedIndex>
+
+  <ZeroBasedIndexParam>
+    <span>
+    这个索引器是基于<em>零</em>的，但是在你的 PRG 代码中，你可以使用<em>一</em>为基础的数组索引。
+    编译器会识别到这个属性是实现了一个特殊接口的类型的一部分并且会从索引中减去一，除非启用了/az编译器选项。
+    </span>
+  </ZeroBasedIndexParam>
+
+  <ZeroBasedIndexProperty>
+    <summary> 使用<em>零</em>为基础的数组索引来获取/设置数组元素。 </summary>
+    <remarks>
+      在你的 PRG 代码中，你可以使用<em>一</em>为基础的数组索引来访问元素。 编译器会识别到这个属性是实现了一个特殊接口的类型的一部分
+      并且会从索引中减去一，除非启用了/az编译器选项。
+    </remarks>
+  </ZeroBasedIndexProperty>
+
+  </Comments>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members></members>
+    <members/>
 <ReportQueue>
       <summary>
         Manage Report Editor reporting activities, as well as the appearance of the Report Editor window.
@@ -9,33 +9,6 @@
         The ReportQueue class allows an application to create, edit, print, preview, and save reports using report definition files (*.RET) created and formatted using the Report Editor.
       </remarks>
 </ReportQueue>
-<ReportQueue.ctor>
-      <summary>
-        Construct a report queue.
-      </summary>
-      <param name="oOwner">The window that owns the ReportQueue object.</param>
-      <param name="cServerName">
-        The Report Editor server to be used.  If not specified, the default value is 'Report Editor', which is the Report Editor runtime engine.
-      </param>
-      <remarks>
-        <note type="tip">Report Editor is the only server that is supported.</note>
-        ReportQueue:Init() creates a ReportQueue object owned by a window.  This object can then be used for sequential reporting tasks.
-      </remarks>
-      <example>
-        This example creates a shell window containing a ReportQueue object:
-        <code language="X#">
-          CLASS MyShellWindow INHERIT ShellWindow
-          HIDDEN oRQ AS OBJECT
-          METHOD Start() CLASS App
-          LOCAL oSW := MyShellWind{}
-          oSW:Show()
-          SELF:Exec()
-          METHOD Init() CLASS MyShellWind
-          SUPER:Init()
-          // Initializes the server
-          oRQ := ReportQueue{SELF,"Report Editor"}
-        </code></example>
-</ReportQueue.ctor>
 <ReportQueue.ActiveFile>
       <summary>
         The report definition file the Report Editor server was just using.  This information can be used within an AppWindow:ReportNotification() method.
@@ -90,10 +63,37 @@
         The following example connects to a "CA Xbase" data source:
         <code language="X#">oRQ:ConnectToDB("CA Xbase")</code></example>
 </ReportQueue.ConnectToDB>
+<ReportQueue.ctor>
+      <summary>
+        Construct a report queue.
+      </summary>
+      <param name="oOwner">The window that owns the ReportQueue object.</param>
+      <param name="cServerName">
+        The Report Editor server to be used.  If not specified, the default value is 'Report Editor', which is the Report Editor runtime engine.
+      </param>
+      <remarks>
+        <note type="tip">Report Editor is the only server that is supported.</note>
+        ReportQueue:Init() creates a ReportQueue object owned by a window.  This object can then be used for sequential reporting tasks.
+      </remarks>
+      <example>
+        This example creates a shell window containing a ReportQueue object:
+        <code language="X#">
+          CLASS MyShellWindow INHERIT ShellWindow
+          HIDDEN oRQ AS OBJECT
+          METHOD Start() CLASS App
+          LOCAL oSW := MyShellWind{}
+          oSW:Show()
+          SELF:Exec()
+          METHOD Init() CLASS MyShellWind
+          SUPER:Init()
+          // Initializes the server
+          oRQ := ReportQueue{SELF,"Report Editor"}
+        </code></example>
+</ReportQueue.ctor>
 <ReportQueue.DataUpdate>
       <summary>
         Handle DataUpdateEvent, if one occurs.  Provide this event handler in your derived ReportQueue class if you require special handling of events.
-        <br />Important!  You should neither attempt to call nor provide alternative implementations to this method.  Instead, you can provide extra handling of  events in your derived version of AppWindow:ReportNotification().
+        <br/>Important!  You should neither attempt to call nor provide alternative implementations to this method.  Instead, you can provide extra handling of  events in your derived version of AppWindow:ReportNotification().
       </summary>
       <param name="oIpcDataUpdateEvent">Stores the topic name, item name, and the changed data as a string.</param>
       <remarks>
@@ -217,7 +217,7 @@
       <param name="cPreviewTitle">String representing the title for the Preview window.  If omitted, no title will appear in the window title bar.</param>
       <param name="lMDIChild">Logical value indicating whether the preview window will be an MDI child (TRUE) or not (FALSE).  If omitted, the default value is FALSE.</param>
       <remarks>
-        The status of the method is sent to the owner window's status bar, displaying "<paramref name="ServerName" /> has completed report."
+        The status of the method is sent to the owner window's status bar, displaying "<paramref name="ServerName"/> has completed report."
         The parameters are transmitted to the Report Editor before the Preview() method, and would be used by subsequent Print() methods.  You can prefer to leave the decision whether to print the report with the person previewing, rather than have the program request a print.
       </remarks>
       <example>

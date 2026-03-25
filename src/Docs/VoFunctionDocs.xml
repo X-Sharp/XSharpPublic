@@ -17466,7 +17466,7 @@
     <summary>
       Return the contents of a memory variable.
     </summary>
-
+    <param name="symVar">The name of the variable .</param>
     <param name="cVarName">The name of the memory variable.</param>
     <returns>
     </returns>
@@ -17490,7 +17490,7 @@
     <summary>
       Assign a value to a memory variable of a given name.
     </summary>
-
+    <param name="symVar">The name of the variable you want to assign to.</param>
     <param name="cVarName">The name of the variable you want to create.</param>
     <param name="uValue">The value to assign to the variable.</param>
     <returns>
@@ -25364,7 +25364,7 @@
     <summary>
       Return the contents of a field or a memory variable.
     </summary>
-
+    <param name="symVar">The name of the variable .</param>
     <param name="cVarName">The name of the field or memory variable.</param>
     <returns>
     </returns>
@@ -25388,7 +25388,7 @@
     <summary>
       Assign a value to a field or a memory variable of a given name.
     </summary>
-
+    <param name="symVar">The name of the variable .</param>
     <param name="cVarName">The name of the variable you want to create.</param>
     <param name="uValue">The value to assign to the variable.</param>
     <returns>

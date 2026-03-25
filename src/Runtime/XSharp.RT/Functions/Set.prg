@@ -121,7 +121,10 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
         CASE Set.Hours
             SetHours(newValue)
             return SetHours()
-
+        CASE Set.Bell
+            IF IsNumeric(newValue) .AND. newValue == 1
+                RETURN ""
+            ENDIF
         END SWITCH
     ENDIF
 

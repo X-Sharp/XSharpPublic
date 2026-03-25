@@ -7,229 +7,12 @@
       </summary>
     </span>
   </CollationTable>
-  <FileAtrChanged>
-    <span>
-      Compared to earlier Xbase versions the return value of Directory() has changed: <br />
-      each subarray returned from Directory() now contains some extra values, such as creation date and
-      last access date. The normal F_DATE and F_TIME elements represent the last written date and time.
-    </span>
-  </FileAtrChanged>
-
-  <FileAttributes>
-    <span>
-      <include file="RTComments.xml" path="Comments/FileAtrChanged/*"  />
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>F_ATTR</term>
-          <description>File attributes (as a string)</description>
-        </item>
-        <item>
-          <term>F_DATE</term>
-          <description>Date of last update (as a date)</description>
-        </item>
-        <item>
-          <term>F_NAME</term>
-          <description>Name of file (as a string)</description>
-        </item>
-        <item>
-          <term>F_SIZE</term>
-          <description>Size of file (as a numeric)</description>
-        </item>
-        <item>
-          <term>F_TIME</term>
-          <description>Time of last update (as a string)</description>
-        </item>
-        <item>
-          <term>F_WRITE_DATE</term>
-          <description>Time of last file write date (as a date)</description>
-        </item>
-        <item>
-          <term>F_WRITE_TIME</term>
-          <description>Time of last file write time (as a string)</description>
-        </item>
-        <item>
-          <term>F_CREATION_DATE</term>
-          <description>Time of file creation date (as a date)</description>
-        </item>
-        <item>
-          <term>F_CREATION_TIME</term>
-          <description>Time of file creation time (as a string)</description>
-        </item>
-        <item>
-          <term>F_ACCESS_DATE</term>
-          <description>Time of last access date (as a date)</description>
-        </item>
-        <item>
-          <term>F_ACCESS_TIME</term>
-          <description>Time of last access time (as a string)</description>
-        </item>
-        <item>
-          <term>F_EA_SIZE</term>
-          <description>.Net File attributes for the file</description>
-        </item>
-      </list>
-    </span>
-  </FileAttributes>
-  <DbStruct_Constants>
-    <span>
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-   <item>
-     <term>DBS_NAME</term>
-     <description>Returns the name of the field.</description>
-   </item>
-   <item>
-     <term>DBS_TYPE</term>
-     <description>Returns the data type of the field.</description>
-   </item>
-   <item>
-     <term>DBS_LEN</term>
-     <description>Returns the length of the field.</description>
-   </item>
-   <item>
-     <term>DBS_DEC</term>
-     <description>Returns the number of decimal places for the field.</description>
-   </item>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>cAlias</description>
-        </item>
- </list>
-    </span>
-  </DbStruct_Constants>
-  <DBS_Constants>
-    <span>
-      <list type="table">
-        <listheader>
-          <term>Constants</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>
-            Returns and optionally changes an alternate name (or alias) by which a field can be referenced
-            (by default, same as DBS_NAME). Using the <paramref name="uNewSetting" /> argument, you can
-            specify a string that you can subsequently use to access the indicated field.
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_LEN</term>
-          <description>
-            Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
-            For strings, the return value is the length of the string in bytes;
-            for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
-            With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(), or
-            FieldInfo(DBS_BLOB_POINTER, .../>).
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_TYPE</term>
-          <description>
-            To determine the data type of BLOB data, without reference to a particular memo field, use DBS_BLOB_DIRECT_TYPE.
-            With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(),
-            BLOBDirectImport(), or FieldInfo(DBS_BLOB_POINTER, ...).
-          </description>
-        </item>
-        <item>
-          <term></term>
-          <description>See DBS_BLOB_TYPE for a table of possible return values.</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_LEN</term>
-          <description>
-            Returns the length of the BLOB data in a memo field as an unsigned long integer. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
-            <note type="tip">Using DBS_BLOB_LEN has a performance advantage over retrieving the value and using the Len() function.</note>
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_POINTER</term>
-          <description>Returns a numeric pointer to the BLOB data associated with a memo field.</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_TYPE</term>
-          <description>
-            Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields.
-            However, the standard functions for determining data types, such as ValType(), simply treat BLOB fields as regular memo
-            fields. To determine the actual type of BLOB data stored in a memo field, use DBS_BLOB_TYPE.<br/>
-            The data type of the return value is string and can be interpreted using this table:
-          <list type="table">
-            <listheader>
-              <term>Returns</term>
-              <description>Meaning</description>
-            </listheader>
-            <item>
-              <term>?</term>
-              <description>Blank (empty/uninitialized field)</description>
-            </item>
-            <item>
-              <term>A</term>
-              <description>Array</description>
-            </item>
-            <item>
-              <term>C</term>
-              <description>String</description>
-            </item>
-            <item>
-              <term>D</term>
-              <description>Date</description>
-            </item>
-            <item>
-              <term>E</term>
-              <description>Error</description>
-            </item>
-            <item>
-              <term>L</term>
-              <description>Logical</description>
-            </item>
-            <item>
-              <term>N</term>
-              <description>Numeric</description>
-            </item>
-            <item>
-              <term>U</term>
-              <description>Undefined (NIL was stored)</description>
-            </item>
-          </list>
-          </description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>Returns the number of decimal places for the field.</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>Returns the length of the field.</description>
-        </item>
-        <item>
-          <term>DBS_NAME</term>
-          <description>Returns the name of the field.</description>
-        </item>
-        <item>
-          <term>DBS_PROPERTIES</term>
-          <description>Returns the number of properties defined for a field.</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>Returns the data type of the field.</description>
-        </item>
-        <item>
-          <term>DBS_USER</term>
-          <description>Start of user defined values.</description>
-        </item>
-      </list>
-      <note type="tip">
-        DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for customizations.
-        Values less than DBS_USER are reserved for X# development.
-      </note>
-    </span>
-  </DBS_Constants>
+  <Constructor>
+    <summary>This constructor is used in code generated by the compiler when needed.</summary>
+  </Constructor>
+  <Converter>
+    <summary>This converter is used in code generated by the compiler when needed.</summary>
+  </Converter>
   <DBI_Constants>
     <span>
       <list type="table">
@@ -254,14 +37,14 @@
           This does not test the integrity between the .DBF and the BLOB file.</description>
         </item>
         <item>
-          <term></term>
+          <term/>
           <description>If the integrity check fails, you can run Info(DBI_BLOB_RECOVER), which will automatically correct the
           BLOB file's tables, however, it will abandon some space within the file that would otherwise be reused.</description>
         </item>
         <item>
-          <term></term>
+          <term/>
           <description>
-            <br />Important! DBServer:Info(DBI_BLOB_INTEGRITY) is a disk intensive operation and may slow down processing of the data server significantly, especially on a busy network.
+            <br/>Important! DBServer:Info(DBI_BLOB_INTEGRITY) is a disk intensive operation and may slow down processing of the data server significantly, especially on a busy network.
           </description>
         </item>
         <item>
@@ -421,7 +204,7 @@
         <item>
           <term>DBOI_CUSTOM</term>
           <description>
-            Returns and optionally sets the logical flag indicating whether the specified order is custom built (for RDDs that support custom built orders). Note that although you can turn the custom built flag on for a standard order by specifying TRUE for the <paramref name="uNewSetting" /> argument, you cannot turn a custom built order into a standard order. Specifying FALSE for <paramref name="uNewSetting" /> is the same as not specifying the argument at all—both return the current setting.
+            Returns and optionally sets the logical flag indicating whether the specified order is custom built (for RDDs that support custom built orders). Note that although you can turn the custom built flag on for a standard order by specifying TRUE for the <paramref name="uNewSetting"/> argument, you cannot turn a custom built order into a standard order. Specifying FALSE for <paramref name="uNewSetting"/> is the same as not specifying the argument at all—both return the current setting.
           </description>
         </item>
         <item>
@@ -584,27 +367,255 @@
       </note>
     </span>
   </DBRI_Constants>
-  <Scope_Constants>
+  <DBS_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>Constants</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>DBS_ALIAS</term>
+          <description>
+            Returns and optionally changes an alternate name (or alias) by which a field can be referenced
+            (by default, same as DBS_NAME). Using the <paramref name="uNewSetting"/> argument, you can
+            specify a string that you can subsequently use to access the indicated field.
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_DIRECT_LEN</term>
+          <description>
+            Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
+            For strings, the return value is the length of the string in bytes;
+            for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
+            With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(), or
+            FieldInfo(DBS_BLOB_POINTER, .../&gt;).
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_DIRECT_TYPE</term>
+          <description>
+            To determine the data type of BLOB data, without reference to a particular memo field, use DBS_BLOB_DIRECT_TYPE.
+            With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(),
+            BLOBDirectImport(), or FieldInfo(DBS_BLOB_POINTER, ...).
+          </description>
+        </item>
+        <item>
+          <term/>
+          <description>See DBS_BLOB_TYPE for a table of possible return values.</description>
+        </item>
+        <item>
+          <term>DBS_BLOB_LEN</term>
+          <description>
+            Returns the length of the BLOB data in a memo field as an unsigned long integer. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
+            <note type="tip">Using DBS_BLOB_LEN has a performance advantage over retrieving the value and using the Len() function.</note>
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_POINTER</term>
+          <description>Returns a numeric pointer to the BLOB data associated with a memo field.</description>
+        </item>
+        <item>
+          <term>DBS_BLOB_TYPE</term>
+          <description>
+            Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields.
+            However, the standard functions for determining data types, such as ValType(), simply treat BLOB fields as regular memo
+            fields. To determine the actual type of BLOB data stored in a memo field, use DBS_BLOB_TYPE.<br/>
+            The data type of the return value is string and can be interpreted using this table:
+          <list type="table">
+            <listheader>
+              <term>Returns</term>
+              <description>Meaning</description>
+            </listheader>
+            <item>
+              <term>?</term>
+              <description>Blank (empty/uninitialized field)</description>
+            </item>
+            <item>
+              <term>A</term>
+              <description>Array</description>
+            </item>
+            <item>
+              <term>C</term>
+              <description>String</description>
+            </item>
+            <item>
+              <term>D</term>
+              <description>Date</description>
+            </item>
+            <item>
+              <term>E</term>
+              <description>Error</description>
+            </item>
+            <item>
+              <term>L</term>
+              <description>Logical</description>
+            </item>
+            <item>
+              <term>N</term>
+              <description>Numeric</description>
+            </item>
+            <item>
+              <term>U</term>
+              <description>Undefined (NIL was stored)</description>
+            </item>
+          </list>
+          </description>
+        </item>
+        <item>
+          <term>DBS_DEC</term>
+          <description>Returns the number of decimal places for the field.</description>
+        </item>
+        <item>
+          <term>DBS_LEN</term>
+          <description>Returns the length of the field.</description>
+        </item>
+        <item>
+          <term>DBS_NAME</term>
+          <description>Returns the name of the field.</description>
+        </item>
+        <item>
+          <term>DBS_PROPERTIES</term>
+          <description>Returns the number of properties defined for a field.</description>
+        </item>
+        <item>
+          <term>DBS_TYPE</term>
+          <description>Returns the data type of the field.</description>
+        </item>
+        <item>
+          <term>DBS_USER</term>
+          <description>Start of user defined values.</description>
+        </item>
+      </list>
+      <note type="tip">
+        DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for customizations.
+        Values less than DBS_USER are reserved for X# development.
+      </note>
+    </span>
+  </DBS_Constants>
+  <DbStruct_Constants>
     <span>
       <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Description</description>
         </listheader>
+   <item>
+     <term>DBS_NAME</term>
+     <description>Returns the name of the field.</description>
+   </item>
+   <item>
+     <term>DBS_TYPE</term>
+     <description>Returns the data type of the field.</description>
+   </item>
+   <item>
+     <term>DBS_LEN</term>
+     <description>Returns the length of the field.</description>
+   </item>
+   <item>
+     <term>DBS_DEC</term>
+     <description>Returns the number of decimal places for the field.</description>
+   </item>
         <item>
-          <term>DBSCOPEALL</term>
-          <description>
-            The scope is all the records in the table. This is the <b>default</b>, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.
-          </description>
+          <term>DBS_ALIAS</term>
+          <description>cAlias</description>
+        </item>
+ </list>
+    </span>
+  </DbStruct_Constants>
+  <FileAtrChanged>
+    <span>
+      Compared to earlier Xbase versions the return value of Directory() has changed: <br/>
+      each subarray returned from Directory() now contains some extra values, such as creation date and
+      last access date. The normal F_DATE and F_TIME elements represent the last written date and time.
+    </span>
+  </FileAtrChanged>
+
+  <FileAttributes>
+    <span>
+      <include file="RTComments.xml" path="Comments/FileAtrChanged/*"/>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>F_ATTR</term>
+          <description>File attributes (as a string)</description>
         </item>
         <item>
-          <term>DBSCOPEREST</term>
-          <description>The scope is the remaining records in the table from the current position.</description>
+          <term>F_DATE</term>
+          <description>Date of last update (as a date)</description>
+        </item>
+        <item>
+          <term>F_NAME</term>
+          <description>Name of file (as a string)</description>
+        </item>
+        <item>
+          <term>F_SIZE</term>
+          <description>Size of file (as a numeric)</description>
+        </item>
+        <item>
+          <term>F_TIME</term>
+          <description>Time of last update (as a string)</description>
+        </item>
+        <item>
+          <term>F_WRITE_DATE</term>
+          <description>Time of last file write date (as a date)</description>
+        </item>
+        <item>
+          <term>F_WRITE_TIME</term>
+          <description>Time of last file write time (as a string)</description>
+        </item>
+        <item>
+          <term>F_CREATION_DATE</term>
+          <description>Time of file creation date (as a date)</description>
+        </item>
+        <item>
+          <term>F_CREATION_TIME</term>
+          <description>Time of file creation time (as a string)</description>
+        </item>
+        <item>
+          <term>F_ACCESS_DATE</term>
+          <description>Time of last access date (as a date)</description>
+        </item>
+        <item>
+          <term>F_ACCESS_TIME</term>
+          <description>Time of last access time (as a string)</description>
+        </item>
+        <item>
+          <term>F_EA_SIZE</term>
+          <description>.Net File attributes for the file</description>
         </item>
       </list>
     </span>
-  </Scope_Constants>
-
+  </FileAttributes>
+  <FileCompat>
+    <remarks>
+      <note type="tip">
+        This function is included for compatibility. We do not recomment using static memory for file i/o operations.
+        We recommend that you use the function overload that takes a byte array parameter in stead.
+      </note>
+    </remarks>
+  </FileCompat>
+  <Memvar>
+    <remarks>
+      <note type="tip">
+        Dynamic memory variables (PUBLIC, PRIVATE, PARAMETERS) are supported in the X# language and runtime for compatibility only.<br/>
+        In most cases the type can and should be replaced with lexically scoped variables, such as LOCALs and GLOBALs.
+      </note>
+    </remarks>
+  </Memvar>
+  <NameBasedIndexParam>
+    <span>
+      Name of the property from the element stored in the location index. If the element implements IIndexedProperties,
+      then the indexer with a string parameter on this element will be called. Otherwise the runtime will use reflection to find
+      the field or property on the element and return its value
+    </span>
+  </NameBasedIndexParam>
+  <Operator>
+    <summary>This operator is used in code generated by the compiler when needed.</summary>
+  </Operator>
   <OrderScope_Constants>
     <span>
       <list type="table">
@@ -629,17 +640,13 @@
       </list>
     </span>
   </OrderScope_Constants>
-  <StaticMemory>
-    <remarks>
-      <note type="tip">
-        The Static Memory Functions (MemAlloc, MemSet etc) are included for compatibility only.
-        In most cases the static memory blocks can (and should) be replaced with arrays of bytes.<br/>
-        Many of the functions in the runtime that take memory blocks as parameter,
-        such as the low level IO functions, now have overloads that take arrays of bytes as parameter.<br/>
-        We recommend that you use these overloads, because their performance is somewhat better.
-      </note>
-    </remarks>
-  </StaticMemory>
+  <OrderScopeParams>
+    <span>
+      The range of records to process, providing the same functionality as the ALL,
+      REST and NEXT clauses of record processing commands.
+      <include file="RTComments.xml" path="Comments/OrderScope_Constants/*"/>
+    </span>
+  </OrderScopeParams>
   <PSZ>
     <remarks>
       <note type="tip">
@@ -650,160 +657,9 @@
       </note>
     </remarks>
   </PSZ>
-  <Symbol>
-    <remarks>
-      <note type="tip">
-        The SYMBOL type is included in the X# language and runtime for compatibility only.
-        In most cases the type can and should be replaced with normal strings.
-      </note>
-    </remarks>
-  </Symbol>
-  <Memvar>
-    <remarks>
-      <note type="tip">
-        Dynamic memory variables (PUBLIC, PRIVATE, PARAMETERS) are supported in the X# language and runtime for compatibility only.<br/>
-        In most cases the type can and should be replaced with lexically scoped variables, such as LOCALs and GLOBALs.
-      </note>
-    </remarks>
-  </Memvar>
-  <Operator>
-    <summary>This operator is used in code generated by the compiler when needed.</summary>
-  </Operator>
-  <UsualCompareTo>
-    <param name="lhs">Left side of the comparison</param>
-    <param name="rhs">Right side of the comparison</param>
-    <remarks>
-      When comparing 2 usuals from different types, then the type of the Left Hand Side is taken as 'leading'.
-      For example when comparing a usual of a LHS of type DATE with a RHS of type DateTime
-      then the DateTime from the RHS is converted to a DATE first (the time is stripped off) before comparing.
-    </remarks>
-    <returns>An Integer value</returns>
-  </UsualCompareTo>
-  <UsualCompare>
-    <param name="lhs">Left side of the comparison</param>
-    <param name="rhs">Right side of the comparison</param>
-    <remarks>
-      When comparing 2 usuals from different types, then the type of the Left Hand Side is taken as 'leading'.
-      For example when comparing a usual of a LHS of type DATE with a RHS of type DateTime
-      then the DateTime from the RHS is converted to a DATE first (the time is stripped off) before comparing. <br/>
-      Comparison with .NULL.  (DBNull.Value) always returns FALSE. In FoxPro this returns .NULL. but that is not supported by .Net.
-    </remarks>
-    <returns>A Logicical value</returns>
-  </UsualCompare>
-  <UsualBinary>
-    <param name="lhs">Left side of the binary operation</param>
-    <param name="rhs">Right side of the binary operation</param>
-    <returns>A usual value of a type that matches the binary operator. For example when the operation involves an integer and a float then the result will be a float</returns>
-    <remarks>
-      When performing binary operations on usual types where the Left and Right types are different then the runtime follows "special"
-      rules to handle these. <br/>
-      For example when adding an integral number to a fractional number(float, decimal or currency), then the result is always a
-      fractional number of the fractional type.<br/>
-      Binary operations where one or both sides are .NULL. (DBNull.Value) always returns .NULL.
-
-    </remarks>
-  </UsualBinary>
-  <Converter>
-    <summary>This converter is used in code generated by the compiler when needed.</summary>
-  </Converter>
-  <Constructor>
-    <summary>This constructor is used in code generated by the compiler when needed.</summary>
-  </Constructor>
-  <FileCompat>
-    <remarks>
-      <note type="tip">
-        This function is included for compatibility. We do not recomment using static memory for file i/o operations.
-        We recommend that you use the function overload that takes a byte array parameter in stead.
-      </note>
-    </remarks>
-  </FileCompat>
-  <ZeroBasedIndex>
-    <remarks>
-      The indexer in this type is <em>ZERO</em> based, however in your PRG code you can use <em>ONE</em> based array indices.
-      When the compiler detects an index operation to a class that implements this interface then the compiler will automatically
-      adjust the indices (by subtracting one) unless the /az compiler option is enabled.
-    </remarks>
-  </ZeroBasedIndex>
-  <ZeroBasedIndexParam>
-    <span>
-      This indexer is <em>ZERO</em> based, however in your PRG code you can use <em>ONE</em> based array indices.
-      The compiler will recognize that this property is part of a type that implements a special interface
-      and will subtract one from the indexes, unless the /az compiler option is enabled.
-    </span>
-  </ZeroBasedIndexParam>
-  <NameBasedIndexParam>
-    <span>
-      Name of the property from the element stored in the location index. If the element implements IIndexedProperties,
-      then the indexer with a string parameter on this element will be called. Otherwise the runtime will use reflection to find
-      the field or property on the element and return its value
-    </span>
-  </NameBasedIndexParam>
-  <ZeroBasedIndexProperty>
-    <summary>
-      Get/Set array elements with a <em>ZERO</em> based array index.
-    </summary>
-    <remarks>
-      In your PRG code you can assess the elements with a <em>ONE</em> based index.
-      The compiler will recognize that this property is part of a type that implements a special interface
-      and will subtract one from the indexes, unless the /az compiler option is enabled.
-    </remarks>
-  </ZeroBasedIndexProperty>
-  <ScopeParams>
-    <span>
-      The range of records to process, providing the same functionality as the ALL,
-      REST and NEXT clauses of record processing commands.
-
-    </span>
-  </ScopeParams>
-  <OrderScopeParams>
-    <span>
-      The range of records to process, providing the same functionality as the ALL,
-      REST and NEXT clauses of record processing commands.
-      <include file="RTComments.xml" path="Comments/OrderScope_Constants/*"  />
-    </span>
-  </OrderScopeParams>
-  <ScopeReturn>
-    <span>
-      The return value depends on the parameter that is passed in:<br/>
-      <list type="table">
-        <listheader>
-          <term>Parameter</term>
-          <description>Return value</description>
-        </listheader>
-        <item>
-          <term>no parameter</term>
-          <description>Returns .T. (true) if a scope is defined, and .F. when no scope is defined.</description>
-        </item>
-        <item>
-          <term>SCOPE_TOP</term>
-          <description>Returns the top scope value, or NIL if no top scope is set.</description>
-        </item>
-        <item>
-          <term>SCOPE_BOTTOM</term>
-          <description>Returns the bottom scope value, or NIL if no bottom scope is set.</description>
-        </item>
-        <item>
-          <term>SCOPE_BOTH</term>
-          <description>
-            Returns an array with 2 elements with the Top scope in element 1 and the Bottom scope in element 2.
-            When a scope is not set then the value NIL is stored in the array
-          </description>
-        </item>
-
-      </list>
-    </span>
-  </ScopeReturn>
-  <SerializeConstructor>
-    <summary>Construct a value from serialized data</summary>
-    <param name="info">A SerializationInfo object containing information required to construct value.</param>
-    <param name="context">
-      A StreamingContext object containing the source and destination of the serialized stream
-      associated with the value.
-    </param>
-  </SerializeConstructor>
   <RddInfoParam>
     <span>
-      The constants are described in the Constants section below. <br />
+      The constants are described in the Constants section below. <br/>
       The initial default of a setting depends on the RDD.<br/>
       The constants are described in the Constants section below.  Note, however, that not all constants are supported for all RDDs.<br/>
       Important!  _SET_USER is a constant that returns the minimum value that third-party RDD developers
@@ -879,4 +735,148 @@
     </list>
   </RddInfoRemarks>
 
-</Comments>
+<Scope_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>DBSCOPEALL</term>
+          <description>
+            The scope is all the records in the table. This is the <b>default</b>, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.
+          </description>
+        </item>
+        <item>
+          <term>DBSCOPEREST</term>
+          <description>The scope is the remaining records in the table from the current position.</description>
+        </item>
+      </list>
+    </span>
+  </Scope_Constants>
+
+  <ScopeParams>
+    <span>
+      The range of records to process, providing the same functionality as the ALL,
+      REST and NEXT clauses of record processing commands.
+
+    </span>
+  </ScopeParams>
+  <ScopeReturn>
+    <span>
+      The return value depends on the parameter that is passed in:<br/>
+      <list type="table">
+        <listheader>
+          <term>Parameter</term>
+          <description>Return value</description>
+        </listheader>
+        <item>
+          <term>no parameter</term>
+          <description>Returns .T. (true) if a scope is defined, and .F. when no scope is defined.</description>
+        </item>
+        <item>
+          <term>SCOPE_TOP</term>
+          <description>Returns the top scope value, or NIL if no top scope is set.</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTTOM</term>
+          <description>Returns the bottom scope value, or NIL if no bottom scope is set.</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTH</term>
+          <description>
+            Returns an array with 2 elements with the Top scope in element 1 and the Bottom scope in element 2.
+            When a scope is not set then the value NIL is stored in the array
+          </description>
+        </item>
+
+      </list>
+    </span>
+  </ScopeReturn>
+  <SerializeConstructor>
+    <summary>Construct a value from serialized data</summary>
+    <param name="info">A SerializationInfo object containing information required to construct value.</param>
+    <param name="context">
+      A StreamingContext object containing the source and destination of the serialized stream
+      associated with the value.
+    </param>
+  </SerializeConstructor>
+  <StaticMemory>
+    <remarks>
+      <note type="tip">
+        The Static Memory Functions (MemAlloc, MemSet etc) are included for compatibility only.
+        In most cases the static memory blocks can (and should) be replaced with arrays of bytes.<br/>
+        Many of the functions in the runtime that take memory blocks as parameter,
+        such as the low level IO functions, now have overloads that take arrays of bytes as parameter.<br/>
+        We recommend that you use these overloads, because their performance is somewhat better.
+      </note>
+    </remarks>
+  </StaticMemory>
+  <Symbol>
+    <remarks>
+      <note type="tip">
+        The SYMBOL type is included in the X# language and runtime for compatibility only.
+        In most cases the type can and should be replaced with normal strings.
+      </note>
+    </remarks>
+  </Symbol>
+  <UsualBinary>
+    <param name="lhs">Left side of the binary operation</param>
+    <param name="rhs">Right side of the binary operation</param>
+    <returns>A usual value of a type that matches the binary operator. For example when the operation involves an integer and a float then the result will be a float</returns>
+    <remarks>
+      When performing binary operations on usual types where the Left and Right types are different then the runtime follows "special"
+      rules to handle these. <br/>
+      For example when adding an integral number to a fractional number(float, decimal or currency), then the result is always a
+      fractional number of the fractional type.<br/>
+      Binary operations where one or both sides are .NULL. (DBNull.Value) always returns .NULL.
+
+    </remarks>
+  </UsualBinary>
+  <UsualCompare>
+    <param name="lhs">Left side of the comparison</param>
+    <param name="rhs">Right side of the comparison</param>
+    <remarks>
+      When comparing 2 usuals from different types, then the type of the Left Hand Side is taken as 'leading'.
+      For example when comparing a usual of a LHS of type DATE with a RHS of type DateTime
+      then the DateTime from the RHS is converted to a DATE first (the time is stripped off) before comparing. <br/>
+      Comparison with .NULL.  (DBNull.Value) always returns FALSE. In FoxPro this returns .NULL. but that is not supported by .Net.
+    </remarks>
+    <returns>A Logicical value</returns>
+  </UsualCompare>
+  <UsualCompareTo>
+    <param name="lhs">Left side of the comparison</param>
+    <param name="rhs">Right side of the comparison</param>
+    <remarks>
+      When comparing 2 usuals from different types, then the type of the Left Hand Side is taken as 'leading'.
+      For example when comparing a usual of a LHS of type DATE with a RHS of type DateTime
+      then the DateTime from the RHS is converted to a DATE first (the time is stripped off) before comparing.
+    </remarks>
+    <returns>An Integer value</returns>
+  </UsualCompareTo>
+  <ZeroBasedIndex>
+    <remarks>
+      The indexer in this type is <em>ZERO</em> based, however in your PRG code you can use <em>ONE</em> based array indices.
+      When the compiler detects an index operation to a class that implements this interface then the compiler will automatically
+      adjust the indices (by subtracting one) unless the /az compiler option is enabled.
+    </remarks>
+  </ZeroBasedIndex>
+  <ZeroBasedIndexParam>
+    <span>
+      This indexer is <em>ZERO</em> based, however in your PRG code you can use <em>ONE</em> based array indices.
+      The compiler will recognize that this property is part of a type that implements a special interface
+      and will subtract one from the indexes, unless the /az compiler option is enabled.
+    </span>
+  </ZeroBasedIndexParam>
+  <ZeroBasedIndexProperty>
+    <summary>
+      Get/Set array elements with a <em>ZERO</em> based array index.
+    </summary>
+    <remarks>
+      In your PRG code you can assess the elements with a <em>ONE</em> based index.
+      The compiler will recognize that this property is part of a type that implements a special interface
+      and will subtract one from the indexes, unless the /az compiler option is enabled.
+    </remarks>
+  </ZeroBasedIndexProperty>
+  </Comments>

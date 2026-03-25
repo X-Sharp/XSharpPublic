@@ -1,25 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <LoadResString>
+    <Crypt>
         <summary>
-        Look up an identifier in a string table and returns its corresponding string.
+        Encrypt or decrypt an array of bytes.
         </summary>
-        <param name="cDef"></param>
-        <param name="id"></param>
-        <param name="xModule"></param>
-        <returns>
-        </returns>
-    </LoadResString>
-    <MBSubstr>
-        <summary>
-        Extract a substring from a string — both the substring and the string can contain double-byte characters.
-        </summary>
-        <param name="c"></param>
-        <param name="iStart"></param>
-        <param name="wLen"></param>
-        <returns>
-        </returns>
-    </MBSubstr>
+        <param name="bSource"/>
+        <param name="cKey"/>
+    </Crypt>
     <CryptRaw>
         <summary>
         Encrypt or decrypt a string handling its characters as single bytes (high order byte is ignored)
@@ -28,35 +15,48 @@
         <param name="cKey">Key to use for the encryption</param>
         <returns>Encrypted text. This has the same length as the original text</returns>
     </CryptRaw>
-    <Crypt>
-        <summary>
-        Encrypt or decrypt an array of bytes.
-        </summary>
-        <param name="bSource"></param>
-        <param name="cKey"></param>
-    </Crypt>
     <DoSendMail>
         <summary>
         </summary>
-        <param name="hWndOwner"></param>
-        <param name="cFiles"></param>
-        <param name="fAsynchWork"></param>
+        <param name="hWndOwner"/>
+        <param name="cFiles"/>
+        <param name="fAsynchWork"/>
         <returns>
         </returns>
     </DoSendMail>
+    <LoadResString>
+        <summary>
+        Look up an identifier in a string table and returns its corresponding string.
+        </summary>
+        <param name="cDef"/>
+        <param name="id"/>
+        <param name="xModule"/>
+        <returns>
+        </returns>
+    </LoadResString>
+    <MBSubstr>
+        <summary>
+        Extract a substring from a string — both the substring and the string can contain double-byte characters.
+        </summary>
+        <param name="c"/>
+        <param name="iStart"/>
+        <param name="wLen"/>
+        <returns>
+        </returns>
+    </MBSubstr>
     <NamedArg>
         <summary>VO Compatible type to allow name/value pairs for Ole Automation parameters</summary>
     </NamedArg>
     <NamedArg.ArgName>
         <summary>Argument name.</summary>
     </NamedArg.ArgName>
-    <NamedArg.Value>
-        <summary>Argument value.</summary>
-    </NamedArg.Value>
     <NamedArg.ctor>
         <summary>Construct a NamedArg object</summary>
     </NamedArg.ctor>
-  <OleAutoObject>
+  <NamedArg.Value>
+        <summary>Argument value.</summary>
+    </NamedArg.Value>
+    <OleAutoObject>
     <summary>VO Compatible OLE Automation class</summary>
   </OleAutoObject>
     <OleAutoObject.ctor>
@@ -65,10 +65,6 @@
   <OleAutoObjectFromFile>
     <summary>VO Compatible class to create an OLEAutObject from a file on disk.</summary>
   </OleAutoObjectFromFile>
-    <OleDateTimeAsDate>
-        <summary>Set and/or Retrieve the setting that determines if OLE date values should be returned as VO date values or as DateTime values</summary>
-        <param name='lSet'>The new setting. FALSE allows the return values to be instances of the OleDateTime class, TRUE forces all OLE  DateTime values to be VO dates . The default is FALSE.</param>
-    </OleDateTimeAsDate>
     <OleDateTime>
         <summary>VO Compatible class to store DateTime values in OLE Automation</summary>
     </OleDateTime>
@@ -78,28 +74,32 @@
     <OleDateTime.AsString>
         <summary>Returns the dateTime value as a String.</summary>
     </OleDateTime.AsString>
-    <OleDateTime.DateVal>
-        <summary>The value of the date part of the DateTime object as a Date.</summary>
-    </OleDateTime.DateVal>
+    <OleDateTime.ctor>
+        <summary>Construct an OleDateTime object</summary>
+      <param name="uDate">This can be a Number, Date or String. A Number will be seen as a REAL8 value in OADate form, Date = Date part and String = TimePart.</param>
+        <param name="val">Initial value as System.DateTime.</param>
+    </OleDateTime.ctor>
     <OleDateTime.DateTime>
         <summary>The value as a .Net DateTime type.</summary>
     </OleDateTime.DateTime>
-    <OleDateTime.ctor>
-        <summary>Construct an OleDateTime object</summary>
-      <param name='uDate'>This can be a Number, Date or String. A Number will be seen as a REAL8 value in OADate form, Date = Date part and String = TimePart.</param>
-        <param name='val'>Initial value as System.DateTime.</param>
-    </OleDateTime.ctor>
+    <OleDateTime.DateVal>
+        <summary>The value of the date part of the DateTime object as a Date.</summary>
+    </OleDateTime.DateVal>
     <OleDateTime.TimeString>
         <summary>The value of the time part of the DateTime object as a String.	</summary>
     </OleDateTime.TimeString>
     <OleDateTime.TimeVal>
         <summary>The value of the time part of the DateTime object as a float.	</summary>
     </OleDateTime.TimeVal>
+    <OleDateTimeAsDate>
+        <summary>Set and/or Retrieve the setting that determines if OLE date values should be returned as VO date values or as DateTime values</summary>
+        <param name="lSet">The new setting. FALSE allows the return values to be instances of the OleDateTime class, TRUE forces all OLE  DateTime values to be VO dates . The default is FALSE.</param>
+    </OleDateTimeAsDate>
     <VObject>
         <summary>Base class for many types used in the VO SDK Classes</summary>
     </VObject>
     <VObject.ctor>
-        <summary></summary>
+        <summary/>
     </VObject.ctor>
     <VObject.Destroy>
         <summary>Free memory resources allocated for a VObject object and its derived objects.</summary>

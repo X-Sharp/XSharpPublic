@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members/>
     <Console>
         <summary>
             Encapsulate a Win32 console application.
@@ -231,4 +230,5 @@
         </summary>
     </ConsoleCoord.Y>
 
+    <members/>
     </doc>

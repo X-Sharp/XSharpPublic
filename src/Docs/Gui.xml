@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-  <members>
-  </members>
   <Accelerator>
     <summary>
       Create an accelerator table.
@@ -15258,6 +15256,8 @@
     </summary>
     <param name="oHLName">The hyperlabel that contains the field name and other attributes (i.e., caption, description, and help context) to be used to create the new logic field specification.</param>
   </LogicFS.ctor>
+  <members>
+  </members>
   <Menu>
     <summary>
       Create a menu. Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.

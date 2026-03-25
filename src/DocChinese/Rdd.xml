@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-  <members>
-  </members>
   <AdsSQLServer>
     <summary>ADS 兼容的 DbServer 类，其构造函数接收一个 Sql Select 语句</summary>
   </AdsSQLServer>
@@ -4219,7 +4217,9 @@
     <summary>获取/设置用于确定 DbServer 操作是否恢复当前工作区的标志</summary>
   </DbSetRestoreWorkarea>
 
-<OrderSpec>
+<members>
+  </members>
+  <OrderSpec>
     <summary>
       OrderSpec 类用于在顺序级别（而非文件级别）建模索引信息，并补充 DBFileSpec 类。
     </summary>

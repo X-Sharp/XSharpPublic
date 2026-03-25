@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members>
-    </members>
     <CEmail>
         <summary>
             Provide a class to store and decode all data for an e-mail.
@@ -3100,4 +3098,6 @@
             </note>
         </remarks>
     </CStorage.SaveEMail>
-</doc>
+<members>
+    </members>
+    </doc>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-  <members>
-  </members>
   <Accelerator>
     <summary>
       创建一个加速键表。
@@ -17618,6 +17616,8 @@
     <param name="oHLName">包含字段名称和其他属性(例如，标题，描述和帮助上下文)的超链接标签，用于创建新的逻辑字段规范。</param>
   </LogicFS.ctor>
 
+  <members>
+  </members>
   <Menu>
     <summary>
       创建一个菜单。菜单由用户选择执行的项目组成；菜单项可以是字符串，位图或另一个菜单。

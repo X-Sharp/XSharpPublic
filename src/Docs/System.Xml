@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members/>
     <DataField>
         <summary>
             Create a field, which is an object that holds information that defines a particular field in a data server (for example, the field's data type and length).
@@ -1556,6 +1555,7 @@
         </summary>
         <param name="oHLName">The hyperlabel that contains the field name and other attributes (i.e., caption, description, and help context) to be used to create the new logic field specification.</param>
     </LogicFS.ctor>
+    <members/>
     <MoneyFS>
         <summary>
             Create a money field specification, which holds money data type information.

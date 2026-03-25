@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members>
-    </members>
     <CEmail>
         <summary>
             提供一个类来存储和解码电子邮件的所有数据。
@@ -3621,4 +3619,6 @@
             </note>
         </remarks>
     </CStorage.SaveEMail>
-</doc>
+<members>
+    </members>
+    </doc>

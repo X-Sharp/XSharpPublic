@@ -1,15 +1,11 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 
-/// <summary>
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Float2Long/*" />
 FUNCTION Float2Long(f IN USUAL) AS LONG
     LOCAL flValue AS FLOAT
     flValue := (FLOAT) f

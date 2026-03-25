@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -15,10 +15,7 @@ USING System.Runtime.CompilerServices
 
 #include "attributes.xh"
 BEGIN NAMESPACE XSharp
-/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
-/// This type has methods and properties that normally are never directly called from user code.
-/// </summary>
-/// <typeparam name="T">Type of the elements inside the array </typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_/*" />
 [DebuggerDisplay("{DebuggerString(),nq}")] ;
 [Serializable];
 PUBLIC CLASS __ArrayBase<T> ;
@@ -27,18 +24,18 @@ PUBLIC CLASS __ArrayBase<T> ;
     [NOSHOW] PROTECTED INTERNAL _internalList AS List<T>
     [NOSHOW] PRIVATE _islocked AS LOGIC
 #region constructors
-    /// <summary>Create an empty array</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.ctor/*" />
     CONSTRUCTOR()
         _internalList := List<T>{}
         RETURN
 
-    /// <summary>Create an array with a certain capacity.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.ctor_2/*" />
     CONSTRUCTOR(capacity AS DWORD)
         _internalList := List<T>{ (INT) capacity}
         //_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
         RETURN
 
-    /// <summary>Create an array with a certain capacity and specify if it should be filled with default values.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.ctor_3/*" />
     CONSTRUCTOR(capacity AS DWORD, fill AS LOGIC)
         _internalList := List<T>{ (INT) capacity}
         IF fill
@@ -46,12 +43,12 @@ PUBLIC CLASS __ArrayBase<T> ;
         ENDIF
         RETURN
 
-    /// <summary>Create an array and fill it with elements from an existing collection.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.ctor_4/*" />
     CONSTRUCTOR( collection AS IEnumerable<T>)
         _internalList := List<T>{collection}
         RETURN
 
-    /// <summary>Create an array and fill it with elements from an existing .Net array of objects. Note that the objects must be of the right type.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.ctor_5/*" />
     CONSTRUCTOR( elements AS OBJECT[] )
         SELF()
         IF elements == NULL
@@ -68,28 +65,30 @@ PUBLIC CLASS __ArrayBase<T> ;
         NEXT
         RETURN
 
-    /// <summary>Create an array and fill it with elements from an existing .Net array.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.ctor_6/*" />
     CONSTRUCTOR( elements AS T[] )
         _internalList := List<T>{elements}
         RETURN
 #endregion
 
-#region properties
-    /// <summary>Is the array empty.</summary>
+     #region properties
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.IsEmpty/*" />
     [NOSHOW] PUBLIC PROPERTY IsEmpty AS LOGIC [INLINE] GET _internalList:Count == 0
-    /// <summary>Length of the array.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.Length/*" />
     PUBLIC PROPERTY Length AS DWORD [INLINE] GET (DWORD) _internalList:Count
-    /// <summary>Length of the array as integer.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.Count/*" />
     [NOSHOW] PUBLIC PROPERTY Count AS INT [INLINE] GET _internalList:Count
 
-    /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.DefaultValue/*" />
     [NOSHOW] PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
 #endregion
 
-#region Enumerators
+    #region Enumerators
+    /// <inheritdoc>
     PUBLIC METHOD IEnumerable<T>.GetEnumerator() AS IEnumerator<T>
         RETURN ((IList<T> ) _internalList:ToArray()):GetEnumerator()
 
+    /// <inheritdoc>
     PUBLIC METHOD IEnumerable.GetEnumerator() AS IEnumerator
         RETURN _internalList:ToArray():GetEnumerator()
 
@@ -117,16 +116,11 @@ PUBLIC CLASS __ArrayBase<T> ;
 
 
 #region Indexers and TO GET / SET Elements.
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the specified location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.__GetElement/*" />
     PUBLIC VIRTUAL METHOD __GetElement(index AS INT) AS T
         RETURN SELF:_internalList[ index ]
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <param name='e'>New element to store in the array at the position specified</param>
-    /// <returns>The new element</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.__SetElement/*" />
     PUBLIC METHOD __SetElement(e AS T,index AS INT) AS T
         IF SELF:CheckLock()
             _internalList[index]:=e
@@ -173,9 +167,7 @@ PUBLIC CLASS __ArrayBase<T> ;
         NEXT
         RETURN NULL
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the indicated location in the collection.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.SELF_index/*" />
     PUBLIC PROPERTY SELF[index AS INT] AS T
     GET
         IF  index > _internalList:Count-1
@@ -193,10 +185,7 @@ PUBLIC CLASS __ArrayBase<T> ;
     END SET
     END PROPERTY
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.SELF_index/*" />
     PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
     GET
         LOCAL oElement AS T
@@ -237,10 +226,7 @@ PUBLIC CLASS __ArrayBase<T> ;
     END SET
     END PROPERTY
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
-    /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.SELF_index/*" />
     PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL
     GET
         LOCAL oElement AS T
@@ -387,7 +373,7 @@ PUBLIC CLASS __ArrayBase<T> ;
         wasLocked := SELF:_islocked
         SELF:_islocked := lLocked
         RETURN wasLocked
-    /// <summary>Is the array locked?</summary>
+    /// <exclude/>
     [NOSHOW];
     PROPERTY Locked AS LOGIC GET _islocked
 
@@ -401,7 +387,7 @@ PUBLIC CLASS __ArrayBase<T> ;
 
 
 #region operators
-    /// <summary>Implicitely convert an array of USUALs to a typed array. Note that the usuals must contain a value of the correct type.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.IMPLICIT/*" />
     STATIC OPERATOR IMPLICIT ( a AS ARRAY) AS __ArrayBase<T>
         IF a == NULL
             RETURN NULL
@@ -426,7 +412,7 @@ PUBLIC CLASS __ArrayBase<T> ;
         RETURN aResult
 
 
-    /// <summary>Implicitely convert a typed array to an array of USUALs.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.EXPLICIT/*" />
     STATIC OPERATOR EXPLICIT ( a AS __ArrayBase<T> ) AS ARRAY
         VAR aResult := __Array{}
         FOREACH VAR o IN a
@@ -434,7 +420,7 @@ PUBLIC CLASS __ArrayBase<T> ;
         NEXT
         RETURN aResult
 
-    /// <summary>Implicitely convert a typed Array to an OBJECT[].</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__ArrayBase_T_.IMPLICIT_2/*" />
     STATIC OPERATOR IMPLICIT ( a AS __ArrayBase<T> ) AS OBJECT[]
         LOCAL aResult := List<OBJECT>{} AS List<OBJECT>
         FOREACH VAR o IN a

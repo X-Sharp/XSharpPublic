@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,39 +11,11 @@ USING System.Runtime.CompilerServices
 FUNCTION Between(uValue AS USUAL, uMin AS USUAL, uMax AS USUAL) AS LOGIC
     RETURN uValue >=uMin .AND.  uValue<=uMax
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*" />
-/// <remarks>InList() determines whether an expression is found in a series of expressions.
-/// The first expression is compared to each of the other expressions until either a match is
-/// found or the entire list has been traversed.
-/// For exact matching, use InListExact(). </remarks>
-/// <seealso cref='M:XSharp.RT.Functions.InListExact(XSharp.__Usual,XSharp.__Usual[])'>InListExact</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/InList/*" />
 FUNCTION InList(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
     RETURN _InListWorker(uValue, uValueList, {x,y => x = y})
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*" />
-/// <remarks>InListExact() determines whether an expression is found in a series of expressions.
-/// The first expression is compared to each of the other expressions until either a match is
-/// found or the entire list has been traversed.
-/// InListExact() is the same as InList() except that <c>==</c> is used for matching instead of <c>=</c>.
-/// There is no difference between InList() and InListExact() for non string datatypes. </remarks>
-/// <seealso cref='O:XSharp.RT.Functions.InList'>InList</seealso>
-/// <example>
-/// This example compares InList() and InListExact() when the left operand in a comparison is longer than the right operand of a comparison:
-/// <code language="X#">
-/// ? InList("longer", "long")&#0009;&#0009;// TRUE
-/// ? InList("long  ", "long")&#0009;&#0009;// TRUE
-/// ? InListExact("longer", "long")&#0009;// FALSE
-/// ? InListExact("long  ", "long")&#0009;// FALSE
-/// </code>
-/// This example compares InList() and InListExact() when the right operand in a comparison is longer than the left operand of a comparison:
-/// <code language="X#">
-/// ? InList("long", "longer")&#0009;&#0009;// FALSE
-/// ? InList("long", "long  ")&#0009;&#0009;// FALSE
-/// ? InListExact("long", "longer")&#0009;// FALSE
-/// ? InListExact("long", "long  ")&#0009;// FALSE
-/// </code>
-/// </example>
-/// <seealso cref='M:XSharp.RT.Functions.InList(XSharp.__Usual,XSharp.__Usual[])'>InList</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/InListExact/*" />
 FUNCTION InListExact(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
     RETURN _InListWorker(uValue, uValueList, {x,y => x == y})
 
@@ -64,8 +36,8 @@ INTERNAL FUNCTION _InListWorker( u IN USUAL, args AS CONST USUAL[], compare as F
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
 FUNCTION Max(uValue1 IN USUAL,uValue2 IN USUAL) AS USUAL
 
     IF uValue1:IsNumeric .AND. uValue2:IsNumeric

@@ -8,12 +8,7 @@ USING System.Runtime.InteropServices
 USING System.Reflection
 USING System.Diagnostics
 #pragma options ("az", ON)
-/// <summary>
-/// Evaluate a code block
-/// </summary>
-/// <param name="block">Block to evaluate</param>
-/// <param name="args">List of arguments</param>
-/// <returns>Result of the evaluation</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Eval/*" />
 [DebuggerStepThrough()];
 FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 	LOCAL result AS USUAL
@@ -34,12 +29,7 @@ FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 	RETURN result
 
 #pragma options ("az", DEFAULT)
-/// <summary>
-/// Evaluate a code block or an objects Eval() method.
-/// </summary>
-/// <param name="uCodeBlock">Block to evaluate</param>
-/// <param name="args">List of arguments</param>
-/// <returns>Result of the evaluation</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Eval/*" />
 FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	IF uCodeBlock:IsNil
@@ -51,12 +41,7 @@ FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 	ENDIF
 	RETURN result
 #pragma options ("az", ON)
-/// <summary>
-/// Evaluate a code block or an objects Eval() method.
-/// </summary>
-/// <param name="obj">Object or block to evaluate</param>
-/// <param name="args">List of arguments</param>
-/// <returns>Result of the evaluation</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Eval/*" />
 FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 
@@ -84,12 +69,7 @@ FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	RETURN result
 #pragma options ("az", DEFAULT)
 
-/// <summary>
-/// Return the number of arguments that a code block is expecting.
-/// </summary>
-/// <param name="uCodeBlock"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/CParamCount/*" />
 FUNCTION CParamCount(oCodeBlock AS CODEBLOCK) AS DWORD
 	IF oCodeBlock == NULL_OBJECT
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oCodeBlock), 1)

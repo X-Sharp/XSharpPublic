@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -42,12 +42,7 @@ FUNCTION Ansi2OemBuff(pszTarget AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 		RETURN FALSE
 
 
-	/// <summary>
-	/// </summary>
-	/// <param name="PSZValue"></param>
-	/// <returns>
-	/// </returns>
-    /// <include file="RTComments.xml" path="Comments/PSZ/*" />
+ /// <include file="XSharp.RT.Docs.xml" path="doc/EmptyPSZ/*" />
 	FUNCTION EmptyPSZ(PSZValue AS PSZ) AS LOGIC
 		   RETURN PSZValue:IsEmpty
 
@@ -199,58 +194,42 @@ FUNCTION _NPut( p AS PSZ, dwOffset AS DWORD, b AS BYTE ) AS VOID
 
 These functions are not needed. There is an implicit conversion from PSZ to STRING
 
-/// <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsAlNum/*" />
 FUNCTION IsAlNum(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsAlNum(cSource)
 
-/// <summary>Determine if the leftmost character in a PSZ is alphabetic.</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character is alphabetic.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsAlpha/*" />
 FUNCTION IsAlpha(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsAlpha(cSource)
 
-/// <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character is alphanumeric.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsAlphaNum/*" />
 FUNCTION IsAlphaNum(pszSource AS PSZ) AS LOGIC
 	RETURN XSharp.RT.Functions.IsAlNum(pszSource)
 
-/// <summary>Determine if the leftmost character in a PSZ is a binary digit  (0 or 1)).</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsBDigit/*" />
 FUNCTION IsBDigit(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsBDigit(cSource)
 
-/// <summary>Determine if the leftmost character in a PSZ is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character is hex otherwise FALSE.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsXDigit/*" />
 FUNCTION IsXDigit(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsXDigit(cSource)
 
 
-/// <summary>Determine if the leftmost character in a PSZ is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsSpace/*" />
 FUNCTION IsSpace(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsSpace(cSource)
 
-/// <summary>Determine if the leftmost character in a PSZ is uppercase.</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsUpper/*" />
 FUNCTION IsUpper(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsUpper(cSource)
 
-/// <summary>Determine if the leftmost character in a PSZ is lower.</summary>
-/// <param name="pszSource">The string to examine.</param>
-/// <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsLower/*" />
 FUNCTION IsLower(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsLower(cSource)

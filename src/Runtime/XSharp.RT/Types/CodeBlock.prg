@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,10 +12,7 @@ USING System.Runtime.CompilerServices
 
 #include "attributes.xh"
 
-/// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
-/// This type has methods that normally are never directly called from user code.
-/// </summary>
-/// <seealso cref="ICodeblock"/>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Codeblock/*" />
 //[DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
     PRIVATE INITONLY _pcount AS INT
@@ -26,33 +23,22 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
         nullArgs := USUAL[]{0}
         RETURN
 
-    /// <summary>Returns the number of parameters in the codeblock</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Codeblock.PCount/*" />
     PUBLIC VIRTUAL METHOD PCount AS INT
         RETURN _pcount
 
-    /// <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
-    /// <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Codeblock.ctor/*" />
     [NODEBUG] [INLINE];
     PROTECTED CONSTRUCTOR (pCount AS INT)
         _pcount := pCount
 
-    /// <summary>
-    /// Executes the codeblock.</summary>
-    /// <param name="args">Zero or more arguments to pass to the codeblock.</param>
-    /// <returns>The value of the last expression within the codeblock as a USUAL.
-    /// If the last expression in the codeblock is of type VOID, then the codeblock
-    /// returns NIL.</returns>
-    /// <remarks>This method is abstract and is implemented in the derived classes
-    /// created by the compiler.</remarks>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Codeblock.Eval/*" />
     PUBLIC ABSTRACT METHOD Eval(args PARAMS CONST USUAL[] ) AS USUAL
 
     /// <inheritdoc />
     PROPERTY ResultType as __UsualType AUTO
 
-    /// <summary>
-    /// Eval method that can be called from code that does not "know" about the USUAL type.
-    /// such as the code in the RDD classes.
-    /// </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Codeblock.EvalBlock/*" />
     [DebuggerStepThrough()];
     PUBLIC VIRTUAL METHOD EvalBlock(args PARAMS OBJECT[] ) AS OBJECT
         LOCAL uArgs as USUAL[]
@@ -73,9 +59,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
         RETURN result
 
 
-    /// <summary>
-    /// Return a string that contains the # of parameters for display in the debugger.
-    /// </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Codeblock.ToString/*" />
     PUBLIC OVERRIDE METHOD ToString() AS STRING
         RETURN "{|" + SELF:_pcount:ToString() + "| ... }"
 
@@ -88,11 +72,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 END CLASS
 
 
-/// <summary>Internal type that is the base class for macro compiled codeblocks.
-/// </summary>
-/// <seealso cref="ICodeblock"/>
-/// <seealso cref="IMacroCompiler"/>
-/// <seealso cref="Codeblock"/>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_Codeblock/*" />
 [DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
 PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
     /// <exclude />
@@ -110,11 +90,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
         nullArgs := OBJECT[]{0}
         RETURN
 
-    /// <summary>This constructor is used by the Macro Compiler</summary>
-    /// <param name="innerBlock">Compiled codeblock created by the macro compiler.</param>
-    /// <param name="cMacro">Macro string that was used to create the codeblock.</param>
-    /// <param name="lIsBlock">Did the macro string start with "{|".</param>
-    /// <param name="lAddsMemvars">Does the macro create Memvars .</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/_Codeblock.ctor/*" />
     PUBLIC CONSTRUCTOR(innerBlock AS ICodeblock, cMacro AS STRING, lIsBlock AS LOGIC, lAddsMemvars AS LOGIC)
         SUPER(IIF (lIsBlock, innerBlock:PCount(), -1))
         _innerBlock := innerBlock
@@ -122,12 +98,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
         _lIsBlock   := lIsBlock
         _addsMemVars := lAddsMemvars
 
-    /// <summary>
-    /// Executes the codeblock.</summary>
-    /// <param name="args">Zero or more arguments to pass to the codeblock.</param>
-    /// <returns>The value of the last expression within the codeblock as a USUAL.
-    /// If the last expression in the codeblock is of type VOID, then the codeblock
-    /// returns NIL.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/_Codeblock.Eval/*" />
     PUBLIC OVERRIDE METHOD Eval(args PARAMS USUAL[]) AS USUAL
         LOCAL uRes      AS USUAL
         LOCAL oRes      AS OBJECT
@@ -154,9 +125,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
         END TRY
         RETURN uRes
 
-    /// <summary>
-    /// Returns the original string that was used to create the macro compiled codeblock.
-    /// </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/_Codeblock.ToString/*" />
     PUBLIC OVERRIDE METHOD ToString() AS STRING
         IF _lIsBlock
             RETURN _cMacro
@@ -164,7 +133,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
             RETURN "{|| "+_cMacro+" }"
         ENDIF
 
-    /// <summary>Was the codeblock created from a string that started with "{|" </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/_Codeblock.IsBlock/*" />
     PUBLIC PROPERTY IsBlock AS LOGIC GET _lIsBlock
 END CLASS
 

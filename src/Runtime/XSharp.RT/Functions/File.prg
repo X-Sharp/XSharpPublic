@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -42,9 +42,7 @@ FUNCTION FReadLine(ptrHandle ,nMax) AS STRING CLIPPER
 		RETURN XSharp.Core.Functions.FReadLine((IntPtr) ptrHandle, (DWORD) nMax)
 	ENDIF
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext/*" />
-/// <param name="pData">A block of memory to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <include file="RTComments.xml" path="Comments/FileCompat/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/FReadText3/*" />
 FUNCTION FReadText3(ptrHandle AS IntPtr,pData AS IntPtr,dwBytes AS DWORD) AS DWORD
     VAR bData := FGetBuffer(ptrHandle, (INT) dwBytes)
 	VAR dwResult := XSharp.Core.Functions.FReadText3(ptrHandle, bData, dwBytes)	

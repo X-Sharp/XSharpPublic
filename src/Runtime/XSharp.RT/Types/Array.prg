@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -15,11 +15,7 @@ USING XSharp
 #include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
-/// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
-/// This type has methods and properties that normally are never directly called from user code.
-/// </summary>
-/// <seealso cref='IIndexer' />
-/// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Array/*" />
 //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
 [DebuggerDisplay("{DebuggerString(),nq}")] ;
 [Serializable];
@@ -42,7 +38,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
     CONSTRUCTOR(capacity AS DWORD, fill AS LOGIC)
         SUPER(capacity, fill)
 
-    /// <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.ctor/*" />
     CONSTRUCTOR( elements AS USUAL[] )
         SELF()
         IF elements == NULL
@@ -165,9 +161,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
         RETURN (ARRAY) SUPER:Clone()
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.SELF_index/*" />
     NEW VIRTUAL PUBLIC PROPERTY SELF[index AS INT] AS USUAL
     GET
         RETURN SELF:__GetElement(index)
@@ -178,10 +172,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
     END PROPERTY
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.SELF_index/*" />
     NEW VIRTUAL PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
     GET
         RETURN SELF:__GetElement(index,index2)
@@ -193,9 +184,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
 
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.SELF_indices/*" />
     VIRTUAL PUBLIC PROPERTY SELF[indices PARAMS INT[]] AS USUAL
     GET
         RETURN SELF:__GetElement(indices)
@@ -205,7 +194,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
     END SET
     END PROPERTY
 
-    /// <summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.DefaultValue/*" />
     [NOSHOW];
     PUBLIC OVERRIDE PROPERTY DefaultValue AS USUAL GET NIL
 
@@ -228,17 +217,13 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
         err:Stack   := ErrorStack(1)
         RETURN err
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the specified location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.__GetElement/*" />
     NEW PUBLIC METHOD __GetElement(index AS INT) AS USUAL
         // VO always throws an error when a single dimension is passed and this dimension is not correct
         SELF:__CheckArrayElement(SELF, index, nameof(index),1)
         RETURN SELF:_internalList[ index ]
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the specified location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.__GetElement/*" />
     PUBLIC VIRTUAL METHOD __GetElement(index AS INT, index2 AS INT) AS USUAL
         // VO Throws an exception when the first dimension is incorrect but not
         // when another dimension is incorrect. That is why we have a TRY CATCH for the second dimension
@@ -268,9 +253,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
         END TRY
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the specified location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.__GetElement/*" />
     PUBLIC VIRTUAL METHOD __GetElement(indices PARAMS INT[]) AS USUAL
         LOCAL length := indices:Length AS INT
         LOCAL currentArray AS ARRAY
@@ -358,9 +341,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
         RETURN sb:ToString()
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the specified location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.__SetElement/*" />
     NEW PUBLIC VIRTUAL METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
         IF SELF:CheckLock()
             SELF:__CheckArrayElement(SELF, index, nameof(index),1)
@@ -369,10 +350,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
         RETURN u
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <returns>The element stored at the specified location in the array.</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.__SetElement/*" />
     PUBLIC VIRTUAL METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
         IF SELF:CheckLock()
             SELF:__CheckArrayElement(SELF, index, nameof(index),1)
@@ -389,10 +367,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
 
 
 
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-    /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    /// <param name='u'>New element to store in the array at the position specified</param>
-    /// <returns>The new element</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.__SetElement/*" />
     PUBLIC VIRTUAL METHOD __SetElement(u AS USUAL, indices PARAMS INT[] ) AS USUAL
         // indices are 0 based
         IF SELF:CheckLock()
@@ -416,7 +391,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
         ENDIF
         RETURN u
 
-    /// <summary>Implicit conversion to OBJECT[]. SubArrays become nested OBJECT[] arrays.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Array.IMPLICIT/*" />
     STATIC OPERATOR IMPLICIT ( a AS __Array) AS OBJECT[]
         LOCAL aResult := List<OBJECT>{} AS List<OBJECT>
         FOREACH uElement AS USUAL IN a
@@ -507,24 +482,8 @@ END CLASS
 
 END NAMESPACE
 
-/// <summary>Suppress Array Index check to be compatible with Visual Objects</summary>
-/// <param name="lCheck">TRUE to enable the array index checks. </param>
-/// <returns>The previous setting of the flag</returns>
-/// <summary>In some situations Visual Objects did not throw a runtime error when you were accessing a non existing array element. <br/>
-/// You can enable this (mis)behaviour in X# by disabling the array index checks.<br/>
-/// The default behavior is to generate an error when you access array indices out of the existing range.
-/// </summary>
-/// <example>
-/// // The following code does not throw a runtime error but displays NIL for u[1,1]
-/// // To get the same behavior in X# you need to call EnableArrayIndexCheck(FALSE)
-/// FUNCTION Start
-/// LOCAL u AS USUAL
-/// u := {1,2,3}
-/// ? u[1,1]
-/// WAIT
-/// RETURN TRUE
-/// </example>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/EnableArrayIndexCheck/*" />
 FUNCTION EnableArrayIndexCheck(lCheck AS LOGIC) AS LOGIC
     LOCAL lOld AS LOGIC
     lOld := ! XSharp.__Array.SuppressArrayIndexErrors

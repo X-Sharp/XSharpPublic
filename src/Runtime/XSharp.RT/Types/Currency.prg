@@ -14,12 +14,7 @@ USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp
 // Type is Immutable, so has no settable properties
-/// <summary>Internal type that implements the FoxPro Compatible CURRENCY type.
-/// This type has many operators and implicit converters that normally are never directly called from user code.
-/// The data in this type is stored as a System.Decimal with 4 decimal places
-/// </summary>
-/// <seealso cref="__Float"/>
-/// <seealso cref="System.Decimal"/>
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Currency/*" />
 [DebuggerDisplay("{ToDebugString(),nq}")];
 [Serializable];
 PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
@@ -33,29 +28,29 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
     [NOSHOW] PRIVATE INITONLY _value AS System.Decimal
 
 #region constructors
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    /// <param name="r8">Real8 value to convert to a FLOAT</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Currency.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR (r8 AS REAL8)
         SELF:_value    := Math.Round((Decimal)r8,4)
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Currency.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR (d AS System.Decimal)
         SELF:_value    := Math.Round(d,4)
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Currency.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR (f AS IFloat)
         SELF:_value		:= Math.Round((Decimal)f:Value,4)
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Currency.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR (c AS ICurrency)
         SELF:_value		:= c:Value
 
 #endregion
 #region Properties
-    /// <summary>Decimal (System.Decimal) value</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Currency.Value/*" />
     [NOSHOW] PROPERTY @@Value    AS System.Decimal	GET _value
 #endregion
 

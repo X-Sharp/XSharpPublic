@@ -413,7 +413,7 @@ CLASS XSharp.CoreDb
         ENDIF
         })
 
-    /// <include file="XSharp.Core.Docs.xml" path="doc/CoreDb.Create_2/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/CoreDb.Create/*" />
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         LOCAL oRdd := NULL  AS RegisteredRDD
         FOREACH VAR name IN rddList:atomRddName
@@ -426,7 +426,7 @@ CLASS XSharp.CoreDb
         RETURN FALSE
 
 
-    /// <include file="XSharp.Core.Docs.xml" path="doc/CoreDb.Create_3/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/CoreDb.Create/*" />
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL uiOldArea := 0 AS DWORD

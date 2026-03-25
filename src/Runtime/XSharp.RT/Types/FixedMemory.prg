@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,7 +12,7 @@ USING System.Collections.Concurrent
 USING System.Runtime.CompilerServices
 
 
-/// <summary>Delegate that a client needs to implement to use MemWalk.</summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemWalker/*" />
 DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
 
 INTERNAL STATIC CLASS XSharp.FixedMemory
@@ -324,16 +324,16 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
 END CLASS
 
 
-/// <summary>Guard Block preceding MemAlloc return value</summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart/*" />
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockStart
-    /// <summary>Checksum</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart.dwMagic/*" />
     [FieldOffset(00)] EXPORT dwMagic AS DWORD	// Checksum
-    /// <summary>Cargo slot</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart.dwCargo/*" />
     [FieldOffset(04)] EXPORT dwCargo AS DWORD    // Can be used by them
-    /// <summary>Group number</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart.dwGroup/*" />
     [FieldOffset(08)] EXPORT dwGroup AS DWORD    // Group Number
-    /// <summary>Size</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart.dwSize/*" />
     [FieldOffset(12)] EXPORT dwSize  AS DWORD	// Size of Data Block excluding Guard Blocks
     /// <exclude />
     CONST MAGIC  := 0x21522358 AS DWORD  // !R#X
@@ -350,16 +350,14 @@ STRUCTURE	 XSharp.FixedMemBlockStart
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC
-
-
 END STRUCTURE
 
-/// <summary>Guard Block following MemAlloc return value</summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockEnd/*" />
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE XSharp.FixedMemBlockEnd
-    /// <summary>Zero terminator</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockEnd.dwZero/*" />
     [FieldOffset(00)] EXPORT dwZero  AS DWORD			// Give them 1 extra DWORD to protect against overflows
-    /// <summary>Checksum</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockEnd.dwMagic/*" />
     [FieldOffset(04)] EXPORT dwMagic AS DWORD			//
     /// <exclude />
     CONST MAGIC  := 0x524E4643 AS DWORD  // Chris, Fabrice, Nikos, Robert

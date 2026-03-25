@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -32,8 +32,7 @@ FUNCTION ConDate(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
 FUNCTION CToD(cDate AS STRING) AS DATE
 	RETURN CToDt(cDate, XSharp.RuntimeState.DateFormat)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*" />
-/// <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
+/// <include file="XSharp.RT.Docs.xml" path="doc/CToD/*" />
 FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
     RETURN CToDt(cDate, cDateFormat)
 
@@ -70,11 +69,7 @@ FUNCTION DToC(dDate AS DATE) AS STRING
 FUNCTION DToS(dDate AS DATE) AS STRING
     RETURN DtToS(dDate)
 
-/// <summary>
-/// </summary>
-/// <param name="d"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/JCDOW/*" />
 FUNCTION JCDOW(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
@@ -83,11 +78,7 @@ FUNCTION JCDOW(d AS DATE) AS STRING
 	RETURN culture:DateTimeFormat:GetDayName(dow)
 
 
-/// <summary>
-/// </summary>
-/// <param name="d"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/JCMONTH/*" />
 FUNCTION JCMONTH(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
@@ -96,11 +87,7 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 	RETURN culture:DateTimeFormat:GetMonthName(month)
 
 
-/// <summary>
-/// </summary>
-/// <param name="d"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/JCYEAR/*" />
 FUNCTION JCYEAR(d AS DATE) AS STRING
 	RETURN Year(d):ToString()
 
@@ -156,11 +143,7 @@ FUNCTION Year(dDate AS DATE) AS DWORD
 
 
 
-/// <summary>
-/// Return the Day of Year
-/// </summary>
-/// <param name="dDate">Date for which to calculate the Date</param>
-/// <returns></returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DOY/*" />
 function DOY(dDate as date) as dword
     local day := 0  as dword
     local d1Jan as date

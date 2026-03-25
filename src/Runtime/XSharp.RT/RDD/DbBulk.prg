@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -6,12 +6,6 @@
 
 // DbBulk.prg: Bulk operations on Workareas
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
 USING XSharp.RDD.Support
 
 
@@ -657,10 +651,7 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition, lNoOpt) AS LOGIC 
 
     RETURN (lRetCode)
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbJoinAppend/*" />
 FUNCTION DbJoinAppend(nSelect AS DWORD, list AS _JoinList)   AS LOGIC
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDbJoinAppend(nSelect, list))
 

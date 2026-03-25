@@ -1,0 +1,2535 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<members>
+
+  <FS_SET>
+    <summary>FSeek() Seek Offset: Seek from beginning of file</summary>
+  </FS_SET>
+  <FS_RELATIVE>
+    <summary>FSeek() Seek Offset: Seek from current file position</summary>
+  </FS_RELATIVE>
+  <FS_END>
+    <summary>FSeek() Seek Offset: Seek from end of file</summary>
+  </FS_END>
+  <FO_READ>
+    <summary>FOpen() Open Mode: Open for reading (default)</summary>
+  </FO_READ>
+  <FO_WRITE>
+    <summary>FOpen() Open Mode: Open for writing</summary>
+  </FO_WRITE>
+  <FO_READWRITE>
+    <summary>FOpen() Open Mode: Open for reading or writing</summary>
+  </FO_READWRITE>
+  <FO_UNBUFFERED>
+    <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
+  </FO_UNBUFFERED>
+  <FO_COMPAT>
+    <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
+  </FO_COMPAT>
+  <FO_EXCLUSIVE>
+    <summary>FOpen() Sharing Mode: Exclusive</summary>
+  </FO_EXCLUSIVE>
+  <FO_DENYWRITE>
+    <summary>FOpen() Sharing Mode: Prevent other processes from writing</summary>
+  </FO_DENYWRITE>
+  <FO_DENYREAD>
+    <summary>FOpen() Sharing Mode: Prevent other processes from reading</summary>
+  </FO_DENYREAD>
+  <FO_DENYNONE>
+    <summary>FOpen() Sharing Mode: (same as FO_SHARED)</summary>
+  </FO_DENYNONE>
+  <FO_SHARED>
+    <summary>FOpen() Sharing Mode:  Allow other processes to read or write</summary>
+  </FO_SHARED>
+  <FC_NORMAL>
+    <summary>FCreate() attribute mode: normal read/write file (default for create)</summary>
+  </FC_NORMAL>
+  <FC_READONLY>
+    <summary>FCreate() attribute mode: read-only file</summary>
+  </FC_READONLY>
+  <FC_HIDDEN>
+    <summary>FCreate() attribute mode: hidden file</summary>
+  </FC_HIDDEN>
+  <FC_SYSTEM>
+    <summary>FCreate() attribute mode: system file</summary>
+  </FC_SYSTEM>
+  <FC_ARCHIVED>
+    <summary>FCreate() attribute mode: archived</summary>
+  </FC_ARCHIVED>
+  <AMERICAN>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </AMERICAN>
+  <ANSI>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </ANSI>
+  <BRITISH>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </BRITISH>
+  <FRENCH>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </FRENCH>
+  <GERMAN>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </GERMAN>
+  <ITALIAN>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </ITALIAN>
+  <DUTCH>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </DUTCH>
+  <JAPANESE>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </JAPANESE>
+  <USA>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </USA>
+  <DMY>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </DMY>
+  <MDY>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </MDY>
+  <YMD>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </YMD>
+  <TAIWAN>
+    <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+  </TAIWAN>
+  <BLOB_EXPORT_APPEND>
+    <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
+  </BLOB_EXPORT_APPEND>
+  <BLOB_EXPORT_OVERWRITE>
+    <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
+  </BLOB_EXPORT_OVERWRITE>
+  <BLOB_IMPORT_COMPRESS>
+    <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
+  </BLOB_IMPORT_COMPRESS>
+  <BLOB_IMPORT_ENCRYPT>
+    <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
+  </BLOB_IMPORT_ENCRYPT>
+  <DBOI_OPTIMIZED_NONE>
+    <include file="CoreComments.xml" path="Comments/OptLevel/*" />
+  </DBOI_OPTIMIZED_NONE>
+  <DBOI_OPTIMIZED_PART>
+    <include file="CoreComments.xml" path="Comments/OptLevel/*" />
+  </DBOI_OPTIMIZED_PART>
+  <DBOI_OPTIMIZED_FULL>
+    <include file="CoreComments.xml" path="Comments/OptLevel/*" />
+  </DBOI_OPTIMIZED_FULL>
+  <DB_DBF_STD>
+    <summary>Standard table   </summary>
+  </DB_DBF_STD>
+  <DB_DBF_VFP>
+    <summary>   FoxPro table   </summary>
+  </DB_DBF_VFP>
+  <DB_MEMO_NONE>
+    <summary>   No Memo   </summary>
+  </DB_MEMO_NONE>
+  <DB_MEMO_DBT>
+    <summary>   DBT Memo   </summary>
+  </DB_MEMO_DBT>
+  <DB_MEMO_FPT>
+    <summary>   FPT Memo   </summary>
+  </DB_MEMO_FPT>
+  <DB_MEMO_SMT>
+    <summary>   SMT Memo   </summary>
+  </DB_MEMO_SMT>
+  <DB_DBFLOCK_DEFAULT>
+    <summary>   Default Harbour Locking scheme   </summary>
+  </DB_DBFLOCK_DEFAULT>
+  <DB_DBFLOCK_CLIPPER>
+    <summary>   default Clipper locking scheme   </summary>
+  </DB_DBFLOCK_CLIPPER>
+  <DB_DBFLOCK_COMIX>
+    <summary>   COMIX and CL53 DBFCDX hyper locking scheme   </summary>
+  </DB_DBFLOCK_COMIX>
+  <DB_DBFLOCK_VFP>
+    <summary>   [V]FP, CL52 DBFCDX, SIx3 SIXCDX, CDXLOCK.OBJ   </summary>
+  </DB_DBFLOCK_VFP>
+  <DB_DBFLOCK_HB32>
+    <summary>   Harbour hyper locking scheme for 32bit file API   </summary>
+  </DB_DBFLOCK_HB32>
+  <DB_DBFLOCK_HB64>
+    <summary>   Harbour hyper locking scheme for 64bit file API   </summary>
+  </DB_DBFLOCK_HB64>
+  <DB_DBFLOCK_CLIPPER2>
+    <summary>   extended Clipper locking scheme NTXLOCK2.OBJ   </summary>
+  </DB_DBFLOCK_CLIPPER2>
+  <DBT_DEFBLOCKSIZE>
+    <summary>   Default DBT BlockSize   </summary>
+  </DBT_DEFBLOCKSIZE>
+  <FPT_DEFBLOCKSIZE>
+    <summary>   Default FPT BlockSize   </summary>
+  </FPT_DEFBLOCKSIZE>
+  <SMT_DEFBLOCKSIZE>
+    <summary>   Default SMT Blocksize   </summary>
+  </SMT_DEFBLOCKSIZE>
+  <EDB>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB>
+  <EDB_SEEK>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SEEK>
+  <EDB_SKIP>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SKIP>
+  <EDB_GOTO>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_GOTO>
+  <EDB_SETRELATION>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SETRELATION>
+  <EDB_USE>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_USE>
+  <EDB_CREATEINDEX>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_CREATEINDEX>
+  <EDB_SETORDER>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SETORDER>
+  <EDB_SETINDEX>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SETINDEX>
+  <EDB_FIELDNAME>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_FIELDNAME>
+  <EDB_BADALIAS>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_BADALIAS>
+  <EDB_DUPALIAS>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_DUPALIAS>
+  <EDB_SETFILTER>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SETFILTER>
+  <EDB_CYCLICREL>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_CYCLICREL>
+  <EDB_CREATETABLE>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_CREATETABLE>
+  <EDB_RDDNOTFOUND>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_RDDNOTFOUND>
+  <EDB_FIELDINDEX>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_FIELDINDEX>
+  <EDB_SELECT>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SELECT>
+  <EDB_SYMSELECT>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_SYMSELECT>
+  <EDB_TOTAL>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_TOTAL>
+  <EDB_RECNO>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_RECNO>
+  <EDB_EXPRESSION>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_EXPRESSION>
+  <EDB_EXPR_WIDTH>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_EXPR_WIDTH>
+  <EDB_DRIVERLOAD>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_DRIVERLOAD>
+  <EDB_PARAM>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_PARAM>
+  <EDB_NOAREAS>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NOAREAS>
+  <EDB_NOMEM>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NOMEM>
+  <EDB_NOFIELDS>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NOFIELDS>
+  <EDB_BAD_ERROR_INFO>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_BAD_ERROR_INFO>
+  <EDB_WRONGFIELDNAME>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_WRONGFIELDNAME>
+  <EDB_ORDDESTROY>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_ORDDESTROY>
+  <EDB_NOINITFUNCTION>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NOINITFUNCTION>
+  <EDB_ERRORINIT>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_ERRORINIT>
+  <EDB_DBSTRUCT>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_DBSTRUCT>
+  <EDB_NOTABLE>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NOTABLE>
+  <EDB_NOORDER>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NOORDER>
+  <EDB_NODB>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_NODB>
+  <EDB_ASSERTION>
+    <include file="CoreComments.xml" path="Comments/RDDError/*" />
+  </EDB_ASSERTION>
+  <SCOPE_TOP>
+    <include file="CoreComments.xml" path="Comments/ScopeInfo/*" />
+  </SCOPE_TOP>
+  <SCOPE_BOTTOM>
+    <include file="CoreComments.xml" path="Comments/ScopeInfo/*" />
+  </SCOPE_BOTTOM>
+  <SCOPE_BOTH>
+    <include file="CoreComments.xml" path="Comments/ScopeInfo/*" />
+  </SCOPE_BOTH>
+  <F_NAME>
+    <summary>Position in Directory() sub-array for fileName (as a string).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_NAME>
+  <F_SIZE>
+    <summary>Position in Directory() sub-array for filesize(as a numeric).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_SIZE>
+  <F_DATE>
+    <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_DATE>
+  <F_WRITE_DATE>
+    <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_WRITE_DATE>
+  <F_TIME>
+    <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_TIME>
+  <F_WRITE_TIME>
+    <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_WRITE_TIME>
+  <F_ATTR>
+    <summary>Position in Directory() sub-array for file attributes(as a number).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_ATTR>
+  <F_EA_SIZE>
+    <summary>Position in Directory() sub-array for Size of extended attributes(as a string).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_EA_SIZE>
+  <F_CREATION_DATE>
+    <summary>Position in Directory() sub-array for creation date(as a date).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_CREATION_DATE>
+  <F_CREATION_TIME>
+    <summary>Position in Directory() sub-array for creation time(as a string).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_CREATION_TIME>
+  <F_ACCESS_DATE>
+    <summary>Position in Directory() sub-array for last access date(as a date).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_ACCESS_DATE>
+  <F_ACCESS_TIME>
+    <summary>Position in Directory() sub-array for last access time(as a string).</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_ACCESS_TIME>
+  <F_LEN>
+    <summary>Length of Directory() sub-array.</summary>
+    <include file="CoreComments.xml" path="Comments/Directory/*" />
+  </F_LEN>
+  <CRLF>
+    <summary>This define consists of a Carriage Return and a Line Feed. Unfortunately this is not properly shown in the help file, because the help file generator strips CRLF characters...</summary>
+  </CRLF>
+  <DbInfo>
+    <summary>
+      This enum specifies the various values that the Info method for the IRDD interface accepts.
+    </summary>
+    <remarks>
+      <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbInfo." prefix.</note>
+    </remarks>
+  </DbInfo>
+  <DbInfo.DBI_ISDBF>
+    <summary>Logical: Is the RDD DBF based ?</summary>
+  </DbInfo.DBI_ISDBF>
+  <DbInfo.DBI_CANPUTREC>
+    <summary>Logical: Does the RDD support the PutRec mechanism ?</summary>
+  </DbInfo.DBI_CANPUTREC>
+  <DbInfo.DBI_GETHEADERSIZE>
+    <summary>Numeric: Get header size of the file  ?</summary>
+  </DbInfo.DBI_GETHEADERSIZE>
+  <DbInfo.DBI_LASTUPDATE>
+    <summary>Date:    Last date RDD file updated  </summary>
+  </DbInfo.DBI_LASTUPDATE>
+  <DbInfo.DBI_GETDELIMITER>
+    <summary>String:  Get default FIELD delimiter</summary>
+  </DbInfo.DBI_GETDELIMITER>
+  <DbInfo.DBI_SETDELIMITER>
+    <summary>String:  Set default FIELD delimiter</summary>
+  </DbInfo.DBI_SETDELIMITER>
+  <DbInfo.DBI_GETRECSIZE>
+    <summary>Numeric: Get record size </summary>
+  </DbInfo.DBI_GETRECSIZE>
+  <DbInfo.DBI_GETLOCKARRAY>
+    <summary>Array:   Get array of locked records</summary>
+  </DbInfo.DBI_GETLOCKARRAY>
+  <DbInfo.DBI_TABLEEXT>
+    <summary>String:  Get table file extension</summary>
+  </DbInfo.DBI_TABLEEXT>
+  <DbInfo.DBI_READONLY>
+    <summary>Logic: is the file opened readonly</summary>
+  </DbInfo.DBI_READONLY>
+  <DbInfo.DBI_ISFLOCK>
+    <summary>Logic: Is there a file lock active? </summary>
+  </DbInfo.DBI_ISFLOCK>
+  <DbInfo.DBI_FILESTREAM>
+    <summary>Stream: The RDDs stream object</summary>
+  </DbInfo.DBI_FILESTREAM>
+  <DbInfo.DBI_CHILDCOUNT>
+    <summary>Number: Number of child relations set</summary>
+  </DbInfo.DBI_CHILDCOUNT>
+  <DbInfo.DBI_FILEHANDLE>
+    <summary>IntPtr: The data file's handle</summary>
+  </DbInfo.DBI_FILEHANDLE>
+  <DbInfo.DBI_FULLPATH>
+    <summary>String: Full path to data file</summary>
+  </DbInfo.DBI_FULLPATH>
+  <DbInfo.DBI_ISANSI>
+    <summary>Logic: Is the file ansi encoded</summary>
+  </DbInfo.DBI_ISANSI>
+  <DbInfo.DBI_BOF>
+    <summary>Logic: Same as Bof()</summary>
+  </DbInfo.DBI_BOF>
+  <DbInfo.DBI_EOF>
+    <summary>Logic: Same as Eof()</summary>
+  </DbInfo.DBI_EOF>
+  <DbInfo.DBI_DBFILTER>
+    <summary>String: Current Filter setting </summary>
+  </DbInfo.DBI_DBFILTER>
+  <DbInfo.DBI_FOUND>
+    <summary>Logic: Same as Found() </summary>
+  </DbInfo.DBI_FOUND>
+  <DbInfo.DBI_FCOUNT>
+    <summary>Number: Number of fields per record</summary>
+  </DbInfo.DBI_FCOUNT>
+  <DbInfo.DBI_LOCKCOUNT>
+    <summary>Number: Number of record locks  </summary>
+  </DbInfo.DBI_LOCKCOUNT>
+  <DbInfo.DBI_VALIDBUFFER>
+    <summary>Logic: Is the buffer Valid</summary>
+  </DbInfo.DBI_VALIDBUFFER>
+  <DbInfo.DBI_ALIAS>
+    <summary>String: Alias</summary>
+  </DbInfo.DBI_ALIAS>
+  <DbInfo.DBI_GETSCOPE>
+    <summary>Object: The ScopeInfo</summary>
+  </DbInfo.DBI_GETSCOPE>
+  <DbInfo.DBI_LOCKOFFSET>
+    <summary>Number: Lock offset</summary>
+  </DbInfo.DBI_LOCKOFFSET>
+  <DbInfo.DBI_SHARED>
+    <summary>Logic: is the file opened shared</summary>
+  </DbInfo.DBI_SHARED>
+  <DbInfo.DBI_MEMOEXT>
+    <summary>String: Memo file extension</summary>
+  </DbInfo.DBI_MEMOEXT>
+  <DbInfo.DBI_MEMOHANDLE>
+    <summary>Intptr: The memo file's handle</summary>
+  </DbInfo.DBI_MEMOHANDLE>
+  <DbInfo.DBI_BLOB_HANDLE>
+    <summary>Intptr: The memo file's handle</summary>
+  </DbInfo.DBI_BLOB_HANDLE>
+  <DbInfo.DBI_MEMOBLOCKSIZE>
+    <summary>Number: The memo block size</summary>
+  </DbInfo.DBI_MEMOBLOCKSIZE>
+  <DbInfo.DBI_CODEPAGE>
+    <summary>Number: The Windows Codepage</summary>
+  </DbInfo.DBI_CODEPAGE>
+  <DbInfo.DBI_DOSCODEPAGE>
+    <summary>Number: The DOS Codepage</summary>
+  </DbInfo.DBI_DOSCODEPAGE>
+  <DbInfo.DBI_BLOB_RECOVER>
+    <summary></summary>
+  </DbInfo.DBI_BLOB_RECOVER>
+  <DbInfo.DBI_NEWINDEXLOCK>
+    <summary>Logic:  Use new index lock mechanism</summary>
+  </DbInfo.DBI_NEWINDEXLOCK>
+  <DbInfo.DBI_STRICTREAD>
+    <summary>Flag for avoiding RDD hierarchy and using a bigger buffer when indexing</summary>
+  </DbInfo.DBI_STRICTREAD>
+  <DbInfo.DBI_OPTIMIZE>
+    <summary>Flag for whether to use query optimization</summary>
+  </DbInfo.DBI_OPTIMIZE>
+  <DbInfo.DBI_AUTOOPEN>
+    <summary>Flag for automatically opening structural indexes</summary>
+  </DbInfo.DBI_AUTOOPEN>
+  <DbInfo.DBI_AUTOORDER>
+    <summary>Should the order be set to the first index when a structural index is opened</summary>
+  </DbInfo.DBI_AUTOORDER>
+  <DbInfo.DBI_AUTOSHARE>
+    <summary>When a network is detected, open the index shared, otherwise open exclusively</summary>
+  </DbInfo.DBI_AUTOSHARE>
+  <DbInfo.DBI_MEMOSTREAM>
+    <summary>Stream: The memo file's stream</summary>
+  </DbInfo.DBI_MEMOSTREAM>
+  <DbInfo.DBI_MEMOPATH>
+    <summary>Stream: The memo file name</summary>
+  </DbInfo.DBI_MEMOPATH>
+  <DbInfo.DBI_DB_VERSION>
+    <summary></summary>
+  </DbInfo.DBI_DB_VERSION>
+  <DbInfo.DBI_RDD_VERSION>
+    <summary></summary>
+  </DbInfo.DBI_RDD_VERSION>
+  <DbInfo.DBI_RDD_LIST>
+    <summary></summary>
+  </DbInfo.DBI_RDD_LIST>
+  <DbInfo.DBI_MEMOFIELD>
+    <summary></summary>
+  </DbInfo.DBI_MEMOFIELD>
+  <DbInfo.DBI_VO_MACRO_SYNTAX>
+    <summary></summary>
+  </DbInfo.DBI_VO_MACRO_SYNTAX>
+  <DbInfo.DBI_RDD_OBJECT>
+    <summary>Returns RDD Object.</summary>
+  </DbInfo.DBI_RDD_OBJECT>
+  <DbInfo.DBI_LOCKSCHEME>
+    <summary></summary>
+    <summary>Harbour extension: Locking scheme used by RDD</summary>
+  </DbInfo.DBI_LOCKSCHEME>
+  <DbInfo.DBI_ISREADONLY>
+    <summary>Harbour extension: Was the file opened readonly?</summary>
+  </DbInfo.DBI_ISREADONLY>
+  <DbInfo.DBI_ROLLBACK>
+    <summary>Harbour extension: Rollback changes made to current record</summary>
+  </DbInfo.DBI_ROLLBACK>
+  <DbInfo.DBI_PASSWORD>
+    <summary>Harbour extension: orkarea password </summary>
+  </DbInfo.DBI_PASSWORD>
+  <DbInfo.DBI_ISENCRYPTED>
+    <summary>Harbour extension: The database is encrypted</summary>
+  </DbInfo.DBI_ISENCRYPTED>
+  <DbInfo.DBI_MEMOTYPE>
+    <summary>Harbour extension: Type of MEMO file: DBT, SMT, FPT</summary>
+  </DbInfo.DBI_MEMOTYPE>
+  <DbInfo.DBI_SEPARATOR>
+    <summary>Harbour extension: The record separator (as a string)</summary>
+  </DbInfo.DBI_SEPARATOR>
+  <DbInfo.DBI_MEMOVERSION>
+    <summary>Harbour extension: sub version of memo file</summary>
+  </DbInfo.DBI_MEMOVERSION>
+  <DbInfo.DBI_TABLETYPE>
+    <summary>Harbour extension: Type of table file</summary>
+  </DbInfo.DBI_TABLETYPE>
+  <DbInfo.DBI_SCOPEDRELATION>
+    <summary>Harbour extension: Is given relation scoped</summary>
+  </DbInfo.DBI_SCOPEDRELATION>
+  <DbInfo.DBI_TRIGGER>
+    <summary>Harbour extension: Get/Set trigger function</summary>
+  </DbInfo.DBI_TRIGGER>
+  <DbInfo.DBI_OPENINFO>
+    <summary>Harbour extension: DBOPENINFO structure pointer</summary>
+  </DbInfo.DBI_OPENINFO>
+  <DbInfo.DBI_ENCRYPT>
+    <summary>Harbour extension: Encrypt table</summary>
+  </DbInfo.DBI_ENCRYPT>
+  <DbInfo.DBI_DECRYPT>
+    <summary>Harbour extension: Decrypt table</summary>
+  </DbInfo.DBI_DECRYPT>
+  <DbInfo.DBI_MEMOPACK>
+    <summary>Harbour extension: Pack memo file </summary>
+  </DbInfo.DBI_MEMOPACK>
+  <DbInfo.DBI_DIRTYREAD>
+    <summary>Harbour extension: Get/Set index dirty read flag</summary>
+  </DbInfo.DBI_DIRTYREAD>
+  <DbInfo.DBI_POSITIONED>
+    <summary>Harbour extension: Is cursor positioned to valid record</summary>
+  </DbInfo.DBI_POSITIONED>
+  <DbInfo.DBI_ISTEMPORARY>
+    <summary>Harbour extension: Is the table a temporary one?</summary>
+  </DbInfo.DBI_ISTEMPORARY>
+  <DbInfo.DBI_LOCKTEST>
+    <summary>Harbour extension: record / file lock test</summary>
+  </DbInfo.DBI_LOCKTEST>
+  <DbInfo.DBI_CODEPAGE_HB>
+    <summary>Harbour extension: Codepage used also memberd by VO and Vulcan</summary>
+  </DbInfo.DBI_CODEPAGE_HB>
+  <DbInfo.DBI_TRANSREC>
+    <summary>Harbour extension: Is it destination table of currently processed COPY TO or APPEND FROM operation?</summary>
+  </DbInfo.DBI_TRANSREC>
+  <DbInfo.DBI_SETHEADER>
+    <summary>Harbour extension: DBF header updating modes</summary>
+  </DbInfo.DBI_SETHEADER>
+  <DbInfo.DBI_RM_SUPPORTED>
+    <summary></summary>
+    <summary>Harbour record map extension: has WA RDD record map support?</summary>
+  </DbInfo.DBI_RM_SUPPORTED>
+  <DbInfo.DBI_RM_CREATE>
+    <summary>Harbour record map extension: create new empty work area record map</summary>
+  </DbInfo.DBI_RM_CREATE>
+  <DbInfo.DBI_RM_REMOVE>
+    <summary>Harbour record map extension: remove active work area record map</summary>
+  </DbInfo.DBI_RM_REMOVE>
+  <DbInfo.DBI_RM_CLEAR>
+    <summary>Harbour record map extension: remove all records from WA record map</summary>
+  </DbInfo.DBI_RM_CLEAR>
+  <DbInfo.DBI_RM_FILL>
+    <summary>Harbour record map extension: add all records to WA record map </summary>
+  </DbInfo.DBI_RM_FILL>
+  <DbInfo.DBI_RM_ADD>
+    <summary>Harbour record map extension: add record to work area record map </summary>
+  </DbInfo.DBI_RM_ADD>
+  <DbInfo.DBI_RM_DROP>
+    <summary>Harbour record map extension: remove record from work area record map</summary>
+  </DbInfo.DBI_RM_DROP>
+  <DbInfo.DBI_RM_TEST>
+    <summary>Harbour record map extension: test if record is set in WA record map</summary>
+  </DbInfo.DBI_RM_TEST>
+  <DbInfo.DBI_RM_COUNT>
+    <summary>Harbour record map extension: number of records set in record map </summary>
+  </DbInfo.DBI_RM_COUNT>
+  <DbInfo.DBI_RM_HANDLE>
+    <summary>Harbour record map extension: get/set record map filter handle</summary>
+  </DbInfo.DBI_RM_HANDLE>
+  <DbInfo.DBI_QUERY>
+    <summary>if area represents result of a query, obtain expression of this query </summary>
+  </DbInfo.DBI_QUERY>
+  <DbInfo.DBI_REFRESH>
+    <summary>Refresh the current data in the SQLRDD</summary>
+  </DbInfo.DBI_REFRESH>
+  <DbInfo.BLOB_INFO_HANDLE>
+    <summary></summary>
+  </DbInfo.BLOB_INFO_HANDLE>
+  <DbInfo.BLOB_FILE_RECOVER>
+    <summary></summary>
+  </DbInfo.BLOB_FILE_RECOVER>
+  <DbInfo.BLOB_FILE_INTEGRITY>
+    <summary></summary>
+  </DbInfo.BLOB_FILE_INTEGRITY>
+  <DbInfo.BLOB_OFFSET>
+    <summary></summary>
+  </DbInfo.BLOB_OFFSET>
+  <DbInfo.BLOB_POINTER>
+    <summary></summary>
+  </DbInfo.BLOB_POINTER>
+  <DbInfo.BLOB_LEN>
+    <summary></summary>
+  </DbInfo.BLOB_LEN>
+  <DbInfo.BLOB_TYPE>
+    <summary></summary>
+  </DbInfo.BLOB_TYPE>
+  <DbInfo.BLOB_EXPORT>
+    <summary></summary>
+  </DbInfo.BLOB_EXPORT>
+  <DbInfo.BLOB_ROOT_UNLOCK>
+    <summary></summary>
+  </DbInfo.BLOB_ROOT_UNLOCK>
+  <DbInfo.BLOB_ROOT_PUT>
+    <summary></summary>
+  </DbInfo.BLOB_ROOT_PUT>
+  <DbInfo.BLOB_ROOT_GET>
+    <summary></summary>
+  </DbInfo.BLOB_ROOT_GET>
+  <DbInfo.BLOB_ROOT_LOCK>
+    <summary></summary>
+  </DbInfo.BLOB_ROOT_LOCK>
+  <DbInfo.BLOB_IMPORT>
+    <summary></summary>
+  </DbInfo.BLOB_IMPORT>
+  <DbInfo.BLOB_DIRECT_PUT>
+    <summary></summary>
+  </DbInfo.BLOB_DIRECT_PUT>
+  <DbInfo.BLOB_DIRECT_GET>
+    <summary></summary>
+  </DbInfo.BLOB_DIRECT_GET>
+  <DbInfo.BLOB_GET>
+    <summary></summary>
+  </DbInfo.BLOB_GET>
+  <DbInfo.BLOB_DIRECT_EXPORT>
+    <summary></summary>
+  </DbInfo.BLOB_DIRECT_EXPORT>
+  <DbInfo.BLOB_DIRECT_IMPORT>
+    <summary></summary>
+  </DbInfo.BLOB_DIRECT_IMPORT>
+  <DbInfo.BLOB_NMODE>
+    <summary></summary>
+  </DbInfo.BLOB_NMODE>
+  <DbInfo.BLOB_EXPORT_APPEND>
+    <summary></summary>
+  </DbInfo.BLOB_EXPORT_APPEND>
+  <DbInfo.BLOB_EXPORT_OVERWRITE>
+    <summary></summary>
+  </DbInfo.BLOB_EXPORT_OVERWRITE>
+  <DbInfo.BLOB_DIRECT_TYPE>
+    <summary></summary>
+  </DbInfo.BLOB_DIRECT_TYPE>
+  <DbInfo.BLOB_DIRECT_LEN>
+    <summary></summary>
+  </DbInfo.BLOB_DIRECT_LEN>
+  <DbInfo.BLOB_USER>
+    <summary></summary>
+  </DbInfo.BLOB_USER>
+  <DbInfo.DBI_USER>
+    <summary>Start of user defined DBI values</summary>
+  </DbInfo.DBI_USER>
+  <DbInfo.DBI_RL_AND>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_AND>
+  <DbInfo.DBI_RL_CLEAR>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_CLEAR>
+  <DbInfo.DBI_RL_COUNT>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_COUNT>
+  <DbInfo.DBI_RL_DESTROY>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_DESTROY>
+  <DbInfo.DBI_RL_EXFILTER>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_EXFILTER>
+  <DbInfo.DBI_RL_GETFILTER>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_GETFILTER>
+  <DbInfo.DBI_RL_HASMAYBE>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_HASMAYBE>
+  <DbInfo.DBI_RL_LEN>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_LEN>
+  <DbInfo.DBI_RL_MAYBEEVAL>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_MAYBEEVAL>
+  <DbInfo.DBI_RL_NEW>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_NEW>
+  <DbInfo.DBI_RL_NEWDUP>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_NEWDUP>
+  <DbInfo.DBI_RL_NEWQUERY>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_NEWQUERY>
+  <DbInfo.DBI_RL_NEXTRECNO>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_NEXTRECNO>
+  <DbInfo.DBI_RL_NOT>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_NOT>
+  <DbInfo.DBI_RL_OR>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_OR>
+  <DbInfo.DBI_RL_PREVRECNO>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_PREVRECNO>
+  <DbInfo.DBI_RL_SET>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_SET>
+  <DbInfo.DBI_RL_SETFILTER>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_SETFILTER>
+  <DbInfo.DBI_RL_TEST>
+    <summary>Clipmore extension: </summary>
+  </DbInfo.DBI_RL_TEST>
+  <DbInfo.DBI_RL_HITS>
+    <summary>Recordlist extension: </summary>
+  </DbInfo.DBI_RL_HITS>
+  <DbInfo.DBI_RL_MISSES>
+    <summary>Recordlist extension: </summary>
+  </DbInfo.DBI_RL_MISSES>
+  <DbInfo.DBI_RL_ENABLE>
+    <summary>Recordlist extension: </summary>
+  </DbInfo.DBI_RL_ENABLE>
+  <DbSortFlags>
+    <summary>Flags that describe how a DbSort operation can be done.</summary>
+  </DbSortFlags>
+  <DbSortFlags.Default>
+    <summary>An ascending sort (default)   </summary>
+  </DbSortFlags.Default>
+  <DbSortFlags.Case>
+    <summary> A case-insensitive sort        </summary>
+  </DbSortFlags.Case>
+  <DbSortFlags.Numeric>
+    <summary>A sort with printable numerics        </summary>
+  </DbSortFlags.Numeric>
+  <DbSortFlags.Ascii>
+    <summary>A sort for ASCII (not nation-dependent)</summary>
+  </DbSortFlags.Ascii>
+  <DbSortFlags.Long>
+    <summary>A sort with long integer values        </summary>
+  </DbSortFlags.Long>
+  <DbSortFlags.Descending>
+    <summary>A descending sort        </summary>
+  </DbSortFlags.Descending>
+  <DbFieldInfo>
+    <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.</summary>
+    <remarks>
+      <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbFieldInfo." prefix.</note>
+    </remarks>
+  </DbFieldInfo>
+  <DbFieldInfo.DBS_NAME>
+    <summary>Returns the name of the field.</summary>
+  </DbFieldInfo.DBS_NAME>
+  <DbFieldInfo.DBS_TYPE>
+    <summary>Returns the data type of the field. This is a single character string such as 'C' or 'N'.</summary>
+  </DbFieldInfo.DBS_TYPE>
+  <DbFieldInfo.DBS_LEN>
+    <summary>Returns the length of the field.</summary>
+  </DbFieldInfo.DBS_LEN>
+  <DbFieldInfo.DBS_ALEN>
+    <summary>Returns the length of the FieldInfo array.</summary>
+  </DbFieldInfo.DBS_ALEN>
+  <DbFieldInfo.DBS_DEC>
+    <summary> Returns the number of decimal places for the field. </summary>
+  </DbFieldInfo.DBS_DEC>
+  <DbFieldInfo.DBS_ALIAS>
+    <summary>Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME).  </summary>
+  </DbFieldInfo.DBS_ALIAS>
+  <DbFieldInfo.DBS_FLAGS>
+    <summary>Returns the field flags for a field (a value from the DBFFieldFlags enum)  </summary>
+  </DbFieldInfo.DBS_FLAGS>
+  <DbFieldInfo.DBS_ISNULL>
+    <summary>Harbour extension: Returns the flag that indicates if a field is Nullable.</summary>
+  </DbFieldInfo.DBS_ISNULL>
+  <DbFieldInfo.DBS_COUNTER>
+    <summary>Harbour extension: Returns the next available value for autoincrement fields.</summary>
+  </DbFieldInfo.DBS_COUNTER>
+  <DbFieldInfo.DBS_STEP>
+    <summary>Harbour extension: Returns the step value for autoincrement fields.</summary>
+  </DbFieldInfo.DBS_STEP>
+  <DbFieldInfo.DBS_CAPTION>
+    <summary>Foxpro extension: Returns the field caption.</summary>
+  </DbFieldInfo.DBS_CAPTION>
+  <DbFieldInfo.DBS_COLUMNINFO>
+    <summary>VFP / SQL extension: Returns the object with the complete column information.</summary>
+  </DbFieldInfo.DBS_COLUMNINFO>
+  <DbFieldInfo.DBS_DESCRIPTION>
+    <summary>VFP / SQL extension: Returns a string describing the object (the comment).</summary>
+  </DbFieldInfo.DBS_DESCRIPTION>
+  <DbFieldInfo.DBS_BLANK>
+    <summary>X# Extension: returns a blank value for the field.</summary>
+  </DbFieldInfo.DBS_BLANK>
+  <DbFieldInfo.DBS_BLOB_GET>
+    <summary>Gets a BLOB value.</summary>
+  </DbFieldInfo.DBS_BLOB_GET>
+  <DbFieldInfo.DBS_BLOB_TYPE>
+    <summary>Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. This returns type type of the BLOB as a single character string.</summary>
+  </DbFieldInfo.DBS_BLOB_TYPE>
+  <DbFieldInfo.DBS_BLOB_LEN>
+    <summary>Returns the length of the BLOB data in a memo field as an unsigned long integer.</summary>
+  </DbFieldInfo.DBS_BLOB_LEN>
+  <DbFieldInfo.DBS_BLOB_OFFSET>
+    <summary></summary>
+  </DbFieldInfo.DBS_BLOB_OFFSET>
+  <DbFieldInfo.DBS_BLOB_POINTER>
+    <summary>Returns a numeric pointer to the BLOB data associated with a memo field.</summary>
+  </DbFieldInfo.DBS_BLOB_POINTER>
+  <DbFieldInfo.DBS_BLOB_DIRECT_TYPE>
+    <summary>Returns the type of data in a BLOB as an unsigned long integer, without referencing a particular memo field.   With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),   or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).  </summary>
+  </DbFieldInfo.DBS_BLOB_DIRECT_TYPE>
+  <DbFieldInfo.DBS_BLOB_DIRECT_LEN>
+    <summary>Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.   With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),   or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).  </summary>
+  </DbFieldInfo.DBS_BLOB_DIRECT_LEN>
+  <DbFieldInfo.DBS_STRUCT>
+    <summary>Return the RDD FieldInfo structure</summary>
+  </DbFieldInfo.DBS_STRUCT>
+  <DbFieldInfo.DBS_PROPERTIES>
+    <summary>Returns the number of properties defined for a field.</summary>
+  </DbFieldInfo.DBS_PROPERTIES>
+  <DbFieldInfo.DBS_USER>
+    <summary>Start of user defined FieldInfo values.</summary>
+  </DbFieldInfo.DBS_USER>
+  <DbFieldType>
+    <summary>This enum specifies the various field types that can appear in DBF files.</summary>
+  </DbFieldType>
+  <DbFieldType.Character>
+    <summary>'C', uses len and dec</summary>
+  </DbFieldType.Character>
+  <DbFieldType.Date>
+    <summary>'D', 8 bytes</summary>
+  </DbFieldType.Date>
+  <DbFieldType.Logic>
+    <summary>'L', 1 byte</summary>
+  </DbFieldType.Logic>
+  <DbFieldType.Memo>
+    <summary>'M', 4 or 10 bytes see Length</summary>
+  </DbFieldType.Memo>
+  <DbFieldType.Number>
+    <summary>'N', uses len and dec</summary>
+  </DbFieldType.Number>
+  <DbFieldType.VOObject>
+    <summary>'O', is anybody using this ?</summary>
+  </DbFieldType.VOObject>
+  <DbFieldType.Blob>
+    <summary>'W' = Blob 4 or 10 bytes VFP type</summary>
+  </DbFieldType.Blob>
+  <DbFieldType.Currency>
+    <summary> 'Y'	VFP Type 8 byte </summary>
+  </DbFieldType.Currency>
+  <DbFieldType.Double>
+    <summary>'B'	VFP Type, also '8'</summary>
+  </DbFieldType.Double>
+  <DbFieldType.DateTime>
+    <summary>'T'	VFP Type can be 4 or 8 bytes</summary>
+  </DbFieldType.DateTime>
+  <DbFieldType.Float>
+    <summary>'F'	VFP Type, uses len and dec</summary>
+  </DbFieldType.Float>
+  <DbFieldType.General>
+    <summary>'G'    VFP type Ole 4 or 10 bytes </summary>
+  </DbFieldType.General>
+  <DbFieldType.Integer>
+    <summary>'I'	VFP Type , may be autoInc</summary>
+  </DbFieldType.Integer>
+  <DbFieldType.Picture>
+    <summary>'P'	VFP Type, 4 or 10 bytes</summary>
+  </DbFieldType.Picture>
+  <DbFieldType.VarBinary>
+    <summary>'Q'    VFP Type=, between 1 and 255 </summary>
+  </DbFieldType.VarBinary>
+  <DbFieldType.VarChar>
+    <summary>'V'    VFP Type </summary>
+  </DbFieldType.VarChar>
+  <DbFieldType.NullFlags>
+    <summary>'0'    VFP Type, contains Null Flags</summary>
+  </DbFieldType.NullFlags>
+  <DbTransInfoFlags>
+    <summary>Flags that describe how a DbTrans operation can be done.</summary>
+  </DbTransInfoFlags>
+  <DbTransInfoFlags.None>
+    <summary>Default</summary>
+  </DbTransInfoFlags.None>
+  <DbTransInfoFlags.SameStructure>
+    <summary>Both this work area and the destination work area have identical row structures (i.e., all columns match).</summary>
+  </DbTransInfoFlags.SameStructure>
+  <DbTransInfoFlags.CanPutRec>
+    <summary>The RDD has the ability to transfer an entire row.</summary>
+  </DbTransInfoFlags.CanPutRec>
+  <DBFFieldFlags>
+    <summary>DBF Field flags.</summary>
+  </DBFFieldFlags>
+  <DBFFieldFlags.System>
+    <summary>System Field ?</summary>
+  </DBFFieldFlags.System>
+  <DBFFieldFlags.Nullable>
+    <summary>Field is Nullable</summary>
+  </DBFFieldFlags.Nullable>
+  <DBFFieldFlags.Binary>
+    <summary>Field is Binary</summary>
+  </DBFFieldFlags.Binary>
+  <DBFFieldFlags.AutoIncrement>
+    <summary>Field is AutoIncrement</summary>
+  </DBFFieldFlags.AutoIncrement>
+  <DBFFieldFlags.Compressed>
+    <summary>Field is Compressed (not used yet, for compatibility with Harbour)</summary>
+  </DBFFieldFlags.Compressed>
+  <DBFFieldFlags.Encrypted>
+    <summary>Field is Encrypted (not used yet, for compatibility with Harbour)</summary>
+  </DBFFieldFlags.Encrypted>
+  <DBFFieldFlags.Unicode>
+    <summary>Field contains Unicode text</summary>
+  </DBFFieldFlags.Unicode>
+  <DbNotificationType>
+    <summary>Enum that described the possible Notification messages that are sent to clients of Workareas</summary>
+    <remarks>Clients that want to subscribe to these notifications can register themselves by calling DbRegisterClient() and must implement IDbNotify().</remarks>
+  </DbNotificationType>
+  <DbNotificationType.FileCreate>
+    <summary>This message is sent after a file was created. The Data parameter is the name of the file that was opened.</summary>
+  </DbNotificationType.FileCreate>
+  <DbNotificationType.FileOpen>
+    <summary>This message is sent after a file was opened. The Data parameter is the name of the file that was opened.</summary>
+  </DbNotificationType.FileOpen>
+  <DbNotificationType.FileClose>
+    <summary>This message is sent after a file is closed. The Data parameter is the name of the file that was closed.</summary>
+  </DbNotificationType.FileClose>
+  <DbNotificationType.IndexCreate>
+    <summary>This message is sent after an index was created. The Data parameter is the name of the file that was opened.</summary>
+  </DbNotificationType.IndexCreate>
+  <DbNotificationType.IndexDelete>
+    <summary>This message is sent after an index was deleted. The Data parameter is the name of the file that was opened.</summary>
+  </DbNotificationType.IndexDelete>
+  <DbNotificationType.IndexOpen>
+    <summary>This message is sent after an index was opened. The Data parameter is the name of the file that was opened.</summary>
+  </DbNotificationType.IndexOpen>
+  <DbNotificationType.IndexClose>
+    <summary>This message is sent after an index was closed. The Data parameter is the name of the file that was closed.</summary>
+  </DbNotificationType.IndexClose>
+  <DbNotificationType.BeforeBulkOperation>
+    <summary>This message is sent before a bulk operation is started. The Data parameter is a description of the operation.</summary>
+  </DbNotificationType.BeforeBulkOperation>
+  <DbNotificationType.AfterBulkOperation>
+    <summary>This message is sent after a bulk operation was completed. The Data parameter is a description of the operation.</summary>
+  </DbNotificationType.AfterBulkOperation>
+  <DbNotificationType.OrderChanged>
+    <summary>This message is sent after an order was changed. The Data parameter is the name of the new order.</summary>
+  </DbNotificationType.OrderChanged>
+  <DbNotificationType.BeforeFieldUpdate>
+    <summary>This message is sent before a field is updated The Data parameter is the fieldname of the field that was updated.</summary>
+  </DbNotificationType.BeforeFieldUpdate>
+  <DbNotificationType.AfterFieldUpdate>
+    <summary>This message is sent after a field was updated The Data parameter is the fieldname of the field that was updated.</summary>
+  </DbNotificationType.AfterFieldUpdate>
+  <DbNotificationType.BeforeMove>
+    <summary>This message is sent before the record pointer is moved. The Data parameter indicates the reason for the move</summary>
+  </DbNotificationType.BeforeMove>
+  <DbNotificationType.AfterMove>
+    <summary>This message is sent after the record pointer was moved. The Data parameter indicates the reason for the move</summary>
+  </DbNotificationType.AfterMove>
+  <DbNotificationType.RecordAppended>
+    <summary>This message is sent after a new record was appended. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.RecordAppended>
+  <DbNotificationType.AfterRecordDeleted>
+    <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.AfterRecordDeleted>
+  <DbNotificationType.RecordDeleted>
+    <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.RecordDeleted>
+  <DbNotificationType.AfterRecordRecalled>
+    <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.AfterRecordRecalled>
+  <DbNotificationType.RecordRecalled>
+    <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.RecordRecalled>
+  <DbNotificationType.RecordLocked>
+    <summary>This message is sent after a record was locked. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.RecordLocked>
+  <DbNotificationType.RecordUnLocked>
+    <summary>This message is sent after a record was unlocked. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.RecordUnLocked>
+  <DbNotificationType.FileCommit>
+    <summary>This message is sent after a Workarea was commited. The Data parameter is the file name of area.</summary>
+  </DbNotificationType.FileCommit>
+  <DbNotificationType.BeforeRecordDeleted>
+    <summary>This message is sent before a record is deleted. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.BeforeRecordDeleted>
+  <DbNotificationType.BeforeRecordRecalled>
+    <summary>This message is sent before a record is recalled. The Data parameter is the record number of the record.</summary>
+  </DbNotificationType.BeforeRecordRecalled>
+  <DbNotificationType.OperationFailed>
+    <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
+  </DbNotificationType.OperationFailed>
+  <DbRecordInfo>
+    <summary>
+      This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+    </summary>
+    <remarks>
+      <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbRecordInfo." prefix.</note>
+    </remarks>
+  </DbRecordInfo>
+
+  <DbRecordInfo.DBRI_DELETED>
+    <summary>Gets the deleted flag for the record.</summary>
+  </DbRecordInfo.DBRI_DELETED>
+  <DbRecordInfo.DBRI_LOCKED>
+    <summary>Gets the locked state for the record. You may specify a specific record.</summary>
+  </DbRecordInfo.DBRI_LOCKED>
+  <DbRecordInfo.DBRI_RECSIZE>
+    <summary>Gets the record size. You may specify a specific record.</summary>
+  </DbRecordInfo.DBRI_RECSIZE>
+  <DbRecordInfo.DBRI_RECNO>
+    <summary>Gets the record number.</summary>
+  </DbRecordInfo.DBRI_RECNO>
+  <DbRecordInfo.DBRI_UPDATED>
+    <summary>Gets/Sets a boolean indicating if the current record is updated.</summary>
+  </DbRecordInfo.DBRI_UPDATED>
+  <DbRecordInfo.DBRI_BUFFPTR>
+    <summary>Gets the buffer used by the RDD system for the record data. This is an array of bytes in X#.</summary>
+  </DbRecordInfo.DBRI_BUFFPTR>
+  <DbRecordInfo.DBRI_ENCRYPTED>
+    <summary>Harbour: Is the current record encrypted?</summary>
+  </DbRecordInfo.DBRI_ENCRYPTED>
+  <DbRecordInfo.DBRI_RAWMEMOS>
+    <summary>Harbour extension: Return all the memos in the current record as one string.</summary>
+  </DbRecordInfo.DBRI_RAWMEMOS>
+  <DbRecordInfo.DBRI_RAWDATA>
+    <summary>Harbour extension: Return the current record and all the memos in the current record as one string.</summary>
+  </DbRecordInfo.DBRI_RAWDATA>
+  <DbRecordInfo.DBRI_RAWRECORD>
+    <summary>Harbour extension: Return the current record as one string.</summary>
+  </DbRecordInfo.DBRI_RAWRECORD>
+  <DbRecordInfo.DBRI_USER>
+    <summary>Offset of user defined values.</summary>
+  </DbRecordInfo.DBRI_USER>
+  <RddInfo>
+    <summary>
+      This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
+      <note type="tip">
+        These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
+      </note>
+    </summary>
+    <seealso cref='M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)' >RddInfo()</seealso>
+    <remarks>Most of these ENUMs come from Harbour and have not been implemented yet. </remarks>
+
+  </RddInfo>
+  <RddInfo.RDDI_ISDBF>
+    <summary>Does this RDD support DBFs?</summary>
+  </RddInfo.RDDI_ISDBF>
+  <RddInfo.RDDI_CANPUTREC>
+    <summary>Can this RDD Put Records?</summary>
+  </RddInfo.RDDI_CANPUTREC>
+  <RddInfo.RDDI_DELIMITER>
+    <summary>The field delimiter (as a string)</summary>
+  </RddInfo.RDDI_DELIMITER>
+  <RddInfo.RDDI_SEPARATOR>
+    <summary>The record separator (as a string) </summary>
+  </RddInfo.RDDI_SEPARATOR>
+  <RddInfo.RDDI_TABLEEXT>
+    <summary>Default data file's file extension</summary>
+  </RddInfo.RDDI_TABLEEXT>
+  <RddInfo.RDDI_MEMOEXT>
+    <summary>Default memo file's file extension </summary>
+  </RddInfo.RDDI_MEMOEXT>
+  <RddInfo.RDDI_ORDBAGEXT>
+    <summary>Default multi tag index's file extension</summary>
+  </RddInfo.RDDI_ORDBAGEXT>
+  <RddInfo.RDDI_ORDEREXT>
+    <summary>default single tag index's file extension</summary>
+  </RddInfo.RDDI_ORDEREXT>
+  <RddInfo.RDDI_ORDSTRUCTEXT>
+    <summary>default single tag index's file extension</summary>
+  </RddInfo.RDDI_ORDSTRUCTEXT>
+  <RddInfo.RDDI_LOCAL>
+    <summary>Local file access?</summary>
+  </RddInfo.RDDI_LOCAL>
+  <RddInfo.RDDI_REMOTE>
+    <summary>Remote table access? </summary>
+  </RddInfo.RDDI_REMOTE>
+  <RddInfo.RDDI_CONNECTION>
+    <summary>Get/Set default connection</summary>
+  </RddInfo.RDDI_CONNECTION>
+  <RddInfo.RDDI_TABLETYPE>
+    <summary>Type of table file</summary>
+  </RddInfo.RDDI_TABLETYPE>
+  <RddInfo.RDDI_MEMOTYPE>
+    <summary>Type of MEMO file DB_MEMO_*: DBT, SMT, FPT(FP,SIX3,FLEXIII) </summary>
+  </RddInfo.RDDI_MEMOTYPE>
+  <RddInfo.RDDI_LARGEFILE>
+    <summary>Is large file size (>=4GB) supported</summary>
+  </RddInfo.RDDI_LARGEFILE>
+  <RddInfo.RDDI_LOCKSCHEME>
+    <summary>Locking scheme used by RDD</summary>
+  </RddInfo.RDDI_LOCKSCHEME>
+  <RddInfo.RDDI_RECORDMAP>
+    <summary>Does RDD support record map functionality?</summary>
+  </RddInfo.RDDI_RECORDMAP>
+  <RddInfo.RDDI_ENCRYPTION>
+    <summary>Does RDD support encryption</summary>
+  </RddInfo.RDDI_ENCRYPTION>
+  <RddInfo.RDDI_TRIGGER>
+    <summary>Get/Set default trigger function</summary>
+  </RddInfo.RDDI_TRIGGER>
+  <RddInfo.RDDI_AUTOLOCK>
+    <summary>automatic locking on update</summary>
+  </RddInfo.RDDI_AUTOLOCK>
+  <RddInfo.RDDI_STRUCTORD>
+    <summary>Are structural indexes supported</summary>
+  </RddInfo.RDDI_STRUCTORD>
+  <RddInfo.RDDI_STRICTREAD>
+    <summary>Flag for avoiding RDD hierarchy and using a bigger buffer when indexing</summary>
+  </RddInfo.RDDI_STRICTREAD>
+  <RddInfo.RDDI_STRICTSTRUCT>
+    <summary>Flag for strict structural order checking</summary>
+  </RddInfo.RDDI_STRICTSTRUCT>
+  <RddInfo.RDDI_OPTIMIZE>
+    <summary>Flag for whether to use query optimization</summary>
+  </RddInfo.RDDI_OPTIMIZE>
+  <RddInfo.RDDI_FORCEOPT>
+    <summary>Flag for forcing linear optimization</summary>
+  </RddInfo.RDDI_FORCEOPT>
+  <RddInfo.RDDI_AUTOOPEN>
+    <summary>Flag for automatically opening structural indexes</summary>
+  </RddInfo.RDDI_AUTOOPEN>
+  <RddInfo.RDDI_AUTOORDER>
+    <summary>When a structural index is opened, the order to be set</summary>
+  </RddInfo.RDDI_AUTOORDER>
+  <RddInfo.RDDI_AUTOSHARE>
+    <summary>When a network is detected, open the index shared, otherwise open exclusively</summary>
+  </RddInfo.RDDI_AUTOSHARE>
+  <RddInfo.RDDI_MULTITAG>
+    <summary>Does RDD support multi tag in index file</summary>
+  </RddInfo.RDDI_MULTITAG>
+  <RddInfo.RDDI_SORTRECNO>
+    <summary>Is record number part of key in sorting</summary>
+  </RddInfo.RDDI_SORTRECNO>
+  <RddInfo.RDDI_MULTIKEY>
+    <summary>Does custom orders support repeated keys?</summary>
+  </RddInfo.RDDI_MULTIKEY>
+  <RddInfo.RDDI_MEMOBLOCKSIZE>
+    <summary>Memo File's block size</summary>
+  </RddInfo.RDDI_MEMOBLOCKSIZE>
+  <RddInfo.RDDI_MEMOVERSION>
+    <summary>sub version of memo file</summary>
+  </RddInfo.RDDI_MEMOVERSION>
+  <RddInfo.RDDI_MEMOGCTYPE>
+    <summary>type of garbage collector used by GC</summary>
+  </RddInfo.RDDI_MEMOGCTYPE>
+  <RddInfo.RDDI_MEMOREADLOCK>
+    <summary>use read lock in memo file access</summary>
+  </RddInfo.RDDI_MEMOREADLOCK>
+  <RddInfo.RDDI_MEMOREUSE>
+    <summary>reuse free space on write</summary>
+  </RddInfo.RDDI_MEMOREUSE>
+  <RddInfo.RDDI_BLOB_SUPPORT>
+    <summary>can support BLOB files directly</summary>
+  </RddInfo.RDDI_BLOB_SUPPORT>
+  <RddInfo.RDDI_PENDINGTRIGGER>
+    <summary>set pending trigger for next open operation</summary>
+  </RddInfo.RDDI_PENDINGTRIGGER>
+  <RddInfo.RDDI_PENDINGPASSWORD>
+    <summary>set pending password for next open operation</summary>
+  </RddInfo.RDDI_PENDINGPASSWORD>
+  <RddInfo.RDDI_PASSWORD>
+    <summary>Get/Set default password</summary>
+  </RddInfo.RDDI_PASSWORD>
+  <RddInfo.RDDI_LOCKRETRY>
+    <summary>Get/Set record and file lock timeout value</summary>
+  </RddInfo.RDDI_LOCKRETRY>
+  <RddInfo.RDDI_DIRTYREAD>
+    <summary>Get/Set index dirty read flag</summary>
+  </RddInfo.RDDI_DIRTYREAD>
+  <RddInfo.RDDI_INDEXPAGESIZE>
+    <summary>Get/Set default index page size</summary>
+  </RddInfo.RDDI_INDEXPAGESIZE>
+  <RddInfo.RDDI_DECIMALS>
+    <summary>Get/Set default number of decimal places for numeric fields if it's undefined</summary>
+  </RddInfo.RDDI_DECIMALS>
+  <RddInfo.RDDI_SETHEADER>
+    <summary>DBF header updating modes</summary>
+  </RddInfo.RDDI_SETHEADER>
+  <RddInfo.RDDI_CONNECT>
+    <summary>connect to database</summary>
+  </RddInfo.RDDI_CONNECT>
+  <RddInfo.RDDI_DISCONNECT>
+    <summary>disconnect from database</summary>
+  </RddInfo.RDDI_DISCONNECT>
+  <RddInfo.RDDI_EXECUTE>
+    <summary>execute SQL statement </summary>
+  </RddInfo.RDDI_EXECUTE>
+  <RddInfo.RDDI_ERROR>
+    <summary>error number</summary>
+  </RddInfo.RDDI_ERROR>
+  <RddInfo.RDDI_ERRORNO>
+    <summary>error description</summary>
+  </RddInfo.RDDI_ERRORNO>
+  <RddInfo.RDDI_INSERTID>
+    <summary>last auto insert ID</summary>
+  </RddInfo.RDDI_INSERTID>
+  <RddInfo.RDDI_AFFECTEDROWS>
+    <summary>number of affected rows after UPDATE</summary>
+  </RddInfo.RDDI_AFFECTEDROWS>
+  <RddInfo.RDDI_QUERY>
+    <summary>last executed query</summary>
+  </RddInfo.RDDI_QUERY>
+  <DbOrder_Info>
+    <summary>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.</summary>
+    <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
+    <remarks>
+      The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.
+      <note type="tip">
+        These enums are also available as DEFINES and can therefore also be used without the "DbOrderInfo." prefix.
+      </note>
+    </remarks>
+
+  </DbOrder_Info>
+  <DbOrder_Info.DBOI_CONDITION>
+    <summary>String: The order's conditional expression</summary>
+  </DbOrder_Info.DBOI_CONDITION>
+  <DbOrder_Info.DBOI_EXPRESSION>
+    <summary>String: The order's key expression</summary>
+  </DbOrder_Info.DBOI_EXPRESSION>
+  <DbOrder_Info.DBOI_POSITION>
+    <summary>Number: The current key position in scope and filter</summary>
+  </DbOrder_Info.DBOI_POSITION>
+  <DbOrder_Info.DBOI_KEYGOTO>
+    <summary>Alias for DBOI_POSITION</summary>
+  </DbOrder_Info.DBOI_KEYGOTO>
+  <DbOrder_Info.DBOI_KEYNO>
+    <summary>Alias for DBOI_POSITION</summary>
+  </DbOrder_Info.DBOI_KEYNO>
+  <DbOrder_Info.DBOI_RECNO>
+    <summary>Number: The current key position disregarding filters</summary>
+  </DbOrder_Info.DBOI_RECNO>
+  <DbOrder_Info.DBOI_NAME>
+    <summary>String: The name of the order</summary>
+  </DbOrder_Info.DBOI_NAME>
+  <DbOrder_Info.DBOI_NUMBER>
+    <summary>Number: The numeric position in the list of orders</summary>
+  </DbOrder_Info.DBOI_NUMBER>
+  <DbOrder_Info.DBOI_BAGNAME>
+    <summary>String: The name of the file containing this order</summary>
+  </DbOrder_Info.DBOI_BAGNAME>
+  <DbOrder_Info.DBOI_INDEXNAME>
+    <summary>Alias for DBOI_BAGNAME</summary>
+  </DbOrder_Info.DBOI_INDEXNAME>
+  <DbOrder_Info.DBOI_BAGEXT>
+    <summary>String: The extension of the file containing this order</summary>
+  </DbOrder_Info.DBOI_BAGEXT>
+  <DbOrder_Info.DBOI_INDEXEXT>
+    <summary>Alias for DBOI_BAGEXT</summary>
+  </DbOrder_Info.DBOI_INDEXEXT>
+  <DbOrder_Info.DBOI_DEFBAGEXT>
+    <summary>String: The defauly index extension </summary>
+  </DbOrder_Info.DBOI_DEFBAGEXT>
+  <DbOrder_Info.DBOI_COLLATION>
+    <summary>FoxPro CDX Index collation</summary>
+  </DbOrder_Info.DBOI_COLLATION>
+  <DbOrder_Info.DBOI_FULLPATH>
+    <summary>String: The full path to the index file (Bag)</summary>
+  </DbOrder_Info.DBOI_FULLPATH>
+  <DbOrder_Info.DBOI_FILEHANDLE>
+    <summary>IntPtr: The handle of the index</summary>
+  </DbOrder_Info.DBOI_FILEHANDLE>
+  <DbOrder_Info.DBOI_ISDESC>
+    <summary>Logic : Is the order DESCENDing? </summary>
+  </DbOrder_Info.DBOI_ISDESC>
+  <DbOrder_Info.DBOI_ISCOND>
+    <summary>Logic : Does the order have a FOR condition?</summary>
+  </DbOrder_Info.DBOI_ISCOND>
+  <DbOrder_Info.DBOI_KEYTYPE>
+    <summary>The type of the order's key  (usualType value)</summary>
+  </DbOrder_Info.DBOI_KEYTYPE>
+  <DbOrder_Info.DBOI_KEYSIZE>
+    <summary>Number: The length of the order's key</summary>
+  </DbOrder_Info.DBOI_KEYSIZE>
+  <DbOrder_Info.DBOI_KEYCOUNT>
+    <summary>Number: The count of keys in scope and filter</summary>
+  </DbOrder_Info.DBOI_KEYCOUNT>
+  <DbOrder_Info.DBOI_SETCODEBLOCK>
+    <summary>Block : The codeblock that produces the key </summary>
+  </DbOrder_Info.DBOI_SETCODEBLOCK>
+  <DbOrder_Info.DBOI_KEYDEC>
+    <summary>Number: The # of decimals in a numeric key </summary>
+  </DbOrder_Info.DBOI_KEYDEC>
+  <DbOrder_Info.DBOI_HPLOCKING>
+    <summary>Logic : Using High Performance locking for this order?</summary>
+  </DbOrder_Info.DBOI_HPLOCKING>
+  <DbOrder_Info.DBOI_LOCKOFFSET>
+    <summary>Number: The offset used for logical locking </summary>
+  </DbOrder_Info.DBOI_LOCKOFFSET>
+  <DbOrder_Info.DBOI_KEYADD>
+    <summary>Logic: Custom Index: Add key  </summary>
+  </DbOrder_Info.DBOI_KEYADD>
+  <DbOrder_Info.DBOI_KEYDELETE>
+    <summary>Logic: Custom Index: Delete key </summary>
+  </DbOrder_Info.DBOI_KEYDELETE>
+  <DbOrder_Info.DBOI_KEYVAL>
+    <summary>Object: The value of the current key </summary>
+  </DbOrder_Info.DBOI_KEYVAL>
+  <DbOrder_Info.DBOI_SCOPETOP>
+    <summary>Object: Get or Set the scope top    </summary>
+  </DbOrder_Info.DBOI_SCOPETOP>
+  <DbOrder_Info.DBOI_SCOPEBOTTOM>
+    <summary>Object: Get or Set the scope bottom</summary>
+  </DbOrder_Info.DBOI_SCOPEBOTTOM>
+  <DbOrder_Info.DBOI_SCOPETOPCLEAR>
+    <summary>Void: Clear top scope</summary>
+  </DbOrder_Info.DBOI_SCOPETOPCLEAR>
+  <DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR>
+    <summary>Void: Clear Bottom scope</summary>
+  </DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR>
+  <DbOrder_Info.DBOI_UNIQUE>
+    <summary>Logic : Does the order have the UNIQUE attribute?</summary>
+  </DbOrder_Info.DBOI_UNIQUE>
+  <DbOrder_Info.DBOI_ORDERCOUNT>
+    <summary>Number: The count of ORDERS contained in an index file or in total</summary>
+  </DbOrder_Info.DBOI_ORDERCOUNT>
+  <DbOrder_Info.DBOI_CUSTOM>
+    <summary>Logic: Is this a Custom Index?  </summary>
+  </DbOrder_Info.DBOI_CUSTOM>
+  <DbOrder_Info.DBOI_SKIPUNIQUE>
+    <summary>Logic: Was a skip to adjacent unique Key successful?  </summary>
+  </DbOrder_Info.DBOI_SKIPUNIQUE>
+  <DbOrder_Info.DBOI_KEYSINCLUDED>
+    <summary>Number: Number of keys in the index order</summary>
+  </DbOrder_Info.DBOI_KEYSINCLUDED>
+  <DbOrder_Info.DBOI_KEYNORAW>
+    <summary>Number: The key number disregarding filters</summary>
+  </DbOrder_Info.DBOI_KEYNORAW>
+  <DbOrder_Info.DBOI_OPTLEVEL>
+    <summary>Number: Optimization level for current query</summary>
+  </DbOrder_Info.DBOI_OPTLEVEL>
+  <DbOrder_Info.DBOI_KEYCOUNTRAW>
+    <summary>Number: The key count disregarding filter  </summary>
+  </DbOrder_Info.DBOI_KEYCOUNTRAW>
+  <DbOrder_Info.DBOI_FILESTREAM>
+    <summary>FileStream: The stream object of the index</summary>
+  </DbOrder_Info.DBOI_FILESTREAM>
+  <DbOrder_Info.DBOI_STRICTREAD>
+    <summary>The following numbers are reserved but not implemented yet.</summary>
+  </DbOrder_Info.DBOI_STRICTREAD>
+  <DbOrder_Info.DBOI_DUMP>
+    <summary>Dump the current order to a text file in the folder of the index.</summary>
+  </DbOrder_Info.DBOI_DUMP>
+  <DbOrder_Info.DBOI_VALIDATE>
+    <summary>Logic: Validate the current order. Errors are written to a text file in the folder of the index. Only supported by DBFCDX</summary>
+  </DbOrder_Info.DBOI_VALIDATE>
+  <DbOrder_Info.DBOI_USER>
+    <summary>Start of user defined values</summary>
+  </DbOrder_Info.DBOI_USER>
+  <DatabasePropertyType.Null>
+    <summary>Null (Internal) </summary>
+  </DatabasePropertyType.Null>
+  <DatabasePropertyType.Path>
+    <summary>The relative path with respect to the DBC to the table including the name of the file. </summary>
+  </DatabasePropertyType.Path>
+  <DatabasePropertyType.Class>
+    <summary>Class (Internal) </summary>
+  </DatabasePropertyType.Class>
+  <DatabasePropertyType.Unknown_3>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_3>
+  <DatabasePropertyType.Unknown_4>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_4>
+  <DatabasePropertyType.Unknown_5>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_5>
+  <DatabasePropertyType.Unknown_6>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_6>
+  <DatabasePropertyType.Comment>
+    <summary>The text of the field comment. (C) </summary>
+  </DatabasePropertyType.Comment>
+  <DatabasePropertyType.Unknown_8>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_8>
+  <DatabasePropertyType.RuleExpression>
+    <summary>The rule expression. (C)</summary>
+  </DatabasePropertyType.RuleExpression>
+  <DatabasePropertyType.RuleText>
+    <summary>The row rule error text.(C) </summary>
+  </DatabasePropertyType.RuleText>
+  <DatabasePropertyType.DefaultValue>
+    <summary>The field default value.(C) </summary>
+  </DatabasePropertyType.DefaultValue>
+  <DatabasePropertyType.ParameterList>
+    <summary>The WHERE clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' </summary>
+  </DatabasePropertyType.ParameterList>
+  <DatabasePropertyType.RelatedChild>
+    <summary>ChildTag for a Relation Object</summary>
+  </DatabasePropertyType.RelatedChild>
+  <DatabasePropertyType.InsertTrigger>
+    <summary>The Insert trigger expression.</summary>
+  </DatabasePropertyType.InsertTrigger>
+  <DatabasePropertyType.UpdateTrigger>
+    <summary>The Update trigger expression.</summary>
+  </DatabasePropertyType.UpdateTrigger>
+  <DatabasePropertyType.DeleteTrigger>
+    <summary>The Delete trigger expression.</summary>
+  </DatabasePropertyType.DeleteTrigger>
+  <DatabasePropertyType.IsUnique>
+    <summary>The IsUnique flag for an Index Object</summary>
+  </DatabasePropertyType.IsUnique>
+  <DatabasePropertyType.RelatedTable>
+    <summary>Related table for a Relation Object</summary>
+  </DatabasePropertyType.RelatedTable>
+  <DatabasePropertyType.RelatedTag>
+    <summary>Related tag for a Relatin Object</summary>
+  </DatabasePropertyType.RelatedTag>
+  <DatabasePropertyType.PrimaryKey>
+    <summary>The tag name of the primary key. (C) </summary>
+  </DatabasePropertyType.PrimaryKey>
+  <DatabasePropertyType.Unknown_21>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_21>
+  <DatabasePropertyType.Unknown_22>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_22>
+  <DatabasePropertyType.Unknown_23>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_23>
+  <DatabasePropertyType.Version>
+    <summary>The database version number. (N) </summary>
+  </DatabasePropertyType.Version>
+  <DatabasePropertyType.Unknown_25>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_25>
+  <DatabasePropertyType.Unknown_26>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_26>
+  <DatabasePropertyType.Unknown_27>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_27>
+  <DatabasePropertyType.BatchUpdateCount>
+    <summary>The number of update statements sent to the back end for views. 1 is the default. Adjusting this value can greatly increase update performance. (N) </summary>
+  </DatabasePropertyType.BatchUpdateCount>
+  <DatabasePropertyType.DataSource>
+    <summary>The name of the data source as defined in the Odbc.ini file.</summary>
+  </DatabasePropertyType.DataSource>
+  <DatabasePropertyType.Unknown_30>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_30>
+  <DatabasePropertyType.Unknown_31>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_31>
+  <DatabasePropertyType.ConnectName>
+    <summary>The named connection used when the view is opened. (C)</summary>
+  </DatabasePropertyType.ConnectName>
+  <DatabasePropertyType.Unknown_33>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_33>
+  <DatabasePropertyType.Unknown_34>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_34>
+  <DatabasePropertyType.UpdateName>
+    <summary>The name of the field used when data in the field is updated to the remote table. By default, the remote table field name.Read/write. </summary>
+  </DatabasePropertyType.UpdateName>
+  <DatabasePropertyType.FetchMemo>
+    <summary>Contains true (.T.) (default) if memo and general fields are fetched with the view results; otherwise, contains false (.F.).</summary>
+  </DatabasePropertyType.FetchMemo>
+  <DatabasePropertyType.FetchSize>
+    <summary>Contains the number of records fetched at a time from the remote tables. The default is 100 records. Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting</summary>
+  </DatabasePropertyType.FetchSize>
+  <DatabasePropertyType.KeyField>
+    <summary>Contains True (.T.) if the field is specified in an index key expression; otherwise, contains False (.F.). (L)  </summary>
+  </DatabasePropertyType.KeyField>
+  <DatabasePropertyType.MaxRecords>
+    <summary>The maximum number of records fetched when result sets are returned. (N) The default is – 1 (all rows are returned). A value of 0 specifies that the view is executed but no results are fetched.</summary>
+  </DatabasePropertyType.MaxRecords>
+  <DatabasePropertyType.ShareConnection>
+    <summary>Contains true (.T.) if the view can share its connection handle with other connections; otherwise, contains false (.F.).</summary>
+  </DatabasePropertyType.ShareConnection>
+  <DatabasePropertyType.SourceType>
+    <summary>The view source. (N) SourceType may assume the following values: 1 - The view uses local tables.2 - The view uses remote tables.</summary>
+  </DatabasePropertyType.SourceType>
+  <DatabasePropertyType.SQL>
+    <summary>The SQL statement executed when the view is opened.(C) </summary>
+  </DatabasePropertyType.SQL>
+  <DatabasePropertyType.Tables>
+    <summary>A comma-delimited list of the names of the tables.(C) </summary>
+  </DatabasePropertyType.Tables>
+  <DatabasePropertyType.SendUpdates>
+    <summary>Contains true (.T.) if a SQL update query is sent to update remote tables; otherwise, contains false (.F.) (default).</summary>
+  </DatabasePropertyType.SendUpdates>
+  <DatabasePropertyType.Updatable>
+    <summary>Contains True (.T.) if the field can be updated; otherwise, contains False (.F.). </summary>
+  </DatabasePropertyType.Updatable>
+  <DatabasePropertyType.UpdateType>
+    <summary>The update type. Valid values are: 1 or DB_UPDATE (from Foxpro.h). The old data is updated with the new data (default). 2 or DB_DELETEINSERT (from Foxpro.h). The old data is deleted and the new data is inserted.</summary>
+  </DatabasePropertyType.UpdateType>
+  <DatabasePropertyType.UseMemoSize>
+    <summary>The minimum size (in bytes) for which result columns are returned in memo fields. For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field. UseMemoSize may vary from 1 to 255; the default value is 255.</summary>
+  </DatabasePropertyType.UseMemoSize>
+  <DatabasePropertyType.WhereType>
+    <summary>The WHERE clause for updates to remote tables.WhereType may assume the following values: 1 or DB_KEY , 2 or DB_KEYANDUPDATABLE, 3 or DB_KEYANDMODIFIED and 4 or DB_KEYANDTIMESTAMP </summary>
+  </DatabasePropertyType.WhereType>
+  <DatabasePropertyType.Unknown_49>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_49>
+  <DatabasePropertyType.DisplayClass>
+    <summary>Name of the class used for field mapping. (C) </summary>
+  </DatabasePropertyType.DisplayClass>
+  <DatabasePropertyType.DisplayClassLibrary>
+    <summary>Path to the class library specified with the DisplayClass property.(C)  </summary>
+  </DatabasePropertyType.DisplayClassLibrary>
+  <DatabasePropertyType.Unknown_52>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_52>
+  <DatabasePropertyType.Unknown_53>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_53>
+  <DatabasePropertyType.InputMask>
+    <summary>The field input format. (C) .Read/write. </summary>
+  </DatabasePropertyType.InputMask>
+  <DatabasePropertyType.Format>
+    <summary>The field display format. (C) .Read/write. </summary>
+  </DatabasePropertyType.Format>
+  <DatabasePropertyType.Caption>
+    <summary>The field caption. (C) If an equal sign (=) precedes the value of this property, Visual FoxPro evaluates the value as an expression. Otherwise, it is treated as a string literal.Read/write. FIELD</summary>
+  </DatabasePropertyType.Caption>
+  <DatabasePropertyType.Unknown_57>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_57>
+  <DatabasePropertyType.Unknown_58>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_58>
+  <DatabasePropertyType.Unknown_59>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_59>
+  <DatabasePropertyType.Unknown_60>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_60>
+  <DatabasePropertyType.Unknown_61>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_61>
+  <DatabasePropertyType.Unknown_62>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_62>
+  <DatabasePropertyType.Unknown_63>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_63>
+  <DatabasePropertyType.Asynchronous>
+    <summary>The connection mode. (Default) False (.F.) specifies a synchronous connection. True (.T.) specifies an asynchronous connection.Read/write.</summary>
+  </DatabasePropertyType.Asynchronous>
+  <DatabasePropertyType.BatchMode>
+    <summary>The batch-processing mode. (Default) True (.T.) specifies the connection that operates in batch mode.</summary>
+  </DatabasePropertyType.BatchMode>
+  <DatabasePropertyType.ConnectString>
+    <summary>The login connection string.</summary>
+  </DatabasePropertyType.ConnectString>
+  <DatabasePropertyType.ConnectTimeout>
+    <summary>The connection timeout interval in seconds. The default is 0 (wait indefinitely).</summary>
+  </DatabasePropertyType.ConnectTimeout>
+  <DatabasePropertyType.DispLogin>
+    <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+  </DatabasePropertyType.DispLogin>
+  <DatabasePropertyType.DispWarnings>
+    <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+  </DatabasePropertyType.DispWarnings>
+  <DatabasePropertyType.IdleTimeout>
+    <summary>The idle timeout interval in minutes. Timeout is checked no more than once per minute, therefore it is possible that active connections might deactivate one or two minutes later after the specified time interval has elapsed. The default value is 0 (wait indefinitely).</summary>
+  </DatabasePropertyType.IdleTimeout>
+  <DatabasePropertyType.QueryTimeOut>
+    <summary>The query timeout interval in seconds. The default value is 0 (wait indefinitely).</summary>
+  </DatabasePropertyType.QueryTimeOut>
+  <DatabasePropertyType.Password>
+    <summary>The connection password.</summary>
+  </DatabasePropertyType.Password>
+  <DatabasePropertyType.Transactions>
+    <summary>Contains a numeric value that determines how the connection manages transactions on the remote table. </summary>
+  </DatabasePropertyType.Transactions>
+  <DatabasePropertyType.UserId>
+    <summary>The user identification.</summary>
+  </DatabasePropertyType.UserId>
+  <DatabasePropertyType.WaitTime>
+    <summary>The amount of time in milliseconds that elapses before Visual FoxPro checks whether the SQL statement has completed executing. </summary>
+  </DatabasePropertyType.WaitTime>
+  <DatabasePropertyType.TimeStamp>
+    <summary>Timestamp (internal)</summary>
+  </DatabasePropertyType.TimeStamp>
+  <DatabasePropertyType.DataType>
+    <summary>The data type for a field in a view. Initially set to the data type for the field in the data source.</summary>
+  </DatabasePropertyType.DataType>
+  <DatabasePropertyType.PacketSize>
+    <summary>The size of the network packet used by the connection. Adjusting this value can improve performance. The default value is 4096 bytes (4K).</summary>
+  </DatabasePropertyType.PacketSize>
+  <DatabasePropertyType.Database>
+    <summary>The name of the server database specified with the DATABASE clause in the CREATE CONNECTION command or in the Connection Designer.</summary>
+  </DatabasePropertyType.Database>
+  <DatabasePropertyType.Prepared>
+    <summary>Contains True (.T.) if SQL statements are prepared for subsequent REQUERY( ) function calls. REQUERY( ) is used to retrieve data again for a SQL view. See SQLPREPARE( ) for additional information about preparing SQL statements. The default is false (.F.).</summary>
+  </DatabasePropertyType.Prepared>
+  <DatabasePropertyType.CompareMemo>
+    <summary>Contains true (.T.) (default) if memo fields (of type Memo, General, or Picture, or, for remote views, type Timestamp) are included in the WHERE clause for updates; otherwise, contains false (.F.).Read/write.</summary>
+  </DatabasePropertyType.CompareMemo>
+  <DatabasePropertyType.FetchAsNeeded>
+    <summary>If True (.T.), data is fetched only when needed, such as when record pointer moves to a row that has not been fetched. If False (.F.), additional data is fetched during idle time. (Default)</summary>
+  </DatabasePropertyType.FetchAsNeeded>
+  <DatabasePropertyType.Unknown_83>
+    <summary>Not defined</summary>
+  </DatabasePropertyType.Unknown_83>
+  <DatabasePropertyType.OfflineRecs>
+    <summary>When this property is found the table is offline. The Path property then returns the OffLinePath</summary>
+  </DatabasePropertyType.OfflineRecs>
+  <DatabasePropertyType.OfflineRemRecs>
+    <summary># of remote records offline.</summary>
+  </DatabasePropertyType.OfflineRemRecs>
+  <DatabasePropertyType.DBCEventFileName>
+    <summary>Relative path and filename of external program file containing DBC Events code. (C) </summary>
+  </DatabasePropertyType.DBCEventFileName>
+  <DatabasePropertyType.DBCEvents>
+    <summary>Enabled state of DBC Events. Set to True (.T.) to enable. (L) </summary>
+  </DatabasePropertyType.DBCEvents>
+  <DatabasePropertyType.AllowSimultaneousFetch>
+    <summary>Applies when using remote views, a shared connection, and to cursors created using ODBC. </summary>
+  </DatabasePropertyType.AllowSimultaneousFetch>
+  <DatabasePropertyType.DisconnectRollback>
+    <summary>Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.</summary>
+  </DatabasePropertyType.DisconnectRollback>
+  <DatabasePropertyType.OffLine>
+    <summary>Is the table offline (this is not stored as a real property but derived from the extistence of the properties OfflineRecs, OfflineRemRecs and Path.</summary>
+  </DatabasePropertyType.OffLine>
+  <DatabasePropertyType.ColumnName>
+    <summary>X# Column Name property (not persisted in DBC)</summary>
+  </DatabasePropertyType.ColumnName>
+  <SQLProperty.Asynchronous>
+    <summary>Specifies whether result sets are returned synchronously.</summary>
+  </SQLProperty.Asynchronous>
+  <SQLProperty.BatchMode>
+    <summary>Specifies whether SqlExec( ) returns result sets all at once (True (.T.), the default),   or individually with SqlMoreResults( ) (False (.F.)).</summary>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec" />
+    <seealso cref="O:XSharp.VFP.Functions.SqlMoreResults" />
+  </SQLProperty.BatchMode>
+  <SQLProperty.ConnectBusy>
+    <summary>Contains True (.T.) if a shared connection is busy; otherwise contains False (.F.).</summary>
+  </SQLProperty.ConnectBusy>
+  <SQLProperty.ConnectString>
+    <summary>The login connection string.</summary>
+  </SQLProperty.ConnectString>
+  <SQLProperty.ConnectTimeOut>
+    <summary>Specifies the time to wait (in seconds) before returning a connection time-out error.   If you specify 0, the wait is indefinite and a time-out error is never returned. ConnectTimeOut can be 0 to 600. The default is 15.</summary>
+  </SQLProperty.ConnectTimeOut>
+  <SQLProperty.DataSource>
+    <summary>The name of the data source as defined in the ODBC.INI file.</summary>
+  </SQLProperty.DataSource>
+  <SQLProperty.DisconnectRollback>
+    <summary>Specifies if a pending transaction is committed or rolled back when SqlDisconnect( ) is called for the last connection handle.</summary>
+    <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect" />
+  </SQLProperty.DisconnectRollback>
+  <SQLProperty.DispLogin>
+    <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+  </SQLProperty.DispLogin>
+  <SQLProperty.DispWarnings>
+    <summary>Specifies if error messages are displayed (True (.T.)) or are not displayed (False (.F.), the default).</summary>
+  </SQLProperty.DispWarnings>
+  <SQLProperty.IdleTimeout>
+    <summary>The idle timeout interval in minutes. Active connections are deactivated after the specified time interval.   The default value is 0 (wait indefinitely).</summary>
+  </SQLProperty.IdleTimeout>
+  <SQLProperty.NativeCommand>
+    <summary>The native commandtext in the SQLStatement object.</summary>
+  </SQLProperty.NativeCommand>
+  <SQLProperty.ODBChdbc>
+    <summary>The internal ODBC connection, which may be used by external code to call ODBC.</summary>
+    <remarks>In X# this does not return the connection handle but the DbConnection object !</remarks>
+  </SQLProperty.ODBChdbc>
+  <SQLProperty.ODBChstmt>
+    <summary>The internal ODBC statement , which may be used by external code to call ODBC.</summary>
+    <remarks>In X# this does not return the statement handle but the DbCommand object !</remarks>
+  </SQLProperty.ODBChstmt>
+  <SQLProperty.PacketSize>
+    <summary>The size of the network packet used by the connection. Adjusting this value can improve performance.   The default value is 4096 bytes (4K).</summary>
+  </SQLProperty.PacketSize>
+  <SQLProperty.Password>
+    <summary>The connection password.</summary>
+  </SQLProperty.Password>
+  <SQLProperty.QueryTimeOut>
+    <summary>Specifies the time to wait (in seconds) before returning a general time-out error.   If you specify 0 (the default), the wait is indefinite and a time-out error is never returned. QueryTimeOut can be 0 to 600.</summary>
+  </SQLProperty.QueryTimeOut>
+  <SQLProperty.Shared>
+    <summary>Specifies whether the underlying connection is a shared connection (True (.T.)), or not (False (.F.)).</summary>
+  </SQLProperty.Shared>
+  <SQLProperty.Transactions>
+    <summary>Contains a numeric value that determines how the connection manages transactions on the remote table.</summary>
+  </SQLProperty.Transactions>
+  <SQLProperty.UserId>
+    <summary>The user identification.</summary>
+  </SQLProperty.UserId>
+  <SQLProperty.WaitTime>
+    <summary>The amount of time in milliseconds that elapses before Visual FoxPro checks if the SQL statement   has completed executing. The default is 100 milliseconds.</summary>
+  </SQLProperty.WaitTime>
+  <__UsualType.Void>
+    <summary>The usual contains a NIL.</summary>
+  </__UsualType.Void>
+  <__UsualType.Long>
+    <summary>The usual contains a LONG value</summary>
+  </__UsualType.Long>
+  <__UsualType.Date>
+    <summary>The usual contains a DATE value</summary>
+  </__UsualType.Date>
+  <__UsualType.Float>
+    <summary>The usual contains a FLOAT value</summary>
+  </__UsualType.Float>
+  <__UsualType.Fixed>
+    <summary>This value is NEVER used for USUALs (this was also defined in VO but never used).</summary>
+  </__UsualType.Fixed>
+  <__UsualType.Array>
+    <summary>The usual contains an ARRAY value</summary>
+  </__UsualType.Array>
+  <__UsualType.Object>
+    <summary>The usual contains an OBJECT value</summary>
+  </__UsualType.Object>
+  <__UsualType.String>
+    <summary>The usual contains an STRING value</summary>
+  </__UsualType.String>
+  <__UsualType.Logic>
+    <summary>The usual contains an LOGIC value</summary>
+  </__UsualType.Logic>
+  <__UsualType.Codeblock>
+    <summary>The usual contains an CODEBLOCK value</summary>
+  </__UsualType.Codeblock>
+  <__UsualType.Symbol>
+    <summary>The usual contains an SYMBOL value</summary>
+  </__UsualType.Symbol>
+  <__UsualType.Byte>
+    <summary>This value is in the enum for completeness but never used inside a usual. Byte values are stored as LONG.</summary>
+  </__UsualType.Byte>
+  <__UsualType.ShortInt>
+    <summary>This value is in the enum for completeness but never used inside a usual. Short values are stored as LONG.</summary>
+  </__UsualType.ShortInt>
+  <__UsualType.Word>
+    <summary>This value is in the enum for completeness but never used inside a usual. Word values are stored as LONG.</summary>
+  </__UsualType.Word>
+  <__UsualType.DWord>
+    <summary>This value is in the enum for completeness but never used inside a usual. DWord values are stored as LONG or FLOAT.</summary>
+  </__UsualType.DWord>
+  <__UsualType.Real4>
+    <summary>This value is in the enum for completeness but never used inside a usual. Real4 values are stored as FLOAT</summary>
+  </__UsualType.Real4>
+  <__UsualType.Real8>
+    <summary>This value is in the enum for completeness but never used inside a usual. Real8 values are stored as FLOAT.</summary>
+  </__UsualType.Real8>
+  <__UsualType.Psz>
+    <summary>This value is in the enum for completeness but never used inside a usual.</summary>
+    <summary>The usual contains an PSZ value</summary>
+  </__UsualType.Psz>
+  <__UsualType.Ptr>
+    <summary>The usual contains an PTR value</summary>
+  </__UsualType.Ptr>
+  <__UsualType.Usual>
+    <exclude/>
+  </__UsualType.Usual>
+  <__UsualType.Int64>
+    <summary>The usual contains an INT64 value (new in Vulcan and X#).</summary>
+  </__UsualType.Int64>
+  <__UsualType.UInt64>
+    <summary>The usual contains an UINT64 value (new in Vulcan and X#).</summary>
+  </__UsualType.UInt64>
+  <__UsualType.Char>
+    <summary>This value is in the enum for completeness but never used inside a usual. Char values are stored as LONG</summary>
+  </__UsualType.Char>
+  <__UsualType.Dynamic>
+    <summary>This value is in the enum for completeness but never used inside a usual. Dynamic values are stored as OBJECT</summary>
+  </__UsualType.Dynamic>
+  <__UsualType.DateTime>
+    <summary>The usual contains a DateTime value (new in X#).</summary>
+  </__UsualType.DateTime>
+  <__UsualType.Decimal>
+    <summary>The usual contains a Decimal value (new in X#).</summary>
+  </__UsualType.Decimal>
+  <__UsualType.Currency>
+    <summary>The usual contains a Currency value (new in X#).</summary>
+  </__UsualType.Currency>
+  <__UsualType.Binary>
+    <summary>The usual contains a Binary value (new in X#).</summary>
+  </__UsualType.Binary>
+  <__UsualType.Null>
+    <summary>The usual contains a DBNull.Value value (new in X#).</summary>
+  </__UsualType.Null>
+  <__UsualType.Memo>
+    <summary>The usual contains an Memo value. This value is there for compatibility with VO but never used.</summary>
+  </__UsualType.Memo>
+  <__UsualType.Invalid>
+    <summary>Invalid Usual Type.</summary>
+  </__UsualType.Invalid>
+  <LockMethod.Exclusive>
+    <summary>Lock a row, releasing currently locked rows.</summary>
+  </LockMethod.Exclusive>
+  <LockMethod.Multiple>
+    <summary>Lock a row, maintaining currently locked rows.</summary>
+  </LockMethod.Multiple>
+  <LockMethod.File>
+    <summary>Lock a table, releasing locks currently held.</summary>
+  </LockMethod.File>
+  <VOErrors.RT_MSG_MONTH1>
+    <summary>String ID for the month January</summary>
+  </VOErrors.RT_MSG_MONTH1>
+  <VOErrors.RT_MSG_MONTH2>
+    <summary>String ID for the month February</summary>
+  </VOErrors.RT_MSG_MONTH2>
+  <VOErrors.RT_MSG_MONTH3>
+    <summary>String ID for the month March</summary>
+  </VOErrors.RT_MSG_MONTH3>
+  <VOErrors.RT_MSG_MONTH4>
+    <summary>String ID for the month April</summary>
+  </VOErrors.RT_MSG_MONTH4>
+  <VOErrors.RT_MSG_MONTH5>
+    <summary>String ID for the month May</summary>
+  </VOErrors.RT_MSG_MONTH5>
+  <VOErrors.RT_MSG_MONTH6>
+    <summary>String ID for the month June</summary>
+  </VOErrors.RT_MSG_MONTH6>
+  <VOErrors.RT_MSG_MONTH7>
+    <summary>String ID for the month July</summary>
+  </VOErrors.RT_MSG_MONTH7>
+  <VOErrors.RT_MSG_MONTH8>
+    <summary>String ID for the month August</summary>
+  </VOErrors.RT_MSG_MONTH8>
+  <VOErrors.RT_MSG_MONTH9>
+    <summary>String ID for the month September</summary>
+  </VOErrors.RT_MSG_MONTH9>
+  <VOErrors.RT_MSG_MONTH10>
+    <summary>String ID for the month October</summary>
+  </VOErrors.RT_MSG_MONTH10>
+  <VOErrors.RT_MSG_MONTH11>
+    <summary>String ID for the month November</summary>
+  </VOErrors.RT_MSG_MONTH11>
+  <VOErrors.RT_MSG_MONTH12>
+    <summary>String ID for the month December</summary>
+  </VOErrors.RT_MSG_MONTH12>
+  <VOErrors.RT_MSG_DAY1>
+    <summary>String ID for the day Sunday</summary>
+  </VOErrors.RT_MSG_DAY1>
+  <VOErrors.RT_MSG_DAY2>
+    <summary>String ID for the day Monday</summary>
+  </VOErrors.RT_MSG_DAY2>
+  <VOErrors.RT_MSG_DAY3>
+    <summary>String ID for the day Tuesday</summary>
+  </VOErrors.RT_MSG_DAY3>
+  <VOErrors.RT_MSG_DAY4>
+    <summary>String ID for the day Wednesday</summary>
+  </VOErrors.RT_MSG_DAY4>
+  <VOErrors.RT_MSG_DAY5>
+    <summary>String ID for the day Thursday</summary>
+  </VOErrors.RT_MSG_DAY5>
+  <VOErrors.RT_MSG_DAY6>
+    <summary>String ID for the day Friday</summary>
+  </VOErrors.RT_MSG_DAY6>
+  <VOErrors.RT_MSG_DAY7>
+    <summary>String ID for the day Saturday</summary>
+  </VOErrors.RT_MSG_DAY7>
+  <VOErrors.RT_MSG_INFOSTRING>
+    <summary>String ID for the description of the Nation Table</summary>
+  </VOErrors.RT_MSG_INFOSTRING>
+  <VOErrors.RT_MSG_SHORT_TRUE>
+    <summary>String ID for the short literal for TRUE</summary>
+  </VOErrors.RT_MSG_SHORT_TRUE>
+  <VOErrors.RT_MSG_SHORT_FALSE>
+    <summary>String ID for the short literal for FALSE</summary>
+  </VOErrors.RT_MSG_SHORT_FALSE>
+  <VOErrors.RT_MSG_LONG_TRUE>
+    <summary>String ID for the long literal for TRUE</summary>
+  </VOErrors.RT_MSG_LONG_TRUE>
+  <VOErrors.RT_MSG_LONG_FALSE>
+    <summary>String ID for the long literal for FALSE</summary>
+  </VOErrors.RT_MSG_LONG_FALSE>
+  <VOErrors.RT_MSG_SHORT_YES>
+    <summary>String ID for the short literal for YES</summary>
+  </VOErrors.RT_MSG_SHORT_YES>
+  <VOErrors.RT_MSG_SHORT_NO>
+    <summary>String ID for the short literal for NO</summary>
+  </VOErrors.RT_MSG_SHORT_NO>
+  <VOErrors.RT_MSG_LONG_YES>
+    <summary>String ID for the long literal for YES</summary>
+  </VOErrors.RT_MSG_LONG_YES>
+  <VOErrors.RT_MSG_LONG_NO>
+    <summary>String ID for the long literal for NO</summary>
+  </VOErrors.RT_MSG_LONG_NO>
+  <VOErrors.RT_MSG_CURRENCY>
+    <summary>String ID for the long literal for currency</summary>
+  </VOErrors.RT_MSG_CURRENCY>
+  <VOErrors.RT_MSG_YNSTRING>
+    <summary>String ID for the literal for Yes/No</summary>
+  </VOErrors.RT_MSG_YNSTRING>
+  <VOErrors.RT_MSG_DEBIT>
+    <summary>String ID for the literal for Debit</summary>
+  </VOErrors.RT_MSG_DEBIT>
+  <VOErrors.RT_MSG_CREDIT>
+    <summary>String ID for the literal for credit</summary>
+  </VOErrors.RT_MSG_CREDIT>
+  <VOErrors.RT_MSG_ERR_0>
+    <summary>String ID for the first error message </summary>
+  </VOErrors.RT_MSG_ERR_0>
+  <VOErrors.RT_MSG_ERR_1>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_1>
+  <VOErrors.RT_MSG_ERR_2>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_2>
+  <VOErrors.RT_MSG_ERR_3>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_3>
+  <VOErrors.RT_MSG_ERR_4>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_4>
+  <VOErrors.RT_MSG_ERR_5>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_5>
+  <VOErrors.RT_MSG_ERR_6>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_6>
+  <VOErrors.RT_MSG_ERR_7>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_7>
+  <VOErrors.RT_MSG_ERR_8>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_8>
+  <VOErrors.RT_MSG_ERR_9>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_9>
+  <VOErrors.RT_MSG_ERR_10>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_10>
+  <VOErrors.RT_MSG_ERR_11>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_11>
+  <VOErrors.RT_MSG_ERR_12>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_12>
+  <VOErrors.RT_MSG_ERR_13>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_13>
+  <VOErrors.RT_MSG_ERR_14>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_14>
+  <VOErrors.RT_MSG_ERR_15>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_15>
+  <VOErrors.RT_MSG_ERR_16>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_16>
+  <VOErrors.RT_MSG_ERR_17>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_17>
+  <VOErrors.RT_MSG_ERR_18>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_18>
+  <VOErrors.RT_MSG_ERR_19>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_19>
+  <VOErrors.RT_MSG_ERR_20>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_20>
+  <VOErrors.RT_MSG_ERR_21>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_21>
+  <VOErrors.RT_MSG_ERR_22>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_22>
+  <VOErrors.RT_MSG_ERR_23>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_23>
+  <VOErrors.RT_MSG_ERR_24>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_24>
+  <VOErrors.RT_MSG_ERR_25>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_25>
+  <VOErrors.RT_MSG_ERR_26>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_26>
+  <VOErrors.RT_MSG_ERR_27>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_27>
+  <VOErrors.RT_MSG_ERR_28>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_28>
+  <VOErrors.RT_MSG_ERR_29>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_29>
+  <VOErrors.RT_MSG_ERR_30>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_30>
+  <VOErrors.RT_MSG_ERR_31>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_31>
+  <VOErrors.RT_MSG_ERR_32>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_32>
+  <VOErrors.RT_MSG_ERR_33>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_33>
+  <VOErrors.RT_MSG_ERR_34>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_34>
+  <VOErrors.RT_MSG_ERR_35>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_35>
+  <VOErrors.RT_MSG_ERR_36>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_36>
+  <VOErrors.RT_MSG_ERR_37>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_37>
+  <VOErrors.RT_MSG_ERR_38>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_38>
+  <VOErrors.RT_MSG_ERR_39>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_39>
+  <VOErrors.RT_MSG_ERR_40>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_40>
+  <VOErrors.RT_MSG_ERR_41>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_41>
+  <VOErrors.RT_MSG_ERR_42>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_42>
+  <VOErrors.RT_MSG_ERR_43>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_43>
+  <VOErrors.RT_MSG_ERR_44>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_44>
+  <VOErrors.RT_MSG_ERR_45>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_45>
+  <VOErrors.RT_MSG_ERR_46>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_46>
+  <VOErrors.RT_MSG_ERR_47>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_47>
+  <VOErrors.RT_MSG_ERR_48>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_48>
+  <VOErrors.RT_MSG_ERR_49>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_49>
+  <VOErrors.RT_MSG_ERR_50>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_50>
+  <VOErrors.RT_MSG_ERR_51>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_51>
+  <VOErrors.RT_MSG_ERR_52>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_52>
+  <VOErrors.RT_MSG_ERR_53>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_53>
+  <VOErrors.RT_MSG_ERR_54>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_54>
+  <VOErrors.RT_MSG_ERR_UNKNOWN>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_UNKNOWN>
+  <VOErrors.RT_MSG_CORRUPTION>
+    <exclude />
+  </VOErrors.RT_MSG_CORRUPTION>
+  <VOErrors.RT_MSG_FATAL>
+    <exclude />
+  </VOErrors.RT_MSG_FATAL>
+  <VOErrors.RT_MSG_APPLI>
+    <exclude />
+  </VOErrors.RT_MSG_APPLI>
+  <VOErrors.RT_MSG_LINE>
+    <exclude />
+  </VOErrors.RT_MSG_LINE>
+  <VOErrors.RT_MSG_FUNC>
+    <exclude />
+  </VOErrors.RT_MSG_FUNC>
+  <VOErrors.RT_MSG_RELEASE>
+    <exclude />
+  </VOErrors.RT_MSG_RELEASE>
+  <VOErrors.RT_MSG_ERR_INSTALLED>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_INSTALLED>
+  <VOErrors.RT_MSG_ERR_GURU>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_GURU>
+  <VOErrors.RT_MSG_ERR_STACK>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_STACK>
+  <VOErrors.RT_MSG_ERR_PARAM>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_PARAM>
+  <VOErrors.RT_MSG_ERR_NOCLIPPER>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_NOCLIPPER>
+  <VOErrors.RT_MSG_ERR_ARGCOUNT>
+    <exclude />
+  </VOErrors.RT_MSG_ERR_ARGCOUNT>
+  <VOErrors.RT_MSG_MAIL_ERR1>
+    <exclude />
+  </VOErrors.RT_MSG_MAIL_ERR1>
+  <VOErrors.RT_MSG_MAIL_ERR2>
+    <exclude />
+  </VOErrors.RT_MSG_MAIL_ERR2>
+  <VOErrors.RT_MSG_MAIL_ERR3>
+    <exclude />
+  </VOErrors.RT_MSG_MAIL_ERR3>
+  <VOErrors.RT_MSG_EXCEPTION>
+    <exclude />
+  </VOErrors.RT_MSG_EXCEPTION>
+  <VOErrors.RT_MSG_ACCESS_VIOLATION>
+    <exclude />
+  </VOErrors.RT_MSG_ACCESS_VIOLATION>
+  <VOErrors.RT_MSG_DATATYPE_MISALIGNMENT>
+    <exclude />
+  </VOErrors.RT_MSG_DATATYPE_MISALIGNMENT>
+  <VOErrors.RT_MSG_SINGLE_STEP>
+    <exclude />
+  </VOErrors.RT_MSG_SINGLE_STEP>
+  <VOErrors.RT_MSG_ARRAY_BOUNDS_EXCEEDED>
+    <exclude />
+  </VOErrors.RT_MSG_ARRAY_BOUNDS_EXCEEDED>
+  <VOErrors.RT_MSG_FLT_DENORMAL_OPERAND>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_DENORMAL_OPERAND>
+  <VOErrors.RT_MSG_FLT_DIVIDE_BY_ZERO>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_DIVIDE_BY_ZERO>
+  <VOErrors.RT_MSG_FLT_INEXACT_RESULT>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_INEXACT_RESULT>
+  <VOErrors.RT_MSG_FLT_INVALID_OPERATION>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_INVALID_OPERATION>
+  <VOErrors.RT_MSG_FLT_OVERFLOW>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_OVERFLOW>
+  <VOErrors.RT_MSG_FLT_STACK_CHECK>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_STACK_CHECK>
+  <VOErrors.RT_MSG_FLT_UNDERFLOW>
+    <exclude />
+  </VOErrors.RT_MSG_FLT_UNDERFLOW>
+  <VOErrors.RT_MSG_INT_DIVIDE_BY_ZERO>
+    <exclude />
+  </VOErrors.RT_MSG_INT_DIVIDE_BY_ZERO>
+  <VOErrors.RT_MSG_INT_OVERFLOW>
+    <exclude />
+  </VOErrors.RT_MSG_INT_OVERFLOW>
+  <VOErrors.RT_MSG_PRIV_INSTRUCTION>
+    <exclude />
+  </VOErrors.RT_MSG_PRIV_INSTRUCTION>
+  <VOErrors.RT_MSG_IN_PAGE_ERROR>
+    <exclude />
+  </VOErrors.RT_MSG_IN_PAGE_ERROR>
+  <VOErrors.RT_MSG_ILLEGAL_INSTRUCTION>
+    <exclude />
+  </VOErrors.RT_MSG_ILLEGAL_INSTRUCTION>
+  <VOErrors.RT_MSG_NONCONTINUABLE_EXCEPTION>
+    <exclude />
+  </VOErrors.RT_MSG_NONCONTINUABLE_EXCEPTION>
+  <VOErrors.RT_MSG_STACK_OVERFLOW>
+    <exclude />
+  </VOErrors.RT_MSG_STACK_OVERFLOW>
+  <VOErrors.RT_MSG_INVALID_DISPOSITION>
+    <exclude />
+  </VOErrors.RT_MSG_INVALID_DISPOSITION>
+  <VOErrors.RT_MSG_GUARD_PAGE>
+    <exclude />
+  </VOErrors.RT_MSG_GUARD_PAGE>
+  <Set>
+    <summary>Values that match the Visual Objects SET_* defines </summary>
+    <remarks>
+      Global settings are stored in the RuntimeState and are thread specific.
+      The numeric value of these sets indicate the key of the setting in the settings dictionary on the runtimestate.
+    </remarks>
+  </Set>
+  <Set.Exact>
+    <summary>Specifies rules that Visual FoxPro uses when comparing two strings of different lengths.</summary>
+  </Set.Exact>
+  <Set.Fixed>
+    <summary>Specifies if the number of decimal places used in the display of numeric data is fixed.</summary>
+  </Set.Fixed>
+  <Set.Decimals>
+    <summary>Specifies the number of decimal places displayed in numeric expressions.</summary>
+  </Set.Decimals>
+  <Set.DateFormat>
+    <summary>Specifies the format for the display of Date and DateTime expressions.</summary>
+  </Set.DateFormat>
+  <Set.Epoch>
+    <summary>Change the setting that determines how dates without century digits are interpreted.</summary>
+  </Set.Epoch>
+  <Set.Path>
+    <summary>Specifies a path for file searches.</summary>
+  </Set.Path>
+  <Set.Default>
+    <summary>Specifies the default drive and directory.</summary>
+  </Set.Default>
+  <Set.Exclusive>
+    <summary>Specifies whether Visual FoxPro opens table files for exclusive or shared use on a network.</summary>
+  </Set.Exclusive>
+  <Set.Softseek>
+    <summary>Determines where the record pointer is positioned after FIND or SEEK unsuccessfully searches for a record.</summary>
+  </Set.Softseek>
+  <Set.Unique>
+    <summary>Specifies whether records with duplicate index key values are maintained in an index file.</summary>
+  </Set.Unique>
+  <Set.Deleted>
+    <summary>Specifies whether Visual FoxPro processes records marked for deletion and whether they are available for use with other commands.</summary>
+  </Set.Deleted>
+  <Set.NotUsed>
+    <summary>--- not used ---</summary>
+  </Set.NotUsed>
+  <Set.Color>
+    <summary>Sets the colors used on the console output</summary>
+  </Set.Color>
+  <Set.Cursor>
+    <summary>Determines whether the insertion point is displayed when Visual FoxPro waits for input.</summary>
+  </Set.Cursor>
+  <Set.Console>
+    <summary>Enables or disables output to the console output window or to the active user-defined window from within programs.</summary>
+  </Set.Console>
+  <Set.Alternate>
+    <summary>Directs screen or printer output created with ?, ??, DISPLAY, or LIST to a text file.</summary>
+  </Set.Alternate>
+  <Set.AltFile>
+    <summary>Output filename for the Alternate file.</summary>
+  </Set.AltFile>
+  <Set.Device>
+    <summary>Directs output from @ ... SAY to the screen, a printer, or a file.</summary>
+  </Set.Device>
+  <Set.Printer>
+    <summary>Enables or disables output to the printer or routes output to a file, port, or network printer. </summary>
+  </Set.Printer>
+  <Set.PrintFile>
+    <summary>Output filename for printer output.</summary>
+  </Set.PrintFile>
+  <Set.Margin>
+    <summary>Sets the left printer margin and affects all output directed to the printer.</summary>
+  </Set.Margin>
+  <Set.Bell>
+    <summary>Turns the computer bell on or off and sets the bell attributes.</summary>
+  </Set.Bell>
+  <Set.Confirm>
+    <summary>Specifies whether the user can exit a text box by typing past the last character in the text box.</summary>
+  </Set.Confirm>
+  <Set.Escape>
+    <summary>Determines whether pressing the ESC key interrupts program and command execution.</summary>
+  </Set.Escape>
+  <Set.Delimiters>
+    <summary></summary>
+  </Set.Delimiters>
+  <Set.Neterr>
+    <summary></summary>
+  </Set.Neterr>
+  <Set.Digits>
+    <summary>The setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.</summary>
+  </Set.Digits>
+  <Set.AmExt>
+    <summary>A string representing the morning extension for time strings in 12-hour format.</summary>
+  </Set.AmExt>
+  <Set.PmExt>
+    <summary>A string representing the evening extension for time strings in 12-hour format.</summary>
+  </Set.PmExt>
+  <Set.Ansi>
+    <summary>The setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.</summary>
+  </Set.Ansi>
+  <Set.Yield>
+    <summary></summary>
+  </Set.Yield>
+  <Set.Locktries>
+    <summary>The number of times certain lock operations are retried</summary>
+  </Set.Locktries>
+  <Set.AmPm>
+    <summary>The setting that determines whether time strings are in 12-hour or 24-hour format.</summary>
+  </Set.AmPm>
+  <Set.Century>
+    <summary>Determines whether the century portion of date expressions is displaid.</summary>
+  </Set.Century>
+  <Set.DigitFixed>
+    <summary>The setting that fixes the number of digits used to display numeric output.</summary>
+  </Set.DigitFixed>
+  <Set.DecimalSep>
+    <summary>Determines the decimal point character used in the display of numeric and currency expressions.</summary>
+  </Set.DecimalSep>
+  <Set.ThousandSep>
+    <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
+  </Set.ThousandSep>
+  <Set.Timesep>
+    <summary>The current separation character used in time strings.</summary>
+  </Set.Timesep>
+  <Set.Fieldstore>
+    <summary>The setting that determines whether assignments are made to fields or to memory variables.</summary>
+  </Set.Fieldstore>
+  <Set.Science>
+    <summary>The setting that controls if numbers are displaid in scientific notation.</summary>
+  </Set.Science>
+  <Set.Floatdelta>
+    <summary>The setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.</summary>
+  </Set.Floatdelta>
+  <Set.International>
+    <summary></summary>
+  </Set.International>
+  <Set.DateCountry>
+    <summary>Specifies the format for the display of Date and DateTime expressions.</summary>
+  </Set.DateCountry>
+  <Set.DefaultDir>
+    <summary></summary>
+  </Set.DefaultDir>
+  <Set.EpochCent>
+    <summary>Determines how X# interprets dates that specify only 2 digit years.</summary>
+  </Set.EpochCent>
+  <Set.EpochYear>
+    <summary>Determines how X# interprets dates that specify only 2 digit years.</summary>
+  </Set.EpochYear>
+  <Set.DateFormatNet>
+    <summary>The current dateformat in .Net format.</summary>
+  </Set.DateFormatNet>
+  <Set.DateFormatEmpty>
+    <summary>The empty representation of the current date format.</summary>
+  </Set.DateFormatEmpty>
+  <Set.SysObject>
+    <summary>SysObject value</summary>
+  </Set.SysObject>
+  <Set.NoMethod>
+    <summary>The last method called with a late bound send operator that was not found in the object that was used.</summary>
+  </Set.NoMethod>
+  <Set.Patharray>
+    <summary>The current path setting as an array of strings.</summary>
+  </Set.Patharray>
+  <Set.NatDLL>
+    <summary>Determines the name of the current Nation DLL.</summary>
+  </Set.NatDLL>
+  <Set.CollationTable>
+    <summary>Determines the collation array read from the current Nation DLL</summary>
+  </Set.CollationTable>
+  <Set.ErrorBlock>
+    <summary>The codeblock set for the current error handler.</summary>
+  </Set.ErrorBlock>
+  <Set.LastScriptError>
+    <summary>The last script error that occurred.</summary>
+  </Set.LastScriptError>
+  <Set.LastFound>
+    <summary>The last file found with File()</summary>
+  </Set.LastFound>
+  <Set.DelimRDD>
+    <summary>Determines the name of the current Delim RDD.</summary>
+  </Set.DelimRDD>
+  <Set.FieldDelimiter>
+    <summary>Determines the current field delimiter for Delim RDDs</summary>
+  </Set.FieldDelimiter>
+  <Set.RecordDelimiter>
+    <summary>Determines the current record delimiter for Delim RDDs</summary>
+  </Set.RecordDelimiter>
+  <Set.ErrorLogFile>
+    <summary>Name of the error log file from the default RT error handler. Defaults to VOERROR.LOG</summary>
+  </Set.ErrorLogFile>
+  <Set.Dict>
+    <summary></summary>
+  </Set.Dict>
+  <Set.Intl>
+    <summary></summary>
+  </Set.Intl>
+  <Set.RddInfo>
+    <summary></summary>
+  </Set.RddInfo>
+  <Set.MemoBlockSize>
+    <summary>Specifies how X# allocates disk space for the storage of memo fields.   This is 64 for the FoxPro dialect and 32 for other dialects.</summary>
+  </Set.MemoBlockSize>
+  <Set.DefaultRdd>
+    <summary>Determines the current Default RDD. This is DBFVFP for the FoxPro dialect and   DBFNTX for the other dialects.</summary>
+  </Set.DefaultRdd>
+  <Set.MemoExt>
+    <summary>Determines the current default Memofile extension.</summary>
+  </Set.MemoExt>
+  <Set.AutoOpen>
+    <summary>Determines if production CDX files should be automatically opened. Defaults to TRUE</summary>
+  </Set.AutoOpen>
+  <Set.AutoOrder>
+    <summary>Determines if the first index in the production CDX should be selected. Defaults to 0 for the FoxPro dialect and 1 for the other dialects.</summary>
+  </Set.AutoOrder>
+  <Set.HpLocking>
+    <summary>Should High Performance NTX Locking be used for DBFNTX files.</summary>
+  </Set.HpLocking>
+  <Set.NewIndexLock>
+    <summary>Should the New Index Locking Scheme be used for DBFNTX files.</summary>
+  </Set.NewIndexLock>
+  <Set.Autoshare>
+    <summary></summary>
+  </Set.Autoshare>
+  <Set.StrictRead>
+    <summary></summary>
+  </Set.StrictRead>
+  <Set.BlobCircref>
+    <summary></summary>
+  </Set.BlobCircref>
+  <Set.Optimize>
+    <summary>Enables or disables Query Optimization.</summary>
+  </Set.Optimize>
+  <Set.FoxLock>
+    <summary>Should the FoxPro locking scheme be used for DBFCDX and DBFVFP files.</summary>
+  </Set.FoxLock>
+  <Set.RddInfoMax>
+    <summary>Determines the maximum number of RDD related settings.</summary>
+  </Set.RddInfoMax>
+  <Set.WinCodepage>
+    <summary>Determines the current Windows CodePage number</summary>
+  </Set.WinCodepage>
+  <Set.DosCodepage>
+    <summary>Determines the current DOS/OEM CodePage number</summary>
+  </Set.DosCodepage>
+  <Set.CollationMode>
+    <summary>Determines the current Collation mode (Windows, Clipper, Ordinal, Unicode, XPP)</summary>
+  </Set.CollationMode>
+  <Set.Asserts>
+    <summary>Specifies whether to pad a shorter string with spaces when making a SQL string comparison or binary expression with zero (0) bytes when making a binary expression comparison in SQL commands using the equal sign operator (=).</summary>
+  </Set.Asserts>
+  <Set.AutoIncError>
+    <summary>Specifies whether attempts to update or insert values in a field with automatically incrementing values generate errors.</summary>
+  </Set.AutoIncError>
+  <Set.CollateFox>
+    <summary>Specifies a collation sequence for character fields in subsequent indexing and sorting operations. Defaults to MACHINE</summary>
+  </Set.CollateFox>
+  <Set.Compatible>
+    <summary>Controls compatibility with Microsoft FoxBASE+ and other FoxPro languages.</summary>
+  </Set.Compatible>
+  <Set.Database>
+    <summary>Sets an open database as the current database or sets no current database.</summary>
+  </Set.Database>
+  <Set.DataSession>
+    <summary></summary>
+  </Set.DataSession>
+  <Set.DebugOut>
+    <summary>Directs debugging output to a file.</summary>
+  </Set.DebugOut>
+  <Set.Directory>
+    <summary>Specifies the default drive and directory.</summary>
+  </Set.Directory>
+  <Set.FullPath>
+    <summary>FoxPro: Should CDX(),DBF() and similar functions return full paths</summary>
+  </Set.FullPath>
+  <Set.Lock>
+    <summary>Enables or disables automatic file locking in certain commands.</summary>
+  </Set.Lock>
+  <Set.MemoWidth>
+    <summary>Specifies the displayed width of memo fields and character expressions.Default is 50</summary>
+  </Set.MemoWidth>
+  <Set.MultiLocks>
+    <summary>Determines whether you can lock multiple records using LOCK( ) or RLOCK( ). Default is OFF</summary>
+  </Set.MultiLocks>
+  <Set.Near>
+    <summary>Determines where the record pointer is positioned after FIND or SEEK unsuccessfully searches for a record.</summary>
+  </Set.Near>
+  <Set.Null>
+    <summary>Determines how null values are supported by the ALTER TABLE, CREATE TABLE and INSERT - SQL commands.</summary>
+  </Set.Null>
+  <Set.Point>
+    <summary>Determines the decimal point character used in the display of numeric and currency expressions.</summary>
+  </Set.Point>
+  <Set.Refresh>
+    <summary>Determines whether to and how frequently to update local memory buffers with changes from other users on the network.</summary>
+  </Set.Refresh>
+  <Set.Reprocess>
+    <summary>Specifies how many times and for how long Visual FoxPro attempts to lock a file or record after an unsuccessful locking attempt.</summary>
+  </Set.Reprocess>
+  <Set.Safety>
+    <summary>Determines whether Visual FoxPro displays a dialog box before overwriting an existing file.</summary>
+  </Set.Safety>
+  <Set.Separator>
+    <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
+  </Set.Separator>
+  <Set.User>
+    <summary>Start of User Defines Settings. </summary>
+  </Set.User>
+  <Set.Space>
+    <summary>FoxPro: Add Space between ? and ?? field expressions</summary>
+  </Set.Space>
+  <Set.SqlBuffering>
+    <summary>Specifies if data in a SQL - SELECT statement is based on buffered data or data written to disk.</summary>
+  </Set.SqlBuffering>
+  <Set.SqlAnsi>
+    <summary>Specifies whether to pad a shorter string with spaces when making a SQL string comparison or binary expression with zero (0) bytes when making a binary expression comparison in SQL commands using the equal sign operator (=).</summary>
+  </Set.SqlAnsi>
+  <Set.TextMerge>
+    <summary>FoxPro: Is Textmerge enabled.</summary>
+  </Set.TextMerge>
+  <Set.WithStack>
+    <summary>Specifies how character data expressions are mapped to query result sets.</summary>
+  </Set.WithStack>
+  <DateCountry.American>
+    <summary>mm/dd/yy  mm/dd/yyyy</summary>
+  </DateCountry.American>
+  <DateCountry.Ansi>
+    <summary>yy.mm.dd  yyyy.mm.dd</summary>
+  </DateCountry.Ansi>
+  <DateCountry.British>
+    <summary>dd/mm/yy  dd/mm/yyyy</summary>
+  </DateCountry.British>
+  <DateCountry.German>
+    <summary>dd.mm.yy  dd.mm.yyyy</summary>
+  </DateCountry.German>
+  <DateCountry.Italian>
+    <summary>mm/dd/yy  mm/dd/yyyy</summary>
+  </DateCountry.Italian>
+  <DateCountry.Japanese>
+    <summary>yy/mm/dd  yyyy/mm/dd</summary>
+  </DateCountry.Japanese>
+  <DateCountry.USA>
+    <summary>mm-dd-yy  mm-dd-yyyy </summary>
+  </DateCountry.USA>
+  <DateCountry.Taiwan>
+    <summary>yy/mm/dd  yyyy/mm/dd</summary>
+  </DateCountry.Taiwan>
+  <DateCountry.System>
+    <summary>Get the format from the System</summary>
+  </DateCountry.System>
+  <AutoShareMode>
+    <summary>This enum specifies how files should be opened.</summary>
+  </AutoShareMode>
+  <DbLockMode>
+    <summary>This enum specifies the lock modes.</summary>
+  </DbLockMode>
+</members>

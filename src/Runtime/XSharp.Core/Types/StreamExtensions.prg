@@ -17,8 +17,7 @@ USING System.Runtime.CompilerServices
 BEGIN NAMESPACE XSharp
     STATIC CLASS FileStreamExensions
 
-        /// <summary>Read data at a location in the file. Makes sure that file locations are >= 0</summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamRead/*" />
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeReadAt/*" />
         STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos AS INT64, buffer AS BYTE[], length AS LONG) AS LOGIC
             Debug.Assert(pos >= 0)
             IF pos < 0
@@ -32,8 +31,7 @@ BEGIN NAMESPACE XSharp
             RETURN oStream:SafeRead(buffer, length)
 
 
-        /// <summary>Read data from a stream. Contains TRY CATCH mechanism. Reads from current location.</summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamRead/*" />
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeRead/*" />
         STATIC METHOD SafeRead(SELF oStream AS FileStream, buffer AS BYTE[], length AS LONG) AS LOGIC
             LOCAL result AS LONG
             TRY
@@ -43,8 +41,7 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result == length
 
-        /// <summary>Read data from a stream. Contains TRY CATCH mechanism. Reads from current location.</summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamRead/*" />
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeRead_2/*" />
         STATIC METHOD SafeRead(SELF oStream AS FileStream, buffer AS BYTE[], length AS LONG, lread OUT LONG) AS LOGIC
             LOCAL result AS LOGIC
             lread := -1
@@ -62,8 +59,7 @@ BEGIN NAMESPACE XSharp
             RETURN result
 
 
-        /// <summary>Write data at a location in the file. Makes sure that file locations are >= 0. </summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamWrite/*" />
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeWriteAt/*" />
         STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos AS INT64, buffer AS BYTE[], length AS LONG) AS LOGIC
             Debug.Assert(pos >= 0)
             IF pos < 0
@@ -78,8 +74,7 @@ BEGIN NAMESPACE XSharp
             return ok
 
 
-        /// <summary>Write data to a stream. Contains TRY CATCH mechanism. Writes to the current location.</summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamWrite/*" />
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeWrite/*" />
         STATIC METHOD SafeWrite(SELF oStream AS FileStream, buffer AS BYTE[], length AS LONG) AS LOGIC
             LOCAL result AS LOGIC
             TRY
@@ -90,8 +85,7 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result
 
-       /// <summary>Write data to a stream. Contains TRY CATCH mechanism. Writes to the current location.</summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamWrite/*" />
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeWriteByte/*" />
         STATIC METHOD SafeWriteByte(SELF oStream AS FileStream, b AS BYTE) AS LOGIC
             LOCAL result AS LOGIC
             TRY
@@ -102,8 +96,7 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result
 
-        /// <summary>Sets the location of a stream. Contains TRY CATCH mechanism. .</summary>
-        /// <include file="CoreComments.xml" path="Comments/StreamWrite/*" />
+         /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeSetPos/*" />
          STATIC METHOD SafeSetPos(SELF oStream AS FileStream, offset AS INT64) AS LOGIC
             LOCAL result AS LOGIC
             TRY
@@ -118,11 +111,7 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result
 
-        /// <summary>Locks a region in a stream. Contains TRY CATCH mechanism. </summary>
-        /// <param name="oStream">The stream to lock.</param>
-        /// <param name="offset">Start of the region to lock. The method checks to see that the location is >= 0.</param>
-        /// <param name="length">Size of the region to lock. The method checks to see that the size is > 0.</param>
-        /// <returns>TRUE when succesfull, FALSE when an exception occurred during reading or when offset or length were invalid.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeLock/*" />
         STATIC METHOD SafeLock(SELF oStream AS FileStream, offset AS INT64, length AS INT64) AS LOGIC
            LOCAL result AS LOGIC
             TRY
@@ -141,11 +130,7 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result
 
-        /// <summary>Unlocks a region in a stream. Contains TRY CATCH mechanism. </summary>
-        /// <param name="oStream">The stream to unlock.</param>
-        /// <param name="offset">Start of the region to unlock. The method checks to see that the location is >= 0.</param>
-        /// <param name="length">Size of the region to unlock. The method checks to see that the size is > 0.</param>
-        /// <returns>TRUE when succesfull, FALSE when an exception occurred during reading or when offset or length were invalid.</returns>
+         /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeUnlock/*" />
          STATIC METHOD SafeUnlock(SELF oStream AS FileStream, offset AS INT64, length AS INT64) AS LOGIC
            LOCAL result AS LOGIC
             TRY
@@ -164,10 +149,7 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result
 
-        /// <summary>Sets the length of a stream. Contains TRY CATCH mechanism. </summary>
-        /// <param name="oStream">The stream for which to set the lengt.</param>
-        /// <param name="length">The new length of the stream. The method checks to see that the location is &gt;= 0.</param>
-        /// <returns>TRUE when succesfull, FALSE when an exception occurred during reading or when the length &lt; 0</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/FileStreamExensions.SafeSetLength/*" />
         STATIC METHOD SafeSetLength(SELF oStream AS FileStream, length AS INT64) AS LOGIC
            LOCAL result AS LOGIC
             TRY

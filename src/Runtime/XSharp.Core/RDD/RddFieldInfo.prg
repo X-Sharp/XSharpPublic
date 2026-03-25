@@ -13,7 +13,7 @@ USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.RDD.Support
 
-/// <summary>Helper class for the RDD system to store field information</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo/*" />
 CLASS RddFieldInfo
 #region static
     static private TypeMap as Dictionary<STRING, DbFieldType>
@@ -47,29 +47,28 @@ CLASS RddFieldInfo
         RETURN DbFieldType.Unknown
 #endregion
 
-    /// <summary>Name, normally max 10 characters</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Name/*" />
     PUBLIC Name 		AS STRING
-    /// <summary>Field Type</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.FieldType/*" />
     PUBLIC FieldType 	AS DbFieldType
-    /// <summary>Physical length in the table</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Length/*" />
     PUBLIC Length 		AS LONG
-    /// <summary>Decimal positions</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Decimals/*" />
     PUBLIC Decimals 	AS LONG
-    /// <summary>Alternative name, no length limit. This is the Caption for VFP fields</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Alias/*" />
     PUBLIC Alias 		AS STRING
-    /// <summary>Flags, such as Nullable, AutoIncrement, Binary etc.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Flags/*" />
     PUBLIC Flags        AS DBFFieldFlags
-    /// <summary>Offset in the record buffer for DBF fields.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Offset/*" />
     PUBLIC Offset       AS LONG
-    /// <summary>1 based Ordinal position in the RDD.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Ordinal/*" />
     PUBLIC Ordinal      AS LONG
-    /// <summary>Next key for autoincrement columns.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.NextValue/*" />
     PUBLIC NextValue    AS LONG
-    /// <summary>Step value for autoincrement columns.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.StepValue/*" />
     PUBLIC StepValue    AS LONG
 
-    /// <summary>Dynamic list of optional properties, such as Caption, Description.</summary>
-    /// <remarks>These properties are used to store VFP specific properties and are read from the DBC file.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Properties/*" />
     PUBLIC PROPERTY Properties AS DatabasePropertyCollection
         GET
             if _lazyProperties == NULL
@@ -82,9 +81,9 @@ CLASS RddFieldInfo
         END SET
     END PROPERTY
     PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
-    /// <summary>Does the field have properties.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.HasProperties/*" />
     property HasProperties as logic get _lazyProperties != null
-    /// <summary>FieldType as a string</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.FieldTypeFlags/*" />
     property FieldTypeFlags as string
         get
             if self:Flags == DBFFieldFlags.None
@@ -115,12 +114,7 @@ CLASS RddFieldInfo
         end get
 
     end property
-    /// <summary>Construct a RddFieldInfo object.</summary>
-    /// <param name="sName">Name</param>
-    /// <param name="sType">Type, may also contain flags in the form of a colon follwed by N,0,B,+,Z,E,U</param>
-    /// <param name="nLength">Length 'DBF style', so length in Buffer</param>
-    /// <param name="nDecimals">Number of decimals. </param>
-    /// <param name="nOffSet">Offset in record buffer (optional).</param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.ctor/*" />
     CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
         Name 		:= sName
         Length 		:= nLength
@@ -158,13 +152,7 @@ CLASS RddFieldInfo
         SELF:Offset := nOffSet
         SELF:Validate()
         RETURN
-    /// <summary>Construct a RddFieldInfo object.</summary>
-    /// <param name="sName">Name</param>
-    /// <param name="nType">Type</param>
-    /// <param name="nLength">Length 'DBF style', so length in Buffer</param>
-    /// <param name="nDecimals">Number of decimals. </param>
-    /// <param name="nOffSet">Offset in record buffer (optional)</param>
-    /// <param name="nFlags">Flags (optional)</param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.ctor_2/*" />
     CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DBFFieldFlags.None AS DBFFieldFlags)
         self:Name 		:= sName
         SELF:FieldType 	:= nType
@@ -176,16 +164,13 @@ CLASS RddFieldInfo
         SELF:Validate()
         RETURN
 
-    /// <summary>Construct a RddFieldInfo object.</summary>
-    /// <param name="oInfo">Object to copy values from.</param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.ctor_3/*" />
     CONSTRUCTOR(oInfo AS RddFieldInfo)
         SUPER()
         SELF:CopyValues(oInfo)
         SELF:Validate()
 
-    /// <summary>Copy values from one object to another.</summary>
-    /// <param name="oInfo">Object to copy values to.</param>
-    /// <remarks>Only the fields will be copied.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.CopyValues/*" />
     METHOD CopyValues(oInfo AS RddFieldInfo) AS VOID
         VAR oFields    := typeof(RddFieldInfo):GetFields()
         foreach var oField in oFields
@@ -200,7 +185,7 @@ CLASS RddFieldInfo
         next
         SELF:Name := SELF:Name:ToUpper()
         return
-    /// <summary>Return the blank (non null) value of the column.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.BlankValue/*" />
     METHOD BlankValue() AS OBJECT
         SWITCH SELF:FieldType
         CASE DbFieldType.Character
@@ -227,16 +212,16 @@ CLASS RddFieldInfo
             RETURN 0.0
         END SWITCH
         RETURN NULL
-    /// <summary>Clone a RddFieldInfo object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Clone/*" />
     METHOD Clone() AS RddFieldInfo
         VAR info := (RddFieldInfo) SELF:MemberwiseClone()
         RETURN info
 
-    /// <summary>Check if two fields match in type, length and decimals.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.SameType/*" />
     METHOD SameType(oFld AS RddFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 
-    /// <summary>Validate combinations of type, length and decimals.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Validate/*" />
     VIRTUAL METHOD Validate() AS LOGIC
         SWITCH SELF:FieldType
         CASE DbFieldType.Date
@@ -272,29 +257,29 @@ CLASS RddFieldInfo
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Flags:ToString("G")+")"
 
-    /// <summary>Field type as 1 character string.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.FieldTypeStr/*" />
     PROPERTY FieldTypeStr       AS STRING GET ((CHAR) SELF:FieldType):ToString()
-    /// <summary>Is it a memo ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsMemo/*" />
     PROPERTY IsMemo             AS LOGIC GET SELF:FieldType:IsMemo()
-    /// <summary>Is it binary ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsBinary/*" />
     PROPERTY IsBinary           AS LOGIC GET SELF:FieldType:IsBinary() .OR. SELF:Flags:HasFlag(DBFFieldFlags.Binary)
-    /// <summary>Is it nullable ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsNullable/*" />
     PROPERTY IsNullable         AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Nullable)
-    /// <summary>Is it an autoincrement ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsAutoIncrement/*" />
     PROPERTY IsAutoIncrement    AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-    /// <summary>Is it a standard Dbase 3 field (CDLMN) ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsStandard/*" />
     PROPERTY IsStandard         AS LOGIC GET SELF:FieldType:IsStandard()
-    /// <summary>Is it a VFP extended field ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsVfp/*" />
     PROPERTY IsVfp              AS LOGIC GET SELF:FieldType:IsVfp()
-    /// <summary>Is it a variable length field ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsVarLength/*" />
     PROPERTY IsVarLength        AS LOGIC GET SELF:FieldType:IsVarLength()
-    /// <summary>Is it a unicode text ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsUnicode/*" />
     PROPERTY IsUnicode          AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Unicode)
-    /// <summary>Is it an encryped field (not implemented yet)?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsEncrypted/*" />
     PROPERTY IsEncrypted        AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Encrypted)
-    /// <summary>Is it a  compressed field (not implemented yet) ?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsCompressed/*" />
     PROPERTY IsCompressed       AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Compressed)
-    /// <summary>Can the field be sorted?</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.CanSort/*" />
     PROPERTY CanSort            AS LOGIC
         GET
             SWITCH SELF:FieldType
@@ -325,61 +310,52 @@ CLASS RddFieldInfo
         return default(T)
 
     // These dynamic properties can be used to automatically generate databrowsers etc.
-    /// <summary>Dynamic property for the Caption. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Caption/*" />
     PROPERTY Caption      AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.Caption) DEFAULT SELF:Name;
         SET SELF:Properties:Add(DatabasePropertyType.Caption, value)
 
-    /// <summary>Dynamic property for the Description. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Description/*" />
     PROPERTY Description  AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.Comment)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.Comment, value)
 
-    /// <summary>Dynamic property for the InputMask. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.InputMask/*" />
     PROPERTY InputMask    AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.InputMask)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.InputMask, value)
 
-    /// <summary>Dynamic property for the Format. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.Format/*" />
     PROPERTY Format       AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.Format)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.Format, value)
 
-    /// <summary>Dynamic property for the ColumnName. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.ColumnName/*" />
     PROPERTY ColumnName   AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.ColumnName)  DEFAULT SELF:Name;
         SET SELF:Properties:Add(DatabasePropertyType.ColumnName, value)
 
-    /// <summary>Dynamic property for the PrimaryKey. Read from the VFP properties collection.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.PrimaryKey/*" />
     PROPERTY PrimaryKey   AS LOGIC ;
         GET SELF:_GetPropertyValue<LOGIC>(DatabasePropertyType.KeyField)   ;
         SET SELF:Properties:Add(DatabasePropertyType.KeyField, value)
 
-    /// <summary>Dynamic property for the DefaultValue. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.DefaultValue/*" />
     PROPERTY DefaultValue   AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.DefaultValue)  DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.DefaultValue, value)
 
-    /// <summary>Dynamic property for the IsUnique. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.IsUnique/*" />
     PROPERTY IsUnique   AS LOGIC ;
         GET SELF:_GetPropertyValue<LOGIC>(DatabasePropertyType.IsUnique)  ;
         SET SELF:Properties:Add(DatabasePropertyType.IsUnique, value)
 
-    /// <summary>Dynamic property for the RuleExpression. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.RuleExpression/*" />
     PROPERTY RuleExpression   AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.RuleExpression)    DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.RuleExpression, value)
 
-    /// <summary>Dynamic property for the RuleText. Read from the VFP properties collection.</summary>
-    /// <seealso cref="P:Properties"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.RuleText/*" />
     PROPERTY RuleText   AS STRING ;
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.RuleText)    DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.RuleText, value)

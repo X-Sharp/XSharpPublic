@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,17 +8,17 @@ USING System.Collections.Concurrent
 USING System.Reflection
 #define XSHARPRDD "XSharp.Rdd"  // Make sure this is the same as the file name for XSharp.Rdd (includin the case)
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>This class is used to register RDD names with the matching System.Types</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD/*" />
     CLASS RegisteredRDD
-        /// <summary>Name of the assembly where the RDD is defined.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.AssemblyName/*" />
         PROPERTY AssemblyName   AS STRING AUTO
-        /// <summary>Assembly object where the RDD is defined</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.Assembly/*" />
         PROPERTY Assembly       AS Assembly AUTO
-        /// <summary>'Common' name of the RDD</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.RddName/*" />
         PROPERTY RddName        AS STRING AUTO
-        /// <summary>Type of the RDD</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.RddType/*" />
         PROPERTY RddType        AS System.Type AUTO
-        /// <summary>Fully qualified type name of the RDD</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.TypeName/*" />
         PROPERTY TypeName       AS STRING AUTO
         STATIC PRIVATE RDDs     AS ConcurrentDictionary<STRING, RegisteredRDD>
 
@@ -79,16 +79,14 @@ BEGIN NAMESPACE XSharp.RDD
 
             RETURN
 
-        /// <summary>Locate an entry for a particular RDD name</summary>
-        /// <returns>NULL when no RDD registration found.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.Find/*" />
         STATIC METHOD Find(cRddName AS STRING) AS RegisteredRDD
             IF RDDs:TryGetValue(cRddName, OUT oRdd AS RegisteredRDD)
                 RETURN oRdd
             ENDIF
             RETURN NULL
 
-        /// <summary>Add a registration for a new RDD.</summary>
-        /// <returns>FALSE when the RDD name is already registered, TRUE when the registration succeeded.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.Add/*" />
         STATIC METHOD Add(oRdd AS RegisteredRDD) AS LOGIC
             LOCAL cRddName AS STRING
             cRddName := oRdd:RddName
@@ -97,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN FALSE
 
-        /// <summary> try to resolve the RDD </summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/RegisteredRDD.Load/*" />
         METHOD Load() AS VOID
             IF SELF:RddType == NULL
                 IF SELF:Assembly == NULL

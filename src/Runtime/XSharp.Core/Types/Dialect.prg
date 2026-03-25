@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,7 +7,7 @@
 
 
 BEGIN NAMESPACE XSharp
-    /// <summary>This enum lists the various dialects possible in XSharp. The enum MUST match the dialect values inside the compiler </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/XSharpDialect/*" />
     ENUM XSharpDialect
         MEMBER Core     := 0
         MEMBER VO       := 1

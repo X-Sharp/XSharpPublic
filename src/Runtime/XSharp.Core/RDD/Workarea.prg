@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -20,39 +20,39 @@ BEGIN NAMESPACE XSharp.RDD
         // That is handled in the DBF class which inherits from RddBase
         #region Fields
         PROTECTED _Disposed     AS LOGIC
-        /// <summary>Workarea Number (1 based) </summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Area/*" />
         PROTECTED _Area			AS DWORD
-        /// <summary> Unique Alias </summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Alias/*" />
         PROTECTED _Alias			AS STRING
         PROTECTED _FileName		AS STRING
-        /// <summary>List of Fields</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Fields/*" />
         PUBLIC _Fields		    AS RddFieldInfo[]
         PROTECTED _fieldNames   AS Dictionary<STRING, INT>
         PRIVATE _currentField   AS LONG
-        /// <summary>Is at BOF ?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._BoF/*" />
         PROTECTED _BoF			    AS LOGIC
         PROTECTED _Bottom		    AS LOGIC
         PROTECTED _Closed           AS LOGIC
         PROTECTED _EoF			    AS LOGIC
         PROTECTED _Found			AS LOGIC
         PROTECTED _Top			    AS LOGIC
-        /// <summary>Result of last macro evaluation</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Result/*" />
         PROTECTED _Result		    AS OBJECT
-        /// <summary>Current Scope</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._ScopeInfo/*" />
         PROTECTED _ScopeInfo		AS DbScopeInfo
         PROTECTED _FilterInfo	    AS DbFilterInfo
         PROTECTED _OpenInfo		    AS DbOpenInfo
         PROTECTED _OrderCondInfo	AS DbOrderCondInfo
-		/// <summary>List of children</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Relations/*" />
         PROTECTED _Relations       AS List<DbRelInfo>
-        /// <summary># of parents</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Parents/*" />
         PROTECTED _Parents		    AS LONG
-        /// <summary>Maximum fieldname length (Advantage supports field names > 10 characters)</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._MaxFieldNameLength/*" />
         PROTECTED _MaxFieldNameLength AS LONG	//
 
         // Some flags that are stored here but managed in subclasses
         PROTECTED _TransRec		AS LOGIC
-        /// <summary>Size of record</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._RecordLength/*" />
         PROTECTED _RecordLength	AS LONG
         PROTECTED _RecordBuffer	AS BYTE[]
         /// <summary>Field delimiter (for DELIM RDD)</summary>
@@ -60,24 +60,24 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>String delimiter (for DELIM RDD)</summary>
         PROTECTED _Separator	:= e"\""  AS STRING
         PROTECTED _ReadOnly		AS LOGIC
-        /// <summary> Is the file opened Shared ?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Shared/*" />
         PROTECTED _Shared			AS LOGIC
-        /// <summary>File handle of the current file</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._hFile/*" />
         PROTECTED _hFile			AS IntPtr
-        /// <summary>Should the file be flushed (it is dirty) ?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Flush/*" />
         PROTECTED _Flush			AS LOGIC
         PROTECTED _IsFileBased      AS LOGIC
 
         // Memo and Order Implementation
         PROTECTED _Memo			AS IMemo
-        /// <summary>Current index implementation.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._Order/*" />
         PROTECTED _Order			AS IOrder
 
-        /// <summary>Result of the last Block evaluation.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea._EvalResult/*" />
         PROTECTED _EvalResult    AS OBJECT
-        /// <summary>Has the workarea been closed.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.Closed/*" />
         PUBLIC PROPERTY Closed as LOGIC => SELF:_Closed
-        /// <summary>File information from the Open/Create methods</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.OpenInfo/*" />
         PUBLIC PROPERTY OpenInfo AS DbOpenInfo => SELF:_OpenInfo
         PUBLIC PROPERTY Properties AS DatabasePropertyCollection
             GET
@@ -91,9 +91,9 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
-        /// <summary>Does the workarea have properties.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.HasProperties/*" />
         PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
-        /// <summary>Does the workarea have relations.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.HasRelations/*" />
         PROPERTY HasRelations   AS LOGIC GET _Relations:Count > 0
         #endregion
             /// <exclude />
@@ -503,7 +503,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN TRUE
-        /// <summary>Set the Number of Fields the AddField Method will add.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.SetFieldExtent/*" />
         VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
             SELF:_Fields        := RddFieldInfo[]{ fieldCount }
             SELF:_fieldNames	:= Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
@@ -688,11 +688,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         END PROPERTY
 
-        /// <summary>
-        /// Return the (1 based) RddFieldInfo object for the specified field
-        /// </summary>
-        /// <param name="nFldPos">1 based index</param>
-        /// <returns>FieldInfo object or NULL when the index is not valid</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.GetField/*" />
         VIRTUAL METHOD GetField(nFldPos AS INT) AS RddFieldInfo
             IF SELF:_FieldIndexValidate(nFldPos)
                 RETURN SELF:_Fields[nFldPos-1]
@@ -1222,19 +1218,19 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         VIRTUAL PROPERTY Found AS LOGIC GET _Found SET _Found := value
 
-        /// <summary>Current memo implementation.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.Memo/*" />
         PROPERTY Memo  AS IMemo GET _Memo SET _Memo := @@value
 
-        /// <summary>Current Order condition</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.OrderCondInfo/*" />
         PROPERTY OrderCondInfo AS DbOrderCondInfo GET _OrderCondInfo SET _OrderCondInfo := @@value
 
-        /// <summary>File name of the main file</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.FileName/*" />
         PROPERTY FileName AS STRING GET _FileName
 
-        /// <summary>Current Filter</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.FilterInfo/*" />
         PROPERTY FilterInfo AS DbFilterInfo GET _FilterInfo
 
-        /// <summary>Current Record</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.RecordBuffer/*" />
         PROPERTY RecordBuffer AS BYTE[] GET _RecordBuffer
 
 
@@ -1249,13 +1245,13 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         VIRTUAL PROPERTY Shared AS LOGIC GET _Shared
 
-        /// <summary> Is the file opened ReadOnly ?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.ReadOnly/*" />
         VIRTUAL PROPERTY ReadOnly AS LOGIC GET _ReadOnly
 
-        /// <summary>Is at top?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.Top/*" />
         PROPERTY Top    AS LOGIC GET _Top       SET _Top    := @@value
 
-        /// <summary>Is at bottom ?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/Workarea.Bottom/*" />
         PROPERTY Bottom AS LOGIC GET _Bottom    SET _Bottom := @@value
 
 

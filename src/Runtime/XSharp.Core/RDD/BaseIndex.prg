@@ -1,18 +1,16 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Support
 
-/// <summary>Base Index class. Does not implement anything. </summary>
-/// <seealso cref="IOrder"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/BaseIndex/*" />
 CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	PRIVATE _oArea AS Workarea
 
-	/// <summary>Create the BaseIndex object</summary>
-	/// <param name="oArea">Workarea object that 'owns' this index object </param>
 
+ /// <include file="XSharp.Core.Docs.xml" path="doc/BaseIndex.ctor/*" />
 	CONSTRUCTOR(oArea AS Workarea)
 		_oArea := oArea
 

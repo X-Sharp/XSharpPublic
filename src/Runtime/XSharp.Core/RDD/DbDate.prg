@@ -1,12 +1,10 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary>
-/// <seealso cref="T:XSharp.IDate"/>
-/// <seealso cref="T:XSharp.__Date"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbDate/*" />
 STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	/// <inheritdoc />
 	PROPERTY Year		AS INT AUTO GET PRIVATE SET
@@ -18,7 +16,7 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	PROPERTY @@Value		AS DateTime GET DateTime{Year, Month, Day}
 	/// <inheritdoc />
 	PROPERTY IsEmpty	AS LOGIC GET Month == 0
-    /// <summary></summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbDate.ctor/*" />
 	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)
 		Year	:= nYear
 		Month   := nMonth

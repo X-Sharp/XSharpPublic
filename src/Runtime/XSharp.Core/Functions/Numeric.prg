@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -61,12 +61,7 @@ FUNCTION SwapLong(liSwap AS LONG) AS LONG
 	RETURN liSwap
 
 
-/// <summary>
-/// Exchange the right and left halves of a Int64
-/// </summary>
-/// <param name="i64"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SwapInt64/*" />
 FUNCTION SwapInt64( i64 AS INT64 ) AS INT64
    RETURN (INT64)  ( i64 << 32 ) | ( i64 >> 32 ) 
 

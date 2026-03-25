@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,9 +7,8 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Linq
-/// <summary>This delegate is used when you want to implement your own function for the logic behind the File() function. You can register your own FileSearcher by calling the RegisterFileSearch() function.</summary>
-/// <seealso cref='RegisterFileSearch' >RegisterFileSearch() Function</seealso>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/XSharp.FileSearcher/*" />
 PUBLIC DELEGATE XSharp.FileSearcher(cIn AS STRING) AS STRING
 INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>
@@ -218,14 +217,7 @@ INTERNAL FUNCTION FileSearchWorker(cFile AS STRING) AS STRING
     NEXT
     RETURN ""
 
-    /// <summary>
-    /// Register Worker function for File Search API.
-    /// </summary>
-    /// <param name="newWorker">Function that implements the worker. Must implement the FileSearcher delegate, so take STRING parameter and return a STRING</param>
-    /// <returns>
-    /// current Worker function
-    /// </returns>
-    /// <seealso cref="FileSearcher">FileSearcher Delegate </seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/RegisterFileSearch/*" />
 FUNCTION RegisterFileSearch(newWorker AS FileSearcher) AS FileSearcher
     LOCAL oldWorker AS FileSearcher
     oldWorker := XSharp.FileSearch.Worker

@@ -10,101 +10,83 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp
-  /// <summary>This enum is used to describe the type of USUAL values in the X# Runtime.
-  /// It is based on the original USUAL type values in the VO runtime and has been extended with some additional type numbers.
-  /// </summary>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType/*" />
   ENUM __UsualType AS BYTE
         // These numbers must match with the types defined in the compiler
         // They also match with the USUAL types in VO (BaseType.h)
-        /// <summary>The usual contains a NIL.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Void/*" />
         MEMBER Void		:=0
-        /// <summary>The usual contains a LONG value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Long/*" />
         MEMBER Long		:=1
-        /// <summary>The usual contains a DATE value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Date/*" />
         MEMBER Date		:=2
-        /// <summary>The usual contains a FLOAT value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Float/*" />
         MEMBER Float	:=3
-        /// <summary>This value is NEVER used for USUALs (this was also defined in VO but never used).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Fixed/*" />
         MEMBER Fixed    := 4
-        /// <summary>The usual contains an ARRAY value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Array/*" />
         MEMBER Array	:=5
-        /// <summary>The usual contains an OBJECT value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Object/*" />
         MEMBER Object	:=6
-        /// <summary>The usual contains an STRING value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.String/*" />
         MEMBER String	:=7
-        /// <summary>The usual contains an LOGIC value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Logic/*" />
         MEMBER Logic	:=8
-        /// <summary>The usual contains an CODEBLOCK value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Codeblock/*" />
         MEMBER Codeblock:=9
-        /// <summary>The usual contains an SYMBOL value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Symbol/*" />
         MEMBER Symbol	:=10
         // see below for missing values
         // The follow numbers are defined but never stored inside a USUAL in VO and Vulcan
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Byte values are stored as LONG.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Byte/*" />
         MEMBER Byte		:=11
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Short values are stored as LONG.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.ShortInt/*" />
         MEMBER ShortInt	:=12
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Word values are stored as LONG.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Word/*" />
         MEMBER Word		:=13
-        /// <summary>This value is in the enum for completeness but never used inside a usual. DWord values are stored as LONG or FLOAT.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.DWord/*" />
         MEMBER DWord	:=14
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Real4 values are stored as FLOAT</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Real4/*" />
         MEMBER Real4	:=15
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Real8 values are stored as FLOAT.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Real8/*" />
         MEMBER Real8	:=16
-        /// <summary>This value is in the enum for completeness but never used inside a usual.</summary>
-        /// <summary>The usual contains an PSZ value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Psz/*" />
         MEMBER Psz		:=17
-        /// <summary>The usual contains an PTR value</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Ptr/*" />
         MEMBER Ptr		:=18
         /// <exclude/>
         MEMBER Usual	:=19	// USUAL by Ref, not implemented in Vulcan
 
         // 20 and 21 not used
 
-        /// <summary>The usual contains an INT64 value (new in Vulcan and X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Int64/*" />
         MEMBER Int64		:=22
-        /// <summary>The usual contains an UINT64 value (new in Vulcan and X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.UInt64/*" />
         MEMBER UInt64     :=23
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Char values are stored as LONG</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Char/*" />
         MEMBER Char		:=24    // not stored in a usual
-        /// <summary>This value is in the enum for completeness but never used inside a usual. Dynamic values are stored as OBJECT</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Dynamic/*" />
         MEMBER Dynamic    :=25
-        /// <summary>The usual contains a DateTime value (new in X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.DateTime/*" />
         MEMBER DateTime	:=26
-        /// <summary>The usual contains a Decimal value (new in X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Decimal/*" />
         MEMBER Decimal	:=27
-        /// <summary>The usual contains a Currency value (new in X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Currency/*" />
         MEMBER Currency	:=28
-        /// <summary>The usual contains a Binary value (new in X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Binary/*" />
         MEMBER Binary	:=29
-        /// <summary>The usual contains a DBNull.Value value (new in X#).</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Null/*" />
         MEMBER Null	    := 30
-        /// <summary>The usual contains an Memo value. This value is there for compatibility with VO but never used.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Memo/*" />
         MEMBER Memo		:=32	// Used in RDD system in VO
-        /// <summary>Invalid Usual Type.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/__UsualType.Invalid/*" />
         MEMBER Invalid    :=99
     END ENUM
 
 END NAMESPACE // global::XSharp.Types
 
 
-/// <summary>
-/// Calculate the Usual Type for a System Type
-/// </summary>
-/// <remarks>
-/// You can use this function in assemblies that do not have a reference to XSharp.RT to determine the type of a value
-/// </remarks>
-/// <example>
-/// This example converts a symbol that is passed inside an object to a string
-/// <code language="X#">
-/// if SystemTypeToUsualType(oOrder:GetType()) == __UsualType.Symbol
-///    oOrder := oOrder:ToString()
-/// endif
-/// </code>
-/// </example>
-/// <param name="oType">The type of the value to check</param>
-/// <returns>A value from the __UsualType enum</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SystemTypeToUsualType/*" />
 FUNCTION SystemTypeToUsualType(oType as System.Type) AS __UsualType
 switch Type.GetTypeCode(oType)
     case TypeCode.Boolean

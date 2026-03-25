@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.IO
         END CLASS
     END CLASS
 
-    /// <summary>This class was inspired by the DiskIO module in Visual Objects</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/PageBuffers/*" />
     INTERNAL CLASS PageBuffers
         [DebuggerDisplay("{Key}")];
         INTERNAL CLASS FilePage
@@ -173,7 +173,7 @@ BEGIN NAMESPACE XSharp.IO
 
     END CLASS
 
-    /// <summary>This class performs buffered IO to files opened exclusively</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream/*" />
     CLASS XsBufferedFileStream INHERIT XsFileStream
 
         PUBLIC CONST BUFF_SIZE  := 0x400 AS LONG
@@ -189,7 +189,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position := 0
             SELF:_callOriginalMethods := FALSE
 
-        /// <summary>Bypass the buffered Read mechanism and call the original Read() method in the base class</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.XRead/*" />
         PUBLIC METHOD XRead(page AS INT64,bytes AS BYTE[] , count AS INT) AS INT
             SELF:_callOriginalMethods := TRUE
             SELF:Position := page
@@ -197,7 +197,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:_callOriginalMethods := FALSE
             RETURN result
 
-        /// <summary>Bypass the buffered Write mechanism and call the original Write() method in the base class</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.XWrite/*" />
         PUBLIC METHOD XWrite(page AS INT64, bytes AS BYTE[] , count AS INT) AS LOGIC
             SELF:_callOriginalMethods := TRUE
             SELF:Position := page
@@ -232,16 +232,15 @@ BEGIN NAMESPACE XSharp.IO
 
         END PROPERTY
 
-        /// <inheritdoc />
 
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD SetLength (newLength AS INT64) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:SetLength(newLength)
             ENDIF
             _length := newLength
 
-        /// <inheritdoc />
-        /// <remarks>This method overrides the normal behavior of the FileStream class and reads the data from an inmemory cache, when possible </remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.Read/*" />
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             // pages in the cache are 1 K
             IF SELF:_callOriginalMethods
@@ -274,8 +273,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position += read
         RETURN read
 
-        /// <inheritdoc />
-        /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.Write/*" />
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT, count AS INT) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:Write(bytes, offset, count)
@@ -312,8 +310,7 @@ BEGIN NAMESPACE XSharp.IO
         RETURN
 
         PRIVATE _temp := BYTE[]{1} AS BYTE[]
-        /// <inheritdoc />
-        /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.WriteByte/*" />
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:WriteByte(b)
@@ -323,8 +320,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Write(_temp, 0, 1)
         RETURN
 
-        /// <inheritdoc />
-        /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Flush() method.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.Flush/*" />
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
             PageBuffers.WritePages(SELF)
             SUPER:Flush(lCommit)
@@ -334,8 +330,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position := _length
         RETURN
 
-        /// <inheritdoc />
-        /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Close() method.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsBufferedFileStream.Close/*" />
         PUBLIC OVERRIDE METHOD Close( ) AS VOID
             IF ! SELF:_closed
                 PageBuffers.FlushPages(SELF)

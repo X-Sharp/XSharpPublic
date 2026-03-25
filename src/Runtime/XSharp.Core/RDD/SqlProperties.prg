@@ -1,59 +1,46 @@
 ﻿USING System.Collections.Generic
-/// <summary>Enum that matches the various FoxPro Sql properties, used in SqlGetProp() and SqlSetProp()</summary>
-/// <seealso cref="O:XSharp.VFP.Functions.SqlGetProp" />
-/// <seealso cref="O:XSharp.VFP.Functions.SqlSetProp" />
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty/*" />
 ENUM XSharp.RDD.SQLProperty
-    /// <summary>Specifies whether result sets are returned synchronously.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.Asynchronous/*" />
     member Asynchronous
-    /// <summary>Specifies whether SqlExec( ) returns result sets all at once (True (.T.), the default),
-    /// or individually with SqlMoreResults( ) (False (.F.)).</summary>
-    /// <seealso cref="O:XSharp.VFP.Functions.SqlExec" />
-    /// <seealso cref="O:XSharp.VFP.Functions.SqlMoreResults" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.BatchMode/*" />
     member BatchMode
-    /// <summary>Contains True (.T.) if a shared connection is busy; otherwise contains False (.F.).</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.ConnectBusy/*" />
     member ConnectBusy
-    /// <summary>The login connection string.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.ConnectString/*" />
     member ConnectString
-    /// <summary>Specifies the time to wait (in seconds) before returning a connection time-out error.
-    /// If you specify 0, the wait is indefinite and a time-out error is never returned. ConnectTimeOut can be 0 to 600. The default is 15.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.ConnectTimeOut/*" />
     member ConnectTimeOut
-    /// <summary>The name of the data source as defined in the ODBC.INI file.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.DataSource/*" />
     member DataSource
-    /// <summary>Specifies if a pending transaction is committed or rolled back when SqlDisconnect( ) is called for the last connection handle.</summary>
-    /// <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.DisconnectRollback/*" />
     MEMBER DisconnectRollback
-    /// <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.DispLogin/*" />
     member DispLogin
-    /// <summary>Specifies if error messages are displayed (True (.T.)) or are not displayed (False (.F.), the default).</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.DispWarnings/*" />
     member DispWarnings
-    /// <summary>The idle timeout interval in minutes. Active connections are deactivated after the specified time interval.
-    /// The default value is 0 (wait indefinitely).</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.IdleTimeout/*" />
     member IdleTimeout
-    /// <summary>The native commandtext in the SQLStatement object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.NativeCommand/*" />
     member NativeCommand
-    /// <summary>The internal ODBC connection, which may be used by external code to call ODBC.</summary>
-    /// <remarks>In X# this does not return the connection handle but the DbConnection object !</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.ODBChdbc/*" />
     member ODBChdbc
-    /// <summary>The internal ODBC statement , which may be used by external code to call ODBC.</summary>
-    /// <remarks>In X# this does not return the statement handle but the DbCommand object !</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.ODBChstmt/*" />
     member ODBChstmt
-    /// <summary>The size of the network packet used by the connection. Adjusting this value can improve performance.
-    /// The default value is 4096 bytes (4K).</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.PacketSize/*" />
     member PacketSize
-    /// <summary>The connection password.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.Password/*" />
     member Password
-    /// <summary>Specifies the time to wait (in seconds) before returning a general time-out error.
-    /// If you specify 0 (the default), the wait is indefinite and a time-out error is never returned. QueryTimeOut can be 0 to 600.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.QueryTimeOut/*" />
     member QueryTimeOut
-    /// <summary>Specifies whether the underlying connection is a shared connection (True (.T.)), or not (False (.F.)).</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.Shared/*" />
     member Shared
-    /// <summary>Contains a numeric value that determines how the connection manages transactions on the remote table.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.Transactions/*" />
     member Transactions
-    /// <summary>The user identification.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.UserId/*" />
     member UserId
-    /// <summary>The amount of time in milliseconds that elapses before Visual FoxPro checks if the SQL statement
-    /// has completed executing. The default is 100 milliseconds.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/SQLProperty.WaitTime/*" />
     member WaitTime
 
 END ENUM

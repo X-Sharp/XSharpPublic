@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -72,8 +72,7 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 	RETURN FCopy(cSourceFile, cTargetFile, TRUE)
 
 
-/// <inheritdoc cref="FCopy" />
-/// <param name="lOverWrite">Should the target file be overwritten.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcopy/*" />
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
 	LOCAL IsCopied := FALSE AS LOGIC
 	TRY
@@ -96,14 +95,7 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC)
 
 
 
-/// <summary><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/summary" /></summary>
-/// <returns><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/returns" /></returns>
-/// <remarks><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/remarks" /></remarks>
-/// <param name="cPath">The path name to break.</param>
-/// <param name="cDrive">The drive letter followed by a colon.  </param>
-/// <param name="cDir">The directories, including the trailing slash.  Forward slashes and backslashes both may be present in &lt;cPath&gt;.  Forward slashes (/) are converted to backslashes (\). </param>
-/// <param name="cName">The file name, without the extension.  </param>
-/// <param name="cExt">The extension, including the leading period.  </param>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_SplitPath/*" />
 FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT STRING,cExt OUT STRING) AS VOID
 	LOCAL nPos AS LONG
 	LOCAL cSeparators AS STRING

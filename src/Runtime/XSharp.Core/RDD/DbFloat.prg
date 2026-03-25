@@ -1,12 +1,10 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary>
-/// <seealso cref="T:XSharp.IFloat"/>
-/// <seealso cref="T:XSharp.__Float"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbFloat/*" />
 STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
     /// <inheritdoc />
     PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
@@ -14,7 +12,7 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
     PROPERTY Digits		AS INT AUTO GET PRIVATE SET
     /// <inheritdoc />
     PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
-    /// <summary></summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFloat.ctor/*" />
     CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
         @@Value := val
         Digits  := len

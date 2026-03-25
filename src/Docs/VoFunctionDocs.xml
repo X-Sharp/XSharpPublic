@@ -8660,7 +8660,7 @@
     <summary>
       Return the space available on a specified disk.
     </summary>
-
+    <param name="nDrive">The number of the disk drive to query, where 1 is drive A, 2 is B, 3 is C, and so on. </param>
     <param name="cDrive">
       The letter of the disk drive to query, for  example "C:", "A:". The drive can also be identified by a number, where 1 is drive A, 2 is B, 3 is C, and so on.<br/>
       If you do not specify a drive, the Windows default is used.
@@ -8728,7 +8728,7 @@
     <summary>
       Return the capacity of the specified disk.
     </summary>
-
+    <param name="cDrive">The name of the drive as a string, for example "C:", "A:". If you do not specify a drive, the Windows default is used.</param>
     <param name="nDrive">The number of the disk drive to query, where 1 is drive A, 2 is B, 3 is C, and so on. The drive can also be identified as a string, for example "C:", "A:".   If you do not specify a drive, the Windows default is used.</param>
     <returns>
       The capacity of the specified disk drive in bytes.
@@ -10022,7 +10022,7 @@
     <summary>
       Copy a file to a new file or to a device.
     </summary>
-
+    <param name="lOverWrite">Should the target file be overwritten.</param>
     <param name="cSourceFile">
       The name of the source file to copy, including an optional drive, directory, and extension.<br/>
 

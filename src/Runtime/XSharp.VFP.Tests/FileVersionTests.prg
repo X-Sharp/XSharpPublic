@@ -76,5 +76,19 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             File.Delete(tempFile)
             File.Delete(tempDbf)
         END METHOD
+
+        [Fact, Trait("Category", "FileFunctions")];
+        METHOD TestDisplayPath() AS VOID
+            VAR cPath := "C:\xsharp\projects\vfp\runtime\source\data\mydata.dbf"
+            VAR cResult := DISPLAYPATH(cPath, 30)
+
+            Assert.True(cResult:Length <= 30)
+            Assert.Equal("c:\...\source\data\mydata.dbf", cResult)
+
+            Assert.True(cResult:Length <= 30)
+
+            Assert.ThrowsAny<Exception>({ => DISPLAYPATH(cPath, 5)})
+
+        END METHOD
 	END CLASS
 END NAMESPACE // XSharp.VFP.Tests

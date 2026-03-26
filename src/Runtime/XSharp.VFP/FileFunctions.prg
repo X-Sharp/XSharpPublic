@@ -301,3 +301,49 @@ FUNCTION FAttrib(cFileName AS STRING) AS DWORD
     ENDIF
 
     RETURN 0
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/displaypath/*" />
+[FoxProFunction("DISPLAYPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION DisplayPath( cFileName AS STRING, nMaxLength AS INT) AS STRING
+    IF nMaxLength < 10 .OR. nMaxLength > 256
+        THROW Error.ArgumentError(__FUNCTION__, NAMEOF(nMaxLength), __VfpStr(VFPErrors.VFP_INVALID_PARAMETER, NAMEOF(nMaxLength)), 2)
+    ENDIF
+
+    IF String.IsNullOrEmpty(cFileName)
+        RETURN ""
+    ENDIF
+
+    cFileName := cFileName:ToLower()
+    IF cFileName:Length <= nMaxLength
+        RETURN cFileName
+    ENDIF
+
+    VAR cFile := System.IO.Path.GetFileName(cFileName)
+    VAR cFullDir := System.IO.Path.GetDirectoryName(cFileName)
+    VAR cRoot := System.IO.Path.GetPathRoot(cFileName)
+    VAR cBaseFixed := cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cFile
+
+    IF cBaseFixed:Length > nMaxLength
+        RETURN cBaseFixed:Substring(0, nMaxLength)
+    ENDIF
+
+    VAR cFoldersOnly := ""
+    IF cFullDir:StartsWith(cRoot)
+        cFoldersOnly := cFullDir:Substring(cRoot:Length)
+    ELSE
+        cFoldersOnly := cFullDir
+    ENDIF
+
+    VAR aParts := cFoldersOnly:Split(<CHAR>{System.IO.Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)
+    VAR cFoldersToDisplay := ""
+
+    FOR VAR i := aParts:Length DOWNTO 1
+        VAR cNextFolder := aParts[i] + System.IO.Path.DirectorySeparatorChar:ToString()
+        IF (cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cNextFolder + cFoldersToDisplay + cFile):Length <= nMaxLength
+            cFoldersToDisplay := cNextFolder + cFoldersToDisplay
+        ELSE
+            EXIT
+        ENDIF
+    NEXT
+
+    RETURN cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cFoldersToDisplay + cFile

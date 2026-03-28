@@ -207,6 +207,19 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(lBellState)
         END METHOD
 
+        #pragma options ("undeclared", on)
+        [Fact, Trait("Category", "General")];
+        METHOD TestVarTypeMissingVariable() AS VOID
+            LOCAL cResult AS STRING
+
+            cResult := __VfpVarType({ || SomeNonExistentVariable123 })
+            Assert.Equal("U", cResult)
+
+            cResult := __VfpVarType({ || SomeNonExistentVariable123 }, .T.)
+            Assert.Equal("U", cResult)
+        END METHOD
+        #pragma options ("undeclared", default)
+
 	END CLASS
 
 END NAMESPACE

@@ -131,3 +131,19 @@ FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
         result := ValType(eExpression)
     endif
     RETURN result
+
+FUNCTION __VfpVarType( cb AS ICodeblock, lNullDataType := FALSE AS LOGIC) AS STRING
+    LOCAL uResult AS USUAL
+    TRY
+        uResult := Eval(cb)
+    CATCH e AS Error
+        IF e:Gencode == EG_NOVAR .OR. e:Gencode == EG_NOVARMETHOD .OR. e:Gencode == EG_NOALIAS
+            RETURN "U"
+        ENDIF
+        THROW
+    CATCH
+        THROW
+    END TRY
+
+    // If success, then we call the original VarType() function.
+    RETURN @@VarType(uResult, lNullDataType)

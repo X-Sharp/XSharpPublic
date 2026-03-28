@@ -598,6 +598,7 @@
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
 
+
 // unsupported commands
 #command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
          => #error This command is not supported: <(udc)>
@@ -615,6 +616,9 @@
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )
 #endif
+
+#translate VARTYPE(<v>)      => __VfpVarType( {|| <v> } )
+#translate VARTYPE(<v>,<1>)  => __VfpVarType( {|| <v> }, <1> )
 
 #include "FoxProSql.xh"
 #endif

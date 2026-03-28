@@ -39,7 +39,14 @@
     <File Path="Docs/VfpRuntimeDocs.xml" />
     <File Path="Docs/VoFunctionDocs.xml" />
     <File Path="Docs/VOSDK.Xml" />
+    <File Path="Docs/XSharp.Core.Docs.xml" />
     <File Path="Docs/XSharp.CoreDefines.xml" />
+    <File Path="Docs/XSharp.Data.Docs.xml" />
+    <File Path="Docs/XSharp.RDD.Docs.xml" />
+    <File Path="Docs/XSharp.RT.Docs.xml" />
+    <File Path="Docs/XSharp.VFP.Docs.xml" />
+    <File Path="Docs/XSharp.VO.Docs.xml" />
+    <File Path="Docs/XSharp.XPP.Docs.xml" />
     <File Path="Docs/XsRuntimeClasses.xml" />
     <File Path="Runtime/Docs/RuntimeSpecsV1.docx" />
     <File Path="Runtime/Docs/RuntimeSpecsV2.docx" />

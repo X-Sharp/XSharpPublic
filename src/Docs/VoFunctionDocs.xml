@@ -98,17 +98,17 @@
     </summary>
     <returns>
       One of the following constants indicating the status of the window:
-      Constant	Meaning	
-      SW_HIDE	The window is hidden and another window activated	
-      SW_MINIMIZE	The window is minimized and the top-level window in the system's list is activated	
-      SW_RESTORE	Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_SHOWNORMAL).	
-      SW_SHOW	Window is activated and displayed in its current size and position	
-      SW_SHOWMAXIMIZED	Window is activated and displayed as maximized	
-      SW_SHOWMINIMIZED	Window is activated and displayed as an icon	
-      SW_SHOWMINNOACTIVE	Window is displayed as an icon, leaving the currently active window active	
-      SW_SHOWNA	Window is displayed in its current state, leaving the currently active window active	
-      SW_SHOWNOACTIVATE	Window is displayed in its most recent size and position, leaving the currently active window active	
-      SW_SHOWNORMAL	Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_RESTORE).	
+      Constant	Meaning
+      SW_HIDE	The window is hidden and another window activated
+      SW_MINIMIZE	The window is minimized and the top-level window in the system's list is activated
+      SW_RESTORE	Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_SHOWNORMAL).
+      SW_SHOW	Window is activated and displayed in its current size and position
+      SW_SHOWMAXIMIZED	Window is activated and displayed as maximized
+      SW_SHOWMINIMIZED	Window is activated and displayed as an icon
+      SW_SHOWMINNOACTIVE	Window is displayed as an icon, leaving the currently active window active
+      SW_SHOWNA	Window is displayed in its current state, leaving the currently active window active
+      SW_SHOWNOACTIVATE	Window is displayed in its most recent size and position, leaving the currently active window active
+      SW_SHOWNORMAL	Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_RESTORE).
     </returns>
     <remarks>
     </remarks>
@@ -146,11 +146,11 @@
         STRING)
         ? dwNumber
         ? xParam
-        FOR i := 2 UPTO dwNumber	
+        FOR i := 2 UPTO dwNumber
         	xParam := _GetNextParam(@pParam, STRING)
         	? xParam
         NEXT
-        RETURN	
+        RETURN
         FUNCTION Start
         	CFunc(,1, "How")
         	CFunc(,2, "How ", "are ")
@@ -179,7 +179,7 @@
         	x := LEFT(x, cb)
         	? x         // Hello World
       </code>
-      	
+
       <code language="X#">
         RESOURCE StringTable
         	{
@@ -1349,6 +1349,8 @@
     </summary>
     <remarks>
       AltD() is operational only if the application is being executed by the Debugger.
+      <note type="tip">This function is inlined by the compiler, but is included so it can be used in Macros as well.</note>
+
     </remarks>
     <example>
       This example shows how to define a breakpoint in a function using AltD():
@@ -4265,7 +4267,7 @@
         FUNCTION CheckClass()
         	LOCAL oY AS OBJECT
         	oY := Female{"Ms.", "Wonderful"}
-        	IF ClassName(oY)	= #Female							
+        	IF ClassName(oY)	= #Female
         		? "The woman belongs to the Female class."
         	ENDIF
       </code>
@@ -4351,7 +4353,7 @@
         FUNCTION InheritanceTree()
         	LOCAL a AS ARRAY
       </code>
-      	
+
       <code language="X#">
         	a := ClassTreeClass(#OldMale)
         	? ArrayGet(a, 1)			// OLDMALE
@@ -4568,7 +4570,7 @@
     <example>
       These examples illustrate ConcatAtom3():
       <code language="X#">
-        ? ConcatAtom3(#UN,#BELIEV,#ABLE)	
+        ? ConcatAtom3(#UN,#BELIEV,#ABLE)
         	// UNBELIEVABLE
         ? ConcatAtom3(#GOOD,#BYE,#GIRL) = #GOODBYEGIRL
         	// TRUE
@@ -4860,7 +4862,7 @@
         	LOCAL i             AS DWORD
         	LOCAL nID           AS DWORD
       </code>
-      	
+
       <code language="X#">
         	FOR i := 1 TO 3
         		pTData := MemAlloc(_SIZEOF(_THREADDATA))
@@ -6021,11 +6023,11 @@
       DBCopyXStruct() creates a database file whose contents is the structure of the current database file, with a record for the definition of each field.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*"/>
       The structure-extended database file has the following structure:
-      Name	Type	Length	Decimals	
-      Field_Name	Character	10		
-      Field_Type	Character	1		
-      Field_Len	Numeric	3	0	
-      Field_Dec	Numeric	3	0	
+      Name	Type	Length	Decimals
+      Field_Name	Character	10
+      Field_Type	Character	1
+      Field_Len	Numeric	3	0
+      Field_Dec	Numeric	3	0
       Used in application programs, DBCopyXStruct() permits you to create or modify the structure of a database file programmatically.<br/>
       To create a new database file from the structure-extended file, use CREATE FROM.<br/>
       If you need an empty structure-extended file, use CREATE.
@@ -6547,9 +6549,9 @@
         	? Name			// Displays name field
         	? NewName			// Also displays name field
       </code>
-      	
-      	
-      	
+
+
+
     </example>
     <seealso cref="O:XSharp.RT.Functions.DbInfo">DBInfo</seealso>
     <seealso cref="O:XSharp.RT.Functions.DbOrderInfo">DBOrderInfo</seealso>
@@ -9016,7 +9018,7 @@
         	LOCAL wI AS DWORD
         	LOCAL cDrives AS STRING
         	cDrives := NULL_STRING
-        	FOR wI := 1 UPTO 27							
+        	FOR wI := 1 UPTO 27
         		IF DiskChange(Chr(wI +64))
         			cDrives := cDrives + Chr(wI+64)
         		ENDIF
@@ -9143,7 +9145,7 @@
       <code language="X#">
         FUNCTION Start()
         	Dir AA:						// Bad device
-        	QOut(DOSErrString(DOSError()))	
+        	QOut(DOSErrString(DOSError()))
         									// Path not found
       </code>
     </example>
@@ -9168,7 +9170,7 @@
       <code language="X#">
         FUNCTION Start()
         	Dir AA:						// Bad device
-        	QOut(DOSErrString(DOSError()))	
+        	QOut(DOSErrString(DOSError()))
         									// Path not found
       </code>
     </example>
@@ -9368,7 +9370,7 @@
         ? ElapTime("23:00:00", "05:00:00")		// 06:00:00
         // Time elapsed from 5am to 11pm
         ? ElapTime("05:00:00", "23:00:00")		// 18:00:00
-        ? ElapTime(Time(), "20:01:03")		
+        ? ElapTime(Time(), "20:01:03")
         // Depends on current time
       </code>
       <br/>
@@ -10265,7 +10267,7 @@
 
       	FC_READONLY	R<br/>
 
-      	FC_SYSTEM	S	
+      	FC_SYSTEM	S
     </param>
     <returns>
       One or more of the characters indicated in the table above, depending upon what file attribute constants were specified in <paramref name="dwAttributes"/>.<br/>
@@ -10296,14 +10298,14 @@
     <returns>
       A value indicating the attributes of the current file.
       The constants in the following table can be used individually or added together to determine which attributes are applicable:
-      Constant	Description	
-      FA_DIRECTORY	Directory	
-      FA_VOLUME	Volume	
-      FC_ARCHIVED	Archived	
-      FC_HIDDEN	Hidden	
-      FC_NORMAL	Read/write	
-      FC_READONLY	Read-only	
-      FC_SYSTEM	System	
+      Constant	Description
+      FA_DIRECTORY	Directory
+      FA_VOLUME	Volume
+      FC_ARCHIVED	Archived
+      FC_HIDDEN	Hidden
+      FC_NORMAL	Read/write
+      FC_READONLY	Read-only
+      FC_SYSTEM	System
       Note:<br/>
       It is not uncommon for a file to have more than one attribute.<br/>
       For example, it may be read-only and archived, which would be represented as FC_READONLY + FC_ARCHIVED or _Or(FC_READONLY, FC_ARCHIVED).
@@ -10528,7 +10530,7 @@
 
       	FC_READONLY	Read-only file<br/>
 
-      	FC_SYSTEM	System file	
+      	FC_SYSTEM	System file
     </param>
     <returns>
       The DOS file handle number of the new file.<br/>
@@ -10583,7 +10585,7 @@
 
       	FC_READONLY	Read-only file<br/>
 
-      	FC_SYSTEM	System file	
+      	FC_SYSTEM	System file
     </param>
     <returns>
       The DOS file handle number of the new file.<br/>
@@ -10624,7 +10626,7 @@
         	? FDate()					// 08/13/98
         ENDIF
         // Next file matching *.txt
-        IF FNext()				
+        IF FNext()
         	? FDate()					// 08/21/98
         ENDIF
       </code>
@@ -10964,7 +10966,7 @@
         ptrHandle := FOpen2("docs.txt", ;
         		FO_READWRITE + FO_SHARED)
         IF ptrHandle != F_ERROR
-        	FWrite(ptrHandle, Space(100))	
+        	FWrite(ptrHandle, Space(100))
         	nKey := Inkey(50)
         	FFlush(ptrHandle)			// Save data
         ENDIF
@@ -13882,7 +13884,7 @@
         	cInstanceVar := ""
         	UnregisterAxit(SELF)
       </code>
-      	
+
       <code language="X#">
         ENDIF
         RETURN NIL
@@ -14608,7 +14610,7 @@
       <code language="X#">
         IF IsLong(uValue)
         	cTransmit := L2Bin(uValue)
-        ELSEIF IsFloat(uValue)	
+        ELSEIF IsFloat(uValue)
         	cTransmit := F2Bin(uValue)
         ENDIF
       </code>
@@ -14699,7 +14701,7 @@
         	ENDIF
         	IF IsMethod(hacker, #Speaks)
         						// Says VO, Hello World, rings a bell
-        		hacker:Speaks()	
+        		hacker:Speaks()
         	ENDIF
       </code>
     </example>
@@ -14781,7 +14783,7 @@
         IF IsMethodUsual(uO, #GoTop)
         	uO:GoTop()
         ELSE
-        	MyGoTop()	
+        	MyGoTop()
         ENDIF
       </code>
     </example>
@@ -15177,11 +15179,11 @@
     <param name="symInstanceVar">The instance variable that you want information about.</param>
     <returns>
       A numeric value that can be interpreted as follows:
-      wIvarInfo	Description	
-      0	Not found	
-      1	INSTANCE declaration	
-      2	EXPORT declaration	
-      3	ACCESS declaration	
+      wIvarInfo	Description
+      0	Not found
+      1	INSTANCE declaration
+      2	EXPORT declaration
+      3	ACCESS declaration
       Note:  PROTECT and HIDDEN variables cannot be tested with this function.
     </returns>
     <remarks>
@@ -15228,7 +15230,7 @@
         	PROTECT cID
         	HIDDEN cPassWord
         CONSTRUCTOR CLASS GetVars
-        	cName := "Adam"	
+        	cName := "Adam"
         	cPhone := "4460"
         END CLASS
 
@@ -15370,11 +15372,11 @@
     <param name="symInstanceVar">The instance variable that you want information about.</param>
     <returns>
       A numeric value that can be interpreted as follows:
-      wIvarInfo	Description	
-      0	Not found	
-      1	INSTANCE declaration	
-      2	EXPORT declaration	
-      3	ASSIGN declaration	
+      wIvarInfo	Description
+      0	Not found
+      1	INSTANCE declaration
+      2	EXPORT declaration
+      3	ASSIGN declaration
       Note:  PROTECT and HIDDEN variables cannot be tested with this function.
     </returns>
     <remarks>
@@ -15390,7 +15392,7 @@
         	z := value
         	RETURN value
       </code>
-      	
+
       <code language="X#">
         FUNCTION Start()
         	LOCAL o AS A
@@ -15646,7 +15648,7 @@
         		MyLanguage := "MYGERMAN.DLL"
         	ENDIF
       </code>
-      	
+
       <code language="X#">	RETURN NULL_STRING</code>
       The code for the MYFRENCH DLL string table would be as follows:
       <code language="X#">
@@ -18414,15 +18416,15 @@
     </returns>
     <remarks>
       Mod() is not implemented using the X# modulus operator (%).  Note that there are differences between the Mod() function and the modulus operator, which are described in the following table:
-      Dividend	Divisor	Modulus Operator	Mod() function	
-      3	 0	Error	 3	
-      3	-2	 1	-1	
-      -3	 2	-1	 1	
-      -3	 0	Error	-3	
-      -1	 3	-1	 2	
-      -2	 3	-2	 1	
-      2	-3	 2	-1	
-      1	-3	 1	-2	
+      Dividend	Divisor	Modulus Operator	Mod() function
+      3	 0	Error	 3
+      3	-2	 1	-1
+      -3	 2	-1	 1
+      -3	 0	Error	-3
+      -1	 3	-1	 2
+      -2	 3	-2	 1
+      2	-3	 2	-1
+      1	-3	 1	-2
       <note type="tip">
         In dBASE III PLUS, a 0 divisor returns the dividend for every value of the dividend.  In versions of CA-Clipper prior to Summer '87, a 0 divisor returned 0 for all dividends.  In X#, by contrast, the modulus of any dividend using a 0 divisor causes a runtime error.
       </note>
@@ -18552,13 +18554,13 @@
     <remarks>
       NetErr() is a global flag set by certain operations that is used to test for concurrency control conflicts in the following situations:
       Operation Attempted
-      	NetErr() is TRUE	
+      	NetErr() is TRUE
       Append a blank record with APPEND BLANK or DBAppend()
-      	If another process has a file lock in place or a record lock of LastRec() + 1 (with, for example, a simultaneous append blank operation)	
+      	If another process has a file lock in place or a record lock of LastRec() + 1 (with, for example, a simultaneous append blank operation)
       File open in either shared or exclusive mode (with, for example, USE or DBUseArea())
-      	If another process has exclusive use of the file	
+      	If another process has exclusive use of the file
       File open in exclusive mode (with, for example, USE...EXCLUSIVE or DBUseArea() with <paramref name="lShared"/> set to FALSE)
-      	If another process has the file open, in either shared or exclusive mode	
+      	If another process has the file open, in either shared or exclusive mode
       Internally, these situations result in a runtime error, invoking the installed error handler.
       	The source code for the default error handler, defined in the ERRORSYS.PRG file located in your X# \SAMPLES directory, does not display an error message in these cases, allowing your application to continue.
       NetErr() is generally applied in a program by testing one of these operations.
@@ -19497,7 +19499,7 @@
         // Create custom built order that is initially empty
         INDEX ON LastName TO Last CUSTOM
         // Add every 50th record
-        FOR n := 1 UPTO RecCount() STEP 50	
+        FOR n := 1 UPTO RecCount() STEP 50
         	GOTO n
         	OrdKeyAdd()
         NEXT
@@ -19598,7 +19600,7 @@
         // Create custom built order that is initially empty
         INDEX ON LastName TO Last CUSTOM
         // Add every 50th record
-        FOR n := 1 UPTO RecCount() STEP 50	
+        FOR n := 1 UPTO RecCount() STEP 50
         	GOTO n
         	OrdKeyAdd()
         NEXT
@@ -19722,14 +19724,14 @@
         FUNCTION DisplayKeys()
         	LOCAL cKey, cFirst, cLast
       </code>
-      	
+
       <code language="X#">
         	USE customer
         	// Assuming both LastName and FirstName are
         	// 20 characters
         	INDEX ON LastName + FirstName TO lastfir
       </code>
-      	
+
       <code language="X#">
         	DO WHILE !Customer-&gt;EOF()
         		cKey := Customer-&gt;OrdKeyVal()		// Get key
@@ -19742,7 +19744,7 @@
         		Customer-&gt;DBSkip()
         	ENDDO
       </code>
-      	
+
       <code language="X#">	CLOSE</code>
     </example>
     <seealso cref="O:XSharp.RT.Functions.OrdScope">OrdScope</seealso>
@@ -20362,7 +20364,7 @@
         FUNCTION ListStack() AS VOID
         	LOCAL wActivation := 1 AS DWORD
       </code>
-      	
+
       <code language="X#">
         	DO WHILE "" != ProcName(wActivation)
         		? "Called froO:", ProcName(wActivation),;
@@ -22048,19 +22050,19 @@
 
 
 
-      	
+
       // To use the Norwegian Bokmal language, default sorting mode
       <br/>
 
 
 
-      	
+
       // To use language independent sorting
       <br/>
 
 
 
-      	
+
     </example>
     <seealso cref="O:XSharp.VO.Functions.GetAppLocaleID">GetAppLocaleId</seealso>
   </setapplocaleid>
@@ -22162,7 +22164,7 @@
         	nLen := GetProfileString("intl", "sLanguage",	;
         		"", pszLang, nBufSize)
       </code>
-      	
+
       <code language="X#">
         	// Run application only if system configured to use
         	// French Windows collation
@@ -22410,10 +22412,10 @@
       For database fields of type FLOAT, such picture information resides in the database header structure and is obtainable by FieldVal().
       With the Val() function and with literal floats (that is, hard-coded in source code and thus known at compile time), the number of decimals is derived from the hard-coded decimal portion and the number of digits is taken from SetDigit().
       If new floats are generated in expressions or by functions, the number of digits is always taken from SetDigit() and the number of decimals is determined as follows:
-      Operators	Number of decimals	
-      + or -	Maximum of two operands	
-      *	Sum of two operands	
-      /	Current setting of SetDecimal()	
+      Operators	Number of decimals
+      + or -	Maximum of two operands
+      *	Sum of two operands
+      /	Current setting of SetDecimal()
       For functions, the number of decimals is determined by the current setting of SetDecimal() or a zero for special cases such as the Integer() function.
     </remarks>
     <example>
@@ -22957,11 +22959,11 @@
       GetAMExt()/SetAMExt()	NULL_STRING
       GetPMExt()/SetPMExt()	NULL_STRING
       SetAMPM()	24-hour format
-      SetDateFormat()	mm/dd/yy	
-      SetDecimal()	2	
-      SetDecimalSep()	Period (.)	
-      SetTimeSep()	Colon (:)	
-      SetThousandSep()	Comma (,)	
+      SetDateFormat()	mm/dd/yy
+      SetDecimal()	2
+      SetDecimalSep()	Period (.)
+      SetTimeSep()	Colon (:)
+      SetThousandSep()	Comma (,)
       <note type="tip">
         Leading zeros in time strings:<br/>
         The leading zeros International setting in the Control Panel is ignored.  Leading zeros are always displayed for time strings.
@@ -24592,7 +24594,7 @@
         	ENDIF
         	RETURN cFile
       </code>
-      	
+
     </example>
     <seealso cref="O:XSharp.Core.Functions.At">At</seealso>
     <seealso cref="O:XSharp.Core.Functions.Left">Left</seealso>
@@ -25117,20 +25119,20 @@
       The table below shows the frequencies of standard musical notes.
       Note:<br/>
       Tone() works only on IBM PC and 100% compatible computers.
-      Pitch	Frequency	Pitch	Frequency	
-      C	130.80	mid C	261.70	
-      C#	138.60	C#	277.20	
-      D	146.80	D	293.70	
-      D#	155.60	D#	311.10	
-      E	164.80	E	329.60	
-      F	174.60	F	349.20	
-      F#	185.00	F#	370.00	
-      G	196.00	G	392.00	
-      G#	207.70	G#	415.30	
-      A	220.00	A	440.00	
-      A#	233.10	A#	466.20	
-      B	246.90	B	493.90	
-      		C	523.30	
+      Pitch	Frequency	Pitch	Frequency
+      C	130.80	mid C	261.70
+      C#	138.60	C#	277.20
+      D	146.80	D	293.70
+      D#	155.60	D#	311.10
+      E	164.80	E	329.60
+      F	174.60	F	349.20
+      F#	185.00	F#	370.00
+      G	196.00	G	392.00
+      G#	207.70	G#	415.30
+      A	220.00	A	440.00
+      A#	233.10	A#	466.20
+      B	246.90	B	493.90
+      		C	523.30
     </remarks>
     <example>
       This example is a beep function that indicates that a batch operation has completed:
@@ -25196,16 +25198,16 @@
       If a function string is present, the @ character must be the leftmost character of the picture string, and the function string must not contain spaces.<br/>
       A function string can be specified alone or with a template string.<br/>
       If both are present, the function string must precede the template string, and the two must be separated by a single space.
-      Function	Action	
-      B	Displays numbers left-justified	
-      C	Displays CR after positive numbers	
-      D	Displays date in SET DATE format	
-      E	Displays date in British format	
-      R	Nontemplate characters are inserted	
-      X	Displays DB after negative numbers	
-      Z	Displays zeros as blanks	
-      (	Encloses negative numbers in parentheses	
-      !	Converts alphabetic characters to uppercase	
+      Function	Action
+      B	Displays numbers left-justified
+      C	Displays CR after positive numbers
+      D	Displays date in SET DATE format
+      E	Displays date in British format
+      R	Nontemplate characters are inserted
+      X	Displays DB after negative numbers
+      Z	Displays zeros as blanks
+      (	Encloses negative numbers in parentheses
+      !	Converts alphabetic characters to uppercase
       Template string:<br/>
       A picture template string specifies formatting rules on a character by character basis.<br/>
       The template string consists of a series of characters, some of which have special meanings (see table below).<br/>
@@ -25214,15 +25216,15 @@
       If the @R picture function is used, these characters are inserted between characters of the return value; otherwise, they overwrite the corresponding characters of the return value.<br/>
       A template string can be specified alone or with a function string.<br/>
       If both are present, the function string must precede the template string, and the two must be separated by a single space.
-      Template	Action	
-      A,N,X,9,#	Displays digits for any data type	
-      L	Displays logicals as "T" or "F"	
-      Y	Displays logicals as "Y" or "N"	
-      !	Converts an alphabetic character to uppercase	
+      Template	Action
+      A,N,X,9,#	Displays digits for any data type
+      L	Displays logicals as "T" or "F"
+      Y	Displays logicals as "Y" or "N"
+      !	Converts an alphabetic character to uppercase
       $	Displays a dollar sign in place of a leading space in a numeric
       *	Displays an asterisk in place of a leading space in a numeric
-      .	Specifies a decimal point position	
-      ,	Specifies a comma position	
+      .	Specifies a decimal point position
+      ,	Specifies a comma position
     </remarks>
     <example>
       This example formats a number into a currency format using a template:
@@ -25327,18 +25329,18 @@
     </param>
     <returns>
       One of the following characters:
-      Returns	Meaning	
-      A	Array	
-      B	Block	
-      C	String	
-      D	Date	
-      L	Logical	
-      M	Memo	
-      N	Numeric	
-      O	Object	
-      U	NIL, local, or static	
-      UE	Error syntactical	
-      UI	Error indeterminate	
+      Returns	Meaning
+      A	Array
+      B	Block
+      C	String
+      D	Date
+      L	Logical
+      M	Memo
+      N	Numeric
+      O	Object
+      U	NIL, local, or static
+      UE	Error syntactical
+      UI	Error indeterminate
     </returns>
     <remarks>
       Type() uses the macro operator (&amp;) to determine the argument's data type; therefore, you cannot use it to determine the data type of undeclared variables or functions that are not intended for used with macros.<br/>
@@ -25617,18 +25619,18 @@
     <returns>
       The data type of <paramref name="uValue"/>.<br/>
       The return values have the following meanings:
-      Returns	Meaning	
-      ARRAY	Array	
-      CODEBLOCK	Code block	
-      DATE	Date	
-      FLOAT	Float, Real4, Real8	
-      LOGIC	Logical value	
-      LONGINT	Byte, Word, DWord, ShortInt, Int, LongInt	
-      OBJECT	Object or runtime code block (see example below)	
-      VOID	NIL	
-      PTR	Pointer	
-      STRING	String, PSZ	
-      SYMBOL	Symbol	
+      Returns	Meaning
+      ARRAY	Array
+      CODEBLOCK	Code block
+      DATE	Date
+      FLOAT	Float, Real4, Real8
+      LOGIC	Logical value
+      LONGINT	Byte, Word, DWord, ShortInt, Int, LongInt
+      OBJECT	Object or runtime code block (see example below)
+      VOID	NIL
+      PTR	Pointer
+      STRING	String, PSZ
+      SYMBOL	Symbol
       If <paramref name="uValue"/> is passed by reference, 128 is automatically added to the return value (see the last example).
     </returns>
     <remarks>
@@ -25646,7 +25648,7 @@
         	? "LongInt"
         CASE xType =DATE
         	? "Date"
-        OTHERWISE	
+        OTHERWISE
         	? "One of the many others"
         ENDCASE
       </code>
@@ -25810,17 +25812,17 @@
     </param>
     <returns>
       One of the following characters, which represent the data type of <paramref name="uValue"/>:
-      Characters	Meaning	
-      A	Array	
-      B	Code block	
-      C	String, PSZ	
-      D	Date	
-      L	Logic	
-      N	LongInt, ShortInt, Byte, Word, Dword, Real4, Real8, Float, Numeric	
-      O	Object	
-      U	NIL	
-      #	Symbol	
-      -	PTR	
+      Characters	Meaning
+      A	Array
+      B	Code block
+      C	String, PSZ
+      D	Date
+      L	Logic
+      N	LongInt, ShortInt, Byte, Word, Dword, Real4, Real8, Float, Numeric
+      O	Object
+      U	NIL
+      #	Symbol
+      -	PTR
       If <paramref name="uValue"/> is passed by reference, the return value will be preceded by an @ sign (see the second example).
     </returns>
     <remarks>

@@ -97,17 +97,17 @@
     </summary>
     <returns>
       以下常量之一，指示窗口的状态：
-      常量	含义	
-      SW_HIDE	窗口被隐藏，另一个窗口被激活	
-      SW_MINIMIZE	窗口被最小化，系统列表中的顶层窗口被激活	
-      SW_RESTORE	窗口被激活并显示 — 如果最小化或最大化，Windows将其恢复到原始大小和位置（与SW_SHOWNORMAL相同）。	
-      SW_SHOW	窗口被激活并以当前大小和位置显示	
-      SW_SHOWMAXIMIZED	窗口被激活并最大化显示	
-      SW_SHOWMINIMIZED	窗口被激活并作为图标显示	
-      SW_SHOWMINNOACTIVE	窗口作为图标显示，保持当前活动窗口激活	
-      SW_SHOWNA	窗口以当前状态显示，保持当前活动窗口激活	
-      SW_SHOWNOACTIVATE	窗口以最近的大小和位置显示，保持当前活动窗口激活	
-      SW_SHOWNORMAL	窗口被激活并显示 — 如果最小化或最大化，Windows将其恢复到原始大小和位置（与SW_RESTORE相同）。	
+      常量	含义
+      SW_HIDE	窗口被隐藏，另一个窗口被激活
+      SW_MINIMIZE	窗口被最小化，系统列表中的顶层窗口被激活
+      SW_RESTORE	窗口被激活并显示 — 如果最小化或最大化，Windows将其恢复到原始大小和位置（与SW_SHOWNORMAL相同）。
+      SW_SHOW	窗口被激活并以当前大小和位置显示
+      SW_SHOWMAXIMIZED	窗口被激活并最大化显示
+      SW_SHOWMINIMIZED	窗口被激活并作为图标显示
+      SW_SHOWMINNOACTIVE	窗口作为图标显示，保持当前活动窗口激活
+      SW_SHOWNA	窗口以当前状态显示，保持当前活动窗口激活
+      SW_SHOWNOACTIVATE	窗口以最近的大小和位置显示，保持当前活动窗口激活
+      SW_SHOWNORMAL	窗口被激活并显示 — 如果最小化或最大化，Windows将其恢复到原始大小和位置（与SW_RESTORE相同）。
     </returns>
     <remarks>
     </remarks>
@@ -145,11 +145,11 @@
         STRING)
         ? dwNumber
         ? xParam
-        FOR i := 2 UPTO dwNumber	
+        FOR i := 2 UPTO dwNumber
         	xParam := _GetNextParam(@pParam, STRING)
         	? xParam
         NEXT
-        RETURN	
+        RETURN
         FUNCTION Start
         	CFunc(,1, "How")
         	CFunc(,2, "How ", "are ")
@@ -179,7 +179,7 @@
         	x := LEFT(x, cb)
         	? x         // Hello World
       </code>
-      	
+
       <code language="X#">
         RESOURCE StringTable
         	{
@@ -1389,6 +1389,7 @@
     </summary>
     <remarks>
       AltD() 仅在应用程序由调试器执行时才起作用。
+      <note type="tip">该函数由编译器内联，但包含在内，以便也可以在宏中使用。</note>
     </remarks>
     <example>
       此示例展示如何使用 AltD() 在函数中定义断点：
@@ -1572,7 +1573,7 @@
     </param>
 
   </arraycommon>
-  
+
 <arraycreate>
     <summary>
       创建一个未初始化的一维数组。
@@ -2336,7 +2337,7 @@
     </returns>
 
   </asortcommon>
-  
+
 <asortex>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortcommon/*"/>
     <param name="compBlock">
@@ -2366,7 +2367,7 @@
     <seealso cref="O:XSharp.RT.Functions.ASortFunc">AsortFunc</seealso>
     <seealso cref="M:System.Collections.IComparer.Compare">IComparer.Compare</seealso>
   </asortex>
-  
+
 <asortfunc>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortcommon/*"/>
     <param name="compFunction">
@@ -2397,7 +2398,7 @@
     <seealso cref="M:System.Collections.IComparer.Compare">IComparer.Compare</seealso>
   </asortfunc>
 
-  
+
 <aspadr>
     <summary>
       Convert a value to a right-padded string.
@@ -3249,7 +3250,7 @@
     </param>
 
   </blobcommon>
-  
+
 <blobdirectexport>
     <summary>
       将 binary large object (BLOB) 指针的内容导出到文件中。注意：<br/>
@@ -4339,7 +4340,7 @@
         FUNCTION CheckClass()
         	LOCAL oY AS OBJECT
         	oY := Female{"女士", "精彩"}
-        	IF ClassName(oY)	= #Female							
+        	IF ClassName(oY)	= #Female
         		? "这位女士属于 Female 类。"
         	ENDIF
       </code>
@@ -4425,7 +4426,7 @@
         FUNCTION InheritanceTree()
         	LOCAL a AS ARRAY
       </code>
-      	
+
       <code language="X#">
         	a := ClassTreeClass(#OldMale)
         	? ArrayGet(a, 1)			// OLDMALE
@@ -4646,7 +4647,7 @@
     <example>
       以下示例说明了ConcatAtom3()的用法：
       <code language="X#">
-        ? ConcatAtom3(#UN,#BELIEV,#ABLE)	
+        ? ConcatAtom3(#UN,#BELIEV,#ABLE)
         	// UNBELIEVABLE
         ? ConcatAtom3(#GOOD,#BYE,#GIRL) = #GOODBYEGIRL
         	// TRUE
@@ -4938,7 +4939,7 @@
         	LOCAL i             AS DWORD
         	LOCAL nID           AS DWORD
       </code>
-      	
+
       <code language="X#">
         	FOR i := 1 TO 3
         		pTData := MemAlloc(_SIZEOF(_THREADDATA))
@@ -6044,11 +6045,11 @@
       DBCopyXStruct() 创建一个数据库文件，其内容是当前数据库文件的结构，每个字段的定义对应一条记录。
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*"/>
       结构扩展数据库文件具有以下结构：
-      名称	类型	长度	小数位	
-      Field_Name	字符	10		
-      Field_Type	字符	1		
-      Field_Len	数值	3	0	
-      Field_Dec	数值	3	0	
+      名称	类型	长度	小数位
+      Field_Name	字符	10
+      Field_Type	字符	1
+      Field_Len	数值	3	0
+      Field_Dec	数值	3	0
       在应用程序中使用 DBCopyXStruct() 允许您以编程方式创建或修改数据库文件的结构。<br/>
       要从结构扩展文件创建新的数据库文件，请使用 CREATE FROM。<br/>
       如果您需要一个空的结构扩展文件，请使用 CREATE。
@@ -6556,9 +6557,9 @@
         	? Name			// 显示 name 字段
         	? NewName			// 也显示 name 字段
       </code>
-      	
-      	
-      	
+
+
+
     </example>
     <seealso cref="O:XSharp.RT.Functions.DbInfo">DBInfo</seealso>
     <seealso cref="O:XSharp.RT.Functions.DbOrderInfo">DBOrderInfo</seealso>
@@ -7883,7 +7884,7 @@
         nNext := 0						// 全部
         nRecord := 0						// 所有记录
         lRest := FALSE					// 全部
-        lDescend :=  FALSE		
+        lDescend :=  FALSE
       </code>
     </example>
     <seealso cref="O:XSharp.RT.Functions.DbCreateIndex">DBCreateIndex</seealso>
@@ -8998,7 +8999,7 @@
         	LOCAL wI AS DWORD
         	LOCAL cDrives AS STRING
         	cDrives := NULL_STRING
-        	FOR wI := 1 UPTO 27							
+        	FOR wI := 1 UPTO 27
         		IF DiskChange(Chr(wI +64))
         			cDrives := cDrives + Chr(wI+64)
         		ENDIF
@@ -9126,7 +9127,7 @@
       <code language="X#">
         FUNCTION Start()
         	Dir AA:						// 错误的设备
-        	QOut(DOSErrString(DOSError()))	
+        	QOut(DOSErrString(DOSError()))
         									// 找不到路径
       </code>
     </example>
@@ -9151,7 +9152,7 @@
       <code language="X#">
         FUNCTION Start()
         	Dir AA:						// 错误的设备
-        	QOut(DOSErrString(DOSError()))	
+        	QOut(DOSErrString(DOSError()))
         									// 找不到路径
       </code>
     </example>
@@ -9350,7 +9351,7 @@
         ? ElapTime("23:00:00", "05:00:00")		// 06:00:00
         // 从凌晨5点到晚上11点经过的时间
         ? ElapTime("05:00:00", "23:00:00")		// 18:00:00
-        ? ElapTime(Time(), "20:01:03")		
+        ? ElapTime(Time(), "20:01:03")
         // 取决于当前时间
       </code>
       <br/>
@@ -10201,7 +10202,7 @@
       	FC_HIDDEN	H<br/>
       	FC_NORMAL	NULL_STRING<br/>
       	FC_READONLY	R<br/>
-      	FC_SYSTEM	S	
+      	FC_SYSTEM	S
     </param>
     <returns>
       根据<paramref name="dwAttributes"/>中指定的文件属性常量，返回上表中指示的一个或多个字符。<br/>
@@ -10233,14 +10234,14 @@
     <returns>
       表示当前文件属性的值。
       以下表格中的常量可以单独使用或组合使用，以确定哪些属性适用：
-      常量	描述	
-      FA_DIRECTORY	目录	
-      FA_VOLUME	卷	
-      FC_ARCHIVED	已归档	
-      FC_HIDDEN	隐藏	
-      FC_NORMAL	读/写	
-      FC_READONLY	只读	
-      FC_SYSTEM	系统	
+      常量	描述
+      FA_DIRECTORY	目录
+      FA_VOLUME	卷
+      FC_ARCHIVED	已归档
+      FC_HIDDEN	隐藏
+      FC_NORMAL	读/写
+      FC_READONLY	只读
+      FC_SYSTEM	系统
       注意：<br/>
       一个文件拥有多个属性并不罕见。<br/>
       例如，它可能是只读的和已归档的，这将表示为 FC_READONLY + FC_ARCHIVED 或 _Or(FC_READONLY, FC_ARCHIVED)。
@@ -10455,7 +10456,7 @@
       	FC_HIDDEN	隐藏文件<br/>
       	FC_NORMAL	普通读/写文件<br/>
       	FC_READONLY	只读文件<br/>
-      	FC_SYSTEM	系统文件	
+      	FC_SYSTEM	系统文件
     </param>
     <returns>
       新文件的 DOS 文件句柄号。<br/>
@@ -10503,7 +10504,7 @@
       	FC_HIDDEN	隐藏文件<br/>
       	FC_NORMAL	普通读/写文件<br/>
       	FC_READONLY	只读文件<br/>
-      	FC_SYSTEM	系统文件	
+      	FC_SYSTEM	系统文件
     </param>
     <returns>
       新文件的 DOS 文件句柄号。<br/>
@@ -10545,7 +10546,7 @@
         	? FDate()					// 08/13/98
         ENDIF
         // 下一个匹配 *.txt 的文件
-        IF FNext()				
+        IF FNext()
         	? FDate()					// 08/21/98
         ENDIF
       </code>
@@ -10863,7 +10864,7 @@
         ptrHandle := FOpen2("docs.txt", ;
         		FO_READWRITE + FO_SHARED)
         IF ptrHandle != F_ERROR
-        	FWrite(ptrHandle, Space(100))	
+        	FWrite(ptrHandle, Space(100))
         	nKey := Inkey(50)
         	FFlush(ptrHandle)			// 保存数据
         ENDIF
@@ -13763,7 +13764,7 @@
         	cInstanceVar := ""
         	UnregisterAxit(SELF)
       </code>
-      	
+
       <code language="X#">
         ENDIF
         RETURN NIL
@@ -14488,7 +14489,7 @@
       <code language="X#">
         IF IsLong(uValue)
         	cTransmit := L2Bin(uValue)
-        ELSEIF IsFloat(uValue)	
+        ELSEIF IsFloat(uValue)
         	cTransmit := F2Bin(uValue)
         ENDIF
       </code>
@@ -14579,7 +14580,7 @@
         	ENDIF
         	IF IsMethod(hacker, #Speaks)
         						// 说：VO，Hello World，响起铃声
-        		hacker:Speaks()	
+        		hacker:Speaks()
         	ENDIF
       </code>
     </example>
@@ -14661,7 +14662,7 @@
         IF IsMethodUsual(uO, #GoTop)
         	uO:GoTop()
         ELSE
-        	MyGoTop()	
+        	MyGoTop()
         ENDIF
       </code>
     </example>
@@ -15057,11 +15058,11 @@
     <param name="symInstanceVar">您要获取信息的实例变量。</param>
     <returns>
       一个数字值，可以解释如下：
-      wIvarInfo	描述	
-      0	未找到	
-      1	实例声明	
-      2	导出声明	
-      3	访问声明	
+      wIvarInfo	描述
+      0	未找到
+      1	实例声明
+      2	导出声明
+      3	访问声明
       注意：  保护和隐藏变量无法通过此函数进行测试。
     </returns>
     <remarks>
@@ -15108,7 +15109,7 @@
         	PROTECT cID
         	HIDDEN cPassWord
         CONSTRUCTOR CLASS GetVars
-        	cName := "Adam"	
+        	cName := "Adam"
         	cPhone := "4460"
         END CLASS
 
@@ -15250,11 +15251,11 @@
     <param name="symInstanceVar">您要获取信息的实例变量。</param>
     <returns>
       一个数字值，可以解释如下：
-      wIvarInfo	描述	
-      0	未找到	
-      1	实例声明	
-      2	导出声明	
-      3	赋值声明	
+      wIvarInfo	描述
+      0	未找到
+      1	实例声明
+      2	导出声明
+      3	赋值声明
       注意：  保护和隐藏变量无法通过此函数进行测试。
     </returns>
     <remarks>
@@ -15270,7 +15271,7 @@
         	z := value
         	RETURN value
       </code>
-      	
+
       <code language="X#">
         FUNCTION Start()
         	LOCAL o AS A
@@ -15526,7 +15527,7 @@
         		MyLanguage := "MYGERMAN.DLL"
         	ENDIF
       </code>
-      	
+
       <code language="X#">	RETURN NULL_STRING</code>
       MYFRENCH DLL 字符串表的代码如下：
       <code language="X#">
@@ -18282,15 +18283,15 @@
     </returns>
     <remarks>
       Mod() 并不是使用 X# 的取模运算符 (%) 实现的。请注意，Mod() 函数和取模运算符之间存在差异，具体如下表所示：
-      被除数	除数	取模运算符	Mod() 函数	
-      3	 0	错误	 3	
-      3	-2	 1	-1	
-      -3	 2	-1	 1	
-      -3	 0	错误	-3	
-      -1	 3	-1	 2	
-      -2	 3	-2	 1	
-      2	-3	 2	-1	
-      1	-3	 1	-2	
+      被除数	除数	取模运算符	Mod() 函数
+      3	 0	错误	 3
+      3	-2	 1	-1
+      -3	 2	-1	 1
+      -3	 0	错误	-3
+      -1	 3	-1	 2
+      -2	 3	-2	 1
+      2	-3	 2	-1
+      1	-3	 1	-2
       <note type="tip">
         在 dBASE III PLUS 中，0 除数对所有被除数返回被除数。在 CA-Clipper 夏季 '87 之前的版本中，0 除数对所有被除数返回 0。相反，在 X# 中，任何被除数使用 0 除数的取模会导致运行时错误。
       </note>
@@ -18420,13 +18421,13 @@
     <remarks>
       NetErr() 是由某些操作设置的全局标志，用于测试以下情况的并发控制冲突：
       尝试的操作
-      	NetErr() 为 TRUE	
+      	NetErr() 为 TRUE
       使用 APPEND BLANK 或 DBAppend() 追加空白记录
-      	如果另一个进程在进行文件锁定或记录锁定 LastRec() + 1（例如，同时追加空白操作）	
+      	如果另一个进程在进行文件锁定或记录锁定 LastRec() + 1（例如，同时追加空白操作）
       以共享或独占模式打开文件（例如，使用 USE 或 DBUseArea()）
-      	如果另一个进程独占使用该文件	
+      	如果另一个进程独占使用该文件
       以独占模式打开文件（例如，使用 USE...EXCLUSIVE 或 DBUseArea()，并将 <paramref name="lShared"/> 设置为 FALSE）
-      	如果另一个进程以共享或独占模式打开该文件	
+      	如果另一个进程以共享或独占模式打开该文件
       在这些情况下，内部结果会导致运行时错误，调用已安装的错误处理程序。
       	默认错误处理程序的源代码定义在 X# \SAMPLES 目录中的 ERRORSYS.PRG 文件中，在这些情况下不会显示错误消息，允许您的应用程序继续。
       NetErr() 通常通过测试这些操作之一在程序中应用。
@@ -19352,7 +19353,7 @@
         // 创建自定义构建的顺序，最初为空
         INDEX ON LastName TO Last CUSTOM
         // 添加每第50条记录
-        FOR n := 1 UPTO RecCount() STEP 50	
+        FOR n := 1 UPTO RecCount() STEP 50
         	GOTO n
         	OrdKeyAdd()
         NEXT
@@ -19446,7 +19447,7 @@
         // 创建自定义构建的顺序，最初为空
         INDEX ON LastName TO Last CUSTOM
         // 添加每第50条记录
-        FOR n := 1 UPTO RecCount() STEP 50	
+        FOR n := 1 UPTO RecCount() STEP 50
         	GOTO n
         	OrdKeyAdd()
         NEXT
@@ -19569,14 +19570,14 @@
         FUNCTION DisplayKeys()
         	LOCAL cKey, cFirst, cLast
       </code>
-      	
+
       <code language="X#">
         	USE customer
         	// 假设 LastName 和 FirstName 都是
         	// 20 个字符
         	INDEX ON LastName + FirstName TO lastfir
       </code>
-      	
+
       <code language="X#">
         	DO WHILE !Customer-&gt;EOF()
         		cKey := Customer-&gt;OrdKeyVal()		// 获取键
@@ -19589,7 +19590,7 @@
         		Customer-&gt;DBSkip()
         	ENDDO
       </code>
-      	
+
       <code language="X#">	CLOSE</code>
     </example>
     <seealso cref="O:XSharp.RT.Functions.OrdScope">OrdScope</seealso>
@@ -20209,7 +20210,7 @@
         FUNCTION ListStack() AS VOID
         	LOCAL wActivation := 1 AS DWORD
       </code>
-      	
+
       <code language="X#">
         	DO WHILE "" != ProcName(wActivation)
         		? "调用自:", ProcName(wActivation),;
@@ -21869,13 +21870,13 @@
       <br/>
       // 在默认排序模式下使用瑞士德语
       <br/>
-      	
+
       // 使用挪威博克马尔语，默认排序模式
       <br/>
-      	
+
       // 使用语言独立排序
       <br/>
-      	
+
     </example>
     <seealso cref="O:XSharp.VO.Functions.GetAppLocaleID">GetAppLocaleId</seealso>
   </setapplocaleid>
@@ -21977,7 +21978,7 @@
         	nLen := GetProfileString("intl", "sLanguage",	;
         		"", pszLang, nBufSize)
       </code>
-      	
+
       <code language="X#">
         	// 仅在系统配置为使用
         	// 法语 Windows 排序时运行应用程序
@@ -22214,10 +22215,10 @@
       所有包含 FLOAT 类型的变量都有与数字和小数相关的内部图片信息（请参见 FloatFormat()）。<br/>
       对于 FLOAT 类型的数据库字段，这些图片信息存在于数据库头结构中，并可通过 FieldVal() 获取。
       当通过表达式或函数生成新浮点数时，小数位数始终取自 SetDigit()，小数位数的确定如下：
-      操作符	小数位数	
-      + 或 -	最多两个操作数	
-      *	两个操作数的总和	
-      /	当前设置的 SetDecimal()	
+      操作符	小数位数
+      + 或 -	最多两个操作数
+      *	两个操作数的总和
+      /	当前设置的 SetDecimal()
       对于函数，小数位数由当前设置的 SetDecimal() 或特殊情况下的零决定，例如 Integer() 函数。
     </remarks>
     <example>
@@ -22758,11 +22759,11 @@
       GetAMExt()/SetAMExt()	NULL_STRING
       GetPMExt()/SetPMExt()	NULL_STRING
       SetAMPM()	24 小时格式
-      SetDateFormat()	mm/dd/yy	
-      SetDecimal()	2	
-      SetDecimalSep()	小数点 (.)	
-      SetTimeSep()	冒号 (:)	
-      SetThousandSep()	逗号 (,)	
+      SetDateFormat()	mm/dd/yy
+      SetDecimal()	2
+      SetDecimalSep()	小数点 (.)
+      SetTimeSep()	冒号 (:)
+      SetThousandSep()	逗号 (,)
       <note type="tip">
         时间字符串中的前导零：<br/>
         控制面板中的前导零国际设置将被忽略。时间字符串中的前导零始终会显示。
@@ -24381,7 +24382,7 @@
         	ENDIF
         	RETURN cFile
       </code>
-      	
+
     </example>
     <seealso cref="O:XSharp.Core.Functions.At">At</seealso>
     <seealso cref="O:XSharp.Core.Functions.Left">Left</seealso>
@@ -24908,20 +24909,20 @@
       下表显示了标准音乐音符的频率。
       注意：<br/>
       Tone() 仅在 IBM PC 和 100% 兼容的计算机上工作。
-      音高	频率	音高	频率	
-      C	130.80	中央 C	261.70	
-      C#	138.60	C#	277.20	
-      D	146.80	D	293.70	
-      D#	155.60	D#	311.10	
-      E	164.80	E	329.60	
-      F	174.60	F	349.20	
-      F#	185.00	F#	370.00	
-      G	196.00	G	392.00	
-      G#	207.70	G#	415.30	
-      A	220.00	A	440.00	
-      A#	233.10	A#	466.20	
-      B	246.90	B	493.90	
-      		C	523.30	
+      音高	频率	音高	频率
+      C	130.80	中央 C	261.70
+      C#	138.60	C#	277.20
+      D	146.80	D	293.70
+      D#	155.60	D#	311.10
+      E	164.80	E	329.60
+      F	174.60	F	349.20
+      F#	185.00	F#	370.00
+      G	196.00	G	392.00
+      G#	207.70	G#	415.30
+      A	220.00	A	440.00
+      A#	233.10	A#	466.20
+      B	246.90	B	493.90
+      		C	523.30
     </remarks>
     <example>
       这个例子是一个表示批处理操作已完成的蜂鸣函数：
@@ -24987,16 +24988,16 @@
       如果存在函数字符串，@字符必须是图片字符串的最左侧字符，且函数字符串不得包含空格。<br/>
       函数字符串可以单独指定，也可以与模板字符串一起指定。<br/>
       如果两者都存在，函数字符串必须在模板字符串之前，两者必须用单个空格分隔。
-      函数	动作	
-      B	左对齐显示数字	
-      C	在正数后显示CR	
-      D	以SET DATE格式显示日期	
-      E	以英国格式显示日期	
-      R	插入非模板字符	
-      X	在负数后显示DB	
-      Z	将零显示为空格	
-      (	将负数括在括号中	
-      !	将字母字符转换为大写	
+      函数	动作
+      B	左对齐显示数字
+      C	在正数后显示CR
+      D	以SET DATE格式显示日期
+      E	以英国格式显示日期
+      R	插入非模板字符
+      X	在负数后显示DB
+      Z	将零显示为空格
+      (	将负数括在括号中
+      !	将字母字符转换为大写
       模板字符串：<br/>
       图片模板字符串在字符基础上指定格式化规则。<br/>
       模板字符串由一系列字符组成，其中一些具有特殊含义（见下表）。<br/>
@@ -25005,15 +25006,15 @@
       如果使用@R图片函数，这些字符会插入到返回值的字符之间；否则，它们会覆盖返回值中相应的字符。<br/>
       模板字符串可以单独指定，也可以与函数字符串一起指定。<br/>
       如果两者都存在，函数字符串必须在模板字符串之前，两者必须用单个空格分隔。
-      模板	动作	
-      A,N,X,9,#	显示任何数据类型的数字	
-      L	将逻辑值显示为"T"或"F"	
-      Y	将逻辑值显示为"Y"或"N"	
-      !	将字母字符转换为大写	
+      模板	动作
+      A,N,X,9,#	显示任何数据类型的数字
+      L	将逻辑值显示为"T"或"F"
+      Y	将逻辑值显示为"Y"或"N"
+      !	将字母字符转换为大写
       $	在数字的前导空格位置显示美元符号
       *	在数字的前导空格位置显示星号
-      .	指定小数点位置	
-      ,	指定逗号位置	
+      .	指定小数点位置
+      ,	指定逗号位置
     </remarks>
     <example>
       此示例使用模板将数字格式化为货币格式：
@@ -25118,18 +25119,18 @@
     </param>
     <returns>
       以下字符之一：
-      返回值	含义	
-      A	数组	
-      B	代码块	
-      C	字符串	
-      D	日期	
-      L	逻辑值	
-      M	备注	
-      N	数值	
-      O	对象	
-      U	NIL、局部变量或静态变量	
-      UE	语法错误	
-      UI	不确定错误	
+      返回值	含义
+      A	数组
+      B	代码块
+      C	字符串
+      D	日期
+      L	逻辑值
+      M	备注
+      N	数值
+      O	对象
+      U	NIL、局部变量或静态变量
+      UE	语法错误
+      UI	不确定错误
     </returns>
     <remarks>
       Type()使用宏运算符(&amp;)来确定参数的数据类型；因此，您不能使用它来确定未声明变量或不打算用于宏的函数的数据类型。<br/>
@@ -25411,18 +25412,18 @@
     <returns>
       <paramref name="uValue"/>的数据类型。<br/>
       返回值具有以下含义：
-      返回值	含义	
-      ARRAY	数组	
-      CODEBLOCK	代码块	
-      DATE	日期	
-      FLOAT	浮点数, Real4, Real8	
-      LOGIC	逻辑值	
-      LONGINT	Byte, Word, DWord, ShortInt, Int, LongInt	
-      OBJECT	对象或运行时代码块（见下面的示例）	
-      VOID	NIL	
-      PTR	指针	
-      STRING	字符串, PSZ	
-      SYMBOL	符号	
+      返回值	含义
+      ARRAY	数组
+      CODEBLOCK	代码块
+      DATE	日期
+      FLOAT	浮点数, Real4, Real8
+      LOGIC	逻辑值
+      LONGINT	Byte, Word, DWord, ShortInt, Int, LongInt
+      OBJECT	对象或运行时代码块（见下面的示例）
+      VOID	NIL
+      PTR	指针
+      STRING	字符串, PSZ
+      SYMBOL	符号
       如果<paramref name="uValue"/>通过引用传递，返回值会自动加上128（见最后一个示例）。
     </returns>
     <remarks>
@@ -25440,7 +25441,7 @@
         	? "长整型"
         CASE xType =DATE
         	? "日期"
-        OTHERWISE	
+        OTHERWISE
         	? "其他类型之一"
         ENDCASE
       </code>
@@ -25598,17 +25599,17 @@
     </param>
     <returns>
       以下字符之一，表示 <paramref name="uValue"/> 的数据类型：
-      字符	含义	
-      A	数组	
-      B	代码块	
-      C	字符串, PSZ	
-      D	日期	
-      L	逻辑	
-      N	LongInt, ShortInt, Byte, Word, Dword, Real4, Real8, Float, Numeric	
-      O	对象	
-      U	NIL	
-      #	符号	
-      -	PTR	
+      字符	含义
+      A	数组
+      B	代码块
+      C	字符串, PSZ
+      D	日期
+      L	逻辑
+      N	LongInt, ShortInt, Byte, Word, Dword, Real4, Real8, Float, Numeric
+      O	对象
+      U	NIL
+      #	符号
+      -	PTR
       如果 <paramref name="uValue"/> 通过引用传递，返回值前面会有一个 @ 符号（见第二个示例）。
     </returns>
     <remarks>

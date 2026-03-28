@@ -209,7 +209,7 @@ FUNCTION SetErrorStackVOFormat(lNew AS LOGIC) AS LOGIC
     RETURN lPrevious
 
 
-/// <include file="XSharp.Core.Docs.xml" path="doc/AltD/*" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*"/>
 FUNCTION AltD() AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
@@ -217,7 +217,7 @@ FUNCTION AltD() AS VOID
 	RETURN
 
 
-/// <include file="XSharp.Core.Docs.xml" path="doc/AltD_2/*" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*"/>
 FUNCTION AltD(nMode AS INT) AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()

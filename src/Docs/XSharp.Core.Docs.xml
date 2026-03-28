@@ -197,15 +197,6 @@
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/alltrim/*"/>
     <returns>A trimmed string, with leading and trailing spaces removed.</returns>
   </AllTrim>
-  <AltD>
-    <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*"/>
-    <remarks>This function is inlined by the compiler, but is included so it can be used in Macros as well.</remarks>
-  </AltD>
-  <AltD_2>
-    <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*"/>
-    <param name="nMode">This parameter is ignored in X#</param>
-    <remarks>This function is inlined by the compiler, but is included so it can be used in Macros as well.</remarks>
-  </AltD_2>
   <Ansi2Oem>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oem/*"/>
     <remarks>

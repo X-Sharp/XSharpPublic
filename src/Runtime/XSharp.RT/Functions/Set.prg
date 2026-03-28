@@ -81,13 +81,35 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 RETURN SetDateCountry(newValue )
             ENDIF
         CASE Set.DecimalSep
-            IF IsNumeric(newValue)
-                RETURN SetDecimalSep(newValue)
+            IF IsString(newValue) .AND. !String.IsNullOrEmpty((STRING)newValue)
+                VAR uOldSep := SetDecimalSep((DWORD)((STRING)newValue)[0])
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldSep):ToString()
+                ENDIF
+                RETURN uOldSep
+            ELSEIF IsNumeric(newValue)
+                VAR uOldSep := SetDecimalSep(newValue)
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldSep):ToString()
+                ENDIF
+                RETURN uOldSep
             ENDIF
+
         CASE Set.ThousandSep
-            IF IsNumeric(newValue)
-                RETURN SetThousandSep(newValue)
+            IF IsString(newValue) .AND. !String.IsNullOrEmpty((STRING)newValue)
+                VAR uOldThous := SetThousandSep((DWORD)((STRING)newValue)[0])
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldThous):ToString()
+                ENDIF
+                RETURN uOldThous
+            ELSEIF IsNumeric(newValue)
+                VAR uOldThous := SetThousandSep(newValue)
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldThous):ToString()
+                ENDIF
+                RETURN uOldThous
             ENDIF
+
         CASE Set.Epoch
             IF IsNumeric(newValue)
                 RETURN SetEpoch(newValue)
@@ -127,7 +149,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 state:Settings[nSetting] := cNew:ToUpper() == "ON"
             ELSE
                 TRY
-                    var oOldType := oOld:GetType()
+                    VAR oOldType := oOld:GetType()
                     IF oNew:GetType() != oOldType
                         oNew := OOPHelpers.ValueConvert(oNew, oOldType)
                     ENDIF
@@ -138,6 +160,19 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             ENDIF
         ENDIF
     ENDIF
+
+    IF RuntimeState.Dialect == XSharpDialect.FoxPro
+        IF nSetting == Set.DecimalSep .OR. nSetting == Set.ThousandSep
+            IF oOld != NULL_OBJECT
+                TRY
+                    VAR iChar := Convert.ToInt32(oOld)
+                    oOld := Convert.ToChar(iChar):ToString()
+                CATCH
+                END TRY
+            ENDIF
+        ENDIF
+    ENDIF
+
     RETURN oOld
 
 

@@ -159,15 +159,34 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         VAR cTemp := cPathSpec:Trim()
         if !String.IsNullOrEmpty(cTemp)
-            IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
+            // Single letter => drive letter
+            IF cTemp:Length == 1 .AND. Char.IsLetter(cTemp[0])
+                cTemp += ":"
+            ENDIF
+
+            // Protect root "\" and "C:\" from being stripped
+            IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString()) .AND. cTemp:Length > 1 .AND. !(cTemp:Length == 3 .AND. cTemp[1] == c':')
                 cTemp := cTemp:Substring(0, cTemp:Length-1)
             ENDIF
+
             IF ! System.IO.Directory.Exists(cTemp)
                 var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
                 err:Description := "Directory not found: '"+cPathSpec+"'"
                 THROW err
             ENDIF
-        endif
+
+            // VFP SET DEFAULT TO updated the process's working directory
+            TRY
+                System.Environment.CurrentDirectory := cTemp
+            CATCH
+                VAR err := Error.VOError(EG_ARG, __FUNCTION__, NAMEOF(cPathSpec), 1, <OBJECT>{cPathSpec})
+                err:Description := "Directory not found: '" + cPathSpec + "'"
+            END TRY
+
+            // Resolves to absolute path to keep Set.Default and SYS() in sync
+            cTemp := System.Environment.CurrentDirectory
+        ENDIF
+        cPathSpec := cTemp
     ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
         IF cPathSpec:Length > 0
             var cLast := cPathSpec[cPathSpec:Length-1]

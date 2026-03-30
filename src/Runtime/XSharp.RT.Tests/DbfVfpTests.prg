@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			// https://github.com/X-Sharp/XSharpPublic/issues/1838
 			LOCAL cFileName AS STRING
 			cFileName := DbfTests.GetTempFileName()
-			
+
 			RddSetDefault("DBFVFP")
 
 			DbCreate(cFileName, {{"TEST","N",6,0}})
@@ -48,17 +48,17 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			LOCAL lDeleted := SetDeleted(TRUE) AS LOGIC
 			LOCAL eDialect := XSharp.RuntimeState.Dialect AS XSharp.XSharpDialect
 			XSharp.RuntimeState.Dialect := XSharp.XSharpDialect.FoxPro
-			
-		
+
+
 			DbCreate(cFileName, {{"FLD","N",5,0}})
 			DbUseArea(TRUE,,cFileName)
-			
+
 			DbAppend();FieldPut(1,1)
 			DbAppend();FieldPut(1,2)
 			DbAppend();FieldPut(1,3)
 			DbAppend();FieldPut(1,4)
 			DbAppend();FieldPut(1,5)
-		
+
 			// delete records 2,3,5
 			DbGoTop()
 			DbSkip()
@@ -68,11 +68,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbSkip(2)
 			DbDelete()
 			DbCloseArea()
-			
+
 			DbUseArea(TRUE,"DBFVFP",cFileName)
 			DbGoTop()
 			RECALL NEXT 2
-			
+
 			SetDeleted(FALSE)
 			DbGoTop()
 			Assert.False( Deleted() )
@@ -84,11 +84,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.False( Deleted() )
 			DbSkip()
 			Assert.True( Deleted() )
-			
+
 			SetDeleted(TRUE)
-			
+
 			RECALL ALL
-		
+
 			SetDeleted(FALSE)
 			DbGoTop()
 			Assert.False( Deleted() )
@@ -100,9 +100,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.False( Deleted() )
 			DbSkip()
 			Assert.False( Deleted() )
-		
+
 			DbCloseArea()
-			
+
 			SetDeleted(lDeleted)
 			XSharp.RuntimeState.Dialect := eDialect
 		RETURN
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			// https://github.com/X-Sharp/XSharpPublic/issues/1837
 			LOCAL cFileName AS STRING
 			cFileName := DbfTests.GetTempFileName()
-			
+
 			RddSetDefault("DBFVFP")
 
 			DbCreate(cFileName, {{"FLD1","C",6,0},{"FLD2","C",6,0}})
@@ -145,35 +145,36 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( 5U , RecNo() )
 
 			DbCloseArea()
-			
+
         [Fact, Trait("Category", "DBF")];
 		METHOD DBFVFP_AutoIncrField() AS VOID
-			// https://github.com/X-Sharp/XSharpPublic/issues/1837
+			// https://github.com/X-Sharp/XSharpPublic/issues/1829
+
 			LOCAL cFileName AS STRING
 			cFileName := DbfTests.GetTempFileName()
-			
+
 			RddSetDefault("DBFVFP")
 
 			DbCreate(cFileName, {{"FLD1","I:+",6,0}})
 			DbUseArea(TRUE, ,cFileName, "alias1", TRUE)
 			alias1->DbAppend()
 			Assert.Equal(1, (INT)alias1->FieldGet(1))
-			
+
 			DbUseArea(TRUE, ,cFileName, "alias2", TRUE)
 			alias2->DbAppend()
 			Assert.Equal(2, (INT)alias2->FieldGet(1))
 			alias2->DbAppend()
 			Assert.Equal(3, (INT)alias2->FieldGet(1))
-			
+
 			alias1->DbAppend()
 			Assert.Equal(4, (INT)alias1->FieldGet(1))
-			
+
 			DbUseArea(TRUE, ,cFileName, "alias3", TRUE)
 			alias3->DbAppend()
 			Assert.Equal(5, (INT)alias3->FieldGet(1))
 
 			Assert.Equal(5U, alias3->RecCount())
-			
+
 			Assert.True( alias1->DbCloseArea() )
 			Assert.True( alias2->DbCloseArea() )
 			Assert.True( alias3->DbCloseArea() )

@@ -792,7 +792,7 @@ BEGIN NAMESPACE XSharp.RDD
             // then write the current value to the buffer
             LOCAL nCurrent as LONG
             local mustLock as LOGIC
-            nCurrent := SELF:Counter
+
             mustLock := SELF:RDD:Shared .and. ! SELF:RDD:_HeaderLocked
             IF mustLock
                 DO WHILE ! SELF:RDD:HeaderLock(DbLockMode.Lock)
@@ -800,6 +800,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDDO
             ENDIF
             SELF:Read()
+            nCurrent := SELF:Counter
             SELF:Counter += SELF:IncrStep
             SELF:Write()
             IF mustLock

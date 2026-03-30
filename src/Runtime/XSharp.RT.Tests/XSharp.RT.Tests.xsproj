@@ -86,7 +86,9 @@
     <Compile Include="StringTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FloatTests.prg" />
+    <Compile Include="MathTests.prg" />
     <Compile Include="MemoryTests.prg" />
+    <Compile Include="MiscTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

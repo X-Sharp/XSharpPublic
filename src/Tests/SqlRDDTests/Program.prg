@@ -37,6 +37,7 @@ function Start as void
     //testCreate()
     //FillGsTutor()
     //TestGsTutor()
+    //TestLock()
     wait
     return
 
@@ -872,6 +873,29 @@ FUNCTION TestGsTutor() AS VOID
         ? e:ToString()
     END TRY
     RETURN
+
+    function TestLock() as void
+        SqlDbSetProvider("SQLSERVER")
+        var handle := SqlDbOpenConnection(SqlConnStr)
+        var conn   := SqlDbGetConnection(handle)
+        conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
+        conn:CallBack += @@EventHandler
+        ? handle
+        VoDbUseArea(true, "SQLRDD","Customers","Customers",true, false)
+        DbGoTo(3)
+        DbRLock()
+        FieldPut(2, "New Company1")
+        //DbCommit()
+
+        System.Console.ReadLine()
+
+        // UBLIC VIRTUAL METHOD RecordInfo(kRecInfoType, nRecordNumber, uRecVal) AS USUAL CLIPPER
+        //var test := DbRecordInfo(DBRI_LOCKED, 3)
+
+//         DbRLock(4)
+//         DbFlock()
+//         DbUnlock(3)
+        //conn:Clode()
 
 
 

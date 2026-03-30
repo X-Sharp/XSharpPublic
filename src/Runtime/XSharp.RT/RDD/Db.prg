@@ -520,11 +520,13 @@ FUNCTION DbRecordInfo(kInfoType, uRecId, uNewValue) AS USUAL CLIPPER
     VoDb.RecordInfo(kInfoType, uRecId, REF uNewValue)
     RETURN uNewValue
 
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlock/*" />
 FUNCTION DbRLock(uRecId) AS USUAL CLIPPER
     RETURN VoDb.RLock(uRecId)
+
+    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlock/*" />
+FUNCTION DbFlock() AS USUAL CLIPPER
+    RETURN VoDb.Flock()
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlocklist/*" />

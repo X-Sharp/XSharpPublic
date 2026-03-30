@@ -33,6 +33,8 @@ class SqlDbProviderAdvantage inherit SqlDbProvider
         return
     end constructor
 
+    override property ParameterPrefix        as string => ":"
+
     private static aFuncs := null as Dictionary<string, string>
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>

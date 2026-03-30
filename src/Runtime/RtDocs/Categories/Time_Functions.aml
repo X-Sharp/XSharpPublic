@@ -222,7 +222,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Returns the number of seconds that have elapsed since midnight.
+        </para>
             </entry>
           </row>
           <row>

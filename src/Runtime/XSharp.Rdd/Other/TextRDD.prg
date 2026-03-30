@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,7 +11,7 @@ USING System.Globalization
 USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>Abstract TextRDD. For reading and writing delimited files and SDF files.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/TEXTRDD/*" />
     ABSTRACT CLASS TEXTRDD INHERIT Workarea
         PROTECT INTERNAL _Encoding      AS Encoding
         PROTECT _Hot            AS LOGIC

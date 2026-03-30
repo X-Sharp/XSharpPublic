@@ -15,9 +15,7 @@ USING System.Reflection
 BEGIN NAMESPACE XSharp.VFP
 
 
-/// <summary>
-/// This enum emulates the FoxPro defines for the CursorAdapter.WhereType property
-/// </summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/SqlWhereType/*" />
 ENUM SqlWhereType
     MEMBER DB_KEY := 1
     MEMBER DB_KEYANDUPDATABLE := 2
@@ -25,9 +23,7 @@ ENUM SqlWhereType
     MEMBER DB_KEYANDTIMESTAMP := 5
 END ENUM
 
-/// <summary>
-/// This enum emulates the FoxPro values for the CursorAdapter.CursorStatus
-/// </summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/CursorStatus/*" />
 ENUM CursorStatus
     MEMBER Detached := 0
     MEMBER Filled   := 1
@@ -391,8 +387,8 @@ CLASS CursorAdapter
         SELF:WhereType          := SqlWhereType.DB_KEY
         RETURN
 
-    /// <include file="VFPClasses.xml" path="doc/CursorAdapter.CursorFill/*" />
 
+    /// <include file="VFPClasses.xml" path="doc/CursorAdapter.CursorFill/*" />
     METHOD CursorFill(lUseCursorSchema, lNoData, nOptions, Source) AS LOGIC CLIPPER
         local useCursorSchema := SELF:UseCursorSchema AS LOGIC
         local noData := SELF:NoData AS LOGIC

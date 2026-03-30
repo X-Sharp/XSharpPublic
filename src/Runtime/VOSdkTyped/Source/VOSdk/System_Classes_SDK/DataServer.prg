@@ -10,7 +10,7 @@ ABSTRACT CLASS DataServer
     PROTECT oHyperLabel 	AS HyperLabel
     PROTECT oHLStatus		AS HyperLabel
     PROTECT wFieldCount 	AS DWORD
-	PROTECT aDataFields	    AS ARRAY
+    PROTECT aDataFields	    AS ARRAY
     PROTECT aClients		AS ARRAY
     PROTECT nClients		AS DWORD
     PROTECT nCCMode		    AS DWORD
@@ -24,7 +24,7 @@ CONSTRUCTOR( )
     RETURN
 
 
- /// <exclude />
+/// <exclude />
 METHOD __ClearLocks( ) AS VOID STRICT
     SWITCH nCCMode
     CASE ccStable
@@ -39,7 +39,7 @@ METHOD __ClearLocks( ) AS VOID STRICT
     RETURN
 
 
- /// <exclude />
+/// <exclude />
 METHOD __SetupLocks( ) AS VOID STRICT
 
 
@@ -64,7 +64,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
             oHLStatus := SELF:Status
         ENDIF
     OTHERWISE
-        BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
     END SWITCH
 
@@ -89,14 +89,14 @@ ACCESS BoF AS LOGIC
 
 /// <include file="System.xml" path="doc/DataServer.Clients/*" />
 ACCESS Clients  AS ARRAY
-   RETURN SELF:aClients
+    RETURN SELF:aClients
 
 
 /// <include file="System.xml" path="doc/DataServer.Clients/*" />
 ASSIGN Clients(aNewClients AS ARRAY)
     SELF:aClients := aNewClients
     SELF:nClients := ALen(SELF:aClients)
-RETURN
+    RETURN
 
 
 /// <include file="System.xml" path="doc/DataServer.Close/*" />
@@ -137,7 +137,7 @@ ASSIGN ConcurrencyControl( nMode  AS USUAL)
         CASE "CCFILE"
             newMode := ccFile
         OTHERWISE
-            BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+            BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                 __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
         END SWITCH
     ENDIF
@@ -155,11 +155,11 @@ ASSIGN ConcurrencyControl( nMode  AS USUAL)
 
 /// <include file="System.xml" path="doc/DataServer.DataField/*" />
 METHOD DataField( nFieldPosition  AS USUAL) AS DataField
-	LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-	IF nPos > 0
-		RETURN aDataFields[ nPos ]
-	ENDIF
-	RETURN NULL_OBJECT
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN aDataFields[ nPos ]
+    ENDIF
+    RETURN NULL_OBJECT
 
 
 /// <include file="System.xml" path="doc/DataServer.DBStruct/*" />
@@ -172,7 +172,7 @@ ACCESS DBStruct AS ARRAY
     aStruct := ArrayNew( wFieldCount )
     FOR w := 1 UPTO wFieldCount
         oDF := aDataFields[ w ]
-	    VAR oFS := oDF:FieldSpec
+        VAR oFS := oDF:FieldSpec
         aStruct[ w ] := { oDF:Name, oFS:UsualType, oFS:Length, oFS:Decimals }
     NEXT
 
@@ -207,25 +207,25 @@ METHOD FieldGetFormatted( nFieldPosition  AS USUAL)  AS USUAL
 
 /// <include file="System.xml" path="doc/DataServer.FieldHyperLabel/*" />
 METHOD FieldHyperLabel( nFieldPosition  AS USUAL) AS HyperLabel
-	LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-	IF nPos > 0
-		RETURN SELF:DataField(nPos):HyperLabel
-	ENDIF
-	RETURN NULL_OBJECT
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN SELF:DataField(nPos):HyperLabel
+    ENDIF
+    RETURN NULL_OBJECT
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldName/*" />
 METHOD FieldName( nFieldPosition AS USUAL )  AS STRING
-	LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-	IF nPos > 0
-		RETURN SELF:DataField(nPos):HyperLabel:Name
-	ENDIF
-	RETURN NULL_STRING
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN SELF:DataField(nPos):HyperLabel:Name
+    ENDIF
+    RETURN NULL_STRING
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldPos/*" />
-	METHOD FieldPos( nFieldPosition AS USUAL) AS DWORD
-		RETURN 0
+METHOD FieldPos( nFieldPosition AS USUAL) AS DWORD
+    RETURN 0
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldPut/*" />
@@ -234,102 +234,102 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldSpec/*" />
-	METHOD FieldSpec( nFieldPosition AS USUAL)  AS FieldSpec
-		LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-		IF nPos > 0
-			RETURN SELF:DataField(nPos):FieldSpec
-		ENDIF
-		RETURN NULL_OBJECT
+METHOD FieldSpec( nFieldPosition AS USUAL)  AS FieldSpec
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN SELF:DataField(nPos):FieldSpec
+    ENDIF
+    RETURN NULL_OBJECT
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldStatus/*" />
-	METHOD FieldStatus( nFieldPosition AS USUAL) AS HyperLabel
-		LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-		IF nPos > 0
-			RETURN SELF:DataField(nPos):FieldSpec:Status
-		ENDIF
-		RETURN NULL_OBJECT
+METHOD FieldStatus( nFieldPosition AS USUAL) AS HyperLabel
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN SELF:DataField(nPos):FieldSpec:Status
+    ENDIF
+    RETURN NULL_OBJECT
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldSym/*" />
-	METHOD FieldSym( nFieldPosition AS USUAL )  AS SYMBOL
-		LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-		IF nPos > 0
-			RETURN SELF:DataField(nPos):HyperLabel:NameSym
-		ENDIF
-		RETURN NULL_SYMBOL
+METHOD FieldSym( nFieldPosition AS USUAL )  AS SYMBOL
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN SELF:DataField(nPos):HyperLabel:NameSym
+    ENDIF
+    RETURN NULL_SYMBOL
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldValidate/*" />
-	METHOD FieldValidate( nFieldPosition AS USUAL, uValue AS USUAL) AS LOGIC
-		LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
-		IF nPos > 0
-			RETURN SELF:DataField(nPos):FieldSpec:Validate(uValue)
-		ENDIF
-		RETURN TRUE
+METHOD FieldValidate( nFieldPosition AS USUAL, uValue AS USUAL) AS LOGIC
+    LOCAL nPos := SELF:FieldPos(nFieldPosition) AS DWORD
+    IF nPos > 0
+        RETURN SELF:DataField(nPos):FieldSpec:Validate(uValue)
+    ENDIF
+    RETURN TRUE
 
 
 /// <include file="System.xml" path="doc/DataServer.FLOCK/*" />
-	METHOD FLock( ) AS LOGIC STRICT
-		RETURN FALSE
+METHOD FLock( ) AS LOGIC STRICT
+    RETURN FALSE
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.GetLookupTable/*" />
-    abstract METHOD GetLookupTable( nMaxRows , uField1 , uField2 , uSearchValue )  AS ARRAY CLIPPER
+abstract METHOD GetLookupTable( nMaxRows , uField1 , uField2 , uSearchValue )  AS ARRAY CLIPPER
 
 /// <include file="System.xml" path="doc/DataServer.GoBottom/*" />
-	METHOD GoBottom( ) AS LOGIC STRICT
-		RETURN FALSE
+METHOD GoBottom( ) AS LOGIC STRICT
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.GoTo/*" />
-	METHOD GoTo( nPosition AS DWORD ) AS LOGIC
-		RETURN FALSE
+METHOD GoTo( nPosition AS DWORD ) AS LOGIC
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.GoTop/*" />
-	METHOD GoTop( ) AS LOGIC STRICT
-		RETURN FALSE
+METHOD GoTop( ) AS LOGIC STRICT
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.HLStatus/*" />
-	ACCESS HLStatus AS HyperLabel
-		// This always returns the status, regardless of the error flag
-		RETURN SELF:oHLStatus
+ACCESS HLStatus AS HyperLabel
+    // This always returns the status, regardless of the error flag
+    RETURN SELF:oHLStatus
 
 
 /// <include file="System.xml" path="doc/DataServer.HyperLabel/*" />
-	ACCESS HyperLabel AS HyperLabel
-		RETURN oHyperLabel
+ACCESS HyperLabel AS HyperLabel
+    RETURN oHyperLabel
 
 
 /// <include file="System.xml" path="doc/DataServer.HyperLabel/*" />
-	ASSIGN HyperLabel( oHL AS HyperLabel)
-		oHyperLabel := oHL
-		RETURN
+ASSIGN HyperLabel( oHL AS HyperLabel)
+    oHyperLabel := oHL
+    RETURN
 
 
 /// <include file="System.xml" path="doc/DataServer.RecCount/*" />
-	ACCESS LastRec AS DWORD
-		RETURN 0
+ACCESS LastRec AS DWORD
+    RETURN 0
 
-    method LockCurrentRecord( ) as logic strict
-        return self:RLock(self:RecNo)
+method LockCurrentRecord( ) as logic strict
+    return self:RLock(self:RecNo)
 
 /// <include file="System.xml" path="doc/DataServer.Name/*" />
-	ACCESS Name AS STRING
-		IF SELF:oHyperLabel != NULL_OBJECT
-			RETURN oHyperLabel:Name
-		ENDIF
-		RETURN NULL_STRING
+ACCESS Name AS STRING
+    IF SELF:oHyperLabel != NULL_OBJECT
+        RETURN oHyperLabel:Name
+    ENDIF
+    RETURN NULL_STRING
 
 
 /// <include file="System.xml" path="doc/DataServer.NameSym/*" />
-	ACCESS NameSym as symbol
-        IF oHyperLabel != NULL_OBJECT
-            RETURN oHyperLabel:NameSym
-        ENDIF
-        RETURN NULL_STRING
+ACCESS NameSym as symbol
+    IF oHyperLabel != NULL_OBJECT
+        RETURN oHyperLabel:NameSym
+    ENDIF
+    RETURN NULL_STRING
 
 
 /// <include file="System.xml" path="doc/DataServer.NoIVarGet/*" />
@@ -355,28 +355,28 @@ METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 
 
 /// <include file="System.xml" path="doc/DataServer.PostInit/*" />
-	METHOD PostInit( ) AS USUAL CLIPPER
-		RETURN SELF
+METHOD PostInit( ) AS USUAL CLIPPER
+    RETURN SELF
 
 
 /// <include file="System.xml" path="doc/DataServer.PreInit/*" />
-	METHOD PreInit( ) AS USUAL CLIPPER
-		RETURN SELF
+METHOD PreInit( ) AS USUAL CLIPPER
+    RETURN SELF
 
 
 /// <include file="System.xml" path="doc/DataServer.RecCount/*" />
-	ACCESS RecCount AS DWORD
-		RETURN 0
+ACCESS RecCount AS DWORD
+    RETURN 0
 
 
 /// <include file="System.xml" path="doc/DataServer.RecNo/*" />
-	ACCESS RecNo AS DWORD
-		RETURN 0L
+ACCESS RecNo AS DWORD
+    RETURN 0L
 
 
 /// <include file="System.xml" path="doc/DataServer.RecNo/*" />
-	ASSIGN RecNo( lRecNo AS DWORD)
-		RETURN
+ASSIGN RecNo( lRecNo AS DWORD)
+    RETURN
 
 
 /// <include file="System.xml" path="doc/DataServer.RegisterClient/*" />
@@ -392,41 +392,41 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 
 
 /// <include file="System.xml" path="doc/DataServer.ResetNotification/*" />
-	METHOD ResetNotification( ) AS LONG STRICT
+METHOD ResetNotification( ) AS LONG STRICT
     RETURN 0
 
 
 /// <include file="System.xml" path="doc/DataServer.RLOCK/*" />
-	METHOD RLock( nRecord AS DWORD ) AS LOGIC
-        RETURN FALSE
+METHOD RLock( nRecord AS DWORD ) AS LOGIC
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.RLockVerify/*" />
-	METHOD RLockVerify( ) AS LOGIC STRICT
-		RETURN FALSE
+METHOD RLockVerify( ) AS LOGIC STRICT
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.Rollback/*" />
-	METHOD Rollback( ) AS LOGIC STRICT
-		RETURN FALSE
+METHOD Rollback( ) AS LOGIC STRICT
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.Seek/*" />
-	METHOD Seek( ) AS LOGIC CLIPPER
-		RETURN FALSE
+METHOD Seek( ) AS LOGIC CLIPPER
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.SetDataField/*" />
-	METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField ) AS LOGIC
+METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField ) AS LOGIC
 
 
     IF aDataFields == NULL
-        BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_SEQUENCE, ;
             __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
 
 
     ELSEIF nFieldPosition < 1 .OR. nFieldPosition > ALen(aDataFields)
-        BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSE
         LOCAL oExisting := aDataFields[ nFieldPosition ] AS DataField
@@ -434,9 +434,9 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
             aDataFields[ nFieldPosition ] := oDataField
             RETURN TRUE
         ELSEIF oDataField:Name == oExisting:Name .AND.    ;
-            oDataField:FieldSpec:UsualType == oExisting:FieldSpec:UsualType .AND.     ;
-            oDataField:FieldSpec:Length    == oExisting:FieldSpec:Length .AND.   ;
-            oDataField:FieldSpec:Decimals  == oExisting:FieldSpec:Decimals
+                oDataField:FieldSpec:UsualType == oExisting:FieldSpec:UsualType .AND.     ;
+                oDataField:FieldSpec:Length    == oExisting:FieldSpec:Length .AND.   ;
+                oDataField:FieldSpec:Decimals  == oExisting:FieldSpec:Decimals
             aDataFields[ nFieldPosition ] := oDataField
             RETURN TRUE
         ELSE
@@ -446,37 +446,37 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 
 
 /// <include file="System.xml" path="doc/DataServer.Skip/*" />
-	METHOD Skip( nRelativePosition := 1 AS LONG) AS LOGIC
-		RETURN FALSE
+METHOD Skip( nRelativePosition := 1 AS LONG) AS LOGIC
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.Status/*" />
-	ACCESS Status AS HyperLabel
-		// Usual because there may be a field Status as well
-		RETURN oHLStatus
+ACCESS Status AS HyperLabel
+    // Usual because there may be a field Status as well
+    RETURN oHLStatus
 
 
 /// <include file="System.xml" path="doc/DataServer.Status/*" />
-	ASSIGN Status(oHl AS HyperLabel)
-		// Usual because there may be a field Status as well
-		IF IsInstanceOfUsual(oHl, #HyperLabel)
-			SELF:oHLStatus := oHl
-		ENDIF
-		RETURN
+ASSIGN Status(oHl AS HyperLabel)
+    // Usual because there may be a field Status as well
+    IF IsInstanceOfUsual(oHl, #HyperLabel)
+        SELF:oHLStatus := oHl
+    ENDIF
+    RETURN
 
 
 /// <include file="System.xml" path="doc/DataServer.SuspendNotification/*" />
-	METHOD SuspendNotification( ) AS LONG STRICT
-		RETURN 0
+METHOD SuspendNotification( ) AS LONG STRICT
+    RETURN 0
 
 
 /// <include file="System.xml" path="doc/DataServer.UnLock/*" />
-	METHOD UnLock(nRecno := 0  AS DWORD) AS LOGIC
-		RETURN FALSE
+METHOD UnLock(nRecno := 0  AS DWORD) AS LOGIC
+    RETURN FALSE
 
 
 /// <include file="System.xml" path="doc/DataServer.UnRegisterClient/*" />
-	METHOD UnRegisterClient( oClient AS OBJECT, lAllowClose := TRUE AS LOGIC)  AS LOGIC
+METHOD UnRegisterClient( oClient AS OBJECT, lAllowClose := TRUE AS LOGIC)  AS LOGIC
     LOCAL w AS DWORD
 
 
@@ -494,7 +494,7 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 
 
 /// <include file="System.xml" path="doc/DataServer.Update/*" />
-	METHOD Update( ) AS LOGIC CLIPPER
+METHOD Update( ) AS LOGIC CLIPPER
     RETURN FALSE
 END CLASS
 

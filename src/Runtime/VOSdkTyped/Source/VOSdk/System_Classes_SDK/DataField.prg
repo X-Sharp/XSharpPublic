@@ -8,8 +8,8 @@
 /// <include file="System.xml" path="doc/DataField/*" />
 [XSharp.Internal.TypesChanged];
 CLASS DataField
-	PROTECT oFieldSpec		AS FieldSpec
-	PROTECT oHyperLabel	    AS HyperLabel
+    PROTECT oFieldSpec		AS FieldSpec
+    PROTECT oHyperLabel	    AS HyperLabel
 
 
 /// <include file="System.xml" path="doc/DataField.ctor/*" />
@@ -23,9 +23,9 @@ CONSTRUCTOR( oHLName AS STRING, oFS := NULL AS FieldSpec)
 
 /// <include file="System.xml" path="doc/DataField.ctor/*" />
 CONSTRUCTOR( oHLName AS HyperLabel, oFS := NULL AS FieldSpec)
-	oHyperLabel := oHLName
+    oHyperLabel := oHLName
     oFieldSpec := oFS
-	RETURN
+    RETURN
 
 
 /// <include file="System.xml" path="doc/DataField.FieldSpec/*" />
@@ -40,7 +40,7 @@ PROPERTY NameSym AS SYMBOL          GET oHyperLabel:NameSym
 
 /// <include file="System.xml" path="doc/DataField.AsString/*" />
 METHOD AsString( ) AS STRING STRICT
-	RETURN oHyperLabel:AsString( )
+    RETURN oHyperLabel:AsString( )
 
 
 END CLASS

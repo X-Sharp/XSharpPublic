@@ -16,13 +16,7 @@ USING System.Diagnostics
 #pragma warnings(171, off)   // field must be fully assigned before control is returned to the caller
 
 BEGIN NAMESPACE XSharp
-/// <summary>Internal type that implements the VO Compatible DATE type<br/>
-/// This type has many operators and implicit converters that normally are never directly called from user code.
-/// It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic.
-/// There are implicit converters between Date and DateTime.
-/// </summary>
-/// <seealso cref="IDate"/>
-/// <seealso cref="T:XSharp.RDD.DbDate"/>
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Date/*" />
 //[DebuggerTypeProxy(TYPEOF(DateDebugView))];
 [DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];
 [StructLayout(LayoutKind.Explicit, Size := 4)];
@@ -59,8 +53,8 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 
 #endregion
 
-#region datetime conversions
-    /// <summary>Return DATE value as DateTime.</summary>
+    #region datetime conversions
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.Value/*" />
     [NOSHOW] PUBLIC PROPERTY Value AS System.DateTime
     GET
         IF (_ymd == 0)
@@ -85,7 +79,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         _NULL_DATE  := DATE{}
         _dtCalc     := DateTime{1901,1,1}
         RETURN
-    /// <summary>Construct a date from a DateTime value.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(dt AS System.DateTime)
         IF dt != DateTime.MinValue
@@ -97,7 +91,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         ENDIF
         RETURN
 
-    /// <summary>Construct a date from another IDate type.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(d AS IDate)
         _year  := (WORD) d:Year
@@ -105,25 +99,25 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         _day   := (BYTE) d:Day
         RETURN
 
-    /// <summary>Construct a date from a number of Ticks.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(ticks AS INT64)
         SELF(System.DateTime{ticks})
         RETURN
 
-    /// <summary>Construct a date from a string. This assumes the string is in current Date format</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(strDate AS STRING)
         LOCAL dValue := CToD(strDate) AS DATE
         _ymd := dValue:_ymd
 
-    /// <summary>Construct a date from a string using the specified Date Format.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(strDate AS STRING, strFormat AS STRING)
         LOCAL dValue := CToD(strDate,strFormat) AS DATE
         _ymd := dValue:_ymd
 
-    /// <summary>Construct a date from year, month, day </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(year AS INT, month AS INT, day AS INT)
         _ymd := 0
@@ -150,7 +144,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         ENDIF
         RETURN
 
-    /// <summary>Construct a date from year, month, day </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Date.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(year AS DWORD, month AS DWORD, day AS DWORD)
         // Chain to Int constructor

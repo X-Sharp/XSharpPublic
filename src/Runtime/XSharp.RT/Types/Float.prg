@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -14,11 +14,7 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so no settable properties
-/// <summary>Internal type that implements the XBase Compatible FLOAT type.
-/// This type has many operators and implicit converters that normally are never directly called from user code.
-/// </summary>
-/// <seealso cref="IFloat"/>
-/// <seealso cref="RDD.DbFloat"/>
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Float/*" />
 [DebuggerDisplay("{ToDebugString(),nq}", Type := "FLOAT" )];
 [StructLayout(LayoutKind.Explicit, Pack := 4)];
 [Serializable];
@@ -34,9 +30,8 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
     [NOSHOW] [FieldOffset(8)]  PRIVATE INITONLY _length AS SHORTINT
     [NOSHOW] [FieldOffset(10)] PRIVATE INITONLY _decimals AS SHORTINT
 
-#region constructors
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    /// <param name="r8">Real8 value to convert to a FLOAT</param>
+    #region constructors
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.ctor/*" />
     [NODEBUG]  [INLINE];
     CONSTRUCTOR (r8 AS REAL8)
         SELF:_value    := r8
@@ -47,35 +42,35 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
             SELF:_decimals := -1
         ENDIF
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.ctor/*" />
     [NODEBUG]  [INLINE];
     CONSTRUCTOR (r8 AS REAL8, decimals AS INT)
         SELF:_value    := r8
         SELF:_length   := 0
         SELF:_decimals := (SHORTINT) decimals
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.ctor/*" />
     [NODEBUG]  [INLINE];
     CONSTRUCTOR (r8 AS REAL8, decimals AS DWORD)
         SELF:_value    := r8
         SELF:_length   := 0
         SELF:_decimals := (SHORTINT) decimals
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.ctor/*" />
     [NODEBUG]  [INLINE];
     CONSTRUCTOR (r8 AS REAL8, length AS DWORD, decimals AS DWORD)
         SELF:_value    := r8
         SELF:_length   := (SHORTINT) length
         SELF:_decimals := (SHORTINT) decimals
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.ctor/*" />
     [NODEBUG]  [INLINE];
     CONSTRUCTOR (r8 AS REAL8, length AS INT, decimals AS INT )
         SELF:_value    := r8
         SELF:_length   := (SHORTINT) length
         SELF:_decimals := (SHORTINT) decimals
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.ctor/*" />
     [NODEBUG]  [INLINE];
     CONSTRUCTOR (@@Value AS IFloat)
         SELF:_value		:= @@Value:Value
@@ -83,11 +78,11 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
         SELF:_decimals	:= (SHORT)  @@Value:Decimals
 #endregion
 #region Properties
-    /// <summary>REAL8 (System.Double) value</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.Value/*" />
     PROPERTY @@Value    AS REAL8	GET _value
-    /// <summary>Width </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.Digits/*" />
     PROPERTY Digits   AS INT	GET _length
-    /// <summary>Number of decimals</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Float.Decimals/*" />
     PROPERTY Decimals AS INT	GET _decimals
 #endregion
 
@@ -209,8 +204,8 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
     [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(w AS WORD) AS FLOAT
         RETURN FLOAT{w, 0}
-    /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
+    /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(i AS INT) AS FLOAT
         RETURN FLOAT{i, 0}

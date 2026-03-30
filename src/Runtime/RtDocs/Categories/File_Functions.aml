@@ -25,32 +25,6 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirChange(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirMake(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AddBs(System.String)</codeEntityReference>
               </para>
             </entry>
@@ -252,32 +226,6 @@
               <para>
       Flush file buffers.
     </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToFileStream</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToMemoryStream</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -627,7 +575,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FGets(System.Int64,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FGetS(System.Int64,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -850,7 +798,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FPuts(System.Int64,System.String,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FPutS(System.Int64,System.String,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1528,11 +1476,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream(System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Retrieve the buffered File IO setting for the runtime</para>
+              <para>Control the buffered File IO setting for the runtime</para>
             </entry>
           </row>
         </table>

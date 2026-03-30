@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -47,11 +47,7 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
    RETURN _TimeString( dwHour, dwMinute, dwSeconds, FALSE, "", "" )
 
 
-/// <summary>
-/// Return the timestring from a DateTime structure
-/// </summary>
-/// <param name="dt">DateTime values that needs to be converted</param>
-/// <returns>A (military) time that corresponds to the passed arguments in the format HH:MM:SS without AM/PM notation.</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/ConTime/*" />
 FUNCTION ConTime(dt AS DateTime) AS STRING
 	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")
 
@@ -205,13 +201,7 @@ INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGI
 
 
 
-/// <summary>
-/// Format a set of numbers representing a year, month, and day as a Date.
-/// </summary>
-/// <param name="dwY">A valid year.  If the century digits are not specified, the century is determined by the rules of SetEpoch(). </param>
-/// <param name="dwM">A number from 1 through 12 representing a valid month. </param>
-/// <param name="dwDay">A number representing a valid day of dwMonth.</param>
-/// <returns>The date that corresponds to the passed arguments.  If any of the arguments specified do not represent a valid year, month, or day, a DateTime.MinValue is returned.</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/ConDateTime/*" />
 FUNCTION ConDateTime(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DateTime
     IF dwM == 0 .OR. dwDay == 0
         RETURN DateTime.MinValue
@@ -254,13 +244,7 @@ STATIC FUNCTION _SplitDate(cDate AS STRING) AS INT[]
 RETURN aNums
 #pragma options ("az", restore)
 
-/// <summary>
-/// Convert a Date string to DateTime.
-/// </summary>
-/// <param name="cDate">A string of numbers representing the month, day, and year, separated by any character other than a number.  The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().  If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
-/// <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
-/// <returns>The DateTime value that corresponds to the numbers specified in <paramref name="cDate"/>.  If <paramref name="cDate"/> is not a valid date, CToDt() returns a DateTime.MinValue.
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/CToDt/*" />
 FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	LOCAL dDate AS DateTime
 	LOCAL nDay, nMonth, nYear AS INT
@@ -431,26 +415,12 @@ STATIC FUNCTION _CToDt_YearAtTheEnd(cDate AS STRING, nDayPos AS INT, nMonthPos A
 RETURN dDate
 
 
-/// <summary>
-/// Convert an ANSI date string to DateTime
-/// </summary>
-/// <param name="cDate">A string in the ANSI form yyyy.mm.dd, where yy, mm, and dd represent year, month, and day respectively.
-/// The year, month, and day can be separated by any character other than a number.
-/// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().
-/// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
-/// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If cDate is not a valid ANSI date, CToDAnsi() returns a DateTime.MinValue.
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/CToDtAnsi/*" />
 FUNCTION CToDtAnsi(cDate AS STRING) AS DateTime
 	RETURN CToDt(cDate, "YYYY.MM.DD")
 
 
-/// <summary>
-/// Convert a DateTime to a string.
-/// </summary>
-/// <param name="d">The DateTime to be converted.</param>
-/// <returns>
-/// A string representation of the given Date, formatted in the current Date format.
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DtToC/*" />
 FUNCTION DtToC(d AS DateTime) AS STRING
 	LOCAL result:="" AS STRING
 	LOCAL cFormat := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet) AS STRING
@@ -462,13 +432,7 @@ FUNCTION DtToC(d AS DateTime) AS STRING
 	ENDIF
 	RETURN result
 
-/// <summary>
-/// Convert a DateTime value to a string formatted as string in ANSI format
-/// </summary>
-/// <param name="dDate">The DateTime to be converted</param>
-/// <returns>
-/// An 8-character string in the format yyyymmdd.  If dDate is a DateTime.MinValue, a string of eight spaces is returned.  The return value is not affected by the current date format.
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DtToS/*" />
 FUNCTION DtToS(dDate AS DateTime) AS STRING
 	LOCAL result := NULL  AS STRING
 	IF dDate != DateTime.MinValue
@@ -478,11 +442,7 @@ FUNCTION DtToS(dDate AS DateTime) AS STRING
 	ENDIF
 	RETURN result
 
-/// <summary>
-/// Convert an Date string to DateTime
-/// </summary>
-/// <param name="cDate"></param>
-/// <returns><inheritdoc cref='M:XSharp.RT.Functions.CToD(System.String)'/></returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SToDt/*" />
 FUNCTION SToDt(cDate AS STRING) AS DateTime
 	LOCAL convertedDate AS DateTime
 	TRY

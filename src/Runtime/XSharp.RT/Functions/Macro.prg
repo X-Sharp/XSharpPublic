@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -31,16 +31,11 @@ FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
     ENDIF
     RETURN uRes
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />
-/// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
-/// <seealso cref="_Codeblock" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/MCompile/*" />
 FUNCTION MCompile(cString AS STRING) AS XSharp._Codeblock
     RETURN MCompile(cString, TRUE)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />
-/// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
-/// <seealso cref="_Codeblock" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/MCompile/*" />
 FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
     VAR oMC := XSharp.RuntimeState.MacroCompiler
     IF oMC != NULL_OBJECT

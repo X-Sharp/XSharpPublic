@@ -122,17 +122,17 @@ FUNCTION ATCLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
 FUNCTION ATLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
     RETURN XSharp.Core.Functions.ATLine(cSearch, cTarget)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padl/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/padl/*" />
 [FoxProFunction("PADL", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION PadL(uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING) AS STRING
     RETURN XSharp.RT.Functions.PadL(uValue, nLength, cFillChar)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padr/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/padr/*" />
 [FoxProFunction("PADR", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION PadR(uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING) AS STRING
     RETURN XSharp.RT.Functions.PadR(uValue, nLength, cFillChar)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padc/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/padc/*" />
 [FoxProFunction("PADC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION PadC(uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING) AS STRING
     RETURN XSharp.RT.Functions.PadC(uValue, nLength, cFillChar)
@@ -275,11 +275,6 @@ FUNCTION CMonth(dDate AS DATE) AS STRING
 FUNCTION DoW(dDate AS DATE) AS DWORD
     RETURN XSharp.RT.Functions.DoW(dDate)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
-[FoxProFunction("DMY", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION Dmy(dExpression AS DATE) AS STRING
-    THROW NotImplementedException{}
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ctod/*" />
 [FoxProFunction("CTOD", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CToD(cDate AS STRING) AS DATE
@@ -293,12 +288,32 @@ FUNCTION DToC(dDate AS DATE) AS STRING
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fdate/*" />
 [FoxProFunction("FDATE", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FDate(cFileName AS STRING, nType := 0 AS INT) AS USUAL
-    RETURN XSharp.Core.Functions.FDate()
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        IF nType == 1
+            RETURN info:LastWriteTime
+        ELSE
+            RETURN (DATE) info:LastWriteTime
+        ENDIF
+    ENDIF
+
+    IF nType == 1
+        RETURN System.DateTime.MinValue
+    ELSE
+        RETURN NULL_DATE
+    ENDIF
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ftime/*" />
 [FoxProFunction("FTIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FTime(cFileName AS STRING) AS STRING
-    RETURN XSharp.Core.Functions.FTime()
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        RETURN info:LastWriteTime:ToString("HH:mm:ss")
+    ENDIF
+    RETURN ""
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/time/*" />
 [FoxProFunction("TIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -353,7 +368,7 @@ FUNCTION IsDigit(pszString AS STRING) AS LOGIC
 FUNCTION IsLower(pszString AS STRING) AS LOGIC
      RETURN XSharp.Core.Functions.IsLower(pszString)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isupper/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/isupper/*" />
 [FoxProFunction("ISUPPER", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION IsUpper(pszString AS STRING) AS LOGIC
     RETURN XSharp.Core.Functions.IsUpper(pszString)

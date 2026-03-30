@@ -761,7 +761,7 @@
             </code>
         </example>
     </astackinfo>
-    
+
     <at>
         <summary>
             Searches a character expression for the occurrence of another character expression.
@@ -861,16 +861,16 @@
             without regard for the case of these two expressions.
         </summary>
         <param name="cSearchExpression">
-            Specifies the character expression that ATC( ) searches for in <paramref name='cExpressionSearched' />.
+            Specifies the character expression that ATC( ) searches for in <paramref name="cExpressionSearched"/>.
         </param>
         <param name="cExpressionSearched">
-            Specifies the character expression <paramref name='cSearchExpression' /> searches for.
-            Both <paramref name='cSearchExpression' /> and <paramref name='cExpressionSearched' /> can be memo fields of any size.
+            Specifies the character expression <paramref name="cSearchExpression"/> searches for.
+            Both <paramref name="cSearchExpression"/> and <paramref name="cExpressionSearched"/> can be memo fields of any size.
         </param>
         <param name="nOccurrence">
-            Specifies which occurrence (first, second, third, and so on) of <paramref name='cSearchExpression' /> is searched for in <paramref name='cExpressionSearched' />.
-            By default, ATC( ) searches for the first occurrence of <paramref name='cSearchExpression' /> (nOccurrence = 1).
-            Including nOccurrence lets you search for additional occurrences of <paramref name='cSearchExpression' /> in <paramref name='cExpressionSearched' />.
+            Specifies which occurrence (first, second, third, and so on) of <paramref name="cSearchExpression"/> is searched for in <paramref name="cExpressionSearched"/>.
+            By default, ATC( ) searches for the first occurrence of <paramref name="cSearchExpression"/> (nOccurrence = 1).
+            Including nOccurrence lets you search for additional occurrences of <paramref name="cSearchExpression"/> in <paramref name="cExpressionSearched"/>.
         </param>
         <returns>
             Numeric
@@ -2734,7 +2734,7 @@
                     <term>437</term>
                     <description>MS-DOS, US</description>
                     <description>ibm437</description>
-                    <description></description>
+                    <description/>
                 </item>
                 <item>
                     <term>850</term>
@@ -3802,7 +3802,7 @@
         </returns>
         <remarks>
             The following table explains the number DriveType( ) returns and the corresponding drive type description:
-            <list type ="table">
+            <list type="table">
                 <listheader>
                     <term>Number</term>
                     <description>Drive Type</description>
@@ -3889,7 +3889,36 @@
         </example>
     </evl>
 
-    <fldlist>
+    <execscript>
+        <summary>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </summary>
+        <param name="cExpression">
+            Represents the text, a variable, type string, or memo to be executed as code.
+        </param>
+        <param name="eParameter1">
+            Optional. Specify parameters passed to a script that has a PARAMETERS or LPARAMETERS statement in first line.
+        </param>
+        <param name="eParameter2">
+            Optional. Specify parameters passed to a script that has a PARAMETERS or LPARAMETERS statement in first line.
+        </param>
+        <param name="eParameterN">
+            Optional. Specify parameters passed to a script that has a PARAMETERS or LPARAMETERS statement in first line.
+        </param>
+
+        <returns>
+            The return value is the value returned by the script in cExpression. If the script returns no value, X# returns NIL.
+        </returns>
+        <remarks>
+            ExecScript(), allows you to execute a block of code without compiling first. <br/>
+            You can use all allowed statements inside the script and create objects,
+            set their properties, call the methods and call functions.<br/>
+        </remarks>
+        <example>
+            <code language="X#">?ExecScript("? 'Hello world from X# ExecScript'")</code>
+        </example>
+    </execscript>
+<fldlist>
         <summary>
             Included for compatibility with dBASE.
         </summary>
@@ -4841,7 +4870,7 @@
             </list>
             <note name="Note">
                 In X#, cursor, animated cursor, and icon files can be used as graphics files. For example, you can specify an animated cursor file for the
-                Picture property for the Image control (however, the Image control displays the static representation of the cursor).>
+                Picture property for the Image control (however, the Image control displays the static representation of the cursor).&gt;
             </note>
             Use the Clear RESOURCES command to clear all cached graphic files, including .gif and .jpg files.<br/>
 
@@ -5864,7 +5893,7 @@
                 gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
                 * declare release function
                 DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
-                * next line should print 1 on the form's background >> "Okay"
+                * next line should print 1 on the form's background &gt;&gt; "Okay"
                 ? ReleaseDC(m.goForm.HWnd, m.hDC)
                 * declare access to the _whole_ window
                 DECLARE Integer GetWindowDC IN User32 integer HWnd
@@ -6035,7 +6064,7 @@
                 DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
                 RETURN ReleaseDC(m.tnHWND, m.tnHDC)
                 ENDFUNC
-                * The following function is not bullert-proof, as it fails on forms with scrollbars (oForm.Scrollbars > 0)
+                * The following function is not bullert-proof, as it fails on forms with scrollbars (oForm.Scrollbars &gt; 0)
                 FUNCTION GetChildAreaCanvas(tnhWnd AS Integer) AS Integer
                 * VFP ‘TopLevelForms’ (oForm.ShowWindow = 2) have
                 * a secondary window inside the outer one.
@@ -7469,7 +7498,7 @@
             By using <b>SetResultSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the
             table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a
             rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
-            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b> 
+            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b>
             Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset
             to the calling application. When the rowset closes, the cursor also closes.
             However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetResultSet( )</b>
@@ -7770,7 +7799,7 @@
                 </item>
                 <item>
                     <term>5</term>
-                    <description>>Width of scroll arrows on vertical scroll bar</description>
+                    <description>&gt;Width of scroll arrows on vertical scroll bar</description>
                 </item>
                 <item>
                     <term>6</term>
@@ -8404,11 +8433,13 @@
     <vartype>
         <summary>
             Returns the data type of an expression.
-            <note name="Note">
-                <b>VARTYPE( )</b> is similar to the <b>TYPE( )</b> function, but <b>VARTYPE( )</b> is faster and does not require quotation
-                marks to enclose the expression for which the data type is returned.
-            </note>
         </summary>
+      <remarks>
+        <note name="Note">
+          <b>VARTYPE( )</b> is similar to the <b>TYPE( )</b> function, but <b>VARTYPE( )</b> is faster and does not require quotation
+          marks to enclose the expression for which the data type is returned.
+        </note>
+      </remarks>
         <param name="eExpression">
             Specifies the expression for which the data type is returned. <b>VARTYPE( )</b> returns a single character
             indicating the data type of the expression.<br/>
@@ -9010,35 +9041,4 @@
             </list>
         </remarks>
     </xmlupdategram>
-    <execscript>
-        <summary>
-            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
-        </summary>
-        <param name="cExpression">
-            Represents the text, a variable, type string, or memo to be executed as code.
-        </param>
-        <param name="eParameter1">
-            Optional. Specify parameters passed to a script that has a PARAMETERS or LPARAMETERS statement in first line.
-        </param>
-        <param name="eParameter2">
-            Optional. Specify parameters passed to a script that has a PARAMETERS or LPARAMETERS statement in first line.
-        </param>
-        <param name="eParameterN">
-            Optional. Specify parameters passed to a script that has a PARAMETERS or LPARAMETERS statement in first line.
-        </param>
-
-        <returns>
-            The return value is the value returned by the script in cExpression. If the script returns no value, X# returns NIL.
-        </returns>
-        <remarks>
-            ExecScript(), allows you to execute a block of code without compiling first. <br/>
-            You can use all allowed statements inside the script and create objects,
-            set their properties, call the methods and call functions.<br/>
-        </remarks>
-        <example>
-            <code language="X#">?ExecScript("? 'Hello world from X# ExecScript'")</code>
-        </example>
-    </execscript>
-</Runtimefunctions>
-
-
+    </Runtimefunctions>

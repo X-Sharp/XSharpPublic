@@ -1,81 +1,55 @@
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 
 [Obsolete( "'AllowCollectThread()' is not supported" )] ;
 FUNCTION AllowCollectThread() AS VOID
-	RETURN  
+	RETURN
 
 
-/// <summary>
-/// Call the garbage collector if a watermark is reached.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <exclude />
 [Obsolete( "'Collect()' is not supported" )] ;
 FUNCTION Collect() AS VOID
-	RETURN  
+	RETURN
 
 
-/// <summary>
-/// Count the number of garbage collections performed by the system.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <exclude />
 [Obsolete( "'CollectCount()' is not supported" )] ;
 FUNCTION CollectCount() AS DWORD
 	return 0
 
-/// <summary>
-/// Call the garbage collector.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <exclude />
 [Obsolete( "'CollectForced()' is not supported" )] ;
 FUNCTION CollectForced() AS VOID
-	RETURN  
+	RETURN
 
 /// <exclude/>
 [Obsolete( "'AxitCalled()' is not supported and always returns FALSE" )] ;
 FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
-RETURN FALSE  
+RETURN FALSE
 
-/// <summary>
-/// Check whether the application is in a garbage collection phase.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <exclude />
 [Obsolete( "'InCollect()' is not supported" )] ;
 FUNCTION InCollect() AS LOGIC
-	RETURN FALSE   
+	RETURN FALSE
 
-    
+
 [Obsolete( "'_RegisterExit()' is not supported and has no effect, use 'AppDomain.CurrentDomain:ProcessExit' in stead..",TRUE)];
 FUNCTION _RegisterExit(aFunction AS USUAL) AS VOID
 	RETURN
-    
 
 
-/// <summary>
-/// Register an object so that it receives an Axit message before being destroyed by the garbage collector.
-/// </summary>
-/// <param name="oSource"></param>
-/// <returns>
-/// </returns>
+
+/// <exclude />
 [Obsolete( "'RegisterAxit()' is not supported and has no effect.")];
 FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
-	RETURN 
+	RETURN
 
 
-/// <summary>
-/// Terminate the registration of an object that has been registered with RegisterAxit().
-/// </summary>
-/// <param name="oSource"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/UnRegisterAxit/*" />
 FUNCTION UnRegisterAxit(oSource AS OBJECT) AS LOGIC
 	GC.SuppressFinalize( oSource )
-	RETURN FALSE   
+	RETURN FALSE

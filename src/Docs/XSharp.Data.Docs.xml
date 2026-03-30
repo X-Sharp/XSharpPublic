@@ -1,0 +1,411 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <AbstractSqlFactory>
+        <summary>This is the base class for most ISqlFactory implementations.</summary>
+        <remarks>This class creates connections, commands etc by calling the appropriate methods on a protected DbProvider instance.</remarks>
+    </AbstractSqlFactory>
+    <CursorStatus>
+        <summary>
+        This enum emulates the FoxPro values for the CursorAdapter.CursorStatus
+        </summary>
+    </CursorStatus>
+    <DbDataColumn>
+        <summary>This class represents a DBF Field in a DbDataTable class.</summary>
+    </DbDataColumn>
+    <DbDataRow>
+        <summary>This class represents a DBF Row in a DbDataTable class.</summary>
+    </DbDataRow>
+    <DbDataRow.RecNo>
+        <summary>Record number in the workarea</summary>
+    </DbDataRow.RecNo>
+    <DbDataSource>
+        <summary>Create a DbDataSource object attached to the current workarea</summary>
+        <returns>A DbDataSource object, or NULL when the current workarea is not in use.</returns>
+    </DbDataSource>
+    <DbDataSource.Add>
+        <summary>This required method has not been implemented.</summary>
+    </DbDataSource.Add>
+    <DbDataSource.AllowEdit>
+        <summary>TRUE when the workarea is not readonly</summary>
+    </DbDataSource.AllowEdit>
+    <DbDataSource.AllowNew>
+        <summary>TRUE when the workarea is not readonly</summary>
+    </DbDataSource.AllowNew>
+    <DbDataSource.AllowRemove>
+        <summary>TRUE when the workarea is not readonly</summary>
+    </DbDataSource.AllowRemove>
+    <DbDataSource.ApplySort>
+        <inheritdoc/>
+        <remarks>This method will create an index on the underlying workarea to sort the rows</remarks>
+    </DbDataSource.ApplySort>
+    <DbDataSource.Clear>
+        <inheritdoc/>
+        <remarks>This method will call Zap() on the workarea, so it requires exclusive use.</remarks>
+    </DbDataSource.Clear>
+    <DbDataSource.CopyTo>
+        <summary>This required method has not (yet) been implemented</summary>
+    </DbDataSource.CopyTo>
+    <DbDataSource.Count>
+        <summary>Returns the # of records in the RDD</summary>
+    </DbDataSource.Count>
+    <DbDataSource.EoF>
+        <summary>Is underlying workarea at EOF</summary>
+    </DbDataSource.EoF>
+    <DbDataSource.Fields>
+        As the meta data are the same for all records, we generate them just once.
+    </DbDataSource.Fields>
+    <DbDataSource.Find>
+        <summary>This required method has not (yet) been implemented</summary>
+    </DbDataSource.Find>
+    <DbDataSource.FullName>
+        <summary>File name of underlying workarea</summary>
+    </DbDataSource.FullName>
+    <DbDataSource.generateFields>
+        Generate the meta data which will be used as source for generating the dynamic properties.
+    </DbDataSource.generateFields>
+    <DbDataSource.GetEnumerator>
+        <summary>Returns an enumerator with which you can walk the RDD.</summary>
+        <remarks>This enumerator returns DbRecord objects for each record in the Data Source</remarks>
+        <seealso cref="DbRecord">DbRecord class</seealso>
+    </DbDataSource.GetEnumerator>
+    <DbDataSource.Insert>
+        <summary>This required method has not been implemented.</summary>
+    </DbDataSource.Insert>
+    <DbDataSource.IsReadOnly>
+        <summary>TRUE when the workarea is readonly</summary>
+    </DbDataSource.IsReadOnly>
+    <DbDataSource.Name>
+        <summary>Alias of underlying workarea</summary>
+    </DbDataSource.Name>
+    <DbDataSource.PutValue>
+        We write through into the dbf table and signal the rest of the world, that we have changed something-
+    </DbDataSource.PutValue>
+    <DbDataSource.RecNo>
+        <summary>Recordnumber in underlying workarea</summary>
+    </DbDataSource.RecNo>
+    <DbDataSource.RemoveIndex>
+        <summary>This required method has not (yet) been implemented</summary>
+    </DbDataSource.RemoveIndex>
+    <DbDataSource.SELF_index>
+        <summary>Retrieve the DbRecordObject for the record at the given position</summary>
+        <remarks>This property is READ ONLY. Assigning to the property will throw an exception</remarks>
+        <seealso cref="DbRecord">DbRecord class</seealso>
+    </DbDataSource.SELF_index>
+    <DbDataSource.ShowDeleted>
+        <summary>Should the Deleted Flag be included as "virtual column"</summary>
+    </DbDataSource.ShowDeleted>
+    <DbDataSource.ShowRecno>
+        <summary>Should the Record number be included as "virtual column"</summary>
+    </DbDataSource.ShowRecno>
+    <DbDataSource_2>
+        <summary>This class implements an IBindingList on a workarea</summary>
+        <remarks>
+        The class can be used TO directly bind a workarea to a data aware .Net control, such as a DataGridView
+        Each row in the List represents a record in the workarea. Records are represented by DbRecord objects
+        Each record
+        </remarks>
+    </DbDataSource_2>
+    <DbDataTable>
+        <summary>Create a DbDataTable object with the data from the current workarea</summary>
+        <returns>A DbDataTable object, or NULL when the current workarea is not in use.</returns>
+    </DbDataTable>
+    <DbDataTable.ctor>
+        <summary>Create a datatable from an IRdd object</summary>
+        <remarks>The structure of the table will be derived from the structure of the workarea.
+        and for each row in the workarea there will be a DbDataRow added to the table
+        You can use the normal events for the DataTable class to monitor changes.
+        and use the GetChanges() method from the DataTable class to retrieve a subset of the table with changed rows.
+        </remarks>
+    </DbDataTable.ctor>
+    <DbDataTable.Save>
+        <summary>Save the changes in the DbDataTable to the underlying RDD</summary>
+        <param name="oRDD">The RDD object for the area where the changes must be saved.</param>
+    </DbDataTable.Save>
+    <DbDataTable_2>
+        <summary>This class is used to create a System.Data.DataTable from a workarea</summary>
+        <remarks>The data in this table is detached from the workarea. So if you make changes to the
+        data you will have to write that back to the workarea yourself.
+        </remarks>
+    </DbDataTable_2>
+    <DbField>
+        <summary>This class is used by the DbDataSource class to describe the fields in the workarea</summary>
+    </DbField>
+    <DbField.CanSort>
+        <summary>Can the field be sorted ?</summary>
+    </DbField.CanSort>
+    <DbField.Caption>
+        <summary>Caption for the field</summary>
+    </DbField.Caption>
+    <DbField.ctor>
+        <summary>Initializes a new instance of the DbField class</summary>
+        <param name="info">Column info on which this field is based.</param>
+    </DbField.ctor>
+    <DbField.DataType>
+        <summary>Dotnet datatype for the field</summary>
+    </DbField.DataType>
+    <DbField.Description>
+        <summary>Can the field be sorted ?</summary>
+    </DbField.Description>
+    <DbField.Name>
+        <summary>Name of the field</summary>
+    </DbField.Name>
+    <DbField.Ordinal>
+        <summary>Ordinal position of the field</summary>
+    </DbField.Ordinal>
+    <DbField.ReadOnly>
+        <summary>Is the field Readonly ?</summary>
+    </DbField.ReadOnly>
+    <DbFieldDescriptor.ShouldSerializeValue>
+        Must be overwritten as the the base class declares this method as abstract.
+    </DbFieldDescriptor.ShouldSerializeValue>
+  <DbRecord>
+    <summary>This class is used by the DbDataSource class to represent the records in a workarea.</summary>
+    <remarks>
+      The record class exposes the fields in the workarea as 'pseudo' properties of these fields.
+      The DbRecord class also implements INotifyPropertychanged, so when the record is bound to a data aware control
+      then this control will 'see' changes that were made to the record.
+    </remarks>
+  </DbRecord>
+    <DbRecord.ctor>
+        the current record position, which is needed when we want to talk back to the dbf.
+        <summary>Initializes a new instance of the DbRecord class</summary>
+        <param name="position">Ordinal position in the datasource</param>
+        <param name="source">Data source to which this object belongs</param>
+    </DbRecord.ctor>
+    <DbRecord.Deleted>
+    <summary>Is the current record deleted ?</summary>
+  </DbRecord.Deleted>
+    <DbRecord.FieldChange>
+        This method will be called if somebody changes a column value inside the dbf server.
+        If the record number is the same as the one we're representing, the we raise the
+        property changed event as one of our properties has changed.
+    </DbRecord.FieldChange>
+  <DbRecord.FieldName_fieldPos>
+        <summary>Get the fieldname for a certain field position</summary>
+        <param name="fieldPos">0 based Field number</param>
+        <returns>Field Name</returns>
+    </DbRecord.FieldName_fieldPos>
+    <DbRecord.FieldValue_fieldPos>
+        <summary>Get the value for a certain field position</summary>
+        <param name="fieldPos">0 based Field number</param>
+        <returns>Field Value</returns>
+    </DbRecord.FieldValue_fieldPos>
+    <DbRecord.OnPropertyChanged>
+        We are using this to signal the consuming components that a property has changed.
+        As the PropertyChangedEventArgs has to provide the name of the property changed,
+        we are usign the column name of inside the dbf server.
+    </DbRecord.OnPropertyChanged>
+    <DbRecord.RecNo>
+    <summary>Record number in the workarea. Does not have to match the logical position in the list.</summary>
+  </DbRecord.RecNo>
+  <DbRecord.SELF_fieldName>
+        <summary>Read/Write fields in the workarea by name.</summary>
+    </DbRecord.SELF_fieldName>
+    <DbRecord.SELF_fieldPos>
+        <summary>Read/Write fields in the workarea by position.</summary>
+    </DbRecord.SELF_fieldPos>
+    <DbRecord.ToString>
+        Always a good idea to implement this.
+    </DbRecord.ToString>
+    <DbRecordDescriptor.GetProperties>
+        Same as the method before except that attributes are provided for filtering.
+    </DbRecordDescriptor.GetProperties>
+    <DbRecordDescriptorProvider.GetTypeDescriptor>
+        This method is being called if someone wants to reflect the type we're operating on.
+    </DbRecordDescriptorProvider.GetTypeDescriptor>
+    <GetSqlFactory>
+        <summary>Retrieve the default SQL factory.</summary>
+        <seealso cref="ISqlFactory">ISqlFactory</seealso>
+        <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+        <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+        <returns>The current default factory.</returns>
+    </GetSqlFactory>
+    <ISqlFactory>
+        <summary>This interface declares the common behavior for all XSharp Data Factory classes.</summary>
+        <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+        <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+        <seealso cref="GetSqlFactory">GetSqlFactory()</seealso>
+    </ISqlFactory>
+    <ISqlFactory.AfterCommit>
+        <summary>This method is called after a transaction was committed.</summary>
+        <param name="oTransaction">The transaction object.</param>
+    </ISqlFactory.AfterCommit>
+    <ISqlFactory.AfterConnect>
+        <summary>This method is called after a connection was opened.</summary>
+        <param name="oConnection">The connection object that was opened.</param>
+    </ISqlFactory.AfterConnect>
+    <ISqlFactory.AfterDisConnect>
+        <summary>This method is called after a connection was disconnected.</summary>
+        <param name="oConnection">The connection object.</param>
+    </ISqlFactory.AfterDisConnect>
+    <ISqlFactory.AfterOpen>
+        <summary>This method is called after a datareader was opened.</summary>
+        <param name="oDataReader">The datareader that was created by the provider.</param>
+        <remarks>Sometimes you may want to change the datareader before using it in the program. </remarks>
+        <returns>The datareader as should be used by the SqlSelect class.</returns>
+    </ISqlFactory.AfterOpen>
+    <ISqlFactory.AfterRollBack>
+        <summary>This method is called after a transaction was rolled back.</summary>
+        <param name="oTransaction">The transaction object.</param>
+    </ISqlFactory.AfterRollBack>
+    <ISqlFactory.BeforeCommit>
+        <summary>This method is called before a transaction is committed.</summary>
+        <param name="oTransaction">The transaction object.</param>
+    </ISqlFactory.BeforeCommit>
+    <ISqlFactory.BeforeConnect>
+        <summary>This method gets called before connecting. This allows to adjust the connection string.</summary>
+        <returns>The connection string that may be altered by the factory.</returns>
+        <param name="cString">Connection String.</param>
+        <param name="cUser">User Name (may be blank).</param>
+        <param name="cPassword">Pass word (may be blank).</param>
+    </ISqlFactory.BeforeConnect>
+    <ISqlFactory.BeforeDisConnect>
+        <summary>This method is called before a connection is disconnected.</summary>
+        <param name="oConnection">The connection object.</param>
+    </ISqlFactory.BeforeDisConnect>
+    <ISqlFactory.BeforeRollBack>
+        <summary>This method is called before a transaction is rolled back.</summary>
+        <param name="oTransaction">The transaction object.</param>
+    </ISqlFactory.BeforeRollBack>
+    <ISqlFactory.CanCreateDataSourceEnumerator>
+        <summary>Does the factory support datasource enumeration.</summary>
+    </ISqlFactory.CanCreateDataSourceEnumerator>
+    <ISqlFactory.CreateCommand>
+        <inheritdoc cref="DbProviderFactory.CreateCommand"/>
+        <seealso cref="DbCommand"/>
+    </ISqlFactory.CreateCommand>
+    <ISqlFactory.CreateCommandBuilder>
+        <inheritdoc cref="DbProviderFactory.CreateCommandBuilder"/>
+        <seealso cref="DbCommandBuilder"/>
+    </ISqlFactory.CreateCommandBuilder>
+    <ISqlFactory.CreateConnection>
+        <inheritdoc cref="DbProviderFactory.CreateConnection"/>
+        <seealso cref="DbConnection"/>
+    </ISqlFactory.CreateConnection>
+    <ISqlFactory.CreateConnectionStringBuilder>
+        <inheritdoc cref="DbProviderFactory.CreateConnectionStringBuilder"/>
+        <seealso cref="DbConnectionStringBuilder"/>
+    </ISqlFactory.CreateConnectionStringBuilder>
+    <ISqlFactory.CreateDataAdapter>
+        <inheritdoc cref="DbProviderFactory.CreateDataAdapter"/>
+        <seealso cref="DbDataAdapter"/>
+    </ISqlFactory.CreateDataAdapter>
+    <ISqlFactory.CreateDataSourceEnumerator>
+        <inheritdoc cref="DbProviderFactory.CreateDataSourceEnumerator"/>
+        <seealso cref="DbDataSourceEnumerator"/>
+    </ISqlFactory.CreateDataSourceEnumerator>
+    <ISqlFactory.CreateParameter>
+        <inheritdoc cref="DbProviderFactory.CreateParameter"/>
+        <seealso cref="DbParameter"/>
+    </ISqlFactory.CreateParameter>
+    <ISqlFactory.DriverConnect>
+        <summary>This method is called to show an interactive dialog to select a connection.</summary>
+        <param name="hWindow">An optional window handle that will be the owner of the dialog.</param>
+        <param name="nCompletion">A numeric value that indicates what can be changed. For example SQL_DRIVER_PROMPT or SQL_DRIVER_COMPLETE. See the ODBC Docs for more info.</param>
+        <param name="cConnectionString">A connection string that indicates the start values for the dialog.</param>
+        <returns>The connection string that is the result of the dialog.</returns>
+    </ISqlFactory.DriverConnect>
+    <ISqlFactory.EnhanceException>
+        <summary>This method is called after a transaction was committed.</summary>
+    </ISqlFactory.EnhanceException>
+    <ISqlFactory.GetMetaDataColumnValues>
+        <summary>Create an object array of column properties from the current datarow in the schema rowset</summary>
+    </ISqlFactory.GetMetaDataColumnValues>
+    <ISqlFactory.GetMetaDataTableValues>
+        <summary>Create an object array of table properties from the current datarow in the schema rowset</summary>
+    </ISqlFactory.GetMetaDataTableValues>
+    <ISqlFactory.GetName>
+        <summary>Return the name of the factory.</summary>
+    </ISqlFactory.GetName>
+    <ISqlFactory.HandleSpecialValue>
+        <summary>This method is called to translate result values for a column.</summary>
+        <param name="oValue">The value as returned by the dataprovider.</param>
+        <param name="oFS">The fieldspec for the column.</param>
+        <param name="lDateTimeAsDate">A setting that indicates if the server wants DateTime values as Date.</param>
+        <returns>The value that must be passed to the program.</returns>
+    </ISqlFactory.HandleSpecialValue>
+    <ISqlFactory.Name>
+        <summary>Return the name of the factory.</summary>
+    </ISqlFactory.Name>
+    <ISqlFactory.ParameterNameInQuery>
+        <summary>Should the parameter name be included in the query. Defaults to FALSE for ODBC and OLEDB and TRUE for SQLServer </summary>
+    </ISqlFactory.ParameterNameInQuery>
+    <ISqlFactory.ParameterPrefix>
+        <summary>Define the character with which parameters are prefixed in queries. For example '?' (ODBC, OLEDB) or '@' (SQLServer) </summary>
+    </ISqlFactory.ParameterPrefix>
+    <ISqlFactory.QuoteChar>
+        <summary>Return the quote character for table and column names.</summary>
+    </ISqlFactory.QuoteChar>
+    <ISqlFactory.TranslateStatement>
+        <summary>This method is called before a statement is sent to the server.</summary>
+        <param name="cStatement">The original statement.</param>
+        <returns>A translated version of the cStatement.</returns>
+    </ISqlFactory.TranslateStatement>
+    <OdbcFactory>
+        <summary>This is the class that implements a Factory to access data through the Ado.Net ODBC Classes.</summary>
+    </OdbcFactory>
+    <OleDbFactory>
+        <summary>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</summary>
+    </OleDbFactory>
+    <SetSqlFactory>
+        <summary>Set a new default SQL factory.</summary>
+        <seealso cref="ISqlFactory">ISqlFactory</seealso>
+        <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+        <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+        <param name="oFactory">New default factory</param>
+        <returns>The current default factory.</returns>
+    </SetSqlFactory>
+    <SqlFunctions.SqlExec>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*"/>
+        <seealso cref="NeedsAccessToLocalsAttribute"/>
+    </SqlFunctions.SqlExec>
+    <SqlFunctions.SqlGetProp>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*"/>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlGetProp>
+    <SqlFunctions.SqlGetProp_2>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*"/>
+        <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref="SQLProperty">SQLProperty Enum</see>.</param>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlGetProp_2>
+    <SqlFunctions.SqlSetProp>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*"/>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlSetProp>
+    <SqlFunctions.SqlSetProp_2>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*"/>
+        <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref="SQLProperty">SQLProperty Enum</see>.</param>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlSetProp_2>
+    <SQLParser>
+        <summary>
+        The SQLParser class.
+        </summary>
+    </SQLParser>
+    <SqlServerFactory>
+        <summary>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</summary>
+    </SqlServerFactory>
+<SQLStatement.ParseCommand>
+        Foxpro detect the parameter with the quotation character '?'
+        if the character followed is '@', It is an output parameter
+        if the character followed is '(', It is an VFP expression closed between  parenthesis
+        If the parameter are variables, they need to be private or publics and initialized before
+    </SQLStatement.ParseCommand>
+    <SqlWhereType>
+        <summary>
+        This enum emulates the FoxPro defines for the CursorAdapter.WhereType property
+        </summary>
+    </SqlWhereType>
+    <VFPErrorMessage>
+        <summary>List of error codes used in the XSharp VTP support. <br/>
+        Each error code represents a translatable string in the string table inside XSharp.Core.
+        </summary>
+    </VFPErrorMessage>
+    <XTokenList>
+        <summary>
+        The XSharpTokenList class. This class is used to process a list of tokens
+        without having to worry about the end of the list. You can safely access next items
+        through the La.. and Lt.. properties and methods.
+        </summary>
+    </XTokenList>
+    </doc>

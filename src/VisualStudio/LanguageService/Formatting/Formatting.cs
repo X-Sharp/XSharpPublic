@@ -8,9 +8,7 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
-using System.Windows.Shapes;
 using XSharp.Settings;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 namespace XSharp.LanguageService
 {
     partial class XSharpFormattingCommandHandler
@@ -78,7 +76,7 @@ namespace XSharp.LanguageService
             {
                 if (!WaitUntilBufferReady())
                     return;
-                //var _ = _classifier.ClassifyWhenNeededAsync();
+                var _ = _classifier.ClassifyWhenNeededAsync();
                 using (var editSession = _buffer.CreateEdit())
                 {
                     try
@@ -161,18 +159,19 @@ namespace XSharp.LanguageService
             var lines = _buffer.CurrentSnapshot.Lines;
             ITextEdit editSession = null;
             var settings = Settings;
+            _ = _classifier.ClassifyWhenNeededAsync();
             try
             {
                 using (editSession = _buffer.CreateEdit())
                 {
                     var document = _buffer.GetDocument();
-                    XSharpLineKeywords keywords = null;
+                    XSharpLineKeywords lineKeywords = null;
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        keywords = await _classifier.GetKeywordsAsync();
+                        lineKeywords = await _classifier.GetLineKeywordsAsync();
                     });
 
-                    var formatter = new DocFormatter(document, settings, keywords);
+                    var formatter = new DocFormatter(document, settings, lineKeywords);
                     var expectedIndent = formatter.GetIndentSizes(lines, startLine, endLine, startIndent);
 
                     // now process the lines
@@ -182,8 +181,12 @@ namespace XSharp.LanguageService
                         if (number >= startLine && number <= endLine)
                         {
                             var indent = expectedIndent[number];
-                            _lineFormatter.FormatLineIndent(editSession, line, indent * settings.IndentSize);
-                            _lineFormatter.FormatLineCase(editSession, line);
+                            // if indent is -1, it means that the line should not be changed
+                            if (indent >= 0)
+                            {
+                                _lineFormatter.FormatLineIndent(editSession, line, indent * settings.IndentSize);
+                                _lineFormatter.FormatLineCase(editSession, line);
+                            }
                         }
                     }
                     if (editSession.HasEffectiveChanges)

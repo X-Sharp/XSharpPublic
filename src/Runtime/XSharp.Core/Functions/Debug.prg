@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -142,9 +142,7 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
     ENDIF
    RETURN name
 
-/// <summary>Return the error stack as a string.</summary>
-/// <param name="wActivation">Starting level. Defaults to 1.</param>
-/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/ErrorStack/*" />
 FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	LOCAL oStackTrace AS System.Diagnostics.StackTrace
 	oStackTrace := System.Diagnostics.StackTrace{TRUE}
@@ -163,11 +161,7 @@ INTERNAL STATIC CLASS XSharp.ErrorStackSettings
 END CLASS
 
 
-/// <summary>Return the error stack as a string.</summary>
-/// <param name="oStackTrace">StackTrace object to convert to an error stack string</param>
-/// <param name="wActivation">Starting level. Defaults to 1.</param>
-/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns>
-/// <seealso cref='SetErrorStackVOFormat' />
+/// <include file="XSharp.Core.Docs.xml" path="doc/ErrorStack_2/*" />
 FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation := 1 AS DWORD) AS STRING
 	LOCAL cResult := "" AS STRING
     LOCAL wStart  AS DWORD
@@ -208,21 +202,14 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
     ENDIF
 	RETURN cResult
 
-/// <summary>This function allows you to enable or disable the VO compatible Errorstack format.</summary>
-/// <param name="lNew">Specify TRUE to enable the new format.</param>
-/// <returns>The current setting for the ErrorStack format.</returns>
-/// <remarks>The default setting for the format is based on the dialect of the main application.
-/// When the main dialect is VO or Vulcan then the VO format is used. Otherwise the normal .Net format is used.
-/// </remarks>
-/// <seealso cref='ErrorStack' />
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetErrorStackVOFormat/*" />
 FUNCTION SetErrorStackVOFormat(lNew AS LOGIC) AS LOGIC
     LOCAL lPrevious := ErrorStackSettings.ErrorStackVOFormat AS LOGIC
     ErrorStackSettings.ErrorStackVOFormat := lNew
     RETURN lPrevious
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
-/// <remarks>This function is inlined by the compiler, but is included so it can be used in Macros as well.</remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*"/>
 FUNCTION AltD() AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
@@ -230,9 +217,7 @@ FUNCTION AltD() AS VOID
 	RETURN
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
-/// <param name="nMode">This parameter is ignored in X#</param>
-/// <remarks>This function is inlined by the compiler, but is included so it can be used in Macros as well.</remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*"/>
 FUNCTION AltD(nMode AS INT) AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()

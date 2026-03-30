@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING XSharp.RDD.Support
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/eof/*" />
 [FoxProFunction("EOF", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -63,31 +64,115 @@ FUNCTION RecSize(uArea AS USUAL) AS INT
 // TODO(irwin): functions pending to implement
 // ---------------------------------------------------------------- //
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/afields/*" />
-[FoxProFunction("AFIELDS", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("AFIELDS", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION AFields(ArrayName AS ARRAY, eWorkArea := NIL AS USUAL) AS INT
-    THROW NotImplementedException{}
+    LOCAL nArea AS DWORD
+    IF IsNil(eWorkArea)
+        nArea := XSharp.RuntimeState.CurrentWorkarea
+    ELSE
+        nArea := (DWORD) XSharp.RT.Functions.Select(eWorkArea)
+    ENDIF
+
+    IF nArea == 0 || !XSharp.RT.Functions.Used(nArea)
+        RETURN 0
+    ENDIF
+
+    VAR aStruct := XSharp.RT.Functions.DbStruct(nArea)
+    VAR nCount := XSharp.RT.Functions.ALen(aStruct)
+
+    IF nCount == 0
+        RETURN 0
+    ENDIF
+
+    // FoxPro array (18 cols)
+    IF ArrayName IS __FoxArray VAR foxArray
+        foxArray:ReDim(nCount, 18)
+        LOCAL i AS DWORD
+        FOR i := 1 TO nCount
+            VAR aField := (ARRAY) aStruct[i]
+            foxArray[(INT)i, 1] := (STRING)aField[1] // Field Name
+            foxArray[(INT)i, 2] := (STRING)aField[2] // Field Type
+            foxArray[(INT)i, 3] := (INT)aField[3] // Field Width
+            foxArray[(INT)i, 4] := (INT)aField[4] // Decimal Places
+
+            LOCAL uFld := NULL AS USUAL
+            XSharp.RT.Functions.VoDbFieldInfo(11, i, REF uFld) // 11 = DBS_COLUMNINFO
+            IF uFld IS XSharp.RDD.DbColumnInfo VAR colInfo
+                foxArray[(INT)i, 5] := (LOGIC)colInfo:IsNullable
+                foxArray[(INT)i, 6] := (LOGIC)colInfo:IsBinary
+                foxArray[(INT)i, 7] := (STRING)colInfo:RuleExpression
+                foxArray[(INT)i, 8] := (STRING)colInfo:RuleText
+                foxArray[(INT)i, 9] := (STRING)colInfo:DefaultValue
+
+                // fillout for compatibility
+                foxArray[(INT)i, 10] := ""
+                foxArray[(INT)i, 11] := ""
+                foxArray[(INT)i, 12] := ""
+                foxArray[(INT)i, 13] := ""
+                foxArray[(INT)i, 14] := ""
+                foxArray[(INT)i, 15] := ""
+                foxArray[(INT)i, 16] := ""
+                foxArray[(INT)i, 17] := (INT)colInfo:NextValue
+                foxArray[(INT)i, 18] := (INT)colInfo:StepValue
+            ELSE // default
+                foxArray[(INT)i, 5] := FALSE
+                foxArray[(INT)i, 6] := FALSE
+                foxArray[(INT)i, 7] := ""
+                foxArray[(INT)i, 8] := ""
+                foxArray[(INT)i, 9] := ""
+                foxArray[(INT)i, 10] := ""
+                foxArray[(INT)i, 11] := ""
+                foxArray[(INT)i, 12] := ""
+                foxArray[(INT)i, 13] := ""
+                foxArray[(INT)i, 14] := ""
+                foxArray[(INT)i, 15] := ""
+                foxArray[(INT)i, 16] := ""
+                foxArray[(INT)i, 17] := 0
+                foxArray[(INT)i, 18] := 0
+            ENDIF
+        NEXT
+    ELSE
+        THROW ArgumentException{__VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))}
+    ENDIF
+
+    RETURN (INT)nCount
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dbf/*" />
-[FoxProFunction("DBF", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION DBF(eWorkArea := NIL AS USUAL) AS STRING
-    THROW NotImplementedException{}
+[FoxProFunction("DBF", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION DBF(uArea IN USUAL) AS STRING
+    RETURN XSharp.RT.Functions.DBF(uArea)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/deleted/*" />
-[FoxProFunction("DELETED", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION Deleted(eWorkArea := NIL AS USUAL) AS LOGIC
-    THROW NotImplementedException{}
+[FoxProFunction("DELETED", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION Deleted(uArea IN USUAL) AS LOGIC
+    RETURN XSharp.RT.Functions.Deleted(uArea)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/flock/*" />
-[FoxProFunction("FLOCK", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION Flock(eWorkArea := NIL AS USUAL) AS LOGIC
-    THROW NotImplementedException{}
+[FoxProFunction("FLOCK", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION Flock(uArea IN USUAL) AS LOGIC
+    RETURN XSharp.RT.Functions.Flock(uArea)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rlock/*" />
-[FoxProFunction("RLOCK", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION RLock(cRecordList := "" AS STRING, eWorkArea := NIL AS USUAL) AS LOGIC
-    THROW NotImplementedException{}
+[FoxProFunction("RLOCK", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION RLock(uArg1, uArg2) AS LOGIC CLIPPER
+    // 0 parameters => block current record in current workarea
+    IF PCount() == 0
+        RETURN XSharp.RT.Functions.RLock()
+    ENDIF
+
+    // 1 parameter => could be either work area (number) or alias (string)
+    IF PCount() == 1
+        RETURN XSharp.RT.Functions.RLock(uArg1)
+    ENDIF
+
+    // 2 parameters => RLock(recordNumber, workArea | tableAlias)
+    IF IsString(uArg1)
+        RETURN XSharp.RT.Functions.RLock((STRING)uArg1, uArg2)
+    ENDIF
+
+    RETURN FALSE
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/lupdate/*" />
-[FoxProFunction("LUPDATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION LUpdate(eWorkArea := NIL AS USUAL) AS DATE
-    THROW NotImplementedException{}
+[FoxProFunction("LUPDATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION LUpdate(uArea IN USUAL) AS DATE
+    RETURN XSharp.RT.Functions.LUpdate(uArea)

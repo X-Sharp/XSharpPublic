@@ -3,9 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#pragma options("vo15", on)
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getautoincvalue/*" />
-#pragma options("vo15", on)
 [FoxProFunction("GETAUTOINCVALUE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION GetAutoIncValue( nDataSessionNumber )
     THROW NotImplementedException{}

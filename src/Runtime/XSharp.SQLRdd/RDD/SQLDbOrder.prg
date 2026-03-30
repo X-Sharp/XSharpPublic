@@ -205,10 +205,14 @@ internal class SqlDbOrder inherit SqlDbObject
     method SeekExpression(seekInfo as DbSeekInfo) as string
         local cComp as string
         local cWhereClause as string
-        if seekInfo:Last
-            cComp := iif( seekInfo:SoftSeek, " <= ", " = " )
+        if seekInfo:SoftSeek
+            if self:Descending
+                cComp := " <= "
+            else
+                cComp := " >= "
+            endif
         else
-            cComp := iif( seekInfo:SoftSeek, " >= ", " = " )
+            cComp := " = "
         endif
         if seekInfo:Value is string var strValue
             var strLen := strValue:Length

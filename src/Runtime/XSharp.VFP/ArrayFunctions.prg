@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -90,8 +90,7 @@ FUNCTION ADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 A
     RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
 
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/ADel/*" />
 FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
         RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
@@ -179,8 +178,7 @@ INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertTy
     XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
     RETURN 1
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/AIns/*" />
 FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
         RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
@@ -188,8 +186,7 @@ FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD)
     XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
     RETURN 1
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asize/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <exclude/>
 FUNCTION ASize(ArrayName AS ARRAY, nSize AS DWORD) AS ARRAY
     IF ArrayName IS __FoxArray VAR foxArray
         foxArray:Resize((LONG) nSize)
@@ -243,7 +240,7 @@ RETURN
 
 END FUNCTION
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alines/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/alines/*" />
 [FoxProFunction("ALINES", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, cParseChars PARAMS STRING[]) AS DWORD
     IF cExpression == null
@@ -334,7 +331,7 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
     RETURN nRows
 END FUNCTION
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/amembers/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/amembers/*" />
 [FoxProFunction("AMEMBERS", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID := 0 AS INT, cFlags := "" AS STRING) AS DWORD
     LOCAL oType AS Type
@@ -431,7 +428,7 @@ FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID
     RETURN nRows
 END FUNCTION
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/agetfileversion/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/agetfileversion/*" />
 [FoxProFunction("AGETFILEVERSION", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.Medium)];
 FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
     IF String.IsNullOrEmpty(cFileName) .OR. !File.Exists(cFileName)
@@ -473,7 +470,7 @@ FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
     RETURN 15
 END FUNCTION
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aused/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/aused/*" />
 [FoxProFunction("AUSED", FoxFunctionCategory.Array, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
 

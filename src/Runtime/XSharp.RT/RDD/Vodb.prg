@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -10,8 +10,7 @@ USING XSharp.RDD.Support
 USING System.Collections.Generic
 USING System.Linq
 
-/// <summary>The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
-/// All other methods are identical and inherited from the CoreDb class.</summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb/*" />
 PARTIAL CLASS XSharp.VoDb INHERIT XSharp.CoreDb
 PRIVATE STATIC METHOD DecodeResult(oValue as OBJECT) AS USUAL
     IF oValue == DBNull.Value
@@ -22,10 +21,10 @@ PRIVATE STATIC METHOD DecodeResult(oValue as OBJECT) AS USUAL
     ENDIF
     RETURN oValue
 
+
+
+
 /// <inheritdoc cref='CoreDb.BlobInfo'/>
-
-
-
 STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := ptrRet AS OBJECT
     LOCAL result AS LOGIC
@@ -58,9 +57,7 @@ STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
     uRet := oValue
     RETURN lResult
 
-/// <inheritdoc cref="CoreDb.Info"/>
-/// <remarks> <inheritdoc cref="CoreDb.Info"/>
-/// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.Info/*" />
 STATIC METHOD Info(nOrdinal AS DWORD,oValue REF USUAL) AS LOGIC
     LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
@@ -72,20 +69,16 @@ STATIC METHOD Info(nOrdinal AS DWORD,oValue REF USUAL) AS LOGIC
     oValue := DecodeResult(oRet)
     RETURN result
 
-/// <inheritdoc cref='CoreDb.Info'/>
-/// <remarks> <inheritdoc cref='CoreDb.Info'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.Info/*" />
 STATIC METHOD Info(nOrdinal AS DWORD,oValue AS USUAL) AS LOGIC
     IF oValue:IsArray
         LOCAL aValue := oValue AS ARRAY
         oValue := (OBJECT[]) aValue
-    ENDIF
+    ENDIF 
 
     RETURN CoreDb.Info(nOrdinal, (OBJECT) oValue)
 
-/// <inheritdoc cref='CoreDb.OrderInfo'/>
-/// <remarks> <inheritdoc cref='CoreDb.OrderInfo'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.OrderInfo/*" />
 STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue REF USUAL) AS LOGIC
     LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
@@ -97,15 +90,11 @@ STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oV
     ENDIF
     RETURN result
 
-/// <inheritdoc cref="CoreDb.OrderInfo" />
-/// <remarks> <inheritdoc cref='CoreDb.OrderInfo'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.OrderInfo/*" />
 STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue AS USUAL) AS LOGIC
     RETURN CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, (OBJECT) oValue)
 
-/// <inheritdoc cref='CoreDb.RddInfo'/>
-/// <remarks> <inheritdoc cref='CoreDb.RddInfo'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.RddInfo and CoreDb.RddInfo is that VoDb.RddInfo takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.RddInfo/*" />
 STATIC METHOD RddInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
     LOCAL oValue AS OBJECT
     oValue := uRet
@@ -113,15 +102,11 @@ STATIC METHOD RddInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
     uRet := DecodeResult(oValue)
     RETURN result
 
-/// <inheritdoc cref='CoreDb.RddInfo'/>
-/// <remarks> <inheritdoc cref='CoreDb.RddInfo'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.RddInfo and CoreDb.RddInfo is that VoDb.RddInfo takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.RddInfo/*" />
 STATIC METHOD RddInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
     RETURN CoreDb.RddInfo(nOrdinal, (OBJECT) uValue)
 
-/// <inheritdoc cref='CoreDb.RecordInfo'/>
-/// <remarks> <inheritdoc cref='CoreDb.RecordInfo'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.RecordInfo/*" />
 STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue REF USUAL) AS LOGIC
     LOCAL oRet := oValue AS OBJECT
     LOCAL lResult AS LOGIC
@@ -129,16 +114,12 @@ STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue REF USUAL) AS 
     oValue := DecodeResult(oRet)
     RETURN lResult
 
-/// <inheritdoc cref='CoreDb.RecordInfo'/>
-/// <remarks> <inheritdoc cref='CoreDb.RecordInfo'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.RecordInfo/*" />
 STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue AS USUAL) AS LOGIC
     RETURN CoreDb.RecordInfo(nOrdinal, oRecID,  (OBJECT) oValue)
 
 
-/// <inheritdoc cref='CoreDb.Select'/>
-/// <remarks> <inheritdoc cref='CoreDb.Select'/>
-/// <br/><br/> <note type="tip">The difference between VoDb.Select and CoreDb.Select is that VoDb.Select takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.Select/*" />
 STATIC METHOD Select(nNew AS DWORD,riOld OUT USUAL) AS LOGIC
     LOCAL nOld := 0 AS DWORD
     LOCAL lResult AS LOGIC
@@ -147,8 +128,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld OUT USUAL) AS LOGIC
     RETURN lResult
 
 
-/// <inheritdoc cref='CoreDb.SetFilter'/>
-/// <remarks> <note type="tip">The difference between VoDb.SetFilter and CoreDb.SetFilter is that VoDb.SetFilter takes a USUAL parameter</note></remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/VoDb.SetFilter/*" />
 STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
     LOCAL cb AS ICodeblock
     IF oBlock:IsCodeblock

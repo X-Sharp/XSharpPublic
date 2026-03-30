@@ -67,6 +67,7 @@ internal class SqlDbTableCommandBuilder
                     if !String.IsNullOrEmpty(tag:Condition)
                         oTag:SetCondition(tag:Condition)
                     endif
+                    oTag:Descending := tag:Descending
                     oBag:Add(oTag)
                 next
                 SELF:OrderBagList:Add(oBag)
@@ -172,6 +173,9 @@ internal class SqlDbTableCommandBuilder
                 else
                     cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
                 endif
+                if CurrentOrder:Descending
+                    cOrderby += " DESC"
+                endif
             endif
         elseif SELF:_oTable:HasRecnoColumn
             sb:Append(Provider:OrderByClause)
@@ -190,12 +194,44 @@ internal class SqlDbTableCommandBuilder
 
     METHOD BuildRowNumberStatement(nRec as DWORD) AS STRING
         var sb := System.Text.StringBuilder{}
+
+        // current filters, scopes and conditions must be respected
+        // to calculate the correct pagenumber !
+        var currentOrder := _oRdd:CurrentOrder
+        var whereClauses := List<String>{}
+        if SELF:_oTable:HasServerFilter
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+        if currentOrder != null
+            var sWhere := currentOrder:GetScopeClause()
+            if !String.IsNullOrEmpty(sWhere)
+                whereClauses:Add(sWhere)
+            endif
+            sWhere := currentOrder:SqlWhere
+            if !String.IsNullOrEmpty(sWhere)
+                whereClauses:Add(sWhere)
+            endif
+        endif
+        var sWhereClause := SELF:CombineWhereClauses(whereClauses)
+        sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
+
         sb:Append(Provider:RowNumberStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_oTable:RealName))
+
+        // not sure if this is a clever solution,
+        // but WhereMacro is already used for nRec
+        var cFromWhere := Provider:QuoteIdentifier(self:_oTable:RealName)
+        if ! String.IsNullOrEmpty(sWhereClause)
+            cFromWhere += SqlDbProvider.WhereClause+sWhereClause
+        endif
+        sb:Replace(SqlDbProvider.TableNameMacro, cFromWhere)
+
         var cOrderby := Functions.List2String(_oRdd:CurrentOrder:OrderList)
         if SELF:_oTable:HasRecnoColumn
             if ! String.IsNullOrEmpty(cOrderby)
                 cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                if _oRdd:CurrentOrder:Descending
+                    cOrderby += " DESC"
+                endif
             else
                 cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
             endif
@@ -291,6 +327,38 @@ internal class SqlDbTableCommandBuilder
             sb:Append(SqlDbProvider.WhereClause)
             sb:Append(_oTable:ServerFilter)
         endif
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteScalar(stmt, _cTable)
+        return Convert.ToUInt32(result)
+
+    method GetOrderKeyCount() AS DWORD
+        var sb := StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append("count(*)")
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
+
+        var currentOrder := _oRdd:CurrentOrder
+        var whereClauses := List<String>{}
+        if SELF:_oTable:HasServerFilter
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+        if currentOrder != null
+            var sWhere := currentOrder:GetScopeClause()
+            if !String.IsNullOrEmpty(sWhere)
+                whereClauses:Add(sWhere)
+            endif
+            sWhere := currentOrder:SqlWhere
+            if !String.IsNullOrEmpty(sWhere)
+                whereClauses:Add(sWhere)
+            endif
+        endif
+        var sWhereClause := SELF:CombineWhereClauses(whereClauses)
+        if !String.IsNullOrEmpty(sWhereClause)
+            sb:Append(SqlDbProvider.WhereClause)
+            sb:Append(sWhereClause)
+        endif
+
         var stmt := sb:ToString()
         var result := _connection:ExecuteScalar(stmt, _cTable)
         return Convert.ToUInt32(result)

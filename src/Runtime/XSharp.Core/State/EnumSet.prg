@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,11 +7,8 @@ USING XSharp
 USING XSharp.RDD.Enums
 USING System.Collections.Generic
 BEGIN NAMESPACE XSharp
-/// <include file="XSharp.CoreDefines.xml" path="members/Set/*" />
-/// <seealso cref='RuntimeState'>RuntimeState</seealso>
-/// <seealso cref='RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
-/// <seealso cref='RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/Set/*" />
 ENUM Set
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exact/*" />
     MEMBER Exact       := 1			// LOGIC
@@ -339,12 +336,10 @@ ENUM Set
     // MEMBER TopicID
     // MEMBER TrBetween
     // MEMBER UdfParams
-	/// <summary>Show seconds in time display</summary>
-	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Hours/*" />
 	MEMBER Hours				:= 147
 
-	/// <summary>Show seconds in time display</summary>
-	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Seconds/*" />
 	MEMBER Seconds				:= 148
 
     // Xbase++ defines
@@ -982,7 +977,7 @@ CASE Set.IdleRepeat
 RETURN 0L
 
 CASE Set.Compatible
-RETURN "OFF"
+RETURN FALSE
 
 CASE Set.AutoOrder
 RETURN 1L

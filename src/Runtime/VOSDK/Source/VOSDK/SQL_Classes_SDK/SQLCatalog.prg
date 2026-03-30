@@ -6,133 +6,133 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
 ACCESS CursorName
 
 
-	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #CursorName )
-	RETURN NIL
+    oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), __FUNCTION__ )
+    RETURN NIL
 
 
 /// <include file="SQL.xml" path="doc/SQLCatalogQuery.CursorName/*" />
 ASSIGN CursorName( cCursor )
 
 
-	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #CursorName )
-	RETURN
+    oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), __FUNCTION__ )
+    RETURN
 
 
 /// <include file="SQL.xml" path="doc/SQLCatalogQuery.Delete/*" />
 METHOD Delete()
 
 
-	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #Delete )
-	RETURN FALSE
+    oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), __FUNCTION__ )
+    RETURN FALSE
 
 
 /// <inheritdoc />
 METHOD Execute()
 
 
-	lCsrOpenFlag := TRUE
-	lRowModified := FALSE
-	lBof := FALSE
-	lEof := FALSE
-	lFetchFlag := FALSE
-	lDeleteFlag := FALSE
+    lCsrOpenFlag := TRUE
+    lRowModified := FALSE
+    lBof := FALSE
+    lEof := FALSE
+    lFetchFlag := FALSE
+    lDeleteFlag := FALSE
 
 
-	RETURN SELF:__InitColumnDesc()
+    RETURN SELF:__InitColumnDesc()
 
 
-/// <include file="SQL.xml" path="doc/SQLCatalogQuery.FIELDPUT/*" />
-METHOD FIELDPUT()
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.FieldPut/*" />
+METHOD FieldPut()
 
 
-	///RvdH Changed #FieldSet to #FieldPut
-	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #FieldPut )
-	RETURN FALSE
+///RvdH Changed #FieldSet to #FieldPut
+oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), __FUNCTION__ )
+RETURN FALSE
 
 
 /// <include file="SQL.xml" path="doc/SQLCatalogQuery.GoTop/*" />
 METHOD GoTop()
-	//RvdH 051216 Added method, because Some ODBC Drivers don't support scrollable Catalog queries
-	LOCAL lRet AS LOGIC
-	#IFDEF __DEBUG__
-		__SQLOutputDebug( "** SQLSelect:GoTop()" )
-	#ENDIF
-	IF !SELF:Notify( NOTIFYINTENTTOMOVE )
-		oStmt:__GenerateSQLError( "IntentToMove returned false.", #GoTop )
-		RETURN FALSE
-	ENDIF
-	// RvdH 050413 Centralize GoCold behavior
-	IF !SELF:__GoCold(FALSE, TRUE)
-		RETURN FALSE
-	ENDIF
+    //RvdH 051216 Added method, because Some ODBC Drivers don't support scrollable Catalog queries
+    LOCAL lRet AS LOGIC
+#IFDEF __DEBUG__
+    __SQLOutputDebug( "** SQLSelect:GoTop()" )
+#ENDIF
+    IF !SELF:Notify( NOTIFYINTENTTOMOVE )
+        oStmt:__GenerateSQLError( "IntentToMove returned false.", __FUNCTION__ )
+        RETURN FALSE
+    ENDIF
+    // RvdH 050413 Centralize GoCold behavior
+    IF !SELF:__GoCold(FALSE, TRUE)
+        RETURN FALSE
+    ENDIF
 
 
-	// Some ODBC Drivers don't support scrollable Catalog queries, so use regular Fetch here,
-	// And make sure we are on top by checking the Record number
-	IF SELF:nRecNum > 1
-		SELF:Execute()
-	ENDIF
-	lRet := SELF:Fetch()
+    // Some ODBC Drivers don't support scrollable Catalog queries, so use regular Fetch here,
+    // And make sure we are on top by checking the Record number
+    IF SELF:nRecNum > 1
+        SELF:Execute()
+    ENDIF
+    lRet := SELF:Fetch()
 
 
-	IF !lRet
-		SELF:nLastRecnum := 0
-		SELF:nRecnum := 1
-		SELF:__SetRecordFlags( TRUE, TRUE )
-	ENDIF
-	RETURN lRet
+    IF !lRet
+        SELF:nLastRecnum := 0
+        SELF:nRecnum := 1
+        SELF:__SetRecordFlags( TRUE, TRUE )
+    ENDIF
+    RETURN lRet
 
 
 /// <include file="SQL.xml" path="doc/SQLCatalogQuery.ctor/*" />
 CONSTRUCTOR( oSQLConnection )
 
 
-	SUPER( NIL, oSQLConnection )
-	RETURN
+    SUPER( NIL, oSQLConnection )
+    RETURN
 
 
 /// <exclude />
 METHOD Prepare()
-	RETURN TRUE
+    RETURN TRUE
 
 
 
 
 /// <include file="SQL.xml" path="doc/SQLCatalogQuery.Skip/*" />
 METHOD Skip( nRecordCount )
-	LOCAL iRecCount, i       AS INT
-	LOCAL lRet					  AS LOGIC
-	//RvdH 051216 Added method, because Some ODBC Drivers don't support scrollable Catalog queries
+    LOCAL iRecCount, i       AS INT
+    LOCAL lRet					  AS LOGIC
+    //RvdH 051216 Added method, because Some ODBC Drivers don't support scrollable Catalog queries
 
 
-	IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
-		oStmt:__GenerateSQLError( "IntentToMove returned false.", #Skip )
-		RETURN FALSE
-	ENDIF
+    IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
+        oStmt:__GenerateSQLError( "IntentToMove returned false.", __FUNCTION__ )
+        RETURN FALSE
+    ENDIF
 
 
-	IF nRecordCount = NIL
-		iRecCount := 1
-	ELSE
-		iRecCount := nRecordCount
-	ENDIF
+    IF nRecordCount = NIL
+        iRecCount := 1
+    ELSE
+        iRecCount := nRecordCount
+    ENDIF
 
 
-	#IFDEF __DEBUG__
-		__SQLOutputDebug( "** SQLSelect:Skip( "+NTrim( iRecCount )+" )" )
-	#ENDIF
+#IFDEF __DEBUG__
+    __SQLOutputDebug( "** SQLSelect:Skip( "+NTrim( iRecCount )+" )" )
+#ENDIF
 
 
-	IF ( iRecCount = 0 )
-		RETURN TRUE
-	ENDIF
-	// Some ODBC Drivers don't support scrollable Catalog queries, so use regular Fetch here.
-	IF (iRecCount > 0)
-		FOR i := 1 TO iRecCount
-			lRet := SELF:Fetch()
-		NEXT
-	ENDIF
-	RETURN lRet
+    IF ( iRecCount = 0 )
+        RETURN TRUE
+    ENDIF
+    // Some ODBC Drivers don't support scrollable Catalog queries, so use regular Fetch here.
+    IF (iRecCount > 0)
+        FOR i := 1 TO iRecCount
+            lRet := SELF:Fetch()
+        NEXT
+    ENDIF
+    RETURN lRet
 
 
 
@@ -141,16 +141,16 @@ METHOD Skip( nRecordCount )
 ACCESS TableName
 
 
-	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #TableName )
-	RETURN NIL
+    oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), __FUNCTION__ )
+    RETURN NIL
 
 
 /// <include file="SQL.xml" path="doc/SQLCatalogQuery.Update/*" />
 METHOD Update()
 
 
-	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #Update )
-	RETURN FALSE
+    oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), __FUNCTION__ )
+    RETURN FALSE
 END CLASS
 
 

@@ -19,8 +19,8 @@ USING STATIC XSharp.Conversions
 #endif
 
 BEGIN NAMESPACE XSharp.RDD.FlexFile
-/// <summary>FlexArea class. Implements the FTP support.</summary>
 
+/// <include file="XSharp.RDD.Docs.xml" path="doc/FlexArea/*" />
 INTERNAL CLASS FlexArea
 
     PROTECT _oRdd       AS Workarea
@@ -237,7 +237,7 @@ INTERNAL CLASS FlexArea
         ENDIF
 
 
-    ///<summary>Return the raw data of a block including the 8 byte token </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/FlexArea.GetBlock/*" />
     INTERNAL METHOD GetBlock(blockNbr AS INT) AS BYTE[]
         LOCAL block := NULL AS BYTE[]
         LOCAL blockLen := 0 AS LONG
@@ -256,7 +256,7 @@ INTERNAL CLASS FlexArea
             ENDIF
         ENDIF
         RETURN block
-    ///<summary>Export a block to an external file</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/FlexArea.WriteBlockToFile/*" />
     INTERNAL METHOD WriteBlockToFile(nBlockNr as INT, FileName as STRING) AS LOGIC
         local block as byte[]
         block := SELF:GetBlock(nBlockNr)
@@ -477,10 +477,7 @@ INTERNAL CLASS FlexArea
         RETURN
 
 
-    /// <summary>Write a block. When the existing block is 0 or the size is insufficient then a new block is allocated.</summary>
-    /// <param name="nOldPtr">Pointer to existing block, or 0 when a new block must be allocated</param>
-    /// <param name="bytes">The data to write, including the 8 byte header</param>
-    /// <returns>The address of the original block (when it fits) or the address of the new block </returns>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/FlexArea.PutBlock/*" />
     INTERNAL METHOD PutBlock(nOldPtr as INT, bytes as BYTE[]) AS INT
         LOCAL blockNr := nOldPtr as INT
         LOCAL nCurrentLen AS LONG
@@ -925,8 +922,7 @@ INTERNAL CLASS FlexArea
             NOP
         END SWITCH
         RETURN oResult
-    /// <summary>Decode the contents of a block, including the block header</summary>
-    /// <param name="bData">The raw block including the 8 byte header</param>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/FlexArea.DecodeValue/*" />
     INTERNAL METHOD DecodeValue(bData AS BYTE[]) AS OBJECT
         // bData includes the header
         LOCAL offset AS LONG
@@ -1133,9 +1129,7 @@ INTERNAL CLASS FlexArea
         NEXT
         RETURN aValues
 
-    /// <summary>Encode a value into a FTP block</summary>
-    /// <param name="oValue">The value to encode. Allowed are at this moment, String, Logic and byte[]</param>
-    /// <returns>Byte array including the 8 byte header with the block length and type</returns>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/FlexArea.EncodeValue/*" />
     INTERNAL METHOD EncodeValue(oValue AS OBJECT) AS BYTE[]
         LOCAL token AS FlexMemoToken
         LOCAL otc AS TypeCode

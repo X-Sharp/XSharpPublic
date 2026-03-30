@@ -75,32 +75,6 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirMake(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirRemove(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -127,19 +101,6 @@
               <para>
       返回指向用于调用应用程序的命令行的指针。
     </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._GetInst</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -207,19 +168,6 @@
             </entry>
             <entry>
               <para>执行 Windows 或 DOS 应用程序、批处理文件或 DOS 命令。</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Send(System.Object,System.Reflection.MethodInfo,XSharp.__Usual[])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -321,7 +269,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            创建一个数组，包含具有 Windows 版本资源的文件（如 .exe、.dll 和 .fll 文件）或在 X# 中创建的自动化服务器的信息。
+            对于 X# 自动化服务器要具有 Windows 版本资源，您必须在 EXE 版本对话框中至少为一个项目指定一个值。
+            有关更多信息，请参阅 EXE 版本对话框。
+        </para>
             </entry>
           </row>
           <row>
@@ -334,7 +286,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将对象的属性、过程和成员对象的名称放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>
@@ -388,7 +342,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将数据会话的表别名和工作区放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>
@@ -416,7 +372,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the value of an expression is inclusively between the values of two expressions of the same type.
+    </para>
             </entry>
           </row>
           <row>
@@ -689,7 +647,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            返回一个整数，0到4，表示两个字符表达式之间的相对语音差异。
+        </para>
             </entry>
           </row>
           <row>
@@ -702,7 +662,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Executes the parent class event or method of the same name from within a subclass.
+      For example, if you place DODEFAULT( ) in the Click event of a subclass, X# executes the Click event of the parent class. The scope resolution operator (::), unlike DODEFAULT( ), executes a parent class event or method of a different name.
+      You can place DODEFAULT( ) only within an event or method.
+    </para>
             </entry>
           </row>
           <row>
@@ -743,7 +707,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether an expression evaluates to empty.
+    </para>
             </entry>
           </row>
           <row>
@@ -913,7 +879,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a character expression and returns the result.
+    </para>
             </entry>
           </row>
           <row>
@@ -972,7 +940,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            允许您在运行时从变量、表格和其他文本中执行多行代码。
+        </para>
             </entry>
           </row>
           <row>
@@ -1099,7 +1069,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current value for a property or program code for an event or method at design time.
+    </para>
             </entry>
           </row>
           <row>
@@ -1185,7 +1157,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether an expression matches another expression in a set of expressions.
+    </para>
             </entry>
           </row>
           <row>
@@ -1286,7 +1260,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns one of two values depending on the value of a logical expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1522,7 +1498,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
+    </para>
             </entry>
           </row>
           <row>
@@ -1698,7 +1676,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a lowercase alphabetic character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1999,7 +1979,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            确定字符表达式中的第一个字符是否为大写字母。
+        </para>
             </entry>
           </row>
           <row>
@@ -2242,7 +2224,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a set of expressions and returns the expression with the maximum value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2526,11 +2510,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Os(System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.OS(System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the name and version number of the operating system under which X# is running.
+    </para>
             </entry>
           </row>
           <row>
@@ -2715,11 +2701,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rgb(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RGB(System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a single color value from a set of red, green, and blue color components.
+    </para>
             </entry>
           </row>
           <row>
@@ -2891,7 +2879,10 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the data type of an expression.
+      VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation marks ("") to enclose the specified expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2979,9 +2970,7 @@
             <entry>
               <para>
             返回表达式的数据类型。
-            VARTYPE( )类似于TYPE( )函数，但VARTYPE( )更快，且不需要引号
-                来包围要返回数据类型的表达式。
-            </para>
+        </para>
             </entry>
           </row>
           <row>
@@ -3009,7 +2998,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns information about the X# version you are using.
+    </para>
             </entry>
           </row>
           <row>

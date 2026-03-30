@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -48,8 +48,7 @@ FUNCTION Empty<T>(uValue AS T[]) AS LOGIC
 FUNCTION Empty<T>(uValue AS ICollection<T>) AS LOGIC
     RETURN (uValue?:Count ?? 0) == 0
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
-/// <remarks>For Object values the 'emptyness' is determined by Comparing to NULL_OBJECT and comparign to DBNull.Value</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Empty/*" />
 FUNCTION Empty(oObject AS OBJECT) AS LOGIC
     IF oObject == NULL_OBJECT .OR. Convert.IsDBNull(oObject)
         RETURN TRUE
@@ -230,20 +229,11 @@ FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
 FUNCTION IsArray(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsArray
 
-/// <summary>
-/// Determine if a value is passed by reference
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsByRef/*" />
 FUNCTION IsByRef(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsByRef
 
-/// <summary>
-/// Determine if a value is a Binary.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a Binary data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsBinary/*" />
 FUNCTION IsBinary(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsBinary
 
@@ -256,36 +246,20 @@ FUNCTION IsDate(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsDate .OR. uValue:IsDateTime
 
 
-/// <summary>
-/// Determine if a value is a DateTime.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a DATETIME data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsDateTime/*" />
 FUNCTION IsDateTime(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsDateTime
 
-/// <summary>
-/// Determine if a value is a Decimal.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a Decimal data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsDecimal/*" />
 FUNCTION IsDecimal(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsDecimal
 
 
-/// <summary>
-/// Determine if a value is a Currency.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a Currency data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsCurrency/*" />
 FUNCTION IsCurrency(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsCurrency
 
-/// <summary>
-/// Determine if a value is a Decimal or a Float
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a Decimal, Currency or Float data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsFractional/*" />
 FUNCTION IsFractional(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsFractional
 
@@ -293,19 +267,11 @@ FUNCTION IsFractional(uVal IN USUAL) AS LOGIC
 FUNCTION IsFloat(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsFloat
 
-/// <summary>
-/// Determine if a value is a INT64.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a INT64 data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsInt64/*" />
 FUNCTION IsInt64(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsInt64
 
-/// <summary>
-/// Determine if a value is an integer (LONG or INT64).
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a LONG or INT64 data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsInteger/*" />
 FUNCTION IsInteger(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsInteger
 
@@ -322,8 +288,7 @@ FUNCTION IsLong(uValue IN USUAL) AS LOGIC
 FUNCTION IsNil(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsNil
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnumeric/*" />
-/// <returns>TRUE if the value is a LONG, FLOAT, IN64 or DECIMAL data type; otherwise, FALSE. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/IsNumeric/*" />
 FUNCTION IsNumeric(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsNumeric
 

@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -26,7 +26,7 @@ INTERNAL FUNCTION _SelectFoxPro(uWorkArea AS USUAL) AS USUAL
 		ENDIF
 
 
-		// note: No exception is thrown if a alias name doesn´t exist !
+		// note: No exception is thrown if a alias name doesnï¿½t exist !
 
 		sCurrent := VoDbGetSelect()  // save the current workarea
 
@@ -479,8 +479,7 @@ FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest, lNoOp
     RETURN lRetCode
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dborderinfo/*" />
-/// <seealso cref='XSharp.RDD.Enums.DbOrder_Info'>DbOrder_Info ENUM</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbOrderInfo/*" />
 FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
     LOCAL lKeyVal  := FALSE  AS LOGIC
 
@@ -516,8 +515,7 @@ FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecordinfo/*" />
-/// <seealso cref='XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbRecordInfo/*" />
 FUNCTION DbRecordInfo(kInfoType, uRecId, uNewValue) AS USUAL CLIPPER
     VoDb.RecordInfo(kInfoType, uRecId, REF uNewValue)
     RETURN uNewValue
@@ -660,8 +658,7 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
 
 
     *----------------------------------------------------------------------------
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetrelation/*" />
-/// <param name="cName">An optional name for the relation. Defaults to ParentName + "_" + ChildName.</param>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbSetRelation/*" />
 FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
 
     LOCAL nSelect   AS DWORD
@@ -781,14 +778,8 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
     ENDIF
     RETURN xRetVal
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" />
-/// <summary>Read an array of bytes direct from the workarea buffer.</summary>
-/// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-///<returns>
-/// The value of the field.`
-/// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldGetBytes() will generate an error.
-/// </returns>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/FieldGetBytes/*" />
 FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
     LOCAL bRetVal := NULL AS BYTE[]
     IF ! IsNumeric(nFieldPos)
@@ -798,14 +789,7 @@ FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
     RETURN bRetVal
 
 
-/// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-/// <summary>Write an array of bytes direct to the workarea buffer.</summary>
-/// <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
-/// <param name="aBytes">The value to write to the field</param>
-///<returns>
-/// The value assigned TO the field.
-/// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/FieldPutBytes/*" />
 FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL
     IF ! IsNumeric(nFieldPos)
         THROW Error.ArgumentError(__FUNCTION__, nameof(nFieldPos), __CavoStr(VOErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nFieldPos,aBytes})
@@ -1246,26 +1230,26 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
    RETURN lRet
 
 
-/// <summary>Automatically lock a record in the FoxPro dialect </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbAutoLock/*" />
 FUNCTION DbAutoLock() AS VOID
     IF XSharp.RuntimeState.AutoLock != NULL
         XSharp.RuntimeState.AutoLock()
     ENDIF
     RETURN
 
-/// <summary>Automatically unlock a record in the FoxPro dialect </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbAutoUnLock/*" />
 FUNCTION DbAutoUnLock() AS VOID
     IF XSharp.RuntimeState.AutoUnLock != NULL
         XSharp.RuntimeState.AutoUnLock()
     ENDIF
     RETURN
-/// <summary>Automatically lock a record in the FoxPro dialect </summary>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbAutoLockArea/*" />
 FUNCTION DbAutoLockArea(area AS STRING) AS USUAL STRICT
     (area)->(DbAutoLock())
     RETURN NIL
 
-/// <summary>Automatically unlock a record in the FoxPro dialect </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbAutoUnLockArea/*" />
 FUNCTION DbAutoUnLockArea(area AS STRING) AS USUAL STRICT
     (area)->(DbAutoUnLock())
     RETURN NIL

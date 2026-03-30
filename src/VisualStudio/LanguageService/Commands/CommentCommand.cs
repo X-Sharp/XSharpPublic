@@ -141,6 +141,9 @@ namespace XSharp.LanguageService.Commands
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
+            var act = sel.ActivePoint;
+            var anch = sel.AnchorPoint;
+            var caretPos = sel.ActivePoint.Position;
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
                 foreach (var selection in sel.SelectedSpans)
@@ -167,6 +170,24 @@ namespace XSharp.LanguageService.Commands
                 }
                 editsession.Apply();
             }
+            snapshot = doc.TextBuffer.CurrentSnapshot;
+            if (anch < act)
+            {
+                anch = anch.TranslateTo(snapshot, PointTrackingMode.Negative);
+                act = act.TranslateTo(snapshot);
+                caretPos = caretPos.TranslateTo(snapshot, PointTrackingMode.Positive);
+            }
+            else
+            {
+                anch = anch.TranslateTo(snapshot);
+                caretPos = caretPos.TranslateTo(snapshot, PointTrackingMode.Negative);
+                act = act.TranslateTo(snapshot, PointTrackingMode.Negative);
+            }
+            doc.TextView.Selection.Select(anch, act);
+            doc.TextView.Caret.MoveTo(caretPos);
+
+
+
         }
 
         private static void CommentSelection(DocumentView doc)

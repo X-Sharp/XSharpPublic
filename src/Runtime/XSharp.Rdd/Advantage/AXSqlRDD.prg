@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,12 +11,12 @@ USING XSharp.RDD.Support
 USING System.Text
 USING System.Diagnostics
 
-/// <summary>Base class for all advantage SQL RDDs.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AXSQLRDD/*" />
 [DebuggerDisplay("AXDBFVFP ({Alias,nq})")];
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
     PUBLIC _hStatement AS System.IntPtr
 
-    /// <summary>Create instance of the RDD </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/AXSQLRDD.ctor/*" />
     CONSTRUCTOR()
         SELF:_hStatement := IntPtr.Zero
         SUPER:_Driver := "AXSQLRDD"

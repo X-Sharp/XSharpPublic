@@ -414,8 +414,9 @@ partial class SQLRDD
             endif
         case DBOI_KEYCOUNT
             self:_ForceOpen()
-            info:Result := self:RowCount
+            info:Result := self:OrderKeyCount
         case DBOI_POSITION
+            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
@@ -458,34 +459,62 @@ partial class SQLRDD
         SELF:_oTd:PageSize := 1
         self:_OpenTable(cSeekWhere)
         SELF:_oTd:PageSize := nPageSize
-        IF SELF:DataTable:Rows:Count = 0
-            RETURN SELF:GoTo(0)
+
+        IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
+            SELF:GoTo(0)
+            SELF:_Found := false
+            SELF:_SetEOF(true)
+            SELF:_SetBOF(false)
+            return false
         ENDIF
 
+        var nRec   := SELF:RecNo
+        var lFound := SELF:GoTo(nRec)
 
+        if lFound .and.;
+            !SELF:_FilterInfo:Active .and.;
+            !seekInfo.Last
+            SELF:_SetEOF(false)
+            SELF:_SetBOF(false)
+            self:Found := True
+            return true
+        endif
 
+        var uSeek       := seekInfo:Value
+        var cbFilter    := SELF:_FilterInfo:FilterBlock
+        var oDBOI       := DbOrderInfo{}
+        var lData       := false
+        WHILE(!SELF:EoF .AND. !SELF:BoF)
+            if !SELF:_FilterInfo:Active .or. SELF:EvalFilter(cbFilter)
+                if self:KeyCompare(self:OrderInfo(DBOI_KEYVAL,oDBOI),uSeek) = 0
+                    lData   := true
+                    nRec    := self:RecNo
+                    if !seekInfo:Last
+                        exit
+                    endif
+                elseif seekInfo.SoftSeek .and. !lData
+                    nRec := self:RecNo
+                    exit
+                else
+                    exit
+                endif
+            endif
+            self:Skip(1)
+        enddo
+        self:GoTo(nRec)
 
-        IF !SELF:_oTd:SeekReturnsSubset
-            var nRec := SELF:RecNo
-            SELF:_GotoRecord(nRec)
-        ENDIF
-        IF SELF:RowCount > 0
-            SELF:_Found := TRUE
+        IF lFound
             SELF:_SetEOF(FALSE)
             SELF:_SetBOF(FALSE)
+            self:Found  := (self:KeyCompare(self:OrderInfo(DBOI_KEYVAL,oDBOI),uSeek) = 0)
         ELSE
-            SELF:_Found := FALSE
+            SELF:GoTo(0)
             SELF:_SetEOF(TRUE)
             SELF:_SetBOF(FALSE)
+            self:Found := false
         ENDIF
-        IF SELF:_oTd:SeekReturnsSubset
-            if seekInfo:Last
-                SELF:RowNumber := SELF:RowCount
-            else
-                SELF:RowNumber := 1
-            endif
-        ENDIF
-        return true
+
+        return self:Found
     end method
 
     PRIVATE METHOD KeyCompare(oRecKey as OBJECT, oKey as OBJECT) AS LONG

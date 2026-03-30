@@ -37,32 +37,32 @@ DEFINE DBC_FIELDSPEC		:= 3
 /// This enum describes the various notification messages that are used by VO compatible servers and clients
 /// </summary>
 ENUM Notify
-    /// <include file="System.xml" path="doc/notifyfieldchange/*" />
-    MEMBER FieldChange :=  -1
-    /// <include file="System.xml" path="doc/notifyclose/*" />
-    MEMBER Close :=  0
-    /// <include file="System.xml" path="doc/notifycompletion/*" />
-    MEMBER Completion :=  1
-    /// <include file="System.xml" path="doc/notifycompletion/*" />
-    MEMBER IntentToMove :=  2
-    /// <include file="System.xml" path="doc/notifyrecordchange/*" />
-    MEMBER RecordChange :=  3
-    /// <include file="System.xml" path="doc/notifygobottom/*" />
-    MEMBER GoBottom :=  4
-    /// <include file="System.xml" path="doc/notifygotop/*" />
-    MEMBER GoTop :=  5
-    /// <include file="System.xml" path="doc/notifydelete/*" />
-    MEMBER Delete :=  6
-    /// <include file="System.xml" path="doc/notifyappend/*" />
-    MEMBER Append :=  7
-    /// <include file="System.xml" path="doc/notifyfilechange/*" />
-    MEMBER FileChange :=  10
-    /// <include file="System.xml" path="doc/notifyrelationchange/*" />
-    MEMBER RelationChange :=  20
-    /// <include file="System.xml" path="doc/notifyclearrelation/*" />
-     MEMBER ClearRelation :=  25
-    /// <include file="System.xml" path="doc/notifyconcurrencycontrolmode/*" />
-    MEMBER ConcurrencyControlMode := 50
+/// <include file="System.xml" path="doc/notifyfieldchange/*" />
+MEMBER FieldChange :=  -1
+/// <include file="System.xml" path="doc/notifyclose/*" />
+MEMBER Close :=  0
+/// <include file="System.xml" path="doc/notifycompletion/*" />
+MEMBER Completion :=  1
+/// <include file="System.xml" path="doc/notifycompletion/*" />
+MEMBER IntentToMove :=  2
+/// <include file="System.xml" path="doc/notifyrecordchange/*" />
+MEMBER RecordChange :=  3
+/// <include file="System.xml" path="doc/notifygobottom/*" />
+MEMBER GoBottom :=  4
+/// <include file="System.xml" path="doc/notifygotop/*" />
+MEMBER GoTop :=  5
+/// <include file="System.xml" path="doc/notifydelete/*" />
+MEMBER Delete :=  6
+/// <include file="System.xml" path="doc/notifyappend/*" />
+MEMBER Append :=  7
+/// <include file="System.xml" path="doc/notifyfilechange/*" />
+MEMBER FileChange :=  10
+/// <include file="System.xml" path="doc/notifyrelationchange/*" />
+MEMBER RelationChange :=  20
+/// <include file="System.xml" path="doc/notifyclearrelation/*" />
+MEMBER ClearRelation :=  25
+/// <include file="System.xml" path="doc/notifyconcurrencycontrolmode/*" />
+MEMBER ConcurrencyControlMode := 50
 END ENUM
 
 /// <include file="System.xml" path="doc/notifyfieldchange/*" />
@@ -75,21 +75,21 @@ DEFINE NOTIFYCLOSE              :=  Notify.Close
 DEFINE NOTIFYCOMPLETION         :=  Notify.Completion
 /// <include file="System.xml" path="doc/notifyintenttomove/*" />
 DEFINE NOTIFYINTENTTOMOVE       :=  Notify.IntentToMove
- /// <include file="System.xml" path="doc/notifyrecordchange/*" />
+/// <include file="System.xml" path="doc/notifyrecordchange/*" />
 DEFINE NOTIFYRECORDCHANGE       :=  Notify.RecordChange
- /// <include file="System.xml" path="doc/notifygobottom/*" />
+/// <include file="System.xml" path="doc/notifygobottom/*" />
 DEFINE NOTIFYGOBOTTOM           :=  Notify.GoBottom
- /// <include file="System.xml" path="doc/notifygotop/*" />
+/// <include file="System.xml" path="doc/notifygotop/*" />
 DEFINE NOTIFYGOTOP              :=   Notify.GoTop
- /// <include file="System.xml" path="doc/notifydelete/*" />
+/// <include file="System.xml" path="doc/notifydelete/*" />
 DEFINE NOTIFYDELETE             :=   Notify.Delete
- /// <include file="System.xml" path="doc/notifyappend/*" />
+/// <include file="System.xml" path="doc/notifyappend/*" />
 DEFINE NOTIFYAPPEND             :=  Notify.Append
- /// <include file="System.xml" path="doc/notifyfilechange/*" />
+/// <include file="System.xml" path="doc/notifyfilechange/*" />
 DEFINE NOTIFYFILECHANGE         :=  Notify.FileChange
- /// <include file="System.xml" path="doc/notifyrelationchange/*" />
+/// <include file="System.xml" path="doc/notifyrelationchange/*" />
 DEFINE NOTIFYRELATIONCHANGE     := Notify.RelationChange
- /// <include file="System.xml" path="doc/notifyconcurrencycontrolmode/*" />
+/// <include file="System.xml" path="doc/notifyconcurrencycontrolmode/*" />
 DEFINE NOTIFYCONCURRENCYCONTROLMODE := Notify.ConcurrencyControlMode
 
 DEFINE TYPE_MULTIMEDIA          := 42

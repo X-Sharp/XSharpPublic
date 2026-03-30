@@ -5,14 +5,7 @@
 //
 USING System.Text
 
-/// <summary>
-/// Look up an identifier in a string table and returns its corresponding string.
-/// </summary>
-/// <param name="cDef"></param>
-/// <param name="id"></param>
-/// <param name="xModule"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.VO.Docs.xml" path="doc/LoadResString/*" />
 FUNCTION LoadResString(cDef ,id ,xModule ) AS STRING CLIPPER
    LOCAL cRet  := "" AS STRING
    LOCAL uiID  := 0	 AS DWORD
@@ -60,13 +53,6 @@ FUNCTION LoadResString(cDef ,id ,xModule ) AS STRING CLIPPER
 INTERNAL _DLL FUNCTION LoadStringW( hInst AS IntPtr, uID AS DWORD, lpBuffer AS StringBuilder, nBufferSize AS INT ) AS INT PASCAL:User32.LoadStringW
 INTERNAL _DLL FUNCTION GetModuleHandleW( name AS STRING ) AS IntPtr PASCAL:Kernel32.GetModuleHandleW
 
-/// <summary>
-/// Extract a substring from a string — both the substring and the string can contain double-byte characters.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="iStart"></param>
-/// <param name="wLen"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.VO.Docs.xml" path="doc/MBSubstr/*" />
 FUNCTION MBSubstr(c AS USUAL,iStart AS USUAL,wLen AS USUAL) AS STRING
 	RETURN SubStr(c, iStart, wLen)

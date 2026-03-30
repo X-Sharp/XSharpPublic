@@ -1,0 +1,1 @@
+for %%i in (*.nupkg) do nuget sign %%i -CertificateFingerPrint 138C0A029177404BC3DC69D08DE4D0F614441288266981800650125C906D83A2 -Overwrite  -Timestamper http://timestamp.comodoca.com

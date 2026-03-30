@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -202,9 +202,7 @@ internal static class XSharp.ConversionHelpers
 
 end class
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*" />
-/// <seealso cref='C2Hex(System.String)' >C2Hex</seealso>
-/// <seealso cref='_C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AsHexString/*" />
 function AsHexString(uValue IN usual) as string
     local result as string
     if uValue:IsString
@@ -520,8 +518,7 @@ function Str(nNumber ,nLength ,nDecimals ) as string clipper
     return ConversionHelpers.AdjustDecimalSeparator(result)
 
 
-/// <inheritdoc cref="Str" />
-/// <returns>The returned string with always have a DOT as decimal separator.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_Str/*" />
 function _Str(nValue ,uLen ,uDec ) as string clipper
     local nLen,  nDec as long
     local dwLen, dwDec as dword
@@ -701,11 +698,7 @@ internal function _Str1(f as float) as string
     return result
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str2/*" />
-/// <returns>A string representation of the value.</returns>
-/// <seealso cref="Str" />
-/// <seealso cref="Str1" />
-/// <seealso cref="Str3" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/Str2/*" />
 function Str2(fNumber as float,dwLength as dword) as string
     return ConversionHelpers.AdjustDecimalSeparator(_Str2(fNumber, dwLength))
 
@@ -729,15 +722,11 @@ internal function _Str2(f as float,dwLen as dword) as string
     return result
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str3/*" />
-/// <seealso cref="Str" />
-/// <seealso cref="Str1" />
-/// <seealso cref="Str2" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/Str3/*" />
 function Str3(fNumber as float,dwLength as dword,dwDecimals as dword) as string
     return ConversionHelpers.AdjustDecimalSeparator(_Str3(fNumber, dwLength, dwDecimals))
 
-/// <inheritdoc cref="Str3" />
-/// <returns>A string with DOT as decimal separator.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_Str3/*" />
 function _Str3(f as float,dwLen as dword,dwDec as dword) as string
     local dwOriginal := dwLen as dword
     local lUnspecifiedDecimals  := dwDec == UInt32.MaxValue as logic
@@ -786,8 +775,7 @@ function _Str3(f as float,dwLen as dword,dwDec as dword) as string
     endif
     return result
 
-/// <inheritdoc cref="Val" />
-/// <returns>The numeric value as a FLOAT.</returns>
+/// <exclude />
 function StrToFloat(c as string) as float
     return (float) Val(c)
 
@@ -971,12 +959,7 @@ internal function _VOVal(cNumber as string) as usual
     return 0
 
 
-/// <summary>
-/// Convert an object containing a numeric value to a FLOAT
-/// </summary>
-/// <param name="oValue">Object containing the numeric value to convert.</param>
-/// <returns>The value in the form of a float. </returns>
-/// <exception cref='System.InvalidCastException'> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Object2Float/*" />
 function Object2Float(oValue as object) as float
     local typ := oValue:GetType() as System.Type
     if typ == typeof(float)
@@ -1033,11 +1016,11 @@ function Bin2F(cFloat as string) as float
     IF aBytes == NULL .OR. aBytes:Length != 10
         THROW ArgumentException{"Input must be exactly 10 bytes."}
     ENDIF
-    // Exponent + prefix: Bits 79–64 (Bytes 9 and 8), Little Endian
+    // Exponent + prefix: Bits 79ï¿½64 (Bytes 9 and 8), Little Endian
     exponent := ((INT)aBytes[10] << 8) | (INT)aBytes[9]
     sign     := exponent >> 15
     exponent := exponent & 0x7FFF // remove first bit (sign bit)
-    // Mantisse: Bytes 0–7 (64 Bit), Little Endian
+    // Mantisse: Bytes 0ï¿½7 (64 Bit), Little Endian
     mantissaRaw := 0
     FOR i := 8 DOWNTO 1
         mantissaRaw := (mantissaRaw << 8) | aBytes[i]

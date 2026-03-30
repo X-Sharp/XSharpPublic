@@ -1,45 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members></members>
     <Console>
         <summary>
             封装一个 Win32 控制台应用程序。
         </summary>
         <remarks> 
-            两个库的实现之间一个明显的区别可以在从命令行启动应用程序时看到。<br />
-            一个 Terminal Lite 应用程序将分配一个新窗口，而一个 Console Classes 应用程序将在启动时所在的窗口中运行。<br />
+            两个库的实现之间一个明显的区别可以在从命令行启动应用程序时看到。<br/>
+            一个 Terminal Lite 应用程序将分配一个新窗口，而一个 Console Classes 应用程序将在启动时所在的窗口中运行。<br/>
             根据命令行设置，一个 Console Classes 应用程序也可以全屏运行，而 Terminal Lite 应用程序不能。
-            另外，使用 Console Classes 不需要与应用程序一起分发额外的运行时DLL。 <br />
+            另外，使用 Console Classes 不需要与应用程序一起分发额外的运行时DLL。 <br/>
             <note type="tip">
                 要在 Win32 控制台中运行应用程序，必须在应用程序选项对话框中将应用程序类型设置为控制台。
-                否则，将创建一个单独的控制台窗口。<br />
+                否则，将创建一个单独的控制台窗口。<br/>
                 您也可以在普通 Windows 应用程序中使用 Console 类来创建一个单独的控制台窗口，例如，输出一些调试信息。
             </note>
         </remarks>
     </Console>
-
-    <Console.ctor>
-        <summary>
-            实例化一个新的 Console 对象。
-        </summary>
-        <param name="lNew">
-            一个逻辑值，如果设置为 TRUE，强制分配一个新控制台窗口。默认为 FALSE。
-        </param>
-        <remarks> 
-            构造函数分配一个新控制台窗口。<br />
-            默认情况下，或者如果 <paramref name="lNew" /> 参数设置为 FALSE，并且应用程序从命令行启动, X# 首先尝试使用已经打开的控制台窗口。<br />
-            如果失败了，或者如果 <paramref name="lNew" /> 参数设置为 TRUE， Console{} 分配并打开一个新控制台窗口。 
-        </remarks>
-        <example> 
-            这个代码片段创建并清除一个新控制台窗口： 
-            <code language="X#">
-                FUNCTION Start()
-                LOCAL oCon AS Console
-                oCon := Console{}
-                oCon:Clear()
-            </code>
-        </example>
-    </Console.ctor>
 
     <Console.Clear>
         <summary>
@@ -55,6 +31,29 @@
             </code>
         </example>
     </Console.Clear>
+
+    <Console.ctor>
+        <summary>
+            实例化一个新的 Console 对象。
+        </summary>
+        <param name="lNew">
+            一个逻辑值，如果设置为 TRUE，强制分配一个新控制台窗口。默认为 FALSE。
+        </param>
+        <remarks> 
+            构造函数分配一个新控制台窗口。<br/>
+            默认情况下，或者如果 <paramref name="lNew"/> 参数设置为 FALSE，并且应用程序从命令行启动, X# 首先尝试使用已经打开的控制台窗口。<br/>
+            如果失败了，或者如果 <paramref name="lNew"/> 参数设置为 TRUE， Console{} 分配并打开一个新控制台窗口。 
+        </remarks>
+        <example> 
+            这个代码片段创建并清除一个新控制台窗口： 
+            <code language="X#">
+                FUNCTION Start()
+                LOCAL oCon AS Console
+                oCon := Console{}
+                oCon:Clear()
+            </code>
+        </example>
+    </Console.ctor>
 
     <Console.CursorPos>
         <summary>
@@ -82,7 +81,7 @@
             提供一种去实体化的方法。
         </summary>
         <remarks>
-            当不再需要 Console 对象时，可以使用该方法。<br />
+            当不再需要 Console 对象时，可以使用该方法。<br/>
             Console:Destroy() 会删除 Console 对象的实例，并允许关闭和释放该对象打开或创建的任何资源，而无需等待垃圾回收器。
         </remarks>
         <returns>
@@ -236,7 +235,17 @@
         </remarks>
     </ConsoleCoord>
 
-    <ConsoleCoord.X>
+    <ConsoleCoord.ctor>
+        <summary>
+            实例化一个 ConsoleCoord 对象。
+        </summary>
+        <param name="nX">指定 x 轴位置或宽度的整数值。</param>
+        <param name="nY">指定 y 轴位置或高度的整数值。</param>
+        <remarks>
+            ConsoleCoord{} 实例化一个新的 ConsoleCoord 对象，可以用于 Console:Size 和 Console:CursorPos 属性。
+        </remarks>
+    </ConsoleCoord.ctor>
+<ConsoleCoord.X>
         <summary>
             X 轴位置或对象的宽度
         </summary>
@@ -248,14 +257,5 @@
         </summary>
     </ConsoleCoord.Y>
 
-    <ConsoleCoord.ctor>
-        <summary>
-            实例化一个 ConsoleCoord 对象。
-        </summary>
-        <param name="nX">指定 x 轴位置或宽度的整数值。</param>
-        <param name="nY">指定 y 轴位置或高度的整数值。</param>
-        <remarks>
-            ConsoleCoord{} 实例化一个新的 ConsoleCoord 对象，可以用于 Console:Size 和 Console:CursorPos 属性。
-        </remarks>
-    </ConsoleCoord.ctor>
-</doc>
+    <members/>
+    </doc>

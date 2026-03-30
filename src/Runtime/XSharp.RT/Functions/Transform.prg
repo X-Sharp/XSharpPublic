@@ -800,11 +800,11 @@ FUNCTION Transform( uValue AS DATE, cSayPicture AS STRING ) AS STRING
 FUNCTION Transform( uValue AS LOGIC, cSayPicture AS STRING ) AS STRING
     RETURN TransformHelpers.TransformL(uValue, cSayPicture)
 
-// /// <summary>Convert any value into a formatted string.</summary>
+
 //FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
 //    RETURN TransformHelpers.TransformN( nValue, cPicture, TRUE)
 //
-// /// <summary>Convert any value into a formatted string.</summary>
+
 //FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
 //    RETURN TransformHelpers.TransformN( nValue, cPicture, TRUE)
 

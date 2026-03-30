@@ -144,7 +144,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
                 var type = expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object);
                 var isVoid = type.SpecialType == SpecialType.System_Void;
-                var tempSym = _factory.SynthesizedLocal(type);
+                var tempSym = _factory.SynthesizedLocal(isVoid ? usual : type);
                 locals.Add(tempSym);
                 var tempLocal = _factory.Local(tempSym);
                 if (!isVoid)

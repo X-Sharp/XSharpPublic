@@ -66,7 +66,6 @@ end class
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
-            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0},_connection:SeekReturnsSubset})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
@@ -86,6 +85,7 @@ end class
             _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0},DEFAULT_EXPRESSION})
             _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0},DEFAULT_CONDITION})
             _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0},DEFAULT_UNIQUE})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Descending)   ,"L", 1,0},DEFAULT_DESCENDING})
         endif
         RETURN _indexcols
     END METHOD
@@ -271,22 +271,6 @@ end class
                 endif
             endif
 
-                // Check new SeekReturnsSubset field
-
-                cmd:CommandText := i"Select seekreturnssubset from {tableDict}"
-
-                ok := cmd:ExecuteNonQuery(tableDict)
-                if ! ok
-                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0}
-                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
-                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
-                    ok := cmd:ExecuteNonQuery(tableDict)
-                    if ok
-                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
-                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:TrueLiteral
-                        ok := cmd:ExecuteNonQuery(tableDict)
-                    endif
-                endif
             // Read the defaults from the database
             cmd:AddParameter("@p1",DefaultSection)
             cmd:CommandText := i"SELECT * FROM {tableDict} WHERE {nameof(TableName)} = @p1"

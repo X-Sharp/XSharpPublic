@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -9,9 +9,7 @@ USING XSharp.RDD.Support
 USING System.IO
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-    /// <summary>
-    /// List of OrderBags (an Orderbag = CDX file)
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxOrderBagList/*" />
     INTERNAL SEALED CLASS CdxOrderBagList
         PRIVATE _oRdd AS DBFCDX
         PRIVATE _bags AS List<CdxOrderBag>

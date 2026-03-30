@@ -1,24 +1,24 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Base class for many types used in the VO SDK Classes</summary>
+/// <include file="XSharp.VO.Docs.xml" path="doc/VObject/*" />
 CLASS XSharp.VObject
-    /// <summary>Cargo slot.</summary>
+    /// <include file="XSharp.VO.Docs.xml" path="doc/VObject.oCargo/*" />
     EXPORT oCargo AS OBJECT
-    /// <summary></summary>
+    /// <include file="XSharp.VO.Docs.xml" path="doc/VObject.ctor/*" />
     CONSTRUCTOR()
         SUPER()
         RETURN
-        
+
     DESTRUCTOR()
         SELF:Destroy()
         RETURN
-    /// <summary>Free memory resources allocated for a VObject object and its derived objects.</summary> 
+    /// <include file="XSharp.VO.Docs.xml" path="doc/VObject.Destroy/*" />
     VIRTUAL METHOD Destroy() AS USUAL CLIPPER
         RETURN SELF
-        
-        
+
+
 END CLASS

@@ -1,16 +1,14 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the ICurrency interface that can be used by the RDD system. </summary>
-/// <seealso cref="T:XSharp.ICurrency"/>
-/// <seealso cref="T:XSharp.__Currency"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbCurrency/*" />
 STRUCTURE XSharp.RDD.DbCurrency IMPLEMENTS ICurrency, IConvertible
     /// <inheritdoc />
     PROPERTY @@Value AS System.Decimal AUTO GET PRIVATE SET
-    /// <summary></summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbCurrency.ctor/*" />
     CONSTRUCTOR (curValue AS System.Decimal)
         @@Value := curValue
 

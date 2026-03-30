@@ -47,19 +47,6 @@
           </row>
           <row>
             <entry>
-              <para>VOSQLClasses</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions._SLen(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -167,7 +154,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Remove leading and trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -255,7 +244,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -481,11 +472,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtCLine(System.String,System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATCLine(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the line number of the first occurrence of a character expression or memo field within another character expression or memo field, without regard for the case (upper or lower) of the characters in either expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -524,11 +517,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtLine(System.String,System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATLine(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the line number of the first occurrence of a character expression or memo field within another character expression or memo field, counting from the first line.
+    </para>
             </entry>
           </row>
           <row>
@@ -595,11 +590,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDoW(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the day of the week from a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -687,7 +684,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -760,7 +759,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -878,7 +879,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            返回一个整数，0到4，表示两个字符表达式之间的相对语音差异。
+        </para>
             </entry>
           </row>
           <row>
@@ -887,7 +890,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -917,11 +920,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToC(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a Character-type date from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -949,7 +954,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1200,7 +1207,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns one of two values depending on the value of a logical expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1241,7 +1250,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
+    </para>
             </entry>
           </row>
           <row>
@@ -1269,7 +1280,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a lowercase alphabetic character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1327,7 +1340,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            确定字符表达式中的第一个字符是否为大写字母。
+        </para>
             </entry>
           </row>
           <row>
@@ -1370,7 +1385,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a specified number of characters from a character expression, starting with the leftmost character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1413,7 +1430,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines the number of characters in a character expression, indicating the length of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1454,7 +1473,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines if a character expression matches another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1512,7 +1533,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a specified character expression in lowercase letters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1988,7 +2011,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of times a character expression occurs within another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2091,7 +2116,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Included for backward compatibility. Use the CPCONVERT( ) Function instead.
+
+      Converts each character in a character expression to the corresponding character in the ANSI character set.
+    </para>
             </entry>
           </row>
           <row>
@@ -2301,6 +2330,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Proper(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns from a character expression a string capitalized as appropriate for proper names.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>
@@ -2429,7 +2473,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the line number of the last occurrence of a character expression within another character expression or memo field, counting from the last line.
+    </para>
             </entry>
           </row>
           <row>
@@ -2487,7 +2533,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string that contains a specified character expression repeated a specified number of times.
+    </para>
             </entry>
           </row>
           <row>
@@ -2515,7 +2563,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the specified number of rightmost characters from a character string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2642,11 +2692,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Soundex(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SoundEx(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a phonetic representation of the specified character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2674,7 +2726,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string composed of a specified number of spaces.
+    </para>
             </entry>
           </row>
           <row>
@@ -2732,7 +2786,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2790,7 +2846,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在单字节、双字节、UNICODE 和特定区域表示之间转换字符表达式。
+        </para>
             </entry>
           </row>
           <row>
@@ -2818,7 +2876,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在两个分隔符之间检索字符串。
+        </para>
             </entry>
           </row>
           <row>
@@ -2979,7 +3039,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Searches a character expression or memo field for a second character expression or memo field and replaces each occurrence with a third character expression or memo field. You can specify where the replacement begins and how many replacements are made.
+    </para>
             </entry>
           </row>
           <row>
@@ -3022,7 +3084,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -3076,11 +3140,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Substr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string from the given character expression or memo field, starting at a specified position in the character expression or memo field and continuing for a specified number of characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -3168,7 +3234,10 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string from an expression in a format determined by a format code.
+      Using TRANSFORM( ) with a large negative number that contains a decimal might result in numeric overflow when that number is passed in as a memory variable. You should use the STR( ) function instead with such numbers.
+    </para>
             </entry>
           </row>
           <row>
@@ -3196,7 +3265,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Remove trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -3312,7 +3383,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the specified character expression in uppercase.
+    </para>
             </entry>
           </row>
           <row>
@@ -3355,7 +3428,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
         </table>

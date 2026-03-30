@@ -1,25 +1,11 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 
-/// <summary>
-/// Changes and/or reads a system setting.
-/// </summary>
-/// <param name="nDefine">Is a positive integer identifying a system setting or system variable.
-/// This should match the values from the Set enumerated type.</param>
-/// <param name="newValue">The optional expression can specify a new value for a system setting.
-/// The data type is dependent on the system setting designated by <paramref name="nDefine" />.</param>
-/// <returns>When Set() is called without the argument <paramref name="newValue" /> ,
-/// the function returns the current system setting designated by <paramref name="nDefine" /> .
-/// If <paramref name="newValue" /> is specified, the corresponding system setting is set to <paramref name="newValue" />
-/// and the value of the old setting is returned.
-/// </returns>
-/// <seealso cref="T:XSharp.Set" />
-/// <remarks>If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine" />
-/// because there are some differences between the values in this header file and the values used inside X#. </remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Set/*" />
 FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     LOCAL state AS XSharp.RuntimeState
     LOCAL oOld  := NULL AS OBJECT
@@ -83,18 +69,47 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             ELSEIF IsLogic(newValue)
                 RETURN SetCentury(newValue)
             ENDIF
+        CASE Set.Compatible
+            IF IsString(newValue)
+                VAR cComp := ((STRING)newValue):ToUpper()
+                RETURN SetCompatible(cComp == "ON" || cComp == "DB4")
+            ELSEIF IsLogic(newValue)
+                RETURN SetCompatible(newValue)
+            ENDIF
         CASE Set.DateCountry
             IF IsNumeric(newValue)
                 RETURN SetDateCountry(newValue )
             ENDIF
         CASE Set.DecimalSep
-            IF IsNumeric(newValue)
-                RETURN SetDecimalSep(newValue)
+            IF IsString(newValue) .AND. !String.IsNullOrEmpty((STRING)newValue)
+                VAR uOldSep := SetDecimalSep((DWORD)((STRING)newValue)[0])
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldSep):ToString()
+                ENDIF
+                RETURN uOldSep
+            ELSEIF IsNumeric(newValue)
+                VAR uOldSep := SetDecimalSep(newValue)
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldSep):ToString()
+                ENDIF
+                RETURN uOldSep
             ENDIF
+
         CASE Set.ThousandSep
-            IF IsNumeric(newValue)
-                RETURN SetThousandSep(newValue)
+            IF IsString(newValue) .AND. !String.IsNullOrEmpty((STRING)newValue)
+                VAR uOldThous := SetThousandSep((DWORD)((STRING)newValue)[0])
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldThous):ToString()
+                ENDIF
+                RETURN uOldThous
+            ELSEIF IsNumeric(newValue)
+                VAR uOldThous := SetThousandSep(newValue)
+                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN Convert.ToChar((DWORD)uOldThous):ToString()
+                ENDIF
+                RETURN uOldThous
             ENDIF
+
         CASE Set.Epoch
             IF IsNumeric(newValue)
                 RETURN SetEpoch(newValue)
@@ -114,7 +129,10 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
         CASE Set.Hours
             SetHours(newValue)
             return SetHours()
-
+        CASE Set.Bell
+            IF IsNumeric(newValue) .AND. newValue == 1
+                RETURN ""
+            ENDIF
         END SWITCH
     ENDIF
 
@@ -131,7 +149,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 state:Settings[nSetting] := cNew:ToUpper() == "ON"
             ELSE
                 TRY
-                    var oOldType := oOld:GetType()
+                    VAR oOldType := oOld:GetType()
                     IF oNew:GetType() != oOldType
                         oNew := OOPHelpers.ValueConvert(oNew, oOldType)
                     ENDIF
@@ -142,6 +160,19 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             ENDIF
         ENDIF
     ENDIF
+
+    IF RuntimeState.Dialect == XSharpDialect.FoxPro
+        IF nSetting == Set.DecimalSep .OR. nSetting == Set.ThousandSep
+            IF oOld != NULL_OBJECT
+                TRY
+                    VAR iChar := Convert.ToInt32(oOld)
+                    oOld := Convert.ToChar(iChar):ToString()
+                CATCH
+                END TRY
+            ENDIF
+        ENDIF
+    ENDIF
+
     RETURN oOld
 
 

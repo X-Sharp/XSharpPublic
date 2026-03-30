@@ -57,7 +57,40 @@ partial class SQLRDD inherit Workarea
             return self:DataTable:Rows[nRow -1]
         end get
     end property
-#endregion
+    /// <summary>A numeric value representing the logical record number of the current record.
+    /// When the server is not in tablemode 0 is returned</summary>
+    public property OrderKeyNo as dword
+        get
+            if self:_tableMode != TableMode.Table
+                return 0
+            endif
+            try
+                SELF:_command:CommandText := _builder:BuildRowNumberStatement(self:RecNo)
+                var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+                var iResult := Convert.ToUInt32(result)
+                return iResult
+            catch as Exception
+                return 0
+            end try
+        end get
+    end property
+    /// <summary>A numeric value representing the number of records in the current order.
+    /// When the table is in natural order or not in table mode 0 is returned</summary>
+    public property OrderKeyCount as dword
+        get
+            if self:_tableMode != TableMode.Table .or.;
+                self:CurrentOrder = null
+                return 0
+            endif
+            try
+                return self:_builder:GetOrderKeyCount()
+            catch as Exception
+                return 0
+            end try
+        end get
+    end property
+
+    #endregion
 
 
 
@@ -513,7 +546,13 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         SELF:_ClearTable()
-        var nPage       := SELF:RecCount / self:_oTd:PageSize
+        local nMaxRecNo as dword
+        if self:CurrentOrder = Null
+            nMaxRecNo := self:_builder:GetRecCount()
+        else
+            nMaxRecNo := self:OrderKeyCount
+        endif
+        var nPage       := nMaxRecNo / self:_oTd:PageSize
         if SELF:RecCount % self:_oTd:PageSize != 0
             nPage += 1
         ENDIF
@@ -744,6 +783,18 @@ partial class SQLRDD inherit Workarea
         return super:Pack()
     end method
 
+    OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+        var cbFilter := info:FilterBlock
+        if cbFilter != NULL
+            try
+                SELF:EvalFilter(cbFilter)
+            catch ex as Exception
+                SELF:_dbfError(ex, Subcodes.EDB_SETFILTER,Gencode.EG_ARG,"SQLRDD.SetFilter",FALSE)
+                return false
+            end try
+        endif
+        RETURN SUPER:SetFilter(info)
+    end method
 
 end class
 

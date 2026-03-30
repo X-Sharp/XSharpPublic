@@ -10,7 +10,7 @@ USING XSharp.RDD.Enums
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>TSV RDD. For reading and writing tab delimited files.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/TSV/*" />
     [DebuggerDisplay("TSV ({Alias,nq})")];
     CLASS TSV INHERIT CSV
         /// <inheritdoc/>
@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_lHasHeader := TRUE
     END CLASS
 
-    /// <summary>CSV RDD. For reading and writing semicolon delimited files.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CSV/*" />
     [DebuggerDisplay("CSV ({Alias,nq})")];
     CLASS CSV INHERIT DELIM
         /// <inheritdoc/>
@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
 
-/// <summary>DELIM RDD. For reading and writing delimited files.</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DELIM/*" />
     [DebuggerDisplay("DELIM ({Alias,nq})")];
     CLASS DELIM INHERIT TEXTRDD
         PROTECT _oSb as StringBuilder

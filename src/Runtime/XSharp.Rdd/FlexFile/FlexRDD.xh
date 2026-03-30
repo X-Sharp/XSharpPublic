@@ -16,8 +16,7 @@ USING System.IO
 USING STATIC XSharp.Conversions
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
-
+   /// <include file="XSharp.RDD.Docs.xml" path="doc/RDDCLASS/*" />
    [DebuggerDisplay("{Driver,q} ({Alias,nq})")];
    CLASS RDDCLASS INHERIT PARENTCLASS IMPLEMENTS IRawData
         PRIVATE oFlexMemo AS MEMOCLASS
@@ -27,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD
 #ifdef RDD_BLOB
         PROPERTY ReturnRawData as LOGIC AUTO
 #endif
-         
+
         CONSTRUCTOR
             SUPER()
             SELF:ReturnRawData := FALSE
@@ -53,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD
                      SELF:_Header:Version := XSharp.RDD.DBFVersion.FoxBaseDBase3NoMemo
                   ENDIF
 #endif
-               NOP                  
+               NOP
 	    ENDIF
             RETURN lOk
 

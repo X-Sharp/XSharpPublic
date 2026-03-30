@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,7 +11,7 @@ USING System.Linq
 #undef AUTOCLOSETIMER
 #translate IsValidArea (<nArea>) => (<nArea> > 0 .and. <nArea> <= MaxWorkareas)
 
-/// <summary>Class that contains the list of open Workareas. Each thread will have its own list.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Workareas/*" />
 ABSTRACT CLASS XSharp.RDD.Workareas
     // Not static because every thread can have its own Workareas structure
     #region Constants
@@ -59,8 +59,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
 #endif
 
     RETURN
-    /// <exclude />
 
+    /// <exclude />
     STATIC METHOD _Add(oRDD AS IRdd, oWA AS Workareas) AS VOID
         BEGIN LOCK _AllRDDs
             IF _AllRDDs:ContainsKey(oRDD)
@@ -129,8 +129,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         Thread              := System.Threading.Thread.CurrentThread
 #endif
 
-    ///<summary>Close All RDDs referenced by this Workarea list</summary>
-    /// <returns>TRUE when all areas were closed succesfully. When one or more areas failed to close then FALSE is returned.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.CloseAll/*" />
     PUBLIC METHOD CloseAll() AS LOGIC
         LOCAL lResult := TRUE AS LOGIC
         // Please note that this returns TRUE when no areas are open, unlike DbCloseArea()
@@ -157,8 +156,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END LOCK
         RETURN lResult
 
-    ///<summary>Commit changes in all workares in this Workarea list</summary>
-    /// <returns>TRUE when all areas were committed succesfully. When one or more areas failed to commit then FALSE is returned.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.CommitAll/*" />
     PUBLIC METHOD CommitAll() AS LOGIC
         LOCAL lResult := TRUE AS LOGIC
         BEGIN LOCK RDDs
@@ -177,9 +175,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END LOCK
         RETURN lResult
 
-    ///<summary>Close area with 1 based Workarea number</summary>
-    /// <param name="nArea">1 based Area number for which to find the alias</param>
-    /// <returns>TRUE when the area was closed succesfully.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.CloseArea/*" />
     PUBLIC METHOD CloseArea( nArea AS DWORD) AS LOGIC
         LOCAL lResult := FALSE AS LOGIC
         IF IsValidArea(nArea)
@@ -207,18 +203,13 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         ENDIF
         RETURN lResult
 
-    /// <summary>Close the area where this RDD object is used.</summary>
-    /// <param name="oRDD">Object of te RDD that needs to be closed.</param>
-    /// <returns>TRUE when the area was closed.</returns>
-    /// <remarks>This will close the area, even when the method is called from another thread.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.CloseArea_2/*" />
     PUBLIC METHOD CloseArea(oRDD AS IRdd) AS LOGIC
         // This can be called from any thread and will close the RDD
         // in the right Workarea even if that area is from another thread
         RETURN Workareas._CloseArea(oRDD)
 
-    /// <summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
-    /// <param name="sAlias">Alias of area to look for. Case INsensitive </param>
-    /// <returns>Area number of an the table with the given alias.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.FindAlias/*" />
     PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
         BEGIN LOCK RDDs
             IF !String.IsNullOrEmpty(sAlias)
@@ -229,9 +220,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END LOCK
         RETURN 0
 
-    ///<summary> Return 1 based empty Workarea</summary>
-    /// <param name="fromStart">Do we start to search from the start (TRUE) or the end (FALSE)</param>
-    /// <returns>Area number of an area where no table is open.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.FindEmptyArea/*" />
     PUBLIC METHOD FindEmptyArea(fromStart AS LOGIC) AS DWORD
         LOCAL i AS DWORD
         BEGIN LOCK RDDs
@@ -251,9 +240,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END LOCK
         RETURN 0
 
-    /// <summary>Get Alias for 1 based Workarea Number</summary>
-    /// <param name="nArea">1 based Area number for which to find the alias</param>
-    /// <returns>Alias or an empty string when there is no table open in the area</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.GetAlias/*" />
     PUBLIC METHOD GetAlias( nArea AS DWORD) AS STRING
         IF ISVALIDAREA(nArea)
             BEGIN LOCK RDDs
@@ -264,7 +251,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         ENDIF
         RETURN String.Empty
 
-    ///<summary>Get RDD object for 1 based Workarea Number</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.GetRDD/*" />
     PUBLIC METHOD GetRDD( nArea AS DWORD) AS IRdd
         IF IsValidArea(nArea)
             BEGIN LOCK RDDs
@@ -275,7 +262,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         ENDIF
         RETURN NULL
 
-    ///<summary>Set RDD object and ALias for 1 based Workarea Number</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.SetArea/*" />
     PUBLIC METHOD SetArea( nArea AS DWORD, oRDD AS IRdd) AS LOGIC
         // sAlias and oRdd may be empty (when clearing the RDD)
         IF IsValidArea(nArea)
@@ -302,7 +289,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         ENDIF
         RETURN FALSE
 
-    ///<summary>Unlock All RDDs referenced by this Workarea list</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.UnLockAll/*" />
     PUBLIC METHOD UnLockAll() AS LOGIC
         LOCAL lResult := TRUE AS LOGIC
         BEGIN LOCK RDDs
@@ -320,10 +307,10 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END LOCK
         RETURN lResult
 
-    ///<summary>Get 1 based Current Workarea Number</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.CurrentWorkareaNO/*" />
     PUBLIC PROPERTY CurrentWorkareaNO AS DWORD GET iCurrentWorkarea SET iCurrentWorkarea := VALUE
 
-    ///<summary>Get Current Workarea Object</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Workareas.CurrentWorkarea/*" />
     PUBLIC PROPERTY CurrentWorkarea AS IRdd
         GET
             LOCAL  nArea AS DWORD

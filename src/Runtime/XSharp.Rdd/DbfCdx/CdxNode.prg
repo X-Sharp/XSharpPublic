@@ -12,110 +12,103 @@ USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-    /// <summary>
-    /// The CdxNode class.
-	/// The size of each item is: 8 + Key Size ( the last item doesn't contain a key value, only a pointer to a sub-tree.)
-    /// The structure of an Item is
-    /// long page_offset - file offset (within ntx file) where sub-tree is. if there's no subtree, a 0 is stored.
-    /// long recno       - record number for this key value (in the dbf file)
-    /// char key_value[key_size]
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxNode/*" />
     [DebuggerDisplay("{DebuggerDisplay,nq}")];
     INTERNAL CLASS CdxNode
-        PROTECTED _keyLength      AS LONG
-        PROTECTED _bytesKey       AS BYTE[]
-        PROTECTED _childPage      AS DWORD
-        PROTECTED _recNo          AS DWORD
-        PROTECTED _pos            AS WORD				// Index of the Item in the page array of Offsets
-		// Retrieve the Key as String
-        INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := value
-        #ifdef DEBUG
-        INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("Rec {0} Page {1:X} Key {2}", Recno, ChildPageNo, KeyText)
-        #endif
-		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
-        INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
-            GET
-                 RETURN _bytesKey
-            END GET
-            SET
-                Array.Copy(value, _bytesKey, _keyLength)
-            END SET
-        END PROPERTY
+    PROTECTED _keyLength      AS LONG
+    PROTECTED _bytesKey       AS BYTE[]
+    PROTECTED _childPage      AS DWORD
+    PROTECTED _recNo          AS DWORD
+    PROTECTED _pos            AS WORD				// Index of the Item in the page array of Offsets
+    // Retrieve the Key as String
+    INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := value
+#ifdef DEBUG
+    INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("Rec {0} Page {1:X} Key {2}", Recno, ChildPageNo, KeyText)
+#endif
+    // Get/Set the Key info as Bytes, copied from/to the Page it belongs to
+INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
+GET
+    RETURN _bytesKey
+END GET
+SET
+    Array.Copy(value, _bytesKey, _keyLength)
+END SET
+END PROPERTY
 
-        INTERNAL PROPERTY KeyText AS STRING GET KeyBytes:ToAscii(FALSE)
+    INTERNAL PROPERTY KeyText AS STRING GET KeyBytes:ToAscii(FALSE)
 
-		// Retrieve/set the PageNo/PageOffset of the Item
-		// It is on top of the Item's bytes
-		// it is the Record offset from start of page
-        INTERNAL VIRTUAL PROPERTY ChildPageNo AS DWORD GET _childPage SET _childPage := value
+    // Retrieve/set the PageNo/PageOffset of the Item
+    // It is on top of the Item's bytes
+    // it is the Record offset from start of page
+    INTERNAL VIRTUAL PROPERTY ChildPageNo AS DWORD GET _childPage SET _childPage := value
 
-        INTERNAL VIRTUAL PROPERTY Recno AS DWORD GET _recNo SET _recNo := value
+    INTERNAL VIRTUAL PROPERTY Recno AS DWORD GET _recNo SET _recNo := value
 
-        INTERNAL CONSTRUCTOR( keylen AS LONG , pos AS WORD )
-            SELF:_keyLength := keylen
-            SELF:_pos       := pos
-            SELF:Clear()
+INTERNAL CONSTRUCTOR( keylen AS LONG , pos AS WORD )
+    SELF:_keyLength := keylen
+    SELF:_pos       := pos
+    SELF:Clear()
 
-        INTERNAL VIRTUAL METHOD Clear() AS VOID
-            SELF:_recNo  := 0
-            SELF:_childPage := 0
-            SELF:_bytesKey  := BYTE[]{ _keyLength }
+INTERNAL VIRTUAL METHOD Clear() AS VOID
+    SELF:_recNo  := 0
+    SELF:_childPage := 0
+    SELF:_bytesKey  := BYTE[]{ _keyLength }
 
-    END CLASS
+END CLASS
 
-    INTERNAL CLASS CdxPageNode INHERIT CdxNode
-        PRIVATE   _Page           AS CdxTreePage			// Page that olds the Item
+INTERNAL CLASS CdxPageNode INHERIT CdxNode
+    PRIVATE   _Page           AS CdxTreePage			// Page that olds the Item
 
-        PRIVATE  PROPERTY HasPage   AS LOGIC    GET _Page != NULL
+    PRIVATE  PROPERTY HasPage   AS LOGIC    GET _Page != NULL
 
-        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD )
-            SUPER( keylen , pos)
-            _Page := page
-            _pos  := pos
+INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD )
+    SUPER( keylen , pos)
+    _Page := page
+    _pos  := pos
 
-        INTERNAL PROPERTY Page AS CdxTreePage GET _Page // SET _Page := value
+INTERNAL PROPERTY Page AS CdxTreePage GET _Page // SET _Page := value
 
-        INTERNAL OVERRIDE METHOD Clear() AS VOID
-            SUPER:Clear()
-            SELF:_Page   := NULL
+INTERNAL OVERRIDE METHOD Clear() AS VOID
+    SUPER:Clear()
+    SELF:_Page   := NULL
 
-       INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
-            GET
-               IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
-                 RETURN SELF:_Page:GetKey(_pos)
-                ENDIF
-                RETURN NULL
-            END GET
-        END PROPERTY
+INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
+GET
+    IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
+        RETURN SELF:_Page:GetKey(_pos)
+    ENDIF
+    RETURN NULL
+END GET
+END PROPERTY
 
 
-        INTERNAL OVERRIDE PROPERTY ChildPageNo AS DWORD
-            GET
-                IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
-                    RETURN SELF:_Page:GetChildPage(_pos)
-                ENDIF
-                RETURN MISSING_PAGE
-            END GET
-        END PROPERTY
+INTERNAL OVERRIDE PROPERTY ChildPageNo AS DWORD
+GET
+    IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
+        RETURN SELF:_Page:GetChildPage(_pos)
+    ENDIF
+    RETURN MISSING_PAGE
+END GET
+END PROPERTY
 
-	    // Retrieve/set the Recno of the Item
-		// It is after the page_offset, which is a long, so 4 bytes after
-        INTERNAL OVERRIDE PROPERTY Recno AS DWORD
-            GET
-                IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
-                    RETURN SELF:_Page:GetRecno(_pos)
-                ENDIF
-                RETURN MISSING_RECNO
-            END GET
-        END PROPERTY
+// Retrieve/set the Recno of the Item
+// It is after the page_offset, which is a long, so 4 bytes after
+INTERNAL OVERRIDE PROPERTY Recno AS DWORD
+GET
+    IF _pos >= 0 .AND. _pos < SELF:_Page:NumKeys
+        RETURN SELF:_Page:GetRecno(_pos)
+    ENDIF
+    RETURN MISSING_RECNO
+END GET
+END PROPERTY
 
-    END CLASS
+END CLASS
 
-    INTERNAL SEALED CLASS CdxLeafPageNode INHERIT CdxPageNode
-        INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD)
-            SUPER( keylen, page  , pos)
-        INTERNAL OVERRIDE PROPERTY ChildPageNo AS DWORD GET 0 SET
+INTERNAL SEALED CLASS CdxLeafPageNode INHERIT CdxPageNode
+INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD)
+    SUPER( keylen, page  , pos)
+INTERNAL OVERRIDE PROPERTY ChildPageNo AS DWORD GET 0 SET
 
-    END CLASS
+END CLASS
 
 END NAMESPACE

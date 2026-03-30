@@ -43,16 +43,20 @@ namespace XSharp.LanguageService
         /// This line starts with an attribute
         /// </summary>
         StartsWithAttribute = 1 << 8,
+        /// <summary>
+        /// This line contains a text block
+        /// </summary>
+        TextBlock = 1 << 9,
     }
     /// <summary>
     /// This class keeps the state for 0 based line numbers
     /// </summary>
     internal class XSharpLineState: XSharpLineInfo<LineFlags>
     {
-        
+
         internal XSharpLineState() : base()
         {
-            
+
         }
         internal void Clear()
         {
@@ -91,7 +95,7 @@ namespace XSharp.LanguageService
 
     }
 
-   
 
-   
+
+
 }

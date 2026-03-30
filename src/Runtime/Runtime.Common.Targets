@@ -28,8 +28,8 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ErrorReport>prompt</ErrorReport>
-    <XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath>
-    <XscToolPath Condition="$(Configuration.Contains('Doc'))">$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath>
+    <!-- <XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath> -->
+    <!-- <XscToolPath Condition="$(Configuration.Contains('Doc'))">$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath> -->
     <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -86,5 +86,5 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
   </PropertyGroup>
-</Project>
+ </Project>
 

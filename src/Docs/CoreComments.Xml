@@ -14,139 +14,12 @@
             </note>
         </span>
     </ansi2oem>
-    <StringCompare>
-        <summary>
-            Compare 2 strings. This function is used by the compiler for string comparisons.
-        </summary>
-        <returns>
-            This function returns a numeric value to indicate the order in which the strings should be sorted: <br/>
-            <table>
-                <tr>
-                    <td>-1</td>
-                    <td>LHS precedes RHS in the sort order. </td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>LHS occurs in the same position as RHS in the sort order.</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>LHS follows RHS in the sort order.</td>
-                </tr>
-            </table>
-        </returns>
-    </StringCompare>
-    <File>
-        <remarks>
-            <note type="tip">
-                The low level File IO functions in the X# runtime are using .Net filestreams in the background. <br/>
-                That means that the file handles returned by FOpen() and FCreate() are not 'normal' file handles,
-                but unique identifiers that are used to find the underlying stream object in a collection of
-                streams in the runtime. <br/>
-                That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
-                created in the X# runtime.<br/>
-                If you want to access the underlying FileStream, then you should call the
-                function <see cref="O:XSharp.Core.Functions.FGetStream">FGetStream() </see>
-            </note>
-        </remarks>
-    </File>
-    <PtrBin>
-        <remarks>
-            <note type="warning">
-                This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
-            </note>
-        </remarks>
-    </PtrBin>
-    <FileHandle>
-        <span>
-            The handle of the file. <em>Please see the remark below about the compatibility of X# Runtime file handles and Win32 file handles.</em>
-        </span>
-    </FileHandle>
-    <Oem2AnsiFileIO>
-        <span>
-            <note type="tip">
-                Conversions between OEM en Ansi were relevant in an Ansi environment like Visual Objects.
-                In a Unicode environment this conversion is noto much a conversion between OEM and Ansi but a
-                conversion between either Unicode and Ansi or Unicode and OEM. <br/>
-                For these conversions the runtime uses the current values of the
-                <see cref="P:XSharp.RuntimeState.WinCodePage">Windows Codepage</see>
-                and
-                <see cref="P:XSharp.RuntimeState.DosCodePage">DOS Codepage</see>.
-            </note>
-        </span>
-    </Oem2AnsiFileIO>
-
     <BLOBImportExport>
         <summary>BLOB Import/Export define.</summary>
     </BLOBImportExport>
-    <OptLevel>
-        <summary>DBOI_OPTLEVEL define.</summary>
-    </OptLevel>
-    <IndexType>
-        <summary>DBOI_INDEXTYPE define.</summary>
-    </IndexType>
-    <LockScheme>
-        <summary>LockScheme define.</summary>
-    </LockScheme>
     <BlockSize>
         <summary>BlockSize define.</summary>
     </BlockSize>
-    <RDDError>
-        <summary>RDD Error Number.</summary>
-        <seealso cref='T:XSharp.Subcodes'>Subcodes Enum</seealso>
-        <seealso cref='P:XSharp.Error.SubCode'>Subcode field in Error object</seealso>
-        <remarks>This define has the same value as a member of the Subcodes enum. You can use either the define or the enum value in your code.</remarks>
-    </RDDError>
-    <Directory>
-        <seealso cref="O:XSharp.RT.Functions.Directory">Directory Function</seealso>
-        <remarks>
-            Compared to Clipper and Visual Objects the return value of Directory() has changed: <br/>
-            each subarray returned from Directory() now contains some extra  values, such as creation date and
-            last access date. The normal Date and Time elements represent the last written date and time.
-        </remarks>
-    </Directory>
-    <Set>
-        <seealso cref='T:XSharp.Set'>Set Enum</seealso>
-        <seealso cref='O:XSharp.RT.Functions.Set' >Set() function</seealso>
-        <remarks>
-            This define has the same value as a member of the Set enum. You can use either the define or the enum value in your code.
-            If you are coming from XHarbour or Xbase++ please don't use SET.CH. The values in the Set enum may be different:
-            we have merged the SET defines from various dialects and there were some conflicting values.
-        </remarks>
-    </Set>
-    <DateCountry>
-        <seealso cref='T:XSharp.DateCountry'>DateCountry Enum</seealso>
-        <remarks>This define has the same value as a member of the DateCountry enum. You can use either the define or the enum value in your code.</remarks>
-    </DateCountry>
-    <NationMessage>
-        <seealso cref='T:XSharp.VOErrors'>VOErrors Enum</seealso>
-        <remarks>This define has the same value as a member of the VOErrors enum. You can use either the define or the enum value in your code.</remarks>
-    </NationMessage>
-    <TrueOrFalse>
-        <span>
-            TRUE when the operation succeeded or FALSE when the operation failed. <br/>
-            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br/>
-            These exceptions are caught in the higher level code and registered in
-            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
-        </span>
-    </TrueOrFalse>
-    <ScopeInfo>
-        <summary>
-            Scope value for <c>DbScope()</c>, <c>DbSetScope()</c> and <c>DbClearScope()</c>.
-        </summary>
-        <seealso cref='O:XSharp.RT.Functions.DbScope' >DbScope()</seealso>
-        <seealso cref='O:XSharp.RT.Functions.DbSetScope' >DbSetScope()</seealso>
-        <seealso cref='O:XSharp.RT.Functions.DbClearScope' >DbClearScope()</seealso>
-    </ScopeInfo>
-    <LastError>
-        <span>
-            <br/><br/>This function, however, does not call the error
-            handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
-            Therefore it is important to check the return value to determine if the function succeeded.<br/><br/>
-            The <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtimestate</see>
-            will contain needed information about any error that occurs.<br/>
-        </span>
-    </LastError>
     <Collation>
         <span>
             The Core dialect always compares according to the Unicode rules.
@@ -191,23 +64,120 @@
 
         </span>
     </Collation>
-    <PerThread>
-        <remarks>
-            <note type="tip">This value is 'per thread'. New threads inherit the settings from the main thread. Changes to this setting are visible to code in the same thread only.</note>
-        </remarks>
-    </PerThread>
     <CompilerOptions>
         <remarks>
             This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
             If your main app is not written in XSharp then this setting will have its default value.<br/>
             <note type="tip">This value is NOT 'per thread' but global for all threads.</note>
         </remarks>
-        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
-        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
-        <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
-        <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
-        <seealso cref="P:XSharp.RuntimeState.Dialect" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11"/>
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13"/>
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF"/>
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF"/>
+        <seealso cref="P:XSharp.RuntimeState.Dialect"/>
     </CompilerOptions>
+    <DateCountry>
+        <seealso cref="T:XSharp.DateCountry">DateCountry Enum</seealso>
+        <remarks>This define has the same value as a member of the DateCountry enum. You can use either the define or the enum value in your code.</remarks>
+    </DateCountry>
+    <Directory>
+        <seealso cref="O:XSharp.RT.Functions.Directory">Directory Function</seealso>
+        <remarks>
+            Compared to Clipper and Visual Objects the return value of Directory() has changed: <br/>
+            each subarray returned from Directory() now contains some extra  values, such as creation date and
+            last access date. The normal Date and Time elements represent the last written date and time.
+        </remarks>
+    </Directory>
+    <File>
+        <remarks>
+            <note type="tip">
+                The low level File IO functions in the X# runtime are using .Net filestreams in the background. <br/>
+                That means that the file handles returned by FOpen() and FCreate() are not 'normal' file handles,
+                but unique identifiers that are used to find the underlying stream object in a collection of
+                streams in the runtime. <br/>
+                That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
+                created in the X# runtime.<br/>
+                If you want to access the underlying FileStream, then you should call the
+                function <see cref="O:XSharp.Core.Functions.FGetStream">FGetStream() </see>
+            </note>
+        </remarks>
+    </File>
+    <FileHandle>
+        <span>
+            The handle of the file. <em>Please see the remark below about the compatibility of X# Runtime file handles and Win32 file handles.</em>
+        </span>
+    </FileHandle>
+    <IndexType>
+        <summary>DBOI_INDEXTYPE define.</summary>
+    </IndexType>
+    <LastError>
+        <span>
+            <br/><br/>This function, however, does not call the error
+            handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
+            Therefore it is important to check the return value to determine if the function succeeded.<br/><br/>
+            The <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtimestate</see>
+            will contain needed information about any error that occurs.<br/>
+        </span>
+    </LastError>
+    <LockScheme>
+        <summary>LockScheme define.</summary>
+    </LockScheme>
+    <NationMessage>
+        <seealso cref="T:XSharp.VOErrors">VOErrors Enum</seealso>
+        <remarks>This define has the same value as a member of the VOErrors enum. You can use either the define or the enum value in your code.</remarks>
+    </NationMessage>
+    <Oem2AnsiFileIO>
+        <span>
+            <note type="tip">
+                Conversions between OEM en Ansi were relevant in an Ansi environment like Visual Objects.
+                In a Unicode environment this conversion is noto much a conversion between OEM and Ansi but a
+                conversion between either Unicode and Ansi or Unicode and OEM. <br/>
+                For these conversions the runtime uses the current values of the
+                <see cref="P:XSharp.RuntimeState.WinCodePage">Windows Codepage</see>
+                and
+                <see cref="P:XSharp.RuntimeState.DosCodePage">DOS Codepage</see>.
+            </note>
+        </span>
+    </Oem2AnsiFileIO>
+
+    <OptLevel>
+        <summary>DBOI_OPTLEVEL define.</summary>
+    </OptLevel>
+    <PerThread>
+        <remarks>
+            <note type="tip">This value is 'per thread'. New threads inherit the settings from the main thread. Changes to this setting are visible to code in the same thread only.</note>
+        </remarks>
+    </PerThread>
+    <PtrBin>
+        <remarks>
+            <note type="warning">
+                This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
+            </note>
+        </remarks>
+    </PtrBin>
+    <RDDError>
+        <summary>RDD Error Number.</summary>
+        <seealso cref="T:XSharp.Subcodes">Subcodes Enum</seealso>
+        <seealso cref="P:XSharp.Error.SubCode">Subcode field in Error object</seealso>
+        <remarks>This define has the same value as a member of the Subcodes enum. You can use either the define or the enum value in your code.</remarks>
+    </RDDError>
+    <ScopeInfo>
+        <summary>
+            Scope value for <c>DbScope()</c>, <c>DbSetScope()</c> and <c>DbClearScope()</c>.
+        </summary>
+        <seealso cref="O:XSharp.RT.Functions.DbScope">DbScope()</seealso>
+        <seealso cref="O:XSharp.RT.Functions.DbSetScope">DbSetScope()</seealso>
+        <seealso cref="O:XSharp.RT.Functions.DbClearScope">DbClearScope()</seealso>
+    </ScopeInfo>
+    <Set>
+        <seealso cref="T:XSharp.Set">Set Enum</seealso>
+        <seealso cref="O:XSharp.RT.Functions.Set">Set() function</seealso>
+        <remarks>
+            This define has the same value as a member of the Set enum. You can use either the define or the enum value in your code.
+            If you are coming from XHarbour or Xbase++ please don't use SET.CH. The values in the Set enum may be different:
+            we have merged the SET defines from various dialects and there were some conflicting values.
+        </remarks>
+    </Set>
     <StreamRead>
             <param name="oStream">The stream to read from.</param>
             <param name="pos">Location where to start reading.</param>
@@ -224,4 +194,34 @@
             <param name="b">Byte to write.</param>
             <returns>TRUE when succesfull, FALSE when an exception occurred or when a parameter was incorrect.</returns>
     </StreamWrite>
-</Comments>
+<StringCompare>
+        <summary>
+            Compare 2 strings. This function is used by the compiler for string comparisons.
+        </summary>
+        <returns>
+            This function returns a numeric value to indicate the order in which the strings should be sorted: <br/>
+            <table>
+                <tr>
+                    <td>-1</td>
+                    <td>LHS precedes RHS in the sort order. </td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>LHS occurs in the same position as RHS in the sort order.</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>LHS follows RHS in the sort order.</td>
+                </tr>
+            </table>
+        </returns>
+    </StringCompare>
+    <TrueOrFalse>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br/>
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br/>
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+    </TrueOrFalse>
+    </Comments>

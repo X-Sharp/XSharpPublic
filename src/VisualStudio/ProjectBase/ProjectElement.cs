@@ -99,9 +99,11 @@ namespace Microsoft.VisualStudio.Project
                     {
                         throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
                     }
-
+                    if (! this.item.IsImported)
+                    {
                     this.item.ItemType = value;
                     this.itemProject.SetProjectFileDirty(true);
+                    }
                 }
             }
         }

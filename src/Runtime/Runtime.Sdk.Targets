@@ -10,6 +10,8 @@
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>

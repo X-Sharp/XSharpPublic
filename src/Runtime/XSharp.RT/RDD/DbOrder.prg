@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -52,8 +52,7 @@ cbEval, nInterval, nStart, nNext, nRecord, lRest, lDescend, lAdditive, lCurrent,
         lBinary,cCollation,lCandidate, lCompact)
 
 
-/// <param name="uOrder">Order in the index file to activate. When not specified then the first order in the file becomes active.</param>
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetindex/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbSetIndex/*" />
 FUNCTION DbSetIndex(cIndexFile, uOrder) AS LOGIC CLIPPER
 	// Don't call VoDb because of error handling
 	IF cIndexFile:IsNil
@@ -333,15 +332,11 @@ FUNCTION OrdKeyVal(uOrder,cIndexFile) AS USUAL CLIPPER
     VoDb.OrderInfo(DBOI_KEYVAL, cIndexFile, uOrder, REF result)
     RETURN result
 
-/// <summary>Determines the number of orders for the current work area.  </summary>
-/// <returns>OrdCount() returns the number of open indexes as a numeric value.
-/// When no index is open or when no file is open in the current workarea, the return value is 0. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/OrdCount/*" />
 FUNCTION OrdCount() AS DWORD
     RETURN IIF (Used(), DbOrderInfo(DBOI_ORDERCOUNT),0)
 
-/// <summary>Return a list of all tag names for the current work area. </summary>
-/// <returns>OrdList() returns a one dimensional array holding strings with the tag names of all open indexes.
-/// When no index is open, an empty array is returned. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/OrdList/*" />
 FUNCTION OrdList() AS ARRAY STRICT
 	LOCAL aResult AS ARRAY
 	LOCAL nIndex, nCount AS DWORD
@@ -422,13 +417,8 @@ FUNCTION OrdSetFocus(uOrder, cIndexFile) AS USUAL CLIPPER
 	RETURN cOrder
 
 
-   /// <summary>Checks if a scope is set in a work area.</summary>
-    /// <param name="uScope">An optional constant that indicates which scope needs to be set.<br/>
-    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /> <br/></param>
-    /// <returns><include file="RTComments.xml" path="Comments/ScopeReturn/*"  /></returns>
-    /// <seealso cref='DbSetScope' />
-    /// <seealso cref='DbClearScope' />
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbScope/*" />
 FUNCTION DbScope(uScope) AS USUAL CLIPPER
     IF uScope:IsNil
         uScope := OrdScope(TOPSCOPE)
@@ -451,16 +441,8 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     END SWITCH
     RETURN uScope
 
-    /// <summary>Sets scope values.</summary>
-    /// <param name="nScope">A constant that indicates which scope needs to be set.<br/>
-    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
-    /// <param name="uValue">The value that needs to be set.
-    /// The type of the value must match the type of the index expression.</param>
-    /// <returns>TRUE when the scope was set succesfully and when the record pointer has been successfully moved to the first record in the scope, otherwise FALSE.</returns>
-    /// <remarks>The record pointer is moved to the first record in the scope when setting of the scope was succesfull.</remarks>
-    /// <seealso cref='DbClearScope' />
-    /// <seealso cref='DbScope' />
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbSetScope/*" />
 FUNCTION DbSetScope(nScope AS LONG, uValue IN USUAL) AS LOGIC
     LOCAL lResult := TRUE AS LOGIC
     TRY
@@ -488,13 +470,8 @@ FUNCTION DbSetScope(nScope AS LONG, uValue IN USUAL) AS LOGIC
     ENDIF
     RETURN lResult
 
-    /// <summary>Clears the top and/or bottom scope. </summary>
-    /// <param name="nScope">An optional constant that indicates which scope needs to be set.<br/>
-    /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
-    /// <returns>TRUE when the scope was cleared succesfully, otherwise FALSE.</returns>
-    /// <seealso cref='DbSetScope' />
-    /// <seealso cref='DbScope' />
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbClearScope/*" />
 FUNCTION DbClearScope(uScope) AS LOGIC CLIPPER
     LOCAL lResult := TRUE AS LOGIC
     IF !uScope:IsNumeric

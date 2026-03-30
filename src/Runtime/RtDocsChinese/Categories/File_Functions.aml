@@ -25,32 +25,6 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirChange(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirMake(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AddBs(System.String)</codeEntityReference>
               </para>
             </entry>
@@ -86,7 +60,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Places information about files into an array and then returns the number of files.
+    </para>
             </entry>
           </row>
           <row>
@@ -202,7 +178,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Changes the size of a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -230,7 +208,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Flushes and closes a file or communication port opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -246,32 +226,6 @@
               <para>
       刷新文件缓冲区。
     </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToFileStream</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToMemoryStream</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -314,7 +268,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Creates and opens a low-level file.
+    </para>
             </entry>
           </row>
           <row>
@@ -357,7 +313,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the last modification Date or DateTime for a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -385,7 +343,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the file pointer is positioned at the end of a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -428,7 +388,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a number corresponding to the most recent low-level file function error.
+    </para>
             </entry>
           </row>
           <row>
@@ -531,7 +493,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Flushes to disk a file opened with a low-level function.
+    </para>
             </entry>
           </row>
           <row>
@@ -611,11 +575,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FGets(System.Int64,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FGetS(System.Int64,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a series of bytes from a file or a communication port opened with a low-level file function until it encounters a carriage return.
+    </para>
             </entry>
           </row>
           <row>
@@ -671,7 +637,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Locates the specified file.
+    </para>
             </entry>
           </row>
           <row>
@@ -744,7 +712,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Opens a file for use with low-level file functions.
+    </para>
             </entry>
           </row>
           <row>
@@ -828,11 +798,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FPuts(System.Int64,System.String,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FPutS(System.Int64,System.String,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Writes a character string, carriage return, and line feed to a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -890,7 +862,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a specified number of bytes from a file opened with a low-level function.
+    </para>
             </entry>
           </row>
           <row>
@@ -1113,7 +1087,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Moves the file pointer in a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -1169,7 +1145,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the size in bytes of a specified field or file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1227,7 +1205,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the last modification time for a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1283,7 +1263,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Writes a character string to a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -1494,11 +1476,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream(System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Retrieve the buffered File IO setting for the runtime</para>
+              <para>Control the buffered File IO setting for the runtime</para>
             </entry>
           </row>
         </table>

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -334,11 +334,7 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	LOCAL dPos := 0 AS INT
 	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoread/*" />
-/// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
-/// Use MemoReadBinary() in stead .</remarks>
-/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
-/// <seealso cref='MemoWrit' >MemoWrit</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoRead/*" />
 FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
@@ -363,15 +359,8 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	RETURN cResult
 
 
-/// <summary>
-/// Return the contents of a binary file as an array of bytes.
-/// Use this function in stead of MemoRead() to read the contents of a binary file.
-/// </summary>
-/// <param name="cFile">The name of the binary file to read from disk, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed</param>
-/// <returns>The file as an array of bytes</returns>
-/// <seealso cref='MemoRead' >MemoRead</seealso>
-/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoReadBinary/*" />
 FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	LOCAL bResult AS BYTE[]
 	TRY
@@ -388,8 +377,7 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	END TRY
 	RETURN bResult
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />
-/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoWrit/*" />
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
@@ -413,20 +401,8 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 FUNCTION MemoWrit(cFileName AS STRING,cString AS BYTE[]) AS LOGIC
     RETURN MemoWritBinary(cFileName, cString)
 
-/// <summary>
-/// Write binary data  o a disk file. Use this function for binary files instead of MemoWrit(). This day may be read with MemoReadBinary().
-/// </summary>
-/// <param name="cFile">The name of the target disk file, including an optional drive, directory, and extension.
-/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and
-/// directory as part of the file name.  No extension is assumed.
-/// If the file does not exist, it is created.  If it exists, this function attempts to open the file in exclusive
-/// mode and, if successful, the file is overwritten without warning or error.  If access is denied because,
-/// for example, another process is using the file, MemoWrit() returns FALSE and NetErr() is set to TRUE.</param>
-/// <param name="bData">The contents to write</param>
-/// <returns>TRUE if the writing operation is successful; otherwise, FALSE</returns>
-/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
-/// <seealso cref='MemoWrit' >MemoWrit</seealso>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoWritBinary/*" />
 FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY

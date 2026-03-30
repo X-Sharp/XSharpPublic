@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XUnit
+//#include "FoxProSet.xh"
 #pragma warnings (219, disable) // unused variables
 
 // Array tests are not working correctly yet with the current build
@@ -242,6 +243,45 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(0, Difference(NULL, "abc"))
             Assert.Equal(0, Difference("", "abc"))
         end method
+
+        [Fact, Trait("Category", "StringFunctions")];
+        METHOD TestNormalize() AS VOID
+            Assert.Equal("GROSSESCHRIFT", NORMALIZE("GroSSescHrifT"))
+            VAR cExpr := "UPPE(customer->name) = 'John Doe' AND NOT empty(customer->id)"
+            VAR cExpected := "UPPER(CUSTOMER.NAME)='John Doe'.AND..NOT.EMPTY(CUSTOMER.ID)"
+
+            // NOTE: The replacement for UPPE to UPPER depends on a keyword parser
+            // this implementation handles the Upper() and -> functions which are
+            // the most critical.
+            VAR cResult := NORMALIZE(cExpr)
+
+            Assert.Contains("CUSTOMER.NAME", cResult)
+            Assert.Contains(".AND.", cResult)
+            Assert.Contains(".NOT.", cResult)
+            Assert.Contains("'John Doe'", cResult) // Strings remains intact.
+        END METHOD
+
+        [Fact];
+        METHOD SetPointSeparatorTest() AS VOID
+            VAR eOldDialect := RuntimeState.Dialect
+            RuntimeState.Dialect := XSharpDialect.FoxPro
+
+            TRY
+                VAR dwOldPoint := SET("POINT")
+                VAR dwOldSep   := SET("SEPARATOR")
+
+                Set(Set.Point, ",")
+                Set(Set.Separator, ".")
+
+                Assert.Equal(",", SET("POINT") )
+                Assert.Equal(".", SET("SEPARATOR") )
+
+                Set(Set.Point, dwOldPoint)
+                Set(Set.Separator, dwOldSep)
+            FINALLY
+                RuntimeState.Dialect := eOldDialect
+            END TRY
+        END METHOD
 
 	END CLASS
 

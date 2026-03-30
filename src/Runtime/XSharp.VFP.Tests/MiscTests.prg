@@ -156,6 +156,91 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             END TRY
         END METHOD
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD TestDBFFunction() AS VOID
+            VAR cDbf := DBF()
+            Assert.Equal("", cDbf)
+        END METHOD
+
+        [Fact, Trait("Category", "OS")];
+        METHOD TestOSFunction() AS VOID
+            VAR cOS := OS(1)
+            Assert.True(cOS:Length > 0)
+            Assert.Equal("1", OS(11))
+        END METHOD
+
+        [Fact, Trait("Category", "DBF")];
+        METHOD TestFSizeFunction() AS VOID
+            CREATE CURSOR TestCursor (CUSTOMER C(15))
+            VAR nSize := FSize("CUSTOMER", "TestCursor")
+            Assert.Equal(15, nSize)
+        END METHOD
+
+        [Fact, Trait("Category", "DBF")];
+        METHOD TestAFieldsFunction() AS VOID
+            CREATE CURSOR TestCursor (ID I, NAME C(25))
+
+            DIMENSION laFields[1]
+            AFields(laFields)
+
+            // ID
+            Assert.True(laFields[1, 1] == "ID")
+            Assert.True(laFields[1, 2] == "I")
+
+            // NAME
+            Assert.True(laFields[2, 1] == "NAME")
+            Assert.True(laFields[2, 2] == "C")
+            Assert.True(laFields[2, 3] == 25)
+
+
+
+        END METHOD
+
+        [Fact, Trait("Category", "UIAndWindows")];
+        METHOD TestMessageBoxBell() AS VOID
+
+            VAR cWaveSet := SET("BELL", 1)
+            Assert.Equal("", cWaveSet)
+
+            SET BELL ON
+            VAR lBellState := SET("BELL")
+            Assert.True(lBellState)
+        END METHOD
+
+        #pragma options ("undeclared", on)
+        [Fact, Trait("Category", "General")];
+        METHOD TestVarTypeMissingVariable() AS VOID
+            LOCAL cResult AS STRING
+
+            cResult := __VfpVarType({ || SomeNonExistentVariable123 })
+            Assert.Equal("U", cResult)
+
+            cResult := __VfpVarType({ || SomeNonExistentVariable123 }, .T.)
+            Assert.Equal("U", cResult)
+        END METHOD
+        #pragma options ("undeclared", default)
+
+        [Fact];
+        METHOD TestSetDefaultTO() AS VOID
+            VAR cOldDir := Environment.CurrentDirectory
+
+            SET DEFAULT TO "C"
+            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+
+            SET DEFAULT TO "C:"
+            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+
+            VAR cNewDir := Path.GetTempPath()
+            SET DEFAULT TO (cNewDir)
+            Assert.Equal(cNewDir:TrimEnd(c'\\'), SET("DEFAULT"):TrimEnd(c'\\'))
+
+            SET DEFAULT TO ".."
+            Assert.True(SET("DEFAULT") != cNewDir:TrimEnd(c'\\'))
+
+            SET DEFAULT TO (cOldDir)
+
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

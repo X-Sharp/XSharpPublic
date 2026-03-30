@@ -5,7 +5,7 @@
 //
 
 USING XSharp.RDD.Support
-/// <summary>This interface defines a row in a .Net Table.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/IDbRow/*" />
 INTERFACE XSharp.RDD.IDbRow
     PROPERTY RecNo as DWORD GET SET
 END INTERFACE

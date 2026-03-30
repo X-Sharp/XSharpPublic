@@ -1193,7 +1193,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUseArea(System.Boolean,System.String,System.String,System.String,System.Boolean,System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>

@@ -150,6 +150,7 @@ class SqlDbTagInfo inherit SqlDbObject
     /// </summary>
     /// <value></value>
     property Index     as SqlDbIndexInfo auto
+    property Descending   as logic  auto
     /// <summary>
     /// Create a new instance of the SqlDbTagInfo class
     /// </summary>

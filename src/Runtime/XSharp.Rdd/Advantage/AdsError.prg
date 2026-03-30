@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,9 +13,7 @@ USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
-/// <summary>
-/// The AdsRDD class.
-/// </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AdsError/*" />
 CLASS XSharp.ADS.AdsError INHERIT RddError
     PRIVATE _msg AS STRING
     CONSTRUCTOR(msg AS STRING, dwGenCode AS DWORD, dwSubCode AS DWORD, cDriver AS STRING, dwSeverity AS DWORD, strFunction AS STRING, strFile AS STRING)

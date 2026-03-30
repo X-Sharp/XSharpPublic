@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,47 +13,25 @@ RETURN XSharp.RuntimeState.GetValue\< <type> \>( <SET> )
 RETURN XSharp.RuntimeState.SetValue\< <type> \>( <SET> , <VALUE> )
 
 
-/// <summary>
-/// Retrieve the setting that determines if TextMerge is active
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>The current setting</returns>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SetTextMerge/*" />
 function SetTextMerge() as logic
     getstate logic Set.TextMerge
 
 
-/// <summary>
-/// Change the setting that determines if TextMerge is active
-/// </summary>
-/// <param name="lSet">TRUE when Merge must be used for TEXT .. ENDTEXT expressions without TEXTMERGE clause and for the \ and \\ commands.</param>
-/// <returns>The current setting</returns>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SetTextMerge_2/*" />
 function SetTextMerge(lSet as logic) as logic
     setstate logic Set.TextMerge lSet
 
 
-/// <summary>
-/// Change the TextMerge delimiters
-/// </summary>
-/// <param name="cLeft">Left delimiter for expressions.</param>
-/// <param name="cRight">Left delimiter for expressions.</param>
-/// <returns>The current setting</returns>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SetTextMergeDelimiters/*" />
 function SetTextMergeDelimiters(cLeft as string, cRight as string) as string[]
     return XSharp.RuntimeState.SetValue<string[]>(Set.TextMergeDelimiters, <string>{cLeft, cRight})
 
-/// <summary>
-/// Read the TextMerge delimiters
-/// </summary>
-/// <returns>The current setting</returns>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SetTextMergeDelimiters_2/*" />
 function SetTextMergeDelimiters() as string[]
     return XSharp.RuntimeState.GetValue<string[]>(Set.TextMergeDelimiters)
 
-/// <summary>
-/// Open/Close the file to which TEXT .. ENDTEXT values are written
-/// </summary>
-/// <param name="cFile">Name of the file to create. When this name is NULL or Empty then the file will be closed when it is open</param>
-/// <returns>TRUE when the file was succesfully opened / closed.</returns>
-/// <remarks>The file handle for the file will be stored in the _TEXT system variable.</remarks>
-/// <seealso cref='_TEXT' />
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SetTextFile/*" />
 function SetTextFile(cFile as string) as logic
     local hFile as IntPtr
     if _TEXT != -1

@@ -1078,67 +1078,11 @@ FUNCTION UInt32x32To64(a AS DWORD, b AS DWORD) AS INT64
 
 	RETURN  (INT64) a * (INT64) b
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-FUNCTION MAKELANGID(p, s) AS WORD
-    EnForceNumeric(@p)
-    EnForceNumeric(@s)
-    RETURN ( _OR( (WORD(_CAST, S) << 10), WORD(P)))
-
 FUNCTION PRIMARYLANGID(lgid AS WORD) AS WORD
 	RETURN (WORD) (_AND(WORD(_CAST, lgid),  0x3ff))
 
 FUNCTION SUBLANGID( lgid AS WORD) AS WORD
 	RETURN (WORD(_CAST, lgid)  >>10)
-
-
-FUNCTION MAKELCID(lgid AS WORD, srtid AS WORD) AS DWORD
-	LOCAL val1 AS DWORD
-	LOCAL val2 AS DWORD
-
-	val1 := DWORD(_CAST, WORD(_CAST, srtid)) << 16
-	val2 := DWORD(_CAST, WORD(_CAST, lgid))
-	RETURN (_OR(val1, val2))
 
 
 FUNCTION LANGIDFROMLCID(lcid AS DWORD) AS WORD

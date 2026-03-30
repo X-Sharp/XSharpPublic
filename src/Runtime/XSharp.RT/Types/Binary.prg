@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -14,11 +14,7 @@ USING System.Runtime.Serialization
 #include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
-/// <summary>Internal type that implements the FoxPro Compatible BINARY type.<br/>
-/// This type has many operators and implicit converters that normally are never directly called from user code.
-/// The data in this type is stored as an array of Bytes<br/>
-/// Conversions from and to String are supported and they use the current active windows codepage.
-/// </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Binary/*" />
 [DebuggerDisplay("{ToDebugString(),nq}")];
 [Serializable];
 PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
@@ -29,9 +25,8 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
 
     [NOSHOW] PRIVATE INITONLY _value AS BYTE[]
 
-#region constructors
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    /// <param name="b">Byte[] value that has the bytes that define the binary</param>
+    #region constructors
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Binary.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR (b AS BYTE[])
         IF b == NULL
@@ -39,10 +34,7 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         ENDIF
         SELF:_value    := b
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    /// <param name="s">STRING that will be converted to bytes using the current windows codepage.</param>
-    /// <remarks>Accented characters and characters outside the current windows codepage may be replaced with a question mark.
-    /// and when the current codepage is a so called multi byte codepage than one character may be mapped to more than one byte in the result</remarks>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Binary.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR (s AS STRING)
         IF s == NULL
@@ -69,7 +61,7 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
 
 #endregion
 #region Properties
-    /// <summary>Binary value as array of Bytes</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Binary.Value/*" />
     PROPERTY @@Value    AS BYTE[]	GET  IIF (_value == NULL, NULL, (BYTE[]) _value:Clone())
     PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
 #endregion
@@ -265,8 +257,8 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         RETURN SELF:ToString("")
 
 #region ISerializable
-    /// <inheritdoc/>
 
+    /// <inheritdoc/>
     PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
         IF info == NULL
             THROW System.ArgumentException{"info"}

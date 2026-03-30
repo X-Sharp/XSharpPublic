@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,9 +13,7 @@ USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-	/// <summary>
-	/// The CdxTagList class is a special CdxLeaf. Its NodeAttribute must be Root + Leaf = TagList
-	/// </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTagList/*" />
 	INTERNAL SEALED CLASS CdxTagList INHERIT CdxLeafPage
         PRIVATE _tags AS List<CdxTag>
 

@@ -1,4 +1,4 @@
-// CdxBlock.prg
+﻿// CdxBlock.prg
 // Created by    : fabri
 // Creation Date : 10/25/2018 10:43:18 PM
 // Created for   :
@@ -29,9 +29,7 @@ USING STATIC XSharp.Conversions
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-/// <summary>
-/// The CdxPageBase class.
-/// </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/CdxPage/*" />
 INTERNAL ABSTRACT CLASS CdxPage
     PROTECTED _bag      AS CdxOrderBag
     PROTECTED _tag      AS CdxTag

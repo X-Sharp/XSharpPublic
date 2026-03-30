@@ -25,5 +25,11 @@
     </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="VariablesWindow.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

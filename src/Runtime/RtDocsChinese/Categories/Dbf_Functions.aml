@@ -101,11 +101,28 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AFields(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Retrieves and stores information about the structure of the table in a specified work area, specified by a table alias, or in the currently selected work area in an array and returns the number of fields in the table.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将数据会话的表别名和工作区放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>
@@ -148,7 +165,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the record pointer is positioned at the beginning of a table.
+    </para>
             </entry>
           </row>
           <row>
@@ -824,7 +843,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dbf(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DBF(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1694,6 +1713,19 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Deleted(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -1717,7 +1749,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the record pointer is positioned past the last record in the current or specified table.
+    </para>
             </entry>
           </row>
           <row>
@@ -1745,7 +1779,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of fields in a table.
+    </para>
             </entry>
           </row>
           <row>
@@ -2125,7 +2161,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FLock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Flock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2157,7 +2193,10 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the most recently executed CONTINUE, FIND, LOCATE, or SEEK command was successful or if the record pointer was moved in a related table.
+      You can use FOUND( ) to determine if a child table has a record that matches the parent record.
+    </para>
             </entry>
           </row>
           <row>
@@ -2198,7 +2237,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of bytes in the header of the current or specified table file.
+    </para>
             </entry>
           </row>
           <row>
@@ -2291,7 +2332,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LUpdate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LUpdate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2351,7 +2392,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of records in the current or specified table.
+    </para>
             </entry>
           </row>
           <row>
@@ -2379,7 +2422,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current record number in the current or specified table.
+    </para>
             </entry>
           </row>
           <row>
@@ -2407,7 +2452,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the size (width) of a table record.
+    </para>
             </entry>
           </row>
           <row>
@@ -2446,7 +2493,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2558,7 +2605,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Used</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Used(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2577,7 +2624,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines if an alias is in use or a table is open in a specific work area.
+    </para>
             </entry>
           </row>
         </table>

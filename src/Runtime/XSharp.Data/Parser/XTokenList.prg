@@ -15,11 +15,7 @@ USING System.Linq
 
 
 BEGIN NAMESPACE XSharp.Parsers 
-    /// <summary>
-    /// The XSharpTokenList class. This class is used to process a list of tokens
-    /// without having to worry about the end of the list. You can safely access next items
-    /// through the La.. and Lt.. properties and methods.
-    /// </summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/XTokenList/*" />
     CLASS XTokenList
         PRIVATE _list  AS IList<XToken>
         PRIVATE _lastReadToken AS XToken

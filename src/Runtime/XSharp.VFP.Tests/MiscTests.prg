@@ -220,6 +220,27 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         END METHOD
         #pragma options ("undeclared", default)
 
+        [Fact];
+        METHOD TestSetDefaultTO() AS VOID
+            VAR cOldDir := Environment.CurrentDirectory
+
+            SET DEFAULT TO "C"
+            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+
+            SET DEFAULT TO "C:"
+            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+
+            VAR cNewDir := Path.GetTempPath()
+            SET DEFAULT TO (cNewDir)
+            Assert.Equal(cNewDir:TrimEnd(c'\\'), SET("DEFAULT"):TrimEnd(c'\\'))
+
+            SET DEFAULT TO ".."
+            Assert.True(SET("DEFAULT") != cNewDir:TrimEnd(c'\\'))
+
+            SET DEFAULT TO (cOldDir)
+
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

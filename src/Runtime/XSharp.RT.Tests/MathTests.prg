@@ -305,7 +305,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             LOCAL epsilon AS REAL8
             epsilon := 0.0000001
             LOCAL x AS REAL8
-            FOR EACH x IN <REAL8>{ 0.0, 0.5, 1.0, 1.5, 2.0, PI()/3, PI()/4 }
+            FOREACH x IN <REAL8>{ 0.0, 0.5, 1.0, 1.5, 2.0, PI()/3, PI()/4 }
                 LOCAL sinVal AS REAL8
                 LOCAL cosVal AS REAL8
                 sinVal := (REAL8) Sin(x)
@@ -320,7 +320,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             LOCAL epsilon AS REAL8
             epsilon := 0.0000001
             LOCAL x AS REAL8
-            FOR EACH x IN <REAL8>{ 0.0, 0.5, 1.0, 2.0, 5.0 }
+            FOREACH x IN <REAL8>{ 0.0, 0.5, 1.0, 2.0, 5.0 }
                 Assert.True( Math.Abs((REAL8) Log(Exp(x)) - x) < epsilon )
             NEXT
         RETURN

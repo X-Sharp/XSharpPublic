@@ -57,6 +57,7 @@
     <Compile Include="IOTests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="NumericTest.prg" />
+    <Compile Include="NumericExtTests.prg" />
     <Compile Include="StringTests.prg">
       <SubType>Code</SubType>
     </Compile>

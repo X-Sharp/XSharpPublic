@@ -168,6 +168,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                     VAR iChar := Convert.ToInt32(oOld)
                     oOld := Convert.ToChar(iChar):ToString()
                 CATCH
+                    NOP
                 END TRY
             ENDIF
         ENDIF

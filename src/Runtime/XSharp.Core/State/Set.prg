@@ -181,6 +181,7 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
             CATCH
                 VAR err := Error.VOError(EG_ARG, __FUNCTION__, NAMEOF(cPathSpec), 1, <OBJECT>{cPathSpec})
                 err:Description := "Directory not found: '" + cPathSpec + "'"
+                THROW err
             END TRY
 
             // Resolves to absolute path to keep Set.Default and SYS() in sync

@@ -78,7 +78,7 @@ FUNCTION PosAlpha(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
 INTERNAL DELEGATE PosDelegate( cChar AS CHAR) AS LOGIC
 
     INTERNAL FUNCTION PosWorker(sString AS STRING, ignoreChars AS LONG, delCheck AS PosDelegate) AS LONG
-    FOR VAR nI := ignoreChars TO sString:Length
+    FOR VAR nI := ignoreChars TO sString:Length-1
         VAR cChar := sString[nI]
         IF delCheck(cChar)
             RETURN nI+1

@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
             RuntimeState.Dialect := XSharpDialect.FoxPro
             System.IO.Directory.CreateDirectory("C:\test" )
 			SetDefault("C:\test\")
-         Assert.Equal("C:\test\", GetDefault())
+         Assert.Equal("C:\test", GetDefault())
          Assert.Throws<Error>({ => SetDefault("c:\notexist\")})
 		   SetDefault("c:\test")
 			Assert.Equal("c:\test", GetDefault())

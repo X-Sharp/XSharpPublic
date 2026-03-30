@@ -34,10 +34,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
         [Fact, Trait("Category", "Numeric")];
         METHOD AbsReal4Tests() AS VOID
             LOCAL r4 AS REAL4
-            r4 := 3.14f
+            r4 := 3.14
             Assert.Equal(r4, AbsReal4(r4))
             Assert.Equal(r4, AbsReal4(-r4))
-            Assert.Equal(0.0f, AbsReal4(0.0f))
+            Assert.Equal(0.0, AbsReal4(0.0))
         RETURN
 
         [Fact, Trait("Category", "Numeric")];

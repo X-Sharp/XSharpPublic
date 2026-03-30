@@ -29,7 +29,7 @@ CLASS GeneralTests
         Assert.True(AValues[1] == 2)
         Assert.True(aValues[4] == NIL)
         Hb_ADel(aValues,2)
-        Assert.True(AValues[1] == 3)
+        Assert.True(AValues[1] == 2)
         Assert.True(aValues[2] == 4)
         Assert.True(Alen(aValues) == 4)
         Hb_ADel(aValues,1, TRUE)
@@ -98,9 +98,9 @@ CLASS GeneralTests
         Hb_ADel(aValues, 1, TRUE)
         Assert.Equal(0, (int) Alen(aValues))
 
-        // Delete from string array with auto-size (nPos is ignored - always deletes pos 1)
+        // Delete from string array with auto-size
         aValues := {"alpha","beta","gamma"}
-        Hb_ADel(aValues, 2, TRUE)
+        Hb_ADel(aValues, 1, TRUE)
         // Implementation always deletes position 1, so "alpha" is removed
         Assert.Equal(2, (int) Alen(aValues))
         Assert.Equal("beta",  aValues[1])

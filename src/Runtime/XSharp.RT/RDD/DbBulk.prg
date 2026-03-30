@@ -364,13 +364,20 @@ FUNCTION __DbGetTags() AS ARRAY
 FUNCTION __DbCreateTags(aOrders as ARRAY) AS LOGIC
     local lRetCode := .T. AS LOGIC
     FOR var i := 1 to ALen(aOrders)
-            var name    := aOrders[i][1]
-            var expr    := aOrders[i][2]
-            var unique  := aOrders[i][3]
-            lRetCode := OrdCreate(,name, expr, ,unique)
-            IF ! lRetCode
-                EXIT
-            endif
+        var name    := aOrders[i][1]
+        var expr    := aOrders[i][2]
+        var unique  := aOrders[i][3]
+        try
+            var xValue := &(expr)
+        catch
+            // if the expression cannot be evaluated in the current context, we skip creating the index
+            // this can happen for example when the index is on a field that is not included in the copy or when the index expression contains a function that is not supported in the current context
+            Loop
+        end try
+        lRetCode := OrdCreate(,name, expr, ,unique)
+        IF ! lRetCode
+            EXIT
+        endif
     NEXT
     RETURN lRetCode
 

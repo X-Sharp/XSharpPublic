@@ -852,7 +852,7 @@ partial class SQLRDD inherit Workarea
             sb:Replace(SqlDbProvider.ColumnsMacro, self:Connection:XsLockColumnList())
             sb:Replace(SqlDbProvider.ValuesMacro, self:Provider:ParameterPrefix+"p1, "+self:Provider:ParameterPrefix+"p2, "+ ;
                 self:Provider:ParameterPrefix+"p3, "+self:Provider:ParameterPrefix+"p4, "+self:Provider:ParameterPrefix+"p5, "+ ;
-                self:Provider:ParameterPrefix+"p6, "+self:Provider:ParameterPrefix+"p7, "+self:Provider:ParameterPrefix+"p8")
+                self:Provider:CurrentDateTime + ", "+self:Provider:ParameterPrefix+"p6, "+self:Provider:ParameterPrefix+"p7")
 
             using var cmdInsertLock := SqlDbCommand{"InsertLock", self:Connection, false}
             cmdInsertLock:CommandText := sb:ToString()
@@ -861,9 +861,8 @@ partial class SQLRDD inherit Workarea
             cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p3", self:Connection:ConnectionId:ToString())
             cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p4", (int)super:Area)
             cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p5", System.Threading.Thread.CurrentThread.ManagedThreadId)
-            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p6", DateTime.Now)
-            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p7", _oTd:RealName ?? String.Empty)
-            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p8", SELF:LockRecNo(lockInfo))
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p6", _oTd:RealName ?? String.Empty)
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p7", SELF:LockRecNo(lockInfo))
 
             if !cmdInsertLock:ExecuteNonQuery()
                 messageLocked:AppendLine("Could not create lock")

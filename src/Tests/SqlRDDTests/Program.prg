@@ -29,7 +29,7 @@ function Start as void
 //     TestParametersODBC()
 //     TestParametersSQL()
 //     TestParametersOLEDB()
-    TestTable()
+    //TestTable()
     //TestCreateIndex()
     //TestServerFilter()
     //TestTableRecno()
@@ -37,7 +37,7 @@ function Start as void
     //testCreate()
     //FillGsTutor()
     //TestGsTutor()
-    //TestLock()
+    TestLock()
     wait
     return
 

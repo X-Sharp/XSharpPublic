@@ -902,30 +902,28 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     end method
 
     private method InitializeLockTimer() as void
-        var timer := System.Timers.Timer{20000} // 120 sec
+        var timer := System.Timers.Timer{120000} // 120 sec
         timer:Elapsed += System.Timers.ElapsedEventHandler{ @@LockTimerElapsedEvent }
         timer:AutoReset := true
         timer:Enabled := true
     return
 
     method LockTimerElapsedEvent(sender as object, e as System.Timers.ElapsedEventArgs) as void
-        var parameterName1 := Provider:ParameterPrefix + "p1"
-        var parameterName2 := Provider:ParameterPrefix + "p2"
+        var parameterName1 := SELF:Provider:ParameterPrefix + "p1"
 
         // Refresh my Locks
         using var cmdRefresh := SqlDbCommand{"RefreshLockTable", SELF, false}
-        var updateStatement := Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
-        updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + parameterName1)
-        updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName2)
+        var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
+        updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
+        updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
         cmdRefresh:Parameters := List<SqlDbParameter>{}
-        cmdRefresh:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now})
-        cmdRefresh:Parameters:Add(SqlDbParameter{parameterName2, SELF:ConnectionId:ToString()})
+        cmdRefresh:Parameters:Add(SqlDbParameter{parameterName1, SELF:ConnectionId:ToString()})
         cmdRefresh:CommandText := updateStatement
         cmdRefresh:ExecuteNonQuery()
 
         // Clear all old locks
         using var cmdClear := SqlDbCommand{"ClearLockTable", SELF, false}
-        cmdClear:CommandText := Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
+        cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
         cmdClear:Parameters := List<SqlDbParameter>{}
         cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-120)})
         cmdClear:ExecuteNonQuery()

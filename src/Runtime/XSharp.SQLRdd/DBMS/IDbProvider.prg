@@ -99,6 +99,11 @@ interface ISqlDbProvider
     property ParameterPrefix        as string get
 
     /// <summary>
+    /// SQL statement to get the current datetime
+    /// </summary>
+    property CurrentDateTime        as string get
+
+    /// <summary>
     /// Return a list of function translations for this provider
     /// </summary>
     /// <returns>Dictionary with XBase functions mapped to SQL functions</returns>

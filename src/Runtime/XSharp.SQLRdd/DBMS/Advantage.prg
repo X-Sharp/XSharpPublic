@@ -35,6 +35,8 @@ class SqlDbProviderAdvantage inherit SqlDbProvider
 
     override property ParameterPrefix        as string => ":"
 
+    override property CurrentDateTime        as string => "NOW()"
+
     private static aFuncs := null as Dictionary<string, string>
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>

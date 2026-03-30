@@ -376,6 +376,7 @@ partial class SQLRDD inherit Workarea
         endif
         return result
 
+
     /// <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method GoCold() as logic
@@ -386,8 +387,31 @@ partial class SQLRDD inherit Workarea
         var lWasHot := current:RowState != DataRowState.Unchanged
         local lOk := TRUE as logic
         if lWasHot .and. self:DataTable != null
+
+            // Check file lock
+            var dbLockInfo := DbLockInfo{}
+            dbLockInfo:RecId := 0
+            var myLock := false
+            var otherLock := false
+            SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+            if (otherLock)
+                return false
+            endif
+
             foreach var row in _updatedRows
                 try
+                    // Check row lock
+                    dbLockInfo:RecId := row[_oTd:RecnoColumn]
+                    SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+                    if otherLock
+                        lOk := false
+                        loop
+                    endif
+
+                    if !myLock
+                        SELF:Lock(ref dbLockInfo)
+                    endif
+
                     lOk := true
                     if super:Deleted
                         local wasNew := false as logic
@@ -432,6 +456,7 @@ partial class SQLRDD inherit Workarea
             next
             if lOk
                 self:DataTable:AcceptChanges()
+                self:UnLock(0)
             else
                 self:DataTable:RejectChanges()
             endif
@@ -453,6 +478,7 @@ partial class SQLRDD inherit Workarea
         foreach var bag in self:OrderBagList
             bag:Close()
         next
+        self:UnLock(0)
         _connection:UnregisterRdd(self)
 
         lOk := super:Close()
@@ -795,6 +821,103 @@ partial class SQLRDD inherit Workarea
         endif
         RETURN SUPER:SetFilter(info)
     end method
+
+    #region Lock / Unlock
+
+    public override method Lock(lockInfo ref DbLockInfo) as logic
+        // TODO thomas: implement Multiple Lock
+        var sb := StringBuilder{}
+        var messageLocked := StringBuilder{}
+
+        try
+            var otherLock := false
+            var myLock := false
+            self:CheckLock(lockInfo, messageLocked, ref myLock, ref otherLock)
+
+            if otherLock
+                lockInfo:Result := false
+                // TODO: thomas add message to output
+                return false
+            endif
+
+            if myLock
+                lockInfo:Result := true
+                return true
+            endif
+
+            // Write Lock
+            sb:Clear()
+            sb:Append(self:Connection:Provider:InsertStatement)
+            sb:Replace(SqlDbProvider.TableNameMacro, SqlDbConnection.LockTableName)
+            sb:Replace(SqlDbProvider.ColumnsMacro, self:Connection:XsLockColumnList())
+            sb:Replace(SqlDbProvider.ValuesMacro, self:Provider:ParameterPrefix+"p1, "+self:Provider:ParameterPrefix+"p2, "+ ;
+                self:Provider:ParameterPrefix+"p3, "+self:Provider:ParameterPrefix+"p4, "+self:Provider:ParameterPrefix+"p5, "+ ;
+                self:Provider:CurrentDateTime + ", "+self:Provider:ParameterPrefix+"p6, "+self:Provider:ParameterPrefix+"p7")
+
+            using var cmdInsertLock := SqlDbCommand{"InsertLock", self:Connection, false}
+            cmdInsertLock:CommandText := sb:ToString()
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p1", Environment.MachineName ?? String.Empty)
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p2", Environment.UserName ?? String.Empty)
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p3", self:Connection:ConnectionId:ToString())
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p4", (int)super:Area)
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p5", System.Threading.Thread.CurrentThread.ManagedThreadId)
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p6", _oTd:RealName ?? String.Empty)
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p7", SELF:LockRecNo(lockInfo))
+
+            if !cmdInsertLock:ExecuteNonQuery()
+                messageLocked:AppendLine("Could not create lock")
+                // TODO: thomas add message to output
+                lockInfo:Result := false
+                return false
+            endif
+        catch
+            messageLocked:AppendLine("An error occured while locking")
+            // TODO: thomas add message to output
+            lockInfo:Result := false
+            return false
+        end try
+
+        lockInfo:Result := true
+        return true
+    end method
+
+    public override method UnLock(oRecId as object) as logic
+        try
+            var sb := StringBuilder{}
+            var sbWhere := StringBuilder{}
+
+            sbWhere:AppendLine(" station = "+self:Provider:ParameterPrefix+"p1")
+            sbWhere:AppendLine(" and username = "+self:Provider:ParameterPrefix+"p2")
+            sbWhere:AppendLine(" and connectionid = "+self:Provider:ParameterPrefix+"p3")
+            sbWhere:AppendLine(" and tablename = "+self:Provider:ParameterPrefix+"p4")
+            sbWhere:AppendLine(" and workarea = "+self:Provider:ParameterPrefix+"p5")
+            if oRecId != null .and. oRecId is int .and. ((int)oRecId) > 0
+                sbWhere:AppendLine(" and recno = "+self:Provider:ParameterPrefix+"p6")
+            endif
+
+            sb:Append(self:Provider:DeleteStatement)
+            sb:Replace(SqlDbProvider.TableNameMacro, SqlDbConnection.LockTableName)
+            sb:Replace(SqlDbProvider.WhereMacro, sbWhere:ToString())
+
+            using var cmd := SqlDbCommand{"ConnectionCleanupLock", self:Connection, false}
+            cmd:CommandText := sb:ToString()
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p1", Environment.MachineName ?? String.Empty)
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p2", Environment.UserName ?? String.Empty)
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p3", self:Connection:ConnectionId:ToString())
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p4", _oTd:RealName ?? String.Empty)
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p5", (int)super:Area)
+            if oRecId != null .and. oRecId is int .and. ((int)oRecId) > 0
+                cmd:AddParameter(self:Provider:ParameterPrefix+"p6", (int)oRecId)
+            endif
+            cmd:ExecuteNonQuery()
+        catch
+            return false
+        end try
+
+        return true
+    end method
+
+    #endregion
 
 end class
 

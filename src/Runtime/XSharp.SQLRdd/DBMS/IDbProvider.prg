@@ -29,7 +29,7 @@ interface ISqlDbProvider
     /// Type name of the DbProviderFactory
     /// </summary>
     property TypeName as string get
-    
+
     /// <summary>
     /// Syntax for a Statement to calculate the row number
     /// </summary>
@@ -92,6 +92,16 @@ interface ISqlDbProvider
     /// Literal value for the False value
     /// </summary>
     property FalseLiteral           as string get
+
+    /// <summary>
+    /// Prefix for the SQL statement variable
+    /// </summary>
+    property ParameterPrefix        as string get
+
+    /// <summary>
+    /// SQL statement to get the current datetime
+    /// </summary>
+    property CurrentDateTime        as string get
 
     /// <summary>
     /// Return a list of function translations for this provider

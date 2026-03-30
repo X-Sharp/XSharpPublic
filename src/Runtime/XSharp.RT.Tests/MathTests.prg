@@ -222,7 +222,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal(-2, (INT) Ceil(-2.9))
             Assert.Equal(0,  (INT) Ceil(0.0))
             Assert.Equal(1,  (INT) Ceil(0.0001))
-            Assert.Equal(-0, (INT) Ceil(-0.9999))
+            Assert.Equal(0,  (INT) Ceil(-0.9999))
         RETURN
 
         [Fact, Trait("Category", "Math")];

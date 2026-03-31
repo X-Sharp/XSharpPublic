@@ -916,10 +916,15 @@ internal static class OOPHelpers
 
         // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
-            return oDynamic:NoIvarGet(cIVar)
+            return oDynamic:NoIVarGet(cIVar)
         endif
         if oObject is ILateBound var oLB
-            return oLB:NoIvarGet(cIVar)
+            if lSelf
+                return oLB:NoIVarGetSelf(cIVar)
+            else
+                return oLB:NoIVarGet(cIVar)
+            endif
+
         endif
         t := oObject:GetType()
         if oObject is IWrappedObject var oWrapped
@@ -989,11 +994,15 @@ internal static class OOPHelpers
         local t as Type
          // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
-            oDynamic:NoIvarPut(cIVar, oValue)
+            oDynamic:NoIVarPut(cIVar, oValue)
             return
         endif
         if oObject is ILateBound var oLB
-            oLB:NoIvarPut(cIVar, oValue)
+            if lSelf
+                oLB:NoIVarPutSelf(cIVar, oValue)
+            else
+                oLB:NoIVarPut(cIVar, oValue)
+            endif
             return
         endif
         t := oObject:GetType()

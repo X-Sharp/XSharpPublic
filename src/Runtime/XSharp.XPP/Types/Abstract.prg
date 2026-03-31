@@ -53,6 +53,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
             THROW ArgumentException{"Missing Codeblock parameter", nameof(uBlock)}
         ENDIF
 
+    ///  <inheritdoc />
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IVarGetInfo(SELF, cName) != 0
 
@@ -67,7 +68,16 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
             endif
         next
         RETURN FALSE
-    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
+
+    ///  <inheritdoc />
+    VIRTUAL METHOD NoIVarGetSelf(cName AS STRING) AS USUAL
+        return SELF:_NoIVarGet(cName, TRUE)
+
+    ///  <inheritdoc />
+    VIRTUAL METHOD NoIVarGet(cName AS STRING) AS USUAL
+        return SELF:_NoIVarGet(cName, FALSE)
+
+    private METHOD _NoIVarGet(cName AS STRING, lSelf as LOGIC) AS USUAL
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             return ClassHelpers.CallIVarGet(self, cName)
         ENDIF
@@ -77,7 +87,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         // So we are not filtering here
 
         if mem is FieldInfo var fld
-            if fld:IsPrivate
+            if fld:IsPrivate .and. ! lSelf
                 if !IsMemberAccessible(fld, System.Diagnostics.StackTrace{false})
                     fld := NULL
                 endif
@@ -85,8 +95,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
             if fld != null
                 return fld:GetValue(self)
             endif
-        endif
-        if mem is PropertyInfo var  prop .and. prop:CanRead
+        elseif mem is PropertyInfo var  prop .and. prop:CanRead .and. (prop:GetMethod:IsPublic .or. lSelf)
             if prop:GetIndexParameters():Length == 0
                 return prop:GetValue(self)
             endif
@@ -96,7 +105,15 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         oError:Description := oError:Message+" '"+cName+"'"
         throw oError
 
-    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+    ///  <inheritdoc />
+    VIRTUAL METHOD NoIVarPutSelf(cName AS STRING, uValue AS USUAL) AS VOID
+        SELF:_NoIVarPut(cName, uValue, TRUE)
+
+    ///  <inheritdoc />
+    VIRTUAL METHOD NoIVarPut(cName AS STRING, uValue AS USUAL) AS VOID
+        SELF:_NoIVarPut(cName, uValue, FALSE)
+
+    PRIVATE METHOD _NoIVarPut(cName AS STRING, uValue AS USUAL, lSelf as LOGIC) AS VOID
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             ClassHelpers.CallIVarPut(self, cName, uValue)
         ENDIF
@@ -105,7 +122,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         // So we are not filtering here
         if mem is FieldInfo var fld
 
-            if fld:IsPrivate
+            if fld:IsPrivate .and. ! lSelf
                 if !IsMemberAccessible(fld, System.Diagnostics.StackTrace{false})
                     fld := null
                 endif
@@ -115,8 +132,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
                 fld:SetValue(self, oValue)
             endif
             RETURN
-        endif
-        if mem is PropertyInfo var  prop .and. prop:CanWrite
+        elseif mem is PropertyInfo var  prop .and. prop:CanWrite .and. (prop:SetMethod:IsPublic .or. lSelf)
             if prop:GetIndexParameters():Length == 0
                 var oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
                 prop:SetValue(self, oValue)
@@ -128,12 +144,12 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         throw oError
     /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.SetNoIVar/*" />
     METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID
-        SELF:NoIvarPut(cName, uValue)
+        SELF:NoIVarPut(cName, uValue)
         RETURN
 
     /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.GetNoIVar/*" />
     METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
-        RETURN SELF:NoIvarGet(cName)
+        RETURN SELF:NoIVarGet(cName)
 
     /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.NoMethod/*" />
 #ifdef DOC

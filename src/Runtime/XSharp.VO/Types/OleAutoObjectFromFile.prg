@@ -11,11 +11,11 @@ USING System.Reflection
 USING System.Diagnostics
 USING System.Runtime.InteropServices.ComTypes
 
-/// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObjectFromFile/*" />
+/// <include file="Gui.xml" path="doc/OleAutoObjectFromFile/*" />
 [DebuggerDisplay( "Type= {__ComObject}, File={cFileName}", Type := "OleAutoObjectFromFile" )];
 CLASS XSharp.OleAutoObjectFromFile INHERIT OleAutoObject
    PROTECT _cFileName 	AS STRING
-
+    /// <include file="Gui.xml" path="doc/OleAutoObjectFromFile.ctor/*" />
    CONSTRUCTOR(cFile AS STRING)
       LOCAL oDoc  AS OBJECT
       LOCAL type  AS System.Type
@@ -35,6 +35,7 @@ CLASS XSharp.OleAutoObjectFromFile INHERIT OleAutoObject
 
       RETURN
 
+    /// <include file="Gui.xml" path="doc/OleAutoObjectFromFile.cFileName/*" />
    PROPERTY cFileName AS STRING GET SELF:_cFileName
 
 END CLASS

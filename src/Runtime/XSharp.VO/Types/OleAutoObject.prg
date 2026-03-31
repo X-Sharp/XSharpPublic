@@ -17,7 +17,7 @@ using System.Runtime.Versioning
 using System.Security
 #endif
 
-/// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject/*" />
+/// <include file="Gui.xml" path="doc/OleAutoObject/*" />
 [AllowLateBinding];
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
 CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
@@ -38,7 +38,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         self:lDateTimeAsDate    := OleDateTimeAsDate()
         return
 
-    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
+    /// <include file="Gui.xml" path="doc/OLEAutoObject.ctor/*" />
     constructor(cProgId as string)
         self()
         oComObject        := OleCreateObject(cProgId)
@@ -48,7 +48,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         endif
         return
 
-    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
+    /// <include file="Gui.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(cProgId as string, fRotCheck as logic)
         self()
         if fRotCheck
@@ -65,7 +65,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
 
 
     // Builds an OleAutoObject on Any OBJECT (including another AutoObject)
-    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
+    /// <include file="Gui.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(oObject as object)
         self()
         oComObject :=  OleUnWrapObject(oObject)
@@ -76,7 +76,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         return
 
         // Builds an OleAutoObject on Any OBJECT (including another AutoObject). Type already known
-    /// <include file="XSharp.VO.Docs.xml" path="doc/OleAutoObject.ctor/*" />
+    /// <include file="Gui.xml" path="doc/OleAutoObject.ctor/*" />
     constructor(oObject as object, _type as System.Type)
         self()
         oComObject	:=  OleUnWrapObject(oObject)
@@ -102,8 +102,8 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
             return true
         otherwise
             result := nil
-            return false
         end switch
+        return false
 
     private method SetOurFieldInfo(cName as string, newvalue as usual) as logic
         switch cName:ToLower()
@@ -113,9 +113,15 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         end switch
         return false
 
+
+    /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarGet/*" />
+    VIRTUAL METHOD NoIVarGetSelf(cName AS STRING ) AS USUAL
+        // OleAutoObject is always a wrapper around another object, so no real difference
+        RETURN SELF:NoIVarGet(cName)
     /// <exclude />
     // ? oObject:Property
-    VIRTUAL METHOD NoIvarGet(cName AS STRING ) AS USUAL
+    /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarGet/*" />
+    VIRTUAL METHOD NoIVarGet(cName AS STRING ) AS USUAL
         IF SELF:GetOurFieldInfo(cName, OUT VAR result)
             return result
         endif
@@ -123,8 +129,13 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
         return OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 
         // oObject:Property := Value
-        /// <exclude />
-    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+    /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarPut/*" />
+    VIRTUAL METHOD NoIVarPutSelf(cName AS STRING, uValue AS USUAL) AS VOID
+        // OleAutoObject is always a wrapper around another object, so no real difference
+        SELF:NoIVarPut(cName, uValue)
+        RETURN
+    /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarPut/*" />
+    VIRTUAL METHOD NoIVarPut(cName AS STRING, uValue AS USUAL) AS VOID
         if self:SetOurFieldInfo(cName, uValue)
             return
         endif

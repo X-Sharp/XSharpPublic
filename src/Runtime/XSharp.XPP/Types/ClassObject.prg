@@ -22,14 +22,23 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
     virtual method New() as object clipper
         return _CreateInstance(self:_Type, _Args())
 
-    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIvarGet/*" />
-    virtual method NoIvarGet(cName as string) as usual
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIVarGet/*" />
+    virtual method NoIVarGetSelf(cName as string) as usual
+        return self:_NoIVarGet(cName, true)
+
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIVarGet/*" />
+    virtual method NoIVarGet(cName as string) as usual
+        return self:_NoIVarGet(cName, false)
+
+    private method _NoIVarGet(cName as string, lSelf as LOGIC) as usual
         var mem := OOPHelpers.GetFieldOrProperty(_Type, cName)
         if mem is FieldInfo var fld .and. fld:IsStatic
-            return fld:GetValue(null)
+            if fld:IsPublic .or. lSelf
+                return fld:GetValue(null)
+            endif
         endif
         if mem is PropertyInfo var  prop .and. prop:CanRead .and. prop:GetMethod:IsStatic
-            if prop:GetIndexParameters():Length == 0
+        if prop:GetIndexParameters():Length == 0 .and. (prop:GetMethod:IsPublic .or. lSelf)
                 return prop:GetValue(null,null)
             endif
         endif
@@ -37,19 +46,29 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
         oError:Description := oError:Message+" '"+cName+"'"
         throw oError
 
-    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIvarPut/*" />
-    virtual method NoIvarPut(cName as string, uValue as usual) as void
+
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIVarPut/*" />
+    virtual method NoIVarPutSelf(cName as string, uValue as usual) as void
+        SELF:_NoIVarPut(cName, uValue, true)
+
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/ClassObject.NoIVarPut/*" />
+    virtual method NoIVarPut(cName as string, uValue as usual) as void
+        SELF:_NoIVarPut(cName, uValue, false)
+
+    private method _NoIVarPut(cName as string, uValue as usual, lSelf as LOGIC) as void
         local oValue as object
         // get member from cache
         var mem := OOPHelpers.GetFieldOrProperty(_Type, cName)
         if mem is FieldInfo var fld .and. fld:IsStatic
-            oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
-            fld:SetValue(null, oValue)
+            if fld:IsPublic .or. lSelf
+                oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
+                fld:SetValue(null, oValue)
+            endif
             return
         endif
         if mem is PropertyInfo var  prop .and. prop:CanWrite .and. prop:SetMethod:IsStatic
             oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
-            if prop:GetIndexParameters():Length == 0
+            if prop:GetIndexParameters():Length == 0 .and. (prop:SetMethod:IsPublic .or. lSelf)
                 prop:SetValue(null, (object) uValue, null)
             endif
             return

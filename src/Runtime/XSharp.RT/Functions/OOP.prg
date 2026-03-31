@@ -900,7 +900,7 @@ internal static class OOPHelpers
         var oClass := oType
         do while oClass != null
             var list := oClass:GetMember(cName, MemberTypes.Field | MemberTypes.Property, bf)
-            if list != null
+            if list != null .and. list:Count() > 0
                 foreach var fld in list
                     OOPHelpers.AddMemberToCache(oType, cName, fld)
                 next

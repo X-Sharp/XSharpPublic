@@ -304,6 +304,8 @@ FUNCTION FDate(cFileName AS STRING, nType := 0 AS INT) AS USUAL
         RETURN NULL_DATE
     ENDIF
 
+FUNCTION FDate() AS USUAL
+    RETURN (DATE) XSharp.Core.Functions.FDate()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ftime/*" />
 [FoxProFunction("FTIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -314,6 +316,9 @@ FUNCTION FTime(cFileName AS STRING) AS STRING
         RETURN info:LastWriteTime:ToString("HH:mm:ss")
     ENDIF
     RETURN ""
+
+FUNCTION FTime() AS STRING
+    RETURN XSharp.Core.Functions.FTime()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/time/*" />
 [FoxProFunction("TIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];

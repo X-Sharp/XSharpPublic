@@ -194,6 +194,12 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
 
     RETURN 0
 
+FUNCTION FSize() AS DWORD
+    RETURN XSharp.Core.Functions.FSize()
+
+FUNCTION FSize(pFile AS IntPtr) AS INT64
+    RETURN XSharp.Core.Functions.FSize(pFile)
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fwrite/*" />
 [FoxProFunction("FWRITE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FWrite(nFileHandle AS INT64, cExpression AS STRING, nCharactersWritten := 0 AS INT) AS INT

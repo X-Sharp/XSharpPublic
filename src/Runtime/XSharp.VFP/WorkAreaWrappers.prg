@@ -47,8 +47,8 @@ FUNCTION Alias(uWorkArea AS USUAL) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fcount/*" />
 [FoxProFunction("FCOUNT", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION FCount() AS DWORD
-    RETURN XSharp.RT.Functions.FCount()
+FUNCTION FCount(uWorkArea AS USUAL) AS DWORD
+    RETURN XSharp.RT.Functions.FCount(uWorkArea)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/header/*" />
 [FoxProFunction("HEADER", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];

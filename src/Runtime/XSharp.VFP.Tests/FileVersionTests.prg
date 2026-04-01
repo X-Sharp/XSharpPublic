@@ -77,6 +77,59 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             File.Delete(tempDbf)
         END METHOD
 
+        [Fact];
+        METHOD FSizeLowLevelTest() AS VOID
+            VAR cFile := Path.GetTempFileName()
+            VAR hFile := (IntPtr) FCreate(cFile)
+
+            Assert.NotEqual(IntPtr.Zero, hFile)
+            FWrite((INT64) hFile, "12345")
+
+            Assert.Equal((INT64)5, FSize(hFile))
+            FClose((INT64) hFile)
+
+            FFirst(cFile, 0)
+            Assert.Equal((DWORD)5, FSize())
+
+            FErase(cFile)
+        END METHOD
+
+        [Fact];
+        METHOD FCountOverloadsTests() AS VOID
+            DbCloseAll()
+
+            VAR aStruct := { {"FIELD1", "C", 10, 0}, {"FIELD2", "N", 5, 0}, {"FIELD3", "L", 1, 0} }
+            VAR cFile := Path.GetTempFileName() + ".dbf"
+
+            DbCreate(cFile, aStruct)
+            DbUseArea(TRUE, "DBFVFP", cFile, "TESTFCOUNT")
+
+            Assert.Equal((DWORD)3, FCount())
+
+            Assert.Equal((DWORD)3, FCount("TESTFCOUNT"))
+            Assert.Equal((DWORD)3, FCount(Select("TESTFCOUNT")))
+
+            DbCloseArea()
+            FErase(cFile)
+        END METHOD
+
+        [Fact];
+        METHOD FDateFTimeParameterlessTests() AS VOID
+            VAR cFile := Path.GetTempFileName()
+
+            StrToFile("test", cFile)
+
+            FFirst(cFile, 0)
+
+            VAR dDate := FDate()
+            Assert.True(NULL_DATE != dDate)
+
+            VAR cTime := FTime()
+            Assert.True(cTime:Length > 0)
+
+            FErase(cFile)
+        END METHOD
+
         [Fact, Trait("Category", "FileFunctions")];
         METHOD TestDisplayPath() AS VOID
             VAR cPath := "C:\xsharp\projects\vfp\runtime\source\data\mydata.dbf"

@@ -39,12 +39,10 @@ BEGIN NAMESPACE XSharp.VFP
             ENDIF
 
             TRY
-                VAR cDllPath := Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly():Location), "XSharp.VFP.UI.dll")
+                VAR oAsm := XSharp.AssemblyHelper.Load("XSharp.VFP.UI")
 
-                IF File.Exists(cDllPath)
-                    VAR oAsm := Assembly.LoadFrom(cDllPath)
+                IF oAsm != NULL
                     VAR oType := oAsm:GetType("XSharp.VFP.UI.VfpUIProvider", FALSE, TRUE)
-
                     IF oType != NULL AND typeof(IVfpUIProvider):IsAssignableFrom(oType)
                         _provider := (IVfpUIProvider) Activator.CreateInstance(oType)
                     ENDIF

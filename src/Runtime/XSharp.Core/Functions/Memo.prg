@@ -28,18 +28,21 @@ PUBLIC CLASS XSharp.MemoHelpers
     /// <exclude/>
 	CONST STD_TAB_WIDTH	:= 4 AS INT
     /// <exclude/>
-	CONST STD_MEMO_WIDTH	 := 79	AS INT
+    STATIC PROPERTY STD_MEMO_WIDTH AS INT => RuntimeState.MemoWidth
 
     /// <exclude/>
-	STATIC METHOD  MLCount( cMemo AS STRING, nLineLen:= MemoHelpers.STD_MEMO_WIDTH AS INT, ;
+	STATIC METHOD MLCount( cMemo AS STRING, nLineLen:= -1 AS INT, ;
 		nTabSize := MemoHelpers.STD_TAB_WIDTH AS INT,  lWrap := TRUE AS LOGIC) AS DWORD
 		LOCAL nTempLen AS INT
 		LOCAL nLines := 0 AS DWORD
 		LOCAL nIndex := 0 AS INT
 		IF cMemo == NULL
 			RETURN 0
-		ENDIF
-		IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
+        ENDIF
+        IF nLineLen == -1
+            nLineLen := MemoHelpers.STD_MEMO_WIDTH
+        ENDIF
+        IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
 
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -318,7 +321,7 @@ FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset AS DWORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline3/*" />
 FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 	LOCAL cResult AS STRING
-	LOCAL iOffSet := (INT) ptrN AS INT
+    LOCAL iOffSet := (INT) ptrN AS INT
 	IF ptrN < cString:Length
 		cResult := Trim(MemoHelpers.MLine( cString , (INT) dwLine , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
 	ELSE
@@ -329,10 +332,16 @@ FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoline/*" />
-FUNCTION MemoLine(cString AS STRING, nLineLength := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNumber := 1 AS DWORD,;
-nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
-	LOCAL dPos := 0 AS INT
-	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
+FUNCTION MemoLine(cString AS STRING, nLineLength := 0xFFFFFFFF AS DWORD, nLineNumber := 1 AS DWORD,;
+    nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
+    LOCAL dPos := 0 AS INT
+    LOCAL iLineLength as LONG
+    IF nLineLength == 0xFFFFFFFF
+        iLineLength := MemoHelpers.STD_MEMO_WIDTH
+    ELSE
+        iLineLength := (INT) nLineLength
+    ENDIF
+	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, iLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
 
 /// <include file="XSharp.Core.Docs.xml" path="doc/MemoRead/*" />
 FUNCTION MemoRead(cFileName AS STRING) AS STRING
@@ -418,7 +427,7 @@ FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlpos2/*" />
 FUNCTION MLPos2(cString AS STRING,dwLine AS DWORD) AS DWORD
-	LOCAL nIndex := 0 AS INT
+    LOCAL nIndex := 0 AS INT
 	MemoHelpers.MLine( cString, (INT)  dwLine, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
 	RETURN (DWORD) nIndex
 

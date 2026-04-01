@@ -312,6 +312,9 @@ CLASS XSharp.RuntimeState
         GET GetValue<STRING>(Set.AltFile);
         SET SetValue<STRING>(Set.AltFile, value)
 
+   STATIC PROPERTY MemoWidth AS LONG ;
+        GET GetValue<LONG>(Set.MemoWidth);
+        SET SetValue<LONG>(Set.MemoWidth, value)
 
     /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Ansi/*" />
     STATIC PROPERTY Ansi AS LOGIC ;

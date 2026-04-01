@@ -1076,6 +1076,8 @@ RETURN CollationMode.Windows
 CASE Set.ErrorLogFile
 RETURN "ERROR.LOG"
 
+CASE Set.MemoWidth
+    RETURN 79
 
 CASE Set.DosCodepage
 RETURN 437L     // US American
@@ -1123,8 +1125,6 @@ CASE Set.CollateFox
 RETURN "MACHINE"
 CASE Set.DataSession
 RETURN 1
-CASE Set.MemoWidth
-RETURN 50
 CASE Set.Refresh
 RETURN 5.0
 CASE Set.Reprocess

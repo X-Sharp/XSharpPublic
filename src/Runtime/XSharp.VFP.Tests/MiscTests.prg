@@ -241,6 +241,29 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         END METHOD
 
+        [Fact];
+        METHOD ReleaseAllLikeTest() AS VOID
+	        MemVarPut("cVar1", "Test 1")
+	        MemVarPut("cVar2", "Test 2")
+	        MemVarPut("nVar3", 3)
+
+	        _MRelease("""c*""", TRUE)
+
+	        Assert.Equal("U", Type("cVar1"))
+	        Assert.Equal("U", Type("cVar2"))
+	        Assert.Equal("N", Type("nVar3")) // This one remains alive
+
+	        MemVarPut("cVar4", 4)
+	        MemVarPut("cVar5", 5)
+
+	        _MRelease("""cV*""", TRUE)
+
+	        Assert.Equal("U", Type("cVar4"))
+	        Assert.Equal("U", Type("cVar5"))
+	        Assert.Equal("N", Type("nVar3")) // Still alive
+
+	        _MClear()
+        END METHOD
 	END CLASS
 
 END NAMESPACE

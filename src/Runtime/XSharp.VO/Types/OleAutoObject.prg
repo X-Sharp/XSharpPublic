@@ -115,13 +115,13 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
 
 
     /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarGet/*" />
-    VIRTUAL METHOD NoIVarGetSelf(cName AS STRING ) AS USUAL
+    VIRTUAL METHOD NoIvarGetSelf(cName AS STRING ) AS USUAL
         // OleAutoObject is always a wrapper around another object, so no real difference
-        RETURN SELF:NoIVarGet(cName)
+        RETURN SELF:NoIvarGet(cName)
     /// <exclude />
     // ? oObject:Property
     /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarGet/*" />
-    VIRTUAL METHOD NoIVarGet(cName AS STRING ) AS USUAL
+    VIRTUAL METHOD NoIvarGet(cName AS STRING ) AS USUAL
         IF SELF:GetOurFieldInfo(cName, OUT VAR result)
             return result
         endif
@@ -130,12 +130,12 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
 
         // oObject:Property := Value
     /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarPut/*" />
-    VIRTUAL METHOD NoIVarPutSelf(cName AS STRING, uValue AS USUAL) AS VOID
+    VIRTUAL METHOD NoIvarPutSelf(cName AS STRING, uValue AS USUAL) AS VOID
         // OleAutoObject is always a wrapper around another object, so no real difference
-        SELF:NoIVarPut(cName, uValue)
+        SELF:NoIvarPut(cName, uValue)
         RETURN
     /// <include file="Gui.xml" path="doc/OleAutoObject.NoIVarPut/*" />
-    VIRTUAL METHOD NoIVarPut(cName AS STRING, uValue AS USUAL) AS VOID
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         if self:SetOurFieldInfo(cName, uValue)
             return
         endif

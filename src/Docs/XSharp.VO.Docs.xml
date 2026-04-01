@@ -56,15 +56,6 @@
   <NamedArg.Value>
         <summary>Argument value.</summary>
     </NamedArg.Value>
-    <OleAutoObject>
-    <summary>VO Compatible OLE Automation class</summary>
-  </OleAutoObject>
-    <OleAutoObject.ctor>
-        <summary>Construct an OleAutoObject</summary>
-    </OleAutoObject.ctor>
-  <OleAutoObjectFromFile>
-    <summary>VO Compatible class to create an OLEAutObject from a file on disk.</summary>
-  </OleAutoObjectFromFile>
     <OleDateTime>
         <summary>VO Compatible class to store DateTime values in OLE Automation</summary>
     </OleDateTime>

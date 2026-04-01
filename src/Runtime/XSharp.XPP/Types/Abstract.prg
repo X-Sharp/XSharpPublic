@@ -70,14 +70,14 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         RETURN FALSE
 
     ///  <inheritdoc />
-    VIRTUAL METHOD NoIVarGetSelf(cName AS STRING) AS USUAL
-        return SELF:_NoIVarGet(cName, TRUE)
+    VIRTUAL METHOD NoIvarGetSelf(cName AS STRING) AS USUAL
+        return SELF:_NoIvarGet(cName, TRUE)
 
     ///  <inheritdoc />
-    VIRTUAL METHOD NoIVarGet(cName AS STRING) AS USUAL
-        return SELF:_NoIVarGet(cName, FALSE)
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
+        return SELF:_NoIvarGet(cName, FALSE)
 
-    private METHOD _NoIVarGet(cName AS STRING, lSelf as LOGIC) AS USUAL
+    private METHOD _NoIvarGet(cName AS STRING, lSelf as LOGIC) AS USUAL
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             return ClassHelpers.CallIVarGet(self, cName)
         ENDIF
@@ -106,14 +106,14 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         throw oError
 
     ///  <inheritdoc />
-    VIRTUAL METHOD NoIVarPutSelf(cName AS STRING, uValue AS USUAL) AS VOID
-        SELF:_NoIVarPut(cName, uValue, TRUE)
+    VIRTUAL METHOD NoIvarPutSelf(cName AS STRING, uValue AS USUAL) AS VOID
+        SELF:_NoIvarPut(cName, uValue, TRUE)
 
     ///  <inheritdoc />
-    VIRTUAL METHOD NoIVarPut(cName AS STRING, uValue AS USUAL) AS VOID
-        SELF:_NoIVarPut(cName, uValue, FALSE)
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+        SELF:_NoIvarPut(cName, uValue, FALSE)
 
-    PRIVATE METHOD _NoIVarPut(cName AS STRING, uValue AS USUAL, lSelf as LOGIC) AS VOID
+    PRIVATE METHOD _NoIvarPut(cName AS STRING, uValue AS USUAL, lSelf as LOGIC) AS VOID
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             ClassHelpers.CallIVarPut(self, cName, uValue)
         ENDIF
@@ -144,12 +144,12 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         throw oError
     /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.SetNoIVar/*" />
     METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID
-        SELF:NoIVarPut(cName, uValue)
+        SELF:NoIvarPut(cName, uValue)
         RETURN
 
     /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.GetNoIVar/*" />
     METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
-        RETURN SELF:NoIVarGet(cName)
+        RETURN SELF:NoIvarGet(cName)
 
     /// <include file="XSharp.XPP.Docs.xml" path="doc/Abstract.NoMethod/*" />
 #ifdef DOC

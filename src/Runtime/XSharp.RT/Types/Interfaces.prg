@@ -35,9 +35,9 @@ interface IDynamicProperties
     /// <include file="XSharp.RT.Docs.xml" path="doc/IDynamicProperties.GetPropertyNames/*" />
     public method GetPropertyNames() as string[]
     /// <include file="XSharp.RT.Docs.xml" path="doc/IDynamicProperties.NoIvarGet/*" />
-    public method NoIVarGet(cName as string) as usual
+    public method NoIvarGet(cName as string) as usual
     /// <include file="XSharp.RT.Docs.xml" path="doc/IDynamicProperties.NoIvarPut/*" />
-    public method NoIVarPut(cName as string, uValue as usual) as void
+    public method NoIvarPut(cName as string, uValue as usual) as void
 end interface
 
 interface IDynamicProperties2
@@ -67,13 +67,13 @@ end interface
 /// <include file="XSharp.RT.Docs.xml" path="doc/ILateBound/*" />
 interface ILateBound
     /// <include file="XSharp.RT.Docs.xml" path="doc/ILateBound.NoIvarGet/*" />
-    method NoIVarGet(cName as string) as usual
+    method NoIvarGet(cName as string) as usual
     /// <include file="XSharp.RT.Docs.xml" path="doc/ILateBound.NoIvarGet/*" />
-    method NoIVarGetSelf(cName as string) as usual
+    method NoIvarGetSelf(cName as string) as usual
     /// <include file="XSharp.RT.Docs.xml" path="doc/ILateBound.NoIvarPut/*" />
-    method NoIVarPut(cName as string, uValue as usual) as void
+    method NoIvarPut(cName as string, uValue as usual) as void
     /// <include file="XSharp.RT.Docs.xml" path="doc/ILateBound.NoIvarPut/*" />
-    method NoIVarPutSelf(cName as string, uValue as usual) as void
+    method NoIvarPutSelf(cName as string, uValue as usual) as void
     /// <include file="XSharp.RT.Docs.xml" path="doc/ILateBound.NoMethod/*" />
     method NoMethod() as usual clipper
 END INTERFACE

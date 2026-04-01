@@ -43,6 +43,7 @@
     <NoWarn>$(DisabledWarnings);108,114</NoWarn>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <IncludePaths>$(Solutiondir)\Common</IncludePaths>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -172,7 +173,6 @@
   <ItemGroup>
     <Folder Include="Headers" />
     <Folder Include="Generated\" />
-    <Folder Include="XSharp" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -202,8 +202,8 @@
     <None Include="Generated\VFPControl.xh" />
     <None Include="Generated\VFPObject.xh" />
     <None Include="Headers\VFPObject.xh" />
+    <None Include="Headers\VFPProperties2.xh" />
     <None Include="Properties\XSharp.bmp" />
-    <None Include="XSharp\VFPProperties.xh" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
@@ -243,11 +243,21 @@
     <PreBuildEvent />
     <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DefineConstants>DEBUG;TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors />
+    <DefineConstants>TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
   </PropertyGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

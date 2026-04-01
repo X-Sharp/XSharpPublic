@@ -62,12 +62,12 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         RETURN {}
 
     /// <include file="XPPComments.xml" path="Comments/NoIvarPut/*" />
-    OVERRIDE METHOD NoIVarPut(cName AS STRING, uValue AS USUAL) AS VOID
+    OVERRIDE METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         SELF:_fields[cName] := uValue
         RETURN
 
     /// <include file="XPPComments.xml" path="Comments/NoIvarGet/*" />
-    OVERRIDE METHOD NoIVarGet(cName AS STRING) AS USUAL
+    OVERRIDE METHOD NoIvarGet(cName AS STRING) AS USUAL
         IF SELF:_fields:ContainsKey(cName)
             RETURN SELF:_fields[cName]
         ENDIF

@@ -23,8 +23,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Container INHERIT System.Windows.Forms.UserControl
 
 
-
-         #include ".\XSharp\VFPProperties.xh"
+         #include "VFPProperties.xh"
+         #include ".\Headers\VFPProperties2.xh"
 		 #include ".\Headers\ControlProperties.xh"
 
 		 #include ".\Headers\Tooltips.xh"

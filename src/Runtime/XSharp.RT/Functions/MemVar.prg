@@ -124,10 +124,23 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	LOCAL cName AS STRING
     LOCAL lFoxPro as LOGIC
     lFoxPro := XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
-    IF cMask:Length > 2 .and. cMask:StartsWith("""") .and. cMask:EndsWith("""")
-    	// VFP does not allow any spaces between quotes and mask, so we are not trimming
-    	cMask := cMask:Substring(1, cMask:Length - 2)
-    END IF
+
+    // #<skel> preprocessor wraps the mask in double quotes.
+    // if the user provided their own quotation ("c*", 'c*', [c*]),
+    // they will be nested. This loop strips them all away
+    DO WHILE cMask:Length >= 2
+        VAR cFirst := cMask[0]
+        VAR cLast := cMask[cMask:Length - 1]
+
+        IF (cFirst == c'"' .AND. cLast == c'"') .OR. ;
+            (cFirst == c'\'' .AND. cLast == c'\'') .OR. ;
+            (cFirst == c'[' .AND. cLast == c']')
+            cMask := cMask:Substring(1, cMask:Length - 2)
+        ELSE
+            EXIT
+        ENDIF
+    ENDDO
+
 	// Case INsensitive comparison. Symbols are all in UPPER case
 	cMask := Upper(cMask)
 	cName := _PrivateFirst(TRUE)

@@ -76,7 +76,7 @@ FUNCTION Bin2Int64(cSignedInt AS STRING) AS INT64
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2logic/*" />
 FUNCTION Bin2Logic(pszLogical AS STRING) AS LOGIC
-    RETURN pszLogical != NULL .AND. pszLogical[0] != 0
+    RETURN pszLogical != NULL .AND. pszLogical:Length > 0 .and. pszLogical[0] != 0
 
 /// <include file="XSharp.Core.Docs.xml" path="doc/Ptr2Bin/*" />
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
@@ -144,7 +144,7 @@ FUNCTION Bin2W(cUnsignedInt AS STRING) AS WORD
 
 /// <include file="XSharp.Core.Docs.xml" path="doc/CTOL/*" />
 FUNCTION CTOL(c AS STRING) AS LOGIC
-    IF c != NULL
+    IF c != NULL .and. c:Length > 0
         IF c[0] == 'T' .OR. c[0] == 't' .OR. c[0] == 'Y' .OR. c[0] =='y'
             RETURN TRUE
         ENDIF

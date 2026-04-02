@@ -176,11 +176,13 @@ FUNCTION W2String(p AS IntPtr) AS STRING
 	LOCAL nIndex AS INT
 	LOCAL pChar AS WORD PTR
 	nIndex := 1
-	pChar := (WORD PTR)p
-	DO WHILE pChar[nIndex] != 0
-		cRet:Append(Convert.ToChar(pChar[nIndex]))
-		nIndex ++
-	END DO
+    pChar := (WORD PTR)p
+    if pChar != null_ptr
+	    DO WHILE pChar[nIndex] != 0
+		    cRet:Append(Convert.ToChar(pChar[nIndex]))
+		    nIndex ++
+        END DO
+    endif
 	RETURN cRet:ToString()
 
 /// <exclude />

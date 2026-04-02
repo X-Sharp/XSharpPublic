@@ -70,6 +70,7 @@
     <Compile Include="ArrayBaseTests.prg" />
     <Compile Include="DbfVfpTests.prg" />
     <Compile Include="LateBindingTests.prg" />
+    <Compile Include="StringExtendedTests.prg" />
     <Compile Include="TerminalTests.prg" />
     <Compile Include="DbfNtxTests.prg" />
     <Compile Include="DbfBlobTests.prg" />

@@ -186,7 +186,9 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 	LOCAL i1 := 0 AS INT
 	LOCAL i2 := 0  AS INT
 	LOCAL sb AS StringBuilder
-
+    if cOdd == NULL .or. cEven == NULL
+        RETURN ""
+    ENDIF
 	IF cEven:Length == 0
 		RETURN ""
 	ELSE
@@ -570,9 +572,23 @@ FUNCTION ProperA(cName REF STRING) AS STRING
 
 /// <include file="XSharp.Core.Docs.xml" path="doc/QPEncString/*" />
 FUNCTION QPEncString(cIn AS STRING) AS STRING
-	THROW NotImplementedException{}
-	//RETURN String.Empty
-
+    if cIn == NULL
+        RETURN NULL
+    endif
+    var sb := StringBuilder{}
+    FOREACH c AS CHAR IN cIn
+        do case
+        case (int) c == 9 .or. (int) c == 32
+            sb:Append(c)
+        case (int) c < 33 .or. c == '='
+            sb:AppendFormat("={0:X2}", (int) c)
+        case (int) c <= 127
+            sb:Append(c)
+        otherwise
+           sb:AppendFormat("={0:X2}", (int) c)
+        endcase
+    NEXT
+    return sb:ToString()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
 FUNCTION RAt(cSearch AS STRING,cTarget AS STRING) AS DWORD

@@ -49,6 +49,9 @@
     <Compile Include="..\XSharp.Core.Tests\Support.prg">
       <Link>Support.prg</Link>
     </Compile>
+    <Compile Include="CryptFunctionsTests.prg" />
+    <Compile Include="GeneralFunctionsTests.prg" />
+    <Compile Include="InternationalFunctionsTests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="OOPTests.prg" />
     <Compile Include="WinDateTest.prg" />

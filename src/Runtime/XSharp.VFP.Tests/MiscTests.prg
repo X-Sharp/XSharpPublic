@@ -264,6 +264,19 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 	        _MClear()
         END METHOD
+
+    	[Fact, Trait("Category", "Database")];
+        METHOD SetMemoWidthTests() AS VOID
+            VAR nOld := (INT)Set(Set.MemoWidth)
+
+            Set(Set.MemoWidth, 100)
+            Assert.Equal(100, (INT)Set(Set.MemoWidth))
+
+            Set(Set.MemoWidth, 50)
+            Assert.Equal(50, (INT)Set(Set.MemoWidth))
+
+            Set(Set.MemoWidth, nOld)
+        END METHOD
 	END CLASS
 
 END NAMESPACE

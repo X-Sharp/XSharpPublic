@@ -7,6 +7,7 @@
 USING System
 USING System.Reflection
 USING System.IO
+USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.VFP
 
@@ -58,14 +59,20 @@ BEGIN NAMESPACE XSharp.VFP
     END CLASS
 
     INTERNAL CLASS HeadlessUIProvider IMPLEMENTS IVfpUIProvider
-
         PUBLIC METHOD ShowMessageBox(cMessage AS STRING, nDialogBoxType AS LONG, cTitleBarText AS STRING, nTimeOut AS LONG) AS LONG
             Console.WriteLine("MESSAGEBOX: " + cTitleBarText + " - " + cMessage)
             RETURN 1
         END METHOD
 
         PUBLIC METHOD SysMetric(nScreenElement AS LONG) AS LONG
-            // There's no useful metrics on console mode
+            IF XSharp.RuntimeState.RunningOnWindows
+                SWITCH nScreenElement
+                    CASE 1 // SYSMETRIC_SCREENWIDTH
+                        RETURN Win32.GetSystemMetrics(0) // SM_CXSCREEN
+                    CASE 2 // SYSMETRIC_SCREENHEIGHT
+                        RETURN Win32.GetSystemMetrics(1) // SM_CYSCREEN
+                END SWITCH
+            ENDIF
             RETURN 0
         END METHOD
 

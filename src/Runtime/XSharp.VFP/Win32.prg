@@ -11,6 +11,9 @@ BEGIN NAMESPACE XSharp.VFP
         [DllImport("kernel32.dll", CharSet := CharSet.Auto,  SetLastError := TRUE)];
         PUBLIC STATIC EXTERN METHOD GetDriveType(lpRootPathName AS STRING) AS DWORD
 
+        [DllImport("user32.dll", CharSet := CharSet.Auto, ExactSpelling := TRUE, SetLastError := TRUE)];
+        PUBLIC STATIC EXTERN METHOD GetSystemMetrics(nIndex AS INT) AS INT
+
     END CLASS
 
 END NAMESPACE

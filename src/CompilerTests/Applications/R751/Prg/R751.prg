@@ -9,6 +9,10 @@ FUNCTION Start() AS VOID
     ? &("b := 42")        
     xAssert(a == "Robert")
     xAssert(b == 42)
+
+    xAssert(Type("nonexistent") == "U")
+    xAssert(VarType(nonexistent) == "U")
+    xAssert(VarType("nonexistent") == "C")
 RETURN
 
 PROC xAssert(l AS LOGIC) 

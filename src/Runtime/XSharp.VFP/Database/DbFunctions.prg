@@ -337,7 +337,20 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
         ENDIF
         aResult := aSource
     ELSE
-        NOP
+        VAR nResRows := ALen(aResult)
+        IF nResRows > 0
+            nColumns := (DWORD) aFields:Count
+            aSource := __FoxArray{nResRows, nColumns}
+            FOR VAR nRow := 1 TO nResRows
+                VAR aRec := aResult[nRow]
+                FOR VAR nCol := 1 TO nColumns
+                    aSource[nRow, nCol] := aRec[nCol]
+                NEXT
+            NEXT
+            aResult := aSource
+        ELSE
+            aResult := __FoxArray{0}
+        ENDIF
     ENDIF
     RETURN aResult
 

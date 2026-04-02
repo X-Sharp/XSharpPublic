@@ -90,21 +90,31 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.ThrowsAny<Exception>( { => ppp ++ })
 
             Assert.True( ccc == "test" )
-            
+
             RELEASE ALL
             LOCAL c AS STRING
             Assert.ThrowsAny<Exception>( { => c := ccc })
-            
+
             ccc := "testing"
             ppp := 100
             RELEASE ALL LIKE "c?c"
             Assert.ThrowsAny<Exception>( { => c := ccc })
-            
+
             Assert.True( ppp == 100 )
 
             RELEASE ALL
             Assert.ThrowsAny<Exception>( { => ppp ++ })
             Assert.ThrowsAny<Exception>( { => c := ccc })
+
+
+        [Fact, Trait("Category", "UIAndWindows")];
+        METHOD SysMetricTests() AS VOID
+            VAR nWidth := SysMetric(1)
+            VAR nHeight := SysMetric(2)
+
+            Assert.True(nWidth > 0, "ScreenWidth should be greater than 0")
+            Assert.True(nHeight > 0, "ScreenHeight should be greater than 0")
+        END METHOD
 
 	END CLASS
 

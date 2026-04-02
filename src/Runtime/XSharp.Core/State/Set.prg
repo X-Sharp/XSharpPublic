@@ -185,7 +185,7 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
             END TRY
 
             // Resolves to absolute path to keep Set.Default and SYS() in sync
-            cTemp := System.Environment.CurrentDirectory
+            cTemp := System.Environment.CurrentDirectory:ToUpperInvariant()
         ENDIF
         cPathSpec := cTemp
     ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan

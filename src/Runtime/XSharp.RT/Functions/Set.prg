@@ -10,8 +10,12 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     LOCAL state AS XSharp.RuntimeState
     LOCAL oOld  := NULL AS OBJECT
     LOCAL nSetting AS XSharp.Set
+    LOCAL cOriginalDefine := "" AS STRING
+
     IF IsString(nDefine)
-        local cDefine := nDefine as STRING
+        LOCAL cDefine := nDefine as STRING
+        cOriginalDefine := cDefine:ToUpperInvariant()
+
         IF ! Enum.TryParse(cDefine, TRUE, OUT nSetting)
             // match start of define ?
             LOCAL found := FALSE AS LOGIC
@@ -45,7 +49,15 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
         CASE Set.Default
             // Special handling, validation on path for FoxPro and this also resets the path array
             IF IsString(newValue)
-                RETURN SetDefault(newValue)
+                LOCAL cOld := SetDefault(newValue) AS STRING
+                IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro .AND. !String.IsNullOrEmpty(cOld)
+                    cOld := cOld:ToUpperInvariant()
+                    // If user called SET("DEFAULT", "c:\..."), we just return previous value drive letter
+                    IF cOriginalDefine == "DEFAULT" .AND. cOld:Length >= 2 .AND. cOld[1] == c':'
+                        cOld := cOld:Substring(0, 2)
+                    ENDIF
+                ENDIF
+                RETURN cOld
             ENDIF
         CASE Set.Path
             // Special handling, clear path array
@@ -162,6 +174,15 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     ENDIF
 
     IF RuntimeState.Dialect == XSharpDialect.FoxPro
+        IF nSetting == Set.Default .AND. oOld != NULL_OBJECT .AND. oOld IS STRING VAR cOldStr
+            cOldStr := cOldStr:ToUpperInvariant()
+            IF cOriginalDefine == "DEFAULT" .AND. cOldStr:Length >= 2 .AND. cOldStr[1] == c':'
+                oOld := cOldStr:Substring(0, 2)
+            ELSE
+                oOld := cOldStr
+            ENDIF
+        ENDIF
+
         IF nSetting == Set.DecimalSep .OR. nSetting == Set.ThousandSep
             IF oOld != NULL_OBJECT
                 TRY

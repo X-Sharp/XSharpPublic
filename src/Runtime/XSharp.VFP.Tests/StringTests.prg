@@ -23,8 +23,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("C:\Folder", JustPath("C:\Folder\test.txt") )
             Assert.Equal("test.txt", JustFName("C:\Folder\test.txt") )
             Assert.Equal("test", JustStem("C:\Folder\test.txt") )
-            Assert.Equal("C:\",Addbs("C:"))
-            Assert.Equal("C:\test\",Addbs("C:\test"))
+            Assert.Equal("C:\",AddBs("C:"))
+            Assert.Equal("C:\test\",AddBs("C:\test"))
 
 		[Fact, Trait("Category", "String")];
         METHOD RatFunctionTests() AS VOID
@@ -246,14 +246,14 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         [Fact, Trait("Category", "StringFunctions")];
         METHOD TestNormalize() AS VOID
-            Assert.Equal("GROSSESCHRIFT", NORMALIZE("GroSSescHrifT"))
+            Assert.Equal("GROSSESCHRIFT", Normalize("GroSSescHrifT"))
             VAR cExpr := "UPPE(customer->name) = 'John Doe' AND NOT empty(customer->id)"
             VAR cExpected := "UPPER(CUSTOMER.NAME)='John Doe'.AND..NOT.EMPTY(CUSTOMER.ID)"
 
             // NOTE: The replacement for UPPE to UPPER depends on a keyword parser
             // this implementation handles the Upper() and -> functions which are
             // the most critical.
-            VAR cResult := NORMALIZE(cExpr)
+            VAR cResult := Normalize(cExpr)
 
             Assert.Contains("CUSTOMER.NAME", cResult)
             Assert.Contains(".AND.", cResult)
@@ -275,6 +275,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
                 Assert.Equal(",", SET("POINT") )
                 Assert.Equal(".", SET("SEPARATOR") )
+                
+                Assert.Equal("123,456", Str(123.456, 10,3):Trim() )
+                SET("POINT","_")
+                Assert.Equal("123_456", Str(123.456, 10,3):Trim() )
 
                 Set(Set.Point, dwOldPoint)
                 Set(Set.Separator, dwOldSep)

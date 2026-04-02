@@ -161,9 +161,12 @@ PUBLIC CLASS XSharp.MemoHelpers
 
 			ENDDO
 
-		ENDIF
-
-		RETURN (DWORD) ( nIndex + 1 )
+        ENDIF
+        // when we did not find enough lines, we return 0
+        IF nLineNum > 0
+            return 0
+        endif
+		RETURN (DWORD) ( nIndex )
 
     /// <exclude/>
 	STATIC METHOD IsCrLf( cMemo AS STRING, nPos AS INT, nCrLf REF INT ) AS LOGIC
@@ -242,11 +245,14 @@ PUBLIC CLASS XSharp.MemoHelpers
 		LOCAL nCrLf := 0 AS INT
 		LOCAL cRet AS STRING
 		LOCAL nIndex AS INT
+        IF cMemo == NULL .or. cMemo:Length == 0
+            dOffset := 0
+            RETURN ""
+        ENDIF
 
 		IF ! lJustCheck
 			oBuilder := System.Text.StringBuilder{ (INT) nLineLen }
 		END IF
-
 		IF nLineNum > 0 .AND. nLineLen > 0 .AND. nLineLen <= MAX_WIDTH
 
 			IF nTabSize > nLineLen
@@ -286,16 +292,18 @@ PUBLIC CLASS XSharp.MemoHelpers
 							nSrc ++
 							nDes ++
 					END CASE
-				ENDDO
+                ENDDO
+                dOffset += 1
+            ELSE
+                dOffset := 0
+                if !lJustCheck
+                    oBuilder:Clear()
+                endif
 			ENDIF
 		ENDIF
-
 		IF lJustCheck
 			cRet := NULL
 		ELSE
-			IF oBuilder:Length < nLineLen
-				oBuilder:Append( ' ',  (INT) nLineLen - oBuilder:Length )
-			ENDIF
 			cRet := oBuilder:ToString()
 		ENDIF
 
@@ -322,6 +330,9 @@ FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset AS DWORD) AS STRING
 FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 	LOCAL cResult AS STRING
     LOCAL iOffSet := (INT) ptrN AS INT
+    IF (cString == NULL) .OR. cString:Length == 0
+        RETURN ""
+    ENDIF
 	IF ptrN < cString:Length
 		cResult := Trim(MemoHelpers.MLine( cString , (INT) dwLine , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
 	ELSE
@@ -336,7 +347,7 @@ FUNCTION MemoLine(cString AS STRING, nLineLength := 0xFFFFFFFF AS DWORD, nLineNu
     nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
     LOCAL dPos := 0 AS INT
     LOCAL iLineLength as LONG
-    IF nLineLength == 0xFFFFFFFF
+  IF nLineLength == 0xFFFFFFFF
         iLineLength := MemoHelpers.STD_MEMO_WIDTH
     ELSE
         iLineLength := (INT) nLineLength

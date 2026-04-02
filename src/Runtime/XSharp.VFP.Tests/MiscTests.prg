@@ -242,6 +242,25 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         END METHOD
 
         [Fact];
+        METHOD VfpSetDefaultReninemenTest() AS VOID
+            VAR cOldDir := GetDefault()
+
+            RuntimeState.Dialect := XSharpDialect.FoxPro
+
+            SetDefault("c:\")
+            SetDefault("C:\")
+            Assert.Equal("C:\", GetDefault())
+
+            VAR drive := XSharp.RT.Functions.Set("DEFAULT", NIL)
+            Assert.Equal("C:", (STRING)drive)
+
+            VAR dir := XSharp.RT.Functions.Set("DIRECTORY", NIL)
+            Assert.Equal("C:\", (STRING)dir)
+
+            SetDefault(cOldDir)
+        END METHOD
+
+        [Fact];
         METHOD ReleaseAllLikeTest() AS VOID
 	        MemVarPut("cVar1", "Test 1")
 	        MemVarPut("cVar2", "Test 2")

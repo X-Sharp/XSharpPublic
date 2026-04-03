@@ -1,4 +1,4 @@
-[General]
+﻿[General]
 PROJECT = Runtime
 IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
@@ -5187,7 +5187,7 @@ IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
 EmitAssemblyProperties = 0
 EmitNetVersion = 0
-IncludePath = 
+IncludePath = %ProjectPath%\Common
 StdDefsFile = 
 AppToRun = 
 SignAssembly = 1
@@ -5565,7 +5565,7 @@ Modified = 0
 [XSharp.VFP.UI Native Resources]
 [XSharp.VFP.UI License files]
 [XSharp.VFP.UI General Options]
-Switches=
+Switches=/define:RUNTIME;DYNAMIC_PROPERTIES
 IgnoreWarnings=
 ZeroArrays=0
 CaseSensitive=0

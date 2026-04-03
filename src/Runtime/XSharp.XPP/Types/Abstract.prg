@@ -169,7 +169,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
                 var t := self:GetType()
                 do while t != typeof(System.Object)
                     var overloads := OOPHelpers.FindOverloads(t, cMethod, false):ToArray()
-                    var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
+                    var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(null, overloads, cMethod, uArgs)
                     if mi != null
                         if OOPHelpers.SendHelper(null, mi, uArgs, out var result)
                             return result

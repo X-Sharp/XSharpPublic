@@ -214,7 +214,15 @@ internal static class OOPHelpers
 
         return oMI
 
-    static method CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
+    static method CompareMethods(t as System.Type, m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
+        if (m1:DeclaringType != m2:DeclaringType)
+            if m1:DeclaringType == t .and. m1:IsHideBySig
+                return 1
+            endif
+            if m2:DeclaringType == t .and. m2:IsHideBySig
+                return 2
+            endif
+        endif
         var p1 := m1:GetParameters()
         var p2 := m2:GetParameters()
         var n1 := CountNonDefaultParameters(p1)
@@ -307,7 +315,7 @@ internal static class OOPHelpers
         next
         return pars:Count
 
-    static method FindBestOverLoad<T>(overloads as IList<T>, cFunction as string, uArgs as usual[]) as T where T is MethodBase
+    static method FindBestOverLoad<T>(t as System.Type, overloads as IList<T>, cFunction as string, uArgs as usual[]) as T where T is MethodBase
         if overloads:Count <= 1
             return overloads:FirstOrDefault()
         endif
@@ -316,7 +324,10 @@ internal static class OOPHelpers
         // first look for methods with the same ! of parametes
         foreach var m in overloads
             var pars := m:GetParameters()
-            if pars:Length == uArgs:Length
+            var isClipper := m:IsDefined(typeof(ClipperCallingConventionAttribute),false)
+            if isClipper
+                found:Add(m)
+            elseif pars:Length == uArgs:Length
                 found:Add(m)
             elseif pars:Length > 0
                 // check to see if there are default parameters for the method
@@ -336,7 +347,7 @@ internal static class OOPHelpers
         foreach var m1 in filtered
             foreach var m2 in filtered
                 if (m2 != m1)
-                    var result := OOPHelpers.CompareMethods(m1, m2, uArgs)
+                    var result := OOPHelpers.CompareMethods(t, m1, m2, uArgs)
                     if result == 1
                         if ! found:Contains(m1)
                             found:Add(m1)
@@ -1137,7 +1148,7 @@ internal static class OOPHelpers
             try
                 if list:Count > 0
                     var mis := list:ToArray()
-                    mi := OOPHelpers.FindBestOverLoad(mis, cMethod,uArgs)
+                    mi := OOPHelpers.FindBestOverLoad(t, mis, cMethod,uArgs)
                 endif
             catch as Error
                 throw
@@ -1559,7 +1570,7 @@ function CreateInstance(symClassName,InitArgList) as object clipper
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
 function _CreateInstance(type as System.Type, InitArgList as usual[]) as object
     var constructors := type:GetConstructors()
-    local ctor := OOPHelpers.FindBestOverLoad(constructors, __function__ ,InitArgList) as ConstructorInfo
+    local ctor := OOPHelpers.FindBestOverLoad(type, constructors, __function__ ,InitArgList) as ConstructorInfo
     if ctor == null
         var oError := Error.VOError( EG_NOMETHOD, __function__, "Constructor", 0 , null)
         oError:Description := "No CONSTRUCTOR defined for type "+ type:FullName
@@ -2087,7 +2098,7 @@ function _CallClipFunc(symFunction as string, uArgs params usual[]) as usual
         elseif aFuncs:Length == 0
             return nil
         else
-            oMI  := OOPHelpers.FindBestOverLoad(aFuncs, symFunction, uArgs)
+            oMI  := OOPHelpers.FindBestOverLoad(null, aFuncs, symFunction, uArgs)
             if oMI != null
                 if OOPHelpers.SendHelper(null, oMI, uArgs, out var result)
                     return result

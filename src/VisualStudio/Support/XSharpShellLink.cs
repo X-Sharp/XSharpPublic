@@ -21,9 +21,10 @@ using XSharpModel;
 
 using static XSharp.Parser.VsParser;
 
+
 using TM = Microsoft.VisualStudio.TextManager.Interop;
 
-namespace XSharp.LanguageService
+namespace XSharp.Support
 {
     internal class XSharpShellLink : IXVsShellLink
     {
@@ -35,6 +36,9 @@ namespace XSharp.LanguageService
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 Logger.Information("Initialize XSharpShellLink");
+
+
+
 #if LIBRARYMANAGER
 
                 VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
@@ -44,9 +48,48 @@ namespace XSharp.LanguageService
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
 
+                VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
+                //VS.Events.ShellEvents.EnvironmentColorChanged   += ShellEvents_EnvironmentColorChanged;
+                //VS.Events.ShellEvents.ShellAvailable += ShellEvents_ShellAvailable;
+
+
+                VS.Events.BuildEvents.SolutionConfigurationChanged += BuildEvents_SolutionConfigurationChanged;
+                VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged; ;
+                VS.Events.BuildEvents.ProjectBuildDone += BuildEvents_ProjectBuildDone;
+                VS.Events.BuildEvents.ProjectBuildStarted += BuildEvents_ProjectBuildStarted;
+                VS.Events.BuildEvents.ProjectCleanDone += BuildEvents_ProjectCleanDone;
+                VS.Events.BuildEvents.ProjectCleanStarted += BuildEvents_ProjectCleanStarted;
+
+
+                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
+                VS.Events.SolutionEvents.OnAfterMergeSolution += SolutionEvents_OnAfterMergeSolution;
+
+                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+                VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+                VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
+
+
+                VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
+                VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
+                VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
+                VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
+                VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
+
+                //VS.Events.SolutionEvents.OnAfterOpenFolder += SolutionEvents_OnAfterOpenFolder;
+                //VS.Events.SolutionEvents.OnBeforeCloseFolder += SolutionEvents_OnBeforeCloseFolder;
+
+                //VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
+                //VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+                //VS.Events.DocumentEvents.Saved += DocumentEvents_Saved;
+                //VS.Events.DocumentEvents.BeforeDocumentWindowShow += DocumentEvents_BeforeDocumentWindowShow;
+                //VS.Events.DocumentEvents.AfterDocumentWindowHide += DocumentEvents_AfterDocumentWindowHide;
+
 
                 Logger.Information("Initialized XSharpShellLink");
             });
+
 
         }
 #if LIBRARYMANAGER
@@ -219,22 +262,191 @@ namespace XSharp.LanguageService
 
         #endregion
 
+        #region Solution Events
+        string solutionName = "";
+
+        private void SolutionEvents_OnAfterCloseSolution()
+        {
+            XSolution.IsClosing = false;
+            Logger.SingleLine();
+            Logger.Information("Closed solution: " + solutionName);
+            Logger.SingleLine();
+            solutionName = "";
+        }
+        private void SolutionEvents_OnAfterOpenSolution(Solution solution)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
+            Logger.SingleLine();
+            solutionName = solution?.FullPath;
+            XSolution.AfterOpen();
+        }
+        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
+        {
+            Logger.SingleLine();
+            Logger.Information("Background Solution Load Complete");
+        }
+        private void SolutionEvents_OnBeforeCloseSolution()
+        {
+            Logger.SingleLine();
+            Logger.Information("Closing solution: " + solutionName);
+            Logger.SingleLine();
+            XSolution.IsClosing = true;
+            XSolution.Close();
+        }
+
+
+        private void SolutionEvents_OnAfterMergeSolution()
+        {
+            Logger.SingleLine();
+            Logger.Information("After Merge solution");
+        }
+        private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opening Solution: " + solutionFileName ?? "");
+            Logger.SingleLine();
+            solutionName = solutionFileName;
+            if (!string.IsNullOrEmpty(solutionName) && File.Exists(solutionName))
+            {
+                XSolution.Open(solutionName);
+            }
+        }
+
+        #endregion
+
+        #region BuildEvents
+        private void BuildEvents_ProjectCleanDone(ProjectBuildDoneEventArgs args)
+        {
+            Logger.SingleLine();
+            Logger.Information("Project Clean done: " + args.Project.Name + " " + args.IsSuccessful); ;
+        }
+
+        private void BuildEvents_ProjectBuildStarted(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Project Build Started: " + project.Name);
+        }
+
+        private void BuildEvents_ProjectBuildDone(ProjectBuildDoneEventArgs args)
+        {
+            Logger.SingleLine();
+            Logger.Information("Project Build Done: " + args.Project.Name + " " + args.IsSuccessful);
+        }
+
+        private void BuildEvents_ProjectConfigurationChanged(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Project Configuration changed: " + project.Name);
+        }
+
+        private void BuildEvents_SolutionConfigurationChanged()
+        {
+            Logger.SingleLine();
+            Logger.Information("Solution Configuration changed");
+        }
+        private void BuildEvents_ProjectCleanStarted(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Project Clean started: " + project.Name);
+        }
+
+        private void BuildEvents_ProjectCleanDone1(ProjectBuildDoneEventArgs args)
+        {
+            Logger.SingleLine();
+            Logger.Information("Project Build done: " + args.Project.Name + " " + args.IsSuccessful);
+        }
+
+        #endregion
+        #region ProjectEvents
+        private void SolutionEvents_OnAfterOpenProject(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opened project: " + project.FullPath ?? "");
+            Logger.SingleLine();
+        }
+        private void SolutionEvents_OnAfterLoadProject(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Loaded project: " + project.FullPath ?? "");
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnBeforeUnloadProject(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Unloading project: " + project.FullPath ?? "");
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnBeforeCloseProject(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Closing project: " + project.FullPath ?? "");
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnAfterRenameProject(Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Renamed project: " + project?.FullPath ?? "");
+            Logger.SingleLine();
+        }
+        private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
+        {
+            Logger.SingleLine();
+            var ext = Path.GetExtension(projectFileName);
+            if (!string.IsNullOrEmpty(ext))
+                Logger.Information("Opening project: " + projectFileName ?? "");
+            else
+                Logger.Information("Opening folder: " + projectFileName ?? "");
+            Logger.SingleLine();
+        }
+
+
+        #endregion
+
         #region BuildEvents
         public bool IsVsBuilding => building;
+
         private void BuildEvents_SolutionBuildCancelled()
         {
+            Logger.Information("Solution Build Cancelled");
             building = false;
         }
         bool building;
 
         private void BuildEvents_SolutionBuildDone(bool result)
         {
+            Logger.Information($"Solution Build Done, result {result}");
             building = false;
         }
 
         private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
         {
+            Logger.Information("Solution Build Started");
             building = true;
+        }
+        #endregion
+
+        #region Shell Events
+        private void ShellEvents_ShutdownStarted()
+        {
+            XSolution.IsClosing = true;
+            XSolution.IsShuttingDown = true;
+            XSolution.Close();
+
+            Logger.SingleLine();
+            Logger.Information("Shutdown VS");
+            Logger.SingleLine();
+        }
+        #endregion
+
+
+        #region Document Events
+        private void DocumentEvents_Opened(string doc)
+        {
+            Logger.Information("Opened document: " + doc ?? "");
         }
         #endregion
 

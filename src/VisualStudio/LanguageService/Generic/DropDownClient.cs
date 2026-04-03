@@ -15,6 +15,7 @@ using File = System.IO.File;
 using MVP = Microsoft.VisualStudio.Package;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal class DropdownSettings
@@ -704,7 +705,7 @@ namespace XSharp.LanguageService
         private void reloadCombos(int nLine)
         {
             int temp = _selectedTypeIndex;
-            
+
             if (nLine == -1 && _activeView != null)
             {
                 nLine = _activeView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;

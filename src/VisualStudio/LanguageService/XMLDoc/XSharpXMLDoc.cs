@@ -16,7 +16,7 @@ using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
 using System.Text;
 using System.Xml;
-using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     // No need to do a complicated lookup for the reference assembly names
@@ -33,6 +33,11 @@ namespace XSharp.LanguageService
             _XMLMemberIndexService = null;
             coreLoc = "";
             coreIndex = null;
+            VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+        }
+        private static void SolutionEvents_OnAfterCloseSolution()
+        {
+            XSharpXMLDocTools.Close();
         }
 
         static void init()

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     /// <summary>

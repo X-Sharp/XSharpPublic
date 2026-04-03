@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using XSharp.Settings;
-
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
 
@@ -44,7 +44,7 @@ namespace XSharp.LanguageService
     {
         public IdentifierTag() : base(ColorizerConstants.HighLightIdentifierFormatDefinition)
         {
-            
+
         }
     }
     internal class IdentifierMatchingTagger : AbstractMatchingTagger
@@ -87,7 +87,7 @@ namespace XSharp.LanguageService
             if (point.AtEnd())
                 yield break;
 
-            // Verify that the document and spans have the right version 
+            // Verify that the document and spans have the right version
             if (point.Snapshot.Version != _document.SnapShot.Version || spans[0].Snapshot != point.Snapshot)
                 yield break;
 
@@ -97,7 +97,7 @@ namespace XSharp.LanguageService
                 yield break;
 
 
-            int currentLine = point.GetContainingLine().LineNumber; 
+            int currentLine = point.GetContainingLine().LineNumber;
             IList<ITagSpan<TextMarkerTag>> result = new List<ITagSpan<TextMarkerTag>>();
             try
             {
@@ -116,7 +116,7 @@ namespace XSharp.LanguageService
                         if (matchingTokens.Count == 1)
                             yield break;
                         var snapshot = _buffer.CurrentSnapshot;
-                        
+
                         foreach (var token2 in matchingTokens)
                         {
                             // Only match when text is identical. So do NOT ignore case

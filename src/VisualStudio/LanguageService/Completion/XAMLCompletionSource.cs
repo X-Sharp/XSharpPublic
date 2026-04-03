@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Shell;
 using XSharp.LanguageService;
 using XSharp.Settings;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using XSharp.Support;
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -92,7 +93,7 @@ namespace XSharpLanguage
                 // The Completion list we are building
                 XCompletionList compList = new XCompletionList(_file);
                 ///
-                /// 
+                ///
                 //compList.Add(new XSCompletion("XSDummy", "XSDummy", "XSDummy Description", null, null, Kind.Class));
                 ///
                 // Sort in alphabetical order

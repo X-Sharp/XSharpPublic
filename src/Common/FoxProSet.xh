@@ -69,7 +69,7 @@
 #command SET SAFETY <x:ON,OFF,&>          =>  Set(Set.Safety, <(x)> )
 #command SET SQLBUFFERING <x:ON,OFF,&>    =>  Set( Set.SqlBuffering, <(x)> )
 #command SET VARCHARMAPPING<x:ON,OFF,&>   =>  Set( Set.VarCharMapping, <(x)> )
-#command SET MEMOWIDTH TO <x>             =>  Set(Set.MemoWidth, <(x))
+#command SET MEMOWIDTH TO <x>             =>  Set(Set.MemoWidth, <x>)
 #command SET MEMOWIDTH TO                 =>  Set(Set.MemoWidth, 50)
 
 ///////////////////////////////////////////////////////////////////////////////

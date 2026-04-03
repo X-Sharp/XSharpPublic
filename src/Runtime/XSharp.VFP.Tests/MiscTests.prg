@@ -17,7 +17,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS MiscTests
 		STATIC CONSTRUCTOR
-        XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+        END CONSTRUCTOR
 
 		[Fact, Trait("Category", "String")];
 		METHOD Various() AS VOID
@@ -221,43 +222,43 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         #pragma options ("undeclared", default)
 
         [Fact];
-        METHOD TestSetDefaultTO() AS VOID
-            VAR cOldDir := Environment.CurrentDirectory
+        METHOD TestSetDefaultTo() AS VOID
+            VAR cOldDir := SET("DEFAULT")
 
             SET DEFAULT TO "C"
-            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+            Assert.True(SET("DEFAULT"):StartsWith("C:", StringComparison.OrdinalIgnoreCase))
 
             SET DEFAULT TO "C:"
-            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+            Assert.True(SET("DEFAULT"):StartsWith("C:", StringComparison.OrdinalIgnoreCase))
 
             VAR cNewDir := Path.GetTempPath()
             SET DEFAULT TO (cNewDir)
-            Assert.Equal(cNewDir:TrimEnd(c'\\'), SET("DEFAULT"):TrimEnd(c'\\'))
+            Assert.Equal(cNewDir:TrimEnd(c'\\'):ToUpper(), SET("DIRECTORY"):TrimEnd(c'\\'))
 
             SET DEFAULT TO ".."
-            Assert.True(SET("DEFAULT") != cNewDir:TrimEnd(c'\\'))
+            Assert.True(SET("DIRECTORY") != cNewDir:TrimEnd(c'\\'))
 
             SET DEFAULT TO (cOldDir)
 
         END METHOD
 
         [Fact];
-        METHOD VfpSetDefaultReninemenTest() AS VOID
-            VAR cOldDir := GetDefault()
+        METHOD VfpSetDefaultRefinementTest() AS VOID
 
-            RuntimeState.Dialect := XSharpDialect.FoxPro
+            VAR cOldDir := SET("DEFAULT")
 
-            SetDefault("c:\")
-            SetDefault("C:\")
-            Assert.Equal("C:\", GetDefault())
+            SET DEFAULT TO "c:\"
+            SET DEFAULT TO "C:\"
 
-            VAR drive := XSharp.RT.Functions.Set("DEFAULT", NIL)
+            Assert.Equal("C:\", SET("DIRECTORY"))
+
+            VAR drive := SET("DEFAULT")
             Assert.Equal("C:", (STRING)drive)
 
-            VAR dir := XSharp.RT.Functions.Set("DIRECTORY", NIL)
+            VAR dir := SET("DIRECTORY")
             Assert.Equal("C:\", (STRING)dir)
 
-            SetDefault(cOldDir)
+            SET DEFAULT TO &cOldDir
         END METHOD
 
         [Fact];

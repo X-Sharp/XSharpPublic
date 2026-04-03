@@ -38,8 +38,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PUBLIC METHOD SysMetric(nScreenElement AS LONG) AS LONG
             SWITCH nScreenElement
-            CASE 1; RETURN SystemInformation.PrimaryMonitorMaximizedWindowSize.Width
-            CASE 2; RETURN SystemInformation.PrimaryMonitorMaximizedWindowSize.Height
+            CASE 1 // SYSMETRIC_SCREENWIDTH
+                LOCAL hDC := VfpWin32UI.GetDC(IntPtr.Zero) AS IntPtr
+                LOCAL nRes := VfpWin32UI.GetDeviceCaps(hDC, VfpWin32UI.DESKTOP_HORZRES) AS LONG
+                VfpWin32UI.ReleaseDC(IntPtr.Zero, hDC)
+                RETURN nRes
+            CASE 2 // SYSMETRIC_SCREENHEIGHT
+                LOCAL hDC := VfpWin32UI.GetDC(IntPtr.Zero) AS IntPtr
+                LOCAL nRes := VfpWin32UI.GetDeviceCaps(hDC, VfpWin32UI.DESKTOP_VERTRES) AS LONG
+                VfpWin32UI.ReleaseDC(IntPtr.Zero, hDC)
+                RETURN nRes
             CASE 3; RETURN SystemInformation.MinimizedWindowSpacingSize.Width
             CASE 4; RETURN SystemInformation.MinimizedWindowSpacingSize.Height
             CASE 5; RETURN SystemInformation.VerticalScrollBarWidth

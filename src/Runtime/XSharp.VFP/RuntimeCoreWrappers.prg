@@ -65,16 +65,13 @@ FUNCTION Version(nType := 0 AS INT) AS USUAL
 FUNCTION Seconds() AS REAL8
     RETURN XSharp.Core.Functions.Seconds()
 
-// -------------------------------------------------------------
-// TODO(irwin): functions to check
-// -------------------------------------------------------------
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fchsize/*" />
 [FoxProFunction("FCHSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FChSize(nFileHandle AS INT64, nNewSize AS INT64) AS INT64
-    IF ! XSharp.Core.Functions.FChSize(nFileHandle, nNewSize)
+    IF ! XSharp.Core.Functions.FChSize((IntPtr) nFileHandle, nNewSize)
         RETURN -1
     ENDIF
-    RETURN XSharp.Core.Functions.FSize(nFileHandle)
+    RETURN XSharp.Core.Functions.FSize((IntPtr) nFileHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fclose/*" />
 [FoxProFunction("FCLOSE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];

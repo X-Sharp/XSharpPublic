@@ -275,7 +275,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
                 Assert.Equal(",", SET("POINT") )
                 Assert.Equal(".", SET("SEPARATOR") )
-                
+
                 Assert.Equal("123,456", Str(123.456, 10,3):Trim() )
                 SET("POINT","_")
                 Assert.Equal("123_456", Str(123.456, 10,3):Trim() )
@@ -286,6 +286,35 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 RuntimeState.Dialect := eOldDialect
             END TRY
         END METHOD
+
+        [Fact];
+        METHOD BinToC_CToBin_Test() AS VOID
+            LOCAL nVal AS INT
+            nVal := 123456
+            LOCAL cBin AS STRING
+            cBin := BinToC(nVal, "4RS")
+            Assert.Equal(4, cBin:Length)
+
+            LOCAL nConverted AS USUAL
+            nConverted := CToBin(cBin, "4RS")
+            Assert.Equal((INT)nConverted, nVal)
+
+            LOCAL nDec AS CURRENCY
+            nDec := 1234.56m
+            cBin := BinToC(nDec, 8)
+            Assert.Equal(8, cBin:Length)
+
+            nConverted := CToBin(cBin, "Y")
+            Assert.Equal((CURRENCY)nConverted, nDec)
+
+            LOCAL nDouble AS REAL8
+            nDouble := -987.654
+            cBin := BinToC(nDouble, "B")
+            Assert.Equal(8, cBin:Length)
+
+            nConverted := CToBin(cBin, "B")
+            Assert.Equal((REAL8)nConverted, nDouble)
+        RETURN
 
 	END CLASS
 

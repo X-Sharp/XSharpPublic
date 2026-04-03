@@ -87,7 +87,6 @@
     <Compile Include="DateFunctions.prg" />
     <Compile Include="ToDo-D.prg" />
     <Compile Include="ToDo-C.prg" />
-    <Compile Include="ToDo-B.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="ToDo-A.prg" />

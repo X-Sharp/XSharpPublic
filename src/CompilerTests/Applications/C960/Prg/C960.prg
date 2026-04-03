@@ -4,14 +4,14 @@
 #pragma options (vo5 , on) // CLIPPER calling convention
 PROCEDURE Main()
     LOCAL o
-    
+
     o := Example():new(5)
     ? o:ToString()
-    
-    xAssert( o:ToString() == 5 )
-    
+
+    xAssert( o:ToString() == "5" )
+
     RETURN
-    
+
 CLASS Example
 EXPORTED:
     INLINE METHOD Init(b)

@@ -9,7 +9,6 @@ PROCEDURE main()
     Child():exportedField := 2
     ? Child():exportedField
     xAssert( Child():exportedField == 2)
-    wait
 RETURN
 
 

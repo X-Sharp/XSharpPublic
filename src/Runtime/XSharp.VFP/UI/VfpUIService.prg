@@ -18,6 +18,9 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD GetColor(nDefaultColorNumber AS USUAL) AS INT
         METHOD GetFont(cFontName AS USUAL, nFontSize AS USUAL, cFontStyle AS USUAL, nFontCharSet AS USUAL) AS STRING
         METHOD GetPrinters(nValue AS INT) AS ARRAY
+        METHOD GetDir(cDirectory AS STRING, cText AS STRING, cCaption AS STRING, nFlags AS LONG, lRootOnly AS LOGIC) AS STRING
+        METHOD GetFile(cFileExtensions AS STRING, cText AS STRING, cOpenButtonCaption AS STRING, nButtonType AS LONG, cTitleBarCaption AS STRING) AS STRING
+        METHOD GetPict(cFileExtensions AS STRING, cFileNameCaption AS STRING, cOpenButtonCaption AS STRING) AS STRING
     END INTERFACE
 
     PUBLIC STATIC CLASS VfpUIService
@@ -30,6 +33,9 @@ BEGIN NAMESPACE XSharp.VFP
                 ENDIF
                 RETURN _provider
             END GET
+            SET
+                _provider := VALUE
+            END SET
         END PROPERTY
 
         STATIC PRIVATE METHOD LoadProvider() AS VOID
@@ -58,7 +64,7 @@ BEGIN NAMESPACE XSharp.VFP
         END METHOD
     END CLASS
 
-    INTERNAL CLASS HeadlessUIProvider IMPLEMENTS IVfpUIProvider
+    PUBLIC CLASS HeadlessUIProvider IMPLEMENTS IVfpUIProvider
         PUBLIC METHOD ShowMessageBox(cMessage AS STRING, nDialogBoxType AS LONG, cTitleBarText AS STRING, nTimeOut AS LONG) AS LONG
             Console.WriteLine("MESSAGEBOX: " + cTitleBarText + " - " + cMessage)
             RETURN 1
@@ -130,6 +136,19 @@ BEGIN NAMESPACE XSharp.VFP
         PUBLIC METHOD GetPrinters(nValue AS INT) AS ARRAY
             RETURN {}
         END METHOD
+
+        METHOD GetDir(cDirectory AS STRING, cText AS STRING, cCaption AS STRING, nFlags AS LONG, lRootOnly AS LOGIC) AS STRING
+            RETURN ""
+        END METHOD
+
+        METHOD GetFile(cFileExtensions AS STRING, cText AS STRING, cOpenButtonCaption AS STRING, nButtonType AS LONG, cTitleBarCaption AS STRING) AS STRING
+            RETURN ""
+        END METHOD
+
+        METHOD GetPict(cFileExtensions AS STRING, cFileNameCaption AS STRING, cOpenButtonCaption AS STRING) AS STRING
+            RETURN ""
+        END METHOD
+
     END CLASS
 
 END NAMESPACE

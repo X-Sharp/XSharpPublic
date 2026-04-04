@@ -11,6 +11,8 @@ USING System.Drawing.Printing
 USING System.Windows.Forms
 USING Microsoft.Win32
 USING System.Reflection
+USING System.Text
+USING System.IO
 USING XSharp.VFP
 
 BEGIN NAMESPACE XSharp.VFP.UI
@@ -19,7 +21,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
     /// This class will be instantiated via Reflection from XSharp.VFP.dll
     /// </summary>
     PUBLIC CLASS VfpUIProvider IMPLEMENTS IVfpUIProvider
-
+        #region (Sysmetric, MessageBox, etc)
         PUBLIC METHOD ShowMessageBox(cMessage AS STRING, nDialogBoxType AS LONG, cTitleBarText AS STRING, nTimeOut AS LONG) AS LONG
             LOCAL nButton AS MessageBoxButtons
             LOCAL nIcon AS MessageBoxIcon
@@ -257,7 +259,135 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
 
             RETURN {}
-        END METHO
+        END METHOD
+        #endregion
+
+        #region GET* Dialogs
+        PUBLIC METHOD GetDir(cDirectory AS STRING, cText AS STRING, cCaption AS STRING, nFlags AS LONG, lRootOnly AS LOGIC) AS STRING
+            VAR oDlg := FolderBrowserDialog{}
+
+            IF !String.IsNullOrEmpty(cText)
+                oDlg:Description := cText
+            ENDIF
+
+            IF !String.IsNullOrEmpty(cDirectory)
+                VAR cFullPath := Path.GetFullPath(cDirectory)
+                IF Directory.Exists(cFullPath)
+                    oDlg:SelectedPath := cFullPath
+                    IF lRootOnly
+                        oDlg:RootFolder := Environment.SpecialFolder.MyComputer
+                    ENDIF
+                ENDIF
+            ENDIF
+
+            IF oDlg:ShowDialog() == DialogResult.OK
+                VAR cResult := oDlg:SelectedPath
+                IF !cResult:EndsWith(Path.DirectorySeparatorChar:ToString())
+                    cResult += Path.DirectorySeparatorChar:ToString()
+                ENDIF
+                RETURN cResult
+            ENDIF
+
+            RETURN ""
+        END METHOD
+
+        PUBLIC METHOD GetFile(cFileExtensions AS STRING, cText AS STRING, cOpenButtonCaption AS STRING, nButtonType AS LONG, cTitleBarCaption AS STRING) AS STRING
+            VAR oDlg := OpenFileDialog{}
+
+            IF !String.IsNullOrEmpty(cTitleBarCaption)
+                oDlg:Title := cTitleBarCaption
+            ELSEIF !String.IsNullOrEmpty(cText)
+                oDlg:Title := cText
+            ENDIF
+
+            oDlg:Filter := SELF:ParseVfpFilter(cFileExtensions, FALSE)
+            oDlg:CheckFileExists := TRUE
+
+            IF oDlg:ShowDialog() == DialogResult.OK
+                RETURN oDlg:FileName
+            ENDIF
+
+            RETURN ""
+        END METHOD
+
+        PUBLIC METHOD GetPict(cFileExtensions AS STRING, cFileNameCaption AS STRING, cOpenButtonCaption AS STRING) AS STRING
+            VAR oDlg := OpenFileDialog{}
+
+            oDlg:Title := IIF(String.IsNullOrEmpty(cFileNameCaption), "Open Picture", cFileNameCaption)
+            oDlg:Filter := SELF:ParseVfpFilter(cFileExtensions, TRUE)
+            oDlg:CheckFileExists := TRUE
+
+            IF oDlg:ShowDialog() == DialogResult.OK
+                RETURN oDlg:FileName
+            ENDIF
+
+            RETURN ""
+        END METHOD
+        #endregion
+
+        #region Private Helper: Filter Parser
+        PRIVATE METHOD ParseVfpFilter(cVfpFilter AS STRING, lIsPicture AS LOGIC) AS STRING
+            IF String.IsNullOrWhiteSpace(cVfpFilter)
+                IF lIsPicture
+                    RETURN "All Pictures|*.bmp;*.dib;*.jpg;*.jpeg;*.jpe;*.jfif;*.gif;*.png;*.ico;*.cur;*.ani;*.tif;*.tiff;*.emf|" + ;
+                           "Bitmaps (*.bmp;*.dib)|*.bmp;*.dib|" + ;
+                           "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|" + ;
+                           "GIF (*.gif)|*.gif|" + ;
+                           "PNG (*.png)|*.png|" + ;
+                           "Icons/Cursors (*.ico;*.cur;*.ani)|*.ico;*.cur;*.ani|" + ;
+                           "All Files (*.*)|*.*"
+                ELSE
+                    RETURN "All Files (*.*)|*.*"
+                ENDIF
+            ENDIF
+
+            VAR sb := StringBuilder{}
+            VAR aParts := cVfpFilter:Split(<CHAR>{c';'}, StringSplitOptions.RemoveEmptyEntries)
+
+            FOREACH cPart AS STRING IN aParts
+                VAR cDesc := ""
+                VAR cExts := ""
+                VAR nColon := cPart:IndexOf(":")
+
+                IF nColon >= 0
+                    cDesc := cPart:Substring(0, nColon):Trim()
+                    cExts := cPart:Substring(nColon + 1):Trim()
+                ELSE
+                    cExts := cPart:Trim()
+                    cDesc := cExts:ToUpper() + " Files"
+                ENDIF
+
+                VAR aExtList := cExts:Split(<char>{c','}, StringSplitOptions.RemoveEmptyEntries)
+                VAR cCleanedExts := ""
+
+                FOREACH cRawExt AS STRING IN aExtList
+                    VAR cE := cRawExt:Trim()
+                    IF !cE:StartsWith("*.")
+                        IF cE:StartsWith(".")
+                            cE := "*" + cE
+                        ELSE
+                            cE := "*." + cE
+                        ENDIF
+                    ENDIF
+                    cCleanedExts += cE + ";"
+                NEXT
+
+                cCleanedExts := cCleanedExts:TrimEnd(<char>{c';'})
+
+                IF sb:Length > 0
+                    sb:Append("|")
+                ENDIF
+
+                sb:Append(cDesc):Append("|"):Append(cCleanedExts)
+            NEXT
+
+            IF !cVfpFilter:Contains("*.*")
+                sb:Append("|All Files (*.*)|*.*")
+            ENDIF
+
+            RETURN sb:ToString()
+        END METHOD
+        #endregion
     END CLASS
 
 END NAMESPACE

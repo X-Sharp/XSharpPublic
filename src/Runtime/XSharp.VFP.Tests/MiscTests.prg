@@ -297,6 +297,24 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Set(Set.MemoWidth, nOld)
         END METHOD
+
+        [Fact, Trait("Category", "Database")];
+        METHOD SetMemoWidthExtendedTests() AS VOID
+            VAR nOld := (INT)Set(Set.MemoWidth)
+
+            VAR cLong := "This is a long enough string to have some word wrap"
+
+            Set(Set.MemoWidth, 20)
+            Assert.Equal(3, (INT)MemLines(cLong))
+
+            Set(Set.MemoWidth, 50)
+            Assert.Equal(2, (INT)MemLines(cLong))
+
+            Set(Set.MemoWidth, 256)
+            Assert.Equal(1, (INT)MemLines(cLong))
+
+            Set(Set.MemoWidth, nOld)
+        END METHOD
 	END CLASS
 
 END NAMESPACE

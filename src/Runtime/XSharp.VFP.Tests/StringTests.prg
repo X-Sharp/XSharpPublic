@@ -316,6 +316,25 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal((REAL8)nConverted, nDouble)
         RETURN
 
+        [Fact, Trait("Category", "UIAndDialogs")];
+        METHOD TestGetDialogsInHeadlessMode() AS VOID
+            VAR oOriginalProvider := VfpUIService.Provider
+
+            VfpUIService.Provider := HeadlessUIProvider{}
+            TRY
+                VAR cRes := GETDIR()
+                Assert.Empty(cRes)
+
+                cRes := GETFILE()
+                Assert.Empty(cRes)
+
+                cRes := GETPICT()
+                Assert.Empty(cRes)
+            FINALLY
+                VfpUIService.Provider := oOriginalProvider
+            END TRY
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

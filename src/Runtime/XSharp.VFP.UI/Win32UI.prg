@@ -13,6 +13,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PUBLIC CONST DESKTOP_HORZRES := 117 AS INT
         PUBLIC CONST DESKTOP_VERTRES := 118 AS INT
 
+        [DllImport("user32.dll", CharSet := CharSet.Unicode, EntryPoint := "MessageBoxTimeoutW")] ;
+        INTERNAL STATIC EXTERN METHOD MessageBoxTimeout( ;
+            hWnd AS IntPtr, ;
+            lpText AS STRING, ;
+            lpCaption AS STRING, ;
+            uType AS DWORD, ;
+            wLanguageId AS WORD, ;
+            dwMilliseconds AS DWORD) AS LONG
+
         [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
         STATIC EXTERN METHOD GetDeviceCaps(hDC AS IntPtr, nIndex AS INT) AS INT
 

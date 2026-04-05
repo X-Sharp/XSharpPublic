@@ -23,19 +23,33 @@ BEGIN NAMESPACE XSharp.VFP.UI
     PUBLIC CLASS VfpUIProvider IMPLEMENTS IVfpUIProvider
         #region (Sysmetric, MessageBox, etc)
         PUBLIC METHOD ShowMessageBox(cMessage AS STRING, nDialogBoxType AS LONG, cTitleBarText AS STRING, nTimeOut AS LONG) AS LONG
-            LOCAL nButton AS MessageBoxButtons
-            LOCAL nIcon AS MessageBoxIcon
-            LOCAL nDefault AS MessageBoxDefaultButton
+            LOCAL nResult AS LONG
+            LOCAL dwTimeOut := IIF(nTimeOut > 0, (DWORD)nTimeOut, 0xFFFFFFFF) AS DWORD
 
-            nButton := (MessageBoxButtons) _AND(nDialogBoxType, 0x0F)
-            nIcon := (MessageBoxIcon) _AND(nDialogBoxType, 0xF0)
-            nDefault := (MessageBoxDefaultButton) _AND(nDialogBoxType, 0xF00)
+            VAR sw := System.Diagnostics.Stopwatch.StartNew()
+            nResult := VfpWin32UI.MessageBoxTimeout( ;
+                IntPtr.Zero, ;
+                cMessage, ;
+                cTitleBarText, ;
+                (DWORD)nDialogBoxType, ;
+                0, ;
+                dwTimeout)
 
-            IF nTimeOut >= 1
-                RETURN (LONG) XSharp.VFP.UI.AutoCloseMessageBox.Show(cMessage, cTitleBarText, (INT)nTimeOut, nButton, nIcon, nDefault)
+            sw:Stop()
+
+            // In native API 32000 (0x7D00) means TIMEOUT
+            IF nResult == 32000
+                RETURN -1
             ENDIF
 
-            RETURN (LONG) MessageBox.Show(cMessage, cTitleBarText, nButton, nIcon, nDefault)
+            IF nTimeOut > 0 .AND. sw:ElapsedMilliseconds >= (nTimeOut - 50)
+                VAR nDefaultButtonID := (nDialogBoxType & 0xF00) >> 8
+                IF nResult <= 1 .OR. nResult == (LONG)nDefaultButtonID
+                    RETURN -1
+                ENDIF
+            ENDIF
+
+            RETURN nResult
         END METHOD
 
         PUBLIC METHOD SysMetric(nScreenElement AS LONG) AS LONG

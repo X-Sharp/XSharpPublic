@@ -38,13 +38,13 @@ jobs:
           call ContinuousIntegrationBuild.cmd
 
       - name: Upload Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: BuildResults
           path: ./Artifacts/Zips/*.zip
 
       - name: Upload BuildLogs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: BuildLogs
           path: ./src/build*.Log
@@ -55,13 +55,13 @@ jobs:
           call RunCompilertests.cmd
 
       - name: Upload TestLogs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: TestLogs
           path: ./Artifacts/Tests/*.Log
 
       - name: Upload Shared Files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Shared
           path: |

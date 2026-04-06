@@ -23,7 +23,7 @@ FUNCTION _cmdDirChange(cDir as STRING) AS VOID
 FUNCTION _cmdDirRemove(cDir as STRING) AS VOID
     System.IO.Directory.Delete(cDir,false)
 
-[NeedsAccessToLocals(TRUE)];
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __VfpDir(cCommand AS STRING) AS VOID
     LOCAL cSkeleton AS STRING
     LOCAL cToFile AS STRING

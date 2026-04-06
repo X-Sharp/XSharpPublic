@@ -87,7 +87,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
         var t := self:_Type
         do while t != typeof(System.Object)
             var overloads := OOPHelpers.FindOverloads(t, cMethod, false):ToArray()
-            var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
+            var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(t, overloads, cMethod, uArgs)
             if mi != null
                 if OOPHelpers.SendHelper(null, mi, uArgs, out var result)
                     return result

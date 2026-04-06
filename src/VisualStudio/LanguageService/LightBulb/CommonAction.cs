@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
 using XSharp.Settings;
-
+using XSharp.Support;
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal abstract class CommonAction
@@ -54,7 +54,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
         public bool TryGetTelemetryId(out Guid telemetryId)
         {
-            // This is a sample action and doesn't participate in LightBulb telemetry  
+            // This is a sample action and doesn't participate in LightBulb telemetry
             telemetryId = Guid.Empty;
             return false;
         }

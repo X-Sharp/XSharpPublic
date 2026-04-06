@@ -13,7 +13,7 @@ USING System.Runtime.InteropServices
 USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
-
+    [Obsolete];
     INTERNAL CLASS AutoCloseMessageBox
         PRIVATE INITONLY _caption AS STRING
         PRIVATE INITONLY _result AS DialogResult

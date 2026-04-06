@@ -1025,7 +1025,7 @@ CASE Set.DebugOut
 RETURN String.Empty
 CASE Set.Default
 CASE Set.DefaultDir
-RETURN ""
+    RETURN System.Environment.CurrentDirectory
 
 CASE Set.DirSeparator
 RETURN System.IO.Path.DirectorySeparatorChar:ToString()

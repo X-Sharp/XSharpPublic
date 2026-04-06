@@ -12,7 +12,11 @@ PUBLIC CLASS XSharp.MemoHelpers
     /// <exclude/>
 	CONST END_MEMO   := 0x1A AS INT // ^Z
     /// <exclude/>
-	CONST MAX_WIDTH  := 254 AS INT
+    STATIC PROPERTY MAX_WIDTH AS INT
+        GET
+            RETURN IIF(XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro, 8192, 254)
+        END GET
+    END PROPERTY
     /// <exclude/>
 	CONST TAB		 := 9 AS INT
     /// <exclude/>

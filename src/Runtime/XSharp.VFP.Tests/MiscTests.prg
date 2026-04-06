@@ -17,7 +17,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS MiscTests
 		STATIC CONSTRUCTOR
-        XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+        END CONSTRUCTOR
 
 		[Fact, Trait("Category", "String")];
 		METHOD Various() AS VOID
@@ -221,24 +222,43 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         #pragma options ("undeclared", default)
 
         [Fact];
-        METHOD TestSetDefaultTO() AS VOID
-            VAR cOldDir := Environment.CurrentDirectory
+        METHOD TestSetDefaultTo() AS VOID
+            VAR cOldDir := SET("DEFAULT")
 
             SET DEFAULT TO "C"
-            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+            Assert.True(SET("DEFAULT"):StartsWith("C:", StringComparison.OrdinalIgnoreCase))
 
             SET DEFAULT TO "C:"
-            Assert.True(SET("DEFAULT"):StartsWith("C:\", StringComparison.OrdinalIgnoreCase))
+            Assert.True(SET("DEFAULT"):StartsWith("C:", StringComparison.OrdinalIgnoreCase))
 
             VAR cNewDir := Path.GetTempPath()
             SET DEFAULT TO (cNewDir)
-            Assert.Equal(cNewDir:TrimEnd(c'\\'), SET("DEFAULT"):TrimEnd(c'\\'))
+            Assert.Equal(cNewDir:TrimEnd(c'\\'):ToUpper(), SET("DIRECTORY"):TrimEnd(c'\\'))
 
             SET DEFAULT TO ".."
-            Assert.True(SET("DEFAULT") != cNewDir:TrimEnd(c'\\'))
+            Assert.True(SET("DIRECTORY") != cNewDir:TrimEnd(c'\\'))
 
             SET DEFAULT TO (cOldDir)
 
+        END METHOD
+
+        [Fact];
+        METHOD VfpSetDefaultRefinementTest() AS VOID
+
+            VAR cOldDir := SET("DEFAULT")
+
+            SET DEFAULT TO "c:\"
+            SET DEFAULT TO "C:\"
+
+            Assert.Equal("C:\", SET("DIRECTORY"))
+
+            VAR drive := SET("DEFAULT")
+            Assert.Equal("C:", (STRING)drive)
+
+            VAR dir := SET("DIRECTORY")
+            Assert.Equal("C:\", (STRING)dir)
+
+            SET DEFAULT TO &cOldDir
         END METHOD
 
         [Fact];
@@ -274,6 +294,24 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Set(Set.MemoWidth, 50)
             Assert.Equal(50, (INT)Set(Set.MemoWidth))
+
+            Set(Set.MemoWidth, nOld)
+        END METHOD
+
+        [Fact, Trait("Category", "Database")];
+        METHOD SetMemoWidthExtendedTests() AS VOID
+            VAR nOld := (INT)Set(Set.MemoWidth)
+
+            VAR cLong := "This is a long enough string to have some word wrap"
+
+            Set(Set.MemoWidth, 20)
+            Assert.Equal(3, (INT)MemLines(cLong))
+
+            Set(Set.MemoWidth, 50)
+            Assert.Equal(2, (INT)MemLines(cLong))
+
+            Set(Set.MemoWidth, 256)
+            Assert.Equal(1, (INT)MemLines(cLong))
 
             Set(Set.MemoWidth, nOld)
         END METHOD

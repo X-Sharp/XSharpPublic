@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
 using stdole;
 
 using System;
@@ -50,7 +49,6 @@ namespace XSharp.Project
     public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsProject5
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
-
         internal static XSharpProjectNode FindProject(string url)
         {
             var file = System.IO.Path.GetFileName(url);
@@ -2412,7 +2410,6 @@ namespace XSharp.Project
             // First remove the Navigation Data
             //
             ThreadHelper.ThrowIfNotOnUIThread();
-            Logger.Debug("Close " + this.ProjectFile);
             // CleanUp the CodeModel
             if (projectModel != null)
             {
@@ -3146,20 +3143,23 @@ namespace XSharp.Project
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
+                //case PackageReferences:
                 case Publish:
                 case UserSourceItems:
                 case WindowsXAML:
                 case WindowsXaml:
                 case WPF:
                 case XSharp:
-                case PackageReferences:
-                case DependenciesTree:
-                case DependencyPackageManagement:
                     return true;
+                // If we return true then sometimes builds with solutionwide restores will start very slowly
+                case PackageReferences:
+                    return false;
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
                 case CPS:
+                case DependenciesTree:
+                case DependencyPackageManagement:
                 case DNX:
                 case DotNetCoreWeb:
                 case DynamicFileNesting:

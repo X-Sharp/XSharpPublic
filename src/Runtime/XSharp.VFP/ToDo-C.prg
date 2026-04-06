@@ -52,13 +52,6 @@ FUNCTION  CreateOffline (ViewName , cPath)
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ctobin/*" />
-[FoxProFunction("CTOBIN", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION CToBin (cExpression , cFlags)
-    THROW NotImplementedException{}
-    // RETURN 0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cursorgetprop/*" />
 [FoxProFunction("CURSORGETPROP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION CursorGetProp (cProperty , uArea)

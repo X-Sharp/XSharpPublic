@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -79,7 +79,7 @@ namespace Microsoft.VisualStudio.Project
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync( cancellationToken, progress );
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();            
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // Subscribe to the solution events
             this.solutionListeners.Add(new SolutionListenerForProjectReferenceUpdate(this));
             this.solutionListeners.Add(new SolutionListenerForProjectOpen(this));

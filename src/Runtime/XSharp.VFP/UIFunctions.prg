@@ -9,20 +9,40 @@ USING XSharp.VFP
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/messagebox/*" />
 [FoxProFunction("MESSAGEBOX", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleBarText := "" AS STRING,nTimeOut := 0 AS LONG) AS LONG
+FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := NIL AS USUAL, cTitleBarText := NIL AS USUAL, nTimeOut := NIL AS USUAL) AS LONG
     LOCAL cMessage AS STRING
+    LOCAL nRealType := 0 AS LONG
+    LOCAL cRealTitle := "" AS STRING
+    LOCAL nRealTimeout := 0 AS LONG
+    LOCAL nNumericFound := 0 AS INT
+    LOCAL lTitleSet := FALSE AS LOGIC
 
-    IF !IsString(eMessageText)
-        cMessage := AsString(eMessageText)
-    ELSE
-        cMessage := eMessageText
+    cMessage := IIF(IsString(eMessageText), (STRING)eMessageText, AsString(eMessageText))
+
+    LOCAL aParams := { nDialogBoxType, cTitleBarText, nTimeOut } AS ARRAY
+
+    FOREACH VAR uParam IN aParams
+        IF !IsNil(uParam)
+            IF IsString(uParam) .AND. !lTitleSet
+                cRealTitle := (STRING)uParam
+                lTitleSet := TRUE
+            ELSEIF IsNumeric(uParam)
+                nNumericFound++
+                IF nNumericFound == 1
+                    nRealType := (LONG)uParam
+                ELSEIF nNumericFound == 2
+                    nRealTimeout := (LONG)uParam
+                ENDIF
+            ENDIF
+        ENDIF
+    NEXT
+
+    IF String.IsNullOrEmpty(cRealTitle)
+        cRealTitle := System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly()?:Location)
+        IF String.IsNullOrEmpty(cRealTitle) ; cRealTitle := "Microsoft Visual FoxPro" ; ENDIF
     ENDIF
 
-    IF String.IsNullOrEmpty(cTitleBarText)
-        cTitleBarText := System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly():Location)
-    ENDIF
-
-    RETURN VfpUIService.Provider:ShowMessageBox(cMessage, nDialogBoxType, cTitleBarText, nTimeOut)
+    RETURN VfpUIService.Provider:ShowMessageBox(cMessage, nRealType, cRealTitle, nRealTimeout)
 END FUNCTION
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sysmetric/*" />

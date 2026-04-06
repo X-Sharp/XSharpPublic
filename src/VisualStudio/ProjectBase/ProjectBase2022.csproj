@@ -197,7 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.549</Version>
+      <Version>17.0.551</Version>
     </PackageReference>
     <PackageReference Include="MessagePack">
       <Version>2.5.192</Version>
@@ -232,7 +232,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
-      <Version>10.0.2</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Primitives">
       <Version>4.3.0</Version>
@@ -241,7 +241,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>9.0.0</Version>
+      <Version>9.0.14</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

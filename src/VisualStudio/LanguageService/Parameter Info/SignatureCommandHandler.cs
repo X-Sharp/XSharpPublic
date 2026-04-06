@@ -23,7 +23,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using XSharp.Settings;
 using XSharpModel;
-
+using XSharp.Support;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
 {

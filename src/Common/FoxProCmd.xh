@@ -156,8 +156,11 @@
           [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;; ;
        OrdCreate(<(file)>,<(ORDER)>,<(key)>,,IIF(<.u.>,.T., NIL))
 
+#command DIR <*any*>       => __VfpDir( <"any"> )
+#command DIRECTORY <*any*> => __VfpDir( <"any"> )
 
-
+#command DIR               => __VfpDir( "" )
+#command DIRECTORY         => __VfpDir( "" )
 
 // Commands with IN clause, commands without are defined in DBCMD.XH
 

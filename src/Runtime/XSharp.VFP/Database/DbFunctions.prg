@@ -8,10 +8,10 @@
 // This also contains the push / pop code to allow access to WITH variables outside of the
 // function where they are declared.
 
-USING XSharp.RDD 
+USING XSharp.RDD
 USING System.Collections.Generic
 USING XSharp.RDD.Support
-
+USING XSharp.Internal
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbgetprop/*" />
 /// <seealso cref="DbSetProp" />
 /// <seealso cref="DbcDatabase" />
@@ -87,18 +87,29 @@ FUNCTION DbAlias () AS STRING
 
 #pragma options("az", ON)
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
+[NeedsAccessToLocals(FALSE)];
 [FoxProFunction("ADATABASES", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION ADatabases( ArrayName AS ARRAY) AS DWORD
+FUNCTION ADatabases([FoxArrayInputParameter] ArrayName AS USUAL) AS DWORD
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSEIF IsNil(ArrayName)
+        aFoxArray := __FoxArray{}
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     local result := (DWORD) DbcManager.Databases:Count AS DWORD
     IF result > 0
-        ArrayName := __FoxRedim(ArrayName, result, 2 )
+        aFoxArray := __FoxRedim(aFoxArray, result, 2 )
         LOCAL nDb := 0 as DWORD
         FOREACH var db in DbcManager.Databases
-            ArrayName[nDb,0]   := db:Name
-            ArrayName[nDb,1]   := db:FileName
+            aFoxArray[nDb,0]   := db:Name
+            aFoxArray[nDb,1]   := db:FileName
             nDb += 1
         NEXT
     ENDIF
+    __VfpPushArrayResult(aFoxArray)
     RETURN result
 #pragma options("az", default)
 

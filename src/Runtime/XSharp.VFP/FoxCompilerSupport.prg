@@ -244,3 +244,28 @@ static function __CheckParams(oObj as object, cName as string) as MemberInfo[]
         Throw Exception{i"Class '{oType:Name}' does not have a member with the name '{cName}'"}
     endif
     return members
+
+
+INTERNAL FUNCTION __GetFoxArrayResultStack() as Stack<__FoxArray>
+    VAR stack := XSharp.RuntimeState.GetValue<Stack<__FoxArray>>(Set.ArrayResultStack)
+    if stack == NULL
+        stack := Stack<__FoxArray>{}
+        XSharp.RuntimeState.SetValue(Set.ArrayResultStack, stack)
+    ENDIF
+    return stack
+
+FUNCTION __VfpPopArrayResult() AS __FoxArray
+    VAR stack := __GetFoxArrayResultStack()
+    if stack:Count > 0
+        return stack:Pop()
+    ENDIF
+    var error := Error{__VfpStr(VFPErrors.VFP_ARRAY_STACK_EMPTY)}
+    error:Gencode := EG_NULLVAR
+    error:FuncSym := ProcName(1)
+    error:SetStackTrace(ErrorStack(1))
+    THROW error
+
+FUNCTION __VfpPushArrayResult(aValue as __FoxArray) AS VOID
+    var stack := __GetFoxArrayResultStack()
+    stack:Push(aValue)
+    RETURN

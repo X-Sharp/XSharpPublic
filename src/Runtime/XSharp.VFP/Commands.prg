@@ -29,7 +29,7 @@ FUNCTION __VfpDir(cCommand AS STRING) AS VOID
     LOCAL cToFile AS STRING
     LOCAL lToPrinter AS LOGIC
     LOCAL nPos AS INT
-
+    // Todo: Implement TO PRINTER clause
     cCommand := cCommand:Trim()
     cSkeleton := cCommand
     cToFile := ""

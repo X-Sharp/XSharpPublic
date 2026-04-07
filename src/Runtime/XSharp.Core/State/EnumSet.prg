@@ -6,7 +6,7 @@
 USING XSharp
 USING XSharp.RDD.Enums
 USING System.Collections.Generic
-BEGIN NAMESPACE XSharp
+NAMESPACE XSharp
 
 /// <include file="XSharp.Core.Docs.xml" path="doc/Set/*" />
 ENUM Set
@@ -336,12 +336,13 @@ ENUM Set
     // MEMBER TopicID
     // MEMBER TrBetween
     // MEMBER UdfParams
- /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Hours/*" />
-	MEMBER Hours				:= 147
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Hours/*" />
+    MEMBER Hours				:= 147
 
- /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Seconds/*" />
-	MEMBER Seconds				:= 148
-
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Seconds/*" />
+    MEMBER Seconds				:= 148
+	/// <include file="XSharp.Core.Docs.xml" path="doc/Set.ArrayResultStack/*" />
+    MEMBER ArrayResultStack := 149    // Stack<OBJECT> used to return arrays from functions that normally return a single value, such as RDDInfo()
     // Xbase++ defines
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CharSet/*" />
     MEMBER CharSet          := 160
@@ -431,7 +432,7 @@ ENUM Set
     MEMBER Sql_parameters       := User+9
 
 END ENUM
-END NAMESPACE
+
 #region Defines
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exact/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
@@ -880,263 +881,264 @@ DEFINE _MAX_PATH := 260
 DEFINE MAX_PATH := 260
 
 INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
-SWITCH nSet
-CASE Set.Exact
-CASE Set.Fixed
-CASE Set.Softseek
-CASE Set.Unique
-CASE Set.Deleted
-CASE Set.Cancel
-CASE Set.Debug
-CASE Set.Alternate
-CASE Set.Printer
-CASE Set.Confirm
-CASE Set.Escape
-CASE Set.Insert
-CASE Set.Exit
-CASE Set.Intensity
-CASE Set.Scoreboard
-CASE Set.Wrap
-CASE Set.Mcenter
-CASE Set.ScrollBreak
-CASE Set.Errorlog
-CASE Set.Yield
-CASE Set.Neterr
-CASE Set.AmPm
-CASE Set.Century
-CASE Set.DigitFixed
-CASE Set.Fieldstore
-CASE Set.Science
-CASE Set.Dict
-CASE Set.HpLocking
-CASE Set.NewIndexLock
-CASE Set.StrictRead
-CASE Set.BlobCircref
-CASE Set.FoxLock
-CASE Set.HandleEvent
-CASE Set.Rushmore
-CASE Set.SmartFilter
-CASE Set.NullValue
-CASE Set.Lexical
-// FoxPro
-CASE Set.Asserts
-CASE Set.Lock
-CASE Set.MultiLocks
-CASE Set.SqlAnsi
-CASE Set.SqlBuffering
-CASE Set.VarCharMapping
-RETURN FALSE
+    SWITCH nSet
+    CASE Set.Exact
+    CASE Set.Fixed
+    CASE Set.Softseek
+    CASE Set.Unique
+    CASE Set.Deleted
+    CASE Set.Cancel
+    CASE Set.Debug
+    CASE Set.Alternate
+    CASE Set.Printer
+    CASE Set.Confirm
+    CASE Set.Escape
+    CASE Set.Insert
+    CASE Set.Exit
+    CASE Set.Intensity
+    CASE Set.Scoreboard
+    CASE Set.Wrap
+    CASE Set.Mcenter
+    CASE Set.ScrollBreak
+    CASE Set.Errorlog
+    CASE Set.Yield
+    CASE Set.Neterr
+    CASE Set.AmPm
+    CASE Set.Century
+    CASE Set.DigitFixed
+    CASE Set.Fieldstore
+    CASE Set.Science
+    CASE Set.Dict
+    CASE Set.HpLocking
+    CASE Set.NewIndexLock
+    CASE Set.StrictRead
+    CASE Set.BlobCircref
+    CASE Set.FoxLock
+    CASE Set.HandleEvent
+    CASE Set.Rushmore
+    CASE Set.SmartFilter
+    CASE Set.NullValue
+    CASE Set.Lexical
+        // FoxPro
+    CASE Set.Asserts
+    CASE Set.Lock
+    CASE Set.MultiLocks
+    CASE Set.SqlAnsi
+    CASE Set.SqlBuffering
+    CASE Set.VarCharMapping
+        RETURN FALSE
 
-CASE Set.Ansi
-CASE Set.Bell
-CASE Set.Console
-CASE Set.Exclusive
-CASE Set.Optimize
-CASE Set.AutoOpen
-CASE Set.Defextensions
-CASE Set.ForceOpt
-CASE Set.Trimfilename
-// FoxPro
-CASE Set.AutoIncError
-CASE Set.FullPath
-CASE Set.Safety
-CASE Set.Space
-CASE Set.TextMerge
-CASE Set.HardCommit
-RETURN TRUE
+    CASE Set.Ansi
+    CASE Set.Bell
+    CASE Set.Console
+    CASE Set.Exclusive
+    CASE Set.Optimize
+    CASE Set.AutoOpen
+    CASE Set.Defextensions
+    CASE Set.ForceOpt
+    CASE Set.Trimfilename
+        // FoxPro
+    CASE Set.AutoIncError
+    CASE Set.FullPath
+    CASE Set.Safety
+    CASE Set.Space
+    CASE Set.TextMerge
+    CASE Set.HardCommit
+        RETURN TRUE
 
-CASE Set.TextMergeDelimiters
-return <string>{"<<",">>"}
+    CASE Set.TextMergeDelimiters
+        return <string>{"<<",">>"}
 
-CASE Set.DirCase
-CASE Set.FileCase
-//            //#define HB_SET_CASE_MIXED  0
-//            //#define HB_SET_CASE_LOWER  1
-//            //#define HB_SET_CASE_UPPER  2
-//            SWITCH System.PlatformID
-//            CASE PlatformID.Unix
-//            CASE PlatformID.MacOSX
-//            CASE PlatformID.Win32NT
-//            CASE PlatformID.Win32S
-//            CASE PlatformID.Win32Windows
-//            CASE PlatformID.WinCE
-//            CASE PlatformID.Xbox
-//            END SWITCH
-RETURN 0
-CASE Set.Typeahead
-CASE Set.Cursor
-CASE Set.Margin
-CASE Set.Message
-CASE Set.Cpu
-CASE Set.Math
-CASE Set.CharSet
-CASE Set.DevTimeOut
-CASE Set.Colormode
-CASE Set.Collation
-CASE Set.IdleRepeat
-RETURN 0L
+    CASE Set.DirCase
+    CASE Set.FileCase
+        //            //#define HB_SET_CASE_MIXED  0
+        //            //#define HB_SET_CASE_LOWER  1
+        //            //#define HB_SET_CASE_UPPER  2
+        //            SWITCH System.PlatformID
+        //            CASE PlatformID.Unix
+        //            CASE PlatformID.MacOSX
+        //            CASE PlatformID.Win32NT
+        //            CASE PlatformID.Win32S
+        //            CASE PlatformID.Win32Windows
+        //            CASE PlatformID.WinCE
+        //            CASE PlatformID.Xbox
+        //            END SWITCH
+        RETURN 0
+    CASE Set.Typeahead
+    CASE Set.Cursor
+    CASE Set.Margin
+    CASE Set.Message
+    CASE Set.Cpu
+    CASE Set.Math
+    CASE Set.CharSet
+    CASE Set.DevTimeOut
+    CASE Set.Colormode
+    CASE Set.Collation
+    CASE Set.IdleRepeat
+        RETURN 0L
 
-CASE Set.Compatible
-RETURN FALSE
+    CASE Set.Compatible
+        RETURN FALSE
 
-CASE Set.AutoOrder
-RETURN 1L
+    CASE Set.AutoOrder
+        RETURN 1L
 
-CASE Set.DateCountry
-RETURN DateCountry.American
+    CASE Set.DateCountry
+        RETURN DateCountry.American
 
-CASE Set.Autoshare
-RETURN AutoShareMode.Auto
+    CASE Set.Autoshare
+        RETURN AutoShareMode.Auto
 
-CASE Set.Color
-RETURN "W/N,N/W,N/N,N/N,N/W"
-CASE Set.DateFormat
-RETURN "MM/DD/YYYY"
+    CASE Set.Color
+        RETURN "W/N,N/W,N/N,N/N,N/W"
+    CASE Set.DateFormat
+        RETURN "MM/DD/YYYY"
 
-CASE Set.DefaultRdd
-RETURN "DBFNTX"
+    CASE Set.DefaultRdd
+        RETURN "DBFNTX"
 
-CASE Set.Eol
-RETURN e"\r\n"
+    CASE Set.Eol
+        RETURN e"\r\n"
 
-CASE Set.Hboutlog
-RETURN "hb_out.log"
+    CASE Set.Hboutlog
+        RETURN "hb_out.log"
 
-CASE Set.Hboutloginfo
-CASE Set.Path
-CASE Set.AltFile
-CASE Set.Device
-CASE Set.PrintFile
-CASE Set.DelimChars
-CASE Set.AmExt
-CASE Set.PmExt
-CASE Set.International
-CASE Set.NatDLL
-CASE Set.NoMethod
-CASE Set.DateFormatNet
-CASE Set.DateFormatEmpty
-CASE Set.LastFound
-CASE Set.MemoExt
-CASE Set.Language
-CASE Set.Timeformat
-// FoxPro
-CASE Set.Database
-CASE Set.DebugOut
-RETURN String.Empty
-CASE Set.Default
-CASE Set.DefaultDir
-    RETURN System.Environment.CurrentDirectory
+    CASE Set.Hboutloginfo
+    CASE Set.Path
+    CASE Set.AltFile
+    CASE Set.Device
+    CASE Set.PrintFile
+    CASE Set.DelimChars
+    CASE Set.AmExt
+    CASE Set.PmExt
+    CASE Set.International
+    CASE Set.NatDLL
+    CASE Set.NoMethod
+    CASE Set.DateFormatNet
+    CASE Set.DateFormatEmpty
+    CASE Set.LastFound
+    CASE Set.MemoExt
+    CASE Set.Language
+    CASE Set.Timeformat
+        // FoxPro
+    CASE Set.Database
+    CASE Set.DebugOut
+        RETURN String.Empty
+    CASE Set.Default
+    CASE Set.DefaultDir
+        RETURN System.Environment.CurrentDirectory
 
-CASE Set.DirSeparator
-RETURN System.IO.Path.DirectorySeparatorChar:ToString()
+    CASE Set.DirSeparator
+        RETURN System.IO.Path.DirectorySeparatorChar:ToString()
 
-CASE Set.Floatdelta
-RETURN 0.0000000000001
-
-
-CASE Set.Patharray     // String[]
-RETURN (STRING[]) NULL
-CASE Set.CollationTable   // byte[]
-RETURN (BYTE[] ) NULL
-
-CASE Set.DecimalSep
-CASE Set.ThousandSep
-CASE Set.Timesep
-CASE Set.EpochYear
-//CASE Set.FileError
-CASE Set.ErrorLevel     // DWORD
-RETURN 0U
-CASE Set.Decimals
-RETURN 2U
-
-CASE Set.Digits
-CASE Set.Locktries
-RETURN 10U
-
-CASE Set.MemoBlockSize
-RETURN (WORD) 32
-
-CASE Set.Epoch
-CASE Set.EpochCent
-RETURN 1900U
-
-CASE Set.ErrorBlock     // Codeblock
-RETURN NULL
-
-CASE Set.LastScriptError    // Exception object
-CASE Set.SysObject
-CASE Set.RddInfo
-RETURN NULL
-CASE Set.WithStack
-RETURN Stack<OBJECT>{}
-CASE Set.Intl
-CASE Set.CollationMode
-RETURN CollationMode.Windows
-
-CASE Set.ErrorLogFile
-RETURN "ERROR.LOG"
-
-CASE Set.MemoWidth
-    RETURN 79
-
-CASE Set.DosCodepage
-RETURN 437L     // US American
-
-CASE Set.WinCodepage
-RETURN 1252L    // Latin 1 / Western Europe
-
-CASE Set.FieldDelimiter
-RETURN ","
-
-CASE Set.Delimiters
-RETURN e"\""
-
-CASE Set.RecordDelimiter
-RETURN CRLF
-
-CASE Set.DelimRDD
-RETURN "DELIM"
-
-// 180 - 197 Harbour extensions, no value yet
-//        MEMBER FILECASE       :=  182
-//        MEMBER DIRCASE        :=  183
-//        MEMBER DBFLOCKSCHEME  :=  188
-//        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
+    CASE Set.Floatdelta
+        RETURN 0.0000000000001
 
 
-// Advantage
-CASE Set.Axslocking
-CASE Set.Rightschecking
-CASE Set.Exactkeypos
-RETURN TRUE
+    CASE Set.Patharray     // String[]
+        RETURN (STRING[]) NULL
+    CASE Set.CollationTable   // byte[]
+        RETURN (BYTE[] ) NULL
 
-CASE Set.Sql_query
-CASE Set.Collation_name
-RETURN String.Empty
-CASE Set.Connection_handle
-CASE Set.Sql_table_passwords
-CASE Set.Sql_parameters
-RETURN NULL
-CASE Set.Sql_timeout
-RETURN 0
+    CASE Set.DecimalSep
+    CASE Set.ThousandSep
+    CASE Set.Timesep
+    CASE Set.EpochYear
+        //CASE Set.FileError
+    CASE Set.ErrorLevel     // DWORD
+        RETURN 0U
+    CASE Set.Decimals
+        RETURN 2U
 
-// FoxPro
-CASE Set.CollateFox
-RETURN "MACHINE"
-CASE Set.DataSession
-RETURN 1
-CASE Set.Refresh
-RETURN 5.0
-CASE Set.Reprocess
-RETURN 0
-	CASE Set.Hours
-		RETURN 12L
-	CASE Set.Seconds
-		RETURN TRUE
-END SWITCH
+    CASE Set.Digits
+    CASE Set.Locktries
+        RETURN 10U
+
+    CASE Set.MemoBlockSize
+        RETURN (WORD) 32
+
+    CASE Set.Epoch
+    CASE Set.EpochCent
+        RETURN 1900U
+
+    CASE Set.ErrorBlock     // Codeblock
+        RETURN NULL
+
+    CASE Set.LastScriptError    // Exception object
+    CASE Set.SysObject
+    CASE Set.RddInfo
+    CASE Set.WithStack
+    CASE Set.ArrayResultStack
+        RETURN NULL
+    CASE Set.Intl
+    CASE Set.CollationMode
+        RETURN CollationMode.Windows
+
+    CASE Set.ErrorLogFile
+        RETURN "ERROR.LOG"
+
+    CASE Set.MemoWidth
+        RETURN 79
+
+    CASE Set.DosCodepage
+        RETURN 437L     // US American
+
+    CASE Set.WinCodepage
+        RETURN 1252L    // Latin 1 / Western Europe
+
+    CASE Set.FieldDelimiter
+        RETURN ","
+
+    CASE Set.Delimiters
+        RETURN e"\""
+
+    CASE Set.RecordDelimiter
+        RETURN CRLF
+
+    CASE Set.DelimRDD
+        RETURN "DELIM"
+
+        // 180 - 197 Harbour extensions, no value yet
+        //        MEMBER FILECASE       :=  182
+        //        MEMBER DIRCASE        :=  183
+        //        MEMBER DBFLOCKSCHEME  :=  188
+        //        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
+
+
+        // Advantage
+    CASE Set.Axslocking
+    CASE Set.Rightschecking
+    CASE Set.Exactkeypos
+        RETURN TRUE
+
+    CASE Set.Sql_query
+    CASE Set.Collation_name
+        RETURN String.Empty
+    CASE Set.Connection_handle
+    CASE Set.Sql_table_passwords
+    CASE Set.Sql_parameters
+        RETURN NULL
+    CASE Set.Sql_timeout
+        RETURN 0
+
+        // FoxPro
+    CASE Set.CollateFox
+        RETURN "MACHINE"
+    CASE Set.DataSession
+        RETURN 1
+    CASE Set.Refresh
+        RETURN 5.0
+    CASE Set.Reprocess
+        RETURN 0
+    CASE Set.Hours
+        RETURN 12L
+    CASE Set.Seconds
+        RETURN TRUE
+    END SWITCH
 
 
 
-RETURN NULL
+    RETURN NULL
+
 
 

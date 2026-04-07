@@ -153,9 +153,19 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType
     RETURN SqlFunctions.SqlColumns( nStatementHandle, cTableName, cType, cCursorName)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asqlhandles/*" />
+[NeedsAccessToLocals(FALSE)];
 [FoxProFunction("ASQLHANDLES", FoxFunctionCategory.Array, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS DWORD
+FUNCTION ASqlHandles ([FoxArrayInputParameterAttribute] ArrayName AS USUAL, nStatementHandle := NIL AS USUAL) AS DWORD
     LOCAL aResult AS ARRAY
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSEIF IsNil(ArrayName)
+        aFoxArray := __FoxArray{}
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     IF IsNumeric(nStatementHandle)
         VAR oStmt := GetStatement(nStatementHandle)
         VAR oConn := oStmt:Connection
@@ -169,11 +179,12 @@ FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS D
             AAdd(aResult, oStmt:Handle)
         NEXT
     ENDIF
+
     IF ALen(aResult) > 0
-        ASize(ArrayName, ALen(aResult))
-        ACopy(aResult, ArrayName)
+        ASize(aFoxArray, ALen(aResult))
+        ACopy(aResult, aFoxArray)
     ENDIF
-    RETURN ALen(aResult)
+    RETURN ALen(aFoxArray)
 /// <exclude />
 FUNCTION SqlParameters( nStatementHandle AS LONG, oParams AS OBJECT) AS LONG
     RETURN SqlFunctions.SqlParameters(nStatementHandle, oParams)

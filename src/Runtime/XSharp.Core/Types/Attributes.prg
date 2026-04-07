@@ -89,6 +89,11 @@ BEGIN NAMESPACE XSharp.Internal
 
 	END CLASS
 
+    /// <include file="XSharp.Core.Docs.xml" path="doc/FoxArrayInputParameterAttribute/*" />
+    SEALED CLASS FoxArrayInputParameterAttribute INHERIT Attribute
+        CONSTRUCTOR()
+            SUPER()
+    END CLASS
 	/// <summary>
 	/// This class is used to describe VOSTRUCT and UNION structures which have a different semantics
 	/// AS actually means Struct PTR. IS means Struct

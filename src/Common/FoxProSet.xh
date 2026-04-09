@@ -36,6 +36,7 @@
    SetTextMergeDelimiters(<cLeft>, iif ( <.cRight.>,<!cRight!>,<cLeft>))
 
 #command SET DEVICE TO <x:SCREEN,PRINTER,&>  =>  Set( Set.Device, <(x)> )
+#command SET DEVICE TO FILE <(file)>         =>  Set( Set.Device, "FILE:" + <(file)> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SET commands for Terminal IO

@@ -83,6 +83,20 @@ INTERNAL FUNCTION TextWriteLine() AS VOID
 
 #endregion
 
+#region SET DEVICE
+INTERNAL FUNCTION DevWrite(cText AS STRING) AS VOID
+    IF XSharp.RuntimeState.GetValue<STRING>(Set.Device) == "FILE" .AND. ConsoleHelpers.DevFileHandle != IntPtr.Zero
+        ConsoleHelpers.Write(ConsoleHelpers.DevFileHandle, cText)
+    ENDIF
+    RETURN
+
+INTERNAL FUNCTION DevWriteLine() AS VOID
+    IF XSharp.RuntimeState.GetValue<STRING>(Set.Device) == "FILE" .AND. ConsoleHelpers.DevFileHandle != IntPtr.Zero
+        ConsoleHelpers.WriteLine(ConsoleHelpers.DevFileHandle)
+    ENDIF
+    RETURN
+#endregion
+
 #region SET CONSOLE
 
 INTERNAL FUNCTION ConsoleWriteLine() AS VOID
@@ -105,12 +119,15 @@ INTERNAL FUNCTION QWriteLine() AS VOID
     ConsoleWriteLine()
     AltWriteLine()
     TextWriteLine()
+    DevWriteLine()
+    RETURN
 
 INTERNAL FUNCTION QWrite(cText as STRING) AS VOID
     IF cText != NULL
         ConsoleWrite(cText)
         AltWrite(cText)
         TextWrite(cText)
+        DevWrite(cText)
     ENDIF
     RETURN
 
@@ -352,6 +369,7 @@ INTERNAL STATIC CLASS ConsoleHelpers
     INTERNAL STATIC TextFileHandle := IntPtr.Zero as IntPtr
     INTERNAL STATIC TextOutPut       AS LOGIC
     INTERNAL STATIC TextFile         AS STRING
+    INTERNAL STATIC DevFileHandle := IntPtr.Zero AS IntPtr
 
 
     //INTERNAL STATIC PrintFileHandle := IntPtr.Zero as IntPtr

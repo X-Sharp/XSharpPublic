@@ -145,6 +145,22 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             IF IsNumeric(newValue) .AND. newValue == 1
                 RETURN ""
             ENDIF
+        CASE Set.Device
+            IF IsString(newValue)
+                LOCAL cNewDev := ((STRING)newValue):ToUpperInvariant() AS STRING
+                IF cNewDev:StartsWith("FILE:")
+                    VAR cFileName := ((STRING)newValue):Substring(5)
+                    IF ConsoleHelpers.DevFileHandle != IntPtr.Zero
+                        ConsoleHelpers.FileClose(REF ConsoleHelpers.DevFileHandle)
+                    ENDIF
+                    ConsoleHelpers.DevFileHandle := ConsoleHelpers.FileOpen(cFileName, FALSE)
+                    newValue := "FILE"
+                ELSEIF cNewDev == "SCREEN" .OR. cNewDev == "PRINTER"
+                    IF ConsoleHelpers.DevFileHandle != IntPtr.Zero
+                        ConsoleHelpers.FileClose(REF ConsoleHelpers.DevFileHandle)
+                    ENDIF
+                ENDIF
+            ENDIF
         END SWITCH
     ENDIF
 

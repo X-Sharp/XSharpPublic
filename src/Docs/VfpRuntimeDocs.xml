@@ -719,74 +719,210 @@
     <returns>
       Numeric data type. <b>AFIELDS( )</b> returns the number of fields in the table. The array contains 18 columns and has the same number of rows as fields in the table.
       The following table describes the content of each column in the first row of the array and the data type of the information stored in each column. Values for table-specific properties in columns 10 through 16 only appear in the first row of the array. One row is created for each field in the table.
-      1
-      Field name
-      Character
-      2
-      Field type:
-      C = Character
-      Y = Currency
-      D = Date
-      T = DateTime
-      B = Double
-      F = Float
-      G = General
-      I = Integer
-      L = Logical
-      M = Memo
-      N = Numeric
-      Q = Varbinary
-      V = Varchar and Varchar (Binary)
-      W = Blob
-      Character
-      3
-      Field width
-      Numeric
-      4
-      Decimal places
-      Numeric
-      5
-      Null values allowed
-      Logical
-      6
-      Code page translation not allowed
-      Logical
-      7
-      Field validation expression
-      Character
-      8
-      Field validation text
-      Character
-      9
-      Field default value
-      Character
-      10
-      Table validation expression
-      Character
-      11
-      Table validation text
-      Character
-      12
-      Long table name
-      Character
-      13
-      Insert trigger expression
-      Character
-      14
-      Update trigger expression
-      Character
-      15
-      Delete trigger expression
-      Character
-      16
-      Table comment
-      Character
-      17
-      NextValue for autoincrementing
-      Numeric
-      18
-      Step for autoincrementing
-      Numeric
+      list type="table">
+      <item>
+        <term>1</term>
+        <description>
+          Field name
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>2</term>
+        <description>
+          Field type:
+          C = Character
+          Y = Currency
+          D = Date
+          T = DateTime
+          B = Double
+          F = Float
+          G = General
+          I = Integer
+          L = Logical
+          M = Memo
+          N = Numeric
+          Q = Varbinary
+          V = Varchar and Varchar (Binary)
+          W = Blob
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>3</term>
+        <description>
+          Field width
+        </description>
+        <description>
+          Numeric
+        </description>
+      </item>
+      <item>
+        <term>4</term>
+        <description>
+          Decimal places
+        </description>
+        <description>
+          Numeric
+        </description>
+      </item>
+      <item>
+        <term>5</term>
+        <description>
+          Null values allowed
+        </description>
+        <description>
+          Logical
+        </description>
+      </item>
+      <item>
+        <term>
+          6
+        </term>
+        <description>
+          Code page translation not allowed
+        </description>
+        <description>
+          Logical
+        </description>
+      </item>
+      <item>
+        <term>
+          7
+        </term>
+        <description>
+          Field validation expression
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          8
+        </term>
+        <description>
+          Field validation text
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          9
+        </term>
+        <description>
+          Field default value
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          10
+        </term>
+        <description>
+          Table validation expression
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          11
+        </term>
+        <description>
+          Table validation text
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          12
+        </term>
+        <description>
+          Long table name
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          13
+        </term>
+        <description>
+          Insert trigger expression
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          14
+        </term>
+        <description>
+          Update trigger expression
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          15
+        </term>
+        <description>
+          Delete trigger expression
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          16
+        </term>
+        <description>
+          Table comment
+        </description>
+        <description>
+          Character
+        </description>
+      </item>
+      <item>
+        <term>
+          17
+        </term>
+        <description>
+          NextValue for autoincrementing
+        </description>
+        <description>
+          Numeric
+        </description>
+      </item>
+      <item>
+        <term>
+          18
+        </term>
+        <description>
+          Step for autoincrementing
+        </description>
+        <description>
+          Numeric
+        </description>
+      </item>
+      </list>
     </returns>
     <remarks>
       If the fields in the table use autoincrementing, the Step value is greater than 0.
@@ -849,7 +985,7 @@
       Logical data type. <b>AFONT( )</b> returns True (.T.) if array is successfully created. Otherwise, <b>AFONT( )</b> returns False (.F.).
     </returns>
     <remarks>
-      If only ArrayName was passed in versions earlier than X# 8.0, the array populated in <b>AFONT( )</b> included extra fonts that were really part of a single font family. For example, the array might have included the following Arial fonts under X# 7.0:
+      If only ArrayName was passed in versions earlier than X# 8.0, the array populated in <b>AFONT( )</b> included extra fonts that were really part of a single font family. For example, the array might have included the following Arial fonts:
       Arial
       Arial Baltic
       Arial Black
@@ -1034,7 +1170,9 @@
       Functions
       Two-dimensional:
       Function name   [M] nParamR [- nParamT]
-      The matchFlag, M, specifies that you must use the full    function name in code.nParamR specifies the number of required parameters. nParamT specifies total number of possible parameters.
+      The matchFlag, M, specifies that you must use the full    
+      function name in code.nParamR specifies the number of required parameters. 
+      nParamT specifies total number of possible parameters.
       3
       Base classes
       One-dimensional:
@@ -1044,7 +1182,8 @@
       DBC event name (The displayed name omits the "DBC_" prefix of the event name.)
     </param>
     <remarks>
-      The ALANGUAGE( ) function returns an array of all valid X# commands and functions. To return object information, use the AMEMBERS( ) function.
+      The ALANGUAGE( ) function returns an array of all valid X# commands and functions. 
+      To return object information, use the AMEMBERS( ) function.
       Use the ALANGUAGE( ) function to access X# functions as in the following code:
        <code language="X#">   ALANGUAGE(FuncArr,2)</code>
       The resulting array, FuncArr, will contain the following values:
@@ -5495,9 +5634,9 @@
       </param>
       <remarks>
         This function is an X# extension for the Visual FoxPro dialect.
-        It mirrors the functionality of the traditional XBase FAttrib() function but operates directly on a given file path.          
+        It mirrors the functionality of the traditional XBase FAttrib() function but operates directly on a given file path.
       </remarks>
-    </fattrib>    
+    </fattrib>
     <fchsize>
     <summary>
       Changes the size of a file opened with a low-level file function.
@@ -13762,5 +13901,5 @@
       </code>
     </example>
   </year>
-  
+
 </Runtimefunctions>

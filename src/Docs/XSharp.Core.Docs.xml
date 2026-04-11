@@ -2536,6 +2536,33 @@
     <br/>
     <include file="CoreComments.xml" path="Comments/File/*"/>
   </FOpen>
+  <FoxArrayInputParameterAttribute>
+    <summary>
+      this class is used to mark a parameter that needs to be returned as a FoxPro array, even when it is undefined before.
+    </summary>
+    <remarks>
+      This attribute should only be used in code in the FoxPro dialect where a parameter may be either an array when a function
+      is called or it may be undefined before.<br/>
+      The compiler will find this attribute at compile time and will make sure that the parameter is initialized as an empty
+      array with it is undefined and will also generate a function call to a special runtime function to store
+      the return value of the function on a stack in the runtime state, so it can be assigned to the
+      local or private variable after the function call returns.
+    </remarks>
+    <example>
+      An example where this attribute is used is for the AMembers function that has the following signature:
+      <code language ="X#">
+        [FoxArrayInputParameter(1)];
+        FUNCTION AMembers ( ArrayName AS USUAL, oObjectOrClass AS USUAL, ;
+                  nArrayContentsID := 0 AS INT, cFlags := "" AS STRING) AS DWORD
+        .
+        .
+        RETURN nRows
+      </code>
+      The compiler will initialize the parameter to an empty FoxPro array and will generate a call to the runtime function __VfpPushArrayResult()
+      to push the new value of ArrayName to the runtime stack, so it can be assigned to the variable that was used as an argument for ArrayName
+      when the function was called.
+    </example>
+  </FoxArrayInputParameterAttribute>
   <FRead3>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/fread3/*"/>
     <param name="ptrBufferVar">An array of bytes to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>

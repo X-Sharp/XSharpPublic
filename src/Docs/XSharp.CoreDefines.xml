@@ -2078,7 +2078,7 @@
     <summary>Determines the current Windows CodePage number</summary>
   </Set.WinCodepage>
   <Set.WithStack>
-    <summary>Specifies how character data expressions are mapped to query result sets.</summary>
+    <summary>The stack used by the FoxPro dialect that keeps the expressions for the current WITH .. END WITH statement.</summary>
   </Set.WithStack>
   <Set.Yield>
     <summary/>

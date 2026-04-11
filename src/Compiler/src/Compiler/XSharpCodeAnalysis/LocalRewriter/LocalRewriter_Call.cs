@@ -34,7 +34,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         private BoundExpression XsAdjustBoundCall(BoundExpression expression)
         {
-            if (expression.Syntax is null || expression.SyntaxTree is null )
+            BoundExpression newExpression = expression;
+            if (expression.Syntax is null || expression.SyntaxTree is null)
                 return expression;
             var root = expression.SyntaxTree.GetRoot() as CompilationUnitSyntax;
             if (root is null)
@@ -53,10 +54,42 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var mods = mds.Modifiers;
                 isStatic = mods.Any(SyntaxKind.StaticKeyword);
             }
+            // check for the FoxArrayParameter Attribute
+            if (expression is BoundCall bc && bc.Method.HasFoxArrayParameter(out var attr))
+            {
+                // get the attribute and retrieve the parameter index                    var attr = bc.Method.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == OurTypeNames.FoxArrayInputParameterAttribute);
+                var oIndex = attr.ConstructorArguments.First().Value;
+                if (oIndex is not null)
+                {
+                    var index = (int)oIndex;
+                    var args = bc.Arguments;
+                    var arg = args[index - 1]; // index is 1 based
+                    if (arg is BoundCall bc2)
+                    {
+                        var method2 = bc2.Method;
+                        if (method2.Name == ReservedNames.VarGet)
+                        {
+                            var margs = bc2.Arguments;
+                            var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
+                            var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
+                            if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
+                            {
+                                var newCall = _factory.StaticCall(symMethod, margs);
+                                var newArgs = args.ToBuilder();
+                                newArgs[index - 1] = newCall;
+                                newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                            }
+                        }
+                    }
+
+                }
+            }
+
+
             // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
             // if that is the case then the node is registered  in the FunctionsThatNeedAccessToLocals dictionary
             if (root.GetLocalsForFunction(expression.Syntax.CsNode, out var writeAccess,
-                out var localsymbols) )
+                out var localsymbols))
             {
                 int count = 0;
                 foreach (var sym in localsymbols)
@@ -65,7 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         count++;
                 }
                 if (count == 0 && isStatic)
-                    return expression;
+                    return newExpression;
                 // write prelude and after code
                 // prelude code should register the locals
                 /*
@@ -149,12 +182,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var tempLocal = _factory.Local(tempSym);
                 if (!isVoid)
                 {
-                    var callorig = _factory.AssignmentExpression(tempLocal, expression);
+                    var callorig = _factory.AssignmentExpression(tempLocal, newExpression);
                     exprs.Add(callorig);
                 }
                 else
                 {
-                    exprs.Add(expression);
+                    exprs.Add(newExpression);
                 }
                 if (writeAccess)
                 {

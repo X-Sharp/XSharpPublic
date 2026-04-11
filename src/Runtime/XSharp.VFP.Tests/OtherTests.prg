@@ -7,6 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING System.IO
 USING XUnit
 
 
@@ -116,6 +117,28 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(nHeight > 0, "ScreenHeight should be greater than 0")
         END METHOD
 
+        [Fact];
+        METHOD SetDeviceToFileTest() AS VOID
+            VAR cFile := Path.Combine(Environment.CurrentDirectory, Guid.NewGuid():ToString() + ".txt")
+            VAR cTestContent := "May the Force be with you, X#"
+            TRY
+                TRY
+                    SET DEVICE TO FILE (cFile)
+                    ? cTestContent
+                FINALLY
+                    SET DEVICE TO SCREEN
+                END TRY
+
+                Assert.True(File(cFile))
+
+                VAR cContent := File.ReadAllText(cFile)
+                Assert.True(cTestContent $ cContent)
+            FINALLY
+                IF File.Exists(cFile)
+                    File.Delete(cFile)
+                ENDIF
+            END TRY
+        END METHOD
 	END CLASS
 
 END NAMESPACE

@@ -147,15 +147,20 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             ENDIF
         CASE Set.Device
             IF IsString(newValue)
-                LOCAL cNewDev := ((STRING)newValue):ToUpperInvariant() AS STRING
+                VAR cNewDev := ((STRING)newValue):ToUpperInvariant()
                 IF cNewDev:StartsWith("FILE:")
-                    VAR cFileName := ((STRING)newValue):Substring(5)
+                    VAR cFileName := ((STRING)newValue):Substring(5):Trim()
+                    IF String.IsNullOrWhiteSpace(cFileName)
+                        THROW ArgumentException{"SET DEVICE TO FILE requires a non-empty filename.", nameof(newValue)}
+                    ENDIF
+
                     IF ConsoleHelpers.DevFileHandle != IntPtr.Zero
                         ConsoleHelpers.FileClose(REF ConsoleHelpers.DevFileHandle)
                     ENDIF
+
                     ConsoleHelpers.DevFileHandle := ConsoleHelpers.FileOpen(cFileName, FALSE)
                     newValue := "FILE"
-                ELSEIF cNewDev == "SCREEN" .OR. cNewDev == "PRINTER"
+                ELSE
                     IF ConsoleHelpers.DevFileHandle != IntPtr.Zero
                         ConsoleHelpers.FileClose(REF ConsoleHelpers.DevFileHandle)
                     ENDIF

@@ -119,21 +119,25 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         [Fact];
         METHOD SetDeviceToFileTest() AS VOID
-            VAR cFile := Path.Combine(Path.GetTempPath(), Guid.NewGuid():ToString() + ".txt")
+            VAR cFile := Path.Combine(Environment.CurrentDirectory, Guid.NewGuid():ToString() + ".txt")
             VAR cTestContent := "May the Force be with you, X#"
             TRY
-                SET DEVICE TO FILE (cFile)
-                ? cTestContent
+                TRY
+                    SET DEVICE TO FILE (cFile)
+                    ? cTestContent
+                FINALLY
+                    SET DEVICE TO SCREEN
+                END TRY
+
+                Assert.True(File(cFile))
+
+                VAR cContent := File.ReadAllText(cFile)
+                Assert.True(cTestContent $ cContent)
             FINALLY
-                SET DEVICE TO SCREEN
+                IF File.Exists(cFile)
+                    File.Delete(cFile)
+                ENDIF
             END TRY
-
-            Assert.True(File(cFile))
-
-            VAR cContent := File.ReadAllText(cFile)
-            Assert.True(cTestContent $ cContent)
-
-            File.Delete(cFile)
         END METHOD
 	END CLASS
 

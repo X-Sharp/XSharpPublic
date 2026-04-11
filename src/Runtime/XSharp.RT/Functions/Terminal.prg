@@ -369,6 +369,7 @@ INTERNAL STATIC CLASS ConsoleHelpers
     INTERNAL STATIC TextFileHandle := IntPtr.Zero as IntPtr
     INTERNAL STATIC TextOutPut       AS LOGIC
     INTERNAL STATIC TextFile         AS STRING
+    [ThreadStatic];
     INTERNAL STATIC DevFileHandle := IntPtr.Zero AS IntPtr
 
 

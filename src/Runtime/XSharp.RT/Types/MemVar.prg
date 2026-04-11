@@ -467,16 +467,21 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
             END LOCK
         ENDIF
 
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Find/*" />
+    STATIC METHOD Find(cName AS STRING) AS MemVar
+        VAR oMemVar := PrivateFind(cName)
+        IF oMemVar == NULL
+            oMemVar := PublicFind(cName)
+        ENDIF
+        RETURN oMemVar
+
     /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.TryGet/*" />
     STATIC METHOD TryGet(cName AS STRING, uValue OUT USUAL) AS LOGIC
         // Local takes precedence over private
         IF LocalFind(cName, OUT uValue, OUT VAR _)
             RETURN TRUE
         ENDIF
-        VAR oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        VAR oMemVar := Find(cName)
         IF oMemVar != NULL
             uValue := oMemVar:Value
             RETURN TRUE
@@ -493,10 +498,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         LOCAL oMemVar AS XSharp.MemVar
         // privates take precedence over publics
-        oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        oMemVar := Find(cName)
         IF oMemVar != NULL
             RETURN oMemVar:Value
         ENDIF
@@ -512,10 +514,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         LOCAL oMemVar AS XSharp.MemVar
         // privates take precedence over publics
-        oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        oMemVar := Find(cName)
         IF oMemVar != NULL
             RETURN oMemVar:Value
         ENDIF
@@ -534,10 +533,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         LOCAL oMemVar AS XSharp.MemVar
         // assign to existing memvar first
         // privates take precedence over publics ?
-        oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        oMemVar := Find(cName)
         IF oMemVar != NULL
             BEGIN LOCK oMemVar
                 oMemVar:Value := uValue
@@ -563,10 +559,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Clear/*" />
     STATIC METHOD Clear(cName AS STRING) AS LOGIC
-        VAR oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        VAR oMemVar := Find(cName)
         IF oMemVar != NULL
             oMemVar:Value := NIL
         ELSE

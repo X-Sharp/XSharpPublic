@@ -153,9 +153,9 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType
     RETURN SqlFunctions.SqlColumns( nStatementHandle, cTableName, cType, cCursorName)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asqlhandles/*" />
-[NeedsAccessToLocals(FALSE)];
+[FoxArrayInputParameter(1)];
 [FoxProFunction("ASQLHANDLES", FoxFunctionCategory.Array, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION ASqlHandles ([FoxArrayInputParameterAttribute] ArrayName AS USUAL, nStatementHandle := NIL AS USUAL) AS DWORD
+FUNCTION ASqlHandles ( ArrayName AS USUAL, nStatementHandle := NIL AS USUAL) AS DWORD
     LOCAL aResult AS ARRAY
     LOCAL aFoxArray AS __FoxArray
     IF ArrayName IS __FoxArray var aFox

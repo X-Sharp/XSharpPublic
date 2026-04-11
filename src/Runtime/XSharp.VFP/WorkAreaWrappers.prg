@@ -64,10 +64,17 @@ FUNCTION RecSize(uArea AS USUAL) AS INT
 // TODO(irwin): functions pending to implement
 // ---------------------------------------------------------------- //
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/afields/*" />
-[NeedsAccessToLocals(FALSE)];
+[FoxArrayInputParameter(1)];
 [FoxProFunction("AFIELDS", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION AFields([FoxArrayInputParameter] ArrayName AS USUAL, eWorkArea := NIL AS USUAL) AS INT
+FUNCTION AFields(ArrayName AS USUAL, eWorkArea := NIL AS USUAL) AS INT
     LOCAL nArea AS DWORD
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     IF IsNil(eWorkArea)
         nArea := XSharp.RuntimeState.CurrentWorkarea
     ELSE
@@ -76,15 +83,6 @@ FUNCTION AFields([FoxArrayInputParameter] ArrayName AS USUAL, eWorkArea := NIL A
 
     IF nArea == 0 || !XSharp.RT.Functions.Used(nArea)
         RETURN 0
-    ENDIF
-    LOCAL aFoxArray AS __FoxArray
-    IF ArrayName IS __FoxArray var aFox
-        aFoxArray := aFox
-    ELSEIF IsNil(ArrayName)
-        aFoxArray := __FoxArray{}
-    ELSE
-        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
-        THROW ArgumentException{cMessage}
     ENDIF
 
     VAR aStruct := XSharp.RT.Functions.DbStruct(nArea)
@@ -140,7 +138,6 @@ FUNCTION AFields([FoxArrayInputParameter] ArrayName AS USUAL, eWorkArea := NIL A
             aFoxArray[(INT)i, 18] := 0
         ENDIF
     NEXT
-    __VfpPushArrayResult(aFoxArray)
     RETURN (INT)nCount
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dbf/*" />

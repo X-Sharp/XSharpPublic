@@ -341,8 +341,6 @@ ENUM Set
 
     /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Seconds/*" />
     MEMBER Seconds				:= 148
-	/// <include file="XSharp.Core.Docs.xml" path="doc/Set.ArrayResultStack/*" />
-    MEMBER ArrayResultStack := 149    // Stack<OBJECT> used to return arrays from functions that normally return a single value, such as RDDInfo()
     // Xbase++ defines
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CharSet/*" />
     MEMBER CharSet          := 160
@@ -1068,7 +1066,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
     CASE Set.SysObject
     CASE Set.RddInfo
     CASE Set.WithStack
-    CASE Set.ArrayResultStack
         RETURN NULL
     CASE Set.Intl
     CASE Set.CollationMode

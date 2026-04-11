@@ -87,14 +87,12 @@ FUNCTION DbAlias () AS STRING
 
 #pragma options("az", ON)
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
-[NeedsAccessToLocals(FALSE)];
+[FoxArrayInputParameter(1)];
 [FoxProFunction("ADATABASES", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION ADatabases([FoxArrayInputParameter] ArrayName AS USUAL) AS DWORD
+FUNCTION ADatabases(ArrayName AS USUAL) AS DWORD
     LOCAL aFoxArray AS __FoxArray
     IF ArrayName IS __FoxArray var aFox
         aFoxArray := aFox
-    ELSEIF IsNil(ArrayName)
-        aFoxArray := __FoxArray{}
     ELSE
         var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
         THROW ArgumentException{cMessage}
@@ -109,7 +107,6 @@ FUNCTION ADatabases([FoxArrayInputParameter] ArrayName AS USUAL) AS DWORD
             nDb += 1
         NEXT
     ENDIF
-    __VfpPushArrayResult(aFoxArray)
     RETURN result
 #pragma options("az", default)
 

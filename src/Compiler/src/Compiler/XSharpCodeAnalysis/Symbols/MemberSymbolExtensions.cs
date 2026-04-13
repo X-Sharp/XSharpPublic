@@ -123,20 +123,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             if (method is MethodSymbol)
             {
-                var atts = method.GetAttributes();
-                foreach (var att in atts)
-                {
-                    var cls = att.AttributeClass;
-                    if (cls.Name == OurTypeNames.ClipperCallingConventionAttribute &&
-                        string.Equals(cls.ConstructedFrom.ContainingAssembly.Name, XSharpAssemblyNames.XSharpCore, System.StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
                 var pars = method.GetParameters();
                 if (pars.Length != 1)
                     return false;
                 var par = pars[0];
-                if (par.Name == XSharpSpecialNames.ClipperArgs)
-                    return true;
+                if (par.IsParams)
+                { 
+                    if (par.Name == XSharpSpecialNames.ClipperArgs)
+                        return true;
+                    if (par.Type is ArrayTypeSymbol ats && ats.ElementType.IsUsualType())
+                    { 
+                      return true;
+                    }
+                }
             }
 
             return false;

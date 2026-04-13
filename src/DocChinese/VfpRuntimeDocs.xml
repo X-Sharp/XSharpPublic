@@ -743,21 +743,21 @@
         <item>
           <term>2</term>
           <description>
-            Field type:
-            C = Character
-            Y = Currency
-            D = Date
-            T = DateTime
-            B = Double
-            F = Float
-            G = General
-            I = Integer
-            L = Logical
-            M = Memo
-            N = Numeric
-            Q = Varbinary
-            V = Varchar and Varchar (Binary)
-            W = Blob
+            Field type:<br/>
+            C = Character<br/>
+            Y = Currency<br/>
+            D = Date<br/>
+            T = DateTime<br/>
+            B = Double<br/>
+            F = Float<br/>
+            G = General<br/>
+            I = Integer<br/>
+            L = Logical<br/>
+            M = Memo<br/>
+            N = Numeric<br/>
+            Q = Varbinary<br/>
+            V = Varchar and Varchar (Binary)<br/>
+            W = Blob<br/>
           </description>
           <description>
             Character

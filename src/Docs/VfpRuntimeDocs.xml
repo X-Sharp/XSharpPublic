@@ -719,7 +719,7 @@
     <returns>
       Numeric data type. <b>AFIELDS( )</b> returns the number of fields in the table. The array contains 18 columns and has the same number of rows as fields in the table.
       The following table describes the content of each column in the first row of the array and the data type of the information stored in each column. Values for table-specific properties in columns 10 through 16 only appear in the first row of the array. One row is created for each field in the table.
-      list type="table">
+      <list type="table">
       <item>
         <term>1</term>
         <description>
@@ -732,21 +732,21 @@
       <item>
         <term>2</term>
         <description>
-          Field type:
-          C = Character
-          Y = Currency
-          D = Date
-          T = DateTime
-          B = Double
-          F = Float
-          G = General
-          I = Integer
-          L = Logical
-          M = Memo
-          N = Numeric
-          Q = Varbinary
-          V = Varchar and Varchar (Binary)
-          W = Blob
+          Field type: <br/>
+          C = Character<br/>
+          Y = Currency<br/>
+          D = Date<br/>
+          T = DateTime<br/>
+          B = Double<br/>
+          F = Float<br/>
+          G = General<br/>
+          I = Integer<br/>
+          L = Logical<br/>
+          M = Memo<br/>
+          N = Numeric<br/>
+          Q = Varbinary<br/>
+          V = Varchar and Varchar (Binary)<br/>
+          W = Blob<br/>
         </description>
         <description>
           Character
@@ -1170,8 +1170,8 @@
       Functions
       Two-dimensional:
       Function name   [M] nParamR [- nParamT]
-      The matchFlag, M, specifies that you must use the full    
-      function name in code.nParamR specifies the number of required parameters. 
+      The matchFlag, M, specifies that you must use the full
+      function name in code.nParamR specifies the number of required parameters.
       nParamT specifies total number of possible parameters.
       3
       Base classes
@@ -1182,7 +1182,7 @@
       DBC event name (The displayed name omits the "DBC_" prefix of the event name.)
     </param>
     <remarks>
-      The ALANGUAGE( ) function returns an array of all valid X# commands and functions. 
+      The ALANGUAGE( ) function returns an array of all valid X# commands and functions.
       To return object information, use the AMEMBERS( ) function.
       Use the ALANGUAGE( ) function to access X# functions as in the following code:
        <code language="X#">   ALANGUAGE(FuncArr,2)</code>

@@ -24,8 +24,8 @@ namespace XSharp.Support
 
         static Logger()
         {
-            XSettings.Logger = new LoggerImpl();
             XSettings.ShellLink = new XSharpShellLink();
+            XSettings.Logger = new LoggerImpl();
         }
 
         public static bool Initialize()

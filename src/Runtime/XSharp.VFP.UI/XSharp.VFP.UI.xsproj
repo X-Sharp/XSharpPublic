@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <NoWarn>$(DisabledWarnings);108,114</NoWarn>
+    <NoWarn>$(NoWarn);$(DisabledWarnings);108,114</NoWarn>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
     <IncludePaths>$(Solutiondir)\Common</IncludePaths>

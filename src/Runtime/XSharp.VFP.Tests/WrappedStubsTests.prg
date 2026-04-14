@@ -30,6 +30,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(nTotalSpace >= nFreeSpace, "Total space must be >= Free space")
         END METHOD
 
+        #pragma options ("undeclared", on)
         [Fact, Trait("Category", "RuntimeCore")];
         METHOD ADirTest() AS VOID
             LOCAL nFiles AS INT
@@ -51,7 +52,14 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             IF nFiles > 0
                 Assert.NotNull(aFilesOriginal[1,1])
             ENDIF
+
+            // Test undeclared array
+            nFiles := (INT)ADir(aNonExistentArray, "*.*")
+            Assert.True(nFiles > 0)
+            Assert.Equal(5, (INT)aNonExistentArray:Columns)
+            Assert.Equal(nFiles, (int)aNonExistentArray:Rows)
         END METHOD
+        #pragma options("undeclared", default)
 
         [Fact, Trait("Category", "RuntimeCore")];
         METHOD VersionTest() AS VOID

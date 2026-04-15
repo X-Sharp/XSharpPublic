@@ -206,6 +206,7 @@ FUNCTION FWrite(nFileHandle AS INT64, cExpression AS STRING, nCharactersWritten 
     ENDIF
     RETURN (INT) XSharp.Core.Functions.FWrite(nFileHandle, cExpression, (DWORD) nCharactersWritten)
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adir/*" />
 [FoxArrayInputParameter(1)];
 [FoxProFunction("ADIR", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION ADir(ArrayName AS USUAL, cFileSkeleton := "" AS STRING, cAttribute := "" AS STRING, nFlag := 0 AS INT) AS INT

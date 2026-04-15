@@ -5,17 +5,19 @@
 
 USING System
 USING XSharp.VFP
+USING XSharp.Internal
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("APRINTERS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION APrinters( ArrayName , nValue ) AS INT CLIPPER
+FUNCTION APrinters( ArrayName AS USUAL, nValue := 0 AS INT ) AS INT
     LOCAL aPrintersFromService AS ARRAY
     LOCAL nRows AS DWORD
     LOCAL nCols AS DWORD
 
-    Default(@nValue, 0)
-    nCols := (DWORD)IIF((INT)nValue > 0, 5, 2)
-    aPrintersFromService := VfpUIService.Provider:GetPrinters((INT)nValue)
+    nCols := (DWORD)IIF(nValue > 0, 5, 2)
+    aPrintersFromService := VfpUIService.Provider:GetPrinters(nValue)
+
     nRows := XSharp.VFP.Functions.ALen((__FoxArray)aPrintersFromService, 1)
 
     IF nRows > 0
@@ -28,6 +30,10 @@ FUNCTION APrinters( ArrayName , nValue ) AS INT CLIPPER
                 faDest[i, j] := faSrc[i, j]
             NEXT
         NEXT
+    ELSE
+        IF ArrayName IS __FoxArray VAR faDest
+            faDest:ReDim(0, 0)
+        ENDIF
     ENDIF
 
     RETURN (INT)nRows

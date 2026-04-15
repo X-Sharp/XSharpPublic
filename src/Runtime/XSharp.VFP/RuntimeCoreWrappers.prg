@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING XSharp.Internal
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/date/*" />
 [FoxProFunction("DATE", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -206,8 +207,9 @@ FUNCTION FWrite(nFileHandle AS INT64, cExpression AS STRING, nCharactersWritten 
     RETURN (INT) XSharp.Core.Functions.FWrite(nFileHandle, cExpression, (DWORD) nCharactersWritten)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adir/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("ADIR", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION ADir(ArrayName AS ARRAY, cFileSkeleton := "" AS STRING, cAttribute := "" AS STRING, nFlag := 0 AS INT) AS INT
+FUNCTION ADir(ArrayName AS USUAL, cFileSkeleton := "" AS STRING, cAttribute := "" AS STRING, nFlag := 0 AS INT) AS INT
     LOCAL aDirInfo AS ARRAY
     LOCAL nFiles AS DWORD
     LOCAL i AS DWORD
@@ -220,13 +222,13 @@ FUNCTION ADir(ArrayName AS ARRAY, cFileSkeleton := "" AS STRING, cAttribute := "
     nFiles := XSharp.RT.Functions.ALen(aDirInfo)
 
     IF nFiles > 0
+        // Redimensiona o inicializa el USUAL mágicamente creado
+        ArrayName := __FoxRedim(ArrayName, nFiles, 5)
+
         IF ArrayName IS __FoxArray VAR foxArray
-            foxArray:ReDim(nFiles, 5) // (name, size, date, time, attributes)
             FOR i := 1 TO nFiles
                 LOCAL aFile AS ARRAY
                 aFile := (ARRAY) aDirInfo[i]
-
-                // nFlag 0 = UPPERCASE (Default in VFP)
                 IF nFlag == 0
                     foxArray[(INT)i, 1] := ((STRING)aFile[1]):ToUpper()
                 ELSE
@@ -238,6 +240,7 @@ FUNCTION ADir(ArrayName AS ARRAY, cFileSkeleton := "" AS STRING, cAttribute := "
                 foxArray[(INT)i, 5] := (STRING)aFile[5]
             NEXT
         ELSE
+            // Por si nos enviaron un ARRAY nativo tradicional de VO
             XSharp.RT.Functions.ASize(ArrayName, nFiles)
             FOR i := 1 TO nFiles
                 LOCAL aFile AS ARRAY
@@ -245,14 +248,14 @@ FUNCTION ADir(ArrayName AS ARRAY, cFileSkeleton := "" AS STRING, cAttribute := "
                 IF nFlag == 0
                     aFile[1] := ((STRING)aFile[1]):ToUpper()
                 ENDIF
-                ArrayName[i] := aFile
+                ((ARRAY)ArrayName)[i] := aFile
             NEXT
         ENDIF
     ELSE
         IF ArrayName IS __FoxArray VAR foxArray
             foxArray:ReDim(0, 0)
-        ELSE
-            XSharp.RT.Functions.ASize(ArrayName, 0)
+        ELSEIF ArrayName IS ARRAY VAR arr
+            XSharp.RT.Functions.ASize(arr, 0)
         ENDIF
     ENDIF
 

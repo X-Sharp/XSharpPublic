@@ -164,7 +164,7 @@
       <config-value name="versionmajor">3</config-value>
       <config-value name="versionminor">0</config-value>
       <config-value name="versionbuild">0</config-value>
-      <config-value name="lcid" translate="true">zh-cn</config-value>
+      <config-value name="lcid" translate="true">zh</config-value>
       <config-value name="charset" translate="true">GB2312_CHARSET</config-value>
       <config-value name="deffont">font-family:Verdana; font-size:10pt; color:#000000; </config-value>
       <config-value name="autohelpstart">0</config-value>
@@ -650,7 +650,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>
@@ -727,11 +727,13 @@
     </config-group>
     <config-group name="print">
       <config-value name="include">PRINT</config-value>
-      <config-value name="template">Standard_manual_A4.mnl</config-value>
+      <config-value name="template">$(HMSYS)Templates\pdf\standard_manual.mnl</config-value>
       <config-value name="colortext">0</config-value>
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
       <config-value name="tocname">Table of Contents</config-value>
+      <config-value name="printoptions">0</config-value>
+      <config-value name="printoptionscutmarks">0</config-value>
     </config-group>
     <config-group name="rtf">
       <config-value name="outputfile">XSHelp_manual.docx</config-value>
@@ -754,7 +756,7 @@
       <config-value name="publisher">XSharp BV</config-value>
     </config-group>
     <config-group name="plugins">
-      <config-value name="deepl">{&quot;sourcelang&quot;:&quot;EN&quot;,&quot;destlang&quot;:&quot;ZH-HANS&quot;,&quot;writelang&quot;:&quot;EN-US&quot;,&quot;defapiglossary&quot;:&quot;&quot;,&quot;glossarycount&quot;:&quot;0&quot;}</config-value>
+      <config-value name="deepl">{&quot;sourcelang&quot;:&quot;ZH&quot;,&quot;destlang&quot;:&quot;EN-GB&quot;,&quot;writelang&quot;:&quot;EN-US&quot;,&quot;defapiglossary&quot;:&quot;&quot;,&quot;glossarycount&quot;:&quot;0&quot;}</config-value>
     </config-group>
     <variables>
       <variable id="TXTVERSION" type="text" translate="true">Gaia (3.0.0.3)</variable>

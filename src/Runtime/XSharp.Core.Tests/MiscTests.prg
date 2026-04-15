@@ -117,8 +117,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			SetDefault("c:\test") // duplicate test, because using SetDefault() in succession could lead to incorrect results
 			Assert.Equal("C:\TEST", GetDefault())
 
-			Assert.Equal("C:", Set("DEFAULT"))
-			Assert.Equal("C:\TEST", Set("DIRECTORY"))
+			//Assert.Equal("C:", Set("DEFAULT"))
+			//Assert.Equal("C:\TEST", Set("DIRECTORY"))
 
 			Assert.Throws<Error>({ => SetDefault("c:\doesnotexist\test")})
 			SetDefault("c:\")

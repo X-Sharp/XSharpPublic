@@ -131,10 +131,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 { 
                     if (par.Name == XSharpSpecialNames.ClipperArgs)
                         return true;
-                    if (par.Type is ArrayTypeSymbol ats && ats.ElementType.IsUsualType())
-                    { 
-                      return true;
-                    }
+                    //if (par.Type is ArrayTypeSymbol ats && ats.ElementType.IsUsualType())
+                    //{ 
+                    //  return true;
+                    //}
                 }
             }
 

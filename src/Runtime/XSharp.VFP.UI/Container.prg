@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
          #include "VFPProperties.xh"
-         #include ".\Headers\VFPProperties2.xh"
+         #include ".\Headers\VFPPropertiesDynamic.xh"
 		 #include ".\Headers\ControlProperties.xh"
 
 		 #include ".\Headers\Tooltips.xh"

@@ -24,7 +24,7 @@
     <vo13>true</vo13>
     <vo14>true</vo14>
     <vo15>False</vo15>
-    <vo16>true</vo16>
+    <vo16>False</vo16>
     <lb>False</lb>
     <memvar>False</memvar>
     <undeclared>False</undeclared>
@@ -202,7 +202,7 @@
     <None Include="Generated\VFPControl.xh" />
     <None Include="Generated\VFPObject.xh" />
     <None Include="Headers\VFPObject.xh" />
-    <None Include="Headers\VFPProperties2.xh" />
+    <None Include="Headers\VFPPropertiesDynamic.xh" />
     <None Include="Properties\XSharp.bmp" />
   </ItemGroup>
   <ItemGroup>

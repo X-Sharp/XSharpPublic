@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-04-13T17:42:27.837Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-04-13T20:28:31.283Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -84,7 +84,6 @@
     <para styleclass="Heading1"><text styleclass="Heading3">Build System</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">Added the missing Chinese XML documentation file to the XSharp.VO NuGet package</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">NuGet packages are now created as part of the Runtime compilation step</text></li>
     </list>
     <para styleclass="Heading1">Changes in 3.0.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading3">Compiler</text></para>

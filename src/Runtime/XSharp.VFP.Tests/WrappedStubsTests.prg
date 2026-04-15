@@ -53,11 +53,32 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 Assert.NotNull(aFilesOriginal[1,1])
             ENDIF
 
-            // Test undeclared array
-            nFiles := (INT)ADir(aNonExistentArray, "*.*")
-            Assert.True(nFiles > 0)
-            Assert.Equal(5, (INT)aNonExistentArray:Columns)
-            Assert.Equal(nFiles, (int)aNonExistentArray:Rows)
+            // Test undeclared array against a controlled directory to avoid
+            // environment-dependent failures when the current directory is empty.
+            LOCAL cTempDir AS STRING
+            LOCAL cTempFile AS STRING
+            LOCAL cSearchPattern AS STRING
+
+            cTempDir := System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.Guid.NewGuid():ToString())
+            cTempFile := System.IO.Path.Combine(cTempDir, "adirtest.tmp")
+            cSearchPattern := System.IO.Path.Combine(cTempDir, "*.*")
+
+            TRY
+                System.IO.Directory.CreateDirectory(cTempDir)
+                System.IO.File.WriteAllText(cTempFile, "x")
+
+                nFiles := (INT)ADir(aNonExistentArray, cSearchPattern)
+                Assert.True(nFiles > 0)
+                Assert.Equal(5, (INT)aNonExistentArray:Columns)
+                Assert.Equal(nFiles, (INT)aNonExistentArray:Rows)
+            FINALLY
+                IF System.IO.File.Exists(cTempFile)
+                    System.IO.File.Delete(cTempFile)
+                ENDIF
+                IF System.IO.Directory.Exists(cTempDir)
+                    System.IO.Directory.Delete(cTempDir)
+                ENDIF
+            END TRY
         END METHOD
         #pragma options("undeclared", default)
 

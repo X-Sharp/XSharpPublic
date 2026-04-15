@@ -1,18 +1,14 @@
 ﻿using Community.VisualStudio.Toolkit;
 
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
-using Microsoft.VisualStudio.Project;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-
-using XSharp.Settings;
-
-using XSharpModel;
+using System.Linq;
+using System.Reflection;
 
 using Task = System.Threading.Tasks.Task;
 
@@ -22,7 +18,7 @@ namespace XSharp.Project
     [Command(PackageIds.idEditProjectFile)]
     internal sealed class CommandEditProjectFile : BaseCommand<CommandEditProjectFile>
     {
-        static Dictionary<string, string> tempProjectFiles;
+        static Dictionary<string, string> tempProjectFiles; // key is the project file, value is the temp file
         static string tempProjectDir;
         static CommandEditProjectFile()
         {
@@ -44,7 +40,6 @@ namespace XSharp.Project
             var project = await VS.Solutions.GetActiveProjectAsync();
             VS.Events.DocumentEvents.Saved += DocumentEvents_Saved;
             VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
-            VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
 
 
             var projectNode = XSharpProjectNode.FindProject(project.FullPath);
@@ -62,16 +57,8 @@ namespace XSharp.Project
 
         }
 
-        private void ShellEvents_ShutdownStarted()
-        {
-            foreach (var item in tempProjectFiles)
-            {
-                if (File.Exists(item.Value))
-                {
-                    File.Delete(item.Value);
-                }
-            }
-        }
+
+
 
         private void DocumentEvents_Saved(string obj)
         {
@@ -100,14 +87,57 @@ namespace XSharp.Project
                 if ( item.Value == obj)
                 {
 
-                    //File.Delete(item.Value);
                     tempProjectFiles.Remove(item.Key);
                     VS.Events.DocumentEvents.Closed -= DocumentEvents_Closed;
                     VS.Events.DocumentEvents.Saved -= DocumentEvents_Saved;
+                    File.Delete(item.Value);
                     break;
 
                 }
             }
+        }
+        static FieldInfo field = null;
+        static Guid guidXmlEditor = new Guid("FA3CD31E-987B-443A-9B81-186104E8DAC1");
+        internal static void CloseProjectEditWindows()
+        {
+
+            if (field == null)
+            {
+                field = typeof(WindowFrame).GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic);
+            }
+            if (field == null)
+                return;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var documents = await VS.Windows.GetAllDocumentWindowsAsync();
+                foreach (var doc in documents.ToArray())
+                {
+                    string docName = null;
+                    if (doc.Editor == guidXmlEditor)
+                    {
+                        dynamic _frame = field.GetValue(doc);
+                        try
+                        {
+                            docName = _frame.EffectiveDocumentMoniker;
+                        }
+                        catch (Exception)
+                        {
+                            ;
+                        }
+                        if (!string.IsNullOrEmpty(docName))
+                        {
+                            if (tempProjectFiles.Values.Contains(docName))
+                            {
+                                // this triggers the Save and Close events which will remove the event handlers
+                                // and delete the temp file.
+                                await doc.CloseFrameAsync(FrameCloseOption.SaveIfDirty);
+                            }
+                        }
+                    }
+                }
+            });
+
+            return;
         }
 
 

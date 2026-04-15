@@ -245,6 +245,7 @@ namespace XSharp.Project
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            CommandEditProjectFile.CloseProjectEditWindows();
             SaveDesignerWindows();
             return CommandProgression.Continue;
         }

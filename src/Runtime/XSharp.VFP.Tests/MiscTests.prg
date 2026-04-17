@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 nHandle := FCreate(cFile, 0)
                 Assert.True(nHandle > 0, "FCreate should return a valid handle")
 
-                nWritten := FPuts(nHandle, "XSharp VFP File Test")
+                nWritten := FPutS(nHandle, "XSharp VFP File Test")
                 Assert.True(nWritten > 0, "Should have written data in the file")
 
                 IF nHandle > 0
@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                     FClose(nHandle)
                 ENDIF
 
-                IF FILE(cFile)
+                IF File(cFile)
                     File.Delete(cFile)
                 ENDIF
             END TRY
@@ -148,7 +148,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             FINALLY
                 Set(Set.Path, cOldPath)
 
-                IF FILE(cPathFile)
+                IF File(cPathFile)
                     File.Delete(cPathFile)
                 ENDIF
                 IF Directory.Exists(cSubDir)
@@ -223,17 +223,22 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         [Fact];
         METHOD TestSetDefaultTo() AS VOID
-            VAR cOldDir := SET("DEFAULT")
+            VAR cOldDir := SET("DIRECTORY")
+
+            LOCAL cTest AS STRING
 
             SET DEFAULT TO "C"
-            Assert.True(SET("DEFAULT"):StartsWith("C:", StringComparison.OrdinalIgnoreCase))
+            cTest := SET("DEFAULT")
+            Assert.True(cTest:StartsWith("C:", StringComparison.OrdinalIgnoreCase))
 
             SET DEFAULT TO "C:"
-            Assert.True(SET("DEFAULT"):StartsWith("C:", StringComparison.OrdinalIgnoreCase))
+            cTest := SET("DEFAULT")
+            Assert.True(cTest:StartsWith("C:", StringComparison.OrdinalIgnoreCase))
 
             VAR cNewDir := Path.GetTempPath()
             SET DEFAULT TO (cNewDir)
-            Assert.Equal(cNewDir:TrimEnd(c'\\'):ToUpper(), SET("DIRECTORY"):TrimEnd(c'\\'))
+            cTest := SET("DIRECTORY")
+            Assert.Equal(cNewDir:TrimEnd(c'\\'):ToUpper(), cTest:TrimEnd(c'\\'))
 
             SET DEFAULT TO ".."
             Assert.True(SET("DIRECTORY") != cNewDir:TrimEnd(c'\\'))
@@ -245,7 +250,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         [Fact];
         METHOD VfpSetDefaultRefinementTest() AS VOID
 
-            VAR cOldDir := SET("DEFAULT")
+            VAR cOldDir := SET("DIRECTORY")
 
             SET DEFAULT TO "c:\"
             SET DEFAULT TO "C:\"
@@ -258,7 +263,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             VAR dir := SET("DIRECTORY")
             Assert.Equal("C:\", (STRING)dir)
 
-            SET DEFAULT TO &cOldDir
+            SET DEFAULT TO (cOldDir)
+            
         END METHOD
 
         [Fact];
@@ -315,6 +321,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Set(Set.MemoWidth, nOld)
         END METHOD
+
 	END CLASS
 
 END NAMESPACE

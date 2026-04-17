@@ -23,6 +23,9 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "Other")];
 		METHOD IOTests() AS VOID
+			LOCAL cOldDefault AS STRING
+			cOldDefault := SetDefault()
+			
             // In the VO Dialect this is allowed with a non existing path
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
             SetDefault(WorkDir())
@@ -35,6 +38,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(cNew, SetDefault(cOld))
             // a not existing path should throw an error in the FoxPro dialect
             Assert.Throws<XSharp.Error>( { =>  SetDefault(cNew)})
+
+			SetDefault(cOldDefault)
 
 		[Fact, Trait("Category", "Other")];
         METHOD KeyboardTests() AS VOID
@@ -123,7 +128,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             VAR cTestContent := "May the Force be with you, X#"
             TRY
                 TRY
-                    SET DEVICE TO FILE (cFile)
+                    SET DEVICE TO File (cFile)
                     ? cTestContent
                 FINALLY
                     SET DEVICE TO SCREEN

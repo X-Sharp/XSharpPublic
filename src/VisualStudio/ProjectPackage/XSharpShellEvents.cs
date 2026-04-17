@@ -113,18 +113,12 @@ namespace XSharp.Project
         #region Project Events
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
-            if (IsXSharpProject(projectFileName))
+            if (XSharpModel.XProject.IsXSharpProject(projectFileName))
             {
                 checkProjectFile(projectFileName);
             }
         }
 
-        bool IsXSharpProject(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-                return false;
-            return string.Equals(Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
-        }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
         const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
@@ -448,7 +442,7 @@ namespace XSharp.Project
             // Remove document from OrphanedFilesProject
             // So it can be opened in normal project afterwards
             // when possible
-            if (!IsXSharpProject(document))
+            if (!XSharpModel.XProject.IsXSharpProject(document))
             {
                 Logger.Information("Languageservice.DocumentEvents_Closed " + document ?? "(none)");
                 var xfile = XSolution.FindFile(document);

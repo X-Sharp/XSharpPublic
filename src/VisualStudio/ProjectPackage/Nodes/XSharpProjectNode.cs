@@ -1153,7 +1153,7 @@ namespace XSharp.Project
                 this.isLoading = false;
                 foreach (var url in this.URLNodes.Keys)
                 {
-                    if (!IsXSharpProjectFile(url) && this.BuildProject != null)
+                    if (!XProject.IsXSharpProject(url) && this.BuildProject != null)
                     {
                         if (this.URLNodes[url] is XSharpFileNode node && !node.IsNonMemberItem)
                         {
@@ -1287,7 +1287,7 @@ namespace XSharp.Project
                         break;
                     case XSharpProjectReferenceNode projref:
                         var url = projref.Url;
-                        if (IsXSharpProjectFile(url))
+                        if (XProject.IsXSharpProject(url))
                         {
                             this.ProjectModel.AddProjectReference(url);
                         }
@@ -1676,7 +1676,7 @@ namespace XSharp.Project
             // XSharpFolderNode
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
-            if (IsXSharpProjectFile(url))
+            if (XProject.IsXSharpProject(url))
             {
                 this.ProjectModel.AddProjectReference(url);
             }
@@ -1744,7 +1744,7 @@ namespace XSharp.Project
             {
                 //
                 // We should remove the external projects entries
-                if (IsXSharpProjectFile(url))
+                if (XProject.IsXSharpProject(url))
                 {
                     this.ProjectModel.RemoveProjectReference(url);
                 }
@@ -1779,17 +1779,6 @@ namespace XSharp.Project
             return base.ReopenItem(itemId, ref editorType, physicalView, ref logicalView, docDataExisting, out frame);
         }
 
-
-        /// <summary>
-        /// Check if fullpath points to a XSharp Project file.
-        /// </summary>
-        /// <param name="fullPath"></param>
-        /// <returns></returns>
-        private bool IsXSharpProjectFile(string fullPath)
-        {
-            return fullPath.EndsWith(".xsproj", StringComparison.OrdinalIgnoreCase)
-                || fullPath.EndsWith(".xsprj", StringComparison.OrdinalIgnoreCase);
-        }
 
         /// <summary>
         /// Check if fullpath points to a file, whose extension ends with "proj" so it might be project file.

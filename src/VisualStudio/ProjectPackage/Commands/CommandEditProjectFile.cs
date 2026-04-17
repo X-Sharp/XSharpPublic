@@ -98,9 +98,10 @@ namespace XSharp.Project
         }
         static FieldInfo field = null;
         static Guid guidXmlEditor = new Guid("FA3CD31E-987B-443A-9B81-186104E8DAC1");
+        static Guid guidProjectDesigner = new Guid("04b8ab82-a572-4fef-95ce-5222444b6b64");
         internal static void CloseProjectEditWindows()
         {
-
+            var toClose = new List<WindowFrame>();
             if (field == null)
             {
                 field = typeof(WindowFrame).GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -112,7 +113,22 @@ namespace XSharp.Project
                 var documents = await VS.Windows.GetAllDocumentWindowsAsync();
                 foreach (var doc in documents.ToArray())
                 {
-                    string docName = null;
+                    string docName = "";
+                    if (doc.Editor == guidProjectDesigner)
+                    {
+                        dynamic _frame = field.GetValue(doc);
+                        try
+                        {
+                            docName = _frame.EffectiveDocumentMoniker;
+                        }
+                        catch (Exception)
+                        {
+                            docName = "";
+                        }
+                        if (XSharpModel.XProject.IsXSharpProject(docName))
+
+                            toClose.Add(doc);
+                    }
                     if (doc.Editor == guidXmlEditor)
                     {
                         dynamic _frame = field.GetValue(doc);
@@ -122,18 +138,20 @@ namespace XSharp.Project
                         }
                         catch (Exception)
                         {
-                            ;
+                            docName = "";
                         }
                         if (!string.IsNullOrEmpty(docName))
                         {
                             if (tempProjectFiles.Values.Contains(docName))
                             {
-                                // this triggers the Save and Close events which will remove the event handlers
-                                // and delete the temp file.
-                                await doc.CloseFrameAsync(FrameCloseOption.SaveIfDirty);
+                                toClose.Add(doc);
                             }
                         }
                     }
+                }
+                foreach (var frame in toClose)
+                {
+                    await frame.CloseFrameAsync(FrameCloseOption.SaveIfDirty);
                 }
             });
 

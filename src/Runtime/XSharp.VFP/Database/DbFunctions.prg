@@ -279,7 +279,8 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
         __DbPopOptimize(lNoOptimize, lOldOpt)
     END TRY
 
-FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
+[FoxArrayInputParameter(1)];
+FUNCTION DbCopyToArray(uSource AS USUAL, aFieldList := NIL AS USUAL, cbForCondition := NIL AS USUAL, cbWhileCondition := NIL AS USUAL, nNext := NIL AS USUAL,nRecord := NIL AS USUAL, lRest := NIL AS USUAL, lNoOptimize := NIL AS USUAL) AS ARRAY strict
     // COPY TO ARRAY doed not have a MEMO keyword, so automatically include memo fields
     VAR aFields := __BuildFieldList(aFieldList, TRUE)
     LOCAL aResult := {} AS ARRAY
@@ -324,7 +325,7 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
     cbAction :=  {|| AAdd(aResult, DbCopyToArraySingleRecord(aFields)), ALen(aResult) < nRows }
     DbEval( cbAction, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize )
     IF aSource != NULL_ARRAY
-        nColumns  := Math.Min(nColumns, FCount())
+        nColumns  := Math.Min(nColumns, (DWORD) aFields:Count)
         IF aFox != NULL
             __FoxFillArray(aFox, NIL)
         ELSE

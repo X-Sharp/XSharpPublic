@@ -57,7 +57,7 @@ CLASS Win32FileStream INHERIT System.IO.FileStream
         LOCAL buffer := IntPtr.Zero AS IntPtr
         //
         fOk 	:= FALSE
-        buffer 	:= _AllocBuffer(count)
+        buffer 	:= SELF:_AllocBuffer(count)
         fOk 	:= Win32FileStream.ReadFile(SELF:hFile, (buffer + offset), count, OUT numBytesRead, System.IntPtr.Zero)
         IF (! fOk)
             RETURN -1
@@ -85,7 +85,7 @@ CLASS Win32FileStream INHERIT System.IO.FileStream
         LOCAL buffer := IntPtr.Zero AS IntPtr
 
         fOk := FALSE
-        buffer := _AllocBuffer(count)
+        buffer := SELF:_AllocBuffer(count)
         Marshal.Copy(bytes, 0, buffer, count)
         fOk := Win32FileStream.WriteFile(SELF:hFile, (buffer + offset), count, OUT lpNumberOfBytesWritten, 0)
         IF (! fOk)

@@ -314,6 +314,9 @@ CLASS Xide.Unit.Assert
 			XideUnitTest.TestRun(FALSE , "No exception occured : ", ProcFile(1) , ProcLine(1))
 		END IF
 		RETURN Default(T)
+	STATIC METHOD Empty(c AS STRING) AS LOGIC
+	RETURN String.IsNullOrEmpty(c)
+
 END CLASS
 
 

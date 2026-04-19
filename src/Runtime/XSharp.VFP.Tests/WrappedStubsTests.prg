@@ -82,6 +82,21 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         END METHOD
         #pragma options("undeclared", default)
 
+        #pragma options ("undeclared", on)
+        [Fact];
+        METHOD ACopyTest() AS VOID
+            DIMENSION aTest[3]
+            aTest[1] := "Apple"
+            aTest[2] := "Banana"
+            aTest[3] := "Pineapple"
+
+            VAR nElements := (INT)ACopy(aTest, aCopied)
+
+            Assert.True(nElements > 0)
+            Assert.Equal(3, (INT)ALEN(aCopied))
+        END METHOD
+        #pragma options ("undeclared", default)
+
         [Fact, Trait("Category", "RuntimeCore")];
         METHOD VersionTest() AS VOID
             LOCAL uRet AS USUAL

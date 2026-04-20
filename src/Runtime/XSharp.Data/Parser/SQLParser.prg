@@ -13,7 +13,7 @@ using XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.Parsers
 /// <include file="XSharp.Data.Docs.xml" path="doc/SQLParser/*" />
-CLASS SQLParser
+PARTIAL CLASS SQLParser
     PRIVATE _list as XTokenList
     PRIVATE _Error as STRING
     PROPERTY Error as STRING GET _Error

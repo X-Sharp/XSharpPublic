@@ -127,6 +127,7 @@ ENUM XTokenType
 #region SQL Keywords          // Only relevant keywords that delimit groups
     MEMBER FIRST_KEYWORD
     MEMBER @@AS
+    MEMBER AND
     MEMBER ALTER
     MEMBER AUTOINC
     MEMBER CHECK
@@ -150,6 +151,7 @@ ENUM XTokenType
 	MEMBER NOCPTRANS
 	MEMBER NOT
     MEMBER NULL
+    MEMBER OR
     MEMBER ORDER
     MEMBER PRIMARY
     MEMBER REFERENCES

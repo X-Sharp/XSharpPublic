@@ -60,7 +60,6 @@
     <File Path="Common/set.xh" />
     <File Path="Common/version.Targets" />
     <File Path="Common/version.xh" />
-    <File Path="Common/VFPProperties.xh" />
     <File Path="Common/XbasePPCmd.xh" />
     <File Path="Common/XSharp.snk" />
     <File Path="Common/XSharpConstants.cs" />

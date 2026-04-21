@@ -6,16 +6,42 @@
     <BuildType Name="Release" />
   </Configurations>
   <Folder Name="/Runtime/">
-    <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c3bc651e-9d08-43e1-bbb2-90bf5232a4df" />
+    <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c3bc651e-9d08-43e1-bbb2-90bf5232a4df">
+      <BuildDependency Project="Runtime/MacroCompiler/XSharp.MacroCompiler.Next.csproj" />
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
     <Project Path="Runtime/MacroCompiler/XSharp.MacroCompiler.Next.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511" />
     <Project Path="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c4235542-910a-44d2-8a1c-874bfeab0705" />
-    <Project Path="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="9cea0df2-04fb-499e-9976-5c9cf7c0e689" />
-    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b99e16c3-beb9-4859-8583-7e11abadeb1f" />
-    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="6e9f3e6a-a2e9-4ff1-8c50-d01a919f9303" />
-    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="dbc49471-370e-4e0c-8cd0-4eef9214b6ae" />
-    <Project Path="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7cc1df6f-21ac-4ead-909d-cb4a076d25c7" />
-    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="4b5dd22f-758f-4459-9f6b-6a3b32ff72bc" />
-    <Project Path="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="984b9b75-017e-4db6-8ad0-3bcce3943502" />
+    <Project Path="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="9cea0df2-04fb-499e-9976-5c9cf7c0e689">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b99e16c3-beb9-4859-8583-7e11abadeb1f">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="6e9f3e6a-a2e9-4ff1-8c50-d01a919f9303">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="dbc49471-370e-4e0c-8cd0-4eef9214b6ae">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7cc1df6f-21ac-4ead-909d-cb4a076d25c7">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="4b5dd22f-758f-4459-9f6b-6a3b32ff72bc">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="984b9b75-017e-4db6-8ad0-3bcce3943502">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
     <Project Path="Runtime/XSharp.XPP/XSharp.XPP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="4407a1ae-94c3-4340-a9cd-ed702cd85d8c" />
   </Folder>
   <Folder Name="/Solution Items/">
@@ -53,13 +79,24 @@
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/VOSDK/">
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5cb418c0-2dce-46fe-86e5-e3cb8fd28a25" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5cb418c0-2dce-46fe-86e5-e3cb8fd28a25">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
     <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d7079298-1712-4b03-ad76-4ec53bfe8356" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
   </Folder>
   <Folder Name="/VOSDKTyped/">
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="273a5f69-9a7c-44d1-b84b-f01685167adb" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ece29add-aa72-41b5-9713-d50512eca3bb" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ece29add-aa72-41b5-9713-d50512eca3bb">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="55399d21-e76c-4c41-9f85-2a7197eaecdd" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="838161b0-44da-42ab-af93-738ec3fc148e" />
   </Folder>

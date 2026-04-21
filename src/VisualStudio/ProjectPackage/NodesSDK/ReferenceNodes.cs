@@ -35,6 +35,7 @@ namespace XSharp.Project
             {
                 sdkProject.SuspendBuild = old;
             }
+        }
     }
 
     class XSharpSDKProjectReferenceNode : XSharpProjectReferenceNode
@@ -97,7 +98,10 @@ namespace XSharp.Project
             foreach (var element in elements)
             {
                 if (this.ItemNode.Item.HasMetadata(element))
+                {
                     this.ItemNode.Item.RemoveMetadata(element);
+                    this.ProjectMgr.SetProjectFileDirty(true);
+                }
 
             }
         }

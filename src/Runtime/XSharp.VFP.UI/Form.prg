@@ -17,9 +17,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Form INHERIT System.Windows.Forms.Form IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
-#include ".\Headers\FontProperties.xh"
+#include "FontProperties.xh"
 
-#include ".\Headers\MousePointer.xh"
+#include "MousePointer.xh"
 
 
 #region VFP Form Properties to emulate
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// Ok,BindControls, but it seems that Grids are Binding based on RecordSource setting..??
 		PROPERTY BindControls AS LOGIC AUTO
 
-		#include ".\Headers\Tooltips.xh"
+		#include "Tooltips.xh"
 
 #endregion
 
@@ -98,9 +98,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		METHOD DataSession( setSession AS INT ) AS VOID
 
-#include ".\Headers\Anchor.xh"
+#include "Anchor.xh"
 
-#include ".\Headers\ControlSource.xh"
+#include "ControlSource.xh"
 
 		PROPERTY DataEnvironment AS DataEnvironment AUTO
 
@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			NEXT
 
 
-#include ".\Headers\FormOverride.xh"
+#include "FormOverride.xh"
 			//
 		OVERRIDE METHOD Refresh() AS VOID
 			// Refresh the BindingSource of the Current Workarea/Cursor
@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ENDIF
 			ENDIF
 
-#include ".\Headers\InitCall.xh"
+#include "InitCall.xh"
 
 
 		METHOD NODEFAULT() AS VOID

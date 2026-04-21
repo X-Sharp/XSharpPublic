@@ -28,9 +28,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:Size := Size{100,24}
 			RETURN
 
-#include ".\Headers\ControlProperties.xh"
+#include "ControlProperties.xh"
 
-#include ".\Headers\ControlSource.xh"
+#include "ControlSource.xh"
 
 		PROPERTY DisplayCount AS LONG AUTO
 		PROPERTY InputMask AS STRING AUTO

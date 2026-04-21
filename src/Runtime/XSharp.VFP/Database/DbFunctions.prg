@@ -395,14 +395,18 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
                 THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_SUBARRAY_TOO_SMALL ) , 1, {u})
             ENDIF
             DbAppend()
-            // Todo Evaluate FOR clause
             FOR VAR i := 1 to aFields:Count
                 __FieldSet(aFields[i-1], aElement[i])
             NEXT
             IF oForCondition != NULL
-                LOCAL lResult as LOGIC
-                lResult := (LOGIC) oForCondition:EvalBlock()
-                IF ! lResult
+                // Evaluate the FOR condition and if it is false,
+                // refresh the buffer to remove the appended record
+                LOCAL uResult as USUAL
+                uResult := oForCondition:EvalBlock()
+                IF ! IsLogic(uResult)
+                    THROW Error.ArgumentError(__FUNCTION__, nameof(cbForCondition), __VfpStr(VFPErrors.VFP_FOR_CONDITION_MUST_BE_LOGIC), 3, {uResult})
+                ENDIF
+                IF ! uResult
                     DbBuffRefresh()
                 ENDIF
             ENDIF

@@ -158,4 +158,8 @@ FUNCTION __VfpDir(cCommand AS STRING) AS VOID
     ELSE
         QOut(cRes)
     ENDIF
+    IF lToPrinter
+        //Todo Implement printing
+        NOP
+    ENDIF
 RETURN

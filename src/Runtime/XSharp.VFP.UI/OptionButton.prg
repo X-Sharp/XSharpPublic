@@ -28,11 +28,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:Size := Size{10,16}
 
 
-		#include ".\Headers\ControlProperties.xh"
+		#include "ControlProperties.xh"
 
-		#include ".\Headers\FontProperties.xh"
+		#include "FontProperties.xh"
 
-		#include ".\Headers\ControlSource.xh"
+		#include "ControlSource.xh"
 
 	END CLASS
 

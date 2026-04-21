@@ -24,10 +24,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
          #include "VFPProperties.xh"
-         #include ".\Headers\VFPPropertiesDynamic.xh"
-		 #include ".\Headers\ControlProperties.xh"
+         #include "VFPPropertiesDynamic.xh"
+		 #include "ControlProperties.xh"
 
-		 #include ".\Headers\Tooltips.xh"
+		 #include "Tooltips.xh"
 
 			// This is a fake property, just here to ease Code Generation
 			//PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO

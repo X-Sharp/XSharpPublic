@@ -27,14 +27,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
             LOCAL oOld AS OBJECT
             LOCAL oNew AS OBJECT
             LOCAL oTest AS OBJECT
-            
+
             oOld := SysObject()
             oTest := OBJECT{}
             oNew := SysObject(oTest)
-            
+
             // Should return the previously set object
             Assert.Equal(oTest, SysObject())
-            
+
             // Restore original
             SysObject(oOld)
         END METHOD
@@ -43,7 +43,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         PUBLIC METHOD SysObject_SetNull_HandlesGracefully() AS VOID
             LOCAL oOld AS OBJECT
             oOld := SysObject()
-            
+
             TRY
                 SysObject(NULL)
                 // Should handle NULL gracefully
@@ -61,13 +61,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
         PUBLIC METHOD OClone_SimpleObject_CreatesClone() AS VOID
             LOCAL oOriginal AS TestClass
             LOCAL oClone AS TestClass
-            
+
             oOriginal := TestClass{}
             oOriginal:Name := "Original"
             oOriginal:Value := 42
-            
+
             oClone := (TestClass)OClone(oOriginal)
-            
+
             Assert.NotNull(oClone)
             Assert.NotSame(oOriginal, oClone)
             Assert.Equal(oOriginal:Name, oClone:Name)
@@ -85,13 +85,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
         PUBLIC METHOD OClone_ModifyClone_DoesNotAffectOriginal() AS VOID
             LOCAL oOriginal AS TestClass
             LOCAL oClone AS TestClass
-            
+
             oOriginal := TestClass{}
             oOriginal:Name := "Original"
-            
+
             oClone := (TestClass)OClone(oOriginal)
             oClone:Name := "Modified"
-            
+
             Assert.Equal("Original", oOriginal:Name)
             Assert.Equal("Modified", oClone:Name)
         END METHOD

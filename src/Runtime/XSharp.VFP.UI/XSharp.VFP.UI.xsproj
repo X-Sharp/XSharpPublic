@@ -43,7 +43,7 @@
     <NoWarn>$(NoWarn);$(DisabledWarnings);108,114</NoWarn>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
-    <IncludePaths>$(Solutiondir)\Common</IncludePaths>
+    <IncludePaths>$(ProjectDir)..\XSharp.VFP%3b$(ProjectDir)\Headers</IncludePaths>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

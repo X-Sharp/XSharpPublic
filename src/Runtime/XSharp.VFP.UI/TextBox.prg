@@ -258,11 +258,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END METHOD
 
 
-		#include ".\Headers\TextControlProperties.xh"
+		#include "TextControlProperties.xh"
 
-		#include ".\Headers\FontProperties.xh"
+		#include "FontProperties.xh"
 
-		#include ".\Headers\ControlSource.xh"
+		#include "ControlSource.xh"
 
 	END CLASS
 

@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         #include "Generated\VFPContainer.xh"
         #include "VFPProperties.xh"
 
-        #include ".\Headers\ControlProperties.xh"
+        #include "ControlProperties.xh"
 
 
         CONSTRUCTOR(  ) STRICT

@@ -45,9 +45,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:BackColor := Color.Transparent
 
 
-			#include ".\Headers\TextControlProperties.xh"
+			#include "TextControlProperties.xh"
 
-			#include ".\Headers\FontProperties.xh"
+			#include "FontProperties.xh"
 
 [System.ComponentModel.DefaultValue(0)];
         PROPERTY DisabledBackColor AS LONG AUTO

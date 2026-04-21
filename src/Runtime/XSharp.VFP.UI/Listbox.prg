@@ -28,9 +28,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 			RETURN
 
-#include ".\Headers\ControlProperties.xh"
+#include "ControlProperties.xh"
 
-#include ".\Headers\ControlSource.xh"
+#include "ControlSource.xh"
 
 		PROPERTY AutoHideScrollBar AS LONG AUTO
 		PROPERTY NullDisplay AS String AUTO

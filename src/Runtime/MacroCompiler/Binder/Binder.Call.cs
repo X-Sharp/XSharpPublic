@@ -379,7 +379,7 @@ namespace XSharp.MacroCompiler
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
                 // only write back to real locals. Do not call IVarPut() or an AssignExpr for properties
                 // or fields, or write back to auto vars or alias expressions, as they will be re-evaluated on each access and the conversion will be applied again, which is not correct for ref arguments
-                if (e.Symbol is LocalSymbol)
+                if (e.Symbol is LocalSymbol || e is AutoVarExpr)
                     HandleArgWriteBack(conv, e, ref writeBack);
             }
             if (ovRes.MissingArgs > 0)

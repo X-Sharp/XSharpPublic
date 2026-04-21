@@ -129,7 +129,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             LOCAL cOldPath AS STRING
 
             cSubDir := Path.Combine(Path.GetTempPath(), "VfpSetPathTest_" + Guid.NewGuid():ToString("N"))
-            Directory.CreateDirectory(cSubDir)
+            System.IO.Directory.CreateDirectory(cSubDir)
 
             cPathFile := Path.Combine(cSubDir, "hidden_data.txt")
             File.WriteAllText(cPathFile, "Data")
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("C:\", (STRING)dir)
 
             SET DEFAULT TO (cOldDir)
-            
+
         END METHOD
 
         [Fact];

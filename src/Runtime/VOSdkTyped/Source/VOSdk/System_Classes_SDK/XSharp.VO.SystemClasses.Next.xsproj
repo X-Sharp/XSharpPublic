@@ -16,12 +16,8 @@
     <Vo5>False</Vo5>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core.Next</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Name>XSharp.RT.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.prg" />

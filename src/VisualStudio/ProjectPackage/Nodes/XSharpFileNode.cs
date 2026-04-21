@@ -718,6 +718,19 @@ namespace XSharp.Project
                     break;
             }
         }
+
+        bool ItemHasValue(string itemName, string value)
+        {
+            if (!ItemNode.Item.HasMetadata(itemName))
+                return false;
+            var current = ItemNode.GetMetadata(itemName);
+            if (current != null)
+            {
+                return string.Equals(current, value, StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+
         /// <summary>
         /// Returns the SubType of an XSharp FileNode. It is
         /// </summary>
@@ -731,7 +744,9 @@ namespace XSharp.Project
             {
                 try
                 {
-                    if (IsImported)
+                    if (this.ItemHasValue(ProjectFileConstants.SubType, value))
+                        return;
+                    if (IsImported && !ItemNode.Item.HasMetadata(ProjectFileConstants.SubType))
                         CreateUpdateItem();
                     ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
                     UpdateHasDesigner();
@@ -751,9 +766,14 @@ namespace XSharp.Project
             set
             {
 
-                if (IsImported)
+                if (this.ItemHasValue(ProjectFileConstants.Generator, value))
+                    return;
+                if (IsImported && ! ItemNode.Item.HasMetadata(ProjectFileConstants.Generator)   )
                     CreateUpdateItem();
-                ItemNode.SetMetadata(ProjectFileConstants.Generator, value);
+                if (value == null)
+                    ItemNode.SetMetadata(ProjectFileConstants.Generator, "");
+                else
+                    ItemNode.SetMetadata(ProjectFileConstants.Generator, value);
                 UpdateHasDesigner();
             }
         }

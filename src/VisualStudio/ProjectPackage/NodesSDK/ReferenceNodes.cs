@@ -24,16 +24,22 @@ namespace XSharp.Project
         }
         protected override void BindReferenceData()
         {
-            var sdkproject = this.ProjectMgr as XSharpSdkProjectNode;
-            var old = sdkproject.SuspendBuild;
-            sdkproject.SuspendBuild = true;
-            base.BindReferenceData();
-            sdkproject.SuspendBuild = old;
-        }
+            var sdkProject = this.ProjectMgr as XSharpSdkProjectNode;
+            var old = sdkProject.SuspendBuild;
+            sdkProject.SuspendBuild = true;
+            try
+            {
+                base.BindReferenceData();
+            }
+            finally
+            {
+                sdkProject.SuspendBuild = old;
+            }
     }
 
     class XSharpSDKProjectReferenceNode : XSharpProjectReferenceNode
     {
+
         public XSharpSDKProjectReferenceNode(ProjectNode root, string referencedProjectName, string projectPath, string projectReference)
             : base(root, referencedProjectName,projectPath,projectReference)
         {
@@ -41,33 +47,58 @@ namespace XSharp.Project
         public XSharpSDKProjectReferenceNode(ProjectNode root, ProjectElement element)
          : base(root, element)
         {
-            ClearElement(element);
+            CleanMetadata();
         }
+        private string _projectName = null;
+
+
+        protected override string ReferencedProjectName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_projectName))
+                    return _projectName;
+                _projectName = this.ItemNode.Item.EvaluatedInclude;
+                _projectName = System.IO.Path.GetFileNameWithoutExtension(_projectName);
+                return _projectName;
+            }
+
+            set
+            {
+                base.ReferencedProjectName = value;
+                CleanMetadata();
+            }
+        }
+
         protected override void BindReferenceData()
         {
-            var sdkproject = this.ProjectMgr as XSharpSdkProjectNode;
-            var old = sdkproject.SuspendBuild;
-            sdkproject.SuspendBuild = true;
-            base.BindReferenceData();
-            ClearElement(this.ItemNode);
-            sdkproject.SuspendBuild = old;
-        }
-        void ClearElement(ProjectElement element)
-        {
-            if (element.Item != null)
+            var sdkProject = this.ProjectMgr as XSharpSdkProjectNode;
+            var old = sdkProject.SuspendBuild;
+            sdkProject.SuspendBuild = true;
+            try
             {
-                // Check to see if we have the Guid and Name in the ProjectElement
-                var guid = element.GetMetadata(ProjectFileConstants.Project);
-                var name = element.GetMetadata(ProjectFileConstants.Name);
-                var priv = element.GetMetadata(ProjectFileConstants.Private);
-                var project = (XSharpProjectNode)this.ProjectMgr;
-                if (!string.IsNullOrEmpty(guid + priv + name))
-                {
-                    element.Item.RemoveMetadata(ProjectFileConstants.Project);
-                    element.Item.RemoveMetadata(ProjectFileConstants.Private);
-                    element.Item.RemoveMetadata(ProjectFileConstants.Name);
-                    project.SetProjectFileDirty(true);
-                }
+                base.BindReferenceData();
+                this.CleanMetadata();
+            }
+            finally
+            {
+                sdkProject.SuspendBuild = old;
+            }
+        }
+        string[] elements = new string[]
+        {
+            ProjectFileConstants.Project,
+            ProjectFileConstants.Private,
+            ProjectFileConstants.Name
+        };
+
+        void CleanMetadata()
+        {
+            foreach (var element in elements)
+            {
+                if (this.ItemNode.Item.HasMetadata(element))
+                    this.ItemNode.Item.RemoveMetadata(element);
+
             }
         }
     }
@@ -84,11 +115,17 @@ namespace XSharp.Project
         }
         protected override void BindReferenceData()
         {
-            var sdkproject = this.ProjectMgr as XSharpSdkProjectNode;
-            var old = sdkproject.SuspendBuild;
-            sdkproject.SuspendBuild = true;
-            base.BindReferenceData();
-            sdkproject.SuspendBuild = old;
+            var sdkProject = this.ProjectMgr as XSharpSdkProjectNode;
+            var old = sdkProject.SuspendBuild;
+            sdkProject.SuspendBuild = true;
+            try
+            {
+                base.BindReferenceData();
+            }
+            finally
+            {
+                sdkProject.SuspendBuild = old;
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using XSharp.Settings;
 using XSharpModel;
@@ -84,26 +85,39 @@ namespace XSharp.LanguageServerProtocol.Internal
                 return;
             }
 
-            _project.Close();
-            ReleaseSolution();
-            _disposed = true;
-            GC.SuppressFinalize(this);
+            try
+            {
+                _project.Close();
+            }
+            finally
+            {
+                _disposed = true;
+                ReleaseSolution();
+            }
         }
 
         private static void AcquireSolution(XSharpLspProjectOptions options)
         {
             lock (s_solutionGate)
             {
-                if (s_activeWorkspaceCount == 0 || !XSolution.IsOpen)
+                if (s_activeWorkspaceCount == int.MaxValue)
                 {
-                    EnsureSolutionOpen(options);
-                }
-                else if (XSolution.OrphanedFilesProject == null)
-                {
-                    XSolution.CreateOrphanedFilesProject();
+                    throw new InvalidOperationException("Too many active XSharp LSP workspaces.");
                 }
 
                 s_activeWorkspaceCount += 1;
+                try
+                {
+                    if (s_activeWorkspaceCount == 1)
+                    {
+                        EnsureSolutionOpen(options);
+                    }
+                }
+                catch
+                {
+                    s_activeWorkspaceCount -= 1;
+                    throw;
+                }
             }
         }
 
@@ -111,12 +125,14 @@ namespace XSharp.LanguageServerProtocol.Internal
         {
             lock (s_solutionGate)
             {
-                if (s_activeWorkspaceCount > 0)
+                if (s_activeWorkspaceCount == 0)
                 {
-                    s_activeWorkspaceCount -= 1;
+                    Debug.Fail("XSharpLspWorkspace.ReleaseSolution called with no active workspace.");
+                    return;
                 }
 
-                if (s_activeWorkspaceCount == 0 && XSolution.IsOpen)
+                s_activeWorkspaceCount -= 1;
+                if (s_activeWorkspaceCount == 0)
                 {
                     XSolution.Close();
                 }

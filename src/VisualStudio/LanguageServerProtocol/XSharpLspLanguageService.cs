@@ -331,7 +331,7 @@ namespace XSharp.LanguageServerProtocol
             return file.EntityList.LastOrDefault(e => string.Equals(e.Name, identifier, StringComparison.OrdinalIgnoreCase));
         }
 
-        private static IReadOnlyList<string> BuildUsings(XFile file, int line, string currentNamespace = "")
+        private static IList<string> BuildUsings(XFile file, int line, string currentNamespace = "")
         {
             var values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var u in file.Usings)
@@ -361,7 +361,7 @@ namespace XSharp.LanguageServerProtocol
                 }
             }
 
-            return values.ToArray();
+            return values.ToList();
         }
 
         private static IList<XSourceVariableSymbol> GetLocals(XSourceMemberSymbol member, DocumentState state)

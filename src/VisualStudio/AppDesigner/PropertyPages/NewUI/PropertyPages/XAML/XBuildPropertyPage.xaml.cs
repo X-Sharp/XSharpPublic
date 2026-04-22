@@ -84,18 +84,14 @@ namespace XSharp.Project
             var project = vm.ParentPage.ProjectMgr as ProjectNode;
             if (project == null) return;
 
-            using (var form = new XSharpSLEPropertyForm())
-            {
-                var mc = new XBuildMacroCollection(project);
-                form.SetMacros(mc);
-                form.PropertyText.Text = vm.OutputPath ?? string.Empty;
-                form.Text = BuildPropertyPagePanel.descOutputPath;
+            var dlg = new XSharpSLEDialog { Title = BuildPropertyPagePanel.descOutputPath };
+            dlg.SetMacros(new XBuildMacroCollection(project));
+            dlg.PropertyText = vm.OutputPath ?? string.Empty;
 
-                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    vm.OutputPath = form.PropertyText.Text;
-                    vm.ParentPage.SetProperty(XSharpProjectFileConstants.OutputPath, vm.OutputPath);
-                }
+            if (dlg.ShowDialog() == true)
+            {
+                vm.OutputPath = dlg.PropertyText;
+                vm.ParentPage.SetProperty(XSharpProjectFileConstants.OutputPath, vm.OutputPath);
             }
         }
 
@@ -119,18 +115,14 @@ namespace XSharp.Project
             var project = vm.ParentPage.ProjectMgr as ProjectNode;
             if (project == null) return;
 
-            using (var form = new XSharpSLEPropertyForm())
-            {
-                var mc = new XBuildMacroCollection(project);
-                form.SetMacros(mc);
-                form.PropertyText.Text = vm.IntermediateOutputPath ?? string.Empty;
-                form.Text = BuildPropertyPagePanel.descIntermediateOutputPath;
+            var dlg = new XSharpSLEDialog { Title = BuildPropertyPagePanel.descIntermediateOutputPath };
+            dlg.SetMacros(new XBuildMacroCollection(project));
+            dlg.PropertyText = vm.IntermediateOutputPath ?? string.Empty;
 
-                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    vm.IntermediateOutputPath = form.PropertyText.Text;
-                    vm.ParentPage.SetProperty(XSharpProjectFileConstants.IntermediateOutputPath, vm.IntermediateOutputPath);
-                }
+            if (dlg.ShowDialog() == true)
+            {
+                vm.IntermediateOutputPath = dlg.PropertyText;
+                vm.ParentPage.SetProperty(XSharpProjectFileConstants.IntermediateOutputPath, vm.IntermediateOutputPath);
             }
         }
 
@@ -153,19 +145,15 @@ namespace XSharp.Project
             var project = vm.ParentPage.ProjectMgr as ProjectNode;
             if (project == null) return;
 
-            using (var form = new XSharpSLEPropertyForm())
-            {
-                form.Filter = "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*";
-                var mc = new XBuildMacroCollection(project);
-                form.SetMacros(mc);
-                form.PropertyText.Text = vm.AssemblyOriginatorKeyFile ?? string.Empty;
-                form.Text = BuildPropertyPagePanel.descAssemblyOriginatorKeyFile;
+            var dlg = new XSharpSLEDialog { Title = BuildPropertyPagePanel.descAssemblyOriginatorKeyFile };
+            dlg.Filter = "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*";
+            dlg.SetMacros(new XBuildMacroCollection(project));
+            dlg.PropertyText = vm.AssemblyOriginatorKeyFile ?? string.Empty;
 
-                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    vm.AssemblyOriginatorKeyFile = form.PropertyText.Text;
-                    vm.ParentPage.SetProperty(XSharpProjectFileConstants.AssemblyOriginatorKeyFile, vm.AssemblyOriginatorKeyFile);
-                }
+            if (dlg.ShowDialog() == true)
+            {
+                vm.AssemblyOriginatorKeyFile = dlg.PropertyText;
+                vm.ParentPage.SetProperty(XSharpProjectFileConstants.AssemblyOriginatorKeyFile, vm.AssemblyOriginatorKeyFile);
             }
         }
     }

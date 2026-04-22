@@ -80,18 +80,14 @@ namespace XSharp.Project
             var project = vm.ParentPage.ProjectMgr as ProjectNode;
             if (project == null) return;
 
-            using (var form = new XSharpSLEPropertyForm())
-            {
-                var mc = new XBuildMacroCollection(project);
-                form.SetMacros(mc);
-                form.PropertyText.Text = vm.DebuggerCommand ?? string.Empty;
-                form.Text = DebugPropertyPagePanel.descDebuggerCommand;
+            var dlg = new XSharpSLEDialog { Title = DebugPropertyPagePanel.descDebuggerCommand };
+            dlg.SetMacros(new XBuildMacroCollection(project));
+            dlg.PropertyText = vm.DebuggerCommand ?? string.Empty;
 
-                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    vm.DebuggerCommand = form.PropertyText.Text;
-                    vm.ParentPage.SetProperty(XSharpProjectFileConstants.DebuggerCommand, vm.DebuggerCommand);
-                }
+            if (dlg.ShowDialog() == true)
+            {
+                vm.DebuggerCommand = dlg.PropertyText;
+                vm.ParentPage.SetProperty(XSharpProjectFileConstants.DebuggerCommand, vm.DebuggerCommand);
             }
         }
 
@@ -115,18 +111,14 @@ namespace XSharp.Project
             var project = vm.ParentPage.ProjectMgr as ProjectNode;
             if (project == null) return;
 
-            using (var form = new XSharpSLEPropertyForm())
-            {
-                var mc = new XBuildMacroCollection(project);
-                form.SetMacros(mc);
-                form.PropertyText.Text = vm.DebuggerWorkingDirectory ?? string.Empty;
-                form.Text = DebugPropertyPagePanel.descDebuggerWorkingDirectory;
+            var dlg = new XSharpSLEDialog { Title = DebugPropertyPagePanel.descDebuggerWorkingDirectory };
+            dlg.SetMacros(new XBuildMacroCollection(project));
+            dlg.PropertyText = vm.DebuggerWorkingDirectory ?? string.Empty;
 
-                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    vm.DebuggerWorkingDirectory = form.PropertyText.Text;
-                    vm.ParentPage.SetProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory, vm.DebuggerWorkingDirectory);
-                }
+            if (dlg.ShowDialog() == true)
+            {
+                vm.DebuggerWorkingDirectory = dlg.PropertyText;
+                vm.ParentPage.SetProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory, vm.DebuggerWorkingDirectory);
             }
         }
     }

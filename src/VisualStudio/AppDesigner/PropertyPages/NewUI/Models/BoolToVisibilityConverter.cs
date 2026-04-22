@@ -12,6 +12,24 @@ using System.Windows.Data;
 namespace XSharp.Project
 {
     /// <summary>
+    /// WPF value converter that negates a <see cref="bool"/> value.
+    /// Used to bind <c>IsEnabled</c> to the inverse of a boolean property
+    /// (e.g. disable a Delete button when <c>Imported</c> is <see langword="true"/>).
+    /// </summary>
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public sealed class BoolNegationConverter : IValueConverter
+    {
+        /// <inheritdoc/>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is bool b ? (object)!b : true;
+
+        /// <inheritdoc/>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is bool b ? (object)!b : false;
+    }
+
+
+    /// <summary>
     /// WPF value converter that maps a <see cref="bool"/> to a
     /// <see cref="Visibility"/> value, with optional inversion.
     /// Used at least in XGeneralPropertyPage.xaml, UserControl

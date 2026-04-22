@@ -46,6 +46,8 @@ namespace XSharp.Project
         /// <returns>The newly created main control that hosts the property page.</returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
+            if (IsSdkProject)
+                return new XGlobalUsingsPropertyPageXamlHost(this);
             return new XGlobalUsingsPropertyPagePanel(this);
         }
     }

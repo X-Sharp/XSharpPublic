@@ -6,6 +6,7 @@
 
 using Microsoft.VisualStudio.Project;
 using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -86,10 +87,17 @@ namespace XSharp.Project
             // Fill the UserControl so VS can resize it freely.
             this.Dock = DockStyle.Fill;
 
+            // Make the UserControl background transparent so the VS
+            // property-page host background shows through (no grey border).
+            this.BackColor = Color.Transparent;
+
             // Create the ElementHost bridge, also filling its parent.
             elementHost = new ElementHost
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                // Transparent background so no white/grey rectangle appears
+                // around the WPF content when VS uses a dark or custom theme.
+                BackColorTransparent = true,
             };
             this.Controls.Add(elementHost);
 

@@ -1,0 +1,69 @@
+<UserControl
+    x:Class="XSharp.Project.XBuildEventsPropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    mc:Ignorable="d"
+    d:DesignHeight="420" d:DesignWidth="660"
+    UseLayoutRounding="True"
+    toolkit:Themes.UseVsTheme="True"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit">
+
+    <!--
+        Build Events property page — WPF/XAML implementation (SDK-style projects).
+        DataContext: XBuildEventsPropertyPageViewModel (set by XBuildEventsPropertyPageXamlHost).
+
+        Layout mirrors the WinForms XBuildEventsPropertyPagePanel:
+          Group 1 — Pre-build Event Command Line  (multiline TextBox + "Edit Pre-build..." button)
+          Group 2 — Post-build Event Command Line (multiline TextBox + "Edit Post-build..." button)
+                    Run the post-build event:     (ComboBox)
+    -->
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="8">
+
+            <!-- ==================== Pre-build group ==================== -->
+            <GroupBox Header="{Binding CaptPreBuildEvent}" Margin="0,0,0,8">
+                <StackPanel Margin="4">
+                    <TextBox Text="{Binding PreBuildEvent, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             AcceptsReturn="True"
+                             Height="90"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             FontFamily="Consolas"
+                             Margin="0,0,0,4"/>
+                    <Button Content="{Binding CaptEditPreBuild}"
+                            HorizontalAlignment="Right"
+                            MinWidth="120"
+                            Click="OnEditPreBuildClick"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- ==================== Post-build group ==================== -->
+            <GroupBox Header="{Binding CaptPostBuildEvent}" Margin="0,0,0,8">
+                <StackPanel Margin="4">
+                    <TextBox Text="{Binding PostBuildEvent, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             AcceptsReturn="True"
+                             Height="90"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             FontFamily="Consolas"
+                             Margin="0,0,0,4"/>
+                    <Button Content="{Binding CaptEditPostBuild}"
+                            HorizontalAlignment="Right"
+                            MinWidth="120"
+                            Click="OnEditPostBuildClick"
+                            Margin="0,0,0,8"/>
+
+                    <!-- Run post-build combo -->
+                    <Label Content="{Binding CaptRunPostBuildEvent}" Margin="0,0,0,2" Padding="0"/>
+                    <ComboBox ItemsSource="{Binding RunPostBuildEventValues}"
+                              SelectedItem="{Binding RunPostBuildEvent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

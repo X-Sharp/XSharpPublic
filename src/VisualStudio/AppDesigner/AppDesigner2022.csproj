@@ -55,6 +55,11 @@
     <Compile Include="PropertyPages\NewUI\Models\XPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <!-- WPF macro/string editor dialogs — used by SDK-style property page code-behinds -->
+    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpMacroDialogViewModel.cs" />
+    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpSLEDialog.xaml.cs" />
+    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpMLEDialog.xaml.cs" />
+    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpBuildEventEditorDialog.xaml.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGeneralPropertyPage.xaml.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGeneralPropertyPageViewModel.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGeneralPropertyPageXamlHost.cs">
@@ -94,6 +99,16 @@
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDebugPropertyPageViewModel.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDebugPropertyPage.xaml.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDebugPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPage.xaml.cs" />
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGlobalUsingsPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGlobalUsingsPropertyPage.xaml.cs" />
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGlobalUsingsPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPage.cs" />
@@ -353,6 +368,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <DependentUpon>XDebugPropertyPage.xaml.cs</DependentUpon>
+    </Page>
+    <!-- Build Events property page — WPF/XAML (SDK-style projects) -->
+    <Page Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>XBuildEventsPropertyPage.xaml.cs</DependentUpon>
+    </Page>
+    <!-- Global Usings property page — WPF/XAML (SDK-style projects) -->
+    <Page Include="PropertyPages\NewUI\PropertyPages\XAML\XGlobalUsingsPropertyPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>XGlobalUsingsPropertyPage.xaml.cs</DependentUpon>
+    </Page>
+    <!-- WPF macro/string editor dialogs -->
+    <Page Include="PropertyPages\NewUI\Dialogs\XSharpSLEDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>XSharpSLEDialog.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\NewUI\Dialogs\XSharpMLEDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>XSharpMLEDialog.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\NewUI\Dialogs\XSharpBuildEventEditorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>XSharpBuildEventEditorDialog.xaml.cs</DependentUpon>
     </Page>
   </ItemGroup>
   <ItemGroup>

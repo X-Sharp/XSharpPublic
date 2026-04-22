@@ -84,18 +84,14 @@ namespace XSharp.Project
             if (project == null)
                 return;
 
-            using (var form = new XSharpSLEPropertyForm())
-            {
-                var mc = new XBuildMacroCollection(project);
-                form.SetMacros(mc);
-                form.PropertyText.Text = vm.IncludePaths ?? string.Empty;
-                form.Text = LanguagePropertyPagePanel.INCDescription;
+            var dlg = new XSharpSLEDialog { Title = LanguagePropertyPagePanel.INCDescription };
+            dlg.SetMacros(new XBuildMacroCollection(project));
+            dlg.PropertyText = vm.IncludePaths ?? string.Empty;
 
-                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    vm.IncludePaths = form.PropertyText.Text;
-                    vm.ParentPage.SetProperty(XSharpProjectFileConstants.IncludePaths, vm.IncludePaths);
-                }
+            if (dlg.ShowDialog() == true)
+            {
+                vm.IncludePaths = dlg.PropertyText;
+                vm.ParentPage.SetProperty(XSharpProjectFileConstants.IncludePaths, vm.IncludePaths);
             }
         }
 

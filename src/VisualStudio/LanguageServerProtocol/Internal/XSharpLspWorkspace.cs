@@ -9,13 +9,16 @@ namespace XSharp.LanguageServerProtocol.Internal
     internal sealed class XSharpLspWorkspace : IDisposable
     {
         private const int MaxSyntheticFileNameLength = 100;
+        private static readonly object s_solutionGate = new object();
+        private static int s_activeWorkspaceCount;
         private readonly Dictionary<string, DocumentState> _documents = new Dictionary<string, DocumentState>(StringComparer.OrdinalIgnoreCase);
         private readonly XProject _project;
+        private bool _disposed;
 
         public XSharpLspWorkspace(XSharpLspProjectOptions options)
         {
             ConfigureCodeModel();
-            EnsureSolutionOpen(options);
+            AcquireSolution(options);
 
             var parseOptions = XParseOptions.FromVsValues(options.CompilerOptionValues);
             var projectPath = options.GetProjectFilePath();
@@ -76,8 +79,48 @@ namespace XSharp.LanguageServerProtocol.Internal
 
         public void Dispose()
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             _project.Close();
-            XSolution.Close();
+            ReleaseSolution();
+            _disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        private static void AcquireSolution(XSharpLspProjectOptions options)
+        {
+            lock (s_solutionGate)
+            {
+                if (s_activeWorkspaceCount == 0 || !XSolution.IsOpen)
+                {
+                    EnsureSolutionOpen(options);
+                }
+                else if (XSolution.OrphanedFilesProject == null)
+                {
+                    XSolution.CreateOrphanedFilesProject();
+                }
+
+                s_activeWorkspaceCount += 1;
+            }
+        }
+
+        private static void ReleaseSolution()
+        {
+            lock (s_solutionGate)
+            {
+                if (s_activeWorkspaceCount > 0)
+                {
+                    s_activeWorkspaceCount -= 1;
+                }
+
+                if (s_activeWorkspaceCount == 0 && XSolution.IsOpen)
+                {
+                    XSolution.Close();
+                }
+            }
         }
 
         private static void ConfigureCodeModel()

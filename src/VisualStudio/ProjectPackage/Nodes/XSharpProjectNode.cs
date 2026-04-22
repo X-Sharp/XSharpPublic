@@ -677,14 +677,24 @@ namespace XSharp.Project
         /// <returns>List of pages GUIDs.</returns>
         protected override Guid[] GetConfigurationIndependentPropertyPages()
         {
-            Guid[] result = new Guid[]
+            if (IsSdkProject)
+            {
+                return new Guid[]
                 {
+                    typeof(XSharpGeneralPropertyPage).GUID,
+                    typeof(XSharpLanguagePropertyPage).GUID,
+                    typeof(XSharpDialectPropertyPage).GUID,
+                    typeof(XSharpPackagePropertyPage).GUID,
+                    /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
+                };
+            }
+            return new Guid[]
+            {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
-                 typeof(XSharpDialectPropertyPage).GUID,
-                 /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
-                };
-            return result;
+                typeof(XSharpDialectPropertyPage).GUID,
+                /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
+            };
         }
 
         /// <summary>

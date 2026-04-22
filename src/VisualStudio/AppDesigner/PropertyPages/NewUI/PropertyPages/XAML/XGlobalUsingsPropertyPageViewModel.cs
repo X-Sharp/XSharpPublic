@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
+using XSharp.Settings;
 
 namespace XSharp.Project
 {

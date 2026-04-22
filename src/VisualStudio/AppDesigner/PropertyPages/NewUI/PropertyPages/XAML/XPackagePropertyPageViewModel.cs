@@ -1,0 +1,249 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Project;
+
+namespace XSharp.Project
+{
+    /// <summary>
+    /// MVVM ViewModel that backs the XAML/WPF Package property page for
+    /// SDK-style XSharp projects.
+    /// </summary>
+    /// <remarks>
+    /// Two groups of properties are exposed:
+    /// <list type="bullet">
+    ///   <item><description>
+    ///     Assembly information: <see cref="AssemblyTitle"/>, <see cref="Description"/>,
+    ///     <see cref="Company"/>, <see cref="Copyright"/>, <see cref="NeutralLanguage"/>.
+    ///   </description></item>
+    ///   <item><description>
+    ///     NuGet package metadata: <see cref="PackageId"/>, <see cref="PackageVersion"/>,
+    ///     <see cref="Authors"/>, <see cref="PackageTags"/>,
+    ///     <see cref="PackageLicenseExpression"/>, <see cref="PackageProjectUrl"/>,
+    ///     <see cref="RepositoryUrl"/>, <see cref="RepositoryType"/>,
+    ///     <see cref="GeneratePackageOnBuild"/>, <see cref="IsPackable"/>.
+    ///   </description></item>
+    /// </list>
+    /// </remarks>
+    internal sealed class XPackagePropertyPageViewModel : XPropertyPageViewModel
+    {
+        // =========================================================================================
+        // Backing fields — Assembly info
+        // =========================================================================================
+
+        private string _assemblyTitle         = string.Empty;
+        private string _description           = string.Empty;
+        private string _company               = string.Empty;
+        private string _copyright             = string.Empty;
+        private string _neutralLanguage       = string.Empty;
+
+        // =========================================================================================
+        // Backing fields — NuGet package metadata
+        // =========================================================================================
+
+        private string _packageId             = string.Empty;
+        private string _packageVersion        = string.Empty;
+        private string _authors               = string.Empty;
+        private string _packageTags           = string.Empty;
+        private string _packageLicenseExpression = string.Empty;
+        private string _packageProjectUrl     = string.Empty;
+        private string _repositoryUrl         = string.Empty;
+        private string _repositoryType        = string.Empty;
+        private bool   _generatePackageOnBuild;
+        private bool   _isPackable = true;
+
+        // =========================================================================================
+        // Constructor
+        // =========================================================================================
+
+        public XPackagePropertyPageViewModel(XPropertyPage parentPropertyPage)
+            : base(parentPropertyPage)
+        {
+        }
+
+        // =========================================================================================
+        // Observable Properties — Assembly info
+        // =========================================================================================
+
+        /// <summary>Gets or sets the assembly title (<c>AssemblyTitle</c> MSBuild property).</summary>
+        public string AssemblyTitle
+        {
+            get => _assemblyTitle;
+            set => SetProperty(ref _assemblyTitle, value);
+        }
+
+        /// <summary>Gets or sets the assembly/package description (<c>Description</c>).</summary>
+        public string Description
+        {
+            get => _description;
+            set => SetProperty(ref _description, value);
+        }
+
+        /// <summary>Gets or sets the company name (<c>Company</c>).</summary>
+        public string Company
+        {
+            get => _company;
+            set => SetProperty(ref _company, value);
+        }
+
+        /// <summary>Gets or sets the copyright string (<c>Copyright</c>).</summary>
+        public string Copyright
+        {
+            get => _copyright;
+            set => SetProperty(ref _copyright, value);
+        }
+
+        /// <summary>Gets or sets the assembly neutral language (<c>NeutralLanguage</c>).</summary>
+        public string NeutralLanguage
+        {
+            get => _neutralLanguage;
+            set => SetProperty(ref _neutralLanguage, value);
+        }
+
+        // =========================================================================================
+        // Observable Properties — NuGet package metadata
+        // =========================================================================================
+
+        /// <summary>Gets or sets the NuGet package identifier (<c>PackageId</c>).</summary>
+        public string PackageId
+        {
+            get => _packageId;
+            set => SetProperty(ref _packageId, value);
+        }
+
+        /// <summary>Gets or sets the NuGet package version (<c>PackageVersion</c>).</summary>
+        public string PackageVersion
+        {
+            get => _packageVersion;
+            set => SetProperty(ref _packageVersion, value);
+        }
+
+        /// <summary>Gets or sets the semicolon-separated list of package authors (<c>Authors</c>).</summary>
+        public string Authors
+        {
+            get => _authors;
+            set => SetProperty(ref _authors, value);
+        }
+
+        /// <summary>Gets or sets the semicolon-delimited package tags (<c>PackageTags</c>).</summary>
+        public string PackageTags
+        {
+            get => _packageTags;
+            set => SetProperty(ref _packageTags, value);
+        }
+
+        /// <summary>Gets or sets the SPDX license expression (<c>PackageLicenseExpression</c>).</summary>
+        public string PackageLicenseExpression
+        {
+            get => _packageLicenseExpression;
+            set => SetProperty(ref _packageLicenseExpression, value);
+        }
+
+        /// <summary>Gets or sets the project URL (<c>PackageProjectUrl</c>).</summary>
+        public string PackageProjectUrl
+        {
+            get => _packageProjectUrl;
+            set => SetProperty(ref _packageProjectUrl, value);
+        }
+
+        /// <summary>Gets or sets the source repository URL (<c>RepositoryUrl</c>).</summary>
+        public string RepositoryUrl
+        {
+            get => _repositoryUrl;
+            set => SetProperty(ref _repositoryUrl, value);
+        }
+
+        /// <summary>Gets or sets the repository type, e.g. "git" (<c>RepositoryType</c>).</summary>
+        public string RepositoryType
+        {
+            get => _repositoryType;
+            set => SetProperty(ref _repositoryType, value);
+        }
+
+        /// <summary>Gets or sets whether the package is generated on every build (<c>GeneratePackageOnBuild</c>).</summary>
+        public bool GeneratePackageOnBuild
+        {
+            get => _generatePackageOnBuild;
+            set => SetProperty(ref _generatePackageOnBuild, value);
+        }
+
+        /// <summary>Gets or sets whether this project is packable (<c>IsPackable</c>).</summary>
+        public bool IsPackable
+        {
+            get => _isPackable;
+            set => SetProperty(ref _isPackable, value);
+        }
+
+        // =========================================================================================
+        // IPropertyPagePanel — ViewModel lifecycle
+        // =========================================================================================
+
+        /// <inheritdoc/>
+        public override void HookupEvents()
+        {
+            PropertyChanged += (sender, e) => NotifyDirty();
+        }
+
+        /// <inheritdoc/>
+        public override void BindProperties()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            // Assembly info
+            AssemblyTitle   = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyTitle)   ?? string.Empty;
+            Description     = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Description)     ?? string.Empty;
+            Company         = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Company)         ?? string.Empty;
+            Copyright       = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Copyright)       ?? string.Empty;
+            NeutralLanguage = parentPropertyPage.GetProperty(XSharpProjectFileConstants.NeutralLanguage) ?? string.Empty;
+
+            // NuGet package metadata
+            PackageId               = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageId)               ?? string.Empty;
+            PackageVersion          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageVersion)          ?? string.Empty;
+            Authors                 = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Authors)                 ?? string.Empty;
+            PackageTags             = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageTags)             ?? string.Empty;
+            PackageLicenseExpression= parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageLicenseExpression)?? string.Empty;
+            PackageProjectUrl       = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageProjectUrl)       ?? string.Empty;
+            RepositoryUrl           = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RepositoryUrl)           ?? string.Empty;
+            RepositoryType          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RepositoryType)          ?? string.Empty;
+            GeneratePackageOnBuild  = GetBoolPropertyValue(XSharpProjectFileConstants.GeneratePackageOnBuild);
+
+            // IsPackable defaults to true when absent
+            var isPackableRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.IsPackable);
+            IsPackable = string.IsNullOrEmpty(isPackableRaw)
+                         || string.Equals(isPackableRaw, "true", System.StringComparison.OrdinalIgnoreCase);
+
+            isDirty = false;
+        }
+
+        /// <inheritdoc/>
+        public override void ApplyChanges()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            // Assembly info
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.AssemblyTitle,   AssemblyTitle   ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Description,     Description     ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Company,         Company         ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Copyright,       Copyright       ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.NeutralLanguage, NeutralLanguage ?? string.Empty);
+
+            // NuGet package metadata
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageId,               PackageId               ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageVersion,          PackageVersion          ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Authors,                 Authors                 ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageTags,             PackageTags             ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageLicenseExpression,PackageLicenseExpression?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageProjectUrl,       PackageProjectUrl       ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.RepositoryUrl,           RepositoryUrl           ?? string.Empty);
+            parentPropertyPage.SetProperty(XSharpProjectFileConstants.RepositoryType,          RepositoryType          ?? string.Empty);
+            SetBoolPropertyValue(XSharpProjectFileConstants.GeneratePackageOnBuild, GeneratePackageOnBuild);
+            SetBoolPropertyValue(XSharpProjectFileConstants.IsPackable,             IsPackable);
+
+            isDirty = false;
+        }
+    }
+}

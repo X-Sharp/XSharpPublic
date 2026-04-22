@@ -111,6 +111,13 @@
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XGlobalUsingsPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <!-- Package property page — WPF/XAML (SDK-style projects only) -->
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XPackagePropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XPackagePropertyPage.xaml.cs" />
+    <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XPackagePropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XPackagePropertyPage.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPage.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPagePanelWinForms.cs">
       <SubType>UserControl</SubType>
@@ -380,6 +387,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <DependentUpon>XGlobalUsingsPropertyPage.xaml.cs</DependentUpon>
+    </Page>
+    <!-- Package property page — WPF/XAML (SDK-style projects only) -->
+    <Page Include="PropertyPages\NewUI\PropertyPages\XAML\XPackagePropertyPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>XPackagePropertyPage.xaml.cs</DependentUpon>
     </Page>
     <!-- WPF macro/string editor dialogs -->
     <Page Include="PropertyPages\NewUI\Dialogs\XSharpSLEDialog.xaml">

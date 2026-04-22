@@ -601,7 +601,7 @@ namespace XSharp.LanguageServerProtocol
                        leftSource.Range.EndColumn == rightSource.Range.EndColumn;
             }
 
-            return true;
+            return string.Equals(left.Prototype, right.Prototype, StringComparison.OrdinalIgnoreCase);
         }
 
         private static IEnumerable<(int start, int end)> EnumerateIdentifierRanges(string text, string identifier)
@@ -616,14 +616,22 @@ namespace XSharp.LanguageServerProtocol
             var inLineComment = false;
             var inBlockComment = false;
 
-            for (var index = 0; index < text.Length; index++)
+            for (var charIndex = 0; charIndex < text.Length; charIndex++)
             {
-                var current = text[index];
-                var next = index + 1 < text.Length ? text[index + 1] : '\0';
+                var current = text[charIndex];
+                var next = charIndex + 1 < text.Length ? text[charIndex + 1] : '\0';
 
                 if (inLineComment)
                 {
-                    if (current == '\r' || current == '\n')
+                    if (current == '\r')
+                    {
+                        inLineComment = false;
+                        if (next == '\n')
+                        {
+                            charIndex++;
+                        }
+                    }
+                    else if (current == '\n')
                     {
                         inLineComment = false;
                     }
@@ -635,14 +643,20 @@ namespace XSharp.LanguageServerProtocol
                     if (current == '*' && next == '/')
                     {
                         inBlockComment = false;
-                        index++;
+                        charIndex++;
                     }
                     continue;
                 }
 
                 if (inSingleQuote)
                 {
-                    if (current == '\'' && (index == 0 || text[index - 1] != '\\'))
+                    if (current == '\'' && next == '\'')
+                    {
+                        charIndex++;
+                        continue;
+                    }
+
+                    if (current == '\'')
                     {
                         inSingleQuote = false;
                     }
@@ -651,7 +665,13 @@ namespace XSharp.LanguageServerProtocol
 
                 if (inDoubleQuote)
                 {
-                    if (current == '"' && (index == 0 || text[index - 1] != '\\'))
+                    if (current == '"' && next == '"')
+                    {
+                        charIndex++;
+                        continue;
+                    }
+
+                    if (current == '"')
                     {
                         inDoubleQuote = false;
                     }
@@ -661,21 +681,21 @@ namespace XSharp.LanguageServerProtocol
                 if (current == '/' && next == '/')
                 {
                     inLineComment = true;
-                    index++;
+                    charIndex++;
                     continue;
                 }
 
                 if (current == '&' && next == '&')
                 {
                     inLineComment = true;
-                    index++;
+                    charIndex++;
                     continue;
                 }
 
                 if (current == '/' && next == '*')
                 {
                     inBlockComment = true;
-                    index++;
+                    charIndex++;
                     continue;
                 }
 
@@ -696,7 +716,7 @@ namespace XSharp.LanguageServerProtocol
                     continue;
                 }
 
-                var start = index;
+                var start = charIndex;
                 var end = start + 1;
                 while (end < text.Length && IsIdentifierChar(text[end]))
                 {
@@ -709,7 +729,7 @@ namespace XSharp.LanguageServerProtocol
                     yield return (start, end);
                 }
 
-                index = end - 1;
+                charIndex = end - 1;
             }
         }
 

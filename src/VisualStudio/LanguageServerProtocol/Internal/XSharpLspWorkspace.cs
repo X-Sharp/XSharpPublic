@@ -101,7 +101,10 @@ namespace XSharp.LanguageServerProtocol.Internal
             }
 
             XSolution.Open(solutionPath);
-            XSolution.CreateOrphanedFilesProject();
+            if (XSolution.OrphanedFilesProject == null)
+            {
+                XSolution.CreateOrphanedFilesProject();
+            }
         }
 
         private static string ResolveFilePath(Uri uri)

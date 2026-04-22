@@ -8,7 +8,7 @@ namespace XSharp.LanguageServerProtocol
         public string ProjectName { get; set; } = "XSharp.Lsp.Project";
         public string? ProjectFilePath { get; set; }
         public string? RootNamespace { get; set; }
-        public IList<string> ParseOptions { get; } = new List<string> { "dialect:Core" };
+        public IList<string> CompilerOptionValues { get; } = new List<string> { "dialect:Core" };
         public IList<string> AssemblyReferences { get; } = new List<string>();
 
         internal string GetProjectFilePath()

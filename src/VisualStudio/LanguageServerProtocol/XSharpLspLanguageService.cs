@@ -69,10 +69,7 @@ namespace XSharp.LanguageServerProtocol
             AddCompletions(results, _workspace.Project.GetTypesLike(prefix, BuildUsings(state.File, line)).Cast<IXSymbol>(), prefix);
             AddCompletions(results, _workspace.Project.FindFunctionsLike(prefix, false).Cast<IXSymbol>(), prefix);
             AddCompletions(results, _workspace.Project.FindGlobalMembersLike(prefix, false).Cast<IXSymbol>(), prefix);
-            AddCompletions(results, _workspace.Project.AllNamespaces
-                .Where(ns => ns.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                .Select(ns => new XSourceEntity(ns, Kind.Namespace))
-                .Cast<IXSymbol>(), prefix);
+            AddNamespaceCompletions(results, _workspace.Project.AllNamespaces, prefix);
 
             if (member != null)
             {
@@ -238,7 +235,7 @@ namespace XSharp.LanguageServerProtocol
             {
                 Signatures = new[] { signature },
                 ActiveSignature = 0,
-                ActiveParameter = Math.Max(0, Math.Min(invocation.activeParameter, member.Parameters.Count - 1))
+                ActiveParameter = ClampActiveParameter(invocation.activeParameter, member.Parameters.Count)
             };
         }
 
@@ -425,6 +422,56 @@ namespace XSharp.LanguageServerProtocol
                     Kind = ToCompletionKind(symbol.Kind)
                 };
             }
+        }
+
+        private static void AddNamespaceCompletions(Dictionary<string, LspCompletionItem> target, IEnumerable<string> namespaces, string prefix)
+        {
+            foreach (var ns in namespaces)
+            {
+                if (string.IsNullOrWhiteSpace(ns))
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(prefix) && !ns.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var key = ns + "|" + Kind.Namespace;
+                if (target.ContainsKey(key))
+                {
+                    continue;
+                }
+
+                target[key] = new LspCompletionItem
+                {
+                    Label = ns,
+                    Detail = ns,
+                    Documentation = "Namespace",
+                    Kind = LspCompletionItemKind.Module
+                };
+            }
+        }
+
+        private static int ClampActiveParameter(int activeParameter, int parameterCount)
+        {
+            if (parameterCount <= 0)
+            {
+                return 0;
+            }
+
+            if (activeParameter < 0)
+            {
+                return 0;
+            }
+
+            if (activeParameter >= parameterCount)
+            {
+                return parameterCount - 1;
+            }
+
+            return activeParameter;
         }
 
         private static LspLocation? ToLocation(IXSymbol symbol)

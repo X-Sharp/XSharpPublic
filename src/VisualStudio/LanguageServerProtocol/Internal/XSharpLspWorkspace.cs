@@ -8,6 +8,7 @@ namespace XSharp.LanguageServerProtocol.Internal
 {
     internal sealed class XSharpLspWorkspace : IDisposable
     {
+        private const int MaxSyntheticFileNameLength = 100;
         private readonly Dictionary<string, DocumentState> _documents = new Dictionary<string, DocumentState>(StringComparer.OrdinalIgnoreCase);
         private readonly XProject _project;
 
@@ -16,7 +17,7 @@ namespace XSharp.LanguageServerProtocol.Internal
             ConfigureCodeModel();
             EnsureSolutionOpen(options);
 
-            var parseOptions = XParseOptions.FromVsValues(options.ParseOptions);
+            var parseOptions = XParseOptions.FromVsValues(options.CompilerOptionValues);
             var projectPath = options.GetProjectFilePath();
             Directory.CreateDirectory(Path.GetDirectoryName(projectPath) ?? Path.GetTempPath());
             var node = new ProjectNode(projectPath, parseOptions, options.RootNamespace ?? string.Empty);
@@ -113,9 +114,9 @@ namespace XSharp.LanguageServerProtocol.Internal
             var root = Path.Combine(Path.GetTempPath(), "XSharpLsp", "Documents");
             Directory.CreateDirectory(root);
             var stem = Uri.EscapeDataString(uri.AbsoluteUri).Replace("%", string.Empty);
-            if (stem.Length > 100)
+            if (stem.Length > MaxSyntheticFileNameLength)
             {
-                stem = stem.Substring(stem.Length - 100);
+                stem = stem.Substring(stem.Length - MaxSyntheticFileNameLength);
             }
             return Path.Combine(root, stem + ".prg");
         }

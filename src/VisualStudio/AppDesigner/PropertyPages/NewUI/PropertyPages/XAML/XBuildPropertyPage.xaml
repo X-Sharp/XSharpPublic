@@ -1,0 +1,236 @@
+<UserControl
+    x:Class="XSharp.Project.XBuildPropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    mc:Ignorable="d"
+    d:DesignHeight="700" d:DesignWidth="700"
+    UseLayoutRounding="True"
+    toolkit:Themes.UseVsTheme="True"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit">
+
+    <!--
+        Build property page — WPF/XAML implementation (SDK-style projects).
+        DataContext: XBuildPropertyPageViewModel (set by XBuildPropertyPageXamlHost).
+
+        Layout mirrors the WinForms XBuildPropertyPagePanel sections:
+          Left column  — Output paths, Signing, Code generation, PPO, Define Constants
+          Right column — Warnings, XML Documentation, Misc checkboxes, Command line, NoWarn
+    -->
+
+    <UserControl.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="8,8,8,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ============================================================ -->
+            <!-- LEFT COLUMN                                                   -->
+            <!-- ============================================================ -->
+            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+
+                <!-- Output paths section -->
+                <Label Content="Output" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                <!-- Output Path (read-only + browse) -->
+                <Label Content="{Binding CaptOutputPath}"
+                       ToolTip="{Binding DescOutputPath}"
+                       Margin="0,4,0,2"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding OutputPath, Mode=OneWay}"
+                             IsReadOnly="True"
+                             ToolTip="{Binding DescOutputPath}"/>
+                    <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                            ToolTip="{Binding DescOutputPath}"
+                            Click="OnBrowseOutputPathClick"/>
+                </Grid>
+
+                <!-- Intermediate Output Path (read-only + browse) -->
+                <Label Content="{Binding CaptIntermediateOutputPath}"
+                       ToolTip="{Binding DescIntermediateOutputPath}"
+                       Margin="0,8,0,2"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding IntermediateOutputPath, Mode=OneWay}"
+                             IsReadOnly="True"
+                             ToolTip="{Binding DescIntermediateOutputPath}"/>
+                    <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                            ToolTip="{Binding DescIntermediateOutputPath}"
+                            Click="OnBrowseIntermediateOutputPathClick"/>
+                </Grid>
+
+                <!-- Platform -->
+                <Label Content="{Binding CaptPlatformTarget}"
+                       ToolTip="{Binding DescPlatformTarget}"
+                       Margin="0,10,0,2"/>
+                <ComboBox ItemsSource="{Binding PlatformTargetValues}"
+                          SelectedItem="{Binding PlatformTarget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="{Binding DescPlatformTarget}"/>
+
+                <!-- Code generation section -->
+                <Label Content="Code Generation" FontWeight="Bold" Margin="0,12,0,4"/>
+
+                <CheckBox Content="{Binding CaptOptimize}"
+                          IsChecked="{Binding Optimize, Mode=TwoWay}"
+                          ToolTip="{Binding DescOptimize}"
+                          Margin="0,3,0,0"/>
+
+                <CheckBox Content="{Binding CaptPrefer32Bit}"
+                          IsChecked="{Binding Prefer32Bit, Mode=TwoWay}"
+                          IsEnabled="{Binding Prefer32BitEnabled}"
+                          ToolTip="{Binding DescPrefer32Bit}"
+                          Margin="0,3,0,0"/>
+
+                <CheckBox Content="{Binding CaptRegisterForComInterop}"
+                          IsChecked="{Binding RegisterForComInterop, Mode=TwoWay}"
+                          ToolTip="{Binding DescRegisterForComInterop}"
+                          Margin="0,3,0,0"/>
+
+                <!-- Preprocessor section -->
+                <Label Content="Preprocessor" FontWeight="Bold" Margin="0,12,0,4"/>
+
+                <CheckBox Content="{Binding CaptPPO}"
+                          IsChecked="{Binding PPO, Mode=TwoWay}"
+                          ToolTip="{Binding DescPPO}"
+                          Margin="0,3,0,0"/>
+
+                <!-- Define Constants -->
+                <Label Content="{Binding CaptDefineConstants}"
+                       ToolTip="{Binding DescDefineConstants}"
+                       Margin="0,10,0,2"/>
+                <TextBox Text="{Binding DefineConstants, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescDefineConstants}"/>
+
+                <!-- Signing section -->
+                <Label Content="Signing" FontWeight="Bold" Margin="0,12,0,4"/>
+
+                <CheckBox Content="{Binding CaptSignAssembly}"
+                          IsChecked="{Binding SignAssembly, Mode=TwoWay}"
+                          ToolTip="{Binding DescSignAssembly}"
+                          Margin="0,3,0,0"/>
+
+                <CheckBox Content="{Binding CaptDelaySign}"
+                          IsChecked="{Binding DelaySign, Mode=TwoWay}"
+                          ToolTip="{Binding DescDelaySign}"
+                          Margin="0,3,0,0"/>
+
+                <!-- Key File (read-only + browse) -->
+                <Label Content="{Binding CaptAssemblyOriginatorKeyFile}"
+                       ToolTip="{Binding DescAssemblyOriginatorKeyFile}"
+                       Margin="0,8,0,2"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding AssemblyOriginatorKeyFile, Mode=OneWay}"
+                             IsReadOnly="True"
+                             ToolTip="{Binding DescAssemblyOriginatorKeyFile}"/>
+                    <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                            ToolTip="{Binding DescAssemblyOriginatorKeyFile}"
+                            Click="OnBrowseKeyFileClick"/>
+                </Grid>
+
+            </StackPanel>
+
+            <!-- ============================================================ -->
+            <!-- RIGHT COLUMN                                                  -->
+            <!-- ============================================================ -->
+            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+
+                <!-- Warnings section -->
+                <Label Content="Warnings" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                <!-- Warning level -->
+                <Label Content="{Binding CaptWarningLevel}"
+                       ToolTip="{Binding DescWarningLevel}"
+                       Margin="0,4,0,2"/>
+                <ComboBox SelectedIndex="{Binding WarningLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="{Binding DescWarningLevel}">
+                    <ComboBoxItem Content="0"/>
+                    <ComboBoxItem Content="1"/>
+                    <ComboBoxItem Content="2"/>
+                    <ComboBoxItem Content="3"/>
+                    <ComboBoxItem Content="4"/>
+                </ComboBox>
+
+                <!-- Treat warnings as errors radio group -->
+                <Label Content="Treat warnings as errors:" Margin="0,10,0,2"/>
+                <RadioButton Content="None"
+                             IsChecked="{Binding WarningsModeNone, Mode=TwoWay}"
+                             Margin="4,2,0,0"/>
+                <RadioButton Content="All"
+                             IsChecked="{Binding WarningsModeAll, Mode=TwoWay}"
+                             Margin="4,2,0,0"/>
+                <RadioButton Content="Specific warnings:"
+                             IsChecked="{Binding WarningsModeSpecific, Mode=TwoWay}"
+                             Margin="4,2,0,0"/>
+                <TextBox Text="{Binding SpecificWarnings, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         IsEnabled="{Binding SpecificWarningsEnabled}"
+                         ToolTip="{Binding DescSpecificWarnings}"
+                         Margin="0,2,0,0"/>
+
+                <!-- XML Documentation section -->
+                <Label Content="XML Documentation" FontWeight="Bold" Margin="0,12,0,4"/>
+
+                <CheckBox Content="{Binding CaptDocumentationFile}"
+                          IsChecked="{Binding XmlDocEnabled, Mode=TwoWay}"
+                          ToolTip="{Binding DescDocumentationFile}"
+                          Margin="0,3,0,0"/>
+
+                <!-- Documentation file name — only shown when XmlDocEnabled -->
+                <TextBox Text="{Binding DocumentationFile, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescDocumentationFileName}"
+                         Visibility="{Binding XmlDocEnabled, Converter={StaticResource BoolToVisibility}}"
+                         Margin="0,4,0,0"/>
+
+                <!-- Misc section -->
+                <Label Content="Miscellaneous" FontWeight="Bold" Margin="0,12,0,4"/>
+
+                <CheckBox Content="{Binding CaptUseSharedCompilation}"
+                          IsChecked="{Binding UseSharedCompilation, Mode=TwoWay}"
+                          ToolTip="{Binding DescUseSharedCompilation}"
+                          Margin="0,3,0,0"/>
+
+                <CheckBox Content="{Binding CaptSuppressRCWarnings}"
+                          IsChecked="{Binding SuppressRCWarnings, Mode=TwoWay}"
+                          ToolTip="{Binding DescSuppressRCWarnings}"
+                          Margin="0,3,0,0"/>
+
+                <!-- Command line options -->
+                <Label Content="{Binding CaptCommandLineOption}"
+                       ToolTip="{Binding DescCommandLineOption}"
+                       Margin="0,10,0,2"/>
+                <TextBox Text="{Binding CommandLineOption, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescCommandLineOption}"/>
+
+                <!-- Suppress specific warnings -->
+                <Label Content="{Binding CaptNoWarn}"
+                       ToolTip="{Binding DescNoWarn}"
+                       Margin="0,8,0,2"/>
+                <TextBox Text="{Binding NoWarn, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescNoWarn}"/>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,24 +1,27 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 namespace XSharp.Project
 {
-    using System;
-    using System.Linq;
-    using System.Globalization;
     using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.Package;
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
 
     /// <summary>
-    /// Property page for the build events.
+    /// COM-visible property page for the Language settings tab.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For SDK-style projects this page returns an <see cref="XLanguagePropertyPageXamlHost"/>
+    /// (a WPF/XAML panel embedded in an <c>ElementHost</c>).  For legacy .NET Framework
+    /// projects it returns an <see cref="XLanguagePropertyPagePanelWinForms"/> (the original
+    /// WinForms panel).  All business logic and UI state are delegated to the appropriate
+    /// panel through the <see cref="IPropertyPagePanel"/> interface.
+    /// </para>
+    /// </remarks>
     [ComVisible(true)]
     [Guid(XSharpConstants.LanguagePropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
@@ -27,7 +30,7 @@ namespace XSharp.Project
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XSharpBuildEventsPropertyPage"/> class.
+        /// Initializes a new instance of the <see cref="XSharpLanguagePropertyPage"/> class.
         /// </summary>
         public XSharpLanguagePropertyPage()
         {
@@ -35,27 +38,36 @@ namespace XSharp.Project
             this.PerConfig = false;
         }
 
+        /// <summary>
+        /// Creates the panel that hosts the Language page controls.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="XLanguagePropertyPageXamlHost"/> for SDK-style projects, or an
+        /// <see cref="XLanguagePropertyPagePanelWinForms"/> for legacy projects.
+        /// </returns>
+        protected override IPropertyPagePanel CreatePropertyPagePanel()
+        {
+            if (IsSdkProject)
+                return new XLanguagePropertyPageXamlHost(this);
+            return new XLanguagePropertyPagePanelWinForms(this);
+        }
 
         /// <summary>
-        /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
+        /// Called by the project system when a project property changes externally
+        /// (e.g. from another property page).  Forwards dialect changes to the active panel
+        /// so it can re-apply dialect-specific enabling logic.
         /// </summary>
-        /// <returns>The newly created main control that hosts the property page.</returns>
-
-        protected override XPropertyPagePanel CreatePropertyPagePanel()
-        {
-            if (panel == null)
-            {
-                panel = new XLanguagePropertyPagePanel(this);
-            }
-            return panel;
-        }
-        XLanguagePropertyPagePanel panel = null;
         protected override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (panel != null)
+
+            if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
             {
-                panel.Project_OnProjectPropertyChanged(sender, e);
+                // XAML path — notify the host which delegates to the ViewModel.
+                (PropertyPagePanel as XLanguagePropertyPageXamlHost)?.NotifyDialectChanged(e.NewValue);
+
+                // WinForms path — delegate directly to the panel (null-safe).
+                (PropertyPagePanel as XLanguagePropertyPagePanel)?.Project_OnProjectPropertyChanged(sender, e);
             }
         }
     }

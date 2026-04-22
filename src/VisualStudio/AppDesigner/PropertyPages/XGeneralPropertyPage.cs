@@ -31,8 +31,6 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
     public class XSharpGeneralPropertyPage : XPropertyPage
     {
-        private bool IsSdkProject => !string.IsNullOrEmpty(ProjectMgr?.BuildProject.Xml.Sdk);
-
 
         // =========================================================================================
         // Constructors
@@ -216,8 +214,11 @@ namespace XSharp.Project
                      + "Are you sure you want to change the Target Framework for this project?";
                     if (!VS.MessageBox.ShowConfirm(message))
                     {
+                        // For WinForms panels: reset the combo back to the old display value.
+                        // For XAML hosts (SDK projects): the ViewModel's TargetFramework observable
+                        // property handles UI rollback automatically — no manual reset is needed.
                         var genPanel = PropertyPagePanel as XGeneralPropertyPagePanel;
-                        genPanel.resetFramework(oldValue);
+                        genPanel?.resetFramework(oldValue);
                         return;
                     }
 
@@ -234,10 +235,17 @@ namespace XSharp.Project
         /// <summary>
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
-        /// <returns>The newly created main control that hosts the property page.</returns>
-        protected override XPropertyPagePanel CreatePropertyPagePanel()
+        /// <returns>
+        /// An <see cref="XGeneralPropertyPageXamlHost"/> for SDK-style projects (WPF/XAML UI),
+        /// or an <see cref="XGeneralPropertyPagePanelWinForms"/> for legacy .NET Framework projects
+        /// (WinForms UI).
+        /// </returns>
+        protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-            return new XGeneralPropertyPagePanel(this);
+            if (IsSdkProject)
+                return new XGeneralPropertyPageXamlHost(this);
+
+            return new XGeneralPropertyPagePanelWinForms(this);
         }
     }
     internal static class ProjectReloader

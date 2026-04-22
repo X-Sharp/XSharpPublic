@@ -44,7 +44,7 @@ namespace XSharp.Project
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
         /// <returns>The newly created main control that hosts the property page.</returns>
-        protected override XPropertyPagePanel CreatePropertyPagePanel()
+        protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
             return new XGlobalUsingsPropertyPagePanel(this);
         }

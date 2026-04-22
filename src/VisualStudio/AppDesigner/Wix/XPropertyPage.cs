@@ -24,6 +24,7 @@ namespace Microsoft.VisualStudio.Project
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
+    using XSharp.Project;
 
     /// <summary>
     /// Abstract base class for a project property page.
@@ -40,7 +41,7 @@ namespace Microsoft.VisualStudio.Project
 
         private bool active;
         private bool isDirty;
-        private XPropertyPagePanel propertyPagePanel;
+        private IPropertyPagePanel propertyPagePanel;
         private string pageName;
         private IPropertyPageSite pageSite;
         private XProjectNode project;
@@ -48,6 +49,8 @@ namespace Microsoft.VisualStudio.Project
         private PROPPAGEINFO propPageInfo;
 
         protected bool PerConfig { get; set; } = false;
+
+        protected bool IsSdkProject => !string.IsNullOrEmpty(ProjectMgr?.BuildProject.Xml.Sdk);
 
         // =========================================================================================
         // Constructors
@@ -131,8 +134,10 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Gets the main control that hosts the property page.
+        /// This is either a WinForms <see cref="XPropertyPagePanel"/> or a
+        /// <see cref="XPropertyPageXamlHost"/> depending on the project type.
         /// </summary>
-        protected XPropertyPagePanel PropertyPagePanel
+        protected IPropertyPagePanel PropertyPagePanel
         {
             get { return this.propertyPagePanel; }
             private set { this.propertyPagePanel = value; }
@@ -163,12 +168,12 @@ namespace Microsoft.VisualStudio.Project
             this.PropertyPagePanel.HookupEvents();
 
             // we need to create the control so the handle is valid
-            this.PropertyPagePanel.CreateControl();
+            this.PropertyPagePanel.Control.CreateControl();
 
-            //this.PropertyPagePanel.HelpRequested += new HelpEventHandler(this.PropertyPagePanel_HelpRequested);
+            //this.PropertyPagePanel.Control.HelpRequested += new HelpEventHandler(this.PropertyPagePanel_HelpRequested);
 
             // set our parent
-            NativeMethods.SetParent(this.PropertyPagePanel.Handle, hwndParent);
+            NativeMethods.SetParent(this.PropertyPagePanel.Control.Handle, hwndParent);
 
             // set our initial size
             this.ResizeContents(rects[0]);
@@ -204,7 +209,7 @@ namespace Microsoft.VisualStudio.Project
 
             if (this.PropertyPagePanel != null)
             {
-                this.PropertyPagePanel.Apply();
+                this.PropertyPagePanel.ApplyChanges();
             }
 
             // Changes are all applied to the build project in real-time, so nothing to do here.
@@ -272,8 +277,8 @@ namespace Microsoft.VisualStudio.Project
             info.pszDocString = null;
             info.pszHelpFile = null;
             info.pszTitle = this.PageName;
-            info.SIZE.cx = this.PropertyPagePanel.Width;
-            info.SIZE.cy = this.PropertyPagePanel.Height;
+            info.SIZE.cx = this.PropertyPagePanel.Control.Width;
+            info.SIZE.cy = this.PropertyPagePanel.Control.Height;
             pageInfos[0] = info;
             this.propPageInfo = info;
         }
@@ -542,11 +547,11 @@ namespace Microsoft.VisualStudio.Project
             {
                 if (cmdShow == Win32SwHide)
                 {
-                    this.PropertyPagePanel.Hide();
+                    this.PropertyPagePanel.Control.Hide();
                 }
                 else
                 {
-                    this.PropertyPagePanel.Show();
+                    this.PropertyPagePanel.Control.Show();
                     this.SetHelpContext();
                 }
             }
@@ -689,7 +694,7 @@ namespace Microsoft.VisualStudio.Project
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
         /// <returns>The newly created main control that hosts the property page.</returns>
-        protected abstract XPropertyPagePanel CreatePropertyPagePanel();
+        protected abstract IPropertyPagePanel CreatePropertyPagePanel();
 
         /// <summary>
         /// Updates the page as necessary when the project output type changed.
@@ -707,7 +712,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="newBounds">The total area of the property page.</param>
         private void ResizeContents(RECT newBounds)
         {
-            if (this.PropertyPagePanel != null && this.PropertyPagePanel.IsHandleCreated)
+            if (this.PropertyPagePanel != null && this.PropertyPagePanel.Control.IsHandleCreated)
             {
                 int minimumWidth = 0;
                 int minimumHeight = 0;
@@ -721,7 +726,7 @@ namespace Microsoft.VisualStudio.Project
                 // Visual Studio sends us the size of the area in which it wants us to size.
                 // However, we don't want to size smaller than the property page's minimum
                 // size, which scales according to the screen DPI.
-                this.PropertyPagePanel.Bounds = new Rectangle(
+                this.PropertyPagePanel.Control.Bounds = new Rectangle(
                     newBounds.left,
                     newBounds.top,
                     Math.Max(newBounds.right - newBounds.left, minimumWidth),

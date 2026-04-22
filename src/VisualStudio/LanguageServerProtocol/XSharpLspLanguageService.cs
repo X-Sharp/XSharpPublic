@@ -115,9 +115,15 @@ namespace XSharp.LanguageServerProtocol
 
             foreach (var document in _workspace.Documents)
             {
-                foreach (var range in FindWordRanges(document.Text, name))
+                foreach (var range in EnumerateIdentifierRanges(document.Text, name))
                 {
                     var line = document.ToPosition(range.start);
+                    var resolved = ResolveIdentifier(document, line.Line, range.start, name);
+                    if (resolved == null || !SameSymbol(resolved, symbol))
+                    {
+                        continue;
+                    }
+
                     if (!@params.IncludeDeclaration && declaration != null && SameLocation(document.Uri.AbsoluteUri, declaration, range.start, range.end, document))
                     {
                         continue;
@@ -559,31 +565,151 @@ namespace XSharp.LanguageServerProtocol
             return char.IsLetterOrDigit(c) || c == '_' || c == '@';
         }
 
-        private static IEnumerable<(int start, int end)> FindWordRanges(string text, string word)
+        private static bool IsIdentifierStartChar(char c)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(word))
+            return char.IsLetter(c) || c == '_' || c == '@';
+        }
+
+        private static bool SameSymbol(IXSymbol left, IXSymbol right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (!string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (left.Kind != right.Kind)
+            {
+                return false;
+            }
+
+            if (!string.Equals(left.FullName, right.FullName, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (left is IXSourceSymbol leftSource && right is IXSourceSymbol rightSource)
+            {
+                return string.Equals(leftSource.File?.FullPath, rightSource.File?.FullPath, StringComparison.OrdinalIgnoreCase) &&
+                       leftSource.Range.StartLine == rightSource.Range.StartLine &&
+                       leftSource.Range.StartColumn == rightSource.Range.StartColumn &&
+                       leftSource.Range.EndLine == rightSource.Range.EndLine &&
+                       leftSource.Range.EndColumn == rightSource.Range.EndColumn;
+            }
+
+            return true;
+        }
+
+        private static IEnumerable<(int start, int end)> EnumerateIdentifierRanges(string text, string identifier)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(identifier))
             {
                 yield break;
             }
 
-            var index = 0;
-            while (true)
+            var inSingleQuote = false;
+            var inDoubleQuote = false;
+            var inLineComment = false;
+            var inBlockComment = false;
+
+            for (var index = 0; index < text.Length; index++)
             {
-                index = text.IndexOf(word, index, StringComparison.OrdinalIgnoreCase);
-                if (index < 0)
+                var current = text[index];
+                var next = index + 1 < text.Length ? text[index + 1] : '\0';
+
+                if (inLineComment)
                 {
-                    yield break;
+                    if (current == '\r' || current == '\n')
+                    {
+                        inLineComment = false;
+                    }
+                    continue;
                 }
 
-                var leftOk = index == 0 || !IsIdentifierChar(text[index - 1]);
-                var rightIndex = index + word.Length;
-                var rightOk = rightIndex >= text.Length || !IsIdentifierChar(text[rightIndex]);
-                if (leftOk && rightOk)
+                if (inBlockComment)
                 {
-                    yield return (index, rightIndex);
+                    if (current == '*' && next == '/')
+                    {
+                        inBlockComment = false;
+                        index++;
+                    }
+                    continue;
                 }
 
-                index += word.Length;
+                if (inSingleQuote)
+                {
+                    if (current == '\'' && (index == 0 || text[index - 1] != '\\'))
+                    {
+                        inSingleQuote = false;
+                    }
+                    continue;
+                }
+
+                if (inDoubleQuote)
+                {
+                    if (current == '"' && (index == 0 || text[index - 1] != '\\'))
+                    {
+                        inDoubleQuote = false;
+                    }
+                    continue;
+                }
+
+                if (current == '/' && next == '/')
+                {
+                    inLineComment = true;
+                    index++;
+                    continue;
+                }
+
+                if (current == '&' && next == '&')
+                {
+                    inLineComment = true;
+                    index++;
+                    continue;
+                }
+
+                if (current == '/' && next == '*')
+                {
+                    inBlockComment = true;
+                    index++;
+                    continue;
+                }
+
+                if (current == '\'')
+                {
+                    inSingleQuote = true;
+                    continue;
+                }
+
+                if (current == '"')
+                {
+                    inDoubleQuote = true;
+                    continue;
+                }
+
+                if (!IsIdentifierStartChar(current))
+                {
+                    continue;
+                }
+
+                var start = index;
+                var end = start + 1;
+                while (end < text.Length && IsIdentifierChar(text[end]))
+                {
+                    end++;
+                }
+
+                if (end - start == identifier.Length &&
+                    string.Compare(text, start, identifier, 0, identifier.Length, StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    yield return (start, end);
+                }
+
+                index = end - 1;
             }
         }
 

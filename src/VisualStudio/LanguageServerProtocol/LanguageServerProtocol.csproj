@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>XSharp.LanguageServerProtocol</RootNamespace>
+    <AssemblyName>XSharp.LanguageServerProtocol</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../XSharpCodeModelXs/CodeModel.xsproj" />
+  </ItemGroup>
+</Project>

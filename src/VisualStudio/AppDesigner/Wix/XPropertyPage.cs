@@ -13,7 +13,6 @@ namespace Microsoft.VisualStudio.Project
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
     using System.Globalization;
-    using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
@@ -47,6 +46,7 @@ namespace Microsoft.VisualStudio.Project
         private XProjectNode project;
         private XProjectConfig[] projectConfigs;
         private PROPPAGEINFO propPageInfo;
+        private IntPtr hwndPageHost; // parent HWND passed to Activate; used in Show to collapse the config row
 
         protected bool PerConfig { get; set; } = false;
 
@@ -174,6 +174,10 @@ namespace Microsoft.VisualStudio.Project
 
             // set our parent
             NativeMethods.SetParent(this.PropertyPagePanel.Control.Handle, hwndParent);
+            this.hwndPageHost = hwndParent; // saved for Show() to collapse config row after Init runs
+            // Disable AutoScroll early so the native scrollbar never flashes on first paint.
+            // The full collapse (padding/row) is repeated in Show() after VS calls Init().
+            CollapseConfigPanelRowForHost(hwndParent);
 
             // set our initial size
             this.ResizeContents(rects[0]);
@@ -553,6 +557,11 @@ namespace Microsoft.VisualStudio.Project
                 {
                     this.PropertyPagePanel.Control.Show();
                     this.SetHelpContext();
+                    // Collapse the config-toolbar row *after* VS has called Init/SetConfigDropdownVisibility,
+                    // which happens before Show(SW_SHOW). At this point ConfigurationPanel.Visible is
+                    // already set correctly and we can safely collapse the empty row.
+                    if (this.hwndPageHost != IntPtr.Zero)
+                        CollapseConfigPanelRowForHost(this.hwndPageHost);
                 }
             }
         }
@@ -750,6 +759,71 @@ namespace Microsoft.VisualStudio.Project
                         helpService.AddContextAttribute("Keyword", String.Empty, HelpKeywordType.F1Keyword);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Walks the managed-control chain from <paramref name="hwndOurControl"/> upward to find
+        /// <c>PropPageDesignerViewLayoutPanel</c> and collapses its row 0 to height 0 when the
+        /// <c>ConfigurationPanel</c> (row 0 child) is hidden — eliminating the gray gap that
+        /// appears above the WPF page content in SDK-style projects.
+        /// </summary>
+        private static void CollapseConfigPanelRowForHost(IntPtr hwndParent)
+        {
+            Control c = Control.FromHandle(hwndParent);
+            while (c != null)
+            {
+                if (c is TableLayoutPanel tlp && tlp.Name == "PropPageDesignerViewLayoutPanel")
+                {
+                    Control configPanel = null;
+                    Control pagePanel = null;
+                    foreach (Control child in tlp.Controls)
+                    {
+                        if (tlp.GetRow(child) == 0) configPanel = child;
+                        else if (tlp.GetRow(child) == 1) pagePanel = child;
+                    }
+
+                    if (configPanel != null && !configPanel.Visible)
+                    {
+                        // Collapse the hidden config row completely
+                        configPanel.MinimumSize = Size.Empty;
+                        configPanel.Size = Size.Empty;
+                        configPanel.Margin = new Padding(0);
+                        tlp.RowStyles[0] = new RowStyle(SizeType.Absolute, 0);
+                        // Remove all TLP padding and PagePanel margins so WPF fills edge-to-edge
+                        tlp.Padding = new Padding(0);
+                        if (pagePanel != null)
+                            pagePanel.Margin = new Padding(0);
+                        tlp.PerformLayout();
+                    }
+
+                    // The WPF content has its own ScrollViewer but ElementHost with Dock=Fill
+                    // gives WPF infinite height so ScrollViewer never activates.
+                    // The WinForms AutoScroll on the ScrollablePanel provides working scrolling —
+                    // leave it enabled.
+                    // Set the panel background to match VS theme so the scrollbar gutter
+                    // and any exposed panel area uses the correct color rather than default gray.
+                    if (pagePanel != null)
+                    {
+                        try
+                        {
+                            var shell2 = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
+                            if (shell2 != null && shell2.GetVSSysColorEx(
+                                    -105, // __VSSYSCOLOREX.VSCOLOR_TOOLWINDOW_BACKGROUND
+                                    out uint colorRef) == VSConstants.S_OK)
+                            {
+                                pagePanel.BackColor = Color.FromArgb(
+                                    (int)(colorRef & 0xFF),
+                                    (int)((colorRef >> 8) & 0xFF),
+                                    (int)((colorRef >> 16) & 0xFF));
+                            }
+                        }
+                        catch { }
+                    }
+
+                    return;
+                }
+                c = c.Parent;
             }
         }
 

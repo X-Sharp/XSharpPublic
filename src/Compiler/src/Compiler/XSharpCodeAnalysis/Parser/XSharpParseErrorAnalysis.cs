@@ -132,6 +132,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CheckEmptyBlock(context, context.StmtBlk, "REPEAT statement");
         }
 
+        public override void ExitCallingconvention([NotNull] XSharpParser.CallingconventionContext context)
+        {
+            if (_options.Dialect == XSharpDialect.Core)
+            {
+                if (context.Convention.Type == XSharpParser.CLIPPER)
+                {
+                    NotInDialect(context, "Clipper calling convention");
+                }
+            }
+        }
         public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
         {
             CheckEmptyBlock(context, context.StmtBlk, "FOREACH statement");
@@ -412,6 +422,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     anchor = context.Start;
                 var errdata = new ParseErrorData(anchor, err);
                 _parseErrors.Add(errdata);
+            }
+            else if (context.Token.Type == XSharpLexer.NIL && _options.Dialect == XSharpDialect.Core)
+            {
+                NotInDialect(context, "NIL literal");
             }
         }
         public override void ExitFoxtextoutStmt(XSharpParser.FoxtextoutStmtContext context)

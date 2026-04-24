@@ -21,8 +21,14 @@
     -->
 
     <UserControl.Resources>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -40,13 +46,14 @@
                 <!-- Output paths section -->
                 <Label Content="Output" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                <!-- Output Path (read-only + browse) -->
+                <!-- Output Path (read-only + browse + reset) -->
                 <Label Content="{Binding CaptOutputPath}"
                        ToolTip="{Binding DescOutputPath}"
                        Margin="0,4,0,2"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0"
@@ -56,15 +63,20 @@
                     <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                             ToolTip="{Binding DescOutputPath}"
                             Click="OnBrowseOutputPathClick"/>
+                    <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="OutputPath"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=OutputPath}"
+                            Margin="4,0,0,0"/>
                 </Grid>
 
-                <!-- Intermediate Output Path (read-only + browse) -->
+                <!-- Intermediate Output Path (read-only + browse + reset) -->
                 <Label Content="{Binding CaptIntermediateOutputPath}"
                        ToolTip="{Binding DescIntermediateOutputPath}"
                        Margin="0,8,0,2"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0"
@@ -74,70 +86,133 @@
                     <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                             ToolTip="{Binding DescIntermediateOutputPath}"
                             Click="OnBrowseIntermediateOutputPathClick"/>
+                    <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="IntermediateOutputPath"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=IntermediateOutputPath}"
+                            Margin="4,0,0,0"/>
                 </Grid>
 
                 <!-- Platform -->
                 <Label Content="{Binding CaptPlatformTarget}"
                        ToolTip="{Binding DescPlatformTarget}"
                        Margin="0,10,0,2"/>
-                <ComboBox ItemsSource="{Binding PlatformTargetValues}"
-                          SelectedItem="{Binding PlatformTarget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ToolTip="{Binding DescPlatformTarget}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0"
+                              ItemsSource="{Binding PlatformTargetValues}"
+                              SelectedItem="{Binding PlatformTarget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ToolTip="{Binding DescPlatformTarget}"/>
+                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="PlatformTarget"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PlatformTarget}"
+                            Margin="4,0,0,0"/>
+                </Grid>
 
                 <!-- Code generation section -->
                 <Label Content="Code Generation" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <CheckBox Content="{Binding CaptOptimize}"
-                          IsChecked="{Binding Optimize, Mode=TwoWay}"
-                          ToolTip="{Binding DescOptimize}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptOptimize}"
+                              IsChecked="{Binding Optimize, Mode=TwoWay}"
+                              ToolTip="{Binding DescOptimize}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="Optimize"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Optimize}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptPrefer32Bit}"
-                          IsChecked="{Binding Prefer32Bit, Mode=TwoWay}"
-                          IsEnabled="{Binding Prefer32BitEnabled}"
-                          ToolTip="{Binding DescPrefer32Bit}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptPrefer32Bit}"
+                              IsChecked="{Binding Prefer32Bit, Mode=TwoWay}"
+                              IsEnabled="{Binding Prefer32BitEnabled}"
+                              ToolTip="{Binding DescPrefer32Bit}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="Prefer32Bit"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Prefer32Bit}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptRegisterForComInterop}"
-                          IsChecked="{Binding RegisterForComInterop, Mode=TwoWay}"
-                          ToolTip="{Binding DescRegisterForComInterop}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptRegisterForComInterop}"
+                              IsChecked="{Binding RegisterForComInterop, Mode=TwoWay}"
+                              ToolTip="{Binding DescRegisterForComInterop}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="RegisterForComInterop"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RegisterForComInterop}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Preprocessor section -->
                 <Label Content="Preprocessor" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <CheckBox Content="{Binding CaptPPO}"
-                          IsChecked="{Binding PPO, Mode=TwoWay}"
-                          ToolTip="{Binding DescPPO}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptPPO}"
+                              IsChecked="{Binding PPO, Mode=TwoWay}"
+                              ToolTip="{Binding DescPPO}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="PPO"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PPO}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Define Constants -->
                 <Label Content="{Binding CaptDefineConstants}"
                        ToolTip="{Binding DescDefineConstants}"
                        Margin="0,10,0,2"/>
-                <TextBox Text="{Binding DefineConstants, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="{Binding DescDefineConstants}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding DefineConstants, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             ToolTip="{Binding DescDefineConstants}"/>
+                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="DefineConstants"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DefineConstants}"
+                            Margin="4,0,0,0"/>
+                </Grid>
 
                 <!-- Signing section -->
                 <Label Content="Signing" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <CheckBox Content="{Binding CaptSignAssembly}"
-                          IsChecked="{Binding SignAssembly, Mode=TwoWay}"
-                          ToolTip="{Binding DescSignAssembly}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptSignAssembly}"
+                              IsChecked="{Binding SignAssembly, Mode=TwoWay}"
+                              ToolTip="{Binding DescSignAssembly}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="SignAssembly"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=SignAssembly}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptDelaySign}"
-                          IsChecked="{Binding DelaySign, Mode=TwoWay}"
-                          ToolTip="{Binding DescDelaySign}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptDelaySign}"
+                              IsChecked="{Binding DelaySign, Mode=TwoWay}"
+                              ToolTip="{Binding DescDelaySign}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="DelaySign"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DelaySign}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <!-- Key File (read-only + browse) -->
+                <!-- Key File (read-only + browse + reset) -->
                 <Label Content="{Binding CaptAssemblyOriginatorKeyFile}"
                        ToolTip="{Binding DescAssemblyOriginatorKeyFile}"
                        Margin="0,8,0,2"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0"
@@ -147,6 +222,10 @@
                     <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                             ToolTip="{Binding DescAssemblyOriginatorKeyFile}"
                             Click="OnBrowseKeyFileClick"/>
+                    <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="AssemblyOriginatorKeyFile"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AssemblyOriginatorKeyFile}"
+                            Margin="4,0,0,0"/>
                 </Grid>
 
             </StackPanel>
@@ -163,14 +242,25 @@
                 <Label Content="{Binding CaptWarningLevel}"
                        ToolTip="{Binding DescWarningLevel}"
                        Margin="0,4,0,2"/>
-                <ComboBox SelectedIndex="{Binding WarningLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ToolTip="{Binding DescWarningLevel}">
-                    <ComboBoxItem Content="0"/>
-                    <ComboBoxItem Content="1"/>
-                    <ComboBoxItem Content="2"/>
-                    <ComboBoxItem Content="3"/>
-                    <ComboBoxItem Content="4"/>
-                </ComboBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0"
+                              SelectedIndex="{Binding WarningLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ToolTip="{Binding DescWarningLevel}">
+                        <ComboBoxItem Content="0"/>
+                        <ComboBoxItem Content="1"/>
+                        <ComboBoxItem Content="2"/>
+                        <ComboBoxItem Content="3"/>
+                        <ComboBoxItem Content="4"/>
+                    </ComboBox>
+                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="WarningLevel"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=WarningLevel}"
+                            Margin="4,0,0,0"/>
+                </Grid>
 
                 <!-- Treat warnings as errors radio group -->
                 <Label Content="Treat warnings as errors:" Margin="0,10,0,2"/>
@@ -183,18 +273,34 @@
                 <RadioButton Content="Specific warnings:"
                              IsChecked="{Binding WarningsModeSpecific, Mode=TwoWay}"
                              Margin="4,2,0,0"/>
-                <TextBox Text="{Binding SpecificWarnings, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                         IsEnabled="{Binding SpecificWarningsEnabled}"
-                         ToolTip="{Binding DescSpecificWarnings}"
-                         Margin="0,2,0,0"/>
+                <Grid Margin="0,2,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding SpecificWarnings, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             IsEnabled="{Binding SpecificWarningsEnabled}"
+                             ToolTip="{Binding DescSpecificWarnings}"/>
+                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="WarningsAsErrors"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=WarningsAsErrors}"
+                            Margin="4,0,0,0"/>
+                </Grid>
 
                 <!-- XML Documentation section -->
                 <Label Content="XML Documentation" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <CheckBox Content="{Binding CaptDocumentationFile}"
-                          IsChecked="{Binding XmlDocEnabled, Mode=TwoWay}"
-                          ToolTip="{Binding DescDocumentationFile}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptDocumentationFile}"
+                              IsChecked="{Binding XmlDocEnabled, Mode=TwoWay}"
+                              ToolTip="{Binding DescDocumentationFile}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="DocumentationFile"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DocumentationFile}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Documentation file name — only shown when XmlDocEnabled -->
                 <TextBox Text="{Binding DocumentationFile, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
@@ -205,29 +311,63 @@
                 <!-- Misc section -->
                 <Label Content="Miscellaneous" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <CheckBox Content="{Binding CaptUseSharedCompilation}"
-                          IsChecked="{Binding UseSharedCompilation, Mode=TwoWay}"
-                          ToolTip="{Binding DescUseSharedCompilation}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptUseSharedCompilation}"
+                              IsChecked="{Binding UseSharedCompilation, Mode=TwoWay}"
+                              ToolTip="{Binding DescUseSharedCompilation}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="UseSharedCompilation"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=UseSharedCompilation}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptSuppressRCWarnings}"
-                          IsChecked="{Binding SuppressRCWarnings, Mode=TwoWay}"
-                          ToolTip="{Binding DescSuppressRCWarnings}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptSuppressRCWarnings}"
+                              IsChecked="{Binding SuppressRCWarnings, Mode=TwoWay}"
+                              ToolTip="{Binding DescSuppressRCWarnings}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="SuppressRCWarnings"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=SuppressRCWarnings}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Command line options -->
                 <Label Content="{Binding CaptCommandLineOption}"
                        ToolTip="{Binding DescCommandLineOption}"
                        Margin="0,10,0,2"/>
-                <TextBox Text="{Binding CommandLineOption, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="{Binding DescCommandLineOption}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding CommandLineOption, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             ToolTip="{Binding DescCommandLineOption}"/>
+                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="CommandLineOption"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=CommandLineOption}"
+                            Margin="4,0,0,0"/>
+                </Grid>
 
                 <!-- Suppress specific warnings -->
                 <Label Content="{Binding CaptNoWarn}"
                        ToolTip="{Binding DescNoWarn}"
                        Margin="0,8,0,2"/>
-                <TextBox Text="{Binding NoWarn, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="{Binding DescNoWarn}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding NoWarn, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             ToolTip="{Binding DescNoWarn}"/>
+                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="NoWarn"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NoWarn}"
+                            Margin="4,0,0,0"/>
+                </Grid>
 
             </StackPanel>
 

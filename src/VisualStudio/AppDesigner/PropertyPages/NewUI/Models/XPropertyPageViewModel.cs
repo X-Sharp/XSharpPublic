@@ -5,8 +5,10 @@
 //
 
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace XSharp.Project
 {
@@ -44,6 +46,30 @@ namespace XSharp.Project
         /// WPF binding infrastructure subscribes to this event automatically.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        // =========================================================================================
+        // Reset command
+        // =========================================================================================
+
+        private ICommand _resetCommand;
+
+        /// <summary>
+        /// A single <see cref="ICommand"/> shared across all reset (↺) buttons on the page.
+        /// The <c>CommandParameter</c> must be the MSBuild property name string.
+        /// The command removes the named property from the project file and then calls
+        /// <see cref="BindProperties"/> to refresh all displayed values.
+        /// It is enabled only when the property is explicitly overridden in the project file.
+        /// </summary>
+        public ICommand ResetCommand
+        {
+            get
+            {
+                if (_resetCommand == null)
+                    _resetCommand = new ResetPropertyCommand(this);
+
+                return _resetCommand;
+            }
+        }
 
         // =========================================================================================
         // Constructors
@@ -155,5 +181,57 @@ namespace XSharp.Project
         /// <param name="value">The boolean value to store.</param>
         protected void SetBoolPropertyValue(string propertyName, bool value)
             => SetProjectProperty(propertyName, value.ToString().ToLowerInvariant());
+
+        // Internal wrappers so that ResetPropertyCommand (a sibling class) can call the
+        // protected base methods without needing reflection or inheritance.
+        internal bool IsPropertyOverriddenInternal(string name) => IsPropertyOverridden(name);
+        internal void ResetPropertyInternal(string name)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ResetProperty(name);
+        }
+    }
+
+    // =========================================================================================
+    // ResetPropertyCommand — ICommand implementation used by all reset (↺) buttons
+    // =========================================================================================
+
+    /// <summary>
+    /// An <see cref="ICommand"/> that removes a named MSBuild property from the project
+    /// file and calls <see cref="XPropertyPageViewModel.BindProperties"/> to refresh the UI.
+    /// The <c>CommandParameter</c> must be the MSBuild property name string.
+    /// The command is enabled only when <see cref="XPropertyPagePanelBase.IsPropertyOverridden"/>
+    /// returns <see langword="true"/> for that property name.
+    /// </summary>
+    internal sealed class ResetPropertyCommand : ICommand
+    {
+        private readonly XPropertyPageViewModel _vm;
+
+        public ResetPropertyCommand(XPropertyPageViewModel vm)
+        {
+            _vm = vm;
+            // Re-evaluate CanExecute whenever any property on the ViewModel changes,
+            // so the button automatically enables / disables as the project changes.
+            _vm.PropertyChanged += (s, e) => CanExecuteChanged?.Invoke(this, System.EventArgs.Empty);
+        }
+
+        public event System.EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            if (parameter is string propertyName && !string.IsNullOrEmpty(propertyName))
+                return _vm.IsPropertyOverriddenInternal(propertyName);
+            return false;
+        }
+
+        public void Execute(object parameter)
+        {
+            if (parameter is string propertyName && !string.IsNullOrEmpty(propertyName))
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                _vm.ResetPropertyInternal(propertyName);
+                _vm.BindProperties();
+            }
+        }
     }
 }

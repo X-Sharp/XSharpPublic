@@ -135,4 +135,40 @@ namespace XSharp.Project
             return Invert ? !visible : visible;
         }
     }
+
+    /// <summary>
+    /// WPF value converter that returns <see langword="true"/> when an MSBuild property is
+    /// explicitly set in the project file (i.e., overrides the SDK default).
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Bind <c>IsEnabled</c> on a reset (↺) button like this:
+    /// <code><![CDATA[
+    ///   <Button IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden},
+    ///                                ConverterParameter=AssemblyName}" .../>
+    /// ]]></code>
+    /// </para>
+    /// <para>
+    /// The <c>value</c> must be an <see cref="XPropertyPageViewModel"/> (the DataContext).
+    /// The <c>parameter</c> must be the MSBuild property name string.
+    /// </para>
+    /// </remarks>
+    [ValueConversion(typeof(XPropertyPageViewModel), typeof(bool))]
+    public sealed class PropertyOverriddenConverter : IValueConverter
+    {
+        /// <inheritdoc/>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is XPropertyPageViewModel vm && parameter is string propertyName
+                && !string.IsNullOrEmpty(propertyName))
+            {
+                return vm.IsPropertyOverriddenInternal(propertyName);
+            }
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
+    }
 }

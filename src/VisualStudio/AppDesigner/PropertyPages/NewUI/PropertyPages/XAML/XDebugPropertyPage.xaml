@@ -24,8 +24,14 @@
     -->
 
     <UserControl.Resources>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -39,6 +45,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0"
                          Text="{Binding DebuggerCommand, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
@@ -46,26 +53,52 @@
                 <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                         ToolTip="{Binding DescDebuggerCommand}"
                         Click="OnBrowseCommandClick"/>
+                <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebuggerCommand"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebuggerCommand}"
+                        Margin="4,0,0,0"/>
             </Grid>
 
             <!-- Command Arguments (multiline) -->
             <Label Content="{Binding CaptDebuggerCommandArguments}"
                    ToolTip="{Binding DescDebuggerCommandArguments}"
                    Margin="0,10,0,2"/>
-            <TextBox Text="{Binding DebuggerCommandArguments, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="{Binding DescDebuggerCommandArguments}"
-                     AcceptsReturn="True"
-                     Height="64"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding DebuggerCommandArguments, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescDebuggerCommandArguments}"
+                         AcceptsReturn="True"
+                         Height="64"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebuggerCommandArguments"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebuggerCommandArguments}"
+                        Margin="4,0,0,0" VerticalAlignment="Top"/>
+            </Grid>
 
             <!-- Debug Type combo -->
             <Label Content="{Binding CaptDebugType}"
                    ToolTip="{Binding DescDebugType}"
                    Margin="0,10,0,2"/>
-            <ComboBox ItemsSource="{Binding DebugTypeValues}"
-                      SelectedItem="{Binding DebugType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      ToolTip="{Binding DescDebugType}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0"
+                          ItemsSource="{Binding DebugTypeValues}"
+                          SelectedItem="{Binding DebugType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="{Binding DescDebugType}"/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebugType"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebugType}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <!-- Working Directory -->
             <Label Content="{Binding CaptDebuggerWorkingDirectory}"
@@ -75,6 +108,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0"
                          Text="{Binding DebuggerWorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
@@ -82,13 +116,23 @@
                 <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                         ToolTip="{Binding DescDebuggerWorkingDirectory}"
                         Click="OnBrowseWorkingDirectoryClick"/>
+                <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebuggerWorkingDirectory"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebuggerWorkingDirectory}"
+                        Margin="4,0,0,0"/>
             </Grid>
 
             <!-- Unmanaged Debugging checkbox -->
-            <CheckBox Content="{Binding CaptEnableUnmanagedDebugging}"
-                      IsChecked="{Binding EnableUnmanagedDebugging, Mode=TwoWay}"
-                      ToolTip="{Binding DescEnableUnmanagedDebugging}"
-                      Margin="0,12,0,0"/>
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <CheckBox Content="{Binding CaptEnableUnmanagedDebugging}"
+                          IsChecked="{Binding EnableUnmanagedDebugging, Mode=TwoWay}"
+                          ToolTip="{Binding DescEnableUnmanagedDebugging}"
+                          VerticalAlignment="Center"/>
+                <Button Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="EnableUnmanagedDebugging"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=EnableUnmanagedDebugging}"
+                        Margin="4,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
 
         </StackPanel>
     </ScrollViewer>

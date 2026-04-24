@@ -308,5 +308,58 @@ namespace XSharp.Project
         /// <returns>The normalized value.</returns>
         protected string Normalize(string propertyName, string value)
             => parentPropertyPage?.Normalize(propertyName, value) ?? value;
+
+        // =========================================================================================
+        // Protected Methods — Reset-to-default support
+        // =========================================================================================
+
+        /// <summary>
+        /// Returns <see langword="true"/> when the MSBuild property <paramref name="propertyName"/>
+        /// is explicitly set in the project file itself (i.e., not inherited from an imported
+        /// <c>.props</c> / <c>.targets</c> file and not absent).
+        /// </summary>
+        /// <remarks>
+        /// This is used to drive the enabled/disabled state of the reset (↺) button next to
+        /// each setting: the button is only enabled when the user has an explicit override in
+        /// the project file.
+        /// </remarks>
+        /// <param name="propertyName">The MSBuild property name (e.g., <c>"AssemblyName"</c>).</param>
+        /// <returns>
+        /// <see langword="true"/> if the property exists in the project file and is not imported;
+        /// <see langword="false"/> if it is absent or comes from an imported file.
+        /// </returns>
+        protected bool IsPropertyOverridden(string propertyName)
+        {
+            var project = parentPropertyPage?.ProjectMgr?.BuildProject;
+            if (project == null)
+                return false;
+            var prop = project.GetProperty(propertyName);
+            // IsImported == false means the property is defined in the project file itself.
+            return prop != null && !prop.IsImported;
+        }
+
+        /// <summary>
+        /// Removes the MSBuild property <paramref name="propertyName"/> from the project file
+        /// so that the SDK-supplied default value takes effect, then reloads all property
+        /// values into the ViewModel by calling <see cref="XPropertyPagePanel.BindProperties"/>.
+        /// </summary>
+        /// <remarks>
+        /// After removal the project is marked dirty so VS knows there are unsaved changes.
+        /// </remarks>
+        /// <param name="propertyName">The MSBuild property name to remove.</param>
+        protected void ResetProperty(string propertyName)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var project = parentPropertyPage?.ProjectMgr?.BuildProject;
+            if (project == null)
+                return;
+
+            var prop = project.GetProperty(propertyName);
+            if (prop != null && !prop.IsImported)
+            {
+                project.RemoveProperty(prop);
+                parentPropertyPage.ProjectMgr.SetProjectFileDirty(true);
+            }
+        }
     }
 }

@@ -21,6 +21,15 @@
                     Run the post-build event:     (ComboBox)
     -->
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="8">
 
@@ -34,10 +43,17 @@
                              VerticalScrollBarVisibility="Auto"
                              FontFamily="Consolas"
                              Margin="0,0,0,4"/>
-                    <Button Content="{Binding CaptEditPreBuild}"
-                            HorizontalAlignment="Right"
-                            MinWidth="120"
-                            Click="OnEditPreBuildClick"/>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right"
+                                Style="{StaticResource ResetButtonStyle}"
+                                Command="{Binding ResetCommand}" CommandParameter="PreBuildEvent"
+                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PreBuildEvent}"
+                                Margin="4,0,0,0"/>
+                        <Button Content="{Binding CaptEditPreBuild}"
+                                HorizontalAlignment="Right"
+                                MinWidth="120"
+                                Click="OnEditPreBuildClick"/>
+                    </DockPanel>
                 </StackPanel>
             </GroupBox>
 
@@ -51,16 +67,33 @@
                              VerticalScrollBarVisibility="Auto"
                              FontFamily="Consolas"
                              Margin="0,0,0,4"/>
-                    <Button Content="{Binding CaptEditPostBuild}"
-                            HorizontalAlignment="Right"
-                            MinWidth="120"
-                            Click="OnEditPostBuildClick"
-                            Margin="0,0,0,8"/>
+                    <DockPanel Margin="0,0,0,8">
+                        <Button DockPanel.Dock="Right"
+                                Style="{StaticResource ResetButtonStyle}"
+                                Command="{Binding ResetCommand}" CommandParameter="PostBuildEvent"
+                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PostBuildEvent}"
+                                Margin="4,0,0,0"/>
+                        <Button Content="{Binding CaptEditPostBuild}"
+                                HorizontalAlignment="Right"
+                                MinWidth="120"
+                                Click="OnEditPostBuildClick"/>
+                    </DockPanel>
 
                     <!-- Run post-build combo -->
                     <Label Content="{Binding CaptRunPostBuildEvent}" Margin="0,0,0,2" Padding="0"/>
-                    <ComboBox ItemsSource="{Binding RunPostBuildEventValues}"
-                              SelectedItem="{Binding RunPostBuildEvent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Grid.Column="0"
+                                  ItemsSource="{Binding RunPostBuildEventValues}"
+                                  SelectedItem="{Binding RunPostBuildEvent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                                Command="{Binding ResetCommand}" CommandParameter="RunPostBuildEvent"
+                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RunPostBuildEvent}"
+                                Margin="4,0,0,0"/>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
 

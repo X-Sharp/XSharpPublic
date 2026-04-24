@@ -23,10 +23,16 @@
     -->
 
     <UserControl.Resources>
-        <!-- BoolToVisibility: true → Visible, false → Collapsed -->
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-        <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
-        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!-- BoolToVisibility: true → Visible, false → Collapsed -->
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -44,66 +50,138 @@
                 <!-- Section header -->
                 <Label Content="General" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                <CheckBox Content="{Binding CaptLB}"
-                          IsChecked="{Binding LB, Mode=TwoWay}"
-                          IsEnabled="{Binding LBEnabled}"
-                          ToolTip="{Binding DescLB}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptLB}"
+                              IsChecked="{Binding LB, Mode=TwoWay}"
+                              IsEnabled="{Binding LBEnabled}"
+                              ToolTip="{Binding DescLB}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="LB"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=LB}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptNamedArgs}"
-                          IsChecked="{Binding NamedArgs, Mode=TwoWay}"
-                          ToolTip="{Binding DescNamedArgs}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptNamedArgs}"
+                              IsChecked="{Binding NamedArgs, Mode=TwoWay}"
+                              ToolTip="{Binding DescNamedArgs}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="NamedArgs"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NamedArgs}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptUnsafe}"
-                          IsChecked="{Binding Unsafe, Mode=TwoWay}"
-                          ToolTip="{Binding DescUnsafe}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptUnsafe}"
+                              IsChecked="{Binding Unsafe, Mode=TwoWay}"
+                              ToolTip="{Binding DescUnsafe}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="Unsafe"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Unsafe}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptCS}"
-                          IsChecked="{Binding CS, Mode=TwoWay}"
-                          ToolTip="{Binding DescCS}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptCS}"
+                              IsChecked="{Binding CS, Mode=TwoWay}"
+                              ToolTip="{Binding DescCS}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="CS"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=CS}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptInitLocals}"
-                          IsChecked="{Binding InitLocals, Mode=TwoWay}"
-                          ToolTip="{Binding DescInitLocals}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptInitLocals}"
+                              IsChecked="{Binding InitLocals, Mode=TwoWay}"
+                              ToolTip="{Binding DescInitLocals}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="InitLocals"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=InitLocals}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptOVF}"
-                          IsChecked="{Binding OVF, Mode=TwoWay}"
-                          ToolTip="{Binding DescOVF}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptOVF}"
+                              IsChecked="{Binding OVF, Mode=TwoWay}"
+                              ToolTip="{Binding DescOVF}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="OVF"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=OVF}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptAZ}"
-                          IsChecked="{Binding AZ, Mode=TwoWay}"
-                          ToolTip="{Binding DescAZ}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptAZ}"
+                              IsChecked="{Binding AZ, Mode=TwoWay}"
+                              ToolTip="{Binding DescAZ}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="AZ"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AZ}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptEnforceSelf}"
-                          IsChecked="{Binding EnforceSelf, Mode=TwoWay}"
-                          ToolTip="{Binding DescEnforceSelf}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptEnforceSelf}"
+                              IsChecked="{Binding EnforceSelf, Mode=TwoWay}"
+                              ToolTip="{Binding DescEnforceSelf}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="EnforceSelf"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=EnforceSelf}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptAllowDot}"
-                          IsChecked="{Binding AllowDot, Mode=TwoWay}"
-                          ToolTip="{Binding DescAllowDot}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptAllowDot}"
+                              IsChecked="{Binding AllowDot, Mode=TwoWay}"
+                              ToolTip="{Binding DescAllowDot}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="Allowdot"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Allowdot}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptEnforceOverride}"
-                          IsChecked="{Binding EnforceOverride, Mode=TwoWay}"
-                          ToolTip="{Binding DescEnforceOverride}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptEnforceOverride}"
+                              IsChecked="{Binding EnforceOverride, Mode=TwoWay}"
+                              ToolTip="{Binding DescEnforceOverride}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="EnforceOverride"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=EnforceOverride}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptOldStyleAssignments}"
-                          IsChecked="{Binding AllowOldStyleAssignments, Mode=TwoWay}"
-                          ToolTip="{Binding DescOldStyleAssignments}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptOldStyleAssignments}"
+                              IsChecked="{Binding AllowOldStyleAssignments, Mode=TwoWay}"
+                              ToolTip="{Binding DescOldStyleAssignments}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="AllowOldStyleAssignments"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AllowOldStyleAssignments}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptModernSyntax}"
-                          IsChecked="{Binding ModernSyntax, Mode=TwoWay}"
-                          ToolTip="{Binding DescModernSyntax}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptModernSyntax}"
+                              IsChecked="{Binding ModernSyntax, Mode=TwoWay}"
+                              ToolTip="{Binding DescModernSyntax}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="ModernSyntax"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=ModernSyntax}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
             </StackPanel>
 
@@ -115,46 +193,77 @@
                 <!-- Memory variables section -->
                 <Label Content="Memory variables" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                <CheckBox Content="{Binding CaptMemVar}"
-                          IsChecked="{Binding MemVar, Mode=TwoWay}"
-                          IsEnabled="{Binding MemVarEnabled}"
-                          ToolTip="{Binding DescMemVar}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptMemVar}"
+                              IsChecked="{Binding MemVar, Mode=TwoWay}"
+                              IsEnabled="{Binding MemVarEnabled}"
+                              ToolTip="{Binding DescMemVar}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="MemVar"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=MemVar}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptUndeclared}"
-                          IsChecked="{Binding Undeclared, Mode=TwoWay}"
-                          IsEnabled="{Binding UndeclaredEnabled}"
-                          ToolTip="{Binding DescUndeclared}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptUndeclared}"
+                              IsChecked="{Binding Undeclared, Mode=TwoWay}"
+                              IsEnabled="{Binding UndeclaredEnabled}"
+                              ToolTip="{Binding DescUndeclared}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="Undeclared"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Undeclared}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Namespaces section -->
                 <Label Content="Namespaces" FontWeight="Bold" Margin="0,10,0,4"/>
 
-                <CheckBox Content="{Binding CaptINS}"
-                          IsChecked="{Binding INS, Mode=TwoWay}"
-                          ToolTip="{Binding DescINS}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptINS}"
+                              IsChecked="{Binding INS, Mode=TwoWay}"
+                              ToolTip="{Binding DescINS}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="INS"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=INS}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <CheckBox Content="{Binding CaptNS}"
-                          IsChecked="{Binding NS, Mode=TwoWay}"
-                          ToolTip="{Binding DescNS}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptNS}"
+                              IsChecked="{Binding NS, Mode=TwoWay}"
+                              ToolTip="{Binding DescNS}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="NS"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NS}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Preprocessor section -->
                 <Label Content="Preprocessor" FontWeight="Bold" Margin="0,10,0,4"/>
 
-                <CheckBox Content="{Binding CaptNoStandardDefs}"
-                          IsChecked="{Binding NoStandardDefs, Mode=TwoWay}"
-                          ToolTip="{Binding DescNoStandardDefs}"
-                          Margin="0,3,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <CheckBox Content="{Binding CaptNoStandardDefs}"
+                              IsChecked="{Binding NoStandardDefs, Mode=TwoWay}"
+                              ToolTip="{Binding DescNoStandardDefs}"
+                              VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource ResetButtonStyle}"
+                            Command="{Binding ResetCommand}" CommandParameter="NoStandardDefs"
+                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NoStandardDefs}"
+                            Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <!-- Include Paths row: label + textbox + browse button -->
+                <!-- Include Paths row: label + textbox + browse button + reset -->
                 <Label Content="{Binding CaptIncludePaths}"
                        ToolTip="{Binding DescIncludePaths}"
                        Margin="0,10,0,2"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0"
@@ -163,15 +272,20 @@
                     <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                              ToolTip="{Binding DescIncludePaths}"
                              Click="OnBrowseIncludePathsClick"/>
+                    <Button  Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                             Command="{Binding ResetCommand}" CommandParameter="IncludePaths"
+                             IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=IncludePaths}"
+                             Margin="4,0,0,0"/>
                 </Grid>
 
-                <!-- Standard Defs row: label + textbox + browse button -->
+                <!-- Standard Defs row: label + textbox + browse button + reset -->
                 <Label Content="{Binding CaptStandardDefs}"
                        ToolTip="{Binding DescStandardDefs}"
                        Margin="0,8,0,2"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0"
@@ -180,6 +294,10 @@
                     <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                              ToolTip="{Binding DescStandardDefs}"
                              Click="OnBrowseStandardDefsClick"/>
+                    <Button  Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                             Command="{Binding ResetCommand}" CommandParameter="StandardDefs"
+                             IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=StandardDefs}"
+                             Margin="4,0,0,0"/>
                 </Grid>
 
             </StackPanel>

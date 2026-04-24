@@ -26,8 +26,14 @@
     -->
 
     <UserControl.Resources>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -42,29 +48,84 @@
 
             <Label Content="Title:"
                    ToolTip="AssemblyTitle — human-readable name for the assembly."/>
-            <TextBox Text="{Binding AssemblyTitle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="AssemblyTitle — human-readable name for the assembly."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding AssemblyTitle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="AssemblyTitle — human-readable name for the assembly."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="AssemblyTitle"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AssemblyTitle}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Description:" Margin="0,4,0,0"
                    ToolTip="Description — used as both the assembly description and the NuGet package description when PackageDescription is not set."/>
-            <TextBox Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
-                     ToolTip="Description — used as both the assembly description and the NuGet package description when PackageDescription is not set."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                         ToolTip="Description — used as both the assembly description and the NuGet package description when PackageDescription is not set."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="Description"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Description}"
+                        Margin="4,0,0,0" VerticalAlignment="Top"/>
+            </Grid>
 
             <Label Content="Company:" Margin="0,4,0,0"
                    ToolTip="Company — maps to [AssemblyCompany]."/>
-            <TextBox Text="{Binding Company, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="Company — maps to [AssemblyCompany]."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding Company, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Company — maps to [AssemblyCompany]."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="Company"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Company}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Copyright:" Margin="0,4,0,0"
                    ToolTip="Copyright — maps to [AssemblyCopyright] and the NuGet Copyright field."/>
-            <TextBox Text="{Binding Copyright, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="Copyright — maps to [AssemblyCopyright] and the NuGet Copyright field."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding Copyright, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Copyright — maps to [AssemblyCopyright] and the NuGet Copyright field."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="Copyright"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Copyright}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Neutral Language:" Margin="0,4,0,0"
                    ToolTip="NeutralLanguage — the culture of the assembly's neutral resources, e.g. en-US."/>
-            <TextBox Text="{Binding NeutralLanguage, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="NeutralLanguage — the culture of the assembly's neutral resources, e.g. en-US."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding NeutralLanguage, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="NeutralLanguage — the culture of the assembly's neutral resources, e.g. en-US."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="NeutralLanguage"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NeutralLanguage}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <!-- ═══════════════════════════════════════════════════════ -->
             <!-- NuGet Package                                           -->
@@ -74,53 +135,153 @@
 
             <Label Content="Package ID:"
                    ToolTip="PackageId — the NuGet package identifier. Defaults to AssemblyName when not set."/>
-            <TextBox Text="{Binding PackageId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="PackageId — the NuGet package identifier. Defaults to AssemblyName when not set."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding PackageId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="PackageId — the NuGet package identifier. Defaults to AssemblyName when not set."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="PackageId"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageId}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Package Version:" Margin="0,4,0,0"
                    ToolTip="PackageVersion — semver version string, e.g. 1.0.0 or 1.0.0-beta."/>
-            <TextBox Text="{Binding PackageVersion, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="PackageVersion — semver version string, e.g. 1.0.0 or 1.0.0-beta."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding PackageVersion, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="PackageVersion — semver version string, e.g. 1.0.0 or 1.0.0-beta."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="PackageVersion"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageVersion}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Authors:" Margin="0,4,0,0"
                    ToolTip="Authors — semicolon-separated list of package authors."/>
-            <TextBox Text="{Binding Authors, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="Authors — semicolon-separated list of package authors."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding Authors, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Authors — semicolon-separated list of package authors."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="Authors"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Authors}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Tags:" Margin="0,4,0,0"
                    ToolTip="PackageTags — semicolon-delimited list of tags for the NuGet gallery."/>
-            <TextBox Text="{Binding PackageTags, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="PackageTags — semicolon-delimited list of tags for the NuGet gallery."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding PackageTags, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="PackageTags — semicolon-delimited list of tags for the NuGet gallery."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="PackageTags"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageTags}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="License Expression (SPDX):" Margin="0,4,0,0"
                    ToolTip="PackageLicenseExpression — an SPDX license identifier or expression, e.g. MIT or Apache-2.0."/>
-            <TextBox Text="{Binding PackageLicenseExpression, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="PackageLicenseExpression — an SPDX license identifier or expression, e.g. MIT or Apache-2.0."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding PackageLicenseExpression, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="PackageLicenseExpression — an SPDX license identifier or expression, e.g. MIT or Apache-2.0."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="PackageLicenseExpression"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageLicenseExpression}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Project URL:" Margin="0,4,0,0"
                    ToolTip="PackageProjectUrl — URL to the project home page."/>
-            <TextBox Text="{Binding PackageProjectUrl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="PackageProjectUrl — URL to the project home page."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding PackageProjectUrl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="PackageProjectUrl — URL to the project home page."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="PackageProjectUrl"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageProjectUrl}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Repository URL:" Margin="0,4,0,0"
                    ToolTip="RepositoryUrl — URL used to clone or retrieve source code."/>
-            <TextBox Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="RepositoryUrl — URL used to clone or retrieve source code."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="RepositoryUrl — URL used to clone or retrieve source code."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="RepositoryUrl"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RepositoryUrl}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
             <Label Content="Repository Type:" Margin="0,4,0,0"
                    ToolTip="RepositoryType — type of the source repository, e.g. git or tfs."/>
-            <TextBox Text="{Binding RepositoryType, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     ToolTip="RepositoryType — type of the source repository, e.g. git or tfs."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding RepositoryType, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="RepositoryType — type of the source repository, e.g. git or tfs."/>
+                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="RepositoryType"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RepositoryType}"
+                        Margin="4,0,0,0"/>
+            </Grid>
 
-            <CheckBox Content="Generate NuGet package on build"
-                      IsChecked="{Binding GeneratePackageOnBuild, Mode=TwoWay}"
-                      Margin="0,8,0,0"
-                      ToolTip="GeneratePackageOnBuild — automatically creates a .nupkg file whenever the project is built."/>
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <CheckBox Content="Generate NuGet package on build"
+                          IsChecked="{Binding GeneratePackageOnBuild, Mode=TwoWay}"
+                          ToolTip="GeneratePackageOnBuild — automatically creates a .nupkg file whenever the project is built."
+                          VerticalAlignment="Center"/>
+                <Button Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="GeneratePackageOnBuild"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=GeneratePackageOnBuild}"
+                        Margin="4,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
 
-            <CheckBox Content="Package this project"
-                      IsChecked="{Binding IsPackable, Mode=TwoWay}"
-                      Margin="0,6,0,0"
-                      ToolTip="IsPackable — when unchecked, msbuild -t:pack will not produce a package for this project."/>
+            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                <CheckBox Content="Package this project"
+                          IsChecked="{Binding IsPackable, Mode=TwoWay}"
+                          ToolTip="IsPackable — when unchecked, msbuild -t:pack will not produce a package for this project."
+                          VerticalAlignment="Center"/>
+                <Button Style="{StaticResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="IsPackable"
+                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=IsPackable}"
+                        Margin="4,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
 
         </StackPanel>
     </ScrollViewer>

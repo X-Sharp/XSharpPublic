@@ -322,6 +322,15 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Set(Set.MemoWidth, nOld)
         END METHOD
 
+        [Fact];
+        METHOD TestLineNo() AS VOID
+            VAR nLine := LINENO()
+            Assert.True(nLine > 0)
+
+            nLine := LINENO(1)
+            Assert.True(nLine > 0)
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

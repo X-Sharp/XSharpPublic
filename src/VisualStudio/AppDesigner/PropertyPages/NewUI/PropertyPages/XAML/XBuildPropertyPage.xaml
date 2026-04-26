@@ -21,14 +21,9 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
-            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -63,9 +58,9 @@
                     <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                             ToolTip="{Binding DescOutputPath}"
                             Click="OnBrowseOutputPathClick"/>
-                    <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="OutputPath"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=OutputPath}"
+                            IsEnabled="{Binding [OutputPath]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -86,9 +81,9 @@
                     <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                             ToolTip="{Binding DescIntermediateOutputPath}"
                             Click="OnBrowseIntermediateOutputPathClick"/>
-                    <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="IntermediateOutputPath"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=IntermediateOutputPath}"
+                            IsEnabled="{Binding [IntermediateOutputPath]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -105,9 +100,9 @@
                               ItemsSource="{Binding PlatformTargetValues}"
                               SelectedItem="{Binding PlatformTarget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ToolTip="{Binding DescPlatformTarget}"/>
-                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="PlatformTarget"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PlatformTarget}"
+                            IsEnabled="{Binding [PlatformTarget]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -119,9 +114,9 @@
                               IsChecked="{Binding Optimize, Mode=TwoWay}"
                               ToolTip="{Binding DescOptimize}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="Optimize"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Optimize}"
+                            IsEnabled="{Binding [Optimize]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -131,9 +126,9 @@
                               IsEnabled="{Binding Prefer32BitEnabled}"
                               ToolTip="{Binding DescPrefer32Bit}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="Prefer32Bit"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Prefer32Bit}"
+                            IsEnabled="{Binding [Prefer32Bit]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -142,9 +137,9 @@
                               IsChecked="{Binding RegisterForComInterop, Mode=TwoWay}"
                               ToolTip="{Binding DescRegisterForComInterop}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="RegisterForComInterop"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RegisterForComInterop}"
+                            IsEnabled="{Binding [RegisterForComInterop]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -156,9 +151,9 @@
                               IsChecked="{Binding PPO, Mode=TwoWay}"
                               ToolTip="{Binding DescPPO}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="PPO"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PPO}"
+                            IsEnabled="{Binding [PPO]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -174,9 +169,9 @@
                     <TextBox Grid.Column="0"
                              Text="{Binding DefineConstants, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                              ToolTip="{Binding DescDefineConstants}"/>
-                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="DefineConstants"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DefineConstants}"
+                            IsEnabled="{Binding [DefineConstants]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -188,9 +183,9 @@
                               IsChecked="{Binding SignAssembly, Mode=TwoWay}"
                               ToolTip="{Binding DescSignAssembly}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="SignAssembly"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=SignAssembly}"
+                            IsEnabled="{Binding [SignAssembly]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -199,9 +194,9 @@
                               IsChecked="{Binding DelaySign, Mode=TwoWay}"
                               ToolTip="{Binding DescDelaySign}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="DelaySign"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DelaySign}"
+                            IsEnabled="{Binding [DelaySign]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -222,9 +217,9 @@
                     <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                             ToolTip="{Binding DescAssemblyOriginatorKeyFile}"
                             Click="OnBrowseKeyFileClick"/>
-                    <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="AssemblyOriginatorKeyFile"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AssemblyOriginatorKeyFile}"
+                            IsEnabled="{Binding [AssemblyOriginatorKeyFile]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -256,9 +251,9 @@
                         <ComboBoxItem Content="3"/>
                         <ComboBoxItem Content="4"/>
                     </ComboBox>
-                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="WarningLevel"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=WarningLevel}"
+                            IsEnabled="{Binding [WarningLevel]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -282,9 +277,9 @@
                              Text="{Binding SpecificWarnings, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                              IsEnabled="{Binding SpecificWarningsEnabled}"
                              ToolTip="{Binding DescSpecificWarnings}"/>
-                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="WarningsAsErrors"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=WarningsAsErrors}"
+                            IsEnabled="{Binding [WarningsAsErrors]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -296,9 +291,9 @@
                               IsChecked="{Binding XmlDocEnabled, Mode=TwoWay}"
                               ToolTip="{Binding DescDocumentationFile}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="DocumentationFile"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DocumentationFile}"
+                            IsEnabled="{Binding [DocumentationFile]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -316,9 +311,9 @@
                               IsChecked="{Binding UseSharedCompilation, Mode=TwoWay}"
                               ToolTip="{Binding DescUseSharedCompilation}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="UseSharedCompilation"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=UseSharedCompilation}"
+                            IsEnabled="{Binding [UseSharedCompilation]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -327,9 +322,9 @@
                               IsChecked="{Binding SuppressRCWarnings, Mode=TwoWay}"
                               ToolTip="{Binding DescSuppressRCWarnings}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="SuppressRCWarnings"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=SuppressRCWarnings}"
+                            IsEnabled="{Binding [SuppressRCWarnings]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -345,9 +340,9 @@
                     <TextBox Grid.Column="0"
                              Text="{Binding CommandLineOption, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                              ToolTip="{Binding DescCommandLineOption}"/>
-                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="CommandLineOption"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=CommandLineOption}"
+                            IsEnabled="{Binding [CommandLineOption]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -363,9 +358,9 @@
                     <TextBox Grid.Column="0"
                              Text="{Binding NoWarn, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                              ToolTip="{Binding DescNoWarn}"/>
-                    <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="NoWarn"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NoWarn}"
+                            IsEnabled="{Binding [NoWarn]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 

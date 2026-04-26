@@ -275,23 +275,5 @@ namespace XSharp.Project
 
             isDirty = false;
         }
-
-        /// <summary>
-        /// Writes the property only when it is already overridden in the project file (so we
-        /// update an existing explicit value) or when the new value is non-empty AND does not
-        /// contain MSBuild variable references (i.e. it is a literal user-entered value, not
-        /// an SDK-inherited default expression such as <c>$(AssemblyName)</c>).
-        /// This prevents SDK default expressions from being written as explicit overrides.
-        /// </summary>
-        private void SetPropertyIfOverriddenOrNonEmpty(string propertyName, string value)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            bool overridden = IsPropertyOverridden(propertyName);
-            // A value is considered a user-supplied literal only when it is non-empty AND
-            // does not contain a MSBuild property reference ("$(...)").
-            bool isUserValue = !string.IsNullOrEmpty(value) && !value.Contains("$(");
-            if (overridden || isUserValue)
-                parentPropertyPage.SetProperty(propertyName, value ?? string.Empty);
-        }
     }
 }

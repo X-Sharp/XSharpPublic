@@ -64,6 +64,9 @@ namespace XSharp.Project
         private ObservableCollection<string> _frameworkItems   = new ObservableCollection<string>();
         private ObservableCollection<string> _startupItems     = new ObservableCollection<string>();
 
+        private bool _isBinding   = false;   // true while BindProperties is loading values
+        private bool _isNotifying = false;   // true while firing Item[] refresh pulse
+
         // =========================================================================================
         // Constructor
         // =========================================================================================
@@ -341,7 +344,17 @@ namespace XSharp.Project
                     || e.PropertyName == nameof(TargetFrameworkLabel))
                     return;
 
+                // Ignore re-entrant notifications from BindProperties load or Item[] pulse.
+                if (_isBinding || _isNotifying)
+                    return;
+
+                ApplyChanges();
                 NotifyDirty();
+
+                // Pulse Item[] so all Reset-button IsEnabled bindings re-evaluate.
+                _isNotifying = true;
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isNotifying = false; }
             };
         }
 
@@ -349,63 +362,71 @@ namespace XSharp.Project
         public override void BindProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
-            // ---- Determine project style ----
-            bool isSdk          = IsSdkProject;
-            bool isMultiTarget  = IsMultiTargetingProject;
-            IsMultiTargeting    = isMultiTarget;
-
-            // ---- Populate combo item sources ----
-            PopulateOutputTypeItems();
-            PopulateDialectItems();
-            PopulateFrameworkItems(isSdk, isMultiTarget);
-            PopulateStartupItems();
-
-            // ---- Target framework label ----
-            TargetFrameworkLabel = isMultiTarget
-                ? GeneralPropertyPagePanel.captTargetFrameworks
-                : GeneralPropertyPagePanel.captTargetFramework;
-
-            // ---- Text fields ----
-            AssemblyName   = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? string.Empty;
-            RootNamespace  = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RootNamespace) ?? string.Empty;
-            ApplicationIcon = parentPropertyPage.GetProperty(XSharpProjectFileConstants.ApplicationIcon) ?? string.Empty;
-
-            // ---- Output type (display name) ----
-            OutputType = parentPropertyPage.GetProperty(XSharpProjectFileConstants.OutputType) ?? string.Empty;
-
-            // ---- Dialect (display name) ----
-            Dialect = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? string.Empty;
-
-            // ---- Target framework ----
-            if (isMultiTarget)
+            _isBinding = true;
+            try
             {
-                TargetFrameworks = parentPropertyPage.GetProperty(XSharpProjectFileConstants.XTargetFrameworks) ?? string.Empty;
+                // ---- Determine project style ----
+                bool isSdk          = IsSdkProject;
+                bool isMultiTarget  = IsMultiTargetingProject;
+                IsMultiTargeting    = isMultiTarget;
+
+                // ---- Populate combo item sources ----
+                PopulateOutputTypeItems();
+                PopulateDialectItems();
+                PopulateFrameworkItems(isSdk, isMultiTarget);
+                PopulateStartupItems();
+
+                // ---- Target framework label ----
+                TargetFrameworkLabel = isMultiTarget
+                    ? GeneralPropertyPagePanel.captTargetFrameworks
+                    : GeneralPropertyPagePanel.captTargetFramework;
+
+                // ---- Text fields ----
+                AssemblyName    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? string.Empty;
+                RootNamespace   = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RootNamespace) ?? string.Empty;
+                ApplicationIcon = parentPropertyPage.GetProperty(XSharpProjectFileConstants.ApplicationIcon) ?? string.Empty;
+
+                // ---- Output type (display name) ----
+                OutputType = parentPropertyPage.GetProperty(XSharpProjectFileConstants.OutputType) ?? string.Empty;
+
+                // ---- Dialect (display name) ----
+                Dialect = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? string.Empty;
+
+                // ---- Target framework ----
+                if (isMultiTarget)
+                {
+                    TargetFrameworks = parentPropertyPage.GetProperty(XSharpProjectFileConstants.XTargetFrameworks) ?? string.Empty;
+                }
+                else
+                {
+                    string fwProp = isSdk
+                        ? XSharpProjectFileConstants.TargetFramework
+                        : XSharpProjectFileConstants.TargetFrameworkVersion;
+                    TargetFramework = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
+                }
+
+                // ---- Startup object ----
+                string startupRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.StartupObject) ?? string.Empty;
+                StartupObject = string.IsNullOrEmpty(startupRaw) ? GeneralPropertyPagePanel.DefaultValue : startupRaw;
+
+                // ---- Checkboxes ----
+                AutoGenerateBindingRedirects = GetBoolPropertyValue(XSharpProjectFileConstants.AutoGenerateBindingRedirects);
+                SuppressDefaultManifest      = GetBoolPropertyValue(XSharpProjectFileConstants.NoWin32Manifest);
+                PreferNativeVersion          = GetBoolPropertyValue(XSharpProjectFileConstants.UseNativeVersion);
+                VulcanCompatibleResources    = GetBoolPropertyValue(XSharpProjectFileConstants.VulcanCompatibleResources);
+
+                // ---- UI state ----
+                IconEnabled          = !HasRCFiles();
+                StartupObjectEnabled = _startupItems.Count > 1;   // more than just DefaultValue entry
+
+                // Clear dirty after loading
+                isDirty = false;
             }
-            else
+            finally
             {
-                string fwProp = isSdk
-                    ? XSharpProjectFileConstants.TargetFramework
-                    : XSharpProjectFileConstants.TargetFrameworkVersion;
-                TargetFramework = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
+                _isBinding = false;
+                OnPropertyChanged("Item[]");
             }
-
-            // ---- Startup object ----
-            string startupRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.StartupObject) ?? string.Empty;
-            StartupObject = string.IsNullOrEmpty(startupRaw) ? GeneralPropertyPagePanel.DefaultValue : startupRaw;
-
-            // ---- Checkboxes ----
-            AutoGenerateBindingRedirects = GetBoolPropertyValue(XSharpProjectFileConstants.AutoGenerateBindingRedirects);
-            SuppressDefaultManifest      = GetBoolPropertyValue(XSharpProjectFileConstants.NoWin32Manifest);
-            PreferNativeVersion          = GetBoolPropertyValue(XSharpProjectFileConstants.UseNativeVersion);
-            VulcanCompatibleResources    = GetBoolPropertyValue(XSharpProjectFileConstants.VulcanCompatibleResources);
-
-            // ---- UI state ----
-            IconEnabled          = !HasRCFiles();
-            StartupObjectEnabled = _startupItems.Count > 1;   // more than just DefaultValue entry
-
-            // Clear dirty after loading
-            isDirty = false;
         }
 
         /// <inheritdoc/>
@@ -413,9 +434,9 @@ namespace XSharp.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.AssemblyName,  AssemblyName ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.RootNamespace, RootNamespace ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.ApplicationIcon, ApplicationIcon ?? string.Empty);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.AssemblyName,    AssemblyName    ?? string.Empty);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.RootNamespace,   RootNamespace   ?? string.Empty);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.ApplicationIcon, ApplicationIcon ?? string.Empty);
 
             // Output type — page's SetProperty handles display→raw conversion
             parentPropertyPage.SetProperty(XSharpProjectFileConstants.OutputType, OutputType ?? string.Empty);
@@ -426,14 +447,14 @@ namespace XSharp.Project
             // Target framework
             if (IsMultiTargeting)
             {
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.XTargetFrameworks, TargetFrameworks ?? string.Empty);
+                SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.XTargetFrameworks, TargetFrameworks ?? string.Empty);
             }
             else
             {
                 string fwProp = IsSdkProject
                     ? XSharpProjectFileConstants.TargetFramework
                     : XSharpProjectFileConstants.TargetFrameworkVersion;
-                parentPropertyPage.SetProperty(fwProp, TargetFramework ?? string.Empty);
+                SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
             }
 
             // Startup object — convert DefaultValue sentinel back to ""

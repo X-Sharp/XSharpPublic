@@ -182,6 +182,22 @@ namespace XSharp.Project
         protected void SetBoolPropertyValue(string propertyName, bool value)
             => SetProjectProperty(propertyName, value.ToString().ToLowerInvariant());
 
+        /// <summary>
+        /// Writes a string property to the MSBuild project only when the property is already
+        /// explicitly overridden in the project file, or when <paramref name="value"/> is a
+        /// genuine user-supplied literal (non-empty and not an SDK expression such as
+        /// <c>$(AssemblyName)</c>).
+        /// This prevents SDK default expressions from being written as explicit overrides.
+        /// </summary>
+        protected void SetPropertyIfOverriddenOrNonEmpty(string propertyName, string value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            bool overridden = IsPropertyOverridden(propertyName);
+            bool isUserValue = !string.IsNullOrEmpty(value) && !value.Contains("$(");
+            if (overridden || isUserValue)
+                parentPropertyPage.SetProperty(propertyName, value ?? string.Empty);
+        }
+
         // =========================================================================================
         // Indexer — used by XAML bindings to check override state per property
         // =========================================================================================

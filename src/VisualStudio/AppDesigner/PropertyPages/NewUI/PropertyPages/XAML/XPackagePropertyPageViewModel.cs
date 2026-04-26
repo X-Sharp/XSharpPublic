@@ -57,8 +57,11 @@ namespace XSharp.Project
         private bool   _isPackable = true;
 
         // =========================================================================================
-        // Constructor
+        // Backing fields — write-through guard
         // =========================================================================================
+
+        /// <summary>Prevents re-entrant ApplyChanges calls during BindProperties.</summary>
+        private bool _isBinding;
 
         public XPackagePropertyPageViewModel(XPropertyPage parentPropertyPage)
             : base(parentPropertyPage)
@@ -185,38 +188,55 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
-            PropertyChanged += (sender, e) => NotifyDirty();
+            PropertyChanged += (sender, e) =>
+            {
+                if (_isBinding)
+                    return;
+                NotifyDirty();
+                Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.Run(async () =>
+                {
+                    await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    ApplyChanges();
+                });
+            };
         }
 
         /// <inheritdoc/>
         public override void BindProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            _isBinding = true;
+            try
+            {
+                // Assembly info
+                AssemblyTitle   = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyTitle)   ?? string.Empty;
+                Description     = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Description)     ?? string.Empty;
+                Company         = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Company)         ?? string.Empty;
+                Copyright       = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Copyright)       ?? string.Empty;
+                NeutralLanguage = parentPropertyPage.GetProperty(XSharpProjectFileConstants.NeutralLanguage) ?? string.Empty;
 
-            // Assembly info
-            AssemblyTitle   = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyTitle)   ?? string.Empty;
-            Description     = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Description)     ?? string.Empty;
-            Company         = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Company)         ?? string.Empty;
-            Copyright       = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Copyright)       ?? string.Empty;
-            NeutralLanguage = parentPropertyPage.GetProperty(XSharpProjectFileConstants.NeutralLanguage) ?? string.Empty;
+                // NuGet package metadata
+                PackageId               = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageId)               ?? string.Empty;
+                PackageVersion          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageVersion)          ?? string.Empty;
+                Authors                 = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Authors)                 ?? string.Empty;
+                PackageTags             = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageTags)             ?? string.Empty;
+                PackageLicenseExpression= parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageLicenseExpression)?? string.Empty;
+                PackageProjectUrl       = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageProjectUrl)       ?? string.Empty;
+                RepositoryUrl           = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RepositoryUrl)           ?? string.Empty;
+                RepositoryType          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RepositoryType)          ?? string.Empty;
+                GeneratePackageOnBuild  = GetBoolPropertyValue(XSharpProjectFileConstants.GeneratePackageOnBuild);
 
-            // NuGet package metadata
-            PackageId               = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageId)               ?? string.Empty;
-            PackageVersion          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageVersion)          ?? string.Empty;
-            Authors                 = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Authors)                 ?? string.Empty;
-            PackageTags             = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageTags)             ?? string.Empty;
-            PackageLicenseExpression= parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageLicenseExpression)?? string.Empty;
-            PackageProjectUrl       = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PackageProjectUrl)       ?? string.Empty;
-            RepositoryUrl           = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RepositoryUrl)           ?? string.Empty;
-            RepositoryType          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RepositoryType)          ?? string.Empty;
-            GeneratePackageOnBuild  = GetBoolPropertyValue(XSharpProjectFileConstants.GeneratePackageOnBuild);
+                // IsPackable defaults to true when absent
+                var isPackableRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.IsPackable);
+                IsPackable = string.IsNullOrEmpty(isPackableRaw)
+                             || string.Equals(isPackableRaw, "true", System.StringComparison.OrdinalIgnoreCase);
 
-            // IsPackable defaults to true when absent
-            var isPackableRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.IsPackable);
-            IsPackable = string.IsNullOrEmpty(isPackableRaw)
-                         || string.Equals(isPackableRaw, "true", System.StringComparison.OrdinalIgnoreCase);
-
-            isDirty = false;
+                isDirty = false;
+            }
+            finally
+            {
+                _isBinding = false;
+            }
         }
 
         /// <inheritdoc/>

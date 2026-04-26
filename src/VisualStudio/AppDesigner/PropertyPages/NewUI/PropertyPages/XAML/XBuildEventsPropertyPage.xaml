@@ -22,12 +22,7 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -45,9 +40,9 @@
                              Margin="0,0,0,4"/>
                     <DockPanel>
                         <Button DockPanel.Dock="Right"
-                                Style="{StaticResource ResetButtonStyle}"
+                                Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="PreBuildEvent"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PreBuildEvent}"
+                                IsEnabled="{Binding [PreBuildEvent]}"
                                 Margin="4,0,0,0"/>
                         <Button Content="{Binding CaptEditPreBuild}"
                                 HorizontalAlignment="Right"
@@ -69,9 +64,9 @@
                              Margin="0,0,0,4"/>
                     <DockPanel Margin="0,0,0,8">
                         <Button DockPanel.Dock="Right"
-                                Style="{StaticResource ResetButtonStyle}"
+                                Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="PostBuildEvent"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PostBuildEvent}"
+                                IsEnabled="{Binding [PostBuildEvent]}"
                                 Margin="4,0,0,0"/>
                         <Button Content="{Binding CaptEditPostBuild}"
                                 HorizontalAlignment="Right"
@@ -89,9 +84,9 @@
                         <ComboBox Grid.Column="0"
                                   ItemsSource="{Binding RunPostBuildEventValues}"
                                   SelectedItem="{Binding RunPostBuildEvent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                        <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="RunPostBuildEvent"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RunPostBuildEvent}"
+                                IsEnabled="{Binding [RunPostBuildEvent]}"
                                 Margin="4,0,0,0"/>
                     </Grid>
                 </StackPanel>

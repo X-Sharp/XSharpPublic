@@ -47,6 +47,9 @@ namespace XSharp.Project
 
         private readonly List<string> _runPostBuildEventValues;
 
+        private bool _isBinding   = false;
+        private bool _isNotifying = false;
+
         // =========================================================================================
         // Constructor
         // =========================================================================================
@@ -128,19 +131,38 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
-            PropertyChanged += (sender, e) => NotifyDirty();
+            PropertyChanged += (sender, e) =>
+            {
+                if (_isBinding || _isNotifying)
+                    return;
+
+                ApplyChanges();
+                NotifyDirty();
+
+                _isNotifying = true;
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isNotifying = false; }
+            };
         }
 
         /// <inheritdoc/>
         public override void BindProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            _isBinding = true;
+            try
+            {
+                PreBuildEvent     = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PreBuildEvent)     ?? string.Empty;
+                PostBuildEvent    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PostBuildEvent)    ?? string.Empty;
+                RunPostBuildEvent = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RunPostBuildEvent) ?? string.Empty;
 
-            PreBuildEvent     = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PreBuildEvent)  ?? string.Empty;
-            PostBuildEvent    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PostBuildEvent) ?? string.Empty;
-            RunPostBuildEvent = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RunPostBuildEvent) ?? string.Empty;
-
-            isDirty = false;
+                isDirty = false;
+            }
+            finally
+            {
+                _isBinding = false;
+                OnPropertyChanged("Item[]");
+            }
         }
 
         /// <inheritdoc/>

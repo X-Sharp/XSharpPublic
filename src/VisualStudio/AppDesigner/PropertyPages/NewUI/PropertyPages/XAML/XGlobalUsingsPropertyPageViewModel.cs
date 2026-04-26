@@ -46,6 +46,9 @@ namespace XSharp.Project
         private string _newAlias     = string.Empty;
         private bool   _newStatic;
 
+        private bool _isBinding;
+        private bool _isNotifying;
+
         private readonly ObservableCollection<UsingInfo> _usings = new ObservableCollection<UsingInfo>();
 
         // =========================================================================================
@@ -237,11 +240,20 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
-            // Only ImplicitUsings triggers MSBuild dirty; Using items are live.
+            // Only ImplicitUsings triggers MSBuild write-through; Using items are live.
             PropertyChanged += (sender, e) =>
             {
+                if (_isBinding || _isNotifying)
+                    return;
                 if (e.PropertyName == nameof(ImplicitUsings))
+                {
+                    ThreadHelper.ThrowIfNotOnUIThread();
+                    ApplyChanges();
                     NotifyDirty();
+                    _isNotifying = true;
+                    try   { OnPropertyChanged("Item[]"); }
+                    finally { _isNotifying = false; }
+                }
             };
         }
 
@@ -249,13 +261,21 @@ namespace XSharp.Project
         public override void BindProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            _isBinding = true;
+            try
+            {
+                var raw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.ImplicitUsings) ?? string.Empty;
+                ImplicitUsings = string.Equals(raw, "enable", StringComparison.OrdinalIgnoreCase)
+                                 || string.Equals(raw, "true",   StringComparison.OrdinalIgnoreCase);
 
-            var raw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.ImplicitUsings) ?? string.Empty;
-            ImplicitUsings = string.Equals(raw, "enable", StringComparison.OrdinalIgnoreCase)
-                             || string.Equals(raw, "true",   StringComparison.OrdinalIgnoreCase);
-
-            RefreshUsings();
-            isDirty = false;
+                RefreshUsings();
+                isDirty = false;
+            }
+            finally
+            {
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isBinding = false; }
+            }
         }
 
         /// <inheritdoc/>

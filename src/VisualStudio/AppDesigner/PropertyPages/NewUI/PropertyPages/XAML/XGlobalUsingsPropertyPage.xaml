@@ -41,7 +41,7 @@
                               VerticalAlignment="Center"/>
                     <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="ImplicitUsings"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=ImplicitUsings}"
+                            IsEnabled="{Binding [ImplicitUsings]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
             </GroupBox>

@@ -65,6 +65,7 @@ namespace XSharp.Project
         private ObservableCollection<string> _startupItems     = new ObservableCollection<string>();
 
         private bool _isBinding   = false;   // true while BindProperties is loading values
+
         private bool _isNotifying = false;   // true while firing Item[] refresh pulse
 
         // =========================================================================================

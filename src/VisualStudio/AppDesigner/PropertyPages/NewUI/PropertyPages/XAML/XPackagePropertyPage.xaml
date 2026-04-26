@@ -52,7 +52,7 @@
                          ToolTip="AssemblyTitle — human-readable name for the assembly."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="AssemblyTitle"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AssemblyTitle}"
+                        IsEnabled="{Binding [AssemblyTitle]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -69,7 +69,7 @@
                          ToolTip="Description — used as both the assembly description and the NuGet package description when PackageDescription is not set."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="Description"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Description}"
+                        IsEnabled="{Binding [Description]}"
                         Margin="4,0,0,0" VerticalAlignment="Top"/>
             </Grid>
 
@@ -85,7 +85,7 @@
                          ToolTip="Company — maps to [AssemblyCompany]."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="Company"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Company}"
+                        IsEnabled="{Binding [Company]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -101,7 +101,7 @@
                          ToolTip="Copyright — maps to [AssemblyCopyright] and the NuGet Copyright field."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="Copyright"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Copyright}"
+                        IsEnabled="{Binding [Copyright]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -117,7 +117,7 @@
                          ToolTip="NeutralLanguage — the culture of the assembly's neutral resources, e.g. en-US."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="NeutralLanguage"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NeutralLanguage}"
+                        IsEnabled="{Binding [NeutralLanguage]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -139,7 +139,7 @@
                          ToolTip="PackageId — the NuGet package identifier. Defaults to AssemblyName when not set."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="PackageId"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageId}"
+                        IsEnabled="{Binding [PackageId]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -155,7 +155,7 @@
                          ToolTip="PackageVersion — semver version string, e.g. 1.0.0 or 1.0.0-beta."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="PackageVersion"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageVersion}"
+                        IsEnabled="{Binding [PackageVersion]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -171,7 +171,7 @@
                          ToolTip="Authors — semicolon-separated list of package authors."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="Authors"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Authors}"
+                        IsEnabled="{Binding [Authors]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -187,7 +187,7 @@
                          ToolTip="PackageTags — semicolon-delimited list of tags for the NuGet gallery."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="PackageTags"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageTags}"
+                        IsEnabled="{Binding [PackageTags]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -203,7 +203,7 @@
                          ToolTip="PackageLicenseExpression — an SPDX license identifier or expression, e.g. MIT or Apache-2.0."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="PackageLicenseExpression"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageLicenseExpression}"
+                        IsEnabled="{Binding [PackageLicenseExpression]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -219,7 +219,7 @@
                          ToolTip="PackageProjectUrl — URL to the project home page."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="PackageProjectUrl"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=PackageProjectUrl}"
+                        IsEnabled="{Binding [PackageProjectUrl]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -235,7 +235,7 @@
                          ToolTip="RepositoryUrl — URL used to clone or retrieve source code."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="RepositoryUrl"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RepositoryUrl}"
+                        IsEnabled="{Binding [RepositoryUrl]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -251,7 +251,7 @@
                          ToolTip="RepositoryType — type of the source repository, e.g. git or tfs."/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="RepositoryType"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=RepositoryType}"
+                        IsEnabled="{Binding [RepositoryType]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -262,7 +262,7 @@
                           VerticalAlignment="Center"/>
                 <Button Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="GeneratePackageOnBuild"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=GeneratePackageOnBuild}"
+                        IsEnabled="{Binding [GeneratePackageOnBuild]}"
                         Margin="4,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 
@@ -273,7 +273,7 @@
                           VerticalAlignment="Center"/>
                 <Button Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="IsPackable"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=IsPackable}"
+                        IsEnabled="{Binding [IsPackable]}"
                         Margin="4,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 

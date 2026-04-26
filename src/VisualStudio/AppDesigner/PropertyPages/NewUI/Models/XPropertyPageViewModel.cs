@@ -182,6 +182,20 @@ namespace XSharp.Project
         protected void SetBoolPropertyValue(string propertyName, bool value)
             => SetProjectProperty(propertyName, value.ToString().ToLowerInvariant());
 
+        // =========================================================================================
+        // Indexer — used by XAML bindings to check override state per property
+        // =========================================================================================
+
+        /// <summary>
+        /// Returns <see langword="true"/> when the named MSBuild property is explicitly set
+        /// in the project file (overriding the SDK default).
+        /// </summary>
+        /// <remarks>
+        /// Expose this as an indexer so XAML can bind with <c>{Binding [Authors]}</c>.
+        /// Raise <c>PropertyChanged("Item[]")</c> to force WPF to re-evaluate all such bindings.
+        /// </remarks>
+        public bool this[string propertyName] => IsPropertyOverridden(propertyName);
+
         // Internal wrappers so that ResetPropertyCommand (a sibling class) can call the
         // protected base methods without needing reflection or inheritance.
         internal bool IsPropertyOverriddenInternal(string name) => IsPropertyOverridden(name);

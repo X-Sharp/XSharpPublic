@@ -60,8 +60,11 @@ namespace XSharp.Project
         // Backing fields — write-through guard
         // =========================================================================================
 
-        /// <summary>Prevents re-entrant ApplyChanges calls during BindProperties.</summary>
+        /// <summary>Prevents re-entrant ApplyChanges calls during BindProperties or post-apply refresh.</summary>
         private bool _isBinding;
+
+        /// <summary>Suppresses ApplyChanges when firing PropertyChanged solely to refresh the UI converters.</summary>
+        private bool _isNotifying;
 
         public XPackagePropertyPageViewModel(XPropertyPage parentPropertyPage)
             : base(parentPropertyPage)
@@ -190,14 +193,17 @@ namespace XSharp.Project
         {
             PropertyChanged += (sender, e) =>
             {
-                if (_isBinding)
+                if (_isBinding || _isNotifying)
                     return;
+                ThreadHelper.ThrowIfNotOnUIThread();
+                ApplyChanges();
                 NotifyDirty();
-                Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.Run(async () =>
-                {
-                    await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    ApplyChanges();
-                });
+                // Fire OnPropertyChanged("Item[]") to force WPF to re-evaluate all indexer
+                // bindings ({Binding [PropertyName]}) which control Reset button enabled state.
+                // The _isNotifying guard prevents this notification from re-entering ApplyChanges.
+                _isNotifying = true;
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isNotifying = false; }
             };
         }
 
@@ -235,7 +241,11 @@ namespace XSharp.Project
             }
             finally
             {
-                _isBinding = false;
+                // Fire OnPropertyChanged("Item[]") while still inside _isBinding=true
+                // so that indexer bindings ({Binding [PropertyName]}) are re-evaluated
+                // (re-enabling/disabling Reset buttons) but the HookupEvents handler ignores it.
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isBinding = false; }
             }
         }
 
@@ -245,25 +255,43 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             // Assembly info
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.AssemblyTitle,   AssemblyTitle   ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Description,     Description     ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Company,         Company         ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Copyright,       Copyright       ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.NeutralLanguage, NeutralLanguage ?? string.Empty);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.AssemblyTitle,   AssemblyTitle);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.Description,     Description);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.Company,         Company);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.Copyright,       Copyright);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.NeutralLanguage, NeutralLanguage);
 
             // NuGet package metadata
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageId,               PackageId               ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageVersion,          PackageVersion          ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.Authors,                 Authors                 ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageTags,             PackageTags             ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageLicenseExpression,PackageLicenseExpression?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PackageProjectUrl,       PackageProjectUrl       ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.RepositoryUrl,           RepositoryUrl           ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.RepositoryType,          RepositoryType          ?? string.Empty);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.PackageId,                PackageId);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.PackageVersion,           PackageVersion);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.Authors,                  Authors);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.PackageTags,              PackageTags);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.PackageLicenseExpression, PackageLicenseExpression);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.PackageProjectUrl,        PackageProjectUrl);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.RepositoryUrl,            RepositoryUrl);
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.RepositoryType,           RepositoryType);
             SetBoolPropertyValue(XSharpProjectFileConstants.GeneratePackageOnBuild, GeneratePackageOnBuild);
             SetBoolPropertyValue(XSharpProjectFileConstants.IsPackable,             IsPackable);
 
             isDirty = false;
+        }
+
+        /// <summary>
+        /// Writes the property only when it is already overridden in the project file (so we
+        /// update an existing explicit value) or when the new value is non-empty AND does not
+        /// contain MSBuild variable references (i.e. it is a literal user-entered value, not
+        /// an SDK-inherited default expression such as <c>$(AssemblyName)</c>).
+        /// This prevents SDK default expressions from being written as explicit overrides.
+        /// </summary>
+        private void SetPropertyIfOverriddenOrNonEmpty(string propertyName, string value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            bool overridden = IsPropertyOverridden(propertyName);
+            // A value is considered a user-supplied literal only when it is non-empty AND
+            // does not contain a MSBuild property reference ("$(...)").
+            bool isUserValue = !string.IsNullOrEmpty(value) && !value.Contains("$(");
+            if (overridden || isUserValue)
+                parentPropertyPage.SetProperty(propertyName, value ?? string.Empty);
         }
     }
 }

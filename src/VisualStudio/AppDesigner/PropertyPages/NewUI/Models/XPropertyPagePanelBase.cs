@@ -358,6 +358,7 @@ namespace XSharp.Project
             if (prop != null && !prop.IsImported)
             {
                 project.RemoveProperty(prop);
+                project.ReevaluateIfNecessary();
                 parentPropertyPage.ProjectMgr.SetProjectFileDirty(true);
             }
         }

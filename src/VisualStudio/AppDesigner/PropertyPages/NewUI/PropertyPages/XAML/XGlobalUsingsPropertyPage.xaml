@@ -24,15 +24,10 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
-            <local:BoolNegationConverter     x:Key="BoolNegation"/>
-            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
-        </ResourceDictionary>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        <local:BoolNegationConverter     x:Key="BoolNegation"/>
+        <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -44,7 +39,7 @@
                     <CheckBox Content="{Binding CaptEnableImplicitUsings}"
                               IsChecked="{Binding ImplicitUsings, Mode=TwoWay}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="ImplicitUsings"
                             IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=ImplicitUsings}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>

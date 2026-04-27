@@ -56,6 +56,16 @@ namespace XSharp.Project
         private bool _isNotifying = false;
 
         // =========================================================================================
+        // Config selector
+        // =========================================================================================
+        private readonly XConfigSelectorViewModel _configSelector = new XConfigSelectorViewModel();
+
+        /// <summary>
+        /// The configuration selector combobox ViewModel (bound to the combobox at the top of the page).
+        /// </summary>
+        public XConfigSelectorViewModel ConfigSelector => _configSelector;
+
+        // =========================================================================================
         // Constructor
         // =========================================================================================
 
@@ -81,6 +91,24 @@ namespace XSharp.Project
         /// can access <c>ProjectMgr</c> and call <c>SetProperty</c>.
         /// </summary>
         internal XPropertyPage ParentPage => parentPropertyPage;
+
+        // =========================================================================================
+        // Per-config bool helpers — route through ConfigSelector instead of ProjectMgr directly
+        // =========================================================================================
+
+        private bool GetBoolForConfigs(string propertyName)
+        {
+            var value = ((XPropertyPage)parentPropertyPage).GetPropertyForConfigs(
+                propertyName, _configSelector.ResolvedConfigs);
+            return bool.TryParse(value, out var result) && result;
+        }
+
+        private void SetBoolForConfigs(string propertyName, bool value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ((XPropertyPage)parentPropertyPage).SetPropertyForConfigs(
+                propertyName, value.ToString().ToLowerInvariant(), _configSelector.ResolvedConfigs);
+        }
 
         // =========================================================================================
         // Observable Properties — strings
@@ -165,6 +193,19 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
+            // Re-bind when the user picks a different configuration.
+            _configSelector.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(XConfigSelectorViewModel.SelectedConfig))
+                {
+                    ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        BindProperties();
+                    });
+                }
+            };
+
             PropertyChanged += (sender, e) =>
             {
                 if (_isBinding || _isNotifying)
@@ -186,11 +227,21 @@ namespace XSharp.Project
             _isBinding = true;
             try
             {
-                DebuggerCommand          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerCommand)          ?? string.Empty;
-                DebuggerCommandArguments = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerCommandArguments) ?? string.Empty;
-                DebugType                = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebugType)                ?? string.Empty;
-                DebuggerWorkingDirectory = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory) ?? string.Empty;
-                EnableUnmanagedDebugging = GetBoolPropertyValue(XSharpProjectFileConstants.EnableUnmanagedDebugging);
+                // ---- Config selector ----
+                var page = (XPropertyPage)parentPropertyPage;
+                var allConfigs = page.GetAllProjectConfigs();
+                var activeConfigName = page.ProjectConfigs?.Count > 0
+                    ? ((XProjectConfig)page.ProjectConfigs[0]).ConfigName
+                    : XConfigSelectorViewModel.AllConfigurations;
+                _configSelector.Initialize(allConfigs, activeConfigName);
+                var configs = _configSelector.ResolvedConfigs;
+
+                // ---- Properties ----
+                DebuggerCommand          = page.GetPropertyForConfigs(XSharpProjectFileConstants.DebuggerCommand,          configs) ?? string.Empty;
+                DebuggerCommandArguments = page.GetPropertyForConfigs(XSharpProjectFileConstants.DebuggerCommandArguments, configs) ?? string.Empty;
+                DebugType                = page.GetPropertyForConfigs(XSharpProjectFileConstants.DebugType,                configs) ?? string.Empty;
+                DebuggerWorkingDirectory = page.GetPropertyForConfigs(XSharpProjectFileConstants.DebuggerWorkingDirectory, configs) ?? string.Empty;
+                EnableUnmanagedDebugging = GetBoolForConfigs(XSharpProjectFileConstants.EnableUnmanagedDebugging);
 
                 isDirty = false;
             }
@@ -205,12 +256,14 @@ namespace XSharp.Project
         public override void ApplyChanges()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            var page = (XPropertyPage)parentPropertyPage;
+            var configs = _configSelector.ResolvedConfigs;
 
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.DebuggerCommand,          DebuggerCommand          ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.DebuggerCommandArguments, DebuggerCommandArguments ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.DebugType,                DebugType                ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory, DebuggerWorkingDirectory ?? string.Empty);
-            SetBoolPropertyValue(XSharpProjectFileConstants.EnableUnmanagedDebugging,           EnableUnmanagedDebugging);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.DebuggerCommand,          DebuggerCommand          ?? string.Empty, configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.DebuggerCommandArguments, DebuggerCommandArguments ?? string.Empty, configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.DebugType,                DebugType                ?? string.Empty, configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.DebuggerWorkingDirectory, DebuggerWorkingDirectory ?? string.Empty, configs);
+            SetBoolForConfigs(XSharpProjectFileConstants.EnableUnmanagedDebugging,          EnableUnmanagedDebugging);
 
             isDirty = false;
         }

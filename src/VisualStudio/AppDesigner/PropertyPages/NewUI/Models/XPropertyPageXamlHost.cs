@@ -5,6 +5,7 @@
 //
 
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Drawing;
 using System.Windows;
@@ -137,6 +138,7 @@ namespace XSharp.Project
             get => viewModel?.isDirty ?? false;
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (viewModel != null)
                     viewModel.isDirty = value;
                 if (parentPropertyPage != null)

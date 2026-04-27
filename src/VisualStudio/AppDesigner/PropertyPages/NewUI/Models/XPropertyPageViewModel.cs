@@ -169,6 +169,7 @@ namespace XSharp.Project
         /// </returns>
         protected bool GetBoolPropertyValue(string propertyName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var value = GetProjectProperty(propertyName);
             return bool.TryParse(value, out var result) && result;
         }
@@ -180,7 +181,10 @@ namespace XSharp.Project
         /// <param name="propertyName">The MSBuild property name.</param>
         /// <param name="value">The boolean value to store.</param>
         protected void SetBoolPropertyValue(string propertyName, bool value)
-            => SetProjectProperty(propertyName, value.ToString().ToLowerInvariant());
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            SetProjectProperty(propertyName, value.ToString().ToLowerInvariant());
+        }
 
         /// <summary>
         /// Writes a string property to the MSBuild project only when the property is already
@@ -256,9 +260,9 @@ namespace XSharp.Project
 
         public void Execute(object parameter)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (parameter is string propertyName && !string.IsNullOrEmpty(propertyName))
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
                 _vm.ResetPropertyInternal(propertyName);
                 _vm.BindProperties();
             }

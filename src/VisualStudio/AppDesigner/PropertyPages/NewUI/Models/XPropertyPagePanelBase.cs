@@ -161,6 +161,7 @@ namespace XSharp.Project
         /// </summary>
         protected void NotifyDirty()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             isDirty = true;
             if (parentPropertyPage != null)
                 parentPropertyPage.IsDirty = true;

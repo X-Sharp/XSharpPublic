@@ -73,6 +73,9 @@ namespace XSharp.Project
         private bool _fox2Enabled      = false;
         private bool _xpp1Enabled      = false;
 
+        private bool _isBinding   = false;
+        private bool _isNotifying = false;
+
         // =========================================================================================
         // Constructor
         // =========================================================================================
@@ -253,7 +256,17 @@ namespace XSharp.Project
                     || e.PropertyName == nameof(Xpp1Enabled))
                     return;
 
+                // Ignore re-entrant notifications from BindProperties load or Item[] pulse.
+                if (_isBinding || _isNotifying)
+                    return;
+
+                ApplyChanges();
                 NotifyDirty();
+
+                // Pulse Item[] so all Reset-button IsEnabled bindings re-evaluate.
+                _isNotifying = true;
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isNotifying = false; }
             };
         }
 
@@ -261,36 +274,44 @@ namespace XSharp.Project
         public override void BindProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            _isBinding = true;
+            try
+            {
+                // ---- All-dialect checkboxes ----
+                Vo1  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo1);
+                Vo2  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo2);
+                Vo3  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo3);
+                Vo4  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo4);
+                Vo8  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo8);
+                Vo9  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo9);
+                Vo10 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo10);
 
-            // ---- All-dialect checkboxes ----
-            Vo1  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo1);
-            Vo2  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo2);
-            Vo3  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo3);
-            Vo4  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo4);
-            Vo8  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo8);
-            Vo9  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo9);
-            Vo10 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo10);
+                // ---- Non-Core checkboxes ----
+                Vo5  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo5);
+                Vo6  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo6);
+                Vo7  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo7);
+                Vo11 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo11);
+                Vo12 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo12);
+                Vo13 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo13);
+                Vo14 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo14);
+                Vo15 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo15);
+                Vo16 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo16);
+                Vo17 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo17);
 
-            // ---- Non-Core checkboxes ----
-            Vo5  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo5);
-            Vo6  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo6);
-            Vo7  = GetBoolPropertyValue(XSharpProjectFileConstants.Vo7);
-            Vo11 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo11);
-            Vo12 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo12);
-            Vo13 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo13);
-            Vo14 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo14);
-            Vo15 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo15);
-            Vo16 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo16);
-            Vo17 = GetBoolPropertyValue(XSharpProjectFileConstants.Vo17);
+                // ---- Dialect-specific checkboxes ----
+                Fox2 = GetBoolPropertyValue(XSharpProjectFileConstants.Fox2);
+                Xpp1 = GetBoolPropertyValue(XSharpProjectFileConstants.Xpp1);
 
-            // ---- Dialect-specific checkboxes ----
-            Fox2 = GetBoolPropertyValue(XSharpProjectFileConstants.Fox2);
-            Xpp1 = GetBoolPropertyValue(XSharpProjectFileConstants.Xpp1);
+                // ---- Dialect-dependent enabling ----
+                SetDialectOptions(parentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? "Core");
 
-            // ---- Dialect-dependent enabling ----
-            SetDialectOptions(parentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? "Core");
-
-            isDirty = false;
+                isDirty = false;
+            }
+            finally
+            {
+                _isBinding = false;
+                OnPropertyChanged("Item[]");
+            }
         }
 
         /// <inheritdoc/>

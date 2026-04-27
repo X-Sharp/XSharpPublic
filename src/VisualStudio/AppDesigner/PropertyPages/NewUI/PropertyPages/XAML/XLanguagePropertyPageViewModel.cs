@@ -397,6 +397,7 @@ namespace XSharp.Project
         {
             PropertyChanged += (sender, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 // Skip re-entrant calls during load or notification pulse.
                 if (_isBinding || _isNotifying)
                     return;

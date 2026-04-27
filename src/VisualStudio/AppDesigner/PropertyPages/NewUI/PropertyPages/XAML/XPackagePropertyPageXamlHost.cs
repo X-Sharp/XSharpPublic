@@ -27,8 +27,22 @@ namespace XSharp.Project
         protected override FrameworkElement CreateXamlContent()
             => new XPackagePropertyPageView();
 
-        public override void HookupEvents()    => _viewModel.HookupEvents();
-        public override void BindProperties() => _viewModel.BindProperties();
-        public override void ApplyChanges()   => _viewModel.ApplyChanges();
+        public override void HookupEvents()
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.HookupEvents();
+        }
+
+        public override void BindProperties()
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.BindProperties();
+        }
+
+        public override void ApplyChanges()
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.ApplyChanges();
+        }
     }
 }

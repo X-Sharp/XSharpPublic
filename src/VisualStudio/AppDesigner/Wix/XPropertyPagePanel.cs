@@ -307,6 +307,7 @@ namespace Microsoft.VisualStudio.Project
         private void HandleTextBoxModifiedChanged(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             TextBox textBox = (TextBox)sender;
             if (textBox.Modified && !this.ParentPropertyPage.IsDirty)
@@ -335,6 +336,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Parameters for the event.</param>
         private void HandleControlValidating(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Control control = (Control)sender;
             string propertyName = (string)control.Tag;
             string value = control.Text;
@@ -489,6 +491,7 @@ namespace Microsoft.VisualStudio.Project
             get => ParentPropertyPage?.IsDirty ?? false;
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (ParentPropertyPage != null)
                     ParentPropertyPage.IsDirty = value;
             }
@@ -510,7 +513,11 @@ namespace Microsoft.VisualStudio.Project
         /// Saves the panel's control values back to the MSBuild project.
         /// Delegates to <see cref="Apply()"/>.
         /// </summary>
-        void IPropertyPagePanel.ApplyChanges() => this.Apply();
+        void IPropertyPagePanel.ApplyChanges()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            this.Apply();
+        }
 
     }
 }

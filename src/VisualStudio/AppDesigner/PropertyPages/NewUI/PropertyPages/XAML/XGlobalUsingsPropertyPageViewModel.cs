@@ -95,6 +95,7 @@ namespace XSharp.Project
             get => _showImported;
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 SetProperty(ref _showImported, value);
                 RefreshUsings();
             }
@@ -243,11 +244,11 @@ namespace XSharp.Project
             // Only ImplicitUsings triggers MSBuild write-through; Using items are live.
             PropertyChanged += (sender, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (_isBinding || _isNotifying)
                     return;
                 if (e.PropertyName == nameof(ImplicitUsings))
                 {
-                    ThreadHelper.ThrowIfNotOnUIThread();
                     ApplyChanges();
                     NotifyDirty();
                     _isNotifying = true;

@@ -338,6 +338,7 @@ namespace XSharp.Project
             // We subscribe to our own PropertyChanged event raised by SetProperty<T>.
             PropertyChanged += (sender, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 // Ignore pure UI-state changes — they don't represent project property edits.
                 if (e.PropertyName == nameof(IconEnabled)
                     || e.PropertyName == nameof(StartupObjectEnabled)

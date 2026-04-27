@@ -133,6 +133,7 @@ namespace XSharp.Project
         {
             PropertyChanged += (sender, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (_isBinding || _isNotifying)
                     return;
 

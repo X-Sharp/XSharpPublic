@@ -74,20 +74,29 @@ namespace XSharp.Project
         /// the dirty flag to the owning <see cref="XPropertyPage"/>.
         /// </summary>
         public override void HookupEvents()
-            => _viewModel.HookupEvents();
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.HookupEvents();
+        }
 
         /// <summary>
         /// Reads all project properties from MSBuild and populates the ViewModel's
         /// observable properties so that the bound XAML controls display them.
         /// </summary>
         public override void BindProperties()
-            => _viewModel.BindProperties();
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.BindProperties();
+        }
 
         /// <summary>
         /// Reads all current ViewModel values and writes them back to the MSBuild project.
         /// Called when the user clicks <em>Apply</em> or <em>OK</em>.
         /// </summary>
         public override void ApplyChanges()
-            => _viewModel.ApplyChanges();
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.ApplyChanges();
+        }
     }
 }

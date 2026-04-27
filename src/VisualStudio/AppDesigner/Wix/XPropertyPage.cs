@@ -164,6 +164,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="modal">Indicates whether the dialog box is shown modally or not.</param>
         void IPropertyPage.Activate(IntPtr hwndParent, RECT[] rects, int modal)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             // create the panel control
             this.PropertyPagePanel = this.CreatePropertyPagePanel();
             this.PropertyPagePanel.HookupEvents();
@@ -182,7 +184,6 @@ namespace Microsoft.VisualStudio.Project
 
             // set our initial size
             this.ResizeContents(rects[0]);
-            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.PropertyPagePanel.BindProperties();
             this.active = true;
@@ -548,6 +549,7 @@ namespace Microsoft.VisualStudio.Project
         /// </param>
         void IPropertyPage.Show(uint cmdShow)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.PropertyPagePanel != null)
             {
                 if (cmdShow == Win32SwHide)
@@ -695,6 +697,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public IReadOnlyList<XProjectConfig> GetAllProjectConfigs()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.project == null)
                 return Array.Empty<XProjectConfig>();
 
@@ -723,6 +726,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="configs">Configurations to read from.</param>
         public string GetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (configs == null || configs.Count == 0)
                 return null;
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
@@ -737,9 +741,9 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="configs">Configurations to write to.</param>
         public void SetPropertyForConfigs(string propertyName, string value, IList<XProjectConfig> configs)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (configs == null || configs.Count == 0)
                 return;
-            ThreadHelper.ThrowIfNotOnUIThread();
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
             IList<ProjectConfig> baseConfigs = configs.Cast<ProjectConfig>().ToList();
             string oldValue = property.GetValue(false, baseConfigs);
@@ -758,9 +762,9 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="configs">Configurations whose property group entries should be removed.</param>
         public void ResetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (configs == null || configs.Count == 0 || this.project == null)
                 return;
-            ThreadHelper.ThrowIfNotOnUIThread();
 
             var buildProject = this.project.BuildProject;
             bool changed = false;
@@ -820,6 +824,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Name of the property that changed.</param>
         protected virtual void HandleOutputTypeChanged(object source, PropertyChangedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.PropertyPagePanel.BindProperties();
         }
 
@@ -878,6 +883,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private static void CollapseConfigPanelRowForHost(IntPtr hwndParent)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Control c = Control.FromHandle(hwndParent);
             while (c != null)
             {

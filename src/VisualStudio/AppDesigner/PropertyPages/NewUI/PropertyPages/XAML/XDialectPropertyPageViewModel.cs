@@ -250,6 +250,7 @@ namespace XSharp.Project
         {
             PropertyChanged += (sender, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 // UI-state properties do not represent project edits — skip dirty.
                 if (e.PropertyName == nameof(IsNotCoreDialect)
                     || e.PropertyName == nameof(Fox2Enabled)

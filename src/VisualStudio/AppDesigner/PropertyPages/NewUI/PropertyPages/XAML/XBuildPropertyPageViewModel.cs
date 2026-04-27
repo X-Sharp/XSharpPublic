@@ -129,6 +129,7 @@ namespace XSharp.Project
 
         private bool GetBoolForConfigs(string propertyName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var value = ((XPropertyPage)parentPropertyPage).GetPropertyForConfigs(
                 propertyName, _configSelector.ResolvedConfigs);
             return bool.TryParse(value, out var result) && result;
@@ -279,12 +280,12 @@ namespace XSharp.Project
             get => _xmlDocEnabled;
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (SetProperty(ref _xmlDocEnabled, value))
                 {
                     if (value && string.IsNullOrEmpty(DocumentationFile))
                     {
                         // Auto-derive filename from the assembly name — matches WinForms behaviour.
-                        ThreadHelper.ThrowIfNotOnUIThread();
                         var asmName = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? "NoName";
                         DocumentationFile = asmName + ".Xml";
                         parentPropertyPage.SetProperty(XSharpProjectFileConstants.DocumentationFile, DocumentationFile);
@@ -483,13 +484,10 @@ namespace XSharp.Project
             // Re-bind when the user picks a different configuration.
             _configSelector.PropertyChanged += (s, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (e.PropertyName == nameof(XConfigSelectorViewModel.SelectedConfig))
                 {
-                    ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        BindProperties();
-                    });
+                    BindProperties();
                 }
             };
 

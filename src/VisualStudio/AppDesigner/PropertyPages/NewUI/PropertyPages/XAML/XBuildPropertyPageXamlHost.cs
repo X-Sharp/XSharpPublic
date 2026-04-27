@@ -77,15 +77,24 @@ namespace XSharp.Project
 
         /// <inheritdoc/>
         public override void HookupEvents()
-            => _viewModel.HookupEvents();
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.HookupEvents();
+        }
 
         /// <inheritdoc/>
         public override void BindProperties()
-            => _viewModel.BindProperties();
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.BindProperties();
+        }
 
         /// <inheritdoc/>
         public override void ApplyChanges()
-            => _viewModel.ApplyChanges();
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            _viewModel.ApplyChanges();
+        }
 
         // =========================================================================================
         // Platform target change notification

@@ -23,11 +23,15 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-        <!-- BoolToVisibility: true → Visible, false → Collapsed -->
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-        <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
-        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!-- BoolToVisibility: true → Visible, false → Collapsed -->
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

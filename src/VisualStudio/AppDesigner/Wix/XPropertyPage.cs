@@ -684,6 +684,111 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        // =========================================================================================
+        // Per-config helpers (used by Build / Debug / BuildEvents ViewModels with own selector)
+        // =========================================================================================
+
+        /// <summary>
+        /// Returns all <see cref="XProjectConfig"/> objects defined in the project,
+        /// regardless of which configuration VS currently has active.
+        /// </summary>
+        public IReadOnlyList<XProjectConfig> GetAllProjectConfigs()
+        {
+            if (this.project == null)
+                return Array.Empty<XProjectConfig>();
+
+            IVsCfgProvider provider;
+            if (ErrorHandler.Failed(this.project.GetCfgProvider(out provider)) || provider == null)
+                return Array.Empty<XProjectConfig>();
+
+            uint[] expected = new uint[1];
+            if (ErrorHandler.Failed(provider.GetCfgs(0, null, expected, null)) || expected[0] == 0)
+                return Array.Empty<XProjectConfig>();
+
+            XProjectConfig[] configs = new XProjectConfig[expected[0]];
+            uint[] actual = new uint[1];
+            int hr = provider.GetCfgs(expected[0], configs, actual, null);
+            if (hr != 0)
+                Marshal.ThrowExceptionForHR(hr);
+
+            return configs;
+        }
+
+        /// <summary>
+        /// Gets a per-config property value for an explicit list of configurations.
+        /// When all configs agree the common value is returned; when they differ, null is returned.
+        /// </summary>
+        /// <param name="propertyName">MSBuild property name.</param>
+        /// <param name="configs">Configurations to read from.</param>
+        public string GetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
+        {
+            if (configs == null || configs.Count == 0)
+                return null;
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
+            return property.GetValue(false, configs);
+        }
+
+        /// <summary>
+        /// Sets a per-config property value for an explicit list of configurations.
+        /// </summary>
+        /// <param name="propertyName">MSBuild property name.</param>
+        /// <param name="value">Value to write.</param>
+        /// <param name="configs">Configurations to write to.</param>
+        public void SetPropertyForConfigs(string propertyName, string value, IList<XProjectConfig> configs)
+        {
+            if (configs == null || configs.Count == 0)
+                return;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
+            string oldValue = property.GetValue(false, configs);
+            if (!String.Equals(value, oldValue, StringComparison.Ordinal))
+            {
+                property.SetValue(value, configs);
+                this.IsDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Removes (resets) a per-config property from the MSBuild property groups that
+        /// match each config in <paramref name="configs"/>, then re-evaluates the project.
+        /// </summary>
+        /// <param name="propertyName">MSBuild property name.</param>
+        /// <param name="configs">Configurations whose property group entries should be removed.</param>
+        public void ResetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
+        {
+            if (configs == null || configs.Count == 0 || this.project == null)
+                return;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var buildProject = this.project.BuildProject;
+            bool changed = false;
+
+            foreach (XProjectConfig config in configs)
+            {
+                string conditionTrimmed = config.Condition.Trim();
+                foreach (var propGroup in buildProject.Xml.PropertyGroups)
+                {
+                    if (!string.Equals(propGroup.Condition.Trim(), conditionTrimmed, StringComparison.Ordinal))
+                        continue;
+                    foreach (var prop in propGroup.Properties)
+                    {
+                        if (string.Equals(prop.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            propGroup.RemoveChild(prop);
+                            changed = true;
+                            break; // only one per group
+                        }
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                this.project.ReevaluateIfNecessary();
+                this.IsDirty = true;
+            }
+        }
+
         /// <summary>
         /// Normalizes a text-field property value by trimming whitespace.
         /// Subclasses may override to do additional normalization.

@@ -147,7 +147,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Gets the currently active collection of configurations for the page.
         /// </summary>
-        protected IList<XProjectConfig> ProjectConfigs
+        public IList<XProjectConfig> ProjectConfigs
         {
             get { return this.projectConfigs; }
         }

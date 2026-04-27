@@ -87,6 +87,16 @@ namespace XSharp.Project
         private bool _isNotifying = false;   // true while firing Item[] refresh pulse
 
         // =========================================================================================
+        // Config selector
+        // =========================================================================================
+        private readonly XConfigSelectorViewModel _configSelector = new XConfigSelectorViewModel();
+
+        /// <summary>
+        /// The configuration selector combobox ViewModel (bound to the combobox at the top of the page).
+        /// </summary>
+        public XConfigSelectorViewModel ConfigSelector => _configSelector;
+
+        // =========================================================================================
         // Constructor
         // =========================================================================================
 
@@ -112,6 +122,24 @@ namespace XSharp.Project
         /// can access <c>ProjectMgr</c> and call <c>SetProperty</c>.
         /// </summary>
         internal XPropertyPage ParentPage => parentPropertyPage;
+
+        // =========================================================================================
+        // Per-config bool helpers — route through ConfigSelector instead of ProjectMgr directly
+        // =========================================================================================
+
+        private bool GetBoolForConfigs(string propertyName)
+        {
+            var value = ((XPropertyPage)parentPropertyPage).GetPropertyForConfigs(
+                propertyName, _configSelector.ResolvedConfigs);
+            return bool.TryParse(value, out var result) && result;
+        }
+
+        private void SetBoolForConfigs(string propertyName, bool value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ((XPropertyPage)parentPropertyPage).SetPropertyForConfigs(
+                propertyName, value.ToString().ToLowerInvariant(), _configSelector.ResolvedConfigs);
+        }
 
         // =========================================================================================
         // Observable Properties — strings
@@ -452,6 +480,19 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
+            // Re-bind when the user picks a different configuration.
+            _configSelector.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(XConfigSelectorViewModel.SelectedConfig))
+                {
+                    ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        BindProperties();
+                    });
+                }
+            };
+
             PropertyChanged += (sender, e) =>
             {
                 // UI-state properties do not represent project edits — skip dirty.
@@ -495,41 +536,51 @@ namespace XSharp.Project
             _isBinding = true;
             try
             {
-                // ---- String fields ----
-                OutputPath                = parentPropertyPage.GetProperty(XSharpProjectFileConstants.OutputPath)                ?? string.Empty;
-                IntermediateOutputPath    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.IntermediateOutputPath)    ?? string.Empty;
-                AssemblyOriginatorKeyFile = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyOriginatorKeyFile) ?? string.Empty;
-                DefineConstants           = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DefineConstants)           ?? string.Empty;
-                CommandLineOption         = parentPropertyPage.GetProperty(XSharpProjectFileConstants.CommandLineOption)         ?? string.Empty;
-                NoWarn                    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.NoWarn)                    ?? string.Empty;
-                DocumentationFile         = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DocumentationFile)         ?? string.Empty;
+                // --- Config selector ---
+                var page = (XPropertyPage)parentPropertyPage;
+                var allConfigs = page.GetAllProjectConfigs();
+                // Determine the active config name from the first config VS passed via SetObjects.
+                var activeConfigName = page.ProjectConfigs?.Count > 0
+                    ? ((XProjectConfig)page.ProjectConfigs[0]).ConfigName
+                    : XConfigSelectorViewModel.AllConfigurations;
+                _configSelector.Initialize(allConfigs, activeConfigName);
+                var configs = _configSelector.ResolvedConfigs;
+
+                // --- String fields ---
+                OutputPath                = page.GetPropertyForConfigs(XSharpProjectFileConstants.OutputPath,                configs) ?? string.Empty;
+                IntermediateOutputPath    = page.GetPropertyForConfigs(XSharpProjectFileConstants.IntermediateOutputPath,    configs) ?? string.Empty;
+                AssemblyOriginatorKeyFile = page.GetPropertyForConfigs(XSharpProjectFileConstants.AssemblyOriginatorKeyFile, configs) ?? string.Empty;
+                DefineConstants           = page.GetPropertyForConfigs(XSharpProjectFileConstants.DefineConstants,           configs) ?? string.Empty;
+                CommandLineOption         = page.GetPropertyForConfigs(XSharpProjectFileConstants.CommandLineOption,         configs) ?? string.Empty;
+                NoWarn                    = page.GetPropertyForConfigs(XSharpProjectFileConstants.NoWarn,                    configs) ?? string.Empty;
+                DocumentationFile         = page.GetPropertyForConfigs(XSharpProjectFileConstants.DocumentationFile,         configs) ?? string.Empty;
 
                 // ---- XmlDoc enabled flag (derived) ----
                 _xmlDocEnabled = !string.IsNullOrEmpty(DocumentationFile);
                 OnPropertyChanged(nameof(XmlDocEnabled));
 
                 // ---- Platform ----
-                PlatformTarget = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget)
+                PlatformTarget = page.GetPropertyForConfigs(XSharpProjectFileConstants.PlatformTarget, configs)
                                  ?? XSharpProjectFileConstants.AnyCPU;
                 Prefer32BitEnabled = string.Equals(PlatformTarget, XSharpProjectFileConstants.AnyCPU,
                                                    StringComparison.OrdinalIgnoreCase);
 
                 // ---- Bool checkboxes ----
-                PPO                   = GetBoolPropertyValue("PPO");
-                UseSharedCompilation  = GetBoolPropertyValue(XSharpProjectFileConstants.UseSharedCompilation);
-                Prefer32Bit           = Prefer32BitEnabled && GetBoolPropertyValue(XSharpProjectFileConstants.Prefer32Bit);
-                RegisterForComInterop = GetBoolPropertyValue(XSharpProjectFileConstants.RegisterForComInterop);
-                Optimize              = GetBoolPropertyValue(XSharpProjectFileConstants.Optimize);
-                SignAssembly          = GetBoolPropertyValue(XSharpProjectFileConstants.SignAssembly);
-                SuppressRCWarnings    = GetBoolPropertyValue(XSharpProjectFileConstants.SuppressRCWarnings);
-                DelaySign             = GetBoolPropertyValue(XSharpProjectFileConstants.DelaySign);
+                PPO                   = GetBoolForConfigs("PPO");
+                UseSharedCompilation  = GetBoolForConfigs(XSharpProjectFileConstants.UseSharedCompilation);
+                Prefer32Bit           = Prefer32BitEnabled && GetBoolForConfigs(XSharpProjectFileConstants.Prefer32Bit);
+                RegisterForComInterop = GetBoolForConfigs(XSharpProjectFileConstants.RegisterForComInterop);
+                Optimize              = GetBoolForConfigs(XSharpProjectFileConstants.Optimize);
+                SignAssembly          = GetBoolForConfigs(XSharpProjectFileConstants.SignAssembly);
+                SuppressRCWarnings    = GetBoolForConfigs(XSharpProjectFileConstants.SuppressRCWarnings);
+                DelaySign             = GetBoolForConfigs(XSharpProjectFileConstants.DelaySign);
 
                 // ---- Warning level ----
-                var warnLevelStr = parentPropertyPage.GetProperty(XSharpProjectFileConstants.WarningLevel) ?? "4";
+                var warnLevelStr = page.GetPropertyForConfigs(XSharpProjectFileConstants.WarningLevel, configs) ?? "4";
                 WarningLevel = int.TryParse(warnLevelStr, out var wl) ? Math.Max(0, Math.Min(4, wl)) : 4;
 
                 // ---- Warnings-as-errors radio group (mirrors WinForms BindProperties) ----
-                var specificWarns = parentPropertyPage.GetProperty(XSharpProjectFileConstants.WarningsAsErrors) ?? string.Empty;
+                var specificWarns = page.GetPropertyForConfigs(XSharpProjectFileConstants.WarningsAsErrors, configs) ?? string.Empty;
                 specificWarns = specificWarns.Trim();
                 SpecificWarnings = specificWarns;
 
@@ -542,7 +593,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    var treatAll = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors) ?? "false";
+                    var treatAll = page.GetPropertyForConfigs(XSharpProjectFileConstants.TreatWarningsAsErrors, configs) ?? "false";
                     bool isAll = string.Equals(treatAll.Trim(), "true", StringComparison.OrdinalIgnoreCase);
                     _warningsModeAll      = isAll;
                     _warningsModeNone     = !isAll;
@@ -566,47 +617,49 @@ namespace XSharp.Project
         public override void ApplyChanges()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            var page = (XPropertyPage)parentPropertyPage;
+            var configs = _configSelector.ResolvedConfigs;
 
             // ---- String fields ----
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.OutputPath,             OutputPath ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.IntermediateOutputPath, IntermediateOutputPath ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.AssemblyOriginatorKeyFile, AssemblyOriginatorKeyFile ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.DefineConstants,        DefineConstants ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.CommandLineOption,      CommandLineOption ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.NoWarn,                 NoWarn ?? string.Empty);
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.DocumentationFile,      DocumentationFile ?? string.Empty);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.OutputPath,                OutputPath ?? string.Empty,                configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.IntermediateOutputPath,    IntermediateOutputPath ?? string.Empty,    configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.AssemblyOriginatorKeyFile, AssemblyOriginatorKeyFile ?? string.Empty, configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.DefineConstants,           DefineConstants ?? string.Empty,           configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.CommandLineOption,         CommandLineOption ?? string.Empty,         configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.NoWarn,                   NoWarn ?? string.Empty,                    configs);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.DocumentationFile,         DocumentationFile ?? string.Empty,         configs);
 
             // ---- Platform ----
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.PlatformTarget,         PlatformTarget ?? string.Empty);
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.PlatformTarget,            PlatformTarget ?? string.Empty,            configs);
 
             // ---- Bool checkboxes ----
-            SetBoolPropertyValue("PPO",                  PPO);
-            SetBoolPropertyValue(XSharpProjectFileConstants.UseSharedCompilation, UseSharedCompilation);
-            SetBoolPropertyValue(XSharpProjectFileConstants.Prefer32Bit,          Prefer32Bit);
-            SetBoolPropertyValue(XSharpProjectFileConstants.RegisterForComInterop, RegisterForComInterop);
-            SetBoolPropertyValue(XSharpProjectFileConstants.Optimize,             Optimize);
-            SetBoolPropertyValue(XSharpProjectFileConstants.SignAssembly,         SignAssembly);
-            SetBoolPropertyValue(XSharpProjectFileConstants.SuppressRCWarnings,   SuppressRCWarnings);
-            SetBoolPropertyValue(XSharpProjectFileConstants.DelaySign,            DelaySign);
+            SetBoolForConfigs("PPO",                                               PPO);
+            SetBoolForConfigs(XSharpProjectFileConstants.UseSharedCompilation,     UseSharedCompilation);
+            SetBoolForConfigs(XSharpProjectFileConstants.Prefer32Bit,              Prefer32Bit);
+            SetBoolForConfigs(XSharpProjectFileConstants.RegisterForComInterop,    RegisterForComInterop);
+            SetBoolForConfigs(XSharpProjectFileConstants.Optimize,                 Optimize);
+            SetBoolForConfigs(XSharpProjectFileConstants.SignAssembly,             SignAssembly);
+            SetBoolForConfigs(XSharpProjectFileConstants.SuppressRCWarnings,       SuppressRCWarnings);
+            SetBoolForConfigs(XSharpProjectFileConstants.DelaySign,                DelaySign);
 
             // ---- Warning level ----
-            parentPropertyPage.SetProperty(XSharpProjectFileConstants.WarningLevel, WarningLevel.ToString());
+            page.SetPropertyForConfigs(XSharpProjectFileConstants.WarningLevel,    WarningLevel.ToString(), configs);
 
             // ---- Warnings-as-errors radio group (mirrors WinForms HandleControlValidated) ----
             if (WarningsModeAll)
             {
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors, "True");
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.WarningsAsErrors, " ");
+                page.SetPropertyForConfigs(XSharpProjectFileConstants.TreatWarningsAsErrors, "True",  configs);
+                page.SetPropertyForConfigs(XSharpProjectFileConstants.WarningsAsErrors,       " ",     configs);
             }
             else if (WarningsModeNone)
             {
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors, "False");
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.WarningsAsErrors, " ");
+                page.SetPropertyForConfigs(XSharpProjectFileConstants.TreatWarningsAsErrors, "False", configs);
+                page.SetPropertyForConfigs(XSharpProjectFileConstants.WarningsAsErrors,       " ",     configs);
             }
             else // Specific
             {
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors, "False");
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.WarningsAsErrors, SpecificWarnings ?? string.Empty);
+                page.SetPropertyForConfigs(XSharpProjectFileConstants.TreatWarningsAsErrors, "False",                    configs);
+                page.SetPropertyForConfigs(XSharpProjectFileConstants.WarningsAsErrors,       SpecificWarnings ?? string.Empty, configs);
             }
 
             isDirty = false;

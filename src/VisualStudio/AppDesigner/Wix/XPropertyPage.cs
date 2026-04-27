@@ -8,6 +8,7 @@ namespace Microsoft.VisualStudio.Project
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.ComponentModel;
     using System.ComponentModel.Design;
     using System.Diagnostics.CodeAnalysis;
@@ -725,7 +726,7 @@ namespace Microsoft.VisualStudio.Project
             if (configs == null || configs.Count == 0)
                 return null;
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
-            return property.GetValue(false, configs);
+            return property.GetValue(false, configs.Cast<ProjectConfig>().ToList());
         }
 
         /// <summary>
@@ -740,7 +741,8 @@ namespace Microsoft.VisualStudio.Project
                 return;
             ThreadHelper.ThrowIfNotOnUIThread();
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
-            string oldValue = property.GetValue(false, configs);
+            IList<ProjectConfig> baseConfigs = configs.Cast<ProjectConfig>().ToList();
+            string oldValue = property.GetValue(false, baseConfigs);
             if (!String.Equals(value, oldValue, StringComparison.Ordinal))
             {
                 property.SetValue(value, configs);
@@ -784,7 +786,8 @@ namespace Microsoft.VisualStudio.Project
 
             if (changed)
             {
-                this.project.ReevaluateIfNecessary();
+                this.project.BuildProject.ReevaluateIfNecessary();
+                this.project.SetProjectFileDirty(true);
                 this.IsDirty = true;
             }
         }

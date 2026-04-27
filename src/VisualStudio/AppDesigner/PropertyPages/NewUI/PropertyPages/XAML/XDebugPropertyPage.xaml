@@ -14,8 +14,7 @@
     <!--
         Debug property page — WPF/XAML implementation (SDK-style projects).
         DataContext: XDebugPropertyPageViewModel (set by XDebugPropertyPageXamlHost).
-
-        Layout mirrors the WinForms XDebugPropertyPagePanel table:
+        Layout mirrors the XDebugPropertyPagePanel from WinForms :
           Row 0 — Debugger Command     (textbox + browse)
           Row 1 — Command Arguments    (multiline textbox)
           Row 2 — Debug Type           (combo)
@@ -24,14 +23,9 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
-            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -53,9 +47,9 @@
                 <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                         ToolTip="{Binding DescDebuggerCommand}"
                         Click="OnBrowseCommandClick"/>
-                <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebuggerCommand"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebuggerCommand}"
+                        IsEnabled="{Binding [DebuggerCommand]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -75,9 +69,9 @@
                          Height="64"
                          TextWrapping="Wrap"
                          VerticalScrollBarVisibility="Auto"/>
-                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebuggerCommandArguments"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebuggerCommandArguments}"
+                        IsEnabled="{Binding [DebuggerCommandArguments]}"
                         Margin="4,0,0,0" VerticalAlignment="Top"/>
             </Grid>
 
@@ -94,9 +88,9 @@
                           ItemsSource="{Binding DebugTypeValues}"
                           SelectedItem="{Binding DebugType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           ToolTip="{Binding DescDebugType}"/>
-                <Button Grid.Column="1" Style="{StaticResource ResetButtonStyle}"
+                <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebugType"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebugType}"
+                        IsEnabled="{Binding [DebugType]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -116,9 +110,9 @@
                 <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                         ToolTip="{Binding DescDebuggerWorkingDirectory}"
                         Click="OnBrowseWorkingDirectoryClick"/>
-                <Button Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebuggerWorkingDirectory"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=DebuggerWorkingDirectory}"
+                        IsEnabled="{Binding [DebuggerWorkingDirectory]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -128,9 +122,9 @@
                           IsChecked="{Binding EnableUnmanagedDebugging, Mode=TwoWay}"
                           ToolTip="{Binding DescEnableUnmanagedDebugging}"
                           VerticalAlignment="Center"/>
-                <Button Style="{StaticResource ResetButtonStyle}"
+                <Button Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="EnableUnmanagedDebugging"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=EnableUnmanagedDebugging}"
+                        IsEnabled="{Binding [EnableUnmanagedDebugging]}"
                         Margin="4,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 

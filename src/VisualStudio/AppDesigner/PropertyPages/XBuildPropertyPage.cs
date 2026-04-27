@@ -30,7 +30,7 @@ namespace XSharp.Project
         public XSharpBuildPropertyPage()
         {
             this.PageName = "Build";
-            this.PerConfig = true;
+            this.PerConfig = false;
         }
 
         // =========================================================================================

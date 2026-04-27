@@ -35,7 +35,7 @@ namespace XSharp.Project
         public XSharpBuildEventsPropertyPage()
         {
             this.PageName = "Build Events";
-            this.PerConfig = true;
+            this.PerConfig = false;
         }
 
         // =========================================================================================

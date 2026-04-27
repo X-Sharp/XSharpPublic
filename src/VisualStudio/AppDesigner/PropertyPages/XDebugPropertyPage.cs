@@ -28,7 +28,7 @@ namespace XSharp.Project
         public XSharpDebugPropertyPage()
         {
             this.PageName  = "Debug";
-            this.PerConfig = true;
+            this.PerConfig = false;
         }
 
         // =========================================================================================

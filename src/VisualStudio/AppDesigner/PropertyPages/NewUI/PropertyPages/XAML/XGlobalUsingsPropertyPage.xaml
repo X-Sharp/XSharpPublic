@@ -84,7 +84,7 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              SelectionMode="SingleCell"
+                              SelectionMode="Single"
                               Height="220"
                               Margin="0,0,0,6"
                               x:Name="gridUsings">

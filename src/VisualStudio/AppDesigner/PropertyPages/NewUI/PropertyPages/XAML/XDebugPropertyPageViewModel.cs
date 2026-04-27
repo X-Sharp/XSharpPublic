@@ -52,6 +52,9 @@ namespace XSharp.Project
 
         private List<string> _debugTypeValues = new List<string>();
 
+        private bool _isBinding   = false;
+        private bool _isNotifying = false;
+
         // =========================================================================================
         // Constructor
         // =========================================================================================
@@ -162,21 +165,40 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
-            PropertyChanged += (sender, e) => NotifyDirty();
+            PropertyChanged += (sender, e) =>
+            {
+                if (_isBinding || _isNotifying)
+                    return;
+
+                ApplyChanges();
+                NotifyDirty();
+
+                _isNotifying = true;
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isNotifying = false; }
+            };
         }
 
         /// <inheritdoc/>
         public override void BindProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            _isBinding = true;
+            try
+            {
+                DebuggerCommand          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerCommand)          ?? string.Empty;
+                DebuggerCommandArguments = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerCommandArguments) ?? string.Empty;
+                DebugType                = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebugType)                ?? string.Empty;
+                DebuggerWorkingDirectory = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory) ?? string.Empty;
+                EnableUnmanagedDebugging = GetBoolPropertyValue(XSharpProjectFileConstants.EnableUnmanagedDebugging);
 
-            DebuggerCommand          = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerCommand)          ?? string.Empty;
-            DebuggerCommandArguments = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerCommandArguments) ?? string.Empty;
-            DebugType                = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebugType)                ?? string.Empty;
-            DebuggerWorkingDirectory = parentPropertyPage.GetProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory) ?? string.Empty;
-            EnableUnmanagedDebugging = GetBoolPropertyValue(XSharpProjectFileConstants.EnableUnmanagedDebugging);
-
-            isDirty = false;
+                isDirty = false;
+            }
+            finally
+            {
+                _isBinding = false;
+                OnPropertyChanged("Item[]");
+            }
         }
 
         /// <inheritdoc/>

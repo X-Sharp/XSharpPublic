@@ -50,6 +50,7 @@
     <Compile Include="PropertyPages\Enums.cs" />
     <Compile Include="PropertyPages\NewUI\Models\BoolToVisibilityConverter.cs" />
     <Compile Include="PropertyPages\NewUI\Models\IPropertyPagePanel.cs" />
+    <Compile Include="PropertyPages\NewUI\Models\XConfigSelectorViewModel.cs" />
     <Compile Include="PropertyPages\NewUI\Models\XPropertyPagePanelBase.cs" />
     <Compile Include="PropertyPages\NewUI\Models\XPropertyPageViewModel.cs" />
     <Compile Include="PropertyPages\NewUI\Models\XPropertyPageXamlHost.cs">

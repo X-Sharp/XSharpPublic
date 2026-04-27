@@ -16,23 +16,18 @@
         DataContext: XDialectPropertyPageViewModel (set by XDialectPropertyPageXamlHost).
 
         Layout mirrors the WinForms XDialectPropertyPagePanel two-column table:
-          Left column  — "All dialects" group  (VO1–VO4, VO8–VO10, VO2)
-          Right column — "Not in Core dialect" group (VO5–VO7, VO11–VO17)
-          Bottom row   — Visual FoxPro compatibility (Fox2, only FoxPro dialect)
+          In the Left column  — "All dialects" group  (VO1–VO4, VO8–VO10, VO2)
+          In the Right column — "Not in Core dialect" group (VO5–VO7, VO11–VO17)
+          Compatibility in the Bottom row   — Visual FoxPro compatibility (Fox2, only FoxPro dialect)
                        — Xbase++ compatibility (Xpp1, only XPP dialect)
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <!-- BoolToVisibility: true → Visible, false → Collapsed -->
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
-            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
-            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+        <!-- BoolToVisibility: true → Visible, false → Collapsed -->
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+        <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
+        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -57,9 +52,9 @@
                                   IsChecked="{Binding Vo1, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO1}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo1"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo1}"
+                                IsEnabled="{Binding [Vo1]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -68,9 +63,9 @@
                                   IsChecked="{Binding Vo3, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO3}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo3"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo3}"
+                                IsEnabled="{Binding [Vo3]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -79,9 +74,9 @@
                                   IsChecked="{Binding Vo10, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO10}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo10"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo10}"
+                                IsEnabled="{Binding [Vo10]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -90,9 +85,9 @@
                                   IsChecked="{Binding Vo8, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO8}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo8"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo8}"
+                                IsEnabled="{Binding [Vo8]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -101,9 +96,9 @@
                                   IsChecked="{Binding Vo9, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO9}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo9"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo9}"
+                                IsEnabled="{Binding [Vo9]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -112,9 +107,9 @@
                                   IsChecked="{Binding Vo4, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO4}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo4"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo4}"
+                                IsEnabled="{Binding [Vo4]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -123,9 +118,9 @@
                                   IsChecked="{Binding Vo2, Mode=TwoWay}"
                                   ToolTip="{Binding DescVO2}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo2"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo2}"
+                                IsEnabled="{Binding [Vo2]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -144,9 +139,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO12}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo12"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo12}"
+                                IsEnabled="{Binding [Vo12]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -156,9 +151,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO11}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo11"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo11}"
+                                IsEnabled="{Binding [Vo11]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -168,9 +163,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO13}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo13"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo13}"
+                                IsEnabled="{Binding [Vo13]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -180,9 +175,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO16}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo16"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo16}"
+                                IsEnabled="{Binding [Vo16]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -192,9 +187,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO5}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo5"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo5}"
+                                IsEnabled="{Binding [Vo5]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -204,9 +199,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO6}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo6"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo6}"
+                                IsEnabled="{Binding [Vo6]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -216,9 +211,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO15}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo15"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo15}"
+                                IsEnabled="{Binding [Vo15]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -228,9 +223,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO14}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo14"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo14}"
+                                IsEnabled="{Binding [Vo14]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -240,9 +235,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO17}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo17"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo17}"
+                                IsEnabled="{Binding [Vo17]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -252,9 +247,9 @@
                                   IsEnabled="{Binding IsNotCoreDialect}"
                                   ToolTip="{Binding DescVO7}"
                                   VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource ResetButtonStyle}"
+                        <Button Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="Vo7"
-                                IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Vo7}"
+                                IsEnabled="{Binding [Vo7]}"
                                 Margin="4,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -272,9 +267,9 @@
                           IsEnabled="{Binding Fox2Enabled}"
                           ToolTip="{Binding DescFox2}"
                           VerticalAlignment="Center"/>
-                <Button Style="{StaticResource ResetButtonStyle}"
+                <Button Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="Fox2"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Fox2}"
+                        IsEnabled="{Binding [Fox2]}"
                         Margin="4,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 
@@ -289,9 +284,9 @@
                           IsEnabled="{Binding Xpp1Enabled}"
                           ToolTip="{Binding DescXpp1}"
                           VerticalAlignment="Center"/>
-                <Button Style="{StaticResource ResetButtonStyle}"
+                <Button Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="Xpp1"
-                        IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Xpp1}"
+                        IsEnabled="{Binding [Xpp1]}"
                         Margin="4,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 

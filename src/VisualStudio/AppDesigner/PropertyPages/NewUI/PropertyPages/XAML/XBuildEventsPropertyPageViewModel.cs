@@ -46,6 +46,7 @@ namespace XSharp.Project
         private string _runPostBuildEvent = string.Empty;
 
         private readonly List<string> _runPostBuildEventValues;
+        private readonly XConfigSelectorViewModel _configSelector;
 
         private bool _isBinding   = false;
         private bool _isNotifying = false;
@@ -66,6 +67,7 @@ namespace XSharp.Project
             : base(parentPropertyPage)
         {
             _runPostBuildEventValues = new List<string>(runPostBuildNames);
+            _configSelector = new XConfigSelectorViewModel();
         }
 
         // =========================================================================================
@@ -77,6 +79,13 @@ namespace XSharp.Project
         /// <c>ProjectMgr</c> and call <c>SetProperty</c>.
         /// </summary>
         internal XPropertyPage ParentPage => parentPropertyPage;
+
+        // =========================================================================================
+        // Config selector
+        // =========================================================================================
+
+        /// <summary>Gets the configuration selector ViewModel bound to the config ComboBox.</summary>
+        public XConfigSelectorViewModel ConfigSelector => _configSelector;
 
         // =========================================================================================
         // Observable Properties
@@ -131,6 +140,16 @@ namespace XSharp.Project
         /// <inheritdoc/>
         public override void HookupEvents()
         {
+            // Config selector wiring — uncomment when per-config Build Events is implemented.
+            // _configSelector.PropertyChanged += (s, e) =>
+            // {
+            //     ThreadHelper.ThrowIfNotOnUIThread();
+            //     if (_isBinding)
+            //         return;
+            //     if (e.PropertyName == nameof(XConfigSelectorViewModel.SelectedConfig))
+            //         BindProperties();
+            // };
+
             PropertyChanged += (sender, e) =>
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
@@ -153,6 +172,11 @@ namespace XSharp.Project
             _isBinding = true;
             try
             {
+                // Config selector init — uncomment when per-config Build Events is implemented.
+                // var allConfigs   = ((XPropertyPage)parentPropertyPage).GetAllProjectConfigs();
+                // var activeConfig = allConfigs.Count > 0 ? allConfigs[0].ConfigName : string.Empty;
+                // _configSelector.Initialize(allConfigs, activeConfig);
+
                 PreBuildEvent     = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PreBuildEvent)     ?? string.Empty;
                 PostBuildEvent    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.PostBuildEvent)    ?? string.Empty;
                 RunPostBuildEvent = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RunPostBuildEvent) ?? string.Empty;

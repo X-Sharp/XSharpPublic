@@ -198,6 +198,8 @@ namespace XSharp.Project
             _configSelector.PropertyChanged += (s, e) =>
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
+                if (_isBinding)
+                    return;
                 if (e.PropertyName == nameof(XConfigSelectorViewModel.SelectedConfig))
                 {
                     BindProperties();

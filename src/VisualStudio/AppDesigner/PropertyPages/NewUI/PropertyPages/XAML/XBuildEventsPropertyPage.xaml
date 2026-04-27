@@ -32,8 +32,20 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="8">
+    <DockPanel>
+
+        <!-- Configuration selector — hidden until per-config Build Events is implemented.
+        <DockPanel DockPanel.Dock="Top" Margin="8,8,8,4" LastChildFill="False">
+            <Label DockPanel.Dock="Left" Content="Configuration:" VerticalAlignment="Center" Padding="0,0,4,0"/>
+            <ComboBox DockPanel.Dock="Left"
+                      ItemsSource="{Binding ConfigSelector.ConfigNames}"
+                      SelectedItem="{Binding ConfigSelector.SelectedConfig, Mode=TwoWay}"
+                      Width="200" VerticalAlignment="Center"/>
+        </DockPanel>
+        -->
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="8">
 
             <!-- ==================== Pre-build group ==================== -->
             <GroupBox Header="{Binding CaptPreBuildEvent}" Margin="0,0,0,8">
@@ -100,5 +112,6 @@
             </GroupBox>
 
         </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

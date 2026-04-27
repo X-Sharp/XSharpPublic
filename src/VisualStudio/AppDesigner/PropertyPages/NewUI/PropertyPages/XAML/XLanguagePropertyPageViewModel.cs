@@ -68,6 +68,10 @@ namespace XSharp.Project
         private bool _memVarEnabled     = true;
         private bool _undeclaredEnabled = false;
 
+        // Guards against re-entrancy during load and notification pulse.
+        private bool _isBinding   = false;
+        private bool _isNotifying = false;
+
         // =========================================================================================
         // Constructor
         // =========================================================================================
@@ -393,6 +397,10 @@ namespace XSharp.Project
         {
             PropertyChanged += (sender, e) =>
             {
+                // Skip re-entrant calls during load or notification pulse.
+                if (_isBinding || _isNotifying)
+                    return;
+
                 // UI-state properties do not represent project edits — skip dirty.
                 if (e.PropertyName == nameof(LBEnabled)
                     || e.PropertyName == nameof(MemVarEnabled)
@@ -403,7 +411,13 @@ namespace XSharp.Project
                 if (e.PropertyName == nameof(MemVar))
                     UndeclaredEnabled = MemVar;
 
+                ApplyChanges();
                 NotifyDirty();
+
+                // Pulse Item[] so all indexer-bound Reset buttons re-evaluate.
+                _isNotifying = true;
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isNotifying = false; }
             };
         }
 
@@ -412,6 +426,9 @@ namespace XSharp.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
+            _isBinding = true;
+            try
+            {
             // ---- Checkboxes ----
             AZ                     = GetBoolPropertyValue(XSharpProjectFileConstants.AZ);
             CS                     = GetBoolPropertyValue(XSharpProjectFileConstants.CS);
@@ -439,6 +456,12 @@ namespace XSharp.Project
             SetDialectOptions(parentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? "Core");
 
             isDirty = false;
+            }
+            finally
+            {
+                _isBinding = false;
+                OnPropertyChanged("Item[]");
+            }
         }
 
         /// <inheritdoc/>

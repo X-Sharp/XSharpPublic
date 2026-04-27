@@ -9,7 +9,10 @@
     d:DesignHeight="420" d:DesignWidth="660"
     UseLayoutRounding="True"
     toolkit:Themes.UseVsTheme="True"
-    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit">
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
         Build Events property page — WPF/XAML implementation (SDK-style projects).

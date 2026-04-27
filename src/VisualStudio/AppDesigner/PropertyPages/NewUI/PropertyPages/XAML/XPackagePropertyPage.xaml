@@ -9,6 +9,8 @@
     xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
     mc:Ignorable="d" d:DesignWidth="660"
     UseLayoutRounding="True"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}"
     toolkit:Themes.UseVsTheme="True"
     Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}" Height="809">
 

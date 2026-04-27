@@ -6,9 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:XSharp.Project"
     xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
     mc:Ignorable="d"
     d:DesignHeight="400" d:DesignWidth="660"
     UseLayoutRounding="True"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}"
     toolkit:Themes.UseVsTheme="True" >
 
     <!--

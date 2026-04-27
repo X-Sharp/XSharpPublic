@@ -685,7 +685,7 @@ namespace XSharp.Project
                     typeof(XSharpLanguagePropertyPage).GUID,
                     typeof(XSharpDialectPropertyPage).GUID,
                     typeof(XSharpPackagePropertyPage).GUID,
-                    /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
+                    typeof(XSharpGlobalUsingsPropertiesPage).GUID
                 };
             }
             return new Guid[]

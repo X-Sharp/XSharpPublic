@@ -23,16 +23,11 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <!-- BoolToVisibility: true → Visible, false → Collapsed -->
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
-            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
-            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+        <!-- BoolToVisibility: true → Visible, false → Collapsed -->
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+        <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
+        <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -56,9 +51,9 @@
                               IsEnabled="{Binding LBEnabled}"
                               ToolTip="{Binding DescLB}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="LB"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=LB}"
+                            IsEnabled="{Binding [LB]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -67,9 +62,9 @@
                               IsChecked="{Binding NamedArgs, Mode=TwoWay}"
                               ToolTip="{Binding DescNamedArgs}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="NamedArgs"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NamedArgs}"
+                            IsEnabled="{Binding [NamedArgs]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -78,9 +73,9 @@
                               IsChecked="{Binding Unsafe, Mode=TwoWay}"
                               ToolTip="{Binding DescUnsafe}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="Unsafe"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Unsafe}"
+                            IsEnabled="{Binding [Unsafe]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -89,9 +84,9 @@
                               IsChecked="{Binding CS, Mode=TwoWay}"
                               ToolTip="{Binding DescCS}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="CS"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=CS}"
+                            IsEnabled="{Binding [CS]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -100,9 +95,9 @@
                               IsChecked="{Binding InitLocals, Mode=TwoWay}"
                               ToolTip="{Binding DescInitLocals}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="InitLocals"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=InitLocals}"
+                            IsEnabled="{Binding [InitLocals]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -111,9 +106,9 @@
                               IsChecked="{Binding OVF, Mode=TwoWay}"
                               ToolTip="{Binding DescOVF}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="OVF"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=OVF}"
+                            IsEnabled="{Binding [OVF]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -122,9 +117,9 @@
                               IsChecked="{Binding AZ, Mode=TwoWay}"
                               ToolTip="{Binding DescAZ}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="AZ"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AZ}"
+                            IsEnabled="{Binding [AZ]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -133,9 +128,9 @@
                               IsChecked="{Binding EnforceSelf, Mode=TwoWay}"
                               ToolTip="{Binding DescEnforceSelf}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="EnforceSelf"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=EnforceSelf}"
+                            IsEnabled="{Binding [EnforceSelf]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -144,9 +139,9 @@
                               IsChecked="{Binding AllowDot, Mode=TwoWay}"
                               ToolTip="{Binding DescAllowDot}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="Allowdot"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Allowdot}"
+                            IsEnabled="{Binding [Allowdot]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -155,9 +150,9 @@
                               IsChecked="{Binding EnforceOverride, Mode=TwoWay}"
                               ToolTip="{Binding DescEnforceOverride}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="EnforceOverride"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=EnforceOverride}"
+                            IsEnabled="{Binding [EnforceOverride]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -166,9 +161,9 @@
                               IsChecked="{Binding AllowOldStyleAssignments, Mode=TwoWay}"
                               ToolTip="{Binding DescOldStyleAssignments}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="AllowOldStyleAssignments"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=AllowOldStyleAssignments}"
+                            IsEnabled="{Binding [AllowOldStyleAssignments]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -177,9 +172,9 @@
                               IsChecked="{Binding ModernSyntax, Mode=TwoWay}"
                               ToolTip="{Binding DescModernSyntax}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="ModernSyntax"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=ModernSyntax}"
+                            IsEnabled="{Binding [ModernSyntax]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -199,9 +194,9 @@
                               IsEnabled="{Binding MemVarEnabled}"
                               ToolTip="{Binding DescMemVar}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="MemVar"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=MemVar}"
+                            IsEnabled="{Binding [MemVar]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -211,9 +206,9 @@
                               IsEnabled="{Binding UndeclaredEnabled}"
                               ToolTip="{Binding DescUndeclared}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="Undeclared"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=Undeclared}"
+                            IsEnabled="{Binding [Undeclared]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -225,9 +220,9 @@
                               IsChecked="{Binding INS, Mode=TwoWay}"
                               ToolTip="{Binding DescINS}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="INS"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=INS}"
+                            IsEnabled="{Binding [INS]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -236,9 +231,9 @@
                               IsChecked="{Binding NS, Mode=TwoWay}"
                               ToolTip="{Binding DescNS}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="NS"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NS}"
+                            IsEnabled="{Binding [NS]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -250,9 +245,9 @@
                               IsChecked="{Binding NoStandardDefs, Mode=TwoWay}"
                               ToolTip="{Binding DescNoStandardDefs}"
                               VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource ResetButtonStyle}"
+                    <Button Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="NoStandardDefs"
-                            IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=NoStandardDefs}"
+                            IsEnabled="{Binding [NoStandardDefs]}"
                             Margin="4,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -272,9 +267,9 @@
                     <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                              ToolTip="{Binding DescIncludePaths}"
                              Click="OnBrowseIncludePathsClick"/>
-                    <Button  Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                    <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                              Command="{Binding ResetCommand}" CommandParameter="IncludePaths"
-                             IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=IncludePaths}"
+                             IsEnabled="{Binding [IncludePaths]}"
                              Margin="4,0,0,0"/>
                 </Grid>
 
@@ -294,9 +289,9 @@
                     <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                              ToolTip="{Binding DescStandardDefs}"
                              Click="OnBrowseStandardDefsClick"/>
-                    <Button  Grid.Column="2" Style="{StaticResource ResetButtonStyle}"
+                    <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                              Command="{Binding ResetCommand}" CommandParameter="StandardDefs"
-                             IsEnabled="{Binding ., Converter={StaticResource PropertyOverridden}, ConverterParameter=StandardDefs}"
+                             IsEnabled="{Binding [StandardDefs]}"
                              Margin="4,0,0,0"/>
                 </Grid>
 

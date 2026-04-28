@@ -43,3 +43,23 @@ FUNCTION ChrSaw(nSeconds := 0 AS REAL8) AS LOGIC
 [FoxProFunction("RGB", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION RGB(nRedValue AS BYTE, nGreenValue AS BYTE, nBlueValue AS BYTE) AS DWORD
     RETURN XSharp.Core.Functions.RGB(nRedValue, nGreenValue, nBlueValue)
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/loadpicture/*" />
+[FoxProFunction("LOADPICTURE", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION LoadPicture(cFileName := "" AS STRING) AS OBJECT
+    IF IsNil(cFileName) .OR. Empty(cFileName)
+        RETURN NULL_OBJECT
+    ENDIF
+
+    LOCAL cFile AS STRING
+    cFile := (STRING) cFileName
+
+    // use XSharp.Core.Functions.File to respect the SET PATH
+    IF XSharp.Core.Functions.File(cFileName)
+        cFile := XSharp.Core.Functions.FPathName()
+    ELSE
+        VAR err := Error.ArgumentError(__FUNCTION__, NAMEOF(cFileName), 1, "File does not exist: " + cFileName)
+        THROW err
+    ENDIF
+
+    RETURN VfpUIService.Provider:LoadPicture(cFile)

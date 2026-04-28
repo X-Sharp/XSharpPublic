@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		METHOD IOTests() AS VOID
 			LOCAL cOldDefault AS STRING
 			cOldDefault := SetDefault()
-			
+
             // In the VO Dialect this is allowed with a non existing path
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
             SetDefault(WorkDir())
@@ -143,6 +143,51 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                     File.Delete(cFile)
                 ENDIF
             END TRY
+        END METHOD
+
+        [Fact];
+        METHOD TestLoadPicture() AS VOID
+            LOCAL oPic AS OBJECT
+
+            // 1. No arguments: should return NULL
+            oPic := LOADPICTURE()
+            Assert.True(oPic == NULL, "LOADPICTURE() without arguments should return NULL")
+
+            oPic := LOADPICTURE("")
+            Assert.True(oPic == NULL, "LOADPICTURE('') should return NULL")
+
+            // 2. Load real file
+            VAR cTempFile := Path.Combine(Path.GetTempPath(), "test.bmp")
+
+            // Create the BMP by hand to avoid polluting the Test project
+            // with specific windows-based asm like System.Drawing
+            VAR aBmpBytes := <BYTE>{;
+                0x42, 0x4D, 0x3A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, ;
+                0x28, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, ;
+                0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, ;
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, ;
+                0x00, 0x00, 0x00, 0x00 }
+
+            File.WriteAllBytes(cTempFile, aBmpBytes)
+
+            TRY
+                oPic := LOADPICTURE(cTempFile)
+
+                IF VfpUIService.Provider IS HeadlessUIProvider
+                    Assert.True(oPic == NULL, "LOADPICTURE should return NULL in Headless mode.")
+                ELSE
+                   Assert.NotNull(oPic)
+                   VAR cTypeName := oPic:GetType():FullName
+                   Assert.True(cTypeName:Contains("Drawing") .OR. cTypeName:Contains("Image") .OR. cTypeName:Contains("Bitmap"))
+                ENDIF
+            FINALLY
+                IF File.Exists(cTempFile)
+                    File.Delete(cTempFile)
+                ENDIF
+            END TRY
+
+
+
         END METHOD
 	END CLASS
 

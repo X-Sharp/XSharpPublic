@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD GetDir(cDirectory AS STRING, cText AS STRING, cCaption AS STRING, nFlags AS LONG, lRootOnly AS LOGIC) AS STRING
         METHOD GetFile(cFileExtensions AS STRING, cText AS STRING, cOpenButtonCaption AS STRING, nButtonType AS LONG, cTitleBarCaption AS STRING) AS STRING
         METHOD GetPict(cFileExtensions AS STRING, cFileNameCaption AS STRING, cOpenButtonCaption AS STRING) AS STRING
+        METHOD LoadPicture(cFileName AS STRING) AS OBJECT
     END INTERFACE
 
     PUBLIC STATIC CLASS VfpUIService
@@ -147,6 +148,11 @@ BEGIN NAMESPACE XSharp.VFP
 
         METHOD GetPict(cFileExtensions AS STRING, cFileNameCaption AS STRING, cOpenButtonCaption AS STRING) AS STRING
             RETURN ""
+        END METHOD
+
+        METHOD LoadPicture(cFileName AS STRING) AS OBJECT
+            Console.WriteLine("LOADPICTURE: Attempted to load: " + cFileName)
+            RETURN NULL_OBJECT
         END METHOD
 
     END CLASS

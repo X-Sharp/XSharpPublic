@@ -23,6 +23,7 @@ INTERNAL STATIC CLASS TransformHelpers
         MEMBER Upper       := 512
         MEMBER YesNo       := 1024
         MEMBER Scroll      := 2048
+        MEMBER Numeric     := 4096
     END ENUM
 
     STATIC METHOD SplitPict(cSayPicture AS STRING, cPic OUT STRING, cFunc OUT STRING) AS LOGIC
@@ -679,6 +680,9 @@ INTERNAL STATIC CLASS TransformHelpers
         ENDIF
         // Map result string back to the original template
         cReturn := MergeValueAndTemplate( c'N', cReturn, cTemplate, nPicFunc)
+        IF  nPicFunc:HasFlag( TransformPictures.Numeric )
+            cReturn := cReturn:TrimStart()
+        endif
         // add special functions
         IF nValue < 0
             IF  nPicFunc:HasFlag( TransformPictures.ParenLeft )
@@ -753,6 +757,8 @@ INTERNAL STATIC CLASS TransformHelpers
                      nPicFunc |= TransformPictures.Date
                 CASE c'E' ; CASE c'e'
                      nPicFunc |= TransformPictures.British
+                CASE c'N' ; CASE c'n'
+                     nPicFunc |= TransformPictures.Numeric
                 CASE c'R' ; CASE c'r'
                      nPicFunc |= TransformPictures.NonTemplate
                 CASE c'X' ; CASE c'x'
@@ -800,11 +806,11 @@ FUNCTION Transform( uValue AS DATE, cSayPicture AS STRING ) AS STRING
 FUNCTION Transform( uValue AS LOGIC, cSayPicture AS STRING ) AS STRING
     RETURN TransformHelpers.TransformL(uValue, cSayPicture)
 
-// /// <summary>Convert any value into a formatted string.</summary>
+
 //FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
 //    RETURN TransformHelpers.TransformN( nValue, cPicture, TRUE)
 //
-// /// <summary>Convert any value into a formatted string.</summary>
+
 //FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
 //    RETURN TransformHelpers.TransformN( nValue, cPicture, TRUE)
 

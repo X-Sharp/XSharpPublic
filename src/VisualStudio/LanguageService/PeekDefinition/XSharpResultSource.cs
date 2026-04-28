@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Imaging.Interop;
-using System.Diagnostics;
-using XSharpModel;
-using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     class XSharpResultSource : IPeekResultSource

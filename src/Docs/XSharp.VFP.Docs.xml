@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <__CheckParams>
+    <summary>
+      Return public members of a type with a specific name (case insensitive)
+    </summary>
+    <param name="oObj"/>
+    <param name="cName"/>
+    <returns/>
+  </__CheckParams>
+  <__FoxArray>
+    <summary>
+      Internal type that implements the FoxPro Compatible ARRAY type.<br/>
+      This type has methods and properties that normally are never directly called from user code.
+    </summary>
+    <remarks>
+      FoxPro arrays can be one dimensional or two dimensional.
+      Two dimensional arrays are implemented as a projection
+      on top of a one dimensional array. <br/>
+      So a two dimensional array of 4 x 3 elements will be implemented as an array of 12 elements.
+      The elements 1-3 represent row 1, 4-6 row 2 etc.
+    </remarks>
+    <seealso cref="IIndexer"/>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
+  </__FoxArray>
+  <__FoxArray.DeleteColumn>
+    <summary>Delete a column from a multi dimensional array.</summary>
+    <param name="nColumn">1 based column number to delete</param>
+    <remarks>
+      When no columns are defined then nothing happens. <br/>
+      When an array has columns then the elements are deleted and shifted.<br/>
+      Assume a 4 x 4 array. When DeleteColumn() is called with column 2 then the elements 2,6,10 and 14 are deleted
+      and the elements 3 &amp; 4, 7 &amp; 8, 11 &amp; 12 and 15 &amp; 16 are shifted to the left.
+      New empty elements are inserted on locations 4,8,12 and 16.
+    </remarks>
+  </__FoxArray.DeleteColumn>
+  <__FoxArray.DeleteRow>
+    <summary>Delete a row from a multi dimensional array.</summary>
+    <param name="nRow">1 based row number to delete</param>
+    <remarks>Deleting rows will shift other rows up and will add a blank row at the bottom of the array</remarks>
+  </__FoxArray.DeleteRow>
+  <__FoxArray.InsertColumn>
+    <summary>Insert a column into a multi dimensional array.</summary>
+    <param name="nColumn">1 based column number to insert</param>
+    <remarks>Inserting columns deletes columns at the end of each row.</remarks>
+  </__FoxArray.InsertColumn>
+  <__FoxArray.InsertRow>
+    <summary>Insert a row into a multi dimensional array.</summary>
+    <param name="nRow">1 based row number to insert</param>
+    <remarks>Inserting rows shifts rows up and deletes a row at the end of the array: FoxPro arrays do not grow automatically</remarks>
+  </__FoxArray.InsertRow>
+  <__FoxArray.SELF_index>
+    <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
+    <param name="index">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="index2">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <param name="indices">
+      <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
+    </param>
+    <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+  </__FoxArray.SELF_index>
+  <__FoxArrayAccess>
+    <summary>
+      Access an element in a FoxPro array with 2 dimensions
+    </summary>
+  </__FoxArrayAccess>
+  <__FoxArrayAccess_2>
+    <summary>
+      Access an element in a FoxPro array with 1 dimension
+    </summary>
+  </__FoxArrayAccess_2>
+  <__FoxAssign>
+    <summary>
+      This function gets called for assignments in FoxPro, so aFoo := 42 will will the complete array when aFoo is an array
+    </summary>
+  </__FoxAssign>
+  <__FoxFillArray>
+    <summary>
+      Fill a FoxPro array
+    </summary>
+  </__FoxFillArray>
+  <__FoxGetWithExpression>
+    <summary>
+      Retrieve an element from the FoxPro With stack
+    </summary>
+  </__FoxGetWithExpression>
+  <__FoxMemVarPut>
+    <summary>
+      This function replaces the normal MemVarPut to make sure that arrays are filled when they are assigned
+    </summary>
+  </__FoxMemVarPut>
+  <__FoxPopWithBlock>
+    <summary>
+      Pop element from the FoxPro With stack
+    </summary>
+  </__FoxPopWithBlock>
+  <__FoxPushWithBlock>
+    <summary>
+      Push element to the FoxPro With stack
+    </summary>
+  </__FoxPushWithBlock>
+  <__FoxRedim>
+    <summary>
+      Resize a FoxPro array
+    </summary>
+  </__FoxRedim>
+  <__GetFoxWithStack>
+    <summary>
+      Retrieve the With Stack for the FoxPro dialect (so you can call methods or properties outside of the scope of the WITH block)
+    </summary>
+  </__GetFoxWithStack>
+  <__IVarGetOrSend>
+    <summary>
+      Call a method or retrieve an indexed property from an object.
+    </summary>
+  </__IVarGetOrSend>
+  <__IVarGetOrSend_2>
+    <summary>
+      Call a method or retrieve an indexed property from an object.
+    </summary>
+  </__IVarGetOrSend_2>
+  <_ASCIICOLS>
+    <summary>Specifies the number of columns in an ASCII text file created with the ASCII keyword in the REPORT FORM command.</summary>
+  </_ASCIICOLS>
+  <_ASCIIROWS>
+    <summary>Specifies the number of rows in an ASCII text file created with the ASCII keyword in the REPORT FORM command.</summary>
+  </_ASCIIROWS>
+  <_MLINE>
+    <summary>Contains the memo field offset for the MLINE( ) function.</summary>
+  </_MLINE>
+  <_PAGENO>
+    <summary>Contains the current page number.</summary>
+  </_PAGENO>
+  <_PAGETOTAL>
+    <summary>Contains the total number of pages in a report.</summary>
+  </_PAGETOTAL>
+  <_PRETEXT>
+    <summary>Specifies a character expression to preface text merge lines.</summary>
+  </_PRETEXT>
+  <_TALLY>
+    <summary>Contains the number of records processed by the most recently executed table command.</summary>
+  </_TALLY>
+  <_TEXT>
+    <summary>File handle for the output file for the TEXT .. ENDTEXT and \ and \\ commands.</summary>
+    <seealso cref="SetTextFile"/>
+  </_TEXT>
+  <_TRIGGERLEVEL>
+    <summary>Contains a numeric value indicating the current trigger procedure nesting level.</summary>
+  </_TRIGGERLEVEL>
+  <Abstract>
+    <summary>
+      The Abstract class.
+    </summary>
+  </Abstract>
+  <ADel>
+    <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*"/>
+    <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+  </ADel>
+  <AIns>
+    <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*"/>
+    <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+  </AIns>
+  <CreateObject>
+    <summary>Creates an object from a class definition or an Automation-enabled application.</summary>
+    <param name="cClassName">Specifies the class or OLE object from which the new object is created.</param>
+    <param name="_args">
+      These optional parameters are used to pass values to the Init event procedure for the class.
+      The Init event is executed when you issue CREATEOBJECT( ) and allows you to initialize the object.
+    </param>
+    <returns>The object that was created</returns>
+    <seealso cref="CreateInstance">CreateInstance</seealso>
+  </CreateObject>
+
+<DialectChanged>
+    <summary>
+      This event handler is attached to the DialectChanged event of the RuntimeState, to initialize the FoxPro state
+    </summary>
+  </DialectChanged>
+  <EmptyClass>
+    <summary>
+      The FoxPro Empty class.
+    </summary>
+  </EmptyClass>
+  <FoxCollations>
+    <summary>List of possible index collations for VFP DBF files. For each of these collations there is a weight table in the XSharp.VFP assembly.</summary>
+  </FoxCollations>
+  <FoxCollations.CZECH>
+    <summary>CZech collation. Supported are codepages 852, 895 and 1250</summary>
+  </FoxCollations.CZECH>
+  <FoxCollations.DUTCH>
+    <summary>Dutch collation. Supported are codepages 437, 850 and 1252</summary>
+  </FoxCollations.DUTCH>
+  <FoxCollations.GENERAL>
+    <summary>General collation. Supported are codepages 437, 620, 850,852,857,861,865,895,1250,1252 and 1254</summary>
+  </FoxCollations.GENERAL>
+  <FoxCollations.GERMAN>
+    <summary>
+      German phone book order (DIN) collation. Supported are codepages 437, and 1252<br/>
+      This collation is used for English, French, German, Modern Spanish, Portuguese, and other Western European languages
+    </summary>
+  </FoxCollations.GERMAN>
+  <FoxCollations.GREEK>
+    <summary>Greek collation. Supported are codepages 737, and 1253</summary>
+  </FoxCollations.GREEK>
+  <FoxCollations.HUNGARY>
+    <summary>Hungarian collation. Supported are codepages 852, and 1250</summary>
+  </FoxCollations.HUNGARY>
+  <FoxCollations.ICELAND>
+    <summary>Icelandic collation. Supported are codepages 437,, 850, 861 and 1252</summary>
+  </FoxCollations.ICELAND>
+  <FoxCollations.MACHINE>
+    <summary>Machine collation. Supported are codepages 437, 620, 850,852,857,861,865,895,1250,1251,1252,1253 and 1254</summary>
+  </FoxCollations.MACHINE>
+  <FoxCollations.NORDAN>
+    <summary>Norwegian, Danish collation. Supported are codepages 437, 850, 865 and 1252.</summary>
+  </FoxCollations.NORDAN>
+  <FoxCollations.POLISH>
+    <summary>Polish collation. Supported are codepages 620, 852 and 1250</summary>
+  </FoxCollations.POLISH>
+  <FoxCollations.RUSSIAN>
+    <summary>Russian collation. Supported are codepages 866 and 1251</summary>
+  </FoxCollations.RUSSIAN>
+  <FoxCollations.SLOVAK>
+    <summary>Slovakian collation. Supported are codepages 852, 895 and 1250</summary>
+  </FoxCollations.SLOVAK>
+  <FoxCollations.SPANISH>
+    <summary>Traditional Spanish collation. Supported are codepages 437, 850 and 1252</summary>
+  </FoxCollations.SPANISH>
+  <FoxCollations.SWEFIN>
+    <summary>Swedish/Finnish collation. Supported are codepages 437, 850, 865 and 1252</summary>
+  </FoxCollations.SWEFIN>
+  <FoxCollations.TURKISH>
+    <summary>Turkish collation. Supported are codepages 857 and 1254</summary>
+  </FoxCollations.TURKISH>
+  <FoxCollations.UNIQWT>
+    <summary>Unique Weight collation. Supported are codepages 437, 850 and 1252</summary>
+  </FoxCollations.UNIQWT>
+  <FoxCriticality>
+    <summary>
+      Fox Functions Weight
+    </summary>
+  </FoxCriticality>
+  <FoxEngine>
+    <summary>
+      FoxPro engine
+    </summary>
+  </FoxEngine>
+  <FoxFunctionCategory>
+    <summary>
+      Official functional categories of Visual FoxPro
+    </summary>
+  </FoxFunctionCategory>
+  <FoxFunctionStatus>
+    <summary>
+      FoxPro feature support level in X#
+    </summary>
+  </FoxFunctionStatus>
+  <FoxProFunctionAttribute>
+    <summary>
+      Attribute to instrument the FoxPro dialect functions
+      vital for generating the compatibility metrics report via Reflection
+    </summary>
+  </FoxProFunctionAttribute>
+  <SetTextFile>
+    <summary>
+      Open/Close the file to which TEXT .. ENDTEXT values are written
+    </summary>
+    <param name="cFile">Name of the file to create. When this name is NULL or Empty then the file will be closed when it is open</param>
+    <returns>TRUE when the file was succesfully opened / closed.</returns>
+    <remarks>The file handle for the file will be stored in the _TEXT system variable.</remarks>
+    <seealso cref="_TEXT"/>
+  </SetTextFile>
+  <SetTextMerge>
+    <summary>
+      Retrieve the setting that determines if TextMerge is active
+    </summary>
+    <param name="lSet"/>
+    <returns>The current setting</returns>
+  </SetTextMerge>
+  <SetTextMerge_2>
+    <summary>
+      Change the setting that determines if TextMerge is active
+    </summary>
+    <param name="lSet">TRUE when Merge must be used for TEXT .. ENDTEXT expressions without TEXTMERGE clause and for the \ and \\ commands.</param>
+    <returns>The current setting</returns>
+  </SetTextMerge_2>
+  <SetTextMergeDelimiters>
+    <summary>
+      Change the TextMerge delimiters
+    </summary>
+    <param name="cLeft">Left delimiter for expressions.</param>
+    <param name="cRight">Left delimiter for expressions.</param>
+    <returns>The current setting</returns>
+  </SetTextMergeDelimiters>
+  <SetTextMergeDelimiters_2>
+    <summary>
+      Read the TextMerge delimiters
+    </summary>
+    <returns>The current setting</returns>
+  </SetTextMergeDelimiters_2>
+  <SqlGetProp>
+    <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*"/>
+    <param name="nSetting">
+      Specifies the setting. For a list of the settings you can specify see the <see cref="SQLProperty">SQLProperty Enum</see>.
+    </param>
+    <seealso cref="SQLProperty"/>
+  </SqlGetProp>
+  <SqlSetProp>
+    <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*"/>
+    <param name="nSetting">
+      Specifies the setting. For a list of the settings you can specify see the <see cref="SQLProperty">SQLProperty Enum</see>.
+    </param>
+    <seealso cref="SQLProperty"/>
+  </SqlSetProp>
+  </doc>

@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Support
-
+USING XSharp.Internal
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/eof/*" />
 [FoxProFunction("EOF", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Eof() AS LOGIC
@@ -47,8 +47,8 @@ FUNCTION Alias(uWorkArea AS USUAL) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fcount/*" />
 [FoxProFunction("FCOUNT", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION FCount() AS DWORD
-    RETURN XSharp.RT.Functions.FCount()
+FUNCTION FCount(uWorkArea AS USUAL) AS DWORD
+    RETURN XSharp.RT.Functions.FCount(uWorkArea)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/header/*" />
 [FoxProFunction("HEADER", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -64,9 +64,17 @@ FUNCTION RecSize(uArea AS USUAL) AS INT
 // TODO(irwin): functions pending to implement
 // ---------------------------------------------------------------- //
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/afields/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("AFIELDS", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION AFields(ArrayName AS ARRAY, eWorkArea := NIL AS USUAL) AS INT
+FUNCTION AFields(ArrayName AS USUAL, eWorkArea := NIL AS USUAL) AS INT
     LOCAL nArea AS DWORD
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     IF IsNil(eWorkArea)
         nArea := XSharp.RuntimeState.CurrentWorkarea
     ELSE
@@ -85,56 +93,51 @@ FUNCTION AFields(ArrayName AS ARRAY, eWorkArea := NIL AS USUAL) AS INT
     ENDIF
 
     // FoxPro array (18 cols)
-    IF ArrayName IS __FoxArray VAR foxArray
-        foxArray:ReDim(nCount, 18)
-        LOCAL i AS DWORD
-        FOR i := 1 TO nCount
-            VAR aField := (ARRAY) aStruct[i]
-            foxArray[(INT)i, 1] := (STRING)aField[1] // Field Name
-            foxArray[(INT)i, 2] := (STRING)aField[2] // Field Type
-            foxArray[(INT)i, 3] := (INT)aField[3] // Field Width
-            foxArray[(INT)i, 4] := (INT)aField[4] // Decimal Places
+    aFoxArray:ReDim(nCount, 18)
+    LOCAL i AS DWORD
+    FOR i := 1 TO nCount
+        VAR aField := (ARRAY) aStruct[i]
+        aFoxArray[(INT)i, 1] := (STRING)aField[1] // Field Name
+        aFoxArray[(INT)i, 2] := (STRING)aField[2] // Field Type
+        aFoxArray[(INT)i, 3] := (INT)aField[3] // Field Width
+        aFoxArray[(INT)i, 4] := (INT)aField[4] // Decimal Places
 
-            LOCAL uFld := NULL AS USUAL
-            XSharp.RT.Functions.VoDbFieldInfo(11, i, REF uFld) // 11 = DBS_COLUMNINFO
-            IF uFld IS XSharp.RDD.DbColumnInfo VAR colInfo
-                foxArray[(INT)i, 5] := (LOGIC)colInfo:IsNullable
-                foxArray[(INT)i, 6] := (LOGIC)colInfo:IsBinary
-                foxArray[(INT)i, 7] := (STRING)colInfo:RuleExpression
-                foxArray[(INT)i, 8] := (STRING)colInfo:RuleText
-                foxArray[(INT)i, 9] := (STRING)colInfo:DefaultValue
+        LOCAL uFld := NULL AS USUAL
+        XSharp.RT.Functions.VoDbFieldInfo(11, i, REF uFld) // 11 = DBS_COLUMNINFO
+        IF uFld IS XSharp.RDD.DbColumnInfo VAR colInfo
+            aFoxArray[(INT)i, 5] := (LOGIC)colInfo:IsNullable
+            aFoxArray[(INT)i, 6] := (LOGIC)colInfo:IsBinary
+            aFoxArray[(INT)i, 7] := (STRING)colInfo:RuleExpression
+            aFoxArray[(INT)i, 8] := (STRING)colInfo:RuleText
+            aFoxArray[(INT)i, 9] := (STRING)colInfo:DefaultValue
 
-                // fillout for compatibility
-                foxArray[(INT)i, 10] := ""
-                foxArray[(INT)i, 11] := ""
-                foxArray[(INT)i, 12] := ""
-                foxArray[(INT)i, 13] := ""
-                foxArray[(INT)i, 14] := ""
-                foxArray[(INT)i, 15] := ""
-                foxArray[(INT)i, 16] := ""
-                foxArray[(INT)i, 17] := (INT)colInfo:NextValue
-                foxArray[(INT)i, 18] := (INT)colInfo:StepValue
-            ELSE // default
-                foxArray[(INT)i, 5] := FALSE
-                foxArray[(INT)i, 6] := FALSE
-                foxArray[(INT)i, 7] := ""
-                foxArray[(INT)i, 8] := ""
-                foxArray[(INT)i, 9] := ""
-                foxArray[(INT)i, 10] := ""
-                foxArray[(INT)i, 11] := ""
-                foxArray[(INT)i, 12] := ""
-                foxArray[(INT)i, 13] := ""
-                foxArray[(INT)i, 14] := ""
-                foxArray[(INT)i, 15] := ""
-                foxArray[(INT)i, 16] := ""
-                foxArray[(INT)i, 17] := 0
-                foxArray[(INT)i, 18] := 0
-            ENDIF
-        NEXT
-    ELSE
-        THROW ArgumentException{__VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))}
-    ENDIF
-
+            // fillout for compatibility
+            aFoxArray[(INT)i, 10] := ""
+            aFoxArray[(INT)i, 11] := ""
+            aFoxArray[(INT)i, 12] := ""
+            aFoxArray[(INT)i, 13] := ""
+            aFoxArray[(INT)i, 14] := ""
+            aFoxArray[(INT)i, 15] := ""
+            aFoxArray[(INT)i, 16] := ""
+            aFoxArray[(INT)i, 17] := (INT)colInfo:NextValue
+            aFoxArray[(INT)i, 18] := (INT)colInfo:StepValue
+        ELSE // default
+            aFoxArray[(INT)i, 5] := FALSE
+            aFoxArray[(INT)i, 6] := FALSE
+            aFoxArray[(INT)i, 7] := ""
+            aFoxArray[(INT)i, 8] := ""
+            aFoxArray[(INT)i, 9] := ""
+            aFoxArray[(INT)i, 10] := ""
+            aFoxArray[(INT)i, 11] := ""
+            aFoxArray[(INT)i, 12] := ""
+            aFoxArray[(INT)i, 13] := ""
+            aFoxArray[(INT)i, 14] := ""
+            aFoxArray[(INT)i, 15] := ""
+            aFoxArray[(INT)i, 16] := ""
+            aFoxArray[(INT)i, 17] := 0
+            aFoxArray[(INT)i, 18] := 0
+        ENDIF
+    NEXT
     RETURN (INT)nCount
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dbf/*" />

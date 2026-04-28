@@ -4,9 +4,7 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.VFP
 
-    /// <summary>
-    /// FoxPro engine
-    /// </summary>
+    /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxEngine/*" />
     PUBLIC ENUM FoxEngine
         RuntimeCore := 0
         LanguageCore := 1
@@ -19,18 +17,14 @@ BEGIN NAMESPACE XSharp.VFP
         Interop := 8
     END ENUM
 
-    /// <summary>
-    /// Fox Functions Weight
-    /// </summary>
+    /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxCriticality/*" />
     PUBLIC ENUM FoxCriticality
         High := 3
         Medium := 2
         Low := 1
     END ENUM
 
-    /// <summary>
-    /// FoxPro feature support level in X#
-    /// </summary>
+    /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxFunctionStatus/*" />
     PUBLIC ENUM FoxFunctionStatus
         Full := 0 // Fully supported (same as VFP)
         Partial := 1 // Partially supported (edge cases missed, flags or optional params)
@@ -40,9 +34,7 @@ BEGIN NAMESPACE XSharp.VFP
         NotSupported := 5 // It won't be supported in X# (eg: Addls(), Bar(), COMArray(), etc)
     END ENUM
 
-    /// <summary>
-    ///  Official functional categories of Visual FoxPro
-    /// </summary>
+    /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxFunctionCategory/*" />
     PUBLIC ENUM FoxFunctionCategory
         Array := 0
         Bitwise := 1
@@ -60,10 +52,7 @@ BEGIN NAMESPACE XSharp.VFP
         General := 13
     END ENUM
 
-    /// <summary>
-    /// Attribute to instrument the FoxPro dialect functions
-    /// vital for generating the compatibility metrics report via Reflection
-    /// </summary>
+    /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxProFunctionAttribute/*" />
     [AttributeUsage(AttributeTargets.Method, AllowMultiple := FALSE, Inherited := FALSE)];
     PUBLIC CLASS FoxProFunctionAttribute INHERIT Attribute
 

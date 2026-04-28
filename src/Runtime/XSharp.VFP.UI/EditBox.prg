@@ -1,4 +1,4 @@
-﻿// EditBox.prg
+// EditBox.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -6,183 +6,306 @@
 
 USING System
 USING System.Collections.Generic
-USING System.Text
 USING System.Windows.Forms
 USING System.Drawing
 USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
-	/// <summary>
-	/// The VFP compatible EditBox class.
-	/// </summary>
-	PARTIAL CLASS EditBox INHERIT TextBox
 
-		// Common properties that all VFP Objects support
-		#include "Headers/VFPObject.xh"
+    /// <summary>
+    /// VFP EditBox Control - Multi-line text editor
+    /// Maps VFP EditBox properties and methods to WinForms RichTextBox
+    ///
+    /// Implements: IVFPObject, IVFPControl, IVFPText, IVFPEditable
+    /// Includes: VFPEditBoxText.xh (EditBox-specific, no InputMask)
+    ///           TextControlProperties.xh, FontProperties.xh, ControlSource.xh
+    ///
+    /// Base Class: System.Windows.Forms.RichTextBox
+    /// Note: Uses RichTextBox (Next's approach), NOT TextBox (Current's approach)
+    /// </summary>
+    PARTIAL CLASS EditBox INHERIT System.Windows.Forms.RichTextBox IMPLEMENTS IVFPObject, IVFPControl, IVFPText, IVFPEditable
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _uValue AS USUAL
+        // ============================================================================
+        // Include VFP EditBox-specific text control properties and methods
+        // Note: EditBox does NOT support InputMask per VFP documentation
+        // ============================================================================
+        #include "Headers/VFPEditBoxText.xh"
 
-		/// <summary>
-		/// Constructor for EditBox control.
-		/// </summary>
-		CONSTRUCTOR( )
-			SUPER()
-			SELF:Multiline := TRUE
-			SELF:ScrollBars := ScrollBars.Both
-			SELF:Size := Size{100,75}
-			SELF:_uValue := NIL
-			RETURN
+        // ============================================================================
+        // Include VFPObject base implementation (IVFPObject, IVFPHelp)
+        // ============================================================================
+        #include "Headers/VFPObject.xh"
 
-		OVERRIDE PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
-			// Handle AllowTabs property
-			IF e:KeyCode == Keys.Tab .AND. !SELF:AllowTabs
-				e:SuppressKeyPress := TRUE
-				e:Handled := TRUE
-				RETURN
-			ENDIF
-			SUPER:OnKeyDown(e)
-		END METHOD
+        // ============================================================================
+        // PRIVATE FIELDS
+        // ============================================================================
 
-		#include ".\Headers\ControlProperties.xh"
-        #include ".\Headers\ControlFocus.xh"
-		#include ".\Headers\ControlSource.xh"
+        PRIVATE _selectOnEntry AS LOGIC
+        PRIVATE _dragMode AS INT
+        PRIVATE _dragIcon AS STRING
+        PRIVATE _baseClass AS STRING
+        PRIVATE _class AS STRING
+        PRIVATE _classLibrary AS STRING
+        PRIVATE _comment AS STRING
+        PRIVATE _helpContextID AS LONG
+        PRIVATE _whatsThisHelpID AS LONG
+        PRIVATE _disabledBackColor AS LONG
+        PRIVATE _disabledForeColor AS LONG
 
-		/// <summary>
-		/// Gets or sets the text value of the EditBox.
-		/// In VFP, this is the Value property.
-		/// </summary>
-		/// <value>The text value as USUAL.</value>
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)];
-		[Browsable(FALSE)];
-		PROPERTY Value AS USUAL
-			GET
-				RETURN SELF:Text
-			END GET
-			SET
-				IF !IsNil(VALUE)
-					SELF:_uValue := VALUE
-					SELF:Text := Str( VALUE )
-				ENDIF
-			END SET
-		END PROPERTY
+        // ============================================================================
+        // PROPERTIES
+        // ============================================================================
 
-		/// <summary>
-		/// Specifies that the EditBox should insert linefeed characters (CHR(10)) after carriage return characters
-		/// (CHR(13)) within the text of an EditBox whenever the Value property is read or whenever the value is
-		/// stored to the ControlSource.
-		/// </summary>
-		/// <value>True to insert linefeeds; otherwise, false.</value>
-		[Category("VFP Properties"), Description("Insert linefeeds after carriage returns")];
-		[DefaultValue(FALSE)];
-		PROPERTY AddLineFeeds AS LOGIC AUTO
+        /// <summary>AddLineFeeds - Insert linefeed after carriage return in Value</summary>
+        PROPERTY AddLineFeeds AS LOGIC AUTO
 
-		/// <summary>
-		/// Specifies whether to allow tabs in an EditBox control.
-		/// </summary>
-		/// <value>True to allow tabs; otherwise, false.</value>
-		[Category("VFP Properties"), Description("Allow tab characters in the edit box")];
-		[DefaultValue(FALSE)];
-		PROPERTY AllowTabs AS LOGIC AUTO
+        /// <summary>AllowTabs - Allow tab characters in the EditBox</summary>
+        PROPERTY AllowTabs AS LOGIC AUTO
 
-		/// <summary>
-		/// Gets or sets the type of scroll bars to display.
-		/// Equivalent to VFP's ScrollBars property.
-		/// </summary>
-		/// <value>0=None, 1=Horizontal, 2=Vertical, 3=Both. Default is 3.</value>
-		[Category("VFP Properties"), Description("Scroll bar type: 0=None, 1=Horizontal, 2=Vertical, 3=Both")];
-		[DefaultValue(3)];
-		PROPERTY VFPScrollBars AS INT
-			GET
-				RETURN (INT)SELF:ScrollBars
-			END GET
-			SET
-				SWITCH VALUE
-					CASE 0
-						SELF:ScrollBars := ScrollBars.None
-					CASE 1
-						SELF:ScrollBars := ScrollBars.Horizontal
-					CASE 2
-						SELF:ScrollBars := ScrollBars.Vertical
-					CASE 3
-						SELF:ScrollBars := ScrollBars.Both
-				END SWITCH
-			END SET
-		END PROPERTY
+        /// <summary>LineCount - Number of lines (read-only)</summary>
+        [System.ComponentModel.Category("VFP Properties")];
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)];
+        PROPERTY LineCount AS INT
+            GET
+                RETURN SELF:Lines:Length
+            END GET
+        END PROPERTY
 
-		/// <summary>
-		/// Finds the first occurrence of a search string in the EditBox text.
-		/// Equivalent to VFP's FindText method.
-		/// </summary>
-		/// <param name="cSearchString">The text to search for.</param>
-		/// <param name="nStartPosition">Optional starting position (0-based). Default is 0 (from beginning).</param>
-		/// <param name="lIgnoreCase">Optional case-sensitivity flag. Default is TRUE (case-insensitive).</param>
-		/// <returns>The 0-based position of the found text, or -1 if not found.</returns>
-		/// <remarks>
-		/// Searches for cSearchString within the EditBox text starting at nStartPosition.
-		/// Returns the 0-based character position where the text was found.
-		/// </remarks>
-		PUBLIC METHOD FindText(cSearchString AS STRING, nStartPosition AS INT := 0, lIgnoreCase AS LOGIC := TRUE) AS INT STRICT
-			IF String.IsNullOrEmpty(cSearchString) .OR. String.IsNullOrEmpty(SELF:Text)
-				RETURN -1
-			ENDIF
+        /// <summary>Wrap - Word wrap (0=Off, 1=On)</summary>
+        [System.ComponentModel.Category("VFP Properties")];
+        [System.ComponentModel.DefaultValue(1)];
+        PROPERTY Wrap AS INT
+            GET
+                RETURN IIF(SELF:WordWrap, 1, 0)
+            END GET
+            SET
+                SELF:WordWrap := (VALUE != 0)
+            END SET
+        END PROPERTY
 
-			VAR compareOption := IF(lIgnoreCase, System.StringComparison.OrdinalIgnoreCase, System.StringComparison.Ordinal)
-			VAR position := SELF:Text.IndexOf(cSearchString, nStartPosition, compareOption)
-			RETURN position
-		END METHOD
+        /// <summary>ScrollBars - Scrollbar visibility (0=None, 1=Vert, 2=Horiz, 3=Both)</summary>
+        [System.ComponentModel.Category("VFP Properties")];
+        [System.ComponentModel.DefaultValue(3)];
+        PROPERTY ScrollBars AS INT
+            GET
+                SWITCH SUPER:ScrollBars
+                    CASE RichTextBoxScrollBars.None
+                        RETURN 0
+                    CASE RichTextBoxScrollBars.Vertical
+                        RETURN 1
+                    CASE RichTextBoxScrollBars.Horizontal
+                        RETURN 2
+                    CASE RichTextBoxScrollBars.Both
+                        RETURN 3
+                    OTHERWISE
+                        RETURN 3
+                END SWITCH
+            END GET
+            SET
+                SWITCH VALUE
+                    CASE 0
+                        SUPER:ScrollBars := RichTextBoxScrollBars.None
+                    CASE 1
+                        SUPER:ScrollBars := RichTextBoxScrollBars.Vertical
+                    CASE 2
+                        SUPER:ScrollBars := RichTextBoxScrollBars.Horizontal
+                    CASE 3
+                        SUPER:ScrollBars := RichTextBoxScrollBars.Both
+                END SWITCH
+            END SET
+        END PROPERTY
 
-		/// <summary>
-		/// Finds and replaces text in the EditBox.
-		/// Equivalent to VFP's ReplaceText method.
-		/// </summary>
-		/// <param name="cSearchString">The text to search for.</param>
-		/// <param name="cReplacementString">The replacement text.</param>
-		/// <param name="nStartPosition">Optional starting position (0-based). Default is 0 (from beginning).</param>
-		/// <param name="lReplaceAll">Optional flag to replace all occurrences. Default is FALSE (first only).</param>
-		/// <param name="lIgnoreCase">Optional case-sensitivity flag. Default is TRUE (case-insensitive).</param>
-		/// <returns>The number of replacements made.</returns>
-		/// <remarks>
-		/// Replaces cSearchString with cReplacementString, starting at nStartPosition.
-		/// If lReplaceAll is TRUE, replaces all occurrences; otherwise replaces first match only.
-		/// </remarks>
-		PUBLIC METHOD ReplaceText(cSearchString AS STRING, cReplacementString AS STRING, nStartPosition AS INT := 0, lReplaceAll AS LOGIC := FALSE, lIgnoreCase AS LOGIC := TRUE) AS INT STRICT
-			IF String.IsNullOrEmpty(cSearchString) .OR. String.IsNullOrEmpty(SELF:Text)
-				RETURN 0
-			ENDIF
+        // ============================================================================
+        // IVFPControl Implementation
+        // ============================================================================
 
-			VAR text := SELF:Text
-			VAR replaceCount := 0
-			VAR currentPos := nStartPosition
-			VAR compareOption := IF(lIgnoreCase, System.StringComparison.OrdinalIgnoreCase, System.StringComparison.Ordinal)
+        [Category("VFP Behavior")];
+        [Description("Drag icon path")];
+        [DefaultValue("")];
+        PROPERTY DragIcon AS STRING
+            GET
+                RETURN SELF:_dragIcon
+            END GET
+            SET
+                SELF:_dragIcon := VALUE
+            END SET
+        END PROPERTY
 
-			DO WHILE currentPos < text:Length
-				VAR foundPos := text:IndexOf(cSearchString, currentPos, compareOption)
-				IF foundPos == -1
-					EXIT
-				ENDIF
+        [Category("VFP Behavior")];
+        [Description("Drag mode (0=manual, 1=automatic)")];
+        [DefaultValue(0)];
+        PROPERTY DragMode AS LONG
+            GET
+                RETURN SELF:_dragMode
+            END GET
+            SET
+                SELF:_dragMode := VALUE
+            END SET
+        END PROPERTY
 
-				text := text:Remove(foundPos, cSearchString:Length):Insert(foundPos, cReplacementString)
-				replaceCount++
-				currentPos := foundPos + cReplacementString:Length
+        PUBLIC METHOD Drag(nAction) AS USUAL CLIPPER
+            RETURN NIL
+        END METHOD
 
-				IF !lReplaceAll
-					EXIT
-				ENDIF
-			ENDDO
+        PUBLIC METHOD SetFocus() AS VOID STRICT
+            SELF:Focus()
+        END METHOD
 
-			IF replaceCount > 0
-				SELF:Text := text
-				SELF:_uValue := text
-			ENDIF
+        // ============================================================================
+        // IVFPText Implementation
+        // ============================================================================
 
-			RETURN replaceCount
-		END METHOD
+        [Category("VFP Text")];
+        [Description("Background color when disabled")];
+        PROPERTY DisabledBackColor AS LONG
+            GET
+                RETURN SELF:_disabledBackColor
+            END GET
+            SET
+                SELF:_disabledBackColor := VALUE
+            END SET
+        END PROPERTY
 
-	END CLASS
+        [Category("VFP Text")];
+        [Description("Foreground color when disabled")];
+        PROPERTY DisabledForeColor AS LONG
+            GET
+                RETURN SELF:_disabledForeColor
+            END GET
+            SET
+                SELF:_disabledForeColor := VALUE
+            END SET
+        END PROPERTY
+
+        // ============================================================================
+        // IVFPEditable Implementation
+        // ============================================================================
+
+        [Category("VFP Behavior")];
+        [Description("Auto-select text on entry")];
+        [DefaultValue(FALSE)];
+        PROPERTY SelectOnEntry AS LOGIC
+            GET
+                RETURN SELF:_selectOnEntry
+            END GET
+            SET
+                SELF:_selectOnEntry := VALUE
+            END SET
+        END PROPERTY
+
+        // ============================================================================
+        // METHODS
+        // ============================================================================
+
+        /// <summary>SelectAll - Select all text</summary>
+        PUBLIC OVERRIDE METHOD SelectAll() AS VOID
+            SUPER:SelectAll()
+        END METHOD
+
+        /// <summary>Clear - Clear all text</summary>
+        PUBLIC METHOD Clear() AS VOID
+            SUPER:Clear()
+            SELF:_vfpValue := NIL
+        END METHOD
+
+        /// <summary>Copy - Copy selection to clipboard</summary>
+        PUBLIC METHOD CopyText() AS VOID
+            IF SELF:SelectionLength > 0
+                SUPER:Copy()
+            ENDIF
+        END METHOD
+
+        /// <summary>Cut - Cut selection to clipboard</summary>
+        PUBLIC METHOD CutText() AS VOID
+            IF SELF:SelectionLength > 0
+                SUPER:Cut()
+            ENDIF
+        END METHOD
+
+        /// <summary>Paste - Paste from clipboard</summary>
+        PUBLIC METHOD PasteText() AS VOID
+            SUPER:Paste()
+        END METHOD
+
+        /// <summary>Undo - Undo last edit</summary>
+        PUBLIC METHOD Undo() AS VOID
+            IF SELF:CanUndo
+                SUPER:Undo()
+            ENDIF
+        END METHOD
+
+        /// <summary>Redo - Redo last undo</summary>
+        PUBLIC METHOD Redo() AS VOID
+            IF SELF:CanRedo
+                SUPER:Redo()
+            ENDIF
+        END METHOD
+
+        /// <summary>FindText - Find text starting at position</summary>
+        PUBLIC METHOD FindText(searchStr AS STRING, startPos AS INT) AS INT
+            IF startPos < 0
+                startPos := 0
+            ENDIF
+            VAR pos := SELF:Text:IndexOf(searchStr, startPos)
+            RETURN pos
+        END METHOD
+
+        /// <summary>GetLine - Get text of specific line (1-based)</summary>
+        PUBLIC METHOD GetLine(lineNum AS INT) AS STRING
+            IF lineNum > 0 .AND. lineNum <= SELF:Lines:Length
+                RETURN SELF:Lines[lineNum - 1]
+            ENDIF
+            RETURN ""
+        END METHOD
+
+        // ============================================================================
+        // EVENT HANDLERS
+        // ============================================================================
+
+        PROTECTED OVERRIDE METHOD OnTextChanged(e AS System.EventArgs) AS VOID
+            SUPER:OnTextChanged(e)
+            SELF:_vfpValue := SELF:Text
+        END METHOD
+
+        // ============================================================================
+        // Include text control VFP event wiring
+        // ============================================================================
+        #include "Headers/TextControlProperties.xh"
+
+        // ============================================================================
+        // Include font properties
+        // ============================================================================
+        #include "Headers/FontProperties.xh"
+
+        // ============================================================================
+        // Include ControlSource data binding
+        // ============================================================================
+        #include "Headers/ControlSource.xh"
+
+        // ============================================================================
+        // CONSTRUCTOR
+        // ============================================================================
+
+        CONSTRUCTOR()
+            SUPER()
+            SELF:_vfpValue := NIL
+            SELF:_format := ""
+            SELF:_selectOnEntry := FALSE
+            SELF:_dragMode := 0
+            SELF:_dragIcon := ""
+            SELF:_baseClass := "EditBox"
+            SELF:_class := "EditBox"
+            SELF:_classLibrary := ""
+            SELF:_comment := ""
+            SELF:_helpContextID := 0
+            SELF:_whatsThisHelpID := 0
+            SELF:_disabledBackColor := 0
+            SELF:_disabledForeColor := 0
+            SELF:Multiline := TRUE
+            SELF:WordWrap := TRUE
+            SELF:ScrollBars := RichTextBoxScrollBars.Both
+            SELF:Size := Size{100, 75}
+
+    END CLASS
 
 END NAMESPACE

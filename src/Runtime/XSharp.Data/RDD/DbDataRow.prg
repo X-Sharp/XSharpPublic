@@ -7,9 +7,9 @@
 USING System.Data
 USING XSharp.RDD
 
-/// <summary>This class represents a DBF Row in a DbDataTable class.</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataRow/*" />
 CLASS XSharp.DbDataRow INHERIT DataRow IMPLEMENTS IDbRow
-    /// <summary>Record number in the workarea</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbDataRow.RecNo/*" />
     PROPERTY RecNo AS DWORD AUTO
     PUBLIC CONSTRUCTOR(builder AS DataRowBuilder )
         SUPER(builder)

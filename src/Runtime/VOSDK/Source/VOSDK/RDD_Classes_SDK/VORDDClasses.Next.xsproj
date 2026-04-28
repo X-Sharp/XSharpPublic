@@ -14,14 +14,8 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core.Next</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Name>XSharp.RT.Next</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.Next.xsproj">
-      <Name>VOSystemClasses.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj" />
+    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.Next.xsproj" />
   </ItemGroup>
 </Project>

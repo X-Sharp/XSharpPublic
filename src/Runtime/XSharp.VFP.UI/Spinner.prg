@@ -1,69 +1,166 @@
-﻿// Spinner.prg
+// Spinner.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
-
 USING System
 USING System.Collections.Generic
-USING System.Text
 USING System.Windows.Forms
 USING System.Drawing
 USING System.ComponentModel
 
-BEGIN NAMESPACE  XSharp.VFP.UI
+BEGIN NAMESPACE XSharp.VFP.UI
 
-	/// <summary>
-    /// The VFP compatible Spinner class.
+    /// <summary>
+    /// VFP Spinner Control - Numeric input with up/down buttons
+    /// Maps VFP Spinner properties and methods to WinForms NumericUpDown
+    ///
+    /// Implements: IVFPObject, IVFPControl
+    /// Includes: VFPObject.xh, VFPProperties.xh, FontProperties.xh
+    ///           ControlProperties.xh, ControlSource.xh
+    ///
+    /// Base Class: System.Windows.Forms.NumericUpDown
+    /// Note: Uses Current's simpler NumericUpDown approach (not Next's custom Panel)
     /// </summary>
-	PARTIAL CLASS Spinner INHERIT System.Windows.Forms.NumericUpDown
-		// Common properties that all VFP Objects support
-		#include "Headers\VFPObject.xh"
+    PARTIAL CLASS Spinner INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVFPObject, IVFPControl
 
-		#include "XSharp\VFPProperties.xh"
+        // ============================================================================
+        // Include VFPObject base implementation (IVFPObject, IVFPHelp)
+        // ============================================================================
+        #include "Headers/VFPObject.xh"
 
-		#include "Headers\FontProperties.xh"
+        // ============================================================================
+        // Include shared VFP property constants/helpers
+        // ============================================================================
+        #include "XSharp/VFPProperties.xh"
 
+        // ============================================================================
+        // Include font properties
+        // ============================================================================
+        #include "Headers/FontProperties.xh"
 
-    CONSTRUCTOR()
-			SUPER()
-			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, true)
+        // ============================================================================
+        // Include common VFP control properties and event wiring
+        // ============================================================================
+        #include "Headers/ControlProperties.xh"
+
+        // ============================================================================
+        // Include ControlSource data binding
+        // ============================================================================
+        #include "Headers/ControlSource.xh"
+
+        // ============================================================================
+        // PRIVATE FIELDS
+        // ============================================================================
+
+        PRIVATE _dragMode AS INT
+        PRIVATE _dragIcon AS STRING
+        PRIVATE _baseClass AS STRING
+        PRIVATE _class AS STRING
+        PRIVATE _classLibrary AS STRING
+        PRIVATE _comment AS STRING
+        PRIVATE _helpContextID AS LONG
+        PRIVATE _whatsThisHelpID AS LONG
+
+        // ============================================================================
+        // PROPERTIES
+        // ============================================================================
+
+        /// <summary>SpinnerHighValue - Maximum spinner value</summary>
+        PROPERTY SpinnerHighValue AS LONG
+            GET
+                RETURN (LONG)SUPER:Maximum
+            END GET
+            SET
+                SUPER:Maximum := VALUE
+            END SET
+        END PROPERTY
+
+        /// <summary>SpinnerLowValue - Minimum spinner value</summary>
+        PROPERTY SpinnerLowValue AS LONG
+            GET
+                RETURN (LONG)SUPER:Minimum
+            END GET
+            SET
+                SUPER:Minimum := VALUE
+            END SET
+        END PROPERTY
+
+        /// <summary>KeyboardHighValue - Keyboard maximum value (maps to Maximum)</summary>
+        PROPERTY KeyboardHighValue AS LONG
+            GET
+                RETURN (LONG)SUPER:Maximum
+            END GET
+            SET
+                SUPER:Maximum := VALUE
+            END SET
+        END PROPERTY
+
+        /// <summary>KeyboardLowValue - Keyboard minimum value (maps to Minimum)</summary>
+        PROPERTY KeyboardLowValue AS LONG
+            GET
+                RETURN (LONG)SUPER:Minimum
+            END GET
+            SET
+                SUPER:Minimum := VALUE
+            END SET
+        END PROPERTY
+
+        // ============================================================================
+        // IVFPControl Implementation
+        // ============================================================================
+
+        [Category("VFP Behavior")];
+        [Description("Drag icon path")];
+        [DefaultValue("")];
+        PROPERTY DragIcon AS STRING
+            GET
+                RETURN SELF:_dragIcon
+            END GET
+            SET
+                SELF:_dragIcon := VALUE
+            END SET
+        END PROPERTY
+
+        [Category("VFP Behavior")];
+        [Description("Drag mode (0=manual, 1=automatic)")];
+        [DefaultValue(0)];
+        PROPERTY DragMode AS LONG
+            GET
+                RETURN SELF:_dragMode
+            END GET
+            SET
+                SELF:_dragMode := VALUE
+            END SET
+        END PROPERTY
+
+        PUBLIC METHOD Drag(nAction) AS USUAL CLIPPER
+            RETURN NIL
+        END METHOD
+
+        PUBLIC METHOD SetFocus() AS VOID STRICT
+            SELF:Focus()
+        END METHOD
+
+        // ============================================================================
+        // CONSTRUCTOR
+        // ============================================================================
+
+        CONSTRUCTOR()
+            SUPER()
+            SELF:SetStyle(ControlStyles.SupportsTransparentBackColor, TRUE)
             SELF:BackColor := Color.Transparent
-            SELF:Size := Size{100,24}
+            SELF:_dragMode := 0
+            SELF:_dragIcon := ""
+            SELF:_baseClass := "Spinner"
+            SELF:_class := "Spinner"
+            SELF:_classLibrary := ""
+            SELF:_comment := ""
+            SELF:_helpContextID := 0
+            SELF:_whatsThisHelpID := 0
+            SELF:Size := Size{100, 24}
 
-#include "Headers\ControlProperties.xh"
-#include "Headers\ControlFocus.xh"
-#include "Headers\ControlSource.xh"
+    END CLASS
 
-		//Todo: See how we can map this to the NumericUpdown
-		//PROPERTY SelLength AS LONG GET SELF:SelectionLength SET SELF:SelectionLength := Value
-		//PROPERTY SelStart AS LONG GET SELF:SelectionStart SET SELF:SelectionStart := Value
-		//PROPERTY SelText AS STRING GET SELF:SelectedText  SET SelectedText  := Value
-
-		PROPERTY SpinnerHighValue AS LONG GET (LONG) SUPER:Maximum SET SUPER:Maximum := Value
-		PROPERTY SpinnerLowValue AS LONG GET (LONG) SUPER:Minimum SET SUPER:Minimum := Value
-
-		PROPERTY KeyboardHighValue AS LONG GET (LONG) SUPER:Maximum SET SUPER:Maximum := Value
-		PROPERTY KeyboardLowValue AS LONG GET (LONG) SUPER:Minimum SET SUPER:Minimum := Value
-
-		/// <summary>
-		/// Gets or sets the increment value for the spinner buttons.
-		/// Equivalent to VFP's Increment property.
-		/// </summary>
-		/// <value>The increment value. Default is 1.</value>
-		[Category("VFP Properties"), Description("Increment value for spinner buttons")];
-		[DefaultValue(1)];
-		PROPERTY Increment AS INT AUTO
-
-		/// <summary>
-		/// Gets or sets the input mask for the spinner.
-		/// Equivalent to VFP's InputMask property.
-		/// </summary>
-		/// <value>The input mask string.</value>
-		[Category("VFP Properties"), Description("Input mask for formatting")];
-		[DefaultValue("")];
-		PROPERTY InputMask AS STRING AUTO
-
-	END CLASS
-END NAMESPACE // xsVFPLibrary
+END NAMESPACE

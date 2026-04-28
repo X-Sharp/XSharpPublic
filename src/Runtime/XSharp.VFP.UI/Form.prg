@@ -1,9 +1,8 @@
-﻿// Form.prg
+// Form.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
-
 
 USING System
 USING System.Collections.Generic
@@ -12,387 +11,285 @@ USING System.Windows.Forms
 USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
-	/// <summary>
-	/// The VFP compatible Form class.
-	/// </summary>
-	PARTIAL CLASS Form INHERIT System.Windows.Forms.Form IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
-#include ".\Headers\FontProperties.xh"
+    /// <summary>
+    /// VFP Form Control - Top-level window container
+    /// Maps VFP Form properties and methods to WinForms Form
+    ///
+    /// Implements: IDynamicProperties, IDynamicProperties2, IVFPOwner
+    /// Includes: FontProperties.xh, MousePointer.xh, Tooltips.xh
+    ///           Anchor.xh, ControlSource.xh, FormOverride.xh, InitCall.xh
+    ///
+    /// Base Class: System.Windows.Forms.Form
+    /// </summary>
+    PARTIAL CLASS Form INHERIT System.Windows.Forms.Form IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
-#include ".\Headers\MousePointer.xh"
+        // ============================================================================
+        // Include font and mouse pointer properties
+        // ============================================================================
+        #include "Headers/FontProperties.xh"
+        #include "Headers/MousePointer.xh"
 
+        // ============================================================================
+        // VFP Form Properties
+        // ============================================================================
 
-#region VFP Form Properties to emulate
+        #region VFP Form Properties to emulate
 
-			// Todo
-		PROPERTY ScaleMode AS INT AUTO
-			// Todo
-		PROPERTY DoCreate AS LOGIC AUTO
-			// Todo
-		PROPERTY AutoCenter AS LOGIC AUTO
-			// Todo
-		PROPERTY Movable AS LOGIC AUTO
+        // Todo
+        PROPERTY ScaleMode AS INT AUTO
+        // Todo
+        PROPERTY DoCreate AS LOGIC AUTO
+        // Todo
+        PROPERTY Movable AS LOGIC AUTO
 
-			// Ease the change of Type
-		NEW PROPERTY WindowState AS INT GET (INT)SUPER:WindowState SET SUPER:WindowState := (System.Windows.Forms.FormWindowState)VALUE
+        // Ease the change of Type
+        NEW PROPERTY WindowState AS INT GET (INT)SUPER:WindowState SET SUPER:WindowState := (System.Windows.Forms.FormWindowState)VALUE
 
+        // Todo  0 = Modeless; 1 = Modal
+        PROPERTY WindowType AS INT AUTO
+        // Todo
+        PROPERTY ScrollBars AS INT AUTO
+        // Todo
+        PROPERTY BorderStyle AS INT AUTO
+        // Todo
+        PROPERTY ColorSource AS INT AUTO
+        // Todo
+        PROPERTY ShowWindowState AS INT AUTO
 
-			// Todo  0 = Modeless; 1 = Modal
-		PROPERTY WindowType AS INT AUTO
-			// Todo
-		PROPERTY ScrollBars AS INT AUTO
-			// Todo
-		PROPERTY BorderStyle AS INT AUTO
-			// Todo
-		PROPERTY ColorSource AS INT AUTO
-					// Todo
-		PROPERTY ShowWindowState AS INT AUTO
-
-			// The Form is returned as Object to force late-bound code
-		PROPERTY ThisForm AS OBJECT GET SELF
+        // The Form is returned as Object to force late-bound code
+        PROPERTY ThisForm AS OBJECT GET SELF
 
         // If the Form belongs to a FormSet, the "Owner" is available here.
         PROPERTY ThisFormSet AS FormSet AUTO
 
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Form (Title)")];
+        [System.ComponentModel.DefaultValue("")];
+        PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text := VALUE
 
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Form (Title)")];
-[System.ComponentModel.DefaultValue("")];
-        PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
-
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MaximizeBox")];
-        [System.ComponentModel.DefaultValue(true)];
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MaximizeBox")];
+        [System.ComponentModel.DefaultValue(TRUE)];
         PROPERTY MaxButton AS LOGIC GET SELF:MaximizeBox SET SELF:MaximizeBox := VALUE
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MinimizeBox")];
-        [System.ComponentModel.DefaultValue(true)];
+
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MinimizeBox")];
+        [System.ComponentModel.DefaultValue(TRUE)];
         PROPERTY MinButton AS LOGIC GET SELF:MinimizeBox SET SELF:MinimizeBox := VALUE
 
-			// Todo Add/Remove the Close item to the System Menu
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if ControlBox is visible")];
-        [System.ComponentModel.DefaultValue(true)];
+        // Todo Add/Remove the Close item to the System Menu
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if ControlBox is visible")];
+        [System.ComponentModel.DefaultValue(TRUE)];
         PROPERTY Closable AS LOGIC GET SELF:ControlBox SET SELF:ControlBox := VALUE
 
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Set the FormBorderStyle")];
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Set the FormBorderStyle")];
         [System.ComponentModel.DefaultValue(1)];
         PROPERTY TitleBar AS INT
-		SET
-			IF ( VALUE == 0 )
-				SELF:FormBorderStyle := FormBorderStyle.None
-			ELSEIF ( VALUE == 1 )
-				SELF:FormBorderStyle := FormBorderStyle.Sizable
-			ENDIF
-		END SET
-		END PROPERTY
+            SET
+                IF VALUE == 0
+                    SELF:FormBorderStyle := FormBorderStyle.None
+                ELSEIF VALUE == 1
+                    SELF:FormBorderStyle := FormBorderStyle.Sizable
+                ENDIF
+            END SET
+        END PROPERTY
 
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if the Form is MDI")];
-        [System.ComponentModel.DefaultValue(false)];
+        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if the Form is MDI")];
+        [System.ComponentModel.DefaultValue(FALSE)];
         PROPERTY MDIForm AS LOGIC AUTO := FALSE
 
-		// Ok,BindControls, but it seems that Grids are Binding based on RecordSource setting..??
-		PROPERTY BindControls AS LOGIC AUTO
+        // Ok, BindControls, but it seems that Grids are Binding based on RecordSource setting..??
+        PROPERTY BindControls AS LOGIC AUTO
 
-		#include ".\Headers\Tooltips.xh"
+        // Todo - AutoCenter
+        PROPERTY AutoCenter AS LOGIC AUTO
 
-#endregion
+        #include "Headers/Tooltips.xh"
 
-#region Support of VFP DataBinding, DataEnvironment, Cursors
+        #endregion
 
-		METHOD DataSession( setSession AS INT ) AS VOID
+        // ============================================================================
+        // Support of VFP DataBinding, DataEnvironment, Cursors
+        // ============================================================================
 
-#include ".\Headers\Anchor.xh"
+        #region Support of VFP DataBinding, DataEnvironment, Cursors
 
-#include ".\Headers\ControlSource.xh"
+        METHOD DataSession(setSession AS INT) AS VOID
 
-		PROPERTY DataEnvironment AS DataEnvironment AUTO
+        #include "Headers/Anchor.xh"
 
-		METHOD DoBindings( ) AS VOID
-			LOCAL ds AS OBJECT
-			LOCAL sourceName AS STRING
-			LOCAL fieldName AS STRING
-			LOCAL sender AS System.Windows.Forms.Control
-			LOCAL cursor AS DbCursor
-			//
-			IF SELF:DataEnvironment != NULL .AND. SELF:DataEnvironment:DataSource != NULL
-				IF SELF:BindingDefinition == NULL
-					SELF:BindingDefinition := Dictionary<System.Windows.Forms.Control,STRING>{}
-				ENDIF
-				// Need to add some CustomControl
-				IF SELF:Controls:Count > 0
-					SELF:PopulateBindings( SELF:Controls )
-				ENDIF
-				//
-				FOREACH VAR bindingInfo IN SELF:BindingDefinition
-					ds := SELF:DataEnvironment:DataSource
-					fieldName := bindingInfo:Value
-					sender := bindingInfo:Key
-					// Do we have a DataSource Name ?
-					IF fieldName:IndexOf(".") > 0
-						sourceName := fieldName.Substring(0,fieldName:IndexOf("."))
-						cursor := SELF:DataEnvironment[ sourceName ]
-						IF cursor != NULL
-							ds := cursor:BindingSource
-						ENDIF
-						fieldName := fieldName.Substring(fieldName:IndexOf(".")+1)
-					ENDIF
-					IF ds != NULL
-						// Always "Text"...We may have to change that
-						sender.DataBindings.Add( Binding{ "Text", ds , fieldName } )
-					ENDIF
-				NEXT
-			ENDIF
+        #include "Headers/ControlSource.xh"
 
-		METHOD PopulateBindings( controls AS System.Windows.Forms.Control.ControlCollection ) AS VOID
-			LOCAL bDef AS OBJECT
-			FOREACH VAR child IN controls
-				//
-				bDef := child:GetType():GetProperty("BindingDefinition")
-				IF bDef != NULL
-					VAR bDefValue := Send( bDef,"GetValue", child )
-					IF bDefValue IS Dictionary<System.Windows.Forms.Control,STRING> VAR bindingDefs
-						FOREACH VAR kvp IN bindingDefs
-							TRY
-								SELF:BindingDefinition:Add( kvp:Key, kvp:Value )
-							CATCH
-								NOP
-							END TRY
-						NEXT
-					ENDIF
-				ENDIF
-				// The Child is a Container ?
-				VAR chld := child ASTYPE System.Windows.Forms.Control
-				IF ( chld != NULL) AND ( chld:Controls:Count > 0)
-					SELF:PopulateBindings( chld:Controls )
-				ENDIF
-			NEXT
+        PROPERTY DataEnvironment AS DataEnvironment AUTO
 
+        METHOD DoBindings() AS VOID
+            LOCAL ds AS OBJECT
+            LOCAL sourceName AS STRING
+            LOCAL fieldName AS STRING
+            LOCAL sender AS System.Windows.Forms.Control
+            LOCAL cursor AS DbCursor
+            //
+            IF SELF:DataEnvironment != NULL .AND. SELF:DataEnvironment:DataSource != NULL
+                IF SELF:BindingDefinition == NULL
+                    SELF:BindingDefinition := Dictionary<System.Windows.Forms.Control,STRING>{}
+                ENDIF
+                // Need to add some CustomControl
+                IF SELF:Controls:Count > 0
+                    SELF:PopulateBindings(SELF:Controls)
+                ENDIF
+                //
+                FOREACH VAR bindingInfo IN SELF:BindingDefinition
+                    ds := SELF:DataEnvironment:DataSource
+                    fieldName := bindingInfo:Value
+                    sender := bindingInfo:Key
+                    // Do we have a DataSource Name ?
+                    IF fieldName:IndexOf(".") > 0
+                        sourceName := fieldName.Substring(0, fieldName:IndexOf("."))
+                        cursor := SELF:DataEnvironment[sourceName]
+                        IF cursor != NULL
+                            ds := cursor:BindingSource
+                        ENDIF
+                        fieldName := fieldName.Substring(fieldName:IndexOf(".") + 1)
+                    ENDIF
+                    IF ds != NULL
+                        // Always "Text"...We may have to change that
+                        sender.DataBindings.Add(Binding{"Text", ds, fieldName})
+                    ENDIF
+                NEXT
+            ENDIF
 
-#include ".\Headers\FormOverride.xh"
-			//
-		OVERRIDE METHOD Refresh() AS VOID
-			// Refresh the BindingSource of the Current Workarea/Cursor
-			// Should we refresh all attached Cursors ??
-			IF SELF:DataEnvironment != NULL .AND. SELF:DataEnvironment:DataSource != NULL
-				VAR currentAlias := Alias( DbGetSelect() )
-				IF ( currentAlias != NULL )
-					VAR vfpCursor := SELF:DataEnvironment[ currentAlias ]
-					IF vfpCursor != NULL
-						vfpCursor:Sync()
-					ENDIF
-				ENDIF
-			ENDIF
-			//
-			IF SELF:_VFPRefresh != NULL
-				SELF:_VFPRefresh:Call()
-			ENDIF
-			// The Windows Form Refresh redraw itself and any child controls.
-			SUPER:Refresh()
+        METHOD PopulateBindings(controls AS System.Windows.Forms.Control.ControlCollection) AS VOID
+            LOCAL bDef AS OBJECT
+            FOREACH VAR child IN controls
+                //
+                bDef := child:GetType():GetProperty("BindingDefinition")
+                IF bDef != NULL
+                    VAR bDefValue := Send(bDef, "GetValue", child)
+                    IF bDefValue IS Dictionary<System.Windows.Forms.Control,STRING> VAR bindingDefs
+                        FOREACH VAR kvp IN bindingDefs
+                            TRY
+                                SELF:BindingDefinition:Add(kvp:Key, kvp:Value)
+                            CATCH
+                                NOP
+                            END TRY
+                        NEXT
+                    ENDIF
+                ENDIF
+                // The Child is a Container ?
+                VAR chld := child ASTYPE System.Windows.Forms.Control
+                IF (chld != NULL) .AND. (chld:Controls:Count > 0)
+                    SELF:PopulateBindings(chld:Controls)
+                ENDIF
+            NEXT
 
-		PROTECTED _validQueryUnload AS LOGIC
-		INTERNAL _handledKeypress AS LOGIC
+        #include "Headers/FormOverride.xh"
 
-		METHOD Release() AS USUAL CLIPPER
-			//
-			SELF:_validQueryUnload := TRUE
+        //
+        OVERRIDE METHOD Refresh() AS VOID
+            // Refresh the BindingSource of the Current Workarea/Cursor
+            IF SELF:DataEnvironment != NULL .AND. SELF:DataEnvironment:DataSource != NULL
+                VAR currentAlias := Alias(DbGetSelect())
+                IF currentAlias != NULL
+                    VAR vfpCursor := SELF:DataEnvironment[currentAlias]
+                    IF vfpCursor != NULL
+                        vfpCursor:Sync()
+                    ENDIF
+                ENDIF
+            ENDIF
+            //
+            IF SELF:_VFPRefresh != NULL
+                SELF:_VFPRefresh:Call()
+            ENDIF
+            // The Windows Form Refresh redraws itself and any child controls.
+            SUPER:Refresh()
+
+        PROTECTED _validQueryUnload AS LOGIC
+        INTERNAL _handledKeypress AS LOGIC
+
+        METHOD Release() AS USUAL CLIPPER
+            //
+            SELF:_validQueryUnload := TRUE
             SELF:Close()
             RETURN NIL
 
-#endregion
+        #endregion
 
+        // ============================================================================
+        // CONSTRUCTOR
+        // ============================================================================
 
-		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			// Default Values
+        CONSTRUCTOR() STRICT
+            SUPER()
+            // Default Values
             SELF:BindControls := TRUE
             SELF:Size := System.Drawing.Size{375, 250}
 
+        // ============================================================================
+        // VFP Load / QueryUnload Events
+        // ============================================================================
 
-		PRIVATE _VFPLoad AS VFPOverride
-		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Load method. Occurs just before an object is created.")];
+        PRIVATE _VFPLoad AS VFPOverride
+        [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Load method. Occurs just before an object is created.")];
         [System.ComponentModel.DefaultValue("")];
-        PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET Set_Load( VFPOverride{SELF, VALUE} )
+        PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET Set_Load(VFPOverride{SELF, VALUE})
 
-		METHOD Set_Load( methodCall AS VFPOverride ) AS VOID
-			SELF:Load += System.EventHandler{ SELF, @OnVFPLoadCall() }
-			SELF:_VFPLoad := methodCall
+        METHOD Set_Load(methodCall AS VFPOverride) AS VOID
+            SELF:Load += System.EventHandler{SELF, @OnVFPLoadCall()}
+            SELF:_VFPLoad := methodCall
 
-		PRIVATE METHOD OnVFPLoadCall( sender AS OBJECT, e AS System.EventArgs) AS VOID
-			//
-			IF SELF:_VFPLoad != NULL
-				SELF:_VFPLoad:Call( )
-			ENDIF
+        PRIVATE METHOD OnVFPLoadCall(sender AS OBJECT, e AS System.EventArgs) AS VOID
+            //
+            IF SELF:_VFPLoad != NULL
+                SELF:_VFPLoad:Call()
+            ENDIF
 
-		PRIVATE _VFPQueryUnload AS VFPOverride
-		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the QueryUnload method. Occurs before a form is unloaded.")];
+        PRIVATE _VFPQueryUnload AS VFPOverride
+        [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the QueryUnload method. Occurs before a form is unloaded.")];
         [System.ComponentModel.DefaultValue("")];
-        PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET Set_QueryUnload( VFPOverride{SELF, VALUE} )
+        PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET Set_QueryUnload(VFPOverride{SELF, VALUE})
 
-		METHOD Set_QueryUnload( methodCall AS VFPOverride ) AS VOID
-			SELF:FormClosing += System.Windows.Forms.FormClosingEventHandler{ SELF, @OnVFPQueryUnload() }
-			SELF:_VFPQueryUnload := methodCall
+        METHOD Set_QueryUnload(methodCall AS VFPOverride) AS VOID
+            SELF:FormClosing += System.Windows.Forms.FormClosingEventHandler{SELF, @OnVFPQueryUnload()}
+            SELF:_VFPQueryUnload := methodCall
 
-		PRIVATE METHOD OnVFPQueryUnload( sender AS OBJECT, e AS FormClosingEventArgs) AS VOID
-			//
-			IF SELF:_VFPQueryUnload != NULL
-				SELF:_validQueryUnload := TRUE
-				SELF:_VFPQueryUnload:Call( )
-				IF !SELF:_validQueryUnload
-					e:Cancel := TRUE
-				ENDIF
-			ENDIF
+        PRIVATE METHOD OnVFPQueryUnload(sender AS OBJECT, e AS FormClosingEventArgs) AS VOID
+            //
+            IF SELF:_VFPQueryUnload != NULL
+                SELF:_validQueryUnload := TRUE
+                SELF:_VFPQueryUnload:Call()
+                IF !SELF:_validQueryUnload
+                    e:Cancel := TRUE
+                ENDIF
+            ENDIF
 
-#include ".\Headers\InitCall.xh"
+        #include "Headers/InitCall.xh"
 
+        METHOD NODEFAULT() AS VOID
+            // Reset all settings....
+            SELF:_validQueryUnload := FALSE
+            SELF:_handledKeypress := TRUE
 
-		METHOD NODEFAULT() AS VOID
-			// Reset all settings....
-			SELF:_validQueryUnload := FALSE
-			SELF:_handledKeypress := TRUE
+        NEW METHOD Show() AS VOID
+            IF SELF:MDIForm
+                SUPER:Show()
+            ELSE
+                SELF:ShowDialog()
+            ENDIF
+        END METHOD
 
+        NEW PROPERTY Visible AS LOGIC
+            GET
+                RETURN SUPER:Visible
+            END GET
+            SET
+                IF SUPER:Visible != VALUE
+                    IF VALUE
+                        SELF:Show()
+                    ELSE
+                        SUPER:Visible := VALUE
+                    ENDIF
+                ENDIF
+            END SET
+        END PROPERTY
 
-		NEW METHOD Show() AS VOID
-			IF SELF:MDIForm
-				SUPER:Show()
-			ELSE
-				SELF:ShowDialog()
-			ENDIF
-		END METHOD
+    END CLASS
 
-		NEW PROPERTY Visible AS LOGIC
-			GET
-				RETURN SUPER:Visible
-			END GET
-			SET
-				IF ( SUPER:Visible != VALUE )
-					IF VALUE
-						SELF:Show()
-					ELSE
-						SUPER:Visible := VALUE
-					ENDIF
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Centers the form on the screen.
-		/// Equivalent to VFP's Center() method.
-		/// </summary>
-		[Category("VFP Properties"), Description("Center the form on the screen")];
-		PUBLIC METHOD Center() AS VOID
-			SELF:CenterToScreen()
-
-		/// <summary>
-		/// Hides the form without closing it.
-		/// Equivalent to VFP's Hide() method.
-		/// </summary>
-		[Category("VFP Properties"), Description("Hide the form without closing")];
-		PUBLIC METHOD Hide() AS VOID
-			SELF:Visible := FALSE
-
-		/// <summary>
-		/// Activates the form (brings it to the front).
-		/// Equivalent to VFP's Activate() method.
-		/// </summary>
-		[Category("VFP Properties"), Description("Activate the form")];
-		PUBLIC METHOD DoActivate() AS VOID
-			SELF:BringToFront()
-
-		/// <summary>
-		/// Adds a control object to the Form.
-		/// Equivalent to VFP's AddObject method.
-		/// </summary>
-		/// <param name="cObjectName">The name to assign to the object.</param>
-		/// <param name="cClassName">The class of the object to add.</param>
-		/// <param name="aParameters">Optional parameters to pass to the object constructor.</param>
-		/// <returns>Reference to the newly added object, or NIL if unsuccessful.</returns>
-		/// <remarks>
-		/// Creates an instance of cClassName with the given name and adds it to the Form.
-		/// The object must be a System.Windows.Forms.Control or compatible type.
-		/// </remarks>
-		PUBLIC METHOD AddObject(cObjectName AS STRING, cClassName AS STRING, aParameters AS ARRAY := NIL) AS OBJECT STRICT
-			LOCAL oObject AS OBJECT
-			LOCAL oControl AS System.Windows.Forms.Control
-
-			TRY
-				// Try to create an instance of the class
-				// This is a simplified implementation - in reality VFP uses a class factory
-				VAR objectType := System.Type.GetType(cClassName)
-				IF objectType == NULL
-					// Try with namespace prepend
-					objectType := System.Type.GetType("XSharp.VFP.UI." + cClassName)
-				ENDIF
-
-				IF objectType != NULL
-					oObject := System.Activator.CreateInstance(objectType)
-					oControl := oObject AS System.Windows.Forms.Control
-
-					IF oControl != NULL
-						oControl:Name := cObjectName
-						SELF:Controls:Add(oControl)
-						RETURN oObject
-					ENDIF
-				ENDIF
-			CATCH AS e
-				// Log exception if needed
-				RETURN NIL
-			END TRY
-
-			RETURN NIL
-		END METHOD
-
-		/// <summary>
-		/// Removes a control object from the Form.
-		/// Equivalent to VFP's RemoveObject method.
-		/// </summary>
-		/// <param name="cObjectName">The name of the object to remove.</param>
-		/// <remarks>
-		/// Removes the named control from the Form and disposes it.
-		/// </remarks>
-		PUBLIC METHOD RemoveObject(cObjectName AS STRING) AS VOID STRICT
-			LOCAL oControl AS System.Windows.Forms.Control
-
-			// Find control by name
-			VAR controls := SELF:Controls:Find(cObjectName, FALSE)
-			IF controls:Length > 0
-				oControl := controls[0]
-				SELF:Controls:Remove(oControl)
-				oControl:Dispose()
-			ENDIF
-		END METHOD
-
-		/// <summary>
-		/// Creates a new object instance.
-		/// Equivalent to VFP's NewObject function.
-		/// </summary>
-		/// <param name="cClassName">The class of the object to create.</param>
-		/// <param name="cClassLibrary">Optional class library name (for custom classes).</param>
-		/// <param name="aParameters">Optional parameters to pass to the object constructor.</param>
-		/// <returns>Reference to the newly created object, or NIL if unsuccessful.</returns>
-		/// <remarks>
-		/// Creates a new instance of the specified class.
-		/// This is a simplified implementation for built-in VFP classes.
-		/// </remarks>
-		PUBLIC METHOD NewObject(cClassName AS STRING, cClassLibrary AS STRING := "", aParameters AS ARRAY := NIL) AS OBJECT STRICT
-			LOCAL oObject AS OBJECT
-
-			TRY
-				// Try to create an instance of the class
-				VAR objectType := System.Type.GetType(cClassName)
-				IF objectType == NULL
-					// Try with namespace prepend
-					objectType := System.Type.GetType("XSharp.VFP.UI." + cClassName)
-				ENDIF
-
-				IF objectType != NULL
-					oObject := System.Activator.CreateInstance(objectType)
-					RETURN oObject
-				ENDIF
-			CATCH AS e
-				// Log exception if needed
-				RETURN NIL
-			END TRY
-
-			RETURN NIL
-		END METHOD
-
-	END CLASS
-
-END NAMESPACE
+END NAMESPACE // XSharp.VFP.UI

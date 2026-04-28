@@ -14,9 +14,7 @@
     <Compile Include="$(CommonInclude)\Constants.prg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

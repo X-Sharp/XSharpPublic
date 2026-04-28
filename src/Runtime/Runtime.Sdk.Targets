@@ -10,8 +10,7 @@
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	
+    <GenerateSupportedOSPlatformAttribute>true</GenerateSupportedOSPlatformAttribute>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
@@ -19,7 +18,7 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <NoWarn>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</NoWarn>
+    <NoWarn>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573,419</NoWarn>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
 </Project>

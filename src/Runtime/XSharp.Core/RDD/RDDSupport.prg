@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,36 +13,36 @@ USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.RDD.Support
 
-/// <summary>Helper class to store the scope and codeblock for a DbEval() operation. </summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbEvalInfo/*" />
 CLASS DbEvalInfo
 
-	/// <summary>A code block to be evaluated with DbEval() on each row of the work area that is in the range defined by ScopeInfo.  </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbEvalInfo.Block/*" />
 	PUBLIC Block	 AS ICodeblock
 
-	/// <summary>A DbScopeInfo structure limiting the evaluation of Block.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbEvalInfo.ScopeInfo/*" />
 	PUBLIC ScopeInfo AS DbScopeInfo
-    /// <summary>Construct a DbEvalInfo object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbEvalInfo.ctor/*" />
     CONSTRUCTOR()
         SELF:ScopeInfo := DbScopeInfo{}
         RETURN
 END CLASS
 
 
-/// <summary>Helper class to store a filter condition for a table.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo/*" />
 CLASS DbFilterInfo
-	/// <summary>A string representing the source code for itmCobExpr.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.FilterText/*" />
 	PUBLIC FilterText	AS STRING
 
-	/// <summary>A code block representing the condition that is evaluated at each cursor location.  If the result of the evaluation is FALSE, the cursor location requested is invalid according to the current filter condition.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.FilterBlock/*" />
 	PUBLIC FilterBlock	AS ICodeblock
 
-	/// <summary>A flag that is TRUE if a filter is active.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.Active/*" />
 	PUBLIC Active		AS LOGIC
 
-	/// <summary>A flag that is TRUE if a filter is optimized.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.Optimized/*" />
 	PUBLIC Optimized	AS LOGIC
 
-	///<summary>Clear the filter fields.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.Clear/*" />
 	METHOD Clear() AS VOID
 		SELF:FilterBlock := NULL
 		SELF:FilterText	 := String.Empty
@@ -50,7 +50,7 @@ CLASS DbFilterInfo
 		SELF:Optimized	 := FALSE
 		RETURN
 
-	///<summary>Clone the filter object.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.Clone/*" />
 	METHOD Clone AS DbFilterInfo
 		LOCAL oClone AS DbFilterInfo
 		oClone := DbFilterInfo{}
@@ -60,7 +60,7 @@ CLASS DbFilterInfo
 		oClone:Active	   := FALSE
 		RETURN oClone
 
-    /// <summary>Construct a DbFilterInfo object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFilterInfo.ctor/*" />
     CONSTRUCTOR
         SELF:Clear()
         RETURN
@@ -71,44 +71,43 @@ CLASS DbFilterInfo
         ENDIF
 END CLASS
 
-/// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbLockInfo/*" />
 STRUCTURE DbLockInfo
-	/// <summary>An Item indicating the ID of the row to lock.  This member is meaningful only if Method is set to EXCLUSIVE or MULTIPLE. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbLockInfo.RecId/*" />
 	PUBLIC RecId		AS OBJECT
 
-	/// <summary>A constant indicating the type of lock to obtain.  The possible values are of the Lockmethod enum. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbLockInfo.Method/*" />
 	PUBLIC @@Method AS LockMethod
 
-	/// <summary>A flag that is TRUE if the lock operation was successful.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbLockInfo.Result/*" />
 	PUBLIC Result		AS LOGIC
-	/// <summary>List of possible Locking Methods </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/LockMethod/*" />
 	ENUM LockMethod
-		/// <summary>Lock a row, releasing currently locked rows.</summary>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/LockMethod.Exclusive/*" />
 		MEMBER Exclusive := 1
-		/// <summary>Lock a row, maintaining currently locked rows.</summary>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/LockMethod.Multiple/*" />
 		MEMBER Multiple  := 2
-		/// <summary>Lock a table, releasing locks currently held.</summary>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/LockMethod.File/*" />
 		MEMBER File 	 := 3
 	END ENUM
 END STRUCTURE
 
-/// <summary>Helper class to store information needed to open a table.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo/*" />
 CLASS DbOpenInfo
 	/// <summary>Should the table be opened Readonly?</summary>
 	PUBLIC ReadOnly 	AS LOGIC
-	/// <summary>Should the table be opened Shared?</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.Shared/*" />
 	PUBLIC Shared		AS LOGIC
-	/// <summary>Unique Alias that the table has. This must be a valid XBase Identifier</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.Alias/*" />
 	PUBLIC Alias		AS STRING
-	/// <summary>The extension for the table that must be opened.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.Extension/*" />
 	PUBLIC Extension    AS STRING
-	/// <summary>The filename (optionally includig a path) for the table that must be opened. Does not have an extension.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.FileName/*" />
 	PUBLIC FileName		AS STRING
-	/// <summary>Workarea number in which the table will be opened.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.Workarea/*" />
 	PUBLIC Workarea		AS DWORD
-    /// <summary>Construct a DbOpenInfo object.</summary>
 
-	/// <summary>The full name (filename + extension) of the file.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.FullName/*" />
     PUBLIC PROPERTY FullName AS STRING
         GET
             RETURN FileName + Extension
@@ -125,7 +124,7 @@ CLASS DbOpenInfo
 
 	CONSTRUCTOR()
         SUPER()
-    /// <summary>Construct a DbOpenInfo object.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.ctor/*" />
 	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, dwWorkarea AS DWORD, lShared AS LOGIC, lReadOnly AS LOGIC)
 		SELF:FullName := sFileName
 		IF String.IsNullOrEmpty( sAlias )
@@ -136,7 +135,7 @@ CLASS DbOpenInfo
 		Workarea	:= dwWorkarea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
-	/// <summary>Return the numeric FileMode based on the Shared and Readonly flags </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOpenInfo.FileMode/*" />
 	PUBLIC PROPERTY FileMode AS DWORD
 	GET
 		LOCAL nMode AS DWORD
@@ -158,56 +157,50 @@ CLASS DbOpenInfo
         RETURN (DbOpenInfo) SELF:MemberwiseClone()
 END CLASS
 
-/// <summary>Helper class to store information needed to create a conditional order.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo/*" />
 CLASS DbOrderCondInfo
-	/// <summary> A flag that is TRUE if one or more valid conditions have been specified in the structure. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Active/*" />
 	PUBLIC Active			AS LOGIC
-	/// <summary> A flag that is TRUE if open orders should remain open while the new order is being created. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Additive/*" />
 	PUBLIC Additive			AS LOGIC
-	/// <summary> A flag that is TRUE if all rows are to be processed during order creation. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.All/*" />
 	PUBLIC All				AS LOGIC
-	/// <summary>A flag that is TRUE if the new order will be a custom built order.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Custom/*" />
 	PUBLIC Custom			AS LOGIC
-	/// <summary> A flag that is TRUE if the order should be created in descending order. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Descending/*" />
 	PUBLIC @@Descending     AS LOGIC
-	/// <summary>A code block defining the expression to evaluate every StepSize rows during the creation of the order.  The code block referenced should return a logical value: TRUE indicates that creation of the order should continue normally, and FALSE indicates that order creation should terminate. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.EvalBlock/*" />
 	PUBLIC EvalBlock		AS ICodeblock
-	/// <summary>A code block defining the for condition to use for the creation and maintenance of the order.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.ForBlock/*" />
 	PUBLIC ForBlock			AS ICodeblock
-	/// <summary>A string defining the for condition to use for the creation and maintenance of the order.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.ForExpression/*" />
 	PUBLIC ForExpression	AS STRING
-	/// <summary>The number of rows to process for order creation.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.NextCount/*" />
 	PUBLIC NextCount		AS DWORD
-	/// <summary>A flag that is TRUE if the for condition may NOT be optimized,</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.NoOptimize/*" />
 	PUBLIC NoOptimize		AS LOGIC
-	/// <summary> A single row number to include in the order. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.RecNo/*" />
 	PUBLIC RecNo			AS DWORD
-	/// <summary>A flag that is TRUE if only the rows specified by lStartRecno through end-of-file are to be included in the order.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Rest/*" />
 	PUBLIC Rest				AS LOGIC
-	/// <summary>A flag indicating whether the order is to be scoped. fScoped will be TRUE if WhileBlock, NextCount, Recno, Rest, or All is specified.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Scoped/*" />
 	PUBLIC Scoped			AS LOGIC
-	/// <summary>The row at which to begin processing when either the NextCount or Rest scoping options are specified.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.StartRecNo/*" />
 	PUBLIC StartRecNo		AS DWORD
-	/// <summary>The frequency of the evaluation of EvalBlock. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.StepSize/*" />
 	PUBLIC StepSize			AS LONG
-	/// <summary>A flag that is TRUE if only rows in the controlling order are to be included in the order.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.UseCurrent/*" />
 	PUBLIC UseCurrent		AS LOGIC
-	/// <summary>A code block defining the while condition to use for the creation of the order.  An empty value indicates that no while condition is being imposed.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.WhileBlock/*" />
 	PUBLIC WhileBlock		AS ICodeblock
-	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.WhileExpression/*" />
     PUBLIC WhileExpression	AS STRING
 
-    /// <summary>
-    /// Collation for the FoxPro INDEX ON command
-    /// </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.Collation/*" />
     PUBLIC Collation        AS STRING
-    /// <summary>
-    /// Binary option for the FoxPro INDEX ON command
-    /// </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.IsBinary/*" />
     PUBLIC IsBinary         AS LOGIC
-    /// <summary>
-    /// Candidate option for the FoxPro INDEX ON command
-    /// </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCondInfo.IsCandidate/*" />
     PUBLIC IsCandidate      AS LOGIC
     /// <summary>
     /// Compact option for the FoxPro INDEX ON command
@@ -243,19 +236,19 @@ CLASS DbOrderCondInfo
 
 END CLASS
 
-/// <summary>Helper class to store information needed to create a new order.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo/*" />
 CLASS DbOrderCreateInfo
-	/// <summary>The index file name.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo.BagName/*" />
 	PUBLIC BagName		AS STRING
-	/// <summary>The order name or number to create in BagName.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo.Order/*" />
 	PUBLIC Order		AS OBJECT
-	/// <summary>The key expression defining the order.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo.Expression/*" />
 	PUBLIC Expression	AS STRING
-	/// <summary>A flag that is TRUE if the order should contain only unique keys. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo.Unique/*" />
 	PUBLIC Unique		AS LOGIC
-	/// <summary>A code block containing the key expression defining the order imposed on the work area. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo.Block/*" />
 	PUBLIC Block		AS ICodeblock
-	/// <summary>A DbOrderCondInfo object containing information about the condition (if any) for the order. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderCreateInfo.OrdCondInfo/*" />
 	PUBLIC OrdCondInfo	AS DbOrderCondInfo
 
     METHOD Compile(oRDD AS IRdd) AS VOID
@@ -271,17 +264,17 @@ CLASS DbOrderCreateInfo
 
 END CLASS
 
-/// <summary>Helper class to store information needed to open/address an order.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderInfo/*" />
 CLASS DbOrderInfo
-	/// <summary>A flag that is TRUE if all tags of the index file must be opened.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderInfo.AllTags/*" />
 	PUBLIC AllTags		AS LOGIC
-	/// <summary>A code block containing the key expression defining the order imposed on the work area.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderInfo.Expression/*" />
 	PUBLIC Expression	AS ICodeblock
-	/// <summary>An object containing the order name or number</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderInfo.Order/*" />
 	PUBLIC Order		AS OBJECT
-	/// <summary>The index file name.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderInfo.BagName/*" />
 	PUBLIC BagName		AS STRING
-	/// <summary>Return value for some order operations.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrderInfo.Result/*" />
 	PUBLIC Result		AS OBJECT
 
     METHOD Clone() AS DbOrderInfo
@@ -305,18 +298,18 @@ CLASS DbOrderInfo
     END PROPERTY
 END CLASS
 
-/// <summary>Helper class to store a list of relational information.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbRelInfo/*" />
 CLASS DbRelInfo
-	/// <summary>The expression used to reposition the cursor of the child table when this relation is resolved.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbRelInfo.Key/*" />
 	PUBLIC Key			AS STRING
-	/// <summary>A code block used to reposition the cursor of the child table when this relation is resolved.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbRelInfo.Block/*" />
 	PUBLIC Block		AS ICodeblock
-	/// <summary>A reference to the child RDD for the relation.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbRelInfo.Child/*" />
 	PUBLIC Child		AS IRdd
-	/// <summary>A reference to the parent RDD for the relation.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbRelInfo.Parent/*" />
 	PUBLIC Parent		AS IRdd
 
-    /// <summary>name of the relation. Defaults to the parent alias = '_' + child alias.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbRelInfo.Name/*" />
 	PUBLIC Name         AS STRING
     METHOD Compile() AS VOID
         IF SELF:Block == NULL .AND. SELF:Parent != NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Key)
@@ -328,36 +321,36 @@ CLASS DbRelInfo
 
 END CLASS
 
-/// <summary>Helper class to store references to all of the scope clause expressions. </summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo/*" />
 CLASS DbScopeInfo
-	/// <summary>A flag that is TRUE if a process should ignore duplicate key values.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.IgnoreDuplicates/*" />
 	PUBLIC IgnoreDuplicates AS LOGIC
-	/// <summary>A flag that is TRUE if a process should ignore any filter condition imposed on the current work area. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.IgnoreFilter/*" />
 	PUBLIC IgnoreFilter		AS LOGIC
-	/// <summary> A flag that is TRUE if a process should include deleted rows. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.IncludeDeleted/*" />
 	PUBLIC IncludeDeleted	AS LOGIC
-	/// <summary>A code block representing the conditional for clause.  A for condition is, essentially, a filter that hides rows for which the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.ForBlock/*" />
 	PUBLIC ForBlock			AS ICodeblock
-	/// <summary>A string representing the conditional for clause.  A for condition is, essentially, a filter that hides rows for which the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.ForExpression/*" />
 	PUBLIC ForExpression	AS STRING
-	/// <summary>A flag that is TRUE if the last row of the current scope is required. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.Last/*" />
 	PUBLIC Last				AS LOGIC
-	/// <summary>Permits continuation of a process for the next lNext rows, while obeying for and while clauses.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.NextCount/*" />
 	PUBLIC NextCount		AS DWORD
-	/// <summary>Permits continuation of a process for a single row number, while obeying for and while clauses.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.RecId/*" />
 	PUBLIC RecId			AS OBJECT
-	/// <summary>A flag that is TRUE if a process should continue stepping through data from the current work area cursor position until logical end-of-file. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.Rest/*" />
 	PUBLIC Rest				AS LOGIC
-	/// <summary>A code block representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.WhileBlock/*" />
 	PUBLIC WhileBlock		AS ICodeblock
-	/// <summary>A string representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.WhileExpression/*" />
 	PUBLIC WhileExpression	AS STRING
 
-	/// <summary>Construct a DbScopeInfo object.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.ctor/*" />
 	CONSTRUCTOR()
 		SELF:Clear()
 
-	///<summary>Clear the scope fields.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.Clear/*" />
 	PUBLIC METHOD Clear() AS VOID
 		IgnoreDuplicates := FALSE
 		IgnoreFilter	 := FALSE
@@ -371,7 +364,7 @@ CLASS DbScopeInfo
 		WhileBlock		 := NULL
 		WhileExpression  := String.Empty
 
-	///<summary>Clone the scopeinfo object.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbScopeInfo.Clone/*" />
 	METHOD Clone AS DbScopeInfo
 		RETURN (DbScopeInfo) SELF:MemberwiseClone()
 
@@ -384,61 +377,60 @@ CLASS DbScopeInfo
         ENDIF
 END CLASS
 
-/// <summary>Helper structure to store information needed to perform a seek operation </summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbSeekInfo/*" />
 STRUCTURE DbSeekInfo
-	/// <summary>A flag that is TRUE if the last occurrence of the specified key value is to be sought, rather than the first.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSeekInfo.Last/*" />
 	PUBLIC Last 	AS LOGIC
-	/// <summary>A flag that is TRUE if a soft seek is to be performed. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSeekInfo.SoftSeek/*" />
 	PUBLIC SoftSeek AS LOGIC
-	/// <summary>An object containing the key value to find.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSeekInfo.Value/*" />
 	PUBLIC Value AS OBJECT
 END STRUCTURE
 
-/// <summary>Helper class to store information needed to perform a physical sort. </summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbSortInfo/*" />
 CLASS DbSortInfo
-	/// <summary>A DbTransInfo object holding the destination work area, column transfer information, and scoping information for the Sort() method. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortInfo.TransInfo/*" />
 	PUBLIC TransInfo  AS DbTransInfo
-	/// <summary>An array of DbSortItem structures defining the key values for the sort.  Note that the key values are processed in the order that they appear in this array. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortInfo.Items/*" />
 	PUBLIC Items	  AS DbSortItem[]
-	/// <summary>Number of items in the Items array. </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortInfo.ItemCount/*" />
     PROPERTY ItemCount  AS LONG GET Items:Length
-    /// <summary>Construct a DbSortInfo object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortInfo.ctor/*" />
     CONSTRUCTOR(transItemCount AS LONG, sortItemCount AS LONG)
         SELF:TransInfo := DbTransInfo{transItemCount}
         SELF:Items     := DbSortItem[]{sortItemCount}
         RETURN
 END CLASS
 
-/// <summary>Helper structure to store information about a single sort key value. </summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbSortItem/*" />
 STRUCTURE DbSortItem
-	/// <summary>A one-based index indicating the column on which the sort is based. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortItem.FieldNo/*" />
 	PUBLIC FieldNo 	AS LONG
-	/// <summary>The offset of the field in the Workarea buffer.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortItem.OffSet/*" />
 	PUBLIC OffSet	AS LONG
-	/// <summary>The length of the field in the Workarea buffer.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortItem.Length/*" />
 	PUBLIC Length	AS LONG
-	/// <summary>One or more constants that function as sort optimization and control flags.
-    /// They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbSortItem.Flags/*" />
 	PUBLIC Flags	AS  DbSortFlags
 
 END STRUCTURE
 
 
-/// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo/*" />
 CLASS DbTransInfo
-	/// <summary>A DbScopeInfo object describing the limits of the scope of the transfer. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.Scope/*" />
 	PUBLIC Scope		AS DbScopeInfo
-	/// <summary>The source work area. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.Source/*" />
 	PUBLIC Source		AS IRdd
-	/// <summary>The destination work area. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.Destination/*" />
 	PUBLIC Destination 	AS IRdd
-	/// <summary>An array of DbTransItem structures defining the items to transfer to the destination work area. This is usually a list of column mappings from the source to the destination. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.Items/*" />
 	PUBLIC Items		AS DbTransItem[]
-	/// <summary>Transfer attributes specified using one or more of the constants Match or PutRec. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.Flags/*" />
 	PUBLIC Flags		AS DbTransInfoFlags
-    /// <summary>Number of items in the Items array.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.ItemCount/*" />
     PUBLIC PROPERTY ItemCount AS LONG AUTO
-    /// <summary>Construct a DbTransInfo object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransInfo.ctor/*" />
     CONSTRUCTOR(itemCount AS LONG)
         SELF:Items := DbTransItem[]{itemCount}
         SELF:Scope := DbScopeInfo{}
@@ -446,11 +438,11 @@ CLASS DbTransInfo
         SELF:Flags := DbTransInfoFlags.None
 END CLASS
 
-/// <summary>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbTransItem/*" />
 STRUCTURE DbTransItem
-	/// <summary>A one-based field index in the source work area. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransItem.Source/*" />
 	PUBLIC Source 		AS LONG
-	/// <summary>A one-based field index in the destination work area. </summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/DbTransItem.Destination/*" />
 	PUBLIC Destination 	AS LONG
 END STRUCTURE
 
@@ -534,48 +526,48 @@ END NAMESPACE
 
 BEGIN NAMESPACE XSharp
 
-/// <summary>Helper class for VoDbTrans and VoDbSort()</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_FieldNames/*" />
 CLASS _FieldNames
-    /// <summary>List of field names.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_FieldNames.Fields/*" />
     PUBLIC Fields AS STRING[]
-    /// <summary>Number of fields in the list.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_FieldNames.FieldCount/*" />
     PROPERTY FieldCount AS LONG GET Fields:Length
-    /// <summary>Construct a _FieldNames object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_FieldNames.ctor/*" />
     CONSTRUCTOR (aFields AS IList<STRING>)
         SELF:Fields := aFields:ToArray()
         RETURN
 END CLASS
 
-/// <summary>Helper class for DbJoin()</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_JoinList/*" />
 CLASS _JoinList
-    /// <summary>Area number of destination Workarea.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_JoinList.uiDestSel/*" />
     PUBLIC uiDestSel AS DWORD
-    /// <summary>List of field areas and positions.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_JoinList.Fields/*" />
     PUBLIC Fields AS _JoinField[]
-    /// <summary>Number of fields in the list.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_JoinList.Count/*" />
     PUBLIC PROPERTY Count AS LONG GET Fields:Length
-    /// <summary>Construct a _JoinList object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_JoinList.ctor/*" />
     PUBLIC CONSTRUCTOR(nFields AS LONG)
         SELF:Fields := _JoinField[]{nFields}
         RETURN
 END CLASS
 
-/// <summary>Helper structure for DbJoin()</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_JoinField/*" />
 STRUCTURE _JoinField
-    /// <summary>Source Workarea number.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_JoinField.Area/*" />
     PUBLIC Area AS DWORD
-    /// <summary>Source field position.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_JoinField.Pos/*" />
     PUBLIC Pos  AS DWORD
 END STRUCTURE
 
-/// <summary>Helper structure to store information for a list of RDD names for DbUseArea()</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_RddList/*" />
 STRUCTURE _RddList
     /// <summary>List of RDD names.</summary>
     EXPORT atomRddName AS STRING[]
-    /// <summary>Number of names in the list.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_RddList.uiRddCount/*" />
     PROPERTY uiRddCount AS DWORD GET (DWORD) atomRddName:Length
 
-    /// <summary>Construct _RddList from class Tree.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_RddList.ctor/*" />
     CONSTRUCTOR(oRDD AS Workarea)
         VAR names := List<STRING>{}
         VAR type  := oRDD:GetType()
@@ -591,7 +583,7 @@ STRUCTURE _RddList
         ENDDO
         names:Reverse()
         atomRddName := names:ToArray()
-    /// <summary>Construct _RddList from list of names.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/_RddList.ctor_2/*" />
     CONSTRUCTOR(aNames AS STRING[])
         atomRddName := aNames
         RETURN

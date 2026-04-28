@@ -1,15 +1,8 @@
-USING System
+﻿USING System
 USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
-    /// <summary>
-    /// the ACEUNPUB class has undocumented constants and functions from the ACE API
-    /// <note type='tip'>
-    /// There is a 32 bits API and a 64 bits API.
-    /// The ACEUNPUB class automatically dispatches to the right version of the API.
-    /// </note>
-    /// </summary>
-    /// <seealso cref="T:XSharp.ADS.ACE"/>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/ACEUNPUB/*" />
 	PUBLIC CLASS ACEUNPUB
 		PRIVATE ENUM PathInfo
 

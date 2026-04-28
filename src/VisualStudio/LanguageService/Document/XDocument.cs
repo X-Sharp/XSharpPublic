@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows.Controls;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -183,7 +184,7 @@ namespace XSharp.LanguageService
                 return tokens;
             if (line.Snapshot.Version == this.SnapShot.Version && allowCached)
             {
-                // When the snapshot matches, return a clone of the line we already have. 
+                // When the snapshot matches, return a clone of the line we already have.
                 // no need to lex again
                 if (this._tokensPerLine.TryGetValue(line.LineNumber, out var token))
                     tokens.AddRange(token);
@@ -194,7 +195,7 @@ namespace XSharp.LanguageService
             var offset = line.Start.Position;
             foreach (var token in tokens)
             {
-                // Since this is the result of lexing a single line we have to adjust the indices 
+                // Since this is the result of lexing a single line we have to adjust the indices
                 // and the linenumber
                 if (token is XSharpToken xt)
                 {

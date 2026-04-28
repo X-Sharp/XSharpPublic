@@ -1,307 +1,257 @@
-// Shape.prg
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.
-// See License.txt in the project root for license information.
-
-
 USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Windows.Forms
-USING System.Drawing
 USING System.ComponentModel
+USING System.Drawing
+USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
+/// <summary>
+/// Shape control - GDI+ graphics primitive for drawing shapes
+/// Custom control for rendering rectangles, circles, and rounded rectangles
+/// Supports customizable fill and border colors and widths
+/// </summary>
+PUBLIC CLASS Shape INHERIT System.Windows.Forms.Control IMPLEMENTS IVFPObject, IVFPControl
+
+	// ============================================================================
+	// Include VFPObject base implementation (IVFPObject, IVFPHelp)
+	// ============================================================================
+	#include "Headers/VFPObject.xh"
+
+	PRIVATE _backColor AS Color
+	PRIVATE _fillColor AS Color
+	PRIVATE _borderColor AS Color
+	PRIVATE _borderWidth AS INT32
+	PRIVATE _shapeType AS INT32  // 0=Rectangle, 1=Circle, 2=RoundedRect
+	PRIVATE _baseClass AS STRING
+	PRIVATE _class AS STRING
+	PRIVATE _classLibrary AS STRING
+	PRIVATE _comment AS STRING
+	PRIVATE _helpContextID AS LONG
+	PRIVATE _whatsThisHelpID AS LONG
+	PRIVATE _dragMode AS INT
+	PRIVATE _dragIcon AS STRING
+
 	/// <summary>
-	/// The VFP compatible Shape class.
-	/// Provides shape drawing capabilities (rectangle, rounded rectangle, oval, etc.)
+	/// Gets or sets the background color of the shape
 	/// </summary>
-	PARTIAL CLASS Shape INHERIT System.Windows.Forms.Panel
+	PUBLIC PROPERTY ShapeBackColor AS Color
+		GET
+			RETURN SELF:_backColor
+		END GET
+		SET
+			SELF:_backColor := VALUE
+			SELF:BackColor := VALUE
+		END SET
+	END PROPERTY
 
-		// Common properties that all VFP Objects support
-		#include "Headers\VFPObject.xh"
+	/// <summary>
+	/// Gets or sets the fill color of the shape
+	/// </summary>
+	PUBLIC PROPERTY FillColor AS Color
+		GET
+			RETURN SELF:_fillColor
+		END GET
+		SET
+			SELF:_fillColor := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _borderColor AS Color
-		PRIVATE _borderWidth AS INT
-		PRIVATE _fillColor AS Color
-		PRIVATE _fillStyle AS INT
-		PRIVATE _curvature AS INT
-		PRIVATE _drawMode AS INT
-		PRIVATE _vfpStyle AS INT
+	/// <summary>
+	/// Gets or sets the border color of the shape
+	/// </summary>
+	PUBLIC PROPERTY BorderColor AS Color
+		GET
+			RETURN SELF:_borderColor
+		END GET
+		SET
+			SELF:_borderColor := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Shape style constants
-		/// </summary>
-		CONSTANT SHAPE_SQUARE := 0
-		CONSTANT SHAPE_RECTANGLE := 1
-		CONSTANT SHAPE_OVAL := 2
-		CONSTANT SHAPE_CIRCLE := 3
-		CONSTANT SHAPE_ROUNDED_RECTANGLE := 4
-		CONSTANT SHAPE_ROUNDED_SQUARE := 5
+	/// <summary>
+	/// Gets or sets the border width in pixels
+	/// </summary>
+	PUBLIC PROPERTY BorderWidth AS INT32
+		GET
+			RETURN SELF:_borderWidth
+		END GET
+		SET
+			SELF:_borderWidth := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Constructor for Shape control.
-		/// </summary>
-		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			SELF:Size := Size{100, 100}
-			SELF:_borderColor := Color.Black
-			SELF:_borderWidth := 1
-			SELF:_fillColor := Color.White
-			SELF:_fillStyle := 1  // Transparent
-			SELF:_curvature := 0
-			SELF:_drawMode := 13  // Copy pen
-			SELF:_vfpStyle := 1   // Rectangle by default
-			SELF:SetStyle(ControlStyles.UserPaint, TRUE)
-			SELF:SetStyle(ControlStyles.AllPaintingInWmPaint, TRUE)
-			SELF:SetStyle(ControlStyles.DoubleBuffer, TRUE)
-			RETURN
+	/// <summary>
+	/// Gets or sets the shape type (0=Rectangle, 1=Circle, 2=RoundedRect)
+	/// </summary>
+	PUBLIC PROPERTY ShapeType AS INT32
+		GET
+			RETURN SELF:_shapeType
+		END GET
+		SET
+			SELF:_shapeType := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		#include ".\Headers\ControlProperties.xh"
+	/// <summary>
+	/// Constructor - initializes the Shape control
+	/// </summary>
+	PUBLIC CONSTRUCTOR()
+		SUPER()
+		SELF:_backColor := System.Drawing.Color.White
+		SELF:_fillColor := System.Drawing.Color.White
+		SELF:_borderColor := System.Drawing.Color.Black
+		SELF:_borderWidth := 1
+		SELF:_shapeType := 0  // Rectangle by default
+		SELF:_baseClass := "Shape"
+		SELF:_class := "Shape"
+		SELF:_classLibrary := ""
+		SELF:_comment := ""
+		SELF:_helpContextID := 0
+		SELF:_whatsThisHelpID := 0
+		SELF:_dragMode := 0
+		SELF:_dragIcon := ""
+		SELF:BackColor := SELF:_backColor
+		SELF:Width := 100
+		SELF:Height := 100
+		SELF:DoubleBuffered := TRUE
+	END CONSTRUCTOR
 
-		/// <summary>
-		/// Gets or sets the border color of the shape.
-		/// Equivalent to VFP's BorderColor property.
-		/// </summary>
-		/// <value>The border color. Default is black.</value>
-		[Category("VFP Properties"), Description("Border color")];
-		[DefaultValue(typeof(Color), "Black")];
-		PROPERTY BorderColor AS Color
-			GET
-				RETURN SELF:_borderColor
-			END GET
-			SET
-				SELF:_borderColor := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the border width in pixels.
-		/// Equivalent to VFP's BorderWidth property.
-		/// </summary>
-		/// <value>The border width in pixels. Default is 1.</value>
-		[Category("VFP Properties"), Description("Border width in pixels")];
-		[DefaultValue(1)];
-		PROPERTY BorderWidth AS INT
-			GET
-				RETURN SELF:_borderWidth
-			END GET
-			SET
-				SELF:_borderWidth := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the fill color of the shape.
-		/// Equivalent to VFP's FillColor property.
-		/// </summary>
-		/// <value>The fill color. Default is white.</value>
-		[Category("VFP Properties"), Description("Fill color")];
-		[DefaultValue(typeof(Color), "White")];
-		PROPERTY FillColor AS Color
-			GET
-				RETURN SELF:_fillColor
-			END GET
-			SET
-				SELF:_fillColor := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
+	// ============================================================================
+	// IVFPControl Implementation
+	// ============================================================================
 
-		/// <summary>
-		/// Gets or sets the fill style of the shape.
-		/// 0=Solid, 1=Transparent, 2=Horizontal Line, 3=Vertical Line, etc.
-		/// Equivalent to VFP's FillStyle property.
-		/// </summary>
-		/// <value>The fill style. Default is 1 (Transparent).</value>
-		[Category("VFP Properties"), Description("Fill style: 0=Solid, 1=Transparent")];
-		[DefaultValue(1)];
-		PROPERTY FillStyle AS INT
-			GET
-				RETURN SELF:_fillStyle
-			END GET
-			SET
-				SELF:_fillStyle := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
+	[Category("VFP Behavior")];
+	[Description("Drag icon path")];
+	[DefaultValue("")];
+	PROPERTY DragIcon AS STRING
+		GET
+			RETURN SELF:_dragIcon
+		END GET
+		SET
+			SELF:_dragIcon := VALUE
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the curvature of the shape (0-100).
-		/// 0 = No curvature, 100 = Maximum curvature.
-		/// Equivalent to VFP's Curvature property.
-		/// </summary>
-		/// <value>The curvature value (0-100). Default is 0.</value>
-		[Category("VFP Properties"), Description("Curvature: 0=None, 100=Maximum")];
-		[DefaultValue(0)];
-		PROPERTY Curvature AS INT
-			GET
-				RETURN SELF:_curvature
-			END GET
-			SET
-				IF VALUE < 0
-					VALUE := 0
-				ELSEIF VALUE > 100
-					VALUE := 100
-				ENDIF
-				SELF:_curvature := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
+	[Category("VFP Behavior")];
+	[Description("Drag mode (0=manual, 1=automatic)")];
+	[DefaultValue(0)];
+	PROPERTY DragMode AS LONG
+		GET
+			RETURN SELF:_dragMode
+		END GET
+		SET
+			SELF:_dragMode := VALUE
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the style of the shape.
-		/// 0=Square, 1=Rectangle, 2=Oval, 3=Circle, 4=Rounded Rectangle, 5=Rounded Square.
-		/// Equivalent to VFP's Style property.
-		/// </summary>
-		/// <value>The shape style. Default is 1 (Rectangle).</value>
-		[Category("VFP Properties"), Description("Shape: 0=Square, 1=Rectangle, 2=Oval, 3=Circle, 4=Rounded Rectangle, 5=Rounded Square")];
-		[DefaultValue(1)];
-		PROPERTY Style AS INT
-			GET
-				RETURN SELF:_vfpStyle
-			END GET
-			SET
-				SELF:_vfpStyle := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
+	PUBLIC METHOD Drag(nAction ) AS USUAL CLIPPER
+		// Placeholder - Drag operation
+		RETURN NIL
+	END METHOD
 
-		/// <summary>
-		/// Gets or sets the draw mode.
-		/// Equivalent to VFP's DrawMode property.
-		/// </summary>
-		/// <value>The draw mode. Default is 13 (Copy Pen).</value>
-		[Category("VFP Properties"), Description("Draw mode")];
-		[DefaultValue(13)];
-		PROPERTY DrawMode AS INT
-			GET
-				RETURN SELF:_drawMode
-			END GET
-			SET
-				SELF:_drawMode := VALUE
-			END SET
-		END PROPERTY
+	PUBLIC METHOD SetFocus() AS VOID STRICT
+		SELF:Focus()
+	END METHOD
 
-		/// <summary>
-		/// Handles the Paint event to draw the shape.
-		/// </summary>
-		PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID
-			LOCAL g AS Graphics
-			LOCAL pen AS Pen
-			LOCAL brush AS Brush
-			LOCAL rect AS Rectangle
+	/// <summary>
+	/// Handles the Paint event to draw the shape
+	/// </summary>
+	PROTECTED OVERRIDE METHOD OnPaint(e AS PaintEventArgs) AS VOID
+		SUPER:OnPaint(e)
+		LOCAL brush AS Brush
+		LOCAL pen AS Pen
 
-			g := e:Graphics
-			pen := Pen{SELF:_borderColor, SELF:_borderWidth}
-			rect := Rectangle{0, 0, SELF:Width-1, SELF:Height-1}
+		brush := SolidBrush{SELF:_fillColor}
+		pen := pen{SELF:_borderColor, SELF:_borderWidth}
 
-			// Draw fill if not transparent
-			IF SELF:_fillStyle == 0  // Solid
-				brush := SolidBrush{SELF:_fillColor}
-			ELSE
-				brush := SolidBrush{Color.Transparent}
-			ENDIF
-
-			// Draw based on style
-			SWITCH SELF:_vfpStyle
-				CASE 0  // Square
-					SELF:DrawSquare(g, pen, brush, rect)
-				CASE 1  // Rectangle
-					SELF:DrawRectangle(g, pen, brush, rect)
-				CASE 2  // Oval
-					SELF:DrawOval(g, pen, brush, rect)
-				CASE 3  // Circle
-					SELF:DrawCircle(g, pen, brush, rect)
-				CASE 4  // Rounded Rectangle
-					SELF:DrawRoundedRectangle(g, pen, brush, rect)
-				CASE 5  // Rounded Square
-					SELF:DrawRoundedSquare(g, pen, brush, rect)
-			END SWITCH
-
-			pen:Dispose()
+		TRY
+			DO CASE
+			CASE SELF:_shapeType == 0  // Rectangle
+				e:Graphics:FillRectangle(brush, 0, 0, SELF:Width, SELF:Height)
+				e:Graphics:DrawRectangle(pen, 0, 0, SELF:Width - 1, SELF:Height - 1)
+			CASE SELF:_shapeType == 1  // Circle/Ellipse
+				e:Graphics:FillEllipse(brush, 0, 0, SELF:Width, SELF:Height)
+				e:Graphics:DrawEllipse(pen, 0, 0, SELF:Width - 1, SELF:Height - 1)
+			CASE SELF:_shapeType == 2  // Rounded Rectangle
+				SELF:DrawRoundedRectangle(e:Graphics, brush, pen)
+			END CASE
+		FINALLY
 			brush:Dispose()
-			RETURN
+			pen:Dispose()
+		END TRY
+	END METHOD
 
-		/// <summary>
-		/// Draws a square shape.
-		/// </summary>
-		PRIVATE METHOD DrawSquare( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle ) AS VOID
-			LOCAL size AS INT
-			size := Math:Min(rect:Width, rect:Height)
-			SELF:DrawRoundedRect(g, pen, brush, Rectangle{0, 0, size, size}, 0)
+	/// <summary>
+	/// Draws a rounded rectangle
+	/// </summary>
+	PRIVATE METHOD DrawRoundedRectangle(g AS Graphics, brush AS Brush, pen AS Pen) AS VOID
+		LOCAL radius AS INT32
+		LOCAL path AS System.Drawing.Drawing2D.GraphicsPath
 
-		/// <summary>
-		/// Draws a rectangle shape.
-		/// </summary>
-		PRIVATE METHOD DrawRectangle( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle ) AS VOID
-			SELF:DrawRoundedRect(g, pen, brush, rect, 0)
+		radius := 10
+		path := System.Drawing.Drawing2D.GraphicsPath{}
 
-		/// <summary>
-		/// Draws an oval shape.
-		/// </summary>
-		PRIVATE METHOD DrawOval( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle ) AS VOID
-			g:FillEllipse(brush, rect)
-			g:DrawEllipse(pen, rect)
+		TRY
+			// Add rounded rectangle path
+			path:AddArc(0, 0, radius, radius, 180, 90)
+			path:AddArc(SELF:Width - radius, 0, radius, radius, 270, 90)
+			path:AddArc(SELF:Width - radius, SELF:Height - radius, radius, radius, 0, 90)
+			path:AddArc(0, SELF:Height - radius, radius, radius, 90, 90)
+			path:CloseFigure()
 
-		/// <summary>
-		/// Draws a circle shape.
-		/// </summary>
-		PRIVATE METHOD DrawCircle( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle ) AS VOID
-			LOCAL size AS INT
-			LOCAL circleRect AS Rectangle
-			size := Math:Min(rect:Width, rect:Height)
-			circleRect := Rectangle{0, 0, size, size}
-			g:FillEllipse(brush, circleRect)
-			g:DrawEllipse(pen, circleRect)
+			g:FillPath(brush, path)
+			g:DrawPath(pen, path)
+		FINALLY
+			path:Dispose()
+		END TRY
+	END METHOD
 
-		/// <summary>
-		/// Draws a rounded rectangle shape.
-		/// </summary>
-		PRIVATE METHOD DrawRoundedRectangle( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle ) AS VOID
-			LOCAL radius AS INT
-			radius := (SELF:_curvature * Math:Min(rect:Width, rect:Height)) / 200
-			SELF:DrawRoundedRect(g, pen, brush, rect, radius)
+	/// <summary>
+	/// Sets the shape to a rectangle
+	/// </summary>
+	PUBLIC METHOD SetRectangle() AS VOID
+		SELF:ShapeType := 0
+	END METHOD
 
-		/// <summary>
-		/// Draws a rounded square shape.
-		/// </summary>
-		PRIVATE METHOD DrawRoundedSquare( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle ) AS VOID
-			LOCAL size AS INT
-			LOCAL squareRect AS Rectangle
-			LOCAL radius AS INT
-			size := Math:Min(rect:Width, rect:Height)
-			squareRect := Rectangle{0, 0, size, size}
-			radius := (SELF:_curvature * size) / 200
-			SELF:DrawRoundedRect(g, pen, brush, squareRect, radius)
+	/// <summary>
+	/// Sets the shape to a circle/ellipse
+	/// </summary>
+	PUBLIC METHOD SetCircle() AS VOID
+		SELF:ShapeType := 1
+		SELF:Width := SELF:Height
+	END METHOD
 
-		/// <summary>
-		/// Helper method to draw a rounded rectangle.
-		/// </summary>
-		PRIVATE METHOD DrawRoundedRect( g AS Graphics, pen AS Pen, brush AS Brush, rect AS Rectangle, radius AS INT ) AS VOID
-			IF radius <= 0
-				g:FillRectangle(brush, rect)
-				g:DrawRectangle(pen, rect)
-			ELSE
-				// Create rounded rectangle path
-				VAR path := System.Drawing.Drawing2D.GraphicsPath{}
-				path:AddArc(rect:X, rect:Y, radius, radius, 180, 90)
-				path:AddArc(rect:X + rect:Width - radius, rect:Y, radius, radius, 270, 90)
-				path:AddArc(rect:X + rect:Width - radius, rect:Y + rect:Height - radius, radius, radius, 0, 90)
-				path:AddArc(rect:X, rect:Y + rect:Height - radius, radius, radius, 90, 90)
-				path:CloseFigure()
-				g:FillPath(brush, path)
-				g:DrawPath(pen, path)
-				path:Dispose()
-			ENDIF
+	/// <summary>
+	/// Sets the shape to a rounded rectangle
+	/// </summary>
+	PUBLIC METHOD SetRoundedRectangle() AS VOID
+		SELF:ShapeType := 2
+	END METHOD
 
-	END CLASS
+	/// <summary>
+	/// Sets both fill and border colors
+	/// </summary>
+	PUBLIC METHOD SetColors(oFill AS Color, oBorder AS Color) AS VOID
+		SELF:FillColor := oFill
+		SELF:BorderColor := oBorder
+	END METHOD
+
+	/// <summary>
+	/// Resets shape to default appearance
+	/// </summary>
+	PUBLIC METHOD Reset() AS VOID
+		SELF:ShapeType := 0
+		SELF:FillColor := System.Drawing.Color.White
+		SELF:BorderColor := System.Drawing.Color.Black
+		SELF:BorderWidth := 1
+	END METHOD
+
+END CLASS
 
 END NAMESPACE

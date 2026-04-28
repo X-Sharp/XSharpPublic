@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -30,13 +30,7 @@ FUNCTION GetAnsi() AS LOGIC
 	/// THROW NotImplementedException{}
 	//RETURN FALSE
 
-	/// <summary>This function is not implemented yet</summary>
-	/// <param name="b1"></param>
-	/// <param name="b2"></param>
-	/// <param name="b3"></param>
-	/// <param name="nPad"></param>
-	/// <returns>
-	/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/GetChunkBase64/*" />
 FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
 	THROW NotImplementedException{}
 	//RETURN String.Empty
@@ -55,7 +49,7 @@ FUNCTION GetDefaultDir() AS STRING
 	GETSTATE STRING Set.DefaultDir
 
 
-/// <summary>This function is not implemented yet</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/GetMimType/*" />
 FUNCTION GetMimType(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	//RETURN String.Empty
@@ -74,11 +68,7 @@ FUNCTION GetPMExt() AS STRING
 FUNCTION GetTimeSep() AS DWORD
 	GETSTATE DWORD Set.Timesep
 
-	/// <summary>
-	/// Returns TimeZone difference for current timezone in Hours
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/GetTimeZoneDiff/*" />
 FUNCTION GetTimeZoneDiff() AS INT
 	RETURN TimeZoneInfo.Local:BaseUtcOffset:Hours
 

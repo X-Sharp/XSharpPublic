@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members></members>
+    <DToCSQL>
+        <summary>将日期转换为"YYYY-MM-DD"格式的字符串</summary>
+        <param name="dDate">要转换的日期</param>
+        <returns>日期的字符串，格式为"YYYY-MM-DD"</returns>
+        <seealso cred="O:VOSQLClasses.Functions.MakeTimeStamp"/>
+    </DToCSQL>
+<MakeTimeStamp>
+        <summary>将日期和秒转换为"YYYY-MM-DD HH:MM:SS.NNN"格式的时间戳字符串</summary>
+        <param name="dDate">要转换的日期</param>
+        <param name="nSeconds">要添加到时间戳的秒数</param>
+        <returns>一个时间戳字符串，格式为"YYYY-MM-DD HH:MM:SS.NNN"</returns>
+        <seealso cred="O:VOSQLClasses.Functions.DToCSQL"/>
+    </MakeTimeStamp>
+    
+    <members/>
     <SQLCatalogQuery>
         <summary>
             提供所有 X# 目录类的基类，这些类都是 SQLCatalogQuery 的子类。
@@ -34,6 +48,12 @@
         </summary>
     </SQLCatalogQuery.Delete>
 
+    <SQLCatalogQuery.FieldPut>
+        <summary>
+            此方法用于覆盖从 SQLSelect 类继承的功能，因为它不适用于 SQLCatalogQuery；因此，它会生成错误并返回 FALSE。
+        </summary>
+    </SQLCatalogQuery.FieldPut>
+
     <SQLCatalogQuery.GoTop>
         <summary>
             打开查询并获取第一个结果。
@@ -47,12 +67,6 @@
         <param name="nRecordCount">要跳过的行数</param>
         <returns>成功时返回 TRUE。</returns>
     </SQLCatalogQuery.Skip>
-
-    <SQLCatalogQuery.FieldPut>
-        <summary>
-            此方法用于覆盖从 SQLSelect 类继承的功能，因为它不适用于 SQLCatalogQuery；因此，它会生成错误并返回 FALSE。
-        </summary>
-    </SQLCatalogQuery.FieldPut>
 
     <SQLCatalogQuery.TableName>
         <summary>
@@ -73,6 +87,20 @@
         </summary>
     </SQLColumn>
 
+    <SQLColumn.AliasName>
+        <summary>
+            SQL 列的别名。
+        </summary>
+        <value>SQL 列的别名。</value>
+    </SQLColumn.AliasName>
+
+    <SQLColumn.ColName>
+        <summary>
+            表示 SQL 列名称的字符串。
+        </summary>
+        <value>表示 SQL 列名称的字符串。</value>
+    </SQLColumn.ColName>
+
     <SQLColumn.ctor>
         <summary>
             构造一个 SQL 列。
@@ -89,20 +117,6 @@
         <param name="cAlias">SQL 列的别名。</param>
     </SQLColumn.ctor>
 
-    <SQLColumn.AliasName>
-        <summary>
-            SQL 列的别名。
-        </summary>
-        <value>SQL 列的别名。</value>
-    </SQLColumn.AliasName>
-
-    <SQLColumn.ColName>
-        <summary>
-            表示 SQL 列名称的字符串。
-        </summary>
-        <value>表示 SQL 列名称的字符串。</value>
-    </SQLColumn.ColName>
-
     <SQLColumn.Index>
         <summary>
             表示 SQL 列编号的数字值。
@@ -115,6 +129,20 @@
             描述一个 SQL 列属性。
         </summary>
     </SQLColumnAttributes>
+
+    <SQLColumnAttributes.AutoIncrement>
+        <summary>
+            如果列自动递增，则为 TRUE；否则，如果列既不是自动递增也不是数字，则为 FALSE。
+        </summary>
+        <value>如果列自动递增，则为 TRUE；否则，如果列既不是自动递增也不是数字，则为 FALSE。</value>
+    </SQLColumnAttributes.AutoIncrement>
+
+    <SQLColumnAttributes.CaseSensitive>
+        <summary>
+            如果排序序列区分大小写，则为 TRUE；否则，为 FALSE。
+        </summary>
+        <value>如果排序序列区分大小写，则为 TRUE；否则，为 FALSE。</value>
+    </SQLColumnAttributes.CaseSensitive>
 
     <SQLColumnAttributes.ctor>
         <summary>
@@ -132,20 +160,6 @@
             <note type="tip">请参阅您的 ODBC 文档，了解可用的所有 ODBC 数据类型的完整列表。</note>
         </remarks>
     </SQLColumnAttributes.ctor>
-
-    <SQLColumnAttributes.AutoIncrement>
-        <summary>
-            如果列自动递增，则为 TRUE；否则，如果列既不是自动递增也不是数字，则为 FALSE。
-        </summary>
-        <value>如果列自动递增，则为 TRUE；否则，如果列既不是自动递增也不是数字，则为 FALSE。</value>
-    </SQLColumnAttributes.AutoIncrement>
-
-    <SQLColumnAttributes.CaseSensitive>
-        <summary>
-            如果排序序列区分大小写，则为 TRUE；否则，为 FALSE。
-        </summary>
-        <value>如果排序序列区分大小写，则为 TRUE；否则，为 FALSE。</value>
-    </SQLColumnAttributes.CaseSensitive>
 
     <SQLColumnAttributes.DisplaySize>
         <summary>
@@ -199,6 +213,26 @@
         <value>如果列可以更新，则为 TRUE；否则，为 FALSE。</value>
     </SQLColumnAttributes.Updatable>
 
+    <SQLConnectErrorMsg>
+        <summary>
+            返回并可选择更改设置，该设置确定是否显示连接错误消息。
+        </summary>
+        <param name="lValue">
+            如果为 TRUE，启用连接错误消息；如果为 FALSE，禁用连接错误消息。初始默认值为 TRUE。
+        </param>
+        <returns> 
+            如果未指定<paramref name="lNewSetting"/>，SQLConnectErrorMsg() 将返回当前设置。 
+            如果指定了<paramref name="lNewSetting"/>，将返回先前的设置。 
+            </returns>
+        <remarks>
+            如果 SQLConnectErrorMsg() 设置为 FALSE，将不显示连接错误消息。
+            如果 SQLConnectErrorMsg() 设置为 TRUE，即默认值，将在消息框中显示连接错误消息。
+        </remarks>
+        <example/>
+        <seealso cref="O:VO.SQLConnection.Connect">SQLConnection:Connect</seealso>
+        <seealso cref="O:VO.SQLConnection.DriverConnect">SQLConnection:DriverConnect</seealso>
+    </SQLConnectErrorMsg>
+
     <SQLConnection>
         <summary>
             管理到 ODBC 数据源的 SQL 连接。在执行任何数据库操作之前，需要一个 SQLConnection 对象。
@@ -225,27 +259,6 @@
         </example>
     </SQLConnection>
 
-    <SQLConnection.ctor>
-        <summary>
-            构造一个 SQL 连接。
-        </summary>
-        <param name="cDataSourceName">ODBC 数据源名称。如果未指定，将使用 NULL_STRING 作为默认值。</param>
-        <param name="cUserID">ODBC 用户 ID。如果未指定，将使用 NULL_STRING 作为默认值。</param>
-        <param name="cPassword">
-            ODBC 密码（授权字符串）。如果未指定，将使用 NULL_STRING 作为默认值。
-        </param>
-        <remarks>
-            如果向此方法提供数据源，将尝试连接；否则，使用 SQLConnection:Connect() 方法。
-            另一个选项是使用 SQLConnection:DataSource 命名数据源。
-        </remarks>
-    </SQLConnection.ctor>
-
-    <SQLConnection.ActiveStmts>
-        <summary>
-            连接的活动语句列表
-        </summary>
-    </SQLConnection.ActiveStmts>
-
     <SQLConnection.AccessMode>
         <summary>
             表示 SQL 连接的访问模式的常量。
@@ -260,6 +273,12 @@
         </remarks>
     </SQLConnection.AccessMode>
 
+    <SQLConnection.ActiveStmts>
+        <summary>
+            连接的活动语句列表
+        </summary>
+    </SQLConnection.ActiveStmts>
+
     <SQLConnection.Connect>
         <summary>
             将用户连接到 ODBC 数据源。
@@ -267,7 +286,7 @@
         <param name="cDataSource">ODBC 数据源名称。如果未指定，将使用 NULL_STRING 作为默认值。</param>
         <param name="cUserID">ODBC 用户 ID。如果未指定，将使用 NULL_STRING 作为默认值。</param>
         <param name="cPassword">ODBC 密码（授权字符串）。如果未指定，将使用 NULL_STRING 作为默认值。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             如果连接失败，将显示一个消息框显示错误。要抑制消息框，调用 SQLConnectErrorMsg(FALSE) 函数。
         </remarks>
@@ -298,6 +317,21 @@
         <value>表示连接句柄的长整数。</value>
     </SQLConnection.ConnHandle>
 
+    <SQLConnection.ctor>
+        <summary>
+            构造一个 SQL 连接。
+        </summary>
+        <param name="cDataSourceName">ODBC 数据源名称。如果未指定，将使用 NULL_STRING 作为默认值。</param>
+        <param name="cUserID">ODBC 用户 ID。如果未指定，将使用 NULL_STRING 作为默认值。</param>
+        <param name="cPassword">
+            ODBC 密码（授权字符串）。如果未指定，将使用 NULL_STRING 作为默认值。
+        </param>
+        <remarks>
+            如果向此方法提供数据源，将尝试连接；否则，使用 SQLConnection:Connect() 方法。
+            另一个选项是使用 SQLConnection:DataSource 命名数据源。
+        </remarks>
+    </SQLConnection.ctor>
+
     <SQLConnection.DataSource>
         <summary>
             表示 ODBC 数据源名称的字符串。
@@ -312,7 +346,7 @@
         <summary>
             从 ODBC 数据源断开当前用户。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLConnection.Disconnect>
 
     <SQLConnection.DriverConnect>
@@ -323,7 +357,7 @@
         <param name="kDriverCompletion">驱动程序完成类型，由以下常量之一表示：</param>
         <param name="cConnStrIn">表示输入连接的字符串。如果省略，应使用 SQL_DRIVER_PROMPT 选项提示驱动程序。</param>
         <returns>
-            如果成功，返回 TRUE；否则，返回 FALSE。<br />
+            如果成功，返回 TRUE；否则，返回 FALSE。<br/>
 
             Level 1
         </returns>
@@ -340,15 +374,15 @@
                 <item>
                     <term>SQL_DRIVER_ COMPLETE</term>
                     <description> 
-                        如果连接字符串（<paramref name="cConnStrIn" />）包含足够的信息，驱动程序将连接到该数据源；否则，将显示一个对话框，提示输入信息。
+                        如果连接字符串（<paramref name="cConnStrIn"/>）包含足够的信息，驱动程序将连接到该数据源；否则，将显示一个对话框，提示输入信息。
                     </description>
                 </item>
             </list>
             SQL_DRIVER_ COMPLETE_REQUIRED 行为类似于SQL_DRIVER_COMPLETE，但是驱动程序会禁用不需要连接的任何信息的控件。
-            SQL_DRIVER_ NOPROMPT 如果连接字符串（<paramref name="cConnStrIn" />）包含足够的信息，驱动程序将连接到该数据源；
+            SQL_DRIVER_ NOPROMPT 如果连接字符串（<paramref name="cConnStrIn"/>）包含足够的信息，驱动程序将连接到该数据源；
             否则，它将返回一个错误。
-            如果省略了 <paramref name="cConnStrIn" />，应使用 SQL_DRIVER_PROMPT 选项，提示驱动程序。
-            如果一些 <paramref name="cConnectStrIn" />信息已存在，应使用 SQL_DRIVER_COMPLETE。如果传递了所有信息，那么就不需要提示驱动程序；
+            如果省略了 <paramref name="cConnStrIn"/>，应使用 SQL_DRIVER_PROMPT 选项，提示驱动程序。
+            如果一些 <paramref name="cConnectStrIn"/>信息已存在，应使用 SQL_DRIVER_COMPLETE。如果传递了所有信息，那么就不需要提示驱动程序；
             因此，可以使用 SQL_DRIVER_NOPROMPT 选项。
             如果连接失败，将显示一个消息框显示错误。要抑制消息框，调用 SQLConnectErrorMsg(FALSE) 函数。 
         </remarks>
@@ -363,7 +397,7 @@
 
     <SQLConnection.ErrInfo>
         <summary>SqlErrorInfo 对象，表示连接的最后一个错误或 NIL。</summary>
-        <seelso cref="T:SQLErrorInfo" />
+        <seelso cref="T:SQLErrorInfo"/>
     </SQLConnection.ErrInfo>
 
     <SQLConnection.GetConnectOption>
@@ -407,7 +441,7 @@
             ODBC 函数（例如，SQL_API_SQLTABLES 和 SQL_API_SQLCOLUMNS）。请参阅您的 ODBC 文档，了解可用的所有 ODBC 函数的完整列表。
         </param>
         <returns>
-            如果支持该函数，则返回 TRUE；否则，返回 FALSE。<br />
+            如果支持该函数，则返回 TRUE；否则，返回 FALSE。<br/>
 
             Level 1
         </returns>
@@ -450,10 +484,10 @@
             <note type="tip">
                 只有在当前连接未忙时才能更改游标类型。如果指定了无效值，游标类型将保持不变。
             </note> 
-            可能的值包括： <br />
-            SQL_CUR_USE_IF NEEDED（大多数驱动程序的默认值） <br />
-            SQL_CUR_USE_ODBC <br />
-            SQL_CUR_USE_DRIVER <br />
+            可能的值包括： <br/>
+            SQL_CUR_USE_IF NEEDED（大多数驱动程序的默认值） <br/>
+            SQL_CUR_USE_ODBC <br/>
+            SQL_CUR_USE_DRIVER <br/>
             <note type="tip">
                 请参阅您的 ODBC 文档，了解这些常量的描述。
             </note>
@@ -487,7 +521,7 @@
         <summary>
             断开当前用户与数据源的连接；如果已连接；然后，重新连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLConnection.Reconnect>
 
     <SQLConnection.ScrollConcurrency>
@@ -496,12 +530,12 @@
         </summary>
         <value>表示 SQL 连接的并发级别的常量。</value>
         <remarks> 
-            表示 SQL 连接的并发级别的常量。 如果指定了无效值，那么并发级别将保持不变。 <br />
-            可能的值包括： <br />
-            SQL_CONCUR_LOCK<br />
-            SQL_CONCUR_READ_ONLY <br />
-            SQL_CONCUR_TIMESTAMP （等同于SQL_CONCUR_ROWVER） <br />
-            SQL_CONCUR_VALUES（大多数驱动程序的默认值） <br />
+            表示 SQL 连接的并发级别的常量。 如果指定了无效值，那么并发级别将保持不变。 <br/>
+            可能的值包括： <br/>
+            SQL_CONCUR_LOCK<br/>
+            SQL_CONCUR_READ_ONLY <br/>
+            SQL_CONCUR_TIMESTAMP （等同于SQL_CONCUR_ROWVER） <br/>
+            SQL_CONCUR_VALUES（大多数驱动程序的默认值） <br/>
             <note type="tip">请参阅您的 ODBC 文档，了解这些常量的描述。</note>
         </remarks>
     </SQLConnection.ScrollConcurrency>
@@ -529,7 +563,7 @@
         </param>
         <param name="uNewValue">连接选项的新值。</param>
         <returns>
-            如果成功，则返回 TRUE；否则，返回 FALSE。<br />
+            如果成功，则返回 TRUE；否则，返回 FALSE。<br/>
 
             Level 1
         </returns>
@@ -604,6 +638,41 @@
         </summary>
         <value>一个逻辑值，表示 SQL 数据值自上次设置以来是否已更改。 TRUE 表示已更改；FALSE 表示未更改。</value>
     </SQLData.ValueChanged>
+
+    <SqlDeleteWhiteSpace>
+        <summary>**Missing documentation **</summary>
+    </SqlDeleteWhiteSpace>
+
+    <SQLDropMyConnection>
+        <summary>
+            断开 ODBC 数据源。
+        </summary>
+        <param name="cMySourceName">此连接的源。</param>
+        <param name="cMyUserid">用于连接到源的用户ID。</param>
+        <param name="cMyPassword">用于连接到源的密码。</param>
+        <returns>
+            如果找到连接，返回 TRUE；否则返回 FALSE。
+        </returns>
+        <remarks>
+            如果找到连接，使用计数减1。当使用计数为1时，断开源。
+        </remarks>
+        <example> 
+            以下示例连接到 WATCOM；然后结束连接： 
+            <code language="X#">
+                FUNCTION TestConnect()
+                    LOCAL oConn AS SQLConnection
+                    oConn := SQLGetMyConnection("sample", "dba", "sql")
+                    ? "SRC=",oConn:DataSource
+                    ? "UID=",oConn:UserID
+                    ? "PWD=",oConn:Password
+                    SQLDropMyConnection("sample", "dba", "sql")
+            </code>
+        </example>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+    </SQLDropMyConnection>
 
     <SQLErrorInfo>
         <summary>
@@ -712,11 +781,100 @@
         </remarks>
     </SQLErrorInfo.SQLState>
 
+    <SQLGetDataSources>
+        <summary>
+            识别可用的 ODBC 数据源。
+        </summary>
+        <returns>
+            一个字符串数组，标识可用的 ODBC 数据源。
+            如果没有可用的源，SQLGetDataSources() 将返回一个 NULL_ARRAY。
+        </returns>
+        <remarks/>
+        <example> 
+            以下示例测试连接实用程序函数： 
+            <code language="X#">
+                FUNCTION TestConnect()
+                    LOCAL wCount AS DWORD
+                    LOCAL aSources AS ARRAY
+                    LOCAL oConn AS SQLConnection
+                    // 获取源的数组
+                    aSources := SQLGetDataSources()
+                    // 列出它们
+                    ? "ODBC Sources..."
+                    for wCount := 1 to ALen(aSources)
+                        ? aSources[wCount]
+                    next
+                    // 连接到源列表
+                    oConn := SQLOpenConnection()
+                    // 将其设置为默认连接
+                    SQLSetConnection(oConn)
+                    // 断开连接
+                    oConn:Disconnect()
+            </code>
+        </example>
+        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+    </SQLGetDataSources>
+
+    <SQLGetMyConnection>
+        <summary>
+            连接到指定的 ODBC 源。
+        </summary>
+        <param name="cMySourceName">要连接的源。</param>
+        <param name="cMyUserID">将用于连接到源的用户ID。</param>
+        <param name="cMyPassword">将用于连接到源的密码。</param>
+        <returns>
+            如果找到源的连接，它将作为 SQLConnection 对象返回。
+            如果未找到连接，将创建一个并作为对象返回。
+        </returns>
+        <remarks>
+            SQLGetMyConnection 在从 SQL 编辑器生成的代码中使用。
+            它允许在同一任务中的多个服务器之间共享连接。
+        </remarks>
+        <example> 
+            以下示例连接到 WATCOM；然后结束连接： 
+            <code language="X#">
+                FUNCTION TestConnect()
+                    LOCAL oConn AS SQLConnection
+                    oConn := SQLGetMyConnection("sample", "dba", "sql")
+                    ? "SRC=",oConn:DataSource
+                    ? "UID=",oConn:UserID
+                    ? "PWD=",oConn:Password
+                    SQLDropMyConnection("sample", "dba", "sql")
+            </code>
+        </example>
+        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+    </SQLGetMyConnection>
+
+    <SqlIsBinaryType>
+        <summary>辅助函数，用于确定 ODBC 类型是否为二进制</summary>
+    </SqlIsBinaryType>
+
+    <SqlIsCharType>
+        <summary>辅助函数，用于确定 ODBC 类型是否为字符</summary>
+    </SqlIsCharType>
+
+    <SqlIsLongType>
+        <summary>辅助函数，用于确定 ODBC 类型是否为长（BLOB，MEMO 等）</summary>
+    </SqlIsLongType>
+
     <SQLListColumnPrivileges>
         <summary>
             列出一个或多个表的列和相关权限。
         </summary>
     </SQLListColumnPrivileges>
+
+    <SQLListColumnPrivileges.ColName>
+        <summary>
+            一个字符串，表示列的名称。
+        </summary>
+        <value>一个字符串，表示列的名称。</value>
+    </SQLListColumnPrivileges.ColName>
 
     <SQLListColumnPrivileges.ctor>
         <summary>
@@ -730,19 +888,12 @@
             如果未指定，那么如果有的话，将使用当前默认连接；如果没有定义，那么系统将要求最终用户登录到数据库。</param>
     </SQLListColumnPrivileges.ctor>
 
-    <SQLListColumnPrivileges.ColName>
-        <summary>
-            一个字符串，表示列的名称。
-        </summary>
-        <value>一个字符串，表示列的名称。</value>
-    </SQLListColumnPrivileges.ColName>
-
     <SQLListColumnPrivileges.Execute>
         <summary>
             检索列权限列表。
         </summary>
         <returns>
-            如果成功，则返回 TRUE；否则，返回 FALSE。<br />
+            如果成功，则返回 TRUE；否则，返回 FALSE。<br/>
 
             Level 2
         </returns>
@@ -775,6 +926,13 @@
         </summary>
     </SQLListColumns>
 
+    <SQLListColumns.ColName>
+        <summary>
+            一个字符串，表示列的名称。
+        </summary>
+        <value>一个字符串，表示列的名称。</value>
+    </SQLListColumns.ColName>
+
     <SQLListColumns.ctor>
         <summary>
             构造一个 SQLListColumns 对象。
@@ -787,19 +945,12 @@
             如果未指定，那么如果有的话，将使用当前默认连接；如果没有定义，那么系统将要求最终用户登录到数据库。</param>
     </SQLListColumns.ctor>
 
-    <SQLListColumns.ColName>
-        <summary>
-            一个字符串，表示列的名称。
-        </summary>
-        <value>一个字符串，表示列的名称。</value>
-    </SQLListColumns.ColName>
-
     <SQLListColumns.Execute>
         <summary>
             检索列列表。
         </summary>
         <returns>
-            如果成功，则返回 TRUE；否则，返回 FALSE。<br />
+            如果成功，则返回 TRUE；否则，返回 FALSE。<br/>
 
             Level 1
         </returns>
@@ -850,7 +1001,7 @@
         <summary>
             检索表示外键的列的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListForeignKeys.Execute>
 
     <SQLListForeignKeys.FOwner>
@@ -916,7 +1067,7 @@
         <summary>
             检索主键的列的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListPrimaryKeys.Execute>
 
     <SQLListPrimaryKeys.Owner>
@@ -946,6 +1097,13 @@
         </summary>
     </SQLListProcedureColumns>
 
+    <SQLListProcedureColumns.ColName>
+        <summary>
+            一个字符串，表示过程列的名称。
+        </summary>
+        <value>一个字符串，表示过程列的名称。</value>
+    </SQLListProcedureColumns.ColName>
+
     <SQLListProcedureColumns.ctor>
         <summary>
             构造一个 SQLListProcedureColumns 对象。
@@ -958,18 +1116,11 @@
             如果未指定，那么如果有的话，将使用当前默认连接；如果没有定义，那么系统将要求最终用户登录到数据库。</param>
     </SQLListProcedureColumns.ctor>
 
-    <SQLListProcedureColumns.ColName>
-        <summary>
-            一个字符串，表示过程列的名称。
-        </summary>
-        <value>一个字符串，表示过程列的名称。</value>
-    </SQLListProcedureColumns.ColName>
-
     <SQLListProcedureColumns.Execute>
         <summary>
             检索过程列的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListProcedureColumns.Execute>
 
     <SQLListProcedureColumns.Owner>
@@ -1014,7 +1165,7 @@
         <summary>
             检索特定数据源中的过程名称的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListProcedures.Execute>
 
     <SQLListProcedures.Owner>
@@ -1043,6 +1194,30 @@
             列出关于在指定表中唯一标识行的最佳列集或在事务更新行的任何值时自动更新的列的信息。
         </summary>
     </SQLListSpecialColumns>
+
+    <SQLListSpecialColumns.ColType>
+        <summary>
+            一个常量，表示要返回的列的类型：
+        </summary>
+        <value>一个常量，表示要返回的列的类型：</value>
+        <remarks> 
+            以下常量之一，表示要返回的列的类型： 
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>SQL_BEST_ROWID</term>
+                    <description>返回最佳列或列集，通过从列中检索值，允许唯一标识指定表中的任何行。</description>
+                </item>
+                <item>
+                    <term>SQL_ROWVER</term>
+                    <description>返回指定表中的列（如果有的话），当数据源在任何事务中更新行的任何值时，这些列会自动更新。</description>
+                </item>
+            </list>
+        </remarks>
+    </SQLListSpecialColumns.ColType>
 
     <SQLListSpecialColumns.ctor>
         <summary>
@@ -1110,35 +1285,11 @@
         </remarks>
     </SQLListSpecialColumns.ctor>
 
-    <SQLListSpecialColumns.ColType>
-        <summary>
-            一个常量，表示要返回的列的类型：
-        </summary>
-        <value>一个常量，表示要返回的列的类型：</value>
-        <remarks> 
-            以下常量之一，表示要返回的列的类型： 
-            <list type="table">
-                <listheader>
-                    <term>常量</term>
-                    <description>描述</description>
-                </listheader>
-                <item>
-                    <term>SQL_BEST_ROWID</term>
-                    <description>返回最佳列或列集，通过从列中检索值，允许唯一标识指定表中的任何行。</description>
-                </item>
-                <item>
-                    <term>SQL_ROWVER</term>
-                    <description>返回指定表中的列（如果有的话），当数据源在任何事务中更新行的任何值时，这些列会自动更新。</description>
-                </item>
-            </list>
-        </remarks>
-    </SQLListSpecialColumns.ColType>
-
     <SQLListSpecialColumns.Execute>
         <summary>
             启动检索特殊列的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListSpecialColumns.Execute>
 
     <SQLListSpecialColumns.Nullable>
@@ -1220,6 +1371,30 @@
         </summary>
     </SQLListStatistics>
 
+    <SQLListStatistics.Accuracy>
+        <summary>
+            一个常量，表示结果集中 CARDINALITY 和 PAGES 列的重要性。
+        </summary>
+        <value>一个常量，表示结果集中 CARDINALITY 和 PAGES 列的重要性。</value>
+        <remarks> 
+            以下常量之一，表示结果集中 CARDINALITY 和 PAGES 列的重要性： 
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>SQL_ENSURE</term>
+                    <description>请求驱动程序无条件地检索统计信息。</description>
+                </item>
+                <item>
+                    <term>SQL_QUICK</term>
+                    <description>请求驱动程序仅在服务器上立即可用时检索结果。 在这种情况下，驱动程序不确保值是当前的。</description>
+                </item>
+            </list><note type="tip">有关 CARDINALITY 和 PAGES 的更多信息，请参阅您的 ODBC 文档。</note>
+        </remarks>
+    </SQLListStatistics.Accuracy>
+
     <SQLListStatistics.ctor>
         <summary>
             构造一个 SQLListStatistics 对象。
@@ -1268,37 +1443,12 @@
         </remarks>
     </SQLListStatistics.ctor>
 
-    <SQLListStatistics.Accuracy>
-        <summary>
-            一个常量，表示结果集中 CARDINALITY 和 PAGES 列的重要性。
-        </summary>
-        <value>一个常量，表示结果集中 CARDINALITY 和 PAGES 列的重要性。</value>
-        <remarks> 
-            以下常量之一，表示结果集中 CARDINALITY 和 PAGES 列的重要性： 
-            <list type="table">
-                <listheader>
-                    <term>常量</term>
-                    <description>描述</description>
-                </listheader>
-                <item>
-                    <term>SQL_ENSURE</term>
-                    <description>请求驱动程序无条件地检索统计信息。</description>
-                </item>
-                <item>
-                    <term>SQL_QUICK</term>
-                    <description>请求驱动程序仅在服务器上立即可用时检索结果。 在这种情况下，驱动程序不确保值是当前的。</description>
-                </item>
-            </list><note
-                type="tip">有关 CARDINALITY 和 PAGES 的更多信息，请参阅您的 ODBC 文档。</note>
-        </remarks>
-    </SQLListStatistics.Accuracy>
-
     <SQLListStatistics.Execute>
         <summary>
             检索表的统计信息和与表关联的索引的列表。
         </summary>
         <returns>
-            如果成功，则返回 TRUE；否则，返回 FALSE。<br />
+            如果成功，则返回 TRUE；否则，返回 FALSE。<br/>
 
             Level 1
         </returns>
@@ -1370,7 +1520,7 @@
         <summary>
             检索表的权限列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListTablePrivileges.Execute>
 
     <SQLListTablePrivileges.Owner>
@@ -1421,7 +1571,7 @@
         <summary>
             检索表的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListTables.Execute>
 
     <SQLListTables.Owner>
@@ -1475,7 +1625,7 @@
         <summary>
             检索类型信息的列表。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLListTypeInfo.Execute>
 
     <SQLListTypeInfo.SqlType>
@@ -1487,6 +1637,44 @@
             <note type="tip">有关可用的 ODBC 数据类型的完整列表，请参阅您的 ODBC 文档。</note>
         </remarks>
     </SQLListTypeInfo.SqlType>
+
+    <SQLOpenConnection>
+        <summary>
+            连接到 ODBC 源列表。
+        </summary>
+        <returns>
+            一个 SQLConnection 对象。
+        </returns>
+        <remarks>
+            SQLOpenConnection() 显示一个对话框，列出所有已安装的源，并提示您选择一个。
+        </remarks>
+        <example> 
+            以下示例测试连接实用程序函数： 
+            <code language="X#">
+                FUNCTION TestConnect()
+                    LOCAL wCount AS DWORD
+                    LOCAL aSources AS ARRAY
+                    LOCAL oConn AS SQLConnection
+                    // 获取源的数组
+                    aSources := SQLGetDataSources()
+                    // 列出它们
+                    ? "ODBC Sources..."
+                    for wCount := 1 to ALen(aSources)
+                        ? aSources[wCount]
+                    next
+                    // 连接到源列表
+                    oConn := SQLOpenConnection()
+                    // 将其设置为默认连接
+                    SQLSetConnection(oConn)
+                    // 断开连接
+                    oConn:Disconnect()
+            </code>
+        </example>
+        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+    </SQLOpenConnection>
 
     <SQLParameter>
         <summary>
@@ -1553,7 +1741,7 @@
             不可能使用 SQLSelect 类来创建数据库表；在打开服务器之前，表必须存在。 
             <note type="tip">
                 SQLSelect 对象使用的游标类型和锁定模式可以通过以下函数进行控制。
-                请查阅您使用的 ODBC 驱动程序的文档，以了解此设置对应用程序性能的影响。<br />
+                请查阅您使用的 ODBC 驱动程序的文档，以了解此设置对应用程序性能的影响。<br/>
                 SqlSetStmtConcurrency(),
                 SqlSetStmtCursorType(),
                 SqlSetStmtSimulateCursor()
@@ -1561,23 +1749,11 @@
         </remarks>
     </SQLSelect>
 
-    <SQLSelect.ctor>
-        <summary>
-            构造一个 SQL 选择对象。
-        </summary>
-        <param name="cSQLSelect">一个 SQL 选择语句（例如 'SELECT * FROM employee'）。</param>
-        <param name="oSQLConnection">指示表可以在哪里找到的 SQL 连接。
-            如果未指定，那么如果有的话，将使用当前默认连接；如果没有定义，那么系统将要求最终用户登录到数据库。</param>
-        <returns>
-            与所有 Init() 方法一样，实例化返回对象。即使表未成功打开，也会创建对象，可能是因为表不存在，损坏或被另一个用户锁定。
-        </returns>
-    </SQLSelect.ctor>
-
     <SQLSelect.Append>
         <summary>
             在缓冲区中创建一个空行；这个空行成为当前位置，并准备好分配数据值。这个缓冲区的 SQLSelect:RecNo 是 SQLSelect:RecCount+1。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             <note type="tip">
                 此方法的实现细节，以及它如何与其他操作（如唯一索引和并发控制）交互，取决于特定数据库。
@@ -1618,7 +1794,7 @@
             插入自上次 SQLSelect:Append() 操作以来在缓冲区中创建的行。
         </summary>
         <param name="lForce">一个逻辑值，确定是否应进行更新。 如果省略，缺省值为 TRUE。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             <note type="tip">
                 此方法的实现细节，以及它如何与其他操作（如唯一索引和并发控制）交互，取决于特定数据库。
@@ -1713,6 +1889,18 @@
         <value>SQLSelect 正在使用的 SQL 连接对象，以操作结果集。</value>
     </SQLSelect.Connection>
 
+    <SQLSelect.ctor>
+        <summary>
+            构造一个 SQL 选择对象。
+        </summary>
+        <param name="cSQLSelect">一个 SQL 选择语句（例如 'SELECT * FROM employee'）。</param>
+        <param name="oSQLConnection">指示表可以在哪里找到的 SQL 连接。
+            如果未指定，那么如果有的话，将使用当前默认连接；如果没有定义，那么系统将要求最终用户登录到数据库。</param>
+        <returns>
+            与所有 Init() 方法一样，实例化返回对象。即使表未成功打开，也会创建对象，可能是因为表不存在，损坏或被另一个用户锁定。
+        </returns>
+    </SQLSelect.ctor>
+
     <SQLSelect.CursorName>
         <summary>
             包含游标名称的字符串。
@@ -1773,7 +1961,7 @@
         <value>包含此数据服务器结构的数组。</value>
         <remarks> 
             包含此数据服务器结构的数组，其长度（即元素数量）等于服务器中的列数。 每个子数组由五个元素组成，这些元素按以下顺序包含以下信息： 
-            <include file="RTComments.xml" path="Comments/DbStruct_Constants/*" />
+            <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"/>
         </remarks>
     </SQLSelect.DBStruct>
 
@@ -1781,7 +1969,7 @@
         <summary>
             删除当前行。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             行直到 Commit() 被调用时才会被删除，如果 Rollback() 被调用，则行不会被删除。
             Delete() 如果成功，将发送 NotifyRecordChange 消息。 如果服务器当前定位在追加缓冲区上，SQLSelect:Delete() 将取消待定的更新。
@@ -1842,7 +2030,7 @@
             &lt;cParam&gt; [, &lt;cParam&gt; …] | &lt;nParam&gt; [ , &lt;nParam&gt; …]
             要执行的参数列表。
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <example> 
             以下示例演示了 SQLSelect:Execute() 方法的使用： 
             <code language="X#">
@@ -1861,10 +2049,10 @@
             请参考您的 ODBC 文档，了解可用的 ODBC 获取类型的完整列表。
         </param>
         <param name="kRow">要获取的行，由 SQL_FETCH_ABSOLUTE 或 SQL_FETCH_RELATIVE 指定。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             如果成功，将发送 NotifyRecordChange 消息。 
-            （如果 <paramref name="kFetchType" /> 被指定为 SQL_FETCH_FIRST，如果成功，该方法将发送 NotifyGoTop 消息。
+            （如果 <paramref name="kFetchType"/> 被指定为 SQL_FETCH_FIRST，如果成功，该方法将发送 NotifyGoTop 消息。
             如果指定了SQL_FETCH_LAST，如果成功，将发送 NotifyGoBottom。） 
             <note type="tip">
                 ODBC 不支持在同一个 select 中同时使用 SQLSelect:Fetch() 和 SQLSelect:ExtendedFetch()。
@@ -1883,7 +2071,7 @@
         <summary>
             获取下一行。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             如果成功，将发送 NotifyRecordChange 消息。 
             <note type="tip">
@@ -2011,7 +2199,7 @@
         </param>
         <param name="uFieldPos">表示所需列的名称、编号或符号。</param>
         <param name="uFieldVal"> 
-            要分配给列的别名。如果为 <paramref name="kColumnInfoType" /> 指定了 DB_ALIAS，那么只有在这个参数中使用。
+            要分配给列的别名。如果为 <paramref name="kColumnInfoType"/> 指定了 DB_ALIAS，那么只有在这个参数中使用。
         </param>
         <returns>
             如果成功，则返回一个值（其数据类型取决于请求的值）；否则，返回 NIL。
@@ -2044,7 +2232,7 @@
                 </item>
             </list>
             SQLSelect:FieldInfo() 方法用于检索有关列的信息，
-            除非您将 <paramref name="kColumnInfoType" /> 指定为 DBS_ALIAS。然后，您可以为列指定一个别名，通过使用 SQLColumn:AliasName 属性访问。
+            除非您将 <paramref name="kColumnInfoType"/> 指定为 DBS_ALIAS。然后，您可以为列指定一个别名，通过使用 SQLColumn:AliasName 属性访问。
         </remarks>
     </SQLSelect.FieldInfo>
 
@@ -2154,7 +2342,7 @@
         <param name="SQL_DROP">关闭游标，解绑并重置参数，并释放语句。</param>
         <param name="SQL_RESET_PARAMS">重置参数。</param>
         <param name="SQL_UNBIND">解绑参数。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLSelect.FreeStmt>
 
     <SQLSelect.GetData>
@@ -2202,7 +2390,7 @@
             请参考 ODBC 文档中的 SQLGetStmtOption()，获取可用的 ODBC 连接选项的完整列表。
         </param>
         <returns>
-            如果成功，则返回语句选项的当前设置；否则，返回 NIL。<br />
+            如果成功，则返回语句选项的当前设置；否则，返回 NIL。<br/>
 
             Level 1
         </returns>
@@ -2212,7 +2400,7 @@
         <summary>
             将数据服务器定位在最后一行。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             如果成功，发送 NotifyGoBottom 消息。 
             <note type="tip">
@@ -2246,7 +2434,7 @@
             将数据服务器定位在指定的行号。
         </summary>
         <param name="nRow">服务器应该定位到的行号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             <note type="tip">某些类型的数据服务器可能不支持按行号移动。</note> 如果成功，发送 NotifyRecordChange 消息。 </remarks>
     </SQLSelect.GoTo>
@@ -2255,7 +2443,7 @@
         <summary>
             将数据服务器定位在第一行。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             如果成功，发送 NotifyGoTop 消息。
         </remarks>
@@ -2307,12 +2495,12 @@
 
     <SQLSelect.NativeSQL>
         <summary>
-            一个字符串，包含语句的原生 SQL 文本。<br />
+            一个字符串，包含语句的原生 SQL 文本。<br/>
 
             Level 2
         </summary>
         <value>
-            一个字符串，包含语句的原生 SQL 文本。<br />
+            一个字符串，包含语句的原生 SQL 文本。<br/>
 
             Level 2
         </value>
@@ -2321,7 +2509,7 @@
     <SQLSelect.NoIVarGet>
         <summary> 
             提供一个通用的错误拦截，当在任何类中访问不存在的导出实例变量时，系统会自动调用（NoIVarGet）。 
-            在 SQLSelect 类中，它用于实现虚拟列变量。 <br />
+            在 SQLSelect 类中，它用于实现虚拟列变量。 <br/>
             重要！NoIVarGet()不应直接调用；系统会要求处理无效引用时，才会调用它。 
         </summary>
         <param name="symFieldName">表示所需列的名称、编号或符号。</param>
@@ -2334,12 +2522,12 @@
 
     <SQLSelect.NoIVarPut>
         <summary> 
-            提供一个通用的错误拦截，当在任何类中对不存在的导出实例变量进行赋值引用时，系统会自动调用（NoIVarPut）。 <br />
+            提供一个通用的错误拦截，当在任何类中对不存在的导出实例变量进行赋值引用时，系统会自动调用（NoIVarPut）。 <br/>
             重要！NoIVarPut()不应直接调用；系统会要求处理无效引用时，才会调用它。 
         </summary>
         <param name="symFieldName">表示所需列的名称、编号或符号。</param>
-        <param name="uValue"> 要分配的相应值。 <paramref name="uValue" />应与列的数据类型兼容。 </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <param name="uValue"> 要分配的相应值。 <paramref name="uValue"/>应与列的数据类型兼容。 </param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             如果变量引用是对服务器的有效列的引用，并且赋值成功，那么发送NotifyFieldChange消息。
             对于 SQLSelect,该方法用于拦截对列名的引用，作为导出变量。通常情况下，不允许对列名的引用。如果列名有效,
@@ -2357,8 +2545,8 @@
             事件的标识，由以下常量之一指定：
             符号描述的事件。 仅与某些通知类型一起使用，如上面所述。
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*"/>
     </SQLSelect.Notify>
 
     <SQLSelect.NullAsBlank>
@@ -2407,12 +2595,12 @@
 
     <SQLSelect.NumParameters>
         <summary>
-            一个数字值，包含参数的数量。值为-1表示错误。<br />
+            一个数字值，包含参数的数量。值为-1表示错误。<br/>
 
             Level 2
         </summary>
         <value>
-            一个数字值，包含参数的数量。值为-1表示错误。<br />
+            一个数字值，包含参数的数量。值为-1表示错误。<br/>
 
             Level 2
         </value>
@@ -2466,7 +2654,7 @@
         <summary>
             准备语句。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             在大多数情况下，没有必要调用 SQLSelect:Prepare()，因为它在需要时会自动调用。
         </remarks>
@@ -2527,7 +2715,7 @@
         <summary>
             刷新缓冲区中的当前行，丢弃已经进行的任何更改。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             如果成功，发送一个 NotifyRecordChange 消息。
             这个命令会丢弃当前行的所有更改。这在应用程序中作为实现撤销的一种方式很有用。
@@ -2659,7 +2847,7 @@
             指定要在需要键的搜索更新或删除操作中用作唯一索引的列。
         </summary>
         <param name="uFieldPos">表示所需列的名称、编号或符号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             如果 SQLSelect:SetPrimaryKey() 传递0作为参数，所有分配的列都将被清除。你也可以通过使用 SQLListSpecialColumns 类找到唯一索引列。
         </remarks>
@@ -2828,7 +3016,7 @@
             更新当前行或恢复行的原始值。
         </summary>
         <param name="lUpdate">TRUE 更新行；FALSE 取消更新并恢复行的原始值。默认值为 TRUE。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             Update() 使用的 SQL 语句类型（搜索或定位）由系统自动确定，除非使用 SQLSelect:ScrollUpdateType 设置为 cursor、key 或 value。
             如果成功执行，此方法会向此数据服务器的客户端发送一个 NotifyRecordChange 消息。
@@ -2845,6 +3033,172 @@
             如果当前查询处于活动状态，返回 TRUE；否则，返回 FALSE。
         </value>
     </SQLSelect.Used>
+
+    <SQLSetConnection>
+        <summary>
+            返回并可选地更改默认的 SQL 连接。
+        </summary>
+        <param name="oSQLConnection">任何需要连接的函数或类的默认 SQL 连接。</param>
+        <returns> 
+            如果未指定 <paramref name="oSQLConnection"/>，SQLSetConnection() 将返回当前设置。 
+            如果指定了 <paramref name="oSQLConnection"/>，将返回新设置。 
+        </returns>
+        <remarks> 
+            如果未指定 <paramref name="oSQLConnection"/> 并且没有先前或默认的连接，SQLSetConnection() 将调用 SQLOpenConnection()，
+            将该连接设置为默认，并返回它。
+        </remarks>
+        <example> 
+            以下示例测试连接实用程序函数： 
+            <code language="X#">
+                FUNCTION TestConnect()
+                    LOCAL wCount AS DWORD
+                    LOCAL aSources AS ARRAY
+                    LOCAL oConn AS SQLConnection
+                    // 获取源的数组
+                    aSources := SQLGetDataSources()
+                    // 列出它们
+                    ? "ODBC Sources..."
+                    for wCount := 1 to ALen(aSources)
+                        ? aSources[wCount]
+                    next
+                    // 连接到源列表
+                    oConn := SQLOpenConnection()
+                    // 将其设置为默认连接
+                    SQLSetConnection(oConn)
+                    // 断开连接
+                    oConn:Disconnect()
+            </code>
+        </example>
+        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+    </SQLSetConnection>
+
+    <SqlSetStmtConcurrency>
+        <summary>
+            返回并可选地更改 SQLSelect 对象的默认并发模式
+        </summary>
+        <param name="nNew">新的并发策略，将由新的 SqlSelect 对象使用</param>
+        <returns> 
+            如果未指定 <paramref name="nNew"/>，SQLSetStmtConcurrency() 将返回当前设置。 
+            如果指定了 <paramref name="nNew"/>，将返回新设置。 
+        </returns>
+        <remarks> 
+            SQLSelect 对象的并发模式用于确定其他连接是否已更改行。可能的值有： 
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>SQL_CONCUR_READ_ONLY</term>
+                    <description>游标是只读的。不允许更新。</description>
+                </item>
+                <item>
+                    <term>SQL_CONCUR_LOCK</term>
+                    <description>游标使用足够低的锁定级别，以确保可以更新行。</description>
+                </item>
+                <item>
+                    <term>SQL_CONCUR_ROWVER</term>
+                    <description>游标使用乐观并发控制，比较行版本，如 SQLBase ROWID 或 Sybase TIMESTAMP。</description>
+                </item>
+                <item>
+                    <term>SQL_CONCUR_VALUES</term>
+                    <description>游标使用乐观并发控制，比较值。</description>
+                </item>
+            </list>
+            X# 使用的默认值是 SQL_CONCUR_ROWVER </remarks>
+        <example/>
+        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
+        <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
+        <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
+        <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
+    </SqlSetStmtConcurrency>
+
+    <SqlSetStmtCursorType>
+        <summary>
+            返回并可选地更改 SQLSelect 对象的默认游标类型
+        </summary>
+        <param name="nNew">新的游标类型，将由新的 SqlSelect 对象使用</param>
+        <returns> 如果未指定 <paramref name="nNew"/>，SQLSetStmtCursorType() 将返回当前设置。 如果指定了 <paramref name="nNew"/>，将返回新设置。 </returns>
+        <remarks> 
+            SQLSelect对象的游标模式用于确定其他连接是否已更改行。可能的值有： 
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>SQL_CURSOR_FORWARD_ONLY</term>
+                    <description>游标只能向前滚动</description>
+                </item>
+                <item>
+                    <term>SQL_CURSOR_KEYSET_DRIVEN</term>
+                    <description>驱动程序保存并使用指定的行数的键</description>
+                </item>
+                <item>
+                    <term>SQL_CURSOR_DYNAMIC</term>
+                    <description>驱动程序仅保存并使用行集中的键。</description>
+                </item>
+                <item>
+                    <term>SQL_CURSOR_STATIC</term>
+                    <description>结果集中的数据是静态的</description>
+                </item>
+            </list>
+            X#使用的默认值是SQL_CURSOR_KEYSET_DRIVEN </remarks>
+        <example/>
+        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
+        <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
+        <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
+        <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
+    </SqlSetStmtCursorType>
+
+    <SqlSetStmtSimulateCursor>
+        <summary>
+            返回并可选地更改 SQLSelect 对象的默认游标模拟模式
+        </summary>
+        <param name="nNew">新的游标模拟模式，将由新的 SqlSelect 对象使用</param>
+        <returns> 如果未指定 <paramref name="nNew"/>，SQLSetStmtSimulateCursor() 将返回当前设置。 如果指定了 <paramref name="nNew"/>，将返回新设置。 </returns>
+        <remarks> 
+            SQLSelect 对象的游标模拟模式用于确定其他连接是否已更改行。可能的值有： 
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>SQL_SC_NON_UNIQUE</term>
+                    <description>
+                        驱动程序不保证模拟定位的更新或删除语句只影响一行；这是应用程序的责任。
+                        如果一个语句影响多行，SQLExecute、SQLExecDirect 或 SQLSetPos 返回 SQLSTATE 01001（游标操作冲突）。
+                    </description>
+                </item>
+                <item>
+                    <term>SQL_SC_TRY_UNIQUE</term>
+                    <description>
+                        驱动程序尝试保证模拟定位的更新或删除语句只影响一行。
+                        驱动程序总是执行这样的语句，即使它们可能影响多行，比如当没有唯一键时。
+                        如果一个语句影响多行，SQLExecute、SQLExecDirect或SQLSetPos 返回 SQLSTATE 01001（游标操作冲突）。
+                    </description>
+                </item>
+                <item>
+                    <term>SQL_SC_UNIQUE</term>
+                    <description>
+                        驱动程序保证模拟定位的更新或删除语句只影响一行。如果驱动程序无法保证这一点，SQLExecDirect 或 SQLPrepare返回一个错误。
+                    </description>
+                </item>
+            </list>
+            X# 使用的默认值是 SQL_SC_TRY_UNIQUE </remarks>
+        <example/>
+        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
+        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
+        <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
+        <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
+        <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
+    </SqlSetStmtSimulateCursor>
 
     <SQLStatement>
         <summary>
@@ -2869,6 +3223,26 @@
         </example>
     </SQLStatement>
 
+    <SQLStatement.Commit>
+        <summary>
+            保存自上次 Commit() 以来所做的更改。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <remarks> 
+            AutoCommit 选项可能会干扰手动提交。你可能希望关闭 AutoCommit，例如： 
+            <code language="X#">
+                oStmt:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)
+            </code>
+        </remarks>
+    </SQLStatement.Commit>
+
+    <SQLStatement.Connection>
+        <summary>
+            这个语句连接的数据源 — 一个 SQLConnection 对象。
+        </summary>
+        <value>这个语句连接的数据源 — 一个 SQLConnection 对象。</value>
+    </SQLStatement.Connection>
+
     <SQLStatement.ctor>
         <summary>
             构造一个 SQLStatement 对象。
@@ -2887,26 +3261,6 @@
         </example>
     </SQLStatement.ctor>
 
-    <SQLStatement.Commit>
-        <summary>
-            保存自上次 Commit() 以来所做的更改。
-        </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <remarks> 
-            AutoCommit 选项可能会干扰手动提交。你可能希望关闭 AutoCommit，例如： 
-            <code language="X#">
-                oStmt:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)
-            </code>
-        </remarks>
-    </SQLStatement.Commit>
-
-    <SQLStatement.Connection>
-        <summary>
-            这个语句连接的数据源 — 一个 SQLConnection 对象。
-        </summary>
-        <value>这个语句连接的数据源 — 一个 SQLConnection 对象。</value>
-    </SQLStatement.Connection>
-
     <SQLStatement.ErrInfo>
         <summary>
             一个 SQL 语句错误信息（SQLErrorInfo）对象。使用返回对象的错误标志来确定是否发生了错误。
@@ -2919,7 +3273,7 @@
             执行语句。
         </summary>
         <param name="uParm">要执行的参数的数组，或要执行的参数的列表。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <example> 
             以下示例执行了 SQL 语句： 
             <code language="X#">
@@ -2936,14 +3290,14 @@
             根据指定的选项释放语句。
         </summary>
         <param name="kOption">
-            释放语句时使用的选项，由以下常量之一指定：<br />
-            常量 描述<br />
-            SQL_CLOSE 关闭游标。<br />
-            SQL_DROP 关闭游标，解绑和重置参数，并释放语句。<br />
-            SQL_RESET_PARAMS 重置参数。<br />
+            释放语句时使用的选项，由以下常量之一指定：<br/>
+            常量 描述<br/>
+            SQL_CLOSE 关闭游标。<br/>
+            SQL_DROP 关闭游标，解绑和重置参数，并释放语句。<br/>
+            SQL_RESET_PARAMS 重置参数。<br/>
             SQL_UNBIND 解绑参数。
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLStatement.FreeStmt>
 
     <SQLStatement.GetStatementOption>
@@ -2964,23 +3318,23 @@
 
     <SQLStatement.NativeSQL>
         <summary>
-            一个字符串，包含语句的本地文本。<br />
+            一个字符串，包含语句的本地文本。<br/>
             Level 2
         </summary>
         <value>
-            一个字符串，包含语句的本地文本。<br />
+            一个字符串，包含语句的本地文本。<br/>
             Level 2
         </value>
     </SQLStatement.NativeSQL>
 
     <SQLStatement.NumParameters>
         <summary>
-            一个数字值，包含语句中的参数数量。返回值为-1表示错误。<br />
+            一个数字值，包含语句中的参数数量。返回值为-1表示错误。<br/>
 
             Level 2
         </summary>
         <value>
-            一个数字值，包含语句中的参数数量。返回值为-1表示错误。<br />
+            一个数字值，包含语句中的参数数量。返回值为-1表示错误。<br/>
 
             Level 2
         </value>
@@ -2997,7 +3351,7 @@
         <summary>
             准备一个语句。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             在大多数情况下，没有必要调用 SQLStatement:Prepare()，因为它将在需要时由其他方法（例如，Execute()）自动调用。
         </remarks>
@@ -3014,7 +3368,7 @@
         <summary>
             撤消自上次 Commit() 以来所做的更改。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             AutoCommit 选项可能会干扰手动提交。你可能希望关闭 AutoCommit，例如： 
             <code language="X#">
@@ -3032,7 +3386,7 @@
             请参阅你的 ODBC 文档中的 SQLSetStatementOption()，了解可用的 ODBC 语句选项的完整列表。
         </param>
         <param name="uValue">要将语句选项设置为的值。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </SQLStatement.SetStatementOption>
 
     <SQLStatement.SQLString>
@@ -3069,6 +3423,21 @@
         </summary>
     </SQLTable>
 
+    <SQLTable.ClearRelation>
+        <summary>
+            清除此服务器与其他服务器之间的一个（或所有）关系。
+        </summary>
+        <param name="nRelation">要清除的关系的编号。如果省略，将清除所有关系。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+    </SQLTable.ClearRelation>
+
+    <SQLTable.Condition>
+        <summary>
+            存储附加到 SQL 语句末尾的任何其他条件。
+        </summary>
+        <param name="cOtherConditions">表示附加到 SQL 语句末尾的其他条件的字符串，例如'GROUPBY'和'HAVING'。</param>
+    </SQLTable.Condition>
+
     <SQLTable.ctor>
         <summary>
             构造一个 SQLTable 对象。
@@ -3081,28 +3450,13 @@
         </param>
     </SQLTable.ctor>
 
-    <SQLTable.ClearRelation>
-        <summary>
-            清除此服务器与其他服务器之间的一个（或所有）关系。
-        </summary>
-        <param name="nRelation">要清除的关系的编号。如果省略，将清除所有关系。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-    </SQLTable.ClearRelation>
-
-    <SQLTable.Condition>
-        <summary>
-            存储附加到 SQL 语句末尾的任何其他条件。
-        </summary>
-        <param name="cOtherConditions">表示附加到 SQL 语句末尾的其他条件的字符串，例如'GROUPBY'和'HAVING'。</param>
-    </SQLTable.Condition>
-
     <SQLTable.Notify>
         <summary>
             在服务器的操作方法完成一些重要事件后，提供一个自动调用的方法：
             列已更改，服务器位置已更更改，某些操作已完成。它的标准实现是向其附加的客户端广播相同的通知。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*"/>
     </SQLTable.Notify>
 
     <SQLTable.OrderBy>
@@ -3129,8 +3483,8 @@
         </summary>
         <param name="nRelation">当前关系列表中所需关系的位置。关系按照使用 SetRelation() 定义的顺序进行编号。</param>
         <returns> 
-            包含由 <paramref name="nRelation" /> 指定的关系的链接表达式的字符串。
-            如果没有为 <paramref name="nRelation" /> 设置关系，SQLTable:Relation() 将返回一个 NULL_STRING。
+            包含由 <paramref name="nRelation"/> 指定的关系的链接表达式的字符串。
+            如果没有为 <paramref name="nRelation"/> 设置关系，SQLTable:Relation() 将返回一个 NULL_STRING。
         </returns>
     </SQLTable.Relation>
 
@@ -3140,11 +3494,11 @@
         </summary>
         <param name="asymColumn">要搜索的列的数组。</param>
         <param name="auValue"> 
-            要搜索的值的数组，与 <paramref name="asymColumn" /> 兼容的类型。
-            此数组的元素数和 <paramref name="asymColumn" /> 必须相同。 
+            要搜索的值的数组，与 <paramref name="asymColumn"/> 兼容的类型。
+            此数组的元素数和 <paramref name="asymColumn"/> 必须相同。 
         </param>
         <param name="symColumn">要搜索的列。</param>
-        <param name="uValue"> 要搜索的值，与 <paramref name="symColumn" /> 兼容的类型。 </param>
+        <param name="uValue"> 要搜索的值，与 <paramref name="symColumn"/> 兼容的类型。 </param>
         <param name="lSoftSeek">指示是否在 WHERE 子句中使用'&gt;='运算符（TRUE）或使用'='运算符（FALSE）。</param>
         <returns>
             如果成功，返回 TRUE；否则，返回 FALSE。(无论是因为服务器无法搜索，还是因为未找到值)。
@@ -3165,7 +3519,7 @@
         <param name="uRelation">表示服务器关系的字段名。可以使用字段名的别名（参见 SQLSelect:FieldInfo() 方法设置别名）。</param>
         <param name="cRelation">
             表示服务器关系的字段名的数组。数组也可以包含复杂的关系运算符（SQL_RELOP_AND，SQL_RELOP_OR，SQL_RELOP_NOT，SQL_RELOP_OPENP，SQL_RELOP_CLOSEP）。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             在SQLTable类中，SetRelation()的功能与SetSelectiveRelation()相同。关系被实现为WHERE子句的扩展。
             如果成功，将向子服务器发送NotifyRecordChange消息。
@@ -3177,7 +3531,7 @@
                 oSQLCustomer:SetRelation(oSQLOrders,#CustNo)
                 oSQLCustomer:SetRelation(oSQLOrders, {#LastName,#Initial,#FirstName})
             </code>
-            以下关系等同于订单集，其中<br />
+            以下关系等同于订单集，其中<br/>
             ORDER.LASTNAME=CUST.LASTNAME OR (ORDER.INITIAL=CUST.INITIAL AND ORDER.FIRSTNAME=CUST.FIRSTNAME)： 
             <code language="X#">
                 oSQLCustomer:SetRelation(oSQLOrders,{#LastName,;
@@ -3194,13 +3548,13 @@
         </summary>
         <param name="oChild"> 
             必须指定为SQLTable对象的子服务器的附加服务器。
-            如果 <paramref name="oSQLChild" /> 省略，将删除此服务器的所有关系（建议使用 ClearRelations() 方法）。
+            如果 <paramref name="oSQLChild"/> 省略，将删除此服务器的所有关系（建议使用 ClearRelations() 方法）。
         </param>
         <param name="uRelation">来自此服务器的字段名。可以使用字段名的别名（参见 SQLSelect:FieldInfo() 方法设置别名）。</param>
         <param name="cRelation">
             表示服务器关系的字段名的数组。
             数组也可以包含复杂的关系运算符（SQL_RELOP_AND，SQL_RELOP_OR，SQL_RELOP_NOT，SQL_RELOP_OPENP，SQL_RELOP_CLOSEP）。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             如果成功，将向子服务器发送 NotifyRecordChange 消息。此方法等同于 SetRelation() 方法。
         </remarks>
@@ -3222,6 +3576,14 @@
         </summary>
         <param name="cCondition [, cCondition]">条件列表（例如，'STATE = 'NY''等）。</param>
     </SQLTable.Where>
+
+    <SQLThrowOutOfMemoryError>
+        <exclude/>
+    </SQLThrowOutOfMemoryError>
+
+    <SQLType2CType>
+        <exclude/>
+    </SQLType2CType>
 
     <SQLValue>
         <summary>
@@ -3320,369 +3682,4 @@
         </remarks>
     </SQLValue.UsualType>
 
-    <SQLConnectErrorMsg>
-        <summary>
-            返回并可选择更改设置，该设置确定是否显示连接错误消息。
-        </summary>
-        <param name="lValue">
-            如果为 TRUE，启用连接错误消息；如果为 FALSE，禁用连接错误消息。初始默认值为 TRUE。
-        </param>
-        <returns> 
-            如果未指定<paramref name="lNewSetting" />，SQLConnectErrorMsg() 将返回当前设置。 
-            如果指定了<paramref name="lNewSetting" />，将返回先前的设置。 
-            </returns>
-        <remarks>
-            如果 SQLConnectErrorMsg() 设置为 FALSE，将不显示连接错误消息。
-            如果 SQLConnectErrorMsg() 设置为 TRUE，即默认值，将在消息框中显示连接错误消息。
-        </remarks>
-        <example></example>
-        <seealso cref="O:VO.SQLConnection.Connect">SQLConnection:Connect</seealso>
-        <seealso cref="O:VO.SQLConnection.DriverConnect">SQLConnection:DriverConnect</seealso>
-    </SQLConnectErrorMsg>
-
-    <SqlDeleteWhiteSpace>
-        <summary>**Missing documentation **</summary>
-    </SqlDeleteWhiteSpace>
-
-    <SQLDropMyConnection>
-        <summary>
-            断开 ODBC 数据源。
-        </summary>
-        <param name="cMySourceName">此连接的源。</param>
-        <param name="cMyUserid">用于连接到源的用户ID。</param>
-        <param name="cMyPassword">用于连接到源的密码。</param>
-        <returns>
-            如果找到连接，返回 TRUE；否则返回 FALSE。
-        </returns>
-        <remarks>
-            如果找到连接，使用计数减1。当使用计数为1时，断开源。
-        </remarks>
-        <example> 
-            以下示例连接到 WATCOM；然后结束连接： 
-            <code language="X#">
-                FUNCTION TestConnect()
-                    LOCAL oConn AS SQLConnection
-                    oConn := SQLGetMyConnection("sample", "dba", "sql")
-                    ? "SRC=",oConn:DataSource
-                    ? "UID=",oConn:UserID
-                    ? "PWD=",oConn:Password
-                    SQLDropMyConnection("sample", "dba", "sql")
-            </code>
-        </example>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
-    </SQLDropMyConnection>
-
-    <SQLGetDataSources>
-        <summary>
-            识别可用的 ODBC 数据源。
-        </summary>
-        <returns>
-            一个字符串数组，标识可用的 ODBC 数据源。
-            如果没有可用的源，SQLGetDataSources() 将返回一个 NULL_ARRAY。
-        </returns>
-        <remarks></remarks>
-        <example> 
-            以下示例测试连接实用程序函数： 
-            <code language="X#">
-                FUNCTION TestConnect()
-                    LOCAL wCount AS DWORD
-                    LOCAL aSources AS ARRAY
-                    LOCAL oConn AS SQLConnection
-                    // 获取源的数组
-                    aSources := SQLGetDataSources()
-                    // 列出它们
-                    ? "ODBC Sources..."
-                    for wCount := 1 to ALen(aSources)
-                        ? aSources[wCount]
-                    next
-                    // 连接到源列表
-                    oConn := SQLOpenConnection()
-                    // 将其设置为默认连接
-                    SQLSetConnection(oConn)
-                    // 断开连接
-                    oConn:Disconnect()
-            </code>
-        </example>
-        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
-    </SQLGetDataSources>
-
-    <SQLGetMyConnection>
-        <summary>
-            连接到指定的 ODBC 源。
-        </summary>
-        <param name="cMySourceName">要连接的源。</param>
-        <param name="cMyUserID">将用于连接到源的用户ID。</param>
-        <param name="cMyPassword">将用于连接到源的密码。</param>
-        <returns>
-            如果找到源的连接，它将作为 SQLConnection 对象返回。
-            如果未找到连接，将创建一个并作为对象返回。
-        </returns>
-        <remarks>
-            SQLGetMyConnection 在从 SQL 编辑器生成的代码中使用。
-            它允许在同一任务中的多个服务器之间共享连接。
-        </remarks>
-        <example> 
-            以下示例连接到 WATCOM；然后结束连接： 
-            <code language="X#">
-                FUNCTION TestConnect()
-                    LOCAL oConn AS SQLConnection
-                    oConn := SQLGetMyConnection("sample", "dba", "sql")
-                    ? "SRC=",oConn:DataSource
-                    ? "UID=",oConn:UserID
-                    ? "PWD=",oConn:Password
-                    SQLDropMyConnection("sample", "dba", "sql")
-            </code>
-        </example>
-        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
-    </SQLGetMyConnection>
-
-    <SqlIsBinaryType>
-        <summary>辅助函数，用于确定 ODBC 类型是否为二进制</summary>
-    </SqlIsBinaryType>
-
-    <SqlIsCharType>
-        <summary>辅助函数，用于确定 ODBC 类型是否为字符</summary>
-    </SqlIsCharType>
-
-    <SqlIsLongType>
-        <summary>辅助函数，用于确定 ODBC 类型是否为长（BLOB，MEMO 等）</summary>
-    </SqlIsLongType>
-
-    <SQLOpenConnection>
-        <summary>
-            连接到 ODBC 源列表。
-        </summary>
-        <returns>
-            一个 SQLConnection 对象。
-        </returns>
-        <remarks>
-            SQLOpenConnection() 显示一个对话框，列出所有已安装的源，并提示您选择一个。
-        </remarks>
-        <example> 
-            以下示例测试连接实用程序函数： 
-            <code language="X#">
-                FUNCTION TestConnect()
-                    LOCAL wCount AS DWORD
-                    LOCAL aSources AS ARRAY
-                    LOCAL oConn AS SQLConnection
-                    // 获取源的数组
-                    aSources := SQLGetDataSources()
-                    // 列出它们
-                    ? "ODBC Sources..."
-                    for wCount := 1 to ALen(aSources)
-                        ? aSources[wCount]
-                    next
-                    // 连接到源列表
-                    oConn := SQLOpenConnection()
-                    // 将其设置为默认连接
-                    SQLSetConnection(oConn)
-                    // 断开连接
-                    oConn:Disconnect()
-            </code>
-        </example>
-        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
-    </SQLOpenConnection>
-
-    <SQLSetConnection>
-        <summary>
-            返回并可选地更改默认的 SQL 连接。
-        </summary>
-        <param name="oSQLConnection">任何需要连接的函数或类的默认 SQL 连接。</param>
-        <returns> 
-            如果未指定 <paramref name="oSQLConnection" />，SQLSetConnection() 将返回当前设置。 
-            如果指定了 <paramref name="oSQLConnection" />，将返回新设置。 
-        </returns>
-        <remarks> 
-            如果未指定 <paramref name="oSQLConnection" /> 并且没有先前或默认的连接，SQLSetConnection() 将调用 SQLOpenConnection()，
-            将该连接设置为默认，并返回它。
-        </remarks>
-        <example> 
-            以下示例测试连接实用程序函数： 
-            <code language="X#">
-                FUNCTION TestConnect()
-                    LOCAL wCount AS DWORD
-                    LOCAL aSources AS ARRAY
-                    LOCAL oConn AS SQLConnection
-                    // 获取源的数组
-                    aSources := SQLGetDataSources()
-                    // 列出它们
-                    ? "ODBC Sources..."
-                    for wCount := 1 to ALen(aSources)
-                        ? aSources[wCount]
-                    next
-                    // 连接到源列表
-                    oConn := SQLOpenConnection()
-                    // 将其设置为默认连接
-                    SQLSetConnection(oConn)
-                    // 断开连接
-                    oConn:Disconnect()
-            </code>
-        </example>
-        <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
-    </SQLSetConnection>
-
-    <SqlSetStmtConcurrency>
-        <summary>
-            返回并可选地更改 SQLSelect 对象的默认并发模式
-        </summary>
-        <param name="nNew">新的并发策略，将由新的 SqlSelect 对象使用</param>
-        <returns> 
-            如果未指定 <paramref name="nNew" />，SQLSetStmtConcurrency() 将返回当前设置。 
-            如果指定了 <paramref name="nNew" />，将返回新设置。 
-        </returns>
-        <remarks> 
-            SQLSelect 对象的并发模式用于确定其他连接是否已更改行。可能的值有： 
-            <list type="table">
-                <listheader>
-                    <term>常量</term>
-                    <description>描述</description>
-                </listheader>
-                <item>
-                    <term>SQL_CONCUR_READ_ONLY</term>
-                    <description>游标是只读的。不允许更新。</description>
-                </item>
-                <item>
-                    <term>SQL_CONCUR_LOCK</term>
-                    <description>游标使用足够低的锁定级别，以确保可以更新行。</description>
-                </item>
-                <item>
-                    <term>SQL_CONCUR_ROWVER</term>
-                    <description>游标使用乐观并发控制，比较行版本，如 SQLBase ROWID 或 Sybase TIMESTAMP。</description>
-                </item>
-                <item>
-                    <term>SQL_CONCUR_VALUES</term>
-                    <description>游标使用乐观并发控制，比较值。</description>
-                </item>
-            </list>
-            X# 使用的默认值是 SQL_CONCUR_ROWVER </remarks>
-        <example></example>
-        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
-        <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
-        <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
-        <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
-    </SqlSetStmtConcurrency>
-
-    <SqlSetStmtCursorType>
-        <summary>
-            返回并可选地更改 SQLSelect 对象的默认游标类型
-        </summary>
-        <param name="nNew">新的游标类型，将由新的 SqlSelect 对象使用</param>
-        <returns> 如果未指定 <paramref name="nNew" />，SQLSetStmtCursorType() 将返回当前设置。 如果指定了 <paramref
-                name="nNew" />，将返回新设置。 </returns>
-        <remarks> 
-            SQLSelect对象的游标模式用于确定其他连接是否已更改行。可能的值有： 
-            <list type="table">
-                <listheader>
-                    <term>常量</term>
-                    <description>描述</description>
-                </listheader>
-                <item>
-                    <term>SQL_CURSOR_FORWARD_ONLY</term>
-                    <description>游标只能向前滚动</description>
-                </item>
-                <item>
-                    <term>SQL_CURSOR_KEYSET_DRIVEN</term>
-                    <description>驱动程序保存并使用指定的行数的键</description>
-                </item>
-                <item>
-                    <term>SQL_CURSOR_DYNAMIC</term>
-                    <description>驱动程序仅保存并使用行集中的键。</description>
-                </item>
-                <item>
-                    <term>SQL_CURSOR_STATIC</term>
-                    <description>结果集中的数据是静态的</description>
-                </item>
-            </list>
-            X#使用的默认值是SQL_CURSOR_KEYSET_DRIVEN </remarks>
-        <example></example>
-        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
-        <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
-        <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
-        <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
-    </SqlSetStmtCursorType>
-
-    <SqlSetStmtSimulateCursor>
-        <summary>
-            返回并可选地更改 SQLSelect 对象的默认游标模拟模式
-        </summary>
-        <param name="nNew">新的游标模拟模式，将由新的 SqlSelect 对象使用</param>
-        <returns> 如果未指定 <paramref name="nNew" />，SQLSetStmtSimulateCursor() 将返回当前设置。 如果指定了 <paramref
-                name="nNew" />，将返回新设置。 </returns>
-        <remarks> 
-            SQLSelect 对象的游标模拟模式用于确定其他连接是否已更改行。可能的值有： 
-            <list type="table">
-                <listheader>
-                    <term>常量</term>
-                    <description>描述</description>
-                </listheader>
-                <item>
-                    <term>SQL_SC_NON_UNIQUE</term>
-                    <description>
-                        驱动程序不保证模拟定位的更新或删除语句只影响一行；这是应用程序的责任。
-                        如果一个语句影响多行，SQLExecute、SQLExecDirect 或 SQLSetPos 返回 SQLSTATE 01001（游标操作冲突）。
-                    </description>
-                </item>
-                <item>
-                    <term>SQL_SC_TRY_UNIQUE</term>
-                    <description>
-                        驱动程序尝试保证模拟定位的更新或删除语句只影响一行。
-                        驱动程序总是执行这样的语句，即使它们可能影响多行，比如当没有唯一键时。
-                        如果一个语句影响多行，SQLExecute、SQLExecDirect或SQLSetPos 返回 SQLSTATE 01001（游标操作冲突）。
-                    </description>
-                </item>
-                <item>
-                    <term>SQL_SC_UNIQUE</term>
-                    <description>
-                        驱动程序保证模拟定位的更新或删除语句只影响一行。如果驱动程序无法保证这一点，SQLExecDirect 或 SQLPrepare返回一个错误。
-                    </description>
-                </item>
-            </list>
-            X# 使用的默认值是 SQL_SC_TRY_UNIQUE </remarks>
-        <example></example>
-        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
-        <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
-        <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
-        <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
-        <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
-    </SqlSetStmtSimulateCursor>
-
-    <SQLThrowOutOfMemoryError>
-        <exclude />
-    </SQLThrowOutOfMemoryError>
-
-    <SQLType2CType>
-        <exclude />
-    </SQLType2CType>
-
-    <MakeTimeStamp>
-        <summary>将日期和秒转换为"YYYY-MM-DD HH:MM:SS.NNN"格式的时间戳字符串</summary>
-        <param name="dDate">要转换的日期</param>
-        <param name="nSeconds">要添加到时间戳的秒数</param>
-        <returns>一个时间戳字符串，格式为"YYYY-MM-DD HH:MM:SS.NNN"</returns>
-        <seealso cred="O:VOSQLClasses.Functions.DToCSQL" />
-    </MakeTimeStamp>
-    
-    <DToCSQL>
-        <summary>将日期转换为"YYYY-MM-DD"格式的字符串</summary>
-        <param name="dDate">要转换的日期</param>
-        <returns>日期的字符串，格式为"YYYY-MM-DD"</returns>
-        <seealso cred="O:VOSQLClasses.Functions.MakeTimeStamp" />
-    </DToCSQL>
-</doc>
+    </doc>

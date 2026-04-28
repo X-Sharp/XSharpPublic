@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,13 +12,13 @@ USING System.Diagnostics
 
 #region Basic Memory Allocation
 
-/// <summary>Enable / disable memory tracing</summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemTrace/*" />
 FUNCTION MemTrace(lSet AS LOGIC) AS LOGIC
 	LOCAL lOld AS LOGIC
 	lOld := FixedMemory.MemTrace
 	FixedMemory.MemTrace := lSet
 	RETURN lOld
-/// <summary>Retrieve memory tracing state.</summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemTrace/*" />
 FUNCTION MemTrace() AS LOGIC
 	LOCAL lOld AS LOGIC
 	lOld := FixedMemory.MemTrace
@@ -44,16 +44,7 @@ FUNCTION MemCAlloc(wItems AS DWORD,wBytes AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(1, wItems * wBytes)
 
 
-
-/// <summary>
-/// ReAllocate a static memory buffer of a specified size.
-/// </summary>
-/// <param name="pBuffer"></param>
-/// <param name="nSize"></param>
-/// <returns>Returns the original pointer when the nSize parameter is smaller or equal to the current size.<br/>
-//  Extraneous bytes are zeroed out. Returns a new buffer when the requesed size is bigger than the original size.
-/// </returns>
-/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemRealloc/*" />
 FUNCTION MemRealloc( pBuffer AS IntPtr, nSize AS DWORD ) AS IntPtr
 	RETURN FixedMemory.Realloc(pBuffer, nSize)
 
@@ -110,9 +101,7 @@ FUNCTION MemGrpOpen() AS DWORD
 	RETURN 0
 
 
-/// <inheritdoc cref="MemCAlloc" />
-/// <param name="wGroup">The group to which the newly allocated memory buffer will belong. This group should have already been opened by MemGrpOpen().</param>
-/// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemGrpCAlloc/*" />
 FUNCTION MemGrpCAlloc(wGroup AS DWORD,wItems AS DWORD,wBytes AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(wGroup, wItems * wBytes)
 
@@ -130,13 +119,8 @@ FUNCTION MemGrpClose(wGroup AS DWORD) AS WORD
 RETURN result
 
 
-/// <summary>
-/// Enumerate all the pointers allocated in a memory group
-/// </summary>
-/// <param name="dwGroup">The group you want to compact</param>
-/// <param name="pEnum">MemWalker Delegate</param>
-/// <returns>TRUE when all delegate calls return TRUE</returns>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemGrpEnum/*" />
 FUNCTION MemGrpEnum(dwGroup AS DWORD, pEnum AS MemWalker) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := TRUE
@@ -335,11 +319,7 @@ FUNCTION MemInt( ptrBuffer AS IntPtr, iValue AS INT, dwCount AS DWORD ) AS IntPt
 	NEXT
 	RETURN pRet
 
-/// <summary>
-/// </summary>
-/// <param name="dwGroup"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemLen/*" />
 FUNCTION MemLen( pMemory AS IntPtr ) AS DWORD
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
@@ -354,12 +334,7 @@ FUNCTION MemLong( ptrBuffer AS IntPtr, liValue AS INT, dwCount AS DWORD ) AS Int
    RETURN MemInt( ptrBuffer, liValue, dwCount )
 
 
-/// <summary>
-/// </summary>
-/// <param name="pMemory"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemLower/*" />
 FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	// Ansi based lower casing
 	LOCAL pChr   AS BYTE PTR
@@ -425,12 +400,7 @@ FUNCTION MemShort( ptrBuffer AS IntPtr, siValue AS SHORT, dwCount AS DWORD ) AS 
 	NEXT
 	RETURN pRet
 
-/// <summary>
-/// </summary>
-/// <param name="pMemory"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemUpper/*" />
 FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	// Ansi based upper casing
 	LOCAL pChr   AS BYTE PTR
@@ -462,8 +432,7 @@ FUNCTION MemWord( ptrBuffer AS IntPtr, dwValue AS WORD, dwCount AS DWORD ) AS In
 	NEXT
 	RETURN pRet
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memwalk/*" />
-/// <remarks>Only memory blocks that were allocated while MemTrace was set to TRUE will be included.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemWalk/*" />
 FUNCTION MemWalk(pEnum AS MemWalker) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := TRUE

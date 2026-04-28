@@ -1,102 +1,44 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.Reflection
 BEGIN NAMESPACE XSharp
-    /// <summary>
-    /// This interface defines Compile time and runtime codeblocks
-    /// </summary>
-    /// <seealso cref="T:XSharp.Codeblock"/>
-    /// <seealso cref="T:XSharp.ICodeblock2"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/ICodeblock/*" />
     interface ICodeblock
-        /// <summary>Evaluate the codeblock</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/ICodeblock.EvalBlock/*" />
         METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
-        /// <summary>
-        /// Returns the number of parameters defined for the codeblock
-        /// </summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/ICodeblock.PCount/*" />
         METHOD	PCount AS LONG
     END INTERFACE
 
 
-    /// <summary>
-    /// This interface extends the ICodeblock interface and adds a property
-    /// that returns the 'real' returntype of the codeblock, before
-    /// customizations are done to the value (for example for Foxpro where NIL gets converted to FALSE)
-    /// </summary>
-    /// <seealso cref="T:XSharp.Codeblock"/>
-    /// <seealso cref="T:XSharp.ICodeblock"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/ICodeblock2/*" />
     INTERFACE ICodeblock2 INHERIT ICodeblock
-        /// <summary>
-        /// Returns the real /original return type of the EvalBlock() method
-        /// </summary>
-        /// <value>A value of the __UsualType enum</value>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/ICodeblock2.ResultType/*" />
         property ResultType as __UsualType get
     END INTERFACE
 
 
-    /// <summary>
-    /// This delegate is used to decide if an assembly should be included in the type cache
-    /// </summary>
-    /// <param name="ass">Assembly object of the assembly being inspected</param>
-    /// <returns>TRUE when the types in the assembly need to be cached.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/MacroCompilerIncludeAssemblyInCache/*" />
     DELEGATE MacroCompilerIncludeAssemblyInCache(ass as Assembly) AS LOGIC
 
-    /// <summary>
-	/// This delegate is used to decide between 2 ambigous methods, functions or constructors
-	/// </summary>
-    /// <param name="m1">MethodInfo of the first symbol</param>
-    /// <param name="m2">MethodInfo of the second symbol</param>
-    /// <param name="args">The types of the arguments that were passed to the method call</param>
-    /// <returns>The delegate should return 1 when it wants to use the first symbol and 2 when it wants to use the second symbol or 0 when it does not want to use either symbol</returns>
-    /// <seealso cref="IMacroCompiler2"/>
-    /// <seealso cref="IMacroCompiler2"/>
-    /// <seealso cref="SetMacroDuplicatesResolver"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/MacroCompilerResolveAmbiguousMatch/*" />
     DELEGATE MacroCompilerResolveAmbiguousMatch(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
 
-    /// <summary>
-    /// You can register a function / method with this prototype in the RuntimeState to intercept errors in the macro compiler
-    /// </summary>
-    /// <param name="cMacro">Source of the macro that causes the error</param>
-    /// <param name="oEx">Exception describing the problem</param>
-    /// <returns>An object that implements ICodeblock, or NULL to tell the macro compiler to throw the error/</returns>
-    /// <remarks>
-    /// This delegate is called when the macro compiler encounters an error.
-    /// The delegate can decide to return a codeblock that will be used instead of the original codeblock
-    /// In theory you can 'patch' the cMacro and call the macro compiler again.
-    /// However that may cause an other error, resulting in an endless loop.
-    /// </remarks>
-    /// <seealso cref="ICodeblock"/>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/MacroCompilerErrorHandler/*" />
     DELEGATE MacroCompilerErrorHandler(cMacro as STRING, oEx as Exception) AS ICodeblock
 
-    /// <summary>
-	/// This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
-	/// </summary>
-	/// <seealso cref="SetMacroDuplicatesResolver"/>
-	/// <seealso cref="MacroCompilerResolveAmbiguousMatch"/>
-    /// <seealso cref="IMacroCompiler"/>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IMacroCompiler2/*" />
 	INTERFACE IMacroCompiler2 INHERIT IMacroCompiler
-        /// <summary>This property allows to set a delegate that may be used to resolve ambigous references</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/IMacroCompiler2.Resolver/*" />
         PROPERTY Resolver AS MacroCompilerResolveAmbiguousMatch GET SET
     END INTERFACE
 
-	/// <summary>
-	/// This interface defines the Macro compiler subsystem
-	/// </summary>
-	/// <seealso cref="SetMacroCompiler"/>
-	/// <seealso cref="GetMacroCompiler"/>
-	/// <seealso cref="ICodeblock"/>
-    /// <seealso cref="IMacroCompiler2"/>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IMacroCompiler/*" />
 	INTERFACE IMacroCompiler
-		/// <summary>Compile a string into a runtime codeblock.</summary>
-		/// <param name="macro">String to compile</param>
-		/// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
-		/// <param name="module">Module of the main app</param>
-		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
-		/// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
-		/// <returns>A compiled codeblock</returns>
-		/// <seealso cref="ICodeblock"/>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IMacroCompiler.Compile/*" />
 		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, ;
             isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS ICodeblock
     END INTERFACE

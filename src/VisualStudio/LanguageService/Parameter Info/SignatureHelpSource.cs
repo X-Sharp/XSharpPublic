@@ -8,6 +8,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Diagnostics;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal class XSharpSignatureProperties

@@ -2613,6 +2613,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected TypeSyntax getReturnType(XP.IMemberContext context)
         {
+            if (context.ReturnType == null &&
+                context.Data.HasClipperCallingConvention)
+                return DefaultType();
             return getDataType(context.ReturnType);
         }
         internal void SetPragmas(IList<PragmaBase> pragmas)
@@ -4387,6 +4390,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     returnType = VoidType;
                 }
+                else if (context.Data.HasClipperCallingConvention)
+                {
+                    returnType = DefaultType();
+                }
                 else  // method and access
                 {
                     returnType = _getMissingType();
@@ -5539,6 +5546,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (context.ReturnType != null && context.ReturnType.GetText().ToLower() != "void")
                     {
                         returntype = NotInDialect(returntype, "Procedure with non VOID return type");
+                    }
+                    else if (context.Data.HasClipperCallingConvention)
+                    {
+                        returntype = DefaultType();
                     }
                     else
                     {

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -265,42 +265,12 @@ INTERNAL DEFINE IDCONTINUE      := 11
 
 
 
-/// <summary>
-/// This function is automatically inserted by the compiler in a compiler generated
-/// RECOVER USING block when you have a BEGIN SEQUENCE .. END SEQUENCE in your code
-/// without RECOVER USING clause
-/// </summary>
-/// <param name="u">The parameter that was passed in the BREAK statement or the call to the _Break function</param>
-/// <remarks>If a REAL exception occurs then this function is NOT called. The function is only called when
-/// the (generated) RECOVER USING block is called with a value from a BREAK statement. <br />
-/// The default implementation of this function (in the XSharp.RT assembly) does nothing.
-/// You can override this function in your own code if you want.
-/// The function should then have the following prototype
-/// <code language="X#">
-/// FUNCTION _SequenceRecover(u as USUAL) AS VOID
-/// </code>
-/// </remarks>
-/// <seealso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_SequenceRecover/*" />
 FUNCTION _SequenceRecover(u as USUAL) AS VOID
     RETURN
 
 
-/// <summary>
-/// This function is automatically inserted by the compiler in a RECOVER USING block and gets called when the
-/// RECOVER USING block is reached because of an exception.
-/// </summary>
-/// <param name="e">The exception that triggered the jump into the RECOVER USING block</param>
-/// <remarks>
-/// The default implementation of this function (in the XSharp.RT assembly) called the installed error handler
-/// that is installed with ErrorBlock()
-/// The function should then have the following prototype
-/// <code language="X#">
-/// FUNCTION _SequenceError(e as Exception) AS VOID
-/// </code>
-/// </remarks>
-/// <returns>The result of the call to the error handler installed in the ErrorBlock</returns>
-/// <seealso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
-/// <seealso cref='O:XSharp.RT.Functions.ErrorBlock'>Break Function</seealso>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_SequenceError/*" />
 FUNCTION _SequenceError(e as Exception) AS USUAL
     LOCAL error as XSharp.Error
     IF e IS XSharp.Error VAR err

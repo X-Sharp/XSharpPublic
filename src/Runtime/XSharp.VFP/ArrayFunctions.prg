@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -90,8 +90,7 @@ FUNCTION ADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 A
     RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
 
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/ADel/*" />
 FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
         RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
@@ -179,8 +178,7 @@ INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertTy
     XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
     RETURN 1
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
-/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/AIns/*" />
 FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
         RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
@@ -243,10 +241,18 @@ RETURN
 END FUNCTION
 
 /// <include file="VfpDocs.xml" path="Runtimefunctions/alines/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("ALINES", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, cParseChars PARAMS STRING[]) AS DWORD
+FUNCTION ALines ( ArrayName AS USUAL, cExpression AS STRING, nFlags := 0 AS INT, cParseChars PARAMS STRING[]) AS DWORD
     IF cExpression == null
         cExpression := ""
+    ENDIF
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
     ENDIF
 
     VAR separators := List<STRING>{}
@@ -324,19 +330,26 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
         finalLines:Add("")
     ENDIF
 
-    ASize(ArrayName, nRows)
+    ASize(aFoxArray, nRows)
 
     FOR VAR i := 0 TO (INT)nRows - 1
-        ArrayName[i + 1] := finalLines[i]
+        aFoxArray[i + 1] := finalLines[i]
     NEXT
-
     RETURN nRows
 END FUNCTION
 
 /// <include file="VfpDocs.xml" path="Runtimefunctions/amembers/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("AMEMBERS", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
-FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID := 0 AS INT, cFlags := "" AS STRING) AS DWORD
+FUNCTION AMembers (ArrayName AS USUAL, oObjectOrClass AS USUAL, nArrayContentsID := 0 AS INT, cFlags := "" AS STRING) AS DWORD
     LOCAL oType AS Type
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
 
     IF IsObject(oObjectOrClass)
         oType := ((OBJECT)oObjectOrClass):GetType()
@@ -404,39 +417,40 @@ FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID
         RETURN 0
     ENDIF
 
-    IF ArrayName IS __FoxArray VAR foxArray
-        IF nArrayContentsID == 0
-            // 1 dimension: Just name
-            foxArray:Resize((INT)nRows) // 1D
-            FOR VAR i := 0 TO (INT)nRows - 1
-                foxArray[i+1] := resultList[i][1]
-            NEXT
-        ELSEIF nArrayContentsID == 1
-            // 2 dimensions: Name and Type
-            foxArray:ReDim(nRows, 2) // 2D
-            FOR VAR i := 0 TO (INT)nRows - 1
-                foxArray[i+1, 1] := resultList[i][1] // Col 1: Name
-                foxArray[i+1, 2] := resultList[i][2] // Col 2: Type
-            NEXT
-        ELSE
-            // nInfo 2, 3 not supported yet
-            THROW NotImplementedException{"AMEMBERS with nInfo=" + nArrayContentsID:ToString() + " is not fully implemented yet."}
-        ENDIF
+    IF nArrayContentsID == 0
+        // 1 dimension: Just name
+        aFoxArray:Resize((INT)nRows) // 1D
+        FOR VAR i := 0 TO (INT)nRows - 1
+            aFoxArray[i+1] := resultList[i][1]
+        NEXT
+    ELSEIF nArrayContentsID == 1
+        // 2 dimensions: Name and Type
+        aFoxArray:ReDim(nRows, 2) // 2D
+        FOR VAR i := 0 TO (INT)nRows - 1
+            aFoxArray[i+1, 1] := resultList[i][1] // Col 1: Name
+            aFoxArray[i+1, 2] := resultList[i][2] // Col 2: Type
+        NEXT
     ELSE
-        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
-        THROW ArgumentException{cMessage}
+        // nInfo 2, 3 not supported yet
+        THROW NotImplementedException{"AMEMBERS with nInfo=" + nArrayContentsID:ToString() + " is not fully implemented yet."}
     ENDIF
-
     RETURN nRows
 END FUNCTION
 
 /// <include file="VfpDocs.xml" path="Runtimefunctions/agetfileversion/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("AGETFILEVERSION", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.Medium)];
-FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
+FUNCTION AGetFileVersion (ArrayName AS USUAL, cFileName AS STRING) AS DWORD
     IF String.IsNullOrEmpty(cFileName) .OR. !File.Exists(cFileName)
         RETURN 0
     ENDIF
-
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     LOCAL oInfo AS FileVersionInfo
     TRY
         oInfo := FileVersionInfo.GetVersionInfo(cFileName)
@@ -448,35 +462,43 @@ FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
         RETURN 0
     ENDIF
 
-    ASize(ArrayName, 15)
+    ASize(aFoxArray, 15)
 
-    ArrayName[1] := oInfo:Comments ?? "" // 1. Comments
-    ArrayName[2] := oInfo:CompanyName ?? "" // 2. Company Name
-    ArrayName[3] := oInfo:FileDescription ?? "" // 3. File Description
-    ArrayName[4] := oInfo:FileVersion ?? "" // 4. File Version
-    ArrayName[5] := oInfo:InternalName ?? "" // 5. Internal Name
-    ArrayName[6] := oInfo:LegalCopyright ?? "" // 6. Legal Copyright
-    ArrayName[7] := oInfo:LegalTrademarks ?? "" // 7. Legal Trademarks
-    ArrayName[8] := oInfo:OriginalFilename ?? "" // 8. Original File Name
-    ArrayName[9] := oInfo:PrivateBuild ?? "" // 9. Private Build
-    ArrayName[10] := oInfo:ProductName ?? "" // 10. Product Name
-    ArrayName[11] := oInfo:ProductVersion ?? "" // 11. Product Version
-    ArrayName[12] := oInfo:SpecialBuild ?? "" // 12. Special Build
-    ArrayName[13] := "" // 13. OLE Self Registration (Not available in FileVersionInfo)
-    ArrayName[14] := oInfo:Language ?? "" // 14. Language
-    ArrayName[15] := "" // 15. Translation Code (this is complex and requires Win32 API)
+    aFoxArray[1] := oInfo:Comments ?? "" // 1. Comments
+    aFoxArray[2] := oInfo:CompanyName ?? "" // 2. Company Name
+    aFoxArray[3] := oInfo:FileDescription ?? "" // 3. File Description
+    aFoxArray[4] := oInfo:FileVersion ?? "" // 4. File Version
+    aFoxArray[5] := oInfo:InternalName ?? "" // 5. Internal Name
+    aFoxArray[6] := oInfo:LegalCopyright ?? "" // 6. Legal Copyright
+    aFoxArray[7] := oInfo:LegalTrademarks ?? "" // 7. Legal Trademarks
+    aFoxArray[8] := oInfo:OriginalFilename ?? "" // 8. Original File Name
+    aFoxArray[9] := oInfo:PrivateBuild ?? "" // 9. Private Build
+    aFoxArray[10] := oInfo:ProductName ?? "" // 10. Product Name
+    aFoxArray[11] := oInfo:ProductVersion ?? "" // 11. Product Version
+    aFoxArray[12] := oInfo:SpecialBuild ?? "" // 12. Special Build
+    aFoxArray[13] := "" // 13. OLE Self Registration (Not available in FileVersionInfo)
+    aFoxArray[14] := oInfo:Language ?? "" // 14. Language
+    aFoxArray[15] := "" // 15. Translation Code (this is complex and requires Win32 API)
 
     // TODO(irwin): Elements 13, 15 require low-level Win32 VerQueryValue API logic
     // which FileVersionInfo wraps but does not expose fully.
-
     RETURN 15
 END FUNCTION
 
 /// <include file="VfpDocs.xml" path="Runtimefunctions/aused/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("AUSED", FoxFunctionCategory.Array, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
+FUNCTION AUsed (ArrayName AS USUAL, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
 
     VAR oWA := RuntimeState.Workareas
+
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
 
     IF oWA == NULL
         RETURN 0
@@ -511,18 +533,12 @@ FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableNa
         RETURN 0
     ENDIF
 
-    IF ArrayName IS __FoxArray VAR foxArray
-        foxArray:ReDim(nCount, 2)
+    aFoxArray:ReDim(nCount, 2)
 
-        FOR VAR i := 0 TO (INT)nCount - 1
-            foxArray[i+1, 1] := sortedList[i]:Key
-            foxArray[i+1, 2] := sortedList[i]:Value
-        NEXT
-    ELSE
-        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
-        THROW ArgumentException{cMessage}
-    ENDIF
-
+    FOR VAR i := 0 TO (INT)nCount - 1
+        aFoxArray[i+1, 1] := sortedList[i]:Key
+        aFoxArray[i+1, 2] := sortedList[i]:Value
+    NEXT
     RETURN nCount
 END FUNCTION
 

@@ -41,10 +41,18 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="CodeTests.prg" />
+    <Compile Include="ConversionExtendedTests.prg" />
     <Compile Include="DateTimeTests.prg" />
+    <Compile Include="DebugFunctionsTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FileSearchTest.prg" />
+    <Compile Include="MacroCompilerTests.prg" />
+    <Compile Include="MemoFunctionsTests.prg" />
+    <Compile Include="NumericFunctionsTests.prg" />
     <Compile Include="OSTests.prg" />
+    <Compile Include="RuntimeStateTests.prg" />
+    <Compile Include="SetFunctionsTests.prg" />
+    <Compile Include="StringCompareFunctionsTests.prg" />
     <Compile Include="Support.prg" />
     <Compile Include="TimeTest.prg" />
     <Compile Include="ConversionTests.prg" />
@@ -57,6 +65,7 @@
     <Compile Include="IOTests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="NumericTest.prg" />
+    <Compile Include="NumericExtTests.prg" />
     <Compile Include="StringTests.prg">
       <SubType>Code</SubType>
     </Compile>

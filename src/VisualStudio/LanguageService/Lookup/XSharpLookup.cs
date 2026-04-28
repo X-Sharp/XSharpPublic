@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup

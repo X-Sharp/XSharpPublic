@@ -4,13 +4,13 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>VO Compatible type to allow name/value pairs for Ole Automation parameters</summary>
+/// <include file="XSharp.VO.Docs.xml" path="doc/NamedArg/*" />
 CLASS XSharp.NamedArg
-    /// <summary>Argument name.</summary>
+   /// <include file="XSharp.VO.Docs.xml" path="doc/NamedArg.ArgName/*" />
    PROPERTY ArgName AS STRING AUTO
-    /// <summary>Argument value.</summary>
+   /// <include file="XSharp.VO.Docs.xml" path="doc/NamedArg.Value/*" />
    PROPERTY @@Value AS USUAL AUTO
-   /// <summary>Construct a NamedArg object</summary>
+   /// <include file="XSharp.VO.Docs.xml" path="doc/NamedArg.ctor/*" />
    CONSTRUCTOR( symArgName AS STRING, uValue AS USUAL )
       SELF:ArgName	:= symArgName
       SELF:Value	:= uValue

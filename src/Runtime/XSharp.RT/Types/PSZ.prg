@@ -14,10 +14,7 @@ USING System.Reflection
 
 BEGIN NAMESPACE XSharp
 
-/// <summary>Internal type that implements the XBase Compatible PSZ type.<br/>
-/// This type has many operators and implicit converters that normally are never directly called from user code.
-/// </summary>
-/// <include file="RTComments.xml" path="Comments/PSZ/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Psz/*" />
 [DebuggerDisplay( "{DebuggerString(),nq}", Type := "PSZ" ) ] ;
 [Serializable];
 STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable

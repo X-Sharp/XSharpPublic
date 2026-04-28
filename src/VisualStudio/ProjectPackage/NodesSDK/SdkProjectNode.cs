@@ -350,9 +350,16 @@ namespace XSharp.Project
                 if (!(node is XSharpSdkFolderNode) && node.ItemNode != null
                     && node.ItemNode.Item != null)
                 {
+                    try
+                    {
                     this.BuildProject.RemoveItem(node.ItemNode.Item);
                     Logger.Information($"Removed folder node {node.Caption} from project {this.Caption}");
                     dirty = true;
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             if (this.GetProjectProperty(ProjectFileConstants.ProjectGuid) != null)

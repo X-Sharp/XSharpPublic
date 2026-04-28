@@ -122,9 +122,7 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='SQLProperty' >SQLProperty Enum</see>.</param>
-/// <seealso cref="SQLProperty" />
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SqlGetProp/*" />
 FUNCTION SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
@@ -135,9 +133,7 @@ FUNCTION SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='SQLProperty'>SQLProperty Enum</see>.</param>
-/// <seealso cref="SQLProperty" />
+/// <include file="XSharp.VFP.Docs.xml" path="doc/SqlSetProp/*" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS USUAL) AS LONG
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
@@ -157,9 +153,19 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType
     RETURN SqlFunctions.SqlColumns( nStatementHandle, cTableName, cType, cCursorName)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asqlhandles/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("ASQLHANDLES", FoxFunctionCategory.Array, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS DWORD
+FUNCTION ASqlHandles ( ArrayName AS USUAL, nStatementHandle := NIL AS USUAL) AS DWORD
     LOCAL aResult AS ARRAY
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSEIF IsNil(ArrayName)
+        aFoxArray := __FoxArray{}
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     IF IsNumeric(nStatementHandle)
         VAR oStmt := GetStatement(nStatementHandle)
         VAR oConn := oStmt:Connection
@@ -173,11 +179,12 @@ FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS D
             AAdd(aResult, oStmt:Handle)
         NEXT
     ENDIF
+
     IF ALen(aResult) > 0
-        ASize(ArrayName, ALen(aResult))
-        ACopy(aResult, ArrayName)
+        ASize(aFoxArray, ALen(aResult))
+        ACopy(aResult, aFoxArray)
     ENDIF
-    RETURN ALen(aResult)
+    RETURN ALen(aFoxArray)
 /// <exclude />
 FUNCTION SqlParameters( nStatementHandle AS LONG, oParams AS OBJECT) AS LONG
     RETURN SqlFunctions.SqlParameters(nStatementHandle, oParams)

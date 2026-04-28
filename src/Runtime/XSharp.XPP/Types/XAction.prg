@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,11 +7,11 @@
 
 begin namespace XSharp.XPP
 
-/// <summary>Helper class that stores actions (codeblocks) for XML nodes</summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/XAction/*" />
 class XAction
-    /// <summary>XML node name for which the action runs.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XAction.Name/*" />
     property Name as string auto
-    /// <summary>Codeblock to run for the action</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XAction.Block/*" />
     property Block as codeblock auto
     constructor(cName as string, oBlock as codeblock)
         Name := cName

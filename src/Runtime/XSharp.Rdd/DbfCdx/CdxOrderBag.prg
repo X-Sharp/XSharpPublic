@@ -15,9 +15,7 @@ USING System.Diagnostics
 //#define CHECKVERSIONS
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-    /// <summary>
-    /// Orderbag = CDX file. Contains one or more orders = Tags
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxOrderBag/*" />
     [DebuggerDisplay("{FullPath,nq} {Tags.Count} tags")];
     INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex
 #region constants

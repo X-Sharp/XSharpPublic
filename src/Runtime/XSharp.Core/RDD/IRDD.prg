@@ -1,421 +1,282 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
-/// <summary>Definition for the interface that each RDD must implement</summary>
-/// <seealso cref="T:XSharp.RDD.Workarea"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/IRdd/*" />
 INTERFACE XSharp.RDD.IRdd
 	// Navigation
-	/// <summary>Evaluate a code block for each row.</summary>
-	/// <param name="info">object containing the information about which rows to visit.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.DbEval/*" />
 	METHOD DbEval(info AS DbEvalInfo)		AS LOGIC
 
-	/// <summary>Position the cursor to the first logical row.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GoTop/*" />
 	METHOD GoTop()							AS LOGIC
 
-	/// <summary>Position the cursor to the last logical row.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GoBottom/*" />
 	METHOD GoBottom()						AS LOGIC
 
-	/// <summary>Position the cursor to a specific, physical row.</summary>
-	/// <param name="nRec">The ONE based row number of the new cursor position.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GoTo/*" />
 	METHOD GoTo(nRec AS DWORD)				AS LOGIC
 
-	/// <summary>Position the cursor to a specific, physical identity.</summary>
-	/// <param name="oRec">The ONE based row ID of the new cursor position.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GoToId/*" />
 	METHOD GoToId(oRec AS OBJECT)			AS LOGIC
 
-	/// <summary>Position the cursor relative to its current position.</summary>
-	/// <param name="nToSkip">The number of rows to skip.
-    /// If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Skip/*" />
 	METHOD Skip(nToSkip AS INT)				AS LOGIC
 
-	/// <summary>Position the cursor, respecting scope and filter conditions.</summary>
-	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive,
-    /// the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SkipFilter/*" />
 	METHOD SkipFilter(nToSkip AS INT)		AS LOGIC
 
-	/// <summary>Position the cursor regardless of scope and filter conditions.</summary>
-	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SkipRaw/*" />
 	METHOD SkipRaw(nToSkip AS INT)			AS LOGIC
 
-	/// <summary>Position the cursor relative to its current position within the current scope.</summary>
-	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SkipScope/*" />
 	METHOD SkipScope(nToSkip AS INT)		AS LOGIC
 
 	// Append and Delete
-	/// <summary>Append a blank row and position the cursor to the new row.</summary>
-	/// <param name="lReleaseLock">A flag that is TRUE if you want to clear all pending row locks before appending the new row and FALSE if you want to add the new row to the end of the current lock list.</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Append/*" />
 	METHOD Append(lReleaseLock AS LOGIC)	AS LOGIC
 
-	/// <summary>Mark the row at the current cursor position for deletion.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Delete/*" />
 	METHOD Delete()							AS LOGIC
 
-	/// <summary>Retrieve the RDD's record buffer as array of bytes.</summary>
-    /// <returns>Record buffer of the RDD. This is the original buffer, so changing this buffer may cause corruption !</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GetRec/*" />
 	METHOD GetRec()							AS BYTE[]
 
-	/// <summary>Physically remove rows marked for deletion.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Pack/*" />
 	METHOD Pack()							AS LOGIC
 
-	/// <summary>Replace the row at the current cursor position with the contents of a byte array.</summary>
-	/// <param name="aRec">The buffer containing the information that you want to write.</param>
-	/// <note>The buffer should have at least the # of bytes that matches the current record size.</note>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.PutRec/*" />
     METHOD PutRec(aRec AS BYTE[])			AS LOGIC
 
-	/// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Recall/*" />
     METHOD Recall()							AS LOGIC
 
-	/// <summary>Physically remove all rows from a table.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Zap/*" />
     METHOD Zap()							AS LOGIC
 
 	// Open and Close
-	/// <summary>Close a table.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Close/*" />
 	METHOD Close() 							AS LOGIC
 
-	/// <summary>Create a table.</summary>
-	/// <param name="info">object describing the file to create.</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Create/*" />
 	METHOD Create(info AS DbOpenInfo)		AS LOGIC
 
-	/// <summary>Open a table.</summary>
-	/// <param name="info">object describing the file to open.</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Open/*" />
 	METHOD Open(info AS DbOpenInfo)			AS LOGIC
 
 	// Filtering and Scoping
-	/// <summary>Clear the active filter condition.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ClearFilter/*" />
 	METHOD ClearFilter() 					AS LOGIC
 
-	/// <summary>Clear the active locate condition.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ClearScope/*" />
 	METHOD ClearScope() 					AS LOGIC
 
-	/// <summary>Goto the next record based on the corrent locate condition.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Continue/*" />
 	METHOD Continue()						AS LOGIC
 
 	//METHOD CountScope(pOpt as PTR)		AS LONG
-	/// <summary>Retrieve the active locate condition.</summary>
-    /// <returns>The current scope information for the RDD.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GetScope/*" />
 	METHOD GetScope()						AS DbScopeInfo
 
-	/// <summary>Set the filter condition.</summary>
-    /// <param name="info">object containing the filter information.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SetFilter/*" />
 	METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC
 
-	/// <summary>Set the locate condition.</summary>
-	/// <param name="info">object containing the scope information.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SetScope/*" />
 	METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
 
 	// Fields
-	/// <summary>Set the Number of Fields the AddField Method will add.</summary>
-    /// <param name="fieldCount">Number of fields that will be added.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SetFieldExtent/*" />
 	METHOD SetFieldExtent(fieldCount AS LONG ) AS LOGIC
 
-	/// <summary>Add a column.</summary>
-    /// <param name="info">RddFieldInfo object.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.AddField/*" />
 	METHOD AddField(info AS RddFieldInfo)	AS LOGIC
 
-	/// <summary>Add columns defined in an array.</summary>
-    /// <param name="aFields">Array of RddFieldInfo objects.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.CreateFields/*" />
 	METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
 
-	/// <summary>Return the ONE based field index for a field name.</summary>
-    /// <param name="fieldName">The name of the field in the database file structure. When the name is not found it will also check for a field alias with this name.</param>
-    /// <returns>The ONE based position of the field in the database file structure.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.FieldIndex/*" />
 	METHOD FieldIndex(fieldName AS STRING)	AS LONG
 
-	/// <summary>Retrieve and optionally change information about a column.</summary>
-    /// <param name="nFldPos">The ONE based position of the field in the database file structure.</param>
-    /// <param name="nOrdinal">Specifies the type of information.</param>
-    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
-    /// <returns>The current value for the property indicated with &lt;nOrdinal&gt;</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.FieldInfo/*" />
 	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
 
-	/// <summary>Retrieve a column name based on its ONE based column number.</summary>
-	/// <param name="nFldPos">The ONE based position of the column whose name you want to obtain.</param>
-    /// <returns>The name of the column.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.FieldName/*" />
 	METHOD FieldName(nFldPos AS LONG)		AS STRING
 
-	/// <summary>Retrieve the field information for a column based on its ONE based column number.</summary>
-    /// <param name="nFldPos">The ONE based position of the column whose info you want to obtain.</param>
-    /// <returns>The Field information for the specified field.</returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GetField/*" />
     METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
 	// Read & Write
 
-    /// <summary>Get a value for the specified column.</summary>
-	/// <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
-    /// <returns>The value of the specified field.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GetValue/*" />
 	METHOD GetValue(nFldPos AS LONG)		AS OBJECT
 
-    /// <summary>Get the value for a column and write (export) it to an external file.</summary>
-	/// <param name="nFldPos">ONE based position for which the value should be retrieved.</param>
-	/// <param name="fileName">Name of the file that needs to be written to.</param>
-    /// <returns>TRUE when the operation succeeded. Otherwise FALSE to indicate a failure.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GetValueFile/*" />
 	METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 
-    /// <summary>Get the length of the for the specified column.</summary>
-	/// <param name="nFldPos">ONE based position for which the length should be retrieved.</param>
-    /// <returns>The length of the value of the specified field.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GetValueLength/*" />
 	METHOD GetValueLength(nFldPos AS LONG)	AS LONG
 
-    /// <summary>Flush the changes to the table, its indexes and memo file.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Flush/*" />
     METHOD Flush() 							AS LOGIC
 
-    /// <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GoCold/*" />
 	METHOD GoCold()							AS LOGIC
 
-	/// <summary>Mark a data buffer as hot, indicating that it needs to be written to the data store.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.GoHot/*" />
 	METHOD GoHot()							AS LOGIC
 
-	/// <summary>Write a value for a specified column</summary>
-	/// <param name="nFldPos">ONE based position for which the value should be written.</param>
-	/// <param name="oValue">New value that needs to written to the table this column.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.PutValue/*" />
 	METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 
-	/// <summary>Read (Import) a value from an external file and write it to the specified column.</summary>
-	/// <param name="nFldPos">ONE based position for which the value should be written.</param>
-	/// <param name="fileName">Name of the file that needs to be read from.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.PutValueFile/*" />
 	METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 
-	/// <summary>Discard all changes to the current record and reread the buffer from disk. When the current buffer is in Append mode then the server will move to the bottom of the file.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Refresh/*" />
 	METHOD Refresh() 							AS LOGIC
 	// Locking
 
-	/// <summary>Add a newly appended row to the list of locked rows.</summary>
-	/// <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.AppendLock/*" />
 	METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
 
-	/// <summary>Lock or unlock the header of a database file.</summary>
-	/// <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.HeaderLock/*" />
 	METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 
-	/// <summary>Perform a lock.</summary>
-	/// <param name="uiMode">An object specifying the kind of lock to acquire.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Lock/*" />
 	METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC
 
-	/// <summary>Release locks.</summary>
-	/// <param name="oRecId">The row number to unlock.  This argument is provided for drivers that support multiple row locks.  By convention, a value of zero indicates that all rows should be unlocked.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.UnLock/*" />
 	METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
 
 	// Memo File Access
-	/// <summary>Close the memo file</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.CloseMemFile/*" />
 	METHOD CloseMemFile() 					AS LOGIC
 
-	/// <summary>Create the memo file</summary>
-	/// <param name="info">object describing the file to create.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.CreateMemFile/*" />
 	METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 
-	/// <summary>Open the memo file </summary>
-	/// <param name="info">object describing the file to open.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OpenMemFile/*" />
 	METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC
 
 	// Indexes
 
-	/// <summary>Set the condition for the next Index Creation</summary>
-    /// <param name="info">An object containing information for the order condition.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderCondition/*" />
     METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 
-	/// <summary>Create a new index or tag.</summary>
-	/// <param name="info">An object containing information for order creation.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderCreate/*" />
     METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 
-	/// <summary>Delete an index or tag.</summary>
-	/// <param name="info">An object containing information about the order to remove.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderDestroy/*" />
 	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Retrieve information about an index.</summary>
-	/// <param name="info">An object containing information about the order to retrieve the info for.</param>
-	/// <param name="nOrdinal">Specifies the type of information to retrieve.</param>
-    /// <returns>The requested value for the specified index.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderInfo/*" />
 	METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 
-	/// <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
-	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderListAdd/*" />
 	METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
-	/// <param name="info"></param>
-	/// <param name="info">An object containing information about the orderlist (file) to delete.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderListDelete/*" />
 	METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
-	/// <param name="info">An object containing information about the order to select.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderListFocus/*" />
 	METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Rebuild all indexes for the current Workarea.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.OrderListRebuild/*" />
 	METHOD OrderListRebuild() AS LOGIC
 
-	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
-	/// <param name="info">An object containing containing the necessary seek information.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Seek/*" />
 	METHOD Seek(info AS DbSeekInfo) AS LOGIC
 
 	// Relations
 
-	/// <summary>Report the initialization of a relation.</summary>
-	/// <param name="info">An object containing information about the relation</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ChildEnd/*" />
 	METHOD ChildEnd(info AS DbRelInfo)				AS LOGIC
 
-	/// <summary>Report the initialization of a relation.</summary>
-	/// <param name="info">An object containing information about the relation</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ChildStart/*" />
 	METHOD ChildStart(info AS DbRelInfo)			AS LOGIC
 
-	/// <summary>Post a pending relational movement, indicating that the specified child work area has been affected by a parental movement.</summary>
-	/// <param name="info">An object containing information about the relation</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ChildSync/*" />
 	METHOD ChildSync(info AS DbRelInfo)				AS LOGIC
 
-	/// <summary>Clear relations.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ClearRel/*" />
 	METHOD ClearRel()								AS LOGIC
 
-	/// <summary>Force all pending relational seeks to be performed.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.ForceRel/*" />
 	METHOD ForceRel()								AS LOGIC
 
-	/// <summary>Retrieve the logical number of a related work area.</summary>
-	/// <param name="nRelNum">The ONE based relation number for which to obtain the logical number.</param>
-    /// <returns>The area number of the relation.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RelArea/*" />
 	METHOD RelArea(nRelNum AS DWORD)					AS DWORD
 
-	/// <summary>Evaluate a code block against the relation in a work area.</summary>
-	/// <param name="info">An object containing information about the relation</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RelEval/*" />
 	METHOD RelEval(info AS DbRelInfo)				AS LOGIC
 
-	/// <summary>Retrieve the key expression of a relation.</summary>
-	/// <param name="nRelNum">The ONE based relation number for which to obtain the key expression. </param>
-    /// <returns>The key expression of the relation.</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RelText/*" />
 	METHOD RelText(nRelNum AS DWORD)					AS STRING
 
-	/// <summary>Set a relation.</summary>
-	/// <param name="info">An object containing information about the relation</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SetRel/*" />
 	METHOD SetRel(info AS DbRelInfo)				AS LOGIC
 
-	/// <summary>Force relational movement in child work areas to synchronize them with the parent work area.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.SyncChildren/*" />
 	METHOD SyncChildren()							AS LOGIC
 
 	// Bulk Operations
-	/// <summary>Physically reorder a table.</summary>
-	/// <param name="info">An object containing information about now to sort the table.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Sort/*" />
 	METHOD Sort(info AS DbSortInfo)					AS LOGIC
 
-	/// <summary>Copy one or more rows from one work area to another.</summary>
-	/// <param name="info">An object containing information about the transfer of data.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Trans/*" />
     METHOD Trans(info AS DbTransInfo) 				AS LOGIC
 
-	/// <summary>Copy a single row from one work area to another.</summary>
-	/// <param name="info">An object containing information about the transfer of data.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.TransRec/*" />
     METHOD TransRec(info AS DbTransInfo) 			AS LOGIC
 
 	// Blob
-	/// <summary>Retrieve information about a memo column.</summary>
-    /// <param name="nOrdinal">Specifies the type of information.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.BlobInfo/*" />
 	METHOD BlobInfo(uiPos AS DWORD, nOrdinal AS DWORD) AS OBJECT
 
 	// Codeblock Support
-	/// <summary>Compile an expression.</summary>
-	/// <param name="sBlock">The expression to compile.</param>
 
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Compile/*" />
 	METHOD Compile(sBlock AS STRING)				AS ICodeblock
-	/// <summary>Evaluate a code block.</summary>
-	/// <param name="sBlock">The code block to evaluate.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.EvalBlock/*" />
 	METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT
 
-	/// <summary>Retrieve and optionally change information about a work area.</summary>
-    /// <param name="nOrdinal">Specifies the type of information.</param>
-    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
 
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Info/*" />
 	METHOD Info(nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
 
-	/// <summary>Retrieve and optionally change information about a row.</summary>
-    /// <param name="nOrdinal">Specifies the type of information.</param>
-    /// <param name="oRecid">If specified (not null), then this parameter is used to specify for which object to retrieve the info.</param>
-    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RecInfo/*" />
 	METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
 
 	// Properties
-	/// <summary>Retrieve the alias name.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Alias/*" />
 	PROPERTY Alias 		AS STRING	GET SET
-	/// <summary>Retrieve the Workarea number.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Area/*" />
 	PROPERTY Area		AS DWORD	GET SET
-	/// <summary>Is the table at the logical beginning-of-file.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.BoF/*" />
 	PROPERTY BoF 		AS LOGIC	GET
-	/// <summary>Is the current row deleted?</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Deleted/*" />
 	PROPERTY Deleted 	AS LOGIC	GET
-	/// <summary>Driver (RDD) name of the object.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Driver/*" />
     PROPERTY Driver     AS STRING	GET
-	/// <summary>Is the table at the logical end-of-file.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.EoF/*" />
     PROPERTY EoF 		AS LOGIC	GET
-	/// <summary>Is the Workarea opened Exclusively</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Exclusive/*" />
 	PROPERTY Exclusive	AS LOGIC	GET
-	/// <summary>The # of fields in the current Workarea.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.FieldCount/*" />
 	PROPERTY FieldCount AS LONG		GET
-	/// <summary>The filter condition as a string.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.FilterText/*" />
 	PROPERTY FilterText	AS STRING	GET
-	/// <summary>The outcome of the last search operation.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Found/*" />
 	PROPERTY Found		AS LOGIC	GET SET
-	/// <summary>The number of rows.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RecCount/*" />
 	PROPERTY RecCount	AS DWORD	GET
-	/// <summary>The row identifier at the current cursor position.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RecId/*" />
 	PROPERTY RecId		AS OBJECT	GET		// Does not have to be numeric.
-	/// <summary>The physical row identifier at the current cursor position.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.RecNo/*" />
 	PROPERTY RecNo		AS DWORD	GET
-	/// <summary>Is the current Workarea opened Shared?</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IRdd.Shared/*" />
 	PROPERTY Shared		AS LOGIC	GET
 
 END INTERFACE

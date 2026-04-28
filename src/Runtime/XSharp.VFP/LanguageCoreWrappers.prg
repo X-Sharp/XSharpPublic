@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING XSharp.Internal
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/left/*" />
 [FoxProFunction("LEFT", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -288,11 +289,36 @@ FUNCTION DToC(dDate AS DATE) AS STRING
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fdate/*" />
 [FoxProFunction("FDATE", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FDate(cFileName AS STRING, nType := 0 AS INT) AS USUAL
-    RETURN XSharp.Core.Functions.FDate()
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        IF nType == 1
+            RETURN info:LastWriteTime
+        ELSE
+            RETURN (DATE) info:LastWriteTime
+        ENDIF
+    ENDIF
+
+    IF nType == 1
+        RETURN System.DateTime.MinValue
+    ELSE
+        RETURN NULL_DATE
+    ENDIF
+
+FUNCTION FDate() AS USUAL
+    RETURN (DATE) XSharp.Core.Functions.FDate()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ftime/*" />
 [FoxProFunction("FTIME", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION FTime(cFileName AS STRING) AS STRING
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        RETURN info:LastWriteTime:ToString("HH:mm:ss")
+    ENDIF
+    RETURN ""
+
+FUNCTION FTime() AS STRING
     RETURN XSharp.Core.Functions.FTime()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/time/*" />
@@ -301,9 +327,83 @@ FUNCTION Time(nExpression := 0 AS INT) AS STRING
     RETURN XSharp.Core.Functions.Time()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/acopy/*" />
+[FoxArrayInputParameter(2)];
 [FoxProFunction("ACOPY", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION ACopy(aSource AS USUAL, aTarget AS USUAL, nStart := 1 AS USUAL, nCount := -1 AS USUAL, nTargetPos := 1 AS USUAL) AS ARRAY
-    RETURN XSharp.RT.Functions.ACopy(aSource, aTarget, nStart, nCount, nTargetPos)
+FUNCTION ACopy(aSource AS USUAL, aTarget AS USUAL, nStart := 1 AS USUAL, nCount := -1 AS USUAL, nTargetPos := 1 AS USUAL) AS DWORD
+    LOCAL nSourceLen AS LONG
+    LOCAL nStartPos AS LONG
+    LOCAL nElements AS LONG
+    LOCAL nDestPos AS LONG
+    LOCAL nReqSize AS LONG
+    LOCAL nTargetLen AS LONG
+
+    IF !IsArray(aSource)
+        THROW Error.ArgumentError(__FUNCTION__, NAMEOF(aSource), 1, <OBJECT>{ aSource} )
+    ENDIF
+
+    IF !IsArray(aTarget)
+        aTarget := __FoxArray{}
+    ENDIF
+
+    nSourceLen := (LONG) XSharp.RT.Functions.ALen(aSource)
+    IF nSourceLen == 0
+        RETURN 0
+    ENDIF
+
+    nStartPos := 1
+    IF !IsNil(nStart) .AND. IsNumeric(nStart)
+        nStartPos := (LONG) nStart
+    ENDIF
+
+    IF nStartPos < 1
+        nStartPos := 1
+    ENDIF
+
+    IF !IsNil(nCount) .AND. IsNumeric(nCount) .AND. (LONG)nCount >= 0
+        nElements := (LONG) nCount
+    ELSE
+        nElements := nSourceLen - nStartPos + 1
+    ENDIF
+
+    IF nStartPos + nElements - 1 > nSourceLen
+        nElements := nSourceLen - nStartPos + 1
+    ENDIF
+
+    IF nElements <= 0
+        RETURN 0
+    ENDIF
+
+    nDestPos := 1
+    IF !IsNil(nTargetPos) .AND. IsNumeric(nTargetPos)
+        nDestPos := (LONG) nTargetPos
+    ENDIF
+
+    IF nDestPos < 1
+        nDestPos := 1
+    ENDIF
+
+    nTargetLen := (LONG) XSharp.RT.Functions.ALen(aTarget)
+
+    IF nTargetLen == 0 .AND. aSource IS __FoxArray VAR arrSource .AND. aTarget IS __FoxArray VAR arrTarget
+        IF arrSource:MultiDimensional
+            arrTarget:ReDim((DWORD)arrSource:Rows, (DWORD)arrSource:Columns)
+        ENDIF
+    ENDIF
+
+    nTargetLen := (LONG) XSharp.RT.Functions.ALen(aTarget)
+    nReqSize := nDestPos - 1 + nElements
+
+    IF nTargetLen < nReqSize
+        IF aTarget IS __FoxArray VAR arrTarget2
+            arrTarget2:Resize(nReqSize)
+        ELSEIF aTarget IS ARRAY VAR arrTarget2
+            XSharp.RT.Functions.ASize(arrTarget2, (DWORD)nReqSize)
+        ENDIF
+    ENDIF
+
+    XSharp.RT.Functions.ACopy(aSource, aTarget, (DWORD)nStartPos, (DWORD)nElements, (DWORD)nDestPos)
+
+    RETURN (DWORD) nElements
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ascan/*" />
 [FoxProFunction("ASCAN", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];

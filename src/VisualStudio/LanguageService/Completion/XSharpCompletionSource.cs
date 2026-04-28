@@ -12,6 +12,7 @@ using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Tagging;
 using XSharp.Settings;
+using XSharp.Support;
 #if ! ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {

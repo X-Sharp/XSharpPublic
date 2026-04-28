@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,21 +8,15 @@ USING XSharp.ADS
 using System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 
-/// <summary>Return the AXS locking status.</summary>
-///<returns>The current Advantage Locking setting.</returns>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_AXSLocking/*" />
 FUNCTION AX_AXSLocking( ) AS LOGIC
     RETURN AX_RddHelper(_SET_AXSLOCKING, TRUE)
 
-/// <summary>Return and set the AXS locking status.</summary>
-/// <returns>The previous Advantage Locking setting.</returns>
-/// <param name="bMode">The new Advantage Locking setting.</param>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_AXSLocking_2/*" />
 FUNCTION AX_AXSLocking( bMode AS LOGIC) AS LOGIC
     RETURN AX_RddHelper(_SET_AXSLOCKING, bMode, TRUE)
 
-/// <summary>Writes a BLOB contained in a memo field to a file.</summary>
-/// <returns>Returns True (.T.) if the BLOB is written to a file, returns False (.F.) if not.</returns>
-/// <param name="cFileName">File name to write to.</param>
-/// <param name="cFieldName">Field name to read from.</param>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_BLOB2File/*" />
 FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC
     LOCAL hTable AS DWORD
     LOCAL ulRetCode AS DWORD
@@ -31,10 +25,7 @@ FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC
     ulRetCode := ACE.AdsBinaryToFile( hTable, cFieldName , cFileName )
     RETURN ulRetCode == 0
 
-/// <summary>Stores the contents of a file into a memo field.</summary>
-/// <returns>Returns True (.T.) if the file contents are copied into the memo field; returns False (.F.) if not.</returns>
-/// <param name="cFileName">File name to read from.</param>
-/// <param name="cFieldName">Field name to write to.</param>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_File2BLOB/*" />
 FUNCTION AX_File2BLOB( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC
     LOCAL hTable AS DWORD
     LOCAL ulRetCode AS DWORD
@@ -42,11 +33,7 @@ FUNCTION AX_File2BLOB( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC
     ulRetCode := ACE.AdsFileToBinary( hTable, cFieldName , ACE.ADS_BINARY , cFileName )
     RETURN ulRetCode == 0
 
-/// <summary>Returns the Advantage Client Engine index handle that corresponds with the specified index in the current work area.
-/// The handle can be used to call any Advantage Client Engine API directly.</summary>
-/// <returns>An Advantage Client Engine index order handle or 0 if no index was found.</returns>
-/// <param name="uIndexFile">filename or NIL</param>
-/// <param name="uOrder">order name, number, or NIL</param>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_GetAceIndexHandle/*" />
 FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS IntPtr
     LOCAL oRet := NULL AS OBJECT
     IF CoreDb.OrderInfo(DBOI_GET_ACE_INDEX_HANDLE, "", uOrder, REF oRet)
@@ -56,16 +43,12 @@ FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS IntPtr
     ENDIF
     RETURN 0
 
-/// <summary>Returns the Advantage Client Engine index handle that corresponds with the specified index in the current work area.
-/// The handle can be used to call any Advantage Client Engine API directly.</summary>
-/// <returns>An Advantage Client Engine index order handle or 0 if no index was found.</returns>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/GetAceIndexHandle/*" />
 FUNCTION GetAceIndexHandle() AS IntPtr
     RETURN AX_GetAceIndexHandle(NULL_OBJECT, NULL_OBJECT)
 
 
-/// <summary>Returns the statement handle for the current workarea.  This handle can be used
-/// to call the Advantage Client Engine directly.  Only for use with the AXSQL RDDs.</summary>
-/// <returns> Returns a 0 if there is a problem.</returns>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_GetAceStmtHandle/*" />
 FUNCTION AX_GetAceStmtHandle() AS IntPtr
     LOCAL oHandle := NULL AS OBJECT
     IF CoreDb.Info( DBI_GET_ACE_STMT_HANDLE , REF oHandle)
@@ -75,8 +58,7 @@ FUNCTION AX_GetAceStmtHandle() AS IntPtr
     ENDIF
     RETURN 0
 
-/// <summary>Returns the table handle for the current workarea.  This handle can be used to call the Advantage Client Engine directly.</summary>
-/// <returns>Returns a 0 if there is a problem.</returns>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_GetAceTableHandle/*" />
 FUNCTION AX_GetAceTableHandle() AS IntPtr
     LOCAL oHandle := NULL AS OBJECT
     IF CoreDb.Info( DBI_GET_ACE_TABLE_HANDLE , REF oHandle)
@@ -91,17 +73,12 @@ FUNCTION GetAceTableHandle() AS IntPtr
     RETURN AX_GetAceTableHandle()
 
 
-/// <summary>Return .T. if Advantage is loaded on the specified location.</summary>
-/// <remarks>cFileName must start with a drive letter ("X:\") or a UNC path ("\\server\volume\path\")</remarks>
-/// <param name="cFileName">String containing drive letter or server name to check.
-/// If the application uses a server name as the parameter, it must include the share or
-/// volume name as well. For example, use "\\server\share" or "\\server\vol:"..</param>
-/// <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_IsServerLoaded/*" />
 FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC //
     ACE.AdsIsServerLoaded  (  cFileName , OUT VAR usLoaded )
     RETURN ( usLoaded == ACE.ADS_REMOTE_SERVER  .OR. usLoaded = ACE.ADS_AIS_SERVER )
 
-/// <summary>Indicates the percent completion of an index build</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_PercentIndexed/*" />
 FUNCTION AX_PercentIndexed() AS INT
     LOCAL oRet := NULL AS OBJECT
     IF CoreDb.OrderInfo(DBOI_AXS_PERCENT_INDEXED, NULL, NULL, REF oRet)
@@ -111,34 +88,31 @@ FUNCTION AX_PercentIndexed() AS INT
 
 
 
-/// <summary>Return the AXS Rights Checking status.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_RightsCheck/*" />
 FUNCTION AX_RightsCheck( ) AS LOGIC
     RETURN AX_RddHelper(_SET_RIGHTSCHECKING, TRUE)
 
-/// <summary>Return and set the AXS Rights Checking status.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_RightsCheck_2/*" />
 FUNCTION AX_RightsCheck( bMode AS LOGIC) AS LOGIC
     RETURN AX_RddHelper(_SET_RIGHTSCHECKING, bMode, TRUE)
 
-/// <summary>This function specifies which collation language to use when opening tables, opening cursors, or creating tables.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetCollation/*" />
 FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
     LOCAL oldCollation := strCollation AS OBJECT
     CoreDb.RddInfo( _SET_COLLATION_NAME, REF oldCollation )
     RETURN (STRING) oldCollation
 
-/// <summary>Sets the connection handle for all successive table opens.</summary>
-/// <param name="ptrHandle">Connection handle that was returned by AdsConnect60</param>
-/// <seealso cref="AdsConnect60">AdsConnect60 Function</seealso>
-/// <seealso cref='AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetConnectionHandle/*" />
 PROCEDURE AX_SetConnectionHandle( ptrHandle AS IntPtr )
     CoreDb.RddInfo( _SET_CONNECTION_HANDLE, ptrHandle )
     RETURN
 
 
-/// <summary>Returns the Exact Key Position Flag.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetExactKeyPos/*" />
 FUNCTION AX_SetExactKeyPos( ) AS LOGIC
     RETURN AX_RddHelper(_SET_EXACTKEYPOS, TRUE)
 
-/// <summary>Returns and sets the Exact Key Position Flag.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetExactKeyPos_2/*" />
 FUNCTION AX_SetExactKeyPos( bMode AS LOGIC) AS LOGIC
     RETURN AX_RddHelper(_SET_EXACTKEYPOS, bMode, TRUE)
 
@@ -164,7 +138,7 @@ INTERNAL FUNCTION AX_RddHelper(iInfo AS INT, lNewValue AS LOGIC, lDefault AS LOG
 RETURN bRetVal
 
 
-/// <summary>Sets the password to be used for subsequent encryption/decryption operations.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetPassword/*" />
 PROCEDURE AX_SetPassword( szEncodeKey AS STRING ) // Set password for record encryption
     IF String.IsNullOrEmpty(szEncodeKey)
         ACE.AdsDisableEncryption( AX_GetAceTableHandle() )
@@ -173,7 +147,7 @@ PROCEDURE AX_SetPassword( szEncodeKey AS STRING ) // Set password for record enc
     ENDIF
     RETURN
 
-/// <summary>Determines which type of Advantage server the client application can use.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetServerType/*" />
 FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGIC, lUseLocalServer AS LOGIC) AS LOGIC // determine which Advantage server to connect to
     LOCAL usServerTypes AS WORD
     LOCAL ulRetCode AS DWORD
@@ -194,14 +168,12 @@ FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGI
     RETURN  ulRetCode == 0
 
 
-/// <summary>Sets passwords for encrypted tables for use with the AXSQL RDDs.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_SetSQLTablePasswords/*" />
 FUNCTION AX_SetSQLTablePasswords( aPasswords AS OBJECT ) AS VOID
     CoreDb.RddInfo( _SET_SQL_TABLE_PASSWORDS, aPasswords )
     RETURN
 
-/// <summary>Begins, commits, rolls back, or shows the state of a transaction</summary>
-/// <param name="iAction">The parameter can be: AX_BEGIN_TRANSACTION, AX_COMMIT_TRANSACTION, AX_ROLLBACK_TRANSACTION, AX_ISACTIVE_TRANSACTION</param>
-/// <returns>True if the command was successful, False if not.</returns>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_Transaction/*" />
 FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
     LOCAL ulRetVal AS DWORD
     //
@@ -229,15 +201,14 @@ FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
     RETURN  ulRetVal == 0
 
 
-/// <summary>Is a transaction pending </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_Transaction_2/*" />
 FUNCTION AX_Transaction( ) AS LOGIC // Transaction call
     LOCAL ulRetVal AS DWORD
     ulRetVal := ACE.AdsInTransaction( 0, OUT VAR usInTrans )
     RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
 
 
-/// <summary>return .T. if the current workarea is using Advantage Server or AIS Server and
-/// .F. IF USING Advantage RDD IN a LOCAL mode</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AX_UsingClientServer/*" />
 FUNCTION AX_UsingClientServer( ) AS LOGIC
     LOCAL ulRetCode AS DWORD
     LOCAL ConnectionHandle := 0 AS IntPtr
@@ -258,51 +229,51 @@ FUNCTION AX_UsingClientServer( ) AS LOGIC
 
 
     #region Wrapper functions found in dbfaxs.prg in VO
-/// <summary>Commits an active transaction on the given connection.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsCommitTransaction/*" />
 FUNCTION DBFAXSAdsCommitTransaction ( hConnect AS IntPtr ) AS DWORD
     RETURN ACE.AdsCommitTransaction(hConnect)
 
-/// <summary>Determines if an Advantage server is available.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsIsServerLoaded/*" />
 FUNCTION DBFAXSAdsIsServerLoaded ( strServer AS STRING, pbLoaded REF WORD ) AS DWORD
     RETURN ACE.AdsIsServerLoaded(strServer,OUT pbLoaded)
 
-/// <summary>Begins a transaction for all connected servers or for the given server.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsBeginTransaction/*" />
 FUNCTION DBFAXSAdsBeginTransaction ( hConnect AS IntPtr ) AS DWORD
     RETURN ACE.AdsBeginTransaction(hConnect)
 
-/// <summary>Rolls back the active transaction on the given connection.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsRollbackTransaction/*" />
 FUNCTION DBFAXSAdsRollbackTransaction ( hConnect AS IntPtr ) AS DWORD
     RETURN ACE.AdsRollbackTransaction(hConnect)
 
-/// <summary>Returns a flag to the caller to indicate if the given connection has an active transaction.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsInTransaction/*" />
 FUNCTION DBFAXSAdsInTransaction ( hConnect AS IntPtr, pbInTrans REF WORD ) AS DWORD
     RETURN ACE.AdsInTransaction(hConnect, OUT pbInTrans)
 
-/// <summary>Stores the contents of the given file as a binary object in the specified field.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsFileToBinary/*" />
 FUNCTION DBFAXSAdsFileToBinary ( hTbl AS IntPtr, pucFldName AS STRING, usBinaryType AS WORD, strFileName AS STRING ) AS DWORD
     RETURN ACE.AdsFileToBinary(hTbl, pucFldName, usBinaryType, strFileName)
 
-/// <summary>Turns off Advantage encryption</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsDisableEncryption/*" />
 FUNCTION DBFAXSAdsDisableEncryption( hTbl AS IntPtr ) AS DWORD
     RETURN ACE.AdsDisableEncryption(hTbl)
 
-/// <summary>Turns on Advantage encryption</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsEnableEncryption/*" />
 FUNCTION DBFAXSAdsEnableEncryption( hTbl AS IntPtr, strPassword AS STRING ) AS DWORD PASCAL
     RETURN ACE.AdsEnableEncryption(hTbl,strPassword)
 
-/// <summary>Controls the types of Advantage Database Servers to which the client application can connect.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsSetServerType/*" />
 FUNCTION DBFAXSAdsSetServerType ( usServerOptions AS WORD ) AS DWORD
     RETURN ACE.AdsSetServerType(usServerOptions)
 
-/// <summary>Returns the type of Advantage Database Server a connection uses.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsGetConnectionType/*" />
 FUNCTION DBFAXSAdsGetConnectionType ( hConnect AS IntPtr, pusConnectType REF WORD ) AS DWORD
     RETURN ACE.AdsGetConnectionType (hConnect, OUT pusConnectType)
 
-/// <summary>Finds a connection handle associated with the server name.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsFindConnection/*" />
 FUNCTION DBFAXSAdsFindConnection ( strServerName AS STRING, phConnect REF IntPtr ) AS DWORD
     RETURN ACE.AdsFindConnection(strServerName,OUT phConnect)
 
-/// <summary>Retrieves the binary object from the given field and stores it in the specified file.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFAXSAdsBinaryToFile/*" />
 FUNCTION DBFAXSAdsBinaryToFile ( hTbl AS IntPtr, strFldName AS STRING, strFileName AS STRING ) AS DWORD
     RETURN ACE.AdsBinaryToFile(hTbl, strFldName, strFileName)
     #endregion
@@ -317,8 +288,8 @@ DEFINE DBFAXS_ADS_AIS_SERVER := 4
 
 
 
-/// <include file="ads.xml" path="functions/ads/*" />
 
+/// <include file="ads.xml" path="functions/ads/*" />
 FUNCTION AdsAddCustomKey(hIndex AS IntPtr ) AS DWORD
     RETURN ACE.AdsAddCustomKey(hIndex)
 
@@ -446,8 +417,7 @@ FUNCTION AdsContinue(hTable AS IntPtr , pbFound OUT WORD) AS DWORD
     RETURN ACE.AdsContinue(hTable, OUT pbFound)
 
 
-/// <include file="ads.xml" path="functions/ads/*" />
-/// <seealso cref="AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AdsConnect60/*" />
 FUNCTION AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD
     RETURN ACE.AdsConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
 
@@ -540,13 +510,13 @@ FUNCTION AdsEvalTestExpr(hTable AS IntPtr , strExpr AS STRING , pusType OUT WORD
 FUNCTION AdsFileToBinary(hTable AS IntPtr , strFldName AS STRING , usBinaryType AS WORD , strFileName AS STRING ) AS DWORD
     RETURN ACE.AdsFileToBinary(hTable, strFldName, usBinaryType, strFileName)
 
-/// <include file="ads.xml" path="functions/ads/*" />
 
+/// <include file="ads.xml" path="functions/ads/*" />
 FUNCTION AdsFileToBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, usBinaryType AS WORD , strFileName AS STRING ) AS DWORD
     RETURN ACE.AdsFileToBinary(hTable, lFieldOrdinal, usBinaryType, strFileName)
 
-/// <include file="ads.xml" path="functions/ads/*" />
 
+/// <include file="ads.xml" path="functions/ads/*" />
 FUNCTION AdsFindConnection(strServerName AS STRING , phConnect OUT IntPtr ) AS DWORD
     RETURN ACE.AdsFindConnection(strServerName, OUT phConnect)
 
@@ -648,8 +618,7 @@ FUNCTION AdsGetLastError(pulErrCode OUT DWORD , [InAttribute] [OutAttribute] str
     RETURN ACE.AdsGetLastError(OUT pulErrCode, strBuf, REF pusBufLen)
 
 
-/// <summary>Return the Last error message for an ADS operation.</summary>
-/// <remarks>You have to call this immediately after an error occurs. Otherwise the error message may have been reset by a subsequent operation.</remarks>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AdsGetErrorMessage/*" />
 FUNCTION AdsGetErrorMessage( ) AS STRING
     LOCAL strMessage AS STRING
     LOCAL message AS CHAR[]
@@ -805,8 +774,8 @@ FUNCTION AdsRollbackTransaction(hConnect AS IntPtr) AS DWORD
 FUNCTION AdsSeek(hIndex AS IntPtr , strKey AS STRING , usKeyLen AS WORD, usDataType AS WORD, usSeekType AS WORD, pbFound OUT WORD) AS DWORD
     RETURN ACE.AdsSeek(hIndex, strKey, usKeyLen, usDataType, usSeekType, OUT pbFound)
 
-/// <include file="ads.xml" path="functions/ads/*" />
 
+/// <include file="ads.xml" path="functions/ads/*" />
 FUNCTION AdsSeek(hIndex AS IntPtr , abKey AS BYTE[] , usKeyLen AS WORD, usDataType AS WORD, usSeekType AS WORD, pbFound OUT WORD) AS DWORD
     RETURN ACE.AdsSeek(hIndex, abKey, usKeyLen, usDataType, usSeekType, OUT pbFound)
 

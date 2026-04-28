@@ -1,103 +1,183 @@
-﻿// Image.prg
+// Image.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
-
 USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Windows.Forms
 USING System.ComponentModel
 USING System.Drawing
-USING System.ComponentModel
+USING System.IO
+USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
-	/// <summary>
-	/// The VFP compatible Image class.
-	/// </summary>
-	PARTIAL CLASS Image INHERIT System.Windows.Forms.PictureBox
+    /// <summary>
+    /// VFP Image Control - Image display
+    /// Maps VFP Image properties and methods to WinForms PictureBox
+    ///
+    /// Implements: IVFPObject, IVFPControl, IVFPImage
+    /// Includes: VFPImage.xh, VFPObject.xh, ControlProperties.xh
+    ///
+    /// Base Class: System.Windows.Forms.PictureBox
+    /// </summary>
+    PARTIAL CLASS Image INHERIT System.Windows.Forms.PictureBox IMPLEMENTS IVFPObject, IVFPControl, IVFPImage
 
-		// Common properties that all VFP Objects support
-		#include "Headers/VFPObject.xh"
+        // ============================================================================
+        // Include VFP Image properties (Picture field, etc.)
+        // ============================================================================
+        #include "Headers/VFPImage.xh"
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _picture AS STRING
-		PRIVATE _stretch AS INT
+        // ============================================================================
+        // Include VFPObject base implementation (IVFPObject, IVFPHelp)
+        // ============================================================================
+        #include "Headers/VFPObject.xh"
 
-		/// <summary>
-		/// Constructor for Image control.
-		/// </summary>
-		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			SELF:Size := System.Drawing.Size{100, 100}
-			SELF:_picture := ""
-			SELF:_stretch := 0
-			RETURN
+        // ============================================================================
+        // Include common VFP control properties and event wiring
+        // ============================================================================
+        #include "Headers/ControlProperties.xh"
 
-		#include ".\Headers\ControlProperties.xh"
-        #include ".\Headers\ControlFocus.xh"
-		/// <summary>
-		/// Gets or sets the path to the image file.
-		/// Equivalent to VFP's Picture property.
-		/// </summary>
-		/// <value>The file path to the image.</value>
-		[Category("VFP Properties"), Description("Path to the image file")];
-		[DefaultValue("")];
-		PROPERTY Picture AS STRING
-			GET
-				RETURN SELF:_picture
-			END GET
-			SET
-				SELF:_picture := VALUE
-				IF !String.IsNullOrEmpty(VALUE)
-					TRY
-						SELF:Image := System.Drawing.Image.FromFile(VALUE)
-					CATCH ex AS Exception
-						// Ignore file not found errors
-						SELF:Image := NULL
-					END TRY
-				ELSE
-					SELF:Image := NULL
-				ENDIF
-			END SET
-		END PROPERTY
+        // ============================================================================
+        // PRIVATE FIELDS
+        // ============================================================================
 
-		/// <summary>
-		/// Gets or sets how the image is sized within the control.
-		/// Equivalent to VFP's Stretch property.
-		/// </summary>
-		/// <value>0=Clip, 1=Isometric, 2=Stretch. Default is 0.</value>
-		[Category("VFP Properties"), Description("Image sizing: 0=Clip, 1=Isometric, 2=Stretch")];
-		[DefaultValue(0)];
-		PROPERTY Stretch AS INT
-			GET
-				RETURN SELF:_stretch
-			END GET
-			SET
-				SELF:_stretch := VALUE
-				SWITCH VALUE
-					CASE 0
-						SELF:SizeMode := PictureBoxSizeMode.Normal
-					CASE 1
-						SELF:SizeMode := PictureBoxSizeMode.Zoom
-					CASE 2
-						SELF:SizeMode := PictureBoxSizeMode.StretchImage
-				END SWITCH
-			END SET
-		END PROPERTY
+        PRIVATE _stretch AS LOGIC
+        PRIVATE _alignment AS ContentAlignment
+        PRIVATE _borderStyle AS BorderStyle
+        PRIVATE _dragMode AS INT
+        PRIVATE _dragIcon AS STRING
+        PRIVATE _baseClass AS STRING
+        PRIVATE _class AS STRING
+        PRIVATE _classLibrary AS STRING
+        PRIVATE _comment AS STRING
+        PRIVATE _helpContextID AS LONG
+        PRIVATE _whatsThisHelpID AS LONG
 
-		/// <summary>
-		/// Gets or sets whether the image is centered in the control.
-		/// Equivalent to VFP's Centered property.
-		/// </summary>
-		/// <value>True if centered; otherwise, false.</value>
-		[Category("VFP Properties"), Description("Center the image")];
-		PROPERTY Centered AS LOGIC AUTO
+        // ============================================================================
+        // PROPERTIES
+        // ============================================================================
 
-	END CLASS
-END NAMESPACE // XSharp.VFP.UI
+        /// <summary>Picture - Image file path</summary>
+        PUBLIC PROPERTY Picture AS STRING
+            GET
+                RETURN SELF:_picture
+            END GET
+            SET
+                SELF:_picture := VALUE
+                SELF:LoadPicture()
+            END SET
+        END PROPERTY
+
+        /// <summary>Stretch - Whether image stretches to fill control</summary>
+        PUBLIC PROPERTY Stretch AS LOGIC
+            GET
+                RETURN SELF:_stretch
+            END GET
+            SET
+                SELF:_stretch := VALUE
+                IF VALUE
+                    SELF:SizeMode := PictureBoxSizeMode.StretchImage
+                ELSE
+                    SELF:SizeMode := PictureBoxSizeMode.Normal
+                ENDIF
+            END SET
+        END PROPERTY
+
+        // ============================================================================
+        // IVFPControl Implementation
+        // ============================================================================
+
+        [Category("VFP Behavior")];
+        [Description("Drag icon path")];
+        [DefaultValue("")];
+        PROPERTY DragIcon AS STRING
+            GET
+                RETURN SELF:_dragIcon
+            END GET
+            SET
+                SELF:_dragIcon := VALUE
+            END SET
+        END PROPERTY
+
+        [Category("VFP Behavior")];
+        [Description("Drag mode (0=manual, 1=automatic)")];
+        [DefaultValue(0)];
+        PROPERTY DragMode AS LONG
+            GET
+                RETURN SELF:_dragMode
+            END GET
+            SET
+                SELF:_dragMode := VALUE
+            END SET
+        END PROPERTY
+
+        PUBLIC METHOD Drag(nAction) AS USUAL CLIPPER
+            RETURN NIL
+        END METHOD
+
+        PUBLIC METHOD SetFocus() AS VOID STRICT
+            SELF:Focus()
+        END METHOD
+
+        // ============================================================================
+        // METHODS
+        // ============================================================================
+
+        /// <summary>LoadPicture - Load image from _picture path</summary>
+        PUBLIC METHOD LoadPicture() AS VOID
+            IF !String.IsNullOrEmpty(SELF:_picture) .AND. File.Exists(SELF:_picture)
+                TRY
+                    SELF:Image := System.Drawing.Image.FromFile(SELF:_picture)
+                CATCH ex AS System.Exception
+                    // Silently fail - image not available
+                    NOP
+                END TRY
+            ENDIF
+        END METHOD
+
+        /// <summary>LoadPicture - Load image from given path</summary>
+        PUBLIC METHOD LoadPicture(cFilePath AS STRING) AS LOGIC
+            IF File.Exists(cFilePath)
+                TRY
+                    SELF:Image := System.Drawing.Image.FromFile(cFilePath)
+                    SELF:_picture := cFilePath
+                    RETURN TRUE
+                CATCH
+                    RETURN FALSE
+                END TRY
+            ENDIF
+            RETURN FALSE
+        END METHOD
+
+        /// <summary>ClearImage - Remove displayed image</summary>
+        PUBLIC METHOD ClearImage() AS VOID
+            SELF:Image := NULL
+            SELF:_picture := ""
+        END METHOD
+
+        // ============================================================================
+        // CONSTRUCTOR
+        // ============================================================================
+
+        CONSTRUCTOR() STRICT
+            SUPER()
+            SELF:_picture := ""
+            SELF:_stretch := FALSE
+            SELF:_alignment := ContentAlignment.MiddleCenter
+            SELF:_borderStyle := BorderStyle.None
+            SELF:_dragMode := 0
+            SELF:_dragIcon := ""
+            SELF:_baseClass := "Image"
+            SELF:_class := "Image"
+            SELF:_classLibrary := ""
+            SELF:_comment := ""
+            SELF:_helpContextID := 0
+            SELF:_whatsThisHelpID := 0
+            SELF:SizeMode := PictureBoxSizeMode.Normal
+            SELF:BorderStyle := BorderStyle.None
+            SELF:Size := System.Drawing.Size{100, 17}
+
+    END CLASS
+
+END NAMESPACE

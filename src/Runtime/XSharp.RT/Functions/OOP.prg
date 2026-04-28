@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -77,7 +77,7 @@ internal static class OOPHelpers
                         next
                         if list:Count > 0
                             aMethods:AddRange(list)
-                        endif 
+                        endif
                     endif
                 end try
             endif
@@ -214,7 +214,15 @@ internal static class OOPHelpers
 
         return oMI
 
-    static method CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
+    static method CompareMethods(t as System.Type, m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
+        if (m1:DeclaringType != m2:DeclaringType)
+            if m1:DeclaringType == t .and. m1:IsHideBySig
+                return 1
+            endif
+            if m2:DeclaringType == t .and. m2:IsHideBySig
+                return 2
+            endif
+        endif
         var p1 := m1:GetParameters()
         var p2 := m2:GetParameters()
         var n1 := CountNonDefaultParameters(p1)
@@ -284,9 +292,7 @@ internal static class OOPHelpers
         endif
         return 0
 
-    /// <summary>
-    /// Convert a null value to the correct value for the type
-    /// </summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/OOPHelpers.ConvertFromNull/*" />
     static method ConvertFromNull(type as System.Type) as usual
         if type == typeof(System.String)
             return __Usual{__UsualType.String, false}
@@ -298,11 +304,7 @@ internal static class OOPHelpers
             return NIL
         endif
         return NULL_OBJECT
-    /// <summary>
-    /// Count the number of parameters that do not have a default value
-    /// </summary>
-    /// <param name="pars"></param>
-    /// <returns></returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/OOPHelpers.CountNonDefaultParameters/*" />
     static method CountNonDefaultParameters(pars as IList<ParameterInfo>) as long
         for var i := 0 upto pars:Count -1
             local oPar := pars[i] as ParameterInfo
@@ -313,7 +315,7 @@ internal static class OOPHelpers
         next
         return pars:Count
 
-    static method FindBestOverLoad<T>(overloads as IList<T>, cFunction as string, uArgs as usual[]) as T where T is MethodBase
+    static method FindBestOverLoad<T>(t as System.Type, overloads as IList<T>, cFunction as string, uArgs as usual[]) as T where T is MethodBase
         if overloads:Count <= 1
             return overloads:FirstOrDefault()
         endif
@@ -322,7 +324,10 @@ internal static class OOPHelpers
         // first look for methods with the same ! of parametes
         foreach var m in overloads
             var pars := m:GetParameters()
-            if pars:Length == uArgs:Length
+            var isClipper := m:IsDefined(typeof(ClipperCallingConventionAttribute),false)
+            if isClipper
+                found:Add(m)
+            elseif pars:Length == uArgs:Length
                 found:Add(m)
             elseif pars:Length > 0
                 // check to see if there are default parameters for the method
@@ -342,7 +347,7 @@ internal static class OOPHelpers
         foreach var m1 in filtered
             foreach var m2 in filtered
                 if (m2 != m1)
-                    var result := OOPHelpers.CompareMethods(m1, m2, uArgs)
+                    var result := OOPHelpers.CompareMethods(t, m1, m2, uArgs)
                     if result == 1
                         if ! found:Contains(m1)
                             found:Add(m1)
@@ -880,12 +885,7 @@ internal static class OOPHelpers
         endif
         return lSelf
 
-    /// <summary>
-    /// This method returns TRUE when the assembly from which an IVarGet()
-    /// or IVarPut() was called is the same assembly in which a property was defined.
-    /// </summary>
-    /// <param name="propInfo">Property that we are checking</param>
-    /// <returns>TRUE when the first stackframe outside of XSharp.RT is in the same assembly as <paramref name="propInfo"/></returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/OOPHelpers.IsInternalVisible/*" />
     static method IsInternalVisible(propInfo as PropertyInfo) as logic
         local asm       := propInfo:DeclaringType:Assembly  as Assembly
         local frames    := StackTrace{false} :GetFrames()   as StackFrame[]
@@ -911,7 +911,7 @@ internal static class OOPHelpers
         var oClass := oType
         do while oClass != null
             var list := oClass:GetMember(cName, MemberTypes.Field | MemberTypes.Property, bf)
-            if list != null
+            if list != null .and. list:Count() > 0
                 foreach var fld in list
                     OOPHelpers.AddMemberToCache(oType, cName, fld)
                 next
@@ -930,7 +930,12 @@ internal static class OOPHelpers
             return oDynamic:NoIvarGet(cIVar)
         endif
         if oObject is ILateBound var oLB
-            return oLB:NoIvarGet(cIVar)
+            if lSelf
+                return oLB:NoIvarGetSelf(cIVar)
+            else
+                return oLB:NoIvarGet(cIVar)
+            endif
+
         endif
         t := oObject:GetType()
         if oObject is IWrappedObject var oWrapped
@@ -1004,7 +1009,11 @@ internal static class OOPHelpers
             return
         endif
         if oObject is ILateBound var oLB
-            oLB:NoIvarPut(cIVar, oValue)
+            if lSelf
+                oLB:NoIvarPutSelf(cIVar, oValue)
+            else
+                oLB:NoIvarPut(cIVar, oValue)
+            endif
             return
         endif
         t := oObject:GetType()
@@ -1139,7 +1148,7 @@ internal static class OOPHelpers
             try
                 if list:Count > 0
                     var mis := list:ToArray()
-                    mi := OOPHelpers.FindBestOverLoad(mis, cMethod,uArgs)
+                    mi := OOPHelpers.FindBestOverLoad(t, mis, cMethod,uArgs)
                 endif
             catch as Error
                 throw
@@ -1529,8 +1538,8 @@ function ClassList() as array
     next
     return classes
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classname/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classname/*" />
 function ClassName(oObject as object) as string
     if oObject != null
         return oObject:GetType():Name:ToUpper()
@@ -1538,8 +1547,8 @@ function ClassName(oObject as object) as string
     return ""
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtree/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtree/*" />
 function ClassTree(oObject as object) as array
     if oObject != null
         return OOPHelpers.ClassTree(oObject:GetType())
@@ -1561,7 +1570,7 @@ function CreateInstance(symClassName,InitArgList) as object clipper
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
 function _CreateInstance(type as System.Type, InitArgList as usual[]) as object
     var constructors := type:GetConstructors()
-    local ctor := OOPHelpers.FindBestOverLoad(constructors, __function__ ,InitArgList) as ConstructorInfo
+    local ctor := OOPHelpers.FindBestOverLoad(type, constructors, __function__ ,InitArgList) as ConstructorInfo
     if ctor == null
         var oError := Error.VOError( EG_NOMETHOD, __function__, "Constructor", 0 , null)
         oError:Description := "No CONSTRUCTOR defined for type "+ type:FullName
@@ -1595,8 +1604,8 @@ function _CreateInstance(symClassName as string, InitArgList as usual[]) as obje
     return _CreateInstance(t, InitArgList)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />
 function ClassTreeClass(symClass as string) as array
     var t := OOPHelpers.FindClass(symClass)
     if t != null
@@ -1607,8 +1616,8 @@ function ClassTreeClass(symClass as string) as array
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isaccess/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isaccess/*" />
 function IsAccess(oObject as object,symAccess as string) as logic
     if oObject != null
         var oProp := OOPHelpers.FindProperty(oObject:GetType(), symAccess, true, true)
@@ -1618,8 +1627,8 @@ function IsAccess(oObject as object,symAccess as string) as logic
     endif
     return false
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isassign/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isassign/*" />
 function IsAssign(oObject as object,symAssign as string) as logic
     if oObject != null
         var oProp := OOPHelpers.FindProperty(oObject:GetType(), symAssign, false, true)
@@ -1629,8 +1638,8 @@ function IsAssign(oObject as object,symAssign as string) as logic
     endif
     return false
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclass/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclass/*" />
 function IsClass(symClassName as string) as logic
     return OOPHelpers.FindClass(symClassName) != null
 
@@ -1642,12 +1651,8 @@ function IsClassOf(symClassName as string,symSuperClassName as string) as logic
     return tSub != null .and. tSuper != null .and. (tSub == tSuper .or. tSub:IsSubclassOf(tSuper))
 
 
-/// <summary>
-/// Find a class in the referenced assemblies
-/// </summary>
-/// <param name="cClassName">Classname to find</param>
-/// <returns>System.Type object or NULL </returns>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/FindClass/*" />
 function FindClass(cClassname as string) as System.Type
     return OOPHelpers.FindClass(cClassname)
 
@@ -1674,8 +1679,8 @@ function IsInstanceOf(oObject as object,symClassName as string) as logic
     end do
     return false
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceofusual/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceofusual/*" />
 function IsInstanceOfUsual(uObject as usual,symClassName as string) as logic
     switch uObject:Type
     case __UsualType.Object
@@ -1690,8 +1695,8 @@ function IsInstanceOfUsual(uObject as usual,symClassName as string) as logic
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarget/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarget/*" />
 function IVarGet(oObject as object,symInstanceVar as string) as usual
     if oObject == null_object
         throw Error.NullArgumentError(__function__, nameof(oObject),1)
@@ -1724,14 +1729,14 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
 function IVarGetInfo(oObject as object,symInstanceVar as string) as dword
     return OOPHelpers.IVarHelper(oObject, symInstanceVar, true)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethod/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethod/*" />
 function IsMethod(oObject as object,symMethod as string) as logic
     if oObject != null_object
         return OOPHelpers.IsMethod(oObject:GetType(), symMethod)
@@ -1739,16 +1744,16 @@ function IsMethod(oObject as object,symMethod as string) as logic
     return false
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodusual/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodusual/*" />
 function IsMethodUsual(uObject as usual,symMethod as string) as logic
     if uObject:IsObject
         return IsMethod( uObject, symMethod )
     endif
     return false
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodclass/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodclass/*" />
 function IsMethodClass( symClass as string, symMethod as string ) as logic
     var t := OOPHelpers.FindClass( symClass )
     if t != null
@@ -1757,8 +1762,8 @@ function IsMethodClass( symClass as string, symMethod as string ) as logic
     return false
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetself/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetself/*" />
 function IVarGetSelf(oObject as object,symInstanceVar as string) as usual
     if oObject == null_object
         throw Error.NullArgumentError(__function__, nameof(oObject),1)
@@ -1768,8 +1773,8 @@ function IVarGetSelf(oObject as object,symInstanceVar as string) as usual
     endif
     return OOPHelpers.IVarGet(oObject, symInstanceVar, true)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
 function IvarList(oObject as object) as array
     // IVarList already checks for NULL_OBJECT
     if oObject is IDynamicProperties var oDynamic
@@ -1783,21 +1788,21 @@ function IvarList(oObject as object) as array
     return OOPHelpers.IVarList(oObject?:GetType())
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlistclass/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlistclass/*" />
 function IvarListClass(symClass as string) as array
     var t := OOPHelpers.FindClass(symClass)
     return OOPHelpers.IVarList(t)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputinfo/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputinfo/*" />
 function IVarPutInfo(oObject as object,symInstanceVar as symbol) as dword
     // IVarHelper already checks for NULL_OBJECT
     return OOPHelpers.IVarHelper(oObject, symInstanceVar, false)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
 function IVarPut(oObject as object,symInstanceVar as string,uValue IN usual) as usual
     if oObject == null_object
         throw Error.NullArgumentError(__function__, nameof(oObject),1)
@@ -1823,8 +1828,8 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue IN usual) as 
     end try
     return uValue
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 function IVarPutSelf(oObject as object,symInstanceVar as string,uValue IN usual) as usual
     if oObject == null_object
         throw Error.NullArgumentError(__function__, nameof(oObject),1)
@@ -1836,16 +1841,16 @@ function IVarPutSelf(oObject as object,symInstanceVar as string,uValue IN usual)
     return uValue
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlist/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlist/*" />
 function MethodList(oClass as object) as array
     if oClass != null
         return OOPHelpers.MethodList( oClass:GetType() )
     endif
     return null_array
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlistclass/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlistclass/*" />
 function MethodListClass( symClass as string ) as array
     local aReturn as array
     var t := OOPHelpers.FindClass( symClass )
@@ -1859,8 +1864,8 @@ function MethodListClass( symClass as string ) as array
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nomethod/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nomethod/*" />
 function NoMethod() as string
     return RuntimeState.NoMethod
 
@@ -1900,14 +1905,14 @@ function Object2Array(oObject as object) as array
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptree/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptree/*" />
 function OOPTree(oObject as object) as array
     // TreeHelper already checks for NULL_OBJECT
     return OOPHelpers.TreeHelper(oObject?:GetType())
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptreeclass/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptreeclass/*" />
 function OOPTreeClass(symClass as string) as array
     var type := OOPHelpers.FindClass(symClass)
     // TreeHelper already checks for NULL_OBJECT
@@ -1932,14 +1937,14 @@ function Send(oObject as usual,symMethod as usual, MethodArgList params usual[])
     uResult := OOPHelpers.DoSend(oToSend, cMethod, MethodArgList, __function__)
     return uResult
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
 function CSend(oObject as object,symMethod as string, MethodArgList params usual[]) as usual
     return __InternalSend(oObject, symMethod, MethodArgList)
 
 
-/// <exclude />
 
+/// <exclude />
 function _Send(oObject as object,symMethod as MethodInfo, MethodArgList params usual[]) as usual
     if OOPHelpers.SendHelper(oObject, symMethod, MethodArgList, out var result)
         return result
@@ -1957,10 +1962,7 @@ function _Send(oObject as object,symMethod as MethodInfo, MethodArgList params u
 function __InternalSend( oObject as usual, cMethod as string, args params usual[] ) as usual
     return OOPHelpers.DoSend(oObject, cMethod, args, __function__)
 
-/// <summary>Helper function to convert ARRAY to USUAL[]</summary>
-/// <param name="args">X# array to convert</param>
-/// <returns>USUAL Array</returns>
-/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_ArrayToUsualArray/*" />
 function _ArrayToUsualArray (args as array) as usual[]
     local elements as int
     local uargs    as usual[]
@@ -1974,10 +1976,7 @@ function _ArrayToUsualArray (args as array) as usual[]
     next
     return uargs
 
-/// <summary>Helper function to convert ARRAY to OBJECT[]</summary>
-/// <param name="args">X# array to convert</param>
-/// <returns>OBJECT Array</returns>
-/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_ArrayToObjectArray/*" />
 function _ArrayToObjectArray (args as array) as object[]
     local elements as int
     local oArgs    as object[]
@@ -1991,10 +1990,7 @@ function _ArrayToObjectArray (args as array) as object[]
     next
     return oArgs
 
-/// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>
-/// <param name="args">USUAL array to convert</param>
-/// <returns>OBJECT Array</returns>
-/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_UsualArrayToObjectArray/*" />
 function _UsualArrayToObjectArray (args as usual[]) as object[]
     local elements as int
     local oArgs    as object[]
@@ -2008,10 +2004,7 @@ function _UsualArrayToObjectArray (args as usual[]) as object[]
     next
     return oArgs
 
-/// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>
-/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
-/// <param name="args">OBJECT array to convert</param>
-/// <returns>USUAL Array</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_ObjectArrayToUsualArray/*" />
 function _ObjectArrayToUsualArray (args as object[]) as usual[]
     local elements as int
     local uArgs    as usual[]
@@ -2058,12 +2051,8 @@ function MParamCount(symClass as string,symMethod as string) as dword
 
 
 
-/// <summary>Return the number of local arguments that a function is expecting.</summary>
-/// <param name="symFunction">The name of the function to examine.</param>
-/// <returns>The number of arguments that a method is expecting.</returns>
-/// <remarks>Note that you can't use this for functions that are overloaded.<br/>
-/// And unlike in VO this function can also be used to return the number of parameters for typed functions.</remarks>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/FParamCount/*" />
 function FParamCount(symFunction as string) as dword
     local aFuncs as MethodInfo[]
     aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
@@ -2087,20 +2076,12 @@ function FParamCount(symFunction as string) as dword
     endif
 
 
-/// <summary>Call a clipper function by name</summary>
-/// <param name="symFunction">The name of the function to call.</param>
-/// <param name="aArgs">The list of arguments to pass to the function</param>
-/// <returns>The return value of the function</returns>
-/// <remarks>Note that X# allows to call functions that are overloaded.</remarks>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/_CallClipFunc/*" />
 function _CallClipFunc(symFunction as string,aArgs as array) as usual
     return _CallClipFunc(symFunction, _ArrayToUsualArray(aArgs))
 
-/// <summary>Call a function by name</summary>
-/// <param name="symFunction">The name of the function to call.</param>
-/// <param name="uArgs">The list of arguments to pass to the function</param>
-/// <returns>The return value of the function</returns>
-/// <remarks>Note that X# allows to call functions that are overloaded.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_CallClipFunc/*" />
 function _CallClipFunc(symFunction as string, uArgs params usual[]) as usual
     local aFuncs as MethodInfo[]
     local oMI as MethodInfo
@@ -2117,7 +2098,7 @@ function _CallClipFunc(symFunction as string, uArgs params usual[]) as usual
         elseif aFuncs:Length == 0
             return nil
         else
-            oMI  := OOPHelpers.FindBestOverLoad(aFuncs, symFunction, uArgs)
+            oMI  := OOPHelpers.FindBestOverLoad(null, aFuncs, symFunction, uArgs)
             if oMI != null
                 if OOPHelpers.SendHelper(null, oMI, uArgs, out var result)
                     return result
@@ -2136,9 +2117,7 @@ function _HasClipFunc(symFunction as string) as logic
     return aFuncs:Length > 0
 
 
-/// <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>
-/// <param name="cLibFileName">The full path of the library to load.</param>
-/// <returns>The Assembly object of the loaded library.</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/XSharpLoadLibrary/*" />
 function XSharpLoadLibrary(cLibFileName as string) as Assembly
     local oAssembly as Assembly
     oAssembly := Assembly.LoadFrom(cLibFileName)

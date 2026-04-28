@@ -10,6 +10,7 @@ USING SYstem.Collections.Generic
 USING SYstem.Linq
 USING SYstem.Text
 USING XSharp.Parsers
+USING XSharp.MacroCompiler
 
 #include "foxcmd.xh"
 #command __NOFOXPROSQL__ <any> => #error This Embedded SQL command is not (yet) supported: <(any)>
@@ -72,6 +73,7 @@ FUNCTION Start() AS VOID STRICT
             ? "Table not open"
         ENDIF
 
+/*
         DELETE FROM employee where _FIELD->EmpID = 1
 
         //DELETE FROM Database!employee where EmpID = 1
@@ -79,12 +81,14 @@ FUNCTION Start() AS VOID STRICT
         DELETE  MyProducts FROM MSRPList;
             WHERE MSRPList.ProdID = MyProducts.ProdID;
             AND MSRPList.discontinued = .t.
+*/
 
 
         //         DELETE  DB!MyProducts FROM DB!MSRPList ;
         //            WHERE MSRPList.ProdID = MyProducts.ProdID;
         //             AND MSRPList.discontinued = .t.
 
+/*
         UPDATE MyProducts SET MSRP=MyUpdates.MSRP FROM MyUpdates WHERE MyProducts.ProdID=MyUpdates.ProdID
         UPDATE products ;
             SET unitprice = ;
@@ -98,12 +102,21 @@ FUNCTION Start() AS VOID STRICT
             FROM mfg_msrp ;
             WHERE mfg_msrp.productID = products.productID;
             AND mfg_msrp.discontinued = .f.
+*/
+        TestSqlParser("x = 1 AND y = 2")
+        wait
 
+        CREATE TABLE Customers ;
+            (CustId i PRIMARY KEY, ;
+             CustName c(20) )
+        INSERT INTO Customers(CustId,CustName) VALUES (1, "Microsoft")
+        INSERT INTO Customers(CustId,CustName) VALUES (2, "Google")
+        ? ALIAS()
 
         CREATE TABLE Orders ;
             (OrderId i PRIMARY KEY, ;
             CustId i REFERENCES customer TAG CustId, ;
-            CustName c(10), ;
+            OrderCode c(10), ;
             OrderAmt y(4), ;
             OrderQty i ;
             DEFAULT 10 ;
@@ -115,8 +128,15 @@ FUNCTION Start() AS VOID STRICT
         local oTest := XSharp.VFP.Empty{}
         AddProperty(oTest, "LastName", "Hulst")
         AddProperty(oTest, "FirstName", "Robert")
-        INSERT INTO Orders(CustId,OrderAmt, OrderQty,CustName) VALUES (1, 100, 10,"19010101")
-        INSERT INTO Orders(CustId,OrderAmt, OrderQty,CustName) VALUES (1, 200, 20,"19010202")
+        INSERT INTO Orders(CustId,OrderAmt, OrderQty,OrderCode) VALUES (1, 100, 10,"19010101")
+        INSERT INTO Orders(CustId,OrderAmt, OrderQty,OrderCode) VALUES (1, 200, 20,"19010202")
+        INSERT INTO Orders(CustId,OrderAmt, OrderQty,OrderCode) VALUES (2, 200, 20,"19010202")
+        ? ALIAS()
+        UPDATE Orders ;
+            SET OrderAmt = OrderAmt*1.1 ;
+            FROM Customers ;
+            WHERE Orders->CustId = Customers->CustId AND Customers->CustName = "Microsoft"
+        wait
         Browse()
         ALTER TABLE Orders Add OrderDate Date NULL
         Browse()
@@ -124,7 +144,7 @@ FUNCTION Start() AS VOID STRICT
         Browse()
         ALTER TABLE Orders DROP COLUMN OrderAmt
         Browse()
-        ALTER TABLE Orders Alter COLUMN CustName C(5)
+        ALTER TABLE Orders Alter COLUMN OrderCode C(5)
         Browse()
 
 //         CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
@@ -154,6 +174,12 @@ FUNCTION __SqlDelete (sCommand as STRING)
     ? table:WhereClause
     RETURN
 
+FUNCTION OpenArea(sTable as STRING) AS LOGIC
+    IF ! DbSelectArea(sTable)
+        DbUseArea(TRUE, "DBFVFP", sTable, sTable, TRUE, FALSE)
+    ENDIF
+    RETURN Used()
+
 FUNCTION __SqlUpdate (sCommand as STRING)
     VAR lexer := XSqlLexer{sCommand}
     VAR tokens := lexer:AllTokens()
@@ -177,5 +203,64 @@ FUNCTION __SqlUpdate (sCommand as STRING)
     next
     ? "Where", table:WhereClause
 
+    VAR o := XSharp.MacroCompiler.MacroOptions.FoxPro
+    o:AllowOldStyleAssignments := False
+    VAR mc := XSharp.Runtime.MacroCompiler{o}
+    // VAR mc := XSharp.Runtime.MacroCompiler.GetScriptCompiler(XSharpDialect.FoxPro)
+    VAR cbWhere := mc:CompileCodeblock(table:WhereClause)
+    //VAR res := (OBJECT) cb:Eval(args)
+
+    VAR values := Dictionary<STRING,CODEBLOCK>{}
+    FOR VAR i := 0 TO table:ColumnList:Count-1
+        values[table:ColumnList[i]] := mc:CompileCodeblock(table:ValueList[i])
+    NEXT
+
+    LOCAL FUNCTION UpdateRow() AS VOID
+        FOREACH VAR item IN values
+            __FieldSet(item:key, item:value:Eval())
+        NEXT
+    END FUNCTION
+
+    LOCAL FUNCTION FilterRow() AS LOGIC
+        FOREACH VAR t IN table:TableList
+            IF (t)->DbLocate( cbWhere )
+                RETURN TRUE
+            ENDIF
+        NEXT
+        RETURN FALSE
+    END FUNCTION
+
+    (table:TableName)->(DbEval( {||DbAutoLock(), UpdateRow(), DbAutoUnLock()}, {||FilterRow()} ))
+
     RETURN
+
+FUNCTION PrintContext(ctx AS SqlExpressionContext, depth := 0 AS INT)
+    IF ctx IS SqlSimpleExpressionContext VAR s
+        ? STRING{c" ", depth*2} + "SIMPLE: " + s:ToString()
+    ELSEIF ctx IS SqlCompsiteExpressionContext VAR c
+        ? STRING{c" ", depth*2} + "COMPOSITE: " + c:ToString()
+    ELSEIF ctx IS SqlParenExpressionContext VAR p
+        ? STRING{c" ", depth*2} + "PAREN: "
+        PrintContext(p:Expr, depth + 1)
+    ELSEIF ctx IS SqlPrefixExpressionContext VAR pr
+        ? STRING{c" ", depth*2} + "PREFIX: " + pr:Op:Text
+        PrintContext(pr:Expr, depth + 1)
+    ELSEIF ctx IS SqlLogicExpressionContext VAR l
+        ? STRING{c" ", depth*2} + "LOGIC: " + l:Op:Text
+        PrintContext(l:Left, depth + 1)
+        PrintContext(l:Right, depth + 1)
+    ELSEIF ctx IS SqlCompareExpressionContext VAR co
+        ? STRING{c" ", depth*2} + "COMPARE: " + co:Op:Text
+        PrintContext(co:Left, depth + 1)
+        PrintContext(co:Right, depth + 1)
+    ENDIF
+
+FUNCTION TestSqlParser (sCommand as STRING)
+    VAR lexer := XSqlLexer{sCommand}
+    VAR tokens := lexer:AllTokens()
+    var parser := SqlParser{XTokenList{tokens}}
+    ? sCommand
+    VAR ctx := parser.ParseExpressionContext()
+    ? ctx:ToString()
+    PrintContext(ctx)
 

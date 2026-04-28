@@ -28,7 +28,7 @@ function Start() as void
 //	?
 //	? Assert.Groups , "test groups, Passed:", Assert.Passed , ", Failed:" , Assert.Failed
 	
-//	VfpCompatMetrics.Program.Start(<STRING>{"XSharp.VFP.dll"})
+//	VfpCompatMetrics.Program.Start(<STRING>{"XSharp.VFP.dll" , "vfp_universe.json"})
 
 return
 

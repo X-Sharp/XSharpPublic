@@ -10,9 +10,7 @@ USING System.Runtime.InteropServices
 USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.IO
-    /// <summary>This class is used for Shared diskaccess on Windows. </summary>
-    /// <remarks>The class bypasses some of the default methods in the FileStraem class and directly uses calls to OS functions to make
-    /// sure that changes made by other users are visible and not hidden because of caching in the .Net FileStream class.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream/*" />
     CLASS XsWin32FileStream INHERIT XsFileStream
         PRIVATE hFile AS IntPtr
         PRIVATE smallBuff AS BYTE[]
@@ -21,8 +19,7 @@ BEGIN NAMESPACE XSharp.IO
             hFile := SELF:SafeFileHandle:DangerousGetHandle()
             smallBuff := BYTE[]{1}
         RETURN
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows SetFilePointerEx() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Seek/*" />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             LOCAL result AS INT64
             LOCAL lOk AS LOGIC
@@ -37,15 +34,13 @@ BEGIN NAMESPACE XSharp.IO
             FError(nErr) 
             THROW IOException{i"Error moving file pointer from {origin} to {offset}"}
             
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows SetEndOfFile() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.SetLength/*" />
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
             // warning: does not restore original file pos
             SELF:Seek(length, SeekOrigin.Begin)
             SetEndOfFile(hFile)
         RETURN
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows GetFileSize() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Length/*" />
         PUBLIC OVERRIDE PROPERTY Length AS INT64
             GET
                   IF GetFileSizeEx(SELF:hFile, OUT VAR size)
@@ -59,8 +54,7 @@ BEGIN NAMESPACE XSharp.IO
                   THROW IOException{"Could not retrieve file length"}  
             END GET
         END PROPERTY
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows ReadFile() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Read/*" />
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesRead := 0 AS INT
@@ -76,8 +70,7 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN -1
             ENDIF
         RETURN bytesRead
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows WriteFile() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Write/*" />
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesWritten := 0 AS INT
@@ -106,13 +99,11 @@ BEGIN NAMESPACE XSharp.IO
                 THROW IOException{i"Write: Not all bytes written to file offset {offset} count {count} written {bytesWritten}"}
             ENDIF
         RETURN
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows WriteFile() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.WriteByte/*" />
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
             SELF:smallBuff[0] := b
             SELF:Write(SELF:smallBuff , 0 , 1)
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows LockFile() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Lock/*" />
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
             
             LOCAL ret  := FALSE AS LOGIC
@@ -127,8 +118,7 @@ BEGIN NAMESPACE XSharp.IO
                 THROW IOException{i"Lock: File lock failed, pos: {position}, length: {length} "} 
             ENDIF
         RETURN 
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows UnlockFile() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Unlock/*" />
         PUBLIC OVERRIDE METHOD Unlock( position AS INT64, length AS INT64)  AS VOID
             LOCAL ret := FALSE AS LOGIC
             ret := UnlockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
@@ -142,8 +132,7 @@ BEGIN NAMESPACE XSharp.IO
                 THROW IOException{i"UnLock: File Unlock failed, pos: {position}, length: {length} "}
             ENDIF
         RETURN
-        /// <inheritdoc />
-        /// <remarks>This method calls the Windows FlushFileBuffers() function directly.</remarks>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream.Flush/*" />
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
             // Note that GetDangerousFileHandle() calls Flush before we have the file handle
             IF lCommit .and. SELF:hFile != NULL

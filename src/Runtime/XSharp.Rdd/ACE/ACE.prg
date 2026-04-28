@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -10,16 +10,9 @@ USING System.Text
 USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
-    /// <summary>
-    /// the ACE class has all the constants and functions from the ACE API <br />
-    /// Please look in the ADS documentation for more information about the functions and constants.
-    /// <note type='tip'>
-    /// There is a 32 bits API and a 64 bits API. The ACE class automatically dispatches to the right version of the API.
-    /// </note>
-    /// </summary>
-    /// <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
 
 
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/ACE/*" />
     STATIC CLASS ACE
 
     #region Constants
@@ -4664,9 +4657,9 @@ INTERNAL DELEGATE _delSetScopeS(hIndex AS IntPtr, usScopeOption AS WORD, strScop
 INTERNAL DELEGATE _delSetStringD(hObj AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS STRING, ulLen AS DWORD ) AS DWORD
 INTERNAL DELEGATE _delSetStringS(hObj AS IntPtr, strFldName AS STRING, strBuf AS STRING, ulLen AS DWORD ) AS DWORD
 INTERNAL DELEGATE _delW (w AS WORD) AS DWORD
-/// <summary>Delegate used by some advantage progress functions</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/CallbackFn/*" />
 PUBLIC DELEGATE CallbackFn(usPercentDone AS WORD, ulCallbackID AS DWORD) AS DWORD
-/// <summary>Delegate used by some advantage progress functions</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/CallbackFn101/*" />
 PUBLIC DELEGATE CallbackFn101(usPercentDone AS WORD, qCallbackID AS INT64) AS DWORD
 
     END NAMESPACE

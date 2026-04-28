@@ -1,0 +1,289 @@
+<Solution>
+  <Folder Name="/Compiler/" />
+  <Folder Name="/Compiler/CSharp/">
+    <Project Path="Compiler/src/Tools/csc/csc.csproj" />
+    <Project Path="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+    <Project Path="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+  </Folder>
+  <Folder Name="/Compiler/Roslyn/" />
+  <Folder Name="/Compiler/Roslyn/Core/">
+    <Project Path="Roslyn/src/Compilers/Core/AnalyzerDriver/AnalyzerDriver.shproj" />
+    <Project Path="Roslyn/src/Compilers/Server/VBCSCompiler/VBCSCompilerCommandLine.shproj" />
+    <Project Path="Roslyn/src/Dependencies/Collections/Microsoft.CodeAnalysis.Collections.shproj" />
+    <Project Path="Roslyn/src/Dependencies/PooledObjects/Microsoft.CodeAnalysis.PooledObjects.shproj" />
+  </Folder>
+  <Folder Name="/Compiler/Roslyn/CSharp/">
+    <Project Path="Roslyn/src/Compilers/CSharp/csc/CscCommandLine.shproj" />
+    <Project Path="Roslyn/src/Compilers/CSharp/CSharpAnalyzerDriver/CSharpAnalyzerDriver.shproj" />
+  </Folder>
+  <Folder Name="/Compiler/Roslyn/Tools/">
+    <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/BoundTreeGenerator/CompilersBoundTreeGenerator.csproj" />
+    <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpErrorFactsGenerator/CSharpErrorFactsGenerator.csproj" />
+    <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpSyntaxGenerator/CSharpSyntaxGenerator.csproj" />
+  </Folder>
+  <Folder Name="/Compiler/Tools/">
+    <Project Path="Tools/Mono.Cecil/XSharp.MonoCecil.csproj" />
+  </Folder>
+  <Folder Name="/Compiler/XSharp/" />
+  <Folder Name="/Compiler/XSharp/Build/">
+    <Project Path="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" />
+  </Folder>
+  <Folder Name="/Compiler/XSharp/Compiler/">
+    <Project Path="Compiler/src/Compiler/xsc/xsc.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpVSParser.csproj">
+      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSharpEvaluator/XSharpEvaluator.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/Compiler/XSharp/NuGet/">
+    <Project Path="Compiler/src/NuGet/XSharp.Compiler.Tools/XSharp.Compiler.Tools.csproj">
+      <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" />
+      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
+      <BuildDependency Project="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj" />
+      <BuildDependency Project="Compiler/src/Scripting/xsi/xsi.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/Compiler/XSharp/Scripting/">
+    <Project Path="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Scripting/xsi/xsi.csproj">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+      <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/RuntimeNet46/" />
+  <Folder Name="/RuntimeNet46/VFPSDK/">
+    <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7e2cbef6-9945-42c4-a7df-f9b8e2e68d44" />
+    <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b4f3862c-82bc-407f-8a84-5241f7321f9f" />
+  </Folder>
+  <Folder Name="/RuntimeNet46/VOSDK-Typed/">
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Targets" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDKDocs.Targets" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="0ee10ced-b863-4b5e-8ac2-443b2cc6eb7a" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="051d166b-3886-43fb-a3c6-6c6846ea6df1" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="223be288-7390-48c2-8c3d-6742287962dc" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="91816960-eb2d-4e4a-ae67-4edc5bd38940" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea" />
+  </Folder>
+  <Folder Name="/RuntimeNet46/VOSDK/">
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDKDocs.Targets" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d0a5da23-00b5-41fd-8564-96246b1e222f" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="0bce49e2-3597-4e32-aa3c-c465130c05c8" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Internet_SDK/VOInternetClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="a62ef59e-7473-4c55-bed8-63ca0d896995" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d7079298-1712-4b03-ad76-4ec53bfe8356" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Report_Classes_SDK/VOReportClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="65d766d9-e113-4372-960b-01732b65d27d" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/SQL_Classes_SDK/VOSQLClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="86da1b42-fbf9-432b-a2d2-67a4f357f019" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ac2aebff-69ff-405d-b7d9-6e5cb1db914c" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Win32_API_Library_SDK/VOWin32APILibrary.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="6c93866f-1894-4e82-9aca-55927cae914a" />
+  </Folder>
+  <Folder Name="/RuntimeNet46/XsRuntime/">
+    <Project Path="Runtime/MacroCompiler/MacroCompiler.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511" />
+    <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="535dff14-efb7-43f5-a4e1-71c1c4280040">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.Data/XSharp.Data.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="db9ad987-ebd9-4f0c-8604-608a9028585c" />
+    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="eaee04e4-d7f6-46ac-b65a-e1b416b8d635" />
+    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="e83c6c8c-773f-4b01-a597-3d38398a9362" />
+    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="770e6ebb-804f-415a-a9ca-e5b0383105f0" />
+    <Project Path="Runtime/XSharp.RT/XSharp.RT.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ef8d2bf2-e81a-479a-ba4f-294c4c348b66" />
+    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="3a771f0e-9400-4a19-8663-c71567ebfa29" />
+    <Project Path="Runtime/XSharp.VO/XSharp.VO.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="06099c3d-1697-4eb1-9f53-8a9a50b9eacd" />
+    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c5d7be20-038e-4b42-a90a-b13bab83d8e5" />
+  </Folder>
+  <Folder Name="/RuntimeNet8/" />
+  <Folder Name="/RuntimeNet8/VOSDK/">
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5cb418c0-2dce-46fe-86e5-e3cb8fd28a25">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d7079298-1712-4b03-ad76-4ec53bfe8357">
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/RuntimeNet8/VOSDKTyped/">
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="273a5f69-9a7c-44d1-b84b-f01685167adb">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ece29add-aa72-41b5-9713-d50512eca3bb">
+      <BuildDependency Project="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="55399d21-e76c-4c41-9f85-2a7197eaecdd">
+      <BuildDependency Project="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="838161b0-44da-42ab-af93-738ec3fc148e">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/RuntimeNet8/Runtime/">
+    <Project Path="Runtime/MacroCompiler/XSharp.MacroCompiler.Next.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9512" />
+    <Project Path="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c4235542-910a-44d2-8a1c-874bfeab0705">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="9cea0df2-04fb-499e-9976-5c9cf7c0e689">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b99e16c3-beb9-4859-8583-7e11abadeb1f">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="6e9f3e6a-a2e9-4ff1-8c50-d01a919f9303">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="dbc49471-370e-4e0c-8cd0-4eef9214b6ae">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7cc1df6f-21ac-4ead-909d-cb4a076d25c7">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="4b5dd22f-758f-4459-9f6b-6a3b32ff72bc">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="984b9b75-017e-4db6-8ad0-3bcce3943502">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+      <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
+    </Project>
+    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="4407a1ae-94c3-4340-a9cd-ed702cd85d8c">
+      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Common/BuildNumber.h" />
+    <File Path="Common/CommonAssemblyInfo.cs" />
+    <File Path="Common/commonAssemblyInfo.prg" />
+    <File Path="Common/Constants.cs" />
+    <File Path="Common/constants.prg" />
+    <File Path="Common/CustomDefs.xh" />
+    <File Path="Common/dbcmd.xh" />
+    <File Path="Common/FoxProCmd.xh" />
+    <File Path="Common/FoxProSet.xh" />
+    <File Path="Common/FoxProSql.xh" />
+    <File Path="Common/GuidStrings.cs" />
+    <File Path="Common/HarbourCmd.xh" />
+    <File Path="Common/memvar.xh" />
+    <File Path="Common/NativeResourceDefines.xh" />
+    <File Path="Common/README.md" />
+    <File Path="Common/set.xh" />
+    <File Path="Common/version.Targets" />
+    <File Path="Common/version.xh" />
+    <File Path="Common/XbasePPCmd.xh" />
+    <File Path="Common/XmlCommon.Targets" />
+    <File Path="Common/XSharp.snk" />
+    <File Path="Common/XSharpConstants.cs" />
+    <File Path="Common/XSharpDefs.xh" />
+    <File Path="Compiler/eng/Versions.props" />
+    <File Path="Compiler/src/Compiler/CompilerCommon.props" />
+    <File Path="Compiler/src/Compiler/XSharpCodeAnalysis/Antlr.props" />
+    <File Path="Compiler/src/Compiler/XSharpCodeAnalysis/Extra.Targets" />
+    <File Path="Runtime/README.md" />
+    <File Path="Runtime/Runtime.Common.Targets" />
+    <File Path="Runtime/Runtime.Sdk.Targets" />
+    <File Path="Runtime/Runtime.Targets" />
+    <File Path="Runtime/VOSDK/Source/SharedSource/SDKAssemblyinfo.prg" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/XmlDoc.Targets" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="Tools/DeployMsBuildSupport/DeployMsBuildSupport.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="f6dea3ea-186c-4868-859a-c2ebbee0d981">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Tools/UDCTester/UDCTester.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="f9579349-9b33-44a3-a615-d091ab45dbb8">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Tools/XPorter/XPorter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="8a49a47c-ade7-416c-8b28-cd3b401cbc25">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="XMLExtractor/XMLExtractor.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="018fa616-afc8-4aee-85c7-8bb0421f10a7">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/Tools/SHFB/">
+    <File Path="Tools/SHFB/SHFB.Targets" />
+    <Project Path="Tools/SHFB/XSharpPlugin/XSharpPlugin.csproj" Id="9e903f77-f7c7-4440-8508-7a30a4fa43fd" />
+    <Project Path="Tools/SHFB/XSharpSyntax/XSharpSyntax.csproj" Id="8e45c5bd-c5f7-4c00-8fb2-ec84413626d0" />
+    <Project Path="Tools/SHFB/XSharpVs/XSharpVs.csproj" Id="770cc19a-4bf3-4755-a293-39e9b20739d7" />
+  </Folder>
+  <Folder Name="/Tools/VFP/">
+    <Project Path="Tests/VFPXPorterTest/VFPXPorterTest.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="421a1a64-a17d-451e-b7e0-dbf3a173b65d" />
+    <Project Path="Tools/VFPXPorter/Source/VFPXPorter/VFPXPorter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="23bb62e9-a405-416a-b0a5-0e4e178b839f">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Tools/VFPXPorter/Source/VFPXPorterCmd/VFPXPorterCmd.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="8ffa9199-e4a3-4ac4-9a97-9ba2ac8d13cd">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Tools/VFPXPorter/Source/VFPXPorterLib/VFPXPorterLib.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="71f46150-aad7-4ed1-8e3f-263698800ba7">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/Tools/VFP/Comments/">
+    <File Path="Tools/VFPXPorter/DocumentationAndRules.md" />
+    <File Path="Tools/VFPXPorter/ExportAdvices.md" />
+    <File Path="Tools/VFPXPorter/README.md" />
+    <File Path="Tools/VFPXPorter/Todo.md" />
+  </Folder>
+  <Folder Name="/Tools/VOXporter/">
+    <Project Path="Tools/VOXporter/Fab_VO_Entities.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="73c0dca6-bfe5-40cb-9240-3db1c37f5b34">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+    <Project Path="Tools/VOXporter/VOXPorter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="939b111b-6ebd-490f-a7f4-ce923d758a3b">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
+  </Folder>
+<Folder Name="/VsIntegration/" />
+<Folder Name="/VsIntegration/Common/">
+  <Project Path="VisualStudio/CodeDomProvider/CodeDomProvider.csproj" Id="7b7d9574-66a7-4719-aa48-c2386d7bf153" />
+  <Project Path="VisualStudio/CodeGenerator/CodeGenerator.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc">
+    <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+  </Project>
+  <Project Path="VisualStudio/Debugger.Support/Debugger.Support.csproj" Id="bbd309aa-a928-461e-b91c-7c12b1145a06" />
+  <Project Path="VisualStudio/VODesigners_tester/VODesigners_tester.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="63d22c03-1d1a-4746-8e24-7bb1248696ee" />
+  <Project Path="VisualStudio/XSharpCodeModelXs/CodeModel.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="eed6843b-b727-4f08-aa32-ca0f48fdde3f">
+    <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+  </Project>
+  <Project Path="VisualStudio/XSharpVoEditors/VoEditors.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7619db88-6286-4ef1-8273-2a08cc8ac70e" />
+</Folder>
+
+</Solution>

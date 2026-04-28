@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -6,13 +6,7 @@
 USING System.Runtime.InteropServices
 #region functions
 
-/// <summary>
-/// </summary>
-/// <param name="hWndOwner"></param>
-/// <param name="cFiles"></param>
-/// <param name="fAsynchWork"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.VO.Docs.xml" path="doc/DoSendMail/*" />
 UNSAFE	FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
     /// THROW NotImplementedException{}
     RETURN

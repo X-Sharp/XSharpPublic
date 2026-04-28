@@ -196,26 +196,33 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
                         if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
-                            Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
-                            bc.Method.NeedAccessToLocals(out var writeAccess))
+                            Compilation.Options.HasOption(CompilerOption.MemVars, node))
                         {
-                            var localsymbols = new List<Symbol>();
-                            var binder = this;
-                            while (binder != null)
+                            var accessLocals = bc.Method.NeedAccessToLocals(out var writeAccess);
+                            var arrayParam = bc.Method.HasFoxArrayParameter(out var _);
+                            if (accessLocals || arrayParam)
                             {
-                                localsymbols.AddRange(binder.Locals);
-                                if (binder is InMethodBinder imb)
+                                var localsymbols = new List<Symbol>();
+                                var binder = this;
+                                if (accessLocals)
                                 {
-                                    var ms = imb.ContainingMemberOrLambda as MethodSymbol;
-                                    localsymbols.AddRange(ms.Parameters);
-                                    break;
+                                    while (binder != null)
+                                    {
+                                        localsymbols.AddRange(binder.Locals);
+                                        if (binder is InMethodBinder imb)
+                                        {
+                                            var ms = imb.ContainingMemberOrLambda as MethodSymbol;
+                                            localsymbols.AddRange(ms.Parameters);
+                                            break;
+                                        }
+                                        binder = binder.Next;
+                                    }
                                 }
-                                binder = binder.Next;
-                            }
-                            var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
-                            if (localsymbols.Count > 0)
-                            {
-                                root.RegisterFunctionThatNeedsAccessToLocals(node.CsNode, writeAccess, localsymbols);
+                                var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
+                                if (localsymbols.Count > 0 || arrayParam)
+                                {
+                                    root.RegisterSpecialFoxProFunction(node.CsNode, writeAccess, localsymbols);
+                                }
                             }
                         }
                     }

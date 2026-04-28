@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,28 +7,28 @@
 
 
 begin namespace XSharp.XPP
-/// <summary>Helper class that stores errors for an XML document</summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/XError/*" />
 class XError
-    /// <summary>Filename where the error occurred.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.FileName/*" />
     property FileName as string auto
-    /// <summary>Linenumber where the error occurred.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.Line/*" />
     property Line     as long auto
-    /// <summary>Column where the error occurred.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.Column/*" />
     property Column   as long auto
-    /// <summary>Id for the node where the error occurred.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.Id/*" />
     property Id       as int64 auto
-    /// <summary>Additional info about the error.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.Additional/*" />
     property Additional as usual auto
-    /// <summary>Document Handle for which the error occurred.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.DocHandle/*" />
     property DocHandle as int64 auto
-    /// <summary>Error Handle.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.Handle/*" />
     property Handle    as int64 auto
     constructor(cFile as string, nId as int64)
         self:FileName := cFile
         self:Id       := nId
         self:Additional := ""
         self:Handle := XDocument.NewHandle()
-    /// <summary>Convert error object to XBase++ compatible error array.</summary>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/XError.ToArray/*" />
     method ToArray() as array
         var aResult := ArrayNew(XML_ERROR_ADDINFO)
         aResult[XML_ERROR_ID]       := self:Id

@@ -78,5 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassCreateTests.prg" />
+    <Compile Include="XppStringFunctionTests.prg" />
+    <Compile Include="XppDataObjectTests.prg" />
   </ItemGroup>
 </Project>

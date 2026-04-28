@@ -13,14 +13,6 @@ FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/lineno/*" />
-[FoxProFunction("LINENO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION LineNo(nPos ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/loadpicture/*" />
 [FoxProFunction("LOADPICTURE", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];

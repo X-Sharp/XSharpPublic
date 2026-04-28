@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,7 +13,7 @@ USING System.Runtime.InteropServices
 USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
-
+    [Obsolete];
     INTERNAL CLASS AutoCloseMessageBox
         PRIVATE INITONLY _caption AS STRING
         PRIVATE INITONLY _result AS DialogResult
@@ -44,14 +44,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
             nDefault := MessageBoxDefaultButton.Button1 AS MessageBoxDefaultButton, ;
             defaultResult := DialogResult.None AS DialogResult ) AS DialogResult
 
-            RETURN AutoCloseMessageBox{caption, timeout,  { capt, btns => MessageBox.Show(text, capt, buttons, nIcon, nDefault) },;
+            RETURN AutoCloseMessageBox{caption, timeout,  { capt, btns => MessageBox.Show(text, capt, btns, nIcon, nDefault) },;
                 buttons, nIcon, nDefault, defaultResult }:_result
         END METHOD
 
         PUBLIC STATIC METHOD Show(owner AS IWin32Window , text AS STRING , caption := "XSharp" AS STRING, timeout := 1000 AS INT, ;
             buttons := MessageBoxButtons.OK AS MessageBoxButtons, nIcon  := MessageBoxIcon.None AS MessageBoxIcon, ;
             nDefault := MessageBoxDefaultButton.Button1 AS MessageBoxDefaultButton, defaultResult := DialogResult.None AS DialogResult ) AS DialogResult
-            RETURN AutoCloseMessageBox{caption, timeout, {capt, btns => MessageBox.Show(owner, text, capt, buttons, nIcon, nDefault)} ,;
+            RETURN AutoCloseMessageBox{caption, timeout, {capt, btns => MessageBox.Show(owner, text, capt, btns, nIcon, nDefault)} ,;
                 buttons, nIcon, nDefault, defaultResult}:_result
         END METHOD
 

@@ -11,10 +11,7 @@ USING System.Reflection
 USING XSharp.RDD.Support
 USING System.Collections.Generic
 
-/// <summary>This class is used to create a System.Data.DataTable from a workarea</summary>
-/// <remarks>The data in this table is detached from the workarea. So if you make changes to the
-/// data you will have to write that back to the workarea yourself.
-/// </remarks>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataTable_2/*" />
 CLASS XSharp.DbDataTable INHERIT DataTable
 PROTECT _nAdding AS DWORD
 PROTECT _nArea   AS LONG
@@ -23,12 +20,7 @@ PROTECT _nArea   AS LONG
 
         CONSTRUCTOR()
             SUPER()
-        /// <summary>Create a datatable from an IRdd object</summary>
-        /// <remarks>The structure of the table will be derived from the structure of the workarea.
-        /// and for each row in the workarea there will be a DbDataRow added to the table
-        /// You can use the normal events for the DataTable class to monitor changes.
-        /// and use the GetChanges() method from the DataTable class to retrieve a subset of the table with changed rows.
-        /// </remarks>
+        /// <include file="XSharp.Data.Docs.xml" path="doc/DbDataTable.ctor/*" />
         CONSTRUCTOR(oRDD AS IRdd)
             SUPER(oRDD:Alias)
             SELF:_nArea := (INT) oRDD:Area
@@ -108,8 +100,7 @@ PROTECT _nArea   AS LONG
             SELF:Rows:Add(oData)
         RETURN
 
-        /// <summary>Save the changes in the DbDataTable to the underlying RDD</summary>
-        /// <param name="oRDD">The RDD object for the area where the changes must be saved.</param>
+        /// <include file="XSharp.Data.Docs.xml" path="doc/DbDataTable.Save/*" />
         METHOD Save(oRDD AS IRdd) AS LOGIC
             LOCAL lockInfo AS DbLockInfo
             TRY

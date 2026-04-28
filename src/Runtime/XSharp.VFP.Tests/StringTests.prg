@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XUnit
+//#include "FoxProSet.xh"
 #pragma warnings (219, disable) // unused variables
 
 // Array tests are not working correctly yet with the current build
@@ -22,8 +23,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("C:\Folder", JustPath("C:\Folder\test.txt") )
             Assert.Equal("test.txt", JustFName("C:\Folder\test.txt") )
             Assert.Equal("test", JustStem("C:\Folder\test.txt") )
-            Assert.Equal("C:\",Addbs("C:"))
-            Assert.Equal("C:\test\",Addbs("C:\test"))
+            Assert.Equal("C:\",AddBs("C:"))
+            Assert.Equal("C:\test\",AddBs("C:\test"))
 
 		[Fact, Trait("Category", "String")];
         METHOD RatFunctionTests() AS VOID
@@ -242,6 +243,97 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(0, Difference(NULL, "abc"))
             Assert.Equal(0, Difference("", "abc"))
         end method
+
+        [Fact, Trait("Category", "StringFunctions")];
+        METHOD TestNormalize() AS VOID
+            Assert.Equal("GROSSESCHRIFT", Normalize("GroSSescHrifT"))
+            VAR cExpr := "UPPE(customer->name) = 'John Doe' AND NOT empty(customer->id)"
+            VAR cExpected := "UPPER(CUSTOMER.NAME)='John Doe'.AND..NOT.EMPTY(CUSTOMER.ID)"
+
+            // NOTE: The replacement for UPPE to UPPER depends on a keyword parser
+            // this implementation handles the Upper() and -> functions which are
+            // the most critical.
+            VAR cResult := Normalize(cExpr)
+
+            Assert.Contains("CUSTOMER.NAME", cResult)
+            Assert.Contains(".AND.", cResult)
+            Assert.Contains(".NOT.", cResult)
+            Assert.Contains("'John Doe'", cResult) // Strings remains intact.
+        END METHOD
+
+        [Fact];
+        METHOD SetPointSeparatorTest() AS VOID
+            VAR eOldDialect := RuntimeState.Dialect
+            RuntimeState.Dialect := XSharpDialect.FoxPro
+
+            TRY
+                VAR dwOldPoint := SET("POINT")
+                VAR dwOldSep   := SET("SEPARATOR")
+
+                Set(Set.Point, ",")
+                Set(Set.Separator, ".")
+
+                Assert.Equal(",", SET("POINT") )
+                Assert.Equal(".", SET("SEPARATOR") )
+
+                Assert.Equal("123,456", Str(123.456, 10,3):Trim() )
+                SET("POINT","_")
+                Assert.Equal("123_456", Str(123.456, 10,3):Trim() )
+
+                Set(Set.Point, dwOldPoint)
+                Set(Set.Separator, dwOldSep)
+            FINALLY
+                RuntimeState.Dialect := eOldDialect
+            END TRY
+        END METHOD
+
+        [Fact];
+        METHOD BinToC_CToBin_Test() AS VOID
+            LOCAL nVal AS INT
+            nVal := 123456
+            LOCAL cBin AS STRING
+            cBin := BinToC(nVal, "4RS")
+            Assert.Equal(4, cBin:Length)
+
+            LOCAL nConverted AS USUAL
+            nConverted := CToBin(cBin, "4RS")
+            Assert.Equal((INT)nConverted, nVal)
+
+            LOCAL nDec AS CURRENCY
+            nDec := 1234.56m
+            cBin := BinToC(nDec, 8)
+            Assert.Equal(8, cBin:Length)
+
+            nConverted := CToBin(cBin, "Y")
+            Assert.Equal((CURRENCY)nConverted, nDec)
+
+            LOCAL nDouble AS REAL8
+            nDouble := -987.654
+            cBin := BinToC(nDouble, "B")
+            Assert.Equal(8, cBin:Length)
+
+            nConverted := CToBin(cBin, "B")
+            Assert.Equal((REAL8)nConverted, nDouble)
+        RETURN
+
+        [Fact, Trait("Category", "UIAndDialogs")];
+        METHOD TestGetDialogsInHeadlessMode() AS VOID
+            VAR oOriginalProvider := VfpUIService.Provider
+
+            VfpUIService.Provider := HeadlessUIProvider{}
+            TRY
+                VAR cRes := GETDIR()
+                Assert.Empty(cRes)
+
+                cRes := GETFILE()
+                Assert.Empty(cRes)
+
+                cRes := GETPICT()
+                Assert.Empty(cRes)
+            FINALLY
+                VfpUIService.Provider := oOriginalProvider
+            END TRY
+        END METHOD
 
 	END CLASS
 

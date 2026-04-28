@@ -3758,7 +3758,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Add missing return type when needed. OBJECT or USUAL depending on the dialect.
             if (context.Data.HasMissingReturnType && !context.Data.MustBeVoid)
             {
-                dataType = _getMissingType();
+                dataType = DefaultType();
             }
         }
 

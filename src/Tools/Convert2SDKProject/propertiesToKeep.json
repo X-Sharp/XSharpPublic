@@ -8,6 +8,8 @@
   "CS",
   "Dialect",
   "FOVF",
+  "FOX1",
+  "FOX2",
   "GenerateFullPaths",
   "IncludePaths",
   "InitLocals",
@@ -45,5 +47,6 @@
   "VO7",
   "VO8",
   "VO9",
-  "VulcanCompatibleResources"
+  "VulcanCompatibleResources",
+  "XPP1"
 ]

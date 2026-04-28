@@ -6,7 +6,8 @@
 
 #include "VFPObject.xh"
 // In order to support it, we also need to have VFPProperties.xh
-#include "..\XSharp\VFPProperties.xh"
+#include "VFPProperties.xh"
+#include "VFPPropertiesDynamic.xh"
 
 
 // METHOD AddObject(cName, cClass , cOLEClass , aInit1, aInit2 ) AS USUAL CLIPPER

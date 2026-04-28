@@ -36,6 +36,7 @@
    SetTextMergeDelimiters(<cLeft>, iif ( <.cRight.>,<!cRight!>,<cLeft>))
 
 #command SET DEVICE TO <x:SCREEN,PRINTER,&>  =>  Set( Set.Device, <(x)> )
+#command SET DEVICE TO FILE <(file)>         =>  Set( Set.Device, "FILE:" + <(file)> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SET commands for Terminal IO
@@ -69,6 +70,8 @@
 #command SET SAFETY <x:ON,OFF,&>          =>  Set(Set.Safety, <(x)> )
 #command SET SQLBUFFERING <x:ON,OFF,&>    =>  Set( Set.SqlBuffering, <(x)> )
 #command SET VARCHARMAPPING<x:ON,OFF,&>   =>  Set( Set.VarCharMapping, <(x)> )
+#command SET MEMOWIDTH TO <x>             =>  Set(Set.MemoWidth, <x>)
+#command SET MEMOWIDTH TO                 =>  Set(Set.MemoWidth, 50)
 
 ///////////////////////////////////////////////////////////////////////////////
 // SET commands for Date and Time formatting
@@ -78,6 +81,16 @@
 #command SET HOURS TO 24                  => SetHours(24)
 
 #command SET SECONDS <x:ON,OFF,&>         => SetSeconds(<(x)>)
+
+///////////////////////////////////////////////////////////////////////////////
+// SET commands for Numric formatting
+///////////////////////////////////////////////////////////////////////////////
+#command SET POINT TO <c>                 => Set(Set.Point, <c>)
+#command SET POINT TO                     => Set(Set.Point, ".")
+
+#command SET SEPARATOR TO <c>             => Set(Set.Separator, <c>)
+#command SET SEPARATOR TO                 => Set(Set.Separator, ",")
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Unsupported (for now ?) commands

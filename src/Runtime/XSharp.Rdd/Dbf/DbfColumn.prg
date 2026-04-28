@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -14,13 +14,13 @@ USING XSharp.RDD.Support
 USING System.Diagnostics
 USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>Class for DBF Column reading / writing </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn/*" />
     CLASS DbfColumn INHERIT RddFieldInfo
         INTERNAL NullBit        := -1 AS LONG
         INTERNAL LengthBit      := -1 AS LONG
         INTERNAL OffSetInHeader := -1 as LONG
         INTERNAL RDD            AS XSharp.RDD.DBF
-        /// <summary>Create a DbfColumn class, used when creating files.</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.Create/*" />
         STATIC METHOD Create(oInfo AS RddFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
             // Commented out types are Harbour specific
             SWITCH oInfo:FieldType
@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN DbfColumn{oInfo,oRDD}
             END SWITCH
 
-        /// <summary>Create a DbfColumn class, based on the definition in the DBF. Used when opening a file. </summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.Create_2/*" />
         STATIC METHOD Create(oField REF DbfField, oRDD AS XSharp.RDD.DBF, nHeaderOffSet AS LONG) AS DbfColumn
             LOCAL oInfo AS RddFieldInfo
             LOCAL oColumn as DbfColumn
@@ -93,13 +93,12 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:RDD        := oRDD
             RETURN
 
-       /// <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+       /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.InitValue/*" />
        VIRTUAL METHOD InitValue(buffer AS BYTE[]) AS VOID
             // this gets called to update the initialize the buffer for 'append blank'. Gets called once when a DBF is opened.
             RETURN
 
-       /// <summary>Update the buffer after appending. For example for AutoIncrement or TimeStamp columns.</summary>
-       /// <param name="buffer">Record buffer for the current record</param>
+       /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.NewRecord/*" />
        VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
             // this gets called to update the appended record. Only used at this moment to set the AutoIncrement value
             // but can also be used to set a timestamp or rowversion later
@@ -126,16 +125,14 @@ BEGIN NAMESPACE XSharp.RDD
             endif
             RETURN nResult
 
-        /// <summary>Get the value from the buffer</summary>
-       /// <param name="buffer">Record buffer for the current record</param>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.GetValue/*" />
         VIRTUAL METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             IF SELF:IsNull()
                 RETURN DBNull.Value
             ENDIF
             RETURN SELF:_GetString(buffer, SELF:Length)
 
-        /// <summary>Handle NULL values.</summary>
-       /// <param name="buffer">Record buffer for the current record</param>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.HandleNullValue/*" />
         VIRTUAL METHOD HandleNullValue(buffer AS BYTE[]) AS LOGIC
             SELF:InitValue(buffer)
             IF SELF:IsNullable
@@ -143,9 +140,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-       /// <summary>Write the value to the buffer</summary>
-       /// <param name="buffer">Record buffer for the current record</param>
-       /// <param name="oValue">Value to write.</param>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfColumn.PutValue/*" />
         VIRTUAL METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             RETURN FALSE
 
@@ -171,7 +166,6 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN
 
-        /// <summary>Get the default "empty" value, as you would get at EOF</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         VIRTUAL METHOD EmptyValue() AS OBJECT
             RETURN String.Empty
@@ -257,7 +251,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing String Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfCharacterColumn/*" />
     CLASS DbfCharacterColumn INHERIT DbfColumn
 
          CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -370,7 +364,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
     END CLASS
-    /// <summary>Class for reading / writing Date Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfDateColumn/*" />
     CLASS DbfDateColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -428,15 +422,15 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Date",oValue))
             RETURN FALSE
 
-        /// <inheritdoc/>
 
+        /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbDate{0,0,0}
-        /// <inheritdoc/>
 
+        /// <inheritdoc/>
     END CLASS
 
-    /// <summary>Class for reading / writing Logic Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLogicColumn/*" />
     CLASS DbfLogicColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -479,7 +473,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing Numeric Columns</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfNumericColumn/*" />
     CLASS DbfNumericColumn INHERIT DbfColumn
 
     CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -620,15 +614,14 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfMemoColumn/*" />
     CLASS DbfMemoColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
 
-        /// <inheritdoc/>
-        /// <remarks>At this level this returns the memo block number.</remarks>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfMemoColumn.GetValue/*" />
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             // Read the Memo Block Number
             LOCAL result AS LONG
@@ -648,8 +641,7 @@ BEGIN NAMESPACE XSharp.RDD
                 Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN
-        /// <inheritdoc/>
-        /// <remarks>At this level this writes the memo block number.</remarks>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfMemoColumn.PutValue/*" />
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // oValue is the memo block number
             LOCAL intValue AS LONG
@@ -692,7 +684,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing Integer Columns. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfIntegerColumn/*" />
     CLASS DbfIntegerColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -760,7 +752,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing AutoIncrement Columns. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfAutoIncrementColumn/*" />
     CLASS DbfAutoIncrementColumn INHERIT DbfIntegerColumn
         INTERNAL IncrStep as LONG
         INTERNAL Counter  AS LONG
@@ -768,7 +760,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-        /// <summary>Read the next autoincrement number from the dbf header </summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfAutoIncrementColumn.Read/*" />
         VIRTUAL METHOD Read() AS LOGIC
             LOCAL oField  as DbfField
             oField := DbfField{SELF:RDD:_Encoding}
@@ -777,7 +769,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:IncrStep := oField:IncStep
             RETURN TRUE
 
-        /// <summary>Write the next autoincrement number to the dbf header </summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfAutoIncrementColumn.Write/*" />
         VIRTUAL METHOD Write() AS LOGIC
             LOCAL oField  AS DbfField
             oField := DbfField{SELF:RDD:_Encoding}
@@ -800,7 +792,7 @@ BEGIN NAMESPACE XSharp.RDD
             // then write the current value to the buffer
             LOCAL nCurrent as LONG
             local mustLock as LOGIC
-            nCurrent := SELF:Counter
+
             mustLock := SELF:RDD:Shared .and. ! SELF:RDD:_HeaderLocked
             IF mustLock
                 DO WHILE ! SELF:RDD:HeaderLock(DbLockMode.Lock)
@@ -808,6 +800,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDDO
             ENDIF
             SELF:Read()
+            nCurrent := SELF:Counter
             SELF:Counter += SELF:IncrStep
             SELF:Write()
             IF mustLock
@@ -822,7 +815,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing Double Columns. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfDoubleColumn/*" />
     CLASS DbfDoubleColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -865,7 +858,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SELF:Length == 8
     END CLASS
 
-    /// <summary>Class for reading / writing Currency Columns. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfCurrencyColumn/*" />
     CLASS DbfCurrencyColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -917,7 +910,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class for reading / writing DateTime Columns. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfDateTimeColumn/*" />
     CLASS DbfDateTimeColumn INHERIT DbfColumn
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
@@ -1026,7 +1019,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
     END CLASS
-    /// <summary>Class for reading / writing the Special Column for NULL values. </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfNullColumn/*" />
     CLASS DbfNullColumn INHERIT DbfColumn
         PRIVATE bitArray AS System.Collections.BitArray
         PRIVATE data     AS BYTE[]
@@ -1056,10 +1049,10 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:bitArray:CopyTo(data, 0)
             System.Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN FALSE
-        /// <summary>Read a bit from the specified position</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfNullColumn.GetBit/*" />
         METHOD GetBit(nPos AS LONG) AS LOGIC
             RETURN SELF:bitArray:Get(nPos)
-        /// <summary>Set a bit at the specified position</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfNullColumn.SetBit/*" />
         METHOD SetBit(nPos AS LONG, lSet AS LOGIC) AS VOID
             SELF:bitArray:Set(nPos, lSet)
             RETURN

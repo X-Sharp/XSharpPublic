@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.FlexFile
             END SET
         END PROPERTY
 
-        /// This includes the length of the token
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/FlexMemoToken.Length/*" />
         INTERNAL PROPERTY Length AS LONG
             GET
                 RETURN BuffToLongFox(_Buffer, 4)

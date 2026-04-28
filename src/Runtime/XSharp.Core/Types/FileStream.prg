@@ -10,28 +10,23 @@ USING System.Collections.Generic
 
 
 
-/// <summary>Control the buffered File IO setting for the runtime</summary>
-/// <remarks>The default behavior for X# 2.7 and later is to use Buffered Filestreams for Exclusive disk io. <br/>
-/// With this function you can switch that behavior on and off.</remarks>
-/// <param name="lUse">Should the buffer file IO be used ?</param>
-/// <returns>Previous setting for the buffered file IO</returns>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/UseBufferedFileStream/*" />
 FUNCTION UseBufferedFileStream(lUse AS LOGIC) AS LOGIC
     LOCAL lOld := XsFileStream.UseBufferedFileStream  AS LOGIC
     XsFileStream.UseBufferedFileStream := lUse
     RETURN lOld
 
-/// <summary>Retrieve the buffered File IO setting for the runtime</summary>
-/// <returns>Current setting for the buffered file IO</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/UseBufferedFileStream_2/*" />
 FUNCTION UseBufferedFileStream() AS LOGIC
     RETURN XsFileStream.UseBufferedFileStream
 
 
 BEGIN NAMESPACE XSharp.IO
-    /// <summary>Special Filestream class that sets the runtime IO Errorstate when an error occurs. </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/XsFileStream/*" />
     CLASS XsFileStream INHERIT FileStream
         STATIC INTERNAL UseBufferedFileStream := TRUE AS LOGIC
-        /// <summary>The name of the file opened in the stream.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsFileStream.FileName/*" />
         PROPERTY FileName as STRING AUTO
         /// <inheritdoc />
         CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
@@ -93,7 +88,7 @@ BEGIN NAMESPACE XSharp.IO
             RETURN
 
         #region Construct the filestream
-        /// <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/XsFileStream.CreateFileStream/*" />
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             IF share != FileShare.None
                 IF RuntimeState.RunningOnWindows

@@ -1,4 +1,4 @@
-﻿// ControlProperties.xh
+﻿// CommonProperties.xh
 
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
@@ -64,6 +64,9 @@ METHOD ZOrder( uValue AS USUAL ) AS USUAL
 	ENDIF
 	RETURN zOrderValue
 END METHOD
+
+METHOD SetFocus() AS VOID STRICT
+	SELF:Focus()
 
 	// Todo
 [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];

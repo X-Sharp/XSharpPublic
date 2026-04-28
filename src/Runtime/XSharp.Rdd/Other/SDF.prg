@@ -11,8 +11,7 @@ USING XSharp.RDD.Enums
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>SDF RDD. For reading and writing text files.</summary>
-
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/SDF/*" />
     [DebuggerDisplay("SDF ({Alias,nq})")];
     CLASS SDF INHERIT TEXTRDD
         PROTECT buffer AS BYTE[]

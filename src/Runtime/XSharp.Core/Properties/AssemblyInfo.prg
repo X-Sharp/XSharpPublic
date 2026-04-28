@@ -22,3 +22,4 @@ using XSharp
 [assembly: ImplicitNamespace("XSharp")]
 [assembly: ImplicitNamespace("XSharp.RDD")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )]
+[assembly: InternalsVisibleTo("XSharp.Core.Tests,"+Constants.PUBLICKEY)]

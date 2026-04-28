@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -6,8 +6,7 @@
 USING System.Text
 USING XSharp.RDD.Support
 
-/// <summary>Base Memo class. Does not implement anything. </summary>
-/// <seealso cref="IMemo"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/BaseMemo/*" />
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
     PROTECTED _oArea AS Workarea
     VIRTUAL PROPERTY FullPath as STRING
@@ -18,8 +17,7 @@ CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
 
 
 
-    /// <summary>Create the BaseMemo object</summary>
-    /// <param name="oArea">Workarea object that 'owns' this memo object </param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/BaseMemo.ctor/*" />
     CONSTRUCTOR(oArea AS Workarea)
         _oArea := oArea
 

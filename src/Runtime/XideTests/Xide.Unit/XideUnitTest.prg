@@ -9,6 +9,7 @@ CLASS XideUnitTest
 	
 	STATIC METHOD Initialize() AS VOID
 		oForm := UnitForm{}
+		oForm:Size := System.Drawing.Size{1024,768}
 		oForm:Show()
 	RETURN
 	STATIC METHOD Run() AS VOID
@@ -198,6 +199,8 @@ CLASS Xide.Unit.Assert
 
 	// XUnit
 	STATIC METHOD Equal(o1 AS OBJECT, o2 AS OBJECT) AS VOID
+		Xide.Unit.Assert._Equal(o1, o2)
+	STATIC protected METHOD _Equal(o1 AS OBJECT, o2 AS OBJECT) AS VOID
 		IF o2 != NULL .and. o2:GetType() == TypeOf(STRING) .and. o1:GetType() == TypeOf(SYMBOL)
 			o2 := String2Symbol((STRING)o2)
 		END IF
@@ -210,12 +213,12 @@ CLASS Xide.Unit.Assert
 		ELSE
 			Failed ++
 			? "failed in ", __ENTITY__
-			XideUnitTest.TestRun(FALSE , "Equal() returned: " + o1:ToString() + " , " + o2:ToString() , ProcFile(1) , ProcLine(1))
+			XideUnitTest.TestRun(FALSE , "Equal() expected: " + o1:ToString() + " , returned: " + o2:ToString() , ProcFile(2) , ProcLine(2))
 		END IF
 	RETURN
 	STATIC METHOD Equal<T>(o1 AS T, o2 AS T) AS VOID
 //		System.Windows.Forms.MessageBox.Show(o1:ToString())
-		Xide.Unit.Assert.Equal((OBJECT)o1, (OBJECT)o2)
+		Xide.Unit.Assert._Equal((OBJECT)o1, (OBJECT)o2)
 	STATIC METHOD NotEqual(o1 AS OBJECT, o2 AS OBJECT) AS VOID
 		IF (o1 == NULL .and. o2 != NULL) .or. (o1 != NULL .and. .not. o1:Equals(o2))
 			Passed ++
@@ -283,6 +286,17 @@ CLASS Xide.Unit.Assert
 		END TRY
 	RETURN cFile
 	
+	STATIC METHOD Contains(cSearch AS STRING, cText AS STRING) AS VOID
+		IF cText:Contains(cSearch)
+			Passed ++
+			XideUnitTest.TestRun(TRUE , "" , "" , 0)
+		ELSE
+			Failed ++
+			? "failed in ", __ENTITY__, GetFileName(ProcFile(1)) , ProcLine(1)
+			XideUnitTest.TestRun(FALSE , "Contains() returned: FALSE", ProcFile(1) , ProcLine(1))
+		END IF
+	RETURN
+	
 	STATIC METHOD ThrowsAny<t>(o AS System.Action?) AS T WHERE T IS Exception
 		LOCAL lExcption := FALSE AS LOGIC
 		TRY
@@ -300,6 +314,9 @@ CLASS Xide.Unit.Assert
 			XideUnitTest.TestRun(FALSE , "No exception occured : ", ProcFile(1) , ProcLine(1))
 		END IF
 		RETURN Default(T)
+	STATIC METHOD Empty(c AS STRING) AS LOGIC
+	RETURN String.IsNullOrEmpty(c)
+
 END CLASS
 
 

@@ -7,7 +7,7 @@ using System.IO;
 using XSharpModel;
 using File = System.IO.File;
 using XSharp.Settings;
-
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition

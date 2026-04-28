@@ -12,7 +12,7 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
     // Inherits all standard DBF and Memo behavior
     // Only adds Order Handling
-    /// <summary>DBFNTX RDD. For DBF/DBT/NTX.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBFNTX/*" />
     [DebuggerDisplay("DBFNTX ({Alias,nq})")];
     CLASS DBFNTX INHERIT DBFDBT
         INTERNAL _indexList AS NtxOrderList

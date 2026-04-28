@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using XSharpModel;
 using XSharp.Settings;
-
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     public static class Extensions

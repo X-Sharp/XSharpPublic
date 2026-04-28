@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -9,7 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD 
-    /// <summary>Error subclass used by the RDD system.</summary> 
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RddError/*" />
     CLASS RddError INHERIT Error
         CONSTRUCTOR()
             RETURN

@@ -1,153 +1,186 @@
-// Line.prg
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.
-// See License.txt in the project root for license information.
-
-
 USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Windows.Forms
-USING System.Drawing
 USING System.ComponentModel
+USING System.Drawing
+USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
+/// <summary>
+/// Line control - GDI+ graphics primitive for drawing lines
+/// Custom control that renders a line using GDI+ drawing
+/// Supports customizable color and width properties
+/// </summary>
+PUBLIC CLASS Line INHERIT System.Windows.Forms.Control IMPLEMENTS IVFPObject, IVFPControl
+
+	// ============================================================================
+	// Include VFPObject base implementation (IVFPObject, IVFPHelp)
+	// ============================================================================
+	#include "Headers/VFPObject.xh"
+
+	PRIVATE _borderColor AS Color
+	PRIVATE _borderWidth AS INT32
+	PRIVATE _visible AS LOGIC
+	PRIVATE _baseClass AS STRING
+	PRIVATE _class AS STRING
+	PRIVATE _classLibrary AS STRING
+	PRIVATE _comment AS STRING
+	PRIVATE _helpContextID AS LONG
+	PRIVATE _whatsThisHelpID AS LONG
+	PRIVATE _dragMode AS INT
+	PRIVATE _dragIcon AS STRING
+
 	/// <summary>
-	/// The VFP compatible Line class.
-	/// Draws a line on the form.
+	/// Gets or sets the color of the line
 	/// </summary>
-	PARTIAL CLASS Line INHERIT System.Windows.Forms.Control
+	PUBLIC PROPERTY BorderColor AS Color
+		GET
+			RETURN SELF:_borderColor
+		END GET
+		SET
+			SELF:_borderColor := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		// Common properties that all VFP Objects support
-		#include "Headers\VFPObject.xh"
+	/// <summary>
+	/// Gets or sets the width of the line in pixels
+	/// </summary>
+	PUBLIC PROPERTY BorderWidth AS INT32
+		GET
+			RETURN SELF:_borderWidth
+		END GET
+		SET
+			SELF:_borderWidth := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _borderColor AS Color
-		PRIVATE _borderWidth AS INT
-		PRIVATE _drawMode AS INT
-		PRIVATE _lineSlant AS STRING
+	/// <summary>
+	/// Gets or sets whether the line is visible
+	/// </summary>
+	PUBLIC PROPERTY LineVisible AS LOGIC
+		GET
+			RETURN SELF:_visible
+		END GET
+		SET
+			SELF:_visible := VALUE
+			SELF:Invalidate()
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Constructor for Line control.
-		/// </summary>
-		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			SELF:Size := Size{100, 0}
-			SELF:_borderColor := Color.Black
-			SELF:_borderWidth := 1
-			SELF:_drawMode := 13  // Copy pen
-			SELF:_lineSlant := "/"  // Forward slash by default
-			SELF:SetStyle(ControlStyles.UserPaint, TRUE)
-			SELF:SetStyle(ControlStyles.AllPaintingInWmPaint, TRUE)
-			SELF:SetStyle(ControlStyles.DoubleBuffer, TRUE)
-			SELF:SetStyle(ControlStyles.Selectable, FALSE)
-			RETURN
+	/// <summary>
+	/// Constructor - initializes the Line control
+	/// </summary>
+	PUBLIC CONSTRUCTOR()
+		SUPER()
+		SELF:_borderColor := System.Drawing.Color.Black
+		SELF:_borderWidth := 1
+		SELF:_visible := TRUE
+		SELF:_baseClass := "Line"
+		SELF:_class := "Line"
+		SELF:_classLibrary := ""
+		SELF:_comment := ""
+		SELF:_helpContextID := 0
+		SELF:_whatsThisHelpID := 0
+		SELF:_dragMode := 0
+		SELF:_dragIcon := ""
+		SELF:BackColor := System.Drawing.Color.Transparent
+		SELF:Height := 2
+		SELF:Width := 100
+		SELF:DoubleBuffered := TRUE
+	END CONSTRUCTOR
 
-		#include ".\Headers\ControlProperties.xh"
 
-		/// <summary>
-		/// Gets or sets the border color of the line.
-		/// Equivalent to VFP's BorderColor property.
-		/// </summary>
-		/// <value>The border color. Default is black.</value>
-		[Category("VFP Properties"), Description("Line color")];
-		[DefaultValue(typeof(Color), "Black")];
-		PROPERTY BorderColor AS Color
-			GET
-				RETURN SELF:_borderColor
-			END GET
-			SET
-				SELF:_borderColor := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the border width (thickness) of the line.
-		/// Equivalent to VFP's BorderWidth property.
-		/// </summary>
-		/// <value>The line thickness in pixels. Default is 1.</value>
-		[Category("VFP Properties"), Description("Line thickness in pixels")];
-		[DefaultValue(1)];
-		PROPERTY BorderWidth AS INT
-			GET
-				RETURN SELF:_borderWidth
-			END GET
-			SET
-				SELF:_borderWidth := VALUE
-				SELF:Invalidate()
-			END SET
-		END PROPERTY
+	// ============================================================================
+	// IVFPControl Implementation
+	// ============================================================================
 
-		/// <summary>
-		/// Gets or sets the draw mode.
-		/// Equivalent to VFP's DrawMode property.
-		/// </summary>
-		/// <value>The draw mode. Default is 13 (Copy Pen).</value>
-		[Category("VFP Properties"), Description("Draw mode")];
-		[DefaultValue(13)];
-		PROPERTY DrawMode AS INT
-			GET
-				RETURN SELF:_drawMode
-			END GET
-			SET
-				SELF:_drawMode := VALUE
-			END SET
-		END PROPERTY
+	[Category("VFP Behavior")];
+	[Description("Drag icon path")];
+	[DefaultValue("")];
+	PROPERTY DragIcon AS STRING
+		GET
+			RETURN SELF:_dragIcon
+		END GET
+		SET
+			SELF:_dragIcon := VALUE
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the line slant direction.
-		/// "/" for forward slash (bottom-left to top-right)
-		/// "\" for backslash (top-left to bottom-right)
-		/// Equivalent to VFP's LineSlant property.
-		/// </summary>
-		/// <value>The line slant direction. Default is "/".</value>
-		[Category("VFP Properties"), Description("Line slant: / or \\")];
-		[DefaultValue("/")];
-		PROPERTY LineSlant AS STRING
-			GET
-				RETURN SELF:_lineSlant
-			END GET
-			SET
-				IF VALUE == "/" .OR. VALUE == "\"
-					SELF:_lineSlant := VALUE
-					SELF:Invalidate()
-				ENDIF
-			END SET
-		END PROPERTY
+	[Category("VFP Behavior")];
+	[Description("Drag mode (0=manual, 1=automatic)")];
+	[DefaultValue(0)];
+	PROPERTY DragMode AS LONG
+		GET
+			RETURN SELF:_dragMode
+		END GET
+		SET
+			SELF:_dragMode := VALUE
+		END SET
+	END PROPERTY
 
-		/// <summary>
-		/// Handles the Paint event to draw the line.
-		/// </summary>
-		PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID
-			LOCAL g AS Graphics
+	PUBLIC METHOD Drag(nAction ) AS USUAL CLIPPER
+		// Placeholder - Drag operation
+		RETURN NIL
+	END METHOD
+
+	PUBLIC METHOD SetFocus() AS VOID STRICT
+		SELF:Focus()
+	END METHOD
+
+	/// <summary>
+	/// Handles the Paint event to draw the line
+	/// </summary>
+	PROTECTED OVERRIDE METHOD OnPaint(e AS PaintEventArgs) AS VOID
+		SUPER:OnPaint(e)
+		IF SELF:_visible
 			LOCAL pen AS Pen
-			LOCAL startPoint AS Point
-			LOCAL endPoint AS Point
+			pen := pen{SELF:_borderColor, SELF:_borderWidth}
+			TRY
+				// Draw horizontal line from left to right
+				e:Graphics:DrawLine(pen, 0, SELF:Height / 2, SELF:Width, SELF:Height / 2)
+			FINALLY
+				pen:Dispose()
+			END TRY
+		ENDIF
+	END METHOD
 
-			g := e:Graphics
-			pen := Pen{SELF:_borderColor, SELF:_borderWidth}
+	/// <summary>
+	/// Sets the line to horizontal orientation
+	/// </summary>
+	PUBLIC METHOD SetHorizontal() AS VOID
+		SELF:Height := SELF:_borderWidth + 2
+	END METHOD
 
-			// Determine start and end points based on LineSlant
-			IF SELF:_lineSlant == "/"
-				// Forward slash: bottom-left to top-right
-				startPoint := Point{0, SELF:Height - 1}
-				endPoint := Point{SELF:Width - 1, 0}
-			ELSE
-				// Backslash: top-left to bottom-right
-				startPoint := Point{0, 0}
-				endPoint := Point{SELF:Width - 1, SELF:Height - 1}
-			ENDIF
+	/// <summary>
+	/// Sets the line to vertical orientation
+	/// </summary>
+	PUBLIC METHOD SetVertical() AS VOID
+		LOCAL temp AS INT32
+		temp := SELF:Width
+		SELF:Width := SELF:Height
+		SELF:Height := temp
+	END METHOD
 
-			g:DrawLine(pen, startPoint, endPoint)
+	/// <summary>
+	/// Sets both color and width properties
+	/// </summary>
+	PUBLIC METHOD SetLineStyle(oColor AS Color, nWidth AS INT32) AS VOID
+		SELF:BorderColor := oColor
+		SELF:BorderWidth := nWidth
+	END METHOD
 
-			pen:Dispose()
-			RETURN
+	/// <summary>
+	/// Resets line to default appearance
+	/// </summary>
+	PUBLIC METHOD Reset() AS VOID
+		SELF:BorderColor := System.Drawing.Color.Black
+		SELF:BorderWidth := 1
+		SELF:LineVisible := TRUE
+		SELF:SetHorizontal()
+	END METHOD
 
-	END CLASS
+END CLASS
 
 END NAMESPACE

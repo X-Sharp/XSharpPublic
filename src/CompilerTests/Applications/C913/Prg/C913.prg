@@ -15,7 +15,7 @@ PROCEDURE TestCopyStructure()
 	FErase(cDbf + ".cdx")
 	FErase(cDest + ".cdx")
 
-//	RddSetDefault("DBFCDX")
+	RddSetDefault("DBFVFP")
 
 	? DbCreate(cDbf,{{"FLD1","C",30,0},{"FLD2","N",10,0},{"MEMO","M",10,0}})
 	? DbUseArea(TRUE,,cDbf,"source")
@@ -71,6 +71,8 @@ PROCEDURE TestCopyStructure()
 
 
 	DbCloseAll()
+
+	RddSetDefault("DBFNTX")
 
 /*	COPY STRUCTURE FIELDS FLD TO "test2"
 	COPY STRUCTURE FIELDS FLD TO "test2" WITH CDX

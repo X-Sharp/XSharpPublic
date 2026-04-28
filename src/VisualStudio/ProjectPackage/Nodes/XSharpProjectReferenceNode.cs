@@ -44,7 +44,7 @@ namespace XSharp.Project
                         if (this.referencedProject != null)
                         {
                             //this.IsUnloaded = false;
-                            base.ReferencedProjectName = this.referencedProject.Caption;
+                            this.ReferencedProjectName = this.referencedProject.Caption;
                         }
                     }
                 }

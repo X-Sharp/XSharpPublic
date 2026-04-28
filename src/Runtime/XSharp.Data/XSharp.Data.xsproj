@@ -20,12 +20,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-  </ItemGroup>  
-  <ItemGroup>
     <Compile Include="CursorAdapter.prg" />
     <Compile Include="DbDataFunctions.prg" />
     <Compile Include="FoxPro\Enums.prg" />
@@ -34,7 +28,9 @@
     <Compile Include="FoxPro\SQLReflection.prg" />
     <Compile Include="FoxPro\SQLStatement.prg" />
     <Compile Include="FoxPro\SQLSupport.prg" />
+    <Compile Include="Parser\Context.Expression.prg" />
     <Compile Include="Parser\Context.prg" />
+    <Compile Include="Parser\SQLParser.Expression.prg" />
     <Compile Include="Parser\SQLParser.prg" />
     <Compile Include="Parser\Token.prg" />
     <Compile Include="Parser\TokenType.prg" />
@@ -82,6 +78,14 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.Common">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

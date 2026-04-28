@@ -1,6 +1,6 @@
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -10,10 +10,10 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD
 USING System.Diagnostics
-/// <summary>Advantage.AXDBFCDX RDD </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AXDBFCDX/*" />
 [DebuggerDisplay("AXDBFCDX ({Alias,nq})")];
 CLASS XSharp.ADS.AXDBFCDX INHERIT ADSRDD
-	/// <summary>Create instande of RDD </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AXDBFCDX.ctor/*" />
 CONSTRUCTOR()
 	SUPER()
 	SELF:_TableType := ACE.ADS_CDX
@@ -21,10 +21,10 @@ CONSTRUCTOR()
 	SELF:_MaxKeySize := 240
 END CLASS
 
-/// <summary>Advantage.AXSQLCDX RDD </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AXSQLCDX/*" />
 [DebuggerDisplay("AXSQLCDX ({Alias,nq})")];
-CLASS XSharp.ADS.AXSQLCDX INHERIT AXSQLRDD 
-	/// <summary>Create instande of RDD </summary>
+CLASS XSharp.ADS.AXSQLCDX INHERIT AXSQLRDD
+/// <include file="XSharp.RDD.Docs.xml" path="doc/AXSQLCDX.ctor/*" />
 CONSTRUCTOR()
 	SUPER()
 	SELF:_TableType    := ACE.ADS_CDX

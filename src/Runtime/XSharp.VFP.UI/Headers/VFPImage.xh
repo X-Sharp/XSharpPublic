@@ -1,0 +1,126 @@
+// VFPImage.xh
+//
+// Common VFP image control properties and methods shared by Image and button controls with pictures
+// This header file provides the standard interface for image-based controls
+//
+
+#ifndef VFP_IMAGE_XH
+#define VFP_IMAGE_XH
+
+// ============================================================================
+// PRIVATE FIELDS
+// ============================================================================
+
+PRIVATE _picture AS STRING
+PRIVATE _disabledPicture AS STRING
+PRIVATE _downPicture AS STRING
+PRIVATE _pictureMargin AS INT
+PRIVATE _picturePosition AS INT
+PRIVATE _pictureSpacing AS INT
+
+// ============================================================================
+// PROPERTIES - VFP Image API
+// ============================================================================
+
+/// <summary>Picture - Path to the image file</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Picture file path")];
+[System.ComponentModel.DefaultValue("")];
+PROPERTY Picture AS STRING
+    GET
+        RETURN SELF:_picture
+    END GET
+    SET
+        SELF:_picture := VALUE
+        SELF:LoadPicture(VALUE)
+    END SET
+END PROPERTY
+
+/// <summary>DisabledPicture - Picture shown when control is disabled</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Disabled picture")];
+[System.ComponentModel.DefaultValue("")];
+PROPERTY DisabledPicture AS STRING
+    GET
+        RETURN SELF:_disabledPicture
+    END GET
+    SET
+        SELF:_disabledPicture := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>DownPicture - Picture shown when button is pressed</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Pressed picture")];
+[System.ComponentModel.DefaultValue("")];
+PROPERTY DownPicture AS STRING
+    GET
+        RETURN SELF:_downPicture
+    END GET
+    SET
+        SELF:_downPicture := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>PictureMargin - Margin around the picture</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Picture margin")];
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY PictureMargin AS INT
+    GET
+        RETURN SELF:_pictureMargin
+    END GET
+    SET
+        SELF:_pictureMargin := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>PicturePosition - Position relative to text (0=Left, 1=Center, 2=Right)</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Picture position")];
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY PicturePosition AS INT
+    GET
+        RETURN SELF:_picturePosition
+    END GET
+    SET
+        SELF:_picturePosition := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>PictureSpacing - Spacing between picture and text</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Picture spacing")];
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY PictureSpacing AS INT
+    GET
+        RETURN SELF:_pictureSpacing
+    END GET
+    SET
+        SELF:_pictureSpacing := VALUE
+    END SET
+END PROPERTY
+
+// ============================================================================
+// METHODS
+// ============================================================================
+
+/// <summary>
+/// Load an image from file
+/// </summary>
+PRIVATE METHOD LoadPicture(cFilePath AS STRING) AS VOID
+    IF !String.IsNullOrEmpty(cFilePath)
+        TRY
+            IF System.IO.File:Exists(cFilePath)
+                // Determine control type and load accordingly
+                // This is a placeholder - actual implementation depends on parent class
+                NOP
+            ENDIF
+        CATCH
+            // Silently ignore missing files
+            NOP
+        END TRY
+    ENDIF
+END METHOD
+
+#endif

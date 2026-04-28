@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -32,9 +32,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _Descending   AS LOGIC
         PRIVATE _Unique       AS LOGIC
         PRIVATE _Custom       AS LOGIC
-        /// <summary>0 based FieldIndex</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTag._SingleField/*" />
         PRIVATE _SingleField  AS LONG
-        /// <summary>Start location in buffer for single field index</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTag._SourceIndex/*" />
         PRIVATE _SourceIndex  AS LONG
         PRIVATE _KeyCodeBlock AS ICodeblock
         PRIVATE _ForCodeBlock AS ICodeblock
@@ -42,9 +42,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _ForExpr      AS STRING
         PRIVATE _currentvalue AS RddKeyData
         PRIVATE _newvalue     AS RddKeyData
-        /// <summary>Is the index nullable (one or more fields are nullable)</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTag._NullableKey/*" />
         PRIVATE _NullableKey   AS LOGIC
-        /// <summary>List of fields that are evaluated for an index expression</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTag._indexedFields/*" />
         PRIVATE _indexedFields AS IList<INT>
         PRIVATE _newKeyLen     AS LONG
         PRIVATE _KeyExprType   AS LONG

@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -84,8 +84,7 @@ STATIC METHOD SqlDisconnect( nStatementHandle AS LONG) AS LONG
     ENDIF
     RETURN -1
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
-/// <seealso cref="NeedsAccessToLocalsAttribute" />
+/// <include file="XSharp.Data.Docs.xml" path="doc/SqlFunctions.SqlExec/*" />
 STATIC METHOD SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
@@ -109,7 +108,7 @@ STATIC METHOD SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cC
             CopyResults(aCountInfo, aInfo)
         ENDIF
         // FoxPro returns current area is the first result cursor area and current Recno is top
-        // take care when there isn´t query result
+        // take care when there isnï¿½t query result
         if result >0 .and. Used(cCursorName)
            if !DbSelectArea(cCursorName)
               result:= -1
@@ -189,26 +188,20 @@ STATIC METHOD SqlRollBack( nStatementHandle AS LONG) AS LONG
 
 #region Properties
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-/// <seealso cref="SQLProperty" />
+/// <include file="XSharp.Data.Docs.xml" path="doc/SqlFunctions.SqlGetProp/*" />
 STATIC METHOD  SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='SQLProperty' >SQLProperty Enum</see>.</param>
-/// <seealso cref="SQLProperty" />
+/// <include file="XSharp.Data.Docs.xml" path="doc/SqlFunctions.SqlGetProp_2/*" />
 STATIC METHOD  SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-/// <seealso cref="SQLProperty" />
+/// <include file="XSharp.Data.Docs.xml" path="doc/SqlFunctions.SqlSetProp/*" />
 STATIC METHOD  SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='SQLProperty'>SQLProperty Enum</see>.</param>
-/// <seealso cref="SQLProperty" />
+/// <include file="XSharp.Data.Docs.xml" path="doc/SqlFunctions.SqlSetProp_2/*" />
 STATIC METHOD  SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS USUAL) AS LONG
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)

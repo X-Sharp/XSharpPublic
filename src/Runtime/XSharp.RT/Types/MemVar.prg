@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -114,19 +114,12 @@ INTERNAL CLASS XSharp.MemVarLevel
 END CLASS
 
 
-/// <summary>Internal type that implements the Dynamic Memory Variables.<br/>
-/// </summary>
-/// <include file="RTComments.xml" path="Comments/Memvar/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemVar/*" />
 [DebuggerDisplay("Memvar: {Name,nq}: {Value}")];
 PUBLIC CLASS XSharp.MemVar
-/// <summary>Delegate for reading memvars.</summary>
-/// <param name="name">Name of the Memvar for which the value has to be retrieved</param>
-/// <returns>The value of the memory variable. </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Getter/*" />
 DELEGATE Getter(name AS STRING) AS USUAL
-/// <summary>Delegate for writing memvars.</summary>
-/// <param name="name">Name of the Memvar for which the value has to be retrieved</param>
-/// <param name="value">Value to assign to the memory variable</param>
-/// <remarks>When the variable does not exist then a new memory variable may be created.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Putter/*" />
 DELEGATE Putter(name AS STRING, @@value AS USUAL) AS USUAL
 
 INTERNAL CLASS MemVarThreadInfo
@@ -222,9 +215,9 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         MemVar.GetSafe  := _GetSafe
 
         // Instance fields
-    /// <summary>Name of the memory variable.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Name/*" />
     PUBLIC PROPERTY Name 	AS STRING AUTO
-    /// <summary>Value of the memory variable. The default is NIL for PRIVATEs and FALSE for PUBLICs.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Value/*" />
     PUBLIC PROPERTY @@Value AS USUAL AUTO
         INTERNAL Level	AS MemVarLevel
     CONSTRUCTOR (cName AS STRING, uValue IN USUAL)
@@ -248,7 +241,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         RETURN MemVarLevels:Peek()
 
 
-    /// <summary>Release all privates at a certain level and higher</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.ReleasePrivates/*" />
     STATIC METHOD ReleasePrivates(nLevel AS INT) AS LOGIC
         DO WHILE MemVarLevels:Count > 0 .AND. MemVarLevels:Peek():Depth >= nLevel
             MemVarLevels:Pop()
@@ -257,7 +250,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         RETURN TRUE
 
 
-    /// <summary>Get a memvar object from the stack (if it exists)</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.GetHigherLevelPrivate/*" />
     STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
         FOREACH VAR previous IN MemVarLevels
             IF previous!= Current .AND. previous:TryGetValue(name, OUT VAR oMemVar)
@@ -266,7 +259,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         NEXT
         RETURN NULL
 
-    /// <summary>Update a private variable. Does NOT add a new variable</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PrivatePut/*" />
     STATIC METHOD PrivatePut(name AS STRING, uValue IN USUAL) AS LOGIC
         VAR current := CheckCurrent()
         LOCAL oMemVar AS XSharp.MemVar
@@ -282,7 +275,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         RETURN FALSE
 
 
-    /// <summary>Find a private variable. Try on the current level on the stack first and when not found then walk the stack.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PrivateFind/*" />
     STATIC METHOD PrivateFind(name AS STRING) AS XSharp.MemVar
         VAR curr := CheckCurrent()
         IF curr != NULL .AND. curr:TryGetValue(name, OUT VAR oMemVar)
@@ -290,7 +283,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         RETURN GetHigherLevelPrivate(name)
 
-    /// <summary>Release a private variable</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Release/*" />
     STATIC METHOD Release(cName AS STRING) AS VOID
         // release variable
         VAR oMemVar := PrivateFind(cName)
@@ -338,20 +331,20 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         RETURN _TempPrivates
 
-    /// <summary>Get an enumerator for all the unique names of private variables</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PrivatesEnum/*" />
     STATIC METHOD PrivatesEnum(lCurrentOnly := FALSE AS LOGIC) AS IEnumerator<STRING>
         CheckCurrent()
         RETURN _GetUniquePrivates(lCurrentOnly):GetEnumerator()
 
 
-    /// <summary>Get the first unique private variable name.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PrivatesFirst/*" />
     STATIC METHOD PrivatesFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING
         _PrivatesEnum := PrivatesEnum(lCurrentOnly)
         _PrivatesEnum:Reset()
         RETURN PrivatesNext()
 
 
-    /// <summary>Get the next unique private variable name.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PrivatesNext/*" />
     STATIC METHOD PrivatesNext() AS STRING
         IF _PrivatesEnum != NULL
             IF _PrivatesEnum:MoveNext()
@@ -362,7 +355,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         RETURN NULL_STRING
 
 
-    /// <summary>Get the total number of unique private variable names.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PrivatesCount/*" />
     STATIC METHOD PrivatesCount(lCurrentOnly := FALSE AS LOGIC) AS INT
         IF MemVarLevels:Count() == 0
             RETURN 0
@@ -371,7 +364,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
 
 
-    /// <summary>Assign NIL to all visible private variables. Hidden privates are not affected.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.ReleaseAll/*" />
     STATIC METHOD ReleaseAll() AS VOID
         FOREACH VAR sym IN _GetUniquePrivates(FALSE)
             PrivatePut(sym, NIL)
@@ -454,9 +447,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
 #endregion
 #region Generic - Public and Private
-    /// <summary>Add a public memvar or a private memvar to the current level.</summary>
-    /// <param name="cName">The name of the memory variable</param>
-    /// <param name="lPrivate">Should the variable be created as private</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Add/*" />
     STATIC METHOD Add(cName AS STRING, lPrivate AS LOGIC) AS VOID
         IF lPrivate
             VAR current := CheckCurrent()
@@ -476,19 +467,21 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
             END LOCK
         ENDIF
 
-    /// <summary>Try to retrieve the value of a local, private or public (in that order).</summary>
-    /// <param name="cName">The name of the memory variable</param>
-    /// <param name="uValue">Value of the variable, or NIL whe the variable does not exist.</param>
-    /// <returns>TRUE when the variable was found. Otherwise FALSE</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Find/*" />
+    STATIC METHOD Find(cName AS STRING) AS MemVar
+        VAR oMemVar := PrivateFind(cName)
+        IF oMemVar == NULL
+            oMemVar := PublicFind(cName)
+        ENDIF
+        RETURN oMemVar
+
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.TryGet/*" />
     STATIC METHOD TryGet(cName AS STRING, uValue OUT USUAL) AS LOGIC
         // Local takes precedence over private
         IF LocalFind(cName, OUT uValue, OUT VAR _)
             RETURN TRUE
         ENDIF
-        VAR oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        VAR oMemVar := Find(cName)
         IF oMemVar != NULL
             uValue := oMemVar:Value
             RETURN TRUE
@@ -497,10 +490,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     /// <inheritdoc cref="M:XSharp.MemVar._GetSafe(System.String)"/>
     STATIC PUBLIC GetSafe AS Getter
-    /// <summary>Get the value of a local, private or public (in that order). Returns NIL if the value does not exist.</summary>
-    /// <returns>The value of the memory variable or NIL when it does not exist.</returns>
-    /// <param name="cName">The name of the memory variable</param>
-    /// <remarks>When a private and a public exist with the same name then the private has preference</remarks>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar._GetSafe/*" />
     STATIC METHOD _GetSafe(cName AS STRING) AS USUAL
         // Local takes precedence over private
         IF LocalFind(cName, OUT VAR uValue, OUT VAR _)
@@ -508,10 +498,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         LOCAL oMemVar AS XSharp.MemVar
         // privates take precedence over publics
-        oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        oMemVar := Find(cName)
         IF oMemVar != NULL
             RETURN oMemVar:Value
         ENDIF
@@ -519,9 +506,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     /// <inheritdoc cref="M:XSharp.MemVar._Get(System.String)"/>
     STATIC PUBLIC @@Get AS Getter
-    /// <summary>Get the value of a local, private or public (in that order). Throws an exception when the variable does not exist.</summary>
-    /// <returns>The value of the memory variable.</returns>
-    /// <param name="cName">The name of the memory variable</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar._Get/*" />
     STATIC METHOD _Get(cName AS STRING) AS USUAL
         // Local takes precedence over private
         IF LocalFind(cName, OUT VAR uValue, OUT VAR _)
@@ -529,10 +514,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         LOCAL oMemVar AS XSharp.MemVar
         // privates take precedence over publics
-        oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        oMemVar := Find(cName)
         IF oMemVar != NULL
             RETURN oMemVar:Value
         ENDIF
@@ -541,11 +523,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     /// <inheritdoc cref="M:XSharp.MemVar._Put(System.String,XSharp.__Usual)"/>
     STATIC PUBLIC Put AS Putter
-    /// <summary>Updates the value of a local, private or public (in that order).
-    /// If the value does not exist than a new variable at the current level is created.</summary>
-    /// <returns>The value of the memory variable.</returns>
-    /// <param name="cName">The name of the memory variable.</param>
-    /// <param name="uValue">The value to assign.</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar._Put/*" />
     STATIC METHOD _Put(cName AS STRING, uValue AS USUAL) AS USUAL
         // Local takes precedence over private
         IF LocalFind(cName, OUT VAR _, OUT VAR level)
@@ -555,10 +533,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         LOCAL oMemVar AS XSharp.MemVar
         // assign to existing memvar first
         // privates take precedence over publics ?
-        oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        oMemVar := Find(cName)
         IF oMemVar != NULL
             BEGIN LOCK oMemVar
                 oMemVar:Value := uValue
@@ -572,8 +547,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         RETURN uValue
 
-    /// <summary>Clear all memvar name/value pairs.
-    /// Does not remove locals. Does not remove privates stack levels.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.ClearAll/*" />
     STATIC METHOD ClearAll() AS VOID
         // Does not clear the privates stack levels
         BEGIN LOCK Publics
@@ -583,15 +557,9 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
             level:Clear()
         NEXT
 
-    /// <summary>Clear a variable by name. Tries to clear a private first and when that is not found then a public</summary>
-    /// <param name="cName">The name of the memory variable.</param>
-    /// <remarks>Clear does not remove the variable but sets its value to NIL.<br />
-    /// In the FoxPro dialect Clear does not clear local variables when these are visible.</remarks>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.Clear/*" />
     STATIC METHOD Clear(cName AS STRING) AS LOGIC
-        VAR oMemVar := PrivateFind(cName)
-        IF oMemVar == NULL
-            oMemVar := PublicFind(cName)
-        ENDIF
+        VAR oMemVar := Find(cName)
         IF oMemVar != NULL
             oMemVar:Value := NIL
         ELSE
@@ -604,8 +572,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 #region Publics
 
 
-    /// <summary>Find a public variable</summary>
-    /// <param name="cName">The name of the memory variable.</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PublicFind/*" />
     STATIC METHOD PublicFind(cName AS STRING) AS XSharp.MemVar
         BEGIN LOCK Publics
             IF Publics:TryGetValue(cName, OUT VAR oMemVar)
@@ -615,9 +582,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         RETURN NULL
 
 
-    /// <summary>Update a public variable. Does NOT create a new public when there is no variable with that name.</summary>
-    /// <param name="cName">The name of the memory variable.</param>
-    /// <param name="uValue">The value to assign.</param>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PublicPut/*" />
     STATIC METHOD PublicPut(cName AS STRING, uValue IN USUAL) AS LOGIC
         VAR oMemVar := PublicFind(cName)
         IF oMemVar != NULL
@@ -628,20 +593,20 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         RETURN FALSE
 
-    /// <summary>Get an enumerator for all the unique names of public variables</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PublicsEnum/*" />
     STATIC METHOD PublicsEnum() AS IEnumerator<STRING>
         BEGIN LOCK Publics
             RETURN Publics:Keys:GetEnumerator()
         END LOCK
 
 
-    /// <summary>Gets the name of the first public variable.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PublicsFirst/*" />
     STATIC METHOD PublicsFirst() AS STRING
         _PublicsEnum := PublicsEnum()
         _PublicsEnum:Reset()
         RETURN PublicsNext()
 
-    /// <summary>Gets the name of the next public variable.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PublicsNext/*" />
     STATIC METHOD PublicsNext() AS STRING
         IF _PublicsEnum != NULL
             IF _PublicsEnum:MoveNext()
@@ -651,7 +616,7 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         ENDIF
         RETURN NULL_STRING
 
-    /// <summary>Gets the total number of public variables.</summary>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.PublicsCount/*" />
     STATIC METHOD PublicsCount() AS INT
         BEGIN LOCK Publics
             RETURN Publics:Count

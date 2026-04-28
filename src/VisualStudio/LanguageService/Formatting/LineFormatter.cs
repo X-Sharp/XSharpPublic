@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal class LineFormatter

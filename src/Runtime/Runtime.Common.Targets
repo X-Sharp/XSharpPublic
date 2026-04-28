@@ -71,7 +71,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
-    <DisabledWarnings>67,165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
+    <NoWarn>$(DisabledWarnings);$(NoWarn);67,165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573,419</NoWarn>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" >

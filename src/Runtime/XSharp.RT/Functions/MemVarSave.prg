@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,15 +8,7 @@ USING System.Collections.Generic
 USING System.Text
 
 
-/// <summary>
-/// Copy public and private memory variables visible within the current routine to a disk file.
-/// </summary>
-/// <param name="cFileName">The name of the file, including an optional drive, directory, and extension. The default extension is .MEM </param>
-/// <param name="cSkel">Wildcard pattern to use when saving. This can include literal characters as well as the standard wildcard characters, * and ?. </param>
-/// <param name="lLike">When set to TRUE then variables matching the pattern are saved. When set to FALSE then the variables that do NOT match the pattern are saved.</param>
-/// <remarks>
-/// An existing MEM file will be overwritten. When an existing file is ReadOnly then an exception will be thrown.
-/// </remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_MSave/*" />
 FUNCTION _MSave(cFileName AS STRING, cSkel AS STRING, lLike AS LOGIC) AS VOID
     LOCAL lAll AS LOGIC
     LOCAL oMemWriter AS MemWriter
@@ -61,19 +53,7 @@ FUNCTION _MSave(cFileName AS STRING, cSkel AS STRING, lLike AS LOGIC) AS VOID
     ENDIF
     RETURN
 
-/// <summary>
-/// Recreate public and private variables previously saved to a file and initialize them with their former values.
-/// </summary>
-/// <param name="cFileName">The name of the memory file to read. The default extension is .MEM </param>
-/// <param name="lAdditive">When set to TRUE then the existing memory variables will be saved. Otherwise all memory variables will be deleted first.</param>
-/// <param name="cSkel">(Optional) Wildcard pattern to use when saving. This can include literal characters as well as the standard wildcard characters, * and ?. </param>
-/// <param name="lLike">(Optional) When set to TRUE then variables matching the pattern are restored. When set to FALSE then the variables that do NOT match the pattern are restored.</param>
-/// <remarks>
-/// When memory variables are restored, they are recreated as private variables with the scope of the current procedure or function
-/// unless they exist as public variables and you specify the ADDITIVE clause .  If ADDITIVE is specified, public and private variables
-/// with the same names are overwritten unless hidden with PRIVATE.  If ADDITIVE is not specified, all public and private variables are
-/// released before the memory file is loaded. In that case all restored variables will become private variables.
-/// </remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_MRestore/*" />
 FUNCTION _MRestore(cFileName AS STRING, lAdditive AS LOGIC, cSkel := NULL AS STRING, lInclude := TRUE AS LOGIC ) AS VOID
     LOCAL oMemReader AS MemReader
     IF .NOT. lAdditive

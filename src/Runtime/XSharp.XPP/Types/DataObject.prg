@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,9 +8,7 @@ USING System.Collections.Generic
 USING System.Diagnostics
 USING System.Linq
 
-/// <summary>
-/// The Xbase++ DataObject class.
-/// </summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/DataObject/*" />
 [DebuggerTypeProxy(TYPEOF(DataObjectDebugView))];
 CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicProperties
     PRIVATE _fields  AS Dictionary<STRING, USUAL>
@@ -21,11 +19,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         _fields  := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
         _methods := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
 
-    /// <summary>
-    /// Checks if the object has a particular member variable
-    /// </summary>
-    /// <param name="cName">is a character string containing the symbolic identifier of a member variable.</param>
-    /// <returns>The return value is .T. (true) if the object has the member variable &lt;cVarName&gt;, otherwise it returns .F. (false). </returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/DataObject.IsMemberVar/*" />
     PUBLIC METHOD IsMemberVar(cName AS STRING) AS LOGIC
         IF SELF:_fields:ContainsKey(cName)
             RETURN TRUE
@@ -79,11 +73,11 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         ENDIF
         RETURN NIL
 
+    ///  <inheritdoc/>
     VIRTUAL METHOD GetPropertyNames() AS STRING[]
         return _fields:Keys:ToArray()
 
-    /// <summary>Creates a dependent shallow copy of this instance </summary>
-    /// <returns>This method returns the new DataObject instance. </returns>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/DataObject.Copy/*" />
     VIRTUAL METHOD Copy() AS DataObject
         LOCAL oNew AS DataObject
         oNew := DataObject{}
@@ -92,11 +86,8 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         NEXT
         RETURN oNew
 
-    /// <summary>Merges exported member variables from another object into this instance.</summary>
-    /// <param name="oNewObject">DataObject to copy the member variables from.</param>
-    /// <param name="cMessagePrefix">Optional prefix that will be added to all fields in the DataObject.</param>
-    /// <returns>This method returns the DataObject (self).</returns>
 
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/DataObject.Merge/*" />
     VIRTUAL METHOD Merge(oNewObject, cMessagePrefix) AS DataObject CLIPPER
         LOCAL oObject := oNewObject AS OBJECT
         EnforceType(REF cMessagePrefix, STRING)
@@ -110,11 +101,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         RETURN SELF
 
 
-    /// <summary>Defines a dynamic method. </summary>
-    /// <param name="cName">The name of the method to be defined.</param>
-    /// <param name="uAction">A Function name or codeblock that must be executed when the method is called.</param>
-    /// <returns>This method returns the DataObject (self).</returns>
-    /// <remarks>Dynamic methods in X# are called from the NoMethod method inside the DataObject class.</remarks>
+    /// <include file="XSharp.XPP.Docs.xml" path="doc/DataObject.DefineMethod/*" />
     VIRTUAL METHOD DefineMethod(cName AS STRING, uAction AS USUAL) AS OBJECT
         SELF:_methods[cName] := uAction
         RETURN SELF

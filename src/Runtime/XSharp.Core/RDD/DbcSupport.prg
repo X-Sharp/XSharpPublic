@@ -9,11 +9,7 @@ USING XSharp.RDD.Support
 using System.Reflection
 BEGIN NAMESPACE XSharp.RDD
 
-    /// <summary>This classes manages open database. Both databases that are opened explicitely and also databases that are opened
-    /// for "free" tables that have a backlink to a database</summary>
-    /// <remarks>The Databases are opened like 'normal' tables but in a separate DataSession. <br/>
-    /// The DoForDataBase() method selects this special datasession, executes the action that is passed as parameter
-    /// and restores the original datasession. This way you can seek, evaluate macros etc without disturbing the normal opened cursors.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager/*" />
     CLASS DbcManager
 
         STATIC PRIVATE _databases               AS List<DbcDatabase>
@@ -26,9 +22,7 @@ BEGIN NAMESPACE XSharp.RDD
             _databases     := List<DbcDatabase>{}
             DbcDataSession := DataSession{0, "Datasession for Database Containers"}
 
-        /// <summary>Enhance the DBC name. Adds the extension and path when needed.</summary>
-        /// <param name="cFileName">Name of the file. The extension and path are optional.</param>
-        /// <returns>Name with DBC extension when needed and with full path information when found.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.ExtendDbName/*" />
         STATIC METHOD ExtendDbName(cFileName as STRING) AS STRING
             LOCAL cExt := System.IO.Path.GetExtension(cFileName) AS STRING
             IF String.IsNullOrEmpty(cExt)
@@ -39,12 +33,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN cFileName
 
-        /// <summary>Open a DBC file. This does NOT make the database the active database</summary>
-        /// <param name="cFileName">Filename of the database to open.</param>
-        /// <param name="lShared">Should the database be opened in Shared mode</param>
-        /// <param name="lReadOnly">Should the database be opened Readonly</param>
-        /// <param name="lValidate">Should the structure of the database be validated.</param>
-        /// <returns>TRUE when opened succesfully. When the database was already open then FALSE is returned.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.Open/*" />
         STATIC METHOD Open(cFileName as STRING, lShared as LOGIC, lReadOnly as LOGIC,lValidate AS LOGIC) AS LOGIC
             IF DbcManager.FindDatabase(cFileName) != NULL_OBJECT
                 RETURN FALSE
@@ -81,8 +70,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN lOk
                 })
 
-        /// <summary>Validate the DBC structure</summary>
-        /// <returns>TRUE when the structure is OK, otherwise FALSE.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.ValidateStructure/*" />
         STATIC METHOD ValidateStructure() AS LOGIC
             LOCAL lOk := TRUE as LOGIC
             local oRDD as IRdd
@@ -112,9 +100,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lOk
 
-        /// <summary>Close a Database</summary>
-        /// <param name="cName">Alias name of the database to close.</param>
-        /// <returns>TRUE when the Database was open and was closed succesfully, otherwise FALSE.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.Close/*" />
         STATIC METHOD Close(cName as STRING) AS LOGIC
             VAR oDb := FindDatabaseByName(cName)
             LOCAL lOk := FALSE AS LOGIC
@@ -132,9 +118,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lOk
 
-        /// <summary>Search a Database by file name</summary>
-        /// <param name="cFileName">The fully qualified filename to look for, so MUST have an extension and path.</param>
-        /// <returns>The database object (when found) otherwise NULL_OBJECT.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.FindDatabase/*" />
         STATIC METHOD FindDatabase(cFileName as STRING) AS DbcDatabase
             FOREACH var oDb in Databases
                 IF String.Compare(oDb:FileName, cFileName, TRUE) == 0
@@ -143,9 +127,7 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
             RETURN NULL_OBJECT
 
-        /// <summary>Search a Database by name</summary>
-        /// <param name="cName">Alias name of the database to close.</param>
-        /// <returns>The database object (when found) otherwise NULL_OBJECT.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.FindDatabaseByName/*" />
         STATIC METHOD FindDatabaseByName(cName as STRING) AS DbcDatabase
             FOREACH var oDb in Databases
                 IF String.Compare(oDb:Name, cName, TRUE) == 0
@@ -187,9 +169,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN old
 
-        /// <summary>Create a new DBC file</summary>
-        /// <param name="cFileName">The fully qualified filename to create.</param>
-        /// <returns>TRUE when the database file was created successfully.</returns>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcManager.CreateDatabase/*" />
         STATIC METHOD CreateDatabase(cFileName as STRING) AS LOGIC
             IF FindDatabase(cFileName) != NULL_OBJECT
                 RETURN FALSE
@@ -274,24 +254,24 @@ BEGIN NAMESPACE XSharp.RDD
     /// <remarks>When opened the list of tables, views and connections is populated. Fields, relations etc are not read.</remarks>
     [DebuggerDisplay("{ObjectType,nq} {Name}")];
     CLASS DbcDatabase INHERIT DbcObject
-        /// <summary>Is the database active ?</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.Active/*" />
         PROPERTY Active         AS LOGIC AUTO
-        /// <summary>Area number for the cursor in the Databases Datasession</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.Area/*" />
         PROPERTY Area           AS DWORD AUTO
-        /// <summary>Alias name for the database</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.Name/*" />
         PROPERTY Name           AS STRING AUTO
-        /// <summary>Filename for the database</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.FileName/*" />
         PROPERTY FileName       AS STRING AUTO
 
-        /// <summary>List of tables</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.Tables/*" />
         PROPERTY Tables         as ICollection<DbcTable> GET _tables:Values
         PRIVATE _tables         AS Dictionary<String, DbcTable>
 
-        /// <summary>List of connections</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.Connections/*" />
         PROPERTY Connections as ICollection<DbcConnection>  GET _connections:Values
         PRIVATE _connections    AS Dictionary<String, DbcConnection>
 
-        /// <summary>List of views</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.Views/*" />
         PROPERTY Views          AS ICollection<DbcView> GET _views:Values
         PRIVATE _views          AS Dictionary<String, DbcView>
 
@@ -324,22 +304,19 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             NEXT
             RETURN NULL
-        /// <summary>Find a connection in the Database container.</summary>
-        /// <param name="cConnection">The connection name to look for.</param>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.FindConnection/*" />
         PUBLIC METHOD FindConnection(cConnection as STRING) AS DbcConnection
             RETURN SELF:FindObject(SELF:_connections, cConnection)
 
-        /// <summary>Find a table in the Database container.</summary>
-        /// <param name="cTable">The table name to look for.</param>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.FindTable/*" />
         PUBLIC METHOD FindTable(cTable as STRING) AS DbcTable
             RETURN SELF:FindObject(SELF:_tables, cTable)
 
-        /// <summary>Find a view in the Database container.</summary>
-        /// <param name="cView">The view name to look for.</param>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.FindView/*" />
         PUBLIC METHOD FindView(cView as STRING) AS DbcView
             RETURN SELF:FindObject(SELF:_views, cView)
 
-        /// <summary>Loads the tables, views and connections from the DBC file</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.GetData/*" />
         OVERRIDE METHOD GetData() AS VOID
             var aChildren := SELF:LoadChildren(SELF:Area)
             FOREACH var oChild in aChildren
@@ -361,7 +338,7 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
 
 
-        /// <summary>Worker method for DbGetProp() </summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.GetProp/*" />
         PUBLIC METHOD GetProp(cName as STRING, cType as STRING, cProp as STRING) AS OBJECT
             SWITCH cType:ToLower()
             CASE "connection"
@@ -415,8 +392,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SWITCH
             RETURN NULL
 
-        /// <summary>-- todo --</summary>
-        /// <summary>Worker method for DbSetProp() </summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.SetProp/*" />
         PUBLIC METHOD SetProp(cName as STRING, cType as STRING, cProp as STRING, ePropertyValue as OBJECT) AS LOGIC
             // check for readonly
             // check for shared. When shared make sure that DBC has not been changed in the meantime
@@ -426,19 +402,18 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class that stores information about a table in a DBC</summary>
-    /// <remarks>When opened the Fields, Indexes and Relations are not read. They need to be explicitely loaded with a call to GetData()</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcTable/*" />
     CLASS DbcTable INHERIT DbcObject
-        /// <summary>The collection of fields</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcTable.Fields/*" />
         PROPERTY Fields     AS List<DbcField> AUTO
-        /// <summary>The collection of indexes</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcTable.Indexes/*" />
         PROPERTY Indexes    AS List<DbcIndex> AUTO
-        /// <summary>The collection of relations</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcTable.Relations/*" />
         PROPERTY Relations  AS List<DbcRelation> AUTO
         PRIVATE _loaded     AS LOGIC
-        /// <summary>The database in which this table is defined.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcTable.Database/*" />
         PROPERTY Database   As DbcDatabase GET (DbcDatabase) SELF:Parent
-        /// <summary>The Table path as stored in the DBC file.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcTable.Path/*" />
         PROPERTY Path       as STRING GET Properties:GetValue<STRING>(DatabasePropertyType.Path)
         CONSTRUCTOR()
             SUPER()
@@ -468,12 +443,11 @@ BEGIN NAMESPACE XSharp.RDD
 
     END CLASS
 
-    /// <summary>Class that stores information about a view in a DBC</summary>
-    /// <remarks>When opened the Fields etc are not read. They need to be explicitely loaded with a call to GetData()</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcView/*" />
     CLASS DbcView INHERIT DbcObject
-        /// <summary>The collection of fields</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcView.Fields/*" />
         PROPERTY Fields     AS List<DbcField> AUTO
-        /// <summary>The database in which this table is defined.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcView.Database/*" />
         PROPERTY Database   As DbcDatabase GET (DbcDatabase) SELF:Parent
 
         PRIVATE _loaded     AS LOGIC
@@ -496,27 +470,27 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
     END CLASS
 
-    /// <summary>Class that stores information about a field in a DBC</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcField/*" />
     CLASS DbcField INHERIT DbcObject
         CONSTRUCTOR
             SUPER()
     END CLASS
 
-    /// <summary>Class that stores information about an index in a DBC</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcIndex/*" />
     CLASS DbcIndex INHERIT DbcObject
         CONSTRUCTOR
             SUPER()
     END CLASS
 
-    /// <summary>Class that stores information about an ODBC connection in a DBC</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcConnection/*" />
     CLASS DbcConnection INHERIT DbcObject
         CONSTRUCTOR
             SUPER()
     END CLASS
 
-    /// <summary>Class that stores information about a relation in a DBC</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcRelation/*" />
     CLASS DbcRelation INHERIT DbcObject
-       /// <summary>The relational rules for Insert, Update, Delete.</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/DbcRelation.RIInfo/*" />
         PROPERTY RIInfo AS STRING AUTO
         CONSTRUCTOR
             SUPER()
@@ -529,7 +503,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
     END CLASS
-    /// <summary>Class that stores other info about Databases, such as the source and object code for Database </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbcOther/*" />
     CLASS DbcOther INHERIT DbcObject
         PROPERTY Code   AS Byte[] AUTO
         PROPERTY Source AS STRING AUTO
@@ -692,10 +666,10 @@ BEGIN NAMESPACE XSharp.RDD
 END NAMESPACE
 
 
-/// <summary>Helper class to open, close and select a database</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Dbc/*" />
 STATIC CLASS XSharp.RDD.Dbc
 
-    /// <summary>Open a database.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Open/*" />
     STATIC METHOD Open(cFileName AS STRING, lShared AS LOGIC, lReadOnly as LOGIC, lValidate as LOGIC) AS LOGIC
         LOCAL lOpen := FALSE as LOGIC
         cFileName := DbcManager.ExtendDbName(cFileName)
@@ -704,7 +678,7 @@ STATIC CLASS XSharp.RDD.Dbc
         ENDIF
         RETURN lOpen
 
-    /// <summary>Find a database by name.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.FindDatabase/*" />
     STATIC METHOD FindDatabase(cFileName as STRING) AS DbcDatabase
         LOCAL oDb as DbcDatabase
         oDb := DbcManager.FindDatabase(cFileName)
@@ -712,13 +686,13 @@ STATIC CLASS XSharp.RDD.Dbc
 
     STATIC METHOD CreateView(cName as STRING, cConnection := "" as STRING, lRemote := FALSE as LOGIC, lShared := FALSE as LOGIC, sSelect := "" as STRING) AS VOID
         RETURN
-    /// <summary>Create a database.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Create/*" />
     STATIC METHOD Create(cFileName as STRING) AS LOGIC
         cFileName := DbcManager.ExtendDbName(cFileName)
         RETURN DbcManager.CreateDatabase(cFileName)
 
 
-    /// <summary>Select a database.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Select/*" />
     STATIC METHOD Select(cDatabaseName as STRING) AS DbcDatabase
         LOCAL oDb as DbcDatabase
         oDb := DbcManager.FindDatabaseByName(cDatabaseName)
@@ -760,28 +734,28 @@ STATIC CLASS XSharp.RDD.Dbc
 
 
 
-    /// <summary>DeSelect a database.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Select_2/*" />
     STATIC METHOD Select() AS VOID
         DbcManager.Activate(NULL)
         RETURN
 
-    /// <summary>Check if a database is used/opened.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.IsUsed/*" />
     STATIC METHOD IsUsed(cDatabaseName as STRING) AS LOGIC
         VAR oDb := DbcManager.FindDatabaseByName(cDatabaseName)
         RETURN oDb != NULL
 
 
-    /// <summary>Get the current active database.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.GetCurrent/*" />
     STATIC METHOD GetCurrent() AS DbcDatabase
         RETURN DbcManager.ActiveDatabase
 
 
-    /// <summary>Validate a property name.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.IsValidPropertyName/*" />
     STATIC METHOD IsValidPropertyName(cProp as STRING) AS LOGIC
         RETURN DatabasePropertyCollection.IsValidProperty(cProp)
 
 
-    /// <summary>Validate a property type.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.IsValidObjectType/*" />
     STATIC METHOD IsValidObjectType(cType as STRING) AS LOGIC
     SWITCH cType:ToLower()
         CASE "connection"
@@ -797,11 +771,11 @@ STATIC CLASS XSharp.RDD.Dbc
         // todo: close all DBC files.
         RETURN TRUE
 
-    /// <summary>Close a database.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Close/*" />
     STATIC METHOD Close(cName as STRING) AS LOGIC
         RETURN DbcManager.Close(cName)
 
-    /// <summary>Dump a database to the terminal window.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Dump/*" />
     STATIC METHOD Dump(cName as STRING) AS LOGIC
     VAR oDb := DbcManager.FindDatabaseByName(cName)
     IF oDb != NULL
@@ -858,7 +832,7 @@ STATIC CLASS XSharp.RDD.Dbc
     ENDIF
     RETURN oDb != NULL
 
-    /// <summary>Dump the conents of a properties collection.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.DumpProperties/*" />
     STATIC METHOD DumpProperties(nSpace as LONG, Properties AS DatabasePropertyCollection) AS VOID
         var ws := String{' ', nSpace}
         FOREACH VAR oProp in Properties

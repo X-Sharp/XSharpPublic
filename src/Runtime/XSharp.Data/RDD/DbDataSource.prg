@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,12 +12,7 @@ USING System.ComponentModel
 
 INTERNAL DELEGATE XSharp.DbNotifyFieldChange( recordNumer AS DWORD , column AS INT) AS VOID
 
-/// <summary>This class implements an IBindingList on a workarea</summary>
-/// <remarks>
-/// The class can be used TO directly bind a workarea to a data aware .Net control, such as a DataGridView
-/// Each row in the List represents a record in the workarea. Records are represented by DbRecord objects
-/// Each record
-/// </remarks>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource_2/*" />
 CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     PROTECTED _fieldList     AS List<DbField>
     PROTECTED _oRDD          AS IRdd
@@ -45,16 +40,16 @@ DESTRUCTOR
         System.IO.File.Delete(_indexFile)
     ENDIF
 
-/// <summary>Should the Deleted Flag be included as "virtual column"</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.ShowDeleted/*" />
 PROPERTY ShowDeleted AS LOGIC AUTO := TRUE
-/// <summary>Should the Record number be included as "virtual column"</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.ShowRecno/*" />
 PROPERTY ShowRecno   AS LOGIC AUTO := TRUE
 #region IBindingList implementation
-/// <summary>TRUE when the workarea is not readonly</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.AllowEdit/*" />
 PROPERTY AllowEdit      AS LOGIC GET !SELF:_readOnly
-/// <summary>TRUE when the workarea is not readonly</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.AllowNew/*" />
 PROPERTY AllowNew       AS LOGIC GET !SELF:_readOnly
-/// <summary>TRUE when the workarea is not readonly</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.AllowRemove/*" />
 PROPERTY AllowRemove    AS LOGIC GET !SELF:_readOnly
 /// <inheritdoc/>
 PROPERTY IsSorted       AS LOGIC GET SELF:_sorted
@@ -68,7 +63,7 @@ PROPERTY SupportsChangeNotification AS LOGIC GET TRUE
 PROPERTY SupportsSorting    AS LOGIC AUTO
 /// <inheritdoc/>
 PROPERTY SupportsSearching  AS LOGIC GET FALSE
-/// <summary>TRUE when the workarea is readonly</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.IsReadOnly/*" />
 PROPERTY IsReadOnly AS LOGIC GET _readOnly
 
 /// <inheritdoc/>
@@ -94,8 +89,7 @@ PRIVATE METHOD findFieldName(property AS PropertyDescriptor) AS STRING
     NEXT
 RETURN "Recno()"
 
-/// <inheritdoc/>
-/// <remarks>This method will create an index on the underlying workarea to sort the rows</remarks>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.ApplySort/*" />
 METHOD ApplySort(property AS PropertyDescriptor, direction AS ListSortDirection) AS VOID
     LOCAL fldName AS STRING
     LOCAL lDescending AS LOGIC
@@ -154,11 +148,11 @@ PRIVATE METHOD getOrder(cName AS STRING) AS LONG
 RETURN (LONG) SELF:_oRDD:OrderInfo(DBOI_NUMBER, info)
 
 
-/// <summary>This required method has not (yet) been implemented</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Find/*" />
 METHOD Find(property AS PropertyDescriptor, key AS OBJECT) AS LONG
     THROW NotImplementedException{}
 
-/// <summary>This required method has not (yet) been implemented</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.RemoveIndex/*" />
 METHOD RemoveIndex(property AS PropertyDescriptor) AS VOID
     THROW NotImplementedException{}
 
@@ -179,13 +173,13 @@ METHOD RemoveSort () AS VOID STRICT
 
 
 
-/// <summary>Recordnumber in underlying workarea</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.RecNo/*" />
 PROPERTY RecNo AS DWORD GET _oRDD:RecNo
-/// <summary>Is underlying workarea at EOF</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.EoF/*" />
 PROPERTY EoF   AS LOGIC GET _oRDD:EoF
-/// <summary>Alias of underlying workarea</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Name/*" />
 PROPERTY Name       AS STRING GET _oRDD:Alias
-/// <summary>File name of underlying workarea</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.FullName/*" />
 PROPERTY FullName   AS STRING GET (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
 
 INTERNAL METHOD GoTop() AS LOGIC
@@ -199,12 +193,11 @@ RETURN SELF:_oRDD:Skip(1)
 INTERNAL PROPERTY Current AS DbRecord GET DbRecord{SELF:RecNo,SELF}
 
 #region IList methods
-/// <summary>This required method has not been implemented.</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Add/*" />
 VIRTUAL METHOD Add( value AS OBJECT ) AS INT
     THROW NotImplementedException{}
 
-/// <inheritdoc />
-/// <remarks>This method will call Zap() on the workarea, so it requires exclusive use.</remarks>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Clear/*" />
 VIRTUAL METHOD Clear() AS VOID STRICT
     IF ! SELF:_shared
         SELF:_oRDD:Zap()
@@ -222,7 +215,7 @@ RETURN FALSE
 VIRTUAL METHOD IndexOf( oValue AS OBJECT ) AS INT
 RETURN  (INT)  ((DbRecord) oValue):RecNo
 
-/// <summary>This required method has not been implemented.</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Insert/*" />
 VIRTUAL METHOD Insert(index AS INT,value AS OBJECT) AS VOID
     THROW NotImplementedException{}
 
@@ -287,9 +280,7 @@ VIRTUAL METHOD RemoveAt(index AS INT) AS VOID
 
 
 
-/// <summary>Retrieve the DbRecordObject for the record at the given position</summary>
-/// <remarks>This property is READ ONLY. Assigning to the property will throw an exception</remarks>
-/// <seealso cref='DbRecord'>DbRecord class</seealso>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.SELF_index/*" />
 VIRTUAL PROPERTY  SELF[index AS INT] AS OBJECT
     GET
         LOCAL record AS DbRecord
@@ -315,8 +306,8 @@ VIRTUAL PROPERTY  SELF[index AS INT] AS OBJECT
     END SET
 END PROPERTY
 
-/// <summary>This required method has not (yet) been implemented</summary>
 
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.CopyTo/*" />
 VIRTUAL METHOD CopyTo( list AS System.Array , index AS INT ) AS VOID
     SELF:_oRDD:GoTop()
     DO WHILE ! _oRDD:EoF
@@ -327,16 +318,14 @@ VIRTUAL METHOD CopyTo( list AS System.Array , index AS INT ) AS VOID
     SELF:_oRDD:GoTop()
 
 
-/// <summary>Returns the # of records in the RDD</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Count/*" />
 VIRTUAL PROPERTY Count          AS INT GET (INT) _oRDD:RecCount
 /// <exclude/>
 VIRTUAL PROPERTY IsSynchronized AS LOGIC GET TRUE
 /// <exclude/>
 VIRTUAL PROPERTY SyncRoot       AS OBJECT GET SELF:_oRDD
 
-/// <summary>Returns an enumerator with which you can walk the RDD.</summary>
-/// <remarks>This enumerator returns DbRecord objects for each record in the Data Source</remarks>
-/// <seealso cref='DbRecord'>DbRecord class</seealso>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.GetEnumerator/*" />
 VIRTUAL METHOD GetEnumerator() AS IEnumerator STRICT
 RETURN DbEnumerator{SELF}
 
@@ -401,7 +390,7 @@ INTERNAL METHOD UnLockRecord() AS LOGIC
 
 
 
-/// We write through into the dbf table and signal the rest of the world, that we have changed something-
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.PutValue/*" />
 INTERNAL METHOD PutValue( uField AS OBJECT, oValue  AS OBJECT)  AS LOGIC
     LOCAL fieldPos AS INT
     LOCAL retVal := FALSE AS LOGIC
@@ -427,7 +416,7 @@ INTERNAL METHOD PutValue( uField AS OBJECT, oValue  AS OBJECT)  AS LOGIC
 RETURN retVal
 
 
-/// As the meta data are the same for all records, we generate them just once.
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.Fields/*" />
 INTERNAL PROPERTY Fields AS IEnumerable<DbField>
     GET
         IF SELF:_fieldList == NULL
@@ -463,7 +452,7 @@ INTERNAL PROPERTY PropertyDescriptors AS PropertyDescriptorCollection
     END GET
 END PROPERTY
 
-/// Generate the meta data which will be used as source for generating the dynamic properties.
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataSource.generateFields/*" />
 PRIVATE METHOD generateFields() AS VOID
     SELF:_fieldList  := List<DbField>{}
     LOCAL f AS INT

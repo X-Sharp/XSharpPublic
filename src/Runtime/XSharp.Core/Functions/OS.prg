@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -30,8 +30,8 @@ FUNCTION GetEnv(cEnvVariable AS STRING) AS STRING
 	RETURN System.Environment.GetEnvironmentVariable(cEnvVariable)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setenv/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setenv/*" />
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING) AS LOGIC
 	RETURN SetEnv(cVar, cValue, FALSE)
 
@@ -59,8 +59,8 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/netname/*" />
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/netname/*" />
 FUNCTION NetName() AS STRING
 	RETURN System.Environment.MachineName
 
@@ -149,8 +149,7 @@ FUNCTION DiskFree(cDrive AS STRING) AS INT64
     END TRY
     RETURN result
 
-/// <inheritdoc cref="DiskFree" />
-/// <param name="nDrive">The number of the disk drive to query, where 1 is drive A, 2 is B, 3 is C, and so on. </param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskfree/*" />
 FUNCTION DiskFree(nDrive AS INT) AS INT64
 	RETURN DiskFree(DiskNo2DiskName(nDrive))
 
@@ -171,8 +170,7 @@ FUNCTION DiskSpace(nDrive AS INT) AS INT64
 	cDisk := DiskNo2DiskName(nDrive)
 	RETURN DiskSpace(cDisk)
 
-/// <inheritdoc cref="DiskSpace" />
-/// <param name="cDrive">The name of the drive as a string, for example "C:", "A:". If you do not specify a drive, the Windows default is used.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskspace/*" />
 FUNCTION DiskSpace(cDrive AS STRING) AS INT64
     LOCAL result AS INT64
     IF String.IsNullOrEmpty(cDrive)
@@ -202,19 +200,11 @@ FUNCTION NetErr( lNewError AS LOGIC ) AS LOGIC
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="n"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/LockTries/*" />
 FUNCTION LockTries() AS DWORD
 	RETURN RuntimeState.LockTries
 
-/// <summary>
-/// </summary>
-/// <param name="n"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/LockTries_2/*" />
 FUNCTION LockTries(nValue AS DWORD) AS DWORD
 	LOCAL nResult AS DWORD
 	nResult := RuntimeState.LockTries
@@ -417,9 +407,7 @@ FUNCTION _GetPrevInst AS IntPtr
     RETURN IntPtr.Zero
 
 
-/// <summary>Terminate application processing, close all open files, and return control to the operating system.</summary>
-/// <remarks>This function can be used from anywhere in an application.
-/// A RETURN executed from the Start() function can also be used to QUIT an application.</remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_Quit/*" />
 FUNCTION _Quit() AS VOID
     TRY
         CoreDb.CloseAll()

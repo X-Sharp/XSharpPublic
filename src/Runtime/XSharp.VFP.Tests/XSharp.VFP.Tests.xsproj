@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="AMembersTests.prg" />
     <Compile Include="AUsedTests.prg" />
+    <Compile Include="CommandTests.prg" />
     <Compile Include="CopyToTests.prg" />
     <Compile Include="FileVersionTests.prg" />
     <Compile Include="FinancialTests.prg" />
@@ -107,6 +108,7 @@
     <Compile Include="OtherTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="StringTests.prg" />
+    <Compile Include="VfpStringFunctionsTests.prg" />
     <Compile Include="WrappedStubsTests.prg" />
   </ItemGroup>
   <ItemGroup>

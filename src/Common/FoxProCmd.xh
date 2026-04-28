@@ -50,7 +50,8 @@
 // todo
 // SET TEXTMERGE [TO [FileName] MEMVAR VarName [ADDITIVE]]
 
-
+// We ignore the SET BELL TO <file> command since we do not support WAV
+#command SET BELL TO [<*any*>] =>
 
 // Rules for FIELD matches that are used in several other commands
 // Note that the FoxPro fields rule is different from the generic rule in dbcmd.xh because of the memo clause
@@ -155,8 +156,11 @@
           [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;; ;
        OrdCreate(<(file)>,<(ORDER)>,<(key)>,,IIF(<.u.>,.T., NIL))
 
+#command DIR <*any*>       => __VfpDir( <"any"> )
+#command DIRECTORY <*any*> => __VfpDir( <"any"> )
 
-
+#command DIR               => __VfpDir( "" )
+#command DIRECTORY         => __VfpDir( "" )
 
 // Commands with IN clause, commands without are defined in DBCMD.XH
 
@@ -597,6 +601,7 @@
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
 
+
 // unsupported commands
 #command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
          => #error This command is not supported: <(udc)>
@@ -614,6 +619,9 @@
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )
 #endif
+
+#translate VARTYPE(<v>)      => __VfpVarType( {|| <v> } )
+#translate VARTYPE(<v>,<1>)  => __VfpVarType( {|| <v> }, <1> )
 
 #include "FoxProSql.xh"
 #endif

@@ -9,11 +9,7 @@ using System.Diagnostics
 using XSharp.RT
 #pragma options("az", on)
 
-/// <summary>
-/// This class returns the ClasssObject for classes created at compile time (Static classes)
-/// This object allows to access static members and methods late bound
-/// Such as <code>Example():Fieldname</code>
-/// </summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/StaticClassObject/*" />
 [DebuggerDisplay("ClassObject {Type.FullName}")];
 class XSharp.XPP.StaticClassObject inherit ClassObject
 

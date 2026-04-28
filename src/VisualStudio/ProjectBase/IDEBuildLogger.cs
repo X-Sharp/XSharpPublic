@@ -9,18 +9,14 @@
  *
  * ***************************************************************************/
 #pragma warning disable VSTHRD010
-using Community.VisualStudio.Toolkit;
-
+using System;
+using System.Runtime.InteropServices;
 using Microsoft.Build.Framework;
-using Microsoft.Internal.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell.Interop;
-#if !DEV17
-using Microsoft.VisualStudio.Shell.Settings;
-#endif
 
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -34,13 +30,27 @@ using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace Microsoft.VisualStudio.Project
 {
-    /// <summary>
-    /// This class implements an MSBuild logger that output events to VS outputwindow and tasklist.
-    /// </summary>
-    [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "IDE")]
+
+
+    [ComImport]
+    [Guid("9B164E40-C3A2-4363-9BC5-EB4039DEF653")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface SVsSettingsPersistenceManager
+    {
+        // Dummy class to get to the internal SVsSettingsPersistenceManager service
+    }
+
+
+/// <summary>
+/// This class implements an MSBuild logger that output events to VS outputwindow and tasklist.
+/// </summary>
+[SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "IDE")]
     public class IDEBuildLogger : Microsoft.Build.Utilities.Logger, IDisposable
     {
         #region fields
+
+        private const string GeneralCollection = @"General";
+        private const string BuildVerbosityProperty = "MSBuildLoggerVerbosity";
 
         private int currentIndent;
         private IVsOutputWindowPane outputWindowPane;
@@ -54,14 +64,12 @@ namespace Microsoft.VisualStudio.Project
         // Queues to manage Tasks and Error output plus message logging
         private ConcurrentQueue<Func<ErrorTask>> taskQueue;
         private ConcurrentQueue<OutputQueueEntry> outputQueue;
-#if DEV17
+
         private const string _settingName = "BuildAndRunOptions.MSBuildLoggerVerbosity";
-        private ISettingsManager _settings;
-#else
-        private const string GeneralCollection = @"General";
-        private const string BuildVerbosityProperty = "MSBuildLoggerVerbosity";
-#endif
-#endregion
+        private static readonly string[] _names = Enum.GetNames(typeof(LoggerVerbosity));
+        private static ISettingsManager _settings;
+
+        #endregion
 
         #region properties
 
@@ -94,12 +102,12 @@ namespace Microsoft.VisualStudio.Project
             set { this.outputWindowPane = value; }
         }
 
-#endregion
+        #endregion
 
-#region ctors
+        #region ctors
 
         /// <summary>
-        /// Constructor.  Inititialize member data.
+        /// Constructor.  Initialize member data.
         /// </summary>
         public IDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
@@ -107,12 +115,14 @@ namespace Microsoft.VisualStudio.Project
             Utilities.ArgumentNotNull("hierarchy", hierarchy);
 
             Trace.WriteLineIf(Thread.CurrentThread.GetApartmentState() != ApartmentState.STA, "WARNING: IDEBuildLogger constructor running on the wrong thread.");
-#if DEV17
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (_settings == null)
             {
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
                 _settings = await VS.GetServiceAsync<SVsSettingsPersistenceManager, ISettingsManager>();
             });
-#endif
+            }
+
             IOleServiceProvider site;
 
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hierarchy.GetSite(out site));
@@ -123,9 +133,9 @@ namespace Microsoft.VisualStudio.Project
             this.serviceProvider = new ServiceProvider(site);
         }
 
-#endregion
+        #endregion
 
-#region IDisposable
+        #region IDisposable
 
         public void Dispose()
         {
@@ -146,9 +156,9 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-#endregion
+        #endregion
 
-#region overridden methods
+        #region overridden methods
 
         /// <summary>
         /// Overridden from the Logger class.
@@ -174,9 +184,9 @@ namespace Microsoft.VisualStudio.Project
             eventSource.MessageRaised += new BuildMessageEventHandler(MessageHandler);
         }
 
-#endregion
+        #endregion
 
-#region event delegates
+        #region event delegates
         /// <summary>
         /// This is the delegate for BuildStartedHandler events.
         /// </summary>
@@ -316,9 +326,9 @@ namespace Microsoft.VisualStudio.Project
             QueueOutputEvent(messageEvent.Importance, messageEvent);
         }
 
-#endregion
+        #endregion
 
-#region output queue
+        #region output queue
 
         protected void QueueOutputEvent(MessageImportance importance, BuildEventArgs buildEvent)
         {
@@ -386,32 +396,29 @@ namespace Microsoft.VisualStudio.Project
             OutputQueueEntry output;
             if (!outputQueue.IsEmpty)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                while (this.outputQueue.TryDequeue(out output))
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                    while (this.outputQueue.TryDequeue(out output))
+                    if (output.Pane is IVsOutputWindowPaneNoPump nopump)
                     {
-                        if (output.Pane is IVsOutputWindowPaneNoPump nopump)
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
-                            //if (ThreadHelper.CheckAccess())
-                            {
-                                nopump.OutputStringNoPump(output.Message);
-                            }
-                        }
-                        else
-                        {
-#if DEV17
-                            output.Pane.OutputStringThreadSafe(output.Message);
-#else
-                            if (ThreadHelper.CheckAccess())
-                            {
-                                output.Pane.OutputString(output.Message);
-                            }
-#endif
-                        }
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            nopump.OutputStringNoPump(output.Message);
+                        });
                     }
-                });
+                    else
+                    {
+#if DEV17
+                        output.Pane.OutputStringThreadSafe(output.Message);
+#else
+                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                                output.Pane.OutputString(output.Message);
+                            });
+#endif
+                    }
+                }
             }
         }
 
@@ -530,7 +537,8 @@ namespace Microsoft.VisualStudio.Project
         private bool LogAtImportance(MessageImportance importance)
         {
             // If importance is too low for current settings, ignore the event
-            bool logIt = true;
+            bool logIt = false;
+
             this.SetVerbosity();
 
             switch (this.Verbosity)
@@ -553,6 +561,7 @@ namespace Microsoft.VisualStudio.Project
                     Debug.Fail("Unknown Verbosity level. Ignoring will cause nothing to be logged");
                     break;
             }
+
             return logIt;
         }
 
@@ -590,18 +599,11 @@ namespace Microsoft.VisualStudio.Project
                 this.Verbosity = LoggerVerbosity.Normal;
 
                 try
-
                 {
-#if DEV17
-                    this.Verbosity = _settings.GetValueOrDefault(_settingName, LoggerVerbosity.Minimal);
-#else
-                    var settings = new ShellSettingsManager(serviceProvider);
-                    var store = settings.GetReadOnlySettingsStore(SettingsScope.UserSettings);
-                    if (store.CollectionExists(GeneralCollection) && store.PropertyExists(GeneralCollection, BuildVerbosityProperty))
+                    if (_settings != null)
                     {
-                        this.Verbosity = (LoggerVerbosity)store.GetInt32(GeneralCollection, BuildVerbosityProperty, (int)LoggerVerbosity.Normal);
+                        this.Verbosity = _settings.GetValueOrDefault(_settingName, LoggerVerbosity.Minimal);
                     }
-#endif
                 }
                 catch (Exception ex)
                 {
@@ -614,9 +616,8 @@ namespace Microsoft.VisualStudio.Project
                 }
 
                 this.haveCachedVerbosity = true;
-
-                }
             }
+        }
 
         /// <summary>
         /// Clear the cached verbosity, so that it will be re-evaluated from the build verbosity registry key.

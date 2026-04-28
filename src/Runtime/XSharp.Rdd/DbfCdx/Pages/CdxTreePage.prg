@@ -13,9 +13,8 @@ USING System.Diagnostics
 #include "CdxDebug.xh"
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-	/// <summary>
-	/// The CdxPageBase class.
-	/// </summary>
+
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxTreePage/*" />
     [DebuggerDisplay(e"{DebuggerDisplay,nq}")];
 	INTERNAL ABSTRACT CLASS CdxTreePage INHERIT CdxPage
         INTERNAL CONST CDXPAGE_TYPE	:= 0	AS WORD // WORD

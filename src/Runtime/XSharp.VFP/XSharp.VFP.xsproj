@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>False</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <IncludePaths>$(CommonInclude)</IncludePaths>
+    <IncludePaths>$(ProjectDir)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
     <StartupObject />
@@ -87,7 +87,6 @@
     <Compile Include="DateFunctions.prg" />
     <Compile Include="ToDo-D.prg" />
     <Compile Include="ToDo-C.prg" />
-    <Compile Include="ToDo-B.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="ToDo-A.prg" />
@@ -188,6 +187,7 @@
     <None Include="VFPFileStructures\VFP6Project2.pdf" />
     <None Include="VFPFileStructures\VFP6Report.pdf" />
     <None Include="VFPFileStructures\VFP6Report2.pdf" />
+    <None Include="VFPProperties.xh" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

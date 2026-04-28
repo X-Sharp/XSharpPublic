@@ -120,10 +120,10 @@ namespace XSharp.Project
         }
 
         internal void AddBuildError(string file, int line, int column, string errCode,
-            string message, __VSERRORCATEGORY sev)
+            string message, __VSERRORCATEGORY sev, XSharpProjectNode project  )
         {
 
-            var item = this.CreateItem(file, line, column, 1, errCode, message, sev, ErrorSource.Build, Project.Caption);
+            var item = this.CreateItem(file, line, column, 1, errCode, message, sev, ErrorSource.Build, project.Caption);
             this.AddItem(item);
         }
 

@@ -174,22 +174,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal IList<PragmaOption> PragmaOptions { get; set; } = null;
         internal IList<NullableDirectiveTriviaSyntax> PragmaNullables { get; set; } = null;
 
-        private ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<Symbol>)> functionsThatNeedAccessToLocals;
+        private ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<Symbol>)> specialFoxProFunctions;
 
-        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<Symbol> locals)
+        internal bool RegisterSpecialFoxProFunction(MCA.CSharpSyntaxNode node, bool writeAccess, List<Symbol> locals)
         {
-            if (functionsThatNeedAccessToLocals == null)
-                functionsThatNeedAccessToLocals = new ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<Symbol>)>();
-            return functionsThatNeedAccessToLocals.TryAdd(node, new(writeAccess, locals));
+            if (specialFoxProFunctions == null)
+                specialFoxProFunctions = new ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<Symbol>)>();
+            return specialFoxProFunctions.TryAdd(node, new(writeAccess, locals));
         }
         internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<Symbol> locals)
         {
             locals = null;
             writeAccess = false;
             var found = false;
-            if (functionsThatNeedAccessToLocals != null)
+            if (specialFoxProFunctions != null)
             {
-                found = functionsThatNeedAccessToLocals.TryRemove(node, out var element);
+                found = specialFoxProFunctions.TryRemove(node, out var element);
                 (writeAccess, locals) = element;
             }
             return found;
@@ -375,9 +375,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         internal IList<PragmaOption> PragmaOptions => internalUnit.PragmaOptions;
         internal IList<InternalSyntax.NullableDirectiveTriviaSyntax> PragmaNullables => internalUnit.PragmaNullables;
 
-        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<Symbol> locals)
+        internal bool RegisterSpecialFoxProFunction(MCA.CSharpSyntaxNode node, bool writeAccess, List<Symbol> locals)
         {
-            return internalUnit.RegisterFunctionThatNeedsAccessToLocals(node, writeAccess, locals);
+            return internalUnit.RegisterSpecialFoxProFunction(node, writeAccess, locals);
         }
         internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<Symbol> locals)
         {

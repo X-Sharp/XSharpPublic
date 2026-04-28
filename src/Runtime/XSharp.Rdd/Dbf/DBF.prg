@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -19,7 +19,7 @@ USING System.Diagnostics
 #define INPUTBUFFER
 
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>DBF RDD. Usually not used 'stand alone'</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBF/*" />
 [DebuggerDisplay("DBF ({Alias,nq})")];
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 #region STATIC properties and fields
@@ -1268,10 +1268,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         SELF:_HasMemo := FALSE
         RETURN SUPER:SetFieldExtent(fieldCount)
 
-    /// <summary>
-    /// Add a Field to the _Fields List. Fields are added in the order of method call
-    /// </summary>
-    /// <inheritdoc />
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBF.AddField/*" />
     OVERRIDE METHOD AddField(info AS RddFieldInfo) AS LOGIC
         LOCAL isOK AS LOGIC
         // convert RddFieldInfo to DBFColumn
@@ -1665,9 +1662,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         ENDIF
         RETURN ret
 
-    /// <summary>Is the current row </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBF.IsHot/*" />
     PROPERTY IsHot AS LOGIC GET SELF:_Hot
-    /// <summary>Is the current row a new record (the result of Append())</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBF.IsNewRecord/*" />
     PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 
     /// <inheritdoc />

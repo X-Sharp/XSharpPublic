@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,7 +8,7 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBFDBT/*" />
     CLASS DBFDBT INHERIT DBF IMPLEMENTS IRawData
         PRIVATE _oDbtMemo AS DBTMemo
         PROPERTY ReturnRawData as LOGIC AUTO

@@ -13,9 +13,7 @@ USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-    /// <summary>
-    /// The pageList class.
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxPageList/*" />
     [DebuggerDisplay("Pages: {Count}")];
     INTERNAL SEALED CLASS CdxPageList
         PRIVATE _pages AS Dictionary<DWORD, LinkedListNode<CdxPage>>

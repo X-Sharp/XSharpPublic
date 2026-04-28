@@ -1,4 +1,4 @@
-// CdxBlock.prg
+﻿// CdxBlock.prg
 // Created by    : fabri
 // Creation Date : 10/25/2018 10:43:18 PM
 // Created for   :
@@ -12,17 +12,8 @@ USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-	/// <summary>
-	/// The CdxHeader class. = Class that maps the File Header to memory
-    /// The logic around this is in the OrderBag class
-	/// </summary>
-	/// <remarks>
-    /// The first page in the file is the FILE Header (Bag Header). |
-  	/// The keylength is fixed to 10 (which is the tag length)
-  	/// The root page of the file header points to the list of tags (which is a LEAF page)
-  	/// The freepage points to the list of free pages at BAG level.
-    /// </remarks>
 
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxFileHeader/*" />
 	INTERNAL SEALED CLASS CdxFileHeader INHERIT CdxTagHeader
     PRIVATE CONST CDXFILEHEADER_VERSION     := 8 AS LONG
 	PRIVATE CONST CDXFILEHEADER_FREELIST	:= 0x04	AS WORD		// Byte offset to next free block

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,14 +7,10 @@
 
 USING System.Reflection
 
-/// <summary>Query current and/or set new active collation.</summary>
-/// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
-/// <returns>The numeric identifier of the active collation table </returns>
-/// <seealso cref='XppCollations' />
-/// <seealso cref='SetCollationTable' />
+/// <include file="XSharp.XPP.Docs.xml" path="doc/SetCollation/*" />
 FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     LOCAL nOld := @@Set(Set.Collation) AS LONG
-    IF PCount() > 0 
+    IF PCount() > 0
         IF IsNumeric(nCollation)
             SetCollationTable(nCollation)
         ELSEIF IsString(nCollation)
@@ -26,13 +22,7 @@ FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     RETURN nOld
 
 
-/// <summary>Query current and/or set user defined collation table .</summary>
-/// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
-/// <param name="aTable">a one dimensional array with 256 elements. It must contain numeric values representing the weighing factors for single characters.
-/// The ASCII value of a character plus 1 defines the array element that contains the weighing factor for that character. </param>
-/// <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
-/// <seealso cref='XppCollations' />
-/// <seealso cref='SetCollation' />
+/// <include file="XSharp.XPP.Docs.xml" path="doc/SetCollationTable/*" />
 FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
     LOCAL liEnum AS LONG
     LOCAL aCollation AS ARRAY
@@ -95,4 +85,121 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
     RETURN aCollation
 
 
+FUNCTION SetLocale(nDefine as LONG) AS STRING
+    SWITCH nDefine
+    CASE NLS_SDECIMAL
+        RETURN Chr(SetDecimalSep())
+    CASE NLS_STHOUSAND
+        RETURN Chr(SetThousandSep())
+    CASE NLS_SLIST
+        return System.Globalization.CultureInfo.CurrentCulture:TextInfo:ListSeparator
+    CASE NLS_SYES
+        return __CavoStr(VOErrors.RT_MSG_SHORT_YES)
+    CASE NLS_SNO
+        return __CavoStr(VOErrors.RT_MSG_SHORT_NO)
+    CASE NLS_STIME
+        RETURN Chr(SetTimeSep())
+    CASE NLS_ITIME
+        RETURN IIF(SetAmPm(), "0", "1")
+    CASE NLS_SDATE
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:DateSeparator
+    CASE NLS_IDATE
+    CASE NLS_S1159
+        RETURN SetAMExt()
+    CASE NLS_S2359
+        RETURN SetPMExt()
+    CASE NLS_SCURRENCY
+    CASE NLS_ICOUNTRY
+        RETURN ""
+    CASE NLS_IANSICP
+        return NTrim(XSharp.RuntimeState.WinCodePage)
+    CASE NLS_IOEMCP
+        return NTrim(XSharp.RuntimeState.DosCodePage)
+    CASE NLS_SDAYNAME1
+    CASE NLS_SDAYNAME2
+    CASE NLS_SDAYNAME3
+    CASE NLS_SDAYNAME4
+    CASE NLS_SDAYNAME5
+    CASE NLS_SDAYNAME6
+    CASE NLS_SDAYNAME7
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:DayNames[nDefine - NLS_SDAYNAME1+1]
+    CASE NLS_SFDAYNAME1
+    CASE NLS_SFDAYNAME2
+    CASE NLS_SFDAYNAME3
+    CASE NLS_SFDAYNAME4
+    CASE NLS_SFDAYNAME5
+    CASE NLS_SFDAYNAME6
+    CASE NLS_SFDAYNAME7
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:DayNames[nDefine - NLS_SFDAYNAME1+1]
+    CASE NLS_SMONTHNAME1
+    CASE NLS_SMONTHNAME2
+    CASE NLS_SMONTHNAME3
+    CASE NLS_SMONTHNAME4
+    CASE NLS_SMONTHNAME5
+    CASE NLS_SMONTHNAME6
+    CASE NLS_SMONTHNAME7
+    CASE NLS_SMONTHNAME8
+    CASE NLS_SMONTHNAME9
+    CASE NLS_SMONTHNAME10
+    CASE NLS_SMONTHNAME11
+    CASE NLS_SMONTHNAME12
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:MonthNames[nDefine - NLS_SMONTHNAME1+1]
+    CASE NLS_SFMONTHNAME1
+    CASE NLS_SFMONTHNAME2
+    CASE NLS_SFMONTHNAME3
+    CASE NLS_SFMONTHNAME4
+    CASE NLS_SFMONTHNAME5
+    CASE NLS_SFMONTHNAME6
+    CASE NLS_SFMONTHNAME7
+    CASE NLS_SFMONTHNAME8
+    CASE NLS_SFMONTHNAME9
+    CASE NLS_SFMONTHNAME10
+    CASE NLS_SFMONTHNAME11
+    CASE NLS_SFMONTHNAME12
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:MonthGenitiveNames[nDefine - NLS_SFMONTHNAME1+1]
+    CASE NLS_SABBREVDAYNAME1
+    CASE NLS_SABBREVDAYNAME2
+    CASE NLS_SABBREVDAYNAME3
+    CASE NLS_SABBREVDAYNAME4
+    CASE NLS_SABBREVDAYNAME5
+    CASE NLS_SABBREVDAYNAME6
+    CASE NLS_SABBREVDAYNAME7
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:AbbreviatedDayNames[nDefine - NLS_SABBREVDAYNAME1+1]
+    CASE NLS_SABBREVMONTHNAME1
+    CASE NLS_SABBREVMONTHNAME2
+    CASE NLS_SABBREVMONTHNAME3
+    CASE NLS_SABBREVMONTHNAME4
+    CASE NLS_SABBREVMONTHNAME5
+    CASE NLS_SABBREVMONTHNAME6
+    CASE NLS_SABBREVMONTHNAME7
+    CASE NLS_SABBREVMONTHNAME8
+    CASE NLS_SABBREVMONTHNAME9
+    CASE NLS_SABBREVMONTHNAME10
+    CASE NLS_SABBREVMONTHNAME11
+    CASE NLS_SABBREVMONTHNAME12
+        return System.Globalization.DateTimeFormatInfo.CurrentInfo:AbbreviatedMonthNames[nDefine - NLS_SABBREVMONTHNAME1+1]
+    END SWITCH
+    RETURN ""
+
+FUNCTION SetLocale(nDefine as LONG, cNewSetting as STRING) AS STRING
+    var oldValue := SetLocale(nDefine)
+    SWITCH nDefine
+    CASE NLS_SDECIMAL
+        SetDecimalSep(Asc(cNewSetting))
+    CASE NLS_STHOUSAND
+        SetThousandSep(Asc(cNewSetting))
+    CASE NLS_STIME
+        SetTimeSep(Asc(cNewSetting))
+    CASE NLS_ITIME
+        SetAmPm(Left(cNewSetting, 1) == "0")
+    CASE NLS_SLIST
+        System.Globalization.CultureInfo.CurrentCulture:TextInfo:ListSeparator := cNewSetting
+    CASE NLS_S1159
+        SetAMExt(cNewSetting)
+    CASE NLS_S2359
+        SetPMExt(cNewSetting)
+    CASE NLS_SDATE
+        System.Globalization.DateTimeFormatInfo.CurrentInfo:DateSeparator := cNewSetting
+    END SWITCH
+    RETURN oldValue
 

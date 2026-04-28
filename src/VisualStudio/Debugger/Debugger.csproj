@@ -89,7 +89,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.16">
-      <Version>16.0.549</Version>
+      <Version>16.0.551</Version>
+    </PackageReference>
+    <PackageReference Include="Community.VisualStudio.VSCT">
+      <Version>16.0.29.14</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>2.2.2</Version>

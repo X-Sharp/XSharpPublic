@@ -26,20 +26,6 @@ FUNCTION GetCursorAdapter( cAlias )
     // RETURN NULL
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getdir/*" />
-[FoxProFunction("GETDIR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION GetDir( cDirectory , cText , cCaption , nFlags , lRootOnly) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getfile/*" />
-[FoxProFunction("GETFILE", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION GetFile( cFileExtensions , cText , cOpenButtonCaption,nButtonType, cTitleBarCaption ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getfldstate/*" />
 [FoxProFunction("GETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION GetFldState( uField , uArea) AS USUAL
@@ -59,13 +45,6 @@ FUNCTION GetNextModified( nRecordNumber , uArea , lNoFire)
 FUNCTION GetObject( uType , cClassName) AS OBJECT
     THROW NotImplementedException{}
     // RETURN NULL_OBJECT
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getpict/*" />
-[FoxProFunction("GETPICT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION GetPict( cFileExtensions , cFileNameCaption , cOpenButtonCaption) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getprinter/*" />

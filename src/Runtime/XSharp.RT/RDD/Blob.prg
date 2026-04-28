@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -6,9 +6,7 @@
 
 // BLOB.PRG	Weakly typed BLOB functions
 
-/// <summary>
-/// This class is used to write BLOB data to a FPT file.
-/// </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/BlobData/*" />
 CLASS XSharp.BlobData IMPLEMENTS XSharp.RDD.IBlobData
     /// <inheritdoc />
     PROPERTY Pointer   as INT AUTO

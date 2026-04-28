@@ -22,7 +22,7 @@ using Microsoft.VisualStudio.Shell;
 using System.Threading;
 using System.Threading.Tasks;
 #endif
-
+using XSharp.Support;
 // Note: This class inherits the base LanguageService from VS
 // Roslyn implements a complete new LanguageService, we may want to do that
 // later.
@@ -368,7 +368,7 @@ namespace XSharp.LanguageService
             return VSConstants.E_NOTIMPL;
         }
         #endregion
-        #region  IVsLanguageTextOps      
+        #region  IVsLanguageTextOps
         public int GetDataTip(IVsTextLayer pTextLayer, TextSpan[] ptsSel, TextSpan[] ptsTip, out string text)
         {
             text = null;
@@ -391,7 +391,7 @@ namespace XSharp.LanguageService
                 case ':':
                 case '.':
                     if (stopAtDelimiter)
-                        return false; 
+                        return false;
                     break;
                 case '_':
                     return true;
@@ -407,7 +407,7 @@ namespace XSharp.LanguageService
             if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN) && this.IsDebugging)
             {
                 var callStack = Environment.StackTrace.ToString();
-                // when inside quick info in the debugger then we want to return a complete 
+                // when inside quick info in the debugger then we want to return a complete
                 // expression like SELF:SomeProperty as a single word.
                 // when not in quick info then we want to select SomeProperty without also selecting
                 // SELF and ':'

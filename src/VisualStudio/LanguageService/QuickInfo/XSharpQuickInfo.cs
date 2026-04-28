@@ -21,7 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
 using XSharp.Settings;
-
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal class XSharpQuickInfoSource : IAsyncQuickInfoSource

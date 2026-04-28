@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -18,29 +18,23 @@ BEGIN NAMESPACE System.Runtime.CompilerServices
     END CLASS
 END NAMESPACE
 
-    /// <summary>Delegate used for the StateChanged Event handler</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/XSharp.StateChanged/*" />
 DELEGATE XSharp.StateChanged (e AS StateChangedEventArgs) AS VOID
-    /// <summary>Delegate used for the DialectChanged Event handler</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/XSharp.DialectChanged/*" />
 DELEGATE XSharp.DialectChanged(oldDialect as XSharpDialect, newDialect as XSharpDialect) AS VOID
 
-/// <summary>Arguments that are sent to StateChanged event handlers</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/StateChangedEventArgs/*" />
 CLASS XSharp.StateChangedEventArgs
-    /// <summary>Setting that was just changed</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/StateChangedEventArgs.Setting/*" />
     PROPERTY Setting  AS XSharp.Set AUTO GET INIT
-    /// <summary>Old value of the setting</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/StateChangedEventArgs.OldValue/*" />
     PROPERTY OldValue AS OBJECT AUTO GET INIT
-    /// <summary>New value of the setting</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/StateChangedEventArgs.NewValue/*" />
     PROPERTY NewValue AS OBJECT AUTO GET INIT
     INTERNAL CONSTRUCTOR()
         RETURN
 END CLASS
-/// <summary>
-/// Container Class that holds the XSharp Runtime state
-/// </summary>
-/// <remarks>
-/// Please note that unlike in most XBase products every thread has its own copy of the runtime state.<br/>
-/// The runtime state from a new thread is a copy of the state of the main thread at that moment.
-/// </remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState/*" />
 CLASS XSharp.RuntimeState
 
 	// Static Fields
@@ -104,18 +98,16 @@ CLASS XSharp.RuntimeState
 
     PUBLIC STATIC PROPERTY RunningOnWindows as LOGIC GET _onWindows
 
-	/// <summary>Retrieve the runtime state for the current thread</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.GetInstance/*" />
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
-    /// <summary>This event is invoked when the runtime state is changed.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.StateChanged/*" />
     PUBLIC STATIC EVENT StateChanged AS StateChanged
-    /// <summary>This event is invoked when the runtime dialect is changed.</summary>
-    /// <remarks>Normally this will almost never happen. However inside our test suites this is quite common </remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DialectChanged/*" />
     PUBLIC STATIC EVENT DialectChanged as DialectChanged
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
-    /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
-    /// <seealso cref="Set" >Set Enum</seealso>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Settings/*" />
     PUBLIC PROPERTY Settings AS Dictionary<XSharp.Set, OBJECT> GET oSettings
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)
 		VAR oThread := Thread.CurrentThread
@@ -173,8 +165,7 @@ CLASS XSharp.RuntimeState
 		END LOCK
 		RETURN oNew
 
-	/// <summary>Retrieve state name</summary>
-	/// <returns>String value, such as "State for Thread 123"</returns>IDb
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Name/*" />
 	PUBLIC PROPERTY Name AS STRING
     GET
         IF SELF:_thread == NULL
@@ -184,11 +175,9 @@ CLASS XSharp.RuntimeState
         ENDIF
     END GET
     END PROPERTY
-	/// <summary>Current Break Level. Gets set by compiler generated code for BEGIN SEQUENCE .. END constructs.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.BreakLevel/*" />
 	PUBLIC PROPERTY BreakLevel AS INT AUTO
-	/// <summary>ToString() override</summary>
-	/// <returns>String value, such as "State for Thread 123"</returns>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.ToString/*" />
 	PUBLIC OVERRIDE METHOD ToString() AS STRING
 		RETURN SELF:Name
 
@@ -244,61 +233,36 @@ CLASS XSharp.RuntimeState
 
 	#region properties FROM the Vulcan RuntimeState that are emulated
 
-	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionFox2/*" />
 	STATIC PROPERTY CompilerOptionFox2 AS LOGIC AUTO
 
-	/// <summary>The current compiler setting for the AllowOldStyleAssignments compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionAllowOldStyleAssignments/*" />
 	STATIC PROPERTY CompilerOptionAllowOldStyleAssignments AS LOGIC AUTO
-	/// <summary>The current compiler setting for the AZ compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionAZ/*" />
 	STATIC PROPERTY CompilerOptionAZ AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO4 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO4/*" />
 	STATIC PROPERTY CompilerOptionVO4 AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO6 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO6/*" />
 	STATIC PROPERTY CompilerOptionVO6 AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO7 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO7/*" />
 	STATIC PROPERTY CompilerOptionVO7 AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO10 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO10/*" />
 	STATIC PROPERTY CompilerOptionVO10 AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO11/*" />
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
 
-	/// <summary>The current compiler setting for the VO12 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO12/*" />
 	STATIC PROPERTY CompilerOptionVO12 AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO13/*" />
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
-	/// <summary>The current compiler setting for the VO12 compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionVO14/*" />
 	STATIC PROPERTY CompilerOptionVO14 AS LOGIC AUTO
-	/// <summary>Gets / Sets the current Workarea number.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CurrentWorkarea/*" />
     STATIC PROPERTY CurrentWorkarea AS DWORD ;
         GET Workareas:CurrentWorkareaNO ;
         SET Workareas:CurrentWorkareaNO  := value
 
-    /// <summary>The current compiler setting for the OVF compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionOVF/*" />
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC AUTO
 
     /// <summary>The current compiler setting for the X# Dialect.</summary>
@@ -320,119 +284,75 @@ CLASS XSharp.RuntimeState
         END SET
     END PROPERTY
 
-	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default value for this option is 'False'.</value>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CompilerOptionFOVF/*" />
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC AUTO
 
-	/// <summary>The System.Reflection.Module for the main application.</summary>
-    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.AppModule/*" />
     STATIC PROPERTY AppModule AS  Module AUTO
 	#endregion
 
-	/// <summary>The last file found with File(). This is the name that FPathName() returns.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="File" />
-    /// <seealso cref="FPathName" />
-    /// <seealso cref="Set.LastFound" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.LastFound/*" />
     STATIC PROPERTY LastFound AS STRING ;
         GET GetValue<STRING>(Set.LastFound);
         SET SetValue<STRING>(Set.LastFound, value)
 
-	/// <summary>The last File IO error number</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="FError" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.FileError/*" />
     STATIC PROPERTY FileError AS DWORD AUTO
 
-	/// <summary>The last file IO Exception</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="FException" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.FileException/*" />
     STATIC PROPERTY FileException AS Exception AUTO
 
-	/// <summary>The current Alternate setting.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:XSharp.RT.Functions.SetAlternate" />
-    /// <seealso cref="O:XSharp.RT.Functions.SetAltFile" />
-    /// <seealso cref="Set.Alternate" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Alternate/*" />
    static property Alternate as logic ;
         GET GetValue<LOGIC>(Set.Alternate);
         SET SetValue<LOGIC>(Set.Alternate, value)
 
-    /// <summary>The current AltFile setting.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:XSharp.RT.Functions.SetAlternate" />
-    /// <seealso cref="O:XSharp.RT.Functions.SetAltFile" />
-    /// <seealso cref="Set.AltFile" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.AltFile/*" />
    STATIC PROPERTY AltFile AS STRING ;
         GET GetValue<STRING>(Set.AltFile);
         SET SetValue<STRING>(Set.AltFile, value)
 
+   STATIC PROPERTY MemoWidth AS LONG ;
+        GET GetValue<LONG>(Set.MemoWidth);
+        SET SetValue<LONG>(Set.MemoWidth, value)
 
-	/// <summary>The current ANSI setting</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetAnsi" />
-    /// <seealso cref="Set.Ansi" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Ansi/*" />
     STATIC PROPERTY Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
         SET SetValue<LOGIC>(Set.Ansi, value)
 
-	/// <summary>The current AutoOrder setting (used by the RDD system).</summary>
-    /// <seealso cref="AutoOpen" />
-    /// <seealso cref="AutoShareMode" />
-    /// <seealso cref="Set.AutoOrder" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.AutoOrder/*" />
     STATIC PROPERTY AutoOrder AS LONG ;
         GET GetValue<LONG>(Set.AutoOrder);
         SET SetValue<LONG>(Set.AutoOrder, value)
 
-	/// <summary>The current AutoOpen setting (used by the RDD system).</summary>
-    /// <seealso cref="AutoOrder" />
-    /// <seealso cref="AutoShareMode" />
-    /// <seealso cref="Set.AutoOpen" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.AutoOpen/*" />
     STATIC PROPERTY AutoOpen AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOpen);
         SET SetValue<LOGIC>(Set.AutoOpen, value)
 
-	/// <summary>The current AutoShareMode setting (used by the RDD system).</summary>
-    /// <seealso cref="AutoOpen" />
-    /// <seealso cref="AutoOrder" />
-    /// <seealso cref="Set.Autoshare" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.AutoShareMode/*" />
     STATIC PROPERTY AutoShareMode AS LONG ;
         GET (LONG) GetValue<AutoShareMode>(Set.Autoshare);
         SET SetValue<AutoShareMode>(Set.Autoshare, (AutoShareMode)value)
 
 
-	/// <summary>The current Compatible setting.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetCompatible" />
-    /// <seealso cref="Set.Compatible" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Compatible/*" />
    STATIC PROPERTY Compatible AS LOGIC ;
         GET GetValue<LOGIC>(Set.Compatible);
         SET SetValue<LOGIC>(Set.Compatible, VALUE)
 
-	/// <summary>The current Console setting.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:XSharp.RT.Functions.SetConsole" />
-    /// <seealso cref="Set.Console" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Console/*" />
    STATIC PROPERTY Console AS LOGIC ;
         GET GetValue<LOGIC>(Set.Console);
         SET SetValue<LOGIC>(Set.Console, value)
 
-	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetCentury" />
-    /// <seealso cref="Set.Century" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Century/*" />
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, value)
 
-	/// <summary>The current Collation mode (used by the RDD system).</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.CollationMode" />
-    /// <seealso cref="OnCollationChanged" />
-    /// <remarks>Send an OnCollationChanged event when changed.</remarks>
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CollationMode/*" />
    static property CollationMode as CollationMode
         get
 			return GetValue<CollationMode>(Set.CollationMode)
@@ -445,108 +365,68 @@ CLASS XSharp.RuntimeState
 		END SET
 	END PROPERTY
 
-	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
-    /// <seealso cref="DateFormat" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetDateCountry" />
-    /// <seealso cref="Set.DateCountry" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DateCountry/*" />
    STATIC PROPERTY DateCountry AS DWORD ;
         GET (DWORD) GetValue<XSharp.DateCountry>(Set.DateCountry);
         SET RuntimeState.GetInstance():_SetDateCountry( (XSharp.DateCountry) value)
 
-	/// <summary>The current Date format</summary>
-	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
-	/// For example DD-MM-YYYY for italian date format, MM/DD/YYYY for American date format or DD/MM/YYYY for British Date format.
-	/// Note that all other characters except the four groups mentioned above are copied to the output string verbatim.
-    /// <note>This value is 'per thread' </note></remarks>
-    /// <seealso cref="DateCountry" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="GetDateFormat" />
-    /// <seealso cref="SetDateFormat" />
-    /// <seealso cref="Set.DateFormat" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DateFormat/*" />
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
         SET RuntimeState.GetInstance():_SetDateFormat(value)
 
-    /// <summary>A cached copy of the string that is returned for empty dates, matching the current DateFormat</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.DateFormatEmpty" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.NullDateString/*" />
 	STATIC PROPERTY NullDateString AS STRING GET GetValue<STRING>(Set.DateFormatEmpty)
 
-	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetDecimal" />
-    /// <seealso cref="Set.Decimals" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Decimals/*" />
     STATIC PROPERTY Decimals AS DWORD ;
         GET GetValue<DWORD>(Set.Decimals);
         SET SetValue<DWORD>(Set.Decimals, value)
 
 
-	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
-    /// <seealso cref="ThousandSep" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetDecimalSep" />
-    /// <seealso cref="Set.DecimalSep" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DecimalSep/*" />
     STATIC PROPERTY DecimalSep AS DWORD ;
         GET GetValue<DWORD>(Set.DecimalSep);
         SET SetValue<DWORD>(Set.DecimalSep, value)
 
-	/// <summary>The default RDD.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
-    /// <seealso cref="O:XSharp.RT.Functions.RddSetDefault" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DefaultRDD/*" />
     STATIC PROPERTY DefaultRDD AS STRING ;
         GET GetValue<STRING>(Set.DefaultRdd);
         SET SetValue<STRING>(Set.DefaultRdd, value)
 
 
-	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetDeleted" />
-    /// <seealso cref="Set.Deleted" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Deleted/*" />
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.Deleted);
         SET SetValue<LOGIC>(Set.Deleted, value)
 
-	/// <summary>Name of the RDD uses for DELIM operations.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DelimRDD/*" />
     STATIC PROPERTY DelimRDD AS STRING ;
         GET GetValue<STRING>(Set.DelimRDD);
         SET SetValue<STRING>(Set.DelimRDD, value)
 
-	/// <summary>Field delimiters for DELIM operations.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.FieldDelimiter/*" />
     STATIC PROPERTY FieldDelimiter AS STRING ;
         GET GetValue<STRING>(Set.FieldDelimiter);
         SET SetValue<STRING>(Set.FieldDelimiter, value)
 
-	/// <summary>String delimiters for DELIM operations.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.StringDelimiter/*" />
     STATIC PROPERTY StringDelimiter AS STRING ;
         GET GetValue<STRING>(Set.Delimiters);
         SET SetValue<STRING>(Set.Delimiters, value)
 
-	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetDigit" />
-    /// <seealso cref="Set.Digits" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Digits/*" />
     STATIC PROPERTY Digits AS DWORD ;
         GET GetValue<DWORD>(Set.Digits);
         SET SetValue<DWORD>(Set.Digits, value)
 
-    /// <summary>Logical setting that fixes the number of digits used to display numeric output.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetDigitFixed" />
-    /// <seealso cref="Set.DigitFixed" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DigitsFixed/*" />
     STATIC PROPERTY DigitsFixed AS LOGIC ;
         GET GetValue<LOGIC>(Set.DigitFixed);
         SET SetValue<LOGIC>(Set.DigitFixed, value)
 
 
-	/// <summary>The 'DOS' Codepage. This gets read at startup from the OS().</summary>
-    /// <seealso cref="DosEncoding" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="OnCodePageChanged" />
-    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DosCodePage/*" />
     STATIC PROPERTY DosCodePage AS LONG
         GET
             RETURN GetValue<LONG>(Set.DosCodepage)
@@ -559,185 +439,123 @@ CLASS XSharp.RuntimeState
 		END SET
 	END PROPERTY
 
-	/// <summary>Should text files, such as memo files be written with a closing EOF = chr(26) character.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.Eof" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Eof/*" />
     STATIC PROPERTY Eof AS LOGIC ;
         GET GetValue<LOGIC>(Set.Eof);
         SET SetValue<LOGIC>(Set.Eof, value)
 
 
-	/// <summary>End of line character to be used by the runtime. Defaults to CR + LF (13 + 13).</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.Eol" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Eol/*" />
     STATIC PROPERTY Eol AS STRING ;
         GET GetValue<STRING>(Set.Eol);
         SET SetValue<STRING>(Set.Eol, value)
 
 
-	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetEpoch" />
-    /// <seealso cref="Set.Epoch" />
 
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Epoch/*" />
     STATIC PROPERTY Epoch AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.Epoch));
         SET SetValue<DWORD>(Set.Epoch, value)
 
-	/// <summary>Date Epoch Year value. This gets set by the SetEpoch() function to the Epoch year % 100.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetEpoch" />
-    /// <seealso cref="Set.EpochYear" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.EpochYear/*" />
     STATIC PROPERTY EpochYear AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EpochYear));
 
-	/// <summary>Date Epoch Century value. This gets set by the SetEpoch() function to the century in which the Epoch year falls.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetEpoch" />
-    /// <seealso cref="Set.EpochCent" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.EpochCent/*" />
     STATIC PROPERTY EpochCent AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EpochCent));
 
 
-	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetExact" />
-    /// <seealso cref="Set.Exact" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Exact/*" />
     static property Exact as logic ;
         get GetValue<logic>(Set.Exact);
         set SetValue<logic>(Set.Exact, value)
 
-    /// <summary>Logical setting that fixes the number of decimal digits used to display numbers.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetFixed" />
-    /// <seealso cref="Set.Fixed" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Fixed/*" />
     STATIC PROPERTY Fixed AS LOGIC ;
         GET GetValue<LOGIC>(Set.Fixed);
         SET SetValue<LOGIC>(Set.Fixed, value)
 
 
 
-	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:XSharp.RT.Functions.SetFloatDelta" />
-    /// <seealso cref="Set.Floatdelta" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.FloatDelta/*" />
    STATIC PROPERTY FloatDelta AS REAL8 ;
         GET GetValue<REAL8>(Set.Floatdelta);
         SET SetValue<REAL8>(Set.Floatdelta, value)
 
-	/// <summary>Current SetInternational Setting.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetInternational" />
-    /// <seealso cref="Set.Intl" />
+     /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.International/*" />
      STATIC PROPERTY International AS CollationMode ;
         GET GetValue<CollationMode>(Set.Intl);
         SET SetValue<CollationMode>(Set.Intl, value)
 
-	/// <summary>Last error that occurred in the RDD subsystem.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.LastRddError/*" />
     STATIC PROPERTY LastRddError AS Exception AUTO
 
-	/// <summary>Last Script error that occurred .</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.LastScriptError" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.LastScriptError/*" />
     STATIC PROPERTY LastScriptError AS Exception ;
         GET GetValue<Exception>(Set.LastScriptError);
         SET SetValue<Exception>(Set.LastScriptError, value)
 
-	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetEpoch" />
-    /// <seealso cref="Set.EpochCent" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.LockTries/*" />
     STATIC PROPERTY LockTries AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.Locktries));
         SET SetValue<DWORD>(Set.Locktries, value)
 
-    /// <summary>The setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.HpLocking" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.HPLocking/*" />
     STATIC PROPERTY HPLocking AS LOGIC ;
         GET GetValue<LOGIC>(Set.HpLocking);
         SET SetValue<LOGIC>(Set.HpLocking, value)
 
-    /// <summary>The setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.NewIndexLock" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.NewIndexLock/*" />
     STATIC PROPERTY NewIndexLock AS LOGIC ;
         GET GetValue<LOGIC>(Set.NewIndexLock);
         SET SetValue<LOGIC>(Set.NewIndexLock, value)
 
 
-	/// <summary>The current default MemoBlock size.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.MemoBlockSize" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.MemoBlockSize/*" />
     STATIC PROPERTY MemoBlockSize AS WORD;
         GET Convert.ToUInt16(GetValue<OBJECT>(Set.MemoBlockSize));
         SET SetValue<WORD>(Set.MemoBlockSize, value)
 
 
-	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.Neterr" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.NetErr/*" />
     STATIC PROPERTY NetErr AS LOGIC;
         GET GetValue<LOGIC>(Set.Neterr);
         SET SetValue<LOGIC>(Set.Neterr, value)
 
-	/// <summary>RDD Optimize Flag  </summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.Optimize" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Optimize/*" />
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.Optimize);
         SET SetValue<LOGIC>(Set.Optimize, value)
 
 
-    /// <summary>The current SetRefresh flag.</summary>
-   /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-   /// <seealso cref="SetRefresh" />
-   /// <seealso cref="Set.Refresh" />
+   /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Refresh/*" />
    STATIC PROPERTY Refresh AS REAL8 ;
        GET GetValue<REAL8>(Set.Refresh);
        SET SetValue<REAL8>(Set.Refresh, value)
 
-	/// <summary>The current SetSafety flag.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetSafety" />
-    /// <seealso cref="Set.Safety" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Safety/*" />
     STATIC PROPERTY Safety AS LOGIC ;
         GET GetValue<LOGIC>(Set.Safety);
         SET SetValue<LOGIC>(Set.Safety, value)
 
-	/// <summary>The current SetSoftSeek flag.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetSoftSeek" />
-    /// <seealso cref="Set.Softseek" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.SoftSeek/*" />
     STATIC PROPERTY SoftSeek AS LOGIC ;
         GET GetValue<LOGIC>(Set.Softseek);
         SET SetValue<LOGIC>(Set.Softseek, value)
 
-	/// <summary>The Thousand separator</summary>
-    /// <seealso cref="DecimalSep" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetThousandSep" />
-    /// <seealso cref="Set.ThousandSep" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.ThousandSep/*" />
     STATIC PROPERTY ThousandSep AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.ThousandSep));
         SET SetValue<DWORD>(Set.ThousandSep, value)
 
 
-	/// <summary>Should indexes by default be created with the 'Unique setting'.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="SetUnique" />
-    /// <seealso cref="Set.Unique" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Unique/*" />
     STATIC PROPERTY Unique AS LOGIC ;
         GET GetValue<LOGIC>(Set.Unique);
         SET SetValue<LOGIC>(Set.Unique, value)
 
-	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
-    /// <seealso cref="WinEncoding" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.WinCodepage" />
-    /// <seealso cref="OnCodePageChanged" />
-    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.WinCodePage/*" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
 		RETURN GetValue<LONG>(Set.WinCodepage)
@@ -750,23 +568,16 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-    /// <summary>The Windows Encoding. This is based on the corrent Win Codepage.</summary>
-    /// <seealso cref="WinCodePage" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:RuntimeState.StringCompare" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.WinEncoding/*" />
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
 
-    /// <summary>The DOS Encoding. This is based on the corrent DOS Codepage.</summary>
-    /// <seealso cref="DosCodePage" />
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DosEncoding/*" />
     STATIC PROPERTY DosEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(DosCodePage)
 
 
-	/// <summary>The name of the method that was called in the last late bound method call.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.NoMethod" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.NoMethod/*" />
     STATIC PROPERTY NoMethod AS STRING ;
         GET GetValue<STRING>(Set.NoMethod);
         SET SetValue<STRING>(Set.NoMethod, value)
@@ -918,12 +729,9 @@ CLASS XSharp.RuntimeState
         RETURN
 
 	PRIVATE _dataSession AS DataSession
-	/// <summary>The Workarea information for the current Thread.</summary>
-    /// <remarks>This property is a backward compatible alias for the DataSession property</remarks>
-    /// <seealso cref="DataSession" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Workareas/*" />
     PUBLIC STATIC PROPERTY Workareas AS DataSession GET DataSession
-	/// <summary>The DataSession information for the current Thread.</summary>
-    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.DataSession/*" />
 	PUBLIC STATIC PROPERTY DataSession AS DataSession
 	GET
         LOCAL inst AS RuntimeState
@@ -946,10 +754,7 @@ CLASS XSharp.RuntimeState
     END GET
     END PROPERTY
 
-    /// <summary>This method can be used to switch the active DataSession in the runtime state.</summary>
-    /// <returns>The previous active datasession</returns>
-    /// <param name="session">The datasession that needs to be set as the new active datasession</param>
-    /// <remarks>This sets the DataSession in the <em>current thread</em>.</remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.SetDataSession/*" />
     STATIC METHOD SetDataSession (session as DataSession) AS DataSession
         LOCAL inst AS RuntimeState
         LOCAL old  as DataSession
@@ -972,10 +777,10 @@ CLASS XSharp.RuntimeState
     static AutoLock   as AutoLockMethod
     /// <summary>Delegate that gets called to automatically unlock a record in the FoxPro dialect.</summary>
     static AutoUnLock as AutoLockMethod
-    /// <summary>Delegate that describes the signature of the AutoLock methods </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.AutoLockMethod/*" />
     delegate AutoLockMethod() as void
 
-    /// <summary>Current collation table.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CollationTable/*" />
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]
@@ -995,15 +800,12 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-    /// <summary>Active Script compiler. Gets assigned from the ExecScriptFast() function.</summary>
-    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.ScriptCompiler/*" />
     STATIC PUBLIC PROPERTY ScriptCompiler AS IMacroCompiler AUTO := NULL
 	STATIC INTERNAL _macrocompilerType   AS System.Type
     STATIC INTERNAL _macrocompiler       AS IMacroCompiler
     STATIC INTERNAL _macroresolver       AS MacroCompilerResolveAmbiguousMatch
-    /// <summary>Active Macro compiler</summary>
-    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="IMacroCompiler" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.MacroCompiler/*" />
     PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
         GET
             IF _macrocompiler == NULL
@@ -1016,17 +818,11 @@ CLASS XSharp.RuntimeState
         END SET
     END PROPERTY
 
-    /// <summary>
-    /// This property allows you to override the mechanism that decided if the types in an assembly should be cached
-    /// The default behavior is that every assembly that is found is cached.
-    /// </summary>
-    /// <value></value>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.MacroCompilerIncludeAssemblyInCache/*" />
     PUBLIC STATIC PROPERTY MacroCompilerIncludeAssemblyInCache as MacroCompilerIncludeAssemblyInCache AUTO := { a AS Assembly => TRUE}
 
 
-    /// <summary>Active Macro compiler</summary>
-    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="IMacroCompiler2" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.MacroResolver/*" />
     PUBLIC STATIC PROPERTY MacroResolver AS MacroCompilerResolveAmbiguousMatch
         GET
             IF _macroresolver == NULL
@@ -1044,18 +840,11 @@ CLASS XSharp.RuntimeState
         END SET
     END PROPERTY
 
-    /// <summary>
-    /// You can register an error handler that will be called when the macrocompiler encounters an error
-    /// </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.MacroCompilerErrorHandler/*" />
     PUBLIC STATIC PROPERTY MacroCompilerErrorHandler as MacroCompilerErrorHandler AUTO
-	/// <summary>This event is thrown when one of the codepages of the runtimestate is changed</summary>
-    /// <remarks>Clients can refresh cached information by registering to this event</remarks>
-    /// <seealso cref="DosCodePage" />
-    /// <seealso cref="WinCodePage" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.OnCodePageChanged/*" />
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
-	/// <summary>This event is thrown when the collation of the runtimestate is changed</summary>
-    /// <remarks>Clients can refresh cached information by registering to this event</remarks>
-    /// <seealso cref="CollationMode" />
+ /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.OnCollationChanged/*" />
 	public static event OnCollationChanged as EventHandler
 
     PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
@@ -1088,25 +877,7 @@ CLASS XSharp.RuntimeState
 		RETURN
 
 
-    /// <overloads>
-    /// <summary>Compare 2 strings respecting the runtime string comparison rules.</summary>
-    /// </overloads>
-    /// <include file="CoreComments.xml" path="Comments/StringCompare/*" />
-    /// <param name="strLHS">The first string .</param>
-    /// <param name="strRHS">The second string.</param>
-    /// <remarks>
-    /// The StringCompare method takes into account: <br/>
-    /// - the setting of SetExact()<br/>
-    /// - the setting of VO13 of the main app<br/>
-    /// - the setting of Collation mode <br/>
-    /// This method respects the current setting of SetCollation(): <br/>
-    /// - When the current collationmode is Clipper or Windows then a Unicode - Ansi conversions will be performed.
-    /// The Clipper collation uses the current DOS codepage and the Windows collation the current Windows codepage.<br/>
-    /// - When the current collationmode is Unicode or Ordinal then the original strings will be compared.
-    /// </remarks>
-    /// <seealso cref="P:CompilerOptionVO13" />
-    /// <seealso cref="P:Exact" />
-    /// <seealso cref="M:StringCompareCollation" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.StringCompare/*" />
     STATIC METHOD StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
        LOCAL ret AS INT
         // Only when vo13 is off and SetExact = TRUE
@@ -1141,14 +912,7 @@ CLASS XSharp.RuntimeState
         ENDIF
         RETURN ret
 
-    /// <include file="CoreComments.xml" path="Comments/StringCompare/*" />
-    /// <param name="strLHS">The first string .</param>
-    /// <param name="strRHS">The second string.</param>
-    /// <remarks>
-    /// This method only checks for SetCollation and does not check fot SetExact() or the VO13 setting
-    /// </remarks>
-    /// <seealso cref="O:StringCompare" />
-    /// <seealso cref="P:CollationMode" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.StringCompareCollation/*" />
     static method StringCompareCollation(strLHS as string, strRHS as string) as int
        LOCAL ret AS INT
         // either exact or RHS longer than LHS
@@ -1170,20 +934,7 @@ CLASS XSharp.RuntimeState
         END SWITCH
         RETURN ret
 
-    /// <inheritdoc cref="XSharp.RuntimeState.StringCompare"/>
-    /// <summary>Compare 2 byte arrays respecting the runtime string comparison rules.</summary>
-    /// <param name="aLHS">The first list of bytes.</param>
-    /// <param name="aRHS">The second list of bytes.</param>
-    /// <param name="nLen">The # of bytes to compare.</param>
-    /// <remarks>This method works on BYTE arrays and is used by the RDD system. <br/>
-    /// This method respects the current setting of SetCollation(): <br/>
-    /// - When the current collationmode is Clipper or Windows then no Ansi - Unicode conversions will be done.The comparisons will be done on the byte arrays.<br/>
-    /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before the comparison is executed.
-    /// </remarks>
-    /// <seealso cref="WinEncoding" />
-    /// <seealso cref="StringCompareCollation" />
-    /// <seealso cref="CollationMode" />
-    /// <seealso cref="SetCollation" />
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.StringCompare_2/*" />
     STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
         SWITCH CollationMode
         CASE CollationMode.Clipper

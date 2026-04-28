@@ -15,6 +15,7 @@ using System.Data
 using System.Data.Common
 using XSharp.RDD.Enums
 using XSharp.RDD.SqlRDD.Providers
+using XSharp.RDD.Support
 
 begin namespace XSharp.RDD.SqlRDD
     /// <summary>
@@ -89,6 +90,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     property QuotedIdentifierCase     as System.Data.Common.IdentifierCase auto get private set
     /// <summary>ProductName as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property ProductName        as string auto get private set
+    /// <summary>A unique id for each connection</summary>
+    internal property ConnectionId       as Guid auto get
 
 
 #endregion
@@ -248,6 +251,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="Callback">(Optional) CallBack</param>
     constructor(cName as string, cConnectionString as string, @@Callback := null as SqlRDDEventHandler)
         super(cName)
+        ConnectionId       := Guid.NewGuid()
         RDDs             := List<SQLRDD>{}
         Schema           := Dictionary<string, SqlDbTableInfo>{StringComparer.OrdinalIgnoreCase}
         Provider         := SqlDbProvider.Current
@@ -281,7 +285,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         SELF:_FillMetadataCollections()
         SELF:_FillDataSourceProperties()
         SELF:_CheckConnectionTable()
+        SELF:_CreateLockTable()
         SELF:_Login()
+        SELF:InitializeLockTimer()
         // Todo: Check for # of open users and close the connection when no users are left and then throw an exception
         return
     end constructor
@@ -844,6 +850,86 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             return logValue
         endif
         return oValue
+        #endregion
+
+    #region lock
+    internal const LockTableName := "xs_locks" AS STRING
+
+    internal method XsLockColumnList() AS STRING
+        var sb := StringBuilder{}
+        foreach var lockFieldInfo in self:LockTableFields()
+            sb:Append(self:Provider:QuoteIdentifier(lockFieldInfo:ColumnName))
+            sb:Append(",")
+        next
+        return sb:ToString().TrimEnd(',')
+
+
+    private method _CreateLockTable() as void
+        if self:DoesTableExist(LockTableName)
+            return
+        endif
+
+        var sb  := StringBuilder{}
+        foreach var rddFieldInfo in SELF:LockTableFields()
+            sb:Append(SELF:Provider:GetSqlColumnInfo(rddFieldInfo, SELF))
+            sb:AppendLine(",")
+        next
+        var fieldList := sb:ToString().Trim().TrimEnd(',')
+        sb:Clear()
+        sb:Append(SELF:Provider:CreateTableStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, LockTableName)
+        sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
+        using var cmd := SqlDbCommand{"LockTable", SELF, false}
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery()
+
+        return
+
+    private _lockTableFields as List<RddFieldInfo>
+    internal method LockTableFields() as List<RddFieldInfo>
+        if _lockTableFields == null
+            _lockTableFields := List<RddFieldInfo>{}
+            _lockTableFields:Add(RddFieldInfo{"Station", "C", 50, 0})
+            _lockTableFields:Add(RddFieldInfo{"Username", "C", 50, 0})
+            _lockTableFields:Add(RddFieldInfo{"ConnectionId", "C", 50, 0})
+            _lockTableFields:Add(RddFieldInfo{"Workarea", "N", 0, 0})
+            _lockTableFields:Add(RddFieldInfo{"ThreadId", "N", 0, 0})
+            _lockTableFields:Add(RddFieldInfo{"LockDateTime", "T", 0, 0})
+            _lockTableFields:Add(RddFieldInfo{"TableName", "C", 255, 0})
+            _lockTableFields:Add(RddFieldInfo{"RecNo", "N", 0, 0})
+        endif
+        return _lockTableFields
+    end method
+
+    private method InitializeLockTimer() as void
+        var timer := System.Timers.Timer{120000} // 120 sec
+        timer:Elapsed += System.Timers.ElapsedEventHandler{ @@LockTimerElapsedEvent }
+        timer:AutoReset := true
+        timer:Enabled := true
+    return
+
+    method LockTimerElapsedEvent(sender as object, e as System.Timers.ElapsedEventArgs) as void
+        var parameterName1 := SELF:Provider:ParameterPrefix + "p1"
+
+        // Refresh my Locks
+        using var cmdRefresh := SqlDbCommand{"RefreshLockTable", SELF, false}
+        var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
+        updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
+        updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
+        cmdRefresh:Parameters := List<SqlDbParameter>{}
+        cmdRefresh:Parameters:Add(SqlDbParameter{parameterName1, SELF:ConnectionId:ToString()})
+        cmdRefresh:CommandText := updateStatement
+        cmdRefresh:ExecuteNonQuery()
+
+        // Clear all old locks
+        using var cmdClear := SqlDbCommand{"ClearLockTable", SELF, false}
+        cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
+        cmdClear:Parameters := List<SqlDbParameter>{}
+        cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-120)})
+        cmdClear:ExecuteNonQuery()
+    return
+
     #endregion
+
 end class
 end namespace

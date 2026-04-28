@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,7 +12,11 @@ PUBLIC CLASS XSharp.MemoHelpers
     /// <exclude/>
 	CONST END_MEMO   := 0x1A AS INT // ^Z
     /// <exclude/>
-	CONST MAX_WIDTH  := 254 AS INT
+    STATIC PROPERTY MAX_WIDTH AS INT
+        GET
+            RETURN IIF(XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro, 8192, 254)
+        END GET
+    END PROPERTY
     /// <exclude/>
 	CONST TAB		 := 9 AS INT
     /// <exclude/>
@@ -28,18 +32,21 @@ PUBLIC CLASS XSharp.MemoHelpers
     /// <exclude/>
 	CONST STD_TAB_WIDTH	:= 4 AS INT
     /// <exclude/>
-	CONST STD_MEMO_WIDTH	 := 79	AS INT
+    STATIC PROPERTY STD_MEMO_WIDTH AS INT => RuntimeState.MemoWidth
 
     /// <exclude/>
-	STATIC METHOD  MLCount( cMemo AS STRING, nLineLen:= MemoHelpers.STD_MEMO_WIDTH AS INT, ;
+	STATIC METHOD MLCount( cMemo AS STRING, nLineLen:= -1 AS INT, ;
 		nTabSize := MemoHelpers.STD_TAB_WIDTH AS INT,  lWrap := TRUE AS LOGIC) AS DWORD
 		LOCAL nTempLen AS INT
 		LOCAL nLines := 0 AS DWORD
 		LOCAL nIndex := 0 AS INT
 		IF cMemo == NULL
 			RETURN 0
-		ENDIF
-		IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
+        ENDIF
+        IF nLineLen == -1
+            nLineLen := MemoHelpers.STD_MEMO_WIDTH
+        ENDIF
+        IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
 
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -158,9 +165,12 @@ PUBLIC CLASS XSharp.MemoHelpers
 
 			ENDDO
 
-		ENDIF
-
-		RETURN (DWORD) ( nIndex + 1 )
+        ENDIF
+        // when we did not find enough lines, we return 0
+        IF nLineNum > 0
+            return 0
+        endif
+		RETURN (DWORD) ( nIndex )
 
     /// <exclude/>
 	STATIC METHOD IsCrLf( cMemo AS STRING, nPos AS INT, nCrLf REF INT ) AS LOGIC
@@ -239,11 +249,14 @@ PUBLIC CLASS XSharp.MemoHelpers
 		LOCAL nCrLf := 0 AS INT
 		LOCAL cRet AS STRING
 		LOCAL nIndex AS INT
+        IF cMemo == NULL .or. cMemo:Length == 0
+            dOffset := 0
+            RETURN ""
+        ENDIF
 
 		IF ! lJustCheck
 			oBuilder := System.Text.StringBuilder{ (INT) nLineLen }
 		END IF
-
 		IF nLineNum > 0 .AND. nLineLen > 0 .AND. nLineLen <= MAX_WIDTH
 
 			IF nTabSize > nLineLen
@@ -283,16 +296,18 @@ PUBLIC CLASS XSharp.MemoHelpers
 							nSrc ++
 							nDes ++
 					END CASE
-				ENDDO
+                ENDDO
+                dOffset += 1
+            ELSE
+                dOffset := 0
+                if !lJustCheck
+                    oBuilder:Clear()
+                endif
 			ENDIF
 		ENDIF
-
 		IF lJustCheck
 			cRet := NULL
 		ELSE
-			IF oBuilder:Length < nLineLen
-				oBuilder:Append( ' ',  (INT) nLineLen - oBuilder:Length )
-			ENDIF
 			cRet := oBuilder:ToString()
 		ENDIF
 
@@ -318,7 +333,10 @@ FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset AS DWORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline3/*" />
 FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 	LOCAL cResult AS STRING
-	LOCAL iOffSet := (INT) ptrN AS INT
+    LOCAL iOffSet := (INT) ptrN AS INT
+    IF (cString == NULL) .OR. cString:Length == 0
+        RETURN ""
+    ENDIF
 	IF ptrN < cString:Length
 		cResult := Trim(MemoHelpers.MLine( cString , (INT) dwLine , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
 	ELSE
@@ -329,16 +347,18 @@ FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoline/*" />
-FUNCTION MemoLine(cString AS STRING, nLineLength := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNumber := 1 AS DWORD,;
-nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
-	LOCAL dPos := 0 AS INT
-	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
+FUNCTION MemoLine(cString AS STRING, nLineLength := 0xFFFFFFFF AS DWORD, nLineNumber := 1 AS DWORD,;
+    nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
+    LOCAL dPos := 0 AS INT
+    LOCAL iLineLength as LONG
+  IF nLineLength == 0xFFFFFFFF
+        iLineLength := MemoHelpers.STD_MEMO_WIDTH
+    ELSE
+        iLineLength := (INT) nLineLength
+    ENDIF
+	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, iLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoread/*" />
-/// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
-/// Use MemoReadBinary() in stead .</remarks>
-/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
-/// <seealso cref='MemoWrit' >MemoWrit</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoRead/*" />
 FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
@@ -363,15 +383,8 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	RETURN cResult
 
 
-/// <summary>
-/// Return the contents of a binary file as an array of bytes.
-/// Use this function in stead of MemoRead() to read the contents of a binary file.
-/// </summary>
-/// <param name="cFile">The name of the binary file to read from disk, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed</param>
-/// <returns>The file as an array of bytes</returns>
-/// <seealso cref='MemoRead' >MemoRead</seealso>
-/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoReadBinary/*" />
 FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	LOCAL bResult AS BYTE[]
 	TRY
@@ -388,8 +401,7 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	END TRY
 	RETURN bResult
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />
-/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoWrit/*" />
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
@@ -413,20 +425,8 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 FUNCTION MemoWrit(cFileName AS STRING,cString AS BYTE[]) AS LOGIC
     RETURN MemoWritBinary(cFileName, cString)
 
-/// <summary>
-/// Write binary data  o a disk file. Use this function for binary files instead of MemoWrit(). This day may be read with MemoReadBinary().
-/// </summary>
-/// <param name="cFile">The name of the target disk file, including an optional drive, directory, and extension.
-/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and
-/// directory as part of the file name.  No extension is assumed.
-/// If the file does not exist, it is created.  If it exists, this function attempts to open the file in exclusive
-/// mode and, if successful, the file is overwritten without warning or error.  If access is denied because,
-/// for example, another process is using the file, MemoWrit() returns FALSE and NetErr() is set to TRUE.</param>
-/// <param name="bData">The contents to write</param>
-/// <returns>TRUE if the writing operation is successful; otherwise, FALSE</returns>
-/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
-/// <seealso cref='MemoWrit' >MemoWrit</seealso>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/MemoWritBinary/*" />
 FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
@@ -442,7 +442,7 @@ FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlpos2/*" />
 FUNCTION MLPos2(cString AS STRING,dwLine AS DWORD) AS DWORD
-	LOCAL nIndex := 0 AS INT
+    LOCAL nIndex := 0 AS INT
 	MemoHelpers.MLine( cString, (INT)  dwLine, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
 	RETURN (DWORD) nIndex
 

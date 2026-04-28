@@ -1,0 +1,100 @@
+// VFPEditBoxText.xh
+//
+// VFP EditBox Control properties and methods
+// EditBox-specific header WITHOUT InputMask (EditBox does not support InputMask)
+// This header file provides the standard interface for EditBox
+//
+// NOTE: InputMask is NOT supported on EditBox per official VFP documentation.
+//       EditBox supports Format for display formatting only.
+//       For TextBox with InputMask support, use VFPTextBoxText.xh instead.
+//
+
+#ifndef VFP_EDITBOX_TEXT_XH
+#define VFP_EDITBOX_TEXT_XH
+
+// ============================================================================
+// PRIVATE FIELDS - Backing storage for VFP-specific properties
+// ============================================================================
+
+PRIVATE _vfpValue AS USUAL
+PRIVATE _format AS STRING
+
+// ============================================================================
+// PROPERTIES - VFP EditBox API
+// ============================================================================
+
+/// <summary>Value - Multi-type value property (USUAL)</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Control value")];
+[System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)];
+PROPERTY Value AS USUAL
+    GET
+        RETURN SELF:_vfpValue
+    END GET
+    SET
+        IF !IsNil(VALUE)
+            SELF:_vfpValue := VALUE
+            SELF:Text := VALUE:ToString()
+        ENDIF
+    END SET
+END PROPERTY
+
+/// <summary>Format - Display format string</summary>
+/// <remarks>
+/// Applies To: EditBox Control
+/// Data Type: Character
+/// Specifies the picture/format expression for displaying formatted output.
+/// 
+/// Note: EditBox does NOT support InputMask. Use Format for display formatting only.
+/// </remarks>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Display format")];
+[System.ComponentModel.DefaultValue("")];
+PROPERTY Format AS STRING
+    GET
+        RETURN SELF:_format
+    END GET
+    SET
+        SELF:_format := Upper(VALUE)
+    END SET
+END PROPERTY
+
+/// <summary>SelStart - Selection start position (0-based)</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Selection start position")];
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY SelStart AS INT
+    GET
+        RETURN SELF:SelectionStart
+    END GET
+    SET
+        SELF:SelectionStart := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>SelLength - Length of selection</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Selection length")];
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY SelLength AS INT
+    GET
+        RETURN SELF:SelectionLength
+    END GET
+    SET
+        SELF:SelectionLength := VALUE
+    END SET
+END PROPERTY
+
+// ============================================================================
+// METHODS - VFP EditBox API
+// ============================================================================
+
+/// <summary>
+/// Select all text in the control
+/// </summary>
+// BUG-01 FIX: Was SELF:SelectAll() — infinite recursion. Changed to SUPER:SelectAll()
+PUBLIC METHOD SelectAll() AS VOID STRICT
+    SUPER:SelectAll()
+END METHOD
+
+#endif

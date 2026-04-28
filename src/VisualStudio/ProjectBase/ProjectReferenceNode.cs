@@ -556,7 +556,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Defines whether this node is valid node for painting the refererence icon.
+        /// Defines whether this node is valid node for painting the reference icon.
         /// </summary>
         /// <returns></returns>
         protected override bool CanShowDefaultIcon()

@@ -16,6 +16,7 @@
     <EnforceSelf>True</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <TargetFramework>net8.0</TargetFramework>
+    <IncludePaths>$(ProjectDir)</IncludePaths>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management">
@@ -26,13 +27,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
     <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Name>XSharp.RT.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

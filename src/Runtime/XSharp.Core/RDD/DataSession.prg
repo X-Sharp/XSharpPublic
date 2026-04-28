@@ -23,7 +23,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
     PRIVATE STATIC sessions    AS List<DataSession>
     [SD.DebuggerBrowsable(SD.DebuggerBrowsableState.Collapsed)] ;
     PROTECTED STATIC timer       AS System.Timers.Timer
-    /// <summary>List of all open DataSessions</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.Sessions/*" />
     PUBLIC STATIC PROPERTY Sessions   AS DataSession[] GET sessions:ToArray()
     #endregion
     #region Static methods
@@ -36,8 +36,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         timer:Elapsed += OnTimer
         timer:AutoReset := TRUE
 
-    /// <summary>Add a DataSession to the list of open datasessions</summary>
-    /// <param name="session">The DataSession to add </param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.Add/*" />
     STATIC METHOD Add(session as DataSession) AS VOID
         BEGIN LOCK sessions
             sessions:Add(session)
@@ -46,8 +45,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
             endif
         END LOCK
 
-    /// <summary>Remove a DataSession from the list of open datasessions</summary>
-    /// <param name="session">The DataSession to remove </param>
+     /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.Close/*" />
      STATIC METHOD Close(session as DataSession) AS VOID
          var old := RuntimeState.SetDataSession(session)
          TRY
@@ -114,13 +112,12 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
     #endregion
     #region Properties
     PRIVATE PROPERTY Thread as Thread AUTO
-    /// <summary>The unique id for the datasession</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.Id/*" />
     PUBLIC PROPERTY Id   AS INT AUTO GET PRIVATE SET
-    /// <summary>The name for the datasession.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.Name/*" />
     PUBLIC PROPERTY Name as STRING AUTO
     #endregion
-    /// <summary>Construct a new datasession</summary>
-    /// <param name="cName">The name for this datasession.</param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.ctor/*" />
     PUBLIC CONSTRUCTOR(cName as STRING)
         SUPER()
         SELF:Name   := cName
@@ -128,9 +125,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         SELF:Thread := Thread.CurrentThread
         DataSession.Add(SELF)
 
-    /// <summary>Construct a new datasession</summary>
-    /// <param name="cName">The name for this datasession.</param>
-    /// <param name="nId">The ID for the datasession.</param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DataSession.ctor_2/*" />
     PUBLIC CONSTRUCTOR(nId AS LONG, cName as STRING)
         SUPER()
         SELF:Name   := cName

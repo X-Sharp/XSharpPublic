@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -478,7 +478,7 @@ ENUM DbOrder_Info
 
     // 53-59
     /* These shouldn't need an open table */
-    /// <summary>The following numbers are reserved but not implemented yet.</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbOrder_Info.DBOI_STRICTREAD/*" />
     MEMBER DBOI_STRICTREAD   := 60  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
     MEMBER DBOI_OPTIMIZE     := 61  /* Flag for whether to use query optimization             */
     MEMBER DBOI_AUTOOPEN     := 62  /* Flag for automatically opening structural indexes      */
@@ -611,21 +611,21 @@ ENUM DbFieldType AS BYTE
 
     // other types for Harbour will be supported later
     /*
-    /// <summary>'+' = AutoInc, 4 bytes</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.AutoIncrement/*" />
     MEMBER AutoIncrement	:= 43
-    /// <summary>'2'	2 byte int, autoInc</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.Integer2/*" />
     MEMBER Integer2		:= 50
-    /// <summary>'4'	4 byte int, autoInc</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.Integer4/*" />
     MEMBER Integer4		:= 52
-    /// <summary>'8'  Same as 'B'</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.Double8/*" />
     MEMBER Double8		:= 56
-    /// <summary>'=' = ModTime, 8 bytes </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.ModTime/*" />
     MEMBER ModTime		:= 61
-    /// <summary>'@' = Timestamp 8 bytes</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.TimeStamp/*" />
     MEMBER TimeStamp		:= 64
-    /// <summary>'Z'	8 byte Currency</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.CurrencyDouble/*" />
     MEMBER CurrencyDouble	:= 90
-    /// <summary>'^' = RowVer, 8 bytes  </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbFieldType.RowVer/*" />
     MEMBER RowVer			:= 94
     */
 END	 ENUM
@@ -779,10 +779,7 @@ ENUM DbTransInfoFlags
 END ENUM
 
 
-/// <include file="XSharp.CoreDefines.xml" path="members/DbNotificationType/*" />
-/// <seealso cref="IDbNotify"/>
-/// <seealso cref="DbRegisterClient"/>
-/// <seealso cref="DbUnRegisterClient"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DbNotificationType/*" />
 Enum DbNotificationType
 /// <include file="XSharp.CoreDefines.xml" path="members/DbNotificationType.FileCreate/*" />
     MEMBER FileCreate

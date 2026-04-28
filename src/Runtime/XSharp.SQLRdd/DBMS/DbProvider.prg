@@ -331,6 +331,17 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// </remarks>
     virtual property FalseLiteral            as string => "false"
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// The default implementation returns the value "@"
+    /// </remarks>
+    virtual property ParameterPrefix        as string => "@"
+
+    /// <summary>
+    /// SQL statement to get the current datetime/timestamp
+    /// </summary>
+    virtual property CurrentDateTime        as string => "CURRENT_TIMESTAMP"
+
 
 #endregion
 

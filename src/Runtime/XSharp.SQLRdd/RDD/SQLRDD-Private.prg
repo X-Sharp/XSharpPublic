@@ -644,6 +644,72 @@ partial class SQLRDD
         SELF:_CheckEofBof()
         RETURN TRUE
 
+    PRIVATE METHOD LockRecNo(lockInfo ref DbLockInfo) AS INT
+        var lockRecNo := 0
+        if lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File
+            if lockInfo:RecId != null .and. lockInfo:RecId is int
+                lockRecNo := (int)lockInfo:RecId
+            else
+                lockRecNo := (int)self:RecNo
+            endif
+        endif
+        RETURN lockRecNo
+
+    /// <summary>
+    /// Check if someone else (or me) has the lock
+    /// </summary>
+    /// <param name="lockInfo"></param>
+    /// <param name="messageLocked"></param>
+    /// <param name="myLock"></param>
+    /// <param name="otherLock"></param>
+    PRIVATE METHOD CheckLock(lockInfo AS DbLockInfo, messageLocked AS StringBuilder, myLock REF LOGIC, otherLock REF LOGIC) AS VOID
+        var sb := StringBuilder{}
+        sb:AppendLine("select " + self:Connection:XsLockColumnList())
+        sb:AppendLine("from " + SqlDbConnection.LockTableName)
+        sb:AppendLine("where tablename = "+self:Provider:ParameterPrefix+"p1")
+        if lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File
+            sb:AppendLine(" AND (recno = "+self:Provider:ParameterPrefix+"p2 OR recno = 0)")
+        endif
+
+        using var cmdCheckLock := SqlDbCommand{"CheckLock", self:Connection, false}
+        cmdCheckLock:CommandText := sb:ToString()
+        cmdCheckLock:AddParameter(self:Provider:ParameterPrefix+"p1",_oTd:RealName)
+        if lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File
+            if lockInfo:RecId != null .and. lockInfo:RecId is int
+                cmdCheckLock:AddParameter(self:Provider:ParameterPrefix+"p2",(int)lockInfo:RecId)
+            else
+                lockInfo:RecId := self:RecNo
+                cmdCheckLock:AddParameter(self:Provider:ParameterPrefix+"p2",(int)self:RecNo)
+            endif
+        endif
+
+        using var reader := cmdCheckLock:ExecuteReader()
+        do while reader:Read()
+            var recNoTemp := (int)reader["recno"]
+            var station := reader["station"]:ToString()
+            var username := reader["username"]:ToString()
+            var connectionId := reader["connectionid"]:ToString()
+            var workarea := (int)reader["workarea"]
+            var threadId := (int)reader["threadid"]
+
+            if (station = (Environment.MachineName ?? String.Empty) .and. ;
+                    username = (Environment.UserName ?? String.Empty) .and. ;
+                    connectionId = self:Connection:ConnectionId:ToString() .and. ;
+                    workarea = (int)super:Area .and. ;
+                    threadId = System.Threading.Thread.CurrentThread.ManagedThreadId)
+                if (lockInfo:Method = XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = 0) .or. ;
+                    (lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = SELF:LockRecNo(lockInfo))
+                        myLock := true
+                endif
+            else
+                myLock |= false
+                var lockType := iif(recNoTemp = 0, "file", "record")
+                messageLocked:AppendLine(i"User {username} on station {station} has the {lockType}lock")
+                otherLock := true
+            endif
+        end do
+        reader:Dispose()
+
 end class
 end namespace
 

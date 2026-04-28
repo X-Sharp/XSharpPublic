@@ -39,45 +39,14 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
+
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
-                VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
                 VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
-                VS.Events.SolutionEvents.OnAfterMergeSolution += SolutionEvents_OnAfterMergeSolution;
-                VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
 
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
-                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
-                VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
-                VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
-                VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
-                //VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
-
-                //VS.Events.SolutionEvents.OnAfterOpenFolder += SolutionEvents_OnAfterOpenFolder;
-                //VS.Events.SolutionEvents.OnBeforeCloseFolder += SolutionEvents_OnBeforeCloseFolder;
 
                 VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
-                //VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
-                //VS.Events.DocumentEvents.Saved += DocumentEvents_Saved;
-                //VS.Events.DocumentEvents.BeforeDocumentWindowShow += DocumentEvents_BeforeDocumentWindowShow;
-                //VS.Events.DocumentEvents.AfterDocumentWindowHide += DocumentEvents_AfterDocumentWindowHide;
-
-                VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
-                //VS.Events.ShellEvents.EnvironmentColorChanged   += ShellEvents_EnvironmentColorChanged;
-                //VS.Events.ShellEvents.ShellAvailable += ShellEvents_ShellAvailable;
-
-                VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
-                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
-                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
-
-                VS.Events.BuildEvents.SolutionConfigurationChanged += BuildEvents_SolutionConfigurationChanged;
-                VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged; ;
-                VS.Events.BuildEvents.ProjectBuildDone += BuildEvents_ProjectBuildDone;
-                VS.Events.BuildEvents.ProjectBuildStarted += BuildEvents_ProjectBuildStarted;
-                VS.Events.BuildEvents.ProjectCleanDone += BuildEvents_ProjectCleanDone;
-                VS.Events.BuildEvents.ProjectCleanStarted += BuildEvents_ProjectCleanStarted;
-
 
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
@@ -92,80 +61,10 @@ namespace XSharp.Project
         }
 
 
-
-        #region Build Events
-        private void BuildEvents_ProjectCleanStarted(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Project Clean started: " + project.Name);
-        }
-
-        private void BuildEvents_ProjectCleanDone1(ProjectBuildDoneEventArgs args)
-        {
-            Logger.SingleLine();
-            Logger.Information("Project Build done: " + args.Project.Name + " " + args.IsSuccessful);
-        }
-
-        private void BuildEvents_ProjectCleanDone(ProjectBuildDoneEventArgs args)
-        {
-            Logger.SingleLine();
-            Logger.Information("Project Clean done: " + args.Project.Name + " " + args.IsSuccessful); ;
-        }
-
-        private void BuildEvents_ProjectBuildStarted(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Project Build Started: " + project.Name);
-        }
-
-        private void BuildEvents_ProjectBuildDone(ProjectBuildDoneEventArgs args)
-        {
-            Logger.SingleLine();
-            Logger.Information("Project Build Done: " + args.Project.Name + " " + args.IsSuccessful);
-        }
-
-        private void BuildEvents_ProjectConfigurationChanged(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Project Configuration changed: " + project.Name);
-        }
-
-        private void BuildEvents_SolutionConfigurationChanged()
-        {
-            Logger.SingleLine();
-            Logger.Information("Solution Configuration changed");
-        }
-        #endregion
-        private void DocumentEvents_Opened(string doc)
-        {
-            Logger.Information("Opened document: " + doc ?? "");
-        }
-
         #region Solution Events
-        string solutionName = "";
-        private void SolutionEvents_OnAfterMergeSolution()
-        {
-            Logger.SingleLine();
-            Logger.Information("After Merge solution");
-        }
-        private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
-        {
-            Logger.SingleLine();
-            Logger.Information("Opening Solution: " + solutionFileName ?? "");
-            Logger.SingleLine();
-            solutionName = solutionFileName;
-            if (!string.IsNullOrEmpty(solutionName) && File.Exists(solutionName))
-            {
-                XSolution.Open(solutionName);
-            }
-        }
 
         private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
-            Logger.SingleLine();
-            Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
-            Logger.SingleLine();
-            solutionName = solution?.FullPath;
             foreach (var project in XSharpProjectNode.AllProjects)
             {
                 if (project.HasIncompleteReferences)
@@ -173,22 +72,10 @@ namespace XSharp.Project
                     project.FixReferences();
                 }
             }
-            XSolution.AfterOpen();
-        }
-        private void SolutionEvents_OnAfterCloseSolution()
-        {
-            XSolution.IsClosing = false;
-            Logger.SingleLine();
-            Logger.Information("Closed solution: " + solutionName);
-            Logger.SingleLine();
-            solutionName = "";
-            XSharpXMLDocTools.Close();
         }
 
         private void SolutionEvents_OnBeforeCloseSolution()
         {
-            XSolution.IsClosing = true;
-            XSolution.Close();
             // close OUR documents that are opened in design mode.
             if (!XSolution.HasProjects)
             {
@@ -210,9 +97,6 @@ namespace XSharp.Project
                 }
             });
 
-            Logger.SingleLine();
-            Logger.Information("Closing solution: " + solutionName);
-            Logger.SingleLine();
 #if !DEV17
             XSharpProjectFactory.InvalidProjectFiles.Clear();
 #endif
@@ -229,57 +113,12 @@ namespace XSharp.Project
         #region Project Events
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
-            Logger.SingleLine();
-            var ext = Path.GetExtension(projectFileName);
-            if (!string.IsNullOrEmpty(ext))
-                Logger.Information("Opening project: " + projectFileName ?? "");
-            else
-                Logger.Information("Opening folder: " + projectFileName ?? "");
-            Logger.SingleLine();
-            if (IsXSharpProject(projectFileName))
+            if (XSharpModel.XProject.IsXSharpProject(projectFileName))
             {
                 checkProjectFile(projectFileName);
             }
         }
-        private void SolutionEvents_OnAfterOpenProject(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Opened project: " + project.FullPath ?? "");
-            Logger.SingleLine();
-        }
-        private void SolutionEvents_OnAfterLoadProject(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Loaded project: " + project.FullPath ?? "");
-            Logger.SingleLine();
-        }
 
-        private void SolutionEvents_OnBeforeUnloadProject(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Unloading project: " + project.FullPath ?? "");
-            Logger.SingleLine();
-        }
-
-        private void SolutionEvents_OnBeforeCloseProject(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Closing project: " + project.FullPath ?? "");
-            Logger.SingleLine();
-        }
-
-        private void SolutionEvents_OnAfterRenameProject(CVT.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Renamed project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
-        }
-        bool IsXSharpProject(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-                return false;
-            return string.Equals(Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
-        }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
         const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
@@ -400,6 +239,7 @@ namespace XSharp.Project
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            CommandEditProjectFile.CloseProjectEditWindows();
             SaveDesignerWindows();
             return CommandProgression.Continue;
         }
@@ -602,7 +442,7 @@ namespace XSharp.Project
             // Remove document from OrphanedFilesProject
             // So it can be opened in normal project afterwards
             // when possible
-            if (!IsXSharpProject(document))
+            if (!XSharpModel.XProject.IsXSharpProject(document))
             {
                 Logger.Information("Languageservice.DocumentEvents_Closed " + document ?? "(none)");
                 var xfile = XSolution.FindFile(document);
@@ -613,37 +453,6 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
-
-        #region Shell Events
-        private void ShellEvents_ShutdownStarted()
-        {
-            XSolution.IsClosing = true;
-            XSolution.IsShuttingDown = true;
-            XSolution.Close();
-
-            Logger.SingleLine();
-            Logger.Information("Shutdown VS");
-            Logger.SingleLine();
-        }
-        #endregion
-
-
-        #region Build Events
-        public bool IsBuilding => building;
-        bool building;
-        private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
-        {
-            building = true;
-        }
-        private void BuildEvents_SolutionBuildDone(bool result)
-        {
-            building = false;
-        }
-        private void BuildEvents_SolutionBuildCancelled()
-        {
-            building = false;
-        }
         #endregion
 
     }

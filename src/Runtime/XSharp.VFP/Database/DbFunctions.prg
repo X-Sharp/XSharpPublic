@@ -8,10 +8,10 @@
 // This also contains the push / pop code to allow access to WITH variables outside of the
 // function where they are declared.
 
-USING XSharp.RDD 
+USING XSharp.RDD
 USING System.Collections.Generic
 USING XSharp.RDD.Support
-
+USING XSharp.Internal
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbgetprop/*" />
 /// <seealso cref="DbSetProp" />
 /// <seealso cref="DbcDatabase" />
@@ -87,15 +87,23 @@ FUNCTION DbAlias () AS STRING
 
 #pragma options("az", ON)
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
+[FoxArrayInputParameter(1)];
 [FoxProFunction("ADATABASES", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION ADatabases( ArrayName AS ARRAY) AS DWORD
+FUNCTION ADatabases(ArrayName AS USUAL) AS DWORD
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray var aFox
+        aFoxArray := aFox
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
     local result := (DWORD) DbcManager.Databases:Count AS DWORD
     IF result > 0
-        ArrayName := __FoxRedim(ArrayName, result, 2 )
+        aFoxArray := __FoxRedim(aFoxArray, result, 2 )
         LOCAL nDb := 0 as DWORD
         FOREACH var db in DbcManager.Databases
-            ArrayName[nDb,0]   := db:Name
-            ArrayName[nDb,1]   := db:FileName
+            aFoxArray[nDb,0]   := db:Name
+            aFoxArray[nDb,1]   := db:FileName
             nDb += 1
         NEXT
     ENDIF
@@ -271,7 +279,8 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
         __DbPopOptimize(lNoOptimize, lOldOpt)
     END TRY
 
-FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
+[FoxArrayInputParameter(1)];
+FUNCTION DbCopyToArray(uSource AS USUAL, aFieldList := NIL AS USUAL, cbForCondition := NIL AS USUAL, cbWhileCondition := NIL AS USUAL, nNext := NIL AS USUAL,nRecord := NIL AS USUAL, lRest := NIL AS USUAL, lNoOptimize := NIL AS USUAL) AS ARRAY strict
     // COPY TO ARRAY doed not have a MEMO keyword, so automatically include memo fields
     VAR aFields := __BuildFieldList(aFieldList, TRUE)
     LOCAL aResult := {} AS ARRAY
@@ -316,7 +325,7 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
     cbAction :=  {|| AAdd(aResult, DbCopyToArraySingleRecord(aFields)), ALen(aResult) < nRows }
     DbEval( cbAction, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize )
     IF aSource != NULL_ARRAY
-        nColumns  := Math.Min(nColumns, FCount())
+        nColumns  := Math.Min(nColumns, (DWORD) aFields:Count)
         IF aFox != NULL
             __FoxFillArray(aFox, NIL)
         ELSE
@@ -337,7 +346,20 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
         ENDIF
         aResult := aSource
     ELSE
-        NOP
+        VAR nResRows := ALen(aResult)
+        IF nResRows > 0
+            nColumns := (DWORD) aFields:Count
+            aSource := __FoxArray{nResRows, nColumns}
+            FOR VAR nRow := 1 TO nResRows
+                VAR aRec := aResult[nRow]
+                FOR VAR nCol := 1 TO nColumns
+                    aSource[nRow, nCol] := aRec[nCol]
+                NEXT
+            NEXT
+            aResult := aSource
+        ELSE
+            aResult := __FoxArray{0}
+        ENDIF
     ENDIF
     RETURN aResult
 
@@ -373,14 +395,18 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
                 THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_SUBARRAY_TOO_SMALL ) , 1, {u})
             ENDIF
             DbAppend()
-            // Todo Evaluate FOR clause
             FOR VAR i := 1 to aFields:Count
                 __FieldSet(aFields[i-1], aElement[i])
             NEXT
             IF oForCondition != NULL
-                LOCAL lResult as LOGIC
-                lResult := (LOGIC) oForCondition:EvalBlock()
-                IF ! lResult
+                // Evaluate the FOR condition and if it is false,
+                // refresh the buffer to remove the appended record
+                LOCAL uResult as USUAL
+                uResult := oForCondition:EvalBlock()
+                IF ! IsLogic(uResult)
+                    THROW Error.ArgumentError(__FUNCTION__, nameof(cbForCondition), __VfpStr(VFPErrors.VFP_FOR_CONDITION_MUST_BE_LOGIC), 3, {uResult})
+                ENDIF
+                IF ! uResult
                     DbBuffRefresh()
                 ENDIF
             ENDIF

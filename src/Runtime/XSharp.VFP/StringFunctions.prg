@@ -12,6 +12,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Globalization
+USING System.Text.RegularExpressions
 
 INTERNAL STATIC CLASS PathHelpers
     INTERNAL STATIC PROPERTY PathChar AS STRING AUTO
@@ -715,3 +716,354 @@ INTERNAL STATIC CLASS StrConvHelpers
 
 END CLASS
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/normalize/*" />
+[FoxProFunction("NORMALIZE", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.Low)];
+FUNCTION Normalize( cExpression AS STRING) AS STRING
+    IF String.IsNullOrEmpty(cExpression)
+        RETURN ""
+    ENDIF
+
+    VAR sb := StringBuilder{cExpression:Length}
+
+    VAR lInString1 := FALSE // Single quotes '
+    VAR lInString2 := FALSE // Double quotes "
+    VAR lInString3 := FALSE // Brackets [ ]
+
+    VAR nLen := cExpression:Length
+    LOCAL cChar AS CHAR
+    LOCAL cNext AS CHAR
+
+    FOR VAR i := 0 TO nLen - 1
+        cChar := cExpression[i]
+        cNext := IIF(i < nLen - 1, cExpression[i+1], c'0')
+
+        IF !lInString1 .AND. !lInString2 .AND. !lInString3
+            IF cChar == c'\''
+                lInString1 := TRUE
+                sb:Append(cChar)
+                LOOP
+            ELSEIF cChar == c'"'
+                lInString2 := TRUE
+                sb:Append(cChar)
+                LOOP
+            ELSEIF cChar == c'['
+                lInString3 := TRUE
+                sb:Append(cChar)
+                LOOP
+            ENDIF
+
+            IF cChar == c'-' .AND. cNext == c'>'
+                sb:Append('.')
+                i++
+                LOOP
+            ENDIF
+
+            sb:Append(Char.ToUpper(cChar))
+        ELSE
+            sb:Append(cChar)
+            IF lInString1 .AND. cChar == c'\''
+                lInString1 := FALSE
+            ELSEIF lInString2 .AND. cChar == c'"'
+                lInString2 := FALSE
+            ELSEIF lInString3 .AND. cChar == c']'
+                lInString3 := FALSE
+            ENDIF
+        ENDIF
+    NEXT
+
+    VAR cResult := sb:ToString()
+
+    LOCAL evalLogics AS MatchEvaluator
+    evalLogics := { m as Match =>
+        IF m:Groups[(INT)1]:Success
+            RETURN m:Groups[(INT)1]:Value
+        ENDIF
+        RETURN "." + m:Groups[(INT)2]:Value + "."
+    }
+
+    VAR patternLogics := "(""[^""]*""|'[^']*'|\[[^\]]*\])|(?<!\.)\b(AND|OR|NOT)\b(?!\.)"
+    cResult := Regex.Replace(cResult, patternLogics, evalLogics)
+
+    LOCAL evalSpaces AS MatchEvaluator
+    evalSpaces := {m AS Match =>
+        IF m:Groups[(INT)1]:Success
+            RETURN m:Groups[(INT)1]:Value
+        ENDIF
+
+        IF m:Groups[(INT)2]:Success
+            RETURN m:Groups[(INT)2]:Value
+        ELSEIF m:Groups[(INT)3]:Success
+            RETURN m:Groups[(INT)3]:Value
+        ELSE
+            RETURN m:Groups[(INT)4]:Value
+        ENDIF
+    }
+
+    VAR patternSpaces := "(""[^""]*""|'[^']*'|\[[^\]]*\])|\s+([=<>!])\s+|\s+([=<>!])|([=<>!])\s+"
+    cResult := Regex.Replace(cResult, patternSpaces, evalSpaces)
+
+    RETURN cResult
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/bintoc/*" />
+[FoxProFunction("BINTOC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION BinToC(nExpression AS USUAL, eFlags := "" AS USUAL) AS STRING
+    LOCAL cFlags := "" AS STRING
+    IF IsNumeric(eFlags)
+        cFlags := AsString(eFlags)
+    ELSEIF IsString(eFlags)
+        cFlags := (STRING) eFlags
+    ENDIF
+    cFlags := cFlags:ToUpper()
+
+    LOCAL lReverse := cFlags:Contains("R") AS LOGIC
+    LOCAL lNoSignToggle := cFlags:Contains("S") AS LOGIC
+    LOCAL nSize := 4 AS INT
+    LOCAL cType := c'I' AS CHAR
+
+    IF cFlags:Contains("1")
+        nSize := 1
+    ELSEIF cFlags:Contains("2")
+        nSize := 2
+    ELSEIF cFlags:Contains("4")
+        nSize := 4
+    ELSEIF cFlags:Contains("8")
+        nSize := 8
+        cType := IIF(nExpression IS Currency, c'Y', c'B')
+    ELSEIF cFlags:Contains("F")
+        nSize := 4
+        cType := c'F'
+    ELSEIF cFlags:Contains("B")
+        nSize := 8
+        cType := c'B'
+    ENDIF
+
+    LOCAL aBytes := <BYTE>{} AS BYTE[]
+    SWITCH cType
+    CASE c'I'
+        IF nSize == 1
+            LOCAL nVal1 AS SByte
+            nVal1 := (SByte) (INT) nExpression
+            IF !lNoSignToggle
+                nVal1 := (SByte) (nVal1 ^ 0x80)
+            ENDIF
+            aBytes := <BYTE>{ (BYTE) nVal1 }
+        ELSEIF nSize == 2
+            LOCAL nVal2 AS SHORT
+            nVal2 := (SHORT) (INT) nExpression
+            IF !lNoSignToggle
+                nVal2 := (SHORT) ( (WORD)nVal2 ^ 0x8000)
+            ENDIF
+            aBytes := BitConverter.GetBytes(nVal2)
+            IF BitConverter.IsLittleEndian
+                Array.Reverse(aBytes)
+            ENDIF
+        ELSEIF nSize == 4
+            LOCAL nVal4 AS INT
+            nVal4 := (INT) nExpression
+            IF !lNoSignToggle
+                nVal4 := (INT) ( (DWORD)nVal4 ^ 0x80000000)
+            ENDIF
+            aBytes := BitConverter.GetBytes(nVal4)
+            IF BitConverter.IsLittleEndian
+                Array.Reverse(aBytes)
+            ENDIF
+        ELSE // 8 bytes
+            LOCAL nVal8 AS INT64
+            nVal8 := (INT64) nExpression
+            aBytes := BitConverter.GetBytes(nVal8)
+            IF BitConverter.IsLittleEndian
+                Array.Reverse(aBytes)
+            ENDIF
+            IF !lNoSignToggle
+                aBytes[1] := (BYTE) _XOR(aBytes[1], 0x80)
+            ENDIF
+        ENDIF
+    CASE c'Y'
+        LOCAL nValY AS INT64
+        nValY := (INT64) ( (DECIMAL) nExpression * 10000m )
+        aBytes := BitConverter.GetBytes(nValY)
+        IF BitConverter.IsLittleEndian
+            Array.Reverse(aBytes)
+        ENDIF
+        IF !lNoSignToggle
+            aBytes[1] := (BYTE) _XOR(aBytes[1], 0x80)
+        ENDIF
+    CASE c'F'
+        LOCAL rValF AS REAL4
+        rValF := (REAL4) nExpression
+        aBytes := BitConverter.GetBytes(rValF)
+        IF BitConverter.IsLittleEndian
+            Array.Reverse(aBytes)
+        ENDIF
+        IF !lNoSignToggle
+            IF _AND(aBytes[1], 0x80) != 0
+                FOR VAR i := 1 TO 4
+                    aBytes[i] := (BYTE) ~aBytes[i]
+                NEXT
+            ELSE
+                aBytes[1] |= 0x80
+            ENDIF
+        ENDIF
+    CASE c'B'
+        LOCAL rValB AS REAL8
+        rValB := (REAL8) nExpression
+        aBytes := BitConverter.GetBytes(rValB)
+        IF BitConverter.IsLittleEndian
+            Array.Reverse(aBytes)
+        ENDIF
+        IF !lNoSignToggle
+            IF _AND(aBytes[1], 0x80) != 0
+                FOR VAR i := 1 TO 8
+                    aBytes[i] := (BYTE) ~aBytes[i]
+                NEXT
+            ELSE
+                aBytes[1] |= 0x80
+            ENDIF
+        ENDIF
+    END SWITCH
+
+    IF lReverse
+        Array.Reverse(aBytes)
+    ENDIF
+
+    LOCAL nLen := aBytes:Length AS INT
+    LOCAL aChars := CHAR[]{nLen} AS CHAR[]
+    FOR VAR i := 1 TO nLen
+        aChars[i] := (CHAR) aBytes[i]
+    NEXT
+
+    RETURN STRING{aChars}
+END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/ctobin/*" />
+[FoxProFunction("CTOBIN", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION CToBin (cExpression AS STRING, cFlags := "" AS USUAL) AS USUAL
+    LOCAL cFlagStr := "" AS STRING
+    IF IsNumeric(cFlags)
+        cFlagStr := AsString(cFlags)
+    ELSEIF IsString(cFlags)
+        cFlagStr := (STRING) cFlags
+    ENDIF
+    cFlagStr := cFlagStr:ToUpper()
+
+    LOCAL lReverse := cFlagStr:Contains("R") AS LOGIC
+    LOCAL lNoSignToggle := cFlagStr:Contains("S") AS LOGIC
+    LOCAL nSize := (INT) cExpression:Length AS INT
+    LOCAL cType := c'I' AS CHAR
+
+    IF cFlagStr:Contains("1")
+        nSize := 1 ; cType := c'I'
+    ELSEIF cFlagStr:Contains("2")
+        nSize := 2 ; cType := c'I'
+    ELSEIF cFlagStr:Contains("4")
+        nSize := 4 ; cType := c'I'
+    ELSEIF cFlagStr:Contains("8")
+        nSize := 8 ; cType := IIF(cFlagStr:Contains("Y"), c'Y', c'B')
+    ELSEIF cFlagStr:Contains("F")
+        nSize := 4 ; cType := c'F'
+    ELSEIF cFlagStr:Contains("B")
+        nSize := 8 ; cType := c'B'
+    ELSEIF cFlagStr:Contains("Y")
+        nSize := 8 ; cType := c'Y'
+    ELSE
+        SWITCH nSize
+        CASE 4
+            cType := c'I'
+        CASE 8
+            cType := c'B'
+        END SWITCH
+    ENDIF
+
+    LOCAL nMax := Math.Min(nSize, (INT)cExpression:Length) AS INT
+    LOCAL aBytes := BYTE[]{nSize} AS BYTE[]
+
+    FOR VAR i := 1 TO nMax
+        aBytes[i] := (BYTE) cExpression[i-1]
+    NEXT
+
+    IF lReverse
+        Array.Reverse(aBytes)
+    ENDIF
+
+    SWITCH cType
+    CASE c'I'
+        IF nSize == 1
+            LOCAL nVal1 AS SByte
+            nVal1 := (SByte) aBytes[1]
+            IF !lNoSignToggle
+                nVal1 := (SByte) (nVal1 ^ 0x80)
+            ENDIF
+            RETURN (INT) nVal1
+        ELSEIF nSize == 2
+            IF BitConverter.IsLittleEndian
+                Array.Reverse(aBytes)
+            ENDIF
+            LOCAL nVal2 AS SHORT
+            nVal2 := BitConverter.ToInt16(aBytes, 0)
+            IF !lNoSignToggle
+                nVal2 := (SHORT) ( (WORD)nVal2 ^ 0x8000)
+            ENDIF
+            RETURN (INT) nVal2
+        ELSEIF nSize == 4
+            IF BitConverter.IsLittleEndian
+                Array.Reverse(aBytes)
+            ENDIF
+            LOCAL nVal4 AS INT
+            nVal4 := BitConverter.ToInt32(aBytes, 0)
+            IF !lNoSignToggle
+                nVal4 := (INT) ( (DWORD)nVal4 ^ 0x80000000)
+            ENDIF
+            RETURN nVal4
+        ELSE // 8 bytes
+            IF !lNoSignToggle
+                aBytes[1] := (BYTE) _XOR(aBytes[1], 0x80)
+            ENDIF
+            IF BitConverter.IsLittleEndian
+                Array.Reverse(aBytes)
+            ENDIF
+            LOCAL nVal8 AS INT64
+            nVal8 := BitConverter.ToInt64(aBytes, 0)
+            RETURN nVal8
+        ENDIF
+    CASE c'Y'
+        IF !lNoSignToggle
+            aBytes[1] := (BYTE) _XOR(aBytes[1], 0x80)
+        ENDIF
+        IF BitConverter.IsLittleEndian
+            Array.Reverse(aBytes)
+        ENDIF
+        LOCAL nValY AS INT64
+        nValY := BitConverter.ToInt64(aBytes, 0)
+        RETURN (CURRENCY) ( (DECIMAL) nValY / 10000m )
+    CASE c'F'
+        IF !lNoSignToggle
+            IF _AND(aBytes[1], 0x80) == 0
+                FOR VAR i := 1 TO 4
+                    aBytes[i] := (BYTE) ~aBytes[i]
+                NEXT
+            ELSE
+                aBytes[1] &= 0x7F
+            ENDIF
+        ENDIF
+        IF BitConverter.IsLittleEndian
+            Array.Reverse(aBytes)
+        ENDIF
+        RETURN BitConverter.ToSingle(aBytes, 0)
+    CASE c'B'
+        IF !lNoSignToggle
+            IF _AND(aBytes[1], 0x80) == 0
+                FOR VAR i := 1 TO 8
+                    aBytes[i] := (BYTE) ~aBytes[i]
+                NEXT
+            ELSE
+                aBytes[1] &= 0x7F
+            ENDIF
+        ENDIF
+        IF BitConverter.IsLittleEndian
+            Array.Reverse(aBytes)
+        ENDIF
+        RETURN BitConverter.ToDouble(aBytes, 0)
+    END SWITCH
+
+    RETURN 0
+END FUNCTION

@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
 using stdole;
 
 using System;
@@ -50,7 +49,6 @@ namespace XSharp.Project
     public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsProject5
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
-
         internal static XSharpProjectNode FindProject(string url)
         {
             var file = System.IO.Path.GetFileName(url);
@@ -1155,7 +1153,7 @@ namespace XSharp.Project
                 this.isLoading = false;
                 foreach (var url in this.URLNodes.Keys)
                 {
-                    if (!IsXSharpProjectFile(url) && this.BuildProject != null)
+                    if (!XProject.IsXSharpProject(url) && this.BuildProject != null)
                     {
                         if (this.URLNodes[url] is XSharpFileNode node && !node.IsNonMemberItem)
                         {
@@ -1289,7 +1287,7 @@ namespace XSharp.Project
                         break;
                     case XSharpProjectReferenceNode projref:
                         var url = projref.Url;
-                        if (IsXSharpProjectFile(url))
+                        if (XProject.IsXSharpProject(url))
                         {
                             this.ProjectModel.AddProjectReference(url);
                         }
@@ -1678,7 +1676,7 @@ namespace XSharp.Project
             // XSharpFolderNode
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
-            if (IsXSharpProjectFile(url))
+            if (XProject.IsXSharpProject(url))
             {
                 this.ProjectModel.AddProjectReference(url);
             }
@@ -1746,7 +1744,7 @@ namespace XSharp.Project
             {
                 //
                 // We should remove the external projects entries
-                if (IsXSharpProjectFile(url))
+                if (XProject.IsXSharpProject(url))
                 {
                     this.ProjectModel.RemoveProjectReference(url);
                 }
@@ -1781,17 +1779,6 @@ namespace XSharp.Project
             return base.ReopenItem(itemId, ref editorType, physicalView, ref logicalView, docDataExisting, out frame);
         }
 
-
-        /// <summary>
-        /// Check if fullpath points to a XSharp Project file.
-        /// </summary>
-        /// <param name="fullPath"></param>
-        /// <returns></returns>
-        private bool IsXSharpProjectFile(string fullPath)
-        {
-            return fullPath.EndsWith(".xsproj", StringComparison.OrdinalIgnoreCase)
-                || fullPath.EndsWith(".xsprj", StringComparison.OrdinalIgnoreCase);
-        }
 
         /// <summary>
         /// Check if fullpath points to a file, whose extension ends with "proj" so it might be project file.
@@ -2412,7 +2399,6 @@ namespace XSharp.Project
             // First remove the Navigation Data
             //
             ThreadHelper.ThrowIfNotOnUIThread();
-            Logger.Debug("Close " + this.ProjectFile);
             // CleanUp the CodeModel
             if (projectModel != null)
             {
@@ -3146,20 +3132,23 @@ namespace XSharp.Project
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
+                //case PackageReferences:
                 case Publish:
                 case UserSourceItems:
                 case WindowsXAML:
                 case WindowsXaml:
                 case WPF:
                 case XSharp:
-                case PackageReferences:
-                case DependenciesTree:
-                case DependencyPackageManagement:
                     return true;
+                // If we return true then sometimes builds with solutionwide restores will start very slowly
+                case PackageReferences:
+                    return false;
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
                 case CPS:
+                case DependenciesTree:
+                case DependencyPackageManagement:
                 case DNX:
                 case DotNetCoreWeb:
                 case DynamicFileNesting:

@@ -49,9 +49,7 @@ INTERNAL FUNCTION ClearFoxState as VOID
 RETURN
 
 
-/// <summary>
-/// This event handler is attached to the DialectChanged event of the RuntimeState, to initialize the FoxPro state
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/DialectChanged/*" />
 INTERNAL FUNCTION DialectChanged(oldDialect as XSharpDialect, newDialect as XSharpDialect) AS VOID
 IF oldDialect != newDialect
     if newDialect == XSharpDialect.FoxPro
@@ -91,9 +89,7 @@ FUNCTION __FoxAutoUnLock() AS VOID
     RETURN
 
 
-/// <summary>
-/// This function replaces the normal MemVarPut to make sure that arrays are filled when they are assigned
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxMemVarPut/*" />
 INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     VAR current :=  XSharp.MemVar.GetSafe(cName)
     IF XSharp.RuntimeState.CompilerOptionFox2
@@ -103,9 +99,7 @@ INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     ENDIF
     RETURN XSharp.MemVar._Put(cName, uValue)
 
-/// <summary>
-/// This function gets called for assignments in FoxPro, so aFoo := 42 will will the complete array when aFoo is an array
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxAssign/*" />
 FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL
     IF uLHS IS __FoxArray VAR aFoxArray
         IF uValue IS __FoxArray
@@ -119,9 +113,7 @@ FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL
     ELSE
         RETURN uValue
     ENDIF
-/// <summary>
-/// Fill a FoxPro array
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxFillArray/*" />
 FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     IF IsArray(uArray) .AND. ! IsArray(uValue)
         LOCAL oldArray := uArray AS ARRAY
@@ -132,9 +124,7 @@ FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     ENDIF
     RETURN uArray
 
-/// <summary>
-/// Resize a FoxPro array
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxRedim/*" />
 FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
     LOCAL result := NULL AS __FoxArray
     IF IsArray(uCurrent)
@@ -148,9 +138,7 @@ FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS _
     ENDIF
     RETURN result
 
-/// <summary>
-/// Access an element in a FoxPro array with 2 dimensions
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxArrayAccess/*" />
 FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL, nIndex2 AS USUAL) AS USUAL
     IF uValue IS  __FoxArray VAR fa .and. IsNumeric(nIndex1) .and. IsNumeric(nIndex2) .and. fa:MultiDimensional
         RETURN fa[nIndex1, nIndex2]
@@ -164,9 +152,7 @@ FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL, nI
         THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_DOES_NOT_EXIST, cName)}
     ENDIF
 
-/// <summary>
-/// Access an element in a FoxPro array with 1 dimension
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxArrayAccess_2/*" />
 FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL) AS USUAL
     IF uValue IS  __FoxArray VAR fa .and. IsNumeric(nIndex1)
         RETURN fa[nIndex1]
@@ -180,10 +166,8 @@ FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL) AS
         THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_DOES_NOT_EXIST, cName)}
     ENDIF
 
-/// <summary>
-/// Retrieve the With Stack for the FoxPro dialect (so you can call methods or properties outside of the scope of the WITH block)
-/// </summary>
 
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__GetFoxWithStack/*" />
 INTERNAL FUNCTION __GetFoxWithStack() AS Stack<OBJECT>
     LOCAL stack as Stack<OBJECT>
     stack := XSharp.RuntimeState.GetValue<Stack<Object>>(Set.WithStack)
@@ -193,17 +177,13 @@ INTERNAL FUNCTION __GetFoxWithStack() AS Stack<OBJECT>
     ENDIF
     return stack
 
-/// <summary>
-/// Push element to the FoxPro With stack
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxPushWithBlock/*" />
 FUNCTION __FoxPushWithBlock(oVar as OBJECT) AS VOID
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     stack:Push(oVar)
     RETURN
 
-/// <summary>
-/// Pop element from the FoxPro With stack
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxPopWithBlock/*" />
 FUNCTION __FoxPopWithBlock() AS OBJECT
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     if stack:Count > 0
@@ -214,9 +194,7 @@ FUNCTION __FoxPopWithBlock() AS OBJECT
     error:FuncSym := ProcName(1)
     error:SetStackTrace(ErrorStack(1))
     THROW error
-/// <summary>
-/// Retrieve an element from the FoxPro With stack
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__FoxGetWithExpression/*" />
 FUNCTION __FoxGetWithExpression() AS OBJECT
     LOCAL stack := __GetFoxWithStack() AS Stack<OBJECT>
     IF stack:Count > 0
@@ -229,9 +207,7 @@ FUNCTION __FoxGetWithExpression() AS OBJECT
     THROW error
 
 
-/// <summary>
-/// Call a method or retrieve an indexed property from an object.
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__IVarGetOrSend/*" />
 function __IVarGetOrSend(oObj as usual, cName as string, nIndex as long) as usual
     var members := __CheckParams(oObj, cName)
     // this returns an array with at least one member (there may be more when the method is overloaded)
@@ -242,9 +218,7 @@ function __IVarGetOrSend(oObj as usual, cName as string, nIndex as long) as usua
     var aVar := IVarGet(oObj, cName)
     return aVar[nIndex]
 
-/// <summary>
-/// Call a method or retrieve an indexed property from an object.
-/// </summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__IVarGetOrSend_2/*" />
 function __IVarGetOrSend(oObj as usual, cName as string, nIndex1 as long, nIndex2 as long) as usual
     var members := __CheckParams(oObj, cName)
     // this returns an array with at least one member (there may be more when the method is overloaded)
@@ -255,12 +229,7 @@ function __IVarGetOrSend(oObj as usual, cName as string, nIndex1 as long, nIndex
     var aVar := IVarGet(oObj, cName)
     return aVar[nIndex1, nIndex2]
 
-/// <summary>
-/// Return public members of a type with a specific name (case insensitive)
-/// </summary>
-/// <param name="oObj"></param>
-/// <param name="cName"></param>
-/// <returns></returns>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/__CheckParams/*" />
 static function __CheckParams(oObj as object, cName as string) as MemberInfo[]
  if oObj == null
         Throw ArgumentException{"Parameter should not be null", nameof(oObj)}
@@ -275,3 +244,16 @@ static function __CheckParams(oObj as object, cName as string) as MemberInfo[]
         Throw Exception{i"Class '{oType:Name}' does not have a member with the name '{cName}'"}
     endif
     return members
+
+
+FUNCTION __VarGetOrCreateFoxArray(cName as STRING) as USUAL
+    local uResult := XSharp.MemVar.GetSafe(cName) as usual
+    if IsNil(uResult)
+        var oMemVar := XSharp.MemVar.Find(cName)
+        if oMemVar == NULL
+            uResult := __FoxArray{}
+            MemVarPut(cName, uResult)
+        ENDIF
+    endif
+    RETURN uResult
+

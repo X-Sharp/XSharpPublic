@@ -19,18 +19,10 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.Next.csproj" />
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
     <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Name>XSharp.RT.Next</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.Next.xsproj">
-      <Name>XSharp.VFP.Next</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VO\XSharp.VO.Next.xsproj">
-      <Name>XSharp.VO.Next</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.VO\XSharp.VO.Next.xsproj" />
   </ItemGroup>
 </Project>

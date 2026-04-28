@@ -14,8 +14,7 @@ namespace Community.VisualStudio.Toolkit
             if (project != null)
             {
                 var path = project.FullPath;
-                var ext = System.IO.Path.GetExtension(path).ToLower();
-                return ext == ".xsproj" || ext == ".xsprj";
+                return XSharpModel.XProject.IsXSharpProject(path);
             }
             return false;
         }

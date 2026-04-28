@@ -1,34 +1,37 @@
-procedure main()
-    try
-    local o := Example():new()  as object
+// 960. Late bound call uses a STRICT parent method instead of NEW CLIPPER in the child class [#1286]
+// https://github.com/X-Sharp/XSharpPublic/issues/1286
 
+CLASS Parent
+	METHOD Foo() AS STRING STRICT
+		? "foo parent strict"
+	RETURN "foo parent strict"
+	METHOD Bar() CLIPPER
+		? "bar parent clipper"
+	RETURN "bar parent clipper"
+END CLASS
 
-    ? Example():classField
-    ? Example():classMethod()
-    ? Example():classAccMethod
-    ?
-    ? o:classField
-    ? o:classMethod()
-    ? o:classAccMethod
-    catch e as Exception
-        ? e:ToString()
-    end try
+CLASS Child INHERIT Parent
+	NEW METHOD Foo() CLIPPER
+		? "new foo child clipper"
+	RETURN "new foo child clipper"
+	NEW METHOD Bar() AS STRING STRICT
+		? "new bar child strict"
+	RETURN "new bar child strict"
+END CLASS
 
+FUNCTION Start( ) AS VOID
+	LOCAL u := Child{}
+	u:Foo()
+	u:Bar()
+
+	// both calls should call the NEW methods in Child class
+	xAssert( u:Foo() == "new foo child clipper")
+    xAssert( u:Bar() == "new bar child strict")
     wait
-return
 
-
-class Example
-exported:
-    inline access class method classAccMethod()
-    return ::classField + 2
-
-    inline class method initClass()
-        ::classField := 4
-    return
-
-    inline class method classMethod()
-    return ::classField + 1
-
-    class var classField
-endclass
+PROC xAssert(l AS LOGIC)
+IF .NOT. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN

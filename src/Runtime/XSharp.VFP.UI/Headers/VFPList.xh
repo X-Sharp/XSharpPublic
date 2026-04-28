@@ -1,0 +1,216 @@
+// VFPList.xh
+//
+// Common VFP list control properties and methods shared by ListBox and ComboBox
+// This header file provides the standard interface for list-based controls
+//
+
+#ifndef VFP_LISTCONTROL_XH
+#define VFP_LISTCONTROL_XH
+
+// ============================================================================
+// PRIVATE FIELDS - Backing storage for VFP-specific properties
+// ============================================================================
+
+PRIVATE _rowSource AS STRING
+PRIVATE _rowSourceType AS INT
+PRIVATE _boundColumn AS INT
+PRIVATE _listIndex AS INT
+
+// ============================================================================
+// PROPERTIES - VFP ListBox/ComboBox API
+// ============================================================================
+
+/// <summary>RowSource - Source data for list items</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Row source data")];
+[System.ComponentModel.DefaultValue("")];
+PROPERTY RowSource AS STRING
+    GET
+        RETURN SELF:_rowSource
+    END GET
+    SET
+        SELF:_rowSource := VALUE
+        SELF:PopulateFromRowSource()
+    END SET
+END PROPERTY
+
+/// <summary>RowSourceType - Type of row source (0=None, 1=Value, 5=Array)</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Row source type")];
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY RowSourceType AS INT
+    GET
+        RETURN SELF:_rowSourceType
+    END GET
+    SET
+        SELF:_rowSourceType := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>BoundColumn - Column bound to Value property</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Bound column")];
+[System.ComponentModel.DefaultValue(1)];
+PROPERTY BoundColumn AS INT
+    GET
+        RETURN SELF:_boundColumn
+    END GET
+    SET
+        SELF:_boundColumn := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>ListIndex - Currently selected item index (1-based)</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Selected item index")];
+[System.ComponentModel.DefaultValue(-1)];
+PROPERTY ListIndex AS INT
+    GET
+        // Convert 0-based to 1-based VFP index
+        IF SELF:SelectedIndex >= 0
+            RETURN SELF:SelectedIndex + 1
+        ELSE
+            RETURN -1
+        ENDIF
+    END GET
+    SET
+        // Convert 1-based to 0-based WinForms index
+        IF VALUE > 0
+            SELF:SelectedIndex := VALUE - 1
+        ELSE
+            SELF:SelectedIndex := -1
+        ENDIF
+        SELF:_listIndex := VALUE
+    END SET
+END PROPERTY
+
+/// <summary>ListCount - Number of items in the list</summary>
+[System.ComponentModel.Category("VFP Properties")];
+[System.ComponentModel.Description("Item count")];
+[System.ComponentModel.Browsable(FALSE)];
+PROPERTY ListCount AS INT
+    GET
+        RETURN SELF:Items:Count
+    END GET
+END PROPERTY
+
+// ============================================================================
+// METHODS - VFP ListBox/ComboBox API
+// ============================================================================
+
+/// <summary>
+/// Add a new item to the list at the specified 1-based position
+/// </summary>
+PUBLIC METHOD AddItem(cItem, nIndex ) AS VOID CLIPPER
+    IF String.IsNullOrEmpty(cItem)
+        cItem := ""
+    ENDIF
+
+    // Convert VFP 1-based index to 0-based .NET index
+    IF nIndex <= 0 .OR. nIndex > SELF:Items:Count + 1
+        // Append to end
+        SELF:Items:Add(cItem)
+    ELSE
+        // Insert at specific position (convert 1-based to 0-based)
+        SELF:Items:Insert(nIndex - 1, cItem)
+    ENDIF
+END METHOD
+
+/// <summary>
+/// Remove an item from the list by its 1-based index
+/// </summary>
+PUBLIC METHOD RemoveItem(nIndex AS INT) AS VOID STRICT
+    // Convert VFP 1-based index to 0-based .NET index
+    VAR zeroBasedIndex := nIndex - 1
+    IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Items:Count
+        SELF:Items:RemoveAt(zeroBasedIndex)
+        // If removed item was selected, update ListIndex
+        IF SELF:SelectedIndex >= SELF:Items:Count .AND. SELF:Items:Count > 0
+            SELF:SelectedIndex := SELF:Items:Count - 1
+        ENDIF
+    ENDIF
+END METHOD
+
+/// <summary>
+/// Remove all items from the list
+/// </summary>
+PUBLIC METHOD Clear() AS VOID CLIPPER
+    SELF:Items:Clear()
+    SELF:_listIndex := -1
+    SELF:SelectedIndex := -1
+    SELF:Text := ""
+END METHOD
+
+/// <summary>
+/// Repopulate the list from RowSource
+/// </summary>
+PUBLIC METHOD Requery() AS VOID STRICT
+    SELF:PopulateFromRowSource()
+END METHOD
+
+// ============================================================================
+// BUG-04 FIX: Added missing methods required by IVFPList interface
+// ============================================================================
+
+/// <summary>
+/// Add an item with an associated item ID (VFP multi-column list support)
+/// </summary>
+PUBLIC METHOD AddListItem(cItem AS STRING, nItemID AS INT, nColumn AS INT) AS VOID STRICT
+    // Simple implementation: append item to list, ignore column/ID for now
+    IF !String.IsNullOrEmpty(cItem)
+        SELF:Items:Add(cItem)
+    ENDIF
+END METHOD
+
+/// <summary>
+/// Remove an item by its item ID
+/// </summary>
+PUBLIC METHOD RemoveListItem(nItemID AS INT) AS VOID STRICT
+    // Item IDs are 1-based; treat as index for single-column lists
+    VAR zeroBasedIndex := nItemID - 1
+    IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Items:Count
+        SELF:Items:RemoveAt(zeroBasedIndex)
+    ENDIF
+END METHOD
+
+/// <summary>
+/// Convert a 1-based list index to its item ID
+/// </summary>
+PUBLIC METHOD IndexToItemID(nIndex AS INT) AS INT STRICT
+    // For single-column lists, index == itemID
+    RETURN nIndex
+END METHOD
+
+/// <summary>
+/// Convert an item ID to its 1-based list index
+/// </summary>
+PUBLIC METHOD ItemIDToIndex(nItemID AS INT) AS INT STRICT
+    // For single-column lists, itemID == index
+    RETURN nItemID
+END METHOD
+
+// ============================================================================
+// PRIVATE METHODS
+// ============================================================================
+
+/// <summary>
+/// Internal method to populate list from RowSource
+/// </summary>
+PRIVATE METHOD PopulateFromRowSource() AS VOID
+    IF String.IsNullOrEmpty(SELF:_rowSource)
+        RETURN
+    ENDIF
+
+    SWITCH SELF:_rowSourceType
+        CASE 1  // Value - comma-separated
+            VAR values := SELF:_rowSource:Split(',')
+            SELF:Items:Clear()
+            FOREACH VAR val IN values
+                SELF:Items:Add(val:Trim())
+            NEXT
+        CASE 5  // Array - handled by application
+            // TODO: Array support
+    END SWITCH
+END METHOD
+
+#endif

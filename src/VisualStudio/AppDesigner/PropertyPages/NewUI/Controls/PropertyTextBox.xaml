@@ -1,0 +1,45 @@
+<UserControl
+    x:Class="XSharp.Project.PropertyTextBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    x:Name="root">
+
+    <!--
+        PropertyTextBox — composite control: Label + TextBox + Reset button.
+
+        DataContext is NOT set here — inherits the page ViewModel so that
+        Button.Command binds to ResetCommand and Button.IsEnabled binds to [PropertyName].
+
+        Dependency properties (set by the page):
+          Label        — text shown above the TextBox
+          Value        — string value (TwoWay, UpdateSourceTrigger=PropertyChanged)
+          PropertyName — drives CommandParameter and IsEnabled indexer binding
+          IsReadOnly   — forwarded to TextBox.IsReadOnly (default false)
+          LabelMargin  — margin on the Label TextBlock (default 0,6,0,2)
+
+        Browse ("...") button is deliberately excluded — click handlers and
+        column layouts differ too much per-usage; callers add it themselves.
+    -->
+
+    <StackPanel>
+        <TextBlock x:Name="labelBlock"
+                   Text="{Binding Label, ElementName=root}"
+                   Margin="{Binding LabelMargin, ElementName=root}"
+                   Style="{DynamicResource ThemedTextBlockStyle}"/>
+        <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="textBox"
+                     Text="{Binding Value, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     IsReadOnly="{Binding IsReadOnly, ElementName=root}"
+                     MinWidth="300"/>
+            <Button x:Name="resetButton"
+                    Style="{DynamicResource ResetButtonStyle}"
+                    Command="{Binding ResetCommand}"
+                    Margin="4,0,0,0"
+                    VerticalAlignment="Center"/>
+        </StackPanel>
+    </StackPanel>
+
+</UserControl>

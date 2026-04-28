@@ -102,6 +102,19 @@
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDebugPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <!-- Composite controls (Controls folder) -->
+    <Compile Include="PropertyPages\NewUI\Controls\PropertyCheckBox.xaml.cs">
+      <DependentUpon>PropertyCheckBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\NewUI\Controls\PropertyComboBox.xaml.cs">
+      <DependentUpon>PropertyComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\NewUI\Controls\PropertyTextBox.xaml.cs">
+      <DependentUpon>PropertyTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\NewUI\Controls\ConfigSelectorBar.xaml.cs">
+      <DependentUpon>ConfigSelectorBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPageViewModel.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPage.xaml.cs" />
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildEventsPropertyPageXamlHost.cs">
@@ -394,6 +407,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <DependentUpon>XPackagePropertyPage.xaml.cs</DependentUpon>
+    </Page>
+    <!-- Composite controls (Controls folder) -->
+    <Page Include="PropertyPages\NewUI\Controls\PropertyCheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>PropertyCheckBox.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\NewUI\Controls\PropertyComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>PropertyComboBox.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\NewUI\Controls\PropertyTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>PropertyTextBox.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\NewUI\Controls\ConfigSelectorBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>ConfigSelectorBar.xaml.cs</DependentUpon>
     </Page>
     <!-- WPF macro/string editor dialogs -->
     <Page Include="PropertyPages\NewUI\Dialogs\XSharpSLEDialog.xaml">

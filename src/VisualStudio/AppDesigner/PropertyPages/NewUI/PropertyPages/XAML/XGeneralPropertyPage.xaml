@@ -134,16 +134,12 @@
             </Grid>
 
             <!-- Row 6: Auto-generate binding redirects -->
-            <StackPanel Grid.Column="0" Grid.Row="6" Orientation="Horizontal" Margin="0,8,8,0">
-                <CheckBox Content="{Binding CaptBindingRedirects}"
-                          IsChecked="{Binding AutoGenerateBindingRedirects, Mode=TwoWay}"
-                          ToolTip="{Binding DescBindingRedirects}"
-                          VerticalAlignment="Center"/>
-                <Button Style="{DynamicResource ResetButtonStyle}"
-                        Command="{Binding ResetCommand}" CommandParameter="AutoGenerateBindingRedirects"
-                        IsEnabled="{Binding [AutoGenerateBindingRedirects]}"
-                        Margin="4,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="6"
+                    Label="{Binding CaptBindingRedirects}"
+                    Value="{Binding AutoGenerateBindingRedirects, Mode=TwoWay}"
+                    PropertyName="AutoGenerateBindingRedirects"
+                    ToolTip="{Binding DescBindingRedirects}"
+                    Margin="0,8,8,0"/>
 
             <!-- Row 7: Resources section header -->
             <Label  Grid.Column="0" Grid.Row="7" Content="Resources:"

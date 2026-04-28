@@ -18,7 +18,7 @@ namespace XSharp.Project
     /// property pages (Build, Debug).  Supports "All Configurations" as well as
     /// individual named configurations (e.g. Debug, Release).
     /// </summary>
-    internal class XConfigSelectorViewModel : INotifyPropertyChanged
+    public class XConfigSelectorViewModel : INotifyPropertyChanged
     {
         // =====================================================================================
         // Constants

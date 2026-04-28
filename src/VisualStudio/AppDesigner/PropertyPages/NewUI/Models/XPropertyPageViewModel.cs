@@ -224,6 +224,13 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             ResetProperty(name);
         }
+        /// <summary>
+        /// Fires <see cref="PropertyChanged"/> for all properties (pass <see langword="null"/>
+        /// or <see cref="string.Empty"/>) or for a named property.
+        /// Called by <see cref="ResetPropertyCommand"/> after <c>BindProperties</c> to force
+        /// WPF to re-read every bound value even when the backing field did not change.
+        /// </summary>
+        internal void NotifyAllPropertiesChanged() => OnPropertyChanged(null);
     }
 
     // =========================================================================================
@@ -265,6 +272,11 @@ namespace XSharp.Project
             {
                 _vm.ResetPropertyInternal(propertyName);
                 _vm.BindProperties();
+                // Force WPF to re-evaluate ALL value bindings.  BindProperties() calls
+                // SetProperty() which skips PropertyChanged when the backing field already
+                // holds the post-reset default value (e.g. false == false).  Raising with
+                // null tells every bound control to re-read its source.
+                _vm.NotifyAllPropertiesChanged();
             }
         }
     }

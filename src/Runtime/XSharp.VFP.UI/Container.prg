@@ -23,11 +23,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Container INHERIT System.Windows.Forms.UserControl
 
 
+         #include "VFPProperties.xh"
+         #include "VFPPropertiesDynamic.xh"
+		 #include "ControlProperties.xh"
 
-         #include ".\XSharp\VFPProperties.xh"
-		 #include ".\Headers\ControlProperties.xh"
-
-		 #include ".\Headers\Tooltips.xh"
+		 #include "Tooltips.xh"
 
 			// This is a fake property, just here to ease Code Generation
 			//PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO

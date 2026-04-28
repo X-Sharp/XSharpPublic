@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROPERTY TextBox AS TextBox AUTO
 
-#include ".\Headers\FontProperties.xh"
+#include "FontProperties.xh"
 
 
 

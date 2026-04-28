@@ -83,7 +83,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Lex() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
         WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
         RETURN (BufferedTokenStream) stream
@@ -178,7 +178,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 
         CATCH e AS Exception
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
         WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
 
@@ -207,7 +207,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Parse() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
 
         END TRY
         WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)

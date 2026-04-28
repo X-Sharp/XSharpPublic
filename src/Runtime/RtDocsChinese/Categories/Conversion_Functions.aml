@@ -43,8 +43,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -58,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -73,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      将包含数值的字符串转换为数值数据类型。
+    </para>
             </entry>
           </row>
           <row>
@@ -88,8 +88,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of ANSI characters to OEM characters.
-        </para>
+      将ANSI字符串转换为OEM字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -103,8 +103,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
-        </para>
+      将ANSI字符串转换为OEM字符串，同时修改原始字符串的内容和返回的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -118,8 +118,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-        </para>
+      将源缓冲区中指定数量的 ANSI 字符转换为相应的 OEM 字符缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -133,8 +133,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-        </para>
+      将源缓冲区中指定数量的 ANSI 字符转换为相应的 OEM 字符缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -148,8 +148,23 @@
             </entry>
             <entry>
               <para>
-            Convert a character to its ASCII value.
-        </para>
+      将字符转换为其 ASCII 值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Asc(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -173,13 +188,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a value to a hexadecimal string.
-        </para>
+      将值转换为十六进制字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +208,8 @@
             </entry>
             <entry>
               <para>
-            Convert a value to a right-padded string.
-        </para>
+      Convert a value to a right-padded string.
+    </para>
             </entry>
           </row>
           <row>
@@ -203,13 +218,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a string or a PSZ to a symbol.
-        </para>
+      将字符串或PSZ转换为符号。
+    </para>
             </entry>
           </row>
           <row>
@@ -223,8 +238,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit binary date to a date data type.
-        </para>
+      将一个字符串中的 32 位二进制日期转换为日期数据类型。
+    </para>
             </entry>
           </row>
           <row>
@@ -238,8 +253,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit unsigned integer to a double word.
-        </para>
+      将一个字符串中的 32 位无符号整数转换为双字。
+    </para>
             </entry>
           </row>
           <row>
@@ -253,8 +268,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 80-bit floating point number to a float value.
-        </para>
+      将一个字符串中的 80 位浮点数转换为 float 值。
+    </para>
             </entry>
           </row>
           <row>
@@ -268,8 +283,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 16-bit signed integer to a short integer.
-        </para>
+      将包含 16 位 signed 整数的字符串转换为短整数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2Int64(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      将包含 32 位 signed 整数的字符串转换为长整数。
+    </para>
             </entry>
           </row>
           <row>
@@ -283,8 +313,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit signed integer to a long integer.
-        </para>
+      将包含 32 位 signed 整数的字符串转换为长整数。
+    </para>
             </entry>
           </row>
           <row>
@@ -298,8 +328,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing an 8-bit logical into a logical value.
-        </para>
+      将包含 8 位逻辑值的字符串转换为逻辑值。
+    </para>
             </entry>
           </row>
           <row>
@@ -313,8 +343,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing an 8-bit logical into a logical value.
-        </para>
+      将包含 8 位逻辑值的字符串转换为逻辑值。
+    </para>
             </entry>
           </row>
           <row>
@@ -327,8 +357,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -342,8 +371,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit floating point number to a Real4 value.
-        </para>
+      将包含 32 位浮点数的字符串转换为 Real4 值。
+    </para>
             </entry>
           </row>
           <row>
@@ -357,8 +386,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit floating point number to a Real8 value.
-        </para>
+      将包含 64 位浮点数的字符串转换为 Real8 值。
+    </para>
             </entry>
           </row>
           <row>
@@ -372,8 +401,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 16-bit unsigned integer to a word.
-        </para>
+      将包含无符号 16 位整数的字符串转换为 Word。
+    </para>
             </entry>
           </row>
           <row>
@@ -386,8 +415,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>-- todo --</para>
             </entry>
           </row>
           <row>
@@ -405,6 +433,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Cast(XSharp.__Usual@,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts an expression from one data type to another.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -414,8 +457,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the day of the week from a date.
-        </para>
+      从日期中提取星期几的名称。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDoW(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the day of the week from a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -429,8 +487,23 @@
             </entry>
             <entry>
               <para>
-            Convert an ASCII code to a character value.
-        </para>
+      将 ASCII 码转换为字符值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Chr(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -446,6 +519,21 @@
               <para>
             Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ChrSaw(System.Double)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether or not a character is present in the keyboard buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -474,8 +562,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the month from a date.
-        </para>
+      从日期中提取月份名称。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CMonth(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -489,8 +592,8 @@
             </entry>
             <entry>
               <para>
-            Format a set of numbers representing a year, month, and day as a date.
-        </para>
+      将表示年、月和日的一组数字格式化为日期。
+    </para>
             </entry>
           </row>
           <row>
@@ -517,8 +620,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date string to date format.
-        </para>
+      将日期字符串转换为日期格式。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToD(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts a character expression to a date expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -532,8 +650,8 @@
             </entry>
             <entry>
               <para>
-            Convert an ANSI date string to date format.
-        </para>
+      将ANSI日期字符串转换为日期格式。
+    </para>
             </entry>
           </row>
           <row>
@@ -587,11 +705,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            从字符表达式返回一个DateTime值。
+        </para>
             </entry>
           </row>
           <row>
@@ -605,8 +725,8 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a 32-bit binary date string.
-        </para>
+      将日期转换为32位二进制日期字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -620,8 +740,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the day of the week from a date.
-        </para>
+      从日期中提取星期几的数字。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DoW(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric day-of-the-week value from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -635,8 +770,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a string.
-        </para>
+      将日期转换为字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToC(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a Character-type date from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -649,7 +799,7 @@
               </para>
             </entry>
             <entry>
-              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+              <para>将日期转换为"YYYY-MM-DD"格式的字符串</para>
             </entry>
           </row>
           <row>
@@ -662,7 +812,7 @@
               </para>
             </entry>
             <entry>
-              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+              <para>将日期转换为"YYYY-MM-DD"格式的字符串</para>
             </entry>
           </row>
           <row>
@@ -671,13 +821,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts degrees to radians.
-        </para>
+      将度数转换为弧度。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts degrees to radians.
+    </para>
             </entry>
           </row>
           <row>
@@ -691,8 +856,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date value to a string formatted as yyyymmdd.
-        </para>
+      将日期值转换为格式为 yyyymmdd 的字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToS(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -751,8 +931,8 @@
             </entry>
             <entry>
               <para>
-            Convert a double word to a string containing a 32-bit unsigned integer.
-        </para>
+      将双字转换为包含32位无符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -766,8 +946,8 @@
             </entry>
             <entry>
               <para>
-            Encode a file for e-mail transfer.
-        </para>
+      对文件进行编码以用于电子邮件传输。
+    </para>
             </entry>
           </row>
           <row>
@@ -781,8 +961,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float to a string containing an 80-bit floating point number.
-        </para>
+      将浮点数转换为包含 80 位浮点数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -791,12 +971,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -809,8 +988,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -824,8 +1002,23 @@
             </entry>
             <entry>
               <para>
-            Convert a short integer to a string containing a 16-bit signed integer.
-        </para>
+      将短整型转换为包含 16 位有符号整数的字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I642Bin(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      将长整型转换为包含32位带符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -839,8 +1032,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer to a string containing a 32-bit signed integer.
-        </para>
+      将长整型转换为包含32位带符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -854,8 +1047,8 @@
             </entry>
             <entry>
               <para>
-            Convert a logical value to a string containing an 8-bit logical value.
-        </para>
+      将逻辑值转换为包含 8 位逻辑值的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -869,8 +1062,8 @@
             </entry>
             <entry>
               <para>
-            Convert a logical value to a string.
-        </para>
+      将逻辑值转换为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -879,12 +1072,12 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+            Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
         </para>
             </entry>
           </row>
@@ -899,8 +1092,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring of a certain size from the left of a buffer.
-        </para>
+      从缓冲区的左侧提取指定大小的子字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -914,8 +1107,8 @@
             </entry>
             <entry>
               <para>
-            Convert the number that identifies a day into the name of the day.
-        </para>
+      将标识日期的数字转换为日期的名称。
+    </para>
             </entry>
           </row>
           <row>
@@ -929,8 +1122,8 @@
             </entry>
             <entry>
               <para>
-            Convert the number that identifies a month into the name of the month.
-        </para>
+      将标识月份的数字转换为月份的名称。
+    </para>
             </entry>
           </row>
           <row>
@@ -954,13 +1147,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a left-trimmed string.
-        </para>
+      将数值表达式转换为左侧修剪的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -974,8 +1167,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of OEM characters to ANSI characters.
-        </para>
+      将OEM字符字符串转换为ANSI字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -989,8 +1182,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
-        </para>
+      将OEM字符字符串转换为ANSI字符，改变参数的内容以及返回值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1004,8 +1197,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-        </para>
+      将源缓冲区中的指定数量的OEM字符转换为相应的ANSI字符缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1019,8 +1212,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-        </para>
+      将源缓冲区中的指定数量的OEM字符转换为相应的ANSI字符缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1034,8 +1227,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      将一个以 NULL 结束的字符串转换为强类型字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1049,8 +1242,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      将一个以 NULL 结束的字符串转换为强类型字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1079,8 +1272,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real4 value to a string containing a 32-bit floating point number.
-        </para>
+      将 Real4 值转换为包含 32 位浮点数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1094,8 +1287,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real8 value to a string containing an 8-byte floating point number.
-        </para>
+      将 Real8 值转换为包含 8 字节浮点数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1104,14 +1297,30 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts radians to its equivalent in degrees.
-            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
-        </para>
+      将弧度转换为相应的角度。
+      在使用 X# 三角函数 COS()、SIN() 和 TAN() 时，可以使用 RTOD()。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
             </entry>
           </row>
           <row>
@@ -1125,8 +1334,23 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      将数值表达式转换为字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1135,13 +1359,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      将数值表达式转换为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1155,8 +1379,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of a specified length.
-        </para>
+      将数值表达式转换为指定长度的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1170,8 +1394,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      将数值表达式转换为特定长度和小数位数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1180,11 +1404,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            在单字节、双字节、UNICODE 和特定区域表示之间转换字符表达式。
+        </para>
             </entry>
           </row>
           <row>
@@ -1198,8 +1424,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float expression to a PSZ.
-        </para>
+      将浮点表达式转换为 PSZ。
+    </para>
             </entry>
           </row>
           <row>
@@ -1227,8 +1453,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1257,8 +1482,8 @@
             </entry>
             <entry>
               <para>
-            Convert an integer expression to a PSZ.
-        </para>
+      将整数表达式转换为 PSZ。
+    </para>
             </entry>
           </row>
           <row>
@@ -1272,8 +1497,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer expression to a PSZ.
-        </para>
+      将长整型表达式转换为 PSZ。
+    </para>
             </entry>
           </row>
           <row>
@@ -1287,8 +1512,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -1302,8 +1527,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-        </para>
+      将数字表达式转换为字符串，并用前导零而非空格填充。
+    </para>
             </entry>
           </row>
           <row>
@@ -1327,13 +1552,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a number to a word.
-        </para>
+      将数字转换为字。
+    </para>
             </entry>
           </row>
           <row>
@@ -1347,8 +1572,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      将包含数值的字符串转换为数值数据类型。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
           <row>
@@ -1361,8 +1601,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1376,8 +1615,8 @@
             </entry>
             <entry>
               <para>
-            Convert a word to a string containing a 16-bit unsigned integer.
-        </para>
+      将一个字转换为包含 16 位无符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1391,8 +1630,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the year from a date.
-        </para>
+      从日期中提取年份。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Year(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the year from the specified date or datetime expression.
+    </para>
             </entry>
           </row>
         </table>

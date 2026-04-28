@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 // Check that we have a FullPath
                 IF Path.GetDirectoryName(SELF:_fullPath):Length == 0
                     // Get the path from the RDD's open info
-                    VAR cPath := Path.GetDirectoryName(SELF:_oRdd:_OpenInfo:FullName)
+                    VAR cPath := Path.GetDirectoryName(SELF:_oRdd:OpenInfo:FullName)
                     IF String.IsNullOrEmpty(cPath)
                         cPath := SELF:_oRdd:FileName
                         cPath := Path.GetDirectoryName(cPath)
@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := FALSE
             SELF:_oRdd:GoCold()
             SELF:_Shared := SELF:_oRdd:Shared
-            SELF:_hFile    := FOpen(SELF:FullPath, SELF:_oRdd:_OpenInfo:FileMode)
+            SELF:_hFile    := FOpen(SELF:FullPath, SELF:_oRdd:OpenInfo:FileMode)
             SELF:_oStream  := FGetStream(SELF:_hFile)
             IF SELF:_oStream  != NULL_OBJECT
                 SELF:_fullPath := SELF:_oStream:Name

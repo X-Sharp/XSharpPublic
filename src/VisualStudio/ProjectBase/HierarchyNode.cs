@@ -3397,11 +3397,16 @@ namespace Microsoft.VisualStudio.Project
         /// <typeparam name="T">The type of hierachy node being serched for</typeparam>
         /// <param name="nodes">A list of nodes of type T</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public void FindNodesOfType<T>(List<T> nodes)
+        public void FindNodesOfType<T>(IList<T> nodes)
             where T : HierarchyNode
         {
             for (HierarchyNode n = this.FirstChild; n != null; n = n.NextSibling)
             {
+                if (n == n.NextSibling)
+                {
+                    // this should not happen, but we have seen it
+                    break;
+                }
                 if (n is T)
                 {
                     T nodeAsT = (T)n;

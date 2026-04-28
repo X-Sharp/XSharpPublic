@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-  <members>
-  </members>
   <AdsSQLServer>
     <summary>ADS 兼容的 DbServer 类，其构造函数接收一个 Sql Select 语句</summary>
   </AdsSQLServer>
   <AdsSQLServer.ctor>
-    <inheritdoc />
+    <inheritdoc/>
   </AdsSQLServer.ctor>
   <DbError>
-    <exclude />
+    <exclude/>
   </DbError>
   <DbError.ctor>
-    <exclude />
+    <exclude/>
   </DbError.ctor>
   <DbError.Throw>
-    <exclude />
+    <exclude/>
   </DbError.Throw>
   <DbFileSpec>
     <summary>
@@ -43,26 +41,6 @@
     </example>
   </DbFileSpec>
 
-  <DbFileSpec.ctor>
-    <summary>
-      实例化一个 DBFileSpec 对象，并填充其实例变量与 DBF 信息。
-    </summary>
-    <param name="cFullPath">DBF 文件的驱动器、路径和文件名。</param>
-    <param name="oFS">DBF 文件的驱动器、路径和文件名。</param>
-    <param name="cDriver">用于实例化 DBFileSpec 的 RDD。</param>
-    <param name="_aRDDs">打开 DBF 文件所需的1-D数组的“隐藏” RDDs，如 DBFMEMO。</param>
-    <returns>
-      一个 DBFileSpec 对象。
-    </returns>
-    <example>
-      <code language="X#">
-        oDB1 := DBFileSpec{ "C:\TEST\TEST.DBF" }
-        oDB2 := DBFileSpec{}
-        oDB2:FullPath := "C:\TEST\TEST.DBF"
-      </code>
-    </example>
-  </DbFileSpec.ctor>
-
   <DbFileSpec.Copy>
     <summary>
       将与 DBFileSpec 对象关联的所有文件复制到不同的驱动器和/或目录。
@@ -70,7 +48,7 @@
     <param name="oDBFSTarget">DBFileSpec 对象的目标目录。可以是可选的或完整路径。</param>
     <param name="lIDX">逻辑参数。TRUE 还会移动与 SELF 关联的任何索引文件。默认为 TRUE。</param>
     <param name="lName">逻辑参数。TRUE 在复制过程中如果发生文件冲突，会自动重命名目标文件。默认为 FALSE。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       <code language="X#">
         // 将 CUSTOMER.DBF 文件复制到 C:\TEST 目录：
@@ -104,7 +82,7 @@
     <param name="oFS">要将 SELF 的文件复制到的驱动器和目录。也可以是一个现有的 DBFileSpec 对象或 FileSpec 对象。</param>
     <param name="cDriver">目标文件的 RDD。</param>
     <param name="lWantAnsi">逻辑参数。TRUE 创建 ANSI 格式的目标文件。默认为源 DBFileSpec 的 ANSI 设置。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example> 
       下面的例子说明了如何将 DBF 文件复制到不同的数据格式： 
       <code language="X#">
@@ -143,7 +121,7 @@
     <param name="cDriver">用于创建新 DBF文件结构的 RDD，如果与 SELF 的不同。</param>
     <param name="lWantAnsi">TRUE，如果这个新的 DBF 是一个 ANSI DBF(默认)。</param>
     <param name="aRdds">打开 DBF 文件所需的1-D数组的“隐藏” RDDs，如 DBFMEMO。默认为 SELF 的。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       DBFileSpec:Create() 方法对于生成给定文件规范和路径的新 DBF 文件非常有用。DBCreate() 函数也可以做同样的事情，但这种方法更有效。
       请注意，DBServer 类不包含 Create() 方法：实例化 DBServer 需要文件已经存在，因此无法创建文件。DBServer 类的 CopyDB() 和 CopyStructure() 方法通常提供了一种更容易的方法，用于复制现有文件的结构，完全或部分。
@@ -164,6 +142,26 @@
       </code>
     </example>
   </DbFileSpec.Create>
+
+  <DbFileSpec.ctor>
+    <summary>
+      实例化一个 DBFileSpec 对象，并填充其实例变量与 DBF 信息。
+    </summary>
+    <param name="cFullPath">DBF 文件的驱动器、路径和文件名。</param>
+    <param name="oFS">DBF 文件的驱动器、路径和文件名。</param>
+    <param name="cDriver">用于实例化 DBFileSpec 的 RDD。</param>
+    <param name="_aRDDs">打开 DBF 文件所需的1-D数组的“隐藏” RDDs，如 DBFMEMO。</param>
+    <returns>
+      一个 DBFileSpec 对象。
+    </returns>
+    <example>
+      <code language="X#">
+        oDB1 := DBFileSpec{ "C:\TEST\TEST.DBF" }
+        oDB2 := DBFileSpec{}
+        oDB2:FullPath := "C:\TEST\TEST.DBF"
+      </code>
+    </example>
+  </DbFileSpec.ctor>
 
   <DbFileSpec.DBFAttr>
     <summary>
@@ -193,7 +191,7 @@
     <param name="xRDDs">用于打开 DBFileSpec 对象中定义的目标文件的 RDD。</param>
     <param name="xRdds">用于打开 DBFileSpec 对象中定义的目标文件的 RDD。</param>
     <param name="aHidden">DBFileSpec 对象中定义的目标文件所需的“隐藏” RDDs的1-D数组。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       <code language="X#">
         oDB := DBFileSpec{}
@@ -230,7 +228,7 @@
       返回一个包含 DBF 文件结构的数组。 
       数组的结构是当前数据库文件的结构，其长度等于数据库文件中的字段数。 
       数组的每个元素是一个子数组，包含一个字段的信息。 子数组的格式如下： 
-      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*" />
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"/>
     </remarks>
   </DbFileSpec.DbStruct>
 
@@ -238,7 +236,7 @@
     <summary>
       物理删除与 DBFileSpec 对象关联的所有文件，包括通过 OrderSpec 对象与 DBF 相关的任何索引文件和任何 FPT 文件。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       <code language="X#">
         oDB := DBFileSpec{ "C:\TEST\DELETE\STRING\TEST.DBF" }
@@ -279,7 +277,7 @@
     <summary>
       使用当前目录、SetDefault() 或 SetPath() 方法定位 DBFileSpec 对象中定义的文件。如果成功，将填充 DBFileSpec 的实例变量。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       <code language="X#">
         // 查找DBF
@@ -417,7 +415,7 @@
     <param name="oDBFSTarget">将 SELF 的文件移动到的驱动器和目录。也可以是一个现有的 DBFileSpec 对象。</param>
     <param name="lIDX">逻辑参数。TRUE 还会移动与 SELF 关联的任何索引文件。默认值为 TRUE。</param>
     <param name="lName">逻辑参数。如果在移动过程中发生文件冲突，TRUE 会导致目标文件自动重命名。默认值为 FALSE。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       <code language="X#">
         // 将CUSTOMER.DBF文件移动到C:\TEST目录：
@@ -518,7 +516,7 @@
     </summary>
     <param name="oDBFSNewName">DBF 文件的新名称。</param>
     <param name="lName">逻辑参数。如果在移动过程中发生文件冲突，TRUE 会导致目标文件自动重命名。默认值为 FALSE。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       <code language="X#">
         SetDefault("C:\CAVO2x\SAMPLES\GSTUTOR")
@@ -562,16 +560,21 @@
     <value>与 CopyTo() 方法一起使用的 WHILE 条件代码块。</value>
   </DbFileSpec.WhileBlock>
 
-  <DBSelectionIndex>
-    <exclude />
+  <DbGetDefaultLockMode>
+    <summary>获取 DbServer 类的默认锁定模式</summary>
+    <returns>当前的锁定模式</returns>
+  </DbGetDefaultLockMode>
+  
+<DBSelectionIndex>
+    <exclude/>
   </DBSelectionIndex>
 
   <DBSelectionIndex.ctor>
-    <exclude />
+    <exclude/>
   </DBSelectionIndex.ctor>
 
   <DBSelectionIndex.Eval>
-    <exclude />
+    <exclude/>
   </DBSelectionIndex.Eval>
 
   <DbServer>
@@ -750,7 +753,7 @@
         因为它的默认是这条记录，而不是所有 Recall() ,因为它的默认是这条记录，而不是所有
       </note>
       几个Xbase数据库命令提供了一些选项，用于通过关键字指定操作范围：
-      ALL、REST、NEXT <paramref name="nRecords" />、RECORD <paramref name="nRecord" />，以及 FOR 和 WHILE 子句。
+      ALL、REST、NEXT <paramref name="nRecords"/>、RECORD <paramref name="nRecord"/>，以及 FOR 和 WHILE 子句。
       这些子句的语义，以及在指定了多个子句时它们的交互方式，都在程序员指南的"Using DBF Files"部分中描述。
       相应的 DBServer 方法(如 Average()、AppendDB()、CopyDB()、Sort()、Sum()、Total() 等)允许在调用中作为参数指定 FOR 子句、WHILE 子句和范围。
       此外，还可以使用简单的赋值(也提供了相应的访问)设置一个"通用服务范围"。
@@ -793,7 +796,7 @@
         <item>
           <term>Scope</term>
           <description>
-            DBSCOPEALL、DBSCOPEREST或一个数字 <paramref name="nRecords" />(意味着NEXT <paramref name="nRecords" />)。
+            DBSCOPEALL、DBSCOPEREST或一个数字 <paramref name="nRecords"/>(意味着NEXT <paramref name="nRecords"/>)。
           </description>
         </item>
         <item>
@@ -803,8 +806,8 @@
       </list>
 
       注意，这种方法不提供指定特定记录号的方式。很少需要处理特定记录(例如，记录5的平均工资)。
-      在需要时，例如对于 Delete()，使用 RecNo := <paramref name="n" />,
-      GoTo(<paramref name="n" />) 或 Seek(<paramref name="Value" />) 定位服务，然后调用 Delete()。 受通用服务作用域影响的方法包括：
+      在需要时，例如对于 Delete()，使用 RecNo := <paramref name="n"/>,
+      GoTo(<paramref name="n"/>) 或 Seek(<paramref name="Value"/>) 定位服务，然后调用 Delete()。 受通用服务作用域影响的方法包括：
       <list type="table">
         <listheader>
           <term>方法名称</term>
@@ -958,72 +961,6 @@
     </remarks>
   </DbServer>
 
-  <DbServer.LogicReturn>
-    <returns>
-      如果成功则返回 TRUE；否则，返回 FALSE(尽管某些记录可能仍已处理)。
-    </returns>
-  </DbServer.LogicReturn>
-
-  <DbServer.FileNameClause>
-    <span>
-      此参数标识要打开的 DBF 文件。
-      如果指定了字符串，则它完全对应于 DBUseArea() 函数的文件名参数；它可以包含带有驱动器和目录的完整路径，或仅包含文件名。
-      如果指定了 FileSpec 对象，则其文件名组件用作要打开的文件。它也可以包含带有驱动器和目录的完整路径，或仅包含文件名。
-      无论哪种类型的参数，如果仅指定文件名，DBServer 的工作方式与 USE 命令或 DBUseArea() 函数关于默认路径的工作方式相同——例如，
-      它受 SET PATH 和 SET DEFAULT 的影响。默认情况下假定扩展名为 DBF。
-      无论哪种情况，在成功创建 DBServer 对象后，它都包含一个带有原始文件规范的 FileSpec 对象。
-    </span>
-  </DbServer.FileNameClause>
-
-  <DbServer.ctor>
-    <summary>
-      构造一个服务对象。
-    </summary>
-    <param name="cFile">
-      要打开的文件名
-      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
-    </param>
-    <param name="oFS">
-      一个带有要打开的文件名的 FileSpec 对象
-      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
-    </param>
-    <param name="oFile">
-      一个带有要打开的文件名的字符串或 FileSpec 对象
-      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
-    </param>
-    <param name="lShareMode">
-      标识文件是否应以共享模式打开。可以指定为常量 DBSHARED(TRUE) 或 DBEXCLUSIVE(FALSE)。
-      如果未指定，则默认值由 SetExclusive() 函数确定，该函数默认值为“独占”或 FALSE。
-    </param>
-    <param name="lReadOnlyMode">
-      标识文件是否应以只读模式打开。
-      可以指定为常量 DBREADONLY(TRUE) 或 DBREADWRITE(FALSE)。如果未指定，则默认值为读写或 FALSE。
-    </param>
-    <param name="xDriver">可以指定驱动程序。如果未指定，则默认为 RDDSetDefault() 指定的驱动程序，该驱动程序又默认为 DBFNTX。</param>
-    <param name="aRDD">
-      一个一维数组，包含主 RDD 继承特殊功能的 RDD 名称。这允许您使用具有特殊功能的 RDD，例如加密或解密，用于具有不同数据库驱动程序的不同数据服务。
-      这些 RDD 覆盖主 RDD(使用 <paramref name="cDriver" /> 参数指定)的特殊功能。如果多个 RDD(使用此参数指定)实现相同的功能，
-      则与列表中最后一个 RDD 关联的功能优先。如果省略 <paramref name="aRdds" />，则不假定有其他 RDD。
-    </param>
-    <param name="aParams">可选的参数值数组</param>
-    <returns>
-      与所有 Init() 方法一样，实例化返回对象。即使文件未成功打开(可能是因为文件不存在、已损坏或被其他用户锁定)，也会创建对象。
-      因此，在使用 DBServer 错误之前，请验证它是否已通过 DBServer:Used 或 Status 访问方法成功打开。
-    </returns>
-    <example>
-      以下示例演示了构造 DBServer 对象的几种不同方法：
-      <code language="X#">
-        // 仅指定DBF文件
-        oDBCust := DBServer{"CUSTOMER"}
-        // 指定所有四个参数
-        oDBCust := DBServer{"CUSTOMER",DBSHARED,DBREADONLY, "DBFNTX"}
-        // 使用FileSpec对象规范定义要打开的DBF文件(以“独占”读写模式)
-        oFSCust := FileSpec{"d:\data\customer"}
-        oDBCust := DBServer{oFSCust,,FALSE}
-      </code>
-    </example>
-  </DbServer.ctor>
-
   <DbServer.Alias>
     <summary>
       表示工作区别名的字符串。
@@ -1054,7 +991,7 @@
       向表中追加一个空白记录；此空白记录成为当前位置，并准备分配数据值。如果 Append() 方法返回 TRUE，则记录会自动锁定。
     </summary>
     <param name="lReleaseLocks">指示是否应释放现有记录锁。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       默认行为是在追加新记录时释放现有锁。
       如果要防止这种情况，需要传递值为 FALSE 的参数。 在操作之前发送 NotifyIntentToMove 消息。
@@ -1068,11 +1005,11 @@
     </summary>
     <param name="oFSSource">
       指定源文件的字符串或 filespec 对象，该文件以共享只读模式打开，并且可以在此或其他应用程序中打开。
-      此函数尝试以共享模式打开 <paramref name="oFSSource" />。如果文件不存在，则会引发运行时错误。
+      此函数尝试以共享模式打开 <paramref name="oFSSource"/>。如果文件不存在，则会引发运行时错误。
       如果文件成功打开，则操作继续进行。有关解决并发冲突的更多信息，请参阅程序员指南中的“并发控制”章节。
     </param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果追加了任何记录，则发送 NotifyFileChange 消息。
@@ -1088,8 +1025,8 @@
       源文件以共享只读模式打开，并且可以在此或其他应用程序中打开。
     </param>
     <param name="cDelimiter">分隔数据库文件中字段的分隔符。如果省略，默认值为 NULL_STRING。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果追加了任何记录，则发送 NotifyFileChange 消息。
@@ -1104,8 +1041,8 @@
       指定包含要追加记录的源文件的字符串或 filespec 对象。
       源文件以共享只读模式打开，并且可以在此或其他应用程序中打开。
     </param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。 如果追加了任何记录，则发送 NotifyFileChange 消息。
     </remarks>
@@ -1116,7 +1053,7 @@
       根据涉及的实际记录数计算一系列数值表达式的平均值。
     </summary>
     <param name="acbExpression">要计算平均值的单个表达式或要计算平均值的表达式数组。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
     <returns>
       包含每个指定字段或表达式平均值的数组。如果指定了单个表达式，则返回长度为1的数组。
     </returns>
@@ -1127,22 +1064,53 @@
     </remarks>
   </DbServer.Average>
 
+  <DbServer.BLOBDirectExample>
+    <example>
+      此示例说明如何在 BLOB 文件中存储设置信息，然后有选择地检索存储的信息：
+      <code language="X#">
+        FUNCTION PutSettings(aColors AS ARRAY, aPaths AS ARRAY, aPW AS ARRAY) AS VOID
+        LOCAL aSettings AS ARRAY
+        LOCAL oDBSetup AS DBServer
+
+        oDBSetup  := Setup{}
+        aSettings := {}
+        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aColors))
+        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPaths))
+        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPW))
+        oDBSetup:BLOBRootPut(aSettings)
+        oDBSetup:Close()
+
+        FUNCTION GetColors() AS ARRAY
+        LOCAL aSettings AS ARRAY
+        LOCAL aColors AS ARRAY
+        LOCAL oDBSetup AS DBServer
+
+        oDBSetup  := Setup{}
+        aSettings := oDBSetup:BLOBRootGet()
+        aColors   := oDBSetup:BLOBDirectGet(aSettings[1])
+        oDBSetup:Close()
+
+        RETURN aColors
+      </code>
+    </example>
+  </DbServer.BLOBDirectExample>
+
   <DbServer.BLOBDirectExport>
     <summary>
       将二进制大对象(BLOB)指针的内容导出到文件。
     </summary>
     <param name="nPointer">
       指向 BLOB 数据的指针。此指针可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectExport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
-      <paramref name="nFieldPos" />)获取。
+      <paramref name="nFieldPos"/>)获取。
     </param>
     <param name="oFSTarget">
       指定目标文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。
-      不假定默认扩展名。 如果 <paramref name="oFSTarget" /> 不存在，则会创建它。如果存在，此方法尝试以独占模式打开文件，如果成功，
+      不假定默认扩展名。 如果 <paramref name="oFSTarget"/> 不存在，则会创建它。如果存在，此方法尝试以独占模式打开文件，如果成功，
       则文件会被写入而不会发出警告或错误。如果由于另一个进程正在使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
     </param>
     <param name="cTarget">
       指定目标文件名称的字符串，包括可选的驱动器、目录和扩展名。有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。
-      不假定默认扩展名。 如果 <paramref name="cTarget" /> 不存在，则会创建它。如果存在，此方法尝试以独占模式打开文件，
+      不假定默认扩展名。 如果 <paramref name="cTarget"/> 不存在，则会创建它。如果存在，此方法尝试以独占模式打开文件，
       如果成功，则文件会被写入而不会发出警告或错误。如果由于另一个进程正在使用文件而拒绝访问，则 NetErr() 设置为 TRUE，
       并且数据服务的Status属性设置。
     </param>
@@ -1167,7 +1135,7 @@
         </item>
       </list>
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       <note type="tip">
         BLOB 文件(.DBV或.FPT)用于存储备注字段信息，作为某些 RDD 支持的标准 .DBt 文件机制的替代方案。
@@ -1208,16 +1176,16 @@
     </summary>
     <param name="nPointer">
       指向 BLOB 数据的指针。此指针可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectImport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
-      <paramref name="nFieldPos" />) 获取。
+      <paramref name="nFieldPos"/>) 获取。
     </param>
     <param name="nStart">
-      <paramref name="nPointer" />中的起始位置。如果 <paramref name="nStart" /> 为正，则起始位置相对于
-      <paramref name="nPointer" />中的最左字符。如果 <paramref name="nStart" /> 为负，
-      则相对于 <paramref name="nPointer" /> 中的最右字符。如果省略 <paramref name="nStart" />，则假定为1。
+      <paramref name="nPointer"/>中的起始位置。如果 <paramref name="nStart"/> 为正，则起始位置相对于
+      <paramref name="nPointer"/>中的最左字符。如果 <paramref name="nStart"/> 为负，
+      则相对于 <paramref name="nPointer"/> 中的最右字符。如果省略 <paramref name="nStart"/>，则假定为1。
     </param>
     <param name="nCount">
-      从 <paramref name="nStart" /> 开始检索的数据字节数。
-      如果 <paramref name="nCount" /> 大于存储的数据量，则多余的数据将被忽略。
+      从 <paramref name="nStart"/> 开始检索的数据字节数。
+      如果 <paramref name="nCount"/> 大于存储的数据量，则多余的数据将被忽略。
       如果省略，DBServer:BLOBDirectGet() 将检索到数据的末尾。
     </param>
     <returns>
@@ -1225,44 +1193,13 @@
     </returns>
     <remarks>
       <note type="tip">
-        <paramref name="nStart" /> 和 <paramref name="nCount" /> 仅适用于字符串数据。对于任何其他数据类型，它们将被忽略。
+        <paramref name="nStart"/> 和 <paramref name="nCount"/> 仅适用于字符串数据。对于任何其他数据类型，它们将被忽略。
       </note>
       DBServer:BLOBDirectGet() 检索存储在 BLOB 文件中的数据，而无需引用数据服务中的特定字段。
       当访问大于64KB的数据时(例如使用 BLOBImport() 方法创建的备注字段),它特别有用。
     </remarks>
-    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*"/>
   </DbServer.BLOBDirectGet>
-
-  <DbServer.BLOBDirectExample>
-    <example>
-      此示例说明如何在 BLOB 文件中存储设置信息，然后有选择地检索存储的信息：
-      <code language="X#">
-        FUNCTION PutSettings(aColors AS ARRAY, aPaths AS ARRAY, aPW AS ARRAY) AS VOID
-        LOCAL aSettings AS ARRAY
-        LOCAL oDBSetup AS DBServer
-
-        oDBSetup  := Setup{}
-        aSettings := {}
-        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aColors))
-        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPaths))
-        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPW))
-        oDBSetup:BLOBRootPut(aSettings)
-        oDBSetup:Close()
-
-        FUNCTION GetColors() AS ARRAY
-        LOCAL aSettings AS ARRAY
-        LOCAL aColors AS ARRAY
-        LOCAL oDBSetup AS DBServer
-
-        oDBSetup  := Setup{}
-        aSettings := oDBSetup:BLOBRootGet()
-        aColors   := oDBSetup:BLOBDirectGet(aSettings[1])
-        oDBSetup:Close()
-
-        RETURN aColors
-      </code>
-    </example>
-  </DbServer.BLOBDirectExample>
 
   <DbServer.BLOBDirectImport>
     <summary>
@@ -1270,9 +1207,9 @@
     </summary>
     <param name="nPointer">
       指向导入后将释放的 BLOB 数据的指针。此指针可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectImport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
-      <paramref name="nFieldPos" />) 获取。传递0将禁用数据释放。
-      重要！如果指定，DBServer:BLOBDirectImport() 会释放与 <paramref name="nOldPointer" /> 关联的空间，以供其他数据重用。
-      因此，在将其作为参数传递给此方法后，使用 <paramref name="nOldPointer" /> 与任何 BLOB 方法一起使用是非法的。使用方法的返回值来引用新存储的数据。
+      <paramref name="nFieldPos"/>) 获取。传递0将禁用数据释放。
+      重要！如果指定，DBServer:BLOBDirectImport() 会释放与 <paramref name="nOldPointer"/> 关联的空间，以供其他数据重用。
+      因此，在将其作为参数传递给此方法后，使用 <paramref name="nOldPointer"/> 与任何 BLOB 方法一起使用是非法的。使用方法的返回值来引用新存储的数据。
     </param>
     <param name="cSource">
       包含要读取 BLOB 数据的文件名称的字符串，包括可选的驱动器、目录和扩展名。
@@ -1299,11 +1236,11 @@
       重要！使用 DBServer:BLOBDirectImport() 导入文件后，nNewPointer(返回值)是访问 BLOB 文件中数据的唯一方法。
       由您(开发人员)提供此引用的永久存储(请参阅下面的示例)
       <note type="tip">
-        DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) 将返回“C”(字符串)，
+        DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos"/>) 将返回“C”(字符串)，
         用于使用 DBServer:BLOBDirectImport() 创建的任何备注字段。
       </note>
     </remarks>
-    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*"/>
   </DbServer.BLOBDirectImport>
 
   <DbServer.BLOBDirectPut>
@@ -1313,23 +1250,23 @@
     <param name="nPointer">
       对先前存储的 BLOB 数据的引用。
       此引用可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectImport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
-      <paramref name="nFieldPos" />) 获取。如果不为0，则 <paramref name="uBLOB" /> 替换 <paramref name="nOldPointer" /> 引用的数据；
-      否则，<paramref name="uBLOB" /> 将添加到 BLOB 文件的当前内容中。
-      重要！如果指定，DBServer:BLOBDirectPut() 会释放与 <paramref name="nOldPointer" /> 关联的空间，以供其他数据重用。
-      因此，在将其作为参数传递给此方法后，使用 <paramref name="nOldPointer" /> 与任何 BLOB 方法一起使用是非法的。使用方法的返回值来引用新存储的数据。
+      <paramref name="nFieldPos"/>) 获取。如果不为0，则 <paramref name="uBLOB"/> 替换 <paramref name="nOldPointer"/> 引用的数据；
+      否则，<paramref name="uBLOB"/> 将添加到 BLOB 文件的当前内容中。
+      重要！如果指定，DBServer:BLOBDirectPut() 会释放与 <paramref name="nOldPointer"/> 关联的空间，以供其他数据重用。
+      因此，在将其作为参数传递给此方法后，使用 <paramref name="nOldPointer"/> 与任何 BLOB 方法一起使用是非法的。使用方法的返回值来引用新存储的数据。
     </param>
     <param name="uBlob">
-      您要放入 BLOB 文件中的数据。<paramref name="uBLOB" /> 可以是任何 X# 常用数据类型，代码块和对象除外。
+      您要放入 BLOB 文件中的数据。<paramref name="uBLOB"/> 可以是任何 X# 常用数据类型，代码块和对象除外。
     </param>
     <returns>
-      指向<paramref name="uBLOB" />数据的数字指针。
+      指向<paramref name="uBLOB"/>数据的数字指针。
     </returns>
     <remarks>
       DBServer:BLOBDirectPut() 存储可变长度的 BLOB 数据，而无需与数据服务中的特定备注字段建立链接。
       使用 DBServer:BLOBDirectPut() 将数据添加到 BLOB 文件后，您应存储方法的返回值，因为这是访问 BLOB 文件中数据的唯一方法。
       由您(开发人员)提供此引用的永久存储(请参阅 DBServer:BLOBRootPut())。
     </remarks>
-    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*"/>
   </DbServer.BLOBDirectPut>
 
   <DbServer.BLOBExport>
@@ -1342,7 +1279,7 @@
       指定目标文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。
       有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。
       不假定默认扩展名。
-      <paramref name="oFSTarget" />不存在，则会创建它。
+      <paramref name="oFSTarget"/>不存在，则会创建它。
       如果存在，此方法尝试以独占模式打开文件，如果成功，则文件会被写入而不会发出警告或错误。
       如果由于另一个进程正在使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
     </param>
@@ -1367,7 +1304,7 @@
         </item>
       </list>
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <example>
       此示例将存储图片的字段内容导出到.GIF文件，以便可以以编程方式显示该文件：
       <code language="X#">
@@ -1396,13 +1333,13 @@
     </summary>
     <param name="uField">表示数据库文件结构中字段位置的名称、编号或符号。</param>
     <param name="nStart">
-      备注字段中 BLOB 数据的起始位置。如果 <paramref name="nStart" /> 为正，
-      则起始位置相对于 <paramref name="uFieldPos" /> 中的最左字符。如果 <paramref name="nStart" /> 为负，
-      则相对于 <paramref name="uFieldPos" /> 中的最右字符。如果省略 <paramref name="nStart" />，则假定为1。
+      备注字段中 BLOB 数据的起始位置。如果 <paramref name="nStart"/> 为正，
+      则起始位置相对于 <paramref name="uFieldPos"/> 中的最左字符。如果 <paramref name="nStart"/> 为负，
+      则相对于 <paramref name="uFieldPos"/> 中的最右字符。如果省略 <paramref name="nStart"/>，则假定为1。
     </param>
     <param name="nCount">
-      从 <paramref name="nStart" /> 开始检索的数据字节数。
-      如果 <paramref name="nCount" /> 大于存储的数据量，则多余的数据将被忽略。如果省略，DBServer:BLOBGet() 将检索到数据的末尾。
+      从 <paramref name="nStart"/> 开始检索的数据字节数。
+      如果 <paramref name="nCount"/> 大于存储的数据量，则多余的数据将被忽略。如果省略，DBServer:BLOBGet() 将检索到数据的末尾。
     </param>
     <returns>
       从备注字段中检索到的 BLOB 数据。返回值的数据类型取决于实际存储的数据。使用 ValType() 或 UsualType() 确定数据类型。
@@ -1410,12 +1347,12 @@
     </returns>
     <remarks>
       <note type="tip">
-        <paramref name="nStart" />和<paramref name="nCount" />仅适用于字符串数据。对于任何其他数据类型，它们将被忽略。
+        <paramref name="nStart"/>和<paramref name="nCount"/>仅适用于字符串数据。对于任何其他数据类型，它们将被忽略。
       </note>
       DBServer:BLOBGet() 与 DBServer:FieldGet() 非常相似。
       然而，由于字符串类型变量不能大于64KB，DBServer:FieldGet() 在尝试检索此大小或更大的备注字段时会引发运行时错误。
       DBServer:BLOBGet() 在尝试检索大于此大小的字段时也会引发错误；
-      但是，您可以通过使用小于64KB的 <paramref name="nCount" /> 来检索 BLOB 数据的任何子集。
+      但是，您可以通过使用小于64KB的 <paramref name="nCount"/> 来检索 BLOB 数据的任何子集。
       <note type="tip">
         小于64KB的 BLOB 数据可以使用标准方法(例如，在表达式中引用字段名称或使用 DBServer:FieldGet() 方法)从备注字段中检索。
       </note>
@@ -1455,7 +1392,7 @@
       指定包含要读取 BLOB 数据的文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。
       有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。不假定默认扩展名。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       此方法尝试以共享模式打开源文件。如果文件不存在，则会引发运行时错误。
       如果文件成功打开，则操作继续进行。如果由于另一个进程独占使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
@@ -1469,7 +1406,7 @@
       这两种方法非常适合创建文档、图形、声音等数据库。
       DBServer:BlobImport() 在成功完成后发送 NotifyFieldChange 消息。
       <note type="tip">
-        DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="uFieldPos" />) 将返回“C”(字符串)，用于使用DBServer:BLOBImport()创建的任何备注字段。
+        DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="uFieldPos"/>) 将返回“C”(字符串)，用于使用DBServer:BLOBImport()创建的任何备注字段。
       </note>
     </remarks>
     <example>
@@ -1497,6 +1434,31 @@
     </example>
   </DbServer.BLOBImport>
 
+  <DbServer.BLOBRootExample>
+    <example>
+      此示例说明如何在 BLOB 文件的根部存储信息以及如何为以共享模式打开的数据服务使用锁定。
+      <code language="X#">
+        FUNCTION GetSettings()
+        LOCAL aCustSettings AS ARRAY
+        LOCAL oDBCust AS DBServer
+
+        // Open a customer file in shared mode
+        oDBCust := Customer{}
+
+        IF oDBCust:BLOBRootLock()
+        aCustSettings := oDBCust:BLOBRootGet()
+        oDBCust:BLOBRootUnlock()
+        ELSE
+        Alert("Could not obtain root lock")
+        ENDIF
+
+        oDBCust:Close()
+
+        RETURN aCustSettings
+      </code>
+    </example>
+  </DbServer.BLOBRootExample>
+
   <DbServer.BLOBRootGet>
     <summary>
       从 BLOB 文件的根区域检索数据。
@@ -1512,18 +1474,18 @@
         因此，如果数据服务以共享模式打开，则在调用 DBServer:BLOBRootGet() 之前应使用 DBServer:BLOBRootLock()。
       </note>
     </remarks>
-    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
+    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*"/>
   </DbServer.BLOBRootGet>
 
   <DbServer.BLOBRootLock>
     <summary>
       获取 BLOB 文件根区域的锁。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在共享模式下访问数据服务时，使用 DBServer:BLOBRootLock() 获取 BLOB 文件根区域的锁，以便从根区域读取或写入数据。
     </remarks>
-    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
+    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*"/>
   </DbServer.BLOBRootLock>
 
   <DbServer.BLOBRootPut>
@@ -1531,9 +1493,9 @@
       将数据存储在 BLOB 文件的根区域。
     </summary>
     <param name="uBlob">
-      您要放入 BLOB 文件根区域的数据。<paramref name="uBLOB" /> 可以是任何 X# 常用数据类型，代码块和对象除外。
+      您要放入 BLOB 文件根区域的数据。<paramref name="uBLOB"/> 可以是任何 X# 常用数据类型，代码块和对象除外。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       DBServer:BLOBRootPut() 允许将一个(且仅一个)数据存储到 BLOB 文件的根区域(此数据没有大小限制)。
       存储新数据后，DBServer:BLOBRootPut() 会释放与先前存储在 BLOB 文件根区域中的任何数据关联的空间。
@@ -1579,31 +1541,6 @@
     </example>
   </DbServer.BLOBRootPut>
 
-  <DbServer.BLOBRootExample>
-    <example>
-      此示例说明如何在 BLOB 文件的根部存储信息以及如何为以共享模式打开的数据服务使用锁定。
-      <code language="X#">
-        FUNCTION GetSettings()
-        LOCAL aCustSettings AS ARRAY
-        LOCAL oDBCust AS DBServer
-
-        // Open a customer file in shared mode
-        oDBCust := Customer{}
-
-        IF oDBCust:BLOBRootLock()
-        aCustSettings := oDBCust:BLOBRootGet()
-        oDBCust:BLOBRootUnlock()
-        ELSE
-        Alert("Could not obtain root lock")
-        ENDIF
-
-        oDBCust:Close()
-
-        RETURN aCustSettings
-      </code>
-    </example>
-  </DbServer.BLOBRootExample>
-
   <DbServer.BLOBRootUnlock>
     <summary>
       释放对 BLOB 文件根区域的锁定。
@@ -1614,7 +1551,7 @@
         唯一需要使用 DBServer:BLOBRootLock() 或 DBServer:BLOBRootUnlock() 的方法是 DBServer:BLOBRootGet() 和 DBServer:BLOBRootPut()。
       </note>
     </remarks>
-    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
+    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*"/>
   </DbServer.BLOBRootUnlock>
 
   <DbServer.BoF>
@@ -1645,7 +1582,7 @@
     <summary>
       清除使用 DBServer:SetFilter() 方法指定的过滤条件。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.ClearFilter>
 
   <DbServer.ClearIndex>
@@ -1654,14 +1591,14 @@
     </summary>
     <param name="uOrder">order 的名称，或 order 在 order 列表中的序数位置。值为0表示控制索引，而不考虑其在列表中的实际位置。</param>
     <param name="cOrdBag">order 所在的 order 包的名称。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.ClearIndex>
 
   <DbServer.ClearLocate>
     <summary>
       清除服务的 LOCATE 条件(如果有)。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.ClearLocate>
 
   <DbServer.ClearOrderScope>
@@ -1677,23 +1614,23 @@
     <summary>
       清除此服务与其他服务之间的所有活动关系。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.ClearRelation>
 
   <DbServer.ClearScope>
     <summary>
       清除定义多记录操作默认范围的设置。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.ClearScope>
 
   <DbServer.Close>
     <summary>
       关闭数据库文件及其关联的索引文件。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
-      关闭后，如果将 <paramref name="oDBServer" /> 设置为 NULL_OBJECT，也将有助于垃圾收集器。
+      关闭后，如果将 <paramref name="oDBServer"/> 设置为 NULL_OBJECT，也将有助于垃圾收集器。
     </remarks>
   </DbServer.Close>
 
@@ -1701,7 +1638,7 @@
     <summary>
       将所有更改从缓冲区提交到磁盘，确保所有缓冲区都已刷新。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，发送 NotifyCompletion 消息。
       如果与 Unlock() 方法一起使用，则应在调用 Unlock() 方法之前执行 Commit() 方法。
@@ -1799,8 +1736,8 @@
     <param name="oFSTarget">
       一个字符串或 filespec 对象，指定要将记录复制到的文件。该文件在操作期间以独占方式打开，因此不应该在其他地方以写入方式打开。
     </param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       操作完成后发送 NotifyRecordChange 消息。
@@ -1824,8 +1761,8 @@
     </summary>
     <param name="oFSTarget">指定记录复制到的文件的字符串或文件规范对象。</param>
     <param name="cDelimiter">分隔数据库文件中字段的分隔符。如果省略，则默认值为 NULL_STRING。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。 操作完成后发送 NotifyRecordChange 消息。
     </remarks>
@@ -1838,8 +1775,8 @@
     <param name="oFSTarget">
       一个字符串或 filespec 对象，指定要将记录复制到的文件。
     </param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。 操作完成后发送 NotifyRecordChange 消息。
     </remarks>
@@ -1852,7 +1789,7 @@
     <param name="cFileName">记录复制到的文件。</param>
     <param name="oFSTarget">指定记录复制到的文件的文件规范对象。</param>
     <param name="aFieldList">要包含在复制记录中的字段数组。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，发送 NotifyCompletion 消息。
       此方法不会打开新文件；它只是创建磁盘上的文件。如果您想在之后打开它，只需直接实例化它。
@@ -1873,7 +1810,7 @@
     <summary>
       返回匹配指定范围的记录数。
     </summary>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
     <returns>
       匹配范围的记录数。
     </returns>
@@ -1899,7 +1836,7 @@
     <param name="cExpr">索引表达式。</param>
     <param name="cbExpr">索引表达式。如果提供了代码块，则应与字符串表达式匹配；如果未提供代码块，则从字符串表达式创建一个代码块。</param>
     <param name="lUnique">索引是否唯一。如果未指定，默认值由 SetUnique() 确定。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送NotifyIntentToMove消息。 操作完成后发送 NotifyFileChange 消息。
     </remarks>
@@ -1914,7 +1851,7 @@
     <param name="cExpr">索引表达式。</param>
     <param name="cbExpr">索引表达式。如果提供了代码块，则应与字符串表达式匹配；如果未提供代码块，则从字符串表达式创建一个代码块。</param>
     <param name="lUnique">索引是否唯一。如果未指定，则默认值由 SetUnique() 确定。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       操作完成后发送 NotifyFileChange 消息。
@@ -1934,6 +1871,55 @@
     </remarks>
   </DbServer.CreateOrder>
 
+  <DbServer.ctor>
+    <summary>
+      构造一个服务对象。
+    </summary>
+    <param name="cFile">
+      要打开的文件名
+      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*"/>
+    </param>
+    <param name="oFS">
+      一个带有要打开的文件名的 FileSpec 对象
+      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*"/>
+    </param>
+    <param name="oFile">
+      一个带有要打开的文件名的字符串或 FileSpec 对象
+      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*"/>
+    </param>
+    <param name="lShareMode">
+      标识文件是否应以共享模式打开。可以指定为常量 DBSHARED(TRUE) 或 DBEXCLUSIVE(FALSE)。
+      如果未指定，则默认值由 SetExclusive() 函数确定，该函数默认值为“独占”或 FALSE。
+    </param>
+    <param name="lReadOnlyMode">
+      标识文件是否应以只读模式打开。
+      可以指定为常量 DBREADONLY(TRUE) 或 DBREADWRITE(FALSE)。如果未指定，则默认值为读写或 FALSE。
+    </param>
+    <param name="xDriver">可以指定驱动程序。如果未指定，则默认为 RDDSetDefault() 指定的驱动程序，该驱动程序又默认为 DBFNTX。</param>
+    <param name="aRDD">
+      一个一维数组，包含主 RDD 继承特殊功能的 RDD 名称。这允许您使用具有特殊功能的 RDD，例如加密或解密，用于具有不同数据库驱动程序的不同数据服务。
+      这些 RDD 覆盖主 RDD(使用 <paramref name="cDriver"/> 参数指定)的特殊功能。如果多个 RDD(使用此参数指定)实现相同的功能，
+      则与列表中最后一个 RDD 关联的功能优先。如果省略 <paramref name="aRdds"/>，则不假定有其他 RDD。
+    </param>
+    <param name="aParams">可选的参数值数组</param>
+    <returns>
+      与所有 Init() 方法一样，实例化返回对象。即使文件未成功打开(可能是因为文件不存在、已损坏或被其他用户锁定)，也会创建对象。
+      因此，在使用 DBServer 错误之前，请验证它是否已通过 DBServer:Used 或 Status 访问方法成功打开。
+    </returns>
+    <example>
+      以下示例演示了构造 DBServer 对象的几种不同方法：
+      <code language="X#">
+        // 仅指定DBF文件
+        oDBCust := DBServer{"CUSTOMER"}
+        // 指定所有四个参数
+        oDBCust := DBServer{"CUSTOMER",DBSHARED,DBREADONLY, "DBFNTX"}
+        // 使用FileSpec对象规范定义要打开的DBF文件(以“独占”读写模式)
+        oFSCust := FileSpec{"d:\data\customer"}
+        oDBCust := DBServer{oFSCust,,FALSE}
+      </code>
+    </example>
+  </DbServer.ctor>
+
   <DbServer.DataField>
     <summary>
       检索指定字段位置的数据字段对象。
@@ -1950,7 +1936,7 @@
     </value>
     <remarks>
       包含此数据服务结构的数组，其长度(即元素数量)等于服务中的字段数。 每个子数组由五个元素组成，按以下顺序包含以下信息：
-      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*" />
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"/>
     </remarks>
     <example>
       此示例打开一个数据库文件，然后使用 DBServer:DBStruct 在别名表达式中创建一个包含数据库结构的数组。
@@ -1977,8 +1963,8 @@
     <summary>
       删除当前记录或指定范围内的记录。
     </summary>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       如果使用范围调用或如果服务范围处于活动状态，Delete() 在操作之前发送 NotifyIntentToMove 消息，
       并在完成后发送 NotifyFileChange 消息(无论实际删除的记录数量如何)。
@@ -1997,7 +1983,7 @@
     <summary>
       删除表中的所有记录。
     </summary>
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       操作完成后发送 NotifyFileChange 消息。
@@ -2054,7 +2040,7 @@
     <param name="cIndexFileName">
       如果指定的 order 名称在所有打开的 order 中是唯一的，或者使用了 order 编号，则不必指定索引文件。但是，如果指定了非唯一的 order 名称，则还应指定索引文件。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.DeleteOrder>
 
   <DbServer.Driver>
@@ -2170,8 +2156,8 @@
       为每个匹配范围和条件的记录评估代码块。如果方法没有传递条件或范围，则受一般服务范围的约束。
     </summary>
     <param name="cbBlock">为每个处理的记录执行的代码块。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       无论成功与否，完成后发送 NotifyFileChange 消息。
@@ -2211,7 +2197,7 @@
     </summary>
     <param name="uField">表示所需字段的名称、编号或符号。</param>
     <returns>
-      指定字段的值。如果<paramref name="nFieldPos" />不对应当前数据服务中任何字段的位置，DBServer:FieldGet() 返回 NIL。
+      指定字段的值。如果<paramref name="nFieldPos"/>不对应当前数据服务中任何字段的位置，DBServer:FieldGet() 返回 NIL。
     </returns>
     <remarks>
       DBServer:FieldGet() 使用字段在数据库文件结构中的位置而不是字段名称来检索字段的值。在通用数据库服务函数中，这允许在不使用宏操作符的情况下检索字段值。
@@ -2282,23 +2268,23 @@
     </param>
     <param name="uField">
       表示字段在数据库文件结构中的位置的名称、编号或符号，或指向 BLOB 的数字指针。
-      仅某些设计用于与 BLOB 字段一起使用的 <paramref name="kFieldInfoType" /> 常量(在下面的常量部分中均有说明)允许使用指针指定字段；
+      仅某些设计用于与 BLOB 字段一起使用的 <paramref name="kFieldInfoType"/> 常量(在下面的常量部分中均有说明)允许使用指针指定字段；
       所有其他常量都要求按位置指定字段。
     </param>
     <param name="uFieldVal">
-      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uNewSetting" />)，
-      取决于 <paramref name="kInfoType" /> 常量，并在下面的常量部分中记录。
+      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uNewSetting"/>)，
+      取决于 <paramref name="kInfoType"/> 常量，并在下面的常量部分中记录。
     </param>
     <returns>
-      如果未指定 <paramref name="uNewSetting" />，DBServer:FieldInfo() 返回当前设置。
-      如果指定了 <paramref name="uNewSetting" />，则返回先前的设置。
+      如果未指定 <paramref name="uNewSetting"/>，DBServer:FieldInfo() 返回当前设置。
+      如果指定了 <paramref name="uNewSetting"/>，则返回先前的设置。
     </returns>
     <remarks>
-      <include file="RTComments.xml" path="Comments/DBS_Constants/*" />
+      <include file="RTComments.xml" path="Comments/DBS_Constants/*"/>
       DBServer:FieldInfo() 检索有关字段(列)状态的信息。
       可用的字段信息由 RDD 定义。在 DBF 模型中，这仅限于存储在 DBF 文件结构中的信息(即名称、长度、小数位数和数据类型)以及可以在运行时更改的字段别名。
       为了支持其他数据库模型(例如基于字典的数据库)的 RDD，这些模型存储有关每个字段或列的更多信息，
-      X# RDD API 已得到增强。DBServer:FieldInfo() 方法设计为允许由第三方 RDD 开发人员定义的其他 <paramref name="kInfoType" /> 值。
+      X# RDD API 已得到增强。DBServer:FieldInfo() 方法设计为允许由第三方 RDD 开发人员定义的其他 <paramref name="kInfoType"/> 值。
     </remarks>
     <example>
       以下示例使用 DBServer:FieldInfo() 检索字段信息：
@@ -2363,7 +2349,7 @@
     <param name="uField">表示所需字段的名称、编号或符号。</param>
     <param name="uValue">要分配给字段的值。此表达式的数据类型必须与字段的数据类型匹配。</param>
     <returns>
-      分配给字段的值。如果 <paramref name="nFieldPos" /> 不对应数据服务中任何字段的位置，DBServer:FieldPut() 返回 NIL。
+      分配给字段的值。如果 <paramref name="nFieldPos"/> 不对应数据服务中任何字段的位置，DBServer:FieldPut() 返回 NIL。
     </returns>
     <remarks>
       DBServer:FieldPut() 允许您使用字段在数据库文件结构中的位置而不是字段名称来设置字段的值。在通用数据库服务函数中，
@@ -2446,6 +2432,17 @@
     </returns>
   </DbServer.FieldValidate>
 
+  <DbServer.FileNameClause>
+    <span>
+      此参数标识要打开的 DBF 文件。
+      如果指定了字符串，则它完全对应于 DBUseArea() 函数的文件名参数；它可以包含带有驱动器和目录的完整路径，或仅包含文件名。
+      如果指定了 FileSpec 对象，则其文件名组件用作要打开的文件。它也可以包含带有驱动器和目录的完整路径，或仅包含文件名。
+      无论哪种类型的参数，如果仅指定文件名，DBServer 的工作方式与 USE 命令或 DBUseArea() 函数关于默认路径的工作方式相同——例如，
+      它受 SET PATH 和 SET DEFAULT 的影响。默认情况下假定扩展名为 DBF。
+      无论哪种情况，在成功创建 DBServer 对象后，它都包含一个带有原始文件规范的 FileSpec 对象。
+    </span>
+  </DbServer.FileNameClause>
+
   <DbServer.FileSpec>
     <summary>
       定义 DBF 文件路径和文件名的 FileSpec 对象。
@@ -2500,7 +2497,7 @@
     <summary>
       锁定此服务使用的表以进行独占访问。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.FLock>
 
   <DbServer.ForBlock>
@@ -2628,7 +2625,7 @@
     <summary>
       将数据服务定位在最后一条记录。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果成功，发送 NotifyGoBottom 消息。
@@ -2641,7 +2638,7 @@
       将数据服务定位在指定的记录号。
     </summary>
     <param name="nRecordNumber">要定位的记录号。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果成功，发送 NotifyRecordChange 消息。
@@ -2652,7 +2649,7 @@
     <summary>
       将数据服务定位在第一条记录。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果成功，发送 NotifyGoTop 消息。
@@ -2718,18 +2715,18 @@
     </summary>
     <param name="kInfoType">
       指定信息类型。
-      <include file="RTComments.xml" path="Comments/RddInfoParam/*" />
+      <include file="RTComments.xml" path="Comments/RddInfoParam/*"/>
     </param>
     <param name="uInfo">
-      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uInfo" />)，
-      取决于 <paramref name="kInfoType" /> 常量，并在下面的常量部分中记录。
+      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uInfo"/>)，
+      取决于 <paramref name="kInfoType"/> 常量，并在下面的常量部分中记录。
     </param>
     <returns>
-      如果未指定 <paramref name="uInfo" />，DBServer:RDDInfo() 返回当前设置。
-      如果指定了 <paramref name="uInfo" />，则返回先前的设置。
+      如果未指定 <paramref name="uInfo"/>，DBServer:RDDInfo() 返回当前设置。
+      如果指定了 <paramref name="uInfo"/>，则返回先前的设置。
     </returns>
     <remarks>
-      <include file="RTComments.xml" path="Comments/DBI_Constants/*" />
+      <include file="RTComments.xml" path="Comments/DBI_Constants/*"/>
     </remarks>
     <example>
       以下示例返回数据服务信息：
@@ -2754,7 +2751,7 @@
     <param name="oFSTarget">一个字符串或文件规范对象，指定连接操作结果放置的文件。</param>
     <param name="aFieldList">要包含在连接操作中的字段数组。</param>
     <param name="cbForBlock">在范围内对每条记录进行评估的条件；如果为 TRUE，则记录包含在处理中。它提供了与记录处理命令的 FOR 子句相同的功能。</param>
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果成功，发送 NotifyRecordChange 消息。
@@ -2785,7 +2782,7 @@
     <summary>
       顺序搜索匹配条件的记录。如果方法没有传递条件或范围，则受一般服务范围的约束。
     </summary>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
     <returns>
       如果找到匹配条件的记录，则返回 TRUE；如果未找到匹配项或操作因其他原因失败，则返回 FALSE。
       之后，可以使用 Found 和 Status 访问方法来确定具体发生了什么。
@@ -2801,14 +2798,14 @@
     <summary>
       锁定当前记录。此方法与调用 RLock() 并将当前记录号作为参数相同。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.LockCurrentRecord>
 
   <DbServer.LockSelection>
     <summary>
       锁定当前活动选择中的所有记录。
     </summary>
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       如果选择未激活，则在操作之前发送 NotifyIntentToMove 消息，并且功能与 FLock() 相同。
     </remarks>
@@ -2829,6 +2826,12 @@
       </code>
     </example>
   </DbServer.LockSelection>
+
+  <DbServer.LogicReturn>
+    <returns>
+      如果成功则返回 TRUE；否则，返回 FALSE(尽管某些记录可能仍已处理)。
+    </returns>
+  </DbServer.LogicReturn>
 
   <DbServer.Lupdate>
     <summary>
@@ -2867,7 +2870,7 @@
     </summary>
     <param name="symFieldName">被引用的变量的符号名称。在 DBServer 类的标准用法中，这是一个字段名称。</param>
     <param name="uValue">要分配给字段的值。此值的数据类型必须与字段的数据类型匹配。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果变量引用的是服务的有效字段，并且赋值成功，则发送 NotifyFieldChange 消息。
       对于 DBServer，此方法用于拦截对字段名称作为导出变量的引用，这通常是不允许的。
@@ -2882,10 +2885,10 @@
       重要！此方法由数据服务的各种操作方法自动调用，通常不应由应用程序代码调用。
     </summary>
     <returns>
-      SELF，除非为<paramref name="kNotifyName" />指定了 NOTIFYINTENTTOMOVE。
+      SELF，除非为<paramref name="kNotifyName"/>指定了 NOTIFYINTENTTOMOVE。
       在这种情况下，如果成功，返回值为 TRUE；否则为 FALSE。
     </returns>
-    <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/notify/*"/>
   </DbServer.Notify>
 
   <DbServer.OleExt>
@@ -2893,13 +2896,6 @@
     <value>文件的 OLE 扩展名(如果有)。</value>
     <remarks>X# RDD 系统不支持 DFL 文件。</remarks>
   </DbServer.OleExt>
-
-  <DbServer.OrderBottomScope>
-    <summary>
-      表示将在控制 order 的当前范围内包含的键值范围的底部边界的记录的键值。
-    </summary>
-    <value>表示将在控制 order 的当前范围内包含的键值范围的底部边界的记录的键值。</value>
-  </DbServer.OrderBottomScope>
 
   <DbServer.OrderArgs>
     <param name="uOrder">
@@ -2909,25 +2905,32 @@
     </param>
     <param name="cIndex">
       索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
-      使用此参数和 <paramref name="uOrder" /> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
-      如果当前进程未打开 <paramref name="cIndex" />，则会引发运行时错误。
+      使用此参数和 <paramref name="uOrder"/> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
+      如果当前进程未打开 <paramref name="cIndex"/>，则会引发运行时错误。
     </param>
     <param name="oFSIndex">
       一个字符串或文件规范对象，指定索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
-      使用此参数和 <paramref name="cOrder" /> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
-      如果当前进程未打开 <paramref name="oFSIndex" /> 则会引发运行时错误。
+      使用此参数和 <paramref name="cOrder"/> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
+      如果当前进程未打开 <paramref name="oFSIndex"/> 则会引发运行时错误。
     </param>
   </DbServer.OrderArgs>
+
+  <DbServer.OrderBottomScope>
+    <summary>
+      表示将在控制 order 的当前范围内包含的键值范围的底部边界的记录的键值。
+    </summary>
+    <value>表示将在控制 order 的当前范围内包含的键值范围的底部边界的记录的键值。</value>
+  </DbServer.OrderBottomScope>
 
   <DbServer.OrderDescend>
     <summary>
       返回并可选地更改 order 的降序标志。
     </summary>
-    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*"/>
     <param name="lNew">TRUE 动态打开 order 的降序标志，结果为降序。FALSE 动态关闭标志，结果为升序。</param>
     <returns>
-      如果未指定 <paramref name="lNew" />，DBServer:OrderDescend() 返回当前设置。
-      如果指定了 <paramref name="lNewDescend" />，则返回先前的设置。
+      如果未指定 <paramref name="lNew"/>，DBServer:OrderDescend() 返回当前设置。
+      如果指定了 <paramref name="lNewDescend"/>，则返回先前的设置。
     </returns>
     <remarks>
       DBServer:OrderDescend() 仅在运行时更改升序/降序标志——它不会更改实际索引文件中存储的降序标志。
@@ -2970,8 +2973,8 @@
     </param>
     <param name="oFSIndex">
       一个字符串或文件规范对象，指定索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
-      使用此参数和 <paramref name="cOrder" /> 消除当不同索引文件中有两个或多个同名order时的歧义。
-      如果当前进程未打开 <paramref name="oFSIndex" />，则会引发运行时错误。
+      使用此参数和 <paramref name="cOrder"/> 消除当不同索引文件中有两个或多个同名order时的歧义。
+      如果当前进程未打开 <paramref name="oFSIndex"/>，则会引发运行时错误。
     </param>
     <param name="uOrder">
       您想要获取信息的 order 名称或表示其在 order 列表中的位置的数字(对于单序索引文件，order 名称是八个字母的索引文件名)。
@@ -2979,15 +2982,15 @@
       如果未指定索引文件或 order，则假定为控制 order。
     </param>
     <param name="uOrdVal">
-      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uOrdVal" />)，
-      取决于 <paramref name="kInfoType" /> 常量，并在下面的常量部分中记录。
+      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uOrdVal"/>)，
+      取决于 <paramref name="kInfoType"/> 常量，并在下面的常量部分中记录。
     </param>
     <returns>
-      如果未指定 <paramref name="uNewSetting" />，DBServer:OrderInfo() 返回当前设置。
-      如果指定了 <paramref name="uNewSetting" />，则返回先前的设置。
+      如果未指定 <paramref name="uNewSetting"/>，DBServer:OrderInfo() 返回当前设置。
+      如果指定了 <paramref name="uNewSetting"/>，则返回先前的设置。
     </returns>
     <remarks>
-      <include file="RTComments.xml" path="Comments/DBOI_Constants/*" />
+      <include file="RTComments.xml" path="Comments/DBOI_Constants/*"/>
     </remarks>
     <example>
       此示例使用 DBOI_NAME 保存当前控制 order。更改为新控制 order后，它使用保存的值恢复原始 order：
@@ -3055,11 +3058,11 @@
     <summary>
       返回给定 order 的唯一标志状态。
     </summary>
-    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*"/>
     <param name="cTarget">
       索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
-      使用此参数和 <paramref name="uOrder" /> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
-      如果当前进程未打开 <paramref name="cTarget" />，则会引发运行时错误。
+      使用此参数和 <paramref name="uOrder"/> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
+      如果当前进程未打开 <paramref name="cTarget"/>，则会引发运行时错误。
     </param>
     <returns>
       指定 order 的唯一标志状态作为逻辑值。
@@ -3083,17 +3086,17 @@
     <summary>
       向自定义构建的 order 添加键。
     </summary>
-    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*"/>
     <param name="uKeyValue">
       您要为当前记录添加的特定键值。
       数据类型必须与order的数据类型匹配。如果未指定，则为当前记录评估 order 的键表达式并将其添加到 order 中。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       自定义构建的 order 是指不由 DBFCDX 驱动程序自动维护的 order。您可以使用 DBServer:OrderInfo(DBOI_CUSTOM,
       ...)确定 order 是否为自定义构建。当您创建这样的 order 时，它最初是空的。
       您必须手动使用 DBServer:OrderKeyAdd() 和 DBServer:OrderKeyDel() 添加和删除键。
-      DBServer:OrderKeyAdd() 评估键表达式(或 <paramref name="uKeyValue" />，如果指定)，
+      DBServer:OrderKeyAdd() 评估键表达式(或 <paramref name="uKeyValue"/>，如果指定)，
       然后将当前记录的键添加到 order 中。如果 order 有条件，则仅在满足该条件时才添加键，并且仅在它落在当前范围内时才添加。
       <note type="tip">
         RDDs 可能允许您通过连续调用 DBServer:OrderKeyAdd() 为同一记录添加多个键。
@@ -3106,7 +3109,7 @@
         <item>未指定 order 且没有控制 order</item>
       </list>
       <note type="tip">
-        在标准 RDD 中，只有 DBFCDX RDD 支持自定义索引。此 RDD 不支持使用 <paramref name="uKeyValue" /> 参数。
+        在标准 RDD 中，只有 DBFCDX RDD 支持自定义索引。此 RDD 不支持使用 <paramref name="uKeyValue"/> 参数。
         它始终使用键表达式来计算要插入的键值。
       </note>
     </remarks>
@@ -3130,7 +3133,7 @@
     <summary>
       返回 order 中的键数。
     </summary>
-    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*"/>
     <remarks>
       DBServer:OrderKeyCount() 计算指定 order 中的键数并将结果作为数值返回。
       如果 order 没有条件且未设置范围，DBServer:OrderKeyCount() 与 DBServer:RecCount 相同，返回数据服务中的记录数。
@@ -3170,8 +3173,8 @@
     <summary>
       从自定义构建的 order 中删除键。
     </summary>
-    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*"/>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       自定义构建的 order 是指不由 DBFCDX 驱动程序自动维护的 order。您可以使用 DBServer:OrderInfo(DBOI_CUSTOM,
       ...)确定 order 是否为自定义构建。当您创建这样的 order 时，它最初是空的。
@@ -3214,7 +3217,7 @@
       移动到控制 order 中由其逻辑记录号指定的记录。
     </summary>
     <param name="nKeyNo">逻辑记录号。如果指定的值不满足 orde 的范围或条件，记录指针将定位在文件末尾。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       DBServer:OrderKeyGoTo() 是 DBServer:OrderKeyNo() 的补充。DBServer:OrderKeyNo() 返回当前记录的逻辑记录号(即其在控制 order 中的位置)，
       而 DBServer:OrderKeyGoTo() 将记录指针移动到指定的逻辑记录。
@@ -3237,7 +3240,7 @@
     <summary>
       获取当前记录的逻辑记录号。
     </summary>
-    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*"/>
     <returns>
       当前记录在指定 order 中的相对位置，作为数值。DBServer:OrderKeyNo() 尊重 order 的范围和条件，
       如果记录指针定位在无效记录上或 DBServer:EOF 为 TRUE，则返回零。
@@ -3293,14 +3296,14 @@
     </summary>
     <param name="nScope">指定顶部 (TOPSCOPE) 或底部 (BOTTOMSCOPE) 边界的数字。</param>
     <param name="uValue">
-      控制顺序当前范围内将包含的键值的顶部或底部范围。<paramref name="uValue" />
+      控制顺序当前范围内将包含的键值的顶部或底部范围。<paramref name="uValue"/>
       可以是与控制顺序中的键表达式数据类型匹配的表达式，也可以是返回正确数据类型的代码块。
-      省略 <paramref name="uValue" /> 或将其指定为 NIL
+      省略 <paramref name="uValue"/> 或将其指定为 NIL
       具有将指定范围重置为其原始默认值的特殊效果。默认的顶部范围是控制顺序中的第一个逻辑记录，默认的底部范围是最后一个逻辑记录。
     </param>
     <returns>
-      如果未指定 <paramref name="uNewValue" />，DBServer:OrderScope() 返回当前设置。
-      如果指定了 <paramref name="uNewValue" />，则返回先前的设置。
+      如果未指定 <paramref name="uNewValue"/>，DBServer:OrderScope() 返回当前设置。
+      如果指定了 <paramref name="uNewValue"/>，则返回先前的设置。
     </returns>
     <remarks>
       使用 DBServer:OrderScope() 指定的值范围是包含的。换句话说，范围内的键将大于或等于顶部边界并小于或等于底部边界。
@@ -3341,7 +3344,7 @@
       将记录指针移动到控制顺序中的下一个或上一个唯一键。
     </summary>
     <param name="nDirection">指定方法将跳到下一个或上一个键。省略此值或将其指定为 1 跳到下一个唯一键。指定负值跳到上一个键。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       DBServer:OrderSkipUnique() 允许您使非唯一顺序看起来像唯一顺序。每次使用 DBServer:OrderSkipUnique()
       时，您都会移动到下一个(或上一个)唯一键，就像您在唯一顺序中跳过一样。此方法消除了维护唯一顺序相关的问题，
@@ -3386,7 +3389,7 @@
     <summary>
       从数据库文件中删除已删除的记录。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，则发送 NotifyFileChange 消息。
     </remarks>
@@ -3402,18 +3405,18 @@
       返回并可选更改由 RDD 直接控制的设置。
     </summary>
     <param name="kRDDInfoType">
-      指定设置。 <include file="RTComments.xml" path="Comments/RddInfoParam/*" />
+      指定设置。 <include file="RTComments.xml" path="Comments/RddInfoParam/*"/>
     </param>
     <param name="uRDDVal">
-      如果指定，此参数用于更改设置的值。 数据类型(以及是否可以指定 <paramref name="uNewSetting" />)，
-      取决于 <paramref name="kRDDInfoType" /> 常量，并在下面的常量部分中记录。
+      如果指定，此参数用于更改设置的值。 数据类型(以及是否可以指定 <paramref name="uNewSetting"/>)，
+      取决于 <paramref name="kRDDInfoType"/> 常量，并在下面的常量部分中记录。
     </param>
     <returns>
-      如果未指定 <paramref name="uNewSetting" />，DBServer:RDDInfo() 返回当前设置。
-      如果指定了 <paramref name="uNewSetting" />，则返回先前的设置。
+      如果未指定 <paramref name="uNewSetting"/>，DBServer:RDDInfo() 返回当前设置。
+      如果指定了 <paramref name="uNewSetting"/>，则返回先前的设置。
     </returns>
     <remarks>
-      <include file="RTComments.xml" path="Comments/RddInfoRemarks/*" />
+      <include file="RTComments.xml" path="Comments/RddInfoRemarks/*"/>
     </remarks>
   </DbServer.RddInfo>
 
@@ -3459,8 +3462,8 @@
     <summary>
       召回由指定范围指示的已删除记录。
     </summary>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       如果未传递范围且未激活范围，则在操作成功时发送 NotifyRecordChange 消息。
       如果使用了范围，则无论处理的记录数如何，都会发送 NotifyFileChange 消息。
@@ -3472,7 +3475,7 @@
     <summary>
       召回表中的所有已删除记录。
     </summary>
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       完成后发送 NotifyFileChange 消息。
@@ -3550,7 +3553,7 @@
       返回值的数据类型取决于请求的值。
     </returns>
     <remarks>
-      <include file="RTComments.xml" path="Comments/DBRI_Constants/*" />
+      <include file="RTComments.xml" path="Comments/DBRI_Constants/*"/>
     </remarks>
   </DbServer.RecordInfo>
 
@@ -3574,7 +3577,7 @@
     <summary>
       从数据库重新读取当前记录，丢弃所做的任何更改。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，则发送 NotifyRecordChange 消息。
       此命令丢弃对当前记录的所有更改。它作为在应用程序中实现撤消的一种方式非常有用。但是，它不能回滚已使用 DBServer:Commit()
@@ -3586,7 +3589,7 @@
     <summary>
       重新创建此服务的所有活动索引。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。 完成后发送 NotifyCompletion
       消息。显然，在执行此方法之前，所有其他用户都应退出您的系统。
@@ -3599,7 +3602,7 @@
     </summary>
     <param name="nRelation">当前关系列表中所需关系的位置。关系根据使用 DBServer:SetRelation() 定义的顺序进行编号。</param>
     <returns>
-      包含指定关系的链接表达式的字符串。如果没有为 <paramref name="nRelation" /> 设置关系，DBServer:Relation() 返回
+      包含指定关系的链接表达式的字符串。如果没有为 <paramref name="nRelation"/> 设置关系，DBServer:Relation() 返回
       NULL_STRING。
     </returns>
   </DbServer.Relation>
@@ -3614,8 +3617,8 @@
       用新表达式替换与指定范围匹配的所有记录的一个或多个字段。
     </summary>
     <param name="acbExpression">单个表达式，评估后得出替换值，或评估后得出替换值的表达式数组。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       如果指定的范围处于活动状态，DBServer:Replace() 在操作之前发送 NotifyIntentToMove 消息。
       无论成功与否，完成后都会发送 NotifyFileChange 消息。
@@ -3662,7 +3665,7 @@
       请注意，这可以是当前记录：明确指定当前记录表示应保持先前的锁。
       如果省略或为 NIL 或 -1，则当前记录被锁定并释放所有先前的记录锁。
     </param>
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
   </DbServer.RLock>
 
   <DbServer.RLockList>
@@ -3692,7 +3695,7 @@
     <summary>
       确定此数据服务中的当前记录是否有任何挂起的更新，如果没有，则锁定它以进行独占写访问。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       此方法通过将服务最初定位在记录上时读取的值与相应数据库记录中的当前值进行比较来检查当前记录是否有挂起的更新。
       如果值匹配，则表示自用户开始处理数据以来没有其他用户修改数据，因此，可以安全地锁定记录并让用户继续进行更新事务。(请注意，当记录被锁定时，其他用户仍然可以对记录进行只读引用。)
@@ -3731,17 +3734,17 @@
     <param name="uSearchExpr">指定与所需记录关联的键值。</param>
     <param name="lSoftSeek">
       确定如果未找到指定的键值，数据服务将如何定位：TRUE 执行软查找；FALSE 不执行。
-      如果省略 <paramref name="lSoftSeek" />，则使用当前的 SetSoftSeek() 设置。
+      如果省略 <paramref name="lSoftSeek"/>，则使用当前的 SetSoftSeek() 设置。
     </param>
     <param name="lLast">
-      TRUE 查找指定键值的最后一个出现。FALSE(默认)查找第一个出现。<paramref name="lLast" /> 仅适用于 CDX 索引。
+      TRUE 查找指定键值的最后一个出现。FALSE(默认)查找第一个出现。<paramref name="lLast"/> 仅适用于 CDX 索引。
     </param>
     <returns>
       如果找到指定的键值，则返回 TRUE；否则返回 FALSE。
     </returns>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
-      DBServer:Seek() 移动到键值等于 <paramref name="uKey" /> 的第一个逻辑记录。
+      DBServer:Seek() 移动到键值等于 <paramref name="uKey"/> 的第一个逻辑记录。
       如果找到这样的记录，它将成为当前记录，DBServer:Seek() 返回 TRUE。否则，DBServer:Seek() 返回 FALSE，数据服务的定位如下：
       对于正常(非软)查找，数据服务定位到 DBServer:LastRec + 1，
       DBServer:EOF 返回 TRUE；对于软查找，数据服务定位到键值大于指定键值的第一个记录。
@@ -3781,7 +3784,7 @@
     </summary>
     <param name="nFieldPosition">所需字段的编号。</param>
     <param name="oDataField">要分配的数据字段。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       验证新字段与实际数据库字段的兼容性(如果有)。此方法通常仅在数据服务实例化期间使用，最常见的是在子类的 Init() 方法中。
       例如，DBServer 编辑器生成的代码使用此方法。
@@ -3794,7 +3797,7 @@
     </summary>
     <param name="cbFilterBlock">以可执行形式表示过滤条件的代码块。如果省略代码块，则过滤表达式的字符串版本将宏编译为代码块。</param>
     <param name="cFilterText">过滤条件。如果省略，DBServer:Filter 访问方法返回 NULL_STRING。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       两个参数都指定过滤表达式，一个是代码块形式，一个是字符串形式。两个参数都是可选的，但必须提供至少一个。
       指定这两种形式的原因是编译的代码块更快，而字符串版本可以通过 Filter 访问方法报告回来。
@@ -3830,7 +3833,7 @@
     <param name="cIndexFileName">
       索引文件。文件类型默认为驱动程序(RDD)的本机类型。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果成功，则发送 NotifyFileChange 消息。
@@ -3866,7 +3869,7 @@
       作为 FileSpec 对象或字符串格式的文件名，带或不带文件类型。文件类型默认为驱动程序(RDD)的本机类型。
       但是请注意，SetOrder() 不会打开索引文件，它仅引用已打开文件中的顺序。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，则发送 NotifyFileChange 消息。 更改控制顺序后，服务仍然定位在同一记录上。请注意，当 dbServer 对象首次实例化时，
       如果使用 CDX 索引驱动程序并且自动打开索引设置为 TRUE，则将打开的标签将是按字母顺序排列的第一个标签 – 而不是您创建标签的顺序。
@@ -3890,7 +3893,7 @@
       指定另一个条件的代码块，每个记录在处理时必须满足该条件。一旦遇到导致条件失败的记录，顺序创建就会终止。
       如果指定了 WHILE 子句，则数据按控制顺序处理。 WHILE 条件是临时的(即，它不会存储在文件中，也不会用于索引更新和重新索引目的)。
       WHILE 条件创建临时顺序，但这些顺序不会更新。
-      使用 WHILE 条件比使用 FOR 条件更高效且更快。WHILE 条件仅处理 <paramref name="cbWhileCondition" /> 为 TRUE 的数据。
+      使用 WHILE 条件比使用 FOR 条件更高效且更快。WHILE 条件仅处理 <paramref name="cbWhileCondition"/> 为 TRUE 的数据。
       相比之下，FOR 条件处理数据源中的所有数据。
     </param>
     <param name="cbEvalBlock">
@@ -3898,12 +3901,12 @@
       它可能用于更新屏幕，例如显示进度条或状态栏中的进度。
     </param>
     <param name="nStep">
-      修改 <paramref name="cbEvalBlock" /> 评估次数的数值表达式。此参数通过每 n
+      修改 <paramref name="cbEvalBlock"/> 评估次数的数值表达式。此参数通过每 n
       条记录而不是每条记录评估条件来提供性能增强。要逐条记录进行评估，请指定值 0 或省略参数。
     </param>
     <param name="nStart">开始评估的记录号。要从顶部开始，请指定值 0 或省略参数。</param>
     <param name="nNext">
-      从 <paramref name="nStart" /> 开始处理的记录数。指定 0 以忽略此参数。
+      从 <paramref name="nStart"/> 开始处理的记录数。指定 0 以忽略此参数。
     </param>
     <param name="nRecno">要处理的单个记录号。指定 0 以忽略此参数。</param>
     <param name="lRest">
@@ -3926,7 +3929,7 @@
     <param name="lNoOptimize">
       指定是否优化用于构建此顺序的 FOR 条件(适用于支持此功能的 RDD)。TRUE 优化 FOR 条件，FALSE 不优化。默认值为 FALSE。
     </param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.SetOrderCondition>
 
   <DbServer.SetRelation>
@@ -3935,13 +3938,13 @@
     </summary>
     <param name="oDBChild">
       附加到子服务的服务必须指定为 DBServer 对象(而不是别名)。
-      如果省略 <paramref name="oDBChild" />，则删除此服务的所有关系(推荐的方法是
+      如果省略 <paramref name="oDBChild"/>，则删除此服务的所有关系(推荐的方法是
       ClearRelations() 方法)。
     </param>
     <param name="uRelation">服务的关系代码块或表示此服务字段的名称或符号；构造并宏编译代码块</param>
     <param name="cRelation">当关系指定为代码块时，还可以提供代码块的字符串版本；它由 Relation() 方法返回。</param>
     <param name="lSelective">这是否是选择性关系？</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，则向子服务发送 NotifyRecordChange 消息。
       一如既往，子工作区应具有与表达式匹配的控制索引。
@@ -3962,11 +3965,11 @@
     </summary>
     <param name="oDBChild">
       附加到子服务的服务必须指定为 DBServer 对象(而不是别名)。
-      如果省略 <paramref name="oDBChild" />，则删除此服务的所有关系(推荐的方法是 ClearRelations() 方法)。
+      如果省略 <paramref name="oDBChild"/>，则删除此服务的所有关系(推荐的方法是 ClearRelations() 方法)。
     </param>
     <param name="uRelation">服务的关系代码块或表示此服务字段的名称或符号；构造并宏编译代码块</param>
     <param name="cRelation">当关系指定为代码块时，还可以提供代码块的字符串版本；它由 Relation() 方法返回。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       如果成功，则向子服务发送 NotifyRecordChange 消息。
       一如既往，表达式应匹配或为子工作区控制索引的部分索引。
@@ -4011,7 +4014,7 @@
       将记录指针向前或向后移动指定数量的记录。
     </summary>
     <param name="nRecordCount">相对于当前记录要移动的记录数。正值表示向前移动，负值表示向后移动。如果省略，则假定为 +1。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       如果进行了移动，则发送 NotifyRecordChange 消息。
@@ -4026,8 +4029,8 @@
     <param name="cTarget">记录复制到的文件。</param>
     <param name="oFSTarget">一个字符串或文件规范对象，指定记录复制到的文件。</param>
     <param name="cTarget">记录复制到的文件。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       操作完成后发送 NotifyRecordChange 消息。
@@ -4065,7 +4068,7 @@
       计算一系列数值表达式的总和。
     </summary>
     <param name="acbExpression">Sum() 操作的单个表达式或 Sum() 操作的表达式数组。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
     <returns>
       包含每个指定表达式或字段总和的数组。
     </returns>
@@ -4106,8 +4109,8 @@
     </summary>
     <param name="oFSTarget">一个字符串或文件规范对象，指定汇总数据写入的文件。</param>
     <param name="cbKeyField">此服务中作为汇总基础的键字段。请注意，为了使汇总产生正确的结果，表应按此键字段进行索引或排序。</param>
-    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*"/>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       在操作之前发送 NotifyIntentToMove 消息。
       操作完成后发送 NotifyRecordChange 消息。
@@ -4129,7 +4132,7 @@
       释放指定的锁或所有锁。
     </summary>
     <param name="nRecordNumber">所需记录的编号。如果为0或省略，则释放此服务的所有锁，包括记录锁和文件锁。</param>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
   </DbServer.UnLock>
 
   <DbServer.Update>
@@ -4140,15 +4143,15 @@
     <param name="cbKey">定义服务之间记录匹配方式的键字段。</param>
     <param name="lRandomFlag">指示其他数据库中的记录是否允许随机顺序。如果为 FALSE 或未指定，则其他数据库必须按指定键排序。</param>
     <param name="cbReplace">执行更新操作的代码块。</param>
-    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*"/>
     <remarks>
       <note type="tip">
         此方法需要文件锁或独占访问。
       </note>
       操作完成后发送 NotifyFileChange 消息。
       服务之间的匹配关系有两种不同的形式。
-      如果 <paramref name="lRandomFlag" /> 为 TRUE，则此服务必须按指定键进行索引，但其他服务可以按任何顺序排列；
-      如果未指定 <paramref name="lRandomFlag" /> 或为 FALSE，则两个服务必须按指定键进行索引或排序。
+      如果 <paramref name="lRandomFlag"/> 为 TRUE，则此服务必须按指定键进行索引，但其他服务可以按任何顺序排列；
+      如果未指定 <paramref name="lRandomFlag"/> 或为 FALSE，则两个服务必须按指定键进行索引或排序。
       如果此服务中有多个记录具有匹配的键字段，则仅更新第一个记录。
     </remarks>
   </DbServer.Update>
@@ -4196,7 +4199,7 @@
     <summary>
       永久删除服务中的所有记录并释放磁盘空间。
     </summary>
-    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
       <note type="tip">此方法需要独占访问。</note>
       操作完成后发送 NotifyFileChange 消息。
@@ -4204,4 +4207,406 @@
   </DbServer.Zap>
 
 
+<DbSetDefaultLockMode>
+    <summary>获取/设置 DbServer 类的默认锁定模式</summary>
+    <param name="dwLockMode">新的锁定模式。默认值 = ccOptimistic</param>
+    <returns>之前的锁定模式</returns>
+  </DbSetDefaultLockMode>
+  
+<DbSetRestoreWorkarea>
+    <summary>获取/设置用于确定 DbServer 操作是否恢复当前工作区的标志</summary>
+  </DbSetRestoreWorkarea>
+
+<members>
+  </members>
+  <OrderSpec>
+    <summary>
+      OrderSpec 类用于在顺序级别（而非文件级别）建模索引信息，并补充 DBFileSpec 类。
+    </summary>
+    <remarks>
+      实例化需要一个 DBFileSpec 对象。每个顺序都需要一个单独的 OrderSpec 对象。
+      对于如 DBFNTX 这样的单顺序索引格式，相当于每个物理文件一个 OrderSpec 对象。
+      对于如 DBFCDX 这样的多顺序索引格式，则意味着一个物理文件对应多个 OrderSpec 对象。
+      有关条件索引顺序实例变量的更多信息，请参阅 OrdCondSet() 函数。
+    </remarks>
+  </OrderSpec>
+  
+<OrderSpec.Add>
+    <summary>
+      指定在创建新顺序时，已打开的顺序是否应保持打开的逻辑值。
+    </summary>
+    <value>指定在创建新顺序时，已打开的顺序是否应保持打开的逻辑值。</value>
+    <remarks>
+      指定在创建新顺序时，已打开的顺序是否应保持打开的逻辑值。TRUE 表示应保持打开。FALSE 表示应关闭所有已打开的顺序。默认值为 FALSE。
+    </remarks>
+  </OrderSpec.Add>
+  
+<OrderSpec.All>
+    <summary>
+      一个逻辑值，用于确定记录范围是否为 DBF 中的所有记录（TRUE）
+    </summary>
+    <value>一个逻辑值，用于确定记录范围是否为 DBF 中的所有记录（TRUE）</value>
+    <remarks>
+      用于条件索引。一个逻辑值，用于确定记录范围是否为 DBF 中的所有记录（TRUE）。默认为 FALSE，这样可以使用 OrderSpec:Records 和 OrderSpec:Interval。
+    </remarks>
+  </OrderSpec.All>
+  
+<OrderSpec.AutoOpen>
+    <summary>
+      决定当 DBF 文件打开时，此索引文件是否会被打开。
+    </summary>
+    <value>决定当 DBF 文件打开时，此索引文件是否会被打开。</value>
+  </OrderSpec.AutoOpen>
+  
+<OrderSpec.AutoOrder>
+    <summary>
+      决定当索引文件被打开时，是否设置第一个顺序。
+    </summary>
+    <value>决定当索引文件被打开时，是否设置第一个顺序。</value>
+  </OrderSpec.AutoOrder>
+  
+<OrderSpec.AutoShare>
+    <summary>
+      决定此索引文件是否以与 DBF 文件相同的共享模式打开。
+    </summary>
+    <value>决定此索引文件是否以与 DBF 文件相同的共享模式打开。</value>
+  </OrderSpec.AutoShare>
+  
+<OrderSpec.ctor>
+    <summary>
+      使用现有的 DBFileSpec 对象实例化一个 OrderSpec 对象。
+    </summary>
+    <param name="oDBFS">一个现有的 DBFileSpec 对象。</param>
+    <returns>
+      一个 OrderSpec 对象。
+    </returns>
+    <example>
+      <code language="X#">
+        oDB := DBFileSpec{"C:\TEST\CUSTOMER.DBF"}
+        oOrd1 := OrderSpec{oDB}
+      </code>
+    </example>
+  </OrderSpec.ctor>
+  
+<OrderSpec.Current>
+    <summary>
+      一个逻辑值，用于确定是否仅包含控制顺序和范围内的记录。默认为 FALSE，因此包含 DBF 中的所有记录。
+    </summary>
+    <value>一个逻辑值，用于确定是否仅包含控制顺序和范围内的记录。默认为 FALSE，因此包含 DBF 中的所有记录。</value>
+  </OrderSpec.Current>
+  
+<OrderSpec.Custom>
+    <summary>
+      一个逻辑值，用于确定此是否为自定义排序。仅对支持自定义排序的RDD有效。对于非自定义排序，默认值为FALSE。
+    </summary>
+    <value>一个逻辑值，用于确定此是否为自定义排序。仅对支持自定义排序的RDD有效。对于非自定义排序，默认值为FALSE。</value>
+  </OrderSpec.Custom>
+  
+<OrderSpec.DBF>
+    <summary>
+      与此OrderSpec对象关联的DBFileSpec对象。
+    </summary>
+    <value>与此OrderSpec对象关联的DBFileSpec对象。</value>
+  </OrderSpec.DBF>
+  
+<OrderSpec.Descend>
+    <summary>
+      一个逻辑值，用于确定此是否为降序排序。默认值为FALSE，即升序排序。
+    </summary>
+    <value>一个逻辑值，用于确定此是否为降序排序。默认值为FALSE，即升序排序。</value>
+  </OrderSpec.Descend>
+  
+<OrderSpec.EvalBlock>
+    <summary>
+      根据OrderSpec:Interval进行评估的代码块。该代码块应返回TRUE值。
+    </summary>
+    <value>根据OrderSpec:Interval进行评估的代码块。该代码块应返回TRUE值。</value>
+  </OrderSpec.EvalBlock>
+  
+<OrderSpec.FileName>
+    <summary>
+      排序的驱动器、路径和文件名。如果省略，驱动器和路径默认为当前窗口的驱动器和路径，或SetDefault()中使用的驱动器和路径。
+    </summary>
+    <value>排序的驱动器、路径和文件名。如果省略，驱动器和路径默认为当前窗口的驱动器和路径，或SetDefault()中使用的驱动器和路径。</value>
+  </OrderSpec.FileName>
+  
+<OrderSpec.ForBlock>
+    <summary>
+      用于构建此排序的FOR条件代码块。
+    </summary>
+    <value>用于构建此排序的FOR条件代码块。</value>
+  </OrderSpec.ForBlock>
+  
+<OrderSpec.ForCond>
+    <summary>
+      用于构建此排序的FOR条件字符串。
+    </summary>
+    <value>用于构建此排序的FOR条件字符串。</value>
+  </OrderSpec.ForCond>
+  
+<OrderSpec.HPLock>
+    <summary>
+      一个逻辑值，用于确定DBFNTX RDD在构建此排序时是否使用HPLocking方案。默认值为FALSE，即不使用HPLocking。
+    </summary>
+    <value>一个逻辑值，用于确定DBFNTX RDD在构建此排序时是否使用HPLocking方案。默认值为FALSE，即不使用HPLocking。</value>
+  </OrderSpec.HPLock>
+  
+<OrderSpec.Interval>
+    <summary>
+      一个整数，用于确定在构建排序时执行OrderSpec:EvalBlock的间隔。
+    </summary>
+    <value>一个整数，用于确定在构建排序时执行OrderSpec:EvalBlock的间隔。</value>
+  </OrderSpec.Interval>
+  
+<OrderSpec.IsCond>
+    <summary>
+      一个逻辑值，指示此是否为条件排序。当任何条件ASSIGN被赋值时，该值会在内部被设置为TRUE，无需手动赋值即可创建条件排序。
+    </summary>
+    <value>一个逻辑值，指示此是否为条件排序。当任何条件ASSIGN被赋值时，该值会在内部被设置为TRUE，无需手动赋值即可创建条件排序。</value>
+  </OrderSpec.IsCond>
+  
+<OrderSpec.KeyInfo>
+    <summary>
+      包含 OrderSpec 对象结构的 1 维、4 元素数组。
+    </summary>
+    <value>包含 OrderSpec 对象结构的 1 维、4 元素数组。</value>
+    <remarks>
+      包含 OrderSpec 对象结构的 1 维、4 元素数组。
+      每个子数组由四个元素组成，包含以下顺序键信息：
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>ORD_KEYTYPE</term>
+          <description>索引键的数据类型。</description>
+        </item>
+        <item>
+          <term>ORD_KEYCOUNT</term>
+          <description>此顺序中包含的键的数量。</description>
+        </item>
+        <item>
+          <term>ORD_KEYSIZE</term>
+          <description>此顺序键的长度。</description>
+        </item>
+        <item>
+          <term>ORD_KEYDEC</term>
+          <description>此顺序中小数的位数</description>
+        </item>
+      </list>
+    </remarks>
+  </OrderSpec.KeyInfo>
+  
+<OrderSpec.LockOffSet>
+    <summary>
+      当前 NTX 锁定偏移量的数值。
+    </summary>
+    <value>当前 NTX 锁定偏移量的数值。</value>
+  </OrderSpec.LockOffSet>
+  
+<OrderSpec.NoOptimize>
+    <summary>
+      一个逻辑值，用于确定用于构建此顺序的 FOR 条件是否应被优化。适用于支持查询优化的 RDD。默认为 FALSE，表示不优化。
+    </summary>
+    <value>一个逻辑值，用于确定用于构建此顺序的 FOR 条件是否应被优化。适用于支持查询优化的 RDD。默认为 FALSE，表示不优化。</value>
+  </OrderSpec.NoOptimize>
+  
+<OrderSpec.OrderAdd>
+    <summary>
+      从现有索引文件中添加顺序信息到 OrderSpec 对象，并将此 OrderSpec 对象与用于实例化的 DBFileSpec 对象关联。
+    </summary>
+    <param name="oFS">指定索引文件完整路径的字符串或文件规范对象，或索引文件的 FileSpec 对象。</param>
+    <param name="uOrder">顺序名称，或在使用多顺序文件时的数字位置。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+    <example>
+      以下示例演示了可以添加的几种不同类型的顺序：
+      <code language="X#">
+        // add orders from a multi-order file:
+        oDB := DBFileSpec{, "DBFCDX"}
+        IF oDB:Find()
+        oOrd1 := OrderSpec{oDB}
+        oOrd2 := OrderSpec{oDB}
+        oOrd3 := OrderSpec{oDB}
+        oOrd1:OrderAdd("C:\TEST\customer.cdx", "FirstName")
+        oOrd2:OrderAdd("C:\TEST\customer.cdx", "LastName")
+        oOrd3:OrderAdd("C:\TEST\customer.cdx", "CustNum")
+        ENDIF
+        // add orders from single-order files:
+        oDB := DBFileSpec{, "DBFNTX"}
+        IF oDB:Find()
+        oOrd1 := OrderSpec{oDB}
+        oOrd2 := OrderSpec{oDB}
+        oOrd3 := OrderSpec{oDB}
+        oOrd1:OrderAdd("C:\TEST\cust1.ntx")
+        oOrd2:OrderAdd("C:\TEST\cust2.ntx")
+        oOrd3:OrderAdd("C:\TEST\cust3.ntx")
+        ENDIF
+      </code>
+    </example>
+  </OrderSpec.OrderAdd>
+  
+<OrderSpec.OrderBlock>
+    <summary>
+      用于创建此顺序的索引键表达式的代码块。
+    </summary>
+    <value>用于创建此顺序的索引键表达式的代码块。</value>
+  </OrderSpec.OrderBlock>
+  
+<OrderSpec.OrderCreate>
+    <summary>
+      创建新订单，如果为空，则填写 OrderSpec 信息并将创建的订单与 DBFileSpec 对象关联。
+    </summary>
+    <param name="oFS">指定目标文件完整路径的字符串或文件规范对象。</param>
+    <param name="cOrder">订单名称。用于多订单索引文件。</param>
+    <param name="cKeyValue">索引键表达式的字符串。</param>
+    <param name="cbKeyValue">索引键表达式的代码块。</param>
+    <param name="lUnique">逻辑值，用于确定是否为唯一订单。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+    <example>
+      以下示例演示了可以创建的几种不同类型的订单：
+      <code language="X#">
+        // create orders for a multi-order file:
+        oDB := DBFileSpec{, "DBFCDX"}
+        IF oDB:Find()
+        oOrd1 := OrderSpec{oDB}
+        oOrd2 := OrderSpec{oDB}
+        oOrd3 := OrderSpec{oDB}
+        oOrd1:OrderCreate("C:\TEST\customer.cdx", "FirstName", "FirstName")
+        oOrd2:OrderCreate("C:\TEST\customer.cdx", "LastName", "LastName")
+        oOrd3:OrderCreate("C:\TEST\customer.cdx", "CustNum", "CustNum")
+        ENDIF
+        // create orders for single-order files:
+        oDB := DBFileSpec{, "DBFNTX"}
+        IF oDB:Find()
+        oOrd1 := OrderSpec{oDB}
+        oOrd2 := OrderSpec{oDB}
+        oOrd3 := OrderSpec{oDB}
+        oOrd1:OrderCreate("C:\TEST\cust1.ntx", , "FirstName")
+        oOrd2:OrderCreate("C:\TEST\cust2.ntx", , "LastName")
+        oOrd3:OrderCreate"C:\TEST\cust3.ntx", , "CustNum")
+        ENDIF
+        // create some orders using instance variables for a multi-order file:
+        oDB := DBFileSpec{, "DBFCDX"}
+        IF oDB:Find()
+        oOrd1 := OrderSpec{oDB}
+        oOrd2 := OrderSpec{oDB}
+        oOrd3 := OrderSpec{oDB}
+        // create an order starting from record 3 and display the progress.
+        oOrd1:FileName := "customer"
+        oOrd1:OrderName := "FirstName"
+        oOrd1:OrderExpr := "FirstName"
+        oOrd1:OrderBlock := {| | _Field-&gt;FirstName }
+        oOrd1:All := FALSE
+        oOrd1:EvalBlock := {| | _Field-&gt;FirstName, Qout(RECNO()), TRUE}
+        oOrd1:Start := 3
+        oOrd1:Rest := TRUE
+        // create a unique, descending order on lastname field
+        oOrd2:FileName := "customer"
+        oOrd2:OrderName := "LastName"
+        oOrd2:OrderExpr := "LastName"
+        oOrd2:OrderBlock := {| | _Field-&gt;LastName }
+        oOrd2:Unique := TRUE
+        oOrd2:DESCEND := TRUE
+        // create a FOR condition based on firstnames with starting letter &gt; "M"
+        oOrd3:FileName := "customer"
+        oOrd3:OrderName := "FirstName"
+        oOrd3:OrderExpr := "FirstName"
+        oOrd3:OrderBlock := {| | _Field-&gt;FirstName }
+        oOrd3:ForCond := "SubStr(_Field-&gt;FirstName, 1, 1) &gt; 'M'"
+        oOrd3:ForBlock := {| | SUBSTR(_Field-&gt;FirstName, 1, 1) &gt; 'M' }
+        oOrd1:OrderCreate( )
+        oOrd2:OrderCreate( )
+        oOrd3:OrderCreate( )
+        ENDIF
+      </code>
+    </example>
+  </OrderSpec.OrderCreate>
+  
+<OrderSpec.OrderDelete>
+    <summary>
+      从多序文件或单序文件的物理索引文件中删除订单。将 OrderSpec 对象和与该订单相关的 DBFileSpec 对象中的 OrderSpec 对象信息置为 NULL。
+    </summary>
+    <param name="uOrder">要删除的订单的数字位置或订单名称。除非已知实际的订单位置，否则请使用订单名称。默认值为索引文件的第一个订单。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+    <example>
+      <code language="X#">
+        RDDSetDefault("DBFNTX")
+        oDB := DBFileSpec{"C:\TEST\CUSTOMER.DBF"}
+        oOrd1 := OrderSpec{oDB}
+        oOrd2 := OrderSpec{oDB}
+        oOrd3 := OrderSpec{oDB}
+        oOrd1:OrderAdd("C:\TEST\CUST1.NTX")
+        oOrd2:OrderAdd("C:\TEST\CUST2.NTX")
+        oOrd3:OrderAdd("C:\TEST\CUST3.NTX")
+        oOrd1:OrderDelete( )
+        oOrd2:OrderDelete( )
+        oOrd3:OrderDelete( )
+      </code>
+    </example>
+  </OrderSpec.OrderDelete>
+  
+<OrderSpec.OrderExpr>
+    <summary>
+      用于创建此订单的索引键表达式字符串。
+    </summary>
+    <value>用于创建此订单的索引键表达式字符串。</value>
+  </OrderSpec.OrderExpr>
+  
+<OrderSpec.OrderName>
+    <summary>
+      此订单的订单（标签）名称。用于创建多序订单文件（包）。
+    </summary>
+    <value>此订单的订单（标签）名称。用于创建多序订单文件（包）。</value>
+  </OrderSpec.OrderName>
+  
+<OrderSpec.Recno>
+    <summary>
+      要处理的单个记录号。默认为零（0），表示处理所有记录。
+    </summary>
+    <value>要处理的单个记录号。默认为零（0），表示处理所有记录。</value>
+  </OrderSpec.Recno>
+  
+<OrderSpec.Records>
+    <summary>
+      从 OrderSpec:Start 开始要处理的记录数。
+    </summary>
+    <value>从 OrderSpec:Start 开始要处理的记录数。</value>
+  </OrderSpec.Records>
+  
+<OrderSpec.Rest>
+    <summary>
+      一个逻辑值，指示是否从 OrderSpec:Start 开始处理记录（TRUE）。默认为 FALSE，表示从文件开头处理所有记录。
+    </summary>
+    <value>一个逻辑值，指示是否从 OrderSpec:Start 开始处理记录（TRUE）。默认为 FALSE，表示从文件开头处理所有记录。</value>
+  </OrderSpec.Rest>
+  
+<OrderSpec.Start>
+    <summary>
+      指定开始构建此订单时的起始记录号。
+    </summary>
+    <value>指定开始构建此订单时的起始记录号。</value>
+  </OrderSpec.Start>
+  
+<OrderSpec.StrictRead>
+    <summary>
+      一个逻辑值，决定在创建订单时是否直接从磁盘读取记录。
+    </summary>
+    <value>一个逻辑值，决定在创建订单时是否直接从磁盘读取记录。</value>
+  </OrderSpec.StrictRead>
+  
+<OrderSpec.Unique>
+    <summary>
+      一个逻辑值，决定此订单是否为唯一订单（无重复键）。
+    </summary>
+    <value>一个逻辑值，决定此订单是否为唯一订单（无重复键）。</value>
+  </OrderSpec.Unique>
+  
+<OrderSpec.WhileBlock>
+    <summary>
+      在构建此订单时使用的 WHILE 条件代码块。
+    </summary>
+    <value>在构建此订单时使用的 WHILE 条件代码块。</value>
+  </OrderSpec.WhileBlock>
+  
 </doc>

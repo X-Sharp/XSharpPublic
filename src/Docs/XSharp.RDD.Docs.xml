@@ -1,0 +1,905 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <ACE>
+        <summary>
+        the ACE class has all the constants and functions from the ACE API <br/>
+        Please look in the ADS documentation for more information about the functions and constants.
+        <note type="tip">
+        There is a 32 bits API and a 64 bits API. The ACE class automatically dispatches to the right version of the API.
+        </note>
+        </summary>
+        <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
+    </ACE>
+    <AceError>
+        <summary>List of possible Advantage Error codes</summary>
+    </AceError>
+    <AceTrigEvent>
+        <summary>List of possible Trigger event codes</summary>
+    </AceTrigEvent>
+    <AceTrigOptions>
+        <summary>List of possible Trigger option codes</summary>
+    </AceTrigOptions>
+    <AceTrigType>
+        <summary>List of possible Trigger type codes</summary>
+    </AceTrigType>
+    <ACEUNPUB>
+        <summary>
+        the ACEUNPUB class has undocumented constants and functions from the ACE API
+        <note type="tip">
+        There is a 32 bits API and a 64 bits API.
+        The ACEUNPUB class automatically dispatches to the right version of the API.
+        </note>
+        </summary>
+        <seealso cref="T:XSharp.ADS.ACE"/>
+    </ACEUNPUB>
+    <AceValidate>
+        <summary>List of possible Validation codes</summary>
+    </AceValidate>
+    <ADS_MGMT_ACTIVITY_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the server's activity.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_ACTIVITY_INFO>
+  <ADS_MGMT_COMM_STATS>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the server's  communication statistics.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_COMM_STATS>
+  <ADS_MGMT_CONFIG_MEMORY>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the server's memory configuration.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_CONFIG_MEMORY>
+  <ADS_MGMT_CONFIG_PARAMS>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the configuration parameters. <br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_CONFIG_PARAMS>
+<ADS_MGMT_INDEX_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about an index.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_INDEX_INFO>
+  <ADS_MGMT_INSTALL_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the installation.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_INSTALL_INFO>
+  <ADS_MGMT_RECORD_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about a locked record.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_RECORD_INFO>
+  <ADS_MGMT_TABLE_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about a table.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_TABLE_INFO>
+  <ADS_MGMT_THREAD_ACTIVITY>
+    <summary>
+      Structure used by the ADS MGMT API to return information about worker threads.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_THREAD_ACTIVITY>
+  <ADS_MGMT_UPTIME_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the server's uptime.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_UPTIME_INFO>
+  <ADS_MGMT_USAGE_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about the server's usage.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_USAGE_INFO>
+  <ADS_MGMT_USER_INFO>
+    <summary>
+      Structure used by the ADS MGMT API to return information about users.<br/>
+      See the ADS documentation for a description of this structure.
+    </summary>
+  </ADS_MGMT_USER_INFO>
+  <ADSADT>
+        <summary>This class allows to open the proprietry ADT format using the Advantage driver</summary>
+    </ADSADT>
+    <AdsCharacterColumn>
+        <summary>Class for reading / writing String Columns</summary>
+    </AdsCharacterColumn>
+    <AdsCharTypes>
+        <summary>
+        List of possible character types and collations. <br/>
+        </summary>
+        <remarks>
+        The collations with VFP in their name match the Visual FoxPro collations. <br/>
+        CI in the name means Case Insensitive <br/>
+        AS in the name means Accent Sensitive <br/>
+        BIN in the name means Binary <br/>
+        The names match the entries in "adscollate.adt "
+        </remarks>
+    </AdsCharTypes>
+    <AdsColumn>
+        <summary>Class for Ads Column reading / writing </summary>
+    </AdsColumn>
+    <AdsConnect60>
+        <include file="ads.xml" path="functions/ads/*"/>
+        <seealso cref="AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
+    </AdsConnect60>
+    <AdsDateColumn>
+        <summary>Class for reading / writing Date Columns</summary>
+    </AdsDateColumn>
+    <AdsError>
+        <summary>
+        The AdsRDD class.
+        </summary>
+    </AdsError>
+    <AdsFieldType>
+        <summary>List of possible field types.</summary>
+    </AdsFieldType>
+    <AdsFieldType.AUTOINC>
+        <summary>4 byte auto-increment value </summary>
+    </AdsFieldType.AUTOINC>
+    <AdsFieldType.BINARY>
+        <summary>BLOB - any data</summary>
+    </AdsFieldType.BINARY>
+    <AdsFieldType.CISTRING>
+        <summary>CaSe INSensiTIVE character data </summary>
+    </AdsFieldType.CISTRING>
+    <AdsFieldType.COMPACTDATE>
+        <summary>DBF date represented with 3 bytes </summary>
+    </AdsFieldType.COMPACTDATE>
+    <AdsFieldType.CURDOUBLE>
+        <summary>IEEE 8 byte floating point currency </summary>
+    </AdsFieldType.CURDOUBLE>
+    <AdsFieldType.DATE>
+        <summary>Date field.</summary>
+    </AdsFieldType.DATE>
+    <AdsFieldType.DOUBLE>
+        <summary>IEEE 8 byte floating point </summary>
+    </AdsFieldType.DOUBLE>
+    <AdsFieldType.GUID>
+        <summary>16-byte binary data </summary>
+    </AdsFieldType.GUID>
+    <AdsFieldType.IMAGE>
+        <summary>BLOB - bitmap</summary>
+    </AdsFieldType.IMAGE>
+    <AdsFieldType.INT64>
+        <summary>8 byte integer </summary>
+    </AdsFieldType.INT64>
+    <AdsFieldType.INTEGER>
+        <summary>IEEE 4 byte signed long integer </summary>
+    </AdsFieldType.INTEGER>
+    <AdsFieldType.LOGICAL>
+        <summary>1 byte logical value</summary>
+    </AdsFieldType.LOGICAL>
+    <AdsFieldType.MEMO>
+        <summary>Variable length character data</summary>
+    </AdsFieldType.MEMO>
+    <AdsFieldType.MODTIME>
+        <summary>8 byte timestamp, updated when record is updated </summary>
+    </AdsFieldType.MODTIME>
+    <AdsFieldType.MONEY>
+        <summary>8 byte, 4 implied decimal Currency Field </summary>
+    </AdsFieldType.MONEY>
+    <AdsFieldType.NCHAR>
+        <summary>Unicode Character data </summary>
+    </AdsFieldType.NCHAR>
+    <AdsFieldType.NMEMO>
+        <summary>Variable Length Unicode Data </summary>
+    </AdsFieldType.NMEMO>
+    <AdsFieldType.NUMERIC>
+        <summary>DBF character style numeric</summary>
+    </AdsFieldType.NUMERIC>
+    <AdsFieldType.NVARCHAR>
+        <summary>Unpadded Unicode Character data </summary>
+    </AdsFieldType.NVARCHAR>
+    <AdsFieldType.RAW>
+        <summary>Untranslated data </summary>
+    </AdsFieldType.RAW>
+    <AdsFieldType.ROWVERSION>
+        <summary>8 byte integer, incremented for every update, unique to entire table </summary>
+    </AdsFieldType.ROWVERSION>
+    <AdsFieldType.SHORTINT>
+        <summary>IEEE 2 byte signed short integer </summary>
+    </AdsFieldType.SHORTINT>
+    <AdsFieldType.STRING>
+        <summary>Character data</summary>
+    </AdsFieldType.STRING>
+    <AdsFieldType.SYSTEM_FIELD>
+        <summary>For internal usage </summary>
+    </AdsFieldType.SYSTEM_FIELD>
+    <AdsFieldType.TIME>
+        <summary>4 byte long integer representing milliseconds since midnight </summary>
+    </AdsFieldType.TIME>
+    <AdsFieldType.TIMESTAMP>
+        <summary>8 bytes.  High order 4 bytes are a long integer representing Julian date.Low order 4 bytes are a long integer representing milliseconds since midnight </summary>
+    </AdsFieldType.TIMESTAMP>
+    <AdsFieldType.VARBINARY_FOX>
+        <summary>Visual FoxPro varbinary field </summary>
+    </AdsFieldType.VARBINARY_FOX>
+    <AdsFieldType.VARCHAR>
+        <summary>variable length character FIELD </summary>
+    </AdsFieldType.VARCHAR>
+    <AdsFieldType.VARCHAR_FOX>
+        <summary>Visual FoxPro varchar field </summary>
+    </AdsFieldType.VARCHAR_FOX>
+    <AdsGetErrorMessage>
+        <summary>Return the Last error message for an ADS operation.</summary>
+        <remarks>You have to call this immediately after an error occurs. Otherwise the error message may have been reset by a subsequent operation.</remarks>
+    </AdsGetErrorMessage>
+    <ADSIndex>
+        <summary>Advantage Index support.</summary>
+    </ADSIndex>
+    <AdsLogicColumn>
+        <summary>Class for reading / writing Logic Columns</summary>
+    </AdsLogicColumn>
+    <ADSMemo>
+        <summary>Advantage Memo support.</summary>
+    </ADSMemo>
+  <ADSMemo.CloseMemFile>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.CloseMemFile>
+    <ADSMemo.CreateMemFile>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.CreateMemFile>
+    <ADSMemo.Flush>
+    <summary>This method is not supported by the AdsMemo class </summary>
+  </ADSMemo.Flush>
+    <ADSMemo.GetValue>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.GetValue>
+    <ADSMemo.GetValueFile>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.GetValueFile>
+    <ADSMemo.OpenMemFile>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.OpenMemFile>
+    <ADSMemo.PutValue>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.PutValue>
+    <ADSMemo.PutValueFile>
+        <summary>This method is not supported by the AdsMemo class </summary>
+    </ADSMemo.PutValueFile>
+  <AdsMemoColumn>
+        <summary>Class for reading / writing Memo Columns. </summary>
+    </AdsMemoColumn>
+    <AdsNumericColumn>
+        <summary>Class for reading / writing Numeric Columns</summary>
+    </AdsNumericColumn>
+    <ADSRDD>
+    <summary>
+      The base AdsRDD class from which all Advantage RDDs for X# inherit.
+    </summary>
+  </ADSRDD>
+    <ADSRDD.AppendLock>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.AppendLock>
+    <ADSRDD.BlobInfo>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.BlobInfo>
+    <ADSRDD.ctor>
+        <summary>Create instande of RDD </summary>
+    </ADSRDD.ctor>
+    <ADSRDD.ForceRel>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.ForceRel>
+    <ADSRDD.GetRec>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.GetRec>
+    <ADSRDD.GetValueFile>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.GetValueFile>
+    <ADSRDD.HeaderLock>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.HeaderLock>
+    <ADSRDD.PutRec>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.PutRec>
+    <ADSRDD.PutValueFile>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.PutValueFile>
+    <ADSRDD.Sort>
+        <summary>This method is not supported by the AdsRDD class </summary>
+    </ADSRDD.Sort>
+  <AX_AXSLocking>
+        <summary>Return the AXS locking status.</summary>
+        <returns>The current Advantage Locking setting.</returns>
+    </AX_AXSLocking>
+    <AX_AXSLocking_2>
+        <summary>Return and set the AXS locking status.</summary>
+        <returns>The previous Advantage Locking setting.</returns>
+        <param name="bMode">The new Advantage Locking setting.</param>
+    </AX_AXSLocking_2>
+    <AX_BLOB2File>
+        <summary>Writes a BLOB contained in a memo field to a file.</summary>
+        <returns>Returns True (.T.) if the BLOB is written to a file, returns False (.F.) if not.</returns>
+        <param name="cFileName">File name to write to.</param>
+        <param name="cFieldName">Field name to read from.</param>
+    </AX_BLOB2File>
+    <AX_File2BLOB>
+        <summary>Stores the contents of a file into a memo field.</summary>
+        <returns>Returns True (.T.) if the file contents are copied into the memo field; returns False (.F.) if not.</returns>
+        <param name="cFileName">File name to read from.</param>
+        <param name="cFieldName">Field name to write to.</param>
+    </AX_File2BLOB>
+    <AX_GetAceIndexHandle>
+        <summary>Returns the Advantage Client Engine index handle that corresponds with the specified index in the current work area.
+        The handle can be used to call any Advantage Client Engine API directly.</summary>
+        <returns>An Advantage Client Engine index order handle or 0 if no index was found.</returns>
+        <param name="uIndexFile">filename or NIL</param>
+        <param name="uOrder">order name, number, or NIL</param>
+    </AX_GetAceIndexHandle>
+    <AX_GetAceStmtHandle>
+        <summary>Returns the statement handle for the current workarea.  This handle can be used
+        to call the Advantage Client Engine directly.  Only for use with the AXSQL RDDs.</summary>
+        <returns> Returns a 0 if there is a problem.</returns>
+    </AX_GetAceStmtHandle>
+    <AX_GetAceTableHandle>
+        <summary>Returns the table handle for the current workarea.  This handle can be used to call the Advantage Client Engine directly.</summary>
+        <returns>Returns a 0 if there is a problem.</returns>
+    </AX_GetAceTableHandle>
+    <AX_IsServerLoaded>
+        <summary>Return .T. if Advantage is loaded on the specified location.</summary>
+        <remarks>cFileName must start with a drive letter ("X:\") or a UNC path ("\\server\volume\path\")</remarks>
+        <param name="cFileName">String containing drive letter or server name to check.
+        If the application uses a server name as the parameter, it must include the share or
+        volume name as well. For example, use "\\server\share" or "\\server\vol:"..</param>
+        <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
+    </AX_IsServerLoaded>
+    <AX_PercentIndexed>
+        <summary>Indicates the percent completion of an index build</summary>
+    </AX_PercentIndexed>
+    <AX_RightsCheck>
+        <summary>Return the AXS Rights Checking status.</summary>
+    </AX_RightsCheck>
+    <AX_RightsCheck_2>
+        <summary>Return and set the AXS Rights Checking status.</summary>
+    </AX_RightsCheck_2>
+    <AX_SetCollation>
+        <summary>This function specifies which collation language to use when opening tables, opening cursors, or creating tables.</summary>
+    </AX_SetCollation>
+    <AX_SetConnectionHandle>
+        <summary>Sets the connection handle for all successive table opens.</summary>
+        <param name="ptrHandle">Connection handle that was returned by AdsConnect60</param>
+        <seealso cref="AdsConnect60">AdsConnect60 Function</seealso>
+        <seealso cref="AdsGetLastError">AdsGetLastError FUNCTION</seealso>
+    </AX_SetConnectionHandle>
+    <AX_SetExactKeyPos>
+        <summary>Returns the Exact Key Position Flag.</summary>
+    </AX_SetExactKeyPos>
+    <AX_SetExactKeyPos_2>
+        <summary>Returns and sets the Exact Key Position Flag.</summary>
+    </AX_SetExactKeyPos_2>
+    <AX_SetPassword>
+        <summary>Sets the password to be used for subsequent encryption/decryption operations.</summary>
+    </AX_SetPassword>
+    <AX_SetServerType>
+        <summary>Determines which type of Advantage server the client application can use.</summary>
+    </AX_SetServerType>
+    <AX_SetSQLTablePasswords>
+        <summary>Sets passwords for encrypted tables for use with the AXSQL RDDs.</summary>
+    </AX_SetSQLTablePasswords>
+    <AX_Transaction>
+        <summary>Begins, commits, rolls back, or shows the state of a transaction</summary>
+        <param name="iAction">The parameter can be: AX_BEGIN_TRANSACTION, AX_COMMIT_TRANSACTION, AX_ROLLBACK_TRANSACTION, AX_ISACTIVE_TRANSACTION</param>
+        <returns>True if the command was successful, False if not.</returns>
+    </AX_Transaction>
+    <AX_Transaction_2>
+        <summary>Is a transaction pending </summary>
+    </AX_Transaction_2>
+    <AX_UsingClientServer>
+        <summary>return .T. if the current workarea is using Advantage Server or AIS Server and
+        .F. IF USING Advantage RDD IN a LOCAL mode</summary>
+    </AX_UsingClientServer>
+    <AXDBFCDX>
+    <summary>Advantage.AXDBFCDX RDD </summary>
+  </AXDBFCDX>
+  <AXDBFCDX.ctor>
+    <summary>Create instande of RDD </summary>
+  </AXDBFCDX.ctor>
+  <AXDBFNTX>
+    <summary>Advantage.AXDBFNTX RDD </summary>
+  </AXDBFNTX>
+    <AXDBFNTX.ctor>
+        <summary>Create instande of RDD </summary>
+    </AXDBFNTX.ctor>
+  <AXDBFVFP>
+    <summary>Advantage.AXDBFVFP RDD </summary>
+  </AXDBFVFP>
+    <AXDBFVFP.ctor>
+        <summary>Create instande of RDD </summary>
+    </AXDBFVFP.ctor>
+  <AXSQLADT>
+        <summary>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</summary>
+    </AXSQLADT>
+    <AXSQLCDX>
+    <summary>Advantage.AXSQLCDX RDD </summary>
+  </AXSQLCDX>
+    <AXSQLCDX.ctor>
+        <summary>Create instande of RDD </summary>
+    </AXSQLCDX.ctor>
+  <AXSQLNTX>
+    <summary>Advantage.AXSQLNTX RDD </summary>
+  </AXSQLNTX>
+    <AXSQLNTX.ctor>
+        <summary>Create instande of RDD </summary>
+    </AXSQLNTX.ctor>
+  <AXSQLRDD>
+    <summary>Base class for all advantage SQL RDDs.</summary>
+  </AXSQLRDD>
+    <AXSQLRDD.ctor>
+        <summary>Create instance of the RDD </summary>
+    </AXSQLRDD.ctor>
+    <AXSQLVFP>
+    <summary>Advantage.AXSQLVFP RDD </summary>
+  </AXSQLVFP>
+    <AXSQLVFP.ctor>
+        <summary>Create instande of RDD </summary>
+    </AXSQLVFP.ctor>
+  <CallbackFn>
+        <summary>Delegate used by some advantage progress functions</summary>
+    </CallbackFn>
+    <CallbackFn101>
+        <summary>Delegate used by some advantage progress functions</summary>
+    </CallbackFn101>
+    <CdxBranchPage>
+    <summary>
+      This class maps the Branch page from the file in memory
+      Manipulating the page is implemented in the CdxTag class
+    </summary>
+  </CdxBranchPage>
+  <CdxFileHeader>
+        <summary>
+        The CdxHeader class. = Class that maps the File Header to memory
+        The logic around this is in the OrderBag class
+        </summary>
+        <remarks>
+        The first page in the file is the FILE Header (Bag Header). |
+        The keylength is fixed to 10 (which is the tag length)
+        The root page of the file header points to the list of tags (which is a LEAF page)
+        The freepage points to the list of free pages at BAG level.
+        </remarks>
+    </CdxFileHeader>
+    <CdxGeneralPage>
+        <summary>
+        CdxLeaf page. this class maps the Leaf page from the file in memory
+        Manipulating the page is implemented in the CdxTag class
+        </summary>
+    </CdxGeneralPage>
+    <CdxLeafPage>
+        <summary>
+        CdxLeaf page. this class maps the Leaf page from the file in memory
+        Manipulating the page is implemented in the CdxTag class
+        </summary>
+    </CdxLeafPage>
+  <CdxNode>
+    <summary>
+      The CdxNode class.
+      The size of each item is: 8 + Key Size ( the last item doesn't contain a key value, only a pointer to a sub-tree.)
+      The structure of an Item is
+      long page_offset - file offset (within ntx file) where sub-tree is. if there's no subtree, a 0 is stored.
+      long recno       - record number for this key value (in the dbf file)
+      char key_value[key_size]
+    </summary>
+  </CdxNode>
+    <CdxOrderBag>
+    <summary>
+      Orderbag = CDX file. Contains one or more orders = Tags
+    </summary>
+  </CdxOrderBag>
+    <CdxOrderBagList>
+        <summary>
+        List of OrderBags (an Orderbag = CDX file)
+        </summary>
+    </CdxOrderBagList>
+  <CdxPage>
+        <summary>
+        The CdxPageBase class.
+        </summary>
+    </CdxPage>
+    <CdxPageList>
+    <summary>
+      The pageList class.
+    </summary>
+  </CdxPageList>
+    <CdxTag._indexedFields>
+        <summary>List of fields that are evaluated for an index expression</summary>
+    </CdxTag._indexedFields>
+  <CdxTag._NullableKey>
+        <summary>Is the index nullable (one or more fields are nullable)</summary>
+    </CdxTag._NullableKey>
+    <CdxTag._SingleField>
+        <summary>0 based FieldIndex</summary>
+    </CdxTag._SingleField>
+    <CdxTag._SourceIndex>
+        <summary>Start location in buffer for single field index</summary>
+    </CdxTag._SourceIndex>
+    <CdxTagHeader>
+        <summary>
+        The CdxTagHeader class. = Class that maps the Tag Header to memory
+        The logic around this is in the CdxTag class
+        </summary>
+    </CdxTagHeader>
+    <CdxTagList>
+        <summary>
+        The CdxTagList class is a special CdxLeaf. Its NodeAttribute must be Root + Leaf = TagList
+        </summary>
+    </CdxTagList>
+    <CdxTreePage>
+    Base class for CDX Tree pages, which are Branch and Leaf pages.
+  </CdxTreePage>
+  <CSV>
+    <summary>CSV RDD. For reading and writing semicolon delimited files.</summary>
+  </CSV>
+  <DBF>
+    <summary>DBF RDD. Usually not used 'stand alone'</summary>
+  </DBF>
+  <DBF.AddField>
+        <summary>
+        Add a Field to the _Fields List. Fields are added in the order of method call
+        </summary>
+        <inheritdoc/>
+    </DBF.AddField>
+    <DBF.IsHot>
+        <summary>Is the current row </summary>
+    </DBF.IsHot>
+    <DBF.IsNewRecord>
+        <summary>Is the current row a new record (the result of Append())</summary>
+    </DBF.IsNewRecord>
+    <DbfAutoIncrementColumn>
+        <summary>Class for reading / writing AutoIncrement Columns. </summary>
+    </DbfAutoIncrementColumn>
+    <DbfAutoIncrementColumn.Read>
+        <summary>Read the next autoincrement number from the dbf header </summary>
+    </DbfAutoIncrementColumn.Read>
+    <DbfAutoIncrementColumn.Write>
+        <summary>Write the next autoincrement number to the dbf header </summary>
+    </DbfAutoIncrementColumn.Write>
+    <DBFAXSAdsBeginTransaction>
+        <summary>Begins a transaction for all connected servers or for the given server.</summary>
+    </DBFAXSAdsBeginTransaction>
+    <DBFAXSAdsBinaryToFile>
+        <summary>Retrieves the binary object from the given field and stores it in the specified file.</summary>
+    </DBFAXSAdsBinaryToFile>
+    <DBFAXSAdsCommitTransaction>
+        <summary>Commits an active transaction on the given connection.</summary>
+    </DBFAXSAdsCommitTransaction>
+    <DBFAXSAdsDisableEncryption>
+        <summary>Turns off Advantage encryption</summary>
+    </DBFAXSAdsDisableEncryption>
+    <DBFAXSAdsEnableEncryption>
+        <summary>Turns on Advantage encryption</summary>
+    </DBFAXSAdsEnableEncryption>
+    <DBFAXSAdsFileToBinary>
+        <summary>Stores the contents of the given file as a binary object in the specified field.</summary>
+    </DBFAXSAdsFileToBinary>
+    <DBFAXSAdsFindConnection>
+        <summary>Finds a connection handle associated with the server name.</summary>
+    </DBFAXSAdsFindConnection>
+    <DBFAXSAdsGetConnectionType>
+        <summary>Returns the type of Advantage Database Server a connection uses.</summary>
+    </DBFAXSAdsGetConnectionType>
+    <DBFAXSAdsInTransaction>
+        <summary>Returns a flag to the caller to indicate if the given connection has an active transaction.</summary>
+    </DBFAXSAdsInTransaction>
+    <DBFAXSAdsIsServerLoaded>
+        <summary>Determines if an Advantage server is available.</summary>
+    </DBFAXSAdsIsServerLoaded>
+    <DBFAXSAdsRollbackTransaction>
+        <summary>Rolls back the active transaction on the given connection.</summary>
+    </DBFAXSAdsRollbackTransaction>
+    <DBFAXSAdsSetServerType>
+        <summary>Controls the types of Advantage Database Servers to which the client application can connect.</summary>
+    </DBFAXSAdsSetServerType>
+    <DBFBLOB>
+    <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
+  </DBFBLOB>
+  <DBFCDX>
+    <summary>DBFCDX RDD. For DBF/FPT/CDX.</summary>
+  </DBFCDX>
+  <DbfCharacterColumn>
+        <summary>Class for reading / writing String Columns</summary>
+    </DbfCharacterColumn>
+    <DbfColumn>
+        <summary>Class for DBF Column reading / writing </summary>
+    </DbfColumn>
+    <DbfColumn.Create>
+        <summary>Create a DbfColumn class, used when creating files.</summary>
+    </DbfColumn.Create>
+    <DbfColumn.Create_2>
+        <summary>Create a DbfColumn class, based on the definition in the DBF. Used when opening a file. </summary>
+    </DbfColumn.Create_2>
+    <DbfColumn.GetValue>
+        <summary>Get the value from the buffer</summary>
+        <param name="buffer">Record buffer for the current record</param>
+    </DbfColumn.GetValue>
+    <DbfColumn.HandleNullValue>
+        <summary>Handle NULL values.</summary>
+        <param name="buffer">Record buffer for the current record</param>
+    </DbfColumn.HandleNullValue>
+    <DbfColumn.InitValue>
+        <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </DbfColumn.InitValue>
+    <DbfColumn.NewRecord>
+        <summary>Update the buffer after appending. For example for AutoIncrement or TimeStamp columns.</summary>
+        <param name="buffer">Record buffer for the current record</param>
+    </DbfColumn.NewRecord>
+    <DbfColumn.PutValue>
+        <summary>Write the value to the buffer</summary>
+        <param name="buffer">Record buffer for the current record</param>
+        <param name="oValue">Value to write.</param>
+    </DbfColumn.PutValue>
+    <DbfCurrencyColumn>
+        <summary>Class for reading / writing Currency Columns. </summary>
+    </DbfCurrencyColumn>
+    <DbfDateColumn>
+        <summary>Class for reading / writing Date Columns</summary>
+    </DbfDateColumn>
+    <DbfDateTimeColumn>
+        <summary>Class for reading / writing DateTime Columns. </summary>
+    </DbfDateTimeColumn>
+    <DBFDBT>
+        <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
+    </DBFDBT>
+    <DbfDoubleColumn>
+        <summary>Class for reading / writing Double Columns. </summary>
+    </DbfDoubleColumn>
+    <DbfField>
+        <summary>DBF Field.</summary>
+    </DbfField>
+    <DbfHeader>
+        <summary>DBF Header.</summary>
+    </DbfHeader>
+    <DbfHeader.CodePage>
+        <summary>Code Page</summary>
+    </DbfHeader.CodePage>
+    <DbfHeader.ctor>
+        <summary>DBF Version</summary>
+    </DbfHeader.ctor>
+    <DbfHeader.Day>
+        <summary>Day of last update</summary>
+    </DbfHeader.Day>
+    <DbfHeader.DbaseLan>
+        <summary>dBASE IV LAN value.</summary>
+    </DbfHeader.DbaseLan>
+    <DbfHeader.Encrypted>
+        <summary>dBASE IV encryption flag.</summary>
+    </DbfHeader.Encrypted>
+    <DbfHeader.HeaderLen>
+        <summary>Number of bytes in the header. (Least significant byte first.)</summary>
+    </DbfHeader.HeaderLen>
+    <DbfHeader.IsAnsi>
+        <summary>Is the codepage an Ansi codepage</summary>
+    </DbfHeader.IsAnsi>
+    <DbfHeader.isHot>
+        <summary>Hot ?  =&gt; Header has changed ?</summary>
+    </DbfHeader.isHot>
+    <DbfHeader.LastUpdate>
+        <summary>Date of last update.</summary>
+    </DbfHeader.LastUpdate>
+    <DbfHeader.Month>
+        <summary>Month of last update</summary>
+    </DbfHeader.Month>
+    <DbfHeader.MultiUser>
+        <summary>dBASE IV Multi User value.</summary>
+    </DbfHeader.MultiUser>
+    <DbfHeader.RecCount>
+        <summary>Number of records in the table. (Least significant byte first.)</summary>
+    </DbfHeader.RecCount>
+    <DbfHeader.RecordLen>
+        <summary>Length of one data record, including deleted flag</summary>
+    </DbfHeader.RecordLen>
+    <DbfHeader.Reserved1>
+        <summary>Reserved flag at position 12</summary>
+    </DbfHeader.Reserved1>
+    <DbfHeader.Reserved2>
+        <summary>Reserved flag at position 24</summary>
+    </DbfHeader.Reserved2>
+    <DbfHeader.Reserved3>
+        <summary>Reserved flag at position 30</summary>
+    </DbfHeader.Reserved3>
+    <DbfHeader.TableFlags>
+        <summary>Table Flags</summary>
+    </DbfHeader.TableFlags>
+    <DbfHeader.Transaction>
+        <summary>Flag indicating incomplete dBASE IV transaction.</summary>
+    </DbfHeader.Transaction>
+    <DbfHeader.Year>
+        <summary>Year of last update
+        YY is added to a base of 1900 decimal to determine the actual year.
+        Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.</summary>
+    </DbfHeader.Year>
+    <DbfHeaderCodepage>
+        <summary>DBF Header Codepage numbers.</summary>
+    </DbfHeaderCodepage>
+    <DbfIntegerColumn>
+        <summary>Class for reading / writing Integer Columns. </summary>
+    </DbfIntegerColumn>
+    <DbfLocking>
+        <summary>This structure holds the various settings for locking models</summary>
+    </DbfLocking>
+    <DbfLocking.Direction>
+        <summary>Direction of locking, used to calculate file lock offsets and record lock offsets</summary>
+    </DbfLocking.Direction>
+    <DbfLocking.FileLockOffSet>
+        <summary>File Lock offsets </summary>
+    </DbfLocking.FileLockOffSet>
+    <DbfLocking.FileSize>
+        <summary>Length for File locks </summary>
+    </DbfLocking.FileSize>
+    <DbfLocking.Initialize>
+        <summary>Set various numbers based on a locking model.</summary>
+    </DbfLocking.Initialize>
+    <DbfLocking.Offset>
+        <summary>Offset of the Locking </summary>
+    </DbfLocking.Offset>
+    <DbfLocking.RecnoOffSet>
+        <summary>Calculate the record offset based </summary>
+    </DbfLocking.RecnoOffSet>
+    <DbfLocking.RecordSize>
+        <summary>Length for Record locks </summary>
+    </DbfLocking.RecordSize>
+    <DbfLockingModel>
+        <summary>DBF Locking model.</summary>
+    </DbfLockingModel>
+    <DbfLogicColumn>
+        <summary>Class for reading / writing Logic Columns</summary>
+    </DbfLogicColumn>
+    <DbfMemoColumn>
+        <summary>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</summary>
+    </DbfMemoColumn>
+    <DbfMemoColumn.GetValue>
+        <inheritdoc/>
+        <remarks>At this level this returns the memo block number.</remarks>
+    </DbfMemoColumn.GetValue>
+    <DbfMemoColumn.PutValue>
+        <inheritdoc/>
+        <remarks>At this level this writes the memo block number.</remarks>
+    </DbfMemoColumn.PutValue>
+    <DBFNSX>
+        <summary>DBFNSX RDD. For DBF/SMT/NSX.</summary>
+    </DBFNSX>
+    <DBFNTX>
+    <summary>DBFNTX RDD. For DBF/DBT/NTX.</summary>
+  </DBFNTX>
+  <DbfNullColumn>
+        <summary>Class for reading / writing the Special Column for NULL values. </summary>
+    </DbfNullColumn>
+    <DbfNullColumn.GetBit>
+        <summary>Read a bit from the specified position</summary>
+    </DbfNullColumn.GetBit>
+    <DbfNullColumn.SetBit>
+        <summary>Set a bit at the specified position</summary>
+    </DbfNullColumn.SetBit>
+    <DbfNumericColumn>
+        <summary>Class for reading / writing Numeric Columns</summary>
+    </DbfNumericColumn>
+    <DBFSMT>
+        <summary>DBFSMT RDD. For DBF/SMT. No index support at this level</summary>
+    </DBFSMT>
+    <DBFTableFlags>
+    <summary>DBF Table flags.</summary>
+  </DBFTableFlags>
+  <DBFVersion>
+        <summary>DBF File Versions.</summary>
+    </DBFVersion>
+    <DBFVFP>
+    <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
+  </DBFVFP>
+  <DBFVFPSQL>
+    <summary>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a
+    List of Object values as backing collection for the data.</summary>
+  </DBFVFPSQL>
+  <DBTMemo>
+    <summary>DBT Memo class. Implements the DBT support.</summary>
+  </DBTMemo>
+  <DBTMemo._GetExtension>
+        <summary>Return the extension set with Set.MemoExt or default extension</summary>
+    </DBTMemo._GetExtension>
+    <DELIM>
+    <summary>DELIM RDD. For reading and writing delimited files.</summary>
+  </DELIM>
+  <ERDD>
+        <summary>Common RDD Error numbers</summary>
+    </ERDD>
+    <Flex.GetValue>
+    <inheritdoc/>
+    <param name="nFldPos">One based field number</param>
+  </Flex.GetValue>
+  <Flex.GetValueFile>
+    <inheritdoc/>
+    <param name="nFldPos">One based field number</param>
+  </Flex.GetValueFile>
+  <Flex.GetValueLength>
+    <inheritdoc/>
+    <param name="nFldPos">One based field number</param>
+  </Flex.GetValueLength>
+  <Flex.PutValue>
+    <summary>Write value to field.</summary>
+    <param name="nFldPos">One based field number</param>
+    <param name="oValue">Data to write. Should be BYTE[] and include the header with the type</param>
+  </Flex.PutValue>
+  <FlexArea>
+        <summary>FlexArea class. Implements the FTP support.</summary>
+    </FlexArea>
+    <FlexArea.DecodeValue>
+        <summary>Decode the contents of a block, including the block header</summary>
+        <param name="bData">The raw block including the 8 byte header</param>
+    </FlexArea.DecodeValue>
+    <FlexArea.EncodeValue>
+        <summary>Encode a value into a FTP block</summary>
+        <param name="oValue">The value to encode. Allowed are at this moment, String, Logic and byte[]</param>
+        <returns>Byte array including the 8 byte header with the block length and type</returns>
+    </FlexArea.EncodeValue>
+    <FlexArea.GetBlock>
+        <summary>Return the raw data of a block including the 8 byte token </summary>
+    </FlexArea.GetBlock>
+    <FlexArea.PutBlock>
+        <summary>Write a block. When the existing block is 0 or the size is insufficient then a new block is allocated.</summary>
+        <param name="nOldPtr">Pointer to existing block, or 0 when a new block must be allocated</param>
+        <param name="bytes">The data to write, including the 8 byte header</param>
+        <returns>The address of the original block (when it fits) or the address of the new block </returns>
+    </FlexArea.PutBlock>
+    <FlexArea.WriteBlockToFile>
+        <summary>Export a block to an external file</summary>
+    </FlexArea.WriteBlockToFile>
+    <FlexMemoToken.Length>
+        This includes the length of the token
+    </FlexMemoToken.Length>
+    <GetAceIndexHandle>
+        <summary>Returns the Advantage Client Engine index handle that corresponds with the specified index in the current work area.
+        The handle can be used to call any Advantage Client Engine API directly.</summary>
+        <returns>An Advantage Client Engine index order handle or 0 if no index was found.</returns>
+    </GetAceIndexHandle>
+    <MEMOCLASS>
+    <summary>Flex Memo class. Implements the FTP support.</summary>
+  </MEMOCLASS>
+  <NsxIndex>
+        <summary>DBFNSX worker class that implements the NSX support.</summary>
+    </NsxIndex>
+    <NtxHeader>
+        <summary>
+        The NtxHeader class.
+        </summary>
+    </NtxHeader>
+    <NtxNode>
+        <summary>
+        The NtxNode class.
+        The size of each item is: 8 + Key Size ( the last item doesn't contain a key value, only a pointer to a sub-tree.)
+        The structure of an Item is
+        long page_offset - file offset (within ntx file) where sub-tree is. if there's no subtree, a 0 is stored.
+        long recno       - record number for this key value (in the dbf file)
+        char key_value[key_size]
+        </summary>
+    </NtxNode>
+    <NtxPageList>
+        <summary>
+        The NtxPageList class.
+        </summary>
+    </NtxPageList>
+    <OsCodepage>
+        <summary>OS Codepages as used in DBF files.</summary>
+    </OsCodepage>
+    <RDDCLASS>
+    <summary>FlexFile RDD. RDD with Flex Memo</summary>
+  </RDDCLASS>
+  <SDF>
+    <summary>SDF RDD. For reading and writing text files.</summary>
+  </SDF>
+  <SMTMemo>
+        <summary>SMT Memo class. Implements the SMT support.</summary>
+    </SMTMemo>
+  <TEXTRDD>
+        <summary>Abstract TextRDD. For reading and writing delimited files and SDF files.</summary>
+    </TEXTRDD>
+    <TSV>
+    <summary>TSV RDD. For reading and writing tab delimited files.</summary>
+  </TSV>
+  </doc>

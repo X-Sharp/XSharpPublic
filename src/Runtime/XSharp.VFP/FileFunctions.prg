@@ -31,8 +31,8 @@ FUNCTION MkDir(cPath AS STRING) AS INT
     END IF
     RETURN nRet
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
+[FoxProFunction("STRTOFILE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING) AS INT
     RETURN StrToFile(cExpression, cFileName, S2F_FLAG_OVERWRITE)
 
@@ -193,6 +193,7 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/filetostr/*" />
+[FoxProFunction("FILETOSTR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FileToStr (cFileName AS STRING) AS STRING
     RETURN FileToStr(cFileName, 0)
 
@@ -250,6 +251,7 @@ FUNCTION FileToStr (cFileName AS STRING, Flags AS INT) AS STRING
 END FUNCTION
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/defaultext/*" />
+[FoxProFunction("DEFAULTEXT", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION DefaultExt( cFileName AS STRING, cDefault  AS STRING) AS STRING
     var ext := Path.GetExtension(cFileName)
     if ext == "" .and. ! cFileName:EndsWith(".")
@@ -259,11 +261,13 @@ FUNCTION DefaultExt( cFileName AS STRING, cDefault  AS STRING) AS STRING
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/drivetype/*" />
+[FoxProFunction("DRIVETYPE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION DriveType( cDrive as string) as DWORD
     RETURN Win32.GetDriveType(cDrive)
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
+[FoxProFunction("FULLPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION FullPath( cFileName1 as string, cFileName2 := "" as STRING) AS STRING
     IF File(cFileName1)
         RETURN FPathName()
@@ -277,3 +281,69 @@ FUNCTION FullPath( cFileName1 as string, cFileName2 := "" as STRING) AS STRING
 //     var cFilePath := Path.GetDirectoryName(cFileName2)
 //     RETURN Path.GetRelativePath(cFileName1, cFilePath)
     RETURN cFileName1
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fname/*" />
+[FoxProFunction("FNAME", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium, "X# Extension")];
+FUNCTION FName(cFileName AS STRING) AS STRING
+    IF XSharp.Core.Functions.File(cFileName)
+        RETURN System.IO.Path.GetFileName(XSharp.Core.Functions.FPathName())
+    ENDIF
+
+    RETURN ""
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fattrib/*" />
+[FoxProFunction("FATTRIB", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium, "X# Extension")];
+FUNCTION FAttrib(cFileName AS STRING) AS DWORD
+    IF XSharp.Core.Functions.File(cFileName)
+        VAR cFullPath := XSharp.Core.Functions.FPathName()
+        VAR info := System.IO.FileInfo{cFullPath}
+        RETURN (DWORD) info:Attributes
+    ENDIF
+
+    RETURN 0
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/displaypath/*" />
+[FoxProFunction("DISPLAYPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION DisplayPath( cFileName AS STRING, nMaxLength AS INT) AS STRING
+    IF nMaxLength < 10 .OR. nMaxLength > 256
+        THROW Error.ArgumentError(__FUNCTION__, NAMEOF(nMaxLength), __VfpStr(VFPErrors.VFP_INVALID_PARAMETER, NAMEOF(nMaxLength)), 2)
+    ENDIF
+
+    IF String.IsNullOrEmpty(cFileName)
+        RETURN ""
+    ENDIF
+
+    cFileName := cFileName:ToLower()
+    IF cFileName:Length <= nMaxLength
+        RETURN cFileName
+    ENDIF
+
+    VAR cFile := System.IO.Path.GetFileName(cFileName)
+    VAR cFullDir := System.IO.Path.GetDirectoryName(cFileName)
+    VAR cRoot := System.IO.Path.GetPathRoot(cFileName)
+    VAR cBaseFixed := cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cFile
+
+    IF cBaseFixed:Length > nMaxLength
+        RETURN cBaseFixed:Substring(0, nMaxLength)
+    ENDIF
+
+    VAR cFoldersOnly := ""
+    IF cFullDir:StartsWith(cRoot)
+        cFoldersOnly := cFullDir:Substring(cRoot:Length)
+    ELSE
+        cFoldersOnly := cFullDir
+    ENDIF
+
+    VAR aParts := cFoldersOnly:Split(<CHAR>{System.IO.Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)
+    VAR cFoldersToDisplay := ""
+
+    FOR VAR i := aParts:Length DOWNTO 1
+        VAR cNextFolder := aParts[i] + System.IO.Path.DirectorySeparatorChar:ToString()
+        IF (cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cNextFolder + cFoldersToDisplay + cFile):Length <= nMaxLength
+            cFoldersToDisplay := cNextFolder + cFoldersToDisplay
+        ELSE
+            EXIT
+        ENDIF
+    NEXT
+
+    RETURN cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cFoldersToDisplay + cFile

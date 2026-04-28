@@ -1,12 +1,11 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp
 BEGIN NAMESPACE XSharp
-/// <summary>Values that match the XBase DateCountry defines. They are used to set the date format.</summary>
-/// <remarks>Please note that although there are different values for British and French, the date formats are the same.</remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/DateCountry/*" />
 PUBLIC ENUM DateCountry
     /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.American/*" />
 	MEMBER American := 1
@@ -40,7 +39,7 @@ PUBLIC ENUM DateCountry
     MEMBER Windows  := 99
 END ENUM
 
-/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
+/// <include file="XSharp.Core.Docs.xml" path="doc/CollationMode/*" />
 ENUM CollationMode
 	MEMBER Windows
 	MEMBER Clipper

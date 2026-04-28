@@ -3,6 +3,8 @@ using System.Collections.Generic
 using System.Reflection
 using System.Text
 using System.Runtime.Versioning
+USING System.IO
+USING System.Linq
 
 [assembly: TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName := ".NET Framework 4.6")]
 [STAThread];
@@ -25,6 +27,8 @@ function Start() as void
 	XideUnitTest.Run()
 //	?
 //	? Assert.Groups , "test groups, Passed:", Assert.Passed , ", Failed:" , Assert.Failed
+	
+//	VfpCompatMetrics.Program.Start(<STRING>{"XSharp.VFP.dll" , "vfp_universe.json"})
 
 return
 

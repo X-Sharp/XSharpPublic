@@ -10,6 +10,15 @@
  * ***************************************************************************/
 
 
+using Community.VisualStudio.Toolkit;
+
+using EnvDTE;
+
+using Microsoft.Build.Execution;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -18,26 +27,22 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Xml;
-using EnvDTE;
-using Microsoft.Build.Execution;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using MSBuildExecution = Microsoft.Build.Execution;
+
+using File = System.IO.File;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using IServiceProvider = System.IServiceProvider;
 using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildConstruction = Microsoft.Build.Construction;
+using MSBuildExecution = Microsoft.Build.Execution;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using System.Reflection;
-using Community.VisualStudio.Toolkit;
-using File = System.IO.File;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -508,6 +513,8 @@ namespace Microsoft.VisualStudio.Project
 
         private Guid projectIdGuid;
 
+        protected bool virtualProjectGuid;
+
         protected ProjectOptions options;
 
         private bool isClosed;
@@ -701,7 +708,8 @@ namespace Microsoft.VisualStudio.Project
                 if (this.projectIdGuid != value)
                 {
                     this.projectIdGuid = value;
-                    SetProjectProperty(ProjectFileConstants.ProjectGuid, this.projectIdGuid.ToString("B"));
+                    if (!virtualProjectGuid)
+                        SetProjectProperty(ProjectFileConstants.ProjectGuid, this.projectIdGuid.ToString("B"));
                 }
             }
         }
@@ -2703,7 +2711,7 @@ namespace Microsoft.VisualStudio.Project
                     return this.options;
                 }
                 ProjectOptions options = this.options = CreateProjectOptions();
-                string targetFrameworkMoniker = GetProjectProperty("TargetFrameworkMoniker");
+                string targetFrameworkMoniker = GetProjectProperty(ProjectFileConstants.TargetFrameworkMoniker);
 
                 if (!string.IsNullOrEmpty(targetFrameworkMoniker))
                 {
@@ -2742,7 +2750,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     outputtype = outputtype.ToLower(CultureInfo.InvariantCulture);
                 }
-                
+
                 if (outputtype == "library")
                 {
                     options.ModuleKind = ModuleKindFlags.DynamicallyLinkedLibrary;
@@ -2753,8 +2761,9 @@ namespace Microsoft.VisualStudio.Project
                 else
                     options.ModuleKind = ModuleKindFlags.ConsoleApplication;
 
-                options.Win32Icon = GetProjectProperty("ApplicationIcon");
-                options.MainClass = GetProjectProperty("StartupObject");
+
+                options.Win32Icon = GetProjectProperty(ProjectFileConstants.ApplicationIcon);
+                options.MainClass = GetProjectProperty(ProjectFileConstants.StartupObject);
 
                 //    other settings from CSharp we may want to adopt at some point...
                 //    AssemblyKeyContainerName = ""  //This is the key file used to sign the interop assembly generated when importing a com object via add reference
@@ -2773,7 +2782,7 @@ namespace Microsoft.VisualStudio.Project
                     options.AllowUnsafeCode = true;
                 }
                 var ba = GetProjectProperty("BaseAddress", false);
-                if ( ba != null)
+                if (ba != null)
                 {
                     try
                     {
@@ -2801,8 +2810,8 @@ namespace Microsoft.VisualStudio.Project
                 {
                     options.CheckedArithmetic = true;
                 }
-                var defs = GetProjectProperty("DefineConstants", false);
-                if ( defs != null)
+                var defs = GetProjectProperty(ProjectFileConstants.DefineConstants, false);
+                if (defs != null)
                 {
                     foreach (string s in defs.Replace(" \t\r\n", "").Split(';'))
                     {
@@ -2810,7 +2819,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                 }
 
-                string docFile = GetProjectProperty("DocumentationFile", false);
+                string docFile = GetProjectProperty(ProjectFileConstants.DocumentationFile, false);
                 if (!String.IsNullOrEmpty(docFile))
                 {
                     options.XmlDocFileName = Path.Combine(this.ProjectFolder, docFile);
@@ -2821,7 +2830,7 @@ namespace Microsoft.VisualStudio.Project
                     options.IncludeDebugInformation = true;
                 }
 
-                var fa = GetProjectProperty("FileAlignment", false);
+                var fa = GetProjectProperty(ProjectFileConstants.FileAlignment, false);
                 if (fa != null)
                 {
                     try
@@ -3498,7 +3507,8 @@ namespace Microsoft.VisualStudio.Project
                 var logger = CreateBuildLogger(output, this.TaskProvider, hierarchy);
                 var oldLogger = this.BuildLogger as IDisposable;
                 this.BuildLogger = logger;
-                if (oldLogger != null) {
+                if (oldLogger != null)
+                {
                     oldLogger.Dispose();
                 }
             }
@@ -3546,7 +3556,7 @@ namespace Microsoft.VisualStudio.Project
 
             }
         }
-        ProjectInstance LastBuildResult= null;
+        ProjectInstance LastBuildResult = null;
         /// <summary>
         /// This execute an MSBuild target.
         /// If you depend on the items/properties generated by the target
@@ -4328,10 +4338,10 @@ namespace Microsoft.VisualStudio.Project
                     continue;
 
                 // If the item visibility is false in the project file then skip adding it
-	            if (!String.IsNullOrEmpty(item.GetMetadataValue(ProjectFileAttributeValue.Visible)))
+                if (!String.IsNullOrEmpty(item.GetMetadataValue(ProjectFileAttributeValue.Visible)))
                 {
                     bool result;
-	               if (Boolean.TryParse(item.GetMetadataValue(ProjectFileAttributeValue.Visible), out result) && !result)
+                    if (Boolean.TryParse(item.GetMetadataValue(ProjectFileAttributeValue.Visible), out result) && !result)
                     {
                         continue;
                     }
@@ -7090,7 +7100,7 @@ namespace Microsoft.VisualStudio.Project
         {
             if (_outputPath != null)
                 return _outputPath;
-            string outputPath = GetProjectProperty("OutputPath");
+            string outputPath = GetProjectProperty(ProjectFileConstants.OutputPath);
 
             if (!String.IsNullOrEmpty(outputPath))
             {
@@ -7218,16 +7228,29 @@ namespace Microsoft.VisualStudio.Project
             if (this.projectIdGuid == Guid.Empty)
             {
                 string projectGuid = this.GetProjectProperty(ProjectFileConstants.ProjectGuid);
-                if (String.IsNullOrEmpty(projectGuid))
+                if (string.IsNullOrEmpty(projectGuid))
                 {
-                    this.projectIdGuid = Guid.NewGuid();
-                    this.SetProjectProperty(ProjectFileConstants.ProjectGuid, projectIdGuid.ToString("B"));
+                    if (!virtualProjectGuid)
+                    {
+                        this.projectIdGuid = Guid.NewGuid();
+                        this.SetProjectProperty(ProjectFileConstants.ProjectGuid, projectIdGuid.ToString("B"));
+                    }
                 }
                 else
                 {
-                    Guid guid = new Guid(projectGuid);
-                    if (guid != this.projectIdGuid)
+                    if (virtualProjectGuid)
                     {
+                        var prop = this.BuildProject.GetProperty(ProjectFileConstants.ProjectGuid);
+                        if (prop != null)
+                        {
+                            Logger.Information($"Removed project Guid from project {Caption}");
+                            this.BuildProject.RemoveProperty(prop);
+                        }
+
+                    }
+                    else
+                    {
+                        Guid guid = new Guid(projectGuid);
                         this.projectIdGuid = guid;
                     }
                 }
@@ -7382,9 +7405,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             FrameworkName moniker = new FrameworkName(newTargetFramework);
-            SetProjectProperty("TargetFrameworkIdentifier", moniker.Identifier);
-            SetProjectProperty("TargetFrameworkVersion", "v" + moniker.Version);
-            SetProjectProperty("TargetFrameworkProfile", moniker.Profile);
+            SetProjectProperty(ProjectFileConstants.TargetFrameworkIdentifier, moniker.Identifier);
+            SetProjectProperty(ProjectFileConstants.TargetFrameworkVersion, "v" + moniker.Version);
+            SetProjectProperty(ProjectFileConstants.TargetFrameworkProfile, moniker.Profile);
             return VSConstants.S_OK;
         }
 

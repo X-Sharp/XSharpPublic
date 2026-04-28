@@ -771,7 +771,7 @@
             </code>
         </example>
     </astackinfo>
-    
+
     <at>
         <summary>
             在一个字符表达式中搜索另一个字符表达式的出现位置。
@@ -873,16 +873,16 @@
             不考虑这两个表达式的大小写。
         </summary>
         <param name="cSearchExpression">
-            指定 ATC( ) 在 <paramref name='cExpressionSearched' /> 中搜索的字符表达式。
+            指定 ATC( ) 在 <paramref name="cExpressionSearched"/> 中搜索的字符表达式。
         </param>
         <param name="cExpressionSearched">
-            指定 <paramref name='cSearchExpression' /> 搜索的字符表达式。
-            <paramref name='cSearchExpression' /> 和 <paramref name='cExpressionSearched' /> 都可以是任意大小的备注字段。
+            指定 <paramref name="cSearchExpression"/> 搜索的字符表达式。
+            <paramref name="cSearchExpression"/> 和 <paramref name="cExpressionSearched"/> 都可以是任意大小的备注字段。
         </param>
         <param name="nOccurrence">
-            指定在 <paramref name='cExpressionSearched' /> 中搜索 <paramref name='cSearchExpression' /> 的第几次出现（第一次、第二次、第三次等）。
-            默认情况下，ATC( ) 搜索 <paramref name='cSearchExpression' /> 的第一次出现（nOccurrence = 1）。
-            包含 nOccurrence 可以让你搜索 <paramref name='cExpressionSearched' /> 中 <paramref name='cSearchExpression' /> 的其他出现位置。
+            指定在 <paramref name="cExpressionSearched"/> 中搜索 <paramref name="cSearchExpression"/> 的第几次出现（第一次、第二次、第三次等）。
+            默认情况下，ATC( ) 搜索 <paramref name="cSearchExpression"/> 的第一次出现（nOccurrence = 1）。
+            包含 nOccurrence 可以让你搜索 <paramref name="cExpressionSearched"/> 中 <paramref name="cSearchExpression"/> 的其他出现位置。
         </param>
         <returns>
             数值型
@@ -2754,7 +2754,7 @@
                     <term>437</term>
                     <description>MS-DOS，美国</description>
                     <description>ibm437</description>
-                    <description></description>
+                    <description/>
                 </item>
                 <item>
                     <term>850</term>
@@ -3830,7 +3830,7 @@
         </returns>
         <remarks>
             下表解释了DriveType()返回的数字和相应的驱动器类型描述：
-            <list type ="table">
+            <list type="table">
                 <listheader>
                     <term>数字</term>
                     <description>驱动器类型</description>
@@ -3918,7 +3918,35 @@
         </example>
     </evl>
 
-    <fldlist>
+    <execscript>
+        <summary>
+            允许您在运行时从变量、表格和其他文本中执行多行代码。
+        </summary>
+        <param name="cExpression">
+            表示要作为代码执行的文本、变量、字符串类型或备注。
+        </param>
+        <param name="eParameter1">
+            可选。指定传递给脚本的参数，该脚本在第一行有 PARAMETERS 或 LPARAMETERS 语句。
+        </param>
+        <param name="eParameter2">
+            可选。指定传递给脚本的参数，该脚本在第一行有 PARAMETERS 或 LPARAMETERS 语句。
+        </param>
+        <param name="eParameterN">
+            可选。指定传递给脚本的参数，该脚本在第一行有 PARAMETERS 或 LPARAMETERS 语句。
+        </param>
+        <returns>
+            返回值是 cExpression 中脚本返回的值。如果脚本没有返回值，X# 返回 NIL。
+        </returns>
+        <remarks>
+            ExecScript() 允许您执行代码块而无需先编译。<br/>
+            您可以在脚本中使用所有允许的语句，创建对象，
+            设置它们的属性，调用方法和调用函数。<br/>
+        </remarks>
+        <example>
+            <code language="X#">?ExecScript("? 'Hello world from X# ExecScript'")</code>
+        </example>
+    </execscript>
+<fldlist>
         <summary>
             包含用于与dBASE兼容。
         </summary>
@@ -4878,7 +4906,7 @@
             </list>
             <note name="注意">
                 在 X# 中，光标、动画光标和图标文件可以用作图形文件。例如，您可以为图像控件的 Picture 属性指定一个动画光标文件
-                （但是，图像控件显示的是光标的静态表示）。>
+                （但是，图像控件显示的是光标的静态表示）。&gt;
             </note>
             使用 Clear RESOURCES 命令清除所有缓存的图形文件，包括 .gif 和 .jpg 文件。<br/>
 
@@ -5530,7 +5558,7 @@
             KeyMatch()将记录指针返回到发出KeyMatch()之前最初所在的记录位置。
         </remarks>
     </keymatch>
-    
+
     <lineno>
         <summary>
             返回程序中正在执行的行号，相对于主程序的第一行。
@@ -5903,7 +5931,7 @@
                 gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
                 * 声明释放函数
                 DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
-                * 下一行应该在表单的背景上打印 1 >> "Okay"
+                * 下一行应该在表单的背景上打印 1 &gt;&gt; "Okay"
                 ? ReleaseDC(m.goForm.HWnd, m.hDC)
                 * 声明访问_整个_窗口
                 DECLARE Integer GetWindowDC IN User32 integer HWnd
@@ -6084,7 +6112,7 @@
                     RETURN ReleaseDC(m.tnHWND, m.tnHDC)
                 ENDFUNC
 
-                * 以下函数对于带滚动条的表单（oForm.Scrollbars > 0）不完全可靠
+                * 以下函数对于带滚动条的表单（oForm.Scrollbars &gt; 0）不完全可靠
                 FUNCTION GetChildAreaCanvas(tnhWnd AS Integer) AS Integer
                     * VFP的'顶级表单'（oForm.ShowWindow = 2）
                     * 在外部窗口内部有一个次级窗口。
@@ -6659,7 +6687,7 @@
             </code>
         </example>
     </prow>
-    
+
     <prtinfo>
         <summary>
             返回当前指定的打印机设置。
@@ -7395,7 +7423,7 @@
             如果 Set NEAR 为 ON，则移动到最接近的匹配记录。
         </returns>
         <remarks>
-            您可以在设置了索引顺序的表上使用 Seek( )，或者如果表上未设置索引顺序，可以使用第三个参数 nIndexNumber、cIDXIndexFileName 
+            您可以在设置了索引顺序的表上使用 Seek( )，或者如果表上未设置索引顺序，可以使用第三个参数 nIndexNumber、cIDXIndexFileName
             或 cTagName 设置控制索引。除非 Set EXACT 设置为 OFF，否则匹配必须精确。<br/>
             如果省略 nIndexNumber、IDXIndexFileName 和 cTagName 参数，
             Seek( ) 将使用主控索引或索引标记来搜索索引键。<br/>
@@ -7440,7 +7468,7 @@
             </code>
         </example>
     </select>
-    
+
     <setfldstate>
         <summary>
             为表或游标中的字段或记录分配字段修改或删除状态值。
@@ -7526,7 +7554,7 @@
             By using <b>SetResultSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the
             table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a
             rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
-            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b> 
+            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b>
             Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset
             to the calling application. When the rowset closes, the cursor also closes.
             However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetResultSet( )</b>
@@ -8463,11 +8491,13 @@
     <vartype>
         <summary>
             返回表达式的数据类型。
-            <note name="注意">
-                <b>VARTYPE( )</b>类似于<b>TYPE( )</b>函数，但<b>VARTYPE( )</b>更快，且不需要引号
-                来包围要返回数据类型的表达式。
-            </note>
         </summary>
+      <remarks>
+        <note name="注意">
+          <b>VARTYPE( )</b>类似于<b>TYPE( )</b>函数，但<b>VARTYPE( )</b>更快，且不需要引号
+          来包围要返回数据类型的表达式。
+        </note>
+      </remarks>
         <param name="eExpression">
             指定要返回数据类型的表达式。<b>VARTYPE( )</b>返回一个单字符
             表示表达式的数据类型。<br/>
@@ -9067,32 +9097,4 @@
         </remarks>
     </xmlupdategram>
 
-    <execscript>
-        <summary>
-            允许您在运行时从变量、表格和其他文本中执行多行代码。
-        </summary>
-        <param name="cExpression">
-            表示要作为代码执行的文本、变量、字符串类型或备注。
-        </param>
-        <param name="eParameter1">
-            可选。指定传递给脚本的参数，该脚本在第一行有 PARAMETERS 或 LPARAMETERS 语句。
-        </param>
-        <param name="eParameter2">
-            可选。指定传递给脚本的参数，该脚本在第一行有 PARAMETERS 或 LPARAMETERS 语句。
-        </param>
-        <param name="eParameterN">
-            可选。指定传递给脚本的参数，该脚本在第一行有 PARAMETERS 或 LPARAMETERS 语句。
-        </param>
-        <returns>
-            返回值是 cExpression 中脚本返回的值。如果脚本没有返回值，X# 返回 NIL。
-        </returns>
-        <remarks>
-            ExecScript() 允许您执行代码块而无需先编译。<br/>
-            您可以在脚本中使用所有允许的语句，创建对象，
-            设置它们的属性，调用方法和调用函数。<br/>
-        </remarks>
-        <example>
-            <code language="X#">?ExecScript("? 'Hello world from X# ExecScript'")</code>
-        </example>
-    </execscript>
-</Runtimefunctions>
+    </Runtimefunctions>

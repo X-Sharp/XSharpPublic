@@ -25,13 +25,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AAdd(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AAdd(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Add a new element to the end of an array.
-        </para>
+      向数组末尾添加新元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Duplicate a multidimensional array.
-        </para>
+      复制一个多维数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Duplicate an array without its subarrays.
-        </para>
+      浅复制一个数组，不包括其子数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,23 @@
             </entry>
             <entry>
               <para>
-            Copy elements from one array to another.
-        </para>
+      将元素从一个数组复制到另一个数组。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ACopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Copies elements from one array to another array.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Delete an array element.
-        </para>
+      删除数组元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -146,11 +161,26 @@
             </entry>
             <entry>
               <para>
-            Fill a series of arrays with directory information.
-            Note:
-            ADir() is a compatibility function and therefore not recommended.
-            It is superseded by the Directory() function, which returns all file information in a multidimensional array.
-        </para>
+      用目录信息填充一系列数组。
+      注意：
+      ADir() 是一个兼容性函数，因此不推荐使用。
+      它被 Directory() 函数取代，后者将所有文件信息返回在一个多维数组中。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADir(XSharp.__Array,System.String,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Places information about files into an array and then returns the number of files.
+    </para>
             </entry>
           </row>
           <row>
@@ -179,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each element in an array.
-        </para>
+      对数组中的每个元素执行代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -194,8 +224,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each element in an array and assign the return value to each element in the array.
-        </para>
+      对数组中的每个元素执行代码块，并将返回值赋给数组中的每个元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -209,8 +239,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each element in an array.
-        </para>
+      对数组中的每个元素执行代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -224,11 +254,26 @@
             </entry>
             <entry>
               <para>
-            Fill arrays with the structure of the current database file.
-            Note:
-            AFields() is a compatibility function and therefore not recommended.
-            It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
-        </para>
+      用当前数据库文件的结构填充数组。
+      注意：
+      AFields() 是一个兼容性函数，因此不推荐使用。
+      它已被 DBStruct() 取代，后者不需要在调用前存在任何数组，并返回一个包含当前数据库文件结构的多维数组。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AFields(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Retrieves and stores information about the structure of the table in a specified work area, specified by a table alias, or in the currently selected work area in an array and returns the number of fields in the table.
+    </para>
             </entry>
           </row>
           <row>
@@ -237,13 +282,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFill(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFill(XSharp.__Array,XSharp.__Usual@,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Fill array elements with a specified value.
-        </para>
+      用指定值填充数组元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -257,8 +302,8 @@
             </entry>
             <entry>
               <para>
-            Insert an element into an array and assign it a NIL value.
-        </para>
+      在数组中插入一个元素并将其赋值为 NIL。
+    </para>
             </entry>
           </row>
           <row>
@@ -287,8 +332,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of elements in an array.
-        </para>
+      返回数组中元素的数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -312,11 +357,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALines(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALines(XSharp.__Array,System.String,System.Int32,System.String[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            将字符表达式或备注字段中的每一行复制到数组的对应行中。
+        </para>
             </entry>
           </row>
           <row>
@@ -330,8 +377,8 @@
             </entry>
             <entry>
               <para>
-            To create an array and fill its elements with a default value.
-        </para>
+      创建一个数组并用默认值填充其元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -345,8 +392,8 @@
             </entry>
             <entry>
               <para>
-            Create an uninitialized array with the specified number of elements and dimensions.
-        </para>
+      创建具有指定元素数量和维度的未初始化数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -360,8 +407,8 @@
             </entry>
             <entry>
               <para>
-            Create an empty array.
-        </para>
+      创建一个空数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -375,8 +422,8 @@
             </entry>
             <entry>
               <para>
-            Create an uninitialized, one-dimensional array.
-        </para>
+      创建一个未初始化的一维数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -390,8 +437,8 @@
             </entry>
             <entry>
               <para>
-            Removes write protection from an entire array.
-        </para>
+      从整个数组中移除写保护。
+    </para>
             </entry>
           </row>
           <row>
@@ -405,8 +452,8 @@
             </entry>
             <entry>
               <para>
-            Read an array element.
-        </para>
+      读取数组元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -420,8 +467,8 @@
             </entry>
             <entry>
               <para>
-            Create an initialized array.
-        </para>
+      创建一个已初始化的数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -435,8 +482,8 @@
             </entry>
             <entry>
               <para>
-            Create an uninitialized array with the specified number of elements and dimensions.
-        </para>
+      创建具有指定元素数量和维度的未初始化数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -450,8 +497,8 @@
             </entry>
             <entry>
               <para>
-            Protect an array from change in all functions except the one in which it was declared.
-        </para>
+      保护数组，使其在声明函数之外无法被修改。
+    </para>
             </entry>
           </row>
           <row>
@@ -460,13 +507,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayPut(XSharp.__Array,System.UInt32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayPut(XSharp.__Array,System.UInt32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Write a value to an array element.
-        </para>
+      向数组元素写入值。
+    </para>
             </entry>
           </row>
           <row>
@@ -480,8 +527,8 @@
             </entry>
             <entry>
               <para>
-            Store an array to a buffer.
-        </para>
+      将数组存储到缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -490,13 +537,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArraySwap(XSharp.__Array,System.UInt32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArraySwap(XSharp.__Array,System.UInt32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Replace an array element with a new value and return the old value.
-        </para>
+      替换数组元素的值并返回原值。
+    </para>
             </entry>
           </row>
           <row>
@@ -505,13 +552,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan an array until a value is found or a code block returns TRUE.
-        </para>
+      扫描数组直到找到一个值或代码块返回 TRUE。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AScan(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Searches an array for an element containing the same data and data type as an expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -520,13 +582,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBin(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBin(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan a sorted array until a value is found or a code block returns 0.
-        </para>
+      扫描已排序的数组，直到找到一个值或代码块返回0。
+    </para>
             </entry>
           </row>
           <row>
@@ -535,13 +597,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBinExact(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBinExact(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan a sorted array until there is an exact match or a code block returns 0.
-        </para>
+      扫描已排序的数组，直到找到一个精确匹配或代码块返回0。
+    </para>
             </entry>
           </row>
           <row>
@@ -550,13 +612,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan an array until there is an exact match or a code block returns TRUE.
-        </para>
+      扫描数组直到找到精确匹配或代码块返回TRUE。
+    </para>
             </entry>
           </row>
           <row>
@@ -570,8 +632,8 @@
             </entry>
             <entry>
               <para>
-            Grow or shrink an array.
-        </para>
+      增大或缩小数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -584,7 +646,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:XSharp.VFP.Functions.ASize(XSharp.__Array,System.UInt32)VfpRuntimeDocs.xmlRuntimefunctions/asize/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -598,8 +660,38 @@
             </entry>
             <entry>
               <para>
-            Sort an array.
-        </para>
+      对数组进行排序。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASort(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Sorts elements in an array in ascending or descending order.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASortEx(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.Codeblock)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Sort an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -641,8 +733,8 @@
             </entry>
             <entry>
               <para>
-            Return the highest numbered element of an array.
-        </para>
+      返回数组的最后一个元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -656,8 +748,8 @@
             </entry>
             <entry>
               <para>
-            Delete an array element.
-        </para>
+      删除数组元素。
+    </para>
             </entry>
           </row>
           <row>
@@ -666,11 +758,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            将数据会话的表别名和工作区放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>
@@ -684,8 +778,8 @@
             </entry>
             <entry>
               <para>
-        Delete an element from an array and optionally adjust the length of the array.
-      </para>
+      从数组中删除一个元素，并且可以调整数组的长度。
+    </para>
             </entry>
           </row>
           <row>
@@ -699,8 +793,8 @@
             </entry>
             <entry>
               <para>
-        Inserts a value at an array subscript position and optionally increases the length of array.
-      </para>
+      在数组的特定位置插入一个值，并且可以增加数组的长度。
+    </para>
             </entry>
           </row>
           <row>

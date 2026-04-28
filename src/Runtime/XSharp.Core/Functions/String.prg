@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -8,8 +8,7 @@ USING System.Text
 // Array of chars used for the various trim functions
 INTERNAL GLOBAL trimChars := <CHAR>{ ' ' } AS CHAR[]
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alltrim/*" />
-/// <returns>A trimmed string, with leading and trailing spaces removed.</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/AllTrim/*" />
 FUNCTION AllTrim(cString AS STRING) AS STRING
 	IF ( cString == NULL )
 		RETURN cString
@@ -54,35 +53,13 @@ INTERNAL FUNCTION __AscWorker(cString AS STRING, lMustBeAnsi AS LOGIC) AS DWORD
 	RETURN ascValue
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-/// <remarks>
-/// AscA() always uses the current Ansi codepage, and ignores the setting of SetAnsi()
-/// </remarks>
-/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.ChrA'>ChrA</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/AscA/*" />
 FUNCTION AscA(cString AS STRING) AS DWORD
 	RETURN __AscWorker(cString, TRUE)
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-/// <remarks>
-/// The return value of Asc() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the result.<br/>
-/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the result.<br/>
-/// This is different from the behior in most single byte versions of Xbase where Asc() simply returnes the
-/// byte value of the 1st character of the string.
-/// </remarks>
-/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Asc/*" />
 FUNCTION Asc(cString AS STRING) AS DWORD
     RETURN __AscWorker(cString, FALSE)
-/// <summary>
-/// Convert a character to its Unicode ASCII value.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>Number of the Unicode character</returns>
-/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.ChrW'>ChrW</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/AscW/*" />
 FUNCTION AscW(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
@@ -167,18 +144,12 @@ FUNCTION ATLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
 FUNCTION ATLine2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	RETURN ATLine(cSearch, cTarget)
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/B64EncFile/*" />
 FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	//RETURN String.Empty
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="cIn"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/B64EncString/*" />
 FUNCTION B64EncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
 	//RETURN String.Empty
@@ -215,7 +186,9 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 	LOCAL i1 := 0 AS INT
 	LOCAL i2 := 0  AS INT
 	LOCAL sb AS StringBuilder
-
+    if cOdd == NULL .or. cEven == NULL
+        RETURN ""
+    ENDIF
 	IF cEven:Length == 0
 		RETURN ""
 	ELSE
@@ -287,36 +260,16 @@ INTERNAL FUNCTION __ChrWorker(dwCode AS DWORD, lMustBeAnsi AS LOGIC) AS STRING
    ENDIF
    RETURN ret
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chr/*" />
-/// <remarks>
-/// The value of dwChar must be between 0 and 255<br/>
-/// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the character.<br/>
-/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the character.<br/>
-/// This is different from the behior in most single byte versions of Xbase where Chr() simply returnes a string with a single byte
-/// that matches the number passed to this function.
-/// </remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Chr/*" />
 FUNCTION Chr(dwCode AS DWORD) AS STRING
   RETURN __ChrWorker(dwCode, FALSE)
 
 
-/// <summary>
-/// Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
-/// </summary>
-/// <param name="dwCode"></param>
-/// <returns>
-/// </returns>
-/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/ChrA/*" />
 FUNCTION ChrA(dwCode AS DWORD) AS STRING
     RETURN __ChrWorker(dwCode, TRUE)
 
-/// <summary>
-/// Convert an ASCII code to a character value.
-/// </summary>
-/// <param name="dwChar"></param>
-/// <returns>
-/// </returns>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/ChrW/*" />
 FUNCTION ChrW(dwChar AS DWORD) AS STRING
    IF dwChar > 0xFFFF
       THROW Error.ArgumentError( __ENTITY__, nameof(dwChar), "Number too High")
@@ -394,11 +347,7 @@ INTERNAL FUNCTION _nibble (c AS CHAR) AS BYTE
 		b := 0
 	END SWITCH
 	RETURN b
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Hex2C/*" />
 FUNCTION Hex2C(c AS STRING) AS STRING
 	LOCAL i AS INT
 	LOCAL sb AS StringBuilder
@@ -489,9 +438,7 @@ FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
 
 	RETURN count
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oem/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Ansi2OemBuff" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Ansi2Oem/*" />
 FUNCTION Ansi2Oem(cAnsiString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -510,22 +457,14 @@ FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
-/// <inheritdoc cref="Ansi2Oem(System.Byte[])" />
-/// <param name="iLen">Length of the source array</param>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Ansi2Oem_2/*" />
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
 	CharToOemBuffA(bSource, bDest, (DWORD) iLen)
 	RETURN bDest
 
-/// <overloads>
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Oem2AnsiA" />
-/// <seealso cref="Ansi2Oem" />
-/// </overloads>
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oema/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="M:Ansi2OemBuff" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Ansi2OemA/*" />
 FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -536,11 +475,7 @@ FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	RETURN cAnsiString
 
 
-/// <summary>
-/// Convert an array of ANSI characters to OEM characters, changing the contents of the argument as well as the return value.
-/// </summary>
-/// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="M:Ansi2OemA(System.String@)" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Ansi2OemA_2/*" />
 FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Ansi2Oem(bSource, bSource:Length)
@@ -548,14 +483,7 @@ FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
     RETURN
 
 
-/// <overloads>
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Ansi2Oem" />
-/// <seealso cref="Oem2AnsiA" />
-/// </overloads>
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansi/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="M:Oem2AnsiBuff" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Oem2Ansi/*" />
 FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -564,21 +492,11 @@ FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	aBytes := Oem2Ansi(aBytes, iLen)
 	RETURN Bytes2String(aBytes, iLen)
 
-/// <summary>
-/// Convert an array of OEM characters to ANSI characters.
-/// </summary>
-/// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="M:Oem2Ansi(System.String)" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Oem2Ansi_2/*" />
 FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 	RETURN Oem2Ansi(bSource, bSource:Length)
 
-/// <overloads>
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Oem2Ansi" />
-/// <seealso cref="Ansi2OemA" />
-/// </overloads>
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansia/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Oem2AnsiA/*" />
 FUNCTION Oem2AnsiA(cOemString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -589,8 +507,7 @@ FUNCTION Oem2AnsiA(cOemString REF STRING) AS STRING
 	RETURN cOemString
 
 
-/// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="System.String@)" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Oem2AnsiA/*" />
 FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Oem2Ansi(bSource, bSource:Length)
@@ -598,26 +515,19 @@ FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
     RETURN
 
 
-/// <inheritdoc cref="Oem2Ansi(System.Byte[])" />
-/// <param name="iLen">The number of characters to convert</param>
-/// <returns>String converted to Ansi</returns>
-/// <seealso cref="Ansi2Oem" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Oem2Ansi_3/*" />
 FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
 	OemToCharBuffA(bSource, bDest, (DWORD) iLen)
 	RETURN bDest
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansibuff/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Ansi2OemBuff" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Oem2AnsiBuff/*" />
 FUNCTION Oem2AnsiBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	OemToCharBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oembuff/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Oem2AnsiBuff" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/Ansi2OemBuff/*" />
 FUNCTION Ansi2OemBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	CharToOemBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget
@@ -660,15 +570,25 @@ FUNCTION ProperA(cName REF STRING) AS STRING
 	cName := Proper(cName)
 	RETURN cName
 
-/// <summary>
-/// </summary>
-/// <param name="cIn"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/QPEncString/*" />
 FUNCTION QPEncString(cIn AS STRING) AS STRING
-	THROW NotImplementedException{}
-	//RETURN String.Empty
-
+    if cIn == NULL
+        RETURN NULL
+    endif
+    var sb := StringBuilder{}
+    FOREACH c AS CHAR IN cIn
+        do case
+        case (int) c == 9 .or. (int) c == 32
+            sb:Append(c)
+        case (int) c < 33 .or. c == '='
+            sb:AppendFormat("={0:X2}", (int) c)
+        case (int) c <= 127
+            sb:Append(c)
+        otherwise
+           sb:AppendFormat("={0:X2}", (int) c)
+        endcase
+    NEXT
+    return sb:ToString()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
 FUNCTION RAt(cSearch AS STRING,cTarget AS STRING) AS DWORD
@@ -776,10 +696,7 @@ FUNCTION Space(dwSize AS DWORD) AS STRING
 	RETURN STRING{' ',(INT)dwSize}
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/slen/*" />
-/// <remarks>
-/// The compiler will replace calls to SLen() as much as possible with a direct call to the Length property of a string.
-/// </remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SLen/*" />
 FUNCTION SLen(cString AS STRING) AS DWORD
 	LOCAL len := 0 AS DWORD
 	IF cString != NULL
@@ -934,27 +851,17 @@ FUNCTION UpperA(cString REF STRING) AS STRING
 	ENDIF
 	RETURN cString
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="cLine"></param>
-/// <param name="hfOut"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/UUDecodeLine/*" />
 FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 	THROW NotImplementedException{}
 //RETURN 0
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/UUEncFile/*" />
 FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	//RETURN String.Empty
 
-/// <summary>This function is not implemented yet</summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/UUEncLine/*" />
 FUNCTION UUEncLine(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	//RETURN String.Empty
@@ -977,11 +884,7 @@ FUNCTION IsAlNum(pszString AS STRING) AS LOGIC
 	ENDIF
 	RETURN ret
 
-/// <summary>Determine if the leftmost character in a string is alphanumeric..</summary>
-/// <param name="cSource">The string to examine.</param>
-/// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
-/// <seealso cref='O:XSharp.Core.Functions.IsAlNum'>IsAlNum</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.IsAlpha'>IsAlpha</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/IsAlphaNum/*" />
 FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
 	RETURN IsAlNum(cSource)
 
@@ -1054,11 +957,7 @@ FUNCTION IsLower(pszString AS STRING) AS LOGIC
 
 
 
-/// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>
-/// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
-/// <param name="sSource">The string to examine.</param>
-/// <remarks>This function is case sensitive. If you want to do a case insensitive compare, use Like()</remarks>
-/// <seealso cref='O:XSharp.Core.Functions.Like'>Like</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/_Like/*" />
 FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     LOCAL nWildLen AS LONG
     LOCAL nSourceLen AS LONG
@@ -1117,12 +1016,7 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     ENDIF
     RETURN TRUE
 
-/// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>
-/// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
-/// <param name="sSource">The string to examine.</param>
-/// <remarks>This function is case INsensitive in all dialects except FoxPro.
-/// If you want to do a case sensitive compare in these dialects, use _Like()</remarks>
-/// <seealso cref='O:XSharp.Core.Functions._Like' >_Like</seealso>
+/// <include file="XSharp.Core.Docs.xml" path="doc/Like/*" />
 FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         RETURN _Like(sWildCard, sSource)

@@ -178,7 +178,7 @@ METHOD __Gather() AS LOGIC STRICT
 	IF lChanged
 		if oServer is DataServer
 			IF lBaseServer // if not subclassing
-				oServer:FIELDPUT(siDataField,SELF:Value) //use FieldPut
+				oServer:FieldPut(siDataField,SELF:Value) //use FieldPut
 			ELSEIF (symDataField != NULL_SYMBOL) //else use assigns
 				IVarPut(oServer, symDataField ,SELF:Value)
 			ELSE
@@ -238,7 +238,7 @@ METHOD __Scatter() AS Control STRICT
 
 	if oServer is DataServer
 		IF lBaseServer // if not subclassing
-			NewValue := oServer:FIELDGET(symDataField) //use fieldget
+			NewValue := oServer:FieldGet(symDataField) //use fieldget
 		ELSEIF symDataField != NULL_SYMBOL //else use Access
 			NewValue := IVarGet(oServer, symDataField)
 		ELSE
@@ -2119,11 +2119,11 @@ ASSIGN Value(uNewValue)
 	LOCAL cOldValue AS STRING
 
 	cOldValue := AsString(uValue)
-	// !!! should be result of FIELDGET and located after FIELDPUT !!!
+	// !!! should be result of FieldGet and located after FieldPut !!!
 	SELF:__Value := uNewValue //Update the control
 	if oServer is DataServer
 		IF lBaseServer // if not subclassing
-			oServer:FIELDPUT(siDataField,SELF:uValue) //update the DataServer
+			oServer:FieldPut(siDataField,SELF:uValue) //update the DataServer
 		ELSEIF symDataField != NULL_SYMBOL
 			IVarPut(oServer, symDataField ,SELF:uValue)
 		ELSE

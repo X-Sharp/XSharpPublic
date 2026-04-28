@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -6,53 +6,36 @@
 USING XSharp.RDD
 BEGIN NAMESPACE XSharp
 
-	/// <summary>
-	/// This interface defines Date values
-	/// </summary>
-	/// <seealso cref="T:XSharp.__Date"/>
-	/// <seealso cref="T:XSharp.RDD.DbDate"/>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IDate/*" />
 	INTERFACE IDate
-		/// <summary>Year part of the date. A number between 0 and 9999</summary>
-		/// <returns>Integer value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IDate.Year/*" />
 		PROPERTY Year		AS INT GET
-		/// <summary>Month part of the date. A number between 0 an 12</summary>
-		/// <returns>Integer value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IDate.Month/*" />
 		PROPERTY Month		AS INT GET
-		/// <summary>Day part of the date. A number between 0 an 31</summary>
-		/// <returns>Integer value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IDate.Day/*" />
 		PROPERTY Day		AS INT GET
-		/// <summary>Date as System.DateTime structure</summary>
-		/// <returns>System.DateTime value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IDate.Value/*" />
 		PROPERTY @@Value		AS DateTime GET
-		/// <summary>Is the date empty (NULL_DATE)</summary>
-		/// <returns>Logical value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IDate.IsEmpty/*" />
 		PROPERTY IsEmpty	AS LOGIC GET
 	END INTERFACE
 
-	/// <summary>
-	/// This interface defines FLOAT values
-	/// </summary>
-	/// <seealso cref="T:XSharp.__Float"/>
-	/// <seealso cref="T:XSharp.RDD.DbFloat"/>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IFloat/*" />
 	INTERFACE IFloat
-		/// <summary>Double value of the Float</summary>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IFloat.Value/*" />
 		property @@Value    as real8 get
-		/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
-		/// <returns>Integer value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IFloat.Digits/*" />
 		PROPERTY Digits	  AS INT  GET
-		/// <summary>Number of decimals.</summary>
-		/// <returns>Integer value</returns>
+  /// <include file="XSharp.Core.Docs.xml" path="doc/IFloat.Decimals/*" />
 		PROPERTY Decimals AS INT  GET
 	END INTERFACE
 
     INTERFACE IClosedRDD
         PROPERTY Closed as LOGIC GET
     END INTERFACE
-    /// <summary>
-    /// This interface is used to return Decimal values from the RDD system
-    /// </summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/ICurrency/*" />
     interface ICurrency
-		/// <summary>Decimal value of the Currency</summary>
+        /// <include file="XSharp.Core.Docs.xml" path="doc/ICurrency.Value/*" />
         property @@Value    as System.Decimal	get
     end interface
 

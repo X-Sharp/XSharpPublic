@@ -13,9 +13,8 @@ USING XSharp.RDD.Support
 USING System.IO
 
 BEGIN NAMESPACE XSharp.RDD
-      /// <summary>DBT Memo class. Implements the DBT support.</summary>
     // See https://www.clicketyclick.dk/databases/xbase/format/dbt.html#DBT_STRUCT/
-    //
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBTMemo/*" />
     INTERNAL CLASS DBTMemo INHERIT AbstractMemo IMPLEMENTS IMemo
 
         STATIC PROPERTY DefExt AS STRING AUTO
@@ -213,7 +212,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             THROW NotImplementedException{}
 
-        /// <summary>Return the extension set with Set.MemoExt or default extension</summary>
+        /// <include file="XSharp.RDD.Docs.xml" path="doc/DBTMemo._GetExtension/*" />
         PRIVATE METHOD _GetExtension() AS STRING
             VAR cExt := RuntimeState.GetValue<STRING>(Set.MemoExt)
             IF ! String.IsNullOrEmpty(cExt)

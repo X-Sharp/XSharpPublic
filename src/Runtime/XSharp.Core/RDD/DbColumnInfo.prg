@@ -15,28 +15,28 @@ USING XSharp.RDD.Enums
 /// <summary>This class describes extended information for a field in a workarea, for fields that come from a SQL backend.</summary>
 [DebuggerDisplay("{ColumnName,nq} #{Ordinal} ({FieldTypeStr,nq} {Length} {Decimals}), ")];
 CLASS XSharp.RDD.DbColumnInfo INHERIT RddFieldInfo
-    /// <summary>DotNet datatype of the column</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.DotNetType/*" />
     PROPERTY DotNetType     AS System.Type AUTO
-    /// <summary>Numeric Scale</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.NumericScale/*" />
     PROPERTY NumericScale   AS LONG AUTO
-    /// <summary>Numeric Precision</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.NumericPrecision/*" />
     PROPERTY NumericPrecision AS LONG AUTO
-    /// <summary>Numeric Precision</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.ReadOnly/*" />
     PROPERTY ReadOnly AS LOGIC AUTO
-    /// <summary>Initializes a new instance of the DbColumnInfo class</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.ctor/*" />
     CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
         SUPER(sName, sType, nLength, nDecimals)
         SELF:ColumnName := sName
         SELF:Caption    := SELF:ColumnName
         SELF:CalculateColumnType()
 
-    /// <summary>Initializes a new instance of the DbColumnInfo class</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.ctor_2/*" />
     CONSTRUCTOR(oInfo AS RddFieldInfo)
         SUPER(oInfo)
         SELF:CalculateColumnType()
         RETURN
 
-    /// <summary>Calculate the column type from the FieldType</summary>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/DbColumnInfo.CalculateColumnType/*" />
     METHOD CalculateColumnType() AS VOID
         SWITCH SELF:FieldType
         CASE DbFieldType.Character

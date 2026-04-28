@@ -1,17 +1,20 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [
+  "author": "XSharp",
+  "classifications": [
     "Windows",
+    "Android",
+    "Linux",
+    "MacOS",
     "Library",
     "Harbour"
   ],
-  "Identity": "XSharp.ClassLibraryHarbour.SDK",
-  "Name": "Class Library Harbour Dialect (SDK)",
+  "identity": "XSharp.ClassLibraryHarbour.SDK",
+  "name": "Class Library Harbour Dialect (SDK)",
   "description": "A SDK Style project for creating a X# class library (.dll) for the Harbour Dialect",
   "SourceName": "XSharp.ClassLibraryHarbour",
-  "ShortName": "xsclasslibraryharbour",
-  "Tags": {
+  "shortName": "xsclasslibraryharbour",
+  "tags": {
     "language": "X#",
     "type": "project",
     "icon": "template.png",

@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PUBLIC METHOD Button( i AS INT ) AS CommandButton
 			RETURN SELF:buttons[ i ]
 
-#include ".\Headers\ControlSource.xh"
+#include "ControlSource.xh"
 
 	END CLASS
 END NAMESPACE

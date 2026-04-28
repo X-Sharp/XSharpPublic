@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -83,10 +83,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
          OVERRIDE METHOD ToString() AS STRING => DebugString
     END CLASS
-	/// <summary>
-	/// CdxLeaf page. this class maps the Leaf page from the file in memory
-    /// Manipulating the page is implemented in the CdxTag class
-	/// </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxLeafPage/*" />
 	INTERNAL CLASS CdxLeafPage INHERIT CdxTreePage
 #region Fields
         // Private fields that map the various fixed values in a page

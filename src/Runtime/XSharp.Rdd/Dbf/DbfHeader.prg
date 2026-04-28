@@ -11,7 +11,7 @@ USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.RDD
 
-/// <summary>DBF Header.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader/*" />
 CLASS DbfHeader
     // Fixed Buffer of 32 bytes
     // Matches the DBF layout
@@ -39,10 +39,10 @@ CLASS DbfHeader
 	PRIVATE Buffer   AS BYTE[]
     PRIVATE _oRDD AS DBF
 
-    /// <summary>Hot ?  => Header has changed ?</summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.isHot/*" />
 	INTERNAL isHot	AS LOGIC
-	/// <summary>DBF Version</summary>
 
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.ctor/*" />
     CONSTRUCTOR (oRDD AS DBF)
         SELF:_oRDD := oRDD
 	    Buffer := BYTE[]{DbfHeader.SIZE}
@@ -53,9 +53,7 @@ PROPERTY Version    AS DBFVersion	;
     GET (DBFVersion) Buffer[OFFSET_SIG] ;
     SET isHot |= Version != VALUE, Buffer[OFFSET_SIG] := (BYTE) VALUE
 
-/// <summary>Year of last update
-/// YY is added to a base of 1900 decimal to determine the actual year.
-/// Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Year/*" />
 PROPERTY Year		AS LONG
 	GET
 		LOCAL nYear AS LONG
@@ -69,82 +67,82 @@ PROPERTY Year		AS LONG
 	END SET
 END PROPERTY
 
-/// <summary>Month of last update</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Month/*" />
 PROPERTY Month		AS BYTE			;
     GET Buffer[OFFSET_MONTH]	;
     SET isHot |= Month != VALUE, Buffer[OFFSET_MONTH] := VALUE
 
-/// <summary>Day of last update</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Day/*" />
 PROPERTY Day		AS BYTE			;
     GET Buffer[OFFSET_DAY]	;
     SET isHot |= Day != VALUE, Buffer[OFFSET_DAY] := VALUE
 
-/// <summary>Number of records in the table. (Least significant byte first.)</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.RecCount/*" />
 PROPERTY RecCount	AS DWORD			;
     GET BitConverter.ToUInt32(Buffer, OFFSET_RECCOUNT) ;
     SET isHot |= RecCount != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG))
 
-/// <summary>Number of bytes in the header. (Least significant byte first.)</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.HeaderLen/*" />
 PROPERTY HeaderLen	AS SHORT		;
     GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
     SET isHot |= HeaderLen != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT))
 
-/// <summary>Length of one data record, including deleted flag</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.RecordLen/*" />
 PROPERTY RecordLen	AS WORD		;
     GET BitConverter.ToUInt16(Buffer, OFFSET_RECSIZE);
     SET isHot |= RecordLen != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD))
 
-/// <summary>Reserved flag at position 12</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Reserved1/*" />
 PROPERTY Reserved1	AS SHORT		;
     GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
     SET isHot |= Reserved1 != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT))
 
-/// <summary>Flag indicating incomplete dBASE IV transaction.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Transaction/*" />
 PROPERTY Transaction AS BYTE		;
     GET Buffer[OFFSET_TRANSACTION];
     SET isHot |= Transaction != VALUE, Buffer[OFFSET_TRANSACTION] := VALUE
 
-/// <summary>dBASE IV encryption flag.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Encrypted/*" />
 PROPERTY Encrypted	AS BYTE			;
     GET Buffer[OFFSET_ENCRYPTED];
     SET isHot |= Encrypted != VALUE, Buffer[OFFSET_ENCRYPTED] := VALUE
 
-/// <summary>dBASE IV LAN value.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.DbaseLan/*" />
 PROPERTY DbaseLan	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
     SET isHot |= DbaseLan != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG))
 
-/// <summary>dBASE IV Multi User value.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.MultiUser/*" />
 PROPERTY MultiUser	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
     SET isHot |= MultiUser != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG))
 
-/// <summary>Reserved flag at position 24</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Reserved2/*" />
 PROPERTY Reserved2	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
     SET isHot |= Reserved2 != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
 
 
-/// <summary>Table Flags</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.TableFlags/*" />
 PROPERTY TableFlags	AS DBFTableFlags ;
     GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
     SET isHot |= TableFlags != VALUE, Buffer[OFFSET_HASTAGS] := (BYTE) VALUE
 
-/// <summary>Code Page</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.CodePage/*" />
 PROPERTY CodePage	AS DbfHeaderCodepage			 ;
     GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
     SET isHot |= CodePage != VALUE, Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE
 
-/// <summary>Reserved flag at position 30</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.Reserved3/*" />
 PROPERTY Reserved3	AS SHORT         ;
     GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
     SET isHot |= Reserved3 != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT))
 
-/// <summary>Date of last update.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.LastUpdate/*" />
 PROPERTY LastUpdate AS DateTime      ;
     GET DateTime{Year, Month, Day} ;
 
-/// <summary>Is the codepage an Ansi codepage</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeader.IsAnsi/*" />
 PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
 
 PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE

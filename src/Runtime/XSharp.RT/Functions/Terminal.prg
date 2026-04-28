@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -53,17 +53,12 @@ INTERNAL FUNCTION AltWriteLine() AS VOID
 
 #region SET TEXT TO FILE
 
-/// <summary>
-/// This function is used by the TEXT TO FILE UDC
-/// </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_TextRestore/*" />
 FUNCTION _TextRestore() AS VOID
     SetTextOutPut(FALSE)
     SetTextFile( "" , FALSE)
     RETURN
-/// <summary>
-/// This function is used by the TEXT TO FILE UDC
-/// </summary>
-/// <param name="cFile">FileName specified in the TEXT TO FILE UDC</param>
+/// <include file="XSharp.RT.Docs.xml" path="doc/_TextSave/*" />
 FUNCTION _TextSave(cFile AS STRING) AS VOID
     SetTextFile( cFile , FALSE)
     SetTextOutPut(TRUE)
@@ -88,6 +83,20 @@ INTERNAL FUNCTION TextWriteLine() AS VOID
 
 #endregion
 
+#region SET DEVICE
+INTERNAL FUNCTION DevWrite(cText AS STRING) AS VOID
+    IF XSharp.RuntimeState.GetValue<STRING>(Set.Device) == "FILE" .AND. ConsoleHelpers.DevFileHandle != IntPtr.Zero
+        ConsoleHelpers.Write(ConsoleHelpers.DevFileHandle, cText)
+    ENDIF
+    RETURN
+
+INTERNAL FUNCTION DevWriteLine() AS VOID
+    IF XSharp.RuntimeState.GetValue<STRING>(Set.Device) == "FILE" .AND. ConsoleHelpers.DevFileHandle != IntPtr.Zero
+        ConsoleHelpers.WriteLine(ConsoleHelpers.DevFileHandle)
+    ENDIF
+    RETURN
+#endregion
+
 #region SET CONSOLE
 
 INTERNAL FUNCTION ConsoleWriteLine() AS VOID
@@ -110,12 +119,15 @@ INTERNAL FUNCTION QWriteLine() AS VOID
     ConsoleWriteLine()
     AltWriteLine()
     TextWriteLine()
+    DevWriteLine()
+    RETURN
 
 INTERNAL FUNCTION QWrite(cText as STRING) AS VOID
     IF cText != NULL
         ConsoleWrite(cText)
         AltWrite(cText)
         TextWrite(cText)
+        DevWrite(cText)
     ENDIF
     RETURN
 
@@ -222,18 +234,13 @@ FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
 
     RETURN retval
 #endregion
-/// <exclude/>
 
+/// <exclude/>
 FUNCTION DoEvents() AS VOID
     UnSafeNativeMethods.DoEvents()
 
 
-/// <summary>Dump the contents of an array to the terminal window</summary>
-/// <param name="aTest">Array to dump</param>
-/// <param name="cPrefix">Name to show before the array brackets. Defaults to 'a'</param>
-/// <returns>Nothing</returns>
-/// <remarks>This dumps the information to the terminal window.
-/// This will only work if the main application is a console application.</remarks>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ShowArray/*" />
 FUNCTION ShowArray  (aTest as array, cPrefix := "" as STRING) AS VOID
     LOCAL i         AS DWORD
     LOCAL n         AS DWORD
@@ -278,13 +285,8 @@ FUNCTION ShowArray  (aTest as array, cPrefix := "" as STRING) AS VOID
 
 
 
-/// <summary>Dump the contents of an object to the terminal window</summary>
-/// <param name="oObject">Object to dump</param>
-/// <param name="cPrefix">Name to show before the field names. Defaults to 'o'</param>
-/// <returns>Nothing</returns>
-/// <remarks>This dumps the information to the terminal window.
-/// This will only work if the main application is a console application.</remarks>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/ShowObject/*" />
 FUNCTION ShowObject(oObject as OBJECT,cPrefix := "" as STRING) AS VOID
     LOCAL aNames := IvarList(oObject) AS ARRAY
     IF cPrefix:Length == 0
@@ -300,12 +302,8 @@ FUNCTION ShowObject(oObject as OBJECT,cPrefix := "" as STRING) AS VOID
     ?
     RETURN
 
-/// <summary>Dump the currently defined privates to the terminal window</summary>
-/// <param name="lCurrentOnly">Only dump the privates from the current level on the evaluation stack.</param>
-/// <returns>Nothing</returns>
-/// <remarks>This dumps the information to the terminal window.
-/// This will only work if the main application is a console application.</remarks>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/ShowPrivates/*" />
 FUNCTION ShowPrivates(lCurrentOnly := FALSE AS LOGIC) AS VOID
     VAR cName := _PrivateFirst(lCurrentOnly)
     var aNames := List<string>{}
@@ -320,11 +318,8 @@ FUNCTION ShowPrivates(lCurrentOnly := FALSE AS LOGIC) AS VOID
     NEXT
     RETURN
 
-/// <summary>Dump the currently defined publics to the terminal window</summary>
-/// <returns>Nothing</returns>
-/// <remarks>This dumps the information to the terminal window.
-/// This will only work if the main application is a console application.</remarks>
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/ShowPublics/*" />
 FUNCTION ShowPublics() AS VOID
     VAR cName := _PublicFirst()
     var aNames := List<string>{}
@@ -374,6 +369,8 @@ INTERNAL STATIC CLASS ConsoleHelpers
     INTERNAL STATIC TextFileHandle := IntPtr.Zero as IntPtr
     INTERNAL STATIC TextOutPut       AS LOGIC
     INTERNAL STATIC TextFile         AS STRING
+    [ThreadStatic];
+    INTERNAL STATIC DevFileHandle := IntPtr.Zero AS IntPtr
 
 
     //INTERNAL STATIC PrintFileHandle := IntPtr.Zero as IntPtr

@@ -45,6 +45,7 @@ CLASS XPEPropertySymbol INHERIT XPEMemberSymbol
             result += SELF:Prototype
             result += IIF(Accessors.HasFlag(AccessorKind.Get), " GET","")
             result += IIF(Accessors.HasFlag(AccessorKind.Set), " SET","")
+            result += IIF(Accessors.HasFlag(AccessorKind.Init), " INIT","")
             RETURN result:Replace("  ", " ")
         END GET
     END PROPERTY

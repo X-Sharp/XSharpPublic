@@ -1,21 +1,21 @@
 /// <include file="SQL.xml" path="doc/SQLListProcedures/*" />
 CLASS SQLListProcedures INHERIT SQLCatalogQuery
-	EXPORT Qualifier AS STRING
-	EXPORT Owner     AS STRING
-	EXPORT ProcName  AS STRING
-
-
+    EXPORT Qualifier AS STRING
+    EXPORT Owner     AS STRING
+    EXPORT ProcName  AS STRING
+    
+    
 /// <include file="SQL.xml" path="doc/SQLListProcedures.Execute/*" />
 METHOD Execute() 
-	LOCAL   nRet    AS INT
+    LOCAL   nRet    AS INT
     LOCAL psz1, psz2, psz3 AS PSZ
-
-
-    #IFDEF __DEBUG__
-        __SQLOutputDebug( "** SQLListProcedures:Execute()" )
-    #ENDIF
-
-
+    
+    
+#IFDEF __DEBUG__
+    __SQLOutputDebug( "** SQLListProcedures:Execute()" )
+#ENDIF
+    
+    
     IF oStmt:StatementHandle = SQL_NULL_HSTMT
         SELF:__AllocStmt()
     ENDIF                    
@@ -34,56 +34,56 @@ METHOD Execute()
         psz1, _SLen( Qualifier ), ;
         psz2, _SLen( Owner ),     ;
         psz3, _SLen( ProcName ) )
-
-
-	IF nRet != SQL_SUCCESS
-		oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
-										#Execute,                   ;
-										oStmt:__Connection:EnvHandle, ;
-										oStmt:__Connection:ConnHandle,;
-										oStmt:StatementHandle }
-
-
-		RETURN FALSE
-	ENDIF
-	RETURN SUPER:Execute()
-
-
+    
+    
+    IF nRet != SQL_SUCCESS
+        oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
+            __FUNCTION__,                   ;
+            oStmt:__Connection:EnvHandle, ;
+            oStmt:__Connection:ConnHandle,;
+            oStmt:StatementHandle }
+        
+        
+        RETURN FALSE
+    ENDIF
+    RETURN SUPER:Execute()
+    
+    
 /// <include file="SQL.xml" path="doc/SQLListProcedures.ctor/*" />
 CONSTRUCTOR( cQualifier, cOwner, cProcName, oSQLConnection ) 
-
-
-	SUPER( oSQLConnection )
-
-
-	#IFDEF __DEBUG__
-		__SQLOutputDebug( "** SQLListProcedures:Init()" )
-	#ENDIF
-
-
-	IF IsString( cQualifier )
-		SELF:Qualifier := cQualifier
-	ELSE
-		SELF:Qualifier := NULL_STRING
-	ENDIF
-
-
-	IF IsString( cOwner )
-		SELF:Owner := cOwner
-	ELSE
-		SELF:Owner := NULL_STRING
-	ENDIF
-
-
-	IF IsString( cProcName )
-		SELF:ProcName := cProcName
-	ELSE
-		SELF:ProcName := NULL_STRING
-	ENDIF
-	SELF:Execute()
-	RETURN 
-
-
+    
+    
+    SUPER( oSQLConnection )
+    
+    
+#IFDEF __DEBUG__
+    __SQLOutputDebug( "** SQLListProcedures:Init()" )
+#ENDIF
+    
+    
+    IF IsString( cQualifier )
+        SELF:Qualifier := cQualifier
+    ELSE
+        SELF:Qualifier := NULL_STRING
+    ENDIF
+    
+    
+    IF IsString( cOwner )
+        SELF:Owner := cOwner
+    ELSE
+        SELF:Owner := NULL_STRING
+    ENDIF
+    
+    
+    IF IsString( cProcName )
+        SELF:ProcName := cProcName
+    ELSE
+        SELF:ProcName := NULL_STRING
+    ENDIF
+    SELF:Execute()
+    RETURN 
+    
+    
 END CLASS
 
 

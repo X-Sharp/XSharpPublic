@@ -51,13 +51,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Break(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Break(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Branch out of a BEGIN SEQUENCE...END construct.
-        </para>
+      Branch out of a BEGIN SEQUENCE...END construct.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,45 +75,17 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirMake(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirRemove(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._CreateInstance(System.String,XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._CreateInstance(System.Type,XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Create an object.
-        </para>
+      Create an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -127,23 +99,23 @@
             </entry>
             <entry>
               <para>
-            Return a pointer to the command line used to invoke the application.
-        </para>
+      Return a pointer to the command line used to invoke the application.
+    </para>
             </entry>
           </row>
           <row>
             <entry>
-              <para>XSharp.Core</para>
+              <para>XSharp.VO</para>
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._GetInst</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions._GetInst</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the instance handle of an application or DLL.
-        </para>
+      Return the instance handle of an application or DLL.
+    </para>
             </entry>
           </row>
           <row>
@@ -156,8 +128,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -197,20 +168,6 @@
             </entry>
             <entry>
               <para>Execute a Windows or DOS application, a batch file, or a DOS command.</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Send(System.Object,System.Reflection.MethodInfo,XSharp.__Usual[])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
             </entry>
           </row>
           <row>
@@ -308,11 +265,15 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AGetFileVersion(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AGetFileVersion(XSharp.__Array,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Creates an array containing information about files with Windows version resources such as .exe, .dll, and .fll files, or automation servers created in X#.
+            For a X# automation server to have Windows version resources, you must specify a value for at least one item in the EXE Version dialog box.
+            For more information, see EXE Version Dialog Box.
+        </para>
             </entry>
           </row>
           <row>
@@ -321,11 +282,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AMembers(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AMembers(XSharp.__Array,XSharp.__Usual,System.Int32,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Places the names of properties, procedures, and member objects for an object into a variable array.
+        </para>
             </entry>
           </row>
           <row>
@@ -352,8 +315,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method for every element in an array of objects.
-        </para>
+      Invoke a method for every element in an array of objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -375,11 +338,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Places table aliases and work areas for a data session into a variable array.
+        </para>
             </entry>
           </row>
           <row>
@@ -393,8 +358,23 @@
             </entry>
             <entry>
               <para>
-            Determine if a value is between two other values.
-        </para>
+      Determine if a value is between two other values.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Between(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the value of an expression is inclusively between the values of two expressions of the same type.
+    </para>
             </entry>
           </row>
           <row>
@@ -438,8 +418,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a particular class.
-        </para>
+      Determine if an object is an instance of a particular class.
+    </para>
             </entry>
           </row>
           <row>
@@ -453,8 +433,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of classes available to your application.
-        </para>
+      Return the number of classes available to your application.
+    </para>
             </entry>
           </row>
           <row>
@@ -494,8 +474,8 @@
             </entry>
             <entry>
               <para>
-            Return an array of symbols corresponding to the classes available to your application.
-        </para>
+      Return an array of symbols corresponding to the classes available to your application.
+    </para>
             </entry>
           </row>
           <row>
@@ -509,8 +489,8 @@
             </entry>
             <entry>
               <para>
-            Get the class name of an object.
-        </para>
+      Get the class name of an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -537,8 +517,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of an object.
-        </para>
+      Get the class hierarchy of an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -552,8 +532,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of a class.
-        </para>
+      Get the class hierarchy of a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -595,8 +575,8 @@
             </entry>
             <entry>
               <para>
-            Create an object.
-        </para>
+      Create an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -638,8 +618,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method.
-        </para>
+      Invoke a method.
+    </para>
             </entry>
           </row>
           <row>
@@ -653,7 +633,22 @@
             </entry>
             <entry>
               <para>
-            Assign a default value to a NIL argument.
+      Assign a default value to a NIL argument.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns an integer, 0 through 4, which represents the relative phonetic difference between two character expressions.
         </para>
             </entry>
           </row>
@@ -663,11 +658,15 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DoDefault(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+      Executes the parent class event or method of the same name from within a subclass.
+      For example, if you place DODEFAULT( ) in the Click event of a subclass, X# executes the Click event of the parent class. The scope resolution operator (::), unlike DODEFAULT( ), executes a parent class event or method of a different name.
+      You can place DODEFAULT( ) only within an event or method.
+    </para>
             </entry>
           </row>
           <row>
@@ -680,8 +679,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -695,8 +693,23 @@
             </entry>
             <entry>
               <para>
-            Determine if the result of an expression is empty.
-        </para>
+      Determine if the result of an expression is empty.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Empty(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether an expression evaluates to empty.
+    </para>
             </entry>
           </row>
           <row>
@@ -710,8 +723,8 @@
             </entry>
             <entry>
               <para>
-            Determine if field number n in the current workarea is empty.
-        </para>
+      Determine if field number n in the current workarea is empty.
+    </para>
             </entry>
           </row>
           <row>
@@ -724,8 +737,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -739,8 +751,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the current record in the current workarea is empty.
-        </para>
+      Determine if the current record in the current workarea is empty.
+    </para>
             </entry>
           </row>
           <row>
@@ -753,8 +765,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -768,8 +779,8 @@
             </entry>
             <entry>
               <para>
-            Return the empty value of a specified data type.
-        </para>
+      Return the empty value of a specified data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -795,8 +806,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -810,8 +820,8 @@
             </entry>
             <entry>
               <para>
-            Make sure a variable is a numeric.
-        </para>
+      Make sure a variable is a numeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -825,8 +835,8 @@
             </entry>
             <entry>
               <para>
-            Make sure a variable is of a certain type.
-        </para>
+      Make sure a variable is of a certain type.
+    </para>
             </entry>
           </row>
           <row>
@@ -855,8 +865,23 @@
             </entry>
             <entry>
               <para>
-            Evaluate an expression contained in a string.
-        </para>
+      Evaluate an expression contained in a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Evaluate(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Evaluates a character expression and returns the result.
+    </para>
             </entry>
           </row>
           <row>
@@ -887,8 +912,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -908,11 +932,41 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ExecScript(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
               <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptFast(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptSlow(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1011,6 +1065,21 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GETPEM(XSharp.__Usual,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the current value for a property or program code for an event or method at design time.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordCount(System.String)</codeEntityReference>
               </para>
             </entry>
@@ -1074,8 +1143,23 @@
             </entry>
             <entry>
               <para>
-            Indicate whether the first expression in a series is repeated later in the series.
-        </para>
+      Indicate whether the first expression in a series is repeated later in the series.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InList(XSharp.__Usual,XSharp.__Usual[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether an expression matches another expression in a set of expressions.
+    </para>
             </entry>
           </row>
           <row>
@@ -1089,8 +1173,8 @@
             </entry>
             <entry>
               <para>
-            Indicate whether the first expression in a series is repeated later in the series.
-        </para>
+      Indicate whether the first expression in a series is repeated later in the series.
+    </para>
             </entry>
           </row>
           <row>
@@ -1132,8 +1216,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular access method can be sent to an object.
-        </para>
+      Check whether a particular access method can be sent to an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -1147,8 +1231,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is alphanumeric.
-        </para>
+      Determine if the leftmost character in a string is alphanumeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -1162,8 +1246,23 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is alphabetic.
-        </para>
+      Determine if the leftmost character in a string is alphabetic.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsAlpha(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns one of two values depending on the value of a logical expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1185,13 +1284,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an array.
-        </para>
+      Determine if a value is an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -1205,8 +1304,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular assign method can be sent to an object.
-        </para>
+      Check whether a particular assign method can be sent to an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -1220,8 +1319,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a binary digit (0 or 1).
-        </para>
+      Determine if the leftmost character in a string is a binary digit (0 or 1).
+    </para>
             </entry>
           </row>
           <row>
@@ -1230,7 +1329,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1245,7 +1344,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1265,8 +1364,8 @@
             </entry>
             <entry>
               <para>
-            Determine if a class exists.
-        </para>
+      Determine if a class exists.
+    </para>
             </entry>
           </row>
           <row>
@@ -1280,8 +1379,8 @@
             </entry>
             <entry>
               <para>
-            Determine if one class is a subclass of another class.
-        </para>
+      Determine if one class is a subclass of another class.
+    </para>
             </entry>
           </row>
           <row>
@@ -1290,13 +1389,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a code block.
-        </para>
+      Determine if a value is a code block.
+    </para>
             </entry>
           </row>
           <row>
@@ -1320,7 +1419,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1335,13 +1434,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a DATE.
-        </para>
+      Determine if a value is a DATE.
+    </para>
             </entry>
           </row>
           <row>
@@ -1350,7 +1449,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1365,7 +1464,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1385,8 +1484,23 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
-        </para>
+      Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsDigit(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
+    </para>
             </entry>
           </row>
           <row>
@@ -1408,13 +1522,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a FLOAT.
-        </para>
+      Determine if a value is a FLOAT.
+    </para>
             </entry>
           </row>
           <row>
@@ -1438,7 +1552,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1458,8 +1572,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a class.
-        </para>
+      Determine if an object is an instance of a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -1473,8 +1587,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object inside a USUAL is an instance of a class.
-        </para>
+      Determine if an object inside a USUAL is an instance of a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -1483,7 +1597,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1498,7 +1612,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1513,13 +1627,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a logical.
-        </para>
+      Determine if a value is a logical.
+    </para>
             </entry>
           </row>
           <row>
@@ -1528,13 +1642,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a LONGINT.
-        </para>
+      Determine if a value is a LONGINT.
+    </para>
             </entry>
           </row>
           <row>
@@ -1548,8 +1662,23 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a lowercase letter.
-        </para>
+      Determine if the leftmost character in a string is a lowercase letter.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsLower(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the leftmost character of the specified character expression is a lowercase alphabetic character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1562,8 +1691,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1590,8 +1718,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object.
-        </para>
+      Check whether a particular method can be sent to an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -1605,8 +1733,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to a class.
-        </para>
+      Check whether a particular method can be sent to a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -1620,8 +1748,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object inside a USUAL.
-        </para>
+      Check whether a particular method can be sent to an object inside a USUAL.
+    </para>
             </entry>
           </row>
           <row>
@@ -1645,13 +1773,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is NIL.
-        </para>
+      Determine if a value is NIL.
+    </para>
             </entry>
           </row>
           <row>
@@ -1664,7 +1792,7 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1673,13 +1801,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a numeric.
-        </para>
+      Determine if a value is a numeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -1688,13 +1816,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an object.
-        </para>
+      Determine if a value is an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -1716,13 +1844,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsPtr(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsPtr(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a pointer.
-        </para>
+      Determine if a value is a pointer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1765,8 +1893,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1780,8 +1907,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
-        </para>
+      Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
+    </para>
             </entry>
           </row>
           <row>
@@ -1790,13 +1917,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a string.
-        </para>
+      Determine if a value is a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1805,13 +1932,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a symbol.
-        </para>
+      Determine if a value is a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -1838,7 +1965,22 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is uppercase.
+      Determine if the leftmost character in a string is uppercase.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsUpper(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Determines whether the first character in a character expression is an uppercase alphabetic character.
         </para>
             </entry>
           </row>
@@ -1853,8 +1995,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).
-        </para>
+      Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).
+    </para>
             </entry>
           </row>
           <row>
@@ -1868,8 +2010,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an exported instance variable.
-        </para>
+      Return the contents of an exported instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -1883,8 +2025,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or access method) was declared.
-        </para>
+      Get information about how a particular instance variable (or access method) was declared.
+    </para>
             </entry>
           </row>
           <row>
@@ -1898,8 +2040,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an instance variable.
-        </para>
+      Return the contents of an instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -1913,8 +2055,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of an object into an array.
-        </para>
+      Store all instance variables of an object into an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -1928,8 +2070,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of a class into an array.
-        </para>
+      Store all instance variables of a class into an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -1938,13 +2080,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an exported instance variable.
-        </para>
+      Assign a value to an exported instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -1958,8 +2100,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or assign method) was declared.
-        </para>
+      Get information about how a particular instance variable (or assign method) was declared.
+    </para>
             </entry>
           </row>
           <row>
@@ -1968,13 +2110,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an instance variable.
-        </para>
+      Assign a value to an instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -1987,8 +2129,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2001,8 +2142,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2015,8 +2155,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2066,13 +2205,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the larger of 2 values.
-        </para>
+      Return the larger of 2 values.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Evaluates a set of expressions and returns the expression with the maximum value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2101,8 +2255,8 @@
             </entry>
             <entry>
               <para>
-            Create a class list in the form of an array for the specified object.
-        </para>
+      Create a class list in the form of an array for the specified object.
+    </para>
             </entry>
           </row>
           <row>
@@ -2116,8 +2270,8 @@
             </entry>
             <entry>
               <para>
-            Create a class list in the form of an array for the specified class.
-        </para>
+      Create a class list in the form of an array for the specified class.
+    </para>
             </entry>
           </row>
           <row>
@@ -2130,8 +2284,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2145,8 +2298,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of arguments that a method is expecting.
-        </para>
+      Return the number of arguments that a method is expecting.
+    </para>
             </entry>
           </row>
           <row>
@@ -2160,8 +2313,8 @@
             </entry>
             <entry>
               <para>
-            Detect a concurrency conflict.
-        </para>
+      Detect a concurrency conflict.
+    </para>
             </entry>
           </row>
           <row>
@@ -2188,8 +2341,8 @@
             </entry>
             <entry>
               <para>
-            Identify an invalid method call.
-        </para>
+      Identify an invalid method call.
+    </para>
             </entry>
           </row>
           <row>
@@ -2231,8 +2384,8 @@
             </entry>
             <entry>
               <para>
-            Identify a character set by its nation driver.
-        </para>
+      Identify a character set by its nation driver.
+    </para>
             </entry>
           </row>
           <row>
@@ -2261,8 +2414,8 @@
             </entry>
             <entry>
               <para>
-            Convert the values of an object's instance variables to an array.
-        </para>
+      Convert the values of an object's instance variables to an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -2317,8 +2470,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class.
-        </para>
+      Return a multidimensional array of all object-oriented programming symbols that constitute the class.
+    </para>
             </entry>
           </row>
           <row>
@@ -2332,8 +2485,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
-        </para>
+      Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -2347,8 +2500,23 @@
             </entry>
             <entry>
               <para>
-            Return the operating system name.
-        </para>
+      Return the operating system name.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.OS(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the name and version number of the operating system under which X# is running.
+    </para>
             </entry>
           </row>
           <row>
@@ -2362,8 +2530,8 @@
             </entry>
             <entry>
               <para>
-            Display a system modal dialog box to pause the current application.
-        </para>
+      Display a system modal dialog box to pause the current application.
+    </para>
             </entry>
           </row>
           <row>
@@ -2377,8 +2545,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of the activated module.
-        </para>
+      Return the name of the activated module.
+    </para>
             </entry>
           </row>
           <row>
@@ -2392,8 +2560,8 @@
             </entry>
             <entry>
               <para>
-            Return the source line number of the last line executed in an activated entity.
-        </para>
+      Return the source line number of the last line executed in an activated entity.
+    </para>
             </entry>
           </row>
           <row>
@@ -2407,8 +2575,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of an activated entity.
-        </para>
+      Return the name of an activated entity.
+    </para>
             </entry>
           </row>
           <row>
@@ -2438,8 +2606,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of bytes that can be read at a given pointer.
-        </para>
+      Determine the number of bytes that can be read at a given pointer.
+    </para>
             </entry>
           </row>
           <row>
@@ -2453,8 +2621,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of bytes that can be written at a given pointer.
-        </para>
+      Determine the number of bytes that can be written at a given pointer.
+    </para>
             </entry>
           </row>
           <row>
@@ -2495,8 +2663,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2525,8 +2692,23 @@
             </entry>
             <entry>
               <para>
-            Get a particular Windows color.
-        </para>
+      Get a particular Windows color.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RGB(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a single color value from a set of red, green, and blue color components.
+    </para>
             </entry>
           </row>
           <row>
@@ -2566,8 +2748,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method.
-        </para>
+      Invoke a method.
+    </para>
             </entry>
           </row>
           <row>
@@ -2591,11 +2773,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Returns system information or sets its behavior.
+        </para>
             </entry>
           </row>
           <row>
@@ -2608,7 +2792,9 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Returns the size of the operating system's screen elements.
+        </para>
             </entry>
           </row>
           <row>
@@ -2622,8 +2808,8 @@
             </entry>
             <entry>
               <para>
-            Install a system-wide object. Please not that this works a bit different from Visual Objects.
-        </para>
+      Install a system-wide object. Please not that this works a bit different from Visual Objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -2666,8 +2852,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2681,8 +2866,24 @@
             </entry>
             <entry>
               <para>
-            Determine the data type of an expression represented as a string.
-        </para>
+      Determine the data type of an expression represented as a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Type(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the data type of an expression.
+      VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation marks ("") to enclose the specified expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2770,9 +2971,7 @@
             <entry>
               <para>
             Returns the data type of an expression.
-            VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation
-                marks to enclose the expression for which the data type is returned.
-            </para>
+        </para>
             </entry>
           </row>
           <row>
@@ -2788,6 +2987,21 @@
               <para>
             Returns the version of X# you are using.
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Version(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns information about the X# version you are using.
+    </para>
             </entry>
           </row>
           <row>

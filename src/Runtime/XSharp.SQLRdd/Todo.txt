@@ -1,1 +1,34 @@
-﻿
+﻿- when top or bottom of subset fetch next/previous batch of records
+- add max buffer size property. When datatable is > buffersize delete old rows
+- reccount = select count(*) from table, do not cache this
+- set order to different order should put on same row, that row is the first in the new datatable
+- when order is changed, the datatable should be cleared and refilled with the new order
+- properties to save if we have seen top or bottom of the table
+- do not use temp file, create rdd without the temp file. Can we inherit from Workarea or DBF?
+- 
+
+declare @pageno int
+select @pageno = 1
+select  *  from orders
+ORDER BY orderid
+OFFSET (@pageno - 1) * 50 ROWS FETCH NEXT 50 ROWS ONLY;
+
+Goto: just the row, or determine the page number and then fetch the page with the record
+the mechanism to determin the page number is also needed to determine OrderKeyNo
+
+
+Record Locks
+- Connection/Login 
+
+
+Goto and seek: How to determine the page number for a given record?
+- Get # of rows where:
+  key value < current key value
+  or key value = current key value and recno < current recno
+  together that is the # of rows before the current row
+  then we can determine the current page number
+  and fetch the complete current page
+
+  For Seek we start with the where clause based on the key expression
+  for Goto we start with a where clause based on the recno
+

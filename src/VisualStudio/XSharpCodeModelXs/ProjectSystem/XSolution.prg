@@ -47,11 +47,12 @@ BEGIN NAMESPACE XSharpModel
         _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
         IsClosing   := FALSE
         _commentTokens := List < XCommentToken >{}
+	END CONSTRUCTOR
 
     STATIC METHOD SetCommentTokens( aTokens AS IList<XCommentToken>) AS VOID
         _commentTokens:Clear()
         _commentTokens:AddRange(aTokens)
-
+	END METHOD
 
     STATIC PRIVATE METHOD _ClearFolder(directory as DirectoryInfo, lDeleteFiles as LOGIC) AS VOID
         if lDeleteFiles
@@ -68,6 +69,7 @@ BEGIN NAMESPACE XSharpModel
             subDirectory:Attributes &= ~FileAttributes.ReadOnly
             subDirectory:Delete()
         next
+	END METHOD
 
 
     STATIC PRIVATE METHOD _DeleteFile(cFileName AS STRING) AS LOGIC
@@ -82,6 +84,7 @@ BEGIN NAMESPACE XSharpModel
             NOP
         END TRY
         RETURN FALSE
+	END METHOD
 
 
     STATIC METHOD CreateBuiltInFunctions(folder as STRING) AS VOID
@@ -101,7 +104,7 @@ BEGIN NAMESPACE XSharpModel
             System.IO.File.WriteAllText(BuiltInFunctions, XSharpBuiltInFunctions(BuiltInFunctions))
             System.IO.File.SetAttributes(BuiltInFunctions, FileAttributes.ReadOnly)
         CATCH e as Exception
-            XSettings.Exception(e,__FUNCTION__)
+            XSettings.Exception(e)
             BuiltInFunctions := ""
         END TRY
 
@@ -127,6 +130,9 @@ BEGIN NAMESPACE XSharpModel
         CreateBuiltInFunctions(folder)
         _sqldb    := Path.Combine(folder, "X#Model.xsdb")
         XDatabase.CreateOrOpenDatabase(_sqldb)
+	END METHOD
+		
+    STATIC METHOD AfterOpen() AS VOID
         VAR dbprojectList := XDatabase.GetProjectFileNames()
         FOREACH var project in _projects:Values
             XDatabase.Read(project)
@@ -147,14 +153,17 @@ BEGIN NAMESPACE XSharpModel
             NEXT
         endif
         ModelWalker.Start()
+	END METHOD
 
     STATIC METHOD AddOrphan(fileName as STRING) AS XFile
         OrphanedFilesProject:AddFile(fileName)
         return OrphanedFilesProject:FindXFile(fileName)
+	END METHOD
 
 
     INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
         RETURN XSolution.Add(project:NameId, project)
+	END METHOD
 
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
@@ -167,6 +176,7 @@ BEGIN NAMESPACE XSharpModel
             XDatabase.Read(project)
         ENDIF
         RETURN lOk
+	END METHOD
 
 
     STATIC METHOD Close() AS VOID
@@ -185,11 +195,13 @@ BEGIN NAMESPACE XSharpModel
             _orphanedFilesProject := NULL
             _fileName  := NULL
         ENDIF
+	END METHOD
 
     STATIC METHOD FileClose(fileName AS STRING) AS VOID
         IF FindFile(fileName):Project == _orphanedFilesProject
             _orphanedFilesProject:RemoveFile(fileName)
         ENDIF
+	END METHOD
 
     STATIC METHOD FindFile(fileName AS STRING) AS XFile
         FOREACH VAR project IN _projects
@@ -199,6 +211,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         NEXT
         RETURN NULL
+	END METHOD
 
     STATIC METHOD FindFullPath(fullPath AS STRING) AS XFile
         FOREACH VAR project IN _projects
@@ -208,6 +221,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         NEXT
         RETURN NULL
+	END METHOD
 
     STATIC METHOD FindProject(idProject as INT64) AS XProject
         FOREACH VAR project IN _projects:Values
@@ -216,6 +230,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         NEXT
         RETURN NULL
+	END METHOD
 
     STATIC METHOD FindProject(projectFile AS STRING, framework as STRING) AS XProject
         LOCAL project AS XProject
@@ -229,6 +244,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN project
         ENDIF
         RETURN NULL
+	END METHOD
 
 
     STATIC METHOD FindProjectByFileName(projectFile AS STRING) AS XProject
@@ -238,6 +254,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         NEXT
         RETURN NULL
+	END METHOD
 
     INTERNAL STATIC METHOD Remove(projectName AS STRING) AS LOGIC
         XSettings.Information("XModel.Solution.Remove() "+projectName)
@@ -260,12 +277,14 @@ BEGIN NAMESPACE XSharpModel
                 _projects:TryAdd(newName, project)
             ENDIF
         ENDIF
+	END METHOD
 
     INTERNAL STATIC METHOD Remove(project AS XProject) AS LOGIC
         IF project != NULL .AND. project:ProjectNode != NULL  .AND. _projects:Count > 0
             RETURN XSolution.Remove(project:NameId)
         ENDIF
         RETURN FALSE
+	END METHOD
 
     STATIC METHOD WalkFile(fileName AS STRING) AS VOID
         VAR file := FindFile(fileName)
@@ -273,6 +292,7 @@ BEGIN NAMESPACE XSharpModel
             ModelWalker.FileWalk(file)
         ENDIF
         RETURN
+	END METHOD
 
     STATIC METHOD CreateOrphanedFilesProject() AS VOID
         var prj := OrphanedFilesProject{}
@@ -283,15 +303,19 @@ BEGIN NAMESPACE XSharpModel
         IF _projects:TryAdd(prj:Name, _orphanedFilesProject)
             projectNode:Project:AddAssemblyReference(TYPEOF(STRING):Assembly:Location)
         ENDIF
+	END METHOD
 
     STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
         XSettings.SetStatusBarText(cText)
+	END METHOD
 
     STATIC METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
         XSettings.SetStatusBarProgress(cMessage, nItem, nTotal)
+	END METHOD
 
     STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
         XSettings.SetStatusBarAnimation(onOff, id)
+	END METHOD
 
    STATIC PROPERTY OrphanedFilesProject AS XProject
         GET

@@ -46,7 +46,7 @@ namespace XSharp.Project
         public const int idDbgMemvarsWindow = 0x0106;
         public const int idDbgWorkareaWindow = 0x0107;
         public const int idDbgSettingsWindow = 0x0108;
-        public const int idConvertXSharpRuntime = 0x0109;
+        public const int idConvertSDKProject = 0x0109;
         public const int idAddDesignerFile = 0x010A;
         public const int idViewRepo = 0x010B;
         public const int idUDCTester = 0x010C;

@@ -10,10 +10,9 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.VisualStudio;
-using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Text.Tagging;
 using XSharp.Settings;
+using XSharp.Support;
 #if ! ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
@@ -74,8 +73,6 @@ namespace XSharp.LanguageService
 
                 // The "parameters" coming from CommandFilter
                 char typedChar = props.Char;
-
-                VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)props.Command;
                 bool showInstanceMembers = (typedChar == ':') || ((typedChar == '.') && _file.Project.ParseOptions.AllowDotForInstanceMembers);
 
                 ////////////////////////////////////////////
@@ -167,7 +164,15 @@ namespace XSharp.LanguageService
                     else
                     {
                         isInstance = true;
-                        state = CompletionState.Members;
+                        if (showInstanceMembers)
+                        {
+                            state |= CompletionState.InstanceMembers;
+                            state |= CompletionState.StaticMembers;
+                        }
+                        else
+                        {
+                            state |= CompletionState.StaticMembers;
+                        }
                     }
 
                     switch (lastToken.Type)

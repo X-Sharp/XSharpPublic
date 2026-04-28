@@ -15,9 +15,7 @@ USING System.Diagnostics
 //#define CHECKVERSIONS
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-    /// <summary>
-    /// Orderbag = CDX file. Contains one or more orders = Tags
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxOrderBag/*" />
     [DebuggerDisplay("{FullPath,nq} {Tags.Count} tags")];
     INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex
 #region constants
@@ -28,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE  _newPageAllocated := FALSE AS LOGIC
         INTERNAL _hFile     AS IntPtr
         INTERNAL _stream    AS FileStream
-        INTERNAL _OpenInfo	AS DbOpenInfo
+        INTERNAL PROPERTY _OpenInfo	AS DbOpenInfo => SELF:_oRdd:OpenInfo
         INTERNAL _PageList  AS CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
@@ -50,7 +48,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER( oRDD )
             SELF:_oRdd     := oRDD
             SELF:_PageList := CdxPageList{SELF}
-            SELF:_OpenInfo := oRDD:_OpenInfo
             SELF:_useFoxLock := XSharp.RuntimeState.GetValue<LOGIC>(Set.FoxLock)
 
         #region RDD Overloads
@@ -309,7 +306,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             // Adjust Filename to handle 8 char DOS names
-            SELF:_OpenInfo := _oRdd:_OpenInfo
             SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode)
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE

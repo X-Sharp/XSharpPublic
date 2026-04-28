@@ -724,10 +724,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement IMPLEMENTS IDbConnectionClient
 
 
 
-    /// Foxpro detect the parameter with the quotation character '?'
-    /// if the character followed is '@', It is an output parameter
-    /// if the character followed is '(', It is an VFP expression closed between  parenthesis
-    /// If the parameter are variables, they need to be private or publics and initialized before
+    /// <include file="XSharp.Data.Docs.xml" path="doc/SQLStatement.ParseCommand/*" />
     METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNameInQuery AS LOGIC) AS STRING
         LOCAL statements := List<STRING>{} AS List<STRING>
         LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>

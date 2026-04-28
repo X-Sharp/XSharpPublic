@@ -82,6 +82,7 @@ namespace XSharp.Project
         XSharpConstants.LanguageName, XSharpConstants.ProjectFileMask, XSharpConstants.ProjectExtension, XSharpConstants.ProjectExtensions,
         "ProjectTemplates", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
+
     [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "X# Custom Editors", "VO Window Editor",
         categoryResourceID: 200,
         pageNameResourceID: 201,
@@ -98,6 +99,7 @@ namespace XSharp.Project
      pageNameResourceID: 204,
      keywordListResourceId: 304,
      supportsAutomation: true)]
+
     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
@@ -111,18 +113,24 @@ namespace XSharp.Project
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
 
+    // Editors for VOBinaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    //[ProvideEditorExtension(typeof(VOSQLServerEditorFactory), ".xssql", 0x42, DefaultName = "XSharp VO SQL Editor", NameResourceID = 80114)]
+    //[ProvideEditorExtension(typeof(VOReportEditorFactory), ".xsrep", 0x42, DefaultName = "XSharp VO Report Editor", NameResourceID = 80115)]
     [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
+    // Vulcan Binaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    //[ProvideEditorExtension(typeof(VOSQLServerEditorFactory), ".vnsqs", 0x42, DefaultName = "XSharp VO SQL Editor", NameResourceID = 80114)]
+    //[ProvideEditorExtension(typeof(VOReportEditorFactory), ".vnrep", 0x42, DefaultName = "XSharp VO Report Editor", NameResourceID = 80115)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(XSharpConstants.guidXSharpProjectPkgString)]
@@ -140,7 +148,7 @@ namespace XSharp.Project
         //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
         IVsShell shell = null;
- 
+
         public static XSharpProjectPackage XInstance => instance ;
 
 
@@ -168,13 +176,13 @@ namespace XSharp.Project
         {
             // Give the codemodel a way to talk to the VS Shell
             _shellEvents = new XSharpShellEvents();
-
+            XSharp.Support.Logger.Initialize();
             this.RegisterToolWindows();
 
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
- 
+
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
@@ -221,8 +229,6 @@ namespace XSharp.Project
                 xnode.UpdateReferencesInProjectModel();
             }
         }
-
-
         private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project prj)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -255,7 +261,7 @@ namespace XSharp.Project
             }
             else
             {
-        //        // save values from disk to private registry 
+                // save values from disk to private registry
                 await options.DebuggerOptions.SaveAsync();
                 await options.WindowEditorOptions.SaveAsync();
                 await options.OtherEditorOptions.SaveAsync();
@@ -264,13 +270,15 @@ namespace XSharp.Project
             return true;
         }
 
-        
-        
-		
+
+
+
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
         /// </summary>
         public void SetCommentTokens()
+        {
+            if (_taskList != null)
         {
             var commentTokens = _taskList.CommentTokens;
             var tokens = new List<XCommentToken>();
@@ -280,6 +288,7 @@ namespace XSharp.Project
                 tokens.Add(cmttoken);
             }
             XSolution.SetCommentTokens(tokens);
+        }
         }
 
 
@@ -292,10 +301,10 @@ namespace XSharp.Project
         #endregion
         public int OnShellPropertyChange(int propid, object var)
         {
-        //    // A modal dialog has been opened. Editor Options ?
+            // A modal dialog has been opened. Editor Options ?
             if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool)
             {
-        //        // when modal window closes
+                // when modal window closes
                 if (!(bool)var)
                 {
                     SetCommentTokens();

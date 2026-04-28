@@ -29,8 +29,20 @@
               </para>
             </entry>
             <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.XPP.ClassHelpers</codeEntityReference>
               </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -43,7 +55,11 @@
               </para>
             </entry>
             <entry>
-              <para>The worker class to help create classes at runtime.</para>
+              <para>
+            This class returns the ClasssObject for classes, both the classes created at compile time
+            as well as the classes created at runtime.
+            This object allows to access static members and methods late bound
+            Such as Example():Fieldname</para>
             </entry>
           </row>
           <row>
@@ -67,12 +83,25 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.XPP.DynamicClassObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>The worker class to help create classes at runtime.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.XPP.StaticClassObject</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            This class returns the ClasssObject for classes created at compile time
+            This class returns the ClasssObject for classes created at compile time (Static classes)
             This object allows to access static members and methods late bound
             Such as Example():Fieldname</para>
             </entry>

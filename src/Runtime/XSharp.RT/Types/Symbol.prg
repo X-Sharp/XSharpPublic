@@ -16,11 +16,7 @@ USING System.Runtime.Serialization
 #include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
-/// <summary>Internal type that implements the XBase Compatible SYMBOL type.<br/>
-/// This type has many operators and implicit converters that normally are never directly called from user code.<br/>
-/// There are also some operators that handle implicit conversions between Symbols and Strings in your code.
-/// </summary>
-/// <include file="RTComments.xml" path="Comments/Symbol/*" />
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Symbol/*" />
 //[DebuggerTypeProxy(TYPEOF(SymbolDebugView))];
 [DebuggerDisplay("{ToDebugString(),nq}",Type := "SYMBOL")];
 [Serializable];
@@ -45,12 +41,12 @@ PUBLIC STRUCTURE __Symbol ;
     STATIC CONSTRUCTOR
         SymbolTable.Initialize()
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Symbol.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(sValue AS STRING)
         SELF(sValue, TRUE)
 
-    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    /// <include file="XSharp.RT.Docs.xml" path="doc/__Symbol.ctor/*" />
     [NODEBUG] [INLINE];
     CONSTRUCTOR(sValue AS STRING,  upperCase AS LOGIC)
         IF sValue != NULL
@@ -63,6 +59,7 @@ PUBLIC STRUCTURE __Symbol ;
         ENDIF
         RETURN
 
+/// <include file="XSharp.RT.Docs.xml" path="doc/__Symbol.ctor/*" />
     [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR (dwValue AS DWORD)
         SELF:_index := dwValue

@@ -8,9 +8,7 @@ USING System.Reflection
 USING System.Collections.Concurrent
 USING System.Collections.Generic
 
-/// <summary>
-/// Support class to support runtime access to globals declared in the loaded X# assemblies
-/// </summary>
+/// <include file="XSharp.RT.Docs.xml" path="doc/Globals/*" />
 CLASS XSharp.Globals
     PRIVATE STATIC Cache AS ConcurrentDictionary<Assembly, ConcurrentDictionary<STRING, FieldInfo> >
     STATIC CONSTRUCTOR()
@@ -55,11 +53,7 @@ CLASS XSharp.Globals
             ENDIF
         NEXT
         RETURN newAsm
-    /// <summary>
-    /// Find the Global Field with a name
-    /// </summary>
-    /// <param name="cVarName">Name of the global to find</param>
-    /// <returns></returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Globals.Find/*" />
     STATIC METHOD Find(cVarName AS STRING) AS FieldInfo
         IF Cache:Count > 0
             FOREACH VAR pair IN Cache
@@ -77,10 +71,7 @@ CLASS XSharp.Globals
             NEXT
         ENDIF
         RETURN NULL_OBJECT
-    /// <summary>
-    /// Return a list of all Global Fields. This is used in the Globals Debugger Window
-    /// </summary>
-    /// <returns>List of Globals</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Globals.GetAllGlobals/*" />
     STATIC METHOD GetAllGlobals() AS IList<FieldInfo>
         LoadAssemblies()
         VAR result := List<FieldInfo>{}
@@ -90,12 +81,7 @@ CLASS XSharp.Globals
             ENDIF
         NEXT
         RETURN result
-    /// <summary>
-    /// Return the value of a Global
-    /// </summary>
-    /// <param name="cVarName">Name of the global to find</param>
-    /// <param name="uValue">Value</param>
-    /// <returns>TRUE when a global with the name exists, FALSE when it does not exist</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Globals.Get/*" />
     STATIC METHOD Get(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
         uValue := NIL
         VAR oFld := Globals.Find(cVarName)
@@ -110,12 +96,7 @@ CLASS XSharp.Globals
             END TRY
         ENDIF
         RETURN FALSE
-    /// <summary>
-    /// Assign a value to a Global
-    /// </summary>
-    /// <param name="cVarName">Name of the global to assign</param>
-    /// <param name="uValue">New value</param>
-    /// <returns>TRUE when a global with the name exists, and the value was successfully assigned. FALSE when it does not exist or when there was an error assigning the value.,</returns>
+    /// <include file="XSharp.RT.Docs.xml" path="doc/Globals.Put/*" />
     STATIC METHOD Put(cVarName AS STRING, uValue AS USUAL) AS LOGIC
         VAR oFld := Globals.Find(cVarName)
         IF (oFld != NULL_OBJECT)

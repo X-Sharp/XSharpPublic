@@ -2,6 +2,7 @@
 <Project>
   <PropertyGroup>
     <BinariesDir>$(SolutionDir)..\Artifacts\</BinariesDir>
+    <Runtimedir>$(SolutionDir)Runtime\</Runtimedir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
@@ -70,7 +71,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
-    <DisabledWarnings>1591,9015,169,649</DisabledWarnings>
+    <NoWarn>$(DisabledWarnings);$(NoWarn);1591,9015,169,649</NoWarn>
     <CommandLineOption>/noclipcall</CommandLineOption>
 	<vo15>true</vo15>
 	<vo5>false</vo5>

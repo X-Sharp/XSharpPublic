@@ -117,7 +117,7 @@ CLASS XProject
                     RETURN _parseOptions:Dialect
                 ENDIF
             CATCH e AS Exception
-                XSettings.Exception(e,__FUNCTION__)
+                XSettings.Exception(e)
             END TRY
             RETURN XDialect.Core
 
@@ -226,6 +226,9 @@ CLASS XProject
 
 #region AssemblyReferences
     METHOD RefreshReferences(asmList as IList<string>) AS VOID
+        if SELF:ProjectNode == null
+		   RETURN
+		ENDIF
         var oldAsm := XDictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         var newAsm := List<string>{}
         SELF:LogReferenceMessage("RefreshReferences , old "+SELF:AssemblyReferenceNames:Count:ToString()+" new "+asmList:Count:ToString())
@@ -417,7 +420,9 @@ CLASS XProject
         if (String.IsNullOrEmpty(FileName))
             return false
         endif
-        return String.Equals(System.IO.Path.GetExtension(FileName), ".xsproj", StringComparison.OrdinalIgnoreCase)
+        var ext := System.IO.Path.GetExtension(FileName)
+        return String.Equals(ext, ".xsproj", StringComparison.OrdinalIgnoreCase) .or. String.Equals(ext, ".xsprj", StringComparison.OrdinalIgnoreCase)
+
 
     METHOD AddProjectReference(Url AS STRING) AS LOGIC
         IF !IsXSharpProject(Url)
@@ -541,7 +546,7 @@ CLASS XProject
             // p is the Community Toolkit Project object here
             OutputFile := p:GetAttributeAsync("TargetPath").Result
         CATCH Exception AS Exception
-            XSettings.Exception(Exception,__FUNCTION__)
+            XSettings.Exception(Exception)
         END TRY
         RETURN OutputFile
 

@@ -933,6 +933,7 @@ namespace Microsoft.Ddue.Tools
                         isClipper = true;
                         continue;
                     case "T:XSharp.Internal.DefaultParameterValueAttribute":
+                    case "T:XSharp.VFP.FoxProFunctionAttribute":
                         continue;
                 }
                 if (!String.IsNullOrEmpty(indent))

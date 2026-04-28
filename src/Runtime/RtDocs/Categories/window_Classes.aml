@@ -44,9 +44,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-      Create a control as part of the Window hierarchy, thereby allowing the behavior of the control to be customized using event handlers.
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -104,9 +102,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-      Create an edit control as part of the Window hierarchy, thereby allowing the behavior of the edit control to be customized using event handlers.
-    </para>
+              <para />
             </entry>
           </row>
           <row>

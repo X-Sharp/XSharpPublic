@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Detect a concurrency conflict.
-        </para>
+      Detect a concurrency conflict.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Identify the current workstation.
-        </para>
+      Identify the current workstation.
+    </para>
             </entry>
           </row>
         </table>

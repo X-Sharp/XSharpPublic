@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [],
-  "Identity": "XSharp.APIController",
-  "Name": "APIController",
+  "author": "XSharp",
+  "classifications": [ "WCF" ],
+  "identity": "XSharp.APIController",
+  "name": "APIController",
   "description": "An empty Web API controller",
   "SourceName": "APIController",
-  "ShortName": "xsapicontrolleri",
-  "Tags": {
+  "shortName": "xsapicontrolleri",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

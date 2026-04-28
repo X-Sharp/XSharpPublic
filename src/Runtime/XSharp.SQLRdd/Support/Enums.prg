@@ -32,8 +32,8 @@ enum SqlRDDEventReason
     member CommandText
 /// <summary>Specifies the real name of a table</summary>
     member RealName
-/// <summary>Specifies the maximum number of records to be fetched</summary>
-    member MaxRecords
+/// <summary>Specifies # of rows in a buffer page</summary>
+    member PageSize
 /// <summary>Specifies the list of columns for the table</summary>
     member ColumnList
 /// <summary>Specifies the server filter for the table</summary>
@@ -70,12 +70,12 @@ enum SqlRDDEventReason
     member Condition
 /// <summary>Specifies if the index tag is unique</summary>
     member Unique
-/// <summary>Should the reccount be calculated from the highest value in the RecnoColumn</summary>
-    member MaxRecnoAsRecCount
-/// <summary>Should a seek return a subset (TRUE) or all rows (FALSE) </summary>
-    member SeekReturnsSubset
+/// <summary>Specifies if the index tag is descending</summary>
+    member Descending
 /// <summary>Retrieve TagName</summary>
     member TagName
+/// <summary>Retrieve Buffersize in pages</summary>
+    member BufferSize
 
 end enum
 

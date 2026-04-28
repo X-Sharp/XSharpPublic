@@ -147,13 +147,11 @@
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent>copy $(TargetFileName) $(SharedDir)</PostBuildEvent>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <PostBuildEvent>xcopy $(TargetPath) $(SharedDir) /y</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent>copy $(TargetFileName) $(SharedDir)</PostBuildEvent>
-    <RunPostBuildEvent />
+    <PostBuildEvent>xcopy $(TargetPath) $(SharedDir) /y</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

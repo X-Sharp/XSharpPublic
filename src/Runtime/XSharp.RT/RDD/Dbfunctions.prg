@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -185,9 +185,7 @@ FUNCTION LastRec() AS DWORD
 FUNCTION LastRec(uArea IN USUAL) AS DWORD
     RETURN (uArea)->(LastRec())
 
-/// <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/DbBuffRefresh/*" />
 FUNCTION DbBuffRefresh() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Refresh())
 

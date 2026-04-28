@@ -5,7 +5,7 @@ FUNCTION Hb_ADel( aArray, nPos, lAutoSize ) AS ARRAY CLIPPER
     Default(REF nPos, 1) 
     Default(ref lAutoSize, FALSE)
     aSource := aArray
-    ADel(aSource, 1) 
+    ADel(aSource, nPos) 
     IF lAutoSize
         ASize(aSource, ALen(aSource)-1) 
     ENDIF

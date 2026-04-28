@@ -5,48 +5,39 @@
 //
 
 USING XSharp.RDD.Support
-/// <summary>This interface defines the mimimum methods that a RDD that supports indexes should implement.</summary>	
+/// <include file="XSharp.Core.Docs.xml" path="doc/IOrder/*" />
 INTERFACE XSharp.RDD.IOrder
-	/// <summary>Set the condition for the next Index Creation</summary>
-    /// <param name="info">An object containing information for the order condition.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderCondition/*" />
 	METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 	
-	/// <summary>Create a new index or tag.</summary>
-	/// <param name="info">An object containing information for order creation.</param>
+    /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderCreate/*" />
     METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
 	
-	/// <summary>Delete an index or tag.</summary>
-	/// <param name="info">An object containing information about the order to remove.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderDestroy/*" />
 	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
 
-	/// <summary>Retrieve information about the current index.</summary>
-	/// <param name="nOrdinal"></param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderInfo/*" />
 	METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 
-	/// <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
-	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderListAdd/*" />
 	METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
-	/// <param name="info"></param>
-	/// <param name="info">An object containing information about the orderlist (file) to delete.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderListDelete/*" />
 	METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
-	/// <param name="info">An object containing information about the order to select.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderListFocus/*" />
 	METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Rebuild all indexes for the current Workarea.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.OrderListRebuild/*" />
 	METHOD OrderListRebuild() AS LOGIC 
 
-	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
-	/// <param name="info">An object containing containing the necessary seek information.</param>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.Seek/*" />
 	METHOD Seek(info AS DbSeekInfo) AS LOGIC
 
-	/// <summary>Result of the last seek operation for the current Workarea.</summary>
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.Found/*" />
 	PROPERTY Found	AS LOGIC GET SET
 
-	/// <summary>Flush the changes to the index.</summary>	
+ /// <include file="XSharp.Core.Docs.xml" path="doc/IOrder.Flush/*" />
 	METHOD Flush() 	AS LOGIC
 
 END INTERFACE	

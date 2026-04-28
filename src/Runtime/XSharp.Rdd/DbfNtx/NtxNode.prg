@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,14 +11,7 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
-    /// <summary>
-    /// The NtxNode class.
-	/// The size of each item is: 8 + Key Size ( the last item doesn't contain a key value, only a pointer to a sub-tree.)
-    /// The structure of an Item is
-    /// long page_offset - file offset (within ntx file) where sub-tree is. if there's no subtree, a 0 is stored.
-    /// long recno       - record number for this key value (in the dbf file)
-    /// char key_value[key_size]
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/NtxNode/*" />
     INTERNAL CLASS NtxNode
         PROTECTED _keyLength      AS LONG
         PROTECTED _bytesKey       AS BYTE[]

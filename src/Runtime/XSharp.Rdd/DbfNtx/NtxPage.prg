@@ -32,11 +32,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     // 0x02 - (LONG) Items Offset - This is an array of <Item Count> elements, that contains the offset within the page of each Item
     // 0x?? - The area where Item values are stored
 
-    /// <summary>
-    /// The NtxPage class.
-	/// This is a collection of Items
-    /// </summary>
-
     [DebuggerDisplay("Page: {PageOffset}")];
     INTERNAL CLASS NtxPage
         INTERNAL CONST NTXPAGE_SIZE             := 1024 AS WORD

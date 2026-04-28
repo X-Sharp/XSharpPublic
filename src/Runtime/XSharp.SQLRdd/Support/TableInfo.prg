@@ -88,13 +88,13 @@ class SqlDbTableInfo inherit SqlDbObject
     constructor(cName as string, oConn as SqlDbConnection)
         super(cName)
         _connection     := oConn
-        self:MaxRecords         := oConn:MaxRecords
+        self:PageSize           := oConn:PageSize
+        self:BufferSize         := oConn:BufferSize
         self:RecnoColumn        := oConn:RecnoColumn
         self:DeletedColumn      := oConn:DeletedColumn
         self:AllowUpdates       := oConn:AllowUpdates
         self:LongFieldNames     := oConn:LongFieldNames
         self:TrimTrailingSpaces := oConn:TrimTrailingSpaces
-        self:MaxRecnoAsRecCount := oConn:MaxRecnoAsRecCount
         self:ServerFilter    := ""
         self:ColumnList      := "*"
         self:Indexes         := List<SqlDbIndexInfo>{}
@@ -150,6 +150,7 @@ class SqlDbTagInfo inherit SqlDbObject
     /// </summary>
     /// <value></value>
     property Index     as SqlDbIndexInfo auto
+    property Descending   as logic  auto
     /// <summary>
     /// Create a new instance of the SqlDbTagInfo class
     /// </summary>

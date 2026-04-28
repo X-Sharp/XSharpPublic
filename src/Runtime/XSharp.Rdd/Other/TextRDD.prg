@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,7 +11,7 @@ USING System.Globalization
 USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>Abstract TextRDD. For reading and writing delimited files and SDF files.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/TEXTRDD/*" />
     ABSTRACT CLASS TEXTRDD INHERIT Workarea
         PROTECT INTERNAL _Encoding      AS Encoding
         PROTECT _Hot            AS LOGIC
@@ -30,7 +30,6 @@ BEGIN NAMESPACE XSharp.RDD
 
         STATIC PRIVATE  culture := CultureInfo.InvariantCulture AS CultureInfo
         PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-        INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
 
         #region abstract methods, must be implemented in subclass
         ABSTRACT PROTECTED METHOD _getLastRec()  AS DWORD
@@ -268,13 +267,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_Fields:Length == 0
                 RETURN FALSE
             ENDIF
-            SELF:_OpenInfo := info
             //
+            SELF:SetOpenInfo(info,"", TRUE)
             SELF:_Hot := FALSE
-            SELF:_FileName := SELF:_OpenInfo:FullName
-            SELF:_Alias := SELF:_OpenInfo:Alias
-            SELF:_Shared := SELF:_OpenInfo:Shared
-            SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
 
             //
             SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
@@ -295,13 +290,9 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL isOK AS LOGIC
             //
             isOK := FALSE
-            SELF:_OpenInfo := info
+            SELF:SetOpenInfo(info,"", FALSE)
             SELF:_Hot := FALSE
-            SELF:_FileName := SELF:_OpenInfo:FullName
-            SELF:_Alias := SELF:_OpenInfo:Alias
-            SELF:_Shared := SELF:_OpenInfo:Shared
-            SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
-            SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
+            SELF:_hFile    := FOpen(SELF:_FileName, SELF:OpenInfo:FileMode)
             IF SELF:IsOpen
                 SELF:_FileName := FGetFileName(SELF:_hFile)
                 isOK := SELF:_DetermineCodePage()

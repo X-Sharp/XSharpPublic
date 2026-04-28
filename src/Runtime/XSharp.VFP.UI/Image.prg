@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:Size := System.Drawing.Size{100, 17}
 			RETURN
 
-#include ".\Headers\ControlProperties.xh"
+#include "ControlProperties.xh"
 
 
 	END CLASS

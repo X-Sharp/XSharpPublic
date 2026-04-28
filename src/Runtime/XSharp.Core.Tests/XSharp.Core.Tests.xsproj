@@ -41,10 +41,18 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="CodeTests.prg" />
+    <Compile Include="ConversionExtendedTests.prg" />
     <Compile Include="DateTimeTests.prg" />
+    <Compile Include="DebugFunctionsTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FileSearchTest.prg" />
+    <Compile Include="MacroCompilerTests.prg" />
+    <Compile Include="MemoFunctionsTests.prg" />
+    <Compile Include="NumericFunctionsTests.prg" />
     <Compile Include="OSTests.prg" />
+    <Compile Include="RuntimeStateTests.prg" />
+    <Compile Include="SetFunctionsTests.prg" />
+    <Compile Include="StringCompareFunctionsTests.prg" />
     <Compile Include="Support.prg" />
     <Compile Include="TimeTest.prg" />
     <Compile Include="ConversionTests.prg" />
@@ -57,6 +65,7 @@
     <Compile Include="IOTests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="NumericTest.prg" />
+    <Compile Include="NumericExtTests.prg" />
     <Compile Include="StringTests.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -77,26 +86,16 @@
       <AssemblyName>System.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
-      <Name>xunit.abstractions</Name>
-      <AssemblyName>xunit.abstractions.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="xunit.assert, Version=2.4.2.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
-      <Name>xunit.assert</Name>
-      <AssemblyName>xunit.assert.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="xunit.core, Version=2.4.2.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
-      <Name>xunit.core</Name>
-      <AssemblyName>xunit.core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="xunit.execution.desktop, Version=2.4.2.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
-      <Name>xunit.execution.desktop</Name>
-      <AssemblyName>xunit.execution.desktop.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit">
+      <Version>2.4.2</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <Version>2.4.3</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />

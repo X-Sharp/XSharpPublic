@@ -29,7 +29,7 @@ CLASS GeneralTests
         Assert.True(AValues[1] == 2)
         Assert.True(aValues[4] == NIL)
         Hb_ADel(aValues,2)
-        Assert.True(AValues[1] == 3)
+        Assert.True(AValues[1] == 2)
         Assert.True(aValues[2] == 4)
         Assert.True(Alen(aValues) == 4)
         Hb_ADel(aValues,1, TRUE)
@@ -42,5 +42,7 @@ CLASS GeneralTests
 
 
 
+        // Delete from string array with auto-size
+        Hb_ADel(aValues, 1, TRUE)
 END CLASS
 END NAMESPACE

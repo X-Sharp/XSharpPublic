@@ -33,7 +33,7 @@ CLASS AdsSQLServer INHERIT DbServer
 
         // Set the query text, this is necessary because the VO runtime doesn't like
         // some of the special characters that are used in SQL queries
-        Functions.RddInfo( _SET_SQL_QUERY, oFile )
+        RddInfo( _SET_SQL_QUERY, oFile )
 
         SELF:_SetParameters(aParams)
         // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
@@ -86,14 +86,14 @@ CLASS AdsSQLServer INHERIT DbServer
         return SUPER:Refresh()
     PRIVATE METHOD _SetParameters( aParams AS USUAL) AS VOID
         local oParameters as object[]
-        IF ( isArray( aParams ) )
+        IF ( IsArray( aParams ) )
             // Convert from Array to object[]
             local aParameters := aParams as ARRAY
             oParameters := aParameters
         ELSE
             oParameters := <OBJECT>{}
         ENDIF
-        Functions.RddInfo( _SET_SQL_PARAMETERS, oParameters )
+        RddInfo( _SET_SQL_PARAMETERS, oParameters )
         RETURN
 
 END CLASS

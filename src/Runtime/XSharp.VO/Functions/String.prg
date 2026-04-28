@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -24,12 +24,7 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	RETURN cSource
 
 
-/// <summary>
-/// Encrypt or decrypt a string handling its characters as single bytes (high order byte is ignored)
-/// </summary>
-/// <param name="cSource">Text that must be encrypted</param>
-/// <param name="cKey">Key to use for the encryption</param>
-/// <returns>Encrypted text. This has the same length as the original text</returns>
+/// <include file="XSharp.VO.Docs.xml" path="doc/CryptRaw/*" />
 FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bSource AS BYTE[]
 	LOCAL bDest  AS BYTE[]
@@ -56,11 +51,7 @@ FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
 
 	RETURN sDest:ToString()
 
-/// <summary>
-/// Encrypt or decrypt an array of bytes.
-/// </summary>
-/// <param name="bSource"></param>
-/// <param name="cKey"></param>
+/// <include file="XSharp.VO.Docs.xml" path="doc/Crypt/*" />
 FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
 	LOCAL bDest   AS BYTE[]
     LOCAL keyLen  AS INT

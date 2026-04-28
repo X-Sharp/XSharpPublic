@@ -30,11 +30,11 @@
             </entry>
             <entry>
               <para>
-            Export the contents of a binary large object (BLOB) pointer to a file.
-            Note:
-            A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs.
-            It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.
-        </para>
+      Export the contents of a binary large object (BLOB) pointer to a file.
+      Note:
+      A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs.
+      It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.
+    </para>
             </entry>
           </row>
           <row>
@@ -48,8 +48,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve data stored in a BLOB file without referencing a specific field.
-        </para>
+      Retrieve data stored in a BLOB file without referencing a specific field.
+    </para>
             </entry>
           </row>
           <row>
@@ -63,8 +63,8 @@
             </entry>
             <entry>
               <para>
-            Import a file into a BLOB file and return a pointer to the data.
-        </para>
+      Import a file into a BLOB file and return a pointer to the data.
+    </para>
             </entry>
           </row>
           <row>
@@ -78,8 +78,8 @@
             </entry>
             <entry>
               <para>
-            Put data in a BLOB file without referencing a specific field.
-        </para>
+      Put data in a BLOB file without referencing a specific field.
+    </para>
             </entry>
           </row>
           <row>
@@ -93,8 +93,8 @@
             </entry>
             <entry>
               <para>
-            Copy the contents of a BLOB, identified by its memo field number, to a file.
-        </para>
+      Copy the contents of a BLOB, identified by its memo field number, to a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -108,8 +108,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a BLOB, identified by its memo field number.
-        </para>
+      Get the contents of a BLOB, identified by its memo field number.
+    </para>
             </entry>
           </row>
           <row>
@@ -123,8 +123,8 @@
             </entry>
             <entry>
               <para>
-            Read the contents of a file as a BLOB, identified by a memo field number.
-        </para>
+      Read the contents of a file as a BLOB, identified by a memo field number.
+    </para>
             </entry>
           </row>
           <row>
@@ -138,8 +138,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve the data from the root area of a BLOB file.
-        </para>
+      Retrieve the data from the root area of a BLOB file.
+    </para>
             </entry>
           </row>
           <row>
@@ -153,8 +153,8 @@
             </entry>
             <entry>
               <para>
-            Obtain a lock on the root area of a BLOB file.
-        </para>
+      Obtain a lock on the root area of a BLOB file.
+    </para>
             </entry>
           </row>
           <row>
@@ -168,8 +168,8 @@
             </entry>
             <entry>
               <para>
-            Store data in the root area of a BLOB file.
-        </para>
+      Store data in the root area of a BLOB file.
+    </para>
             </entry>
           </row>
           <row>
@@ -183,8 +183,8 @@
             </entry>
             <entry>
               <para>
-            Release the lock on a BLOB file's root area.
-        </para>
+      Release the lock on a BLOB file's root area.
+    </para>
             </entry>
           </row>
           <row>
@@ -197,8 +197,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

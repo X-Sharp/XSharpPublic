@@ -31,6 +31,10 @@ interface ISqlDbProvider
     property TypeName as string get
 
     /// <summary>
+    /// Syntax for a Statement to calculate the row number
+    /// </summary>
+    property RowNumberStatement as STRING get
+    /// <summary>
     /// Syntax for a CREATE TABLE statement.
     /// </summary>
     property CreateTableStatement   as string get
@@ -51,10 +55,6 @@ interface ISqlDbProvider
     /// </summary>
     property DeleteAllRowsStatement as string get
     /// <summary>
-    /// Syntax for the statement to select a limited number of rows from the table
-    /// </summary>
-    property SelectTopStatement     as string get
-    /// <summary>
     /// Syntax for the INSERT statement
     /// </summary>
     property InsertStatement        as string get
@@ -70,6 +70,10 @@ interface ISqlDbProvider
     /// Syntax for the ORDER BY clause
     /// </summary>
     property OrderByClause          as string get
+      /// <summary>
+    /// Syntax for the Paging clause
+    /// </summary>
+    property PagingClause          as string get
     /// <summary>
     /// Syntax for the statement to retrieve the identity value of the last inserted row
     /// </summary>
@@ -88,6 +92,16 @@ interface ISqlDbProvider
     /// Literal value for the False value
     /// </summary>
     property FalseLiteral           as string get
+
+    /// <summary>
+    /// Prefix for the SQL statement variable
+    /// </summary>
+    property ParameterPrefix        as string get
+
+    /// <summary>
+    /// SQL statement to get the current datetime
+    /// </summary>
+    property CurrentDateTime        as string get
 
     /// <summary>
     /// Return a list of function translations for this provider

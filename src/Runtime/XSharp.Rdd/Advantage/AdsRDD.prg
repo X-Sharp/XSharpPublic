@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -14,9 +14,7 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Diagnostics
 
-/// <summary>
-/// The base AdsRDD class from which all Advantage RDDs for X# inherit.
-/// </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD/*" />
 [DebuggerDisplay("AdsRDD ({Alias,nq})")];
 CLASS XSharp.ADS.ADSRDD INHERIT Workarea
   #region Fields
@@ -34,6 +32,7 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     INTERNAL _Ansi  AS LOGIC
     INTERNAL _HasMemo AS LOGIC
     INTERNAL _fieldCount AS LONG
+    INTERNAL _Extension as STRING
     PRIVATE  _syncSettings AS LOGIC
     PRIVATE  _syncDeleted  AS LOGIC
     PRIVATE  _syncFolders  AS LOGIC
@@ -43,7 +42,7 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
 
   #endregion
 
-  /// <summary>Create instande of RDD </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.ctor/*" />
 CONSTRUCTOR()
     SUPER()
     SELF:_Order         := ADSIndex{SELF}
@@ -58,6 +57,8 @@ CONSTRUCTOR()
     SELF:_syncDeleted    := TRUE
     SELF:_syncSettings   := TRUE
     SELF:_syncFolders    := TRUE
+    SELF:_IsFileBased    := FALSE
+    SELF:_Extension      := ".dbf"
 
 
     RuntimeState.StateChanged += StateChanged
@@ -352,6 +353,7 @@ OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
     LOCAL fileName AS STRING
     //
     openmode := 0
+    SELF:SetOpenInfo(info, SELF:_Extension, FALSE)
     SELF:_CheckRDDInfo()
     alias := Path.GetFileNameWithoutExtension(info:Alias)
     // both Clipper and XPP use weight tables
@@ -469,10 +471,7 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
     LOCAL length AS WORD
     //
     strFieldDef     := String.Empty
-    SELF:_Alias     := info:Alias
-    SELF:_Area      := info:Workarea
-    SELF:_Shared    := info:Shared
-    SELF:_ReadOnly  := info:ReadOnly
+    SELF:SetOpenInfo(info, SELF:_Extension, TRUE)
     SELF:_Ansi      := RuntimeState.Ansi
 
     IF !SELF:_GetFieldInfo(REF strFieldDef)
@@ -653,8 +652,8 @@ OVERRIDE METHOD SkipRaw(lCount AS LONG) AS LOGIC
 RETURN SELF:Skip(lCount)
 
 
-    /// <inheritdoc />
 
+    /// <inheritdoc />
 INTERNAL METHOD _GetScope(hIndex AS System.IntPtr, usScopeOption AS WORD) AS OBJECT
     LOCAL aScope    AS CHAR[]
     LOCAL wBufLen   AS WORD
@@ -1358,49 +1357,49 @@ OVERRIDE METHOD TransRec(info AS DbTransInfo) AS LOGIC
       #endregion
 
     #region Unsupported
+
+
+
+
     /// <inheritdoc />
-
-
-
-
 INTERNAL METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
     SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, strFunctionName)
 RETURN FALSE
 
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.AppendLock/*" />
 OVERRIDE METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
 RETURN SELF:Unsupported("AppendLock")
 
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.BlobInfo/*" />
 OVERRIDE METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
     SELF:Unsupported("BlobInfo")
 RETURN NULL
 
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.ForceRel/*" />
 OVERRIDE METHOD ForceRel() AS LOGIC
 RETURN SELF:Unsupported("ForceRel")
 
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.GetRec/*" />
 OVERRIDE METHOD GetRec() AS BYTE[]
     SELF:Unsupported("GetRec")
 RETURN NULL
 
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.GetValueFile/*" />
 OVERRIDE METHOD GetValueFile(nFldPos AS INT, cFileName AS STRING) AS LOGIC
     SELF:Unsupported("GetValueFile")
 RETURN FALSE
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.HeaderLock/*" />
 OVERRIDE METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 RETURN SELF:Unsupported("HeaderLock")
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.PutRec/*" />
 OVERRIDE METHOD PutRec(aRec AS BYTE[])			AS LOGIC
 RETURN SELF:Unsupported("PutRec")
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.PutValueFile/*" />
 OVERRIDE METHOD PutValueFile(nFldPos AS INT, cFileName AS STRING) AS LOGIC
     SELF:Unsupported("PutValueFile")
 RETURN FALSE
 
-      /// <summary>This method is not supported by the AdsRDD class </summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/ADSRDD.Sort/*" />
 OVERRIDE METHOD Sort(info AS DbSortInfo) AS LOGIC
 RETURN SELF:Unsupported("Sort")
 

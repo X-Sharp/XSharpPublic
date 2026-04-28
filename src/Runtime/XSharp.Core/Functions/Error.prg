@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -24,10 +24,7 @@ FUNCTION DosErrString(dwError AS DWORD) AS STRING
 
 
 
-/// <summary>Return a descriptive name (in upper case) for a X# (Usual) Type</summary>
-/// <param name="dwType">Type number to check for</param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/TypeString/*" />
 FUNCTION TypeString( nType AS DWORD ) AS STRING
    LOCAL ret AS STRING
    SWITCH (__UsualType) nType

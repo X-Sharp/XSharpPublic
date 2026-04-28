@@ -1,10 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <ReturnsLogic>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-    </ReturnsLogic>
     <commonblocks>
         <notify>
 		<span>
@@ -47,7 +42,7 @@
                     <item>
                         <term>NOTIFYFIELDCHANGE</term>
                         <description>
-                            A field has changed. <paramref name="uDescription" /> is the field name as a symbol.  Note that the browser might not contain a column with the indicated name. The server knows only that it has a field of that name and that it changed, and it notifies all its clients in case they are interested.
+                            A field has changed. <paramref name="uDescription"/> is the field name as a symbol.  Note that the browser might not contain a column with the indicated name. The server knows only that it has a field of that name and that it changed, and it notifies all its clients in case they are interested.
                         </description>
                     </item>
                     <item>
@@ -78,7 +73,7 @@
                     <item>
                         <term>NOTIFYRECORDCHANGE</term>
                         <description>
-                            The record position of the server has changed.  All clients are notified after any movement, so they can refresh their displays from the server. A browser needs to update its display intelligently, depending on how far the move was.  <paramref name="uDescription" /> might indicate the length of the move (the number of records). The browser can use this information for display optimization, but cannot rely on its availability.
+                            The record position of the server has changed.  All clients are notified after any movement, so they can refresh their displays from the server. A browser needs to update its display intelligently, depending on how far the move was.  <paramref name="uDescription"/> might indicate the length of the move (the number of records). The browser can use this information for display optimization, but cannot rely on its availability.
                         </description>
                     </item>
                     <item>
@@ -169,29 +164,29 @@
                 As soon as a record is encountered that causes the condition to fail, the operation
                 terminates.<br/>
 
-                If no scope is specified, <paramref name="cbWhileCondition" /> changes the default scope to <paramref name="lRest" />.<br/>
+                If no scope is specified, <paramref name="cbWhileCondition"/> changes the default scope to <paramref name="lRest"/>.<br/>
 
                 You define the scope using one of these three, mutually exclusive arguments.<br/>
                 The default is all records.
             </param>
             <param name="uScope">
               The range of records to process, providing the same functionality as the ALL, REST and NEXT clauses of record processing commands.
-              <include file="RTComments.xml" path="Comments/Scope_Constants/*"  />
+              <include file="RTComments.xml" path="Comments/Scope_Constants/*"/>
             </param>
             <param name="cDriver">The name of the RDD that will service the data server. If not specified, the default RDD as determined by RDDSetDefault() is used.</param>
             <param name="aRDD">
-                A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds" /> is omitted, no additional RDDs are assumed.
+                A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver"/> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds"/> is omitted, no additional RDDs are assumed.
             </param>
             <param name="nNext">
-                The number of records to process, starting at <paramref name="nRecord" />.  
+                The number of records to process, starting at <paramref name="nRecord"/>.  
                 Specify 0 to ignore this argument.
             </param>
             <param name="nRecord">A single record number to process.  Specify 0 to ignore this argument.</param>
             <param name="lRest">
-                TRUE processes only records from <paramref name="nStart" /> to the end of the file.  
+                TRUE processes only records from <paramref name="nStart"/> to the end of the file.  
                 FALSE processes all records.
             </param>
-            <param name="lNoOpt" >Disable (Rushmore) optimizations (not supported yet).</param>
+            <param name="lNoOpt">Disable (Rushmore) optimizations (not supported yet).</param>
         </scopeparams>
         <acrdds>
             <param name="acRDDs">
@@ -199,12 +194,17 @@
 
                 This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers.  <br/>
 
-                These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument).<br/>
+                These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver"/> argument).<br/>
                 If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence.  <br/>
 
-                If <paramref name="acRDDs" /> is omitted, no additional RDDs are assumed.
+                If <paramref name="acRDDs"/> is omitted, no additional RDDs are assumed.
             </param>
         </acrdds>
 
     </commonblocks>
-</doc>
+<ReturnsLogic>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </ReturnsLogic>
+    </doc>

@@ -25,13 +25,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an array.
-        </para>
+      Determine if a value is an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -40,7 +40,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -59,7 +59,9 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Determines whether an expression is blank.
+        </para>
             </entry>
           </row>
           <row>
@@ -68,7 +70,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -83,13 +85,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a code block.
-        </para>
+      Determine if a value is a code block.
+    </para>
             </entry>
           </row>
           <row>
@@ -98,7 +100,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -113,13 +115,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a DATE.
-        </para>
+      Determine if a value is a DATE.
+    </para>
             </entry>
           </row>
           <row>
@@ -128,7 +130,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -143,7 +145,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -158,13 +160,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a FLOAT.
-        </para>
+      Determine if a value is a FLOAT.
+    </para>
             </entry>
           </row>
           <row>
@@ -173,13 +175,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a logical.
-        </para>
+      Determine if a value is a logical.
+    </para>
             </entry>
           </row>
           <row>
@@ -188,13 +190,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a LONGINT.
-        </para>
+      Determine if a value is a LONGINT.
+    </para>
             </entry>
           </row>
           <row>
@@ -203,13 +205,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is NIL.
-        </para>
+      Determine if a value is NIL.
+    </para>
             </entry>
           </row>
           <row>
@@ -218,13 +220,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a numeric.
-        </para>
+      Determine if a value is a numeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -233,13 +235,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an object.
-        </para>
+      Determine if a value is an object.
+    </para>
             </entry>
           </row>
         </table>

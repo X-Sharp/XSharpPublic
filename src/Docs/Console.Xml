@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members></members>
     <Console>
         <summary>
             Encapsulate a Win32 console application.
@@ -10,25 +9,6 @@
             <note type="tip">The application type has to be set to Console in the Application Options dialog box in order to run the application within the Win32 console. Otherwise, a separate console window is created. You can also use the Console class to create a separate console window in a regular Windows application, e.g., to output some debug information.</note>
         </remarks>
     </Console>
-    <Console.ctor>
-        <summary>
-            Instantiate a new Console object.
-        </summary>
-        <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE. The default is FALSE.</param>
-        <remarks>
-            The constructor allocates a new console window. By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line. If this fails, or if <paramref name="lNew" /> was set to TRUE, 
-            Console{} allocates and opens a new console window.
-        </remarks>
-        <example>
-            This code snippet creates and clear a new console window:
-            <code language="X#">
-                FUNCTION Start()
-                LOCAL oCon AS Console
-                oCon := Console{}
-                oCon:Clear()
-            </code>
-        </example>
-    </Console.ctor>
     <Console.Clear>
         <summary>
             Clear the console window.
@@ -43,6 +23,25 @@
             </code>
         </example>
     </Console.Clear>
+    <Console.ctor>
+        <summary>
+            Instantiate a new Console object.
+        </summary>
+        <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE. The default is FALSE.</param>
+        <remarks>
+            The constructor allocates a new console window. By default, or if the <paramref name="lNew"/> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line. If this fails, or if <paramref name="lNew"/> was set to TRUE, 
+            Console{} allocates and opens a new console window.
+        </remarks>
+        <example>
+            This code snippet creates and clear a new console window:
+            <code language="X#">
+                FUNCTION Start()
+                LOCAL oCon AS Console
+                oCon := Console{}
+                oCon:Clear()
+            </code>
+        </example>
+    </Console.ctor>
     <Console.CursorPos>
         <summary>
             The current cursor position as a ConsoleCoord object.
@@ -209,17 +208,6 @@
             The ConsoleCoord class encapsulates x and y values used for Console:Size and Console:CursorPos properties.
         </remarks>
     </ConsoleCoord>
-    <ConsoleCoord.X>
-        <summary>
-            X-axis position or width of object
-        </summary>
-    </ConsoleCoord.X>
-    <ConsoleCoord.Y>
-        <summary>
-            Y-axis position or height of object
-        </summary>
-    </ConsoleCoord.Y>
-
     <ConsoleCoord.ctor>
         <summary>
             Instantiate a ConsoleCoord object.
@@ -231,4 +219,16 @@
             and Console:CursorPos properties.
         </remarks>
     </ConsoleCoord.ctor>
-</doc>
+<ConsoleCoord.X>
+        <summary>
+            X-axis position or width of object
+        </summary>
+    </ConsoleCoord.X>
+    <ConsoleCoord.Y>
+        <summary>
+            Y-axis position or height of object
+        </summary>
+    </ConsoleCoord.Y>
+
+    <members/>
+    </doc>

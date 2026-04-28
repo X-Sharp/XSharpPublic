@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -159,15 +159,35 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         VAR cTemp := cPathSpec:Trim()
         if !String.IsNullOrEmpty(cTemp)
-            IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
+            // Single letter => drive letter
+            IF cTemp:Length == 1 .AND. Char.IsLetter(cTemp[0])
+                cTemp += ":"
+            ENDIF
+
+            // Protect root "\" and "C:\" from being stripped
+            IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString()) .AND. cTemp:Length > 1 .AND. !(cTemp:Length == 3 .AND. cTemp[1] == c':')
                 cTemp := cTemp:Substring(0, cTemp:Length-1)
             ENDIF
+
             IF ! System.IO.Directory.Exists(cTemp)
                 var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
                 err:Description := "Directory not found: '"+cPathSpec+"'"
                 THROW err
             ENDIF
-        endif
+
+            // VFP SET DEFAULT TO updated the process's working directory
+            TRY
+                System.Environment.CurrentDirectory := cTemp
+            CATCH
+                VAR err := Error.VOError(EG_ARG, __FUNCTION__, NAMEOF(cPathSpec), 1, <OBJECT>{cPathSpec})
+                err:Description := "Directory not found: '" + cPathSpec + "'"
+                THROW err
+            END TRY
+
+            // Resolves to absolute path to keep Set.Default and SYS() in sync
+            cTemp := System.Environment.CurrentDirectory:ToUpperInvariant()
+        ENDIF
+        cPathSpec := cTemp
     ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
         IF cPathSpec:Length > 0
             var cLast := cPathSpec[cPathSpec:Length-1]
@@ -251,14 +271,11 @@ FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
     SETSTATE LOGIC Set.Errorlog lNewSetting
 
 
-/// <summary>Get the name of the current errorlog file</summary>
-/// <returns>Current name of the error log file.</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetErrorLogFile/*" />
 FUNCTION SetErrorLogFile() AS STRING
     GETSTATE STRING Set.ErrorLogFile
 
-/// <summary>Set the name of the current errorlog file</summary>
-/// <param name="cNewSetting">New name of error log file </param>
-/// <returns>Previous name of the error log file.</returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetErrorLogFile_2/*" />
 FUNCTION SetErrorLogFile(cNewSetting AS STRING) AS STRING
     SETSTATE STRING Set.ErrorLogFile cNewSetting
 
@@ -309,23 +326,8 @@ FUNCTION SetMath(nNewSetting AS DWORD) AS DWORD
     SETSTATE DWORD Set.Math nNewSetting
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setnatdll/*" />
-/// <remarks>
-/// In Visual Objects the nation DLL is an external DLL. For X# there are no separate
-/// nation DLL. The nation support code is integrated in XSharp.Core.DLL.
-/// For compatibility you can still use the SetNatDLL() function to switch to another
-/// nation module. <br/>
-/// The available nation modules are (just like in Visual Objects):<br/>
-/// 	"BRAZIL", "CROATIA", "CZECH852", "CZECH895", "DANISH", "DUTCH", "FINNISH",
-/// 	"FRENCH", "GENERIC", "GERMAN", "GERMAN2", "HUNG852", "HUNGCWI", "ITALIAN",
-///     "NORWEGN", "POL-ISO", "POL-MAZ", "POL852", "PORT850", "PORT860", "ROMANIA",
-/// 	"RUSSIAN", "SERBIA", "SL-W-95", "SL-W-AS7", "SL-W-EE", "SLOV852", "SLOV895",
-/// 	"SPANISH", "SWEDISH", "TURKISH", "UK"
-/// <br/> You may specify a DLL name with full path. The Runtime will strip the path and extension
-/// from the file name and will look for one of the names listed above.<br/>
-/// The nation DLL name is NOT case sensitive.
-///</remarks>
 
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetNatDLL/*" />
 FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
     LOCAL cBase AS STRING
     _SetNatDLL(cNewDLL)
@@ -370,14 +372,7 @@ FUNCTION SetPath(cPathList AS STRING) AS STRING
     SETSTATE STRING Set.Path cPathList
 
 
-/// <summary>
-/// Return the Path array that is used by the File() function to locate files outside of the current directory.
-/// This is a combination of the SetDefault() and SetPath() variables.
-/// This may be null if the file function has never been called or never been called for files outside of the current
-/// directory.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetPathArray/*" />
 FUNCTION SetPathArray() AS STRING[]
     GETSTATE STRING[] Set.Patharray
 
@@ -429,20 +424,11 @@ FUNCTION SetSafety(lNewSetting AS LOGIC) AS LOGIC
 
 
 
-/// <summary>
-/// Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetSpace/*" />
 FUNCTION SetSpace() AS LOGIC
     GETSTATE LOGIC Set.Space
 
-/// <summary>
-/// Change the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetSpace_2/*" />
 FUNCTION SetSpace(lSet AS LOGIC) AS LOGIC
     SETSTATE LOGIC Set.Space lSet
 
@@ -478,18 +464,11 @@ FUNCTION SetUnique(lNewSetting AS LOGIC) AS LOGIC
     RuntimeState.Unique := lNewSetting
     RETURN lOld
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetYield/*" />
 FUNCTION SetYield() AS LOGIC
     GETSTATE LOGIC Set.Yield
 
-/// <summary>
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetYield_2/*" />
 FUNCTION SetYield(lSet AS LOGIC) AS LOGIC
     SETSTATE LOGIC Set.Yield lSet
 
@@ -509,29 +488,7 @@ FUNCTION SetInternational() AS STRING
     RETURN RuntimeState.International:ToString():ToUpper()
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setinternational/*" />
-/// <remarks>
-/// SetInternational() allows XSharp apps to operate in different international modes.
-/// The "CLIPPER" mode is provided for compatibility with CA-Clipper applications and uses an
-/// internationalization routine defined in the nation module.<br/>
-/// The "Windows" mode uses international services provided by Windows.
-/// When you set this mode several settings will be changed
-/// <list type="table">
-/// <listheader>
-/// <term>Setting</term> <description>Initial value in CLIPPER mode</description>
-/// </listheader>
-///	<item><term>SetAmExt</term> <description>Empty String</description></item>
-/// <item><term>SetPmExt</term> <description>Empty String</description></item>
-/// <item><term>SetAmPm</term> <description>FALSE (24 hour format)</description></item>
-/// <item><term>SetCentury</term> <description>FALSE</description></item>
-/// <item><term>SetDateCountry</term> <description>American (1)</description></item>
-/// <item><term>SetDateFormat</term> <description>mm/dd/yy</description></item>
-/// <item><term>SetDecimal</term> <description>2</description></item>
-/// <item><term>SetDecimalSep</term> <description>Period (.)</description></item>
-/// <item><term>SetThousandSep</term> <description>Comma (,)</description></item>
-/// <item><term>SetTimeSep</term> <description>Colon(:)</description></item>
-/// </list>
-/// </remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetInternational/*" />
 FUNCTION SetInternational(symNewSetting AS STRING) AS STRING
     LOCAL cOld AS STRING
     cOld := RuntimeState.International:ToString():ToUpper()
@@ -549,20 +506,12 @@ FUNCTION SetInternational(symNewSetting AS STRING) AS STRING
     RETURN cOld
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcollation/*" />
-/// <remarks>
-/// <include file="CoreComments.xml" path="Comments/Collation/*" />
-/// </remarks>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetCollation/*" />
 FUNCTION SetCollation() AS STRING
     RETURN RuntimeState.CollationMode:ToString():ToUpper()
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcollation/*" />
-/// <remarks>
-/// <include file="CoreComments.xml" path="Comments/Collation/*" />
-/// </remarks>
-/// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal" </returns>
-/// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetCollation_2/*" />
 FUNCTION SetCollation(symNewSetting AS STRING)  AS STRING
     LOCAL cOld AS STRING
     cOld := RuntimeState.CollationMode:ToString():ToUpper()
@@ -597,8 +546,7 @@ FUNCTION SetRefresh(nNewSetting AS REAL8) AS REAL8
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrefresh/*" />
 FUNCTION SetRefresh() AS REAL8
 	RETURN RuntimeState.Refresh
-/// <summary>Get/Set hours format (12 or 24 hours)</summary>
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sethours/*" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetHours/*" />
 FUNCTION SetHours() AS LONG
 	RETURN RuntimeState.GetValue<LONG>(Set.Hours)
 
@@ -612,8 +560,7 @@ FUNCTION SetHours(tnHours AS LONG) AS LONG
     RuntimeState.SetValue<LOGIC>(Set.AmPm, tnHours == 12)
 	RETURN nOld
 
-/// <summary>Get/Set seconds display</summary>
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setseconds/*" />
+/// <include file="XSharp.Core.Docs.xml" path="doc/SetSeconds/*" />
 FUNCTION SetSeconds() AS LOGIC
 	RETURN RuntimeState.GetValue<LOGIC>(Set.Seconds)
 

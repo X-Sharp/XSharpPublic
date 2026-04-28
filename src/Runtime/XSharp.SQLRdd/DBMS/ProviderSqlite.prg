@@ -31,7 +31,7 @@ class SqlDbProviderSQLite inherit SqlDbProvider
    override property DropIndexStatement     as string => "drop index if exists "+IndexNameMacro
 
    /// <inheritdoc />
-   override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
+   override property PagingClause     as string => " limit "+PagesizeMacro+" offset "+StartRecMacro
 
    /// <inheritdoc />
    override property GetIdentity as string => "SELECT last_insert_rowid()"

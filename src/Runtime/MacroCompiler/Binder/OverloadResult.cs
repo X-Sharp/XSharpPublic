@@ -106,11 +106,13 @@ namespace XSharp.MacroCompiler
                     return this;
                 else if (other.Symbol.DeclaringType.IsSubclassOf(Symbol.DeclaringType))
                     return other;
-                else
+                else if (this.Symbol != other.Symbol)
                 {
                     Equivalent = other;
                     ExtraValid += other.ExtraValid + 1;
                 }
+                // TODO (nvk): I'm not sure why this.Symbol could be equal to other.Symbol, but it can happen
+                //             Needs investigation, I suspect symbols being loaded twice.
             }
             return this;
         }

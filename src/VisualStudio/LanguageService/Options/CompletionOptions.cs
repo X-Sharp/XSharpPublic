@@ -11,6 +11,7 @@ namespace XSharp.LanguageService
     {
         #region Properties
         public int CompleteNumChars { get; set; }
+        public int MaxCompletionEntries { get; set; }
         public bool CompleteLocals { get; set; }
         public bool CompleteSelf { get; set; }
         public bool CompleteParent { get; set; }
@@ -28,6 +29,7 @@ namespace XSharp.LanguageService
         public CompletionOptions()
         {
             CompleteNumChars = 4;
+            MaxCompletionEntries = 250;
             CompleteLocals = true;
             CompleteSelf = true;
             CompleteParent = true;
@@ -58,6 +60,7 @@ namespace XSharp.LanguageService
             XEditorSettings.CompleteFunctionsP = CompleteFunctionsP;
             XEditorSettings.CompleteFunctionsA = CompleteFunctionsA;
             XEditorSettings.CompleteNumChars = CompleteNumChars;
+            XEditorSettings.MaxCompletionEntries = MaxCompletionEntries;
         }
     }
 }

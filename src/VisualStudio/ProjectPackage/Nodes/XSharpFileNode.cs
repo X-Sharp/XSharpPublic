@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-using Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -82,7 +81,6 @@ namespace XSharp.Project
 
         #endregion
         #region Properties
-
         internal string ItemType => this.ItemNode.ItemName;
         /// <summary>
         /// Gets an index into the default <b>ImageList</b> of the icon to show for this file.
@@ -171,6 +169,8 @@ namespace XSharp.Project
                     {
                         xmlItem.Parent.RemoveChild(xmlItem);
                         buildProject.RemoveItem(this.ItemNode.Item);
+                        buildProject.MarkDirty();
+                        ProjectMgr.SetProjectFileDirty(true);
                         buildProject.ReevaluateIfNecessary();
                         break;
                     }
@@ -209,15 +209,7 @@ namespace XSharp.Project
              if (this.IsImported)
              {
                  // to exclude an imported file we need to remove
-                 var fileName = ProjectMgr.GetRelativePath(this.Url);
-                 var item = ProjectMgr.CreateMsBuildFileItem(fileName, this.ItemType);
-                 var xml = item.Item.Xml;
-                 if (xml != null)
-                 {
-                     xml.Include = null;
-                     xml.Remove = fileName;
-                     ProjectMgr.BuildProject.ReevaluateIfNecessary();
-                 }
+                 this.CreateRemoveItem();
              }
              //if (this.FileType == XFileType.SourceCode)
              {
@@ -307,6 +299,8 @@ namespace XSharp.Project
                             }
                             if (SubType != null && this.ItemNode.GetMetadata(ProjectFileConstants.SubType) != SubType)
                             {
+                                if (IsImported)
+                                    CreateUpdateItem();
                                 this.ItemNode.SetMetadata(ProjectFileConstants.SubType, SubType);
                                 this.ItemNode.RefreshProperties();
                                 this.UpdateHasDesigner();
@@ -318,6 +312,9 @@ namespace XSharp.Project
             }
             if (this.FileType == XFileType.TextTemplate)
             {
+                if (IsImported)
+                    CreateUpdateItem();
+
                 this.ItemNode.SetMetadata(ProjectFileConstants.Generator, "TextTemplatingFileGenerator");
                 this.ItemNode.RefreshProperties();
             }
@@ -470,7 +467,7 @@ namespace XSharp.Project
             // In that case the path is the path from the base project folder
             string parent = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
             parent = Path.GetFileName(parent);
-            if (!this.IsNonMemberItem)
+            if (!this.IsNonMemberItem && !IsImported)
             {
                 string parentPath = Path.GetDirectoryName(Path.GetFullPath(this.Url));
                 string childPath = Path.GetDirectoryName(Path.GetFullPath(dependent.Url));
@@ -478,7 +475,7 @@ namespace XSharp.Project
                 {
                     dependent.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
                 }
-                else
+                else if (!IsImported)
                 {
                     string projectPath = this.ProjectMgr.ProjectFolder;
                     Uri projectFolder = new Uri(projectPath);
@@ -594,6 +591,56 @@ namespace XSharp.Project
                 return HasSubType(ProjectFileAttributeValue.UserControl);
             }
         }
+
+        private bool CreateUpdateItem()
+        {
+            var item = ProjectMgr.CreateMsBuildFileItem(this.ItemNode.Item.EvaluatedInclude, this.ItemType);
+            ProjectMgr.BuildProject.MarkDirty();
+            ProjectMgr.BuildProject.ReevaluateIfNecessary();
+            var items = ProjectMgr.BuildProject.Items.Where(i => !i.IsImported && i.ItemType == this.ItemType);
+            foreach (var i in items)
+            {
+                if (i.EvaluatedInclude == ItemNode.Item.EvaluatedInclude)
+                {
+                    var xml = i.Xml;
+                    if (xml != null)
+                    {
+                        var temp = xml.Include;
+                        xml.Include = null;
+                        xml.Update = temp;
+                    }
+                    this.ItemNode = new ProjectElement(this.ProjectMgr, i, false);
+                    this.ProjectMgr.SetProjectFileDirty(true);
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool CreateRemoveItem()
+        {
+            var item = ProjectMgr.CreateMsBuildFileItem(this.ItemNode.Item.EvaluatedInclude, this.ItemType);
+            ProjectMgr.BuildProject.MarkDirty();
+            ProjectMgr.BuildProject.ReevaluateIfNecessary();
+            var items = ProjectMgr.BuildProject.Items.Where(i => !i.IsImported).ToList();
+            foreach (var i in items)
+            {
+                if (i.ItemType == this.ItemType && i.EvaluatedInclude == ItemNode.Item.EvaluatedInclude)
+                {
+                    var xml = i.Xml;
+                    if (xml != null)
+                    {
+                        var temp = xml.Include;
+                        xml.Include = null;
+                        xml.Remove = temp;
+                    }
+                    this.ItemNode = new ProjectElement(this.ProjectMgr, i, false);
+                    this.ProjectMgr.SetProjectFileDirty(true);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override int SortPriority
         {
             get
@@ -628,6 +675,8 @@ namespace XSharp.Project
                 return _fileType;
             }
         }
+
+
 
         private void CheckItemType()
         {
@@ -669,6 +718,19 @@ namespace XSharp.Project
                     break;
             }
         }
+
+        bool ItemHasValue(string itemName, string value)
+        {
+            if (!ItemNode.Item.HasMetadata(itemName))
+                return false;
+            var current = ItemNode.GetMetadata(itemName);
+            if (current != null)
+            {
+                return string.Equals(current, value, StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+
         /// <summary>
         /// Returns the SubType of an XSharp FileNode. It is
         /// </summary>
@@ -682,8 +744,11 @@ namespace XSharp.Project
             {
                 try
                 {
+                    if (this.ItemHasValue(ProjectFileConstants.SubType, value))
+                        return;
+                    if (IsImported && !ItemNode.Item.HasMetadata(ProjectFileConstants.SubType))
+                        CreateUpdateItem();
                     ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
-                    // Don't forget to update...
                     UpdateHasDesigner();
                 }
                 catch (Exception)
@@ -700,7 +765,16 @@ namespace XSharp.Project
             }
             set
             {
-                ItemNode.SetMetadata(ProjectFileConstants.Generator, value);
+
+                if (this.ItemHasValue(ProjectFileConstants.Generator, value))
+                    return;
+                if (IsImported && ! ItemNode.Item.HasMetadata(ProjectFileConstants.Generator)   )
+                    CreateUpdateItem();
+                if (value == null)
+                    ItemNode.SetMetadata(ProjectFileConstants.Generator, "");
+                else
+                    ItemNode.SetMetadata(ProjectFileConstants.Generator, value);
+                UpdateHasDesigner();
             }
         }
 
@@ -837,6 +911,7 @@ namespace XSharp.Project
                 xfile.SetSpecialPropertiesEx();
             }
         }
+        internal static XSharpFileNode CurrentItem = null;
 
         /// <summary>
         /// Handles command status on a node. Should be overridden by descendant nodes. If a command cannot be handled then the base should be called.
@@ -848,6 +923,8 @@ namespace XSharp.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         protected override int QueryStatusOnNode(Guid guidCmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
+            // Save the current item. We need that to fool the Nuget tools later
+            // See OAXSharpProject.cs
             CurrentItem = this;
             if (guidCmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97)
             {
@@ -886,7 +963,6 @@ namespace XSharp.Project
 
             return base.QueryStatusOnNode(guidCmdGroup, cmd, pCmdText, ref result);
         }
-        internal static XSharpFileNode CurrentItem = null;
 
         public override void Remove(bool removeFromStorage)
         {
@@ -896,6 +972,13 @@ namespace XSharp.Project
             base.Remove(removeFromStorage);
             project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
+            if (project.IsSdkProject)
+            {
+                // we have to do this after the file was deleted to make sure
+                // that Msbuild cannot find it anymore
+                project.BuildProject.MarkDirty();
+            }
+
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {

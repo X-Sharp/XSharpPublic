@@ -244,14 +244,24 @@ internal class SqlDbExpression inherit SqlDbObject
         return sb:ToString()
     access OrderList as List<string>
         local aList as List<string>
+        local cDesc as string
+        local cAsc  as string
+
+        if self:Owner:Descending
+            cDesc   := ""
+            cAsc    := " DESC"
+        else
+            cDesc   := " DESC"
+            cAsc    := ""
+        endif
         if self:Segments:Count > 1
             aList := List<string>{}
             foreach var oSeg in self:Segments
                 foreach var col in oSeg:OrderList
                     if oSeg:Descending
-                        aList:Add(col+" DESC")
+                        aList:Add(col+cDesc)
                     else
-                        aList:Add(col+" ASC")
+                        aList:Add(col+cAsc)
                     endif
                 next
             next
@@ -260,13 +270,15 @@ internal class SqlDbExpression inherit SqlDbObject
             if self:HasFunctions
                 aList := List<string>{} {self:SQLKey}
             else
-                aList := self:ColumnList
+                aList := self:ColumnList:ToList()
             endif
-            if oSeg:Descending
-                for var i := 1 to aList:Count
-                    aList[i] += " DESC"
-                next
-            endif
+            for var i := 0 to aList:Count-1
+                if oSeg:Descending
+                    aList[i] += cDesc
+                else
+                    aList[i] += cAsc
+                endif
+            next
         endif
         return aList
 
@@ -386,6 +398,7 @@ internal class SqlDbExpression inherit SqlDbObject
     access SegmentCount as long
         return self:Segments:Count
     method TranslateFunctions() as void
+        local lastToken := null as SqlDbToken
         foreach var token in self:Tokens
             switch token:Type
             case TokenType.BoFunc
@@ -398,10 +411,23 @@ internal class SqlDbExpression inherit SqlDbObject
             case TokenType.Operator
                 if token:Name:Trim() = "+"
                     token:SQLName := _provider:GetFunction("+")
+                elseif token:Name:Trim() == "=="
+                    token:SQLName := "="
+                else
+                    token:SQLName := token:Name
                 endif
             case TokenType.Token
                 token:SQLName := _provider.QuoteIdentifier(token:Name)
+            case TokenType.String
+                if lastToken != null .and. lastToken:Name:Trim() == "="
+                    // This is a string literal after a single equals, so we need to quote it as well
+                    lastToken:SQLName := "like"
+                    token:SQLName := Left(token:Name, (DWORD)token:Name:Length-1) + "%" + Right(token:Name, 1)
+                else
+                    token:SQLName := token:Name
+                endif
             end switch
+            lastToken := token
         next
         self:Translated := true
         return

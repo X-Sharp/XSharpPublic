@@ -12,13 +12,16 @@
 #define TYPE_ERROR2  "Value must be LONG"
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitand/*" />
+[FoxProFunction("BITAND", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitAnd (Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL
     RETURN BitHelpers._BITANDORX(BitOperation.And, Arg1, Arg2)
 END FUNC
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitand/*" />
 FUNCTION BitAnd (Arg1 AS INT, Arg2 PARAMS INT[]) AS INT
     RETURN BitHelpers._BITANDORX(BitOperation.And, Arg1, Arg2)
 END FUNC
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitand/*" />
 FUNCTION BitAnd(Arg1 AS BINARY, Arg2 PARAMS BINARY[]) AS BINARY
     RETURN BitHelpers._BITANDORX(BitOperation.And, Arg1, Arg2)
@@ -26,6 +29,7 @@ END FUNC
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
+[FoxProFunction("BITCLEAR", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitClear (Arg1 AS USUAL) AS BINARY
     RETURN BitClear((BINARY)Arg1)
 END FUNC
@@ -48,9 +52,7 @@ END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
 FUNCTION BitClear (Arg1 AS USUAL, Arg2 AS USUAL, Arg3 AS USUAL) AS BINARY
-
     RETURN BitClear((BINARY)Arg1, (INT)Arg2, (INT)Arg3)
-
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
@@ -101,6 +103,7 @@ FUNCTION BitClear (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BIN
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitlshift/*" />
+[FoxProFunction("BITLSHIFT", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION BitLShift (Arg AS INT, Bits AS INT) AS INT
     IF BETWEEN(Bits, 0, 31)
         RETURN Arg << Bits
@@ -109,14 +112,14 @@ FUNCTION BitLShift (Arg AS INT, Bits AS INT) AS INT
     ENDIF
 
 END FUNC
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitlshift/*" />
 FUNCTION BitLShift (Arg AS USUAL, Bits AS USUAL) AS INT
     RETURN BitLShift((INT)Arg, (INT)Bits)
 END FUNC
 
-
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitnot/*" />
+[FoxProFunction("BITNOT", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION BitNot (Arg1 AS USUAL) AS USUAL
     IF IsBinary(Arg1)
         RETURN BitNot((BINARY)Arg1)
@@ -160,6 +163,7 @@ END FUNC
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitor/*" />
+[FoxProFunction("BITOR", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitOr (Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL
     RETURN BitHelpers._BITANDORX(BitOperation.Or, Arg1, Arg2)
 END FUNC
@@ -174,11 +178,8 @@ FUNCTION BitOr (Arg1 AS BINARY, Arg2 PARAMS BINARY[]) AS BINARY
     RETURN BitHelpers._BITANDORX(BitOperation.Or, Arg1, Arg2)
 END FUNC
 
-
-
-
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitrshift/*" />
+[FoxProFunction("BITRSHIFT", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION BitRShift (Arg AS USUAL, Bits AS USUAL) AS INT
    IF IsNumeric(Arg) .AND. IsNumeric(Bits)
       RETURN BitRShift((INT)Arg, (INT)Bits)
@@ -189,7 +190,6 @@ FUNCTION BitRShift (Arg AS USUAL, Bits AS USUAL) AS INT
    THROW Error.ArgumentError(__FUNCTION__, nameof(Bits),TYPE_ERROR2, 2, {Bits})
 
 END FUNC
-
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitrshift/*" />
 INTERNAL FUNCTION BitRShift (Arg AS INT, Bits AS INT) AS INT
@@ -205,8 +205,8 @@ INTERNAL FUNCTION BitRShift (Arg AS INT, Bits AS INT) AS INT
 
 END FUNC
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
+[FoxProFunction("BITSET", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitSet (Arg1 AS USUAL) AS BINARY
     RETURN BitSet((BINARY)Arg1)
 END FUNC
@@ -239,16 +239,12 @@ END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
 FUNCTION BitSet (BinString AS BINARY) AS BINARY
-
     RETURN IIF(BinString.Length == 0, 0h, BitSet(BinString, 0, BinString.Length * 8))
-
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
 FUNCTION BitSet (BinString AS BINARY, StartBit AS INT) AS BINARY
-
     RETURN IIF(BinString.Length == 0, 0h, BitSet(BinString, StartBit, 1))
-
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
@@ -272,10 +268,10 @@ FUNCTION BitSet (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BINAR
     NEXT
 
     RETURN (BINARY)Result
-
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bittest/*" />
+[FoxProFunction("BITTEST", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitTest (Arg AS USUAL, Bit AS USUAL) AS LOGIC
     IF IsBinary(Arg)
       RETURN BitTest((BINARY)Arg, (INT)Bit)
@@ -312,6 +308,7 @@ FUNCTION BitTest (BinString AS BINARY, BitNumber AS INT) AS LOGIC
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitxor/*" />
+[FoxProFunction("BITXOR", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitXor (Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL
     RETURN BitHelpers._BITANDORX(BitOperation.Xor, Arg1, Arg2)
 END FUNC
@@ -325,7 +322,6 @@ END FUNC
 FUNCTION BitXor (Arg1 AS BINARY, Arg2 PARAMS BINARY[]) AS BINARY
     RETURN BitHelpers._BITANDORX(BitOperation.Xor, Arg1, Arg2)
 END FUNC
-
 
 INTERNAL STATIC CLASS BitHelpers
 STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL

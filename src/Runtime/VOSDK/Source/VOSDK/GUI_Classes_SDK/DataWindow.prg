@@ -748,7 +748,7 @@ METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT
 				oOle:ValueChanged :=TRUE
 				oOle:Modified :=TRUE
 				SELF:Server:RLOCK()
-				SELF:FIELDPUT(oOle:__GetDataFldPos, oOle)
+				SELF:FieldPut(oOle:__GetDataFldPos, oOle)
 				oOle:__Scatter() // ???!!! correct ??
 				SELF:Server:Unlock()
 			ELSE
@@ -2117,8 +2117,8 @@ METHOD Expose(oExposeEvent)
 
 
 
-/// <include file="Gui.xml" path="doc/DataWindow.FIELDGET/*" />
-METHOD FIELDGET(uFieldID)
+/// <include file="Gui.xml" path="doc/DataWindow.FieldGet/*" />
+METHOD FieldGet(uFieldID)
 	LOCAL oError AS USUAL
 	LOCAL oFieldObject AS OBJECT
 	LOCAL uValue AS USUAL
@@ -2144,7 +2144,7 @@ METHOD FIELDGET(uFieldID)
 
 		IF oFieldObject == NULL_OBJECT
 			IF oAttachedServer != NULL_OBJECT
-				RETURN oAttachedServer:FIELDGET(uFieldID)
+				RETURN oAttachedServer:FieldGet(uFieldID)
 			ELSE
 				RETURN NIL
 			ENDIF
@@ -2170,8 +2170,8 @@ METHOD FIELDGET(uFieldID)
 
 
 
-/// <include file="Gui.xml" path="doc/DataWindow.FIELDPUT/*" />
-METHOD FIELDPUT(uFieldId, uNewValue)
+/// <include file="Gui.xml" path="doc/DataWindow.FieldPut/*" />
+METHOD FieldPut(uFieldId, uNewValue)
 	// Retrieves the current value of the indicated string
 	// uFieldPosition is numeric, symbol or string: the field position as numeric,
 	// or the field name as a symbol or a string
@@ -2209,7 +2209,7 @@ METHOD FIELDPUT(uFieldId, uNewValue)
 		// Field object should contain control or column
 		IF IsNil(oFieldObject)
 			IF oAttachedServer != NULL_OBJECT
-				RETURN oAttachedServer:FIELDPUT(uFieldId, uNewValue)
+				RETURN oAttachedServer:FieldPut(uFieldId, uNewValue)
 			ENDIF
 			RETURN NIL
 		ENDIF

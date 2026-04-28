@@ -52,6 +52,7 @@ namespace Microsoft.VisualStudio.Project
 
             this.Font = XHelperMethods.GetDialogFont();
             this.ForeColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONTEXT);
+            this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_WINDOW);
         }
 
         // =========================================================================================
@@ -306,7 +307,6 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Parameters for the event.</param>
         private void HandleTextBoxModifiedChanged(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             ThreadHelper.ThrowIfNotOnUIThread();
 
             TextBox textBox = (TextBox)sender;

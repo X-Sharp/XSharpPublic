@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Cci;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -83,27 +84,60 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return false;
         }
+
+        internal static bool HasFoxArrayParameter(this Symbol method, out CSharpAttributeData attr)
+        {
+            attr = null;
+            if (method is MethodSymbol)
+            {
+                foreach (var att in method.GetAttributes())
+                {
+                    var cls = att.AttributeClass;
+                    if (cls.Name == OurTypeNames.FoxArrayInputParameterAttribute &&
+                        string.Equals(cls.ConstructedFrom.ContainingAssembly.Name,XSharpAssemblyNames.XSharpCore,System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        attr = att;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         internal static bool HasClipperCallingConvention(this Symbol method)
         {
             if (method is SourceMemberMethodSymbol sms)
             {
                 var xnode = sms.SyntaxNode?.XNode;
-                if (xnode is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.ClsmethodContext clsmethod)
+                if (xnode is ClsmethodContext clsmethod)
                 {
-                    return clsmethod.Member.Data.HasClipperCallingConvention;
+                    xnode = clsmethod.Member;
+                }
+                if (xnode is IMemberContext member)
+                {
+                    return member.Data.HasClipperCallingConvention;
+                }
+                if (xnode is IXPPMemberContext xmember)
+                {
+                    return xmember.Data.HasClipperCallingConvention;
                 }
             }
-            if (method != null)
+            if (method is MethodSymbol)
             {
                 var pars = method.GetParameters();
                 if (pars.Length != 1)
                     return false;
                 var par = pars[0];
-                if (par.Name == XSharpSpecialNames.ClipperArgs)
-                    return true;
-                if (par.Name == VulcanSpecialNames.ClipperArgs)
-                    return true;
+                if (par.IsParams)
+                { 
+                    if (par.Name == XSharpSpecialNames.ClipperArgs)
+                        return true;
+                    //if (par.Type is ArrayTypeSymbol ats && ats.ElementType.IsUsualType())
+                    //{ 
+                    //  return true;
+                    //}
+                }
             }
+
             return false;
         }
         internal static bool EndsWithUsualParams(this Symbol method)

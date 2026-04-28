@@ -1229,8 +1229,10 @@ namespace Microsoft.VisualStudio.Project
             byte[] guidBytes = targetInfo.clsidCustom.ToByteArray();
             Marshal.Copy(guidBytes, 0, targetInfo2.pDebugEngines, guidBytes.Length);
 
-            debugTargetInfo[0] = targetInfo2;
-            actualTargets[0] = 1;
+            if (debugTargetInfo != null && debugTargetInfo.Length > 0)
+                debugTargetInfo[0] = targetInfo2;
+            if (actualTargets != null && actualTargets.Length > 0)
+                actualTargets[0] = 1;
             return VSConstants.S_OK;
         }
         #endregion

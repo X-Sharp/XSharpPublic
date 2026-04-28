@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 using Community.VisualStudio.Toolkit;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
@@ -45,7 +46,7 @@ namespace XSharp.LanguageService
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
         }
-		
+
 		public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] commands, IntPtr pCmdText)
         {
             if (pguidCmdGroup == VSConstants.VSStd2K && cCmds > 0)
@@ -204,7 +205,7 @@ namespace XSharp.LanguageService
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
-            
+
             // 3. Post process
             if (!handled && ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
@@ -229,7 +230,11 @@ namespace XSharp.LanguageService
                                 {
                                     case ':':
                                     case '.':
-                                        StartCompletionSession(nCmdID, ch);
+                                        // do not bring up the list automatically after a whitespace character
+                                        if (!char.IsWhiteSpace(prevChar()))
+                                        {
+                                            StartCompletionSession(nCmdID, ch);
+                                        }
                                         break;
                                     case '/':
                                         InsertXMLDoc();
@@ -325,7 +330,7 @@ namespace XSharp.LanguageService
             get => _doc.CompletionSession;
             set => _doc.CompletionSession = value;
         }
-            
+
         private void FilterCompletionSession(char ch)
         {
 

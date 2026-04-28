@@ -21,7 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
 using XSharp.Settings;
-
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal class XSharpQuickInfoSource : IAsyncQuickInfoSource
@@ -272,8 +272,10 @@ namespace XSharp.LanguageService
                             return KnownMonikers.LocalVariable;
                         case Kind.Command:
                         case Kind.XCommand:
+                        case Kind.YCommand:
                         case Kind.Translate:
                         case Kind.XTranslate:
+                        case Kind.YTranslate:
                             return KnownMonikers.MacroPublic;
                     }
                     return default;

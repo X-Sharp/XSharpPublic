@@ -78,5 +78,40 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(aValues[2,1] == 2)
             Assert.True(aValues[2,2] == 4)
             DbCloseArea()
+
+        [Fact, Trait("Category", "CopyTo")];
+        METHOD CopyToArrayTest() AS VOID
+            LOCAL aStruct AS ARRAY
+
+            aStruct := {{"ID", "N", 4, 0}, {"NAME", "C", 10, 0}}
+            DbCreate("test.dbf", aStruct)
+            DbUseArea(TRUE, NIL, "TEST")
+
+            DbAppend()
+            FieldPut(1, 100)
+            FieldPut(2, "John")
+
+            DbAppend()
+            FieldPut(1, 200)
+            FieldPut(2, "Peter")
+
+            PUBLIC aDest(2,2)
+            aDest := DbCopyToArray(aDest)
+            DBGoTop()
+
+            Assert.True(IsArray(aDest), "Target should be an array")
+            Assert.True(aDest IS __FoxArray, "Target should be a FOX array")
+
+            Assert.Equal(2, (INT)ALen(aDest, 1)) // 2 Rows
+            Assert.Equal(2, (INT)ALen(aDest, 2)) // 2 Columns
+
+            Assert.Equal(100, (INT) aDest[1, 1])
+            Assert.Equal("John      ", (STRING) aDest[1, 2])
+
+            Assert.Equal(200, (INT) aDest[2, 1])
+            Assert.Equal("Peter     ", (STRING) aDest[2, 2])
+
+            DbCloseArea()
+        END METHOD
     END CLASS
 END NAMESPACE

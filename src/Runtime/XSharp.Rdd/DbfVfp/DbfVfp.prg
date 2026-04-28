@@ -13,7 +13,7 @@ USING System.Linq
 USING STATIC XSharp.Conversions
 
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFVFP/*" />
 [DebuggerDisplay("DBFVFP ({Alias,nq})")];
 CLASS DBFVFP INHERIT DBFCDX
     PRIVATE CONST VFP_BACKLINKSIZE := 262 AS LONG

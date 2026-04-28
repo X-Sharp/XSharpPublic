@@ -1,0 +1,520 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <__XppWrappedObject>
+        <summary>
+        XppWrappedObject类。
+        </summary>
+    </__XppWrappedObject>
+    <Abstract.ClassName>
+        <summary>检索对象所属类的名称。</summary>
+        <returns>该方法返回表示类名称的字符串。</returns>
+    </Abstract.ClassName>
+    <Abstract.ClassObject>
+        <summary>检索类的类对象（System.Type）。</summary>
+        <returns>该方法返回类的类对象。</returns>
+        <remarks>X# XPP实现返回System.Type对象作为类对象。</remarks>
+    </Abstract.ClassObject>
+    <Abstract.GetNoIVar>
+        <summary>处理对未定义实例变量的访问操作。</summary>
+        <param name="cName">要访问的字段名。</param>
+        <returns/>
+    </Abstract.GetNoIVar>
+    <Abstract.IsDerivedFrom>
+        <summary>检查对象是否属于或派生自特定类。</summary>
+        <param name="uParent">包含对象所属或派生自的类名称的字符串。也可以传递类对象（System.Type）代替类名。</param>
+        <returns>如果执行该方法的对象属于或派生自指定类，则该方法返回.T.（真）。</returns>
+        <remarks>此方法用于检查未知对象是否具有已知类的特征。这对于事件驱动编程或类继承自其他类的情况特别有用。</remarks>
+    </Abstract.IsDerivedFrom>
+  <Abstract.NoMethod>
+    <summary>处理对未定义方法的调用。</summary>
+    <param name="uParams">要发送到方法的参数。</param>
+    <returns>返回值将被解释为所调用的未定义方法的返回值。</returns>
+    <remarks>如果调用了未定义的方法，将引发运行时错误。</remarks>
+
+  </Abstract.NoMethod>
+  <Abstract.Notify>
+        <summary>接收来自数据库引擎的通知</summary>
+        <param name="nEvent">此参数接收与APPEVENT.CH中列出的常量对应的数值。</param>
+        <param name="nNotification">第二个参数标识通知对象的情况。文件DMLB.CH列出了可用于在程序中测试发生哪种情况的定义常量。</param>
+        <remarks>在X#中无需包含头文件。这些定义已作为X#运行时的一部分包含在内。</remarks>
+    </Abstract.Notify>
+    <Abstract.SetNoIVar>
+        <summary>处理对未定义实例变量的赋值操作。</summary>
+        <param name="cName">要赋值的字段名。</param>
+        <param name="uValue">赋值的值。</param>
+        <returns>该方法的返回值将被忽略。</returns>
+    </Abstract.SetNoIVar>
+    <ClassCreate>
+        <summary>动态创建一个类。</summary>
+        <returns>类对象。</returns>
+    </ClassCreate>
+    <ClassDestroy>
+        <summary>移除类的类对象。</summary>
+        <param name="uObject">要删除其类对象的类名称，或类对象。</param>
+        <returns>当类对象从内存中移除时返回.T.（真），否则返回.F.（假）。</returns>
+        <remarks>函数ClassDestroy()从主内存中移除动态创建的类的类对象。
+        动态类是在运行时由ClassCreate()函数创建的。它们在编译时是未知的。
+        因此，它们没有类函数，在程序运行时仅由类对象表示。<br/>
+        当程序使用动态类时，当不再需要该类时，应从主内存中移除相应的类对象。否则，类对象将保留在内存中，并且可以随时通过ClassObject()函数检索。<br/>
+        <b>注意</b>在X#中，类实际上永远不会从内存中释放。.Net框架不允许这样做。ClassDestroy()确实会从活动类列表中移除类。如果以后使用相同结构重新创建相同的类，则将重用先前定义的类定义。</remarks>
+    </ClassDestroy>
+    <ClassHelpers.FindClass>
+        <summary>
+        查找类的ClassObject
+        </summary>
+        <param name="cClassName"/>
+        <param name="lIncludeDeleted"/>
+        <returns/>
+    </ClassHelpers.FindClass>
+    <ClassHelpers.FullNameTypeFilter>
+        用于在DynamicAssembly中过滤类型的委托
+    </ClassHelpers.FullNameTypeFilter>
+    <ClassObject>
+        <summary>检索类的类对象。</summary>
+        <param name="cClassName">要返回其类对象的类名称。</param>
+        <returns>该函数返回名称为&lt;cClassName&gt;的类的类对象。
+        当类不存在时，返回值为NULL_OBJECT。</returns>
+    </ClassObject>
+    <ClassObject>
+    <summary>
+      此类返回类的ClassObject，包括编译时创建的类和运行时创建的类。
+      此对象允许延迟绑定地访问静态成员和方法，
+      例如<code>Example():Fieldname</code>
+    </summary>
+  </ClassObject>
+    <ClassObject.New>
+        <summary>
+        创建类的新实例。
+        </summary>
+        <returns>新对象</returns>
+    </ClassObject.New>
+    <ClassObject.NoIvarGet>
+        <summary>
+        对类/静态变量的延迟绑定访问
+        </summary>
+        <param name="cName">要读取的属性/字段的名称</param>
+        <returns>读取属性或字段的结果</returns>
+    </ClassObject.NoIvarGet>
+    <ClassObject.NoIvarPut>
+        <summary>
+        对类/静态变量的延迟绑定赋值
+        </summary>
+        <param name="cName">要更新的属性/字段的名称</param>
+        <param name="uValue">属性的新值</param>
+        <returns>uValue</returns>
+    </ClassObject.NoIvarPut>
+    <ClassObject.NoMethod>
+        <summary>
+        静态/类方法的延迟绑定调用。
+        </summary>
+        <returns>方法调用的结果</returns>
+    </ClassObject.NoMethod>
+    <DataObject>
+    <summary>
+      Xbase++ DataObject类。
+    </summary>
+  </DataObject>
+    <DataObject.Copy>
+        <summary>创建此实例的依赖浅拷贝</summary>
+        <returns>此方法返回新的DataObject实例。</returns>
+    </DataObject.Copy>
+    <DataObject.DefineMethod>
+        <summary>定义一个动态方法。</summary>
+        <param name="cName">要定义的方法名称。</param>
+        <param name="uAction">调用方法时必须执行的函数名或代码块。</param>
+        <returns>此方法返回DataObject（self）。</returns>
+        <remarks>X#中的动态方法是从DataObject类中的NoMethod方法调用的。</remarks>
+    </DataObject.DefineMethod>
+    <DataObject.IsMemberVar>
+        <summary>
+        检查对象是否具有特定的成员变量
+        </summary>
+        <param name="cName">包含成员变量符号标识符的字符串。</param>
+        <returns>如果对象具有成员变量&lt;cVarName&gt;，则返回值为.T.（真），否则返回.F.（假）。</returns>
+    </DataObject.IsMemberVar>
+    <DataObject.Merge>
+        <summary>将另一个对象的导出成员变量合并到此实例中。</summary>
+        <param name="oNewObject">要从中复制成员变量的DataObject。</param>
+        <param name="cMessagePrefix">将添加到DataObject中所有字段的可选前缀。</param>
+        <returns>此方法返回DataObject（self）。</returns>
+    </DataObject.Merge>
+    <DbCargo>
+        <summary>将任意值附加到已使用的工作区</summary>
+        <param name="xNewValue">要附加到工作区的值。</param>
+        <returns>该函数返回调用前附加到工作区的值。</returns>
+        <remarks>函数DbCargo()将任意值附加到已使用的工作区。该值保留在工作区中，
+        用户定义的数据可以以这种方式绑定到特定工作区。当工作区关闭时，附加的数据将被丢弃。</remarks>
+    </DbCargo>
+    <DbDescend>
+        <summary>检查导航顺序是否为降序</summary>
+        <returns>当当前工作区的顺序为降序时，DbDescend()的返回值为TRUE，否则返回FALSE。</returns>
+        <remarks>函数DbDescend()测试当前工作区中的顺序是否为降序。
+        有关反转导航顺序的更多信息，请参阅DbSetDescend()。
+        </remarks>
+        <seealso cref="DbSetDescend">DbSetDescend()</seealso>
+    </DbDescend>
+    <DbSetDescend>
+        <summary>反转工作区的导航顺序。</summary>
+        <param name="lNewDescend">逻辑值。当为TRUE时，当前工作区中的导航顺序设置为降序，FALSE将顺序设置为升序。</param>
+        <returns>DbSetDescend()的返回值是DbSetDescend()的先前设置。</returns>
+        <remarks>函数DbSetDescend()用于快速将工作区中的顺序从升序更改为降序，反之亦然，而无需创建相应的索引。
+        当向函数传递TRUE时，顺序被反转，即所有移动记录指针的函数和命令都被倒转。
+        DbGoTop()变为DbGoBottom()，DbSkip(1)变为DbSkip(-1)，EOF变为BOF()等。
+        <note type="tip"> 并非所有RDD都支持在运行时切换顺序 </note></remarks>
+        <seealso cref="DbDescend">DbDescend()</seealso>
+    </DbSetDescend>
+    <DynamicClassObject>
+    <summary>帮助在运行时创建类的工作类。</summary>
+  </DynamicClassObject>
+<LOCKING_EXCLUSIVE>
+        指定事务内/外的锁定行为
+    </LOCKING_EXCLUSIVE>
+    <PosAlpha>
+        <summary>检索字符串中第一个字母的从1开始的位置。</summary>
+        <returns>以数值形式返回字符串中第一个字母的位置，如果字符串中没有大写字母则返回ZERO。</returns>
+        <param name="cString">要检查的字符串</param>
+        <param name="lNoLetter">当传入TRUE时，返回第一个非字母字符的位置。默认为FALSE。</param>
+        <param name="nIgnoreCharsFromLeft">必须忽略的字符数。默认为0。</param>
+        <remarks>在X#中，字母定义为Char.IsLetter()方法返回TRUE的字符。
+        如果<paramref name="lNoLetter"/>设置为TRUE，则函数返回第一个非字母字符的位置。</remarks>
+        <seealso cref="PosUpper"/>
+        <seealso cref="PosLower"/>
+    </PosAlpha>
+    <PosChar>
+        <summary>替换字符串中指定位置的单个字符。</summary>
+        <returns>返回修改后的字符串。</returns>
+        <param name="cString">要检查的字符串</param>
+        <param name="uChar">要插入字符串的新字符</param>
+        <param name="nPosition">要更改的位置（从1开始）。默认为Len(<paramref name="cString"/>)。</param>
+        <seealso cref="PosDel"/>
+        <seealso cref="PosIns"/>
+        <seealso cref="PosRepl"/>
+    </PosChar>
+    <PosDel>
+        <summary>删除字符串中指定位置的字符。</summary>
+        <returns>返回修改后的字符串。</returns>
+        <param name="cString">要检查的字符串</param>
+        <param name="nStartPos">开始删除的位置（从1开始）。默认为Len(<paramref name="cString"/>)。</param>
+        <param name="nDeleteLen">要删除的字符数。</param>
+        <seealso cref="PosChar"/>
+        <seealso cref="PosIns"/>
+        <seealso cref="PosRepl"/>
+    </PosDel>
+    <PosIns>
+        <summary>在字符串的指定位置插入字符串。</summary>
+        <returns>返回修改后的字符串。</returns>
+        <param name="cString">要更新的字符串</param>
+        <param name="cInsertString">要插入的字符串</param>
+        <param name="nPosition">字符串必须插入的位置（从1开始）。默认为Len(<paramref name="cString"/>)+1。</param>
+        <seealso cref="PosChar"/>
+        <seealso cref="PosDel"/>
+        <seealso cref="PosRepl"/>
+    </PosIns>
+    <PosLower>
+        <summary>检索字符串中第一个小写字母的从1开始的位置。</summary>
+        <returns>以数值形式返回字符串中第一个小写字母的位置，如果字符串中没有大写字母则返回ZERO。</returns>
+        <param name="cString">要检查的字符串</param>
+        <param name="lNoLetter">当传入TRUE时，返回第一个不被Upper()函数改变的字符的位置。默认为FALSE。</param>
+        <param name="nIgnoreCharsFromLeft">必须忽略的字符数。默认为0。</param>
+        <remarks>在X#中，字母定义为Char.IsLetter()方法返回TRUE的字符。
+        如果<paramref name="lNoLetter"/>设置为TRUE，则函数返回第一个非字母字符的位置。</remarks>
+        <seealso cref="PosUpper"/>
+        <seealso cref="PosAlpha"/>
+    </PosLower>
+    <PosRepl>
+        <summary>在字符串的指定位置插入字符串。</summary>
+        <returns>返回修改后的字符串。</returns>
+        <param name="cString">要更新的字符串</param>
+        <param name="cReplace">要插入的字符串。</param>
+        <param name="nStartPos">字符串必须插入的位置（从1开始）。</param>
+        <remarks>如果未指定参数<paramref name="nStartPos"/>，则函数将替换<paramref name="cString"/>末尾的Len(<paramref name="cReplace"/>)个字符。</remarks>
+        <seealso cref="PosChar"/>
+        <seealso cref="PosDel"/>
+        <seealso cref="PosIns"/>
+    </PosRepl>
+    <PosUpper>
+        <summary>检索字符串中第一个大写字母的从1开始的位置。</summary>
+        <returns>以数值形式返回字符串中第一个大写字母的位置，如果字符串中没有大写字母则返回ZERO。</returns>
+        <param name="cString">要检查的字符串</param>
+        <param name="lNoLetter">当传入TRUE时，返回第一个不被Lower()函数改变的字符的位置。默认为FALSE。</param>
+        <param name="nIgnoreCharsFromLeft">必须忽略的字符数。默认为0。</param>
+        <remarks>在X#中，字母定义为Char.IsLetter()方法返回TRUE的字符。
+        如果<paramref name="lNoLetter"/>设置为TRUE，则函数返回第一个非字母字符的位置。</remarks>
+        <seealso cref="PosLower"/>
+        <seealso cref="PosAlpha"/>
+    </PosUpper>
+    <SetCollation>
+        <summary>查询当前和/或设置新的活动排序规则。</summary>
+        <param name="nCollation">要选择的排序规则表的数字标识符。必须是XppCollations枚举中的一个值或简单数字</param>
+        <returns>活动排序规则表的数字标识符</returns>
+        <seealso cref="XppCollations"/>
+        <seealso cref="SetCollationTable"/>
+    </SetCollation>
+    <SetCollationTable>
+        <summary>查询当前和/或设置用户定义的排序规则表。</summary>
+        <param name="nCollation">要选择的排序规则表的数字标识符。必须是XppCollations枚举中的一个值或简单数字</param>
+        <param name="aTable">包含256个元素的一维数组。必须包含表示单个字符权重因子的数值。
+        字符的ASCII值加1定义了包含该字符权重因子的数组元素。</param>
+        <returns>包含活动排序规则字符权重因子的一维数组。</returns>
+        <seealso cref="XppCollations"/>
+        <seealso cref="SetCollation"/>
+    </SetCollationTable>
+    <StaticClassObject>
+    <summary>
+      此类返回编译时创建的类（静态类）的ClassObject。
+      此对象允许延迟绑定地访问静态成员和方法，
+      例如<code>Example():Fieldname</code>
+    </summary>
+  </StaticClassObject>
+  <XAction>
+        <summary>存储XML节点操作（代码块）的辅助类</summary>
+    </XAction>
+    <XAction.Block>
+        <summary>为操作运行的代码块</summary>
+    </XAction.Block>
+    <XAction.Name>
+        <summary>操作运行的XML节点名称。</summary>
+    </XAction.Name>
+    <xbeK_UP>
+        ///////////////////////////////////////////////////////////////////
+    </xbeK_UP>
+    <XDocument>
+        <summary>XML函数使用的辅助类</summary>
+    </XDocument>
+    <XDocument.AsXmlArray>
+        <summary>以XPP特定的XML数组形式返回节点的子节点</summary>
+    </XDocument.AsXmlArray>
+    <XDocument.ClearActions>
+        <summary>清除文档上的所有操作</summary>
+    </XDocument.ClearActions>
+    <XDocument.ClearAllErrors>
+        <summary>清除所有错误</summary>
+    </XDocument.ClearAllErrors>
+    <XDocument.Close>
+        <summary>关闭已打开的XML文档</summary>
+    </XDocument.Close>
+    <XDocument.CloseAllDocuments>
+        <summary>关闭所有打开的文档</summary>
+    </XDocument.CloseAllDocuments>
+    <XDocument.DocHandle>
+        <summary>文档的唯一句柄。</summary>
+    </XDocument.DocHandle>
+    <XDocument.FindChildTag>
+        <summary>在XML节点中查找子标签</summary>
+    </XDocument.FindChildTag>
+    <XDocument.FindError>
+        <summary>按ID查找错误</summary>
+    </XDocument.FindError>
+    <XDocument.FindFirstChildTag>
+        <summary>在XML节点中查找子标签</summary>
+    </XDocument.FindFirstChildTag>
+    <XDocument.FindNode>
+        <summary>按ID获取XML节点和文档</summary>
+    </XDocument.FindNode>
+    <XDocument.FindParent>
+        <summary>获取XML节点父节点的ID</summary>
+    </XDocument.FindParent>
+    <XDocument.FindTag>
+        <summary>获取XML节点中的标签列表</summary>
+    </XDocument.FindTag>
+    <XDocument.GetDocument>
+        <summary>通过唯一句柄查找打开的XDocument对象</summary>
+    </XDocument.GetDocument>
+    <XDocument.GetErrors>
+        <summary>获取所有错误的列表</summary>
+    </XDocument.GetErrors>
+    <XDocument.GetErrorsForDocument>
+        <summary>获取特定文档的错误</summary>
+    </XDocument.GetErrorsForDocument>
+    <XDocument.Initialize>
+        <summary>初始化静态变量</summary>
+    </XDocument.Initialize>
+    <XDocument.NewHandle>
+        <summary>分配新的XDocument句柄</summary>
+    </XDocument.NewHandle>
+    <XDocument.OpenFile>
+        <summary>打开XML文件</summary>
+    </XDocument.OpenFile>
+    <XDocument.OpenText>
+        <summary>从字符串打开XML文档</summary>
+    </XDocument.OpenText>
+    <XDocument.PerformActions>
+        <summary>对XML节点执行操作。</summary>
+    </XDocument.PerformActions>
+    <XDocument.Process>
+        <summary>处理已打开的XML文档</summary>
+    </XDocument.Process>
+    <XDocument.ProcessNodes>
+        <summary>循环遍历所有操作并处理每个匹配操作的节点</summary>
+    </XDocument.ProcessNodes>
+    <XDocument.RegisterError>
+        <summary/>
+    </XDocument.RegisterError>
+    <XDocument.SelectNodes>
+        <summary>通过XPath选择节点</summary>
+    </XDocument.SelectNodes>
+    <XDocument.SetAction>
+        <summary>在XML节点上设置操作</summary>
+    </XDocument.SetAction>
+    <XDocument.WalkNode>
+        <summary>遍历所有节点并将其添加到文档类的集合中</summary>
+    </XDocument.WalkNode>
+    <XError>
+        <summary>存储XML文档错误的辅助类</summary>
+    </XError>
+    <XError.Additional>
+        <summary>错误的附加信息。</summary>
+    </XError.Additional>
+    <XError.Column>
+        <summary>发生错误的列。</summary>
+    </XError.Column>
+    <XError.DocHandle>
+        <summary>发生错误的文档句柄。</summary>
+    </XError.DocHandle>
+    <XError.FileName>
+        <summary>发生错误的文件名。</summary>
+    </XError.FileName>
+    <XError.Handle>
+        <summary>错误句柄。</summary>
+    </XError.Handle>
+    <XError.Id>
+        <summary>发生错误的节点ID。</summary>
+    </XError.Id>
+    <XError.Line>
+        <summary>发生错误的行号。</summary>
+    </XError.Line>
+    <XError.ToArray>
+        <summary>将错误对象转换为XBase++兼容的错误数组。</summary>
+    </XError.ToArray>
+  <XMLDocClearErrors>
+        <summary>清除所有全局XML错误。</summary>
+        <returns>始终返回.T.（真）。</returns>
+        <remarks>关闭所有未链接到XML文档的XML错误。</remarks>
+    </XMLDocClearErrors>
+    <XMLDocClose>
+        <summary>关闭XML文档。</summary>
+        <param name="nDocHandle"/>
+        <returns>如果文档成功关闭则返回.T.（真），否则返回.F.（假）。</returns>
+        <remarks>关闭XML文档并释放系统资源。</remarks>
+    </XMLDocClose>
+    <XMLDocCloseAll>
+        <summary>关闭所有打开的XML文档。</summary>
+        <returns>始终返回.T.（真）。</returns>
+        <remarks>关闭所有XML文档，清除所有错误并释放系统资源。</remarks>
+    </XMLDocCloseAll>
+    <XMLDocGetErrorList>
+        <summary>获取错误描述数组。</summary>
+        <param name="nDocHandle">XML文档的数字句柄。如果文档打开函数返回了有效的文档句柄，请使用此句柄。</param>
+        <param name="nErrHandle">XMLOpenDocFile()或XMLOpenDocString()返回的数字错误句柄。当打开函数返回无效文档句柄时，使用此句柄检索由打开函数产生的错误。</param>
+        <returns>返回包含错误信息的二维数组，如果没有发生错误则返回NULL_ARRAY。</returns>
+        <remarks/>
+    </XMLDocGetErrorList>
+    <XMLDocGetRootTag>
+        <summary>获取XML文档的根标签。</summary>
+        <param name="nDocHandle">XML文档的数字句柄。</param>
+        <returns>该函数返回XML文档的数字句柄。</returns>
+        <remarks>此函数返回XML文档的根标签。
+        根标签是由解析器作为XML文档树根节点创建的标签。
+        即文档始终有一个根标签，即使XML文件（或字符串）为空。
+        此函数提供遍历文档树的起始点。
+        有关XML标签的更多信息，请参阅XMLGetTag()函数。</remarks>
+    </XMLDocGetRootTag>
+    <XMLDocOpenFile>
+        <summary>打开XML文档。</summary>
+        <param name="cFileName">要解析的XML文件名。</param>
+        <returns>返回文档的非零数字句柄，如果解析器资源不足，或文件无法打开、读取或解析时返回0。此函数返回的句柄必须在后续调用其他XMLDoc..()函数时使用。</returns>
+        <remarks>XMLDocOpenFile()打开一个新的XML文档。它为解析器分配系统资源，打开并读取文件并解析其内容。
+        在解析文档时，解析引擎会构建一棵树。</remarks>
+    </XMLDocOpenFile>
+    <XMLDocOpenFile_2>
+        <summary>打开XML文档。</summary>
+        <param name="cFileName">要解析的XML文件名。</param>
+        <param name="nErrHandle">通过引用传递一个变量，该变量在记录错误时接收错误句柄。</param>
+        <returns>返回文档的非零数字句柄，如果解析器资源不足，或文件无法打开、读取或解析时返回0。此函数返回的句柄必须在后续调用其他XMLDoc..()函数时使用。</returns>
+        <remarks>XMLDocOpenFile()打开一个新的XML文档。它为解析器分配系统资源，打开并读取文件并解析其内容。
+        在解析文档时，解析引擎会构建一棵树。</remarks>
+    </XMLDocOpenFile_2>
+    <XMLDocOpenString>
+        <summary>从字符串创建XML文档。</summary>
+        <param name="cXMLString">表示有效XML文档的字符串。</param>
+        <param name="nErrHandle">通过引用传递一个变量，该变量在记录错误时接收错误句柄。</param>
+        <returns>返回传入字符串的非零句柄，如果解析器资源不足或字符串不包含有效的XML代码则返回0。此函数返回的句柄必须在后续调用其他XMLDoc..()函数时使用。<br/>
+        如果函数返回0，可通过调用XMLDocGetErrorList(, <paramref name="nErrHandle"/> )获取更多信息。</returns>
+        <remarks>调用XML解析器引擎解析传入的字符串并构建内部树结构。</remarks>
+    </XMLDocOpenString>
+    <XMLDocOpenString_2>
+        <summary>从字符串创建XML文档。</summary>
+        <param name="cXMLString">表示有效XML文档的字符串。</param>
+        <param name="nErrHandle">通过引用传递一个变量，该变量在记录错误时接收错误句柄。</param>
+        <returns>返回传入字符串的非零句柄，如果解析器资源不足或字符串不包含有效的XML代码则返回0。此函数返回的句柄必须在后续调用其他XMLDoc..()函数时使用。<br/>
+        如果函数返回0，可通过调用XMLDocGetErrorList(,<paramref name="nErrHandle"/>)获取更多信息。</returns>
+        <remarks>调用XML解析器引擎解析传入的字符串并构建内部树结构。</remarks>
+    </XMLDocOpenString_2>
+    <XMLDocProcess>
+        <summary>为所有标签执行操作代码块。</summary>
+        <param name="nDocHandle">XML文档的数字句柄。</param>
+        <returns>如果所有操作代码块都已成功执行则返回.T.（真），否则返回.F.（假）。</returns>
+        <remarks>此函数执行使用XMLDocSetAction()为XML文档注册的所有操作代码块。</remarks>
+    </XMLDocProcess>
+    <XMLDocResetAction>
+        <summary>释放使用XMLDocSetAction()定义的操作代码块。</summary>
+        <param name="nDocHandle">XML文档的数字句柄。</param>
+        <returns>如果文档句柄有效则返回.T.（真），否则返回.F.（假）。</returns>
+        <remarks>此函数用于释放为XML文档所有节点定义的所有操作代码块</remarks>
+    </XMLDocResetAction>
+    <XMLDocSetAction>
+        <summary>为特定标签设置操作代码块。</summary>
+        <param name="nDocHandle">XML文档的数字句柄。</param>
+        <param name="cNode">定义XML文档中一个或多个节点的字符串。请参阅下面的说明。</param>
+        <param name="bCallback">与<paramref name="cNode"/>指定的XML文档中的节点关联的代码块。</param>
+        <returns>该函数返回与字符串<paramref name="cNode"/>匹配的标签或节点数。</returns>
+        <remarks/>
+    </XMLDocSetAction>
+    <XMLGetAttribute>
+        <summary>获取XML标签的属性值。</summary>
+        <param name="nTagHandle">XML标签的数字句柄。</param>
+        <param name="cAttributeName">包含要搜索其值的标签属性名称的字符串。</param>
+        <returns>返回表示标签属性值的字符串，如果不存在具有给定名称的属性则返回NULL_STRING。</returns>
+        <remarks>此函数用于通过属性名称获取各个XML标签属性的值。</remarks>
+    </XMLGetAttribute>
+    <XMLGetChild>
+        <summary>获取XML标签的子节点。</summary>
+        <param name="nTagHandle">XML标签的数字句柄。</param>
+        <param name="cChildTagName">要搜索的子节点的标签名。</param>
+        <returns>返回第一个匹配指定名称的子节点的数字句柄，如果不存在具有给定名称的子节点则返回0。</returns>
+        <remarks>此函数用于检索与第二个参数指定名称匹配的XML标签的第一个子标签。可使用XMLGetChildren()函数获取具有特定名称的所有子标签。</remarks>
+    </XMLGetChild>
+    <XMLGetChildren>
+        <summary>获取XML标签子节点的数组。</summary>
+        <param name="nTagHandle">XML标签的数字句柄。</param>
+        <param name="cChildTagName">要搜索的子标签的标签名。</param>
+        <returns>返回与第二个参数指定名称匹配的子节点句柄数组，如果不存在具有给定名称的子节点则返回0。</returns>
+        <remarks>此函数用于检索具有第二个参数指定标签名称的所有子标签。</remarks>
+    </XMLGetChildren>
+    <XMLGetParent>
+        <summary>获取XML标签的父节点。</summary>
+        <param name="nTagHandle">XML标签的数字句柄。</param>
+        <returns>返回父标签的数字句柄，如果<paramref name="nTagHandle"/>没有父标签则返回0。</returns>
+        <remarks>此函数用于检索XML标签的父标签。每个标签只有一个父标签，文档根标签除外，它没有父标签。</remarks>
+    </XMLGetParent>
+    <XMLGetTag>
+        <summary>获取XML标签节点的成员。</summary>
+        <param name="nTagHandle">XML标签的数字句柄。</param>
+        <param name="aTagMember">如果函数成功返回，此参数包含标签所有成员的数组。
+        参数必须通过引用传递。可以使用下面列出的常量访问数组的单个元素。</param>
+        <returns>如果标签是有效标签则返回.T.（真），否则返回.F.（假）。</returns>
+        <remarks>此函数用于检索XML标签节点的所有成员。
+        元素与Xbase++中相同，并添加了包含XmlNode对象的额外第6个元素。</remarks>
+    </XMLGetTag>
+    <XMLSelectNodes>
+        <summary>通过xpath选择特定节点。</summary>
+        <param name="nDocHandle">XML文档的数字句柄。</param>
+        <param name="cSelect">XPath选择语句。</param>
+        <param name="aTagHandles">输出数组</param>
+        <returns>如果nDocHandle被识别则返回.T.（真），否则返回.F.（假）。</returns>
+    </XMLSelectNodes>
+    <XppCollations>
+        <summary>XBase++排序规则的可能值列表</summary>
+        <remarks>System枚举值由2种不同的排序顺序表示，具体取决于当前的Ansi或Charmode设置。</remarks>
+    </XppCollations>
+  </doc>

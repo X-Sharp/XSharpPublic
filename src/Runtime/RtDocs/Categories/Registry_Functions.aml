@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Delete a subtree from the VO registry branches
-        </para>
+      Delete a subtree from the VO registry branches
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve a numeric value from the Registry.
-        </para>
+      Retrieve a numeric value from the Registry.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve a string value from the Registry.
-        </para>
+      Retrieve a string value from the Registry.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Save a numeric value to the Registry.
-        </para>
+      Save a numeric value to the Registry.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Save a string value to the Registry.
-        </para>
+      Save a string value to the Registry.
+    </para>
             </entry>
           </row>
         </table>

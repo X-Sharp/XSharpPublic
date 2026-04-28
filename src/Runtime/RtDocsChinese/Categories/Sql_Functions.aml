@@ -57,7 +57,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:XSharp_VOSQLClasses.Functions.DotNetType2VOType(System.Data.DataTable,System.Data.DataColumn,System.String)Sql.xmldoc/DotNetType2VOType/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -70,7 +70,7 @@
               </para>
             </entry>
             <entry>
-              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+              <para>将日期转换为"YYYY-MM-DD"格式的字符串</para>
             </entry>
           </row>
           <row>
@@ -83,7 +83,7 @@
               </para>
             </entry>
             <entry>
-              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+              <para>将日期转换为"YYYY-MM-DD"格式的字符串</para>
             </entry>
           </row>
           <row>
@@ -109,8 +109,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -123,7 +122,7 @@
               </para>
             </entry>
             <entry>
-              <para>Convert a date and seconds to a timestamp string in "YYYY-MM-DD HH:MM:SS.NNN" format</para>
+              <para>将日期和秒转换为"YYYY-MM-DD HH:MM:SS.NNN"格式的时间戳字符串</para>
             </entry>
           </row>
           <row>
@@ -150,20 +149,6 @@
             </entry>
             <entry>
               <para>-- todo --</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>VOSQLClasses</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC(System.Int32)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
             </entry>
           </row>
           <row>
@@ -237,7 +222,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to display connection error messages.
+            返回并可选择更改设置，该设置确定是否显示连接错误消息。
         </para>
             </entry>
           </row>
@@ -252,7 +237,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to display connection error messages.
+            返回并可选择更改设置，该设置确定是否显示连接错误消息。
         </para>
             </entry>
           </row>
@@ -295,7 +280,7 @@
             </entry>
             <entry>
               <para>
-            Disconnect the ODBC data source.
+            断开 ODBC 数据源。
         </para>
             </entry>
           </row>
@@ -325,7 +310,7 @@
             </entry>
             <entry>
               <para>
-            Identify the available ODBC data sources.
+            识别可用的 ODBC 数据源。
         </para>
             </entry>
           </row>
@@ -340,7 +325,7 @@
             </entry>
             <entry>
               <para>
-            Identify the available ODBC data sources.
+            识别可用的 ODBC 数据源。
         </para>
             </entry>
           </row>
@@ -355,7 +340,7 @@
             </entry>
             <entry>
               <para>
-            Connect to the ODBC source specified.
+            连接到指定的 ODBC 源。
         </para>
             </entry>
           </row>
@@ -397,7 +382,7 @@
               </para>
             </entry>
             <entry>
-              <para>Helper function to determine if an ODBC type is Binary</para>
+              <para>辅助函数，用于确定 ODBC 类型是否为二进制</para>
             </entry>
           </row>
           <row>
@@ -410,7 +395,7 @@
               </para>
             </entry>
             <entry>
-              <para>Helper function to determine if an ODBC type is Character</para>
+              <para>辅助函数，用于确定 ODBC 类型是否为字符</para>
             </entry>
           </row>
           <row>
@@ -423,7 +408,7 @@
               </para>
             </entry>
             <entry>
-              <para>Helper function to determine if an ODBC type is Long (BLOB, MEMO etc)</para>
+              <para>辅助函数，用于确定 ODBC 类型是否为长（BLOB，MEMO 等）</para>
             </entry>
           </row>
           <row>
@@ -452,22 +437,8 @@
             </entry>
             <entry>
               <para>
-            Connect to a list of ODBC sources.
+            连接到 ODBC 源列表。
         </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlParameters(System.Int32,System.Object)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
             </entry>
           </row>
           <row>
@@ -511,7 +482,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default SQL connection.
+            返回并可选地更改默认的 SQL 连接。
         </para>
             </entry>
           </row>
@@ -526,7 +497,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default SQL connection.
+            返回并可选地更改默认的 SQL 连接。
         </para>
             </entry>
           </row>
@@ -572,7 +543,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default concurrency mode for SQLSelect objects
+            返回并可选地更改 SQLSelect 对象的默认并发模式
         </para>
             </entry>
           </row>
@@ -587,7 +558,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default cursor type used by for SQLSelect objects
+            返回并可选地更改 SQLSelect 对象的默认游标类型
         </para>
             </entry>
           </row>
@@ -602,7 +573,7 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default cursor simulation mode used by for SQLSelect objects
+            返回并可选地更改 SQLSelect 对象的默认游标模拟模式
         </para>
             </entry>
           </row>
@@ -634,20 +605,6 @@
               <para>
             Stores the names of tables in a data source to a X# cursor.
         </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VOSQLClasses</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLThrowOutOfMemoryError</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
             </entry>
           </row>
         </table>

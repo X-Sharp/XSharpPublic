@@ -26,7 +26,7 @@ DEFINE MISSING_RECNO := 0xFFFFFFFF AS DWORD
 BEGIN NAMESPACE XSharp.RDD
     // Inherits all standard DBF and Memo behavior
     // Only adds Order Handling
-    /// <summary>DBFCDX RDD. For DBF/FPT/CDX.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBFCDX/*" />
     [DebuggerDisplay("DBFCDX ({Alias,nq})")];
     CLASS DBFCDX INHERIT DBFFPT
         INTERNAL _indexList  AS CdxOrderBagList

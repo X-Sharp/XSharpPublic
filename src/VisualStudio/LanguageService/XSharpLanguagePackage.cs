@@ -21,6 +21,7 @@ using System.Threading;
 using XSharp.LanguageService.OptionsPages;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 #if DEV17
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Threading;
@@ -226,12 +227,12 @@ namespace XSharp.LanguageService
             options.WriteToRegistry();
             return;
         }
-        
+
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
-            LanguageServiceEvents.Start();
+            Logger.Initialize();
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -248,6 +249,7 @@ namespace XSharp.LanguageService
             XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this;
+
 #if DEV17
             RegisterLanguageService(typeof(XSharpLanguageService), async cToken =>
             {
@@ -295,11 +297,10 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings(true);
             Commands.AbstractCommand.InitializeCommands();
-            XSettings.ShellLink = new XSharpShellLink();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
-            StartLogging();
         }
+
 
         protected override void Dispose(bool disposing)
         {
@@ -443,19 +444,6 @@ namespace XSharp.LanguageService
         }
         #endregion
 
-        public void StartLogging()
-        {
-            int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
-            int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
-
-            XSettings.EnableFileLogging = FileLogging != 0;
-            XSettings.EnableDebugLogging = DebugLogging != 0;
-            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
-                Logger.Start();
-            else
-                Logger.Stop();
-
-        }
     }
-    
+
 }

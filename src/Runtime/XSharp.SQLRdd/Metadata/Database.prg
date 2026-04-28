@@ -21,7 +21,6 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 /// It uses the following tables (when they exist)
 /// - xs_tableInfo
 /// - xs_indexInfo
-/// - xs_defaults
 /// </remarks>
 CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
 internal class MetaFieldInfo
@@ -61,13 +60,12 @@ end class
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0},_connection:LongFieldNames})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0},_connection:AllowUpdates})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdateAllColumns),"L", 1,0},_connection:UpdateAllColumns})
-            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0},_connection:MaxRecords})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.PageSize),"N", 10,0},_connection:PageSize})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.BufferSize),"N", 10,0},_connection:BufferSize})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0},_connection:RecnoColumn})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
-            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0},_connection:MaxRecnoAsRecCount})
-            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0},_connection:SeekReturnsSubset})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
@@ -87,6 +85,7 @@ end class
             _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0},DEFAULT_EXPRESSION})
             _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0},DEFAULT_CONDITION})
             _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0},DEFAULT_UNIQUE})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Descending)   ,"L", 1,0},DEFAULT_DESCENDING})
         endif
         RETURN _indexcols
     END METHOD
@@ -238,54 +237,40 @@ end class
     end method
 
     PRIVATE METHOD ReadDefaults() AS VOID
-        if ! hasDefaults
-            using var cmd := SqlDbCommand{"ReadDefaults", Connection, false}
-            // Check if the table dictionary exists
-            IF !Connection:DoesTableExist(TableDictionary)
+        if hasDefaults
+            RETURN
+        ENDIF
+
+        using var cmd := SqlDbCommand{"ReadDefaults", Connection, false}
+        // Check if the table dictionary exists
+        IF !Connection:DoesTableExist(TableDictionary)
+            SELF:CreateDictionary()
+        ELSEIF !Connection:DoesTableExist(IndexDictionary)
+            SELF:CreateDictionary()
+        ELSE
+            // Check if the table dictionary has at least one record
+            cmd:CommandText := i"SELECT COUNT(*) FROM {tableDict}"
+            var count := cmd:ExecuteScalar()
+            if Convert.ToInt64(count) == 0
                 SELF:CreateDictionary()
-            ELSEIF !Connection:DoesTableExist(IndexDictionary)
-                SELF:CreateDictionary()
-            ELSE
-                // Check if the table dictionary has at least one record
-                cmd:CommandText := i"SELECT COUNT(*) FROM {tableDict}"
-                var count := cmd:ExecuteScalar()
-                if Convert.ToInt64(count) == 0
-                    SELF:CreateDictionary()
-                endif
-                // Check new MaxRecnoAsRecCount field
-                cmd:CommandText := i"Select maxrecnoasreccount from {tableDict}"
-                local ok := false as logic
+            endif
+            // Check new bufferSize field
+            cmd:CommandText := i"Select bufferSize from {tableDict}"
+            local ok := false as logic
 
+            ok := cmd:ExecuteNonQuery(tableDict)
+            if ! ok
+                var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.BufferSize),"N", 10,0}
+                var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
+                cmd:CommandText := i"alter table {tableDict} add "+colInfo
                 ok := cmd:ExecuteNonQuery(tableDict)
-                if ! ok
-                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0}
-                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
-                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
+                if ok
+                    colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
+                    cmd:CommandText := i"update {tableDict} set "+colInfo+" = 1"
                     ok := cmd:ExecuteNonQuery(tableDict)
-                    if ok
-                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
-                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:FalseLiteral
-                        ok := cmd:ExecuteNonQuery(tableDict)
-                    endif
                 endif
+            endif
 
-                // Check new SeekReturnsSubset field
-
-                cmd:CommandText := i"Select seekreturnssubset from {tableDict}"
-
-                ok := cmd:ExecuteNonQuery(tableDict)
-                if ! ok
-                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0}
-                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
-                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
-                    ok := cmd:ExecuteNonQuery(tableDict)
-                    if ok
-                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
-                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:TrueLiteral
-                        ok := cmd:ExecuteNonQuery(tableDict)
-                    endif
-                endif
-            ENDIF
             // Read the defaults from the database
             cmd:AddParameter("@p1",DefaultSection)
             cmd:CommandText := i"SELECT * FROM {tableDict} WHERE {nameof(TableName)} = @p1"
@@ -297,7 +282,8 @@ end class
                 rdr:Close()
             endif
             hasDefaults := TRUE
-        endif
+        ENDIF
+
         return
     end method
 
@@ -576,5 +562,5 @@ end class
     INTERNAL CONST Ordinal           := nameof(Ordinal) as string
 #endregion
 END CLASS
+END NAMESPACE
 
-END NAMESPACE // XSharp.SQLRdd.Metadata

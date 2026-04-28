@@ -1087,7 +1087,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     && this.Compilation.Options.HasOption(CompilerOption.NullStrings, associatedSyntaxNode))
                 {
                     initializerOpt = BindPossibleArrayInitializer(
-                        SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), 
+                        SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")),
                         declTypeOpt.Type, valueKind, BindingDiagnosticBag.GetInstance());
                     initializerOpt.WasCompilerGenerated = true;
                 }
@@ -1534,7 +1534,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 #if XSHARP
                 XsCheckPsz2String(node, op1, diagnostics);
-                if (Compilation.Options.HasOption(CompilerOption.FoxArraySupport, node))
+                bool foxArrayParameter = op2 is BoundCall bc && bc.Method != null && bc.Method.HasFoxArrayParameter(out var _);
+                if (!foxArrayParameter && Compilation.Options.HasOption(CompilerOption.FoxArraySupport, node))
                 {
                     // convert op2 to methodcall __FoxAssign(op1, op2)
                     op2 = XsBindFoxArrayAssign(node, op1, op2, diagnostics);
@@ -1859,7 +1860,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (propertySymbol is XsVariableSymbol)
             {
                 sourcePropertyDefinition = null;
-                return true; // X# variables are always auto-properties 
+                return true; // X# variables are always auto-properties
             }
 #endif
             sourcePropertyDefinition = null;
@@ -3254,7 +3255,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 conversion = Conversion.ImplicitNumeric;
             }
-            
+
 #endif
 
             if (!argument.HasAnyErrors || argument.Kind == BoundKind.UnboundLambda)
@@ -3652,7 +3653,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 IndexerDeclarationSyntax => MessageID.IDS_FeatureExpressionBodiedIndexer,
                 PropertyDeclarationSyntax => MessageID.IDS_FeatureExpressionBodiedProperty,
                 // No need to check if expression bodies are allowed if we have a local function. Local functions
-                // themselves are checked for availability, and if they are available then expression bodies must 
+                // themselves are checked for availability, and if they are available then expression bodies must
                 // also be available.
                 LocalFunctionStatementSyntax => (MessageID?)null,
                 // null in speculative scenarios.
@@ -4162,7 +4163,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         /// <summary>
         /// If this binder owns the scope that can declare extern aliases, a set of declared aliases should be returned (even if empty).
-        /// Otherwise, a default instance should be returned. 
+        /// Otherwise, a default instance should be returned.
         /// </summary>
         internal virtual ImmutableArray<AliasAndExternAliasDirective> ExternAliases
         {
@@ -4174,7 +4175,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         /// <summary>
         /// If this binder owns the scope that can declare using aliases, a set of declared aliases should be returned (even if empty).
-        /// Otherwise, a default instance should be returned. 
+        /// Otherwise, a default instance should be returned.
         /// Note, only aliases syntactically declared within the enclosing declaration are included. For example, global aliases
         /// declared in a different compilation units are not included.
         /// </summary>

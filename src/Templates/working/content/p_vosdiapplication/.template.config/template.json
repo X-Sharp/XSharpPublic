@@ -1,17 +1,17 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [
+  "author": "XSharp",
+  "classifications": [
     "Windows",
     "Desktop",
     "VO"
   ],
-  "Identity": "XSharp.VOSDIApplication.SDK",
-  "Name": "VO SDI Application (SDK)",
+  "identity": "XSharp.VOSDIApplication.SDK",
+  "name": "VO SDI Application (SDK)",
   "description": "A SDK Style project for creating a VO SDI application in the VO Dialect.",
   "SourceName": "XSharp.VOSDIApplication",
-  "ShortName": "xsvosdiapplication",
-  "Tags": {
+  "shortName": "xsvosdiapplication",
+  "tags": {
     "language": "X#",
     "type": "project",
     "icon": "template.png",

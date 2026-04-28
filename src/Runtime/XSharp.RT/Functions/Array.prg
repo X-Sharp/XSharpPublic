@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -335,8 +335,7 @@ FUNCTION ArrayCreate(dwElements AS DWORD) AS ARRAY
     RETURN __Array{dwElements, TRUE}
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayCreate_T_/*" />
 FUNCTION ArrayCreate<T>(dwElements AS DWORD) AS __ArrayBase<T>
     RETURN __ArrayBase<T>{dwElements,TRUE}
 
@@ -356,14 +355,13 @@ FUNCTION ArrayInit(wElements AS DWORD, avalues REF USUAL[]) AS ARRAY
     NEXT
     RETURN aTemp
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
 
+    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
 FUNCTION AAdd(aTarget AS ARRAY,uNewElement IN USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN AAdd<USUAL>(aTarget, uNewElement)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AAdd_T_/*" />
 FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T
     ARRAYNOTNULL aTarget
     aTarget:Add(uNewElement)
@@ -375,8 +373,7 @@ FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL, nElement as DWORD) AS USUAL
     RETURN AAdd<USUAL>(aTarget, uNewElement, nElement)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AAdd_T_/*" />
 FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T, nElement as DWORD) AS T
     ARRAYNOTNULL aTarget
     aTarget:Resize((int) aTarget:Length+1)
@@ -391,8 +388,7 @@ FUNCTION AClone(aSource AS ARRAY) AS ARRAY
     END IF
     RETURN (ARRAY) aSource:Clone()
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AClone_T_/*" />
 FUNCTION AClone<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T>
     IF aSource == NULL
         RETURN aSource
@@ -407,8 +403,7 @@ FUNCTION ACloneShallow(aSource AS ARRAY) AS ARRAY
     END IF
     RETURN (ARRAY) aSource:CloneShallow()
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ACloneShallow_T_/*" />
 FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T>
     IF aSource == NULL
         RETURN aSource
@@ -430,8 +425,7 @@ FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ADel_T_/*" />
 FUNCTION ADel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T>
     ARRAYNOTNULL aTarget
     aTarget:Delete((INT) dwPosition)
@@ -444,16 +438,13 @@ FUNCTION ATrueDel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     aTarget:RemoveAt((INT) dwPosition)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ATrueDel_T_/*" />
 FUNCTION ATrueDel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T>
     ARRAYNOTNULL aTarget
     aTarget:RemoveAt((INT) dwPosition)
     RETURN aTarget
 
-    /// <summary>Calculate the # of dimensions in an array</summary>
-        /// <param name="a"></param>
-    /// <returns>Number of dimensions in an array</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ADim/*" />
 FUNCTION ADim(a AS ARRAY) AS DWORD
     LOCAL dwDims AS DWORD
     dwDims := 1
@@ -471,9 +462,7 @@ FUNCTION ADim(a AS ARRAY) AS DWORD
     ENDDO
     RETURN dwDims
 
-    /// <summary>Calculate a string that represents the dimensions in an array</summary>
-        /// <param name="a"></param>
-    /// <returns>String that displays the dimensions in an array</returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ADimPic/*" />
 FUNCTION ADimPic(a AS ARRAY) AS STRING
 RETURN Repl("[]", ADim(a))
 
@@ -493,15 +482,13 @@ FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     aTarget:Insert((INT) dwPosition)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AIns_T_/*" />
 FUNCTION AIns<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T>
     ARRAYNOTNULL aTarget
     aTarget:Insert((INT) dwPosition)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ALen_T_/*" />
 FUNCTION ALen<T>(aTarget AS __ArrayBase<T>) AS DWORD
     IF aTarget != NULL
         RETURN aTarget:Length
@@ -522,8 +509,7 @@ FUNCTION ALen(aTarget AS ARRAY) AS DWORD
     ENDIF
     RETURN aTarget:Length
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayDeProtect_T_/*" />
 FUNCTION ArrayDeProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(FALSE)
@@ -539,8 +525,7 @@ FUNCTION ArrayGet(aTarget AS ARRAY,dwElement AS DWORD) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN aTarget:__GetElement( (INT) dwElement-1)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayGet_T_/*" />
 FUNCTION ArrayGet<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD) AS T
     ARRAYNOTNULL aTarget
     RETURN aTarget:__GetElement( (INT) dwElement-1)
@@ -551,15 +536,13 @@ FUNCTION ArrayProtect(aTarget AS ARRAY) AS LOGIC
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(TRUE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayProtect_T_/*" />
 FUNCTION ArrayProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(TRUE)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayPut_T_/*" />
 FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) AS T
     ARRAYNOTNULL aTarget
     aTarget:__SetElement(uValue, (INT)dwElement -1)
@@ -584,8 +567,7 @@ FUNCTION ArrayStore(aSource AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
     NEXT
     RETURN dwLen
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayStore_T_/*" />
 FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD
     ARRAYNOTNULL aSource
     LOCAL i, nLen AS DWORD
@@ -602,8 +584,7 @@ FUNCTION ArraySwap(aTarget AS ARRAY,dwElement AS DWORD,uNewValue IN USUAL) AS US
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArraySwap_T_/*" />
 FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS T) AS T
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
@@ -655,44 +636,36 @@ FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch IN USUAL) AS DWORD
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, TRUE )
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AScan_T_/*" />
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch,1, (INT) aTarget:Length)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
-    /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AScan_T_/*" />
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act,1, (INT) aTarget:Length)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AScan_T_/*" />
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
-    /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AScan_T_/*" />
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1)
 
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AScan_T_/*" />
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AScan_T_/*" />
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, nCount)
@@ -704,8 +677,7 @@ FUNCTION ASize(aTarget AS ARRAY,dwLength AS DWORD) AS ARRAY
     aTarget:Resize((INT) dwLength)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ASize_T_/*" />
 FUNCTION ASize<T>(aTarget AS __ArrayBase<T>,dwLength AS DWORD) AS __ArrayBase<T>
     ARRAYNOTNULL aTarget
     aTarget:Resize((INT) dwLength)
@@ -717,8 +689,7 @@ FUNCTION ATail(aTarget AS ARRAY) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN aTarget:Tail()
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ATail_T_/*" />
 FUNCTION ATail<T>(aTarget AS __ArrayBase<T>) AS T
     ARRAYNOTNULL aTarget
     RETURN aTarget:Tail()
@@ -856,14 +827,12 @@ FUNCTION @@Array(wElementList PARAMS USUAL[]) AS ARRAY
     RETURN ArrayNew(wElementList)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />
-/// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayNew_T_/*" />
 FUNCTION ArrayNew<T>(wElementList AS DWORD) AS __ArrayBase<T>
     RETURN __ArrayBase<T>{wElementList}
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ArrayNew_T_/*" />
 FUNCTION ArrayNew<T>(wElementList AS INT) AS __ArrayBase<T>
     RETURN __ArrayBase<T>{(DWORD) wElementList}
 
@@ -1003,16 +972,14 @@ internal structure ArraySortComparer<T>  IMPLEMENTS System.Collections.Generic.I
         endif
 end structure
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ASort_T_/*" />
 FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T>
     ARRAYNULL aTarget
     aTarget:Sort( nStart, nCount, ArraySortComparer<T> { cbOrder } )
     RETURN aTarget
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/ASort_T_/*" />
 FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T>
     ARRAYNULL aTarget
     aTarget:Sort( ArraySortComparer<T> { cbOrder } )
@@ -1031,8 +998,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD
     RETURN AEval(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AEval_T_/*" />
 FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD,nCount  AS DWORD) AS __ArrayBase<T>
     ARRAYNULL aArray
     LOCAL nEnd AS DWORD
@@ -1091,22 +1057,19 @@ FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEvalA")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,nCount , TRUE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AEvalA_T_/*" />
 FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>) AS __ArrayBase<T>
     ARRAYNULL aArray
     RETURN AEvalA(aArray, cbBlock, 1, ALen(aArray))
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AEvalA_T_/*" />
 FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD) AS __ArrayBase<T>
     ARRAYNULL aArray
     RETURN AEvalA(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="XSharp.RT.Docs.xml" path="doc/AEvalA_T_/*" />
 FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD, nCount AS DWORD) AS __ArrayBase<T>
     ARRAYNULL aArray
     LOCAL nEnd  AS DWORD

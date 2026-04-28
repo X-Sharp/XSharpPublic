@@ -14,24 +14,31 @@ Copyright (C) XSharp BV. All rights reserved.
   <PropertyGroup>
     <!-- Make sure these items are excluded by the SDK props and targets -->
     <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
-	<AppXamlFiles>**\App.xaml</AppXamlFiles>
-	<!-- App.xaml files need special item type ApplicationDefinition, so exclude these as well -->
-	<DefaultItemExcludes>$(VOBinaryFiles);$(AppXamlFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
+    <AppXamlFiles>**\App.xaml</AppXamlFiles>
+    <HeaderFiles>**\*.vh;**\*.xh</HeaderFiles>
+    <!-- App.xaml files need special item type ApplicationDefinition, so exclude these as well -->
+    <DefaultItemExcludes>$(VOBinaryFiles);$(AppXamlFiles);$(HeaderFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
   </PropertyGroup>
+  
   <ItemGroup>
-     <!-- App.xaml files need special item type ApplicationDefinition -->
+    <!-- App.xaml files need special item type ApplicationDefinition -->
     <ApplicationDefinition Include="$(AppXamlFiles)">
-	    <Generator>MSBuild:Compile</Generator>
-	</ApplicationDefinition>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
     <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
-	<VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+    <VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </VOBinary>
     <NativeResource Include="**/*.rc" >
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\.rc$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </NativeResource >
+	<Compile Include="**/*.xaml.prg"  KeepDuplicates="false" >
+	   <!-- .xaml.prg can depend on xaml -->
+      <ParentXamlName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.xaml.prg$', '.xaml', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentXamlName>
+      <DependentUpon Condition="Exists('%(ParentXamlName)')">%(ParentXamlName)</DependentUpon>
+	</Compile>
     <Compile Include="**/*.designer.prg"  KeepDuplicates="false" >
       <!-- Designer.prg can depend on prg, resx or settings -->
       <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
@@ -42,10 +49,15 @@ Copyright (C) XSharp BV. All rights reserved.
       <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
     </Compile>
     <EmbeddedResource Include="**/*.resx"   KeepDuplicates="false">
-      <!-- This handles form.resx that depends on form.prg -->
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.resx$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <!-- This handles .resx that depends on a prg -->
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </EmbeddedResource>
+    <None Include="$(HeaderFiles)"  KeepDuplicates="false">
+      <!-- This handles header files that depend on a prg -->
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </None>
   </ItemGroup>
   <!-- Implicit imports -->
   <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">

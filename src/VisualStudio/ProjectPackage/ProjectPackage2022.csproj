@@ -181,10 +181,13 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
+    <Compile Include="NodesSDK\DependenciesContainer.cs" />
+    <Compile Include="NodesSDK\FolderNodes.cs" />
+    <Compile Include="NodesSDK\ReferenceNodes.cs" />
+    <Compile Include="NodesSDK\SdkProjectNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
-    <Compile Include="Nodes\XSharpSdkProjectNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
@@ -714,6 +717,12 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\Support\Support2022.csproj">
+      <Project>{fb387be5-a620-46ea-a7a6-1ccb9177f7c1}</Project>
+      <Name>Support2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>
@@ -759,10 +768,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.549</Version>
+      <Version>17.0.551</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
-      <Version>16.0.29.6</Version>
+      <Version>16.0.29.14</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -814,7 +823,7 @@
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
-      <Version>10.0.2</Version>
+      <Version>10.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>all</IncludeAssets>
@@ -824,7 +833,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>9.0.0</Version>
+      <Version>9.0.14</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

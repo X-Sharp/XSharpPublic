@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -187,7 +188,7 @@ namespace XSharp.LanguageService
             }
             return _document;
         }
-        internal async Task<XSharpLineKeywords> GetKeywordsAsync()
+        internal async Task<XSharpLineKeywords> GetLineKeywordsAsync()
         {
             try
             {
@@ -609,6 +610,7 @@ namespace XSharp.LanguageService
                                 break;
                             case XSharpLexer.TEXT_STRING_CONST:
                                 type = xsharpTextType;
+                                _lineState.SetFlags(token.Line, LineFlags.TextBlock);
                                 break;
                             case XSharpLexer.FALSE_CONST:
                             case XSharpLexer.TRUE_CONST:

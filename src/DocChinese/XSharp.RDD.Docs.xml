@@ -1,0 +1,905 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <ACE>
+        <summary>
+        ACE 类包含来自 ACE API 的所有常量和函数 <br/>
+        请参阅 ADS 文档以获取有关函数和常量的更多信息。
+        <note type="tip">
+        有 32 位 API 和 64 位 API。ACE 类会自动分派到正确版本的 API。
+        </note>
+        </summary>
+        <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
+    </ACE>
+    <AceError>
+        <summary>可能的 Advantage 错误代码列表</summary>
+    </AceError>
+    <AceTrigEvent>
+        <summary>可能的触发器事件代码列表</summary>
+    </AceTrigEvent>
+    <AceTrigOptions>
+        <summary>可能的触发器选项代码列表</summary>
+    </AceTrigOptions>
+    <AceTrigType>
+        <summary>可能的触发器类型代码列表</summary>
+    </AceTrigType>
+    <ACEUNPUB>
+        <summary>
+        ACEUNPUB 类包含来自 ACE API 的未公开常量和函数
+        <note type="tip">
+        有 32 位 API 和 64 位 API。
+        ACEUNPUB 类会自动分派到正确版本的 API。
+        </note>
+        </summary>
+        <seealso cref="T:XSharp.ADS.ACE"/>
+    </ACEUNPUB>
+    <AceValidate>
+        <summary>可能的验证代码列表</summary>
+    </AceValidate>
+    <ADS_MGMT_ACTIVITY_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关服务器活动的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_ACTIVITY_INFO>
+  <ADS_MGMT_COMM_STATS>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关服务器通信统计信息的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_COMM_STATS>
+  <ADS_MGMT_CONFIG_MEMORY>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关服务器内存配置的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_CONFIG_MEMORY>
+  <ADS_MGMT_CONFIG_PARAMS>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关配置参数的信息。 <br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_CONFIG_PARAMS>
+<ADS_MGMT_INDEX_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关索引的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_INDEX_INFO>
+  <ADS_MGMT_INSTALL_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关安装的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_INSTALL_INFO>
+  <ADS_MGMT_RECORD_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关已锁定记录的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_RECORD_INFO>
+  <ADS_MGMT_TABLE_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关表的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_TABLE_INFO>
+  <ADS_MGMT_THREAD_ACTIVITY>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关工作线程的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_THREAD_ACTIVITY>
+  <ADS_MGMT_UPTIME_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关服务器运行时间的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_UPTIME_INFO>
+  <ADS_MGMT_USAGE_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关服务器使用情况的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_USAGE_INFO>
+  <ADS_MGMT_USER_INFO>
+    <summary>
+      ADS MGMT API 使用的结构，用于返回有关用户的信息。<br/>
+      有关此结构的说明，请参阅 ADS 文档。
+    </summary>
+  </ADS_MGMT_USER_INFO>
+  <ADSADT>
+        <summary>此类允许使用 Advantage 驱动程序打开专有的 ADT 格式</summary>
+    </ADSADT>
+    <AdsCharacterColumn>
+        <summary>用于读取/写入字符串列的类</summary>
+    </AdsCharacterColumn>
+    <AdsCharTypes>
+        <summary>
+        可能的字符类型和排序规则列表。 <br/>
+        </summary>
+        <remarks>
+        名称中包含 VFP 的排序规则与 Visual FoxPro 排序规则相匹配。 <br/>
+        名称中的 CI 表示不区分大小写 <br/>
+        名称中的 AS 表示区分重音 <br/>
+        名称中的 BIN 表示二进制 <br/>
+        这些名称与"adscollate.adt"中的条目相匹配
+        </remarks>
+    </AdsCharTypes>
+    <AdsColumn>
+        <summary>用于 Ads 列读取/写入的类</summary>
+    </AdsColumn>
+    <AdsConnect60>
+        <include file="ads.xml" path="functions/ads/*"/>
+        <seealso cref="AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
+    </AdsConnect60>
+    <AdsDateColumn>
+        <summary>用于读取/写入日期列的类</summary>
+    </AdsDateColumn>
+    <AdsError>
+        <summary>
+        AdsRDD 类。
+        </summary>
+    </AdsError>
+    <AdsFieldType>
+        <summary>可能的字段类型列表。</summary>
+    </AdsFieldType>
+    <AdsFieldType.AUTOINC>
+        <summary>4 字节自动递增值</summary>
+    </AdsFieldType.AUTOINC>
+    <AdsFieldType.BINARY>
+        <summary>BLOB - 任意数据</summary>
+    </AdsFieldType.BINARY>
+    <AdsFieldType.CISTRING>
+        <summary>不区分大小写的字符数据</summary>
+    </AdsFieldType.CISTRING>
+    <AdsFieldType.COMPACTDATE>
+        <summary>用 3 个字节表示的 DBF 日期</summary>
+    </AdsFieldType.COMPACTDATE>
+    <AdsFieldType.CURDOUBLE>
+        <summary>IEEE 8 字节浮点货币类型</summary>
+    </AdsFieldType.CURDOUBLE>
+    <AdsFieldType.DATE>
+        <summary>日期字段。</summary>
+    </AdsFieldType.DATE>
+    <AdsFieldType.DOUBLE>
+        <summary>IEEE 8 字节浮点数</summary>
+    </AdsFieldType.DOUBLE>
+    <AdsFieldType.GUID>
+        <summary>16 字节二进制数据</summary>
+    </AdsFieldType.GUID>
+    <AdsFieldType.IMAGE>
+        <summary>BLOB - 位图</summary>
+    </AdsFieldType.IMAGE>
+    <AdsFieldType.INT64>
+        <summary>8 字节整数</summary>
+    </AdsFieldType.INT64>
+    <AdsFieldType.INTEGER>
+        <summary>IEEE 4 字节有符号长整数</summary>
+    </AdsFieldType.INTEGER>
+    <AdsFieldType.LOGICAL>
+        <summary>1 字节逻辑值</summary>
+    </AdsFieldType.LOGICAL>
+    <AdsFieldType.MEMO>
+        <summary>可变长度字符数据</summary>
+    </AdsFieldType.MEMO>
+    <AdsFieldType.MODTIME>
+        <summary>8 字节时间戳，在记录更新时自动更新</summary>
+    </AdsFieldType.MODTIME>
+    <AdsFieldType.MONEY>
+        <summary>8 字节，含 4 位隐含小数的货币字段</summary>
+    </AdsFieldType.MONEY>
+    <AdsFieldType.NCHAR>
+        <summary>Unicode 字符数据</summary>
+    </AdsFieldType.NCHAR>
+    <AdsFieldType.NMEMO>
+        <summary>可变长度 Unicode 数据</summary>
+    </AdsFieldType.NMEMO>
+    <AdsFieldType.NUMERIC>
+        <summary>DBF 字符样式的数值</summary>
+    </AdsFieldType.NUMERIC>
+    <AdsFieldType.NVARCHAR>
+        <summary>未填充的 Unicode 字符数据</summary>
+    </AdsFieldType.NVARCHAR>
+    <AdsFieldType.RAW>
+        <summary>未转换的数据</summary>
+    </AdsFieldType.RAW>
+    <AdsFieldType.ROWVERSION>
+        <summary>8 字节整数，每次更新时递增，在整个表中唯一</summary>
+    </AdsFieldType.ROWVERSION>
+    <AdsFieldType.SHORTINT>
+        <summary>IEEE 2 字节有符号短整数</summary>
+    </AdsFieldType.SHORTINT>
+    <AdsFieldType.STRING>
+        <summary>字符数据</summary>
+    </AdsFieldType.STRING>
+    <AdsFieldType.SYSTEM_FIELD>
+        <summary>供内部使用</summary>
+    </AdsFieldType.SYSTEM_FIELD>
+    <AdsFieldType.TIME>
+        <summary>4 字节长整数，表示自午夜起的毫秒数</summary>
+    </AdsFieldType.TIME>
+    <AdsFieldType.TIMESTAMP>
+        <summary>8 字节。高位 4 字节为表示儒略日期的长整数。低位 4 字节为表示自午夜起毫秒数的长整数</summary>
+    </AdsFieldType.TIMESTAMP>
+    <AdsFieldType.VARBINARY_FOX>
+        <summary>Visual FoxPro varbinary 字段</summary>
+    </AdsFieldType.VARBINARY_FOX>
+    <AdsFieldType.VARCHAR>
+        <summary>可变长度字符字段</summary>
+    </AdsFieldType.VARCHAR>
+    <AdsFieldType.VARCHAR_FOX>
+        <summary>Visual FoxPro varchar 字段</summary>
+    </AdsFieldType.VARCHAR_FOX>
+    <AdsGetErrorMessage>
+        <summary>返回 ADS 操作的最后一条错误消息。</summary>
+        <remarks>必须在错误发生后立即调用此方法。否则错误消息可能已被后续操作重置。</remarks>
+    </AdsGetErrorMessage>
+    <ADSIndex>
+        <summary>Advantage 索引支持。</summary>
+    </ADSIndex>
+    <AdsLogicColumn>
+        <summary>用于读取/写入逻辑列的类</summary>
+    </AdsLogicColumn>
+    <ADSMemo>
+        <summary>Advantage 备注支持。</summary>
+    </ADSMemo>
+  <ADSMemo.CloseMemFile>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.CloseMemFile>
+    <ADSMemo.CreateMemFile>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.CreateMemFile>
+    <ADSMemo.Flush>
+    <summary>AdsMemo 类不支持此方法</summary>
+  </ADSMemo.Flush>
+    <ADSMemo.GetValue>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.GetValue>
+    <ADSMemo.GetValueFile>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.GetValueFile>
+    <ADSMemo.OpenMemFile>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.OpenMemFile>
+    <ADSMemo.PutValue>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.PutValue>
+    <ADSMemo.PutValueFile>
+        <summary>AdsMemo 类不支持此方法</summary>
+    </ADSMemo.PutValueFile>
+  <AdsMemoColumn>
+        <summary>用于读取/写入备注列的类。</summary>
+    </AdsMemoColumn>
+    <AdsNumericColumn>
+        <summary>用于读取/写入数值列的类</summary>
+    </AdsNumericColumn>
+    <ADSRDD>
+    <summary>
+      所有 X# 的 Advantage RDD 继承的 AdsRDD 基类。
+    </summary>
+  </ADSRDD>
+    <ADSRDD.AppendLock>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.AppendLock>
+    <ADSRDD.BlobInfo>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.BlobInfo>
+    <ADSRDD.ctor>
+        <summary>创建 RDD 实例</summary>
+    </ADSRDD.ctor>
+    <ADSRDD.ForceRel>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.ForceRel>
+    <ADSRDD.GetRec>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.GetRec>
+    <ADSRDD.GetValueFile>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.GetValueFile>
+    <ADSRDD.HeaderLock>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.HeaderLock>
+    <ADSRDD.PutRec>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.PutRec>
+    <ADSRDD.PutValueFile>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.PutValueFile>
+    <ADSRDD.Sort>
+        <summary>AdsRDD 类不支持此方法</summary>
+    </ADSRDD.Sort>
+  <AX_AXSLocking>
+        <summary>返回 AXS 锁定状态。</summary>
+        <returns>当前的 Advantage 锁定设置。</returns>
+    </AX_AXSLocking>
+    <AX_AXSLocking_2>
+        <summary>返回并设置 AXS 锁定状态。</summary>
+        <returns>之前的 Advantage 锁定设置。</returns>
+        <param name="bMode">新的 Advantage 锁定设置。</param>
+    </AX_AXSLocking_2>
+    <AX_BLOB2File>
+        <summary>将备注字段中包含的 BLOB 写入文件。</summary>
+        <returns>如果 BLOB 已写入文件则返回 True (.T.)，否则返回 False (.F.)。</returns>
+        <param name="cFileName">要写入的文件名。</param>
+        <param name="cFieldName">要读取的字段名。</param>
+    </AX_BLOB2File>
+    <AX_File2BLOB>
+        <summary>将文件内容存储到备注字段中。</summary>
+        <returns>如果文件内容已复制到备注字段则返回 True (.T.)，否则返回 False (.F.)。</returns>
+        <param name="cFileName">要读取的文件名。</param>
+        <param name="cFieldName">要写入的字段名。</param>
+    </AX_File2BLOB>
+    <AX_GetAceIndexHandle>
+        <summary>返回与当前工作区中指定索引对应的 Advantage 客户端引擎索引句柄。
+        该句柄可用于直接调用任何 Advantage 客户端引擎 API。</summary>
+        <returns>Advantage 客户端引擎索引顺序句柄，如果未找到索引则返回 0。</returns>
+        <param name="uIndexFile">文件名或 NIL</param>
+        <param name="uOrder">顺序名称、编号或 NIL</param>
+    </AX_GetAceIndexHandle>
+    <AX_GetAceStmtHandle>
+        <summary>返回当前工作区的语句句柄。此句柄可用于
+        直接调用 Advantage 客户端引擎。仅用于 AXSQL RDD。</summary>
+        <returns>如果出现问题则返回 0。</returns>
+    </AX_GetAceStmtHandle>
+    <AX_GetAceTableHandle>
+        <summary>返回当前工作区的表句柄。此句柄可用于直接调用 Advantage 客户端引擎。</summary>
+        <returns>如果出现问题则返回 0。</returns>
+    </AX_GetAceTableHandle>
+    <AX_IsServerLoaded>
+        <summary>如果指定位置已加载 Advantage 则返回 .T.。</summary>
+        <remarks>cFileName 必须以驱动器号（"X:\"）或 UNC 路径（"\\server\volume\path\"）开头</remarks>
+        <param name="cFileName">包含要检查的驱动器号或服务器名称的字符串。
+        如果应用程序使用服务器名称作为参数，则还必须包含共享或
+        卷名。例如，使用"\\server\share"或"\\server\vol:"。</param>
+        <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
+    </AX_IsServerLoaded>
+    <AX_PercentIndexed>
+        <summary>表示索引构建完成的百分比</summary>
+    </AX_PercentIndexed>
+    <AX_RightsCheck>
+        <summary>返回 AXS 权限检查状态。</summary>
+    </AX_RightsCheck>
+    <AX_RightsCheck_2>
+        <summary>返回并设置 AXS 权限检查状态。</summary>
+    </AX_RightsCheck_2>
+    <AX_SetCollation>
+        <summary>此函数指定在打开表、打开游标或创建表时使用哪种排序语言。</summary>
+    </AX_SetCollation>
+    <AX_SetConnectionHandle>
+        <summary>设置所有后续表打开操作的连接句柄。</summary>
+        <param name="ptrHandle">由 AdsConnect60 返回的连接句柄</param>
+        <seealso cref="AdsConnect60">AdsConnect60 Function</seealso>
+        <seealso cref="AdsGetLastError">AdsGetLastError FUNCTION</seealso>
+    </AX_SetConnectionHandle>
+    <AX_SetExactKeyPos>
+        <summary>返回精确键位置标志。</summary>
+    </AX_SetExactKeyPos>
+    <AX_SetExactKeyPos_2>
+        <summary>返回并设置精确键位置标志。</summary>
+    </AX_SetExactKeyPos_2>
+    <AX_SetPassword>
+        <summary>设置用于后续加密/解密操作的密码。</summary>
+    </AX_SetPassword>
+    <AX_SetServerType>
+        <summary>确定客户端应用程序可以使用的 Advantage 服务器类型。</summary>
+    </AX_SetServerType>
+    <AX_SetSQLTablePasswords>
+        <summary>设置用于 AXSQL RDD 的加密表的密码。</summary>
+    </AX_SetSQLTablePasswords>
+    <AX_Transaction>
+        <summary>开始、提交、回滚或显示事务状态</summary>
+        <param name="iAction">参数可以是：AX_BEGIN_TRANSACTION、AX_COMMIT_TRANSACTION、AX_ROLLBACK_TRANSACTION、AX_ISACTIVE_TRANSACTION</param>
+        <returns>如果命令成功则返回 True，否则返回 False。</returns>
+    </AX_Transaction>
+    <AX_Transaction_2>
+        <summary>是否有挂起的事务</summary>
+    </AX_Transaction_2>
+    <AX_UsingClientServer>
+        <summary>如果当前工作区使用 Advantage Server 或 AIS Server 则返回 .T.，
+        如果在本地模式下使用 Advantage RDD 则返回 .F.</summary>
+    </AX_UsingClientServer>
+    <AXDBFCDX>
+    <summary>Advantage.AXDBFCDX RDD </summary>
+  </AXDBFCDX>
+  <AXDBFCDX.ctor>
+    <summary>创建 RDD 实例</summary>
+  </AXDBFCDX.ctor>
+  <AXDBFNTX>
+    <summary>Advantage.AXDBFNTX RDD </summary>
+  </AXDBFNTX>
+    <AXDBFNTX.ctor>
+        <summary>创建 RDD 实例</summary>
+    </AXDBFNTX.ctor>
+  <AXDBFVFP>
+    <summary>Advantage.AXDBFVFP RDD </summary>
+  </AXDBFVFP>
+    <AXDBFVFP.ctor>
+        <summary>创建 RDD 实例</summary>
+    </AXDBFVFP.ctor>
+  <AXSQLADT>
+        <summary>此类允许使用 Advantage 驱动程序以 SQL 语法打开专有的 ADT 格式</summary>
+    </AXSQLADT>
+    <AXSQLCDX>
+    <summary>Advantage.AXSQLCDX RDD </summary>
+  </AXSQLCDX>
+    <AXSQLCDX.ctor>
+        <summary>创建 RDD 实例</summary>
+    </AXSQLCDX.ctor>
+  <AXSQLNTX>
+    <summary>Advantage.AXSQLNTX RDD </summary>
+  </AXSQLNTX>
+    <AXSQLNTX.ctor>
+        <summary>创建 RDD 实例</summary>
+    </AXSQLNTX.ctor>
+  <AXSQLRDD>
+    <summary>所有 Advantage SQL RDD 的基类。</summary>
+  </AXSQLRDD>
+    <AXSQLRDD.ctor>
+        <summary>创建 RDD 实例</summary>
+    </AXSQLRDD.ctor>
+    <AXSQLVFP>
+    <summary>Advantage.AXSQLVFP RDD </summary>
+  </AXSQLVFP>
+    <AXSQLVFP.ctor>
+        <summary>创建 RDD 实例</summary>
+    </AXSQLVFP.ctor>
+  <CallbackFn>
+        <summary>某些 Advantage 进度函数使用的委托</summary>
+    </CallbackFn>
+    <CallbackFn101>
+        <summary>某些 Advantage 进度函数使用的委托</summary>
+    </CallbackFn101>
+    <CdxBranchPage>
+    <summary>
+      此类将文件中的分支页映射到内存中
+      页面操作在 CdxTag 类中实现
+    </summary>
+  </CdxBranchPage>
+  <CdxFileHeader>
+        <summary>
+        CdxHeader 类。= 将文件头映射到内存的类
+        相关逻辑在 OrderBag 类中
+        </summary>
+        <remarks>
+        文件中的第一页是文件头（Bag 头）。|
+        键长度固定为 10（即标签长度）
+        文件头的根页面指向标签列表（这是一个叶页面）
+        空闲页面指向 BAG 级别的空闲页面列表。
+        </remarks>
+    </CdxFileHeader>
+    <CdxGeneralPage>
+        <summary>
+        CdxLeaf 页面。此类将文件中的叶页面映射到内存中
+        页面操作在 CdxTag 类中实现
+        </summary>
+    </CdxGeneralPage>
+    <CdxLeafPage>
+        <summary>
+        CdxLeaf 页面。此类将文件中的叶页面映射到内存中
+        页面操作在 CdxTag 类中实现
+        </summary>
+    </CdxLeafPage>
+  <CdxNode>
+    <summary>
+      CdxNode 类。
+      每个条目的大小为：8 + 键大小（最后一个条目不包含键值，只有指向子树的指针。）
+      条目的结构为
+      long page_offset - 子树所在的文件偏移量（在 ntx 文件中）。如果没有子树，则存储 0。
+      long recno       - 此键值的记录编号（在 dbf 文件中）
+      char key_value[key_size]
+    </summary>
+  </CdxNode>
+    <CdxOrderBag>
+    <summary>
+      Orderbag = CDX 文件。包含一个或多个顺序 = 标签
+    </summary>
+  </CdxOrderBag>
+    <CdxOrderBagList>
+        <summary>
+        OrderBag 列表（Orderbag = CDX 文件）
+        </summary>
+    </CdxOrderBagList>
+  <CdxPage>
+        <summary>
+        CdxPageBase 类。
+        </summary>
+    </CdxPage>
+    <CdxPageList>
+    <summary>
+      pageList 类。
+    </summary>
+  </CdxPageList>
+    <CdxTag._indexedFields>
+        <summary>为索引表达式求值的字段列表</summary>
+    </CdxTag._indexedFields>
+  <CdxTag._NullableKey>
+        <summary>索引是否可为空（一个或多个字段可为空）</summary>
+    </CdxTag._NullableKey>
+    <CdxTag._SingleField>
+        <summary>从 0 开始的字段索引</summary>
+    </CdxTag._SingleField>
+    <CdxTag._SourceIndex>
+        <summary>单字段索引在缓冲区中的起始位置</summary>
+    </CdxTag._SourceIndex>
+    <CdxTagHeader>
+        <summary>
+        CdxTagHeader 类。= 将标签头映射到内存的类
+        相关逻辑在 CdxTag 类中
+        </summary>
+    </CdxTagHeader>
+    <CdxTagList>
+        <summary>
+        CdxTagList 类是一种特殊的 CdxLeaf。其 NodeAttribute 必须为 Root + Leaf = TagList
+        </summary>
+    </CdxTagList>
+    <CdxTreePage>
+    CDX 树页面的基类，包括分支页面和叶页面。
+  </CdxTreePage>
+  <CSV>
+    <summary>CSV RDD。用于读取和写入分号分隔的文件。</summary>
+  </CSV>
+  <DBF>
+    <summary>DBF RDD。通常不单独使用</summary>
+  </DBF>
+  <DBF.AddField>
+        <summary>
+        向 _Fields 列表添加一个字段。字段按方法调用的顺序添加
+        </summary>
+        <inheritdoc/>
+    </DBF.AddField>
+    <DBF.IsHot>
+        <summary>当前行是否已修改</summary>
+    </DBF.IsHot>
+    <DBF.IsNewRecord>
+        <summary>当前行是否为新记录（Append() 的结果）</summary>
+    </DBF.IsNewRecord>
+    <DbfAutoIncrementColumn>
+        <summary>用于读取/写入自动递增列的类。</summary>
+    </DbfAutoIncrementColumn>
+    <DbfAutoIncrementColumn.Read>
+        <summary>从 DBF 头读取下一个自动递增编号</summary>
+    </DbfAutoIncrementColumn.Read>
+    <DbfAutoIncrementColumn.Write>
+        <summary>将下一个自动递增编号写入 DBF 头</summary>
+    </DbfAutoIncrementColumn.Write>
+    <DBFAXSAdsBeginTransaction>
+        <summary>为所有已连接的服务器或指定服务器开始一个事务。</summary>
+    </DBFAXSAdsBeginTransaction>
+    <DBFAXSAdsBinaryToFile>
+        <summary>从指定字段检索二进制对象并将其存储在指定文件中。</summary>
+    </DBFAXSAdsBinaryToFile>
+    <DBFAXSAdsCommitTransaction>
+        <summary>提交指定连接上的活动事务。</summary>
+    </DBFAXSAdsCommitTransaction>
+    <DBFAXSAdsDisableEncryption>
+        <summary>关闭 Advantage 加密</summary>
+    </DBFAXSAdsDisableEncryption>
+    <DBFAXSAdsEnableEncryption>
+        <summary>开启 Advantage 加密</summary>
+    </DBFAXSAdsEnableEncryption>
+    <DBFAXSAdsFileToBinary>
+        <summary>将指定文件的内容作为二进制对象存储在指定字段中。</summary>
+    </DBFAXSAdsFileToBinary>
+    <DBFAXSAdsFindConnection>
+        <summary>查找与服务器名称关联的连接句柄。</summary>
+    </DBFAXSAdsFindConnection>
+    <DBFAXSAdsGetConnectionType>
+        <summary>返回连接所使用的 Advantage 数据库服务器的类型。</summary>
+    </DBFAXSAdsGetConnectionType>
+    <DBFAXSAdsInTransaction>
+        <summary>向调用者返回一个标志，指示给定连接是否有活动事务。</summary>
+    </DBFAXSAdsInTransaction>
+    <DBFAXSAdsIsServerLoaded>
+        <summary>确定 Advantage 服务器是否可用。</summary>
+    </DBFAXSAdsIsServerLoaded>
+    <DBFAXSAdsRollbackTransaction>
+        <summary>回滚指定连接上的活动事务。</summary>
+    </DBFAXSAdsRollbackTransaction>
+    <DBFAXSAdsSetServerType>
+        <summary>控制客户端应用程序可以连接的 Advantage 数据库服务器类型。</summary>
+    </DBFAXSAdsSetServerType>
+    <DBFBLOB>
+    <summary>DBFFPT RDD。用于 DBF/FPT。此级别不支持索引</summary>
+  </DBFBLOB>
+  <DBFCDX>
+    <summary>DBFCDX RDD。用于 DBF/FPT/CDX。</summary>
+  </DBFCDX>
+  <DbfCharacterColumn>
+        <summary>用于读取/写入字符串列的类</summary>
+    </DbfCharacterColumn>
+    <DbfColumn>
+        <summary>用于 DBF 列读取/写入的类</summary>
+    </DbfColumn>
+    <DbfColumn.Create>
+        <summary>创建 DbfColumn 类，用于创建文件。</summary>
+    </DbfColumn.Create>
+    <DbfColumn.Create_2>
+        <summary>根据 DBF 中的定义创建 DbfColumn 类。用于打开文件。</summary>
+    </DbfColumn.Create_2>
+    <DbfColumn.GetValue>
+        <summary>从缓冲区获取值</summary>
+        <param name="buffer">当前记录的记录缓冲区</param>
+    </DbfColumn.GetValue>
+    <DbfColumn.HandleNullValue>
+        <summary>处理 NULL 值。</summary>
+        <param name="buffer">当前记录的记录缓冲区</param>
+    </DbfColumn.HandleNullValue>
+    <DbfColumn.InitValue>
+        <summary>初始化用于追加的缓冲区。在打开 DBF 时调用一次。</summary>
+    </DbfColumn.InitValue>
+    <DbfColumn.NewRecord>
+        <summary>追加后更新缓冲区。例如用于自动递增或时间戳列。</summary>
+        <param name="buffer">当前记录的记录缓冲区</param>
+    </DbfColumn.NewRecord>
+    <DbfColumn.PutValue>
+        <summary>将值写入缓冲区</summary>
+        <param name="buffer">当前记录的记录缓冲区</param>
+        <param name="oValue">要写入的值。</param>
+    </DbfColumn.PutValue>
+    <DbfCurrencyColumn>
+        <summary>用于读取/写入货币列的类。</summary>
+    </DbfCurrencyColumn>
+    <DbfDateColumn>
+        <summary>用于读取/写入日期列的类</summary>
+    </DbfDateColumn>
+    <DbfDateTimeColumn>
+        <summary>用于读取/写入日期时间列的类。</summary>
+    </DbfDateTimeColumn>
+    <DBFDBT>
+        <summary>DBFDBT RDD。用于 DBF/DBT。此级别不支持索引</summary>
+    </DBFDBT>
+    <DbfDoubleColumn>
+        <summary>用于读取/写入双精度列的类。</summary>
+    </DbfDoubleColumn>
+    <DbfField>
+        <summary>DBF 字段。</summary>
+    </DbfField>
+    <DbfHeader>
+        <summary>DBF 头。</summary>
+    </DbfHeader>
+    <DbfHeader.CodePage>
+        <summary>代码页</summary>
+    </DbfHeader.CodePage>
+    <DbfHeader.ctor>
+        <summary>DBF 版本</summary>
+    </DbfHeader.ctor>
+    <DbfHeader.Day>
+        <summary>最后更新日期的天</summary>
+    </DbfHeader.Day>
+    <DbfHeader.DbaseLan>
+        <summary>dBASE IV LAN 值。</summary>
+    </DbfHeader.DbaseLan>
+    <DbfHeader.Encrypted>
+        <summary>dBASE IV 加密标志。</summary>
+    </DbfHeader.Encrypted>
+    <DbfHeader.HeaderLen>
+        <summary>头中的字节数。（最低有效字节在前。）</summary>
+    </DbfHeader.HeaderLen>
+    <DbfHeader.IsAnsi>
+        <summary>代码页是否为 Ansi 代码页</summary>
+    </DbfHeader.IsAnsi>
+    <DbfHeader.isHot>
+        <summary>热？ =&gt; 头是否已更改？</summary>
+    </DbfHeader.isHot>
+    <DbfHeader.LastUpdate>
+        <summary>最后更新日期。</summary>
+    </DbfHeader.LastUpdate>
+    <DbfHeader.Month>
+        <summary>最后更新日期的月份</summary>
+    </DbfHeader.Month>
+    <DbfHeader.MultiUser>
+        <summary>dBASE IV 多用户值。</summary>
+    </DbfHeader.MultiUser>
+    <DbfHeader.RecCount>
+        <summary>表中的记录数。（最低有效字节在前。）</summary>
+    </DbfHeader.RecCount>
+    <DbfHeader.RecordLen>
+        <summary>一条数据记录的长度，包括删除标志</summary>
+    </DbfHeader.RecordLen>
+    <DbfHeader.Reserved1>
+        <summary>位置 12 处的保留标志</summary>
+    </DbfHeader.Reserved1>
+    <DbfHeader.Reserved2>
+        <summary>位置 24 处的保留标志</summary>
+    </DbfHeader.Reserved2>
+    <DbfHeader.Reserved3>
+        <summary>位置 30 处的保留标志</summary>
+    </DbfHeader.Reserved3>
+    <DbfHeader.TableFlags>
+        <summary>表标志</summary>
+    </DbfHeader.TableFlags>
+    <DbfHeader.Transaction>
+        <summary>指示未完成的 dBASE IV 事务的标志。</summary>
+    </DbfHeader.Transaction>
+    <DbfHeader.Year>
+        <summary>最后更新日期的年份
+        YY 加上基数 1900（十进制）以确定实际年份。
+        因此，YY 的可能值范围为 0x00-0xFF，允许的年份范围为 1900-2155。</summary>
+    </DbfHeader.Year>
+    <DbfHeaderCodepage>
+        <summary>DBF 头代码页编号。</summary>
+    </DbfHeaderCodepage>
+    <DbfIntegerColumn>
+        <summary>用于读取/写入整数列的类。</summary>
+    </DbfIntegerColumn>
+    <DbfLocking>
+        <summary>此结构保存各种锁定模型的设置</summary>
+    </DbfLocking>
+    <DbfLocking.Direction>
+        <summary>锁定方向，用于计算文件锁偏移量和记录锁偏移量</summary>
+    </DbfLocking.Direction>
+    <DbfLocking.FileLockOffSet>
+        <summary>文件锁偏移量</summary>
+    </DbfLocking.FileLockOffSet>
+    <DbfLocking.FileSize>
+        <summary>文件锁的长度</summary>
+    </DbfLocking.FileSize>
+    <DbfLocking.Initialize>
+        <summary>根据锁定模型设置各种数值。</summary>
+    </DbfLocking.Initialize>
+    <DbfLocking.Offset>
+        <summary>锁定的偏移量</summary>
+    </DbfLocking.Offset>
+    <DbfLocking.RecnoOffSet>
+        <summary>计算基于记录号的偏移量</summary>
+    </DbfLocking.RecnoOffSet>
+    <DbfLocking.RecordSize>
+        <summary>记录锁的长度</summary>
+    </DbfLocking.RecordSize>
+    <DbfLockingModel>
+        <summary>DBF 锁定模型。</summary>
+    </DbfLockingModel>
+    <DbfLogicColumn>
+        <summary>用于读取/写入逻辑列的类</summary>
+    </DbfLogicColumn>
+    <DbfMemoColumn>
+        <summary>用于读取/写入备注列的类。此类返回并写入块编号。</summary>
+    </DbfMemoColumn>
+    <DbfMemoColumn.GetValue>
+        <inheritdoc/>
+        <remarks>在此级别，这将返回备注块编号。</remarks>
+    </DbfMemoColumn.GetValue>
+    <DbfMemoColumn.PutValue>
+        <inheritdoc/>
+        <remarks>在此级别，这将写入备注块编号。</remarks>
+    </DbfMemoColumn.PutValue>
+    <DBFNSX>
+        <summary>DBFNSX RDD。用于 DBF/SMT/NSX。</summary>
+    </DBFNSX>
+    <DBFNTX>
+    <summary>DBFNTX RDD。用于 DBF/DBT/NTX。</summary>
+  </DBFNTX>
+  <DbfNullColumn>
+        <summary>用于读取/写入 NULL 值的特殊列的类。</summary>
+    </DbfNullColumn>
+    <DbfNullColumn.GetBit>
+        <summary>从指定位置读取一个位</summary>
+    </DbfNullColumn.GetBit>
+    <DbfNullColumn.SetBit>
+        <summary>在指定位置设置一个位</summary>
+    </DbfNullColumn.SetBit>
+    <DbfNumericColumn>
+        <summary>用于读取/写入数值列的类</summary>
+    </DbfNumericColumn>
+    <DBFSMT>
+        <summary>DBFSMT RDD。用于 DBF/SMT。此级别不支持索引</summary>
+    </DBFSMT>
+    <DBFTableFlags>
+    <summary>DBF 表标志。</summary>
+  </DBFTableFlags>
+  <DBFVersion>
+        <summary>DBF 文件版本。</summary>
+    </DBFVersion>
+    <DBFVFP>
+    <summary>DBFVFP RDD。支持 FoxPro 字段类型的 DBFCDX。</summary>
+  </DBFVFP>
+  <DBFVFPSQL>
+    <summary>DBFVFPSQL RDD。支持 FoxPro 字段类型并以
+    对象值列表作为数据后备集合的 DBFCDX。</summary>
+  </DBFVFPSQL>
+  <DBTMemo>
+    <summary>DBT 备注类。实现 DBT 支持。</summary>
+  </DBTMemo>
+  <DBTMemo._GetExtension>
+        <summary>返回通过 Set.MemoExt 设置的扩展名或默认扩展名</summary>
+    </DBTMemo._GetExtension>
+    <DELIM>
+    <summary>DELIM RDD。用于读取和写入带分隔符的文件。</summary>
+  </DELIM>
+  <ERDD>
+        <summary>通用 RDD 错误编号</summary>
+    </ERDD>
+    <Flex.GetValue>
+    <inheritdoc/>
+    <param name="nFldPos">从 1 开始的字段编号</param>
+  </Flex.GetValue>
+  <Flex.GetValueFile>
+    <inheritdoc/>
+    <param name="nFldPos">从 1 开始的字段编号</param>
+  </Flex.GetValueFile>
+  <Flex.GetValueLength>
+    <inheritdoc/>
+    <param name="nFldPos">从 1 开始的字段编号</param>
+  </Flex.GetValueLength>
+  <Flex.PutValue>
+    <summary>将值写入字段。</summary>
+    <param name="nFldPos">从 1 开始的字段编号</param>
+    <param name="oValue">要写入的数据。应为 BYTE[] 并包含带类型的头</param>
+  </Flex.PutValue>
+  <FlexArea>
+        <summary>FlexArea 类。实现 FTP 支持。</summary>
+    </FlexArea>
+    <FlexArea.DecodeValue>
+        <summary>解码块的内容，包括块头</summary>
+        <param name="bData">包含 8 字节头的原始块</param>
+    </FlexArea.DecodeValue>
+    <FlexArea.EncodeValue>
+        <summary>将值编码为 FTP 块</summary>
+        <param name="oValue">要编码的值。目前允许的类型为 String、Logic 和 byte[]</param>
+        <returns>包含 8 字节头（含块长度和类型）的字节数组</returns>
+    </FlexArea.EncodeValue>
+    <FlexArea.GetBlock>
+        <summary>返回包含 8 字节令牌的块的原始数据</summary>
+    </FlexArea.GetBlock>
+    <FlexArea.PutBlock>
+        <summary>写入一个块。当现有块为 0 或大小不足时，将分配一个新块。</summary>
+        <param name="nOldPtr">指向现有块的指针，或在必须分配新块时为 0</param>
+        <param name="bytes">要写入的数据，包括 8 字节头</param>
+        <returns>原始块的地址（当大小合适时）或新块的地址</returns>
+    </FlexArea.PutBlock>
+    <FlexArea.WriteBlockToFile>
+        <summary>将块导出到外部文件</summary>
+    </FlexArea.WriteBlockToFile>
+    <FlexMemoToken.Length>
+        这包括令牌的长度
+    </FlexMemoToken.Length>
+    <GetAceIndexHandle>
+        <summary>返回与当前工作区中指定索引对应的 Advantage 客户端引擎索引句柄。
+        该句柄可用于直接调用任何 Advantage 客户端引擎 API。</summary>
+        <returns>Advantage 客户端引擎索引顺序句柄，如果未找到索引则返回 0。</returns>
+    </GetAceIndexHandle>
+    <MEMOCLASS>
+    <summary>Flex 备注类。实现 FTP 支持。</summary>
+  </MEMOCLASS>
+  <NsxIndex>
+        <summary>实现 NSX 支持的 DBFNSX 工作类。</summary>
+    </NsxIndex>
+    <NtxHeader>
+        <summary>
+        NtxHeader 类。
+        </summary>
+    </NtxHeader>
+    <NtxNode>
+        <summary>
+        NtxNode 类。
+        每个条目的大小为：8 + 键大小（最后一个条目不包含键值，只有指向子树的指针。）
+        条目的结构为
+        long page_offset - 子树所在的文件偏移量（在 ntx 文件中）。如果没有子树，则存储 0。
+        long recno       - 此键值的记录编号（在 dbf 文件中）
+        char key_value[key_size]
+        </summary>
+    </NtxNode>
+    <NtxPageList>
+        <summary>
+        NtxPageList 类。
+        </summary>
+    </NtxPageList>
+    <OsCodepage>
+        <summary>DBF 文件中使用的操作系统代码页。</summary>
+    </OsCodepage>
+    <RDDCLASS>
+    <summary>FlexFile RDD。带 Flex 备注的 RDD</summary>
+  </RDDCLASS>
+  <SDF>
+    <summary>SDF RDD。用于读取和写入文本文件。</summary>
+  </SDF>
+  <SMTMemo>
+        <summary>SMT 备注类。实现 SMT 支持。</summary>
+    </SMTMemo>
+  <TEXTRDD>
+        <summary>抽象 TextRDD。用于读取和写入带分隔符的文件和 SDF 文件。</summary>
+    </TEXTRDD>
+    <TSV>
+    <summary>TSV RDD。用于读取和写入制表符分隔的文件。</summary>
+  </TSV>
+  </doc>

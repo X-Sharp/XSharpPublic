@@ -16,7 +16,7 @@
     <EnforceSelf>True</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <TargetFramework>net8.0</TargetFramework>
-    <ProjectGuid>{0792ab92-a662-4d1d-9f96-338a6cc6ce54}</ProjectGuid>
+    <IncludePaths>$(ProjectDir)</IncludePaths>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management">
@@ -27,22 +27,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="UI\**\*.prg" />
-    <Compile Remove="UI\**\*.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
-      <Name>XSharp.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj">
-      <Project>{9cea0df2-04fb-499e-9976-5c9cf7c0e689}</Project>
-      <Name>XSharp.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Project>{504a02d9-74ae-445f-85d7-af2544e06d81}</Project>
-      <Name>XSharp.RT</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

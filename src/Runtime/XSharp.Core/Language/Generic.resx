@@ -2756,6 +2756,9 @@
   <data name="VFP_WITH_STACK_EMPTY" xml:space="preserve">
     <value>No active WITH block found</value>
   </data>
+  <data name="VFP_FOR_CONDITION_MUST_BE_LOGIC" xml:space="preserve">
+    <value>The FOR condition must evaluate to a logical value</value>
+  </data>
   <data name="VFP_VARIABLE_NOT_ARRAY" xml:space="preserve">
     <value>Variable '{0}' is not an array</value>
   </data>

@@ -1,11 +1,11 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>DBF Header Codepage numbers.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfHeaderCodepage/*" />
     ENUM DbfHeaderCodepage INHERIT BYTE
 
         MEMBER CP_DBF_DOS_OLD           := 0x00  // MS-DOS previous versions
@@ -43,7 +43,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER CP_DBF_MAC_GREEK         := 0x98   // Greek Macintosh
     END ENUM
     //
-    /// <summary>OS Codepages as used in DBF files.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/OsCodepage/*" />
     ENUM OsCodepage
 
         MEMBER CP_INI_DOS_US            := 437   // U.S. MS-DOS
@@ -80,7 +80,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
 
-    /// <summary>DBF Locking model.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DbfLockingModel/*" />
     ENUM DbfLockingModel
         MEMBER Clipper52    // Clipper 5.2 locking scheme
         MEMBER Clipper53    // Clipper 5.3 locking scheme
@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER VoAnsi       // VO Locking scheme for Ansi DBF files
     END ENUM
 
-    /// <summary>DBF Table flags.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFTableFlags/*" />
     [Flags];
     ENUM DBFTableFlags AS BYTE
         MEMBER None             := 0
@@ -101,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER IsOLE            := 128
     END ENUM
 
-    /// <summary>DBF File Versions.</summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/DBFVersion/*" />
     ENUM DBFVersion AS BYTE
         MEMBER FoxBase              := 0x02
         MEMBER FoxBaseDBase3NoMemo  := 0x03

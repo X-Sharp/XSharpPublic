@@ -1,18 +1,16 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Support
 
-/// <summary>Base Index class. Does not implement anything. </summary>
-/// <seealso cref="IOrder"/>
+/// <include file="XSharp.Core.Docs.xml" path="doc/BaseIndex/*" />
 CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	PRIVATE _oArea AS Workarea
 
-	/// <summary>Create the BaseIndex object</summary>
-	/// <param name="oArea">Workarea object that 'owns' this index object </param>
 
+ /// <include file="XSharp.Core.Docs.xml" path="doc/BaseIndex.ctor/*" />
 	CONSTRUCTOR(oArea AS Workarea)
 		_oArea := oArea
 
@@ -53,8 +51,8 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		CASE DBOI_KEYCOUNTRAW
 		CASE DBOI_KEYDEC
 		CASE DBOI_LOCKOFFSET
-		CASE DBOI_BAGCOUNT
-            RETURN 0
+        CASE DBOI_BAGCOUNT
+            info:Result := NULL
 		CASE DBOI_CONDITION
         CASE DBOI_EXPRESSION
 		CASE DBOI_NAME
@@ -65,17 +63,17 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		//CASE DBOI_INDEXEXT  alias for BAGEXT
 		CASE DBOI_FULLPATH
 		CASE DBOI_COLLATION
-            RETURN ""
+            info:Result := ""
         CASE DBOI_FILEHANDLE
-            RETURN IntPtr.Zero
+            info:Result := IntPtr.Zero
         CASE DBOI_FILESTREAM
-            RETURN NULL
+            info:Result := NULL
 		CASE DBOI_ISCOND
 		CASE DBOI_ISDESC
         CASE DBOI_UNIQUE
 		CASE DBOI_CUSTOM
 		CASE DBOI_HPLOCKING
-            RETURN FALSE
+            info:Result := FALSE
 		CASE DBOI_KEYADD
 		CASE DBOI_KEYDELETE
 		CASE DBOI_KEYVAL
@@ -85,9 +83,9 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		CASE DBOI_SCOPEBOTTOMCLEAR
 		CASE DBOI_SETCODEBLOCK
 		CASE DBOI_SKIPUNIQUE
-            RETURN NULL
+            info:Result := NULL
         END SWITCH
-        RETURN NULL
+        RETURN info:Result
 
 	/// <inheritdoc />
 	VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Targets" />
   <PropertyGroup>
     <RootNamespace>XSharp</RootNamespace>
@@ -8,15 +8,50 @@
     <CS>true</CS>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
-    <Allowdot>True</Allowdot>
+    <Allowdot>true</Allowdot>
     <StartupObject />
-    <NamedArgs>True</NamedArgs>
-    <EnforceSelf>True</EnforceSelf>
+    <NamedArgs>true</NamedArgs>
+    <EnforceSelf>true</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <ProjectGuid>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <NoWin32Manifest>false</NoWin32Manifest>
+    <VulcanCompatibleResources>true</VulcanCompatibleResources>
+    <AllowOldStyleAssignments>false</AllowOldStyleAssignments>
+    <ModernSyntax>false</ModernSyntax>
+    <IncludePaths />
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Vo17>false</Vo17>
+    <Fox2>false</Fox2>
+    <Xpp1>false</Xpp1>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NoWarn />
+    <Prefer32Bit>false</Prefer32Bit>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DelaySign>false</DelaySign>
+    <WarningsAsErrors />
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn />
+    <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DelaySign>false</DelaySign>
+    <WarningsAsErrors />
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <DebuggerCommand />
+    <DebuggerCommandArguments />
+    <DebuggerWorkingDirectory />
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(CommonInclude)\Constants.prg" />
     <compile Remove="CollationHelpers\*.prg" />
     <compile Remove="Collations\*.prg" />
     <compile Remove="Language\*.prg" />
@@ -24,6 +59,92 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Language\Croatia.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Czech852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Danish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Dutch.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Finnish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\French.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Generic.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\German.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Hung852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Italian.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Norwegn.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Pol852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Port850.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Romania.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Russian.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Serbia.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\SL-W-EE.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Slov852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Spanish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Swedish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Turkish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

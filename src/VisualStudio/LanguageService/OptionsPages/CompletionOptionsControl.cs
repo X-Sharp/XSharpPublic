@@ -13,6 +13,7 @@ namespace XSharp.LanguageService.OptionsPages
             chkNamespaces.Tag = nameof(CompletionOptions.CompleteNamespaces);
             chkTypes.Tag = nameof(CompletionOptions.CompleteTypes);
             chkKeywords.Tag = nameof(CompletionOptions.CompleteKeywords);
+            tbMaxEntries.Tag = nameof(CompletionOptions.MaxCompletionEntries);
             chkSnippets.Tag = nameof(CompletionOptions.CompleteSnippets);
             chkGlobalsProject.Tag = nameof(CompletionOptions.CompleteGlobals);
             chkGlobalsSource.Tag = nameof(CompletionOptions.CompleteGlobalsP);

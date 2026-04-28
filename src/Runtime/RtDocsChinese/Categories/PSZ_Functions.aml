@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      将一个以 NULL 结束的字符串转换为强类型字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      将一个以 NULL 结束的字符串转换为强类型字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Copy a buffer pointed to by a PSZ to a newly allocated block of memory and return a new pointer to that memory.
-        </para>
+      将一个 PSZ 指向的缓冲区复制到新分配的内存块，并返回指向该内存的新指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Copy a buffer pointed to by a PSZ to a newly allocated block of memory and return a new pointer to that memory.
-        </para>
+      将一个 PSZ 指向的缓冲区复制到新分配的内存块，并返回指向该内存的新指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Return the system time in a format determined by various international settings.
-        </para>
+      Return the system time in a format determined by various international settings.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Return the system time in 24-hour format.
-        </para>
+      Return the system time in 24-hour format.
+    </para>
             </entry>
           </row>
         </table>

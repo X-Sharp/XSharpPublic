@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,9 +13,7 @@ USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
-	/// <summary>
-	/// The NtxHeader class.
-	/// </summary>
+ /// <include file="XSharp.RDD.Docs.xml" path="doc/NtxHeader/*" />
 	INTERNAL SEALED CLASS NtxHeader
 		// Fixed Buffer of 1024 bytes
 		// https://www.clicketyclick.dk/databases/xbase/format/ntx.html#NTX_STRUCT

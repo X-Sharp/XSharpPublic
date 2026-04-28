@@ -1,13 +1,13 @@
-//////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////
 //
 //  DMLB.CH
 //
 //  Contents:
 //      Generic define constants for DbeInfo(), DbInfo() and FieldInfo()
 //   
+
+
 //////////////////////////////////////////////////////////////////////
-
-
 //  DMLB.CH
 DEFINE DMLB_FILENAME           := 0x01
 DEFINE DMLB_QUALIFIED_FILENAME := 0x02
@@ -135,7 +135,7 @@ DEFINE DB_ZEROSPACE        :=  2
 DEFINE DB_ALERTSPACE       :=  3 
 
 
-/// Specifies the locking behaviour inside/outside of transactions
+/// <include file="XSharp.XPP.Docs.xml" path="doc/LOCKING_EXCLUSIVE/*" />
 DEFINE LOCKING_EXCLUSIVE              :=    1
 DEFINE LOCKING_SHARED                 :=    2  
 DEFINE LOCKING_UPDATE                 :=    4

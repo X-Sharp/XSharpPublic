@@ -7,17 +7,14 @@ USING System.Collections.Generic
 USING XSharp.RDD.Support
 USING XSharp.Internal
 
-/// <summary>Creates an object from a class definition or an Automation-enabled application.</summary>
-/// <param name="cClassName">Specifies the class or OLE object from which the new object is created.</param>
-/// <param name="_args">These optional parameters are used to pass values to the Init event procedure for the class.
-/// The Init event is executed when you issue CREATEOBJECT( ) and allows you to initialize the object.</param>
-/// <returns>The object that was created</returns>
-/// <seealso cref='CreateInstance' >CreateInstance</seealso>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/CreateObject/*" />
+[FoxProFunction("CREATEOBJECT", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/createobjectex/*" />
+[FoxProFunction("CREATEOBJECTEX", FoxFunctionCategory.ClassAndObject, FoxEngine.Interop, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
@@ -35,7 +32,6 @@ INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     RuntimeState.Eof :=  TRUE
     RuntimeState.MemoBlockSize := 64
 RETURN
-
 
 
 Function SetFoxCollation(cCollation as STRING) AS STRING
@@ -61,9 +57,8 @@ Function SetFoxCollation(cCollation as STRING) AS STRING
     ENDIF
     RETURN cOld
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/icase/*" />
-
+[FoxProFunction("ICASE", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as usual CLIPPER
     LOCAL nCount := PCount() AS LONG
     // loop through the actual parameters. The odd parameters should be logic
@@ -86,7 +81,6 @@ function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as 
     // when they call this function with < 2 parameters then we have no idea what return type they expect...
     return NIL
 
-
 FUNCTION __VfpStr( resid AS DWORD , args PARAMS OBJECT[]) AS STRING
     // Strings are stored in a Managed resource with a name
     // the name matches the enum names
@@ -106,15 +100,12 @@ FUNCTION __VfpStr( resid AS DWORD , args PARAMS OBJECT[]) AS STRING
     ENDIF
     RETURN strMessage
 
-
-
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
 FUNCTION VarType( eExpression AS USUAL) AS STRING
     RETURN VarType(eExpression, FALSE)
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
+[FoxProFunction("VARTYPE", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
     IF IsNil(eExpression)
         IF ! lNullDataType
@@ -141,4 +132,18 @@ FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
     endif
     RETURN result
 
+FUNCTION __VfpVarType( cb AS ICodeblock, lNullDataType := FALSE AS LOGIC) AS STRING
+    LOCAL uResult AS USUAL
+    TRY
+        uResult := Eval(cb)
+    CATCH e AS Error
+        IF e:Gencode == EG_NOVAR .OR. e:Gencode == EG_NOVARMETHOD .OR. e:Gencode == EG_NOALIAS
+            RETURN "U"
+        ENDIF
+        THROW
+    CATCH
+        THROW
+    END TRY
 
+    // If success, then we call the original VarType() function.
+    RETURN @@VarType(uResult, lNullDataType)

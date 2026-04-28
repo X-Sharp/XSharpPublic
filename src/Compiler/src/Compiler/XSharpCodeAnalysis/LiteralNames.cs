@@ -8,10 +8,6 @@
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
-    internal static class VulcanSpecialNames
-    {
-        internal const string ClipperArgs = "$args";
-    }
     internal static class OurTypeNames
     {
         internal const string CodeBlockType = "Codeblock";
@@ -37,6 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NeedAccessToLocals = "NeedsAccessToLocalsAttribute";
         internal const string TypesChanged = "TypesChangedAttribute";
         internal const string IsInstance = "IsInstanceAttribute";
+        internal const string FoxArrayInputParameterAttribute = "FoxArrayInputParameterAttribute";
     }
 
     internal static class XSharpQualifiedTypeNames
@@ -259,6 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string CallClipFunc = "_CallClipFunc";
         internal const string GetXppClassObject = "__GetXppClassObject";
         internal const string GetXppWrappedParentObject = "__GetXppWrappedParentObject";
+        internal const string VarGetOrCreateFoxArray = "__VarGetOrCreateFoxArray";
     }
 
     internal static class XSharpQualifiedFunctionNames

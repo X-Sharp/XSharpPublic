@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -13,9 +13,8 @@ USING System.Runtime.InteropServices
 
 
 
-    /// <summary>This is the base class for most ISqlFactory implementations.</summary>
-    /// <remarks>This class creates connections, commands etc by calling the appropriate methods on a protected DbProvider instance.</remarks>
 
+/// <include file="XSharp.Data.Docs.xml" path="doc/AbstractSqlFactory/*" />
 ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     #region Static
     STATIC PROPERTY DefaultFactory AS ISqlFactory AUTO

@@ -141,19 +141,23 @@ namespace XSharp.LanguageService.Commands
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
+            var act = sel.ActivePoint;
+            var anch = sel.AnchorPoint;
+            var caretPos = sel.ActivePoint.Position;
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
                 foreach (var selection in sel.SelectedSpans)
                 {
                     bool done = false;
                     var (start, end) = SortLowHigh(selection.Start.Position, selection.End.Position);
+                    var line = snapshot.GetLineFromPosition(start);
+                    var text = line.GetText();
+                    bool uncomment = text.TrimStart().StartsWith("//");
                     do
                     {
-                        var line = snapshot.GetLineFromPosition(start);
+                        line = snapshot.GetLineFromPosition(start);
                         var span = line.Extent;
-                        var text = line.GetText();
-                        var trimmed = text.TrimStart();
-                        if (trimmed.StartsWith("//"))
+                        if (uncomment)
                         {
                             UnCommentLine(doc, editsession, span);
                         }
@@ -166,6 +170,24 @@ namespace XSharp.LanguageService.Commands
                 }
                 editsession.Apply();
             }
+            snapshot = doc.TextBuffer.CurrentSnapshot;
+            if (anch < act)
+            {
+                anch = anch.TranslateTo(snapshot, PointTrackingMode.Negative);
+                act = act.TranslateTo(snapshot);
+                caretPos = caretPos.TranslateTo(snapshot, PointTrackingMode.Positive);
+            }
+            else
+            {
+                anch = anch.TranslateTo(snapshot);
+                caretPos = caretPos.TranslateTo(snapshot, PointTrackingMode.Negative);
+                act = act.TranslateTo(snapshot, PointTrackingMode.Negative);
+            }
+            doc.TextView.Selection.Select(anch, act);
+            doc.TextView.Caret.MoveTo(caretPos);
+
+
+
         }
 
         private static void CommentSelection(DocumentView doc)

@@ -7,7 +7,7 @@
 USING System.Data
 USING XSharp.RDD
 
-/// <summary>This class represents a DBF Field in a DbDataTable class.</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbDataColumn/*" />
 CLASS XSharp.DbDataColumn INHERIT DataColumn
     PROPERTY ColumnInfo AS DbColumnInfo AUTO
     

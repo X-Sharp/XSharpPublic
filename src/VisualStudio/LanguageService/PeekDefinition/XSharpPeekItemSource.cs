@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Text;
 using System;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal sealed class XSharpPeekItemSource : IPeekableItemSource

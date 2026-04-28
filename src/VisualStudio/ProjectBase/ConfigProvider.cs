@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -190,7 +190,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int AddCfgsOfCfgName(string name, string cloneName, int fPrivate)
         {
             // We need to QE/QS the project file
-            ThreadHelper.ThrowIfNotOnUIThread();
+                ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!this.ProjectMgr.QueryEditProjectFile(false))
             {

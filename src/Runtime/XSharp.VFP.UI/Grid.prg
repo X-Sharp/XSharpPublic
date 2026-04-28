@@ -33,9 +33,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PRIVATE _rowColChange AS LONG
 
         #include "Generated\VFPContainer.xh"
-        #include "XSharp\VFPProperties.xh"
+        #include "VFPProperties.xh"
 
-        #include ".\Headers\ControlProperties.xh"
+        #include "ControlProperties.xh"
 
 
         CONSTRUCTOR(  ) STRICT

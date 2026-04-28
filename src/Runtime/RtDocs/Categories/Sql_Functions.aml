@@ -57,7 +57,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:XSharp_VOSQLClasses.Functions.DotNetType2VOType(System.Data.DataTable,System.Data.DataColumn,System.String)Sql.xmldoc/DotNetType2VOType/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -109,8 +109,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -150,20 +149,6 @@
             </entry>
             <entry>
               <para>-- todo --</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>VOSQLClasses</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC(System.Int32)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
             </entry>
           </row>
           <row>
@@ -462,20 +447,6 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlParameters(System.Int32,System.Object)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlPrepare(System.Int32,System.String,System.String)</codeEntityReference>
               </para>
             </entry>
@@ -634,20 +605,6 @@
               <para>
             Stores the names of tables in a data source to a X# cursor.
         </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VOSQLClasses</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLThrowOutOfMemoryError</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
             </entry>
           </row>
         </table>

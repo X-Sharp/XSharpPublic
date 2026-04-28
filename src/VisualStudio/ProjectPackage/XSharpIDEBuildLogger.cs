@@ -7,13 +7,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Build.Framework;
-using Microsoft.VisualStudio.Shell.TableManager;
-using XSharpModel;
 using XSharp.Settings;
 namespace XSharp.Project
 {
@@ -64,7 +58,6 @@ namespace XSharp.Project
                 errorlistManager.ClearBuildErrors();
                 errors = warnings = 0;
                 mustRefresh = false;
-                Logger.Debug("Build Started");
             }
             catch (Exception e)
             {
@@ -88,7 +81,6 @@ namespace XSharp.Project
                         QueueOutputText(MessageImportance.Normal, msg+"\n");
                     }
                     base.BuildFinishedHandler(sender, buildEvent);
-                    Logger.Debug("Build Finished : " +msg  );
                 }
                 catch (Exception e)
                 {
@@ -101,7 +93,6 @@ namespace XSharp.Project
             try
             {
                 base.ProjectStartedHandler(sender, buildEvent);
-                Logger.Debug("Project Build Started " + buildEvent.ProjectFile );
                 if (this.ProjectNode is XSharpProjectNode xprj)
                 {
                     xprj.BuildStarted();
@@ -118,7 +109,6 @@ namespace XSharp.Project
             try
             {
                 base.ProjectFinishedHandler(sender, buildEvent);
-                Logger.Debug("Project Build Finished " + buildEvent.ProjectFile );
                 if (mustRefresh)
                 {
                     errorlistManager.Refresh();
@@ -189,7 +179,7 @@ namespace XSharp.Project
             {
                 mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
-                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, __VSERRORCATEGORY.EC_ERROR);
+                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, __VSERRORCATEGORY.EC_ERROR, this.ProjectNode);
                 Logger.Debug("Build Error: "+ msg);
             }
             catch (Exception e)
@@ -203,7 +193,7 @@ namespace XSharp.Project
             {
                 mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
-                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, __VSERRORCATEGORY.EC_WARNING);
+                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, __VSERRORCATEGORY.EC_WARNING, this.ProjectNode);
                 Logger.Debug("Build Warning: " + msg);
             }
             catch (Exception e)

@@ -57,7 +57,7 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             BindReferenceData();
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (this.ProjectMgr is XSharpProjectNode)
@@ -104,7 +104,7 @@ namespace XSharp.Project
             XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
             projectNode.ProjectModel.RemoveAssemblyReference(this.Url);
             base.Remove(!IsPrimary);  // when not Primary, then remove from storage
-        } 
+        }
 
         protected override void DeleteFromStorage(string path)
         {
@@ -131,7 +131,7 @@ namespace XSharp.Project
                 }
                 if (this.ProjectMgr == null)
                     return String.Empty;
-                string result = this.ProjectMgr.GetProjectProperty("IntermediateOutputPath") + this.wrapperFileName;
+                string result = this.ProjectMgr.GetProjectProperty(ProjectFileConstants.IntermediateOutputPath) + this.wrapperFileName;
                 result = Path.Combine(this.ProjectMgr.ProjectFolder, result);
                 return result;
             }

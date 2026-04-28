@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using System;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class CommonActionProvider
@@ -27,7 +28,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public bool TryGetTelemetryId(out Guid telemetryId)
         {
-            // This is a sample provider and doesn't participate in LightBulb telemetry  
+            // This is a sample provider and doesn't participate in LightBulb telemetry
             telemetryId = Guid.Empty;
             return false;
         }

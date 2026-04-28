@@ -17,7 +17,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         PROPERTY MyProp AS STRING AUTO
         EVENT MyEvent AS EventHandler
         METHOD MyMethod AS VOID
-            NOP
+            // Dummy code to get rid of warning that MyEvent is never used
+            MyEvent?.Invoke(this, EventArgs.Empty)
         END METHOD
     END CLASS
 

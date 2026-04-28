@@ -1,7 +1,5 @@
 ﻿// WindowFunctions.prg
 
-
-
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -11,8 +9,8 @@ INTERNAL _DLL FUNCTION IsWindowVisible(hwnd AS PTR) AS LOGIC PASCAL:USER32.IsWin
 DEFINE SW_HIDE                       := 0
 DEFINE SW_NORMAL                     := 1
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/wvisible/*" />
+[FoxProFunction("WVISIBLE", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION WVISIBLE( windowName AS STRING ) AS LOGIC
 	VAR hwnd := FindWindow(null, (STRING)windowName)
 	IF ( hwnd != NULL)
@@ -21,6 +19,7 @@ FUNCTION WVISIBLE( windowName AS STRING ) AS LOGIC
 	RETURN FALSE
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/wexist/*" />
+[FoxProFunction("WEXIST", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION WEXIST( windowName AS STRING ) AS LOGIC
 	VAR hwnd := FindWindow(null, (STRING)windowName)
 	RETURN ( hwnd != NULL )

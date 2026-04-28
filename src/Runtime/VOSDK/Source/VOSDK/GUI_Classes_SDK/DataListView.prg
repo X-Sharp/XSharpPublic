@@ -170,9 +170,9 @@ METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
         symCol  := oCol:NameSym
         oFS     := oCol:FieldSpec
 		IF (oFS != NULL_OBJECT)
-			sVal := oFS:Transform(SELF:FIELDGET(symCol))
+			sVal := oFS:Transform(SELF:FieldGet(symCol))
 		ELSE
-			sVal := AsString(SELF:FIELDGET(symCol))
+			sVal := AsString(SELF:FieldGet(symCol))
 		ENDIF
 		aCache[iIndex, j] := sVal
 	NEXT
@@ -253,9 +253,9 @@ METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 
 
 			IF (oFS != NULL_OBJECT)
-				sVal := oFS:Transform(SELF:FIELDGET(symCol))
+				sVal := oFS:Transform(SELF:FieldGet(symCol))
 			ELSE
-				sVal := AsString(SELF:FIELDGET(symCol))
+				sVal := AsString(SELF:FieldGet(symCol))
 			ENDIF
 		ENDIF
 
@@ -466,14 +466,14 @@ METHOD Destroy()  AS USUAL CLIPPER
 	RETURN SUPER:Destroy()
 
 
-/// <include file="Gui.xml" path="doc/DataListView.FIELDGET/*" />
-METHOD FIELDGET(nFieldPos)
+/// <include file="Gui.xml" path="doc/DataListView.FieldGet/*" />
+METHOD FieldGet(nFieldPos)
 
 
 
 
 	IF (oDLVServer != NULL_OBJECT)
-		RETURN oDLVServer:FIELDGET(nFieldPos)
+		RETURN oDLVServer:FieldGet(nFieldPos)
 	ENDIF
 	RETURN NIL
 

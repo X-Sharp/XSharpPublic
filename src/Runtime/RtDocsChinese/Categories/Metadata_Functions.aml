@@ -47,8 +47,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a particular class.
-        </para>
+      确定对象是否为特定类的实例。
+    </para>
             </entry>
           </row>
           <row>
@@ -62,8 +62,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of classes available to your application.
-        </para>
+      返回应用程序可用的类的数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -103,8 +103,8 @@
             </entry>
             <entry>
               <para>
-            Return an array of symbols corresponding to the classes available to your application.
-        </para>
+      返回一个符号数组，对应于应用程序可用的类。
+    </para>
             </entry>
           </row>
           <row>
@@ -118,8 +118,8 @@
             </entry>
             <entry>
               <para>
-            Get the class name of an object.
-        </para>
+      获取对象的类名。
+    </para>
             </entry>
           </row>
           <row>
@@ -146,8 +146,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of an object.
-        </para>
+      获取对象的类层次结构。
+    </para>
             </entry>
           </row>
           <row>
@@ -161,8 +161,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of a class.
-        </para>
+      获取类的层次结构。
+    </para>
             </entry>
           </row>
           <row>
@@ -176,8 +176,8 @@
             </entry>
             <entry>
               <para>
-            Create an object.
-        </para>
+      创建一个对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -219,8 +219,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method.
-        </para>
+      调用一个方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -247,8 +247,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular access method can be sent to an object.
-        </para>
+      检查是否可以向对象发送特定的访问方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -262,8 +262,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular assign method can be sent to an object.
-        </para>
+      检查是否可以向对象发送特定的赋值方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -277,8 +277,8 @@
             </entry>
             <entry>
               <para>
-            Determine if a class exists.
-        </para>
+      确定类是否存在。
+    </para>
             </entry>
           </row>
           <row>
@@ -292,8 +292,8 @@
             </entry>
             <entry>
               <para>
-            Determine if one class is a subclass of another class.
-        </para>
+      确定一个类是否是另一个类的子类。
+    </para>
             </entry>
           </row>
           <row>
@@ -307,8 +307,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a class.
-        </para>
+      确定对象是否为特定类的实例。
+    </para>
             </entry>
           </row>
           <row>
@@ -322,8 +322,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object inside a USUAL is an instance of a class.
-        </para>
+      确定 USUAL 中的对象是否为某个类的实例。
+    </para>
             </entry>
           </row>
           <row>
@@ -336,8 +336,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -351,8 +350,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object.
-        </para>
+      检查特定方法是否可以发送到对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -366,8 +365,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to a class.
-        </para>
+      检查特定方法是否可以发送到类。
+    </para>
             </entry>
           </row>
           <row>
@@ -381,8 +380,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object inside a USUAL.
-        </para>
+      检查特定方法是否可以发送到USUAL中的对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -396,8 +395,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an exported instance variable.
-        </para>
+      返回导出实例变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -411,8 +410,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or access method) was declared.
-        </para>
+      获取有关特定实例变量（或访问方法）声明方式的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -426,8 +425,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an instance variable.
-        </para>
+      返回实例变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -441,8 +440,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of an object into an array.
-        </para>
+      将对象的所有实例变量存储到数组中。
+    </para>
             </entry>
           </row>
           <row>
@@ -456,8 +455,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of a class into an array.
-        </para>
+      将类的所有实例变量存储到数组中。
+    </para>
             </entry>
           </row>
           <row>
@@ -466,13 +465,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an exported instance variable.
-        </para>
+      将值分配给导出实例变量。
+    </para>
             </entry>
           </row>
           <row>
@@ -486,8 +485,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or assign method) was declared.
-        </para>
+      获取有关特定实例变量（或赋值方法）声明方式的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -496,13 +495,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an instance variable.
-        </para>
+      将值分配给实例变量。
+    </para>
             </entry>
           </row>
           <row>
@@ -516,8 +515,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of arguments that a method is expecting.
-        </para>
+      返回方法期望的参数数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -531,8 +530,8 @@
             </entry>
             <entry>
               <para>
-            Identify an invalid method call.
-        </para>
+      识别无效的方法调用。
+    </para>
             </entry>
           </row>
           <row>
@@ -546,8 +545,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class.
-        </para>
+      返回构成类的所有面向对象编程符号的多维数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -561,8 +560,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
-        </para>
+      返回构成对象类的所有面向对象编程符号的多维数组。
+    </para>
             </entry>
           </row>
           <row>

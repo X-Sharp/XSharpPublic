@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -11,9 +11,7 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
-    /// <summary>
-    /// The NtxPageList class.
-    /// </summary>
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/NtxPageList/*" />
     INTERNAL SEALED CLASS NtxPageList
         PRIVATE _Pages AS Dictionary<DWORD, LinkedListNode<NtxPage>>
         PRIVATE _lruPages AS LinkedList<NtxPage>

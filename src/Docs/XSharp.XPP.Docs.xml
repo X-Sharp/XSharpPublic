@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <__XppWrappedObject>
+        <summary>
+        The XppWrappedObject class.
+        </summary>
+    </__XppWrappedObject>
+    <Abstract.ClassName>
+        <summary>Retrieves the name of the class an object belongs to.</summary>
+        <returns>The method returns a character string representing the name of a class.</returns>
+    </Abstract.ClassName>
+    <Abstract.ClassObject>
+        <summary>Retrieves the class object (System.Type) of a class.</summary>
+        <returns>The method returns the class object of a class.</returns>
+        <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
+    </Abstract.ClassObject>
+    <Abstract.GetNoIVar>
+        <summary>Handles access operations to undefined instance variables. </summary>
+        <param name="cName">The fieldname to access.</param>
+        <returns/>
+    </Abstract.GetNoIVar>
+    <Abstract.IsDerivedFrom>
+        <summary>Checks if an object belongs to or is derived from a particular class.</summary>
+        <param name="uParent">A character string containing the name of the class an object belongs to or is derived from. Alternatively, the class object (System.Type) can be passed instead of the class name.</param>
+        <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
+        <remarks>This method is used to check if an unknown object has features of a known class. This is especially useful for event driven programming or when classes are inherited from other classes.</remarks>
+    </Abstract.IsDerivedFrom>
+  <Abstract.NoMethod>
+    <summary>Handles calls to undefined methods.</summary>
+    <param name="uParams">The parameters to send to the method.</param>
+    <returns>The return value will be interpreted as the return value of the called undefined method. </returns>
+    <remarks>If an undefined method is called, a runtime error is raised.</remarks>
+
+  </Abstract.NoMethod>
+  <Abstract.Notify>
+        <summary>Receives notifications from DatabaseEngines </summary>
+        <param name="nEvent">This parameter receives a numeric value that corresponds with a constant listed in APPEVENT.CH.</param>
+        <param name="nNotification">The second parameter identifies the situation for which an object is notified. The file DMLB.CH lists define constants that can be used to test in a program which situation occurred. </param>
+        <remarks>There is no need in X# to include the header files. The defines are included as part of the X# runtime.</remarks>
+    </Abstract.Notify>
+    <Abstract.SetNoIVar>
+        <summary>Handles assign operations to undefined instance variables. </summary>
+        <param name="cName">The fieldname to assign.</param>
+        <param name="uValue">The value of an assignment. </param>
+        <returns>The return value of the method is ignored.</returns>
+    </Abstract.SetNoIVar>
+    <ClassCreate>
+        <summary>Create a class dynamically.</summary>
+        <returns>The class object.</returns>
+    </ClassCreate>
+    <ClassDestroy>
+        <summary>Remove the class object of class. </summary>
+        <param name="uObject">The name of the class whose class object should be deleted, or the class object.</param>
+        <returns>The return value is .T. (true) when the class object is removed from memory, otherwise it is .F. (false). </returns>
+        <remarks>The function ClassDestroy() removes the class object of a dynamically created class from main memory.
+        Dynamic classes are created during runtime by the ClassCreate() function. They are unknown at compile time.
+        Therefore, they do not have a class function and are represented at runtime of a program only by a class object. <br/>
+        When a program uses a dynamic class, the corresponding class object should be removed from main memory when the class
+        is no longer needed. Otherwise, the class object remains in memory and can be retrieved by the ClassObject() function at any time.<br/>
+        <b>Note</b>In X# classes are never really freed from memory. The .Net framework does not allow that. ClassDestroy() does remove the class
+        from the list of active classes. If you recreate the same class later with the same structure then the class definition from the previous
+        defintion is reused.</remarks>
+    </ClassDestroy>
+    <ClassHelpers.FindClass>
+        <summary>
+        Find the ClassObject for a class
+        </summary>
+        <param name="cClassName"/>
+        <param name="lIncludeDeleted"/>
+        <returns/>
+    </ClassHelpers.FindClass>
+    <ClassHelpers.FullNameTypeFilter>
+        Delegate to filter types in the DynamicAssembly
+    </ClassHelpers.FullNameTypeFilter>
+    <ClassObject>
+        <summary>Retrieves the class object of class. </summary>
+        <param name="cClassName">The name of the class whose class object should be returned. </param>
+        <returns>The function returns the class object of the class with the name &lt;cClassName&gt;.
+        The return value is NULL_OBJECT when the class does not exist. </returns>
+    </ClassObject>
+    <ClassObject>
+    <summary>
+      This class returns the ClasssObject for classes, both the classes created at compile time
+      as well as the classes created at runtime.
+      This object allows to access static members and methods late bound
+      Such as <code>Example():Fieldname</code>
+    </summary>
+  </ClassObject>
+    <ClassObject.New>
+        <summary>
+        Create a new instance of the class.
+        </summary>
+        <returns>new object</returns>
+    </ClassObject.New>
+    <ClassObject.NoIvarGet>
+        <summary>
+        Late bound access to class/static vars
+        </summary>
+        <param name="cName">Name of the property/field to read</param>
+        <returns>the result of reading the property or field</returns>
+    </ClassObject.NoIvarGet>
+    <ClassObject.NoIvarPut>
+        <summary>
+        Late bound assign for class/static vars
+        </summary>
+        <param name="cName">Name of the property/field to update</param>
+        <param name="uValue">New value for the property</param>
+        <returns>uValue</returns>
+    </ClassObject.NoIvarPut>
+    <ClassObject.NoMethod>
+        <summary>
+        Late bound calls for Static/Class methods.
+        </summary>
+        <returns>Result of Method Call</returns>
+    </ClassObject.NoMethod>
+    <DataObject>
+    <summary>
+      The Xbase++ DataObject class.
+    </summary>
+  </DataObject>
+    <DataObject.Copy>
+        <summary>Creates a dependent shallow copy of this instance </summary>
+        <returns>This method returns the new DataObject instance. </returns>
+    </DataObject.Copy>
+    <DataObject.DefineMethod>
+        <summary>Defines a dynamic method. </summary>
+        <param name="cName">The name of the method to be defined.</param>
+        <param name="uAction">A Function name or codeblock that must be executed when the method is called.</param>
+        <returns>This method returns the DataObject (self).</returns>
+        <remarks>Dynamic methods in X# are called from the NoMethod method inside the DataObject class.</remarks>
+    </DataObject.DefineMethod>
+    <DataObject.IsMemberVar>
+        <summary>
+        Checks if the object has a particular member variable
+        </summary>
+        <param name="cName">is a character string containing the symbolic identifier of a member variable.</param>
+        <returns>The return value is .T. (true) if the object has the member variable &lt;cVarName&gt;, otherwise it returns .F. (false). </returns>
+    </DataObject.IsMemberVar>
+    <DataObject.Merge>
+        <summary>Merges exported member variables from another object into this instance.</summary>
+        <param name="oNewObject">DataObject to copy the member variables from.</param>
+        <param name="cMessagePrefix">Optional prefix that will be added to all fields in the DataObject.</param>
+        <returns>This method returns the DataObject (self).</returns>
+    </DataObject.Merge>
+    <DbCargo>
+        <summary>Attaches an arbitrary value to a used work area </summary>
+        <param name="xNewValue">the value to attach to a work area. </param>
+        <returns>The function returns the value attached to a work area before the function is called. </returns>
+        <remarks>The function DbCargo() attaches an arbitrary value to a used work area. The value remains in the work area,
+        In this way, user defined data can be bound to a particular work area. Attached data is discarded when the workarea
+        is closed.</remarks>
+    </DbCargo>
+    <DbDescend>
+        <summary>Checks if the order for navigation is descending </summary>
+        <returns>The return value of DbDescend() is TRUE when the in the current work area is descending, otherwise FALSE is returned. </returns>
+        <remarks>The function DbDescend() tests if the order in the current work area is descending.
+        Refer to DbSetDescend() for more information about reversing the navigational order.
+        </remarks>
+        <seealso cref="DbSetDescend">DbSetDescend()</seealso>
+    </DbDescend>
+    <DbSetDescend>
+        <summary>Reverses the navigational order of a work area.</summary>
+        <param name="lNewDescend">A logical value. When TRUE the navigational order in the current work area is set to descending, FALSE sets the order to ascending. </param>
+        <returns>The return value of DbSetDescend() is the previous setting for DbSetDescend().</returns>
+        <remarks>The function DbSetDescend() is used to quickly change the order in a work area from ascending to descending and vice versa
+        without the need to create a corresponding index. When TRUE is passed to the function, the order is reversed, i.e. all functions and
+        commands that move the record pointer are inverted. DbGoTop() becomes DbGoBottom(), DbSkip(1) becomes DbSkip(-1), EOF becomes BOF() etc.
+        <note type="tip"> Not all RDDs support switching the order at runtime </note></remarks>
+        <seealso cref="DbDescend">DbDescend()</seealso>
+    </DbSetDescend>
+    <DynamicClassObject>
+    <summary>The worker class to help create classes at runtime.</summary>
+  </DynamicClassObject>
+<LOCKING_EXCLUSIVE>
+        Specifies the locking behaviour inside/outside of transactions
+    </LOCKING_EXCLUSIVE>
+    <PosAlpha>
+        <summary>Retrieves the 1 based position of the first letter in a string. </summary>
+        <returns>Returns the position of the first letter in a string as a numeric value, or ZERO when there is no uppercase letter in the string. </returns>
+        <param name="cString">String to check</param>
+        <param name="lNoLetter">When TRUE is passed then the first character is returned which is not a not a letter. Defaults to FALSE.</param>
+        <param name="nIgnoreCharsFromLeft">Number of characters that must be ignored. Defaults to 0.</param>
+        <remarks>In X# A letter is defined as a character for which the Char.IsLetter() method returns TRUE.
+        If <paramref name="lNoLetter"/> is set to TRUE the function returns the position of the first character which is not a letter. </remarks>
+        <seealso cref="PosUpper"/>
+        <seealso cref="PosLower"/>
+    </PosAlpha>
+    <PosChar>
+        <summary>Replaces a single character at a specified position in a string. </summary>
+        <returns>Returns the modified string. </returns>
+        <param name="cString">String to check</param>
+        <param name="uChar">The new character to insert into the string</param>
+        <param name="nPosition">1 based position to change. Defaults to Len(<paramref name="cString"/>).</param>
+        <seealso cref="PosDel"/>
+        <seealso cref="PosIns"/>
+        <seealso cref="PosRepl"/>
+    </PosChar>
+    <PosDel>
+        <summary>Removes characters at a specified position in a string. </summary>
+        <returns>Returns the modified string. </returns>
+        <param name="cString">String to check</param>
+        <param name="nStartPos">1 based position to start deleting from. Defaults to Len(<paramref name="cString"/>).</param>
+        <param name="nDeleteLen">The number of characters to delete.</param>
+        <seealso cref="PosChar"/>
+        <seealso cref="PosIns"/>
+        <seealso cref="PosRepl"/>
+    </PosDel>
+    <PosIns>
+        <summary>Inserts a character string into a string at a specified position.  </summary>
+        <returns>Returns the modified string. </returns>
+        <param name="cString">String to update</param>
+        <param name="cInsertString">The string to insert</param>
+        <param name="nPosition">1 based position where the string must be inserted. Defaults to Len(<paramref name="cString"/>)+1.</param>
+        <seealso cref="PosChar"/>
+        <seealso cref="PosDel"/>
+        <seealso cref="PosRepl"/>
+    </PosIns>
+    <PosLower>
+        <summary>Retrieves the 1 based position of the first lower case letter in a string. </summary>
+        <returns>Returns the position of the first lower case letter in a string as a numeric value, or ZERO when there is no uppercase letter in the string. </returns>
+        <param name="cString">String to check</param>
+        <param name="lNoLetter">When TRUE is passed then the first character is returned which is not changed by function Upper(). Defaults to FALSE.</param>
+        <param name="nIgnoreCharsFromLeft">Number of characters that must be ignored. Defaults to 0.</param>
+        <remarks>In X# A letter is defined as a character for which the Char.IsLetter() method returns TRUE.
+        If <paramref name="lNoLetter"/> is set to TRUE  the function returns the position of the first character which is not a letter. </remarks>
+        <seealso cref="PosUpper"/>
+        <seealso cref="PosAlpha"/>
+    </PosLower>
+    <PosRepl>
+        <summary>Inserts a character string into a string at a specified position.</summary>
+        <returns>Returns the modified string.</returns>
+        <param name="cString">String to update</param>
+        <param name="cReplace">The string to insert.</param>
+        <param name="nStartPos">1 based position where the string must be inserted. </param>
+        <remarks>If the parameter <paramref name="nStartPos"/> is not specified the function
+        replaces Len( <paramref name="cReplace"/> ) characters at the end of <paramref name="cString"/>.</remarks>
+        <seealso cref="PosChar"/>
+        <seealso cref="PosDel"/>
+        <seealso cref="PosIns"/>
+    </PosRepl>
+    <PosUpper>
+        <summary>Retrieves the 1 based position of the first upper case letter in a string. </summary>
+        <returns>Returns the position of the first upper case letter in a string as a numeric value, or ZERO when there is no uppercase letter in the string. </returns>
+        <param name="cString">String to check</param>
+        <param name="lNoLetter">When TRUE is passed then the first character is returned which is not changed by function Lower(). Defaults to FALSE.</param>
+        <param name="nIgnoreCharsFromLeft">Number of characters that must be ignored. Defaults to 0.</param>
+        <remarks>In X# A letter is defined as a character for which the Char.IsLetter() method returns TRUE.
+        If <paramref name="lNoLetter"/> is set to TRUE  the function returns the position of the first character which is not a letter. </remarks>
+        <seealso cref="PosLower"/>
+        <seealso cref="PosAlpha"/>
+    </PosUpper>
+    <SetCollation>
+        <summary>Query current and/or set new active collation.</summary>
+        <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
+        <returns>The numeric identifier of the active collation table </returns>
+        <seealso cref="XppCollations"/>
+        <seealso cref="SetCollationTable"/>
+    </SetCollation>
+    <SetCollationTable>
+        <summary>Query current and/or set user defined collation table .</summary>
+        <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
+        <param name="aTable">a one dimensional array with 256 elements. It must contain numeric values representing the weighing factors for single characters.
+        The ASCII value of a character plus 1 defines the array element that contains the weighing factor for that character. </param>
+        <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
+        <seealso cref="XppCollations"/>
+        <seealso cref="SetCollation"/>
+    </SetCollationTable>
+    <StaticClassObject>
+    <summary>
+      This class returns the ClasssObject for classes created at compile time (Static classes)
+      This object allows to access static members and methods late bound
+      Such as <code>Example():Fieldname</code>
+    </summary>
+  </StaticClassObject>
+  <XAction>
+        <summary>Helper class that stores actions (codeblocks) for XML nodes</summary>
+    </XAction>
+    <XAction.Block>
+        <summary>Codeblock to run for the action</summary>
+    </XAction.Block>
+    <XAction.Name>
+        <summary>XML node name for which the action runs.</summary>
+    </XAction.Name>
+    <xbeK_UP>
+        ///////////////////////////////////////////////////////////////////
+    </xbeK_UP>
+    <XDocument>
+        <summary>Helper class that is used by the XML functions</summary>
+    </XDocument>
+    <XDocument.AsXmlArray>
+        <summary>Return the children of a node as a XPP specific XML array</summary>
+    </XDocument.AsXmlArray>
+    <XDocument.ClearActions>
+        <summary>Clear all actions on a document</summary>
+    </XDocument.ClearActions>
+    <XDocument.ClearAllErrors>
+        <summary>Clear all errors</summary>
+    </XDocument.ClearAllErrors>
+    <XDocument.Close>
+        <summary>CLose an opened XML document</summary>
+    </XDocument.Close>
+    <XDocument.CloseAllDocuments>
+        <summary>Close all open document</summary>
+    </XDocument.CloseAllDocuments>
+    <XDocument.DocHandle>
+        <summary>Unique handle for the document.</summary>
+    </XDocument.DocHandle>
+    <XDocument.FindChildTag>
+        <summary>Find a child tag in an XML Node</summary>
+    </XDocument.FindChildTag>
+    <XDocument.FindError>
+        <summary>Find error by ID</summary>
+    </XDocument.FindError>
+    <XDocument.FindFirstChildTag>
+        <summary>Find a child tag in an XML Node</summary>
+    </XDocument.FindFirstChildTag>
+    <XDocument.FindNode>
+        <summary>Get XML node and document by ID</summary>
+    </XDocument.FindNode>
+    <XDocument.FindParent>
+        <summary>Get ID for the parent of an XML node</summary>
+    </XDocument.FindParent>
+    <XDocument.FindTag>
+        <summary>Get a list of the tags in an XML Node</summary>
+    </XDocument.FindTag>
+    <XDocument.GetDocument>
+        <summary>Find an open XDocument object by its unique handle</summary>
+    </XDocument.GetDocument>
+    <XDocument.GetErrors>
+        <summary>Get list of all errors</summary>
+    </XDocument.GetErrors>
+    <XDocument.GetErrorsForDocument>
+        <summary>Get error for a specific document</summary>
+    </XDocument.GetErrorsForDocument>
+    <XDocument.Initialize>
+        <summary>Initialize the static variables</summary>
+    </XDocument.Initialize>
+    <XDocument.NewHandle>
+        <summary>Allocate new XDocument handle</summary>
+    </XDocument.NewHandle>
+    <XDocument.OpenFile>
+        <summary>Open an XML File</summary>
+    </XDocument.OpenFile>
+    <XDocument.OpenText>
+        <summary>Open a XML document from a string</summary>
+    </XDocument.OpenText>
+    <XDocument.PerformActions>
+        <summary>Perform actions on an XML node.</summary>
+    </XDocument.PerformActions>
+    <XDocument.Process>
+        <summary>Process an opened XML document</summary>
+    </XDocument.Process>
+    <XDocument.ProcessNodes>
+        <summary>Loop through all the actions and process each node that matches the actions</summary>
+    </XDocument.ProcessNodes>
+    <XDocument.RegisterError>
+        <summary/>
+    </XDocument.RegisterError>
+    <XDocument.SelectNodes>
+        <summary>Select Nodes via XPath selection </summary>
+    </XDocument.SelectNodes>
+    <XDocument.SetAction>
+        <summary>Set an action on a XML node</summary>
+    </XDocument.SetAction>
+    <XDocument.WalkNode>
+        <summary>Walk all nodes and add them to the collections on the document class</summary>
+    </XDocument.WalkNode>
+    <XError>
+        <summary>Helper class that stores errors for an XML document</summary>
+    </XError>
+    <XError.Additional>
+        <summary>Additional info about the error.</summary>
+    </XError.Additional>
+    <XError.Column>
+        <summary>Column where the error occurred.</summary>
+    </XError.Column>
+    <XError.DocHandle>
+        <summary>Document Handle for which the error occurred.</summary>
+    </XError.DocHandle>
+    <XError.FileName>
+        <summary>Filename where the error occurred.</summary>
+    </XError.FileName>
+    <XError.Handle>
+        <summary>Error Handle.</summary>
+    </XError.Handle>
+    <XError.Id>
+        <summary>Id for the node where the error occurred.</summary>
+    </XError.Id>
+    <XError.Line>
+        <summary>Linenumber where the error occurred.</summary>
+    </XError.Line>
+    <XError.ToArray>
+        <summary>Convert error object to XBase++ compatible error array.</summary>
+    </XError.ToArray>
+  <XMLDocClearErrors>
+        <summary>Clear all global XML Errors.</summary>
+        <returns>Allways returns .T. (true).</returns>
+        <remarks>Closes all XML errors that are not linked to a XML document.</remarks>
+    </XMLDocClearErrors>
+    <XMLDocClose>
+        <summary>Close an XML document. </summary>
+        <param name="nDocHandle"/>
+        <returns>Returns .T. (true) if the document is successfully closed and .F. (false) otherwise.</returns>
+        <remarks>Closes XML document and releases system resources.</remarks>
+    </XMLDocClose>
+    <XMLDocCloseAll>
+        <summary>Close all open XML documents.</summary>
+        <returns>Allways returns .T. (true).</returns>
+        <remarks>Closes all XML documents, clears all errors and releases system resources.</remarks>
+    </XMLDocCloseAll>
+    <XMLDocGetErrorList>
+        <summary>Get array of error descriptions. </summary>
+        <param name="nDocHandle">Numeric handle of an XML document. Use this handle if a valid document handle was returned by an doc open function. </param>
+        <param name="nErrHandle">Numeric error handle returned XMLOpenDocFile() or XMLOpenDocString(). Use this handle to retrieve errors produced by an open function, where an invalid document handle was returned. </param>
+        <returns>Returns a two-dimensional array holding error information, or NULL_ARRAY if no error occurred.</returns>
+        <remarks/>
+    </XMLDocGetErrorList>
+    <XMLDocGetRootTag>
+        <summary>Get the root tag of an XML document. </summary>
+        <param name="nDocHandle">Numeric handle of an XML document. </param>
+        <returns>The function returns the numeric handle of an XML document. </returns>
+        <remarks>This function returns the root tag of an XML document.
+        The root tag is a tag that is created by the parser as the root node of the XML document tree.
+        i.e. a document has always a root tag, even if the XML file (or string) is empty.
+        This function provides for the starting point when traversing a document tree.
+        See function XMLGetTag() for more information about an XML tag. </remarks>
+    </XMLDocGetRootTag>
+    <XMLDocOpenFile>
+        <summary>Open an XML document. </summary>
+        <param name="cFileName">Name of an XML file to be parsed.</param>
+        <returns>Returns a non-zero numeric handle for the document, or 0 if there are not enough system resources
+        for the parser, or when the file cannot be opened, read or parsed. The handle returned by this function must be used in subsequent calls to other XMLDoc..() functions. </returns>
+        <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents.
+        While parsing a document, a tree is build by the parsing engine. </remarks>
+    </XMLDocOpenFile>
+    <XMLDocOpenFile_2>
+        <summary>Open an XML document. </summary>
+        <param name="cFileName">Name of an XML file to be parsed.</param>
+        <param name="nErrHandle">Pass a variable by reference which receives an error handle if errors were recorded.</param>
+        <returns>Returns a non-zero numeric handle for the document, or 0 if there are not enough system resources
+        for the parser, or when the file cannot be opened, read or parsed. The handle returned by this function must be used in subsequent calls to other XMLDoc..() functions. </returns>
+        <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents.
+        While parsing a document, a tree is build by the parsing engine. </remarks>
+    </XMLDocOpenFile_2>
+    <XMLDocOpenString>
+        <summary>Create XML document from a string. </summary>
+        <param name="cXMLString">Character string representing a valid XML document. </param>
+        <param name="nErrHandle">Pass a variable by reference which receives an error handle if errors were recorded.</param>
+        <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser,
+        or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent
+        calls to other XMLDoc..() functions. <br/>
+        If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(, <paramref name="nErrHandle"/> ). </returns>
+        <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
+    </XMLDocOpenString>
+    <XMLDocOpenString_2>
+        <summary>Create XML document from a string. </summary>
+        <param name="cXMLString">Character string representing a valid XML document. </param>
+        <param name="nErrHandle">Pass a variable by reference which receives an error handle if errors were recorded.</param>
+        <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser,
+        or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent
+        calls to other XMLDoc..() functions. <br/>
+        If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(,<paramref name="nErrHandle"/>). </returns>
+        <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
+    </XMLDocOpenString_2>
+    <XMLDocProcess>
+        <summary>Execute action code blocks for all tags. </summary>
+        <param name="nDocHandle">Numeric handle for an XML document. </param>
+        <returns>Returns .T. (true) if all action code blocks have been executed successfully or .F. (false) otherwise.</returns>
+        <remarks>This function executes all action code blocks registered for an XML document using XMLDocSetAction().</remarks>
+    </XMLDocProcess>
+    <XMLDocResetAction>
+        <summary>Releases the action code blocks defined with XMLDocSetAction(). </summary>
+        <param name="nDocHandle">Numeric handle of an XML document.</param>
+        <returns>Returns .T. (true) if the document handle is a valid and .F. (false) otherwise.</returns>
+        <remarks>This function is used to release all action code blocks defined for all nodes of an XML document</remarks>
+    </XMLDocResetAction>
+    <XMLDocSetAction>
+        <summary>Set action code blocks for specific tags.</summary>
+        <param name="nDocHandle">Numeric handle of the XML document.</param>
+        <param name="cNode">A character string defining one or more nodes in the XML document. See description below.</param>
+        <param name="bCallback">A code block to be associated with the nodes in an XML document specified with <paramref name="cNode"/>.</param>
+        <returns>The function returns the number of tags, or nodes, matching the string <paramref name="cNode"/>.</returns>
+        <remarks/>
+    </XMLDocSetAction>
+    <XMLGetAttribute>
+        <summary>Get attribute value of an XML tag. </summary>
+        <param name="nTagHandle">Numeric handle of the XML tag. </param>
+        <param name="cAttributeName">Character string containing the name of the tag attribute whose value is searched.</param>
+        <returns>Returns a string representing the value of a tag attribute or NULL_STRING if no attribute with the given name exists. </returns>
+        <remarks>This function is used to obtain values of individual XML tag attributes by attribute name. </remarks>
+    </XMLGetAttribute>
+    <XMLGetChild>
+        <summary>Get child of XML tag. </summary>
+        <param name="nTagHandle">Numeric handle for the XML tag. </param>
+        <param name="cChildTagName">The tag name of the child to search.</param>
+        <returns>Returns the numeric handle of the first child matching the specified name, or 0 if no child with the given name exists. </returns>
+        <remarks>This function is used to retrieve the first child tag of an XML tag matching the name
+        specified with the second parameter. The XMLGetChildren() function can be used to obtain ALL child tags having a specific name. </remarks>
+    </XMLGetChild>
+    <XMLGetChildren>
+        <summary>Get array of children of an XML tag. </summary>
+        <param name="nTagHandle">Numeric handle for the XML tag. </param>
+        <param name="cChildTagName">The tag name of the child tags to search.</param>
+        <returns>Returns an array of child handles matching the name specified as second parameter, or 0 if no child with the given name exists.</returns>
+        <remarks>This function is used to retrieve all child tags having the tag name specified with the second parameter.</remarks>
+    </XMLGetChildren>
+    <XMLGetParent>
+        <summary>Get parent of XML tag.</summary>
+        <param name="nTagHandle">Numeric handle for the XML tag.</param>
+        <returns>Returns the numeric handle of the parent tag or 0 if <paramref name="nTagHandle"/> doesn't have a parent tag. </returns>
+        <remarks>This function is used to retrieve the parent tag of an XML tag. Every tag has only one parent, except the document root tag which has no parent tag. </remarks>
+    </XMLGetParent>
+    <XMLGetTag>
+        <summary>Get members of an XML tag node. </summary>
+        <param name="nTagHandle">Numeric handle of an XML tag. </param>
+        <param name="aTagMember">If the function returns successfully, this parameter contains an array with all members of the tag.
+        The parameter must be passed by reference. Single elements of the array can be accessed using constants listed below.</param>
+        <returns>Returns .T. (true) if the tag is a valid tag and .F. (false) otherwise.</returns>
+        <remarks>This function is used to retrieve all members of an XML tag node.
+        The elements are the same as in Xbase++, and an extra 6th element has been added that contains the XmlNode object. </remarks>
+    </XMLGetTag>
+    <XMLSelectNodes>
+        <summary>Select specific nodes via xpath. </summary>
+        <param name="nDocHandle">Numeric handle for an XML document. </param>
+        <param name="cSelect">XPath select statement. </param>
+        <param name="aTagHandles">Output array </param>
+        <returns>Returns .T. (true) nDocHandle is recognized or .F. (false) otherwise.</returns>
+    </XMLSelectNodes>
+    <XppCollations>
+        <summary>List of possible values for XBase++ collations</summary>
+        <remarks>The System enumeration value is represented by 2 different sort orders, depending on the current Ansi or Charmode setting.</remarks>
+    </XppCollations>
+  </doc>

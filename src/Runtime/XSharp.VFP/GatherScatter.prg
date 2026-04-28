@@ -89,6 +89,8 @@ FUNCTION __GatherMemVar(aFieldList, lMemo) AS LOGIC CLIPPER
     RETURN TRUE
 #pragma options ("az", on)
 
+
+[FoxArrayInputParameter(1)];
 FUNCTION __ScatterArray(uSource, aFieldList, lBlank, lMemo) AS ARRAY CLIPPER
     EnforceType(@lBlank, __UsualType.Logic)
     EnforceType(@lMemo, __UsualType.Logic)

@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup
@@ -190,6 +191,20 @@ namespace XSharp.LanguageService
         }
         public static XSourceMemberSymbol FindMember(int nLine, XFile file)
         {
+            var member = _FindMemberWorker(nLine, file);
+            if (member != null)
+                return member;
+            file.Parse();
+            member = _FindMemberWorker(nLine, file);
+            if (member != null)
+                return member;
+            WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
+            return null;
+        }
+
+        static XSourceMemberSymbol _FindMemberWorker(int nLine, XFile file)
+        {
+
             var member = FindEntity(nLine, file);
             if (member is XSourceMemberSymbol)
             {
@@ -225,9 +240,6 @@ namespace XSharp.LanguageService
             {
                 return symbol.XMembers.LastOrDefault();
             }
-
-            WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
-
             return null;
         }
 
@@ -715,7 +727,15 @@ namespace XSharp.LanguageService
                         else if (symbols.Count > 0)
                         {
                             if (symbols.Peek() is IXTypeSymbol type)
+                            {
                                 currentType = type;
+                                if (currentToken.Type == XSharpLexer.RCURLY)
+                                {
+                                    findConstructor = true;
+                                    currentName = type.Name;
+                                    break;
+                                }
+                            }
                             else if (symbols.Peek() is IXMemberSymbol member)
                             {
                                 currentType = member.ResolvedType;
@@ -780,6 +800,8 @@ namespace XSharp.LanguageService
                                     Translate = 3,               // #translate
                                     XCommand = 4,                // #xcommand
                                     XTranslate = 5,              // #xtranslate
+                                    YCommand = 6,                // #ycommand
+                                    YTranslate = 7,              // #ytranslate
                                 }
                              * */
                             case 1:
@@ -796,6 +818,12 @@ namespace XSharp.LanguageService
                                 break;
                             case 5:
                                 kind = Kind.XTranslate;
+                                break;
+                            case 6:
+                                kind = Kind.YCommand;
+                                break;
+                            case 7:
+                                kind = Kind.YTranslate;
                                 break;
                             default:
                                 kind = Kind.Unknown;
@@ -870,6 +898,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
+
                 if (isId)
                 {
                     qualifiedName = list.La1 == XSharpLexer.DOT;
@@ -899,6 +928,10 @@ namespace XSharp.LanguageService
                             result.AddRange(props.Where(p => !p.IsStatic));
                         }
                     }
+                }
+                if (findConstructor)
+                {
+                    isId = true;
                 }
                 if (literal)
                 {
@@ -966,7 +999,15 @@ namespace XSharp.LanguageService
                         var types = SearchType(location, lookupName, additionalUsings);
                         if (types?.Count() > 0)
                         {
-                            result.AddRange(types);
+                            if (findConstructor)
+                            {
+                                var ctors = SearchConstructors(types[0], Modifiers.Public);
+                                result.AddRange(ctors);
+                            }
+                            else
+                            {
+                                result.AddRange(types);
+                            }
                         }
                     }
                     if (startOfExpression && result.Count == 0)

@@ -55,6 +55,21 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerErrorHandler</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            You can register a function / method with this prototype in the RuntimeState to intercept errors in the macro compiler
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerIncludeAssemblyInCache</codeEntityReference>
               </para>
             </entry>

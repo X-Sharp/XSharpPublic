@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Performs a bitwise AND operation on two or more values of Numeric, Varbinary, or Blob type and returns the result.
-            There is a numeric and a binary version of the syntax.
+            对两个或多个数值型、可变二进制或大型二进制类型的值执行按位与操作并返回结果。
+            有数值版本和二进制版本的语法。
         </para>
             </entry>
           </row>
@@ -46,9 +46,9 @@
             </entry>
             <entry>
               <para>
-            Clears the specified bit in a Numeric, Varbinary, or Blob value by setting it to 0 and returns the resulting value.
-            There is a numeric and a binary version of the syntax.
-            If the specified expression is not an integer, it is converted to an integer before performing the operation.
+            通过将指定位设置为0来清除数值型、可变二进制或大型二进制值中的指定位，并返回结果值。
+            有数值版本和二进制版本的语法。
+            如果指定的表达式不是整数，则在执行操作之前会将其转换为整数。
         </para>
             </entry>
           </row>
@@ -63,8 +63,8 @@
             </entry>
             <entry>
               <para>
-            Moves bits in a numeric value to the left by the specified number of positions and returns the resulting value.
-            If the specified expressions are not integers, they are converted to integers before performing the operation.
+            将数值中的位向左移动指定的位数，并返回结果值。
+            如果指定的表达式不是整数，它们在执行操作之前会被转换为整数。
         </para>
             </entry>
           </row>
@@ -79,9 +79,9 @@
             </entry>
             <entry>
               <para>
-            Performs a bitwise NOT operation on a value of Numeric, Varbinary, or Blob type and returns the bitwise complement on the specified value.
-            There is a numeric and a binary version of the syntax.
-            If the specified expression is not an integer, it is converted to an integer before performing the operation.
+            对数值型、可变二进制或大型二进制类型的值执行按位非操作，并返回指定值的按位补码。
+            有数值版本和二进制版本的语法。
+            如果指定的表达式不是整数，则在执行操作之前会将其转换为整数。
         </para>
             </entry>
           </row>
@@ -96,8 +96,8 @@
             </entry>
             <entry>
               <para>
-            Perform a bitwise inclusive OR operation on two or more values of Numeric, Varbinary, or Blob type and returns the result.
-            There is a numeric and a binary version of the syntax.
+            对数值型、可变二进制或大型二进制类型的两个或多个值执行按位包含性OR操作，并返回结果。
+            有数值版本和二进制版本的语法。
         </para>
             </entry>
           </row>
@@ -112,8 +112,8 @@
             </entry>
             <entry>
               <para>
-            Moves bits in a numeric value to the right by the specified number of positions and returns the resulting value.
-            If the specified expressions are not integers, they are converted to integers before performing the operation.
+            将数值中的位向右移动指定的位数，并返回结果值。
+            如果指定的表达式不是整数，它们在执行操作之前会被转换为整数。
         </para>
             </entry>
           </row>
@@ -128,9 +128,9 @@
             </entry>
             <entry>
               <para>
-            Sets a bit to 1 in a value of Numeric, Varbinary, or Blob type and returns the resulting value.
-            There is a numeric and a binary version of the syntax.
-            If the specified expression is not an integer, it is converted to an integer before setting the bit.
+            通过将指定位设置为1来设置数值型、可变二进制或大型二进制值中的指定位，并返回结果值。
+            有数值版本和二进制版本的语法。
+            如果指定的表达式不是整数，则在执行操作之前会将其转换为整数。
         </para>
             </entry>
           </row>
@@ -145,9 +145,9 @@
             </entry>
             <entry>
               <para>
-            Determines whether a specific bit in a Numeric, Varbinary, or Blob value is set to 1.
-            There is a numeric and a binary version of the syntax.
-            If the specified expression is not an integer, it is converted to an integer before performing the operation.
+            确定数值型、可变二进制或大型二进制值中的特定位是否设置为1。
+            有数值版本和二进制版本的语法。
+            如果指定的表达式不是整数，则在执行操作之前会将其转换为整数。
         </para>
             </entry>
           </row>
@@ -162,8 +162,8 @@
             </entry>
             <entry>
               <para>
-            Perform a bitwise exclusive OR operation on two or more values of Numeric, Varbinary, or Blob type and returns the result.
-            There is a numeric and a binary version of the syntax.
+            对两个或多个数值型、可变二进制或大型二进制类型的值执行按位异或操作，并返回结果。
+            有数值版本和二进制版本的语法。
         </para>
             </entry>
           </row>

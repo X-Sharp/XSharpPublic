@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -12,13 +12,13 @@ USING System.Text
 USING System.Runtime.CompilerServices
 USING System.Runtime.InteropServices
 
-/// <summary>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</summary>
 
 
+/// <include file="XSharp.Data.Docs.xml" path="doc/OleDbFactory/*" />
 CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
 
-    /// <inheritdoc />
 
+    /// <inheritdoc />
     PRIVATE quotes AS STRING
 
     OVERRIDE PROPERTY QuoteChar AS STRING GET quotes

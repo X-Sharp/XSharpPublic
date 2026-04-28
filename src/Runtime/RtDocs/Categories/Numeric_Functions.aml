@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -70,13 +70,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Abs(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Abs(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the absolute value of a numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a numeric expression, regardless of its sign.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Abs(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the absolute value of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a strongly typed numeric expression, regardless of its sign.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a strongly typed numeric expression, regardless of its sign.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a strongly typed numeric expression, regardless of its sign.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +150,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a strongly typed numeric expression, regardless of its sign.
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +165,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a strongly typed numeric expression, regardless of its sign.
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +180,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      Return the absolute value of a strongly typed numeric expression, regardless of its sign.
+    </para>
             </entry>
           </row>
           <row>
@@ -175,88 +190,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACos(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Returns the arc cosine of a specified numeric expression.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACot(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Calculate the arc cotangent of a number.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASin(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Returns in radians the arc sine of a numeric expression.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATan(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Calculate the arc tangent of a number.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Atan2(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Returns the angle whose tangent is the quotient of two specified numbers.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ceil(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Round a number up to the next highest integer.
-        </para>
+      Returns the arc cosine of a specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -265,11 +205,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Ceiling(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ACos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+      Returns the arc cosine of a specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -278,12 +220,132 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cos(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACot(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the cosine of a number.
+      Calculate the arc cotangent of a number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASin(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns in radians the arc sine of a numeric expression.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASin(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns in radians the arc sine of a numeric expression.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATan(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Calculate the arc tangent of a number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATan(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns in radians the arc tangent of a numeric expression.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Atan2(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the angle whose tangent is the quotient of two specified numbers.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Atn2(System.Double,System.Double)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the arc tangent in all four quadrants from specified values.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ceil(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Round a number up to the next highest integer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Ceiling(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns the next highest integer that is greater than or equal to the specified numeric expression.
         </para>
             </entry>
           </row>
@@ -293,13 +355,43 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cot(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the cotangent of a value.
-        </para>
+      Calculate the cosine of a number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Cos(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the cosine of a numeric expression.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cot(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Calculate the cotangent of a value.
+    </para>
             </entry>
           </row>
           <row>
@@ -321,13 +413,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts degrees to radians.
-        </para>
+      Converts degrees to radians.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts degrees to radians.
+    </para>
             </entry>
           </row>
           <row>
@@ -341,8 +448,8 @@
             </entry>
             <entry>
               <para>
-            Convert a double word to a string containing a 32-bit unsigned integer.
-        </para>
+      Convert a double word to a string containing a 32-bit unsigned integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -351,13 +458,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Exp(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Exp(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the numeric value of a natural logarithm.
-        </para>
+      Calculate the numeric value of a natural logarithm.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Exp(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the value of ex where x is a specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -371,8 +493,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float to a string containing an 80-bit floating point number.
-        </para>
+      Convert a float to a string containing an 80-bit floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -386,8 +508,8 @@
             </entry>
             <entry>
               <para>
-            Calculate the factorial of a number.
-        </para>
+      Calculate the factorial of a number.
+    </para>
             </entry>
           </row>
           <row>
@@ -396,12 +518,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -415,8 +536,8 @@
             </entry>
             <entry>
               <para>
-            Set the display format for a floating point numeric.
-        </para>
+      Set the display format for a floating point numeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -425,13 +546,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Floor(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Floor(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Round a number down to the next lowest integer.
-        </para>
+      Round a number down to the next lowest integer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Floor(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the nearest integer that is less than or equal to the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -445,8 +581,8 @@
             </entry>
             <entry>
               <para>
-            Return the fractional portion of a number.
-        </para>
+      Return the fractional portion of a number.
+    </para>
             </entry>
           </row>
           <row>
@@ -475,8 +611,8 @@
             </entry>
             <entry>
               <para>
-            Return the high-order (leftmost) byte in a number.
-        </para>
+      Return the high-order (leftmost) byte in a number.
+    </para>
             </entry>
           </row>
           <row>
@@ -490,8 +626,8 @@
             </entry>
             <entry>
               <para>
-            Return the high-order (leftmost) word in a number.
-        </para>
+      Return the high-order (leftmost) word in a number.
+    </para>
             </entry>
           </row>
           <row>
@@ -505,23 +641,38 @@
             </entry>
             <entry>
               <para>
-            Convert a short integer to a string containing a 16-bit signed integer.
-        </para>
+      Convert a short integer to a string containing a 16-bit signed integer.
+    </para>
             </entry>
           </row>
           <row>
             <entry>
-              <para>XSharp.RT</para>
+              <para>XSharp.Core</para>
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Integer(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I642Bin(System.Int64)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Truncate or floor a number with decimal digits to a whole number.
-        </para>
+      Convert a long integer to a string containing a 32-bit signed integer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Int(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Evaluates a numeric expression and returns the integer portion of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -530,7 +681,22 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Integer(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Truncate or floor a number with decimal digits to a whole number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -545,7 +711,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -560,7 +726,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -575,13 +741,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a FLOAT.
-        </para>
+      Determine if a value is a FLOAT.
+    </para>
             </entry>
           </row>
           <row>
@@ -590,7 +756,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -605,7 +771,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -620,7 +786,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -635,13 +801,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a LONGINT.
-        </para>
+      Determine if a value is a LONGINT.
+    </para>
             </entry>
           </row>
           <row>
@@ -650,13 +816,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a numeric.
-        </para>
+      Determine if a value is a numeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -670,8 +836,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer to a string containing a 32-bit signed integer.
-        </para>
+      Convert a long integer to a string containing a 32-bit signed integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -680,13 +846,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the length of a string or an array.
-        </para>
+      Return the length of a string or an array.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Len(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines the number of characters in a character expression, indicating the length of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -700,8 +881,8 @@
             </entry>
             <entry>
               <para>
-            Return the low-order (rightmost) byte in a number.
-        </para>
+      Return the low-order (rightmost) byte in a number.
+    </para>
             </entry>
           </row>
           <row>
@@ -710,13 +891,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.LOG(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.LOG(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the natural logarithm of a numeric value.
-        </para>
+      Calculate the natural logarithm of a numeric value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LOG(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the natural logarithm (base e) of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -725,13 +921,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Log10(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Log10(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the common logarithm of a numeric value.
-        </para>
+      Calculate the common logarithm of a numeric value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Log10(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the common logarithm (base 10) of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -745,8 +956,8 @@
             </entry>
             <entry>
               <para>
-            Convert a logical value to a string containing an 8-bit logical value.
-        </para>
+      Convert a logical value to a string containing an 8-bit logical value.
+    </para>
             </entry>
           </row>
           <row>
@@ -760,8 +971,8 @@
             </entry>
             <entry>
               <para>
-            Return the low-order (rightmost) word in a number.
-        </para>
+      Return the low-order (rightmost) word in a number.
+    </para>
             </entry>
           </row>
           <row>
@@ -775,8 +986,8 @@
             </entry>
             <entry>
               <para>
-            Create a DWORD from two words
-        </para>
+      Create a DWORD from two words
+    </para>
             </entry>
           </row>
           <row>
@@ -790,22 +1001,8 @@
             </entry>
             <entry>
               <para>
-            Create a long from two words
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAKEROP4(System.UInt16,System.UInt16)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-              </para>
+      Create a long from two words
+    </para>
             </entry>
           </row>
           <row>
@@ -819,8 +1016,8 @@
             </entry>
             <entry>
               <para>
-            Create a Short from two bytes
-        </para>
+      Create a Short from two bytes
+    </para>
             </entry>
           </row>
           <row>
@@ -834,8 +1031,8 @@
             </entry>
             <entry>
               <para>
-            Create a Short from two bytes
-        </para>
+      Create a Short from two bytes
+    </para>
             </entry>
           </row>
           <row>
@@ -844,13 +1041,58 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the larger of 2 values.
-        </para>
+      Return the larger of 2 values.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Evaluates a set of expressions and returns the expression with the maximum value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Min(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Return the smaller of 2 values.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Min(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Evaluates a set of expressions and returns the expression with the minimum value.
+    </para>
             </entry>
           </row>
           <row>
@@ -864,8 +1106,8 @@
             </entry>
             <entry>
               <para>
-            Return the remainder of one number divided by another number.
-        </para>
+      Return the remainder of one number divided by another number.
+    </para>
             </entry>
           </row>
           <row>
@@ -874,13 +1116,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mod(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mod(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the remainder of one number divided by another number.
-        </para>
+      Return the remainder of one number divided by another number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Mod(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Divides one numeric expression by another numeric expression and returns the remainder.
+    </para>
             </entry>
           </row>
           <row>
@@ -919,13 +1176,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a left-trimmed string.
-        </para>
+      Convert a numeric expression to a left-trimmed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -954,8 +1211,23 @@
             </entry>
             <entry>
               <para>
-            Returns the numeric constant pi.
-        </para>
+      Returns the numeric constant pi.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PI</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the numeric constant pi.
+    </para>
             </entry>
           </row>
           <row>
@@ -964,13 +1236,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Pow(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Pow(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Raise the first argument to the numeric power specified by the second argument.
-        </para>
+      Raise the first argument to the numeric power specified by the second argument.
+    </para>
             </entry>
           </row>
           <row>
@@ -999,8 +1271,23 @@
             </entry>
             <entry>
               <para>
-            Return a random number between 0 and 1.
-        </para>
+      Return a random number between 0 and 1.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rand</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a random number between 0 and 1.
+    </para>
             </entry>
           </row>
           <row>
@@ -1014,8 +1301,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real4 value to a string containing a 32-bit floating point number.
-        </para>
+      Convert a Real4 value to a string containing a 32-bit floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -1029,8 +1316,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real8 value to a string containing an 8-byte floating point number.
-        </para>
+      Convert a Real8 value to a string containing an 8-byte floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -1039,13 +1326,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Round(XSharp.__Usual,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Round(XSharp.__Usual@,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Round a number to a specified number of digits.
-        </para>
+      Round a number to a specified number of digits.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Round(XSharp.__Usual@,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric expression rounded to a specified number of decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -1054,14 +1356,30 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts radians to its equivalent in degrees.
-            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
-        </para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
             </entry>
           </row>
           <row>
@@ -1085,13 +1403,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Sin(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Sin(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the sine of a number.
-        </para>
+      Calculate the sine of a number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sin(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the sine of an angle.
+    </para>
             </entry>
           </row>
           <row>
@@ -1100,13 +1433,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SQrt(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SQrt(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the square root of a positive number.
-        </para>
+      Return the square root of a positive number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SQrt(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the square root of the specified numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1120,8 +1468,23 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1130,13 +1493,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1150,8 +1513,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of a specified length.
-        </para>
+      Convert a numeric expression to a string of a specified length.
+    </para>
             </entry>
           </row>
           <row>
@@ -1165,8 +1528,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -1175,11 +1538,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Converts character expressions between single-byte, double-byte, UNICODE, and locale-specific representations.
+        </para>
             </entry>
           </row>
           <row>
@@ -1208,8 +1573,8 @@
             </entry>
             <entry>
               <para>
-            Convert an integer expression to a PSZ.
-        </para>
+      Convert an integer expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -1223,8 +1588,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer expression to a PSZ.
-        </para>
+      Convert a long integer expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -1238,8 +1603,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -1253,8 +1618,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-        </para>
+      Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
+    </para>
             </entry>
           </row>
           <row>
@@ -1268,8 +1633,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a byte.
-        </para>
+      Exchange the right and left halves of a byte.
+    </para>
             </entry>
           </row>
           <row>
@@ -1283,8 +1648,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a double word.
-        </para>
+      Exchange the right and left halves of a double word.
+    </para>
             </entry>
           </row>
           <row>
@@ -1298,8 +1663,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of an integer.
-        </para>
+      Exchange the right and left halves of an integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1328,8 +1693,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a long integer.
-        </para>
+      Exchange the right and left halves of a long integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1342,8 +1707,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1357,8 +1721,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a short integer.
-        </para>
+      Exchange the right and left halves of a short integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1372,8 +1736,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a word.
-        </para>
+      Exchange the right and left halves of a word.
+    </para>
             </entry>
           </row>
           <row>
@@ -1382,13 +1746,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Tan(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Tan(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the tangent of a number.
-        </para>
+      Calculate the tangent of a number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Tan(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      This trigonometric function returns the tangent of an angle.
+    </para>
             </entry>
           </row>
           <row>
@@ -1397,13 +1776,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a number to a word.
-        </para>
+      Convert a number to a word.
+    </para>
             </entry>
           </row>
           <row>
@@ -1417,8 +1796,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
           <row>
@@ -1432,8 +1826,8 @@
             </entry>
             <entry>
               <para>
-            Convert a word to a string containing a 16-bit unsigned integer.
-        </para>
+      Convert a word to a string containing a 16-bit unsigned integer.
+    </para>
             </entry>
           </row>
         </table>

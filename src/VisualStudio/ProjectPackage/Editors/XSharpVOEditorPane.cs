@@ -222,7 +222,7 @@ namespace XSharp.Project
             this.editorControl.StatusMessage = new StatusMessageDelegate(StatusBarMessageHandler);
         }
 
-        
+
         void StatusBarMessageHandler(string cText)
         {
             VS.StatusBar.ShowMessageAsync(cText).FireAndForget();
@@ -238,7 +238,7 @@ namespace XSharp.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (!this.loading)
-            { 
+            {
                 ((IPersistFileFormat)this).Save(fileName, 0, 0);
             }
         }
@@ -446,7 +446,7 @@ namespace XSharp.Project
             editorControl.RecordCommand("Cut");
         }
 
- 
+
 
         /// <summary>
         /// Handler for when we want to query the status of the cut or delete
@@ -1202,7 +1202,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsFileChangeEvents.FilesChanged(uint cChanges, string[] rgpszFile, uint[] rggrfChange)
         {
-            Logger.Debug("**** Inside FilesChanged ****");
+            Logger.Information("**** Inside FilesChanged ****");
             ThreadHelper.ThrowIfNotOnUIThread();
 
             //check the different parameters
@@ -1273,7 +1273,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsDocDataFileChangeControl.IgnoreFileChanges(int fIgnore)
         {
-            Logger.Debug("**** Inside IgnoreFileChanges ****");
+            Logger.Information("**** Inside IgnoreFileChanges ****");
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (fIgnore != 0)

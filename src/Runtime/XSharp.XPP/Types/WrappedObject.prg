@@ -5,9 +5,7 @@ using System.Text
 
 begin namespace XSharp.XPP
 
-/// <summary>
-/// The XppWrappedObject class.
-/// </summary>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/__XppWrappedObject/*" />
 class __XppWrappedObject implements IWrappedObject
     property Object as object auto get private set
     property Type   as System.Type auto get private set

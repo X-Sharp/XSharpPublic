@@ -1,4 +1,5 @@
 @echo off
+set xssolution=compiler.slnx
 set xsoldpath=%path%
 set xsdotnetpath=%~dp0\Artifacts\Tools\dotnet
 set path=%xsdotnetpath%;%PATH%
@@ -14,11 +15,11 @@ if /i "%1" == "All" goto All
 goto Error
 :All
 Echo Restore nuget packages once for all builds
-dotnet restore Compiler.sln  -p:Configuration=Release
+dotnet restore %xssolution%  -p:Configuration=Release
 SET XSHARPBUILDNESTED=1
+call BuildCompiler Public
 call BuildCompiler Debug
 call BuildCompiler Release
-call BuildCompiler Public
 call BuildMacroCompiler.cmd
 SET XSHARPBUILDNESTED=
 Goto End
@@ -32,10 +33,10 @@ rem Next line can help to debug where DotNet.exe finds the right SDK
 rem SET COREHOST_TRACE=1
 if "%XSHARPBUILDNESTED%" == "1" goto Build
 Echo Restoring packages for configuration %1 
-dotnet restore Compiler.sln  -p:Configuration=%1
+dotnet restore %xssolution%  -p:Configuration=%1
 :Build
 Echo Building output for configuration %1
-msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo /m
+msbuild %xssolution% /fl1 /p:Configuration=%1 /t:Build /v:m /nologo /m
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log
 set XSharpDev=%tmpXSharpDev%

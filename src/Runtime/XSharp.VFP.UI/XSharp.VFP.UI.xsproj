@@ -24,7 +24,7 @@
     <vo13>true</vo13>
     <vo14>true</vo14>
     <vo15>False</vo15>
-    <vo16>true</vo16>
+    <vo16>False</vo16>
     <lb>False</lb>
     <memvar>False</memvar>
     <undeclared>False</undeclared>
@@ -40,9 +40,10 @@
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <NoWarn>$(DisabledWarnings);108,114</NoWarn>
+    <NoWarn>$(NoWarn);$(DisabledWarnings);108,114</NoWarn>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <IncludePaths>$(ProjectDir)..\XSharp.VFP%3b$(ProjectDir)\Headers</IncludePaths>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -55,6 +56,11 @@
       <Name>System.Drawing</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.Drawing.dll</AssemblyName>
+    </Reference>
+    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Management</Name>
+      <AssemblyName>System.Management.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Windows.Forms</Name>
@@ -72,6 +78,13 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="AEventsDefinition.prg" />
+    <Compile Include="AssertDialog.designer.prg">
+      <DependentUpon>AssertDialog.prg</DependentUpon>
+    </Compile>
+    <Compile Include="AssertDialog.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoCloseMessageBox.prg" />
     <Compile Include="Generated\CheckBox.generated.prg" />
     <Compile Include="Generated\_Interfaces.prg" />
     <Compile Include="Generated\Column.generated.prg" />
@@ -153,12 +166,13 @@
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
     <Compile Include="VFPTools.prg" />
+    <Compile Include="VfpUIProvider.prg" />
+    <Compile Include="Win32UI.prg" />
     <Compile Include="_OtherClasses.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Headers" />
     <Folder Include="Generated\" />
-    <Folder Include="XSharp" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -188,8 +202,8 @@
     <None Include="Generated\VFPControl.xh" />
     <None Include="Generated\VFPObject.xh" />
     <None Include="Headers\VFPObject.xh" />
+    <None Include="Headers\VFPPropertiesDynamic.xh" />
     <None Include="Properties\XSharp.bmp" />
-    <None Include="XSharp\VFPProperties.xh" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
@@ -220,15 +234,30 @@
       <CustomTool>ResXFileCodeGenerator</CustomTool>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AssertDialog.resx">
+      <DependentUpon>AssertDialog.prg</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DefineConstants>DEBUG;TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors />
+    <DefineConstants>TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
   </PropertyGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

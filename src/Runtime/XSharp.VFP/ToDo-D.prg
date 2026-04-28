@@ -8,19 +8,9 @@
 
 #pragma options("vo15", on)
 
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/displaypath/*" />
-
-FUNCTION DisplayPath( cFilename, nMaxLength )
-    THROW NotImplementedException{}
-    // RETURN ""
-
-
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dropoffline/*" />
-
+[FoxProFunction("DROPOFFLINE", FoxFunctionCategory.Database, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION DropOffLine( cViewName )
     THROW NotImplementedException{}
     // RETURN FALSE

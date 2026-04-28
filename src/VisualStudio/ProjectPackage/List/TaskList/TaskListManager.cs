@@ -25,7 +25,7 @@ namespace XSharp.Project
     internal class TaskListManager : ListManager<ITaskListItem>
     {
         static ConcurrentDictionary<Guid, TaskListManager> _projects;
-        static ListProvider _provider = null;
+        static ListProvider _listprovider = null;
         static ITaskList _taskList;
         static ITableManager _manager;
 
@@ -38,7 +38,7 @@ namespace XSharp.Project
             if (_taskList != null)
             {
                 _manager = _taskList.TableControl.Manager;
-                _provider = new TaskListProvider(_manager);
+                _listprovider = new TaskListProvider(_manager);
             }
         }
 
@@ -51,16 +51,21 @@ namespace XSharp.Project
         internal TaskListManager(XSharpProjectNode node) : base(node)
         {
             GetTaskList();
-            SetProvider(_provider);
+            SetProvider(_listprovider);
         }
 
         internal static TaskListManager RegisterProject(XSharpProjectNode project)
         {
+            if (_listprovider == null)
+			{
+				GetTaskList();
+			}
 
             if (!_projects.ContainsKey(project.ProjectIDGuid))
             {
                 var manager = new TaskListManager(project);
-                _provider.AddListFactory(manager.Factory);
+                if (_listprovider != null)
+                   _listprovider.AddListFactory(manager.Factory);
                 _projects.TryAdd(project.ProjectIDGuid, manager);
             }
             _projects.TryGetValue(project.ProjectIDGuid, out var tasklistmanager);
@@ -86,7 +91,7 @@ namespace XSharp.Project
         {
             if (_projects.TryGetValue(project.ProjectIDGuid, out var entry))
             {
-                _provider.RemoveListFactory(entry.Factory);
+                _listprovider.RemoveListFactory(entry.Factory);
                 return _projects.TryRemove(project.ProjectIDGuid, out _);
             }
             return false;

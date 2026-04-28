@@ -9,11 +9,7 @@ USING System.Collections.Generic
 USING System.ComponentModel
 USING XSharp.RDD
 
-/// <summary>This class is used by the DbDataSource class to represent the records in a workarea.</summary>
-/// <remarks>The record class exposes the fields in the workarea as 'pseudo' properties of these fields.
-/// The DbRecord class also implements INotifyPropertychanged, so when the record is bound to a data aware control
-/// then this control will 'see' changes that were made to the record.
-/// </remarks>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord/*" />
 [TypeDescriptionProvider(typeof(DbRecordDescriptorProvider))];
 CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     #region instance variables
@@ -25,10 +21,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     #endregion
 
     #region construtors
-    /// the current record position, which is needed when we want to talk back to the dbf.
-    /// <summary>Initializes a new instance of the DbRecord class</summary>
-    /// <param name="position">Ordinal position in the datasource</param>
-    /// <param name="source">Data source to which this object belongs</param>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.ctor/*" />
     CONSTRUCTOR( position AS DWORD, source AS DbDataSource)
     SELF:RecNo := position
     SELF:Datasource := source
@@ -56,10 +49,10 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
 
     #region properties
 
-    /// <summary>Record number in the workarea. Does not have to match the logical position in the list.</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.RecNo/*" />
     [ReadOnly(TRUE)];
     PROPERTY  RecNo AS DWORD AUTO
-    /// <summary>Is the current record deleted ?</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.Deleted/*" />
     [ReadOnly(TRUE)];
     PROPERTY  Deleted      AS LOGIC
         GET
@@ -74,7 +67,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
         END GET
     END PROPERTY
 
-    /// <summary>Read/Write fields in the workarea by name.</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.SELF_fieldName/*" />
     PROPERTY SELF[fieldName AS STRING] AS OBJECT
         GET
             VAR fieldPos := SELF:Datasource:FieldIndex(fieldName)
@@ -87,7 +80,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     END PROPERTY
 
 
-    /// <summary>Read/Write fields in the workarea by position.</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.SELF_fieldPos/*" />
     PROPERTY SELF[fieldPos AS INT] AS OBJECT
         GET
             LOCAL value AS OBJECT
@@ -119,18 +112,14 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     END PROPERTY
     #endregion
 
-    /// <summary>Get the fieldname for a certain field position</summary>
-    /// <param name="fieldPos">0 based Field number</param>
-    /// <returns>Field Name</returns>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.FieldName_fieldPos/*" />
     PROPERTY FieldName[fieldPos AS INT] AS STRING
         GET
             return SELF:Datasource:FieldName(fieldPos)
         END GET
     END PROPERTY
 
-    /// <summary>Get the value for a certain field position</summary>
-    /// <param name="fieldPos">0 based Field number</param>
-    /// <returns>Field Value</returns>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.FieldValue_fieldPos/*" />
     PROPERTY FieldValue[fieldPos AS INT] AS OBJECT
         GET
             return SELF:Datasource:GetValue(fieldPos)
@@ -139,22 +128,18 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
 
 
     #region methods
-    /// Always a good idea to implement this.
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.ToString/*" />
     PUBLIC OVERRIDE METHOD ToString() AS STRING STRICT
         RETURN SELF:Datasource:Name+" "+SELF:RecNo:ToString()
 
-    /// This method will be called if somebody changes a column value inside the dbf server.
-    /// If the record number is the same as the one we're representing, the we raise the
-    /// property changed event as one of our properties has changed.
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.FieldChange/*" />
     PRIVATE METHOD FieldChange( recno AS DWORD , colno AS INT ) AS VOID
         IF recno == SELF:RecNo
             SELF:OnPropertyChanged(colno)
         ENDIF
     RETURN
 
-    /// We are using this to signal the consuming components that a property has changed.
-        /// As the PropertyChangedEventArgs has to provide the name of the property changed,
-    /// we are usign the column name of inside the dbf server.
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecord.OnPropertyChanged/*" />
     PRIVATE METHOD OnPropertyChanged(colno AS INT) AS VOID
     IF SELF:PropertyChanged != NULL
         LOCAL args:=PropertyChangedEventArgs{SELF:Datasource:FieldName(colno)} AS PropertyChangedEventArgs
@@ -182,7 +167,7 @@ INTERNAL CLASS XSharp.DbRecordDescriptorProvider INHERIT TypeDescriptionProvider
     RETURN
     #endregion
     #region methods
-    /// This method is being called if someone wants to reflect the type we're operating on.
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecordDescriptorProvider.GetTypeDescriptor/*" />
     PUBLIC OVERRIDE METHOD GetTypeDescriptor(objectType AS Type, instanceObject AS OBJECT) AS ICustomTypeDescriptor
         LOCAL returnValue          AS ICustomTypeDescriptor
         LOCAL defaultDescriptor    AS ICustomTypeDescriptor
@@ -217,7 +202,7 @@ INTERNAL CLASS XSharp.DbRecordDescriptor  INHERIT CustomTypeDescriptor
     PUBLIC OVERRIDE METHOD GetProperties() AS PropertyDescriptorCollection STRICT
         RETURN SELF:oDatasource:PropertyDescriptors
 
-    /// Same as the method before except that attributes are provided for filtering.
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbRecordDescriptor.GetProperties/*" />
     PUBLIC OVERRIDE METHOD GetProperties(attributes AS Attribute[]) AS PropertyDescriptorCollection
         RETURN SELF:oDatasource:PropertyDescriptors
 #endregion

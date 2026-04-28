@@ -50,11 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
         OVERRIDE METHOD ToString() AS STRING => DebugString
 
-    END CLASS
-    /// <summary>
-    /// CdxBranchePage. this class maps the Branch page from the file in memory
-    /// Manipulating the page is implemented in the CdxTag class
-    /// </summary>
+END CLASS
     /*
     From the FoxPro Docs, where this is called "Compact Index Interior Node Record"
     Byte offset  Description
@@ -71,6 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 This node always contains the index key, record number and intra-index pointer.2
                 The key/four-byte hexadecimal number combinations will occur the number of times indicated in bytes 02 ? 03.
     */
+    /// <include file="XSharp.RDD.Docs.xml" path="doc/CdxBranchPage/*" />
     INTERNAL SEALED CLASS CdxBranchPage INHERIT CdxTreePage
         PRIVATE _keyLen    AS Int32
         PRIVATE _dataLen   as Int32

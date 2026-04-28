@@ -1,0 +1,23 @@
+///////////////////////////////////////////////////////////////////////////
+// VFPPropertiesDynamic.xh
+//
+// Include this file in a class that wants to add VFP Property support
+// Additionally add IMPLEMENTS XSharp.IDynamicProperties to the class definition
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+#ifndef VFP_PROPERTIESDYNAMIC_XH
+#define VFP_PROPERTIESDYNAMIC_XH
+
+    METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
+        RETURN SELF:_AddProperty(cPropertyName, uValue, nVisibility, cDescription)
+
+    METHOD RemoveProperty(cPropertyName AS STRING) AS LOGIC
+        RETURN SELF:_RemoveProperty(cPropertyName)
+
+    METHOD HasProperty(cPropertyName AS STRING) AS LOGIC
+         RETURN _Properties:HasProperty(cPropertyName)
+
+
+#endif

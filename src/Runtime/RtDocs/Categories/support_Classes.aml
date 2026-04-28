@@ -177,8 +177,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -272,8 +271,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -314,6 +312,21 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ICurrency</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface is used to return Decimal values from the RDD system
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IDate</codeEntityReference>
               </para>
             </entry>
@@ -321,6 +334,19 @@
               <para>
             This interface defines Date values
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IDbConnectionClient</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -467,6 +493,19 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IWrappedObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MemVar</codeEntityReference>
               </para>
             </entry>
@@ -553,6 +592,19 @@
             </entry>
             <entry>
               <para>This class is used for Shared diskaccess on Windows. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbCurrency</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Implementation of the ICurrency interface that can be used by the RDD system. </para>
             </entry>
           </row>
           <row>
@@ -669,8 +721,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -683,8 +734,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
-            </para>
+              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.</para>
             </entry>
           </row>
           <row>
@@ -710,8 +760,9 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the Info method for the IRDD interface accepts.
-            </para>
+              <para>
+      This enum specifies the various values that the Info method for the IRDD interface accepts.
+    </para>
             </entry>
           </row>
           <row>
@@ -750,8 +801,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
-            </para>
+              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.</para>
             </entry>
           </row>
           <row>
@@ -764,8 +814,9 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
-            </para>
+              <para>
+      This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+    </para>
             </entry>
           </row>
           <row>

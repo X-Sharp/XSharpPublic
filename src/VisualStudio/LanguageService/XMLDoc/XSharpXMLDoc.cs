@@ -16,7 +16,7 @@ using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
 using System.Text;
 using System.Xml;
-using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     // No need to do a complicated lookup for the reference assembly names
@@ -33,6 +33,15 @@ namespace XSharp.LanguageService
             _XMLMemberIndexService = null;
             coreLoc = "";
             coreIndex = null;
+            VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+        }
+        private static void SolutionEvents_OnAfterCloseSolution()
+        {
+            XSharpXMLDocTools.Close();
+        }
+
+        static void init()
+        {
         }
 
         static bool GetIndex()
@@ -177,7 +186,7 @@ namespace XSharp.LanguageService
             foreach (var token in tokens)
             {
                 if (result.Length + token.Length + 1 > maxLength )
-                { 
+                {
                     yield return result;
                     result = "";
                 }
@@ -268,7 +277,7 @@ namespace XSharp.LanguageService
                         sb.Append(addXml("remarks", remarks));
                     }
                     return sb.ToString();
-                    
+
                 });
             }
             return null;
@@ -421,7 +430,7 @@ namespace XSharp.LanguageService
                             }
                             if (lastchar != ' ' && lastchar != '>')  // no space after '>' or after another space
                             {
-                                lastchar = ' ';          
+                                lastchar = ' ';
                                 sb.Append(lastchar);
                             }
                             break;

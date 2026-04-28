@@ -39,7 +39,7 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
     override property FalseLiteral            as string => "0"
 
     /// <inheritdoc />
-    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
+    override property PagingClause     as string => " limit "+PagesizeMacro+" offset "+StartRecMacro
     private static lockObj := object{} as object
     constructor()
         super("PostgreSql")

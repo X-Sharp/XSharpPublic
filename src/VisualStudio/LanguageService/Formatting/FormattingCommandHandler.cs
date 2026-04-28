@@ -17,6 +17,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
 {
@@ -58,7 +59,7 @@ namespace XSharp.LanguageService
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
             _lineFormatter = new LineFormatter(_buffer);
-            _document.FormattingCommandHandler = this;  
+            _document.FormattingCommandHandler = this;
 
         }
 
@@ -187,7 +188,7 @@ namespace XSharp.LanguageService
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {
-            if (XDebuggerSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)  
+            if (XDebuggerSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)
             {
                 XSettings.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();

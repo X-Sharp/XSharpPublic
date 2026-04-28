@@ -50,7 +50,7 @@ CLASS XClassCreator
             var result := List<String>{}
             result:Add("// Exception occurred during reading type information: ")
             result:Add("// "+e:Message)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
             return result
 		END TRY
 

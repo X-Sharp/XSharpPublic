@@ -16,7 +16,7 @@ using XSharp.RDD.SqlRDD.Providers
 begin namespace XSharp.RDD.SqlRDD
 
 
-partial class SQLRDD inherit DBFVFP
+partial class SQLRDD
     internal _currentOrder   as SqlDbOrder
 
     internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
@@ -110,10 +110,8 @@ partial class SQLRDD inherit DBFVFP
             self:Connection:MetadataProvider:CreateIndex(SELF:_cTable, orderInfo)
             return TRUE
         else
-            // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
-            self:_creatingIndex := TRUE
-            result := super:OrderCreate(orderInfo)
-            self:_creatingIndex := FALSE
+            self:_dbfError(Subcodes.EDB_CREATEINDEX, Gencode.EG_SYNTAX, "OrdCreate", "Cannot create an index on a result set from a SELECT statement")
+            result := FALSE
         endif
         return result
     end method
@@ -136,7 +134,7 @@ partial class SQLRDD inherit DBFVFP
 	/// <param name="info">An object containing information about the order to remove.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderDestroy(orderInfo AS DbOrderInfo ) as logic
-        local result as logic
+        local result := false as logic
         if self:_tableMode == TableMode.Table
             // todo: Rebuild Orders in tablemode, query mode uses DBFVFP driver for indices
             var order := self:FindOrder(orderInfo)
@@ -147,7 +145,7 @@ partial class SQLRDD inherit DBFVFP
             endif
 
         else
-            result := super:OrderDestroy(orderInfo)
+            self:_dbfError(Subcodes.EDB_ORDDESTROY, Gencode.EG_SYNTAX, "OrderDestroy", "Cannot destroy an index on a result set from a SELECT statement")
         endif
         return result
     end method
@@ -156,21 +154,28 @@ partial class SQLRDD inherit DBFVFP
 	/// <param name="info">An object containing information about the order to select.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderListFocus(orderInfo as DbOrderInfo) as logic
-        local result as logic
+        local result := false as logic
         if self:_tableMode == TableMode.Table
-            self:_CloseCursor()
             var currentRecord := SELF:RecNo
+            self:_CloseCursor()
             SELF:CurrentOrder := self:FindOrder(orderInfo)
             result := CurrentOrder != null
             IF result
                 SELF:CurrentOrder:ClearCache()
                 SELF:CurrentOrder:CalculateKeyLength()
-                if SELF:_recnoColumNo > -1
-                    self:GoTo(currentRecord)
-                endif
+                self:GoTo(currentRecord)
             ENDIF
         else
-            result := super:OrderListFocus(orderInfo)
+            if orderInfo:Order != null
+                if orderInfo:Order is long var nOrder .and. nOrder == 0
+                    result := true
+                elseif orderInfo:Order is string var cOrder .and. String.IsNullOrEmpty(cOrder)
+                    result := true
+                else
+                    self:_dbfError(Subcodes.EDB_SETORDER, Gencode.EG_SYNTAX, "OrderListFocus", "Cannot select an index on a result set from a SELECT statement")
+                    result := FALSE
+                endif
+            endif
         endif
         return result
     end method
@@ -287,7 +292,7 @@ partial class SQLRDD inherit DBFVFP
             endif
         case DBOI_FULLPATH
             if workOrder != null
-                info:Result := workOrder:OrderBag:FullPath
+                info:Result := workOrder:OrderBag:LogicalName
             else
                 info:Result := String.Empty
             endif
@@ -409,11 +414,12 @@ partial class SQLRDD inherit DBFVFP
             endif
         case DBOI_KEYCOUNT
             self:_ForceOpen()
-            info:Result := self:RowCount
+            info:Result := self:OrderKeyCount
         case DBOI_POSITION
+            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
         case DBOI_RECNO
             // our position is the row number in the local cursor
-            info:Result := self:RowNumber
+            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch
@@ -445,68 +451,70 @@ partial class SQLRDD inherit DBFVFP
             self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER, "SQLRDD:Seek","No current Order" )
             return false
         endif
-        if self:_oTd:SeekReturnsSubset
-            var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
-            self:_OpenTable(cSeekWhere)
-            if seekInfo:Last
-                self:GoBottom()
-            else
-                self:GoTop()
-            endif
-            SELF:_Found := ! SELF:EoF
-            RETURN TRUE
-        ELSE
-            SELF:_ForceOpen()
-            SELF:GoTop()
-            oKey := SELF:CurrentOrder:VerifyKeyType(oKey)
-            SELF:RowNumber := 1
-            SELF:_Found := FALSE
-            IF SELF:CurrentOrder:KeyCache:TryGetValue(oKey, out var nKey)
-                SELF:RowNumber := nKey
-                SELF:_Found := TRUE
-                IF ! seekInfo:Last
-                    RETURN TRUE
-                endif
-            ENDIF
-            // Linear search for now
-            DO WHILE ! SELF:EoF
-                var oRecKey := SELF:CurrentOrder:KeyValue
-                IF !(oRecKey IS NULL) .and. ! SELF:CurrentOrder:KeyCache:ContainsKey(oRecKey)
-                    SELF:CurrentOrder:KeyCache:Add(oRecKey, SELF:RowNumber)
-                endif
-                var nDiff := SELF:KeyCompare(oRecKey, oKey)
-                if  nDiff == 0
-                    SELF:_Found := TRUE
-                    EXIT
-                ELSEIF seekInfo:SoftSeek .AND. nDiff > 0
-                    SELF:_Found := FALSE
-                    EXIT
-                endif
-                SELF:RowNumber += 1
-                SELF:_CheckEofBof()
-                SELF:SkipFilter(1)
-            ENDDO
-            if seekInfo:Last
-                var foundRecord := SELF:RowNumber
-                SELF:RowNumber += 1
-                DO WHILE ! SELF:EoF
-                    var oRecKey := SELF:CurrentOrder:KeyValue
-                    // no need to add values to keycache, these values will be duplicates anyway
-                    var nDiff := SELF:KeyCompare(oRecKey, oKey)
-                    IF nDiff != 0
-                        EXIT
-                    ENDIF
-                    foundRecord := SELF:RowNumber
-                    SELF:RowNumber += 1
-                    SELF:_CheckEofBof()
-                    SELF:SkipFilter(1)
-                ENDDO
-                SELF:RowNumber := foundRecord
-                SELF:_SetEOF(FALSE)
-            endif
+        var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+        SELF:_ClearTable()
+        SELF:_currentPageNo := 1
+        // save PageSize
+        var nPageSize := SELF:_oTd:PageSize
+        SELF:_oTd:PageSize := 1
+        self:_OpenTable(cSeekWhere)
+        SELF:_oTd:PageSize := nPageSize
 
+        IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
+            SELF:GoTo(0)
+            SELF:_Found := false
+            SELF:_SetEOF(true)
+            SELF:_SetBOF(false)
+            return false
+        ENDIF
+
+        var nRec   := SELF:RecNo
+        var lFound := SELF:GoTo(nRec)
+
+        if lFound .and.;
+            !SELF:_FilterInfo:Active .and.;
+            !seekInfo.Last
+            SELF:_SetEOF(false)
+            SELF:_SetBOF(false)
+            self:Found := True
+            return true
         endif
-        return true
+
+        var uSeek       := seekInfo:Value
+        var cbFilter    := SELF:_FilterInfo:FilterBlock
+        var oDBOI       := DbOrderInfo{}
+        var lData       := false
+        WHILE(!SELF:EoF .AND. !SELF:BoF)
+            if !SELF:_FilterInfo:Active .or. SELF:EvalFilter(cbFilter)
+                if self:KeyCompare(self:OrderInfo(DBOI_KEYVAL,oDBOI),uSeek) = 0
+                    lData   := true
+                    nRec    := self:RecNo
+                    if !seekInfo:Last
+                        exit
+                    endif
+                elseif seekInfo.SoftSeek .and. !lData
+                    nRec := self:RecNo
+                    exit
+                else
+                    exit
+                endif
+            endif
+            self:Skip(1)
+        enddo
+        self:GoTo(nRec)
+
+        IF lFound
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
+            self:Found  := (self:KeyCompare(self:OrderInfo(DBOI_KEYVAL,oDBOI),uSeek) = 0)
+        ELSE
+            SELF:GoTo(0)
+            SELF:_SetEOF(TRUE)
+            SELF:_SetBOF(FALSE)
+            self:Found := false
+        ENDIF
+
+        return self:Found
     end method
 
     PRIVATE METHOD KeyCompare(oRecKey as OBJECT, oKey as OBJECT) AS LONG

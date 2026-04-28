@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Return the alias of a specified work area as a string.
-        </para>
+      Return the alias of a specified work area as a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Return the alias of a specified work area as a symbol.
-        </para>
+      Return the alias of a specified work area as a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Add a new record.
-        </para>
+      Add a new record.
+    </para>
             </entry>
           </row>
           <row>
@@ -74,8 +74,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -89,8 +88,8 @@
             </entry>
             <entry>
               <para>
-            Determine when beginning-of-file is encountered.
-        </para>
+      Determine when beginning-of-file is encountered.
+    </para>
             </entry>
           </row>
           <row>
@@ -117,8 +116,8 @@
             </entry>
             <entry>
               <para>
-            Clear a logical filter condition.
-        </para>
+      Clear a logical filter condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -132,8 +131,8 @@
             </entry>
             <entry>
               <para>
-            Clear a locate condition by deleting the locate code block.
-        </para>
+      Clear a locate condition by deleting the locate code block.
+    </para>
             </entry>
           </row>
           <row>
@@ -147,8 +146,8 @@
             </entry>
             <entry>
               <para>
-            Clear any active relations.
-        </para>
+      Clear any active relations.
+    </para>
             </entry>
           </row>
           <row>
@@ -175,8 +174,8 @@
             </entry>
             <entry>
               <para>
-            Close all files in all work areas.
-        </para>
+      Close all files in all work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -190,8 +189,8 @@
             </entry>
             <entry>
               <para>
-            Close all files in a work area.
-        </para>
+      Close all files in a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -205,8 +204,8 @@
             </entry>
             <entry>
               <para>
-            Flush pending updates in one work area.
-        </para>
+      Flush pending updates in one work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -220,8 +219,8 @@
             </entry>
             <entry>
               <para>
-            Flush pending updates in all work areas.
-        </para>
+      Flush pending updates in all work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -235,8 +234,8 @@
             </entry>
             <entry>
               <para>
-            Resume a pending locate condition.
-        </para>
+      Resume a pending locate condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -265,8 +264,8 @@
             </entry>
             <entry>
               <para>
-            Mark the current record for deletion.
-        </para>
+      Mark the current record for deletion.
+    </para>
             </entry>
           </row>
           <row>
@@ -280,8 +279,8 @@
             </entry>
             <entry>
               <para>
-            Return the deleted status of the current record.
-        </para>
+      Return the deleted status of the current record.
+    </para>
             </entry>
           </row>
           <row>
@@ -295,8 +294,8 @@
             </entry>
             <entry>
               <para>
-            Determine when end-of-file is encountered.
-        </para>
+      Determine when end-of-file is encountered.
+    </para>
             </entry>
           </row>
           <row>
@@ -310,8 +309,8 @@
             </entry>
             <entry>
               <para>
-            Evaluate a code block for each record that matches a specified scope and/or condition.
-        </para>
+      Evaluate a code block for each record that matches a specified scope and/or condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -325,8 +324,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve the value of a specified database field.
-        </para>
+      Retrieve the value of a specified database field.
+    </para>
             </entry>
           </row>
           <row>
@@ -340,8 +339,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve the value of a specified database field.
-        </para>
+      Retrieve the value of a specified database field.
+    </para>
             </entry>
           </row>
           <row>
@@ -355,8 +354,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve field definition information about a field.
-        </para>
+      Retrieve field definition information about a field.
+    </para>
             </entry>
           </row>
           <row>
@@ -365,13 +364,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldPut(System.UInt32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldPut(System.UInt32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a specified database field.
-        </para>
+      Set the value of a specified database field.
+    </para>
             </entry>
           </row>
           <row>
@@ -385,8 +384,8 @@
             </entry>
             <entry>
               <para>
-            Set the value of a specified database field.
-        </para>
+      Set the value of a specified database field.
+    </para>
             </entry>
           </row>
           <row>
@@ -426,8 +425,8 @@
             </entry>
             <entry>
               <para>
-            Return a filter.
-        </para>
+      Return a filter.
+    </para>
             </entry>
           </row>
           <row>
@@ -441,8 +440,8 @@
             </entry>
             <entry>
               <para>
-            Lock an opened and shared database file.
-        </para>
+      Lock an opened and shared database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -456,8 +455,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the previous search operation succeeded.
-        </para>
+      Determine if the previous search operation succeeded.
+    </para>
             </entry>
           </row>
           <row>
@@ -484,8 +483,8 @@
             </entry>
             <entry>
               <para>
-            Return the work area number.
-        </para>
+      Return the work area number.
+    </para>
             </entry>
           </row>
           <row>
@@ -499,8 +498,8 @@
             </entry>
             <entry>
               <para>
-            Move to the last logical record.
-        </para>
+      Move to the last logical record.
+    </para>
             </entry>
           </row>
           <row>
@@ -509,13 +508,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoto(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoto(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Move to a record specified by record number.
-        </para>
+      Move to a record specified by record number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGotoId(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Move to a record specified by record number.
+    </para>
             </entry>
           </row>
           <row>
@@ -529,8 +543,8 @@
             </entry>
             <entry>
               <para>
-            Move to the first logical record.
-        </para>
+      Move to the first logical record.
+    </para>
             </entry>
           </row>
           <row>
@@ -544,8 +558,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve information about a work area.
-        </para>
+      Retrieve information about a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -582,13 +596,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbLocate(XSharp.__Usual,XSharp.__Usual,System.Int32,XSharp.__Usual,System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbLocate(XSharp.__Usual,XSharp.__Usual,System.UInt32,XSharp.__Usual,System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Search for the first record that matches a specified condition and scope.
-        </para>
+      Search for the first record that matches a specified condition and scope.
+    </para>
             </entry>
           </row>
           <row>
@@ -630,8 +644,8 @@
             </entry>
             <entry>
               <para>
-            Set the condition and scope for an order.
-        </para>
+      Set the condition and scope for an order.
+    </para>
             </entry>
           </row>
           <row>
@@ -645,8 +659,8 @@
             </entry>
             <entry>
               <para>
-            Create or replace an order in an index file.
-        </para>
+      Create or replace an order in an index file.
+    </para>
             </entry>
           </row>
           <row>
@@ -655,13 +669,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Remove an order from an open index file.
-        </para>
+      Remove an order from an open index file.
+    </para>
             </entry>
           </row>
           <row>
@@ -670,13 +684,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return information about index files and the orders in them.
-        </para>
+      Return information about index files and the orders in them.
+    </para>
             </entry>
           </row>
           <row>
@@ -685,13 +699,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Open an index file and add all its orders to the order list in a work area.
-        </para>
+      Open an index file and add all its orders to the order list in a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -700,13 +714,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Remove orders from the order list in a work area and close associated index files.
-        </para>
+      Remove orders from the order list in a work area and close associated index files.
+    </para>
             </entry>
           </row>
           <row>
@@ -720,8 +734,8 @@
             </entry>
             <entry>
               <para>
-            Rebuild all orders in the order list of a work area.
-        </para>
+      Rebuild all orders in the order list of a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -730,13 +744,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual,System.String@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual@,System.String@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the controlling order for a work area.
-        </para>
+      Set the controlling order for a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -750,8 +764,8 @@
             </entry>
             <entry>
               <para>
-            Remove all records that have been marked for deletion from a database file.
-        </para>
+      Remove all records that have been marked for deletion from a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -764,8 +778,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -774,7 +787,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddInfo(System.UInt32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddInfo(System.UInt32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -791,8 +804,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -821,8 +833,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default RDD for the application.
-        </para>
+      Return and optionally change the default RDD for the application.
+    </para>
             </entry>
           </row>
           <row>
@@ -836,8 +848,8 @@
             </entry>
             <entry>
               <para>
-            Restore the current record if it is marked for deletion.
-        </para>
+      Restore the current record if it is marked for deletion.
+    </para>
             </entry>
           </row>
           <row>
@@ -851,8 +863,8 @@
             </entry>
             <entry>
               <para>
-            Return the current record number.
-        </para>
+      Return the current record number.
+    </para>
             </entry>
           </row>
           <row>
@@ -874,13 +886,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordInfo(System.UInt32,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordInfo(System.UInt32,XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Retrieve information about a record.
-        </para>
+      Retrieve information about a record.
+    </para>
             </entry>
           </row>
           <row>
@@ -907,8 +919,8 @@
             </entry>
             <entry>
               <para>
-            Return the linking expression of a specified relation.
-        </para>
+      Return the linking expression of a specified relation.
+    </para>
             </entry>
           </row>
           <row>
@@ -922,8 +934,8 @@
             </entry>
             <entry>
               <para>
-            Lock the current record.
-        </para>
+      Lock the current record.
+    </para>
             </entry>
           </row>
           <row>
@@ -937,8 +949,8 @@
             </entry>
             <entry>
               <para>
-            Return the work area number of a relation.
-        </para>
+      Return the work area number of a relation.
+    </para>
             </entry>
           </row>
           <row>
@@ -952,8 +964,8 @@
             </entry>
             <entry>
               <para>
-            Move to the record having the specified key value.
-        </para>
+      Move to the record having the specified key value.
+    </para>
             </entry>
           </row>
           <row>
@@ -967,8 +979,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area and retrieve the current work area.
-        </para>
+      Select a new work area and retrieve the current work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -977,13 +989,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual,System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual@,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set a filter condition.
-        </para>
+      Set a filter condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -997,8 +1009,8 @@
             </entry>
             <entry>
               <para>
-            Set the found flag.
-        </para>
+      Set the found flag.
+    </para>
             </entry>
           </row>
           <row>
@@ -1007,13 +1019,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetLocate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetLocate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Specify the code block for a locate condition.
-        </para>
+      Specify the code block for a locate condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -1022,13 +1034,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetRelation(System.String,XSharp.__Usual,System.String,System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetRelation(System.String,XSharp.__Usual@,System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Relate a specified work area to the current work area.
-        </para>
+      Relate a specified work area to the current work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1055,8 +1067,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area.
-        </para>
+      Select a new work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1070,8 +1082,8 @@
             </entry>
             <entry>
               <para>
-            Move the record pointer relative to the current record.
-        </para>
+      Move the record pointer relative to the current record.
+    </para>
             </entry>
           </row>
           <row>
@@ -1093,13 +1105,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSort(System.UInt32,XSharp._FieldNames,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean,XSharp._FieldNames)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSort(System.UInt32,XSharp._FieldNames,XSharp.__Usual@,XSharp.__Usual@,XSharp.__Usual@,XSharp.__Usual@,System.Boolean,XSharp._FieldNames)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Copy records to a database file in sorted order.
-        </para>
+      Copy records to a database file in sorted order.
+    </para>
             </entry>
           </row>
           <row>
@@ -1113,8 +1125,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area by specifying its alias as a symbol and return the number of the current work area.
-        </para>
+      Select a new work area by specifying its alias as a symbol and return the number of the current work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1123,13 +1135,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbTrans(System.UInt32,XSharp._FieldNames,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbTrans(System.UInt32,XSharp._FieldNames,XSharp.__Usual@,XSharp.__Usual@,XSharp.__Usual@,XSharp.__Usual@,System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Transfer records to an open database file.
-        </para>
+      Transfer records to an open database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1151,13 +1163,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Release all locks for a work area.
-        </para>
+      Release all locks for a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1171,8 +1183,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for all work areas.
-        </para>
+      Release all locks for all work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -1186,8 +1198,8 @@
             </entry>
             <entry>
               <para>
-            Open a database file.
-        </para>
+      Open a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1201,8 +1213,8 @@
             </entry>
             <entry>
               <para>
-            Remove all records from open files.
-        </para>
+      Remove all records from open files.
+    </para>
             </entry>
           </row>
         </table>

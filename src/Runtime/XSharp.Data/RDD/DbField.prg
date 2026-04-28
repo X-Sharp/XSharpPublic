@@ -9,28 +9,27 @@ USING System.ComponentModel
 
 
 
-/// <summary>This class is used by the DbDataSource class to describe the fields in the workarea</summary>
+/// <include file="XSharp.Data.Docs.xml" path="doc/DbField/*" />
 CLASS XSharp.DbField
     INTERNAL Info AS DbColumnInfo
-    /// <summary>Initializes a new instance of the DbField class</summary>
-    /// <param name="info">Column info on which this field is based.</param>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.ctor/*" />
     CONSTRUCTOR( info AS DbColumnInfo)
         SELF:Info       := info
 
     #region properties
-    /// <summary>Dotnet datatype for the field</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.DataType/*" />
     PROPERTY DataType   AS System.Type GET SELF:Info:DotNetType
-    /// <summary>Name of the field</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.Name/*" />
     PROPERTY Name       AS STRING GET SELF:Info:ColumnName
-    /// <summary>Caption for the field</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.Caption/*" />
     PROPERTY Caption    AS STRING GET SELF:Info:Caption
-    /// <summary>Ordinal position of the field</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.Ordinal/*" />
     PROPERTY Ordinal     AS INT GET SELF:Info:Ordinal
-    /// <summary>Is the field Readonly ?</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.ReadOnly/*" />
     PROPERTY ReadOnly   AS LOGIC GET SELF:Info:IsAutoIncrement
-    /// <summary>Can the field be sorted ?</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.CanSort/*" />
     PROPERTY CanSort    AS LOGIC GET SELF:Info:CanSort
-    /// <summary>Can the field be sorted ?</summary>
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbField.Description/*" />
     PROPERTY Description   AS STRING GET SELF:Info:Description
 
     #endregion
@@ -78,7 +77,7 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
         record:Item[SELF:_dbField:Ordinal] := value
         RETURN
 
-    /// Must be overwritten as the the base class declares this method as abstract.
+    /// <include file="XSharp.Data.Docs.xml" path="doc/DbFieldDescriptor.ShouldSerializeValue/*" />
     OVERRIDE METHOD ShouldSerializeValue(component AS OBJECT) AS LOGIC
         RETURN FALSE
     #endregion

@@ -182,9 +182,9 @@ namespace XSharp.Project
         {
             return XSharpProjectNode.CreatePackageReferenceNode(name);
         }
-        internal virtual void LoadReferencesFromBuildProject(XSharpProjectNode buildProject)
+        internal virtual void LoadReferencesFromBuildProject(XSharpProjectNode prj)
         {
-            foreach (var item in base.ProjectMgr.BuildProject.GetItems(ProjectFileConstants.PackageReference))
+            foreach (var item in prj.BuildProject.GetItems(ProjectFileConstants.PackageReference))
             {
                 var element = new ProjectElement(base.ProjectMgr, item, false);
                 var referenceNode = new XSharpPackageReferenceNode(ProjectMgr, element);

@@ -4,8 +4,9 @@ USING System.Linq
 USING System.Text
 USING System.XML
 GLOBAL gaFiles AS STRING[]
-GLOBAL gsPath AS STRING
+GLOBAL gsBinPath AS STRING
 GLOBAL gsCatPath AS STRING
+GLOBAL gsDocPath AS STRING
 GLOBAL documents AS Dictionary<STRING, XmlDocument>
 FUNCTION Start AS VOID
     gaFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL", ;
@@ -15,8 +16,12 @@ FUNCTION Start AS VOID
         "VOSQLClasses.DLL","VOInternetClasses.DLL", "VOConsoleClasses.DLL",;
         "XSharp.RT.Debugger.DLL", "XSharp.VOSystemClasses.DLL", ;
         "XSharp.VOConsoleClasses.DLL","XSharp.VOSQLClasses.DLL","XSharp.VORDDClasses.DLL"}
-    gsPath  := "c:\XSharp\DevRt\Binaries\Documentation\"
-    gsCatPath := "c:\XSharp\DevRt\Docs\Categories\"
+    // note: this must be the documentation folder, because we are not using clipper calling convention
+    // in the doc file
+    var base := "E:\XSharp\Dev\"
+    gsBinPath    := base+"Artifacts\Documentation\net46\"
+    gsDocPath := base+"src\Runtime\RtDocs\"
+    gsCatPath := gsDOcPath+"Categories\"
     documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}
     TRY
         CreateClassList()
@@ -60,7 +65,7 @@ FUNCTION WriteClassTopics() AS VOID
         ? cat
         VAR sFile := gsCatPath+cat+"_Classes.aml"
         VAR contents := System.IO.File.ReadAllText(sFile)
-        contents := contents.Replace("%date%", DateTime.Now.ToString())
+        contents := contents:Replace("%date%", DateTime.Now:ToString())
         VAR left   := contents:Substring(0, contents:IndexOf("<content>")+9)
         VAR right  := contents:Substring(contents:IndexOf("</content>"))
         VAR sb     := StringBuilder{}
@@ -81,13 +86,18 @@ FUNCTION WriteClassTopics() AS VOID
             NEXT
             IF match
                 VAR sig := "T:"+info:NameSpace+"."+ info:Name
-                VAR xml  := gsPath+info:assembly:replace(".DLL",".XML")
+                VAR xml  := gsBinPath+info:assembly:replace(".DLL",".XML")
                 VAR desc := ReadDescription(xml, sig, "c:\Program Files (x86)\XSharp\Assemblies\")
                 sb:AppendLine("<row><entry><para>"+info:NameSpace+"</para></entry>")
                 sb:Append("<entry><para><codeEntityReference qualifyHint=""false"" autoUpgrade=""true"">")
                 sb:Append(sig)
                 sb:AppendLine("</codeEntityReference></para></entry>")
-                sb:AppendLine("<entry><para>"+desc+"</para></entry></row>")
+                if String.IsNullOrWhiteSpace(desc)
+                    sb:AppendLine("<entry><para /></entry></row>")
+                else
+                    sb:AppendLine("<entry><para>"+desc+"</para></entry></row>")
+                endif
+
             ENDIF
         NEXT
         sb:AppendLine("</table>")
@@ -127,7 +137,7 @@ FUNCTION WriteFunctionTopics() AS VOID
         ? cat
         VAR sFile := gsCatPath+cat+"_Functions.aml"
         VAR contents := System.IO.File.ReadAllText(sFile)
-        contents := contents.Replace("%date%", DateTime.Now.ToString())
+        contents := contents:Replace("%date%", DateTime.Now:ToString())
         VAR left   := contents:Substring(0, contents:IndexOf("<content>")+9)
         VAR right  := contents:Substring(contents:IndexOf("</content>"))
         VAR sb     := StringBuilder{}
@@ -149,7 +159,7 @@ FUNCTION WriteFunctionTopics() AS VOID
             NEXT
             IF match
                 VAR assembly := info:assembly:replace(".DLL","")
-                VAR xml      := gsPath+info:assembly:replace(".DLL",".XML")
+                VAR xml      := gsBinPath+info:assembly:replace(".DLL",".XML")
                 VAR sig := info:Signature
                 VAR funcClass := FunctionsClassName (assembly)
                 sig := "M:"+funcClass+"."+info:Name+sig
@@ -159,7 +169,11 @@ FUNCTION WriteFunctionTopics() AS VOID
                 sb:Append("<entry><para><codeEntityReference qualifyHint=""false"" autoUpgrade=""true"">")
                 sb:Append(sig)
                 sb:AppendLine("</codeEntityReference></para></entry>")
-                sb:AppendLine("<entry><para>"+desc+"</para></entry></row>")
+                if String.IsNullOrWhiteSpace(desc)
+                    sb:AppendLine("<entry><para /></entry></row>")
+                else
+                    sb:AppendLine("<entry><para>"+desc+"</para></entry></row>")
+                endif
             ENDIF
         NEXT
         sb:AppendLine("</table>")
@@ -179,7 +193,7 @@ FUNCTION FormatDocument (sFile as STRING) AS VOID
     var oStringWriter := System.IO.StringWriter{}
     var oWriter     := System.Xml.XmlTextWriter{oStringWriter}
     oWriter:Formatting := System.Xml.Formatting.Indented
-    oWriter:IndentChar := ' '
+    oWriter:IndentChar := c' '
     oDoc:WriteTo(oWriter)
     System.IO.File.WriteAllText(sFile, oStringWriter:ToString())
     RETURN
@@ -188,7 +202,7 @@ FUNCTION FunctionsClassName(asmName AS STRING) AS STRING
     IF !asmName:ToLower():EndsWith(".dll")
         asmName += ".dll"
     ENDIF
-    asmName := gsPath+asmName
+    asmName := gsBinPath+asmName
     VAR asm := Assembly.LoadFrom(asmName)
     FOREACH attribute AS CustomAttributeData IN asm:GetCustomAttributesData()
         IF attribute:AttributeType:Fullname == "XSharp.Internal.ClassLibraryAttribute"
@@ -215,7 +229,7 @@ FUNCTION ReadDescription(cXmlFile AS STRING, cSig AS STRING, cAltPath AS STRING)
 //            RETURN child.InnerText
 //            ENDIF
 //            NEXT
-            RETURN node.InnerText
+            RETURN node:InnerText
         ENDIF
     ENDIF
     IF ! string.IsNullOrEmpty(cAltPath)
@@ -234,10 +248,10 @@ FUNCTION CreateFunctionSectionFiles AS VOID
         VAR sFile := gsCatPath+sLine+"_Functions.aml"
         IF ! System.IO.File.Exists(sFile)
             VAR file := System.IO.File.ReadAllText(sTemplate)
-            file := file.Replace("%date%", DateTime.Now.ToString())
-            file := file.Replace("id=""default""", "id=""cat-"+sLine+"_Functions""")
-            file := file.Replace("title=""default functions""", "title="""+sLine+" Functions""")
-            file := file.Replace("<title>default Functions</title>", "<title>"+sLine +" Functions</title>")
+            file := file:Replace("%date%", DateTime.Now:ToString())
+            file := file:Replace("id=""default""", "id=""cat-"+sLine+"_Functions""")
+            file := file:Replace("title=""default functions""", "title="""+sLine+" Functions""")
+            file := file:Replace("<title>default Functions</title>", "<title>"+sLine +" Functions</title>")
             System.IO.File.WriteAllText(sFile, file)
         ENDIF
     NEXT
@@ -251,10 +265,10 @@ FUNCTION CreateClassSectionFiles AS VOID
         VAR sFile := gsCatPath+sLine+"_Classes.aml"
         IF ! System.IO.File.Exists(sFile)
             VAR file := System.IO.File.ReadAllText(sTemplate)
-            file := file.Replace("%date%", DateTime.Now.ToString())
-            file := file.Replace("id=""default""", "id=""cat-"+sLine+"_Classes""")
-            file := file.Replace("title=""default Classes""", "title="""+sLine+" Classes""")
-            file := file.Replace("<title>default Classes</title>", "<title>"+sLine +" Classes</title>")
+            file := file:Replace("%date%", DateTime.Now:ToString())
+            file := file:Replace("id=""default""", "id=""cat-"+sLine+"_Classes""")
+            file := file:Replace("title=""default Classes""", "title="""+sLine+" Classes""")
+            file := file:Replace("<title>default Classes</title>", "<title>"+sLine +" Classes</title>")
             System.IO.File.WriteAllText(sFile, file)
         ENDIF
     NEXT
@@ -264,7 +278,7 @@ FUNCTION CreateClassList AS SortedDictionary<STRING, MyClassInfo>
     VAR aExcluded := ReadExcludedClasses()
     FOREACH VAR sFile IN gaFiles
         TRY
-            VAR asm   := Assembly.LoadFrom(gsPath+sFile)
+            VAR asm   := Assembly.LoadFrom(gsBinPath+sFile)
             VAR types := asm:GetTypes()
             FOREACH oType AS System.Type IN types
                 IF !oType:FullName:EndsWith("Functions") .and. ;
@@ -310,7 +324,7 @@ FUNCTION CreateFunctionList AS  SortedDictionary<STRING, FunctionInfo>
     VAR aExcluded := ReadExcludedFunctions()
     FOREACH VAR sFile IN gaFiles
         TRY
-            VAR asm   := Assembly.LoadFrom(gsPath+sFile)
+            VAR asm   := Assembly.LoadFrom(gsBinPath+sFile)
             VAR types := asm:GetTypes()
             FOREACH type AS System.Type IN types
                 IF type:FullName:EndsWith(".Functions")
@@ -320,7 +334,7 @@ FUNCTION CreateFunctionList AS  SortedDictionary<STRING, FunctionInfo>
                         IF (name:StartsWith("$") || name:StartsWith("__")   )
                             LOOP
                         ENDIF
-                        VAR info := FunctionInfo{}{ Assembly := sFile, Name := m.Name}
+                        VAR info := FunctionInfo{}{ Assembly := sFile, Name := m:Name}
                         IF aExcluded:ContainsKey(info:key)
                             IF aInfo:ContainsKey(info:key)
                                 ? "Delete", info:key
@@ -328,7 +342,7 @@ FUNCTION CreateFunctionList AS  SortedDictionary<STRING, FunctionInfo>
                             ENDIF
                             LOOP
                         ENDIF
-                        VAR overloads := type:GetMember(m.Name)
+                        VAR overloads := type:GetMember(m:Name)
                         IF aInfo:ContainsKey(info:Key)
                             info := aInfo[info:Key]
                         ENDIF
@@ -351,7 +365,7 @@ FUNCTION CreateFunctionList AS  SortedDictionary<STRING, FunctionInfo>
                         ENDIF
                         TRY
                             IF !aInfo:ContainsKey(info:Key)
-                                ? "Add", m.Name
+                                ? "Add", m:Name
                                 aInfo:Add(info:key, info )
                             ENDIF
                         CATCH e AS Exception
@@ -385,10 +399,10 @@ RETURN aInfo
 
 FUNCTION ReadFunctionList() AS SortedDictionary<STRING, FunctionInfo>
     VAR aInfo := SortedDictionary<STRING, FunctionInfo> {}
-    IF System.IO.File.Exists("RuntimeFunctions.CSV")
-        VAR aLines := System.IO.File.ReadAllLines("RuntimeFunctions.CSV")
+    IF System.IO.File.Exists(gsDocPath+"RuntimeFunctions.CSV")
+        VAR aLines := System.IO.File.ReadAllLines(gsDocPath+"RuntimeFunctions.CSV")
         FOREACH VAR line IN aLines
-            VAR aElements := line:Split(<char>{',',';'})
+            VAR aElements := line:Split(<char>{c',',c';'})
             IF aElements:Length >= 2
                 VAR info := FunctionInfo{} {assembly := aElements[1], Name := aElements[2]}
                 VAR groups := STRING[]{aElements:Length -2}
@@ -396,7 +410,9 @@ FUNCTION ReadFunctionList() AS SortedDictionary<STRING, FunctionInfo>
                     groups[i] := aElements[i+2]
                 NEXT
                 info:Categories := groups
-                aInfo:Add(info:Key, info)
+                if ! aInfo:ContainsKey(info:Key)
+                    aInfo:Add(info:Key, info)
+                endif
             ENDIF
         NEXT
     ENDIF
@@ -404,10 +420,10 @@ RETURN aInfo
 
 FUNCTION ReadClassList() AS SortedDictionary<STRING, MyClassInfo>
     VAR aInfo := SortedDictionary<STRING, MyClassInfo> {}
-    IF System.IO.File.Exists("RuntimeClasses.CSV")
-        VAR aLines := System.IO.File.ReadAllLines("RuntimeClasses.CSV")
+    IF System.IO.File.Exists(gsDocPath+"RuntimeClasses.CSV")
+        VAR aLines := System.IO.File.ReadAllLines(gsDocPath+"RuntimeClasses.CSV")
         FOREACH VAR line IN aLines
-            VAR aElements := line:Split(<char>{',',';'})
+            VAR aElements := line:Split(<char>{c',',c';'})
             IF aElements:Length >= 3
                 VAR info := MyClassInfo{} {assembly := aElements[1], Namespace := aElements[2], Name := aElements[3]}
                 VAR groups := STRING[]{aElements:Length -3}
@@ -427,10 +443,10 @@ RETURN aInfo
 
 FUNCTION ReadExcludedFunctions() AS SortedDictionary<STRING, FunctionInfo>
     VAR aInfo := SortedDictionary<STRING, FunctionInfo> {}
-    IF System.IO.File.Exists("ExcludedFunctions.CSV")
-        VAR aLines := System.IO.File.ReadAllLines("ExcludedFunctions.CSV")
+    IF System.IO.File.Exists(gsDocPath+"ExcludedFunctions.CSV")
+        VAR aLines := System.IO.File.ReadAllLines(gsDocPath+"ExcludedFunctions.CSV")
         FOREACH VAR line IN aLines
-            VAR aElements := line:Split(<char>{','})
+            VAR aElements := line:Split(<char>{c',',c';'})
             IF aElements:Length >= 2
                 VAR info := FunctionInfo{} {assembly := aElements[1], Name := aElements[2]}
                 aInfo:Add(info:Key, info)
@@ -441,10 +457,10 @@ RETURN aInfo
 
 FUNCTION ReadExcludedClasses() AS SortedDictionary<STRING, MyClassInfo>
     VAR aInfo := SortedDictionary<STRING, MyClassInfo> {}
-    IF System.IO.File.Exists("ExcludedClasses.CSV")
-        VAR aLines := System.IO.File.ReadAllLines("ExcludedClasses.CSV")
+    IF System.IO.File.Exists(gsDocPath+"ExcludedClasses.CSV")
+        VAR aLines := System.IO.File.ReadAllLines(gsDocPath+"ExcludedClasses.CSV")
         FOREACH VAR line IN aLines
-            VAR aElements := line:Split(<char>{','})
+            VAR aElements := line:Split(<char>{c','})
             IF aElements:Length >= 3
                 VAR info := MyClassInfo{} {assembly := aElements[1], Namespace := aElements[2], Name := aElements[3]}
                 aInfo:Add(info:Key, info)
@@ -456,8 +472,8 @@ RETURN aInfo
 
 FUNCTION ReadFunctionCategories() AS SortedDictionary<STRING, STRING>
     VAR list := SortedDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-    IF System.IO.File.Exists("FunctionCategories.CSV")
-        VAR aLines := System.IO.File.ReadAllLines("FunctionCategories.CSV")
+    IF System.IO.File.Exists(GsDocPath+"FunctionCategories.CSV")
+        VAR aLines := System.IO.File.ReadAllLines(GsDocPath+"FunctionCategories.CSV")
         FOREACH VAR sLine IN aLines
             IF ! String.IsNullOrEmpty(sLine)
                 list:Add(sLine:Trim(),sline:Trim())
@@ -469,8 +485,8 @@ RETURN list
 
 FUNCTION ReadClassCategories() AS SortedDictionary<STRING, STRING>
     VAR list := SortedDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-    IF System.IO.File.Exists("ClassesCategories.CSV")
-        VAR aLines := System.IO.File.ReadAllLines("ClassesCategories.CSV")
+    IF System.IO.File.Exists(GsDocPath+"ClassesCategories.CSV")
+        VAR aLines := System.IO.File.ReadAllLines(GsDocPath+"ClassesCategories.CSV")
         FOREACH VAR sLine IN aLines
             IF ! String.IsNullOrEmpty(sLine)
                 list:Add(sLine:Trim(), sLine:Trim())
@@ -507,7 +523,7 @@ PROPERTY Assembly AS STRING AUTO
 PROPERTY Name AS STRING AUTO
 PROPERTY Description AS STRING AUTO   := ""
 PROPERTY Categories AS STRING[] AUTO  := STRING[]{0}
-PROPERTY Key AS STRING GET Name:ToLower():PadRight(25) +":"+Assembly:ToLower()
+PROPERTY Key AS STRING GET Name:PadRight(25) +":"+Assembly:ToLower()
 PROPERTY Overloads AS MemberInfo[] AUTO
 PROPERTY Signature AS STRING
     GET

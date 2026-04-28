@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create a Bitmap object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+      创建一个 BitmapObject 对象；这种类型的实体是 DrawObject 层次结构的一部分，提供显示和操作各种对象的方法。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# DrawObject objects are subclassed.
+      提供所有 X# DrawObject 对象的基类，这些对象都是从它派生的。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create an EllipseObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+      创建一个 EllipseObject 对象；这种类型的实体是 DrawObject 层次结构的一部分，该层次结构提供了一种显示和操作各种对象的方法。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Provide a way to format a string specifying position (origin), font, and color.
+      提供一种方法，用于格式化一个字符串，指定位置(原点)、字体和颜色。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Create a LineObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+      创建一个 LineObject 对象；这种类型的实体是 DrawObject 层次结构的一部分，它提供了一种显示和操作各种对象的方法。
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-      Construct a PieObject object.
+      构造一个 PieObject 对象。
     </para>
             </entry>
           </row>
@@ -120,7 +120,7 @@
             </entry>
             <entry>
               <para>
-      Create a RectangleObject object; this class is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various geometric objects.
+      创建一个 RectangleObject 对象；这个类是 DrawObject 层次结构的一部分，它提供了一种显示和操作各种几何对象的方法。
     </para>
             </entry>
           </row>
@@ -135,7 +135,7 @@
             </entry>
             <entry>
               <para>
-      Provide an intermediate class from which all X# two-dimensional objects are subclassed.
+      提供一个中间类，所有 X# 二维对象都是它的子类。
     </para>
             </entry>
           </row>
@@ -150,7 +150,7 @@
             </entry>
             <entry>
               <para>
-      Create a text-drawing object.
+      创建一个文本绘制对象。
     </para>
             </entry>
           </row>

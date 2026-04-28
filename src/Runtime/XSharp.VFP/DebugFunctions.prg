@@ -10,6 +10,7 @@ USING System.Text
 using System.Diagnostics
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/program/*" />
+[FoxProFunction("PROGRAM", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Program( nLevel, lShowSignature) AS USUAL CLIPPER
     local frameCount as LONG
     local iLevel as LONG
@@ -45,3 +46,18 @@ FUNCTION Program( nLevel, lShowSignature) AS USUAL CLIPPER
         endif
     endif
     return ""
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/lineno/*" />
+[FoxProFunction("LINENO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
+FUNCTION LineNo(nPos := 0 AS USUAL) AS LONG
+    VAR nLevel := 1
+    LOCAL oFrame := NULL AS StackFrame
+    VAR oTrace := StackTrace{TRUE}
+
+    IF oTrace:FrameCount > nLevel
+        oFrame := oTrace:GetFrame(nLevel)
+        RETURN oFrame:GetFileLineNumber()
+    ENDIF
+
+    RETURN 0
+

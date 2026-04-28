@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -7,7 +7,7 @@
 USING XSharp.RDD
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>DBFNSX RDD. For DBF/SMT/NSX.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/DBFNSX/*" />
 CLASS DBFNSX INHERIT DBFSMT
 	CONSTRUCTOR()
 		SUPER()
@@ -16,7 +16,7 @@ CLASS DBFNSX INHERIT DBFSMT
 		
 	PROPERTY Driver AS STRING GET "DBFNSX"
 
-/// <summary>DBFNSX worker class that implements the NSX support.</summary>
+/// <include file="XSharp.RDD.Docs.xml" path="doc/NsxIndex/*" />
 CLASS NsxIndex INHERIT BaseIndex    
 	PROTECT _oRDD AS DBF
 	/// <inheritdoc />

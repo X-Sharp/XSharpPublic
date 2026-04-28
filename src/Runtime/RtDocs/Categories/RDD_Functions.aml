@@ -69,8 +69,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
-        </para>
+      Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
+    </para>
             </entry>
           </row>
           <row>
@@ -84,8 +84,8 @@
             </entry>
             <entry>
               <para>
-            Get the number of currently loaded RDDs.
-        </para>
+      Get the number of currently loaded RDDs.
+    </para>
             </entry>
           </row>
           <row>
@@ -99,8 +99,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change settings controlled directly by the RDD.
-        </para>
+      Return and optionally change settings controlled directly by the RDD.
+    </para>
             </entry>
           </row>
           <row>
@@ -114,8 +114,8 @@
             </entry>
             <entry>
               <para>
-            Get a list of RDDs in use.
-        </para>
+      Get a list of RDDs in use.
+    </para>
             </entry>
           </row>
           <row>
@@ -129,8 +129,8 @@
             </entry>
             <entry>
               <para>
-            Return an RDD name.
-        </para>
+      Return an RDD name.
+    </para>
             </entry>
           </row>
           <row>
@@ -144,8 +144,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default RDD for the application.
-        </para>
+      Return and optionally change the default RDD for the application.
+    </para>
             </entry>
           </row>
           <row>
@@ -158,8 +158,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

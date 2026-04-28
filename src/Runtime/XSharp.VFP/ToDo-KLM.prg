@@ -8,22 +8,14 @@
 #pragma options("vo15", on)
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/keymatch/*" />
-
+[FoxProFunction("KEYMATCH", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/lineno/*" />
-
-FUNCTION LineNo(nPos ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/loadpicture/*" />
-
+[FoxProFunction("LOADPICTURE", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
 FUNCTION LoadPicture( cFileName ) AS OBJECT
     THROW NotImplementedException{}
     // RETURN NULL_OBJECT
@@ -32,6 +24,7 @@ FUNCTION LoadPicture( cFileName ) AS OBJECT
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/locfile/*" />
 // Example: = LOCFILE("","PRG File:prg;Compiled:fxp;Backup:bak","Bestand")
+[FoxProFunction("LOCFILE", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION LocFile( cFileName , cFileExtensions , cFileNameCaption ) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
@@ -39,14 +32,14 @@ FUNCTION LocFile( cFileName , cFileExtensions , cFileNameCaption ) AS STRING
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lookup/*" />
-
+[FoxProFunction("LOOKUP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION Lookup( ReturnField, eSearchExpression, SearchedField , cTagName) AS USUAL
     THROW NotImplementedException{}
     // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/maketransactable/*" />
-
+[FoxProFunction("MAKETRANSACTABLE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION MakeTransactable( uArea ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE

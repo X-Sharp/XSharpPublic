@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -25,25 +25,15 @@ FUNCTION DiskChange(pszDrive AS PSZ) AS LOGIC
  
 	
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/GetRTFullPath/*" />
 FUNCTION GetRTFullPath() AS STRING
 	RETURN Assembly.GetAssembly(TYPEOF(XSharp.__Usual)):Location
 
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/GetThreadCount/*" />
 FUNCTION GetThreadCount() AS DWORD
 	RETURN (DWORD) System.Diagnostics.Process.GetCurrentProcess():Threads:Count
 
 
-	/// <summary>
-	/// Get the number of 1/10000 seconds that have elapsed since Windows was started.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="XSharp.RT.Docs.xml" path="doc/GetTickCountLow/*" />
 FUNCTION GetTickCountLow() AS DWORD
 	RETURN (DWORD)Environment.TickCount*10	

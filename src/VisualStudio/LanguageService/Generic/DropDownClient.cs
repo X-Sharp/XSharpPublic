@@ -15,6 +15,7 @@ using File = System.IO.File;
 using MVP = Microsoft.VisualStudio.Package;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
     internal class DropdownSettings
@@ -161,8 +162,9 @@ namespace XSharp.LanguageService
                 this._document = textView.TextBuffer.GetDocument();
                 _file.Project = ActiveProject;
                 textView.GotAggregateFocus += TextView_GotAggregateFocus;
-                textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
+                if (textView.Caret != null)
+                    textView.Caret.PositionChanged += Caret_PositionChanged;
                 StartOnIdleAsync(textViewAdapter).FireAndForget();
 
 
@@ -190,7 +192,6 @@ namespace XSharp.LanguageService
                 textView.SendExplicitFocus();
                 var pos = _activeView.Caret.Position;
                 _activeView.Caret.MoveToNextCaretPosition();
-                _activeView.Caret.PositionChanged += Caret_PositionChanged;
                 _activeView.Caret.MoveTo(pos.BufferPosition);
             }
         }
@@ -202,7 +203,6 @@ namespace XSharp.LanguageService
                 if (_textViews.ContainsKey(textView))
                 {
                     textView.GotAggregateFocus -= TextView_GotAggregateFocus;
-                    textView.LostAggregateFocus -= TextView_LostAggregateFocus;
                     textView.Closed -= TextView_Closed;
                     textView.Caret.PositionChanged -= Caret_PositionChanged;
                     if (_activeView == textView)
@@ -210,14 +210,6 @@ namespace XSharp.LanguageService
                     _textViews.Remove(textView);
                     _file.ContentsChanged -= _file_ContentsChanged;
                 }
-            }
-        }
-
-        private void TextView_LostAggregateFocus(object sender, EventArgs e)
-        {
-            if (sender is ITextView textView && textView == _activeView)
-            {
-                //_activeView = null;
             }
         }
 
@@ -241,12 +233,21 @@ namespace XSharp.LanguageService
 
         private void LineChanged()
         {
+            if (_activeView == null)
+            {
+                _activeView = _textViews.Values.FirstOrDefault();
+            }
             if (_activeView != null)
                 Caret_PositionChanged(_activeView, new CaretPositionChangedEventArgs(_activeView, _activeView.Caret.Position, _activeView.Caret.Position));
         }
 
         private void Caret_PositionChanged(object sender, CaretPositionChangedEventArgs e)
         {
+
+            if (_activeView == null)
+            {
+                _activeView = _textViews.Values.FirstOrDefault();
+            }
             int newLine = e.NewPosition.BufferPosition.GetContainingLine().LineNumber;
             if (newLine != _lastLine && _dropDownBar != null && _members.Count > 0)
             {
@@ -704,6 +705,11 @@ namespace XSharp.LanguageService
         private void reloadCombos(int nLine)
         {
             int temp = _selectedTypeIndex;
+
+            if (nLine == -1 && _activeView != null)
+            {
+                nLine = _activeView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
+            }
             loadTypeCombos(nLine);
             _selectedTypeIndex = temp;
             temp = _selectedMemberIndex;

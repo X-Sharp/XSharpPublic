@@ -13,6 +13,7 @@ using XSharpModel;
 using XSharp.Settings;
 using Microsoft.VisualStudio.Language.StandardClassification;
 using Microsoft.VisualStudio.Text.Classification;
+using XSharp.Support;
 
 namespace XSharp.LanguageService
 {
@@ -27,7 +28,7 @@ namespace XSharp.LanguageService
         protected readonly IBufferTagAggregatorFactoryService _aggregator;
         protected readonly ITagAggregator<IClassificationTag> _tagAggregator;
         protected SnapshotPoint? _point;
-        
+
         protected string _prefix;
 
         internal AbstractMatchingTagger(ITextView view, IBufferTagAggregatorFactoryService aggregator)

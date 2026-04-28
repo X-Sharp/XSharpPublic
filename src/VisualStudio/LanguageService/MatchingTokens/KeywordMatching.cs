@@ -15,6 +15,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.Support;
 namespace XSharp.LanguageService
 {
 
@@ -58,7 +59,7 @@ namespace XSharp.LanguageService
         {
             _prefix = "Keyword Matching: ";
         }
-    
+
         static private IList<SnapshotSpan> GetSpansForBlock(XSourceBlock b, ITextBuffer buffer)
         {
             var spans = new List<SnapshotSpan>();
@@ -152,7 +153,7 @@ namespace XSharp.LanguageService
             // Cursor after keyword before EOF?
             if (point.AtEnd() && !point.AtStart())
                 point -= 1;
-           
+
             var ch = point.GetChar();
             if (char.IsWhiteSpace(ch) )
             {
@@ -164,7 +165,7 @@ namespace XSharp.LanguageService
                 if (char.IsWhiteSpace(ch))
                     yield break;
             }
-            int currentLine = _point.Value.GetContainingLine().LineNumber; 
+            int currentLine = _point.Value.GetContainingLine().LineNumber;
             int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
             IList<ITagSpan<TextMarkerTag>> result = new List<ITagSpan<TextMarkerTag>>();
             try
@@ -177,7 +178,7 @@ namespace XSharp.LanguageService
                     var ents = _document.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine); // && e.BlockTokens.Count > 1);
                     foundSpans = GetEntitySpans(ents,point, _buffer);
                 }
-               
+
                 if (foundSpans != null)
                 {
                     foreach (var span in foundSpans)

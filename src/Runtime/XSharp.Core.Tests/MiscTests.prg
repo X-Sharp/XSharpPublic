@@ -106,13 +106,23 @@ BEGIN NAMESPACE XSharp.Core.Tests
             RuntimeState.Dialect := XSharpDialect.FoxPro
             System.IO.Directory.CreateDirectory("C:\test" )
 			SetDefault("C:\test\")
-         Assert.Equal("C:\test\", GetDefault())
+         Assert.Equal("C:\TEST", GetDefault())
          Assert.Throws<Error>({ => SetDefault("c:\notexist\")})
-		   SetDefault("c:\test")
-			Assert.Equal("c:\test", GetDefault())
-			Assert.Throws<Error>({ => SetDefault("c:\nested\test")})
+			SetDefault("c:\test")
+			Assert.Equal("C:\TEST", GetDefault())
+
+			SetDefault("C:\test\")
+			Assert.Equal("C:\TEST", GetDefault())
+
+			SetDefault("c:\test") // duplicate test, because using SetDefault() in succession could lead to incorrect results
+			Assert.Equal("C:\TEST", GetDefault())
+
+			//Assert.Equal("C:", Set("DEFAULT"))
+			//Assert.Equal("C:\TEST", Set("DIRECTORY"))
+
+			Assert.Throws<Error>({ => SetDefault("c:\doesnotexist\test")})
 			SetDefault("c:\")
-			Assert.Equal("c:\", GetDefault())
+			Assert.Equal("C:\", GetDefault())
 			SetDefault(cDefault)
          RuntimeState.Dialect := eDialect
 		RETURN

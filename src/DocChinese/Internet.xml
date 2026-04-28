@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members>
-    </members>
     <CEmail>
         <summary>
             提供一个类来存储和解码电子邮件的所有数据。
@@ -53,14 +51,6 @@
         </example>
     </CEmail>
 
-    <CEmail.ctor>
-        <summary>
-            构造一个CEmail对象。
-        </summary>
-        <param name="cRawMail">**缺少参数文档**</param>
-        <param name="uStorage">**缺少参数文档**</param>
-    </CEmail.ctor>
-
     <CEmail.AddAttachment>
         <summary>
             向电子邮件添加附件。
@@ -70,7 +60,7 @@
         <param name="dwEncodeType">要使用的编码。默认为</param>
         <param name="cContentID">**缺少参数文档**</param>
         <param name="cFilename">在消息体中使用的文件名。默认为文件本身的名称。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CEmail.AddAttachment>
 
     <CEmail.AttachmentFileList>
@@ -158,6 +148,14 @@
         </remarks>
     </CEmail.CreateReplyBody>
 
+    <CEmail.ctor>
+        <summary>
+            构造一个CEmail对象。
+        </summary>
+        <param name="cRawMail">**缺少参数文档**</param>
+        <param name="uStorage">**缺少参数文档**</param>
+    </CEmail.ctor>
+
     <CEmail.DateTimeStamp>
         <summary>
             包含电子邮件的完全限定日期和时间的字符串。
@@ -170,7 +168,7 @@
             从电子邮件的各个部分中提取所有信息。
         </summary>
         <param name="cMail">要解码的邮件消息。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法将原始电子邮件流的所有不同部分拆分，并将它们分配给适当的属性。
         </remarks>
@@ -181,7 +179,7 @@
             向电子邮件添加附件。
         </summary>
         <param name="dwIndex">要删除的附件的索引</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CEmail.DeleteAttachment>
 
     <CEmail.DestList>
@@ -334,9 +332,9 @@
         </summary>
         <param name="c">要编码的可选字符串。默认是对正文进行编码</param>
         <param name="nCode">
-            要使用的可选编码类型。VO 支持以下两种编码:<br />
-            CODING_TYPE_PRINTABLE(默认)<br />
-            CODING_TYPE_BASE64<br />
+            要使用的可选编码类型。VO 支持以下两种编码:<br/>
+            CODING_TYPE_PRINTABLE(默认)<br/>
+            CODING_TYPE_BASE64<br/>
         </param>
         <returns>
             编码后的字符串。
@@ -348,13 +346,13 @@
             编码 MIME 附件头的方法
         </summary>
         <param name="nCode">
-            要使用的可选编码类型。VO 支持以下两种编码:<br />
-            CODING_TYPE_PRINTABLE(默认)<br />
-            CODING_TYPE_BASE64<br />
+            要使用的可选编码类型。VO 支持以下两种编码:<br/>
+            CODING_TYPE_PRINTABLE(默认)<br/>
+            CODING_TYPE_BASE64<br/>
         </param>
         <param name="xContentType">
-            编码时要使用的内容类型。默认是消息的内容类型。当使用以下三种情况之一时，VO 将假定文件是正文的一部分:<br />
-            如果使用其他类型，VO 将假定文件不是消息正文的一部分，而是附件<br />
+            编码时要使用的内容类型。默认是消息的内容类型。当使用以下三种情况之一时，VO 将假定文件是正文的一部分:<br/>
+            如果使用其他类型，VO 将假定文件不是消息正文的一部分，而是附件<br/>
         </param>
         <param name="cFile">要用于编码的头文件的文件名。这个名称不适用于上述三种内容类型。</param>
         <param name="cCID">**缺少参数文档**</param>
@@ -394,7 +392,7 @@
         <param name="cPath">要保存文件的目录。如果未指定，附件将保存在当前目录中。</param>
         <param name="cFile">包含要保存的附件的新文件名的字符串。如果未指定，附件将保存在附件电子邮件头中包含的文件名下。</param>
         <param name="n">指定要解码和保存为文件的多个附件中的哪一个的数字。如果未指定，将保存第一个附件。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法解码指定的编码附件并将其保存为指定或默认文件名。
         </remarks>
@@ -406,14 +404,14 @@
         </summary>
         <param name="dwIndex">需要替换的附件数组中的元素</param>
         <param name="dwType">
-            需要替换的信息类型。这可以是以下之一:<br />
-            ATTACH_STOREID(1)<br />
-            ATTACH_CONTENTID(2)<br />
-            ATTACH_FILESIZE(3)<br />
-            ATTACH_FILENAME(4)<br />
-            ATTACH_CONTENTTYPE(5)<br />
-            ATTACH_TRANSFERENCODING(6)<br />
-            ATTACH_FULLPATH(7)<br />
+            需要替换的信息类型。这可以是以下之一:<br/>
+            ATTACH_STOREID(1)<br/>
+            ATTACH_CONTENTID(2)<br/>
+            ATTACH_FILESIZE(3)<br/>
+            ATTACH_FILENAME(4)<br/>
+            ATTACH_CONTENTTYPE(5)<br/>
+            ATTACH_TRANSFERENCODING(6)<br/>
+            ATTACH_FULLPATH(7)<br/>
             ATTACH_SIZE(8)
         </param>
         <param name="uNewValue">类型的新值。</param>
@@ -436,7 +434,7 @@
         <summary>
             基于当前日期和时间创建一个 ANSI 日期/时间。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法创建一个包含日期和时间的字符串，格式可以被所有 Internet 服务器理解。生成的字符串可以通过 TimeStamp 访问使用。
         </remarks>
@@ -510,15 +508,6 @@
         </remarks>
     </CFtp>
 
-    <CFtp.ctor>
-        <summary>
-            构造一个 CFtp 对象实例。
-        </summary>
-        <param name="cCaption">调用后续方法的应用程序或实体的名称。默认是'VO Ftp Client'。</param>
-        <param name="n">端口号。默认的FTP端口号是21。</param>
-        <param name="lStat">逻辑值，指定是否应调用 CFtp:InternetStatus() 方法以获取状态回调通知。默认是 TRUE。</param>
-    </CFtp.ctor>
-
     <CFtp.AccessType>
         <summary>
             代表所需访问的数值。
@@ -555,7 +544,7 @@
             关闭远程文件。
         </summary>
         <param name="ptrHandle">先前打开的远程文件的句柄。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             应该使用此方法来关闭从 OpenFile() 方法返回的句柄。
         </remarks>
@@ -565,7 +554,7 @@
         <summary>
             关闭当前的 Internet FTP 连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             可以使用此方法来关闭 CFtp 对象实例的连接。如果未指定，如果适当的对象实例超出范围，连接将自动关闭。
         </remarks>
@@ -589,7 +578,7 @@
         <param name="cID">包含要登录的用户的名称的字符串。如果此参数为NULL，函数将使用适当的默认值('anonymous')。对于 FTP 协议，默认值是 anonymous。</param>
         <param name="cPw">用户的密码作为字符串。对于匿名登录用户，可以使用用户的电子邮件名称作为密码。</param>
         <param name="lBypass">**缺少参数文档**</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法建立与远程 FTP 服务器的连接。
         </remarks>
@@ -619,8 +608,7 @@
                     ENDIF
 
                     oFTP:CloseRemote()
-            </code><code
-                language="X#">RETURN lRet</code>
+            </code><code language="X#">RETURN lRet</code>
         </example>
     </CFtp.ConnectRemote>
 
@@ -629,18 +617,27 @@
             在 FTP 服务器上创建一个新目录。
         </summary>
         <param name="cRemoteDir">包含要创建的目录的名称的字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法在远程 FTP 服务器上创建一个新目录。
         </remarks>
     </CFtp.CreateDir>
+
+    <CFtp.ctor>
+        <summary>
+            构造一个 CFtp 对象实例。
+        </summary>
+        <param name="cCaption">调用后续方法的应用程序或实体的名称。默认是'VO Ftp Client'。</param>
+        <param name="n">端口号。默认的FTP端口号是21。</param>
+        <param name="lStat">逻辑值，指定是否应调用 CFtp:InternetStatus() 方法以获取状态回调通知。默认是 TRUE。</param>
+    </CFtp.ctor>
 
     <CFtp.DeleteFile>
         <summary>
             删除存储在 FTP 服务器上的文件。
         </summary>
         <param name="cRemoteFile">包含要在远程 FTP 服务器上删除的文件的名称的字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法从远程 FTP 服务器中删除一个文件。
         </remarks>
@@ -657,7 +654,7 @@
             如果不指定任何文件名，将假定为'*.*'。
         </param>
         <param name="nFlags">**缺少参数文档**</param>
-        <returns> 一个子数组的数组，每个子数组包含与<paramref name="cFileSpec" />
+        <returns> 一个子数组的数组，每个子数组包含与<paramref name="cFileSpec"/>
             匹配的每个文件的信息。子数组元素的引用如下所示，在 CFtp:ConnectRemote() 方法部分的示例中。
         </returns>
         <remarks>
@@ -698,11 +695,11 @@
         <param name="cRemoteFile">要接收的远程文件的名称。</param>
         <param name="cNewFile">
             包含要在本地系统上创建的文件名称的字符串。
-            如果未指定，则 <paramref name="cRemoteFile" /> 自动成为本地文件的名称。
+            如果未指定，则 <paramref name="cRemoteFile"/> 自动成为本地文件的名称。
         </param>
         <param name="lFailIfExists">
             逻辑值，指示如果本地系统上已存在指定名称的文件，方法是否应继续执行。
-            如果 <paramref name="lFailIfExists" /> 为 TRUE 且本地文件存在，则 GetFile() 方法失败。
+            如果 <paramref name="lFailIfExists"/> 为 TRUE 且本地文件存在，则 GetFile() 方法失败。
         </param>
         <param name="nFlags">
             控制文件下载方式的标志。第一个标志值集指示传输发生的条件。这些传输类型标志可以与控制缓存的第二个标志值集结合使用。
@@ -710,7 +707,7 @@
             下面的标志处理如何处理此文件的缓存。可以与传输类型标志结合使用任何以下标志。
             可能的值是:
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法从 FTP 服务器检索文件，并将其存储在指定名称下的本地文件中。
         </remarks>
@@ -767,7 +764,7 @@
         <param name="nContext">与当前类相关联的应用程序定义的上下文值。</param>
         <param name="nStatus">状态代码，指示调用回调函数的原因。它可以是以下值之一:</param>
         <param name="pStatusInfo">包含与此回调函数调用相关信息的缓冲区的地址。</param>
-        <param name="nStatusLength"><paramref name="pStatusInfo" />缓冲区的大小。</param>
+        <param name="nStatusLength"><paramref name="pStatusInfo"/>缓冲区的大小。</param>
         <remarks>
             InternetStatus() 方法可以在 FTP 客户端和服务器之间的 FTP 传输的任何阶段接收不同状态信息。
         </remarks>
@@ -860,7 +857,7 @@
             如果此数组包含'&lt;local&gt;'字符串作为唯一条目，函数将绕过不包含句点的任何主机名。
             例如，'www.cai.com' 将被路由到代理，而 'internet' 将不会。如果此参数为 NIL，函数将从注册表中读取绕过列表。
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法初始化内部数据结构，并准备好将来调用 CFtp 方法。不必显式调用此方法，因为 CFtp:ConnectRemote() 方法在必要时会在内部调用此方法。
         </remarks>
@@ -919,14 +916,14 @@
         <param name="cRemoteFile">包含要在远程 FTP 服务器上创建的文件的名称的字符串。如果未指定，&lt;cLocalFile&gt;将自动成为远程文件的名称。</param>
         <param name="lFailIfExists">
             逻辑值，指示如果指定名称的远程文件已存在，方法是否应继续。
-            如果 <paramref name="lFailIfExists" /> 为 TRUE，并且远程文件存在，PutFile() 方法失败。
+            如果 <paramref name="lFailIfExists"/> 为 TRUE，并且远程文件存在，PutFile() 方法失败。
         </param>
         <param name="nFlags">
             控制函数将如何处理文件上传以及传输发生的条件的标志。应用程序应选择一个传输类型和任何控制文件缓存方式的标志。
             传输类型可以是以下任何一个值：
             应用程序可以使用以下任何一个或多个值来控制文件缓存：
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法处理与在本地读取文件并将其存储在FTP服务器上相关的所有必要过程。
         </remarks>
@@ -989,7 +986,7 @@
             从远程 FTP 服务器删除一个目录。
         </summary>
         <param name="cRemoteDir">包含要删除的目录名称的字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             此方法从远程 FTP 服务器删除一个目录。
         </remarks>
@@ -1001,7 +998,7 @@
         </summary>
         <param name="cRemoteFile">包含要在远程 FTP 服务器上重命名的文件名称的字符串。</param>
         <param name="cNewName">要给文件的新名称。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             RenameFile()方法重命名远程 FTP 服务器上的文件。
         </remarks>
@@ -1012,7 +1009,7 @@
             更改远程 FTP 服务器上当前进程的当前目录。
         </summary>
         <param name="cRemoteDir">包含要更改到的目录路径的字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             SetCurDir()方法更改远程 FTP 服务器上当前进程的目录。
         </remarks>
@@ -1034,36 +1031,27 @@
         </remarks>
     </CHttp>
 
-    <CHttp.ctor>
-        <summary>
-            实例化一个新的 Http 包装对象。
-        </summary>
-        <param name="cCaption">一个可选的标题字符串。</param>
-        <param name="n">HTTP 端口地址(默认为80)。</param>
-        <param name="lStat">**缺少参数文档**</param>
-    </CHttp.ctor>
-
     <CHttp.AddRequestHeaders>
         <summary>
             向当前请求添加额外的头部。
         </summary>
         <param name="cHeaders">包含要追加到请求的头部的字符串。每个头部必须以CR/LF(回车/换行)对结尾。</param>
         <param name="nModifiers">包含用于修改此函数语义的值(见 Win32 Internet API 帮助中的 HttpAddRequestHeaders 可能的值)。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CHttp.AddRequestHeaders>
     
     <CHttp.CloseRemote>
         <summary>
             关闭 http 连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CHttp.CloseRemote>
 
     <CHttp.CloseRequest>
         <summary>
             关闭一个 http 请求。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CHttp.CloseRequest>
 
     <CHttp.ConnectRemote>
@@ -1073,8 +1061,17 @@
         <param name="cIP">远程服务器的主机名或 IP 地址。</param>
         <param name="cID">用户ID(可选)</param>
         <param name="cPw">密码(可选)</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CHttp.ConnectRemote>
+
+    <CHttp.ctor>
+        <summary>
+            实例化一个新的 Http 包装对象。
+        </summary>
+        <param name="cCaption">一个可选的标题字符串。</param>
+        <param name="n">HTTP 端口地址(默认为80)。</param>
+        <param name="lStat">**缺少参数文档**</param>
+    </CHttp.ctor>
 
     <CHttp.Directory>
         <summary>
@@ -1210,8 +1207,8 @@
             向服务器发送请求。
         </summary>
         <param name="cHeaders">额外的头部(可选)。</param>
-        <param name="pData">数据的指针，大小为 <paramref name="nDataSize" /> (可选)。</param>
-        <param name="nDataSize"><paramref name="pData" /> 中的数据大小(可选，但如果使用了 <paramref name="pData" />，则必须提供)。</param>
+        <param name="pData">数据的指针，大小为 <paramref name="nDataSize"/> (可选)。</param>
+        <param name="nDataSize"><paramref name="pData"/> 中的数据大小(可选，但如果使用了 <paramref name="pData"/>，则必须提供)。</param>
         <returns>
             如果请求成功，则为 TRUE，否则为 FALSE。
         </returns>
@@ -1231,13 +1228,6 @@
         <summary>使用 IMAP 协议读取邮箱的类。</summary>
     </CIMap>
 
-    <CImap.ctor>
-        <summary>**缺少文档**</summary>
-        <param name="cServer">**缺少参数文档**</param>
-        <param name="cUid">**缺少参数文档**</param>
-        <param name="cPwd">**缺少参数文档**</param>
-    </CImap.ctor>
-
     <CImap.CheckReply>
         <summary>**缺少文档**</summary>
     </CImap.CheckReply>
@@ -1246,6 +1236,13 @@
         <summary>**缺少文档**</summary>
         <param name="cBuffer">**缺少参数文档**</param>
     </CImap.ClientCommand>
+
+    <CImap.ctor>
+        <summary>**缺少文档**</summary>
+        <param name="cServer">**缺少参数文档**</param>
+        <param name="cUid">**缺少参数文档**</param>
+        <param name="cPwd">**缺少参数文档**</param>
+    </CImap.ctor>
 
     <CImap.DeleteMail>
         <summary>**缺少文档**</summary>
@@ -1293,17 +1290,17 @@
         </remarks>
     </CInetDial>
 
+    <CINetDial.AutoDial>
+        <summary>**缺少文档**</summary>
+        <param name="dwDialFlag">**缺少参数文档**</param>
+    </CINetDial.AutoDial>
+
     <CINetDial.ctor>
         <summary>**缺少文档**</summary>
         <param name="dwDialFlag">**缺少参数文档**</param>
         <param name="oOwner">**缺少参数文档**</param>
         <param name="symNotifyMethod">**缺少参数文档**</param>
     </CINetDial.ctor>
-
-    <CINetDial.AutoDial>
-        <summary>**缺少文档**</summary>
-        <param name="dwDialFlag">**缺少参数文档**</param>
-    </CINetDial.AutoDial>
 
     <CINetDial.Dial>
         <summary>**缺少文档**</summary>
@@ -1387,30 +1384,30 @@
             CPop, CSmtp 和 CNNTP 类的基类。
         </summary>
         <remarks>
-            <br />重要！ CMailAbstract 是一个抽象类，不应直接使用 - 而是使用其子类之一。 
+            <br/>重要！ CMailAbstract 是一个抽象类，不应直接使用 - 而是使用其子类之一。 
             这个抽象类定义了电子邮件类(CPop, CSmtp 和 CNNTP)使用的公共协议 - 属性和行为。 
         </remarks>
     </CMailAbstract>
-
-    <CMailAbstract.ctor>
-        <summary>
-            构造一个 CMailAbstract 对象。
-        </summary>
-        <param name="nPort">端口号在 <paramref name="cHostNameOrIP" />。默认值为 IPPORT_SMTP(25)。</param>
-        <param name="cServer">
-            包含 Internet 服务器的本地名称的字符串。或者，字符串可以包含 ASCII 点十进制格式的站点IP号(例如，11.22.3.45)。如果指定了 NULL_STRING，将假定本地主机名。
-        </param>
-    </CMailAbstract.ctor>
 
     <CMailAbstract.Close>
         <summary>
             关闭 Internet 会话的所有内部值。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             这个方法通过关闭和销毁适当的 CSocket 对象实例来关闭 Internet 会话。
         </remarks>
     </CMailAbstract.Close>
+
+    <CMailAbstract.ctor>
+        <summary>
+            构造一个 CMailAbstract 对象。
+        </summary>
+        <param name="nPort">端口号在 <paramref name="cHostNameOrIP"/>。默认值为 IPPORT_SMTP(25)。</param>
+        <param name="cServer">
+            包含 Internet 服务器的本地名称的字符串。或者，字符串可以包含 ASCII 点十进制格式的站点IP号(例如，11.22.3.45)。如果指定了 NULL_STRING，将假定本地主机名。
+        </param>
+    </CMailAbstract.ctor>
 
     <CMailAbstract.Destroy>
         <summary>**缺少文档**</summary>
@@ -1453,14 +1450,14 @@
         <summary>
             初始化 Internet 会话的所有内部启动值。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             这个方法通过创建一个稍后将使用的 CSocket 对象来初始化 Internet 会话。
         </remarks>
     </CMailAbstract.Open>
 
     <CMailAbstract.oSocket>
-        <exclude />
+        <exclude/>
     </CMailAbstract.oSocket>
 
     <CMailAbstract.PassWord>
@@ -1474,7 +1471,7 @@
         <summary>
             从远程主机接收数据。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             RecvRemote() 方法从连接的远程主机接收数据。接收到的数据存储到实例变量 SELF:cReply 中。
         </remarks>
@@ -1513,7 +1510,7 @@
             向远程主机发送数据。
         </summary>
         <param name="cData">要发送到远程主机的数据。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             这个方法通过向数据流添加尾随CRLF来发送数据到远程主机。
         </remarks>
@@ -1529,7 +1526,7 @@
             向远程主机发送任何数据。
         </summary>
         <param name="cData">要发送到远程主机的数据。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             这个方法通过一个套接字向远程主机发送数据。
         </remarks>
@@ -1565,15 +1562,9 @@
             CEmail类的基类。
         </summary>
         <remarks>
-            <br />重要！ CMessage 是一个抽象类，不应直接使用 - 而是使用其子类之一。 这个抽象类定义了电子邮件类(CEmail)使用的公共协议 - 属性和行为。 
+            <br/>重要！ CMessage 是一个抽象类，不应直接使用 - 而是使用其子类之一。 这个抽象类定义了电子邮件类(CEmail)使用的公共协议 - 属性和行为。 
         </remarks>
     </CMessage>
-
-    <CMessage.ctor>
-        <summary>
-            构造一个新的 CMessage 对象。
-        </summary>
-    </CMessage.ctor>
 
     <CMessage.AttachmentCount>
         <summary>**缺少文档**</summary>
@@ -1621,12 +1612,18 @@
         <value>表示当前部分的内容类型的字符串。</value>
     </CMessage.ContentType>
 
+    <CMessage.ctor>
+        <summary>
+            构造一个新的 CMessage 对象。
+        </summary>
+    </CMessage.ctor>
+
     <CMessage.Decode>
         <summary>
             将原始消息字符串解码为其各个部分。
         </summary>
         <param name="cMail">要解码的原始字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CMessage.Decode>
 
     <CMessage.DecodeAndSaveAs>
@@ -1635,11 +1632,11 @@
             开发人员可以使用该方法来实现不支持的代码类型。
         </summary>
         <remarks>
-            <br />重要！ 这是 X# 使用的回调方法。通常，不应在应用程序代码中调用它。 </remarks>
+            <br/>重要！ 这是 X# 使用的回调方法。通常，不应在应用程序代码中调用它。 </remarks>
         <param name="cPath">保存文件时要使用的路径。</param>
         <param name="cFile">要使用的文件名。</param>
         <param name="cMail">要解码的原始字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CMessage.DecodeAndSaveAs>
 
     <CMessage.Error>
@@ -1684,14 +1681,14 @@
             获取有关附件的信息。
         </summary>
         <param name="c">可选的附件字符串。</param>
-        <param name="lNewsGroupMessage">一个逻辑标志，指示 <paramref name="c" /> 是否是新闻组消息。</param>
+        <param name="lNewsGroupMessage">一个逻辑标志，指示 <paramref name="c"/> 是否是新闻组消息。</param>
     </CMessage.GetAttachInfo>
 
     <CMessage.GetHeaderInfo>
         <summary>
             提取所有头信息并将该信息存储到适当的属性中。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CMessage.GetHeaderInfo>
 
     <CMessage.HEADER>
@@ -1752,14 +1749,14 @@
         <param name="cPath">可选的目录，其中文件将被保存。</param>
         <param name="cFile">可选的文件名，保存附件。</param>
         <param name="n">要保存的附件。如果未指定，将保存第一个附件。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CMessage.SaveAs>
 
     <CMessage.SetMailTime>
         <summary>
             将当前时间和日期转换为当前消息对象的 Internet 时间戳字符串。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CMessage.SetMailTime>
 
     <CMessage.SubBoundary>
@@ -1821,7 +1818,7 @@
         <summary>
             提取所有头信息并将该信息存储到相应的属性中。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNews.GetHeaderInfo>
 
     <CNews.NewsGroups>
@@ -1868,20 +1865,11 @@
         </remarks>
     </CNNTP>
 
-    <CNNTP.ctor>
-        <summary>
-            构造一个新的NNTP对象。
-        </summary>
-        <param name="cServer">Internet 新闻服务器的本地名称。</param>
-        <param name="cUid">可选的用户ID作为字符串。</param>
-        <param name="cPwd">可选的密码作为字符串。</param>
-    </CNNTP.ctor>
-
     <CNNTP.Authenticate>
         <summary>
             将用户身份验证到 NNTP 服务器。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             <note type="tip">
                 应当在初始化 CNNTP 对象时指定用户ID和密码。
@@ -1893,7 +1881,7 @@
         <summary>
             确定服务器的回复是否成功。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.CheckReply>
 
     <CNNTP.connect>
@@ -1902,8 +1890,17 @@
         </summary>
         <param name="cIP">包含 Internet 服务器本地名称的可选字符串。默认为本地主机名。</param>
         <param name="n">在 cIP 上使用的可选端口号。默认为 IPPORT_SMTP (25)。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.connect>
+
+    <CNNTP.ctor>
+        <summary>
+            构造一个新的NNTP对象。
+        </summary>
+        <param name="cServer">Internet 新闻服务器的本地名称。</param>
+        <param name="cUid">可选的用户ID作为字符串。</param>
+        <param name="cPwd">可选的密码作为字符串。</param>
+    </CNNTP.ctor>
 
     <CNNTP.CurrentNews>
         <summary>
@@ -1916,7 +1913,7 @@
         <summary>
             从新闻服务器断开连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.Disconnect>
 
     <CNNTP.GetArticle>
@@ -1924,7 +1921,7 @@
             从选定的组中检索指定的消息。
         </summary>
         <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果 xMsg 未指定，则假设当前消息。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.GetArticle>
 
     <CNNTP.GetBody>
@@ -1932,7 +1929,7 @@
             从选定的组中检索指定的消息体。
         </summary>
         <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果 xMsg 未指定，则假设当前消息。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.GetBody>
 
     <CNNTP.GetHeader>
@@ -1940,7 +1937,7 @@
             从选定的组中检索指定的消息头。
         </summary>
         <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果 xMsg 未指定，则假设当前消息。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.GetHeader>
 
     <CNNTP.GetList>
@@ -1985,7 +1982,7 @@
             从选定的组中检索指定的消息状态。
         </summary>
         <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果xMsg未指定，则假设当前消息。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.GetStatus>
 
     <CNNTP.GroupName>
@@ -2051,7 +2048,7 @@
         <summary>
             通过套接字从新闻服务器检索数据。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             <note type="tip">
                 检索到的数据将以CRLF结尾。
@@ -2079,7 +2076,7 @@
             从NTTP服务器选择一个新闻组，以便进一步处理。
         </summary>
         <param name="cGroup">要选择的组的名称作为字符串。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.SetNewsGroup>
 
     <CNNTP.SetReadMode>
@@ -2090,14 +2087,14 @@
         <summary>
             将内部消息指针设置为当前组的下一个可用的消息。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.SkipNext>
 
     <CNNTP.SkipPrev>
         <summary>
             将内部消息指针设置为当前组的上一个可用的消息。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CNNTP.SkipPrev>
 
     <CPop>
@@ -2108,6 +2105,28 @@
             该类提供了从 Internet POP 服务器检查和接收电子邮件所需的所有方法和属性。
         </remarks>
     </CPop>
+
+    <CPop.CheckReply>
+        <summary>
+            检查 POP 服务器的响应是否包含错误代码。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <remarks>
+            该方法检查 POP 服务器的响应字符串，检查错误代码，并设置 ReplyCode、ReplyString 和 Error 属性。
+        </remarks>
+    </CPop.CheckReply>
+
+    <CPop.connect>
+        <summary>
+            与远程 POP 服务器建立连接。
+        </summary>
+        <param name="cIP">包含 Internet 服务器主机名的字符串。或者，字符串可以包含 POP 服务器的 IP 号，以 ASCII 点分十进制格式(例如，11.22.3.45)。</param>
+        <param name="n">
+            在 <paramref name="cHostNameOrIP"/> 的端口号。如果未指定，将在端口 SELF:RemotePort 或默认端口 IPPORT_POP(110) 上建立连接。
+        </param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <remarks> 该方法在指定的远程邮件服务器的端口 <paramref name="nPort"/> 或 SELF:RemotePort 上建立连接。 </remarks>
+    </CPop.connect>
 
     <CPop.ctor>
         <summary>
@@ -2120,34 +2139,12 @@
         <param name="oEMailStorage">**缺少参数文档**</param>
     </CPop.ctor>
 
-    <CPop.CheckReply>
-        <summary>
-            检查 POP 服务器的响应是否包含错误代码。
-        </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <remarks>
-            该方法检查 POP 服务器的响应字符串，检查错误代码，并设置 ReplyCode、ReplyString 和 Error 属性。
-        </remarks>
-    </CPop.CheckReply>
-
-    <CPop.connect>
-        <summary>
-            与远程 POP 服务器建立连接。
-        </summary>
-        <param name="cIP">包含 Internet 服务器主机名的字符串。或者，字符串可以包含 POP 服务器的 IP 号，以 ASCII 点分十进制格式(例如，11.22.3.45)。</param>
-        <param name="n">
-            在 <paramref name="cHostNameOrIP" /> 的端口号。如果未指定，将在端口 SELF:RemotePort 或默认端口 IPPORT_POP(110) 上建立连接。
-        </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <remarks> 该方法在指定的远程邮件服务器的端口 <paramref name="nPort" /> 或 SELF:RemotePort 上建立连接。 </remarks>
-    </CPop.connect>
-
     <CPop.DeleteMail>
         <summary>
             从远程 POP 服务器删除指定的邮件。
         </summary>
         <param name="nMail">要从队列中删除的电子邮件消息的编号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法从远程 POP 服务器删除指定的电子邮件消息。
         </remarks>
@@ -2188,7 +2185,7 @@
         <summary>
             关闭当前的 POP 连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法可以用于关闭到 POP3 服务器的连接。
         </remarks>
@@ -2225,7 +2222,7 @@
             从远程 POP 服务器读取指定的邮件。
         </summary>
         <param name="nMail">要从队列中读取的电子邮件消息的编号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法从远程 POP 服务器读取指定的电子邮件消息，并将其解码为其 MailHeader， MailBody 和 Attachment 部分。
         </remarks>
@@ -2318,7 +2315,7 @@
         </summary>
         <param name="cUID">用户ID。</param>
         <param name="cPwd">用户的密码。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <example>
             参见 CPop:DeleteMail() 示例。
         </example>
@@ -2362,7 +2359,7 @@
         <summary>
             从远程邮件服务器接收响应数据。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法从已连接的远程 POP 服务器接收数据。接收的数据存储到 ReplyString 属性中。
         </remarks>
@@ -2391,15 +2388,6 @@
         </remarks>
     </CSession>
 
-    <CSession.ctor>
-        <summary>
-            构造一个CSession对象。
-        </summary>
-        <param name="cCaption">可选的标题，作为字符串。</param>
-        <param name="n">可选的端口号。如果未提供，则默认为0。</param>
-        <param name="lStat">** 缺少参数文档 **</param>
-    </CSession.ctor>
-
     <CSession.AccessType>
         <summary>
             Internet 会话的类型。
@@ -2418,14 +2406,14 @@
             关闭远程文件。
         </summary>
         <param name="hFile">要关闭的文件的句柄。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CSession.CloseFile>
 
     <CSession.CloseRemote>
         <summary>
             关闭 Internet 连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CSession.CloseRemote>
 
     <CSession.Connected>
@@ -2450,8 +2438,17 @@
         <param name="nService">表示要访问的服务类型的常量。</param>
         <param name="nFlags">在内部 InternetConnect 调用中使用的标志。</param>
         <param name="nContext">返回的连接句柄的应用程序上下文的标识符。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CSession.ConnectRemote>
+
+    <CSession.ctor>
+        <summary>
+            构造一个CSession对象。
+        </summary>
+        <param name="cCaption">可选的标题，作为字符串。</param>
+        <param name="n">可选的端口号。如果未提供，则默认为0。</param>
+        <param name="lStat">** 缺少参数文档 **</param>
+    </CSession.ctor>
 
     <CSession.Destroy>
         <summary>**缺少文档 **</summary>
@@ -2487,11 +2484,11 @@
     </CSession.InternetStatus>
 
     <CSession.ogStatus>
-        <exclude />
+        <exclude/>
     </CSession.ogStatus>
 
     <CSession.oLock>
-        <exclude />
+        <exclude/>
     </CSession.oLock>
 
     <CSession.Open>
@@ -2501,7 +2498,7 @@
         <param name="nFlags">在内部 InternetConnect 调用中使用的标志。</param>
         <param name="xProxy">可选的代理服务器的名称。</param>
         <param name="aProxyByPass">一个不应通过代理访问的服务器名称的可选数组。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
     </CSession.Open>
 
     <CSession.OpenFlags>
@@ -2602,20 +2599,11 @@
         </example>
     </CSmtp>
 
-    <CSmtp.ctor>
-        <summary>
-            构造一个 CSmtp 对象。
-        </summary>
-        <param name="oMail">一个 CEmail 对象。如果省略，将创建一个通用(空)的 CEmail 对象。</param>
-        <param name="cServer">类应连接到的远程主机的名称</param>
-        <param name="nPort">类应连接到的远程主机的电子邮件端口。默认为25</param>
-    </CSmtp.ctor>
-
     <CSmtp.CheckReply>
         <summary>
             检查邮件服务器的响应是否包含错误代码。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法检查邮件服务器的响应字符串是否包含错误代码，并设置属性 ReplyCode，ReplyString 和 Error。
         </remarks>
@@ -2646,18 +2634,27 @@
         <param name="cIP">包含 Internet 服务器的主机名的字符串。或者，字符串可以包含 ASCII 点十进制格式的站点的 IP 号码(例如11.22.3.45)。</param>
         <param name="nPort">
             在 cHostNameOrIP 上使用的端口号。如果未指定，将建立到端口 SELF:RemotePort 的连接。默认值为 IPPORT_SMTP(25)。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <remarks> 该方法在指定的远程邮件服务器的端口 <paramref name="nPort" /> 或 SELF:RemotePort 上建立连接。 </remarks>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <remarks> 该方法在指定的远程邮件服务器的端口 <paramref name="nPort"/> 或 SELF:RemotePort 上建立连接。 </remarks>
         <example>
             参见 CSmtp:CheckReply() 示例。
         </example>
     </CSmtp.connect>
 
+    <CSmtp.ctor>
+        <summary>
+            构造一个 CSmtp 对象。
+        </summary>
+        <param name="oMail">一个 CEmail 对象。如果省略，将创建一个通用(空)的 CEmail 对象。</param>
+        <param name="cServer">类应连接到的远程主机的名称</param>
+        <param name="nPort">类应连接到的远程主机的电子邮件端口。默认为25</param>
+    </CSmtp.ctor>
+
     <CSmtp.Disconnect>
         <summary>
             关闭当前的 SMTP 连接。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法可以用于关闭到 SMTP 服务器的连接。
         </remarks>
@@ -2700,7 +2697,7 @@
         <summary>
             从远程 SMTP 服务器接收响应数据。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法从连接的远程 SMTP 服务器接收数据。接收到的数据存储到 ReplyString 属性中。
         </remarks>
@@ -2718,7 +2715,7 @@
             作为电子邮件的一部分，向远程 SMTP 服务器发送附加文件。
         </summary>
         <param name="cFile">要发送的文件，可选包括驱动器号和路径。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             SendAttachedFile() 从 SendMail() 方法中调用，以编码并发送由 SELF:AttachmentFile 指定的文件到远程 SMTP 服务器。
         </remarks>
@@ -2728,7 +2725,7 @@
         <summary>
             创建邮件头并作为电子邮件的一部分发送到远程 SMTP 服务器。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             SendHeaderInfo() 从 SendMail() 方法中调用，以准备并发送适当的头部到远程 SMTP 服务器。该方法不接受任何参数。FROM，TO，CC和BCC的值从 cSMTP 类的 Email 属性中读取。
         </remarks>
@@ -2738,7 +2735,7 @@
         <summary>
             将完整的电子邮件发送到远程 SMTP 服务器。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法将完整的电子邮件发送到远程 SMTP 服务器。
             根据 SELF:MailBody，SELF:AttachmentFile，SELF:DestList，SELF:CCList，SELF:FromAddress 和 SELF:RemoteHost 的值，
@@ -2768,15 +2765,6 @@
             该类提供了可以用于实现不同 Internet 协议的低级套接字功能。
         </remarks>
     </CSocket>
-
-    <CSocket.ctor>
-        <summary>
-            构造一个 CSocket 对象。
-        </summary>
-        <param name="nType">新创建的套接字的类型。有效值为：</param>
-        <param name="xSocket">套接字号。</param>
-        <param name="xSocketStatus">套接字状态。</param>
-    </CSocket.ctor>
 
     <CSocket.accept>
         <summary>
@@ -2828,7 +2816,7 @@
         <summary>
             将本地地址与套接字关联。
         </summary>
-        <param name="nPort">在<paramref name="cHostNameOrIP" />的端口号。</param>
+        <param name="nPort">在<paramref name="cHostNameOrIP"/>的端口号。</param>
         <param name="cIP">
             包含 Internet 服务器的本地名称的字符串。或者，字符串可以包含 ASCII 点分十进制格式的站点的IP号码(例如，11.22.3.45)。
             如果指定 NULL_STRING，则假定本地主机名。</param>
@@ -2839,7 +2827,7 @@
         <summary>
             断开套接字的连接并关闭它。
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法断开连接并关闭连接。
             如果在代码中未关闭套接字，如果适当的对象实例超出范围，它将自动关闭。
@@ -2854,9 +2842,9 @@
             建立套接字实例与对等方的连接。
         </summary>
         <param name="cIP">包含 Internet 服务器的主机名的字符串。或者，字符串可以包含 ASCII 点分十进制格式的站点的IP号码(例如，11.22.3.45)。</param>
-        <param name="nPort">在 <paramref name="cHostNameOrIP" /> 的端口号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
-        <remarks> 该方法在指定的远程地址的端口 <paramref name="nPort" /> 建立连接。 </remarks>
+        <param name="nPort">在 <paramref name="cHostNameOrIP"/> 的端口号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
+        <remarks> 该方法在指定的远程地址的端口 <paramref name="nPort"/> 建立连接。 </remarks>
         <example> 
             以下示例检查远程 SMTP 服务器当前是否可用： 
             <code language="X#">
@@ -2881,6 +2869,15 @@
             </code>
         </example>
     </CSocket.connect>
+    <CSocket.ctor>
+        <summary>
+            构造一个 CSocket 对象。
+        </summary>
+        <param name="nType">新创建的套接字的类型。有效值为：</param>
+        <param name="xSocket">套接字号。</param>
+        <param name="xSocketStatus">套接字状态。</param>
+    </CSocket.ctor>
+
     <CSocket.Destroy>
         <summary>**Missing documentation **</summary>
     </CSocket.Destroy>
@@ -2892,7 +2889,7 @@
             请注意，此函数不像 Visual Objects 2.5 中那样关闭连接！
             要关闭套接字，您需要调用 cSocket:Close()！
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             Disconnect() 可以用于关闭 CSocket 对象实例的连接。如果未指定，如果适当的对象实例超出范围，连接将自动关闭。
         </remarks>
@@ -2993,7 +2990,7 @@
         </summary>
         <param name="cName">引用一个字符串，用于接收对等方的IP地址。</param>
         <param name="nPort">引用一个 DWORD 值，用于接收对等方的端口号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法获取套接字连接的对等方的地址和端口号。
         </remarks>
@@ -3095,7 +3092,7 @@
         </summary>
         <param name="cName">引用一个字符串，用于接收套接字的本地IP地址。</param>
         <param name="nPort">引用一个 DWORD 值，用于接收套接字的本地端口号。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法获取套接字的本地地址和端口号。
         </remarks>
@@ -3134,7 +3131,7 @@
             建立一个套接字以侦听传入的连接。
         </summary>
         <param name="nBackLog">挂起连接队列的最大长度。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             该方法建立一个套接字以侦听传入的连接。
         </remarks>
@@ -3187,7 +3184,7 @@
         </summary>
         <param name="cData">要通过套接字发送的数据。</param>
         <param name="cDest">包含 Internet 服务器的主机名的字符串。或者，字符串可以包含 ASCII 点分十进制格式的站点IP号(例如，11.22.3.45)。</param>
-        <param name="nRemPort">在<paramref name="cHostNameOrIP" />的端口号。</param>
+        <param name="nRemPort">在<paramref name="cHostNameOrIP"/>的端口号。</param>
         <returns>
             如果成功，返回发送的数据量；否则，返回0(零)。
         </returns>
@@ -3221,7 +3218,7 @@
         </summary>
         <param name="pData">指向要通过套接字发送的数据的指针。</param>
         <param name="nSize">要发送的数据的长度。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             SendRaw() 向连接的套接字发送原始数据。 
             <note type="tip">此方法仅适用于 TCP 套接字，因为它假定已经建立了连接。</note>
@@ -3262,7 +3259,7 @@
         </summary>
         <param name="cData">指向要通过套接字发送的数据的指针。</param>
         <param name="nDataLen">要发送的数据的长度。</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks> 
             SendRaw() 向连接的套接字发送原始数据。 
             <note type="tip">此方法仅适用于 TCP 套接字，因为它假定已经建立了连接。</note>
@@ -3352,25 +3349,18 @@
             提供一个接口来处理大型电子邮件消息和附件
         </summary>
         <remarks>
-            此类仅由 CEMail 类专门用于读取和写入附件。<br />
-            该类在磁盘文件夹中读取/写入附件。<br />
-            如果您想将附件存储在其他位置(例如SQL数据库)中，那么您应该子类化此类并重写方法的实现。<br />
-            CStorage 还为您提供了一个接口，用于存储接收到的电子邮件的原始数据。<br />
-            在接收电子邮件时，会调用以下三个方法:<br />
-            RawNew()<br />
-            RawWrite()<br />
-            RawClose()<br />
-            您可以使用这些方法来实现自己的机制来保存原始电子邮件内容。<br />
+            此类仅由 CEMail 类专门用于读取和写入附件。<br/>
+            该类在磁盘文件夹中读取/写入附件。<br/>
+            如果您想将附件存储在其他位置(例如SQL数据库)中，那么您应该子类化此类并重写方法的实现。<br/>
+            CStorage 还为您提供了一个接口，用于存储接收到的电子邮件的原始数据。<br/>
+            在接收电子邮件时，会调用以下三个方法:<br/>
+            RawNew()<br/>
+            RawWrite()<br/>
+            RawClose()<br/>
+            您可以使用这些方法来实现自己的机制来保存原始电子邮件内容。<br/>
             该类提供了一个接口，用于处理入站和出站消息的流式传输
         </remarks>
     </CStorage>
-
-    <CStorage.ctor>
-        <summary>
-            在此输入主题文本。
-        </summary>
-        <param name="cPath">**缺少参数文档**</param>
-    </CStorage.ctor>
 
     <CStorage.AttachmentAdd>
         <summary>
@@ -3391,7 +3381,7 @@
             </pre>
             在大多数情况下，它是 CODING_TYPE_BASE64，CStorage 类中只实现了这种类型。 </param>
         <returns>
-            <paramref name="cID" /> STRING 唯一的ID。如果 AttachmentAdd() 失败，它返回一个 NULL_STRING。 </returns>
+            <paramref name="cID"/> STRING 唯一的ID。如果 AttachmentAdd() 失败，它返回一个 NULL_STRING。 </returns>
     </CStorage.AttachmentAdd>
 
     <CStorage.AttachmentClose>
@@ -3416,7 +3406,7 @@
         </summary>
         <param name="cAttachID">包含附件的ID或完整路径。如果是完整路径，cAttachID 的第一个字符是 ATTACHID_PATHFLAG(&gt;)</param>
         <returns>
-            <paramref name="cID" /> STRING 附件文件的完整路径 </returns>
+            <paramref name="cID"/> STRING 附件文件的完整路径 </returns>
     </CStorage.AttachmentFullPath>
 
     <CStorage.AttachmentOpen>
@@ -3459,7 +3449,7 @@
         <param name="cAttachID">包含附件的ID或完整路径。</param>
         <param name="cToFile">包含目标文件的完整路径名。</param>
         <returns>
-            <paramref name="cID" /> STRING 唯一的ID。如果 AttachmentAdd() 失败，它返回一个 NULL_STRING。 </returns>
+            <paramref name="cID"/> STRING 唯一的ID。如果 AttachmentAdd() 失败，它返回一个 NULL_STRING。 </returns>
     </CStorage.AttachmentSave>
 
     <CStorage.AttachmentSize>
@@ -3488,8 +3478,15 @@
             此方法返回一个新的空 CEMail 对象。
         </summary>
         <returns>
-            <paramref name="oMail" /> 一个新的空 CEmail 对象。 </returns>
+            <paramref name="oMail"/> 一个新的空 CEmail 对象。 </returns>
     </CStorage.CreateNewMail>
+
+    <CStorage.ctor>
+        <summary>
+            在此输入主题文本。
+        </summary>
+        <param name="cPath">**缺少参数文档**</param>
+    </CStorage.ctor>
 
     <CStorage.LoadEMail>
         <summary>
@@ -3499,7 +3496,7 @@
         </summary>
         <param name="cId">包含电子邮件的唯一标识符</param>
         <returns>
-            <paramref name="oEmail" />
+            <paramref name="oEmail"/>
         </returns>
         <remarks>
             <note type="tip"> 
@@ -3572,7 +3569,7 @@
         </summary>
         <param name="cData">包含附件的文件名。</param>
         <returns>
-            <paramref name="cID" /> STRING 唯一ID。如果 AttachmentAdd() 失败，则返回 NULL_STRING。 </returns>
+            <paramref name="cID"/> STRING 唯一ID。如果 AttachmentAdd() 失败，则返回 NULL_STRING。 </returns>
         <remarks>
             <note type="tip">
                 不建议将原始电子邮件在内存中解码为单个字符串。
@@ -3590,7 +3587,7 @@
         <param name="oEMail">需要从中保存附件到存储的电子邮件。</param>
         <param name="lClone">如果 lClone 为 TRUE，并且 oEMail 从存储中加载，则将附件的新副本存储到存储中。</param>
         <returns>
-            <paramref name="cID" /> STRING 唯一ID。如果 AttachmentAdd() 失败，则返回 NULL_STRING。 </returns>
+            <paramref name="cID"/> STRING 唯一ID。如果 AttachmentAdd() 失败，则返回 NULL_STRING。 </returns>
     </CStorage.SaveAttachments>
 
     <CStorage.SaveEMail>
@@ -3622,4 +3619,6 @@
             </note>
         </remarks>
     </CStorage.SaveEMail>
-</doc>
+<members>
+    </members>
+    </doc>

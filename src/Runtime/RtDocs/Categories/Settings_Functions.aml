@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Returns a string representing the morning extension for time strings in 12-hour format.
-        </para>
+      Returns a string representing the morning extension for time strings in 12-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
-        </para>
+      Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-        </para>
+      Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
+    </para>
             </entry>
           </row>
           <row>
@@ -89,8 +89,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>-- todo --</para>
             </entry>
           </row>
           <row>
@@ -103,8 +102,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -117,8 +115,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -145,8 +142,8 @@
             </entry>
             <entry>
               <para>
-            Get the current X# search path for opening file.
-        </para>
+      Get the current X# search path for opening file.
+    </para>
             </entry>
           </row>
           <row>
@@ -173,8 +170,8 @@
             </entry>
             <entry>
               <para>
-            Return the current date format.
-        </para>
+      Return the current date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -188,8 +185,8 @@
             </entry>
             <entry>
               <para>
-            Return the X# default drive and directory.
-        </para>
+      Return the X# default drive and directory.
+    </para>
             </entry>
           </row>
           <row>
@@ -203,8 +200,8 @@
             </entry>
             <entry>
               <para>
-            Return the current SetDefault() setting.
-        </para>
+      Return the current SetDefault() setting.
+    </para>
             </entry>
           </row>
           <row>
@@ -218,8 +215,8 @@
             </entry>
             <entry>
               <para>
-            Return the DOS error code from any application.
-        </para>
+      Return the DOS error code from any application.
+    </para>
             </entry>
           </row>
           <row>
@@ -233,8 +230,23 @@
             </entry>
             <entry>
               <para>
-            Retrieve the contents of a DOS environment variable.
-        </para>
+      Retrieve the contents of a DOS environment variable.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetEnv(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the contents of the specified MS-DOS environment variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -248,8 +260,8 @@
             </entry>
             <entry>
               <para>
-            Convert file attributes to numbers.
-        </para>
+      Convert file attributes to numbers.
+    </para>
             </entry>
           </row>
           <row>
@@ -289,8 +301,8 @@
             </entry>
             <entry>
               <para>
-            Prepare a file specification for wildcard searching.
-        </para>
+      Prepare a file specification for wildcard searching.
+    </para>
             </entry>
           </row>
           <row>
@@ -303,8 +315,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -331,8 +342,8 @@
             </entry>
             <entry>
               <para>
-            Get the current DLL for nation-dependent operations and messages.
-        </para>
+      Get the current DLL for nation-dependent operations and messages.
+    </para>
             </entry>
           </row>
           <row>
@@ -359,8 +370,8 @@
             </entry>
             <entry>
               <para>
-            Returns a string representing the evening extension for time strings in 12-hour format.
-        </para>
+      Returns a string representing the evening extension for time strings in 12-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -373,8 +384,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -387,8 +397,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -402,8 +411,8 @@
             </entry>
             <entry>
               <para>
-            Return the current separation character used in time strings.
-        </para>
+      Return the current separation character used in time strings.
+    </para>
             </entry>
           </row>
           <row>
@@ -431,8 +440,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -452,6 +460,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Set(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the status of various SET commands.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -460,8 +483,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -474,8 +496,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -489,8 +510,8 @@
             </entry>
             <entry>
               <para>
-            Set the morning extension for time strings in 12-hour format.
-        </para>
+      Set the morning extension for time strings in 12-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -504,8 +525,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
-        </para>
+      Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -519,8 +540,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-        </para>
+      Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
+    </para>
             </entry>
           </row>
           <row>
@@ -534,8 +555,8 @@
             </entry>
             <entry>
               <para>
-            Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
+    </para>
             </entry>
           </row>
           <row>
@@ -549,8 +570,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether a beep is sounded by the error system when an error occurs.
-        </para>
+      Return and optionally change the setting that determines whether a beep is sounded by the error system when an error occurs.
+    </para>
             </entry>
           </row>
           <row>
@@ -564,8 +585,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to include or omit century digits in the date format.
-        </para>
+      Return and optionally change the setting that determines whether to include or omit century digits in the date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -592,8 +613,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the internal collation routine used for string comparisons.
-        </para>
+      Return and optionally change the setting that determines the internal collation routine used for string comparisons.
+    </para>
             </entry>
           </row>
           <row>
@@ -602,12 +623,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -620,8 +640,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -634,23 +653,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetCpu</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return and optionally change the setting that determines the type of central processor you have.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -664,8 +667,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-        </para>
+      Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
+    </para>
             </entry>
           </row>
           <row>
@@ -679,8 +682,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# date format.
-        </para>
+      Change the setting that determines the X# date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -694,8 +697,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the number of decimal places used to display numbers.
-        </para>
+      Return and optionally change the setting that determines the number of decimal places used to display numbers.
+    </para>
             </entry>
           </row>
           <row>
@@ -709,8 +712,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
-        </para>
+      Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
+    </para>
             </entry>
           </row>
           <row>
@@ -724,8 +727,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# default drive and directory.
-        </para>
+      Change the setting that determines the X# default drive and directory.
+    </para>
             </entry>
           </row>
           <row>
@@ -739,8 +742,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the location of the error log file.
-        </para>
+      Change the setting that determines the location of the error log file.
+    </para>
             </entry>
           </row>
           <row>
@@ -754,8 +757,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to ignore or include records that are marked for deletion.
-        </para>
+      Return and optionally change the setting that determines whether to ignore or include records that are marked for deletion.
+    </para>
             </entry>
           </row>
           <row>
@@ -769,8 +772,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
-        </para>
+      Return and optionally change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
+    </para>
             </entry>
           </row>
           <row>
@@ -784,8 +787,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that fixes the number of digits used to display numeric output.
-        </para>
+      Return and optionally change the setting that fixes the number of digits used to display numeric output.
+    </para>
             </entry>
           </row>
           <row>
@@ -799,8 +802,8 @@
             </entry>
             <entry>
               <para>
-            Update or replace the contents of a DOS environment variable.
-        </para>
+      Update or replace the contents of a DOS environment variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -814,8 +817,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines how dates without century digits are interpreted.
-        </para>
+      Return and optionally change the setting that determines how dates without century digits are interpreted.
+    </para>
             </entry>
           </row>
           <row>
@@ -829,8 +832,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether error information is written to the error log file by the default runtime error handler.
-        </para>
+      Return and optionally change the setting that determines whether error information is written to the error log file by the default runtime error handler.
+    </para>
             </entry>
           </row>
           <row>
@@ -870,8 +873,8 @@
             </entry>
             <entry>
               <para>
-            Toggles an exact match for character string comparisons.
-        </para>
+      Toggles an exact match for character string comparisons.
+    </para>
             </entry>
           </row>
           <row>
@@ -885,8 +888,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to open database files in exclusive or shared mode.
-        </para>
+      Return and optionally change the setting that determines whether to open database files in exclusive or shared mode.
+    </para>
             </entry>
           </row>
           <row>
@@ -900,8 +903,8 @@
             </entry>
             <entry>
               <para>
-            Reset the date and time stamps of a File.
-        </para>
+      Reset the date and time stamps of a File.
+    </para>
             </entry>
           </row>
           <row>
@@ -915,8 +918,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether assignments are made to fields or to memory variables.
-        </para>
+      Return and optionally change the setting that determines whether assignments are made to fields or to memory variables.
+    </para>
             </entry>
           </row>
           <row>
@@ -930,8 +933,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that fixes the number of decimal digits used to display numbers.
-        </para>
+      Return and optionally change the setting that fixes the number of decimal digits used to display numbers.
+    </para>
             </entry>
           </row>
           <row>
@@ -958,8 +961,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
-        </para>
+      Return and optionally change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
+    </para>
             </entry>
           </row>
           <row>
@@ -972,8 +975,20 @@
               </para>
             </entry>
             <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetHours</codeEntityReference>
               </para>
+            </entry>
+            <entry>
+              <para>Get/Set hours format (12 or 24 hours)</para>
             </entry>
           </row>
           <row>
@@ -987,8 +1002,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the international mode for the application.
-        </para>
+      Return and optionally change the setting that determines the international mode for the application.
+    </para>
             </entry>
           </row>
           <row>
@@ -1027,28 +1042,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetMath</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return and optionally change the setting that determines the internal operational characteristics of the underlying floating-point system.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetNatDLL(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Activate a new DLL for nation-dependent operations and messages.
-        </para>
+      Activate a new DLL for nation-dependent operations and messages.
+    </para>
             </entry>
           </row>
           <row>
@@ -1062,8 +1062,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# search path for opening files.
-        </para>
+      Change the setting that determines the X# search path for opening files.
+    </para>
             </entry>
           </row>
           <row>
@@ -1095,8 +1095,8 @@
             </entry>
             <entry>
               <para>
-            Set the evening extension for time strings in 12-hour format.
-        </para>
+      Set the evening extension for time strings in 12-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -1110,8 +1110,8 @@
             </entry>
             <entry>
               <para>
-            Move the cursor to a new position on the terminal window.
-        </para>
+      Move the cursor to a new position on the terminal window.
+    </para>
             </entry>
           </row>
           <row>
@@ -1125,8 +1125,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve and optionally set the time for which the RDD system caches data.
-        </para>
+      Retrieve and optionally set the time for which the RDD system caches data.
+    </para>
             </entry>
           </row>
           <row>
@@ -1152,8 +1152,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1167,8 +1166,21 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that displays numbers in scientific notation.
-        </para>
+      Return and optionally change the setting that displays numbers in scientific notation.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetSeconds</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get/Set seconds display</para>
             </entry>
           </row>
           <row>
@@ -1182,8 +1194,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether a seek operation will find a close match when no exact match is found.
-        </para>
+      Return and optionally change the setting that determines whether a seek operation will find a close match when no exact match is found.
+    </para>
             </entry>
           </row>
           <row>
@@ -1192,12 +1204,12 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetSpace</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetSpace(System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
+            Change the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
             </para>
             </entry>
           </row>
@@ -1212,6 +1224,19 @@
             </entry>
             <entry>
               <para>Set a new default SQL factory.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetTextFile</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1255,8 +1280,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
-        </para>
+      Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
+    </para>
             </entry>
           </row>
           <row>
@@ -1269,8 +1294,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1284,8 +1308,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the separation character to be used in time strings.
-        </para>
+      Change the setting that determines the separation character to be used in time strings.
+    </para>
             </entry>
           </row>
           <row>
@@ -1294,13 +1318,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetUnique(System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetUnique</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to include unique record keys in an order.
-        </para>
+      Return and optionally change the setting that determines whether to include unique record keys in an order.
+    </para>
             </entry>
           </row>
           <row>
@@ -1339,8 +1363,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

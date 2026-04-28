@@ -25,12 +25,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._NoAlias(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._NoAlias(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -44,8 +43,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of a work area.
-        </para>
+      Determine the number of a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -59,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of a work area.
-        </para>
+      Determine the number of a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -89,11 +88,11 @@
             </entry>
             <entry>
               <para>
-            Fill arrays with the structure of the current database file.
-            Note:
-            AFields() is a compatibility function and therefore not recommended.
-            It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
-        </para>
+      Fill arrays with the structure of the current database file.
+      Note:
+      AFields() is a compatibility function and therefore not recommended.
+      It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
+    </para>
             </entry>
           </row>
           <row>
@@ -102,11 +101,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AFields(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+      Retrieves and stores information about the structure of the table in a specified work area, specified by a table alias, or in the currently selected work area in an array and returns the number of fields in the table.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Places table aliases and work areas for a data session into a variable array.
+        </para>
             </entry>
           </row>
           <row>
@@ -135,8 +151,23 @@
             </entry>
             <entry>
               <para>
-            Determine when beginning-of-file is encountered.
-        </para>
+      Determine when beginning-of-file is encountered.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Bof</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the record pointer is positioned at the beginning of a table.
+    </para>
             </entry>
           </row>
           <row>
@@ -178,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Import records from a database file.
-        </para>
+      Import records from a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +224,8 @@
             </entry>
             <entry>
               <para>
-            Import records from a delimited text file.
-        </para>
+      Import records from a delimited text file.
+    </para>
             </entry>
           </row>
           <row>
@@ -207,8 +238,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -217,13 +247,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppend(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppend(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Add a new record to a database file.
-        </para>
+      Add a new record to a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -236,8 +266,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -250,8 +279,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -265,8 +293,8 @@
             </entry>
             <entry>
               <para>
-            Import records from an SDF file.
-        </para>
+      Import records from an SDF file.
+    </para>
             </entry>
           </row>
           <row>
@@ -276,6 +304,19 @@
             <entry>
               <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically lock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoLockArea(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -301,12 +342,24 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoUnLockArea(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically unlock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -346,8 +399,8 @@
             </entry>
             <entry>
               <para>
-            Clear a logical filter condition.
-        </para>
+      Clear a logical filter condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -361,8 +414,8 @@
             </entry>
             <entry>
               <para>
-            Remove orders from the order list in a work area and close associated index files.
-        </para>
+      Remove orders from the order list in a work area and close associated index files.
+    </para>
             </entry>
           </row>
           <row>
@@ -376,8 +429,8 @@
             </entry>
             <entry>
               <para>
-            Clear the condition and scope for an order.
-        </para>
+      Clear the condition and scope for an order.
+    </para>
             </entry>
           </row>
           <row>
@@ -391,8 +444,8 @@
             </entry>
             <entry>
               <para>
-            Clear any active relations.
-        </para>
+      Clear any active relations.
+    </para>
             </entry>
           </row>
           <row>
@@ -419,8 +472,8 @@
             </entry>
             <entry>
               <para>
-            Close all files in all work areas.
-        </para>
+      Close all files in all work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -434,8 +487,8 @@
             </entry>
             <entry>
               <para>
-            Close all files in a work area.
-        </para>
+      Close all files in a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -449,8 +502,8 @@
             </entry>
             <entry>
               <para>
-            Flush all pending updates in one work area.
-        </para>
+      Flush all pending updates in one work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -464,8 +517,8 @@
             </entry>
             <entry>
               <para>
-            Flush all pending updates in all work areas.
-        </para>
+      Flush all pending updates in all work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -474,13 +527,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbContinue(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbContinue</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Resume a pending locate condition.
-        </para>
+      Resume a pending locate condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -489,13 +542,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Export records to a new database file.
-        </para>
+      Export records to a new database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -509,8 +562,8 @@
             </entry>
             <entry>
               <para>
-            Export records to a new delimited text file.
-        </para>
+      Export records to a new delimited text file.
+    </para>
             </entry>
           </row>
           <row>
@@ -523,8 +576,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -537,8 +589,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -552,8 +603,8 @@
             </entry>
             <entry>
               <para>
-            Export records to a new SDF file.
-        </para>
+      Export records to a new SDF file.
+    </para>
             </entry>
           </row>
           <row>
@@ -567,8 +618,21 @@
             </entry>
             <entry>
               <para>
-            Create an empty database file with field definitions from another database file.
-        </para>
+      Create an empty database file with field definitions from another database file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyStructFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -581,8 +645,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -596,8 +659,21 @@
             </entry>
             <entry>
               <para>
-            Copy the field definitions in a database file structure to a structure-extended file as data.
-        </para>
+      Copy the field definitions in a database file structure to a structure-extended file as data.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyXStructFox(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -611,8 +687,8 @@
             </entry>
             <entry>
               <para>
-            Create a database file from a database structure array.
-        </para>
+      Create a database file from a database structure array.
+    </para>
             </entry>
           </row>
           <row>
@@ -626,8 +702,8 @@
             </entry>
             <entry>
               <para>
-            Create an index file and add an order to it.
-        </para>
+      Create an index file and add an order to it.
+    </para>
             </entry>
           </row>
           <row>
@@ -641,8 +717,8 @@
             </entry>
             <entry>
               <para>
-            Create or replace an order in an index file.
-        </para>
+      Create or replace an order in an index file.
+    </para>
             </entry>
           </row>
           <row>
@@ -682,8 +758,8 @@
             </entry>
             <entry>
               <para>
-            Mark the current record for deletion.
-        </para>
+      Mark the current record for deletion.
+    </para>
             </entry>
           </row>
           <row>
@@ -697,8 +773,8 @@
             </entry>
             <entry>
               <para>
-            Remove an order from an open index file.
-        </para>
+      Remove an order from an open index file.
+    </para>
             </entry>
           </row>
           <row>
@@ -725,8 +801,8 @@
             </entry>
             <entry>
               <para>
-            Return the default RDD for the application.
-        </para>
+      Return the default RDD for the application.
+    </para>
             </entry>
           </row>
           <row>
@@ -740,8 +816,8 @@
             </entry>
             <entry>
               <para>
-            Evaluate a code block for each record that matches a specified scope and/or condition.
-        </para>
+      Evaluate a code block for each record that matches a specified scope and/or condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -755,10 +831,25 @@
             </entry>
             <entry>
               <para>
-            Return the name of the alias.
-            Note:  DBF() is a compatibility function and is no longer recommended.
-            It is superseded by Alias0().  See Alias0() for more information.
-        </para>
+      Return the name of the alias.
+      Note:  DBF() is a compatibility function and is no longer recommended.
+      It is superseded by Alias0().  See Alias0() for more information.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DBF(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the name of a table open in a specified work area or a table name from a table alias.
+    </para>
             </entry>
           </row>
           <row>
@@ -772,8 +863,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change information about a field.
-        </para>
+      Return and optionally change information about a field.
+    </para>
             </entry>
           </row>
           <row>
@@ -786,8 +877,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -801,8 +891,8 @@
             </entry>
             <entry>
               <para>
-            Return a filter.
-        </para>
+      Return a filter.
+    </para>
             </entry>
           </row>
           <row>
@@ -816,8 +906,8 @@
             </entry>
             <entry>
               <para>
-            Return the work area number.
-        </para>
+      Return the work area number.
+    </para>
             </entry>
           </row>
           <row>
@@ -831,8 +921,8 @@
             </entry>
             <entry>
               <para>
-            Move to the last logical record.
-        </para>
+      Move to the last logical record.
+    </para>
             </entry>
           </row>
           <row>
@@ -841,13 +931,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoto(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoto(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Move to a record specified by record number.
-        </para>
+      Move to a record specified by record number.
+    </para>
             </entry>
           </row>
           <row>
@@ -861,8 +951,8 @@
             </entry>
             <entry>
               <para>
-            Move to the first logical record.
-        </para>
+      Move to the first logical record.
+    </para>
             </entry>
           </row>
           <row>
@@ -876,8 +966,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change information about a database file open in a work area.
-        </para>
+      Return and optionally change information about a database file open in a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -891,8 +981,8 @@
             </entry>
             <entry>
               <para>
-            Create a new database file by merging records/fields from two work areas.
-        </para>
+      Create a new database file by merging records/fields from two work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -905,8 +995,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -920,8 +1009,8 @@
             </entry>
             <entry>
               <para>
-            Search for the first record that matches the specified condition and scope.
-        </para>
+      Search for the first record that matches the specified condition and scope.
+    </para>
             </entry>
           </row>
           <row>
@@ -943,13 +1032,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoField(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoField(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the memo field pointer of a DBF record.
-        </para>
+      Return the memo field pointer of a DBF record.
+    </para>
             </entry>
           </row>
           <row>
@@ -963,8 +1052,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change information about orders and index files.
-        </para>
+      Return and optionally change information about orders and index files.
+    </para>
             </entry>
           </row>
           <row>
@@ -978,8 +1067,8 @@
             </entry>
             <entry>
               <para>
-            Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
-        </para>
+      Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
+    </para>
             </entry>
           </row>
           <row>
@@ -993,8 +1082,8 @@
             </entry>
             <entry>
               <para>
-            Restore the current record if it has been marked for deletion.
-        </para>
+      Restore the current record if it has been marked for deletion.
+    </para>
             </entry>
           </row>
           <row>
@@ -1008,8 +1097,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve field definition information about a record.
-        </para>
+      Retrieve field definition information about a record.
+    </para>
             </entry>
           </row>
           <row>
@@ -1036,8 +1125,8 @@
             </entry>
             <entry>
               <para>
-            Rebuild all orders in the order list of a work area.
-        </para>
+      Rebuild all orders in the order list of a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1051,8 +1140,8 @@
             </entry>
             <entry>
               <para>
-            Return the linking expression of a specified relation.
-        </para>
+      Return the linking expression of a specified relation.
+    </para>
             </entry>
           </row>
           <row>
@@ -1066,8 +1155,8 @@
             </entry>
             <entry>
               <para>
-            Lock a record in a shared database file, optionally retaining previous record locks.
-        </para>
+      Lock a record in a shared database file, optionally retaining previous record locks.
+    </para>
             </entry>
           </row>
           <row>
@@ -1081,8 +1170,8 @@
             </entry>
             <entry>
               <para>
-            Get a list of locked records.
-        </para>
+      Get a list of locked records.
+    </para>
             </entry>
           </row>
           <row>
@@ -1096,8 +1185,8 @@
             </entry>
             <entry>
               <para>
-            Return the work area number of a relation.
-        </para>
+      Return the work area number of a relation.
+    </para>
             </entry>
           </row>
           <row>
@@ -1111,8 +1200,8 @@
             </entry>
             <entry>
               <para>
-            Release all or specified record locks.
-        </para>
+      Release all or specified record locks.
+    </para>
             </entry>
           </row>
           <row>
@@ -1139,8 +1228,21 @@
             </entry>
             <entry>
               <para>
-            Move to the record having the specified key value in the controlling order.
-        </para>
+      Move to the record having the specified key value in the controlling order.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbSeekFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1154,8 +1256,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area and retrieve the current work area.
-        </para>
+      Select a new work area and retrieve the current work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1169,8 +1271,8 @@
             </entry>
             <entry>
               <para>
-            Change the current work area.
-        </para>
+      Change the current work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1197,10 +1299,10 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default RDD driver for the application.
-            Note:  DBSetDriver() is a compatibility function and is no longer recommended.
-            It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
-        </para>
+      Return and optionally change the default RDD driver for the application.
+      Note:  DBSetDriver() is a compatibility function and is no longer recommended.
+      It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
+    </para>
             </entry>
           </row>
           <row>
@@ -1214,8 +1316,8 @@
             </entry>
             <entry>
               <para>
-            Set a filter condition.
-        </para>
+      Set a filter condition.
+    </para>
             </entry>
           </row>
           <row>
@@ -1229,8 +1331,8 @@
             </entry>
             <entry>
               <para>
-            Set the found flag.
-        </para>
+      Set the found flag.
+    </para>
             </entry>
           </row>
           <row>
@@ -1244,8 +1346,8 @@
             </entry>
             <entry>
               <para>
-            Open an index file and add all its orders to the order list in a work area.
-        </para>
+      Open an index file and add all its orders to the order list in a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1259,8 +1361,8 @@
             </entry>
             <entry>
               <para>
-            Set the controlling order for a work area.
-        </para>
+      Set the controlling order for a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1274,8 +1376,8 @@
             </entry>
             <entry>
               <para>
-            Set the condition and scope to use in creating the next order.
-        </para>
+      Set the condition and scope to use in creating the next order.
+    </para>
             </entry>
           </row>
           <row>
@@ -1289,8 +1391,8 @@
             </entry>
             <entry>
               <para>
-            Relate a specified work area to the current work area.
-        </para>
+      Relate a specified work area to the current work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1325,7 +1427,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1343,8 +1445,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area.
-        </para>
+      Select a new work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1353,13 +1455,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSkip(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Move the record pointer relative to the current record.
-        </para>
+      Move the record pointer relative to the current record.
+    </para>
             </entry>
           </row>
           <row>
@@ -1373,8 +1475,8 @@
             </entry>
             <entry>
               <para>
-            Copy records to a database file in sorted order.
-        </para>
+      Copy records to a database file in sorted order.
+    </para>
             </entry>
           </row>
           <row>
@@ -1387,8 +1489,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1402,8 +1503,8 @@
             </entry>
             <entry>
               <para>
-            Copy records to a database file in sorted order.
-        </para>
+      Copy records to a database file in sorted order.
+    </para>
             </entry>
           </row>
           <row>
@@ -1417,8 +1518,8 @@
             </entry>
             <entry>
               <para>
-            Create an array containing the structure of a database file.
-        </para>
+      Create an array containing the structure of a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1432,8 +1533,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area by specifying its alias as a symbol.
-        </para>
+      Select a new work area by specifying its alias as a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -1446,8 +1547,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1461,8 +1561,8 @@
             </entry>
             <entry>
               <para>
-            Summarize records by key value to a database file.
-        </para>
+      Summarize records by key value to a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1476,8 +1576,8 @@
             </entry>
             <entry>
               <para>
-            Transfer records to an open database file.
-        </para>
+      Transfer records to an open database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1491,8 +1591,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for a work area.
-        </para>
+      Release all locks or a specified lock for a work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1506,8 +1606,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for all work areas.
-        </para>
+      Release all locks for all work areas.
+    </para>
             </entry>
           </row>
           <row>
@@ -1534,8 +1634,8 @@
             </entry>
             <entry>
               <para>
-            Replace fields in the current work area with values from another work area, based on the specified key expression.
-        </para>
+      Replace fields in the current work area with values from another work area, based on the specified key expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1549,8 +1649,23 @@
             </entry>
             <entry>
               <para>
-            Open a database file.
-        </para>
+      Open a database file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbUseAreaFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Open a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1579,8 +1694,8 @@
             </entry>
             <entry>
               <para>
-            Remove all records from open files.
-        </para>
+      Remove all records from open files.
+    </para>
             </entry>
           </row>
           <row>
@@ -1594,8 +1709,23 @@
             </entry>
             <entry>
               <para>
-            Return the deleted status of the current record.
-        </para>
+      Return the deleted status of the current record.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Deleted(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a logical value that indicates whether the current record is marked for deletion.
+    </para>
             </entry>
           </row>
           <row>
@@ -1609,8 +1739,53 @@
             </entry>
             <entry>
               <para>
-            Determine when end-of-file is encountered.
-        </para>
+      Determine when end-of-file is encountered.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Eof</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the record pointer is positioned past the last record in the current or specified table.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Return the number of fields in the current database file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the number of fields in a table.
+    </para>
             </entry>
           </row>
           <row>
@@ -1639,8 +1814,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field that is identified by its name.
-        </para>
+      Return a set-get code block for a field that is identified by its name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1654,8 +1829,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field that is identified by a symbol.
-        </para>
+      Return a set-get code block for a field that is identified by a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -1669,8 +1844,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by its position.
-        </para>
+      Get the contents of a field that is identified by its position.
+    </para>
             </entry>
           </row>
           <row>
@@ -1684,8 +1859,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by a work area alias and the field name.
-        </para>
+      Get the contents of a field that is identified by a work area alias and the field name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1699,8 +1874,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by its work area and a symbol.
-        </para>
+      Get the contents of a field that is identified by its work area and a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -1714,8 +1889,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by its position.
-        </para>
+      Get the contents of a field that is identified by its position.
+    </para>
             </entry>
           </row>
           <row>
@@ -1729,8 +1904,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by a work area alias and the field name.
-        </para>
+      Get the contents of a field that is identified by a work area alias and the field name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1744,8 +1919,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve the contents of a field that is identified by its symbolic name.
-        </para>
+      Retrieve the contents of a field that is identified by its symbolic name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1759,8 +1934,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of a field as a string.
-        </para>
+      Return the name of a field as a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1774,8 +1949,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of a field.
-        </para>
+      Return the position of a field.
+    </para>
             </entry>
           </row>
           <row>
@@ -1789,8 +1964,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of a field that is identified by a symbol.
-        </para>
+      Return the position of a field that is identified by a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -1804,8 +1979,8 @@
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its position.
-        </para>
+      Set the value of a field identified by its position.
+    </para>
             </entry>
           </row>
           <row>
@@ -1814,13 +1989,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutAlias(XSharp.__Symbol,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutAlias(XSharp.__Symbol,XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its work area alias and field name.
-        </para>
+      Set the value of a field identified by its work area alias and field name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1829,13 +2004,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutArea(System.UInt32,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutArea(System.UInt32,XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its work area number and field name.
-        </para>
+      Set the value of a field identified by its work area number and field name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1857,13 +2032,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSelect(XSharp.__Usual,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSelect(XSharp.__Usual,XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its work area alias and field name.
-        </para>
+      Set the value of a field identified by its work area alias and field name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1872,13 +2047,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field that is identified by its symbolic name.
-        </para>
+      Set the value of a field that is identified by its symbolic name.
+    </para>
             </entry>
           </row>
           <row>
@@ -1892,8 +2067,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of a field as a symbol.
-        </para>
+      Return the name of a field as a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -1907,8 +2082,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field, specified as a string, in a specified work area.
-        </para>
+      Return a set-get code block for a field, specified as a string, in a specified work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1917,13 +2092,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlockSym(XSharp.__Symbol,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlockSym(XSharp.__Symbol,System.UInt32@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field, specified as a symbol, in a specified work area.
-        </para>
+      Return a set-get code block for a field, specified as a symbol, in a specified work area.
+    </para>
             </entry>
           </row>
           <row>
@@ -1980,8 +2155,23 @@
             </entry>
             <entry>
               <para>
-            Lock an opened and shared database file.
-        </para>
+      Lock an opened and shared database file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Flock(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Attempts to lock the current or specified table.
+    </para>
             </entry>
           </row>
           <row>
@@ -1995,8 +2185,24 @@
             </entry>
             <entry>
               <para>
-            Determine if the previous search operation succeeded.
-        </para>
+      Determine if the previous search operation succeeded.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Found</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the most recently executed CONTINUE, FIND, LOCATE, or SEEK command was successful or if the record pointer was moved in a related table.
+      You can use FOUND( ) to determine if a child table has a record that matches the parent record.
+    </para>
             </entry>
           </row>
           <row>
@@ -2023,8 +2229,23 @@
             </entry>
             <entry>
               <para>
-            Return the length of the database file header.
-        </para>
+      Return the length of the database file header.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Header</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the number of bytes in the header of the current or specified table file.
+    </para>
             </entry>
           </row>
           <row>
@@ -2037,7 +2258,7 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2051,8 +2272,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of the last record in a database file.
-        </para>
+      Return the number of the last record in a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -2080,8 +2301,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2108,8 +2328,23 @@
             </entry>
             <entry>
               <para>
-            Return the date a database file was last modified and closed.
-        </para>
+      Return the date a database file was last modified and closed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LUpdate(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the date on which a table was last updated.
+    </para>
             </entry>
           </row>
           <row>
@@ -2151,8 +2386,23 @@
             </entry>
             <entry>
               <para>
-            Determine the number of records in a database file.
-        </para>
+      Determine the number of records in a database file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RecCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the number of records in the current or specified table.
+    </para>
             </entry>
           </row>
           <row>
@@ -2166,8 +2416,23 @@
             </entry>
             <entry>
               <para>
-            Return the current record number.
-        </para>
+      Return the current record number.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RecNo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the current record number in the current or specified table.
+    </para>
             </entry>
           </row>
           <row>
@@ -2181,8 +2446,23 @@
             </entry>
             <entry>
               <para>
-            Determine the record length of a database file.
-        </para>
+      Determine the record length of a database file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RecSize(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the size (width) of a table record.
+    </para>
             </entry>
           </row>
           <row>
@@ -2211,8 +2491,23 @@
             </entry>
             <entry>
               <para>
-            Lock the current record.
-        </para>
+      Lock the current record.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Attempts to lock a table record or records.
+    </para>
             </entry>
           </row>
           <row>
@@ -2225,7 +2520,11 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Searches an indexed table for the first occurrence of a record whose index key matches a specified expression.
+            Issuing Seek( ) is equivalent to issuing Seek and FOUND( ) in succession.
+            X# does not support seek operations for binary indexes.
+        </para>
             </entry>
           </row>
           <row>
@@ -2239,8 +2538,21 @@
             </entry>
             <entry>
               <para>
-            Determine the number of a work area.
-        </para>
+      Determine the number of a work area.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Select(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2303,13 +2615,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Used</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Used(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine whether a database file is open.
-        </para>
+      Determine whether a database file is open.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Used</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines if an alias is in use or a table is open in a specific work area.
+    </para>
             </entry>
           </row>
         </table>

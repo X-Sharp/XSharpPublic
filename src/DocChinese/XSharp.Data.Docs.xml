@@ -1,0 +1,411 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <AbstractSqlFactory>
+        <summary>这是大多数 ISqlFactory 实现的基类。</summary>
+        <remarks>该类通过调用受保护的 DbProvider 实例上的相应方法来创建连接、命令等。</remarks>
+    </AbstractSqlFactory>
+    <CursorStatus>
+        <summary>
+        此枚举模拟 FoxPro 中 CursorAdapter.CursorStatus 的值。
+        </summary>
+    </CursorStatus>
+    <DbDataColumn>
+        <summary>该类表示 DbDataTable 类中的一个 DBF 字段。</summary>
+    </DbDataColumn>
+    <DbDataRow>
+        <summary>该类表示 DbDataTable 类中的一个 DBF 行。</summary>
+    </DbDataRow>
+    <DbDataRow.RecNo>
+        <summary>工作区中的记录号</summary>
+    </DbDataRow.RecNo>
+    <DbDataSource>
+        <summary>创建一个附加到当前工作区的 DbDataSource 对象</summary>
+        <returns>一个 DbDataSource 对象，如果当前工作区未在使用中则返回 NULL。</returns>
+    </DbDataSource>
+    <DbDataSource.Add>
+        <summary>此必需方法尚未实现。</summary>
+    </DbDataSource.Add>
+    <DbDataSource.AllowEdit>
+        <summary>当工作区非只读时为 TRUE</summary>
+    </DbDataSource.AllowEdit>
+    <DbDataSource.AllowNew>
+        <summary>当工作区非只读时为 TRUE</summary>
+    </DbDataSource.AllowNew>
+    <DbDataSource.AllowRemove>
+        <summary>当工作区非只读时为 TRUE</summary>
+    </DbDataSource.AllowRemove>
+    <DbDataSource.ApplySort>
+        <inheritdoc/>
+        <remarks>此方法将在底层工作区上创建索引以对行进行排序</remarks>
+    </DbDataSource.ApplySort>
+    <DbDataSource.Clear>
+        <inheritdoc/>
+        <remarks>此方法将对工作区调用 Zap()，因此需要独占使用。</remarks>
+    </DbDataSource.Clear>
+    <DbDataSource.CopyTo>
+        <summary>此必需方法尚未实现</summary>
+    </DbDataSource.CopyTo>
+    <DbDataSource.Count>
+        <summary>返回 RDD 中的记录数</summary>
+    </DbDataSource.Count>
+    <DbDataSource.EoF>
+        <summary>底层工作区是否处于 EOF 状态</summary>
+    </DbDataSource.EoF>
+    <DbDataSource.Fields>
+        由于所有记录的元数据相同，我们只生成一次。
+    </DbDataSource.Fields>
+    <DbDataSource.Find>
+        <summary>此必需方法尚未实现</summary>
+    </DbDataSource.Find>
+    <DbDataSource.FullName>
+        <summary>底层工作区的文件名</summary>
+    </DbDataSource.FullName>
+    <DbDataSource.generateFields>
+        生成元数据，用于作为生成动态属性的来源。
+    </DbDataSource.generateFields>
+    <DbDataSource.GetEnumerator>
+        <summary>返回一个可用于遍历 RDD 的枚举器。</summary>
+        <remarks>此枚举器为数据源中的每条记录返回 DbRecord 对象</remarks>
+        <seealso cref="DbRecord">DbRecord 类</seealso>
+    </DbDataSource.GetEnumerator>
+    <DbDataSource.Insert>
+        <summary>此必需方法尚未实现。</summary>
+    </DbDataSource.Insert>
+    <DbDataSource.IsReadOnly>
+        <summary>当工作区为只读时为 TRUE</summary>
+    </DbDataSource.IsReadOnly>
+    <DbDataSource.Name>
+        <summary>底层工作区的别名</summary>
+    </DbDataSource.Name>
+    <DbDataSource.PutValue>
+        我们直接写入 dbf 表，并通知外部已发生了更改。
+    </DbDataSource.PutValue>
+    <DbDataSource.RecNo>
+        <summary>底层工作区中的记录号</summary>
+    </DbDataSource.RecNo>
+    <DbDataSource.RemoveIndex>
+        <summary>此必需方法尚未实现</summary>
+    </DbDataSource.RemoveIndex>
+    <DbDataSource.SELF_index>
+        <summary>检索指定位置记录的 DbRecord 对象</summary>
+        <remarks>此属性为只读。向该属性赋值将引发异常</remarks>
+        <seealso cref="DbRecord">DbRecord 类</seealso>
+    </DbDataSource.SELF_index>
+    <DbDataSource.ShowDeleted>
+        <summary>是否将删除标志作为"虚拟列"包含在内</summary>
+    </DbDataSource.ShowDeleted>
+    <DbDataSource.ShowRecno>
+        <summary>是否将记录号作为"虚拟列"包含在内</summary>
+    </DbDataSource.ShowRecno>
+    <DbDataSource_2>
+        <summary>该类在工作区上实现了 IBindingList 接口</summary>
+        <remarks>
+        该类可用于将工作区直接绑定到支持数据绑定的 .Net 控件（如 DataGridView）。
+        列表中的每一行代表工作区中的一条记录。记录由 DbRecord 对象表示。
+        每条记录
+        </remarks>
+    </DbDataSource_2>
+    <DbDataTable>
+        <summary>创建一个包含当前工作区数据的 DbDataTable 对象</summary>
+        <returns>一个 DbDataTable 对象，如果当前工作区未在使用中则返回 NULL。</returns>
+    </DbDataTable>
+    <DbDataTable.ctor>
+        <summary>从 IRdd 对象创建数据表</summary>
+        <remarks>表的结构将从工作区的结构中派生。
+        工作区中的每一行都会向表中添加一个 DbDataRow。
+        您可以使用 DataTable 类的常规事件来监视更改。
+        并使用 DataTable 类的 GetChanges() 方法来检索包含已更改行的表子集。
+        </remarks>
+    </DbDataTable.ctor>
+    <DbDataTable.Save>
+        <summary>将 DbDataTable 中的更改保存到底层 RDD</summary>
+        <param name="oRDD">必须保存更改的区域的 RDD 对象。</param>
+    </DbDataTable.Save>
+    <DbDataTable_2>
+        <summary>该类用于从工作区创建 System.Data.DataTable</summary>
+        <remarks>此表中的数据与工作区分离。因此如果您对数据进行更改，
+        则需要自行将其写回工作区。
+        </remarks>
+    </DbDataTable_2>
+    <DbField>
+        <summary>该类由 DbDataSource 类用于描述工作区中的字段</summary>
+    </DbField>
+    <DbField.CanSort>
+        <summary>该字段是否可以排序？</summary>
+    </DbField.CanSort>
+    <DbField.Caption>
+        <summary>字段的标题</summary>
+    </DbField.Caption>
+    <DbField.ctor>
+        <summary>初始化 DbField 类的新实例</summary>
+        <param name="info">此字段所基于的列信息。</param>
+    </DbField.ctor>
+    <DbField.DataType>
+        <summary>字段的 .Net 数据类型</summary>
+    </DbField.DataType>
+    <DbField.Description>
+        <summary>该字段是否可以排序？</summary>
+    </DbField.Description>
+    <DbField.Name>
+        <summary>字段名称</summary>
+    </DbField.Name>
+    <DbField.Ordinal>
+        <summary>字段的序号位置</summary>
+    </DbField.Ordinal>
+    <DbField.ReadOnly>
+        <summary>该字段是否为只读？</summary>
+    </DbField.ReadOnly>
+    <DbFieldDescriptor.ShouldSerializeValue>
+        必须重写，因为基类将此方法声明为抽象方法。
+    </DbFieldDescriptor.ShouldSerializeValue>
+  <DbRecord>
+    <summary>该类由 DbDataSource 类用于表示工作区中的记录。</summary>
+    <remarks>
+      记录类将工作区中的字段公开为这些字段的"伪"属性。
+      DbRecord 类还实现了 INotifyPropertychanged 接口，因此当记录绑定到支持数据绑定的控件时，
+      该控件将"感知"到对记录所做的更改。
+    </remarks>
+  </DbRecord>
+    <DbRecord.ctor>
+        当前记录位置，当我们需要与 dbf 通信时需要用到它。
+        <summary>初始化 DbRecord 类的新实例</summary>
+        <param name="position">数据源中的序号位置</param>
+        <param name="source">此对象所属的数据源</param>
+    </DbRecord.ctor>
+    <DbRecord.Deleted>
+    <summary>当前记录是否已被删除？</summary>
+  </DbRecord.Deleted>
+    <DbRecord.FieldChange>
+        如果有人更改了 dbf 服务器中的某个列值，将调用此方法。
+        如果记录号与我们所表示的记录号相同，则我们引发
+        属性更改事件，因为我们的某个属性已发生更改。
+    </DbRecord.FieldChange>
+  <DbRecord.FieldName_fieldPos>
+        <summary>获取指定字段位置的字段名</summary>
+        <param name="fieldPos">从 0 开始的字段编号</param>
+        <returns>字段名</returns>
+    </DbRecord.FieldName_fieldPos>
+    <DbRecord.FieldValue_fieldPos>
+        <summary>获取指定字段位置的值</summary>
+        <param name="fieldPos">从 0 开始的字段编号</param>
+        <returns>字段值</returns>
+    </DbRecord.FieldValue_fieldPos>
+    <DbRecord.OnPropertyChanged>
+        我们使用此方法来通知使用该组件的组件某个属性已更改。
+        由于 PropertyChangedEventArgs 需要提供已更改属性的名称，
+        我们使用 dbf 服务器内部的列名称。
+    </DbRecord.OnPropertyChanged>
+    <DbRecord.RecNo>
+    <summary>工作区中的记录号。不必与列表中的逻辑位置匹配。</summary>
+  </DbRecord.RecNo>
+  <DbRecord.SELF_fieldName>
+        <summary>按名称读写工作区中的字段。</summary>
+    </DbRecord.SELF_fieldName>
+    <DbRecord.SELF_fieldPos>
+        <summary>按位置读写工作区中的字段。</summary>
+    </DbRecord.SELF_fieldPos>
+    <DbRecord.ToString>
+        实现此方法始终是个好主意。
+    </DbRecord.ToString>
+    <DbRecordDescriptor.GetProperties>
+        与前一个方法相同，但提供了属性用于过滤。
+    </DbRecordDescriptor.GetProperties>
+    <DbRecordDescriptorProvider.GetTypeDescriptor>
+        当有人想要反射我们正在操作的类型时，将调用此方法。
+    </DbRecordDescriptorProvider.GetTypeDescriptor>
+    <GetSqlFactory>
+        <summary>检索默认 SQL 工厂。</summary>
+        <seealso cref="ISqlFactory">ISqlFactory</seealso>
+        <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+        <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+        <returns>当前的默认工厂。</returns>
+    </GetSqlFactory>
+    <ISqlFactory>
+        <summary>此接口声明所有 XSharp 数据工厂类的通用行为。</summary>
+        <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+        <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+        <seealso cref="GetSqlFactory">GetSqlFactory()</seealso>
+    </ISqlFactory>
+    <ISqlFactory.AfterCommit>
+        <summary>此方法在事务提交后调用。</summary>
+        <param name="oTransaction">事务对象。</param>
+    </ISqlFactory.AfterCommit>
+    <ISqlFactory.AfterConnect>
+        <summary>此方法在连接打开后调用。</summary>
+        <param name="oConnection">已打开的连接对象。</param>
+    </ISqlFactory.AfterConnect>
+    <ISqlFactory.AfterDisConnect>
+        <summary>此方法在连接断开后调用。</summary>
+        <param name="oConnection">连接对象。</param>
+    </ISqlFactory.AfterDisConnect>
+    <ISqlFactory.AfterOpen>
+        <summary>此方法在数据读取器打开后调用。</summary>
+        <param name="oDataReader">由提供程序创建的数据读取器。</param>
+        <remarks>有时您可能希望在程序中使用数据读取器之前对其进行修改。</remarks>
+        <returns>SqlSelect 类应使用的数据读取器。</returns>
+    </ISqlFactory.AfterOpen>
+    <ISqlFactory.AfterRollBack>
+        <summary>此方法在事务回滚后调用。</summary>
+        <param name="oTransaction">事务对象。</param>
+    </ISqlFactory.AfterRollBack>
+    <ISqlFactory.BeforeCommit>
+        <summary>此方法在事务提交前调用。</summary>
+        <param name="oTransaction">事务对象。</param>
+    </ISqlFactory.BeforeCommit>
+    <ISqlFactory.BeforeConnect>
+        <summary>此方法在连接前调用。允许调整连接字符串。</summary>
+        <returns>可能已被工厂修改的连接字符串。</returns>
+        <param name="cString">连接字符串。</param>
+        <param name="cUser">用户名（可以为空）。</param>
+        <param name="cPassword">密码（可以为空）。</param>
+    </ISqlFactory.BeforeConnect>
+    <ISqlFactory.BeforeDisConnect>
+        <summary>此方法在连接断开前调用。</summary>
+        <param name="oConnection">连接对象。</param>
+    </ISqlFactory.BeforeDisConnect>
+    <ISqlFactory.BeforeRollBack>
+        <summary>此方法在事务回滚前调用。</summary>
+        <param name="oTransaction">事务对象。</param>
+    </ISqlFactory.BeforeRollBack>
+    <ISqlFactory.CanCreateDataSourceEnumerator>
+        <summary>工厂是否支持数据源枚举。</summary>
+    </ISqlFactory.CanCreateDataSourceEnumerator>
+    <ISqlFactory.CreateCommand>
+        <inheritdoc cref="DbProviderFactory.CreateCommand"/>
+        <seealso cref="DbCommand"/>
+    </ISqlFactory.CreateCommand>
+    <ISqlFactory.CreateCommandBuilder>
+        <inheritdoc cref="DbProviderFactory.CreateCommandBuilder"/>
+        <seealso cref="DbCommandBuilder"/>
+    </ISqlFactory.CreateCommandBuilder>
+    <ISqlFactory.CreateConnection>
+        <inheritdoc cref="DbProviderFactory.CreateConnection"/>
+        <seealso cref="DbConnection"/>
+    </ISqlFactory.CreateConnection>
+    <ISqlFactory.CreateConnectionStringBuilder>
+        <inheritdoc cref="DbProviderFactory.CreateConnectionStringBuilder"/>
+        <seealso cref="DbConnectionStringBuilder"/>
+    </ISqlFactory.CreateConnectionStringBuilder>
+    <ISqlFactory.CreateDataAdapter>
+        <inheritdoc cref="DbProviderFactory.CreateDataAdapter"/>
+        <seealso cref="DbDataAdapter"/>
+    </ISqlFactory.CreateDataAdapter>
+    <ISqlFactory.CreateDataSourceEnumerator>
+        <inheritdoc cref="DbProviderFactory.CreateDataSourceEnumerator"/>
+        <seealso cref="DbDataSourceEnumerator"/>
+    </ISqlFactory.CreateDataSourceEnumerator>
+    <ISqlFactory.CreateParameter>
+        <inheritdoc cref="DbProviderFactory.CreateParameter"/>
+        <seealso cref="DbParameter"/>
+    </ISqlFactory.CreateParameter>
+    <ISqlFactory.DriverConnect>
+        <summary>此方法用于显示一个交互式对话框以选择连接。</summary>
+        <param name="hWindow">可选的窗口句柄，将作为对话框的父窗口。</param>
+        <param name="nCompletion">指示可更改内容的数值。例如 SQL_DRIVER_PROMPT 或 SQL_DRIVER_COMPLETE。详情请参阅 ODBC 文档。</param>
+        <param name="cConnectionString">指示对话框起始值的连接字符串。</param>
+        <returns>对话框结果的连接字符串。</returns>
+    </ISqlFactory.DriverConnect>
+    <ISqlFactory.EnhanceException>
+        <summary>此方法在事务提交后调用。</summary>
+    </ISqlFactory.EnhanceException>
+    <ISqlFactory.GetMetaDataColumnValues>
+        <summary>从架构行集中当前数据行创建列属性的对象数组</summary>
+    </ISqlFactory.GetMetaDataColumnValues>
+    <ISqlFactory.GetMetaDataTableValues>
+        <summary>从架构行集中当前数据行创建表属性的对象数组</summary>
+    </ISqlFactory.GetMetaDataTableValues>
+    <ISqlFactory.GetName>
+        <summary>返回工厂的名称。</summary>
+    </ISqlFactory.GetName>
+    <ISqlFactory.HandleSpecialValue>
+        <summary>此方法用于转换列的结果值。</summary>
+        <param name="oValue">数据提供程序返回的值。</param>
+        <param name="oFS">列的字段规格。</param>
+        <param name="lDateTimeAsDate">指示服务器是否希望将 DateTime 值作为 Date 的设置。</param>
+        <returns>必须传递给程序的值。</returns>
+    </ISqlFactory.HandleSpecialValue>
+    <ISqlFactory.Name>
+        <summary>返回工厂的名称。</summary>
+    </ISqlFactory.Name>
+    <ISqlFactory.ParameterNameInQuery>
+        <summary>是否应在查询中包含参数名。对于 ODBC 和 OLEDB 默认为 FALSE，对于 SQLServer 默认为 TRUE。</summary>
+    </ISqlFactory.ParameterNameInQuery>
+    <ISqlFactory.ParameterPrefix>
+        <summary>定义查询中参数前缀字符。例如 '?'（ODBC、OLEDB）或 '@'（SQLServer）。</summary>
+    </ISqlFactory.ParameterPrefix>
+    <ISqlFactory.QuoteChar>
+        <summary>返回表名和列名的引号字符。</summary>
+    </ISqlFactory.QuoteChar>
+    <ISqlFactory.TranslateStatement>
+        <summary>此方法在语句发送到服务器之前调用。</summary>
+        <param name="cStatement">原始语句。</param>
+        <returns>cStatement 的翻译版本。</returns>
+    </ISqlFactory.TranslateStatement>
+    <OdbcFactory>
+        <summary>该类实现了通过 Ado.Net ODBC 类访问数据的工厂。</summary>
+    </OdbcFactory>
+    <OleDbFactory>
+        <summary>该类实现了通过 Ado.Net Microsoft SQL Server 类访问数据的工厂。</summary>
+    </OleDbFactory>
+    <SetSqlFactory>
+        <summary>设置新的默认 SQL 工厂。</summary>
+        <seealso cref="ISqlFactory">ISqlFactory</seealso>
+        <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+        <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+        <param name="oFactory">新的默认工厂</param>
+        <returns>当前的默认工厂。</returns>
+    </SetSqlFactory>
+    <SqlFunctions.SqlExec>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*"/>
+        <seealso cref="NeedsAccessToLocalsAttribute"/>
+    </SqlFunctions.SqlExec>
+    <SqlFunctions.SqlGetProp>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*"/>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlGetProp>
+    <SqlFunctions.SqlGetProp_2>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*"/>
+        <param name="nSetting">指定设置。有关可指定设置的列表，请参阅 <see cref="SQLProperty">SQLProperty 枚举</see>。</param>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlGetProp_2>
+    <SqlFunctions.SqlSetProp>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*"/>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlSetProp>
+    <SqlFunctions.SqlSetProp_2>
+        <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*"/>
+        <param name="nSetting">指定设置。有关可指定设置的列表，请参阅 <see cref="SQLProperty">SQLProperty 枚举</see>。</param>
+        <seealso cref="SQLProperty"/>
+    </SqlFunctions.SqlSetProp_2>
+    <SQLParser>
+        <summary>
+        SQLParser 类。
+        </summary>
+    </SQLParser>
+    <SqlServerFactory>
+        <summary>该类实现了通过 Ado.Net Microsoft SQL Server 类访问数据的工厂。</summary>
+    </SqlServerFactory>
+<SQLStatement.ParseCommand>
+        FoxPro 使用引号字符 '?' 来检测参数。
+        如果其后紧跟 '@'，则为输出参数。
+        如果其后紧跟 '('，则为用括号括起的 VFP 表达式。
+        如果参数为变量，则这些变量必须是 private 或 public 类型，并在使用前已初始化。
+    </SQLStatement.ParseCommand>
+    <SqlWhereType>
+        <summary>
+        此枚举模拟 FoxPro 中 CursorAdapter.WhereType 属性的定义值。
+        </summary>
+    </SqlWhereType>
+    <VFPErrorMessage>
+        <summary>XSharp VFP 支持中使用的错误代码列表。<br/>
+        每个错误代码代表 XSharp.Core 内部字符串表中的一个可翻译字符串。
+        </summary>
+    </VFPErrorMessage>
+    <XTokenList>
+        <summary>
+        XSharpTokenList 类。该类用于处理令牌列表，
+        无需担心列表末尾问题。您可以通过 La.. 和 Lt.. 属性及方法
+        安全地访问后续项。
+        </summary>
+    </XTokenList>
+    </doc>

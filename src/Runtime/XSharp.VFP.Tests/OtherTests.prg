@@ -7,6 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING System.IO
 USING XUnit
 
 
@@ -22,6 +23,9 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "Other")];
 		METHOD IOTests() AS VOID
+			LOCAL cOldDefault AS STRING
+			cOldDefault := SetDefault()
+			
             // In the VO Dialect this is allowed with a non existing path
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
             SetDefault(WorkDir())
@@ -34,6 +38,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(cNew, SetDefault(cOld))
             // a not existing path should throw an error in the FoxPro dialect
             Assert.Throws<XSharp.Error>( { =>  SetDefault(cNew)})
+
+			SetDefault(cOldDefault)
 
 		[Fact, Trait("Category", "Other")];
         METHOD KeyboardTests() AS VOID
@@ -57,9 +63,9 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         METHOD TypeTests()  AS VOID
             var state := XSharp.RuntimeState.Dialect
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
-             Assert.True(type ( "x" ) == "U")
+             Assert.True(Type ( "x" ) == "U")
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
-             Assert.True(type ( "x" ) == "UE")
+             Assert.True(Type ( "x" ) == "UE")
              XSharp.RuntimeState.Dialect := state
 
         [Fact, Trait("Category", "Other")];
@@ -70,9 +76,74 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True( EVL("abc",123) == "abc")
             Assert.True( EVL(0,123) == 123)
             Assert.True( EVL(123,456) == 123)
-            Assert.True( EVL(NULL_DATE,ToDay()) == ToDay())
-            Assert.True( EVL(2000.01.01,ToDay()) == 2000.01.01)
+            Assert.True( EVL(NULL_DATE,Today()) == Today())
+            Assert.True( EVL(2000.01.01,Today()) == 2000.01.01)
 
+        [Fact, Trait("Category", "Other")];
+        METHOD ReleaseTests()  AS VOID
+        	PUBLIC ppp,ccc
+        	ccc := "test"
+        	ppp := 123
+        	ppp ++
+            Assert.True( ppp == 124 )
+            RELEASE ALL LIKE p*
+            Assert.ThrowsAny<Exception>( { => ppp ++ })
+
+			ppp := 1
+			ppp ++
+            Assert.True( ppp == 2 )
+            RELEASE ALL LIKE "p*"
+            Assert.ThrowsAny<Exception>( { => ppp ++ })
+
+            Assert.True( ccc == "test" )
+
+            RELEASE ALL
+            LOCAL c AS STRING
+            Assert.ThrowsAny<Exception>( { => c := ccc })
+
+            ccc := "testing"
+            ppp := 100
+            RELEASE ALL LIKE "c?c"
+            Assert.ThrowsAny<Exception>( { => c := ccc })
+
+            Assert.True( ppp == 100 )
+
+            RELEASE ALL
+            Assert.ThrowsAny<Exception>( { => ppp ++ })
+            Assert.ThrowsAny<Exception>( { => c := ccc })
+
+
+        [Fact, Trait("Category", "UIAndWindows")];
+        METHOD SysMetricTests() AS VOID
+            VAR nWidth := SysMetric(1)
+            VAR nHeight := SysMetric(2)
+
+            Assert.True(nWidth > 0, "ScreenWidth should be greater than 0")
+            Assert.True(nHeight > 0, "ScreenHeight should be greater than 0")
+        END METHOD
+
+        [Fact];
+        METHOD SetDeviceToFileTest() AS VOID
+            VAR cFile := Path.Combine(Environment.CurrentDirectory, Guid.NewGuid():ToString() + ".txt")
+            VAR cTestContent := "May the Force be with you, X#"
+            TRY
+                TRY
+                    SET DEVICE TO File (cFile)
+                    ? cTestContent
+                FINALLY
+                    SET DEVICE TO SCREEN
+                END TRY
+
+                Assert.True(File(cFile))
+
+                VAR cContent := File.ReadAllText(cFile)
+                Assert.True(cTestContent $ cContent)
+            FINALLY
+                IF File.Exists(cFile)
+                    File.Delete(cFile)
+                ENDIF
+            END TRY
+        END METHOD
 	END CLASS
 
 END NAMESPACE

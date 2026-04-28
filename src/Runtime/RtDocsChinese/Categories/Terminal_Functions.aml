@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Take input from the keyboard and assign it to a memory variable.
-        </para>
+      从键盘获取输入并将其分配给内存变量。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,9 +45,9 @@
             </entry>
             <entry>
               <para>
-            Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.
-            Note:  WAIT is a compatibility command and is no longer recommended.
-        </para>
+      在向终端窗口发送回车/换行后显示提示，然后等待按键。
+      注意：WAIT 是一个兼容性命令，不再推荐使用。
+    </para>
             </entry>
           </row>
           <row>
@@ -61,8 +61,8 @@
             </entry>
             <entry>
               <para>
-            Clear the terminal window and position the cursor at row and column 0.
-        </para>
+      清除终端窗口并将光标定位到第0行第0列。
+    </para>
             </entry>
           </row>
           <row>
@@ -76,8 +76,25 @@
             </entry>
             <entry>
               <para>
-            Return the current column position of the cursor in the terminal window.
-        </para>
+      返回终端窗口中光标的当前列位置。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Col</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Included for backward compatibility. Use the CurrentX, CurrentY Properties.
+
+      Returns the current column position of the cursor.
+    </para>
             </entry>
           </row>
           <row>
@@ -91,8 +108,8 @@
             </entry>
             <entry>
               <para>
-            Display the results of one or more expressions in the terminal window to the console.
-        </para>
+      在终端窗口向控制台显示一个或多个表达式的结果。
+    </para>
             </entry>
           </row>
           <row>
@@ -106,8 +123,8 @@
             </entry>
             <entry>
               <para>
-            Display the results of one or more expressions in the terminal window to the console.
-        </para>
+      在终端窗口向控制台显示一个或多个表达式的结果。
+    </para>
             </entry>
           </row>
           <row>
@@ -121,8 +138,25 @@
             </entry>
             <entry>
               <para>
-            Return the screen row position of the cursor in the terminal window.
-        </para>
+      返回终端窗口中光标的屏幕行位置。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Row</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Included for backward compatibility. Use the CurrentX, CurrentY Properties.
+
+      Returns the current row position of the cursor.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +169,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -149,8 +182,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -163,8 +195,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -180,6 +211,19 @@
               <para>
             Change the TextMerge delimiters
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetTextOutPut(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -258,11 +302,11 @@
             </entry>
             <entry>
               <para>
-            Sound a speaker tone for a specified frequency and duration.
-            Note:
-            Tone() is a compatibility function and is no longer recommended.
-            It is superseded by the Windows API MessageBeep(), SndPlaySound(), and the MCI family of functions.  MessageBeep() is defined in the System Library, whereas the other functions are defined in the Win32 API library.  In order to use these functions, you must include the Win32 API library in your application's search path.
-        </para>
+      以指定的频率和持续时间发出扬声器音调。
+      注意：
+      Tone() 是一个兼容性函数，不再推荐使用。
+      它被 Windows API 的 MessageBeep()、SndPlaySound() 和 MCI 系列函数所取代。MessageBeep() 在系统库中定义，而其他函数在 Win32 API 库中定义。要使用这些函数，您必须在应用程序的搜索路径中包含 Win32 API 库。
+    </para>
             </entry>
           </row>
         </table>

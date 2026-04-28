@@ -1,11 +1,10 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-/// <summary>List of possible values for XBase++ collations</summary>
-/// <remarks>The System enumeration value is represented by 2 different sort orders, depending on the current Ansi or Charmode setting.</remarks>
+/// <include file="XSharp.XPP.Docs.xml" path="doc/XppCollations/*" />
 enum XppCollations
     member Ascii          :=   -1
     member System         :=   0

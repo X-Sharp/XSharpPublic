@@ -49,7 +49,10 @@
             this.tbChars = new System.Windows.Forms.NumericUpDown();
             this.chkNamespaces = new System.Windows.Forms.CheckBox();
             this.chkTypes = new System.Windows.Forms.CheckBox();
+            this.tbMaxEntries = new System.Windows.Forms.NumericUpDown();
+            this.lblMaxEntries = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tbChars)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbMaxEntries)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -219,16 +222,17 @@
             // lblChars
             // 
             this.lblChars.AutoSize = true;
-            this.lblChars.Location = new System.Drawing.Point(17, 149);
+            this.lblChars.Location = new System.Drawing.Point(208, 270);
             this.lblChars.Name = "lblChars";
             this.lblChars.Size = new System.Drawing.Size(78, 13);
             this.lblChars.TabIndex = 2;
             this.lblChars.Text = "Chars required:";
             this.toolTip1.SetToolTip(this.lblChars, "Number of characters required to start Generic CompletionList");
+            this.lblChars.Visible = false;
             // 
             // tbChars
             // 
-            this.tbChars.Location = new System.Drawing.Point(101, 147);
+            this.tbChars.Location = new System.Drawing.Point(292, 268);
             this.tbChars.Minimum = new decimal(new int[] {
             3,
             0,
@@ -244,6 +248,7 @@
             0,
             0,
             0});
+            this.tbChars.Visible = false;
             // 
             // chkNamespaces
             // 
@@ -269,11 +274,46 @@
         "s");
             this.chkTypes.UseVisualStyleBackColor = true;
             // 
+            // tbMaxEntries
+            // 
+            this.tbMaxEntries.Location = new System.Drawing.Point(104, 141);
+            this.tbMaxEntries.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.tbMaxEntries.Minimum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            this.tbMaxEntries.Name = "tbMaxEntries";
+            this.tbMaxEntries.Size = new System.Drawing.Size(79, 20);
+            this.tbMaxEntries.TabIndex = 20;
+            this.toolTip1.SetToolTip(this.tbMaxEntries, "Maximum # of entries in completion list");
+            this.tbMaxEntries.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            // 
+            // lblMaxEntries
+            // 
+            this.lblMaxEntries.AutoSize = true;
+            this.lblMaxEntries.Location = new System.Drawing.Point(20, 143);
+            this.lblMaxEntries.Name = "lblMaxEntries";
+            this.lblMaxEntries.Size = new System.Drawing.Size(65, 13);
+            this.lblMaxEntries.TabIndex = 19;
+            this.lblMaxEntries.Text = "Max Entries:";
+            this.toolTip1.SetToolTip(this.lblMaxEntries, "Maximum # of entries in completion list");
+            // 
             // CompletionOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.tbMaxEntries);
+            this.Controls.Add(this.lblMaxEntries);
             this.Controls.Add(this.chkTypes);
             this.Controls.Add(this.chkNamespaces);
             this.Controls.Add(this.tbChars);
@@ -296,6 +336,7 @@
             this.Name = "CompletionOptionsControl";
             this.Size = new System.Drawing.Size(403, 305);
             ((System.ComponentModel.ISupportInitialize)(this.tbChars)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbMaxEntries)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -323,5 +364,7 @@
         private System.Windows.Forms.NumericUpDown tbChars;
         private System.Windows.Forms.CheckBox chkNamespaces;
         private System.Windows.Forms.CheckBox chkTypes;
+        private System.Windows.Forms.NumericUpDown tbMaxEntries;
+        private System.Windows.Forms.Label lblMaxEntries;
     }
 }

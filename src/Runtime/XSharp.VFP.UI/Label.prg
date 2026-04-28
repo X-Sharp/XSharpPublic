@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// Common properties that all VFP Objects support
 		#include "Headers/VFPObject.xh"
 
-	    #include "XSharp\VFPProperties.xh"
+	    #include "VFPProperties.xh"
 
 		PROPERTY Alignment AS INT
 			GET
@@ -45,13 +45,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:BackColor := Color.Transparent
 
 
-			#include ".\Headers\TextControlProperties.xh"
+			#include "TextControlProperties.xh"
 
-			#include ".\Headers\FontProperties.xh"
+			#include "FontProperties.xh"
 
 [System.ComponentModel.DefaultValue(0)];
         PROPERTY DisabledBackColor AS LONG AUTO
-        
+
         [System.ComponentModel.DefaultValue(0)];
         PROPERTY DisabledForeColor AS LONG AUTO
 

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <members>
-    </members>
     <CEmail>
         <summary>
             Provide a class to store and decode all data for an e-mail.
@@ -46,13 +44,6 @@
             CLASS CPop, CLASS CSmtp, Class CStorage
         </example>
     </CEmail>
-    <CEmail.ctor>
-        <summary>
-            Construct a CEmail object.
-        </summary>
-        <param name="cRawMail">** missing parameter documentation **</param>
-        <param name="uStorage">** missing parameter documentation **</param>
-    </CEmail.ctor>
     <CEmail.AddAttachment>
         <summary>
             Adds an attachment to the email.
@@ -62,7 +53,7 @@
         <param name="dwEncodeType">The Encoding to use. The default is </param>
         <param name="cContentID">** missing parameter documentation **</param>
         <param name="cFilename">The filename to use in the message body. The default is the name of the file itself.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CEmail.AddAttachment>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CEmail.AddAttachment>
     <CEmail.AttachmentFileList>
         <summary>
             Array containing the names of the attached files.
@@ -137,6 +128,13 @@
             This method prepares a default reply text and places it in the cText instance variable of the Class. It incorporates a From Address, destination list and datetime stamp. The existing text lines are prefixed with an "&gt; " and any HTML text is cleaned out.
         </remarks>
     </CEmail.CreateReplyBody>
+    <CEmail.ctor>
+        <summary>
+            Construct a CEmail object.
+        </summary>
+        <param name="cRawMail">** missing parameter documentation **</param>
+        <param name="uStorage">** missing parameter documentation **</param>
+    </CEmail.ctor>
     <CEmail.DateTimeStamp>
         <summary>
             A string containing the fully qualified date and time of the email.
@@ -148,7 +146,7 @@
             Extract all information from the various parts of an e-mail.
         </summary>
         <param name="cMail">The mail message to decode.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method knocks down all of the different parts of the raw e-mail stream and assigns them to appropriate properties.
         </remarks>
     </CEmail.Decode>
@@ -157,7 +155,7 @@
             Adds an attachment to the email.
         </summary>
         <param name="dwIndex">The index of the attachment to delete</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CEmail.DeleteAttachment>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CEmail.DeleteAttachment>
     <CEmail.DestList>
         <summary>
             Array of strings containing the e-mail addresses of all recipients.
@@ -343,7 +341,7 @@
         <param name="cPath">The directory in which the file is to be saved.  If not specified, the attachment will be saved within the current directory.</param>
         <param name="cFile">String containing a new file name for the attachment being saved.  If not specified, the attachment will be saved under the file name contained in the attachment e-mail header.</param>
         <param name="n">Number specifying which of the multiple attachments should be decoded and saved as a file.  If not specified, the first attachment will be saved.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method decodes the specified encoded attachment and saves it either under the specified or default file name.
         </remarks>
     </CEmail.SaveAs>
@@ -381,7 +379,7 @@
         <summary>
             Create an ANSI Date/Time based on current date and time.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method creates a string containing the date and time in a format that can be understood by all Internet servers.  The resulting string can be used via the TimeStamp access.
         </remarks>
     </CEmail.SetMailTime>
@@ -442,14 +440,6 @@
             This class provides all necessary methods and properties for file transfer and exchange using File Transfer Protocol.
         </remarks>
     </CFtp>
-    <CFtp.ctor>
-        <summary>
-            Construct a CFtp object instance.
-        </summary>
-        <param name="cCaption">Name of the application or entity calling subsequent methods.  The default is 'VO Ftp Client'.</param>
-        <param name="n">Port number.  The default FTP port number is 21.</param>
-        <param name="lStat">Logical value specifying whether the CFtp:InternetStatus() method should be called for status callback notifications.  The default is TRUE.</param>
-    </CFtp.ctor>
     <CFtp.AccessType>
         <summary>
             Numeric value representing the required access.
@@ -473,7 +463,7 @@
             Close a remote file.
         </summary>
         <param name="ptrHandle">Handle of a previously opened remote file.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method should be used to close the handle returned from the OpenFile() method.
         </remarks>
     </CFtp.CloseFile>
@@ -481,7 +471,7 @@
         <summary>
             Shut down the current Internet FTP connection.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method can be used to close the connection made for the CFtp object instance.  If not specified, the connection will be automatically closed if the appropriate object instance goes out of scope.
         </remarks>
         <example>
@@ -502,7 +492,7 @@
         <param name="cID">String that contains the name of the user to log on.  If this parameter is NULL, the function uses the appropriate default ('anonymous').  For the FTP protocol, the default is anonymous.</param>
         <param name="cPw">User's password as a string.  For anonymous login users, the user's e-mail name can be used as password.</param>
         <param name="lBypass">** missing parameter documentation **</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method establishes a connection to a remote FTP server.
         </remarks>
         <example>
@@ -537,16 +527,24 @@
             Create a new directory on the FTP server.
         </summary>
         <param name="cRemoteDir">String that contains the name of the directory that is to be created.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method creates a new directory on the remote FTP server.
         </remarks>
     </CFtp.CreateDir>
+    <CFtp.ctor>
+        <summary>
+            Construct a CFtp object instance.
+        </summary>
+        <param name="cCaption">Name of the application or entity calling subsequent methods.  The default is 'VO Ftp Client'.</param>
+        <param name="n">Port number.  The default FTP port number is 21.</param>
+        <param name="lStat">Logical value specifying whether the CFtp:InternetStatus() method should be called for status callback notifications.  The default is TRUE.</param>
+    </CFtp.ctor>
     <CFtp.DeleteFile>
         <summary>
             Delete a file stored on the FTP server.
         </summary>
         <param name="cRemoteFile">String that contains the name of the file to be deleted on the remote FTP server.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method removes a file from a remote FTP server.
         </remarks>
     </CFtp.DeleteFile>
@@ -561,7 +559,7 @@
         </param>
         <param name="nFlags">** missing parameter documentation **</param>
         <returns>
-            An array of subarrays, with each subarray containing information about each file matching <paramref name="cFileSpec" />.  The subarray elements are referenced as shown in the example under the CFtp:ConnectRemote() Method section.
+            An array of subarrays, with each subarray containing information about each file matching <paramref name="cFileSpec"/>.  The subarray elements are referenced as shown in the example under the CFtp:ConnectRemote() Method section.
         </returns>
         <remarks>
             This method returns information about files in the current or specified directory.  You can use it to perform actions on groups of files.
@@ -595,15 +593,15 @@
             Receive a file from the FTP server.
         </summary>
         <param name="cRemoteFile">Name of the remote file that has to be received.  </param>
-        <param name="cNewFile">String that contains the name of the file to create on the local system.  If not specified, <paramref name="cRemoteFile" /> automatically becomes the name of the local file.</param>
-        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a local file of the specified name already exists.  If <paramref name="lFailIfExists" /> is TRUE and the local file exists, the GetFile() method fails.</param>
+        <param name="cNewFile">String that contains the name of the file to create on the local system.  If not specified, <paramref name="cRemoteFile"/> automatically becomes the name of the local file.</param>
+        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a local file of the specified name already exists.  If <paramref name="lFailIfExists"/> is TRUE and the local file exists, the GetFile() method fails.</param>
         <param name="nFlags">
             Flags that control how the function will handle the file download.  The first set of flag values indicates the conditions under which the transfer occurs.  These transfer type flags can be used in combination with the second set of flags that control caching.
             The application can select one of these transfer type values:
             The following flags handle how the caching of this file will be handled.  Any combination of the following flags can be used with the transfer type flag.
             The possible values are:
         </param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method retrieves a file from an FTP server and stores it under the specified name as a local file.
         </remarks>
         <example>
@@ -653,7 +651,7 @@
         <param name="nContext">Application-defined context value associated with the current class.</param>
         <param name="nStatus">Status code that indicates the reason for calling.  It can be one of the following values: </param>
         <param name="pStatusInfo">Address of a buffer that contains information pertinent to this call to the callback function.  </param>
-        <param name="nStatusLength">Size of the <paramref name="pStatusInfo" /> buffer.  </param>
+        <param name="nStatusLength">Size of the <paramref name="pStatusInfo"/> buffer.  </param>
         <remarks>
             The InternetStatus() method can be used to receive different status information at any stage of an FTP transfer between the FTP client and server.
         </remarks>
@@ -732,7 +730,7 @@
             Array with host names or IP addresses, or both, that are known locally.  Requests to these names are not routed through the proxy.  The strings can contain wildcards, such as {'157.55.*', '*int*'}, meaning any IP address starting with 157.55, or any name containing the substring 'int', will bypass the proxy.
             If this array contains the '&lt;local&gt;' string as the only entry, the function bypasses any host name that does not contain a period.  For example, 'www.cai.com' would be routed to the proxy, whereas 'internet' would not.  If this parameter is NIL, the function reads the bypass list from the registry.
         </param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method initializes internal data structures and prepares for future calls to CFtp methods.  It does not have to be called explicitly, because the CFtp:ConnectRemote() method internally calls this method, if necessary.
         </remarks>
     </CFtp.Open>
@@ -778,13 +776,13 @@
         </summary>
         <param name="cLocalFile">Name of the local file that is to be sent to the remote FTP server.  </param>
         <param name="cRemoteFile">String that contains the name of the file to create on the remote FTP server.  If not specified, &lt;cLocalFile&gt; automatically becomes the name of the remote file.</param>
-        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a remote file of the specified name already exists.  If <paramref name="lFailIfExists" /> is TRUE and the remote file exists, method PutFile() fails.</param>
+        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a remote file of the specified name already exists.  If <paramref name="lFailIfExists"/> is TRUE and the remote file exists, method PutFile() fails.</param>
         <param name="nFlags">
             Flags that control how the function will handle the file upload and the conditions under which the transfers occur.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
             The transfer type can be any one of the following values:
             The application can use one or more of the following values to control the caching of the file:
         </param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method handles all of the necessary processes associated with reading a file locally and storing it on an FTP server.
         </remarks>
         <example>
@@ -836,7 +834,7 @@
             Delete a directory from the remote FTP server.
         </summary>
         <param name="cRemoteDir">String that contains the name of the directory that is to be removed.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method removes a directory from the remote FTP server.
         </remarks>
     </CFtp.RemoveDir>
@@ -846,7 +844,7 @@
         </summary>
         <param name="cRemoteFile">String that contains the name of the file to be renamed on the remote FTP server.</param>
         <param name="cNewName">The new name to give to the file.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             The RenameFile() method renames a file on the remote FTP server.
         </remarks>
     </CFtp.RenameFile>
@@ -855,7 +853,7 @@
             Change the current directory on the remote FTP server for the current process.
         </summary>
         <param name="cRemoteDir">String that contains the path of the directory to change to.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             The SetCurDir() method changes the directory on the remote FTP server for the current process.
         </remarks>
     </CFtp.SetCurDir>
@@ -873,6 +871,31 @@
             This class provides all necessary methods and properties for an HyperText Transfer Protocol session.
         </remarks>
     </CHttp>
+    <CHttp.AddRequestHeaders>
+        <summary>
+            Adds additional headers to the current request.
+        </summary>
+        <param name="cHeaders">Contains the headers to append to the request. Each header must be terminated by a CR/LF (carriage return/line feed) pair.</param>
+        <param name="nModifiers">Contains values used to modify the semantics of this function (see HttpAddRequestHeaders in the Win32 Internet API help for possible values).</param>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CHttp.AddRequestHeaders>
+    <CHttp.CloseRemote>
+        <summary>
+            Closes the http connection.
+        </summary>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CHttp.CloseRemote>
+    <CHttp.CloseRequest>
+        <summary>
+            Closes an http request.
+        </summary>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CHttp.CloseRequest>
+    <CHttp.ConnectRemote>
+        <summary>
+            Opens the http connection.
+        </summary>
+        <param name="cIP">The host name or IP address of the remote server.</param>
+        <param name="cID">User ID ( Optional )</param>
+        <param name="cPw">Password ( Optional )</param>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CHttp.ConnectRemote>
     <CHttp.ctor>
         <summary>
             Instantiates a new Http wrapper object.
@@ -881,31 +904,6 @@
         <param name="n">The HTTP port address ( the default is 80 ).</param>
         <param name="lStat">** missing parameter documentation **</param>
     </CHttp.ctor>
-    <CHttp.AddRequestHeaders>
-        <summary>
-            Adds additional headers to the current request.
-        </summary>
-        <param name="cHeaders">Contains the headers to append to the request. Each header must be terminated by a CR/LF (carriage return/line feed) pair.</param>
-        <param name="nModifiers">Contains values used to modify the semantics of this function (see HttpAddRequestHeaders in the Win32 Internet API help for possible values).</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CHttp.AddRequestHeaders>
-    <CHttp.CloseRemote>
-        <summary>
-            Closes the http connection.
-        </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CHttp.CloseRemote>
-    <CHttp.CloseRequest>
-        <summary>
-            Closes an http request.
-        </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CHttp.CloseRequest>
-    <CHttp.ConnectRemote>
-        <summary>
-            Opens the http connection.
-        </summary>
-        <param name="cIP">The host name or IP address of the remote server.</param>
-        <param name="cID">User ID ( Optional )</param>
-        <param name="cPw">Password ( Optional )</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CHttp.ConnectRemote>
     <CHttp.Directory>
         <summary>
             If an ftp server is accessed via http, this method returns an array of the files of the current directory.
@@ -1027,8 +1025,8 @@
             Sends a request to the server.
         </summary>
         <param name="cHeaders">Additional headers (optional).</param>
-        <param name="pData">Pointer to data of size <paramref name="nDataSize" /> (optional).</param>
-        <param name="nDataSize">The size of the data in <paramref name="pData" /> (optional but must be provided if <paramref name="pData" /> is used).</param>
+        <param name="pData">Pointer to data of size <paramref name="nDataSize"/> (optional).</param>
+        <param name="nDataSize">The size of the data in <paramref name="pData"/> (optional but must be provided if <paramref name="pData"/> is used).</param>
         <returns>
             TRUE if the request is successful, otherwise FALSE.
         </returns>
@@ -1045,12 +1043,6 @@
     <CIMap>
         <summary>Class to read a mailbox using the IMAP protocol.</summary>
     </CIMap>
-    <CImap.ctor>
-        <summary>**Missing documentation **</summary>
-        <param name="cServer">** missing parameter documentation **</param>
-        <param name="cUid">** missing parameter documentation **</param>
-        <param name="cPwd">** missing parameter documentation **</param>
-    </CImap.ctor>
     <CImap.CheckReply>
         <summary>**Missing documentation **</summary>
     </CImap.CheckReply>
@@ -1058,6 +1050,12 @@
         <summary>**Missing documentation **</summary>
         <param name="cBuffer">** missing parameter documentation **</param>
     </CImap.ClientCommand>
+    <CImap.ctor>
+        <summary>**Missing documentation **</summary>
+        <param name="cServer">** missing parameter documentation **</param>
+        <param name="cUid">** missing parameter documentation **</param>
+        <param name="cPwd">** missing parameter documentation **</param>
+    </CImap.ctor>
     <CImap.DeleteMail>
         <summary>**Missing documentation **</summary>
         <param name="nMail">** missing parameter documentation **</param>
@@ -1095,16 +1093,16 @@
             This class wraps functionality to manage Dialup Connections
         </remarks>
     </CInetDial>
+    <CINetDial.AutoDial>
+        <summary>**Missing documentation **</summary>
+        <param name="dwDialFlag">** missing parameter documentation **</param>
+    </CINetDial.AutoDial>
     <CINetDial.ctor>
         <summary>**Missing documentation **</summary>
         <param name="dwDialFlag">** missing parameter documentation **</param>
         <param name="oOwner">** missing parameter documentation **</param>
         <param name="symNotifyMethod">** missing parameter documentation **</param>
     </CINetDial.ctor>
-    <CINetDial.AutoDial>
-        <summary>**Missing documentation **</summary>
-        <param name="dwDialFlag">** missing parameter documentation **</param>
-    </CINetDial.AutoDial>
     <CINetDial.Dial>
         <summary>**Missing documentation **</summary>
         <param name="cConnectionName">** missing parameter documentation **</param>
@@ -1169,25 +1167,25 @@
             Base class for CPop, CSmtp and CNNTP classes.
         </summary>
         <remarks>
-            <br />Important!  CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.
+            <br/>Important!  CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.
             This abstract class defines the common protocol — properties and behavior — used by the e-mail classes, CPop, CSmtp and CNNTP.
         </remarks>
     </CMailAbstract>
-    <CMailAbstract.ctor>
-        <summary>
-            Construct a CMailAbstract object.
-        </summary>
-        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.  The default value is IPPORT_SMTP (25).</param>
-        <param name="cServer">String containing the local name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
-    </CMailAbstract.ctor>
     <CMailAbstract.Close>
         <summary>
             De-initialize all internal values of an Internet session.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method closes down an Internet session by closing and destroying the appropriate CSocket object instance.
         </remarks>
     </CMailAbstract.Close>
+    <CMailAbstract.ctor>
+        <summary>
+            Construct a CMailAbstract object.
+        </summary>
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP"/>.  The default value is IPPORT_SMTP (25).</param>
+        <param name="cServer">String containing the local name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
+    </CMailAbstract.ctor>
     <CMailAbstract.Destroy>
         <summary>**Missing documentation **</summary>
     </CMailAbstract.Destroy>
@@ -1223,12 +1221,12 @@
         <summary>
             Initialize all internal startup values for an Internet session.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method initializes an Internet session by creating a CSocket object that will be used later on.
         </remarks>
     </CMailAbstract.Open>
     <CMailAbstract.oSocket>
-        <exclude />
+        <exclude/>
     </CMailAbstract.oSocket>
     <CMailAbstract.PassWord>
         <summary>
@@ -1240,7 +1238,7 @@
         <summary>
             Receive data from a remote host.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             The RecvRemote() method receives data from a connected remote host.  Received data are stored to instance variable, SELF:cReply.
         </remarks>
     </CMailAbstract.RecvRemote>
@@ -1273,7 +1271,7 @@
             Send data to a remote host.
         </summary>
         <param name="cData">Data to be sent to a remote host.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method sends data via a socket to the remote host after adding trailing CRLF to the data stream.
         </remarks>
     </CMailAbstract.SendData>
@@ -1286,7 +1284,7 @@
             Send any data to a remote host.
         </summary>
         <param name="cData">Data to be sent to the remote host.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method sends data via a socket to the remote host.
         </remarks>
     </CMailAbstract.SendRemote>
@@ -1316,15 +1314,10 @@
             Base class for CEmail class.
         </summary>
         <remarks>
-            <br />Important!  CMessage is an abstract class and should not be used directly — instead, use one of its subclasses.
+            <br/>Important!  CMessage is an abstract class and should not be used directly — instead, use one of its subclasses.
             This abstract class defines the common protocol — properties and behaviour — used by the e-mail classes, CEmail.
         </remarks>
     </CMessage>
-    <CMessage.ctor>
-        <summary>
-            Construct a new CMessage object.
-        </summary>
-    </CMessage.ctor>
     <CMessage.AttachmentCount>
         <summary>**Missing documentation **</summary>
     </CMessage.AttachmentCount>
@@ -1362,24 +1355,29 @@
         </summary>
         <value>A string representing the content type for that section.</value>
     </CMessage.ContentType>
+    <CMessage.ctor>
+        <summary>
+            Construct a new CMessage object.
+        </summary>
+    </CMessage.ctor>
     <CMessage.Decode>
         <summary>
             Decodes a raw message string into its parts.
         </summary>
         <param name="cMail">The raw string to be decoded.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CMessage.Decode>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CMessage.Decode>
     <CMessage.DecodeAndSaveAs>
         <summary>
             This is an abstract method called by CMessage:SaveAs() If the code type is unknown.
             This method can be provided by the developer to implement unsupported code types.
         </summary>
         <remarks>
-            <br />Important!  This is a callback method used by X#.  Normally, it should not be called in your application code.
+            <br/>Important!  This is a callback method used by X#.  Normally, it should not be called in your application code.
         </remarks>
         <param name="cPath">The path to use when saving the file.</param>
         <param name="cFile">The file name to use.</param>
         <param name="cMail">The raw string to be decoded.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CMessage.DecodeAndSaveAs>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CMessage.DecodeAndSaveAs>
     <CMessage.Error>
         <summary>
             A number representing the error most recently occurring.
@@ -1417,13 +1415,13 @@
             Retrieves information about attachment(s).
         </summary>
         <param name="c">The optional attachment string.</param>
-        <param name="lNewsGroupMessage">A logical flag indicating whether <paramref name="c" /> is a news group message.</param>
+        <param name="lNewsGroupMessage">A logical flag indicating whether <paramref name="c"/> is a news group message.</param>
     </CMessage.GetAttachInfo>
     <CMessage.GetHeaderInfo>
         <summary>
             Extracts all the header information and stores that information into the appropriate properties.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CMessage.GetHeaderInfo>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CMessage.GetHeaderInfo>
     <CMessage.HEADER>
         <summary>**Missing documentation **</summary>
     </CMessage.HEADER>
@@ -1473,12 +1471,12 @@
         <param name="cPath">The optional directory in which the file will be saved.</param>
         <param name="cFile">The optional file name to save the attachment as.</param>
         <param name="n">Which attachment to save.  If not specified, the first attachment will be saved.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CMessage.SaveAs>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CMessage.SaveAs>
     <CMessage.SetMailTime>
         <summary>
             Converts the current time and date into an Internet timestamp string for the current message object.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CMessage.SetMailTime>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CMessage.SetMailTime>
     <CMessage.SubBoundary>
         <summary>
             A string representing the sub boundary for the multi-part alternate email. This is one which carries both text and html components.
@@ -1530,7 +1528,7 @@
         <summary>
             Extracts all the header information and stores that information into the appropriate properties.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNews.GetHeaderInfo>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNews.GetHeaderInfo>
     <CNews.NewsGroups>
         <summary>
             Returns a string representing the NewsGroups field of the news message header.
@@ -1569,19 +1567,11 @@
             Encapsulates an Internet session to an Internet News Server based on NNTP (Network News Transport Protocol).
         </remarks>
     </CNNTP>
-    <CNNTP.ctor>
-        <summary>
-            Construct a new NNTP object.
-        </summary>
-        <param name="cServer">The local name of the Internet News Server.</param>
-        <param name="cUid">The optional user ID as a string.</param>
-        <param name="cPwd">The optional password as a string.</param>
-    </CNNTP.ctor>
     <CNNTP.Authenticate>
         <summary>
             Authenticates the user to a NNTP Server.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             <note type="tip">
                 The user ID and password should be specified when initializing the CNNTP object.
             </note>
@@ -1591,14 +1581,22 @@
         <summary>
             Determines if the reply from the server has been successful.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.CheckReply>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.CheckReply>
     <CNNTP.connect>
         <summary>
             Establishes a connection to an Internet Mail Server.
         </summary>
         <param name="cIP">The optional string containing the local name of an Internet server. The default is the local host name.</param>
         <param name="n">The optional port number to use at cIP.  The default is IPPORT_SMTP (25).</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.connect>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.connect>
+    <CNNTP.ctor>
+        <summary>
+            Construct a new NNTP object.
+        </summary>
+        <param name="cServer">The local name of the Internet News Server.</param>
+        <param name="cUid">The optional user ID as a string.</param>
+        <param name="cPwd">The optional password as a string.</param>
+    </CNNTP.ctor>
     <CNNTP.CurrentNews>
         <summary>
             The current CNews object of the CNNTP class.
@@ -1609,25 +1607,25 @@
         <summary>
             Disconnect from the news server.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.Disconnect>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.Disconnect>
     <CNNTP.GetArticle>
         <summary>
             Retrieves a specified message from the selected group.
         </summary>
         <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.GetArticle>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.GetArticle>
     <CNNTP.GetBody>
         <summary>
             Retrieves a specified message body from the selected group.
         </summary>
         <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.GetBody>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.GetBody>
     <CNNTP.GetHeader>
         <summary>
             Retrieves a specified message header from the selected group.
         </summary>
         <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.GetHeader>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.GetHeader>
     <CNNTP.GetList>
         <summary>
             Returns a list of all groups from an NTTP Server containing cSearch in their names.
@@ -1666,7 +1664,7 @@
             Retrieves a specified message status from the selected group.
         </summary>
         <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.GetStatus>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.GetStatus>
     <CNNTP.GroupName>
         <summary>
             Returns a string representing the name of the currently selected group.
@@ -1721,7 +1719,7 @@
         <summary>
             Retrieves data from the news server via socket.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             <note type="tip">
                 The data that is retrieved wil be terminated by a CRLF.
             </note>
@@ -1744,7 +1742,7 @@
             Selects a newsgroup from a NTTP Server for further processing.
         </summary>
         <param name="cGroup">The name of the group to select as a string.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.SetNewsGroup>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.SetNewsGroup>
     <CNNTP.SetReadMode>
         <summary>**Missing documentation **</summary>
     </CNNTP.SetReadMode>
@@ -1752,12 +1750,12 @@
         <summary>
             Sets the internal message pointer to the next available message of the current group.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.SkipNext>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.SkipNext>
     <CNNTP.SkipPrev>
         <summary>
             Sets the internal message pointer to the previous available message of the current group.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CNNTP.SkipPrev>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CNNTP.SkipPrev>
     <CPop>
         <summary>
             Provide a class for Internet Post Office Protocol (POP).
@@ -1766,6 +1764,24 @@
             This class provides all necessary methods and properties for checking and receiving e-mail from an Internet POP Server.
         </remarks>
     </CPop>
+    <CPop.CheckReply>
+        <summary>
+            Check the response from a POP server for error codes.
+        </summary>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
+            This method checks the response string from the POP server for error codes, and sets the ReplyCode, ReplyString and Error properties.
+        </remarks>
+    </CPop.CheckReply>
+    <CPop.connect>
+        <summary>
+            Establish a connection to the remote POP server.
+        </summary>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="n">Port number at <paramref name="cHostNameOrIP"/>.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_POP (110).</param>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
+            This method establishes a connection to the specified remote mail server at port <paramref name="nPort"/> or SELF:RemotePort.
+        </remarks>
+    </CPop.connect>
     <CPop.ctor>
         <summary>
             Construct a CPop object.
@@ -1776,30 +1792,12 @@
         <param name="nPort">** missing parameter documentation **</param>
         <param name="oEMailStorage">** missing parameter documentation **</param>
     </CPop.ctor>
-    <CPop.CheckReply>
-        <summary>
-            Check the response from a POP server for error codes.
-        </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
-            This method checks the response string from the POP server for error codes, and sets the ReplyCode, ReplyString and Error properties.
-        </remarks>
-    </CPop.CheckReply>
-    <CPop.connect>
-        <summary>
-            Establish a connection to the remote POP server.
-        </summary>
-        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
-        <param name="n">Port number at <paramref name="cHostNameOrIP" />.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_POP (110).</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
-            This method establishes a connection to the specified remote mail server at port <paramref name="nPort" /> or SELF:RemotePort.
-        </remarks>
-    </CPop.connect>
     <CPop.DeleteMail>
         <summary>
             Delete specified mail from a remote POP server.
         </summary>
         <param name="nMail">The number of the e-mail message to be deleted from the queue.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method removes the specified e-mail message from a remote POP server.
         </remarks>
         <example>
@@ -1834,7 +1832,7 @@
         <summary>
             Shut down the current POP connection.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method can be used to close the connection to a POP3 Server.
         </remarks>
         <example>
@@ -1866,7 +1864,7 @@
             Read specified mail from a remote POP server.
         </summary>
         <param name="nMail">The number of the e-mail message to be read from the queue.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method reads the specified e-mail message from a remote POP server and decodes it into its MailHeader, MailBody, and Attachment parts.
         </remarks>
         <example>
@@ -1949,7 +1947,7 @@
         </summary>
         <param name="cUID">The user ID.</param>
         <param name="cPwd">The user's password.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <example>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <example>
             See the CPop:DeleteMail() example.
         </example>
     </CPop.LogOn>
@@ -1987,7 +1985,7 @@
         <summary>
             Receive response data from a remote mail server.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method receives data from the connected remote POP server.  Received data is stored to the ReplyString property.
         </remarks>
     </CPop.RecvRemote>
@@ -2011,14 +2009,6 @@
             This class provides all necessary methods and properties as a base for sending and receiving files via Ftp and Http.
         </remarks>
     </CSession>
-    <CSession.ctor>
-        <summary>
-            Construct a CSession object.
-        </summary>
-        <param name="cCaption">The optional caption as a string.</param>
-        <param name="n">The optional port number. If not provided the defaults is 0.</param>
-        <param name="lStat">** missing parameter documentation **</param>
-    </CSession.ctor>
     <CSession.AccessType>
         <summary>
             The type of Internet session.
@@ -2036,12 +2026,12 @@
             Closes a remote file.
         </summary>
         <param name="hFile">The handle of the file to close.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CSession.CloseFile>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CSession.CloseFile>
     <CSession.CloseRemote>
         <summary>
             Closes the Internet connection.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CSession.CloseRemote>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CSession.CloseRemote>
     <CSession.Connected>
         <summary>
             A logical value indicating the status of the connection.
@@ -2062,7 +2052,15 @@
         <param name="nService">A constant representing the type of service to access.</param>
         <param name="nFlags">The flags to use in the internal InternetConnect call.</param>
         <param name="nContext">An identifier for the application context of the returned connection handle.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CSession.ConnectRemote>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CSession.ConnectRemote>
+    <CSession.ctor>
+        <summary>
+            Construct a CSession object.
+        </summary>
+        <param name="cCaption">The optional caption as a string.</param>
+        <param name="n">The optional port number. If not provided the defaults is 0.</param>
+        <param name="lStat">** missing parameter documentation **</param>
+    </CSession.ctor>
     <CSession.Destroy>
         <summary>**Missing documentation **</summary>
     </CSession.Destroy>
@@ -2092,10 +2090,10 @@
         <param name="nStatusLength">** missing parameter documentation **</param>
     </CSession.InternetStatus>
     <CSession.ogStatus>
-        <exclude />
+        <exclude/>
     </CSession.ogStatus>
     <CSession.oLock>
-        <exclude />
+        <exclude/>
     </CSession.oLock>
     <CSession.Open>
         <summary>
@@ -2104,7 +2102,7 @@
         <param name="nFlags">The flags to use in the internal InternetConnect call.</param>
         <param name="xProxy">The optional name of a proxy server.</param>
         <param name="aProxyByPass">An optional array of server names that should not be accessed through the proxy.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </CSession.Open>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </CSession.Open>
     <CSession.OpenFlags>
         <summary>**Missing documentation **</summary>
     </CSession.OpenFlags>
@@ -2189,19 +2187,11 @@
             </code>
         </example>
     </CSmtp>
-    <CSmtp.ctor>
-        <summary>
-            Construct a CSmtp object.
-        </summary>
-        <param name="oMail">A CEmail object.  If omitted, a generic (empty) CEmail object is created.</param>
-        <param name="cServer">Name of the remote host that the class should connect to</param>
-        <param name="nPort">Email port of the remote host that the class should connect to. Defaults to 25</param>
-    </CSmtp.ctor>
     <CSmtp.CheckReply>
         <summary>
             Check the response from a mail server for error codes.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method checks for a response string from a mail server for error codes and sets the properties, ReplyCode, ReplyString, and Error.
         </remarks>
         <example>
@@ -2225,19 +2215,27 @@
             Establish a connection to a remote SMTP server.
         </summary>
         <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
-        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_SMTP (25).</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
-            This method establishes a connection to the specified remote mail server at port <paramref name="nPort" /> or SELF:RemotePort.
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP"/>.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_SMTP (25).</param>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
+            This method establishes a connection to the specified remote mail server at port <paramref name="nPort"/> or SELF:RemotePort.
         </remarks>
         <example>
             See the CSmtp:CheckReply() example.
         </example>
     </CSmtp.connect>
+    <CSmtp.ctor>
+        <summary>
+            Construct a CSmtp object.
+        </summary>
+        <param name="oMail">A CEmail object.  If omitted, a generic (empty) CEmail object is created.</param>
+        <param name="cServer">Name of the remote host that the class should connect to</param>
+        <param name="nPort">Email port of the remote host that the class should connect to. Defaults to 25</param>
+    </CSmtp.ctor>
     <CSmtp.Disconnect>
         <summary>
             Shut down the current SMTP connection.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method can be used to close the connection to the SMTP server.
         </remarks>
         <example>
@@ -2274,7 +2272,7 @@
         <summary>
             Receive response data from a remote mail server.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method receives data from the connected remote mail server.  Received data is stored to the ReplyString property.
         </remarks>
     </CSmtp.RecvRemote>
@@ -2289,7 +2287,7 @@
             Send an attached file as part of an e-mail to a remote SMTP server.
         </summary>
         <param name="cFile">The file, optionally including the drive letter and path, to be sent.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             SendAttachedFile() is called from the SendMail() method to encode and send the file specified by SELF:AttachmentFile to the remote SMTP Server.
         </remarks>
     </CSmtp.SendAttachedFile>
@@ -2297,7 +2295,7 @@
         <summary>
             Create a mail header and send it as part of an e-mail to a remote SMTP server.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             SendHeaderInfo() is called from the SendMail() method to prepare and send the appropriate header to the remote SMTP server. The method does not take any parameters. The values for the FROM, TO, CC and BCC are read from the Email property of the cSMTP class.
         </remarks>
     </CSmtp.SendHeaderInfo>
@@ -2305,7 +2303,7 @@
         <summary>
             Send a complete e-mail to a remote SMTP server.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method sends the complete e-mail to the remote SMTP Server.  Based on the SELF:MailBody, SELF:AttachmentFile, SELF:DestList, SELF:CCList, SELF:FromAddress and SELF:RemoteHost values, the SendMail()method prepares all necessary data including header and control sequences, and calls the SELF:SendHeaderInfo(), SendMailBody() and SELF:SendAttachedFile() methods at different stages of that transaction.
         </remarks>
     </CSmtp.SendMail>
@@ -2328,14 +2326,6 @@
             This class provides low-level socket functionality that can be used to implement different Internet protocols.
         </remarks>
     </CSocket>
-    <CSocket.ctor>
-        <summary>
-            Construct a CSocket object.
-        </summary>
-        <param name="nType">The type of the newly created socket.  Valid values are:</param>
-        <param name="xSocket">The socket number.</param>
-        <param name="xSocketStatus">The socket status.</param>
-    </CSocket.ctor>
     <CSocket.accept>
         <summary>
             Accept a new connection on a socket.
@@ -2380,7 +2370,7 @@
         <summary>
             Associate a local address with a socket.
         </summary>
-        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.</param>
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP"/>.</param>
         <param name="cIP">String containing the local name of an Internet server. Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
         <param name="nFamily">SHORTINT number specifying the Address Family. </param>
     </CSocket.bind>
@@ -2388,7 +2378,7 @@
         <summary>
             Disconnects the socket and closes it.
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method disconnects a connection and then closes it.
             If a socket is not closed in code, it will be automatically closed if the appropriate object instance goes out of scope.
         </remarks>
@@ -2401,9 +2391,9 @@
             Establish a connection of the socket instance to a peer.
         </summary>
         <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
-        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
-            This method establishes a connection to the specified remote address at port <paramref name="nPort" />.
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP"/>.</param>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
+            This method establishes a connection to the specified remote address at port <paramref name="nPort"/>.
         </remarks>
         <example>
             The following example checks whether a remote SMTP server is currently available:
@@ -2426,6 +2416,14 @@
             </code>
         </example>
     </CSocket.connect>
+    <CSocket.ctor>
+        <summary>
+            Construct a CSocket object.
+        </summary>
+        <param name="nType">The type of the newly created socket.  Valid values are:</param>
+        <param name="xSocket">The socket number.</param>
+        <param name="xSocketStatus">The socket status.</param>
+    </CSocket.ctor>
     <CSocket.Destroy>
         <summary>**Missing documentation **</summary>
     </CSocket.Destroy>
@@ -2436,7 +2434,7 @@
             Note that this function does NOT close the connection like it did in Visual Objects 2.5!
             To close a socket you need to call cSocket:Close()!
         </summary>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             Disconnect() can be used to close the connection made for the CSocket object instance.  If not specified, the connection will automatically be closed if the appropriate object instance goes out of scope.
         </remarks>
         <example>
@@ -2525,7 +2523,7 @@
         </summary>
         <param name="cName">Reference to a string to receive the peer's IP address.</param>
         <param name="nPort">Reference to a DWORD value to receive the peer's port number.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method gets the address and port number of the peer to which the socket is connected.
         </remarks>
         <example>
@@ -2617,7 +2615,7 @@
         </summary>
         <param name="cName">Reference to a string which is to receive the peer's IP address.</param>
         <param name="nPort">Reference to a DWORD value to receive the peer's port number</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>
         <remarks>
             This method gets the local address and port number of the socket.
         </remarks>
@@ -2650,7 +2648,7 @@
             Establish a socket to listen for an incoming connection.
         </summary>
         <param name="nBackLog">The maximum length to which the queue of pending connections can grow.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             This method establishes a socket to listen for an incoming connection.
         </remarks>
         <example>
@@ -2697,7 +2695,7 @@
         </summary>
         <param name="cData">Data to be sent via the socket.</param>
         <param name="cDest">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
-        <param name="nRemPort">Port number at <paramref name="cHostNameOrIP" />.</param>
+        <param name="nRemPort">Port number at <paramref name="cHostNameOrIP"/>.</param>
         <returns>
             Number of data sent, if successful; otherwise, 0 (zero).
         </returns>
@@ -2726,7 +2724,7 @@
         </summary>
         <param name="pData">Pointer to the data to be sent via the socket.</param>
         <param name="nSize">Length of the data to be sent.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             SendRaw() sends raw data to the connected socket.
             <note type="tip">This method can be used for TCP sockets only, because it assumes that a connection is already established.</note>
         </remarks>
@@ -2761,7 +2759,7 @@
         </summary>
         <param name="cData">Pointer to the data to be sent via the socket.</param>
         <param name="nDataLen">Length of the data to be sent.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>        <remarks>
             SendRaw() sends raw data to the connected socket.
             <note type="tip">This method can be used for TCP sockets only, because it assumes that a connection is already established.</note>
         </remarks>
@@ -2853,12 +2851,6 @@
             This class provides an interface that is used to handle streaming of inbound and outbound messages
         </remarks>
     </CStorage>
-    <CStorage.ctor>
-        <summary>
-            Enter topic text here.
-        </summary>
-        <param name="cPath">** missing parameter documentation **</param>
-    </CStorage.ctor>
     <CStorage.AttachmentAdd>
         <summary>
             This method is called when an email is received to initialize the saving of a new attachment.
@@ -2879,7 +2871,7 @@
             In most cases it is CODING_TYPE_BASE64 and only this type is implemented in the CStorage class.
         </param>
         <returns>
-            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+            <paramref name="cID"/>	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
         </returns>
     </CStorage.AttachmentAdd>
     <CStorage.AttachmentClose>
@@ -2903,7 +2895,7 @@
         </summary>
         <param name="cAttachID">Contains the ID or the full path of the attachment.If it is a full path the first character of cAttachID is ATTACHID_PATHFLAG (&gt;)</param>
         <returns>
-            <paramref name="cID" />	STRING The full path of an attachment file
+            <paramref name="cID"/>	STRING The full path of an attachment file
         </returns>
     </CStorage.AttachmentFullPath>
     <CStorage.AttachmentOpen>
@@ -2944,7 +2936,7 @@
         <param name="cAttachID">Contains the ID or the full path of the attachment.</param>
         <param name="cToFile">Contains the full path name of the target file.</param>
         <returns>
-            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+            <paramref name="cID"/>	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
         </returns>
     </CStorage.AttachmentSave>
     <CStorage.AttachmentSize>
@@ -2970,9 +2962,15 @@
             This method returns a new empty CEMail object.
         </summary>
         <returns>
-            <paramref name="oMail" />	A new empty CEmail object.
+            <paramref name="oMail"/>	A new empty CEmail object.
         </returns>
     </CStorage.CreateNewMail>
+    <CStorage.ctor>
+        <summary>
+            Enter topic text here.
+        </summary>
+        <param name="cPath">** missing parameter documentation **</param>
+    </CStorage.ctor>
     <CStorage.LoadEMail>
         <summary>
             This method returns a CEMail object filled with all data addressed through the cID.
@@ -2981,7 +2979,7 @@
         </summary>
         <param name="cId">Contains a unique identifier that describes the Email</param>
         <returns>
-            <paramref name="oEmail" />
+            <paramref name="oEmail"/>
         </returns>
         <remarks>
             <note type="tip">
@@ -3050,7 +3048,7 @@
         </summary>
         <param name="cData">Contains the file name of the attachment.</param>
         <returns>
-            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+            <paramref name="cID"/>	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
         </returns>
         <remarks>
             <note type="tip">
@@ -3068,7 +3066,7 @@
         <param name="oEMail">The Email from which the attachments need to be saved to the storage.</param>
         <param name="lClone">If lClone is TRUE and oEMail was loaded from the storage new copies of the attachments are stored into the storage.</param>
         <returns>
-            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+            <paramref name="cID"/>	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
         </returns>
     </CStorage.SaveAttachments>
     <CStorage.SaveEMail>
@@ -3100,4 +3098,6 @@
             </note>
         </remarks>
     </CStorage.SaveEMail>
-</doc>
+<members>
+    </members>
+    </doc>

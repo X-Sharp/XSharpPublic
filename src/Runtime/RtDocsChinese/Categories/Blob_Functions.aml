@@ -30,11 +30,10 @@
             </entry>
             <entry>
               <para>
-            Export the contents of a binary large object (BLOB) pointer to a file.
-            Note:
-            A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs.
-            It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.
-        </para>
+      将 binary large object (BLOB) 指针的内容导出到文件中。注意：
+      BLOB 文件 (.DBV 或 .FPT) 用于存储备忘录字段信息，作为替代标准 .DBT 文件机制的方法，支持一些 RDDs。
+      它是一个更为强大和高效的机制，用于存储和检索大量数据，而不是使用 .DBT 文件。  X# 提供了 DBFCDX 驱动程序，它默认使用 BLOB 文件存储机制，并且提供了 DBFBLOB 驱动程序，您可以将其作为继承的驱动程序用于其他 RDDs。
+    </para>
             </entry>
           </row>
           <row>
@@ -48,8 +47,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve data stored in a BLOB file without referencing a specific field.
-        </para>
+      从 BLOB 文件中检索数据，而不需要引用特定的字段。
+    </para>
             </entry>
           </row>
           <row>
@@ -63,8 +62,8 @@
             </entry>
             <entry>
               <para>
-            Import a file into a BLOB file and return a pointer to the data.
-        </para>
+      将文件导入 BLOB 文件中，并返回到数据的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -78,8 +77,8 @@
             </entry>
             <entry>
               <para>
-            Put data in a BLOB file without referencing a specific field.
-        </para>
+      在不引用特定字段的情况下将数据放入 BLOB 文件中。
+    </para>
             </entry>
           </row>
           <row>
@@ -93,8 +92,8 @@
             </entry>
             <entry>
               <para>
-            Copy the contents of a BLOB, identified by its memo field number, to a file.
-        </para>
+      将 BLOB 的内容，根据其备注字段号，复制到文件中。
+    </para>
             </entry>
           </row>
           <row>
@@ -108,8 +107,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a BLOB, identified by its memo field number.
-        </para>
+      通过备注字段号获取 BLOB 的内容
+    </para>
             </entry>
           </row>
           <row>
@@ -123,8 +122,8 @@
             </entry>
             <entry>
               <para>
-            Read the contents of a file as a BLOB, identified by a memo field number.
-        </para>
+      通过备注字段号将文件的内容读取到 BLOB 中
+    </para>
             </entry>
           </row>
           <row>
@@ -138,8 +137,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve the data from the root area of a BLOB file.
-        </para>
+      从 BLOB 文件的根目录中检索数据。
+    </para>
             </entry>
           </row>
           <row>
@@ -153,8 +152,8 @@
             </entry>
             <entry>
               <para>
-            Obtain a lock on the root area of a BLOB file.
-        </para>
+      在 BLOB 文件的根目录中获取锁。
+    </para>
             </entry>
           </row>
           <row>
@@ -168,8 +167,8 @@
             </entry>
             <entry>
               <para>
-            Store data in the root area of a BLOB file.
-        </para>
+      在 BLOB 文件的根区域存储数据。
+    </para>
             </entry>
           </row>
           <row>
@@ -183,8 +182,8 @@
             </entry>
             <entry>
               <para>
-            Release the lock on a BLOB file's root area.
-        </para>
+      释放 BLOB 文件根区域的锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -197,8 +196,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

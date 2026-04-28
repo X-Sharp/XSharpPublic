@@ -42,8 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -57,8 +56,8 @@
             </entry>
             <entry>
               <para>
-            Return the last DOS error code associated with an activation of the runtime error block.
-        </para>
+      返回与运行时错误块激活相关的最后一个 DOS 错误代码。
+    </para>
             </entry>
           </row>
           <row>
@@ -72,8 +71,8 @@
             </entry>
             <entry>
               <para>
-            Return a description string for a DOS error number.
-        </para>
+      返回 DOS 错误号的描述字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -87,8 +86,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the code block that is executed when a runtime error occurs.
-        </para>
+      返回并可选择性地更改在发生运行时错误时执行的代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -101,7 +100,7 @@
               </para>
             </entry>
             <entry>
-              <para>Create an error object from an exception.</para>
+              <para>从异常创建错误对象。</para>
             </entry>
           </row>
           <row>
@@ -114,8 +113,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -128,8 +126,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -143,8 +140,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve and optionally set the X# return code.
-        </para>
+      获取并可选择性地设置 X# 返回码。
+    </para>
             </entry>
           </row>
           <row>
@@ -170,8 +167,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -185,8 +181,8 @@
             </entry>
             <entry>
               <para>
-            Return an error message associated with a system-generated error code.
-        </para>
+      返回与系统生成的错误代码相关联的错误消息。
+    </para>
             </entry>
           </row>
           <row>
@@ -199,8 +195,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -214,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Detect a concurrency conflict.
-        </para>
+      检测并发冲突。
+    </para>
             </entry>
           </row>
         </table>

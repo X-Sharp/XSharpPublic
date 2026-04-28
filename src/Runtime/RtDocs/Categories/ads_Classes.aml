@@ -211,8 +211,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -226,7 +225,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the server's activity.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -240,7 +241,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the server's  communication statistics.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -254,7 +257,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the server's memory configuration.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -268,7 +273,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the configuration parameters. 
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -282,7 +289,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about an index.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -296,7 +305,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the installation.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -310,7 +321,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about a locked record.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -324,7 +337,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about a table.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -338,7 +353,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about worker threads.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -352,7 +369,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the server's uptime.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -366,7 +385,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about the server's usage.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>
@@ -380,7 +401,9 @@
             </entry>
             <entry>
               <para>
-              </para>
+            Structure used by the ADS MGMT API to return information about users.
+            See the ADS documentation for a description of this structure.
+            </para>
             </entry>
           </row>
           <row>

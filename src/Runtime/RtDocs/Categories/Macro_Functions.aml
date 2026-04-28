@@ -36,11 +36,41 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ExecScript(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
               <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptFast(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptSlow(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -75,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Macro compile a string.
-        </para>
+      Macro compile a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Evaluate a macro-compiled string.
-        </para>
+      Evaluate a macro-compiled string.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Allows text substitution in strings entered at runtime.
-        </para>
+      Allows text substitution in strings entered at runtime.
+    </para>
             </entry>
           </row>
         </table>

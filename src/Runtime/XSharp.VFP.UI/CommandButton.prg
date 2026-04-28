@@ -21,9 +21,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// Common properties that all VFP Objects support
 		#include "Headers/VFPObject.xh"
 
-		#include ".\Headers\ButtonControlProperties.xh"
+		#include "ButtonControlProperties.xh"
 
-		#include ".\Headers\FontProperties.xh"
+		#include "FontProperties.xh"
 
 
 		CONSTRUCTOR(  ) STRICT

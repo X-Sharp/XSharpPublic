@@ -29,9 +29,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:Size := Size{100, 17}
 			RETURN
 
-#include ".\Headers\ControlProperties.xh"
+#include ".\ControlProperties.xh"
 
-#include ".\Headers\ControlSource.xh"
+#include ".\ControlSource.xh"
 
 		PROPERTY Centered AS LOGIC AUTO
 		PROPERTY ReadOnly  AS LOGIC AUTO

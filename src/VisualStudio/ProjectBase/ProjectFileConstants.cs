@@ -128,6 +128,14 @@ namespace Microsoft.VisualStudio.Project
         public const string NativeResource = nameof(NativeResource);
         public const string VOBinary = nameof(VOBinary);
         public const string Settings = nameof(Settings);
+        public const string DefineConstants = nameof(DefineConstants);
+        public const string TargetFrameworkIdentifier = nameof(TargetFrameworkIdentifier);
+        public const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
+        public const string TargetFrameworkProfile = nameof(TargetFrameworkProfile);
+        public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
+        public const string IntermediateOutputPath = nameof(IntermediateOutputPath);
+        public const string DocumentationFile = nameof(DocumentationFile);
+        public const string FileAlignment = nameof(FileAlignment);
 
     }
 
@@ -163,6 +171,10 @@ namespace Microsoft.VisualStudio.Project
         public const int NestedProjectNode = 200;
         public const int ReferenceContainerNode = 300;
         public const int NuGetPackagesNode = 400;
+        public const int DependenciesNode = 425;
+        public const int TargetFrameworksNode = 435;
+        public const int ProjectsNode = 450;
+        public const int AssembliesNode = 475;
         public const int FolderNode = 500;
         public const int VOBinaryNode = 750;
         public const int HierarchyNode = 1000;

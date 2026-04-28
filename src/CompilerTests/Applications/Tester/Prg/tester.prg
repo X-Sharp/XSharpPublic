@@ -1,11 +1,33 @@
-// Core dialect
+procedure main()
+    Child():setter(1)
+    ? Child():getter()
 
-FUNCTION start() as void
-var (x , y ) := tuple{42,"robert"}
-local a as (int, string)
-local (b as int, c as string) := tuple(42,"robert")
-a := (x,y)
-? x, y
-? a
-? b,c
-RETURN
+    Child():exportedField := 2
+    ? Child():exportedField
+    wait
+return
+
+
+class Child from Parent
+endclass
+
+
+class Parent
+exported:
+    inline class method initClass()
+        ::classField := 0
+        ::exportedField := 0
+    return
+
+    inline class method getter()
+    return ::classField
+
+    inline class method setter(n)
+        ::classField := n
+    return
+
+    class var exportedField
+
+hidden:
+    class var classField
+endclass

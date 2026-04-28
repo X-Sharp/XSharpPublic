@@ -1,27 +1,25 @@
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-///<summary>Specifies the number of columns in an ASCII text file created with the ASCII keyword in the REPORT FORM command.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_ASCIICOLS/*" />
 GLOBAL _ASCIICOLS := 0 AS LONG
-///<summary>Specifies the number of rows in an ASCII text file created with the ASCII keyword in the REPORT FORM command.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_ASCIIROWS/*" />
 GLOBAL _ASCIIROWS := 0 AS LONG
-///<summary>Contains the memo field offset for the MLINE( ) function.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_MLINE/*" />
 GLOBAL _MLINE     := 0 AS LONG
-///<summary>Contains the current page number.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_PAGENO/*" />
 GLOBAL _PAGENO    := 1 AS LONG
-///<summary>Contains the total number of pages in a report.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_PAGETOTAL/*" />
 GLOBAL _PAGETOTAL := 0 AS LONG
-///<summary>Specifies a character expression to preface text merge lines.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_PRETEXT/*" />
 GLOBAL _PRETEXT   := "" AS STRING
-///<summary>Contains the number of records processed by the most recently executed table command.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_TALLY/*" />
 GLOBAL _TALLY    := 0 AS LONG
-///<summary>File handle for the output file for the TEXT .. ENDTEXT and \ and \\ commands.</summary>
-/// <seealso cref='SetTextFile' />
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_TEXT/*" />
 GLOBAL _TEXT     := -1 AS INT64
-///<summary>Contains a numeric value indicating the current trigger procedure nesting level.</summary>
+/// <include file="XSharp.VFP.Docs.xml" path="doc/_TRIGGERLEVEL/*" />
 GLOBAL _TRIGGERLEVEL := 0 AS LONG
-///<summary></summary>
 

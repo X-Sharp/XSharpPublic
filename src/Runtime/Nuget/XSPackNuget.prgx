@@ -34,6 +34,7 @@ ENDIF
 VAR SourceFolders := Root + "\Artifacts\" + Build
 VAR OutputFolder := Root + "\Artifacts\Packages\" + Build
 VAR XmlFolder    := Root+"\Artifacts\Help" 
+VAR XmlCnFolder  := Root+"\Artifacts\Help_ZH-CN" 
 
 // Parameter for TFM ?
 IF Args:Count >= 3
@@ -86,7 +87,8 @@ InfoMessage( "Tool : " + Tool )
 InfoMessage( "Build : " + Build )
 InfoMessage( "Target Framework : " + TFM )
 InfoMessage( "Source Folder : " + SourceFolders )
-InfoMessage( "Xml Folder : " + XmlFolder )
+InfoMessage( "Xml Folder    : " + XmlFolder )
+InfoMessage( "XmlCn  Folder : " + XmlCnFolder )
 InfoMessage( "Output Folder : " + OutputFolder )
 InfoMessage( "Version : " + Version )
 // Check if Nuget is installed
@@ -97,13 +99,13 @@ IF ( ! result )
     RETURN
 ENDIF
 
-CreateNuSpec( TFM, SourceFolders, Tool, Version, XmlFolder )
+CreateNuSpec( TFM, SourceFolders, Tool, Version, XmlFolder, XmlCnFolder )
 
 IF !RunNuget( Tool, Version, OutputFolder )
 	ErrorMessage( "Something went wrong...." )
 ENDIF
 File.Copy("XSAddNugetSource.prgx", Path.Combine(OutputFolder, "XSAddNugetSource.prgx"), true)
-InfoMessage( "Done." )
+File.Copy("NuGetSign.bat", Path.Combine(OutputFolder, "NuGetSign.bat"), true)
 
 FUNCTION GetBuildNumber( versionFile AS STRING ) AS String
 	VAR version := "3.0.0"
@@ -142,10 +144,10 @@ FUNCTION CheckNuGet() AS LOGIC
 			result := execResult:Contains( "Microsoft.NuGet" )
 		END USING
 	END USING
-RETURN result
+RETURN result 
 
-PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, version AS STRING, xmlFolder AS STRING)
-	VAR source := "XSharp." + tool + ".nuspec.txt"
+PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, version AS STRING, xmlFolder AS STRING, xmlcnFolder AS STRING)
+	VAR source := "XSharp." + tool + ".nuspec.xml"
 	VAR destination := "XSharp." + tool + "." + version +".nuspec"
 	VAR content := ""
 	VAR tfmList := tfm:Split('+')
@@ -163,7 +165,12 @@ PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, 
 			ELSEIF line:Contains( "$XmlFolder" ) 
 				FOR VAR i := 1 TO tfmList:Length
 					VAR tfmItem := tfmList[i]
-					content += line:Replace( "$XmlFolder", xmlFolder ):Replace( "$TFM", tfmItem ) +Environment.NewLine
+					content += line:Replace( "$XmlFolder", xmlfolder ):Replace( "$TFM", tfmItem ) +Environment.NewLine
+				NEXT
+			ELSEIF line:Contains( "$XmlCnFolder" ) 
+				FOR VAR i := 1 TO tfmList:Length
+					VAR tfmItem := tfmList[i]
+					content += line:Replace( "$XmlCnFolder", xmlcnFolder ):Replace( "$TFM", tfmItem ) +Environment.NewLine
 				NEXT
 			ELSE
 				content += line:Replace( "$Version", version ) +Environment.NewLine

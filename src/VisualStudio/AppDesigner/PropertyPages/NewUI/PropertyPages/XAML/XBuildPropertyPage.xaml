@@ -15,12 +15,12 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Build property page — WPF/XAML implementation (SDK-style projects).
+        Build property page â€” WPF/XAML implementation (SDK-style projects).
         DataContext: XBuildPropertyPageViewModel (set by XBuildPropertyPageXamlHost).
 
         Layout mirrors the WinForms XBuildPropertyPagePanel sections:
-          Left column  — Output paths, Signing, Code generation, PPO, Define Constants
-          Right column — Warnings, XML Documentation, Misc checkboxes, Command line, NoWarn
+          Left column  â€” Output paths, Signing, Code generation, PPO, Define Constants
+          Right column â€” Warnings, XML Documentation, Misc checkboxes, Command line, NoWarn
     -->
 
     <UserControl.Resources>
@@ -78,7 +78,6 @@
                             Click="OnBrowseOutputPathClick"/>
                     <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="OutputPath"
-                            IsEnabled="{Binding [OutputPath]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -101,122 +100,77 @@
                             Click="OnBrowseIntermediateOutputPathClick"/>
                     <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="IntermediateOutputPath"
-                            IsEnabled="{Binding [IntermediateOutputPath]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
                 <!-- Platform -->
-                <Label Content="{Binding CaptPlatformTarget}"
-                       ToolTip="{Binding DescPlatformTarget}"
-                       Margin="0,10,0,2"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <ComboBox Grid.Column="0"
-                              ItemsSource="{Binding PlatformTargetValues}"
-                              SelectedItem="{Binding PlatformTarget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              ToolTip="{Binding DescPlatformTarget}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="PlatformTarget"
-                            IsEnabled="{Binding [PlatformTarget]}"
-                            Margin="4,0,0,0"/>
-                </Grid>
+                <local:PropertyComboBox
+                        Label="{Binding CaptPlatformTarget}"
+                        Items="{Binding PlatformTargetValues}"
+                        Value="{Binding PlatformTarget, Mode=TwoWay}"
+                        PropertyName="PlatformTarget"
+                        ToolTip="{Binding DescPlatformTarget}"
+                        Margin="0,10,0,0"/>
 
                 <!-- Code generation section -->
                 <Label Content="Code Generation" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptOptimize}"
-                              IsChecked="{Binding Optimize, Mode=TwoWay}"
-                              ToolTip="{Binding DescOptimize}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="Optimize"
-                            IsEnabled="{Binding [Optimize]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptOptimize}"
+                        Value="{Binding Optimize, Mode=TwoWay}"
+                        PropertyName="Optimize"
+                        ToolTip="{Binding DescOptimize}"
+                        Margin="0,3,0,0"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptPrefer32Bit}"
-                              IsChecked="{Binding Prefer32Bit, Mode=TwoWay}"
-                              IsEnabled="{Binding Prefer32BitEnabled}"
-                              ToolTip="{Binding DescPrefer32Bit}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="Prefer32Bit"
-                            IsEnabled="{Binding [Prefer32Bit]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptPrefer32Bit}"
+                        Value="{Binding Prefer32Bit, Mode=TwoWay}"
+                        PropertyName="Prefer32Bit"
+                        IsEnabled="{Binding Prefer32BitEnabled}"
+                        ToolTip="{Binding DescPrefer32Bit}"
+                        Margin="0,3,0,0"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptRegisterForComInterop}"
-                              IsChecked="{Binding RegisterForComInterop, Mode=TwoWay}"
-                              ToolTip="{Binding DescRegisterForComInterop}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="RegisterForComInterop"
-                            IsEnabled="{Binding [RegisterForComInterop]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptRegisterForComInterop}"
+                        Value="{Binding RegisterForComInterop, Mode=TwoWay}"
+                        PropertyName="RegisterForComInterop"
+                        ToolTip="{Binding DescRegisterForComInterop}"
+                        Margin="0,3,0,0"/>
 
                 <!-- Preprocessor section -->
                 <Label Content="Preprocessor" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptPPO}"
-                              IsChecked="{Binding PPO, Mode=TwoWay}"
-                              ToolTip="{Binding DescPPO}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="PPO"
-                            IsEnabled="{Binding [PPO]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptPPO}"
+                        Value="{Binding PPO, Mode=TwoWay}"
+                        PropertyName="PPO"
+                        ToolTip="{Binding DescPPO}"
+                        Margin="0,3,0,0"/>
 
                 <!-- Define Constants -->
-                <Label Content="{Binding CaptDefineConstants}"
-                       ToolTip="{Binding DescDefineConstants}"
-                       Margin="0,10,0,2"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0"
-                             Text="{Binding DefineConstants, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             ToolTip="{Binding DescDefineConstants}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="DefineConstants"
-                            IsEnabled="{Binding [DefineConstants]}"
-                            Margin="4,0,0,0"/>
-                </Grid>
+                <local:PropertyTextBox
+                        Label="{Binding CaptDefineConstants}"
+                        Value="{Binding DefineConstants, Mode=TwoWay}"
+                        PropertyName="DefineConstants"
+                        ToolTip="{Binding DescDefineConstants}"
+                        Margin="0,10,0,0"/>
 
                 <!-- Signing section -->
                 <Label Content="Signing" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptSignAssembly}"
-                              IsChecked="{Binding SignAssembly, Mode=TwoWay}"
-                              ToolTip="{Binding DescSignAssembly}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="SignAssembly"
-                            IsEnabled="{Binding [SignAssembly]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptSignAssembly}"
+                        Value="{Binding SignAssembly, Mode=TwoWay}"
+                        PropertyName="SignAssembly"
+                        ToolTip="{Binding DescSignAssembly}"
+                        Margin="0,3,0,0"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptDelaySign}"
-                              IsChecked="{Binding DelaySign, Mode=TwoWay}"
-                              ToolTip="{Binding DescDelaySign}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="DelaySign"
-                            IsEnabled="{Binding [DelaySign]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptDelaySign}"
+                        Value="{Binding DelaySign, Mode=TwoWay}"
+                        PropertyName="DelaySign"
+                        ToolTip="{Binding DescDelaySign}"
+                        Margin="0,3,0,0"/>
 
                 <!-- Key File (read-only + browse + reset) -->
                 <Label Content="{Binding CaptAssemblyOriginatorKeyFile}"
@@ -237,7 +191,6 @@
                             Click="OnBrowseKeyFileClick"/>
                     <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="AssemblyOriginatorKeyFile"
-                            IsEnabled="{Binding [AssemblyOriginatorKeyFile]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -271,7 +224,6 @@
                     </ComboBox>
                     <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                             Command="{Binding ResetCommand}" CommandParameter="WarningLevel"
-                            IsEnabled="{Binding [WarningLevel]}"
                             Margin="4,0,0,0"/>
                 </Grid>
 
@@ -286,36 +238,24 @@
                 <RadioButton Content="Specific warnings:"
                              IsChecked="{Binding WarningsModeSpecific, Mode=TwoWay}"
                              Margin="4,2,0,0"/>
-                <Grid Margin="0,2,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0"
-                             Text="{Binding SpecificWarnings, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             IsEnabled="{Binding SpecificWarningsEnabled}"
-                             ToolTip="{Binding DescSpecificWarnings}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="WarningsAsErrors"
-                            IsEnabled="{Binding [WarningsAsErrors]}"
-                            Margin="4,0,0,0"/>
-                </Grid>
+                <local:PropertyTextBox
+                        Value="{Binding SpecificWarnings, Mode=TwoWay}"
+                        PropertyName="WarningsAsErrors"
+                        IsEnabled="{Binding SpecificWarningsEnabled}"
+                        ToolTip="{Binding DescSpecificWarnings}"
+                        Margin="0,2,0,0"/>
 
                 <!-- XML Documentation section -->
                 <Label Content="XML Documentation" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptDocumentationFile}"
-                              IsChecked="{Binding XmlDocEnabled, Mode=TwoWay}"
-                              ToolTip="{Binding DescDocumentationFile}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="DocumentationFile"
-                            IsEnabled="{Binding [DocumentationFile]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptDocumentationFile}"
+                        Value="{Binding XmlDocEnabled, Mode=TwoWay}"
+                        PropertyName="DocumentationFile"
+                        ToolTip="{Binding DescDocumentationFile}"
+                        Margin="0,3,0,0"/>
 
-                <!-- Documentation file name — only shown when XmlDocEnabled -->
+                <!-- Documentation file name â€” only shown when XmlDocEnabled -->
                 <TextBox Text="{Binding DocumentationFile, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                          ToolTip="{Binding DescDocumentationFileName}"
                          Visibility="{Binding XmlDocEnabled, Converter={StaticResource BoolToVisibility}}"
@@ -324,63 +264,35 @@
                 <!-- Misc section -->
                 <Label Content="Miscellaneous" FontWeight="Bold" Margin="0,12,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptUseSharedCompilation}"
-                              IsChecked="{Binding UseSharedCompilation, Mode=TwoWay}"
-                              ToolTip="{Binding DescUseSharedCompilation}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="UseSharedCompilation"
-                            IsEnabled="{Binding [UseSharedCompilation]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptUseSharedCompilation}"
+                        Value="{Binding UseSharedCompilation, Mode=TwoWay}"
+                        PropertyName="UseSharedCompilation"
+                        ToolTip="{Binding DescUseSharedCompilation}"
+                        Margin="0,3,0,0"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptSuppressRCWarnings}"
-                              IsChecked="{Binding SuppressRCWarnings, Mode=TwoWay}"
-                              ToolTip="{Binding DescSuppressRCWarnings}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="SuppressRCWarnings"
-                            IsEnabled="{Binding [SuppressRCWarnings]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox
+                        Label="{Binding CaptSuppressRCWarnings}"
+                        Value="{Binding SuppressRCWarnings, Mode=TwoWay}"
+                        PropertyName="SuppressRCWarnings"
+                        ToolTip="{Binding DescSuppressRCWarnings}"
+                        Margin="0,3,0,0"/>
 
                 <!-- Command line options -->
-                <Label Content="{Binding CaptCommandLineOption}"
-                       ToolTip="{Binding DescCommandLineOption}"
-                       Margin="0,10,0,2"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0"
-                             Text="{Binding CommandLineOption, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             ToolTip="{Binding DescCommandLineOption}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="CommandLineOption"
-                            IsEnabled="{Binding [CommandLineOption]}"
-                            Margin="4,0,0,0"/>
-                </Grid>
+                <local:PropertyTextBox
+                        Label="{Binding CaptCommandLineOption}"
+                        Value="{Binding CommandLineOption, Mode=TwoWay}"
+                        PropertyName="CommandLineOption"
+                        ToolTip="{Binding DescCommandLineOption}"
+                        Margin="0,10,0,0"/>
 
                 <!-- Suppress specific warnings -->
-                <Label Content="{Binding CaptNoWarn}"
-                       ToolTip="{Binding DescNoWarn}"
-                       Margin="0,8,0,2"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0"
-                             Text="{Binding NoWarn, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             ToolTip="{Binding DescNoWarn}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="NoWarn"
-                            IsEnabled="{Binding [NoWarn]}"
-                            Margin="4,0,0,0"/>
-                </Grid>
+                <local:PropertyTextBox
+                        Label="{Binding CaptNoWarn}"
+                        Value="{Binding NoWarn, Mode=TwoWay}"
+                        PropertyName="NoWarn"
+                        ToolTip="{Binding DescNoWarn}"
+                        Margin="0,8,0,0"/>
 
             </StackPanel>
 

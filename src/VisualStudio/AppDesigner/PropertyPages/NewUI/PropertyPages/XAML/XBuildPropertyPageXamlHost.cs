@@ -90,7 +90,7 @@ namespace XSharp.Project
         }
 
         /// <inheritdoc/>
-        public override void ApplyChanges()
+        protected override void ApplyChangesCore()
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _viewModel.ApplyChanges();

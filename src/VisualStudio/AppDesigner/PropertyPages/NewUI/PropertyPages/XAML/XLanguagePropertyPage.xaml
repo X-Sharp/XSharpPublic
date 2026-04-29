@@ -15,13 +15,13 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Language property page — WPF/XAML implementation (SDK-style projects).
+        Language property page - WPF/XAML implementation (SDK-style projects).
         DataContext: XLanguagePropertyPageViewModel (set by XLanguagePropertyPageXamlHost).
 
         Layout mirrors the WinForms XLanguagePropertyPagePanel (4-column table mapped to
         a two-column Grid):
-          Left column  — General group (12 checkboxes)
-          Right column — Memory variables group, Namespaces group, Preprocessor group,
+          Left column  - General group (12 checkboxes)
+          Right column - Memory variables group, Namespaces group, Preprocessor group,
                          Include Paths row, Standard Defs row.
     -->
 
@@ -30,9 +30,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <!-- BoolToVisibility: true → Visible, false → Collapsed -->
+            <!-- BoolToVisibility: true -> Visible, false -> Collapsed -->
             <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
+            <!-- BoolToInverseVisibility: true -> Collapsed, false -> Visible -->
             <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -45,218 +45,49 @@
             </Grid.ColumnDefinitions>
 
             <!-- ============================================================ -->
-            <!-- LEFT COLUMN — General group                                   -->
+            <!-- LEFT COLUMN - General group                                   -->
             <!-- ============================================================ -->
             <StackPanel Grid.Column="0" Margin="0,0,8,0">
 
                 <!-- Section header -->
                 <Label Content="General" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptLB}"
-                              IsChecked="{Binding LB, Mode=TwoWay}"
-                              IsEnabled="{Binding LBEnabled}"
-                              ToolTip="{Binding DescLB}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="LB"
-                            IsEnabled="{Binding [LB]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptNamedArgs}"
-                              IsChecked="{Binding NamedArgs, Mode=TwoWay}"
-                              ToolTip="{Binding DescNamedArgs}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="NamedArgs"
-                            IsEnabled="{Binding [NamedArgs]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptUnsafe}"
-                              IsChecked="{Binding Unsafe, Mode=TwoWay}"
-                              ToolTip="{Binding DescUnsafe}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="Unsafe"
-                            IsEnabled="{Binding [Unsafe]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptCS}"
-                              IsChecked="{Binding CS, Mode=TwoWay}"
-                              ToolTip="{Binding DescCS}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="CS"
-                            IsEnabled="{Binding [CS]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptInitLocals}"
-                              IsChecked="{Binding InitLocals, Mode=TwoWay}"
-                              ToolTip="{Binding DescInitLocals}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="InitLocals"
-                            IsEnabled="{Binding [InitLocals]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptOVF}"
-                              IsChecked="{Binding OVF, Mode=TwoWay}"
-                              ToolTip="{Binding DescOVF}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="OVF"
-                            IsEnabled="{Binding [OVF]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptAZ}"
-                              IsChecked="{Binding AZ, Mode=TwoWay}"
-                              ToolTip="{Binding DescAZ}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="AZ"
-                            IsEnabled="{Binding [AZ]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptEnforceSelf}"
-                              IsChecked="{Binding EnforceSelf, Mode=TwoWay}"
-                              ToolTip="{Binding DescEnforceSelf}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="EnforceSelf"
-                            IsEnabled="{Binding [EnforceSelf]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptAllowDot}"
-                              IsChecked="{Binding AllowDot, Mode=TwoWay}"
-                              ToolTip="{Binding DescAllowDot}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="Allowdot"
-                            IsEnabled="{Binding [Allowdot]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptEnforceOverride}"
-                              IsChecked="{Binding EnforceOverride, Mode=TwoWay}"
-                              ToolTip="{Binding DescEnforceOverride}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="EnforceOverride"
-                            IsEnabled="{Binding [EnforceOverride]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptOldStyleAssignments}"
-                              IsChecked="{Binding AllowOldStyleAssignments, Mode=TwoWay}"
-                              ToolTip="{Binding DescOldStyleAssignments}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="AllowOldStyleAssignments"
-                            IsEnabled="{Binding [AllowOldStyleAssignments]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptModernSyntax}"
-                              IsChecked="{Binding ModernSyntax, Mode=TwoWay}"
-                              ToolTip="{Binding DescModernSyntax}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="ModernSyntax"
-                            IsEnabled="{Binding [ModernSyntax]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox Label="{Binding CaptLB}"                  Value="{Binding LB,                      Mode=TwoWay}" PropertyName="LB"                      IsEnabled="{Binding LBEnabled}"         ToolTip="{Binding DescLB}"                  Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptNamedArgs}"            Value="{Binding NamedArgs,               Mode=TwoWay}" PropertyName="NamedArgs"               ToolTip="{Binding DescNamedArgs}"           Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptUnsafe}"               Value="{Binding Unsafe,                  Mode=TwoWay}" PropertyName="Unsafe"                  ToolTip="{Binding DescUnsafe}"              Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptCS}"                   Value="{Binding CS,                      Mode=TwoWay}" PropertyName="CS"                      ToolTip="{Binding DescCS}"                  Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptInitLocals}"           Value="{Binding InitLocals,              Mode=TwoWay}" PropertyName="InitLocals"              ToolTip="{Binding DescInitLocals}"          Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptOVF}"                  Value="{Binding OVF,                     Mode=TwoWay}" PropertyName="OVF"                     ToolTip="{Binding DescOVF}"                 Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptAZ}"                   Value="{Binding AZ,                      Mode=TwoWay}" PropertyName="AZ"                      ToolTip="{Binding DescAZ}"                  Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptEnforceSelf}"          Value="{Binding EnforceSelf,             Mode=TwoWay}" PropertyName="EnforceSelf"             ToolTip="{Binding DescEnforceSelf}"         Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptAllowDot}"             Value="{Binding AllowDot,                Mode=TwoWay}" PropertyName="Allowdot"                ToolTip="{Binding DescAllowDot}"            Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptEnforceOverride}"      Value="{Binding EnforceOverride,         Mode=TwoWay}" PropertyName="EnforceOverride"         ToolTip="{Binding DescEnforceOverride}"     Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptOldStyleAssignments}"  Value="{Binding AllowOldStyleAssignments,Mode=TwoWay}" PropertyName="AllowOldStyleAssignments" ToolTip="{Binding DescOldStyleAssignments}" Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptModernSyntax}"         Value="{Binding ModernSyntax,            Mode=TwoWay}" PropertyName="ModernSyntax"            ToolTip="{Binding DescModernSyntax}"        Margin="0,3,0,0"/>
 
             </StackPanel>
 
             <!-- ============================================================ -->
-            <!-- RIGHT COLUMN — Memory variables, Namespaces, Preprocessor    -->
+            <!-- RIGHT COLUMN - Memory variables, Namespaces, Preprocessor    -->
             <!-- ============================================================ -->
             <StackPanel Grid.Column="1" Margin="8,0,0,0">
 
                 <!-- Memory variables section -->
                 <Label Content="Memory variables" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptMemVar}"
-                              IsChecked="{Binding MemVar, Mode=TwoWay}"
-                              IsEnabled="{Binding MemVarEnabled}"
-                              ToolTip="{Binding DescMemVar}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="MemVar"
-                            IsEnabled="{Binding [MemVar]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptUndeclared}"
-                              IsChecked="{Binding Undeclared, Mode=TwoWay}"
-                              IsEnabled="{Binding UndeclaredEnabled}"
-                              ToolTip="{Binding DescUndeclared}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="Undeclared"
-                            IsEnabled="{Binding [Undeclared]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox Label="{Binding CaptMemVar}"     Value="{Binding MemVar,     Mode=TwoWay}" PropertyName="MemVar"     IsEnabled="{Binding MemVarEnabled}"     ToolTip="{Binding DescMemVar}"     Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptUndeclared}" Value="{Binding Undeclared, Mode=TwoWay}" PropertyName="Undeclared" IsEnabled="{Binding UndeclaredEnabled}" ToolTip="{Binding DescUndeclared}" Margin="0,3,0,0"/>
 
                 <!-- Namespaces section -->
                 <Label Content="Namespaces" FontWeight="Bold" Margin="0,10,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptINS}"
-                              IsChecked="{Binding INS, Mode=TwoWay}"
-                              ToolTip="{Binding DescINS}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="INS"
-                            IsEnabled="{Binding [INS]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptNS}"
-                              IsChecked="{Binding NS, Mode=TwoWay}"
-                              ToolTip="{Binding DescNS}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="NS"
-                            IsEnabled="{Binding [NS]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox Label="{Binding CaptINS}" Value="{Binding INS, Mode=TwoWay}" PropertyName="INS" ToolTip="{Binding DescINS}" Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptNS}"  Value="{Binding NS,  Mode=TwoWay}" PropertyName="NS"  ToolTip="{Binding DescNS}"  Margin="0,3,0,0"/>
 
                 <!-- Preprocessor section -->
                 <Label Content="Preprocessor" FontWeight="Bold" Margin="0,10,0,4"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <CheckBox Content="{Binding CaptNoStandardDefs}"
-                              IsChecked="{Binding NoStandardDefs, Mode=TwoWay}"
-                              ToolTip="{Binding DescNoStandardDefs}"
-                              VerticalAlignment="Center"/>
-                    <Button Style="{DynamicResource ResetButtonStyle}"
-                            Command="{Binding ResetCommand}" CommandParameter="NoStandardDefs"
-                            IsEnabled="{Binding [NoStandardDefs]}"
-                            Margin="4,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+                <local:PropertyCheckBox Label="{Binding CaptNoStandardDefs}" Value="{Binding NoStandardDefs, Mode=TwoWay}" PropertyName="NoStandardDefs" ToolTip="{Binding DescNoStandardDefs}" Margin="0,3,0,0"/>
 
                 <!-- Include Paths row: label + textbox + browse button + reset -->
                 <Label Content="{Binding CaptIncludePaths}"
@@ -276,7 +107,6 @@
                              Click="OnBrowseIncludePathsClick"/>
                     <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                              Command="{Binding ResetCommand}" CommandParameter="IncludePaths"
-                             IsEnabled="{Binding [IncludePaths]}"
                              Margin="4,0,0,0"/>
                 </Grid>
 
@@ -298,7 +128,6 @@
                              Click="OnBrowseStandardDefsClick"/>
                     <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                              Command="{Binding ResetCommand}" CommandParameter="StandardDefs"
-                             IsEnabled="{Binding [StandardDefs]}"
                              Margin="4,0,0,0"/>
                 </Grid>
 

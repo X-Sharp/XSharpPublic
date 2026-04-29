@@ -412,7 +412,6 @@ namespace XSharp.Project
                 if (e.PropertyName == nameof(MemVar))
                     UndeclaredEnabled = MemVar;
 
-                ApplyChanges();
                 NotifyDirty();
 
                 // Pulse Item[] so all indexer-bound Reset buttons re-evaluate.
@@ -460,33 +459,36 @@ namespace XSharp.Project
             }
             finally
             {
-                _isBinding = false;
-                OnPropertyChanged("Item[]");
+                // Raise PropertyChanged(null) while _isBinding is still true so WPF
+                // re-reads ALL value bindings without triggering HookupEvents dirty logic.
+                OnPropertyChanged(null);
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isBinding = false; }
             }
         }
 
         /// <inheritdoc/>
-        public override void ApplyChanges()
+        protected override void ApplyChangesCore()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            SetBoolPropertyValue(XSharpProjectFileConstants.AZ,                      AZ);
-            SetBoolPropertyValue(XSharpProjectFileConstants.CS,                      CS);
-            SetBoolPropertyValue(XSharpProjectFileConstants.INS,                     INS);
-            SetBoolPropertyValue(XSharpProjectFileConstants.InitLocals,              InitLocals);
-            SetBoolPropertyValue(XSharpProjectFileConstants.LB,                      LB);
-            SetBoolPropertyValue(XSharpProjectFileConstants.MemVar,                  MemVar);
-            SetBoolPropertyValue(XSharpProjectFileConstants.NamedArgs,               NamedArgs);
-            SetBoolPropertyValue(XSharpProjectFileConstants.NoStandardDefs,          NoStandardDefs);
-            SetBoolPropertyValue(XSharpProjectFileConstants.NS,                      NS);
-            SetBoolPropertyValue(XSharpProjectFileConstants.OVF,                     OVF);
-            SetBoolPropertyValue(XSharpProjectFileConstants.Undeclared,              Undeclared);
-            SetBoolPropertyValue(XSharpProjectFileConstants.Unsafe,                  Unsafe);
-            SetBoolPropertyValue(XSharpProjectFileConstants.EnforceSelf,             EnforceSelf);
-            SetBoolPropertyValue(XSharpProjectFileConstants.EnforceOverride,         EnforceOverride);
-            SetBoolPropertyValue(XSharpProjectFileConstants.Allowdot,               AllowDot);
+            SetBoolPropertyValue(XSharpProjectFileConstants.AZ,                       AZ);
+            SetBoolPropertyValue(XSharpProjectFileConstants.CS,                       CS);
+            SetBoolPropertyValue(XSharpProjectFileConstants.INS,                      INS);
+            SetBoolPropertyValue(XSharpProjectFileConstants.InitLocals,               InitLocals);
+            SetBoolPropertyValue(XSharpProjectFileConstants.LB,                       LB);
+            SetBoolPropertyValue(XSharpProjectFileConstants.MemVar,                   MemVar);
+            SetBoolPropertyValue(XSharpProjectFileConstants.NamedArgs,                NamedArgs);
+            SetBoolPropertyValue(XSharpProjectFileConstants.NoStandardDefs,           NoStandardDefs);
+            SetBoolPropertyValue(XSharpProjectFileConstants.NS,                       NS);
+            SetBoolPropertyValue(XSharpProjectFileConstants.OVF,                      OVF);
+            SetBoolPropertyValue(XSharpProjectFileConstants.Undeclared,               Undeclared);
+            SetBoolPropertyValue(XSharpProjectFileConstants.Unsafe,                   Unsafe);
+            SetBoolPropertyValue(XSharpProjectFileConstants.EnforceSelf,              EnforceSelf);
+            SetBoolPropertyValue(XSharpProjectFileConstants.EnforceOverride,          EnforceOverride);
+            SetBoolPropertyValue(XSharpProjectFileConstants.Allowdot,                AllowDot);
             SetBoolPropertyValue(XSharpProjectFileConstants.AllowOldStyleAssignments, AllowOldStyleAssignments);
-            SetBoolPropertyValue(XSharpProjectFileConstants.ModernSyntax,            ModernSyntax);
+            SetBoolPropertyValue(XSharpProjectFileConstants.ModernSyntax,             ModernSyntax);
 
             parentPropertyPage.SetProperty(XSharpProjectFileConstants.IncludePaths, IncludePaths ?? string.Empty);
             parentPropertyPage.SetProperty(XSharpProjectFileConstants.StandardDefs, StandardDefs ?? string.Empty);

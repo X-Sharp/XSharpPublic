@@ -15,12 +15,12 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Build Events property page — WPF/XAML implementation (SDK-style projects).
+        Build Events property page â€” WPF/XAML implementation (SDK-style projects).
         DataContext: XBuildEventsPropertyPageViewModel (set by XBuildEventsPropertyPageXamlHost).
 
         Layout mirrors the WinForms XBuildEventsPropertyPagePanel:
-          Group 1 — Pre-build Event Command Line  (multiline TextBox + "Edit Pre-build..." button)
-          Group 2 — Post-build Event Command Line (multiline TextBox + "Edit Post-build..." button)
+          Group 1 â€” Pre-build Event Command Line  (multiline TextBox + "Edit Pre-build..." button)
+          Group 2 â€” Post-build Event Command Line (multiline TextBox + "Edit Post-build..." button)
                     Run the post-build event:     (ComboBox)
     -->
 
@@ -34,7 +34,7 @@
 
     <DockPanel>
 
-        <!-- Configuration selector — hidden until per-config Build Events is implemented.
+        <!-- Configuration selector â€” hidden until per-config Build Events is implemented.
         <DockPanel DockPanel.Dock="Top" Margin="8,8,8,4" LastChildFill="False">
             <Label DockPanel.Dock="Left" Content="Configuration:" VerticalAlignment="Center" Padding="0,0,4,0"/>
             <ComboBox DockPanel.Dock="Left"
@@ -61,7 +61,6 @@
                         <Button DockPanel.Dock="Right"
                                 Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="PreBuildEvent"
-                                IsEnabled="{Binding [PreBuildEvent]}"
                                 Margin="4,0,0,0"/>
                         <Button Content="{Binding CaptEditPreBuild}"
                                 HorizontalAlignment="Right"
@@ -85,7 +84,6 @@
                         <Button DockPanel.Dock="Right"
                                 Style="{DynamicResource ResetButtonStyle}"
                                 Command="{Binding ResetCommand}" CommandParameter="PostBuildEvent"
-                                IsEnabled="{Binding [PostBuildEvent]}"
                                 Margin="4,0,0,0"/>
                         <Button Content="{Binding CaptEditPostBuild}"
                                 HorizontalAlignment="Right"
@@ -94,20 +92,13 @@
                     </DockPanel>
 
                     <!-- Run post-build combo -->
-                    <Label Content="{Binding CaptRunPostBuildEvent}" Margin="0,0,0,2" Padding="0"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="0"
-                                  ItemsSource="{Binding RunPostBuildEventValues}"
-                                  SelectedItem="{Binding RunPostBuildEvent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="RunPostBuildEvent"
-                                IsEnabled="{Binding [RunPostBuildEvent]}"
-                                Margin="4,0,0,0"/>
-                    </Grid>
+                    <local:PropertyComboBox
+                            Label="{Binding CaptRunPostBuildEvent}"
+                            Items="{Binding RunPostBuildEventValues}"
+                            Value="{Binding RunPostBuildEvent, Mode=TwoWay}"
+                            PropertyName="RunPostBuildEvent"
+                            LabelMargin="0,0,0,2"
+                            Margin="0,0,0,0"/>
                 </StackPanel>
             </GroupBox>
 

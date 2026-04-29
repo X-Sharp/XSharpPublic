@@ -30,6 +30,14 @@
           Row 4 — Insert Macro button + OK / Cancel
     -->
 
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

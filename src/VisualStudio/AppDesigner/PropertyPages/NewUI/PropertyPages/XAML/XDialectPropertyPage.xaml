@@ -15,14 +15,14 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Dialect property page — WPF/XAML implementation (SDK-style projects).
+        Dialect property page - WPF/XAML implementation (SDK-style projects).
         DataContext: XDialectPropertyPageViewModel (set by XDialectPropertyPageXamlHost).
 
         Layout mirrors the WinForms XDialectPropertyPagePanel two-column table:
-          In the Left column  — "All dialects" group  (VO1–VO4, VO8–VO10, VO2)
-          In the Right column — "Not in Core dialect" group (VO5–VO7, VO11–VO17)
-          Compatibility in the Bottom row   — Visual FoxPro compatibility (Fox2, only FoxPro dialect)
-                       — Xbase++ compatibility (Xpp1, only XPP dialect)
+          Left column  - "All dialects" group  (VO1-VO4, VO8-VO10, VO2)
+          Right column - "Not in Core dialect" group (VO5-VO7, VO11-VO17)
+          Bottom row   - Visual FoxPro compatibility (Fox2, only FoxPro dialect)
+                       - Xbase++ compatibility (Xpp1, only XPP dialect)
     -->
 
     <UserControl.Resources>
@@ -30,9 +30,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <!-- BoolToVisibility: true → Visible, false → Collapsed -->
+            <!-- BoolToVisibility: true -> Visible, false -> Collapsed -->
             <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <!-- BoolToInverseVisibility: true → Collapsed, false → Visible -->
+            <!-- BoolToInverseVisibility: true -> Collapsed, false -> Visible -->
             <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -48,254 +48,56 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- ============================================================ -->
-                <!-- LEFT COLUMN — All dialects                                    -->
+                <!-- LEFT COLUMN - All dialects                                    -->
                 <!-- ============================================================ -->
                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
 
                     <Label Content="{Binding CaptAllDialects}" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO1}"
-                                  IsChecked="{Binding Vo1, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO1}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo1"
-                                IsEnabled="{Binding [Vo1]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO3}"
-                                  IsChecked="{Binding Vo3, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO3}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo3"
-                                IsEnabled="{Binding [Vo3]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO10}"
-                                  IsChecked="{Binding Vo10, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO10}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo10"
-                                IsEnabled="{Binding [Vo10]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO8}"
-                                  IsChecked="{Binding Vo8, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO8}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo8"
-                                IsEnabled="{Binding [Vo8]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO9}"
-                                  IsChecked="{Binding Vo9, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO9}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo9"
-                                IsEnabled="{Binding [Vo9]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO4}"
-                                  IsChecked="{Binding Vo4, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO4}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo4"
-                                IsEnabled="{Binding [Vo4]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO2}"
-                                  IsChecked="{Binding Vo2, Mode=TwoWay}"
-                                  ToolTip="{Binding DescVO2}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo2"
-                                IsEnabled="{Binding [Vo2]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <local:PropertyCheckBox Label="{Binding CaptVO1}"  Value="{Binding Vo1,  Mode=TwoWay}" PropertyName="Vo1"  ToolTip="{Binding DescVO1}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO3}"  Value="{Binding Vo3,  Mode=TwoWay}" PropertyName="Vo3"  ToolTip="{Binding DescVO3}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO10}" Value="{Binding Vo10, Mode=TwoWay}" PropertyName="Vo10" ToolTip="{Binding DescVO10}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO8}"  Value="{Binding Vo8,  Mode=TwoWay}" PropertyName="Vo8"  ToolTip="{Binding DescVO8}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO9}"  Value="{Binding Vo9,  Mode=TwoWay}" PropertyName="Vo9"  ToolTip="{Binding DescVO9}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO4}"  Value="{Binding Vo4,  Mode=TwoWay}" PropertyName="Vo4"  ToolTip="{Binding DescVO4}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO2}"  Value="{Binding Vo2,  Mode=TwoWay}" PropertyName="Vo2"  ToolTip="{Binding DescVO2}"  Margin="0,3,0,0"/>
 
                 </StackPanel>
 
                 <!-- ============================================================ -->
-                <!-- RIGHT COLUMN — Not in Core dialect                            -->
+                <!-- RIGHT COLUMN - Not in Core dialect                            -->
                 <!-- ============================================================ -->
                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
 
                     <Label Content="{Binding CaptNotInCore}" FontWeight="Bold" Margin="0,0,0,4"/>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO12}"
-                                  IsChecked="{Binding Vo12, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO12}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo12"
-                                IsEnabled="{Binding [Vo12]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO11}"
-                                  IsChecked="{Binding Vo11, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO11}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo11"
-                                IsEnabled="{Binding [Vo11]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO13}"
-                                  IsChecked="{Binding Vo13, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO13}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo13"
-                                IsEnabled="{Binding [Vo13]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO16}"
-                                  IsChecked="{Binding Vo16, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO16}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo16"
-                                IsEnabled="{Binding [Vo16]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO5}"
-                                  IsChecked="{Binding Vo5, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO5}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo5"
-                                IsEnabled="{Binding [Vo5]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO6}"
-                                  IsChecked="{Binding Vo6, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO6}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo6"
-                                IsEnabled="{Binding [Vo6]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO15}"
-                                  IsChecked="{Binding Vo15, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO15}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo15"
-                                IsEnabled="{Binding [Vo15]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO14}"
-                                  IsChecked="{Binding Vo14, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO14}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo14"
-                                IsEnabled="{Binding [Vo14]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO17}"
-                                  IsChecked="{Binding Vo17, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO17}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo17"
-                                IsEnabled="{Binding [Vo17]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <CheckBox Content="{Binding CaptVO7}"
-                                  IsChecked="{Binding Vo7, Mode=TwoWay}"
-                                  IsEnabled="{Binding IsNotCoreDialect}"
-                                  ToolTip="{Binding DescVO7}"
-                                  VerticalAlignment="Center"/>
-                        <Button Style="{DynamicResource ResetButtonStyle}"
-                                Command="{Binding ResetCommand}" CommandParameter="Vo7"
-                                IsEnabled="{Binding [Vo7]}"
-                                Margin="4,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <local:PropertyCheckBox Label="{Binding CaptVO12}" Value="{Binding Vo12, Mode=TwoWay}" PropertyName="Vo12" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO12}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO11}" Value="{Binding Vo11, Mode=TwoWay}" PropertyName="Vo11" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO11}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO13}" Value="{Binding Vo13, Mode=TwoWay}" PropertyName="Vo13" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO13}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO16}" Value="{Binding Vo16, Mode=TwoWay}" PropertyName="Vo16" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO16}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO5}"  Value="{Binding Vo5,  Mode=TwoWay}" PropertyName="Vo5"  IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO5}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO6}"  Value="{Binding Vo6,  Mode=TwoWay}" PropertyName="Vo6"  IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO6}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO15}" Value="{Binding Vo15, Mode=TwoWay}" PropertyName="Vo15" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO15}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO14}" Value="{Binding Vo14, Mode=TwoWay}" PropertyName="Vo14" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO14}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO17}" Value="{Binding Vo17, Mode=TwoWay}" PropertyName="Vo17" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO17}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO7}"  Value="{Binding Vo7,  Mode=TwoWay}" PropertyName="Vo7"  IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO7}"  Margin="0,3,0,0"/>
 
                 </StackPanel>
             </Grid>
 
             <!-- ============================================================ -->
-            <!-- BOTTOM — Visual FoxPro compatibility (FoxPro dialect only)   -->
+            <!-- BOTTOM - Visual FoxPro compatibility (FoxPro dialect only)   -->
             <!-- ============================================================ -->
             <Label Content="{Binding CaptFoxCompat}" FontWeight="Bold" Margin="0,12,0,4"/>
 
-            <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                <CheckBox Content="{Binding CaptFox2}"
-                          IsChecked="{Binding Fox2, Mode=TwoWay}"
-                          IsEnabled="{Binding Fox2Enabled}"
-                          ToolTip="{Binding DescFox2}"
-                          VerticalAlignment="Center"/>
-                <Button Style="{DynamicResource ResetButtonStyle}"
-                        Command="{Binding ResetCommand}" CommandParameter="Fox2"
-                        IsEnabled="{Binding [Fox2]}"
-                        Margin="4,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
+            <local:PropertyCheckBox Label="{Binding CaptFox2}" Value="{Binding Fox2, Mode=TwoWay}" PropertyName="Fox2" IsEnabled="{Binding Fox2Enabled}" ToolTip="{Binding DescFox2}" Margin="0,3,0,0"/>
 
             <!-- ============================================================ -->
-            <!-- BOTTOM — Xbase++ compatibility (XPP dialect only)            -->
+            <!-- BOTTOM - Xbase++ compatibility (XPP dialect only)            -->
             <!-- ============================================================ -->
             <Label Content="{Binding CaptXppCompat}" FontWeight="Bold" Margin="0,12,0,4"/>
 
-            <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                <CheckBox Content="{Binding CaptXpp1}"
-                          IsChecked="{Binding Xpp1, Mode=TwoWay}"
-                          IsEnabled="{Binding Xpp1Enabled}"
-                          ToolTip="{Binding DescXpp1}"
-                          VerticalAlignment="Center"/>
-                <Button Style="{DynamicResource ResetButtonStyle}"
-                        Command="{Binding ResetCommand}" CommandParameter="Xpp1"
-                        IsEnabled="{Binding [Xpp1]}"
-                        Margin="4,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
+            <local:PropertyCheckBox Label="{Binding CaptXpp1}" Value="{Binding Xpp1, Mode=TwoWay}" PropertyName="Xpp1" IsEnabled="{Binding Xpp1Enabled}" ToolTip="{Binding DescXpp1}" Margin="0,3,0,0"/>
 
         </StackPanel>
     </ScrollViewer>

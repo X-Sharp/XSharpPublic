@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="XSharp.Project.XBuildEventsPropertyPageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,12 +15,12 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Build Events property page â€” WPF/XAML implementation (SDK-style projects).
+        Build Events property page - WPF/XAML implementation (SDK-style projects).
         DataContext: XBuildEventsPropertyPageViewModel (set by XBuildEventsPropertyPageXamlHost).
 
         Layout mirrors the WinForms XBuildEventsPropertyPagePanel:
-          Group 1 â€” Pre-build Event Command Line  (multiline TextBox + "Edit Pre-build..." button)
-          Group 2 â€” Post-build Event Command Line (multiline TextBox + "Edit Post-build..." button)
+          Group 1 - Pre-build Event Command Line  (multiline TextBox + "Edit Pre-build..." button)
+          Group 2 - Post-build Event Command Line (multiline TextBox + "Edit Post-build..." button)
                     Run the post-build event:     (ComboBox)
     -->
 
@@ -34,7 +34,7 @@
 
     <DockPanel>
 
-        <!-- Configuration selector â€” hidden until per-config Build Events is implemented.
+        <!-- Configuration selector - hidden until per-config Build Events is implemented.
         <DockPanel DockPanel.Dock="Top" Margin="8,8,8,4" LastChildFill="False">
             <Label DockPanel.Dock="Left" Content="Configuration:" VerticalAlignment="Center" Padding="0,0,4,0"/>
             <ComboBox DockPanel.Dock="Left"

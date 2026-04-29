@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="XSharp.Project.XBuildPropertyPageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,12 +15,12 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Build property page â€” WPF/XAML implementation (SDK-style projects).
+        Build property page - WPF/XAML implementation (SDK-style projects).
         DataContext: XBuildPropertyPageViewModel (set by XBuildPropertyPageXamlHost).
 
         Layout mirrors the WinForms XBuildPropertyPagePanel sections:
-          Left column  â€” Output paths, Signing, Code generation, PPO, Define Constants
-          Right column â€” Warnings, XML Documentation, Misc checkboxes, Command line, NoWarn
+          Left column  - Output paths, Signing, Code generation, PPO, Define Constants
+          Right column - Warnings, XML Documentation, Misc checkboxes, Command line, NoWarn
     -->
 
     <UserControl.Resources>
@@ -255,7 +255,7 @@
                         ToolTip="{Binding DescDocumentationFile}"
                         Margin="0,3,0,0"/>
 
-                <!-- Documentation file name â€” only shown when XmlDocEnabled -->
+                <!-- Documentation file name - only shown when XmlDocEnabled -->
                 <TextBox Text="{Binding DocumentationFile, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                          ToolTip="{Binding DescDocumentationFileName}"
                          Visibility="{Binding XmlDocEnabled, Converter={StaticResource BoolToVisibility}}"

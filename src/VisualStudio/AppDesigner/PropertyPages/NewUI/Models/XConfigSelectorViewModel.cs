@@ -120,33 +120,49 @@ namespace XSharp.Project
         {
             _allConfigs = allConfigs ?? Array.Empty<XProjectConfig>();
 
-            // Rebuild the display list
-            ConfigNames.Clear();
-            ConfigNames.Add(AllConfigurations);
+            // Build the desired name list without touching the ObservableCollection yet.
+            var newNames = new System.Collections.Generic.List<string> { AllConfigurations };
             foreach (var cfg in _allConfigs)
+                if (!newNames.Contains(cfg.ConfigName))
+                    newNames.Add(cfg.ConfigName);
+
+            // Only rebuild ConfigNames when the list actually changed.
+            // Clearing the ObservableCollection causes WPF to reset SelectedItem → null,
+            // which propagates back through the TwoWay binding and loses the user's selection.
+            bool listChanged = ConfigNames.Count != newNames.Count;
+            if (!listChanged)
+                for (int i = 0; i < newNames.Count; i++)
+                    if (ConfigNames[i] != newNames[i]) { listChanged = true; break; }
+
+            if (listChanged)
             {
-                if (!ConfigNames.Contains(cfg.ConfigName))
-                    ConfigNames.Add(cfg.ConfigName);
+                ConfigNames.Clear();
+                foreach (var n in newNames)
+                    ConfigNames.Add(n);
             }
 
             if (!_initialized)
             {
                 // First call: select the active config if it exists, else "All Configurations"
-                _selectedConfig = ConfigNames.Contains(activeConfigName)
+                _selectedConfig = newNames.Contains(activeConfigName)
                     ? activeConfigName
                     : AllConfigurations;
                 _initialized = true;
+                // Notify bindings on first init
+                OnPropertyChanged(nameof(SelectedConfig));
+                OnPropertyChanged(nameof(ResolvedConfigs));
             }
             else
             {
-                // Subsequent calls: keep current selection if still valid
-                if (!ConfigNames.Contains(_selectedConfig))
+                // Subsequent calls: keep current selection if still valid; do NOT
+                // fire OnPropertyChanged(SelectedConfig) — that would re-trigger BindProperties.
+                if (!newNames.Contains(_selectedConfig))
+                {
                     _selectedConfig = AllConfigurations;
+                    OnPropertyChanged(nameof(SelectedConfig));
+                    OnPropertyChanged(nameof(ResolvedConfigs));
+                }
             }
-
-            // Notify bindings — selection and resolved list may both have changed
-            OnPropertyChanged(nameof(SelectedConfig));
-            OnPropertyChanged(nameof(ResolvedConfigs));
         }
     }
 }

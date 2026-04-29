@@ -93,7 +93,7 @@ namespace XSharp.Project
         /// Reads all current ViewModel values and writes them back to the MSBuild project.
         /// Called when the user clicks <em>Apply</em> or <em>OK</em>.
         /// </summary>
-        public override void ApplyChanges()
+        protected override void ApplyChangesCore()
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _viewModel.ApplyChanges();

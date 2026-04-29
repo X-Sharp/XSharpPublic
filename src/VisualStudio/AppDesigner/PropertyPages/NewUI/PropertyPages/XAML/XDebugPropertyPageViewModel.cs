@@ -211,7 +211,6 @@ namespace XSharp.Project
                 if (_isBinding || _isNotifying)
                     return;
 
-                ApplyChanges();
                 NotifyDirty();
 
                 _isNotifying = true;
@@ -247,13 +246,16 @@ namespace XSharp.Project
             }
             finally
             {
-                _isBinding = false;
-                OnPropertyChanged("Item[]");
+                // Raise PropertyChanged(null) while _isBinding is still true so WPF
+                // re-reads ALL value bindings without triggering HookupEvents dirty logic.
+                OnPropertyChanged(null);
+                try   { OnPropertyChanged("Item[]"); }
+                finally { _isBinding = false; }
             }
         }
 
         /// <inheritdoc/>
-        public override void ApplyChanges()
+        protected override void ApplyChangesCore()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var page = (XPropertyPage)parentPropertyPage;

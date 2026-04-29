@@ -15,14 +15,14 @@
     FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
 
     <!--
-        Debug property page — WPF/XAML implementation (SDK-style projects).
+        Debug property page â€” WPF/XAML implementation (SDK-style projects).
         DataContext: XDebugPropertyPageViewModel (set by XDebugPropertyPageXamlHost).
         Layout mirrors the XDebugPropertyPagePanel from WinForms :
-          Row 0 — Debugger Command     (textbox + browse)
-          Row 1 — Command Arguments    (multiline textbox)
-          Row 2 — Debug Type           (combo)
-          Row 3 — Working Directory    (textbox + browse)
-          Row 4 — Unmanaged Debugging  (checkbox)
+          Row 0 â€” Debugger Command     (textbox + browse)
+          Row 1 â€” Command Arguments    (multiline textbox)
+          Row 2 â€” Debug Type           (combo)
+          Row 3 â€” Working Directory    (textbox + browse)
+          Row 4 â€” Unmanaged Debugging  (checkbox)
     -->
 
     <UserControl.Resources>
@@ -67,7 +67,6 @@
                         Click="OnBrowseCommandClick"/>
                 <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebuggerCommand"
-                        IsEnabled="{Binding [DebuggerCommand]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
@@ -89,28 +88,17 @@
                          VerticalScrollBarVisibility="Auto"/>
                 <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebuggerCommandArguments"
-                        IsEnabled="{Binding [DebuggerCommandArguments]}"
                         Margin="4,0,0,0" VerticalAlignment="Top"/>
             </Grid>
 
             <!-- Debug Type combo -->
-            <Label Content="{Binding CaptDebugType}"
-                   ToolTip="{Binding DescDebugType}"
-                   Margin="0,10,0,2"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox Grid.Column="0"
-                          ItemsSource="{Binding DebugTypeValues}"
-                          SelectedItem="{Binding DebugType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          ToolTip="{Binding DescDebugType}"/>
-                <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
-                        Command="{Binding ResetCommand}" CommandParameter="DebugType"
-                        IsEnabled="{Binding [DebugType]}"
-                        Margin="4,0,0,0"/>
-            </Grid>
+            <local:PropertyComboBox
+                    Label="{Binding CaptDebugType}"
+                    Items="{Binding DebugTypeValues}"
+                    Value="{Binding DebugType, Mode=TwoWay}"
+                    PropertyName="DebugType"
+                    ToolTip="{Binding DescDebugType}"
+                    Margin="0,10,0,0"/>
 
             <!-- Working Directory -->
             <Label Content="{Binding CaptDebuggerWorkingDirectory}"
@@ -130,21 +118,16 @@
                         Click="OnBrowseWorkingDirectoryClick"/>
                 <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
                         Command="{Binding ResetCommand}" CommandParameter="DebuggerWorkingDirectory"
-                        IsEnabled="{Binding [DebuggerWorkingDirectory]}"
                         Margin="4,0,0,0"/>
             </Grid>
 
             <!-- Unmanaged Debugging checkbox -->
-            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                <CheckBox Content="{Binding CaptEnableUnmanagedDebugging}"
-                          IsChecked="{Binding EnableUnmanagedDebugging, Mode=TwoWay}"
-                          ToolTip="{Binding DescEnableUnmanagedDebugging}"
-                          VerticalAlignment="Center"/>
-                <Button Style="{DynamicResource ResetButtonStyle}"
-                        Command="{Binding ResetCommand}" CommandParameter="EnableUnmanagedDebugging"
-                        IsEnabled="{Binding [EnableUnmanagedDebugging]}"
-                        Margin="4,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
+            <local:PropertyCheckBox
+                    Label="{Binding CaptEnableUnmanagedDebugging}"
+                    Value="{Binding EnableUnmanagedDebugging, Mode=TwoWay}"
+                    PropertyName="EnableUnmanagedDebugging"
+                    ToolTip="{Binding DescEnableUnmanagedDebugging}"
+                    Margin="0,12,0,0"/>
 
         </StackPanel>
     </ScrollViewer>

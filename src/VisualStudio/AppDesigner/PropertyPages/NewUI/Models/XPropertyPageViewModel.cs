@@ -99,10 +99,16 @@ namespace XSharp.Project
 
         /// <summary>
         /// Reads all current ViewModel property values and saves them back to the
-        /// MSBuild project.
-        /// Called when the user clicks <em>Apply</em> or <em>OK</em>.
+        /// MSBuild project.  Called when the user clicks <em>Apply</em> or <em>OK</em>.
         /// </summary>
-        public abstract void ApplyChanges();
+        public void ApplyChanges()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ApplyChangesCore();
+        }
+
+        /// <summary>Concrete implementation; override in each ViewModel.</summary>
+        protected abstract void ApplyChangesCore();
 
         /// <summary>
         /// Subscribes to change events (typically the ViewModel's own
@@ -170,6 +176,25 @@ namespace XSharp.Project
         protected bool GetBoolPropertyValue(string propertyName)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            // Read only from the project file XML — not from evaluated/imported values.
+            // This ensures that after a Reset (property removed from XML), we return
+            // false rather than a stale SDK-imported value.
+            var project = parentPropertyPage?.ProjectMgr?.BuildProject;
+            if (project != null)
+            {
+                foreach (var propGroup in project.Xml.PropertyGroups)
+                {
+                    if (!string.IsNullOrEmpty(propGroup.Condition))
+                        continue;
+                    foreach (var prop in propGroup.Properties)
+                    {
+                        if (string.Equals(prop.Name, propertyName, System.StringComparison.OrdinalIgnoreCase)
+                            && string.IsNullOrEmpty(prop.Condition))
+                            return bool.TryParse(prop.Value, out var xmlResult) && xmlResult;
+                    }
+                }
+                return false;
+            }
             var value = GetProjectProperty(propertyName);
             return bool.TryParse(value, out var result) && result;
         }
@@ -224,13 +249,6 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             ResetProperty(name);
         }
-        /// <summary>
-        /// Fires <see cref="PropertyChanged"/> for all properties (pass <see langword="null"/>
-        /// or <see cref="string.Empty"/>) or for a named property.
-        /// Called by <see cref="ResetPropertyCommand"/> after <c>BindProperties</c> to force
-        /// WPF to re-read every bound value even when the backing field did not change.
-        /// </summary>
-        internal void NotifyAllPropertiesChanged() => OnPropertyChanged(null);
     }
 
     // =========================================================================================
@@ -241,8 +259,7 @@ namespace XSharp.Project
     /// An <see cref="ICommand"/> that removes a named MSBuild property from the project
     /// file and calls <see cref="XPropertyPageViewModel.BindProperties"/> to refresh the UI.
     /// The <c>CommandParameter</c> must be the MSBuild property name string.
-    /// The command is enabled only when <see cref="XPropertyPagePanelBase.IsPropertyOverridden"/>
-    /// returns <see langword="true"/> for that property name.
+    /// The command is always enabled.
     /// </summary>
     internal sealed class ResetPropertyCommand : ICommand
     {
@@ -251,32 +268,31 @@ namespace XSharp.Project
         public ResetPropertyCommand(XPropertyPageViewModel vm)
         {
             _vm = vm;
-            // Re-evaluate CanExecute whenever any property on the ViewModel changes,
-            // so the button automatically enables / disables as the project changes.
-            _vm.PropertyChanged += (s, e) => CanExecuteChanged?.Invoke(this, System.EventArgs.Empty);
         }
 
-        public event System.EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
+        // Delegate to CommandManager so WPF re-evaluates CanExecute automatically
+        // whenever it normally would (focus changes, input gestures, etc.).
+        public event System.EventHandler CanExecuteChanged
         {
-            if (parameter is string propertyName && !string.IsNullOrEmpty(propertyName))
-                return _vm.IsPropertyOverriddenInternal(propertyName);
-            return false;
+            add    { System.Windows.Input.CommandManager.RequerySuggested += value; }
+            remove { System.Windows.Input.CommandManager.RequerySuggested -= value; }
         }
+
+        public bool CanExecute(object parameter) => true;
 
         public void Execute(object parameter)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (parameter is string propertyName && !string.IsNullOrEmpty(propertyName))
             {
+                // Flush any pending dirty changes first so other properties are
+                // written to the project file before we reset this one.
+                // BindProperties will then read them back correctly.
+                if (_vm.isDirty)
+                    _vm.ApplyChanges();
                 _vm.ResetPropertyInternal(propertyName);
                 _vm.BindProperties();
-                // Force WPF to re-evaluate ALL value bindings.  BindProperties() calls
-                // SetProperty() which skips PropertyChanged when the backing field already
-                // holds the post-reset default value (e.g. false == false).  Raising with
-                // null tells every bound control to re-read its source.
-                _vm.NotifyAllPropertiesChanged();
+                _vm.isDirty = false;
             }
         }
     }

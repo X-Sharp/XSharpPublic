@@ -167,9 +167,17 @@ namespace XSharp.Project
         /// <summary>
         /// Reads all current ViewModel property values and writes them back to the
         /// MSBuild project.  Called when the user clicks <em>Apply</em> or <em>OK</em>.
-        /// Typically delegates to <see cref="XPropertyPageViewModel.ApplyChanges"/>.
         /// </summary>
-        public abstract void ApplyChanges();
+        public void ApplyChanges()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ApplyChangesCore();
+        }
+
+        /// <summary>
+        /// Concrete implementation of <see cref="ApplyChanges"/>; override in each host.
+        /// </summary>
+        protected abstract void ApplyChangesCore();
 
         // =========================================================================================
         // Abstract Methods

@@ -334,9 +334,21 @@ namespace XSharp.Project
             var project = parentPropertyPage?.ProjectMgr?.BuildProject;
             if (project == null)
                 return false;
-            var prop = project.GetProperty(propertyName);
-            // IsImported == false means the property is defined in the project file itself.
-            return prop != null && !prop.IsImported;
+            // Check XML API (covers properties written via Xml.PropertyGroups path)
+            foreach (var propGroup in project.Xml.PropertyGroups)
+            {
+                foreach (var prop in propGroup.Properties)
+                {
+                    if (string.Equals(prop.Name, propertyName, System.StringComparison.OrdinalIgnoreCase)
+                        && string.IsNullOrEmpty(prop.Condition))
+                        return true;
+                }
+            }
+            // Check evaluation API (covers properties written via buildProject.SetProperty)
+            var evalProp = project.GetProperty(propertyName);
+            if (evalProp != null && !evalProp.IsImported)
+                return true;
+            return false;
         }
 
         /// <summary>
@@ -355,13 +367,30 @@ namespace XSharp.Project
             if (project == null)
                 return;
 
-            var prop = project.GetProperty(propertyName);
-            if (prop != null && !prop.IsImported)
+            // Remove via the evaluation API first (before XML mutation invalidates the object).
+            // This clears the in-memory value written by buildProject.SetProperty.
+            var evalProp = project.GetProperty(propertyName);
+            if (evalProp != null && !evalProp.IsImported)
+                project.RemoveProperty(evalProp);
+
+            // Also remove any entries in the project XML directly.
+            var groupsToDelete = new System.Collections.Generic.List<Microsoft.Build.Construction.ProjectPropertyGroupElement>();
+            foreach (var propGroup in project.Xml.PropertyGroups)
             {
-                project.RemoveProperty(prop);
-                project.ReevaluateIfNecessary();
-                parentPropertyPage.ProjectMgr.SetProjectFileDirty(true);
+                var propsToDelete = new System.Collections.Generic.List<Microsoft.Build.Construction.ProjectPropertyElement>();
+                foreach (var prop in propGroup.Properties)
+                {
+                    if (string.Equals(prop.Name, propertyName, System.StringComparison.OrdinalIgnoreCase)
+                        && string.IsNullOrEmpty(prop.Condition))
+                        propsToDelete.Add(prop);
+                }
+                foreach (var prop in propsToDelete)
+                    propGroup.RemoveChild(prop);
+                if (propGroup.Count == 0 && string.IsNullOrEmpty(propGroup.Condition))
+                    groupsToDelete.Add(propGroup);
             }
+            foreach (var g in groupsToDelete)
+                project.Xml.RemoveChild(g);
         }
     }
 }

@@ -213,7 +213,7 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (this.PropertyPagePanel != null)
+            if (this.PropertyPagePanel != null && this.IsDirty)
             {
                 this.PropertyPagePanel.ApplyChanges();
             }

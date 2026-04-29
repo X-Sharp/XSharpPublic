@@ -196,7 +196,6 @@ namespace XSharp.Project
                 if (_isBinding || _isNotifying)
                     return;
                 ThreadHelper.ThrowIfNotOnUIThread();
-                ApplyChanges();
                 NotifyDirty();
                 // Fire OnPropertyChanged("Item[]") to force WPF to re-evaluate all indexer
                 // bindings ({Binding [PropertyName]}) which control Reset button enabled state.
@@ -241,6 +240,9 @@ namespace XSharp.Project
             }
             finally
             {
+                // Fire OnPropertyChanged(null) while _isBinding=true to force WPF to re-read all
+                // bound values even when a backing field did not change (e.g. after Reset).
+                OnPropertyChanged(null);
                 // Fire OnPropertyChanged("Item[]") while still inside _isBinding=true
                 // so that indexer bindings ({Binding [PropertyName]}) are re-evaluated
                 // (re-enabling/disabling Reset buttons) but the HookupEvents handler ignores it.
@@ -250,7 +252,7 @@ namespace XSharp.Project
         }
 
         /// <inheritdoc/>
-        public override void ApplyChanges()
+        protected override void ApplyChangesCore()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 

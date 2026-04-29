@@ -6,7 +6,6 @@
 
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace XSharp.Project
 {
@@ -118,16 +117,6 @@ namespace XSharp.Project
             var name    = e.NewValue as string ?? string.Empty;
 
             control.resetButton.CommandParameter = name;
-
-            if (string.IsNullOrEmpty(name))
-            {
-                BindingOperations.ClearBinding(control.resetButton, IsEnabledProperty);
-            }
-            else
-            {
-                var binding = new Binding($"[{name}]");
-                BindingOperations.SetBinding(control.resetButton, IsEnabledProperty, binding);
-            }
         }
     }
 }

@@ -6,7 +6,6 @@
 
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace XSharp.Project
 {
@@ -118,8 +117,7 @@ namespace XSharp.Project
 
         /// <summary>
         /// Called when <see cref="PropertyName"/> changes.
-        /// Rewires the reset button's <c>CommandParameter</c> and
-        /// <c>IsEnabled</c> indexer binding to match the new property name.
+        /// Rewires the reset button's <c>CommandParameter</c> to match the new property name.
         /// </summary>
         private static void OnPropertyNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -128,17 +126,6 @@ namespace XSharp.Project
 
             // CommandParameter — plain string, no binding needed.
             control.resetButton.CommandParameter = name;
-
-            // IsEnabled — bind to the ViewModel indexer [PropertyName].
-            if (string.IsNullOrEmpty(name))
-            {
-                BindingOperations.ClearBinding(control.resetButton, IsEnabledProperty);
-            }
-            else
-            {
-                var binding = new Binding($"[{name}]");
-                BindingOperations.SetBinding(control.resetButton, IsEnabledProperty, binding);
-            }
         }
     }
 }

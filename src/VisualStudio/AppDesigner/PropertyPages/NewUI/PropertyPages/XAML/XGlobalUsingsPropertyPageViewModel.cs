@@ -249,7 +249,6 @@ namespace XSharp.Project
                     return;
                 if (e.PropertyName == nameof(ImplicitUsings))
                 {
-                    ApplyChanges();
                     NotifyDirty();
                     _isNotifying = true;
                     try   { OnPropertyChanged("Item[]"); }
@@ -274,13 +273,14 @@ namespace XSharp.Project
             }
             finally
             {
+                OnPropertyChanged(null);
                 try   { OnPropertyChanged("Item[]"); }
                 finally { _isBinding = false; }
             }
         }
 
         /// <inheritdoc/>
-        public override void ApplyChanges()
+        protected override void ApplyChangesCore()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 

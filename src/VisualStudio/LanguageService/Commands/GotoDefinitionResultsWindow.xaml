@@ -16,8 +16,7 @@
 
         <ListView x:Name="_listView"
                   Grid.Row="0"
-                  MouseDoubleClick="OnItemDoubleClick"
-                  KeyDown="OnKeyDown">
+                  MouseDoubleClick="OnItemDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="200"

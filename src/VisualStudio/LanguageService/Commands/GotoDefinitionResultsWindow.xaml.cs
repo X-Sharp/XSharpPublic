@@ -2,8 +2,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
@@ -49,7 +48,7 @@ namespace XSharp.LanguageService
                 ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    var vsUIShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+                    var vsUIShell = await VS.Services.GetUIShellAsync();
                     if (vsUIShell != null)
                     {
                         vsUIShell.GetDialogOwnerHwnd(out IntPtr ownerHwnd);

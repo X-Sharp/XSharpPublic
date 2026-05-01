@@ -173,6 +173,8 @@ namespace XSharp.Project
             NewAlias     = string.Empty;
             NewStatic    = false;
 
+            // Re-evaluate so GetItems reflects the newly added item.
+            parentPropertyPage.ProjectMgr?.BuildProject?.ReevaluateIfNecessary();
             RefreshUsings();
             NotifyDirty();
         }
@@ -193,12 +195,15 @@ namespace XSharp.Project
             if (project == null)
                 return;
 
-            var buildItem = project.BuildProject.AllEvaluatedItems
-                .FirstOrDefault(i => i.ItemType == "Using"
-                                     && i.EvaluatedInclude == item.Namespace
+            var buildItem = project.BuildProject.GetItems("Using")
+                .FirstOrDefault(i => i.EvaluatedInclude == item.Namespace
                                      && !i.IsImported);
             if (buildItem != null)
+            {
                 project.BuildProject.RemoveItem(buildItem);
+                project.BuildProject.MarkDirty();
+                project.BuildProject.ReevaluateIfNecessary();
+            }
 
             RefreshUsings();
             NotifyDirty();
@@ -218,8 +223,7 @@ namespace XSharp.Project
             if (project == null)
                 return;
 
-            foreach (var buildItem in project.BuildProject.AllEvaluatedItems
-                         .Where(i => i.ItemType == "Using"))
+            foreach (var buildItem in project.BuildProject.GetItems("Using"))
             {
                 if (buildItem.IsImported && !_showImported)
                     continue;
@@ -250,6 +254,15 @@ namespace XSharp.Project
                 if (e.PropertyName == nameof(ImplicitUsings))
                 {
                     NotifyDirty();
+                    // Write the new value to the project file immediately so that
+                    // ReevaluateIfNecessary picks up the SDK-provided <Using> items.
+                    parentPropertyPage.SetProperty(
+                        XSharpProjectFileConstants.ImplicitUsings,
+                        _implicitUsings ? "enable" : "disable");
+                    var proj = parentPropertyPage.ProjectMgr?.BuildProject;
+                    proj?.MarkDirty();
+                    proj?.ReevaluateIfNecessary();
+                    RefreshUsings();
                     _isNotifying = true;
                     try   { OnPropertyChanged("Item[]"); }
                     finally { _isNotifying = false; }

@@ -61,6 +61,10 @@
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
+    <Compile Include="Commands\GotoDefinitionResultsWindow.xaml.cs">
+      <DependentUpon>GotoDefinitionResultsWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\HelpViewer.cs" />
     <Compile Include="Commands\SaveCommand.cs" />
@@ -334,6 +338,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Page Include="Commands\GotoDefinitionResultsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DocumentOutline\DocumentOutlineControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

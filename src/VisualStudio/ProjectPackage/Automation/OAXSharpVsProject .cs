@@ -38,7 +38,7 @@ namespace XSharp.Project
                 return imports;
             }
         }
-        
+
         public override VSProjectEvents Events
         {
             get

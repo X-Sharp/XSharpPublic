@@ -23,7 +23,9 @@ namespace XSharp.Project
 
         protected virtual System.Type ProjectReferenceType => typeof(XSharpProjectReferenceNode);
         protected virtual System.Type AssemblyReferenceType => typeof(XSharpAssemblyReferenceNode);
+
         protected virtual System.Type ComReferenceType => typeof(XSharpComReferenceNode);
+
         protected override ProjectReferenceNode CreateProjectReferenceNode(ProjectElement element)
         {
             // Check to see if we have the Guid and Name in the ProjectElement
@@ -35,6 +37,7 @@ namespace XSharp.Project
             bool changed = false;
             if ( parent.IsSdkProject)
             {
+                // already handled in the DependenciesContainer
             }
             else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name) )
             {
@@ -52,22 +55,23 @@ namespace XSharp.Project
                 {
                     parent.HasIncompleteReferences = true;
                 }
-            if (refnode != null)
-            {
-                var refguid = refnode.ProjectIDGuid.ToString("B");
-                if (string.Compare(guid, refguid, StringComparison.OrdinalIgnoreCase) != 0)
+                if (refnode != null)
                 {
-                    // The guid's do not match, so update the project element
-                    guid = refguid;
+                    var refguid = refnode.ProjectIDGuid.ToString("B");
+                    if (string.Compare(guid, refguid, StringComparison.OrdinalIgnoreCase) != 0)
+                    {
+                        // The guid's do not match, so update the project element
+                        guid = refguid;
                         element.SetMetadata(ProjectFileConstants.Project, guid);
-                    changed = true;
-                }
+                        changed = true;
+                    }
                 }
             }
             if (changed)
             {
                 parent.BuildProject.Save();
             }
+
             var node = (XSharpProjectReferenceNode) Activator.CreateInstance(ProjectReferenceType,this.ProjectMgr, element);
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
@@ -107,7 +111,6 @@ namespace XSharp.Project
                 node = existing as ProjectReferenceNode;
             }
             return node;
-
         }
         protected override AssemblyReferenceNode CreateAssemblyReferenceNode(ProjectElement element)
         {

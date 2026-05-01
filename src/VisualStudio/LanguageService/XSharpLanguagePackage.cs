@@ -103,6 +103,11 @@ namespace XSharp.LanguageService
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
 
+    [ProvideToolWindow(typeof(DocumentOutlineToolWindow),
+        Style = Microsoft.VisualStudio.Shell.VsDockStyle.Tabbed,
+        Window = "74946827-37A0-11D2-A273-00C04F8EF4FF",   // Server Explorer
+        Orientation = Microsoft.VisualStudio.Shell.ToolWindowOrientation.Right)]
+
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]

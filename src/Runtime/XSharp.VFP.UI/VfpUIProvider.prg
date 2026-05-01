@@ -274,6 +274,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
             RETURN {}
         END METHOD
+
+        METHOD LoadPicture(cFileName AS STRING) AS OBJECT
+            LOCAL oImage AS OBJECT
+
+            TRY
+                oImage := System.Drawing.Image.FromFile(cFileName)
+            CATCH e AS Exception
+                VAR err := Error.WrapRawException(e)
+                err:FuncSym := "LOADPICTURE"
+                THROW err
+            END TRY
+
+            RETURN oImage
+        END METHOD
         #endregion
 
         #region GET* Dialogs

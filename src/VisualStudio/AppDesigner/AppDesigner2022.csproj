@@ -356,11 +356,12 @@
   </ItemGroup>
   <ItemGroup>
     <!-- XAML resource dictionary compiled as BAML so it is addressable via pack:// URI -->
-    <Page Include="VsThemeDictionary.xaml">
+    <!-- General (Application) property page — WPF/XAML (SDK-style projects) -->
+    <Page Include="..\VsThemeDictionary.xaml">
+      <Link>VsThemeDictionary.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <!-- General (Application) property page — WPF/XAML (SDK-style projects) -->
     <Page Include="PropertyPages\NewUI\PropertyPages\XAML\XGeneralPropertyPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

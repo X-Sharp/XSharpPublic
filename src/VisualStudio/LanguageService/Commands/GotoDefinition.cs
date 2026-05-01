@@ -62,7 +62,6 @@ namespace XSharp.LanguageService
                 if (result.Count > 1)
                 {
                     var window = new GotoDefinitionResultsWindow(result, TextView, state);
-                    window.Owner = System.Windows.Application.Current?.MainWindow;
                     window.Show();
                     return;
                 }

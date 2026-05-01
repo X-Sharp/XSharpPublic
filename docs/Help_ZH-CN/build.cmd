@@ -1,0 +1,1 @@
+"c:\Program Files\EC Software\HelpAndManual\HELPMAN.EXE"  XSHelp.hmxp /chm 

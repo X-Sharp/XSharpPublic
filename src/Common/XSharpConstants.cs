@@ -69,6 +69,9 @@ namespace XSharp
         internal const string DebuggerGlobalsPane = "53B7968B-251B-44E0-BDF5-A225BF0DBC77";
         internal const string DebuggerPublicsPrivatesPane = "7C2FC14E-4BBE-4B95-B0CB-B3B7E0658A23";
 
+        /// <summary>GUID for the Document Outline tool window pane.</summary>
+        internal const string DocumentOutlinePaneGuidString = "A1B2C3D4-E5F6-7890-ABCD-EF1234567890";
+
     }
 
     /// <summary>

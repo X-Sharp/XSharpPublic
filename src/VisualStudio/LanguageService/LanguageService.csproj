@@ -57,6 +57,7 @@
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="Commands\AbstractCommand.cs" />
     <Compile Include="Commands\CommentCommand.cs" />
+    <Compile Include="Commands\DocumentOutlineCommand.cs" />
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
@@ -327,6 +328,12 @@
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <!--VSCT file that defines Language Service menu commands (e.g. View > Other Windows > X# Document Outline).-->
+    <VSCTCompile Include="XSharpLanguagePackage.vsct">
+      <ResourceName>XSharpLanguagePackage.ctmenu</ResourceName>
+    </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets\Snippets\case.snippet">

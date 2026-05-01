@@ -72,6 +72,9 @@ namespace XSharp
         /// <summary>GUID for the Document Outline tool window pane.</summary>
         internal const string DocumentOutlinePaneGuidString = "23C56229-5AA9-4CE7-A4D6-691E88BCAE59";
 
+        /// <summary>OLE command ID used to show the Document Outline window (must match XSharpLanguagePackage.vsct).</summary>
+        internal const int cmdidDocumentOutlineWindow = 0x7001;
+
     }
 
     /// <summary>

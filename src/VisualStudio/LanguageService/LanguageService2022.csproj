@@ -59,6 +59,7 @@
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="Commands\AbstractCommand.cs" />
     <Compile Include="Commands\CommentCommand.cs" />
+    <Compile Include="Commands\DocumentOutlineCommand.cs" />
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
@@ -220,6 +221,8 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
+    <Compile Include="DocumentOutline\DocumentOutlineControl.cs" />
+    <Compile Include="DocumentOutline\DocumentOutlineToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -227,6 +230,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
     <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(VSExternalDir)XSharp.MonoCecil.dll</HintPath>
@@ -339,6 +345,12 @@
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <!--VSCT file that defines Language Service menu commands (e.g. View > Other Windows > X# Document Outline).-->
+    <VSCTCompile Include="XSharpLanguagePackage.vsct">
+      <ResourceName>XSharpLanguagePackage.ctmenu</ResourceName>
+    </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets\Snippets\case.snippet">

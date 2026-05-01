@@ -221,7 +221,10 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
-    <Compile Include="DocumentOutline\DocumentOutlineControl.cs" />
+    <Compile Include="DocumentOutline\DocumentOutlineControl.cs">
+      <DependentUpon>DocumentOutlineControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DocumentOutline\DocumentOutlineToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -351,6 +354,12 @@
     <VSCTCompile Include="XSharpLanguagePackage.vsct">
       <ResourceName>XSharpLanguagePackage.ctmenu</ResourceName>
     </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DocumentOutline\DocumentOutlineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets\Snippets\case.snippet">

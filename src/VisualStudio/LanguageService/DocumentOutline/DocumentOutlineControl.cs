@@ -5,7 +5,6 @@
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,16 +19,8 @@ namespace XSharp.LanguageService
     /// It shows types and their members from the active X# source file and
     /// lets the user navigate by clicking a node.
     /// </summary>
-    internal sealed class DocumentOutlineControl : UserControl
+    internal sealed partial class DocumentOutlineControl : UserControl
     {
-        // -----------------------------------------------------------------------
-        // Controls
-        // -----------------------------------------------------------------------
-        private readonly TreeView _treeView;
-        private readonly StackPanel _toolPanel;
-        private readonly Button _btnSortByName;
-        private readonly Button _btnCollapseAll;
-
         // -----------------------------------------------------------------------
         // State
         // -----------------------------------------------------------------------
@@ -38,7 +29,7 @@ namespace XSharp.LanguageService
         private bool _sortByName;    // false = sort by document order (default)
 
         // -----------------------------------------------------------------------
-        // Image source cache: maps glyph index → ImageSource
+        // Image source cache: maps glyph index -> ImageSource
         // -----------------------------------------------------------------------
         private static readonly Dictionary<int, ImageSource> _glyphCache = new Dictionary<int, ImageSource>();
         private static System.Drawing.ImageList _imageList;
@@ -69,52 +60,7 @@ namespace XSharp.LanguageService
         // -----------------------------------------------------------------------
         public DocumentOutlineControl()
         {
-            // -- Toolbar --
-            _btnSortByName = new Button
-            {
-                Content = "#↓",
-                Width = 32,
-                Height = 24,
-                Margin = new Thickness(2, 2, 2, 2),
-                ToolTip = "Toggle sort: document order / alphabetical",
-                Padding = new Thickness(2)
-            };
-            _btnSortByName.Click += OnSortToggle;
-
-            _btnCollapseAll = new Button
-            {
-                Content = "−",
-                Width = 32,
-                Height = 24,
-                Margin = new Thickness(0, 2, 2, 2),
-                ToolTip = "Collapse all",
-                Padding = new Thickness(2)
-            };
-            _btnCollapseAll.Click += OnCollapseAll;
-
-            _toolPanel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Height = 28
-            };
-            _toolPanel.Children.Add(_btnSortByName);
-            _toolPanel.Children.Add(_btnCollapseAll);
-
-            // -- Tree --
-            _treeView = new TreeView();
-            _treeView.SelectedItemChanged += OnNodeSelected;
-
-            // -- Layout --
-            var grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-            Grid.SetRow(_toolPanel, 0);
-            Grid.SetRow(_treeView, 1);
-            grid.Children.Add(_toolPanel);
-            grid.Children.Add(_treeView);
-
-            Content = grid;
+            InitializeComponent();
         }
 
         // -----------------------------------------------------------------------
@@ -279,7 +225,7 @@ namespace XSharp.LanguageService
         }
 
         // -----------------------------------------------------------------------
-        // Glyph → ImageSource conversion
+        // Glyph -> ImageSource conversion
         // -----------------------------------------------------------------------
         private static ImageSource GetGlyphImage(int glyphIndex)
         {
@@ -358,7 +304,7 @@ namespace XSharp.LanguageService
         private void OnSortToggle(object sender, RoutedEventArgs e)
         {
             _sortByName = !_sortByName;
-            _btnSortByName.Content = _sortByName ? "A↓" : "#↓";
+            _btnSortByName.Content = _sortByName ? "A\u2193" : "#\u2193";
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -435,3 +381,4 @@ namespace XSharp.LanguageService
         internal static extern bool DeleteObject(IntPtr hObject);
     }
 }
+

@@ -350,12 +350,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <!--VSCT file that defines Language Service menu commands (e.g. View > Other Windows > X# Document Outline).-->
-    <VSCTCompile Include="XSharpLanguagePackage.vsct">
-      <ResourceName>XSharpLanguagePackage.ctmenu</ResourceName>
-    </VSCTCompile>
-  </ItemGroup>
-  <ItemGroup>
+    <Page Include="..\VsThemeDictionary.xaml">
+      <Link>DocumentOutline\VsThemeDictionary.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DocumentOutline\DocumentOutlineControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

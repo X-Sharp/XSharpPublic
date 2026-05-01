@@ -8,6 +8,10 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="300">
     <Grid>
+        <Grid.Resources>
+            <ResourceDictionary Source="VsThemeDictionary.xaml"/>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -23,12 +27,19 @@
                     ToolTip="Toggle sort: document order / alphabetical"
                     Click="OnSortToggle"/>
             <Button x:Name="_btnCollapseAll"
-                    Content="&#x2212;"
+                    Content="-"
                     Width="32" Height="24"
                     Margin="0,2,2,2"
                     Padding="2"
                     ToolTip="Collapse all"
                     Click="OnCollapseAll"/>
+            <Button x:Name="_btnExpandAll"
+                    Content="+"
+                    Width="32" Height="24"
+                    Margin="0,2,2,2"
+                    Padding="2"
+                    ToolTip="Expand all"
+                    Click="OnExpandAll"/>
         </StackPanel>
 
         <!-- Tree view -->

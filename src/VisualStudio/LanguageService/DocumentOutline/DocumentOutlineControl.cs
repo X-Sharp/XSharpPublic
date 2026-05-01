@@ -2,14 +2,19 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
+
 using Microsoft.VisualStudio.Shell;
+
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
 
 namespace XSharp.LanguageService
@@ -19,7 +24,7 @@ namespace XSharp.LanguageService
     /// It shows types and their members from the active X# source file and
     /// lets the user navigate by clicking a node.
     /// </summary>
-    internal sealed partial class DocumentOutlineControl : UserControl
+     sealed partial class DocumentOutlineControl : UserControl
     {
         // -----------------------------------------------------------------------
         // State
@@ -32,11 +37,11 @@ namespace XSharp.LanguageService
         // Image source cache: maps glyph index -> ImageSource
         // -----------------------------------------------------------------------
         private static readonly Dictionary<int, ImageSource> _glyphCache = new Dictionary<int, ImageSource>();
-        private static System.Drawing.ImageList _imageList;
+        private static System.Windows.Forms.ImageList _imageList;
 
         static DocumentOutlineControl()
         {
-            _imageList = new System.Drawing.ImageList
+            _imageList = new System.Windows.Forms.ImageList
             {
                 ImageSize = new System.Drawing.Size(16, 16),
                 TransparentColor = System.Drawing.Color.FromArgb(255, 0, 255)
@@ -132,29 +137,9 @@ namespace XSharp.LanguageService
             else
                 types.Sort((a, b) => a.Range.StartLine - b.Range.StartLine);
 
-            bool hasNonGlobalTypes = false;
-            foreach (var t in types)
-                if (!t.IsGlobal) { hasNonGlobalTypes = true; break; }
-
-            // When there are no explicit types, show all global members under a file root node.
-            if (!hasNonGlobalTypes && _file.GlobalType != null)
-            {
-                var globalMembers = GetFilteredMembers(_file.GlobalType);
-                if (globalMembers.Count > 0)
-                {
-                    var globalNode = new OutlineTreeNode(_file.GlobalType, _file.Name, GetGlyphImage(_file.GlobalType.Glyph));
-                    foreach (var m in globalMembers)
-                        globalNode.Items.Add(CreateNode(m));
-                    _treeView.Items.Add(globalNode);
-                    globalNode.IsExpanded = true;
-                }
-                return;
-            }
 
             foreach (var type in types)
             {
-                if (type.IsGlobal)
-                    continue;
 
                 var typeNode = CreateNode(type);
                 AddMemberNodes(typeNode, type);
@@ -288,7 +273,40 @@ namespace XSharp.LanguageService
                 _navigating = true;
                 try
                 {
-                    node.Entity.OpenEditor();
+                    ThreadHelper.JoinableTaskFactory.Run(async () =>
+                    {
+                        var fileName = node.Entity.File?.FullPath;
+
+                        var doc = await VS.Documents.GetActiveDocumentViewAsync();
+                        if (doc != null)
+                        {
+                            var buffer = doc.TextBuffer;
+                            var file = doc.TextBuffer.GetFile();
+                            if (!string.Equals(file?.FullPath, fileName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                node.Entity.OpenEditor();
+                            }
+                        }
+                        doc = await VS.Documents.GetDocumentViewAsync(fileName);
+                        if (doc != null)
+                        {
+                            var line = node.Entity.Range.StartLine;
+                            var column = node.Entity.Range.StartColumn;
+                            var view = doc.TextView;
+                            TextSpan span = new TextSpan();
+                            span.iStartLine = line;
+                            span.iStartIndex = column;
+                            span.iEndLine = line;
+                            span.iEndIndex = column;
+                            //
+                            IVsTextView textView = null;
+                            textView = await view.ToIVsTextViewAsync();
+
+                            textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                            textView.EnsureSpanVisible(span);
+                        }
+
+                    });
                 }
                 catch (Exception)
                 {
@@ -324,6 +342,19 @@ namespace XSharp.LanguageService
             foreach (OutlineTreeNode child in node.Items)
                 CollapseAll(child);
         }
+
+        private void OnExpandAll(object sender, RoutedEventArgs e)
+        {
+            foreach (OutlineTreeNode node in _treeView.Items)
+                ExpandAll(node);
+        }
+        private static void ExpandAll(OutlineTreeNode node)
+        {
+            node.IsExpanded = true;
+            foreach (OutlineTreeNode child in node.Items)
+                ExpandAll(child);
+        }
+
 
         // -----------------------------------------------------------------------
         // Disposal (UserControl does not implement IDisposable, but we clean up here)

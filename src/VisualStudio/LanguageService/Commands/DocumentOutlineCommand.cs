@@ -2,9 +2,8 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using System;
-using System.ComponentModel.Design;
 using System.Threading.Tasks;
 using XSharp.LanguageService.Commands;
 
@@ -24,22 +23,14 @@ namespace XSharp.LanguageService
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var commandService =
-                await XSharpLanguagePackage.Instance.GetServiceAsync(typeof(IMenuCommandService))
-                as OleMenuCommandService;
+            var cmdOutline = await VS.Commands.FindCommandAsync("View.DocumentOutline");
 
-            if (commandService == null)
-                return;
-
-            var cmdId = new CommandID(
-                new Guid(GuidStrings.guidXSharpLanguageServiceCmdSetString),
-                XSharpConstants.cmdidDocumentOutlineWindow);
-
-            var menuCmd = new MenuCommand(OnExecute, cmdId);
-            commandService.AddCommand(menuCmd);
+            // We need to manually intercept the commenting command, because language services swallow these commands.
+            if (cmdOutline != null)
+                await VS.Commands.InterceptAsync(cmdOutline, () => Execute(Show));
         }
 
-        private static void OnExecute(object sender, EventArgs e)
+        private static void Show(DocumentView doc)
         {
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {

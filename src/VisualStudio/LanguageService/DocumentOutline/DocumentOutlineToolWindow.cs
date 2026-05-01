@@ -2,13 +2,19 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Controls;
+
 using XSharpModel;
 
 namespace XSharp.LanguageService
@@ -22,8 +28,6 @@ namespace XSharp.LanguageService
     public sealed class DocumentOutlineToolWindow : ToolWindowPane, IVsSelectionEvents
     {
         private DocumentOutlineControl _control;
-        private IVsMonitorSelection _monitorSelection;
-        private uint _selectionEventsCookie;
         private IWpfTextView _activeTextView;
 
         public DocumentOutlineToolWindow() : base(null)
@@ -44,27 +48,24 @@ namespace XSharp.LanguageService
 
             // Subscribe to selection-change events to track the active document.
             ThreadHelper.ThrowIfNotOnUIThread();
-            _monitorSelection = GetService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
-            _monitorSelection?.AdviseSelectionEvents(this, out _selectionEventsCookie);
-
             // Try to populate the outline for the currently active document.
             UpdateOutlineForActiveDocument();
+            VS.Events.WindowEvents.ActiveFrameChanged += OnActiveFrameChanged;
+
+        }
+        IVsWindowFrame newFrame = null;
+        private void OnActiveFrameChanged(ActiveFrameChangeEventArgs args)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            newFrame = args.NewFrame;
+            UpdateOutlineForActiveDocument();
+            newFrame = null;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (_monitorSelection != null && _selectionEventsCookie != 0)
-                {
-                    ThreadHelper.JoinableTaskFactory.Run(async () =>
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        _monitorSelection.UnadviseSelectionEvents(_selectionEventsCookie);
-                    });
-                    _selectionEventsCookie = 0;
-                }
-
                 if (_activeTextView != null)
                 {
                     _activeTextView.Caret.PositionChanged -= OnCaretPositionChanged;
@@ -80,7 +81,7 @@ namespace XSharp.LanguageService
         // -----------------------------------------------------------------------
         // Active document tracking
         // -----------------------------------------------------------------------
-
+        static FieldInfo field = null;
         private void UpdateOutlineForActiveDocument()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -91,9 +92,53 @@ namespace XSharp.LanguageService
                 _activeTextView.Caret.PositionChanged -= OnCaretPositionChanged;
                 _activeTextView = null;
             }
+            if (field == null)
+            {
+                field = typeof(WindowFrame).GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic);
+            }
 
+            IWpfTextView textView = null;
+            string docName = null;
+            try
+            {
+                if (newFrame != null && field != null)
+                {
+
+                    dynamic frame = newFrame;
+                    var editor = (Guid) frame.Editor;
+                    if (editor != new Guid(XSharpConstants.EditorFactoryGuidString))
+                    {
+                        return;
+                    }
+                    dynamic _frame = field.GetValue(newFrame);
+                    docName = _frame.EffectiveDocumentMoniker;
+                    if (!string.IsNullOrEmpty(docName))
+                    {
+                        ThreadHelper.JoinableTaskFactory.Run(async () =>
+                        {
+                            var doc = await VS.Documents.GetDocumentViewAsync(docName);
+                            textView = doc?.TextView;
+                        });
+                    }
+                }
+                else
+                {
+                    ThreadHelper.JoinableTaskFactory.Run(async () =>
+                    {
+                        var doc = await VS.Documents.GetActiveDocumentViewAsync();
+                        if (doc != null)
+                        {
+                            docName = doc.TextView.TextBuffer.GetFile().FullPath;
+                            textView = doc.TextView;
+                        }
+                    });
+                }
+            }
+            catch
+            {
+                ; // ignore exception
+            }
             // Find the current active IWpfTextView
-            var textView = GetActiveWpfTextView();
             if (textView == null)
             {
                 _control?.SetFile(null);
@@ -118,29 +163,6 @@ namespace XSharp.LanguageService
             _control?.SelectNodeAtLine(line);
         }
 
-        private IWpfTextView GetActiveWpfTextView()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                var textManager = GetService(typeof(SVsTextManager)) as IVsTextManager;
-                if (textManager == null)
-                    return null;
-
-                textManager.GetActiveView(1, null, out IVsTextView vsView);
-                if (vsView == null)
-                    return null;
-
-                var adapterFactory = XSharpLanguagePackage.GetComponentModel()
-                    ?.GetService<Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService>();
-
-                return adapterFactory?.GetWpfTextView(vsView);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
 
         private void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e)
         {

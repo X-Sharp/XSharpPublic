@@ -54,9 +54,16 @@ namespace XSharp.LanguageService
                 var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();
-                if (result.Count > 0)
+                if (result.Count == 1)
                 {
                     Goto(result[0], TextView, state);
+                    return;
+                }
+                if (result.Count > 1)
+                {
+                    var window = new GotoDefinitionResultsWindow(result, TextView, state);
+                    window.Owner = System.Windows.Application.Current?.MainWindow;
+                    window.Show();
                     return;
                 }
             }

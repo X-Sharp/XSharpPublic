@@ -2,10 +2,14 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using XSharpModel;
 
 namespace XSharp.LanguageService
@@ -33,6 +37,33 @@ namespace XSharp.LanguageService
             _listView.ItemsSource = items;
             if (items.Count > 0)
                 _listView.SelectedIndex = 0;
+
+            // Set the VS main window as the owner so the popup stays on top of the IDE
+            SetVsOwner();
+        }
+
+        private void SetVsOwner()
+        {
+            try
+            {
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var vsUIShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+                    if (vsUIShell != null)
+                    {
+                        vsUIShell.GetDialogOwnerHwnd(out IntPtr ownerHwnd);
+                        if (ownerHwnd != IntPtr.Zero)
+                        {
+                            new WindowInteropHelper(this).Owner = ownerHwnd;
+                        }
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                // Fallback: no owner; window will still work
+            }
         }
 
         private void NavigateToSelected()
@@ -50,7 +81,7 @@ namespace XSharp.LanguageService
                 NavigateToSelected();
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -62,6 +93,7 @@ namespace XSharp.LanguageService
                 Close();
                 e.Handled = true;
             }
+            base.OnPreviewKeyDown(e);
         }
     }
 

@@ -1,0 +1,93 @@
+<UserControl x:Class="XSharp.LanguageService.OptionsPages.OtherOptionsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             toolkit:Themes.UseVsTheme="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <GroupBox Header="Source Code Editor" Margin="4">
+            <StackPanel Margin="4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left column -->
+                    <StackPanel Grid.Column="0">
+                        <CheckBox x:Name="chkShowDividers"
+                                  Content="Show Entity Dividers"
+                                  Tag="ShowDividers"
+                                  Margin="0,2"
+                                  ToolTip="The entity dividers will have the color defined in the Color setting as 'Outlining Margin Vertical Rule'"
+                                  Checked="OnShowDividersChanged"
+                                  Unchecked="OnShowDividersChanged"/>
+                        <CheckBox x:Name="chkSingleLineDividers"
+                                  Content="Single line Entity Dividers"
+                                  Tag="ShowSingleLineDividers"
+                                  Margin="0,2"
+                                  ToolTip="This applies to GLOBALs, DEFINEs, DELEGATES, CLASS Variables, MEMBERs of structures etc"
+                                  IsEnabled="{Binding IsChecked, ElementName=chkShowDividers}"/>
+                        <CheckBox x:Name="chkHighlightWord"
+                                  Content="Highlight identifiers"
+                                  Tag="EnableHighlightWord"
+                                  Margin="0,2"
+                                  ToolTip="Highlight matching identifiers in the editor"/>
+                        <CheckBox x:Name="chkBraceMatching"
+                                  Content="Brace Matching"
+                                  Tag="EnableBraceMatching"
+                                  Margin="0,2"
+                                  ToolTip="Match braces"/>
+                        <CheckBox x:Name="chkAutoOpen"
+                                  Content="Add '(' to methods in completion list"
+                                  Tag="AutoOpen"
+                                  Margin="0,2"
+                                  ToolTip="Automatically type '(' when selecting a method from a completion list"/>
+                        <CheckBox x:Name="chkAutoPairs"
+                                  Content="Brace Completion"
+                                  Tag="AutoPairs"
+                                  Margin="0,2"
+                                  ToolTip="Type closing brace or closing quote after typing opening character"/>
+                    </StackPanel>
+
+                    <!-- Right column -->
+                    <StackPanel Grid.Column="1">
+                        <CheckBox x:Name="chkKeywordMatching"
+                                  Content="Highlight Keyword Pairs"
+                                  Tag="EnableKeywordmatching"
+                                  Margin="0,2"
+                                  ToolTip="Highlight keyword pairs, such as FOR and NEXT, IF and ENDIF etc."/>
+                        <CheckBox x:Name="chkLightBulbs"
+                                  Content="Light Bulbs"
+                                  Tag="EnableLightBulbs"
+                                  Margin="0,2"
+                                  ToolTip="Enable Light bulbs for suggestions for code manipulation"/>
+                        <CheckBox x:Name="chkQuickInfo"
+                                  Content="Quick Info Tips"
+                                  Tag="EnableQuickInfo"
+                                  Margin="0,2"
+                                  ToolTip="Enable Quick Info tips with hints about identifiers"/>
+                        <CheckBox x:Name="chkParameters"
+                                  Content="Parameter Tips"
+                                  Tag="EnableParameterInfo"
+                                  Margin="0,2"
+                                  ToolTip="Enable Parameter Tips"/>
+                        <CheckBox x:Name="chkCompletion"
+                                  Content="Code Completion"
+                                  Tag="EnableCodeCompletion"
+                                  Margin="0,2"
+                                  ToolTip="Enable Code completion for '.' and ':' characters"/>
+                        <CheckBox x:Name="chkRegions"
+                                  Content="Regions"
+                                  Tag="EnableRegions"
+                                  Margin="0,2"
+                                  ToolTip="Enable Regions in the Editor"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Most options require closing and reopening the editor window(s)."
+                           FontStyle="Italic"
+                           Margin="0,8,0,0"/>
+            </StackPanel>
+        </GroupBox>
+    </ScrollViewer>
+</UserControl>

@@ -1,7 +1,9 @@
-﻿using System;
-using System.Windows.Forms;
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 using XSharpModel;
 using XSharp.Settings;
+
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class GeneratorOptionsControl : XSUserControl
@@ -9,65 +11,34 @@ namespace XSharp.LanguageService.OptionsPages
         public GeneratorOptionsControl()
         {
             InitializeComponent();
-            chkShowXMLComments.Tag = nameof(GeneratorOptions.ShowXmlComments); 
-            rbExport.Tag = nameof(PublicStyle.Export);
-            rbPublic.Tag = nameof(PublicStyle.Public);
-            rbNone.Tag = nameof(PublicStyle.None);
-            rbPrivate.Tag = nameof(PrivateStyle.Private);
-            rbHidden.Tag = nameof(PrivateStyle.Hidden);
         }
 
         internal override void ReadValues(object options)
         {
-            GeneratorOptionsPage OurOptionsPage = (GeneratorOptionsPage)optionPage;
             base.ReadValues(options);
-
-            switch (OurOptionsPage.Options.PublicStyle)
+            var page = (GeneratorOptionsPage)optionPage;
+            switch ((PublicStyle)page.Options.PublicStyle)
             {
-                case 1:
-                    rbExport.Checked = true;
-                    break;
-                case 2:
-                    rbNone.Checked = true;
-                    break;
-                default:
-                    rbPublic.Checked = true;
-                    break;
+                case PublicStyle.Export: rbExport.IsChecked = true; break;
+                case PublicStyle.None:   rbNone.IsChecked   = true; break;
+                default:                 rbPublic.IsChecked = true; break;
             }
-            switch (OurOptionsPage.Options.PrivateStyle)
+            switch ((PrivateStyle)page.Options.PrivateStyle)
             {
-                case 1:
-                    rbHidden.Checked = true;
-                    break;
-                default:
-                    rbPrivate.Checked = true;
-                    break;
+                case PrivateStyle.Hidden: rbHidden.IsChecked  = true; break;
+                default:                  rbPrivate.IsChecked = true; break;
             }
         }
+
         internal override void SaveValues(object options)
         {
             base.SaveValues(options);
-            var controls = new RadioButton[] { rbExport, rbNone, rbPublic, rbPrivate, rbHidden };
-            foreach (var rb in controls)
-            {
-                var tag = rb.Tag;
-                if (tag is string strTag && rb.Checked)
-                {
-                    switch (strTag)
-                    {
-                        case nameof(PublicStyle.Export):
-                        case nameof(PublicStyle.Public):
-                        case nameof(PublicStyle.None):
-                            ((GeneratorOptions) options).PublicStyle = (int)(PublicStyle)Enum.Parse(typeof(PublicStyle), strTag);
-                            break;
-                        case nameof(PrivateStyle.Private):
-                        case nameof(PrivateStyle.Hidden):
-                            ((GeneratorOptions)options).PrivateStyle = (int)(PrivateStyle)Enum.Parse(typeof(PrivateStyle), strTag);
-                            break;
-                    }
-                }
-            }
-
+            var opts = (GeneratorOptions)options;
+            if      (rbExport.IsChecked == true) opts.PublicStyle  = (int)PublicStyle.Export;
+            else if (rbNone.IsChecked   == true) opts.PublicStyle  = (int)PublicStyle.None;
+            else                                 opts.PublicStyle  = (int)PublicStyle.Public;
+            if (rbHidden.IsChecked      == true) opts.PrivateStyle = (int)PrivateStyle.Hidden;
+            else                                 opts.PrivateStyle = (int)PrivateStyle.Private;
         }
     }
 }

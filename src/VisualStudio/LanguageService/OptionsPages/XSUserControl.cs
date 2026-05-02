@@ -1,112 +1,85 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System;
-using System.Windows.Forms;
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+using Microsoft.VisualStudio.Shell;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace XSharp.LanguageService.OptionsPages
 {
-    public class XSUserControl : UserControl  
+    public class XSUserControl : UserControl
     {
         internal DialogPage optionPage;
 
-        private void ReadControl(Control c, object options)
+        private void ReadControl(DependencyObject element, object options)
         {
-            var tag = c.Tag;
-            if (tag is string strTag)
+            if (element is FrameworkElement fe && fe.Tag is string strTag)
             {
-
                 var prop = options.GetType().GetProperty(strTag);
                 if (prop != null)
                 {
                     var val = prop.GetValue(options);
-                    if (c is CheckBox cb && val is bool bValue)
-                    {
-                        cb.Checked = bValue;
-                    }
-                    if (c is NumericUpDown number && val is int iValue)
-                    {
-                        number.Value = iValue >= number.Minimum && iValue < number.Maximum ? iValue : number.Minimum ;
-                    }
-                    if (c is TextBox tb)
-                    {
-                        tb.Text = val.ToString();
-                    }
-
+                    if (fe is CheckBox cb && val is bool bValue)
+                        cb.IsChecked = bValue;
+                    else if (fe is TextBox tb)
+                        tb.Text = val?.ToString() ?? string.Empty;
                 }
             }
-            foreach (Control control in c.Controls)
-            {
-                ReadControl(control, options);
-            }
-
+            foreach (var child in LogicalTreeHelper.GetChildren(element).OfType<DependencyObject>())
+                ReadControl(child, options);
         }
+
         internal virtual void ReadValues(object options)
         {
-            foreach (Control control in this.Controls)
-            {
-                ReadControl(control, options);
-            }
+            ReadControl(this, options);
         }
 
         internal virtual void SaveValues(object options)
         {
-            foreach (Control control in this.Controls)
-            {
-                SaveControl(control, options);
-            }
+            SaveControl(this, options);
         }
-        private void SaveControl(Control c, Object options)
+
+        private void SaveControl(DependencyObject element, object options)
         {
-            var tag = c.Tag;
-            if (tag is string strTag)
+            if (element is FrameworkElement fe && fe.Tag is string strTag)
             {
                 var prop = options.GetType().GetProperty(strTag);
                 if (prop != null && prop.SetMethod != null)
                 {
-                    if (c is CheckBox cb)
-                    {
-                        prop.SetValue(options, cb.Checked);
-                    }
-                    if (c is NumericUpDown number)
-                    {
-                        prop.SetValue(options, (int)number.Value);
-                    }
-                    if (c is TextBox tb)
+                    if (fe is CheckBox cb)
+                        prop.SetValue(options, cb.IsChecked == true);
+                    else if (fe is TextBox tb)
                     {
                         var old = prop.GetValue(options);
                         switch (old)
                         {
                             case int _:
-                                if (int.TryParse(tb.Text, out var iNew))
+                                if (int.TryParse(tb.Text, out int iNew))
                                     prop.SetValue(options, iNew);
-
                                 break;
                             case string _:
                                 prop.SetValue(options, tb.Text);
                                 break;
                         }
                     }
-
                 }
             }
-            foreach (Control control in c.Controls)
-            {
-                SaveControl(control, options);
-            }
+            foreach (var child in LogicalTreeHelper.GetChildren(element).OfType<DependencyObject>())
+                SaveControl(child, options);
         }
-        
 
         protected void checkbuttons(bool check)
         {
-            foreach (var control in this.Controls)
-            {
-                if (control is CheckBox cb)
-                {
-                    cb.Checked = check;
-                }
-            }
-
+            CheckAllCheckBoxes(this, check);
         }
 
-
+        private void CheckAllCheckBoxes(DependencyObject element, bool check)
+        {
+            if (element is CheckBox cb)
+                cb.IsChecked = check;
+            foreach (var child in LogicalTreeHelper.GetChildren(element).OfType<DependencyObject>())
+                CheckAllCheckBoxes(child, check);
+        }
     }
 }

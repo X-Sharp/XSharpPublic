@@ -1,0 +1,61 @@
+<Window x:Class="XSharp.LanguageService.OptionsPages.XSharpSpecialOptions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+        toolkit:Themes.UseVsTheme="True"
+        Title="Special Options"
+        Width="460" SizeToContent="Height"
+        MinWidth="400"
+        WindowStyle="SingleBorderWindow"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="Enable / Disable various intellisense options" Margin="0,0,0,8">
+            <StackPanel Margin="4">
+                <TextBlock Text="Changing these options may require restarting VS." Margin="0,2"/>
+                <TextBlock Text="Most others require closing and reopening the editor window(s)." Margin="0,2,0,6"/>
+                <CheckBox x:Name="chkDisableEditorDropdowns" Content="Disable Editor Dropdowns" Margin="0,2"/>
+                <CheckBox x:Name="chkDisableClassViewObjectView" Content="Disable ClassView and ObjectBrowser" Margin="0,2"/>
+                <CheckBox x:Name="chkDisableEntityParsing" Content="Disable Source Entity Parsing" Margin="0,2"/>
+                <CheckBox x:Name="chkDisableSyntaxColorization" Content="Disable Syntax Colorization" Margin="0,2"/>
+                <CheckBox x:Name="chkDisableAssemblyReferences" Content="Disable Lookup in Assembly References" Margin="0,2"/>
+                <CheckBox x:Name="chkDisableForeignProjectReferences" Content="Disable Lookup in Foreign Project References" Margin="0,2"/>
+                <CheckBox x:Name="chkDisableXSharpProjectReferences" Content="Disable Lookup in XSharp Project References" Margin="0,2"/>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Header="Enable Logging" Margin="0,0,0,8">
+            <StackPanel Margin="4">
+                <CheckBox x:Name="chkEnableOutputPane" Content="Enable Output Pane" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableDatabaseLog" Content="Enable Database Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableParserLog" Content="Enable Parser Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableParameterTipsLog" Content="Enable Parameter Tips Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableBraceMatchLog" Content="Enable Brace Matching Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableCodeCompletionLog" Content="Enable Code Completion Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableQuickInfoLog" Content="Enable Quick Info Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableTypeLookupLog" Content="Enable Type Lookup Log" Margin="0,2"/>
+                <CheckBox x:Name="chkEnableReferenceLog" Content="Enable Reference Info Log" Margin="0,2"/>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2" Header="Log Destination" Margin="0,0,0,8">
+            <StackPanel Margin="4">
+                <CheckBox x:Name="chkLogToDebug" Content="Log to Debug Output" Margin="0,2"/>
+                <CheckBox x:Name="chkLogToFile" Content="Log to File" Margin="0,2"/>
+            </StackPanel>
+        </GroupBox>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="80" Height="28" Margin="0,0,8,0" IsDefault="True" Click="OnOk"/>
+            <Button Content="Cancel" Width="80" Height="28" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,6 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using XSharpModel;
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+using System.Windows;
+
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class OtherOptionsControl : XSUserControl
@@ -8,32 +10,21 @@ namespace XSharp.LanguageService.OptionsPages
         public OtherOptionsControl()
         {
             InitializeComponent();
-            chkShowDividers.Tag = nameof(OtherOptions.ShowDividers);
-            chkSingleLineDividers.Tag = nameof(OtherOptions.ShowSingleLineDividers);
-            chkHighlightWord.Tag = nameof(OtherOptions.EnableHighlightWord);
-            chkBraceMatching.Tag = nameof(OtherOptions.EnableBraceMatching);
-            chkKeywordMatching.Tag = nameof(OtherOptions.EnableKeywordmatching);
-
-            chkLightBulbs.Tag = nameof(OtherOptions.EnableLightBulbs);
-            chkQuickInfo.Tag = nameof(OtherOptions.EnableQuickInfo);
-            chkParameters.Tag = nameof(OtherOptions.EnableParameterInfo);
-            chkCompletion.Tag = nameof(OtherOptions.EnableCodeCompletion);
-            chkRegions.Tag = nameof(OtherOptions.EnableRegions);
-            chkAutoPairs.Tag = nameof(OtherOptions.AutoPairs);
-            chkAutoOpen.Tag = nameof(OtherOptions.AutoOpen);
         }
+
         internal override void ReadValues(object options)
         {
             base.ReadValues(options);
-            chkSingleLineDividers.Enabled = chkShowDividers.Checked;
+            chkSingleLineDividers.IsEnabled = chkShowDividers.IsChecked == true;
         }
 
-        private void chkShowDividers_CheckedChanged(object sender, EventArgs e)
+        private void OnShowDividersChanged(object sender, RoutedEventArgs e)
         {
-            chkSingleLineDividers.Enabled = chkShowDividers.Checked;
-            if (!chkSingleLineDividers.Enabled)
+            if (chkSingleLineDividers != null)
             {
-                chkSingleLineDividers.Checked = false;
+                chkSingleLineDividers.IsEnabled = chkShowDividers.IsChecked == true;
+                if (!chkSingleLineDividers.IsEnabled)
+                    chkSingleLineDividers.IsChecked = false;
             }
         }
     }

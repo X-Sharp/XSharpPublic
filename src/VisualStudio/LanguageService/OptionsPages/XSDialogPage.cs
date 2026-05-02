@@ -1,20 +1,23 @@
-﻿using XSharpModel;
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+using XSharpModel;
 using Microsoft.VisualStudio.Shell;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using System.Windows;
 using XSharp.Settings;
-#pragma warning disable VSTHRD012 
+#pragma warning disable VSTHRD012
 namespace XSharp.LanguageService.OptionsPages
 {
     [ComVisible(true)]
-    public class XSDialogPage<T, U> : DialogPage where T: XSUserControl, new() where U : OptionsBase, new()
+    public class XSDialogPage<T, U> : UIElementDialogPage where T : XSUserControl, new() where U : OptionsBase, new()
     {
         #region Properties
         public override object AutomationObject => Options;
         public U Options { get; private set; } = null;
         #endregion
-        internal XSDialogPage() : base(ThreadHelper.JoinableTaskContext)
+
+        internal XSDialogPage()
         {
             Options = new U();
         }
@@ -22,39 +25,30 @@ namespace XSharp.LanguageService.OptionsPages
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
-            if (control != null)
-            {
-                control.ReadValues(Options);
-            }
+            if (_control != null)
+                _control.ReadValues(Options);
         }
+
         public override void SaveSettingsToStorage()
         {
-            CreateControl();
-            if (control != null)
-            {
-                control.SaveValues(Options);
-            }
+            EnsureControl();
+            if (_control != null)
+                _control.SaveValues(Options);
             base.SaveSettingsToStorage();
             Options.WriteToSettings();
         }
 
-        private void CreateControl()
+        private void EnsureControl()
         {
-            if (control == null)
+            if (_control == null)
             {
-                control = new T
-                {
-                    optionPage = this
-                };
-                control.ReadValues(Options);
+                _control = new T { optionPage = this };
+                _control.ReadValues(Options);
             }
         }
 
-        XSUserControl control = null;
-        /// <summary>
-        /// Set the properties of the page from the Options object
-        /// </summary>
-        /// <param name="options"></param>
+        private T _control;
+
         internal void SetOptions(U options)
         {
             if (Options == null)
@@ -70,12 +64,13 @@ namespace XSharp.LanguageService.OptionsPages
                 }
             }
         }
-        protected override IWin32Window Window
+
+        protected override UIElement Child
         {
             get
             {
-                CreateControl();
-                return control;
+                EnsureControl();
+                return _control;
             }
         }
     }

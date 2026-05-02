@@ -1,0 +1,51 @@
+<UserControl x:Class="XSharp.LanguageService.OptionsPages.FormattingOptionsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             toolkit:Themes.UseVsTheme="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <GroupBox Header="Document Formatting" Margin="4">
+            <StackPanel Margin="4">
+                <!-- Keyword Case sub-group -->
+                <GroupBox Header="Keyword Case Synchronization" Margin="0,0,0,8">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="4">
+                            <RadioButton x:Name="rbNone"  Content="None"  GroupName="KeywordCase" Margin="0,0,16,0" Checked="OnCaseChanged"/>
+                            <RadioButton x:Name="rbUpper" Content="UPPER" GroupName="KeywordCase" Margin="0,0,16,0" Checked="OnCaseChanged"/>
+                            <RadioButton x:Name="rbLower" Content="lower" GroupName="KeywordCase" Margin="0,0,16,0" Checked="OnCaseChanged"/>
+                            <RadioButton x:Name="rbTitle" Content="Title" GroupName="KeywordCase" Margin="0,0,24,0" Checked="OnCaseChanged"/>
+                            <TextBox x:Name="tbExample"
+                                     IsReadOnly="True"
+                                     Width="120"
+                                     Foreground="Red"
+                                     FontFamily="Courier New"
+                                     FontWeight="Bold"
+                                     Text="FUNCTION"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <CheckBox x:Name="chkSynchronizeUDCKeywords"
+                          Content="Synchronize case of UDC Keywords"
+                          Tag="UdcCase"
+                          Margin="4,2"
+                          ToolTip="When enabled, User Defined keywords inside UDCs will follow the capitalization rules for the built-in keywords"/>
+                <CheckBox x:Name="chkIdentifierCase"
+                          Content="Identifier Case Synchronization"
+                          Tag="IdentifierCase"
+                          Margin="4,2"
+                          ToolTip="Synchronize the case of identifiers with their declaration"/>
+                <CheckBox x:Name="chkTrimTrailngWhiteSpace"
+                          Content="Trim Trailing Whitespace"
+                          Tag="TrimTrailingWhiteSpace"
+                          Margin="4,2"
+                          ToolTip="When you select this then all the lines will be trimmed when you save the file."/>
+                <CheckBox x:Name="chkInsertFinalNewLine"
+                          Content="Insert Final NewLine"
+                          Tag="InsertFinalNewLine"
+                          Margin="4,2"
+                          ToolTip="When you select this then the editor will add a CRLF after the last line of code when needed."/>
+            </StackPanel>
+        </GroupBox>
+    </ScrollViewer>
+</UserControl>

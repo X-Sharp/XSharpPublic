@@ -107,10 +107,7 @@
     <Compile Include="LightBulb\ConstructorAction.cs" />
     <Compile Include="LightBulb\ConstructorProvider.cs" />
     <Compile Include="LightBulb\CtorParamsDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LightBulb\CtorParamsDlg.Designer.cs">
-      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+      <DependentUpon>CtorParamsDlg.xaml</DependentUpon>
     </Compile>
     <Compile Include="LightBulb\PropertyAction.cs" />
     <Compile Include="LightBulb\PropertyProvider.cs" />
@@ -135,34 +132,22 @@
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
     <Compile Include="OptionsPages\CompletionOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\CompletionOptionsControl.Designer.cs">
-      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
+      <DependentUpon>CompletionOptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\CompletionOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\IndentingOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\IndentingOptionsControl.Designer.cs">
-      <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
+      <DependentUpon>IndentingOptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
-      <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+      <DependentUpon>FormattingOptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\IndentingOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\GeneratorOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
-      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
+      <DependentUpon>GeneratorOptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\CompletionOptions.cs" />
     <Compile Include="Options\FormattingOptions.cs" />
@@ -172,16 +157,10 @@
     <Compile Include="Options\TabOptions.cs" />
     <Compile Include="Options\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\OtherOptionsControl.Designer.cs">
-      <DependentUpon>OtherOptionsControl.cs</DependentUpon>
+      <DependentUpon>OtherOptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\IntellisenseOptionsControl.Designer.cs">
-      <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
+      <DependentUpon>IntellisenseOptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsPage.cs">
       <SubType>Component</SubType>
@@ -195,18 +174,11 @@
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OptionsPages\XSDialogPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="OptionsPages\XSDialogPage.cs" />
     <Compile Include="OptionsPages\XSharpSpecialOptions.cs">
-      <SubType>Form</SubType>
+      <DependentUpon>XSharpSpecialOptions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OptionsPages\XSharpSpecialOptions.Designer.cs">
-      <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionsPages\XSUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="OptionsPages\XSUserControl.cs" />
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
     <Compile Include="Snippets\SnippetHelpers.cs" />
     <Compile Include="Snippets\ExpansionFunctions.cs" />
@@ -282,30 +254,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
-      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\CompletionOptionsControl.resx">
-      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
-      <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
-      <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\GeneratorOptionsControl.resx">
-      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\OtherOptionsControl.resx">
-      <DependentUpon>OtherOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
-      <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\XSharpSpecialOptions.resx">
-      <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -346,6 +294,38 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="DocumentOutline\DocumentOutlineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LightBulb\CtorParamsDlg.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\XSharpSpecialOptions.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\CompletionOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\FormattingOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\GeneratorOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\IndentingOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\IntellisenseOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsPages\OtherOptionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -1,0 +1,40 @@
+<UserControl x:Class="XSharp.LanguageService.OptionsPages.GeneratorOptionsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             toolkit:Themes.UseVsTheme="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <GroupBox Header="Code Generator" Margin="4">
+            <StackPanel Margin="4">
+                <CheckBox x:Name="chkShowXMLComments"
+                          Content="Show XML comments in generated source code for Goto Definition"
+                          Tag="ShowXmlComments"
+                          Margin="0,4,0,8"/>
+
+                <TextBlock Text="Modifier for Public properties:" Margin="0,0,0,4"
+                           ToolTip="Specify the modifier the code generators should use for public properties"/>
+                <GroupBox Margin="0,0,0,8">
+                    <StackPanel Orientation="Horizontal" Margin="4">
+                        <RadioButton x:Name="rbPublic" Content="Public" GroupName="PublicStyle" Margin="0,0,16,0"
+                                     ToolTip="Use PUBLIC as modifier"/>
+                        <RadioButton x:Name="rbExport" Content="Export" GroupName="PublicStyle" Margin="0,0,16,0"
+                                     ToolTip="Use EXPORT as modifier"/>
+                        <RadioButton x:Name="rbNone"   Content="None"   GroupName="PublicStyle"
+                                     ToolTip="Use no modifier for public properties and methods"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <TextBlock Text="Modifier for Private properties:" Margin="0,0,0,4"
+                           ToolTip="Specify the modifier the code generator should use for private properties"/>
+                <GroupBox>
+                    <StackPanel Orientation="Horizontal" Margin="4">
+                        <RadioButton x:Name="rbPrivate" Content="Private" GroupName="PrivateStyle" Margin="0,0,16,0"
+                                     ToolTip="Use PRIVATE as modifier"/>
+                        <RadioButton x:Name="rbHidden"  Content="Hidden"  GroupName="PrivateStyle"
+                                     ToolTip="Use HIDDEN as modifier"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </GroupBox>
+    </ScrollViewer>
+</UserControl>

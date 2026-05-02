@@ -169,7 +169,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 {
                     CtorParamsDlg dlg = new CtorParamsDlg();
                     dlg.FillMembers(_fieldsNProps);
-                    if ( dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK )
+                    if ( dlg.ShowDialog() == true )
                     {
                         insertText.Append(prefix);
                         insertText.Append("PUBLIC ");

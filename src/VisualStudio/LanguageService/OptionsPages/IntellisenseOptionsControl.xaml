@@ -1,0 +1,77 @@
+<UserControl x:Class="XSharp.LanguageService.OptionsPages.IntellisenseOptionsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             toolkit:Themes.UseVsTheme="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="4">
+            <GroupBox Header="Navigation Bars" Margin="0,0,0,8">
+                <StackPanel Margin="4">
+                    <CheckBox x:Name="chkIncludeFields"
+                              Content="Include fields (instance variables) and defines"
+                              Tag="IncludeFieldsInNavigationBars"
+                              Margin="0,2"
+                              ToolTip="When enabled, the combo box on the right hand side of the navigation bar will also include fields and defines"/>
+                    <CheckBox x:Name="chkSortNavBar"
+                              Content="Sort Items by name"
+                              Tag="SortNavigationBars"
+                              Margin="0,2"
+                              ToolTip="If enabled, the items in the comboboxes on the navigation bar will be sorted by name"/>
+                    <CheckBox x:Name="chkShowMembersOfCurrentType"
+                              Content="Members combobox shows members of current selected type only"
+                              Tag="ShowMembersOfCurrentTypeOnly"
+                              Margin="0,2"
+                              ToolTip="If selected, the combobox on the right hand side will only show members of the current selected type"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Completion List" Margin="0,0,0,8">
+                <StackPanel Margin="4">
+                    <CheckBox x:Name="chkCompletionListtabs"
+                              Content="Organize in tabs with different item types (properties, methods etc)"
+                              Tag="CompletionListTabs"
+                              Margin="0,2"
+                              ToolTip="Organize the Completion list in tabs with different item types"/>
+                    <CheckBox x:Name="chkKeywordsInAll"
+                              Content="Add Keywords to the main tab"
+                              Tag="KeywordsInAll"
+                              Margin="0,2"
+                              ToolTip="If you organize the Completion lists in tabs, this controls if keywords are added to the main tab"/>
+                    <CheckBox x:Name="chkExcludeMembersFromOtherfiles"
+                              Content="Exclude members from other files"
+                              Tag="ExcludeMembersFromOtherFiles"
+                              Margin="0,2"
+                              ToolTip="Exclude members that are defined in other files from the completion list"/>
+                    <CheckBox x:Name="chkUseMicrosoftSQLite"
+                              Content="Use Microsoft SQLite provider"
+                              Tag="UseMicrosoftSQLite"
+                              Margin="0,2"
+                              ToolTip="Use Microsoft SQLite provider instead of System.Data.SQLite"/>
+
+                    <TextBlock Text="Commit completion list by typing the following characters:"
+                               Margin="0,8,0,4"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="commitChars"
+                                 Tag="CommitChars"
+                                 Width="300"
+                                 ToolTip="Characters that commit the current completion item"/>
+                        <Button Content="Reset" Width="60" Margin="8,0,0,0" Click="OnReset"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <CheckBox x:Name="chkAutoOpen"
+                      Content="Add '(' to methods in completion list"
+                      Tag="AutoOpen"
+                      Margin="4,2"
+                      ToolTip="Automatically type '(' when selecting a method from a completion list"/>
+
+            <Button x:Name="btnShowMeTheMagic"
+                    Content="Show Me The Magic"
+                    Width="160"
+                    HorizontalAlignment="Left"
+                    Margin="4,8,0,0"
+                    Click="OnShowMeTheMagic"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

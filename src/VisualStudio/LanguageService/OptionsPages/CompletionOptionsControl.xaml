@@ -1,0 +1,116 @@
+<UserControl x:Class="XSharp.LanguageService.OptionsPages.CompletionOptionsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             toolkit:Themes.UseVsTheme="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="4">
+            <!-- Description -->
+            <TextBox x:Name="rtfDescription"
+                     IsReadOnly="True"
+                     TextWrapping="Wrap"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     Margin="0,0,0,8"
+                     MaxHeight="130"/>
+
+            <!-- Max entries row -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="Max Entries:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox x:Name="tbMaxEntries"
+                         Width="80"
+                         Tag="MaxCompletionEntries"
+                         ToolTip="Maximum number of entries in the completion list"/>
+            </StackPanel>
+
+            <!-- Two-column grid of checkboxes -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left column -->
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="chkLocals"
+                              Content="Locals and Parameters"
+                              Tag="CompleteLocals"
+                              Margin="0,2"
+                              ToolTip="Include Locals and Parameters in the completion list"/>
+                    <CheckBox x:Name="chkFields"
+                              Content="Fields and methods of current type"
+                              Tag="CompleteSelf"
+                              Margin="0,2"
+                              ToolTip="Include fields and methods of the current type in the completion list"/>
+                    <CheckBox x:Name="chkInherited"
+                              Content="Inherited Fields and methods"
+                              Tag="CompleteParent"
+                              Margin="0,2"
+                              ToolTip="Include fields and methods of parent type(s) in the completion list"/>
+                    <CheckBox x:Name="chkNamespaces"
+                              Content="Namespaces"
+                              Tag="CompleteNamespaces"
+                              Margin="0,2"
+                              ToolTip="Include namespaces from the current project and all referenced projects and assemblies"/>
+                    <CheckBox x:Name="chkTypes"
+                              Content="Types"
+                              Tag="CompleteTypes"
+                              Margin="0,2"
+                              ToolTip="Include types from the current assembly and all referenced projects and assemblies"/>
+                    <CheckBox x:Name="chkKeywords"
+                              Content="Keywords"
+                              Tag="CompleteKeywords"
+                              Margin="0,2"
+                              ToolTip="Include keywords in the completion list"/>
+                    <CheckBox x:Name="chkSnippets"
+                              Content="Snippets"
+                              Tag="CompleteSnippets"
+                              Margin="0,2"
+                              Visibility="Collapsed"
+                              IsEnabled="False"
+                              ToolTip="Include snippets in the completion list"/>
+                </StackPanel>
+
+                <!-- Right column -->
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="chkGlobalsProject"
+                              Content="Globals and Defines in current project"
+                              Tag="CompleteGlobals"
+                              Margin="0,2"
+                              ToolTip="Include Globals and Defines from the current project in the completion list"/>
+                    <CheckBox x:Name="chkGlobalsSource"
+                              Content="Globals and Defines in source"
+                              Tag="CompleteGlobalsP"
+                              Margin="0,2"
+                              ToolTip="Include Globals and Defines from referenced X# projects in the completion list"/>
+                    <CheckBox x:Name="chkGlobalsExtern"
+                              Content="Globals and Defines in assemblies"
+                              Tag="CompleteGlobalsA"
+                              Margin="0,2"
+                              ToolTip="Include Globals and Defines from referenced X# assemblies in the completion list"/>
+                    <CheckBox x:Name="chkFunctions"
+                              Content="Functions in current project"
+                              Tag="CompleteFunctions"
+                              Margin="0,2"
+                              ToolTip="Include Functions from the current project in the completion list"/>
+                    <CheckBox x:Name="chkFunctionsSource"
+                              Content="Functions in source"
+                              Tag="CompleteFunctionsP"
+                              Margin="0,2"
+                              ToolTip="Include Functions from referenced X# projects in the completion list"/>
+                    <CheckBox x:Name="chkFunctionsExternal"
+                              Content="Functions in assemblies"
+                              Tag="CompleteFunctionsA"
+                              Margin="0,2"
+                              ToolTip="Include Functions from referenced X# assemblies in the completion list"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- All/None buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                <Button x:Name="btnAll" Content="All" Width="50" Height="26" Margin="0,0,8,0" Click="OnAll"/>
+                <Button x:Name="btnNothing" Content="None" Width="50" Height="26" Click="OnNone"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

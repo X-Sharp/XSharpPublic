@@ -1,75 +1,69 @@
-﻿using Community.VisualStudio.Toolkit;
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+using Community.VisualStudio.Toolkit;
 using System;
+using System.Windows;
 using XSharp.Settings;
 using XSharpModel;
+
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class IntellisenseOptionsControl : XSUserControl
     {
-        string defaultCommitChars = "{}[]().,:;+-*/%&|^!~<>?@#\'\"\\";
-        bool Isx86 = false;
+        private const string DefaultCommitChars = "{}[]().,:;+-*/%&|^!~<>?@#'\"\\";
+        private bool _isx86;
+
         public IntellisenseOptionsControl()
         {
             InitializeComponent();
-            this.commitChars.Text = defaultCommitChars;
-            chkCompletionListtabs.Tag = nameof(IntellisenseOptions.CompletionListTabs);
-            chkKeywordsInAll.Tag = nameof(IntellisenseOptions.KeywordsInAll);
-            chkIncludeFields.Tag = nameof(IntellisenseOptions.IncludeFieldsInNavigationBars);
-            chkSortNavBar.Tag = nameof(IntellisenseOptions.SortNavigationBars);
-            chkShowMembersOfCurrentType.Tag = nameof(IntellisenseOptions.ShowMembersOfCurrentTypeOnly);
-            commitChars.Tag = nameof(IntellisenseOptions.CommitChars);
-            chkExcludeMembersFromOtherfiles.Tag = nameof(IntellisenseOptions.ExcludeMembersFromOtherFiles);
-            chkUseMicrosoftSQLite.Tag = nameof(IntellisenseOptions.UseMicrosoftSQLite);
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))
+            commitChars.Text = DefaultCommitChars;
+
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))
+                btnShowMeTheMagic.Visibility = Visibility.Collapsed;
+
+            _isx86 = IntPtr.Size == 4;
+            if (_isx86)
             {
-                this.btnShowMeTheMagic.Visible = false;
-            }
-            Isx86 = IntPtr.Size == 4;
-            if (Isx86)
-            {
-                chkUseMicrosoftSQLite.Checked = false;
-                chkUseMicrosoftSQLite.Visible = false;
+                chkUseMicrosoftSQLite.IsChecked = false;
+                chkUseMicrosoftSQLite.Visibility = Visibility.Collapsed;
             }
             else if (XSettings.IsArm)
             {
-                chkUseMicrosoftSQLite.Checked = true;
-                chkUseMicrosoftSQLite.Visible = false;
+                chkUseMicrosoftSQLite.IsChecked = true;
+                chkUseMicrosoftSQLite.Visibility = Visibility.Collapsed;
             }
-
         }
+
         internal override void ReadValues(object options)
         {
             base.ReadValues(options);
-            if (Isx86)
-            {
-                chkUseMicrosoftSQLite.Checked = false;
-            }
+            if (_isx86)
+                chkUseMicrosoftSQLite.IsChecked = false;
             else if (XSettings.IsArm)
-            {
-                chkUseMicrosoftSQLite.Checked = true;
-            }
+                chkUseMicrosoftSQLite.IsChecked = true;
         }
+
         internal override void SaveValues(object options)
         {
             base.SaveValues(options);
-            if (!Isx86 && chkUseMicrosoftSQLite.Checked != XSettings.UseMicrosoftSQLite && !XSettings.IsArm)
+            if (!_isx86 && chkUseMicrosoftSQLite.IsChecked != XSettings.UseMicrosoftSQLite && !XSettings.IsArm)
             {
                 VS.MessageBox.ShowWarning("You have changed the setting for the SQLite provider. This change will only take effect after you restart Visual Studio");
                 XDatabase.DeleteOnClose = true;
-                XSettings.UseMicrosoftSQLite = chkUseMicrosoftSQLite.Checked;
-            }   
-
+                XSettings.UseMicrosoftSQLite = chkUseMicrosoftSQLite.IsChecked == true;
+            }
         }
 
-        private void btnShowMeTheMagic_Click(object sender, EventArgs e)
+        private void OnShowMeTheMagic(object sender, RoutedEventArgs e)
         {
-            XSharpSpecialOptions form = new XSharpSpecialOptions((IntellisenseOptionsPage)optionPage);
+            var form = new XSharpSpecialOptions((IntellisenseOptionsPage)optionPage);
             form.ShowDialog();
         }
-      
-        private void btnReset_Click(object sender, EventArgs e)
+
+        private void OnReset(object sender, RoutedEventArgs e)
         {
-            this.commitChars.Text = defaultCommitChars;
+            commitChars.Text = DefaultCommitChars;
         }
     }
 }

@@ -1,95 +1,53 @@
-﻿using System;
-using System.Windows.Forms;
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+using System.Windows;
 using XSharpModel;
 using XSharp.Settings;
+
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class FormattingOptionsControl : XSUserControl
     {
-        
         public FormattingOptionsControl()
         {
             InitializeComponent();
-            grpCase.Enabled = true;
-            rbUpper.Tag = nameof(KeywordCase.Upper);
-            rbLower.Tag = nameof(KeywordCase.Lower);
-            rbTitle.Tag = nameof(KeywordCase.Title);
-            rbNone.Tag = nameof(KeywordCase.None);
-
-            chkSynchronizeUDCKeywords.Tag = nameof(FormattingOptions.UdcCase);
-            chkIdentifierCase.Tag = nameof(FormattingOptions.IdentifierCase);
-            chkInsertFinalNewLine.Tag = nameof(FormattingOptions.InsertFinalNewLine);
-            chkTrimTrailngWhiteSpace.Tag = nameof(FormattingOptions.TrimTrailingWhiteSpace);
-
         }
-
 
         internal override void ReadValues(object options)
         {
             base.ReadValues(options);
             switch (((FormattingOptions)options).KeywordCase)
             {
-                case KeywordCase.Upper:
-                    rbUpper.Checked = true;
-                    break;
-                case KeywordCase.Lower:
-                    rbLower.Checked = true;
-                    break;
-                case KeywordCase.Title:
-                    rbTitle.Checked = true;
-                    break;
-                default:
-                    rbNone.Checked = true;
-                    break;
+                case KeywordCase.Upper: rbUpper.IsChecked = true; break;
+                case KeywordCase.Lower: rbLower.IsChecked = true; break;
+                case KeywordCase.Title: rbTitle.IsChecked = true; break;
+                default:               rbNone.IsChecked  = true; break;
             }
-            showExample();
+            ShowExample();
         }
+
         internal override void SaveValues(object options)
         {
             base.SaveValues(options);
-            var controls = new RadioButton[] { rbLower, rbUpper, rbNone, rbTitle };
-            foreach (var rb in controls)
-            {
-                var tag = rb.Tag;
-                if (tag is string strTag && rb.Checked)
-                {
-                    switch (strTag)
-                    {
-                        case nameof(KeywordCase.None):
-                        case nameof(KeywordCase.Upper):
-                        case nameof(KeywordCase.Lower):
-                        case nameof(KeywordCase.Title):
-                            ((FormattingOptions) options).KeywordCase = (KeywordCase)Enum.Parse(typeof(KeywordCase), strTag);
-                            break;
-                    }
-                }
-            }
+            var opts = (FormattingOptions)options;
+            if      (rbUpper.IsChecked == true) opts.KeywordCase = KeywordCase.Upper;
+            else if (rbLower.IsChecked == true) opts.KeywordCase = KeywordCase.Lower;
+            else if (rbTitle.IsChecked == true) opts.KeywordCase = KeywordCase.Title;
+            else                               opts.KeywordCase = KeywordCase.None;
         }
 
-  
-        private void caseChanged(object sender, EventArgs e)
+        private void OnCaseChanged(object sender, RoutedEventArgs e)
         {
-            showExample();
+            ShowExample();
         }
-        void showExample()
-        {
-            if (rbUpper.Checked)
-            {
-                tbExample.Text = "FUNCTION";
-            }
-            else if (rbLower.Checked)
-            {
-                tbExample.Text = "function";
-            }
-            else if (rbNone.Checked)
-            {
-                tbExample.Text = "FuNcTiOn";
-            }
-            else if (rbTitle.Checked)
-            {
-                tbExample.Text = "Function";
-            }
 
+        private void ShowExample()
+        {
+            if      (rbUpper.IsChecked == true) tbExample.Text = "FUNCTION";
+            else if (rbLower.IsChecked == true) tbExample.Text = "function";
+            else if (rbNone.IsChecked  == true) tbExample.Text = "FuNcTiOn";
+            else if (rbTitle.IsChecked == true) tbExample.Text = "Function";
         }
     }
 }

@@ -16,14 +16,14 @@ namespace XSharp.LanguageService.OptionsPages
         internal override void ReadValues(object options)
         {
             base.ReadValues(options);
-            var page = (GeneratorOptionsPage)optionPage;
-            switch ((PublicStyle)page.Options.PublicStyle)
+            var opts = (GeneratorOptions)options;
+            switch ((PublicStyle)opts.PublicStyle)
             {
                 case PublicStyle.Export: rbExport.IsChecked = true; break;
                 case PublicStyle.None:   rbNone.IsChecked   = true; break;
                 default:                 rbPublic.IsChecked = true; break;
             }
-            switch ((PrivateStyle)page.Options.PrivateStyle)
+            switch ((PrivateStyle)opts.PrivateStyle)
             {
                 case PrivateStyle.Hidden: rbHidden.IsChecked  = true; break;
                 default:                  rbPrivate.IsChecked = true; break;

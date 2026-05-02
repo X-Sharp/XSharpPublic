@@ -60,12 +60,6 @@
                 </StackPanel>
             </GroupBox>
 
-            <CheckBox x:Name="chkAutoOpen"
-                      Content="Add '(' to methods in completion list"
-                      Tag="AutoOpen"
-                      Margin="4,2"
-                      ToolTip="Automatically type '(' when selecting a method from a completion list"/>
-
             <Button x:Name="btnShowMeTheMagic"
                     Content="Show Me The Magic"
                     Width="160"

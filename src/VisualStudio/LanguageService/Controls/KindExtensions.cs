@@ -4,6 +4,11 @@
 //
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System.Runtime.InteropServices;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using XSharpModel;
 
 namespace XSharp.LanguageService
@@ -155,6 +160,34 @@ namespace XSharp.LanguageService
                 default:
                     return publicMoniker;
             }
+        }
+
+        /// <summary>
+        /// Converts an <see cref="ImageMoniker"/> to a WPF <see cref="ImageSource"/> at 16×16 logical pixels
+        /// using the VS image service.  Returns <c>null</c> when the image service is unavailable.
+        /// </summary>
+        internal static ImageSource GetImageSource(this ImageMoniker moniker)
+        {
+            var imageService = Package.GetGlobalService(typeof(SVsImageService)) as IVsImageService2;
+            if (imageService == null)
+                return null;
+
+            var attributes = new ImageAttributes
+            {
+                StructSize = Marshal.SizeOf(typeof(ImageAttributes)),
+                ImageType   = (uint)_UIImageType.IT_Bitmap,
+                Format      = (uint)_UIDataFormat.DF_WPF,
+                LogicalWidth  = 16,
+                LogicalHeight = 16,
+                Flags = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
+            };
+
+            IVsUIObject uiObject = imageService.GetImage(moniker, attributes);
+            if (uiObject == null)
+                return null;
+
+            uiObject.get_Data(out object data);
+            return data as BitmapSource;
         }
     }
 }

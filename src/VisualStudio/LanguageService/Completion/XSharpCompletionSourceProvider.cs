@@ -12,7 +12,6 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
 using Microsoft.VisualStudio.Shell;
-using System.Windows.Media;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
@@ -28,9 +27,6 @@ namespace XSharp.LanguageService
     {
         [Import]
         internal SVsServiceProvider ServiceProvider = null;
-
-        [Import]
-        internal IGlyphService GlyphService = null;
 
         [Import]
         IBufferTagAggregatorFactoryService aggregator = null;

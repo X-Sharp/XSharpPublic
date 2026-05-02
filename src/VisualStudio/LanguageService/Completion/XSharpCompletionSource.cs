@@ -42,7 +42,7 @@ namespace XSharp.LanguageService
             _file = file;
             var prj = _file.Project.ProjectNode;
             _dialect = _file.Project.Dialect;
-            helpers = new CompletionHelpers(_dialect, provider.GlyphService, file, !prj.ParseOptions.CaseSensitive);
+            helpers = new CompletionHelpers(_dialect, file, !prj.ParseOptions.CaseSensitive);
             this._tagAggregator = aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
 
         }

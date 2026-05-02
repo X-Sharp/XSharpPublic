@@ -154,7 +154,15 @@ namespace XSharp.LanguageService
                 {
                     if (entity.Name == element.Name)
                     {
-                        return entity;
+                        if (entity is IXMemberSymbol m1 && element is IXMemberSymbol m2)
+                        {
+                            if (m1.Prototype == m2.Prototype)
+                                return entity;
+                        }
+                        else if (entity.FullName == element.FullName)
+                        {
+                            return entity;
+                        }
                     }
                 }
             }

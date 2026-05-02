@@ -3,6 +3,8 @@
 // See License.txt in the project root for license information.
 //
 using Community.VisualStudio.Toolkit;
+
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace XSharp.LanguageService
     /// Floating tool window shown when Goto Definition finds multiple locations.
     /// Double-clicking an item (or pressing Enter) navigates to that location and closes the window.
     /// </summary>
-    internal partial class GotoDefinitionResultsWindow : Window
+     partial class GotoDefinitionResultsWindow : Window
     {
         private readonly ITextView _textView;
         private readonly CompletionState _state;
@@ -113,5 +115,6 @@ namespace XSharp.LanguageService
                 DisplayName = symbol.FullName;
             Location = symbol.Location;
         }
+        public override string ToString() => DisplayName + " (" + Location + ")";
     }
 }

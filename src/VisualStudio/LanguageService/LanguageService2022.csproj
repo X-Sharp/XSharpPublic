@@ -225,6 +225,7 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
+    <Compile Include="Controls\KindExtensions.cs" />
     <Compile Include="Controls\DocumentOutlineControl.cs">
       <DependentUpon>DocumentOutlineControl.xaml</DependentUpon>
       <SubType>Code</SubType>

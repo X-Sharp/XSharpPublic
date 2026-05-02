@@ -63,7 +63,7 @@
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
-    <Compile Include="Commands\GotoDefinitionResultsWindow.xaml.cs">
+    <Compile Include="Controls\GotoDefinitionResultsWindow.xaml.cs">
       <DependentUpon>GotoDefinitionResultsWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -225,7 +225,7 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
-    <Compile Include="DocumentOutline\DocumentOutlineControl.cs">
+    <Compile Include="Controls\DocumentOutlineControl.cs">
       <DependentUpon>DocumentOutlineControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -355,15 +355,15 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="..\VsThemeDictionary.xaml">
-      <Link>DocumentOutline\VsThemeDictionary.xaml</Link>
+      <Link>Controls\VsThemeDictionary.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Commands\GotoDefinitionResultsWindow.xaml">
+    <Page Include="Controls\GotoDefinitionResultsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DocumentOutline\DocumentOutlineControl.xaml">
+    <Page Include="Controls\DocumentOutlineControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -11,6 +11,10 @@
         ResizeMode="CanResize"
         WindowStartupLocation="Manual">
     <Grid>
+        <Grid.Resources>
+            <ResourceDictionary Source="VsThemeDictionary.xaml"/>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>

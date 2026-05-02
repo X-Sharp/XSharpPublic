@@ -12,7 +12,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Reflection
 USING XSharp.Settings
-
+USING System.Linq
 
 #pragma options ("az", ON)
 NAMESPACE XSharpModel
@@ -803,8 +803,10 @@ CLASS XProject
         SELF:LogTypeMessage(i"FindFunctionsLike {name}, found {result.Count} occurences")
         RETURN result
 
-
     METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
+        var members := SELF:FindFunctions(name, lRecursive)
+        return members:FirstOrDefault()
+    METHOD FindFunctions(name AS STRING, lRecursive := TRUE AS LOGIC) AS IList<IXMemberSymbol>
         // we look in the project references and assembly references
         // pass the list of ProjectIds and AssemblyIds to the database engine
         SELF:LogTypeMessage(ie"FindFunction {name} ")
@@ -814,9 +816,9 @@ CLASS XProject
             projectIds    := SELF:DependentProjectList
         ENDIF
         VAR result := XDatabase.FindFunction(name, projectIds)
-        VAR xmember := SELF:GetGlobalMember(result)
-        SELF:LogTypeMessage(ie"FindFunction {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\")} ")
-        RETURN xmember
+        VAR xmembers := SELF:GetGlobalMembers(result)
+        SELF:LogTypeMessage(ie"FindFunction {name}, result {result:Count} ")
+        RETURN xmembers
 
     METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
         // we look in the project references and assembly references
@@ -832,6 +834,9 @@ CLASS XProject
         RETURN xmember
 
     PRIVATE METHOD GetGlobalMember(result AS IList<XDbResult>) AS IXMemberSymbol
+        var members := SELF:GetGlobalMembers(result)
+        return iif(members?:Count() > 0, members[0], NULL)
+    PRIVATE METHOD GetGlobalMembers(result AS IList<XDbResult>) AS List<IXMemberSymbol>
         IF result:Count > 0
             // Get the source code and parse it into a member
             // we know that it will be of the globals class
@@ -872,7 +877,7 @@ CLASS XProject
                 ENDIF
             NEXT
             parentType:SetMembers(entities)
-            RETURN first
+            RETURN entities:ToList<IXMemberSymbol>()
         ENDIF
         RETURN NULL
 

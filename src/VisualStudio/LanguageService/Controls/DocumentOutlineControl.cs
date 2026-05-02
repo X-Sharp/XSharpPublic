@@ -3,17 +3,13 @@
 // See License.txt in the project root for license information.
 //
 using Community.VisualStudio.Toolkit;
-
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
-
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
 
@@ -32,33 +28,6 @@ namespace XSharp.LanguageService
         private XFile _file;
         private bool _navigating;    // reentrancy guard
         private bool _sortByName;    // false = sort by document order (default)
-
-        // -----------------------------------------------------------------------
-        // Image source cache: maps glyph index -> ImageSource
-        // -----------------------------------------------------------------------
-        private static readonly Dictionary<int, ImageSource> _glyphCache = new Dictionary<int, ImageSource>();
-        private static System.Windows.Forms.ImageList _imageList;
-
-        static DocumentOutlineControl()
-        {
-            _imageList = new System.Windows.Forms.ImageList
-            {
-                ImageSize = new System.Drawing.Size(16, 16),
-                TransparentColor = System.Drawing.Color.FromArgb(255, 0, 255)
-            };
-            try
-            {
-                Stream stream = typeof(Microsoft.VisualStudio.Package.LanguageService)
-                                    .Assembly
-                                    .GetManifestResourceStream("Resources.completionset.bmp");
-                if (stream != null)
-                    _imageList.Images.AddStrip(new System.Drawing.Bitmap(stream));
-            }
-            catch (Exception)
-            {
-                // If images cannot be loaded the tree will still work without icons.
-            }
-        }
 
         // -----------------------------------------------------------------------
         // Construction
@@ -155,7 +124,7 @@ namespace XSharp.LanguageService
             string label = entity.ComboPrototype;
             if (string.IsNullOrEmpty(label))
                 label = entity.Name;
-            return new OutlineTreeNode(entity, label, GetGlyphImage(entity.Glyph));
+            return new OutlineTreeNode(entity, label, GetMoniker(entity.Kind, entity.Visibility));
         }
 
         private void AddMemberNodes(OutlineTreeNode parentNode, XSourceTypeSymbol type)
@@ -210,45 +179,149 @@ namespace XSharp.LanguageService
         }
 
         // -----------------------------------------------------------------------
-        // Glyph -> ImageSource conversion
+        // Kind + Visibility -> ImageMoniker mapping
         // -----------------------------------------------------------------------
-        private static ImageSource GetGlyphImage(int glyphIndex)
+
+        /// <summary>
+        /// Returns the <see cref="ImageMoniker"/> from <see cref="KnownMonikers"/> that best
+        /// represents the given entity <paramref name="kind"/> and <paramref name="visibility"/>.
+        /// </summary>
+        private static ImageMoniker GetMoniker(Kind kind, Modifiers visibility)
         {
-            if (_imageList == null || glyphIndex < 0 || glyphIndex >= _imageList.Images.Count)
-                return null;
-
-            if (_glyphCache.TryGetValue(glyphIndex, out var cached))
-                return cached;
-
-            var bmp = _imageList.Images[glyphIndex] as System.Drawing.Bitmap;
-            if (bmp == null)
-                return null;
-
-            ImageSource source;
-            try
+            switch (kind)
             {
-                var handle = bmp.GetHbitmap();
-                try
-                {
-                    source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                        handle,
-                        IntPtr.Zero,
-                        Int32Rect.Empty,
-                        BitmapSizeOptions.FromEmptyOptions());
-                    source.Freeze();
-                }
-                finally
-                {
-                    NativeMethods.DeleteObject(handle);
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+                case Kind.Class:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.ClassPublic, KnownMonikers.ClassProtected,
+                        KnownMonikers.ClassPrivate, KnownMonikers.ClassInternal);
 
-            _glyphCache[glyphIndex] = source;
-            return source;
+                case Kind.Structure:
+                case Kind.VOStruct:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.ValueTypePublic, KnownMonikers.ValueTypeProtected,
+                        KnownMonikers.ValueTypePrivate, KnownMonikers.ValueTypeInternal);
+
+                case Kind.Interface:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.InterfacePublic, KnownMonikers.InterfaceProtected,
+                        KnownMonikers.InterfacePrivate, KnownMonikers.InterfaceInternal);
+
+                case Kind.Delegate:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.DelegatePublic, KnownMonikers.DelegateProtected,
+                        KnownMonikers.DelegatePrivate, KnownMonikers.DelegateInternal);
+
+                case Kind.Enum:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.EnumerationPublic, KnownMonikers.EnumerationProtected,
+                        KnownMonikers.EnumerationPrivate, KnownMonikers.EnumerationInternal);
+
+                case Kind.EnumMember:
+                    return KnownMonikers.EnumerationItemPublic;
+
+                case Kind.Constructor:
+                case Kind.Destructor:
+                case Kind.Method:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.MethodPublic, KnownMonikers.MethodProtected,
+                        KnownMonikers.MethodPrivate, KnownMonikers.MethodInternal);
+
+                case Kind.Function:
+                case Kind.Procedure:
+                case Kind.LocalFunc:
+                case Kind.LocalProc:
+                    // Global/module-level routines have no class visibility
+                    return KnownMonikers.MethodPublic;
+
+                case Kind.Access:
+                case Kind.Assign:
+                case Kind.Property:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.PropertyPublic, KnownMonikers.PropertyProtected,
+                        KnownMonikers.PropertyPrivate, KnownMonikers.PropertyInternal);
+
+                case Kind.Event:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.EventPublic, KnownMonikers.EventProtected,
+                        KnownMonikers.EventPrivate, KnownMonikers.EventInternal);
+
+                case Kind.Field:
+                case Kind.VOGlobal:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.FieldPublic, KnownMonikers.FieldProtected,
+                        KnownMonikers.FieldPrivate, KnownMonikers.FieldInternal);
+
+                case Kind.Operator:
+                    return KnownMonikers.Operator;
+
+                case Kind.Namespace:
+                    return KnownMonikers.Namespace;
+
+                case Kind.Union:
+                    return KnownMonikers.Union;
+
+                case Kind.VODefine:
+                case Kind.Define:
+                case Kind.Undefine:
+                    return VisibilityMoniker(visibility,
+                        KnownMonikers.ConstantPublic, KnownMonikers.ConstantProtected,
+                        KnownMonikers.ConstantPrivate, KnownMonikers.ConstantInternal);
+
+                case Kind.Command:
+                case Kind.XCommand:
+                case Kind.YCommand:
+                case Kind.Translate:
+                case Kind.XTranslate:
+                case Kind.YTranslate:
+                    return KnownMonikers.MacroPublic;
+
+                case Kind.Include:
+                    return KnownMonikers.Library;
+
+                case Kind.Keyword:
+                    return KnownMonikers.IntellisenseKeyword;
+
+                case Kind.Attribute:
+                    return KnownMonikers.Attribute;
+
+                case Kind.TypeParameter:
+                    return KnownMonikers.Type;
+
+                case Kind.Local:
+                case Kind.Parameter:
+                case Kind.MemVar:
+                case Kind.DbField:
+                case Kind.Undeclared:
+                    return KnownMonikers.LocalVariable;
+
+                default:
+                    return KnownMonikers.Item;
+            }
+        }
+
+        /// <summary>
+        /// Picks one of four visibility-specific monikers based on <paramref name="visibility"/>.
+        /// <see cref="Modifiers.ProtectedInternal"/> maps to the <paramref name="protectedMoniker"/>
+        /// because that is the closest visual equivalent available in the catalog.
+        /// Any other value (including <see cref="Modifiers.None"/> and <see cref="Modifiers.Public"/>)
+        /// returns <paramref name="publicMoniker"/>.
+        /// </summary>
+        private static ImageMoniker VisibilityMoniker(Modifiers visibility,
+            ImageMoniker publicMoniker, ImageMoniker protectedMoniker,
+            ImageMoniker privateMoniker, ImageMoniker internalMoniker)
+        {
+            switch (visibility)
+            {
+                case Modifiers.Protected:
+                case Modifiers.ProtectedInternal:
+                    return protectedMoniker;
+                case Modifiers.Private:
+                    return privateMoniker;
+                case Modifiers.Internal:
+                    return internalMoniker;
+                default:
+                    return publicMoniker;
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -376,22 +449,19 @@ namespace XSharp.LanguageService
     {
         public XSourceEntity Entity { get; }
 
-        public OutlineTreeNode(XSourceEntity entity, string label, ImageSource icon)
+        public OutlineTreeNode(XSourceEntity entity, string label, ImageMoniker moniker)
         {
             Entity = entity;
 
             var panel = new StackPanel { Orientation = Orientation.Horizontal };
-            if (icon != null)
+            panel.Children.Add(new CrispImage
             {
-                panel.Children.Add(new System.Windows.Controls.Image
-                {
-                    Source = icon,
-                    Width = 16,
-                    Height = 16,
-                    Margin = new Thickness(0, 0, 4, 0),
-                    VerticalAlignment = VerticalAlignment.Center
-                });
-            }
+                Moniker = moniker,
+                Width = 16,
+                Height = 16,
+                Margin = new Thickness(0, 0, 4, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            });
             panel.Children.Add(new TextBlock
             {
                 Text = label,
@@ -400,16 +470,6 @@ namespace XSharp.LanguageService
 
             Header = panel;
         }
-    }
-
-    // ---------------------------------------------------------------------------
-    // P/Invoke helper for bitmap conversion
-    // ---------------------------------------------------------------------------
-    internal static class NativeMethods
-    {
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        internal static extern bool DeleteObject(IntPtr hObject);
     }
 }
 

@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
-
+using Microsoft.VisualStudio.Imaging;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -137,6 +137,19 @@ namespace XSharp.LanguageService
 
             foreach (var member in members)
             {
+                switch (member.Kind)
+                {
+                    case Kind.Include:
+                    case Kind.Using:
+                    case Kind.Command:
+                    case Kind.XCommand:
+                    case Kind.YCommand:
+                    case Kind.Translate:
+                    case Kind.XTranslate:
+                    case Kind.YTranslate:
+                        continue;
+
+                }
                 var node = CreateNode(member);
                 if (member is XSourceTypeSymbol nested)
                     AddMemberNodes(node, nested);

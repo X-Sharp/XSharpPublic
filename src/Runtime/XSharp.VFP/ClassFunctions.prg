@@ -5,6 +5,7 @@
 //
 
 USING System.Reflection
+USING System.Collections.Generic
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/addproperty/*" />
 [FoxProFunction("ADDPROPERTY", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -39,6 +40,9 @@ FUNCTION GETPEM( uObject as USUAL, cProperty as STRING) as USUAL
 /// <include file="VFPDocs.xml" path="Runtimefunctions/compobj/*" />
 [FoxProFunction("COMPOBJ", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION CompObj (oExpression1 AS OBJECT, oExpression2 AS OBJECT) AS LOGIC
+    RETURN CompObjHelper(oExpression1, oExpression2, 0)
+
+INTERNAL FUNCTION CompObjHelper(oExpression1 AS OBJECT, oExpression2 AS OBJECT, nDepth AS INT) AS LOGIC
     IF oExpression1 == NULL_OBJECT .AND. oExpression2 == NULL_OBJECT
         RETURN TRUE
     ENDIF
@@ -47,37 +51,36 @@ FUNCTION CompObj (oExpression1 AS OBJECT, oExpression2 AS OBJECT) AS LOGIC
         RETURN FALSE
     ENDIF
 
-    VAR aProps1 := oExpression1:GetType():GetProperties(BindingFlags.Public | BindingFlags.Instance)
-    VAR aProps2 := oExpression2:GetType():GetProperties(BindingFlags.Public | BindingFlags.Instance)
-
-    IF aProps1:Length != aProps2:Length
-        RETURN FALSE
+    // Guard against cyclic object graphs causing infinite recursion.
+    // Returning TRUE (assume equal) at the depth limit mirrors the VFP behaviour of
+    // not recursing indefinitely; real cycles are extremely rare in practice.
+    LOCAL CONST MAX_COMPOBJ_DEPTH := 50 AS INT
+    IF nDepth > MAX_COMPOBJ_DEPTH
+        RETURN TRUE
     ENDIF
 
-    FOREACH VAR oProp1 IN aProps1
-        IF !oProp1:CanRead
+    // Build a name→PropertyInfo map for oExpression2's comparable (readable, non-indexed) properties
+    VAR dict2 := Dictionary<STRING, PropertyInfo>{}
+    FOREACH VAR oP IN oExpression2:GetType():GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        IF oP:CanRead .AND. oP:GetIndexParameters():Length == 0
+            dict2[oP:Name] := oP
+        ENDIF
+    NEXT
+
+    // Iterate oExpression1's comparable properties and compare with O(1) lookup into dict2
+    LOCAL nComparableCount := 0 AS INT
+    FOREACH VAR oProp1 IN oExpression1:GetType():GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        IF !oProp1:CanRead .OR. oProp1:GetIndexParameters():Length > 0
             LOOP
         ENDIF
 
-        IF oProp1:GetIndexParameters():Length > 0
-            LOOP
-        ENDIF
+        nComparableCount++
 
-        LOCAL oProp2 := NULL AS PropertyInfo
-        FOREACH VAR oP IN aProps2
-            IF oP:Name == oProp1:Name
-                oProp2 := oP
-                EXIT
-            ENDIF
-        NEXT
-
-        IF oProp2 == NULL .OR. !oProp2:CanRead
+        IF !dict2:ContainsKey(oProp1:Name)
             RETURN FALSE
         ENDIF
 
-        IF oProp2:GetIndexParameters():Length > 0
-            LOOP
-        ENDIF
+        VAR oProp2 := dict2[oProp1:Name]
 
         VAR uVal1 := oProp1:GetValue(oExpression1)
         VAR uVal2 := oProp2:GetValue(oExpression2)
@@ -97,7 +100,7 @@ FUNCTION CompObj (oExpression1 AS OBJECT, oExpression2 AS OBJECT) AS LOGIC
                     RETURN FALSE
                 ENDIF
             ELSE
-                IF !CompObj(o1, o2)
+                IF !CompObjHelper(o1, o2, nDepth + 1)
                     RETURN FALSE
                 ENDIF
             ENDIF
@@ -105,6 +108,11 @@ FUNCTION CompObj (oExpression1 AS OBJECT, oExpression2 AS OBJECT) AS LOGIC
             RETURN FALSE
         ENDIF
     NEXT
+
+    // If oExpression2 has more comparable properties than oExpression1, they differ
+    IF nComparableCount != dict2:Count
+        RETURN FALSE
+    ENDIF
 
     RETURN TRUE
 

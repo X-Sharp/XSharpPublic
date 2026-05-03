@@ -6,8 +6,6 @@
 
 
 USING System
-USING System.Collections.Generic
-USING System.Text
 USING XUnit
 
 BEGIN NAMESPACE XSharp.VFP.Tests
@@ -25,6 +23,15 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         PROPERTY Name AS STRING AUTO
         PROPERTY Age AS INT AUTO
         PROPERTY Extra AS STRING AUTO
+    END CLASS
+
+    CLASS WithIndexerObj
+        PROPERTY Name AS STRING AUTO
+        PROPERTY SELF[nIndex AS INT] AS INT
+            GET
+                RETURN nIndex
+            END GET
+        END PROPERTY
     END CLASS
 
     CLASS CompObjTests
@@ -97,6 +104,34 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Assert.False(COMPOBJ(o, NULL_OBJECT))
             Assert.False(COMPOBJ(NULL_OBJECT, o))
+        END METHOD
+
+        [Fact, Trait("Category", "ClassAndObject")];
+        METHOD ExtraPropertyReturnsFalseTest AS VOID
+            // oExpression2 has an extra "Extra" property not present on oExpression1
+            VAR o1 := SimpleObj{}
+            o1:Name := "Test"
+            o1:Age := 42
+
+            VAR o2 := ExtraPropObj{}
+            o2:Name := "Test"
+            o2:Age := 42
+            o2:Extra := "Extra"
+
+            Assert.False(COMPOBJ(o1, o2))
+            Assert.False(COMPOBJ(o2, o1))
+        END METHOD
+
+        [Fact, Trait("Category", "ClassAndObject")];
+        METHOD IndexedPropertyIgnoredTest AS VOID
+            // Indexed properties must be ignored; only the regular Name property is compared
+            VAR o1 := WithIndexerObj{}
+            o1:Name := "Test"
+
+            VAR o2 := WithIndexerObj{}
+            o2:Name := "Test"
+
+            Assert.True(COMPOBJ(o1, o2))
         END METHOD
 
     END CLASS

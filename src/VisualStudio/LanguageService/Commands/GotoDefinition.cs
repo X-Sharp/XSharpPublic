@@ -54,9 +54,15 @@ namespace XSharp.LanguageService
                 var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();
-                if (result.Count > 0)
+                if (result.Count == 1)
                 {
                     Goto(result[0], TextView, state);
+                    return;
+                }
+                if (result.Count > 1)
+                {
+                    var window = new GotoDefinitionResultsWindow(result, TextView, state);
+                    window.Show();
                     return;
                 }
             }
@@ -148,7 +154,15 @@ namespace XSharp.LanguageService
                 {
                     if (entity.Name == element.Name)
                     {
-                        return entity;
+                        if (entity is IXMemberSymbol m1 && element is IXMemberSymbol m2)
+                        {
+                            if (m1.Prototype == m2.Prototype)
+                                return entity;
+                        }
+                        else if (entity.FullName == element.FullName)
+                        {
+                            return entity;
+                        }
                     }
                 }
             }

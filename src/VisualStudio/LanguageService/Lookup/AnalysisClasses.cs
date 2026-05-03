@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Adornments;
@@ -26,35 +25,7 @@ namespace XSharp.LanguageService
             symbol = sym;
             Name = sym.FullName;
         }
-        internal ImageMoniker Image
-        {
-            get
-            {
-                switch (symbol.Kind)
-                {
-                    case Kind.Class:
-                        return KnownMonikers.Class;
-                    case Kind.Structure:
-                        return KnownMonikers.Structure;
-                    case Kind.Interface:
-                        return KnownMonikers.Interface;
-                    case Kind.Delegate:
-                        return KnownMonikers.Delegate;
-                    case Kind.Enum:
-                        return KnownMonikers.Enumeration;
-                    case Kind.VOStruct:
-                        return KnownMonikers.ValueType;
-                    case Kind.Union:
-                        return KnownMonikers.Union;
-                    case Kind.Using:
-                    case Kind.Namespace:
-                        return KnownMonikers.Namespace;
-                    case Kind.Keyword:
-                        return KnownMonikers.IntellisenseKeyword;
-                }
-                return KnownMonikers.None;
-            }
-        }
+        internal ImageMoniker Image => symbol.Kind.GetImageMoniker(symbol.Visibility);
         public string Prototype => Name;
 
         public virtual ClassifiedTextRun[] WPFDescription

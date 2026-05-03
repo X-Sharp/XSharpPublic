@@ -61,6 +61,10 @@
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
+    <Compile Include="Commands\GotoDefinitionResultsWindow.xaml.cs">
+      <DependentUpon>GotoDefinitionResultsWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\HelpViewer.cs" />
     <Compile Include="Commands\SaveCommand.cs" />
@@ -220,6 +224,7 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
+    <Compile Include="Controls\KindExtensions.cs" />
     <Compile Include="DocumentOutline\DocumentOutlineControl.cs">
       <DependentUpon>DocumentOutlineControl.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -320,9 +325,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\ProjectPackage\Resources\XSharpProjectImageList.bmp">
-      <Link>Resources\XSharpProjectImageList.bmp</Link>
-    </EmbeddedResource>
     <Content Include="Completion\Notes.txt" />
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
@@ -334,6 +336,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Page Include="Commands\GotoDefinitionResultsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DocumentOutline\DocumentOutlineControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

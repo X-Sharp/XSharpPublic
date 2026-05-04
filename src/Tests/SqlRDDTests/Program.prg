@@ -597,8 +597,6 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
         case "Index:Customers"
             e:Value := "PK,CompanyName,ContactName,Address"
         end switch
-     case SqlRDDEventReason.SeekReturnsSubset
-         e:Value := TRUE
     end switch
     if showEvents
         ? "Event", e:Name, e:Reason:ToString(), e:Value
@@ -889,7 +887,7 @@ FUNCTION TestGsTutor() AS VOID
 
         System.Console.ReadLine()
 
-        // UBLIC VIRTUAL METHOD RecordInfo(kRecInfoType, nRecordNumber, uRecVal) AS USUAL CLIPPER
+        // PUBLIC VIRTUAL METHOD RecordInfo(kRecInfoType, nRecordNumber, uRecVal) AS USUAL CLIPPER
         //var test := DbRecordInfo(DBRI_LOCKED, 3)
 
 //         DbRLock(4)

@@ -528,7 +528,7 @@ end class
             var rdr := (DbDataReader) oPar
             var pos := SELF:GetPos(rdr, nReason:ToString())
             if pos >= 0
-                var num := rdr:GetDecimal(pos)
+                var num := rdr:GetValue(pos)
                 return Convert.ToInt32(num)
             endif
         catch

@@ -169,7 +169,9 @@ internal class SqlDbTableCommandBuilder
             cOrderby := Functions.List2String(CurrentOrder:OrderList)
             if SELF:_oTable:HasRecnoColumn
                 if ! String.IsNullOrEmpty(cOrderby)
-                    cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                    if !cOrderby.Contains(Provider:QuoteIdentifier(self:_oTable:RecnoColumn))
+                        cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                    endif
                 else
                     cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
                 endif

@@ -461,6 +461,7 @@ partial class SQLRDD inherit Workarea
                 self:DataTable:RejectChanges()
             endif
             _updatedRows:Clear()
+            // TODO: thomas optimize. Change reccount when adding or deleting a row above instead of reloading data from DB with _GetRecCount
             self:_GetRecCount()
         endif
         return lOk
@@ -641,8 +642,10 @@ partial class SQLRDD inherit Workarea
     OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
 	    LOCAL result AS LOGIC
 		TRY
-			VAR nRec := Convert.ToUInt32( oRec )
-			result := SELF:GoTo( (DWORD) nRec )
+            VAR nRec := Convert.ToUInt32( oRec )
+            if nRec != RowNumber
+                result := SELF:GoTo( (DWORD) nRec )
+            endif
 		CATCH ex AS Exception
 			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "SQLRDD.GoToId",FALSE)
 			result := FALSE

@@ -94,6 +94,7 @@ FUNCTION __SqlInsertValues(sTable as STRING, aFields as ARRAY, aValues as ARRAY)
     DbUnLock()
     RETURN TRUE
 
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlAlterTable(sCommand as STRING) AS LOGIC
     var oContext := FoxEmbeddedSQL.ParseSqlAlter(sCommand)
     if (oContext != NULL)
@@ -101,6 +102,7 @@ FUNCTION __SqlAlterTable(sCommand as STRING) AS LOGIC
     endif
     RETURN FALSE
 
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlCreateCursor(sCommand as STRING) AS LOGIC
     var oContext := FoxEmbeddedSQL.ParseSqlCreate(sCommand, TRUE)
     if (oContext != NULL)
@@ -108,7 +110,7 @@ FUNCTION __SqlCreateCursor(sCommand as STRING) AS LOGIC
     endif
     RETURN FALSE
 
-
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlCreateTable(sCommand as STRING) AS LOGIC
     // FoxPro creates the table and keeps it open
     var oContext := FoxEmbeddedSQL.ParseSqlCreate(sCommand, FALSE)

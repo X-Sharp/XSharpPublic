@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN
 
         VIRTUAL METHOD GetValue() AS OBJECT
-            RETURN NIL
+            RETURN NULL
 
         VIRTUAL METHOD PutValue(oValue AS OBJECT) AS LOGIC
             RETURN FALSE

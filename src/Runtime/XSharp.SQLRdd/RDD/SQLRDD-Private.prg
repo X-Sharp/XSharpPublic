@@ -601,16 +601,20 @@ partial class SQLRDD
         return result
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
-        // Brute walk
-        SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
-        var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
-        var iResult := Convert.ToInt64(result)
-        // shouldn't this be ToUInt32?
-        
-        // determine correct page
-        SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
-        SELF:_ClearTable()
-        SELF:DataTable := SELF:_ReadTable("")
+
+        if SELF:DataTable:Rows:Count < 1
+            // Brute walk
+            SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
+            var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+            var iResult := Convert.ToInt64(result)
+            // shouldn't this be ToUInt32?
+
+            // determine correct page
+            SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
+            SELF:_ClearTable()
+            SELF:DataTable := SELF:_ReadTable("")
+        end if
+
         // locate the row in the page
         SELF:RowNumber := 1
         DO WHILE SELF:RowNumber <= SELF:DataTable:Rows:Count
@@ -620,6 +624,7 @@ partial class SQLRDD
             SELF:RowNumber+= 1
         ENDDO
         RETURN FALSE
+
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE
         var nCount := SELF:DataTable:Rows:Count

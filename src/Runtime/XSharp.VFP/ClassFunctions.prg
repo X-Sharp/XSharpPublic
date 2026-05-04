@@ -76,11 +76,9 @@ INTERNAL FUNCTION CompObjHelper(oExpression1 AS OBJECT, oExpression2 AS OBJECT, 
 
         nComparableCount++
 
-        IF !dict2:ContainsKey(oProp1:Name)
+        IF !dict2:TryGetValue(oProp1:Name, OUT VAR oProp2)
             RETURN FALSE
         ENDIF
-
-        VAR oProp2 := dict2[oProp1:Name]
 
         VAR uVal1 := oProp1:GetValue(oExpression1)
         VAR uVal2 := oProp2:GetValue(oExpression2)
@@ -93,19 +91,16 @@ INTERNAL FUNCTION CompObjHelper(oExpression1 AS OBJECT, oExpression2 AS OBJECT, 
             RETURN FALSE
         ENDIF
 
-        IF uVal1 IS OBJECT VAR o1 .AND. uVal2 IS OBJECT VAR o2
-            VAR oType := o1:GetType()
-            IF oType:IsValueType .OR. oType == typeof(STRING)
-                IF !uVal1:Equals(uVal2)
-                    RETURN FALSE
-                ENDIF
-            ELSE
-                IF !CompObjHelper(o1, o2, nDepth + 1)
-                    RETURN FALSE
-                ENDIF
+        VAR oType := uVal1:GetType()
+
+        IF oType:IsValueType .OR. oType == typeof(STRING)
+            IF !uVal1:Equals(uVal2)
+                RETURN FALSE
             ENDIF
-        ELSEIF !uVal1:Equals(uVal2)
-            RETURN FALSE
+        ELSE
+            IF !CompObjHelper(uVal1, uVal2, nDepth + 1)
+                RETURN FALSE
+            ENDIF
         ENDIF
     NEXT
 

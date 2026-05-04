@@ -12,6 +12,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
     CLASS SimpleObj
         PROPERTY Name AS STRING AUTO
         PROPERTY Age AS INT AUTO
+        EXPORT Salary AS DECIMAL
     END CLASS
 
     CLASS NestedObj
@@ -23,6 +24,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         PROPERTY Name AS STRING AUTO
         PROPERTY Age AS INT AUTO
         PROPERTY Extra AS STRING AUTO
+        EXPORT Salary AS DECIMAL
     END CLASS
 
     CLASS WithIndexerObj
@@ -44,6 +46,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             VAR o := SimpleObj{}
             o:Name := "Test"
             o:Age := 42
+            o:Salary := 1000.00m
             Assert.True(COMPOBJ(o, o))
         END METHOD
 
@@ -52,10 +55,12 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             VAR o1 := SimpleObj{}
             o1:Name := "Test"
             o1:Age := 42
+            o1:Salary := 1000.00m
 
             VAR o2 := SimpleObj{}
             o2:Name := "Test"
             o2:Age := 42
+            o2:Salary := 1000.00m
 
             Assert.True(COMPOBJ(o1, o2))
         END METHOD
@@ -66,11 +71,12 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             o1 := SimpleObj{}
             o1:Name := "Test"
             o1:Age := 42
+            o1:Salary := 1000.00m
 
             o2 := SimpleObj{}
             o2:Name := "Test"
             o2:Age := 99
-
+            o2:Salary := 1000.00m
             Assert.False(COMPOBJ(o1, o2))
         END METHOD
 
@@ -83,12 +89,13 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             o1:Child := SimpleObj{}
             o1:Child:Name := "X"
             o1:Child:Age := 1
-
+            o1:Child:Salary := 1000.00m
             o2 := NestedObj{}
             o2:Title := "A"
             o2:Child := SimpleObj{}
             o2:Child:Name := "X"
             o2:Child:Age := 1
+            o2:Child:Salary := 1000.00m
 
             Assert.True(COMPOBJ(o1, o2))
         END METHOD
@@ -112,11 +119,13 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             VAR o1 := SimpleObj{}
             o1:Name := "Test"
             o1:Age := 42
-
+            o1:Salary := 1000.00m
             VAR o2 := ExtraPropObj{}
             o2:Name := "Test"
             o2:Age := 42
+            o2:Salary := 1000.00m
             o2:Extra := "Extra"
+
 
             Assert.False(COMPOBJ(o1, o2))
             Assert.False(COMPOBJ(o2, o1))

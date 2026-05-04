@@ -59,29 +59,21 @@ INTERNAL FUNCTION CompObjHelper(oExpression1 AS OBJECT, oExpression2 AS OBJECT, 
         RETURN TRUE
     ENDIF
 
-    // Build a name→PropertyInfo map for oExpression2's comparable (readable, non-indexed) properties
-    VAR dict2 := Dictionary<STRING, PropertyInfo>{}
-    FOREACH VAR oP IN oExpression2:GetType():GetProperties(BindingFlags.Public | BindingFlags.Instance)
-        IF oP:CanRead .AND. oP:GetIndexParameters():Length == 0
-            dict2[oP:Name] := oP
-        ENDIF
-    NEXT
+    var listIVars1 := IvarList(oExpression1)
+    var listIVars2 := IvarList(oExpression2)
 
     // Iterate oExpression1's comparable properties and compare with O(1) lookup into dict2
     LOCAL nComparableCount := 0 AS INT
-    FOREACH VAR oProp1 IN oExpression1:GetType():GetProperties(BindingFlags.Public | BindingFlags.Instance)
-        IF !oProp1:CanRead .OR. oProp1:GetIndexParameters():Length > 0
-            LOOP
-        ENDIF
+    FOREACH sym AS SYMBOL in listIVars1
 
         nComparableCount++
 
-        IF !dict2:TryGetValue(oProp1:Name, OUT VAR oProp2)
+        IF AScan(listIVars2, sym) == 0
             RETURN FALSE
         ENDIF
 
-        VAR uVal1 := oProp1:GetValue(oExpression1)
-        VAR uVal2 := oProp2:GetValue(oExpression2)
+        VAR uVal1 := (OBJECT) IVarGet(oExpression1, sym)
+        VAR uVal2 := (OBJECT) IVarGet(oExpression2, sym)
 
         IF uVal1 == NULL .AND. uVal2 == NULL
             LOOP
@@ -105,7 +97,7 @@ INTERNAL FUNCTION CompObjHelper(oExpression1 AS OBJECT, oExpression2 AS OBJECT, 
     NEXT
 
     // If oExpression2 has more comparable properties than oExpression1, they differ
-    IF nComparableCount != dict2:Count
+    IF nComparableCount != ALen(listIVars2)
         RETURN FALSE
     ENDIF
 

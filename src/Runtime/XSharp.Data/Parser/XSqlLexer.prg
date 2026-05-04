@@ -94,6 +94,15 @@ CLASS XSqlLexer INHERIT XLexer
                         t := XTokenType.INCOMPLETE_ID
                     ENDIF
                     strValue := SELF:_Source:Substring(start, SELF:_index - start)
+                CASE XTokenType.SQUOTE
+                    t := XTokenType.STRING_CONST
+                    DO WHILE !SELF:Reach(c'''')
+                        NOP
+                    ENDDO
+                    IF !SELF:Expect(c'''')
+                        t := XTokenType.INVALID_STRING_CONST
+                    ENDIF
+                    strValue := SELF:_Source:Substring(start, SELF:_index - start)
                 CASE XTokenType.LBRKT
                     t := XTokenType.ID
                     DO WHILE !SELF:Reach(c']')

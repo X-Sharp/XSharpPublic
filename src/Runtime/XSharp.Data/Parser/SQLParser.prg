@@ -270,16 +270,16 @@ PARTIAL CLASS SQLParser
         IF !lTable .and. !SELF:Expect(XTokenType.CURSOR)
             return FALSE
         endif
-        if !SELF:ExpectAndGet(XTokenType.ID, out id)
+        IF ! SELF:ParseTableName(out var tableName)
             RETURN FALSE
         ENDIF
+        table:Name := tableName
         if lTable .and. SELF:Expect("NAME")
             table:LongName := SELF:ConsumeAndGet():Text
         ENDIF
         IF lTable .and. SELF:Expect("FREE")
             table:Free := TRUE
         ENDIF
-        table:Name := id:Text
         IF SELF:Expect(XTokenType.CODEPAGE)
             nCP := SELF:ConsumeAndGet()
             IF Int32.TryParse( nCP:Text, out var cp)
@@ -343,6 +343,44 @@ PARTIAL CLASS SQLParser
         next
 
         RETURN TRUE
+
+    METHOD ParseTableName( name OUT STRING) AS LOGIC
+        name := ""
+        IF SELF:ExpectAndGet(XTokenType.ID, out var id)
+            name := id:Text
+            if (name:StartsWith('"') .and. name:EndsWith('"'))
+                name := name:Substring(1, name:Length - 2)
+            ENDIF
+            RETURN TRUE
+        ENDIF
+        IF SELF:ExpectAndGet(XTokenType.STRING_CONST, out var str)
+            name := str:Text
+            RETURN TRUE
+        ENDIF
+        IF SELF:ExpectAndGet(XTokenType.LPAREN, out var LParen)
+            IF SELF:ParseTableName(out name)
+                IF SELF:Expect(XTokenType.RPAREN)
+                    // name is now the name of a local or memvar
+                    VAR uName := __VarGetSafe(name)
+                    if IsString(uName)
+                        name := (STRING) uName
+                        RETURN TRUE
+                    else
+                        SELF:SetError("Variable "+name+" does not contain a string value", LParen)
+                        RETURN FALSE
+                    ENDIF
+                ELSE
+                    SELF:SetError("Expected ')'", SELF:Lt1)
+                    RETURN FALSE
+                ENDIF
+            ELSE
+                // error should already be set by recursive call
+                RETURN FALSE
+            ENDIF
+        ENDIF
+        SELF:SetError("Expected TableName", SELF:Lt1 )
+        RETURN FALSE
+
 
     METHOD ParseColumn(oColumns as List<FoxColumnContext>, lTable as LOGIC) AS LOGIC
         local name      as XToken
@@ -479,20 +517,36 @@ PARTIAL CLASS SQLParser
             return FALSE
         ENDIF
         IF SELF:Matches(XTokenType.ID)
-            stmt:TableName := SELF:ParseTableName()
+            IF SELF:ParseTableName( OUT VAR sName)
+                stmt:TableList:Add(sName)
+            ELSE
+                SELF:SetError("Unexpected token ", SELF:Lt1)
+                RETURN FALSE
+            ENDIF
+
+            stmt:TableName := sName
         ENDIF
         IF SELF:Expect(XTokenType.FROM)
             IF SELF:Expect("FORCE")
                 stmt:IsForce := TRUE
             ENDIF
             DO WHILE SELF:Matches(XTokenType.ID)
-                var sName := SELF:ParseTableName()
-                stmt:TableList:Add(sName)
+                IF SELF:ParseTableName( OUT VAR sName)
+                    stmt:TableList:Add(sName)
+                ELSE
+                    SELF:SetError("Unexpected token ", SELF:Lt1)
+                    RETURN FALSE
+                ENDIF
                 SELF:Expect(XTokenType.COMMA)
             ENDDO
         ELSEIF SELF:Matches(XTokenType.JOIN)
             DO WHILE SELF:Matches(XTokenType.ID)
-                var sName := SELF:ParseTableName()
+                IF SELF:ParseTableName( OUT VAR sName)
+                    stmt:TableList:Add(sName)
+                ELSE
+                    SELF:SetError("Unexpected token ", SELF:Lt1)
+                    RETURN FALSE
+                ENDIF
                 stmt:JoinList:Add(sName)
                 SELF:Expect(XTokenType.COMMA)
             ENDDO
@@ -517,14 +571,14 @@ PARTIAL CLASS SQLParser
         RETURN true
 
 
-    METHOD ParseTableName() AS STRING
-        local sTable as STRING
-        sTable := SELF:ConsumeAndGetAny(XTokenType.ID):Text
-        IF SELF:La1 == XTokenType.EXCLAMATIONMARK .and. SELF:La2 == XTokenType.ID
-            SELF:Consume()
-            sTable += "!"+self:ConsumeAndGetText()
-        ENDIF
-        RETURN sTable
+    // METHOD ParseTableName() AS STRING
+        // local sTable as STRING
+        // sTable := SELF:ConsumeAndGetAny(XTokenType.ID):Text
+        // IF SELF:La1 == XTokenType.EXCLAMATIONMARK .and. SELF:La2 == XTokenType.ID
+            // SELF:Consume()
+            // sTable += "!"+self:ConsumeAndGetText()
+        // ENDIF
+        // RETURN sTable
 
     METHOD ParseUpdateStatement(stmt out FoxUpdateContext) AS LOGIC
         /*
@@ -559,9 +613,12 @@ PARTIAL CLASS SQLParser
                 SELF:SetError("Expected UPDATE")
                 return FALSE
             ENDIF
-            IF SELF:Matches(XTokenType.ID)
-                stmt:TableName := SELF:ParseTableName()
+            IF !SELF:ParseTableName( OUT VAR tableName)
+                SELF:SetError("Unexpected token ", SELF:Lt1)
+                RETURN FALSE
             ENDIF
+
+            stmt:TableName := tableName
             IF ! SELF:Expect(XTokenType.SET)
                 SELF:SetError("Expected SET")
                 return FALSE
@@ -589,8 +646,11 @@ PARTIAL CLASS SQLParser
                     stmt:IsForce := TRUE
                 ENDIF
                 DO WHILE SELF:Matches(XTokenType.ID)
-                    var tableName := SELF:ParseTableName()
-                    stmt:TableList:Add(tableName)
+                    IF !SELF:ParseTableName( OUT VAR ftableName)
+                        SELF:SetError("Unexpected token ", SELF:Lt1)
+                        RETURN FALSE
+                    ENDIF
+                    stmt:TableList:Add(ftableName)
                     IF ! SELF:Expect(XTokenType.COMMA)
                         EXIT
                     ENDIF
@@ -598,11 +658,14 @@ PARTIAL CLASS SQLParser
             ELSEIF SELF:Expect(XTokenType.JOIN)
                 IF SELF:Matches(XTokenType.ID)
                     DO WHILE SELF:Matches(XTokenType.ID)
-                        var tableName := SELF:ParseTableName()
-                        IF SELF:Expect(XTokenType.AS) .and. SELF:Matches(XTokenType.ID)
-                            tableName += "->"+SELF:ConsumeAndGetText()
+                        IF !SELF:ParseTableName( OUT VAR jtableName)
+                            SELF:SetError("Unexpected token ", SELF:Lt1)
+                            RETURN FALSE
                         ENDIF
-                        stmt:JoinList:Add(tableName)
+                        IF SELF:Expect(XTokenType.AS) .and. SELF:Matches(XTokenType.ID)
+                            jtableName += "->"+SELF:ConsumeAndGetText()
+                        ENDIF
+                        stmt:JoinList:Add(jtableName)
                         IF ! SELF:Expect(XTokenType.COMMA)
                             EXIT
                         ENDIF

@@ -987,7 +987,7 @@ INTERNAL CLASS FlexArea
         CASE FlexFieldType.StringEmpty
             RETURN ""
         CASE FlexFieldType.Illegal
-            RETURN NIL
+            RETURN NULL
         END SWITCH
         RETURN bData
 

@@ -1355,7 +1355,7 @@ namespace XSharp.Project
         public XSharpPackageReferenceContainerNode GetPackageReferenceContainerNode()
         {
             var node = FindChild(XSharpPackageReferenceContainerNode.PackageReferencesNodeVirtualName) as XSharpPackageReferenceContainerNode;
-            if (node == null )
+            if (node == null)
             {
                 var referenceContainerNode = GetReferenceContainer() as HierarchyNode;
                 node = new XSharpPackageReferenceContainerNode(this);
@@ -1574,7 +1574,7 @@ namespace XSharp.Project
                 }
                 _taskListManager.Refresh();
             }
-            RefreshIncludeFiles();
+            ThreadUtilities.runSafe(RefreshIncludeFiles);
 
         }
 
@@ -1637,14 +1637,10 @@ namespace XSharp.Project
             finally
             {
                 this.EventTriggeringFlag = oldEvents;
-                ThreadUtilities.runSafe(() =>
+                if (hasChanged)
                 {
-                    if (hasChanged)
-                    {
-                        this.OnItemsAppended(includeNode);
-                    }
-
-                });
+                    this.OnItemsAppended(includeNode);
+                }
             }
         }
         private void OnFileWalkComplete(XFile xfile)
@@ -1837,7 +1833,7 @@ namespace XSharp.Project
                 {
                     switch (item.ItemType.ToLower())
                     {
-                        case "reference" when ! isSdk:
+                        case "reference" when !isSdk:
                             allReferenceAssemblies.AddUnique(item);
                             break;
                         case "referencepath" when isSdk:

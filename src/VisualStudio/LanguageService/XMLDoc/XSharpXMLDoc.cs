@@ -27,6 +27,7 @@ namespace XSharp.LanguageService
         static IVsXMLMemberIndexService _XMLMemberIndexService ;
         static string coreLoc ;
         static IVsXMLMemberIndex coreIndex ;
+        static readonly object _initLock = new object();
         static XSharpXMLDocTools()
         {
             _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
@@ -46,8 +47,12 @@ namespace XSharp.LanguageService
 
         static bool GetIndex()
         {
-            if (_XMLMemberIndexService == null)
+            if (_XMLMemberIndexService != null)
+                return true;
+            lock (_initLock)
             {
+                if (_XMLMemberIndexService != null)
+                    return true;
                 ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                 {
                     _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService, IVsXMLMemberIndexService>();

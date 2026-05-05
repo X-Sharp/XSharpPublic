@@ -62,8 +62,8 @@ namespace XSharp.LanguageService
         private readonly List<String> _xtraKeywords;
         private XSharpLineState _lineState;
         private XSharpLineKeywords _lineKeywords;
-        private bool IsLexing = false;
-        private bool IsStarted = false;
+        private volatile bool IsLexing = false;
+        private volatile bool IsStarted = false;
         private bool _needsKeywords = false;
         private bool forceRepaint = false;
 

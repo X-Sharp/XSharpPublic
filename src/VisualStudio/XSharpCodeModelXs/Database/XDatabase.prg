@@ -1973,6 +1973,30 @@ STATIC CLASS XDatabase
         RETURN result
 
 
+    STATIC METHOD GetProjectMembersLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+        VAR result := List<XDbResult>{}
+        CHECKIFOPEN result
+        var sLike := sName + "%"
+        VAR stmt := "Select * from ProjectMembers where name like $name AND typeName != $globalname AND IdProject in ("+sProjectIds+")"
+        BEGIN LOCK oConn
+            TRY
+                USING VAR oCmd := CreateCommand(stmt, oConn)
+                oCmd:Parameters:AddWithValue("$name", sLike)
+                oCmd:Parameters:AddWithValue("$globalname", XLiterals.GlobalName)
+                USING VAR rdr := oCmd:ExecuteReader()
+                DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
+                    var mem := CreateMemberInfo(rdr)
+                    if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                        result:Add(mem)
+                    endif
+                ENDDO
+            CATCH e AS Exception
+                XSettings.Exception(e)
+            END TRY
+        END LOCK
+        Log(i"GetProjectMembersLike '{sName}' returns {result.Count} matches")
+        RETURN result
+
     STATIC METHOD GetFunctions( nFileId AS Int64, nProjectId as Int64) AS IList<XDbResult>
         VAR result := List<XDbResult>{}
         CHECKIFOPEN result

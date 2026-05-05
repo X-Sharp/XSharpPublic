@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,13 +19,14 @@ namespace XSharp.Project
     [Command(PackageIds.idEditProjectFile)]
     internal sealed class CommandEditProjectFile : BaseCommand<CommandEditProjectFile>
     {
-        static Dictionary<string, string> tempProjectFiles; // key is the project file, value is the temp file
+        static ConcurrentDictionary<string, string> tempProjectFiles; // key is the project file, value is the temp file
         static string tempProjectDir;
+        static bool _eventsSubscribed = false;
         static CommandEditProjectFile()
         {
             tempProjectDir = Path.Combine(Path.GetTempPath(), "XSharp.Intellisense");
             Directory.CreateDirectory(tempProjectDir);
-            tempProjectFiles = new Dictionary<string, string>();
+            tempProjectFiles = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         protected override void BeforeQueryStatus(EventArgs e)
         {
@@ -38,8 +40,14 @@ namespace XSharp.Project
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             var project = await VS.Solutions.GetActiveProjectAsync();
-            VS.Events.DocumentEvents.Saved += DocumentEvents_Saved;
-            VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
+            // Unsubscribe before subscribing to prevent duplicate registrations
+            // if ExecuteAsync is called multiple times.
+            if (!_eventsSubscribed)
+            {
+                VS.Events.DocumentEvents.Saved += DocumentEvents_Saved;
+                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
+                _eventsSubscribed = true;
+            }
 
 
             var projectNode = XSharpProjectNode.FindProject(project.FullPath);
@@ -82,17 +90,25 @@ namespace XSharp.Project
 
         private void DocumentEvents_Closed(string obj)
         {
+            // Find the matching key without modifying the collection during iteration.
+            string keyToRemove = null;
             foreach (var item in tempProjectFiles)
             {
-                if ( item.Value == obj)
+                if (item.Value == obj)
                 {
-
-                    tempProjectFiles.Remove(item.Key);
+                    keyToRemove = item.Key;
+                    break;
+                }
+            }
+            if (keyToRemove != null && tempProjectFiles.TryRemove(keyToRemove, out _))
+            {
+                File.Delete(obj);
+                // Unsubscribe event handlers when there are no more tracked files.
+                if (tempProjectFiles.IsEmpty)
+                {
                     VS.Events.DocumentEvents.Closed -= DocumentEvents_Closed;
                     VS.Events.DocumentEvents.Saved -= DocumentEvents_Saved;
-                    File.Delete(item.Value);
-                    break;
-
+                    _eventsSubscribed = false;
                 }
             }
         }

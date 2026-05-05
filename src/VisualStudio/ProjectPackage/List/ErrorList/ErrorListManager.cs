@@ -27,6 +27,7 @@ namespace XSharp.Project
         static ErrorListProvider _listprovider = null;
         static IErrorList _errorList = null;
         static ITableManager _manager = null;
+        static readonly object _initLock = new object();
 
 
         static ErrorListManager()
@@ -39,11 +40,16 @@ namespace XSharp.Project
         {
             if (_errorList != null)
                 return;
-            _errorList = XSharpProjectPackage.XInstance.ErrorList;
-            if (_errorList != null)
+            lock (_initLock)
             {
-                _manager = _errorList.TableControl.Manager;
-                _listprovider = new ErrorListProvider(_manager);
+                if (_errorList != null)
+                    return;
+                _errorList = XSharpProjectPackage.XInstance.ErrorList;
+                if (_errorList != null)
+                {
+                    _manager = _errorList.TableControl.Manager;
+                    _listprovider = new ErrorListProvider(_manager);
+                }
             }
         }
         internal ErrorListManager(XSharpProjectNode node) : base(node)

@@ -229,7 +229,11 @@ BEGIN NAMESPACE VFPXPorterLib
 			LOCAL c AS Char
 			LOCAL amp := false AS LOGIC
 			LOCAL inSearch AS INT
-			LOCAL ignore := false AS LOGIC
+			// quoteChar tracks the delimiter of the current open string literal (\0 = not in string).
+			// VFP supports three string delimiters: "...", '...' and [...] (closes with ]).
+			// Using a single matching-delimiter approach prevents apostrophes inside "it's" from
+			// prematurely closing the string, which the old toggle-on-any-quote logic got wrong.
+			LOCAL quoteChar := (CHAR)0 AS CHAR
 			// Check for line starting with * or &&
 			VAR tmp := line:TrimStart()
 			IF tmp:StartsWith("*") .OR. tmp:StartsWith("&&")
@@ -249,16 +253,19 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 					// Get one char
 					c := line[ pos ]
-					// Simple Quote, Double Quotes ?? 34/39
-					IF c:CompareTo('"')==0 .OR. (int)c==39 // '"' .OR. "'"
-						if !ignore
-							ignore := true
-						else
-							ignore := false
-						endif
+					// String literal detection: track opening delimiter and only close on its match.
+					// '[' opens a bracket string that closes with ']'.
+					IF c:CompareTo('"')==0 .OR. (INT)c==39 .OR. c:CompareTo('[')==0 .OR. c:CompareTo(']')==0
+						IF quoteChar == (CHAR)0
+							IF c:CompareTo(']') != 0  // ']' alone cannot open a string
+								quoteChar := IIF( c:CompareTo('[')==0, ']', c )
+							ENDIF
+						ELSEIF c == quoteChar
+							quoteChar := (CHAR)0
+						ENDIF
 					ENDIF
-					IF ignore
-						loop
+					IF quoteChar != (CHAR)0
+						LOOP
 					ENDIF
 					// Start of Comment ?
 					IF ( c:CompareTo('&')==0 )

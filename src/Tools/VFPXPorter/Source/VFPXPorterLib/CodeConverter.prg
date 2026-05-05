@@ -91,15 +91,9 @@ BEGIN NAMESPACE VFPXPorterLib
 		PUBLIC METHOD ProcessProcedure( sourceCode AS STRING, procedureName AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
 			SELF:CheckForProcedureName(procedureName)
-			//
-			
-			// We will enumerate the lines of source code
-			// and change the "perspective" : FoxPro handler is from the Control perspective; .NET are from the Form perspective
-			// -> change this.Parent to this.
-			// -> this. to this.<theNameOfTheControl> if needed
-			// -> ThisForm has to be Property on the new Form Class that points to SELF
-			// WARNING !! This will be done for EventHandlers that are referring to OwnerControl instead of Form
-			// Try to avoid using it, better to support these through NEW PROPERTY etc
+			IF SELF:_convertStatement
+				SELF:ChangeStatement()
+			ENDIF
 		PRIVATE METHOD ChangeThisAndParent( FoxClassName := "" AS STRING, Name := "" AS STRING ) AS VOID
 			LOCAL line AS STRING
 			LOCAL startLine := 0 AS INT

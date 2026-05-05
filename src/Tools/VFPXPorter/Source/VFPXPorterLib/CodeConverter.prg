@@ -94,6 +94,19 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
+
+		// Converts a block of menu handler code: applies statement→method-call conversions
+		// and VFPElements substitutions (THISFORM./THISFORMSET.) without the form-perspective
+		// logic that ProcessEvent uses. Caller sets Source on return.
+		PUBLIC METHOD ProcessMenuCode( sourceCode AS STRING ) AS VOID
+			SELF:Source := ReadSource(sourceCode)
+			IF SELF:_convertStatement
+				SELF:ChangeStatement()
+			ENDIF
+			IF SELF:_convertThisObject
+				SELF:ChangeThisObject()
+			ENDIF
+
 		PRIVATE METHOD ChangeThisAndParent( FoxClassName := "" AS STRING, Name := "" AS STRING ) AS VOID
 			LOCAL line AS STRING
 			LOCAL startLine := 0 AS INT

@@ -27,6 +27,7 @@ BEGIN NAMESPACE VFPXPorterLib
         PROPERTY ConvertTable AS STRING GET SELF:GetTemplateFromCache( ConvertTableFile )
 
         PRIVATE _templateCache AS Dictionary<STRING, STRING>
+        PRIVATE _menuConverter AS CodeConverter
 
         /// <summary>
         /// The List of Items that exist in the current file (Form/Library)
@@ -159,11 +160,6 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROTECT METHOD ExportSingleFile() AS VOID
             LOCAL dest AS StreamWriter
-            //LOCAL newList AS List<MNXItem>
-            //newList := CloneItemList( SELF:Items )
-            // Load Convertion table
-            LOCAL typeList AS Dictionary<STRING,STRING[]>
-            typeList := DeserializeJSONSimpleArray( SELF:ConvertTable )
             // The File to be created
             LOCAL destFile AS STRING
             destFile := Path.GetFileName( SELF:Settings:ItemsPath )
@@ -171,32 +167,23 @@ BEGIN NAMESPACE VFPXPorterLib
             destFile := Path.ChangeExtension( destFile, ".prg")
             dest := StreamWriter{ destFile }
             SELF:GeneratedFiles:Add( GeneratedFile{destFile})
-            // The Code template file
-            LOCAL code AS STRING
-            code := SELF:MenuContainer
             // Build replacements dictionary for Menu template
             VAR menuReplacements := Dictionary<STRING, STRING>{}
             menuReplacements["MenuName"] := Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath)
-            // The declaration part to be generated
-            LOCAL declaration AS STRING
-            // Create the List of Declaration(s)
-            declaration := SELF:ProcessDeclarations( SELF:Items, typeList )
+            //
+            LOCAL initMenu AS STRING
+            initMenu := SELF:ProcessInits( SELF:Items )
             IF !SELF:Canceled
-                menuReplacements["MenuDeclaration"] := declaration
-                LOCAL initMenu AS STRING
-                initMenu := ""
-                initMenu := SELF:ProcessInits( SELF:Items, typeList )
+                menuReplacements["MenuInit"] := initMenu
+                LOCAL events AS STRING
+                events := ""
+                events := SELF:ProcessEvents( SELF:Items )
                 IF !SELF:Canceled
-                    menuReplacements["MenuInit"] := initMenu
-                    LOCAL events AS STRING
-                    events := ""
-                    events := SELF:ProcessEvents( SELF:Items )
-                    IF !SELF:Canceled
-                        menuReplacements["MenuCode"] := events
-                        //
-                        code := SELF:ReplaceAndValidate(SELF:MenuContainer, "MenuContainer", menuReplacements)
-                        dest:Write( code )
-                    ENDIF
+                    menuReplacements["MenuCode"] := events
+                    //
+                    LOCAL code AS STRING
+                    code := SELF:ReplaceAndValidate(SELF:MenuContainer, "MenuContainer", menuReplacements)
+                    dest:Write( code )
                 ENDIF
             ENDIF
             //
@@ -204,28 +191,79 @@ BEGIN NAMESPACE VFPXPorterLib
             RETURN
 
         PROTECTED METHOD ProcessAttachedCode() AS LOGIC
-            // The TopLevel is the ToolStripMenu
+            // ConvertHandlerCode recurses into Childs, so only iterate top-level pads here
             FOREACH item AS MNXItem IN SELF:Items
-                //
-                FOREACH subItem AS MNXItem IN item:Childs
-                    IF SELF:Canceled
-                        EXIT
-                    ENDIF
-                    SELF:ConvertHandlerCode( subItem )
-                NEXT
                 IF SELF:Canceled
                     EXIT
                 ENDIF
-                // Don't forget to process the Item itself
                 SELF:ConvertHandlerCode( item )
             NEXT
             RETURN	!SELF:Canceled
 
-        PROTECTED METHOD ConvertHandlerCode( subItem AS MNXItem ) AS VOID
-            // Code in COMMAND
-            // Code in PROCEDURE
-            // Code in SETUP
-            // Code in CLEANUP
+        PROTECTED METHOD ConvertHandlerCode( item AS MNXItem ) AS VOID
+            // Lazy-init the code converter for menu handler code
+            IF SELF:_menuConverter == NULL
+                LOCAL sttmnts AS List<STRING>
+                sttmnts := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.StatementsFile) )
+                LOCAL vfpElts AS Dictionary<STRING,STRING>
+                vfpElts := JsonConvert.DeserializeObject<Dictionary<STRING,STRING>>( File.ReadAllText(XPorterSettings.VFPElementsFile) )
+                // Only apply THISFORM/THISFORMSET in menu context — not this./Parent. (no "this" object in menus)
+                LOCAL menuElts AS Dictionary<STRING,STRING>
+                menuElts := Dictionary<STRING,STRING>{}
+                FOREACH VAR elt IN vfpElts
+                    IF elt:Key == "thisform." .OR. elt:Key == "thisformset."
+                        menuElts:Add(elt:Key, elt:Value)
+                    ENDIF
+                NEXT
+                SELF:_menuConverter := CodeConverter{ FALSE, FALSE, TRUE, TRUE, FALSE }
+                SELF:_menuConverter:Statements := sttmnts
+                SELF:_menuConverter:VFPElements := menuElts
+            ENDIF
+            // Convert COMMAND (single-line inline VFP code)
+            IF !String.IsNullOrEmpty(item:COMMAND)
+                SELF:_menuConverter:ProcessMenuCode(item:COMMAND)
+                item:COMMAND := String.Join(Environment.NewLine, SELF:_menuConverter:Source:ToArray())
+            ENDIF
+            // Convert PROCEDURE (multi-line block — strip PROCEDURE/ENDPROC wrapper first)
+            IF !String.IsNullOrEmpty(item:PROCEDURE)
+                SELF:_menuConverter:ProcessMenuCode(SELF:StripProcedureWrapper(item:PROCEDURE))
+                item:PROCEDURE := String.Join(Environment.NewLine, SELF:_menuConverter:Source:ToArray())
+            ENDIF
+            // Recurse into nested sub-menu children
+            FOREACH child AS MNXItem IN item:Childs
+                SELF:ConvertHandlerCode(child)
+            NEXT
+
+        PRIVATE METHOD StripProcedureWrapper( code AS STRING ) AS STRING
+            LOCAL lines AS List<STRING>
+            lines := ReadSource(code)
+            IF lines:Count == 0
+                RETURN code
+            ENDIF
+            // Strip leading PROCEDURE/FUNCTION declaration line
+            VAR firstUp := lines[0]:Trim():ToUpper()
+            IF firstUp:StartsWith("PROCEDURE ") .OR. firstUp:StartsWith("FUNCTION ")
+                lines:RemoveAt(0)
+            ENDIF
+            // Strip trailing blank lines, then the closing RETURN/ENDPROC/ENDFUNC
+            DO WHILE lines:Count > 0
+                VAR lastTrimmed := lines[lines:Count-1]:Trim()
+                IF String.IsNullOrWhiteSpace(lastTrimmed)
+                    lines:RemoveAt(lines:Count-1)
+                ELSEIF String.Compare(lastTrimmed, "RETURN",  TRUE) == 0 .OR. ;
+                       String.Compare(lastTrimmed, "ENDPROC", TRUE) == 0 .OR. ;
+                       String.Compare(lastTrimmed, "ENDFUNC", TRUE) == 0
+                    lines:RemoveAt(lines:Count-1)
+                    EXIT
+                ELSE
+                    EXIT
+                ENDIF
+            ENDDO
+            VAR sb := StringBuilder{}
+            FOREACH VAR line IN lines
+                sb:AppendLine(line)
+            NEXT
+            RETURN sb:ToString()
 
         PROTECTED METHOD ProcessDeclarations( itemList AS List<MNXItem>, typeList AS Dictionary<STRING,STRING[]> ) AS STRING
             LOCAL declaration AS StringBuilder
@@ -263,109 +301,65 @@ BEGIN NAMESPACE VFPXPorterLib
             NEXT
             RETURN declaration:ToString()
 
-        PROTECTED METHOD ProcessInits( itemList AS List<MNXItem>, typeList AS Dictionary<STRING,STRING[]> ) AS STRING
+        PROTECTED METHOD ProcessInits( itemList AS List<MNXItem> ) AS STRING
             LOCAL initCode AS StringBuilder
-            LOCAL strips AS List<STRING>
-            LOCAL menuText := NULL AS STRING
-            LOCAL itemName AS STRING
             initCode := StringBuilder{}
-            strips := List<STRING>{}
-            itemName := "SubItems" // Non existing property
             //
-            FOREACH VAR menuItem IN itemList
-                //
+            FOREACH VAR pad IN itemList
                 IF SELF:Canceled
                     RETURN ""
                 ENDIF
                 SELF:UpdateProgress()
                 //
-                LOCAL itemClassName AS STRING
-                itemClassName := "unknown"
-                // set default item ClassName and apply conversion
-                IF ( menuItem:OBJTYPE == MenuObjType.Menu ) .OR. ( menuItem:OBJTYPE == MenuObjType.SdiMenu )
-                    itemClassName := "xsPorterMenuStrip"
-                    strips:Add( menuItem:GeneratedName)
-                    itemName := "Items"
-                    menuText := NULL
-                ELSEIF ( menuItem:OBJTYPE == MenuObjType.Item )
-                    itemClassName := "xsPorterMenuItem"
-                    itemName := "DropDownItems"
-                    IF menuItem:PROMPT == "\-"
-                        itemClassName := "xsPorterMenuSeparator"
-                        menuText := NULL
-                    ELSE
-                        menuText := menuItem:PROMPT
-                    ENDIF
-                ENDIF
-                itemClassName := SELF:ConvertClassName( itemClassName, typeList )
-                // Should be "THIS." ? Create the Object
-                initCode:Append("SELF:")
-                initCode:Append(menuItem:GeneratedName)
-                initCode:Append(" := ")
-                initCode:Append(itemClassName)
-                initCode:Append("{" )
-                IF ( menuText != NULL )
-                    initCode:Append('"')
-                    initCode:Append(menuText)
-                    initCode:Append('"')
-                ENDIF
-                initCode:Append("}")
-                initCode:Append(Environment.NewLine)
-                // Menu Name
-                initCode:Append("SELF:")
-                initCode:Append(menuItem:GeneratedName)
-                initCode:Append(":Name := ")
+                // Emit AddPad for each top-level menu entry
+                initCode:Append('oPad := SELF:AddPad( "')
+                initCode:Append(pad:Name)
+                initCode:Append('", "')
+                initCode:Append(pad:PROMPT)
                 initCode:Append('"')
-                initCode:Append(menuItem:Name)
-                initCode:Append('"')
-                initCode:Append(Environment.NewLine)
-                // Menu Text
-                initCode:Append("SELF:")
-                initCode:Append(menuItem:GeneratedName)
-                initCode:Append(":Text := ")
-                initCode:Append('"')
-                initCode:Append(menuItem:PROMPT)
-                initCode:Append('"')
-                initCode:Append(Environment.NewLine)
-                // Add the EventHandlers
-                IF !String.IsNullOrEmpty( menuItem:COMMAND )
-                    initCode:Append("SELF:" )
-                    initCode:Append(menuItem:GeneratedName )
-                    initCode:Append(":Click += System.EventHandler{ SELF, @" )
-                    initCode:Append(menuItem:GeneratedName )
-                    initCode:Append("_Command() }" )
-                    initCode:Append(Environment.NewLine)
-                ENDIF
-                IF !String.IsNullOrEmpty( menuItem:PROCEDURE )
-                    initCode:Append("SELF:")
-                    initCode:Append(menuItem:GeneratedName)
-                    initCode:Append(":Click += System.EventHandler{ SELF, @")
-                    initCode:Append(menuItem:GeneratedName)
-                    initCode:Append("_Procedure() }")
-                    initCode:Append(Environment.NewLine)
-                ENDIF
-                // Add SubItems
-                IF menuItem:Childs:Count > 0
-                    initCode:Append(SELF:ProcessInits( menuItem:Childs, typeList  ))
-                    FOREACH VAR menuChild IN menuItem:Childs
-                        initCode:Append("SELF:" )
-                        initCode:Append(menuItem:GeneratedName)
-                        initCode:Append(":")
-                        initCode:Append(itemName)
-                        initCode:Append(":Add( ")
-                        initCode:Append(menuChild:GeneratedName)
-                        initCode:Append(" )")
-                        initCode:Append(Environment.NewLine)
-                    NEXT
-                ENDIF
-            NEXT
-            // Create a list of MenuStrips
-            initCode:Append("//")
-            initCode:Append(Environment.NewLine)
-            FOREACH VAR menuStrip IN strips
-                initCode:Append("MenuStrips:Add( " )
-                initCode:Append(menuStrip)
                 initCode:Append(" )")
+                initCode:Append(Environment.NewLine)
+                //
+                IF pad:Childs:Count > 0
+                    initCode:AppendLine("oPopup := XSharp.VFP.UI.Popup{}")
+                    // AddBar for each child
+                    FOREACH VAR bar IN pad:Childs
+                        IF bar:PROMPT == "\-"
+                            initCode:Append('oPopup:AddBar( "')
+                            initCode:Append(bar:Name)
+                            initCode:Append('", "--" )')
+                            initCode:Append(Environment.NewLine)
+                        ELSE
+                            initCode:Append('oPopup:AddBar( "')
+                            initCode:Append(bar:Name)
+                            initCode:Append('", "')
+                            initCode:Append(bar:PROMPT)
+                            initCode:Append('" )')
+                            initCode:Append(Environment.NewLine)
+                            IF bar:Childs:Count > 0
+                                initCode:Append('// TODO: nested sub-menu "')
+                                initCode:Append(bar:Name)
+                                initCode:AppendLine('" — add sub-items manually')
+                            ENDIF
+                        ENDIF
+                    NEXT
+                    // Wire vfpClick — 1-based, separators excluded
+                    LOCAL barIndex := 0 AS INT
+                    FOREACH VAR bar IN pad:Childs
+                        IF bar:PROMPT != "\-"
+                            barIndex++
+                            IF !String.IsNullOrEmpty(bar:COMMAND) .OR. !String.IsNullOrEmpty(bar:PROCEDURE)
+                                initCode:Append("oPopup:Bars[")
+                                initCode:Append(barIndex:ToString())
+                                initCode:Append(']:vfpClick := "')
+                                initCode:Append(bar:Name)
+                                initCode:Append('"')
+                                initCode:Append(Environment.NewLine)
+                            ENDIF
+                        ENDIF
+                    NEXT
+                    initCode:AppendLine("oPad:Popup := oPopup")
+                ENDIF
                 initCode:Append(Environment.NewLine)
             NEXT
             RETURN initCode:ToString()
@@ -374,36 +368,39 @@ BEGIN NAMESPACE VFPXPorterLib
             LOCAL eventCode AS StringBuilder
             eventCode := StringBuilder{}
             //
-            FOREACH VAR menuItem IN itemList
-                //
+            FOREACH VAR pad IN itemList
                 IF SELF:Canceled
                     RETURN ""
                 ENDIF
                 SELF:UpdateProgress()
-                //
-                // Add the EventHandlers
-                IF !String.IsNullOrEmpty( menuItem:COMMAND )
-                    eventCode:Append("PRIVATE METHOD ")
-                    eventCode:Append(menuItem:GeneratedName)
-                    eventCode:Append("_Command( sender AS OBJECT, e AS System.EventArgs) AS VOID")
-                    eventCode:Append(Environment.NewLine)
-                    eventCode:Append(menuItem:COMMAND)
-                    eventCode:Append(Environment.NewLine)
-                ENDIF
-                IF !String.IsNullOrEmpty( menuItem:PROCEDURE )
-                    eventCode:Append("PRIVATE METHOD ")
-                    eventCode:Append(menuItem:GeneratedName)
-                    eventCode:Append("_Procedure( sender AS OBJECT, e AS System.EventArgs) AS VOID")
-                    eventCode:Append(Environment.NewLine)
-                    eventCode:Append(menuItem:PROCEDURE)
-                    eventCode:Append(Environment.NewLine)
-                ENDIF
-                // Add SubItems
-                IF menuItem:Childs:Count > 0
-                    eventCode:Append(SELF:ProcessEvents( menuItem:Childs ))
-                ENDIF
+                SELF:AppendBarMethods(eventCode, pad:Childs)
             NEXT
             RETURN eventCode:ToString()
+
+        PRIVATE METHOD AppendBarMethods( code AS StringBuilder, bars AS List<MNXItem> ) AS VOID
+            FOREACH VAR bar IN bars
+                IF SELF:Canceled
+                    RETURN
+                ENDIF
+                VAR hasCode := !String.IsNullOrEmpty(bar:COMMAND) .OR. !String.IsNullOrEmpty(bar:PROCEDURE)
+                IF hasCode
+                    code:Append("METHOD ")
+                    code:Append(bar:Name)
+                    code:AppendLine("() AS USUAL STRICT")
+                    // PROCEDURE takes priority (more complete); fall back to COMMAND
+                    IF !String.IsNullOrEmpty(bar:PROCEDURE)
+                        code:AppendLine(bar:PROCEDURE)
+                    ELSE
+                        code:AppendLine(bar:COMMAND)
+                    ENDIF
+                    code:AppendLine("    RETURN NIL")
+                    code:Append(Environment.NewLine)
+                ENDIF
+                // Recurse for nested sub-menus
+                IF bar:Childs:Count > 0
+                    SELF:AppendBarMethods(code, bar:Childs)
+                ENDIF
+            NEXT
 
 
         VIRTUAL PROTECT METHOD PostProcessItems( itemList AS List<MNXItem> ) AS VOID

@@ -21,10 +21,12 @@ BEGIN NAMESPACE VFPXPorterLib
     CLASS VFPXPorterMenu INHERIT XPorter
 
         PROTECTED MenuContainerFile AS STRING
-        PROPERTY MenuContainer AS STRING GET File.ReadAllText( MenuContainerFile )
+        PROPERTY MenuContainer AS STRING GET SELF:GetTemplateFromCache( MenuContainerFile )
 
         PROTECTED ConvertTableFile AS STRING
-        PROPERTY ConvertTable AS STRING GET File.ReadAllText( ConvertTableFile )
+        PROPERTY ConvertTable AS STRING GET SELF:GetTemplateFromCache( ConvertTableFile )
+
+        PRIVATE _templateCache AS Dictionary<STRING, STRING>
 
         /// <summary>
         /// The List of Items that exist in the current file (Form/Library)
@@ -39,8 +41,18 @@ BEGIN NAMESPACE VFPXPorterLib
             //
             SELF:Items := List<MNXItem>{ }
             SELF:GeneratedFiles := List<GeneratedFile>{}
+            SELF:_templateCache := Dictionary<STRING, STRING>{}
             //
             RETURN
+
+        PRIVATE METHOD GetTemplateFromCache( filePath AS STRING ) AS STRING
+            IF SELF:_templateCache:ContainsKey( filePath )
+                RETURN SELF:_templateCache[ filePath ]
+            ENDIF
+            LOCAL content AS STRING
+            content := File.ReadAllText( filePath )
+            SELF:_templateCache[ filePath ] := content
+            RETURN content
 
 
         METHOD Analyze( doBackup AS LOGIC ) AS LOGIC

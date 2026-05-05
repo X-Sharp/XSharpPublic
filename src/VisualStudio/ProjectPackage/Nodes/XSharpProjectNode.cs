@@ -53,16 +53,18 @@ namespace XSharp.Project
 
         internal static XSharpProjectNode FindProject(string url)
         {
-            var file = System.IO.Path.GetFileName(url);
-            foreach (var proj in nodes)
+            lock (nodes)
             {
-                if (string.Compare(proj.FileName, url, true) == 0)
-                    return proj;
-                var pFile = System.IO.Path.GetFileName(proj.FileName);
-                if (string.Compare(pFile, url, true) == 0)
-                    return proj;
+                var file = System.IO.Path.GetFileName(url);
+                foreach (var proj in nodes)
+                {
+                    if (string.Compare(proj.FileName, url, true) == 0)
+                        return proj;
+                    var pFile = System.IO.Path.GetFileName(proj.FileName);
+                    if (string.Compare(pFile, url, true) == 0)
+                        return proj;
+                }
             }
-
             return null;
         }
 
@@ -88,7 +90,7 @@ namespace XSharp.Project
             _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
-        internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
+        internal static XSharpProjectNode[] AllProjects { get { lock (nodes) { return nodes.ToArray(); } } }
 
         #region Constants
         internal const string ProjectTypeName = XSharpConstants.LanguageName;

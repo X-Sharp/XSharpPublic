@@ -32,7 +32,12 @@
     -->
 
     <Window.Resources>
-        <local:BoolNegationConverter x:Key="BoolNegation"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolNegationConverter x:Key="BoolNegation"/>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Margin="10">

@@ -21,7 +21,7 @@ namespace XSharp.Project
     {
         static ConcurrentDictionary<string, string> tempProjectFiles; // key is the project file, value is the temp file
         static string tempProjectDir;
-        static bool _eventsSubscribed = false;
+        static volatile bool _eventsSubscribed = false;
         static CommandEditProjectFile()
         {
             tempProjectDir = Path.Combine(Path.GetTempPath(), "XSharp.Intellisense");
@@ -103,7 +103,8 @@ namespace XSharp.Project
             if (keyToRemove != null && tempProjectFiles.TryRemove(keyToRemove, out _))
             {
                 File.Delete(obj);
-                // Unsubscribe event handlers when there are no more tracked files.
+                // VS document events and commands all execute on the UI thread, so no other
+                // thread can insert a new entry between TryRemove and IsEmpty.
                 if (tempProjectFiles.IsEmpty)
                 {
                     VS.Events.DocumentEvents.Closed -= DocumentEvents_Closed;

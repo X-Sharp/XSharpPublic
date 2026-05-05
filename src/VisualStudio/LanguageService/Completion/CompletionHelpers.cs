@@ -3,18 +3,23 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
+
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.TextManager.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
-using XSharpModel;
 using System.Windows.Media;
-using LanguageService.SyntaxTree;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 using XSharp.Settings;
-using Microsoft.VisualStudio.TextManager.Interop;
+
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -318,6 +323,7 @@ namespace XSharp.LanguageService
         }
         internal void AddGenericFunctionsAssembliesLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
+
             var found = location.Project.FindFunctionsInAssemblyReferences(startWith, true);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
@@ -651,6 +657,8 @@ namespace XSharp.LanguageService
         /// <param name="minVisibility"></param>
         internal void FillMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             FillMembers(location, compList, xType, xType.GetMembers(startWith), minVisibility, staticOnly);
         }
 
@@ -668,6 +676,8 @@ namespace XSharp.LanguageService
                 }
                 if (selection.Count() > 0)
                 {
+                    ThreadHelper.ThrowIfNotOnUIThread();
+
                     FillMembers(location, compList, null, selection, Modifiers.Public, true);
                 }
             }

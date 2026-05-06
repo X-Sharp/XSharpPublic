@@ -6,30 +6,29 @@
 
 namespace XSharp.Project
 {
-    using System;
-    using System.Linq;
-    using System.Globalization;
     using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.Package;
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
 
     /// <summary>
-    /// Property page for the build events.
+    /// COM-visible property page for the Dialect settings tab.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For SDK-style projects this page returns an <see cref="XDialectPropertyPageXamlHost"/>
+    /// (a WPF/XAML panel embedded in an <c>ElementHost</c>).  For legacy .NET Framework
+    /// projects it returns an <see cref="XDialectPropertyPagePanelWinForms"/> (the original
+    /// WinForms panel).  All business logic and UI state are delegated to the appropriate
+    /// panel through the <see cref="IPropertyPagePanel"/> interface.
+    /// </para>
+    /// </remarks>
     [Guid(XSharpConstants.DialectPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpDialectPropertyPage))]
     public class XSharpDialectPropertyPage : XPropertyPage
     {
-        // =========================================================================================
-        // Constructors
-        // =========================================================================================
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="XSharpBuildEventsPropertyPage"/> class.
+        /// Initializes a new instance of the <see cref="XSharpDialectPropertyPage"/> class.
         /// </summary>
         public XSharpDialectPropertyPage()
         {
@@ -37,56 +36,37 @@ namespace XSharp.Project
             this.PerConfig = false;
         }
 
-        // =========================================================================================
-        // Methods
-        // =========================================================================================
-
         /// <summary>
-        /// Gets a project property.
+        /// Creates the panel that hosts the Dialect page controls.
         /// </summary>
-        /// <param name="propertyName">The name of the property to get.</param>
         /// <returns>
-        /// Value of the property, or null if the property is unset or inconsistent across configurations.
+        /// An <see cref="XDialectPropertyPageXamlHost"/> for SDK-style projects, or an
+        /// <see cref="XDialectPropertyPagePanelWinForms"/> for legacy projects.
         /// </returns>
-        public override string GetProperty(string propertyName)
+        protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-            string value = base.GetProperty(propertyName);
-            return value;
+            if (IsSdkProject)
+                return new XDialectPropertyPageXamlHost(this);
+            return new XDialectPropertyPagePanelWinForms(this);
         }
 
         /// <summary>
-        /// Sets a project property.
+        /// Called by the project system when a project property changes externally
+        /// (e.g. from another property page).  Forwards dialect changes to the active panel
+        /// so it can re-apply dialect-specific enabling logic.
         /// </summary>
-        /// <param name="propertyName">Name of the property to set.</param>
-        /// <param name="value">Value of the property.</param>
-        public override void SetProperty(string propertyName, string value)
-        {
-            //todo enable / disable controls based on contents
-            ThreadHelper.ThrowIfNotOnUIThread();
-            base.SetProperty(propertyName, value);
-        }
-
-        /// <summary>
-        /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
-        /// </summary>
-        /// <returns>The newly created main control that hosts the property page.</returns>
-        protected override XPropertyPagePanel CreatePropertyPagePanel()
-        {
-            if (panel == null)
-            {
-                panel = new XDialectPropertyPagePanel(this);
-            }
-            return panel;
-        }
-        XDialectPropertyPagePanel panel = null;
         protected override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-            if (panel != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
             {
-                panel.Project_OnProjectPropertyChanged(sender, e);
+                // XAML path — notify the host which delegates to the ViewModel.
+                (PropertyPagePanel as XDialectPropertyPageXamlHost)?.NotifyDialectChanged(e.NewValue);
+
+                // WinForms path — delegate directly to the panel (null-safe).
+                (PropertyPagePanel as XDialectPropertyPagePanel)?.Project_OnProjectPropertyChanged(sender, e);
             }
         }
-
-
     }
 }

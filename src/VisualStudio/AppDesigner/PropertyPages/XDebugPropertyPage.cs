@@ -1,70 +1,61 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 namespace XSharp.Project
 {
-    using System;
-    using System.Linq;
-    using System.Globalization;
     using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.Package;
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
 
     /// <summary>
-    /// Property page for the build events.
+    /// Property page for the Debug settings.
     /// </summary>
     [Guid(XSharpConstants.DebugPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpDebugPropertyPage))]
     public class XSharpDebugPropertyPage : XPropertyPage
     {
-        DebugTypeConverter converterDebugType;
         // =========================================================================================
-        // Constructors
+        // Constructor
         // =========================================================================================
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XSharpBuildEventsPropertyPage"/> class.
+        /// Initializes a new instance of the <see cref="XSharpDebugPropertyPage"/> class.
         /// </summary>
         public XSharpDebugPropertyPage()
         {
-            this.PageName = "Debug";
-            this.PerConfig = true;
-            converterDebugType = new DebugTypeConverter();
-
+            this.PageName  = "Debug";
+            this.PerConfig = false;
         }
 
         // =========================================================================================
-        // Methods
+        // XPropertyPage overrides
         // =========================================================================================
 
         /// <summary>
-        /// Sets a project property.
+        /// Sets a project property, forwarding to the base implementation.
         /// </summary>
         /// <param name="propertyName">Name of the property to set.</param>
         /// <param name="value">Value of the property.</param>
         public override void SetProperty(string propertyName, string value)
         {
-            //todo enable / disable controls based on contents
             ThreadHelper.ThrowIfNotOnUIThread();
             base.SetProperty(propertyName, value);
         }
 
         /// <summary>
-        /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
+        /// Creates the UI panel for this property page.
+        /// SDK-style projects get the XAML/WPF host; legacy projects get the WinForms panel.
         /// </summary>
-        /// <returns>The newly created main control that hosts the property page.</returns>
-        protected override XPropertyPagePanel CreatePropertyPagePanel()
+        /// <returns>An <see cref="IPropertyPagePanel"/> implementation.</returns>
+        protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-            return new XDebugPropertyPagePanel(this);
+            if (IsSdkProject)
+                return new XDebugPropertyPageXamlHost(this);
+            return new XDebugPropertyPagePanelWinForms(this);
         }
-        
-
     }
 }

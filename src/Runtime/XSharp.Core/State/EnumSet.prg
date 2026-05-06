@@ -6,7 +6,7 @@
 USING XSharp
 USING XSharp.RDD.Enums
 USING System.Collections.Generic
-NAMESPACE XSharp
+BEGIN NAMESPACE XSharp
 
 /// <include file="XSharp.Core.Docs.xml" path="doc/Set/*" />
 ENUM Set
@@ -430,6 +430,8 @@ ENUM Set
     MEMBER Sql_parameters       := User+9
 
 END ENUM
+
+END NAMESPACE
 
 #region Defines
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exact/*" />

@@ -50,7 +50,7 @@
     <Compile Include="$(CommonDir)Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="E:\XSharp\Dev\src\Common\constantsMethods.cs">
+    <Compile Include="$(CommonDir)constantsMethods.cs">
       <Link>constantsMethods.cs</Link>
     </Compile>
     <Compile Include="$(CommonDir)XSharpConstants.cs">
@@ -59,9 +59,14 @@
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="Commands\AbstractCommand.cs" />
     <Compile Include="Commands\CommentCommand.cs" />
+    <Compile Include="Commands\DocumentOutlineCommand.cs" />
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
+    <Compile Include="Controls\GotoDefinitionResultsWindow.xaml.cs">
+      <DependentUpon>GotoDefinitionResultsWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\HelpViewer.cs" />
     <Compile Include="Commands\SaveCommand.cs" />
@@ -220,6 +225,12 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
+    <Compile Include="Controls\KindExtensions.cs" />
+    <Compile Include="Controls\DocumentOutlineControl.cs">
+      <DependentUpon>DocumentOutlineControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentOutline\DocumentOutlineToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -227,6 +238,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
     <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(VSExternalDir)XSharp.MonoCecil.dll</HintPath>
@@ -328,9 +342,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\ProjectPackage\Resources\XSharpProjectImageList.bmp">
-      <Link>Resources\XSharpProjectImageList.bmp</Link>
-    </EmbeddedResource>
     <Content Include="Completion\Notes.txt" />
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
@@ -339,6 +350,21 @@
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\VsThemeDictionary.xaml">
+      <Link>Controls\VsThemeDictionary.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\GotoDefinitionResultsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\DocumentOutlineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets\Snippets\case.snippet">

@@ -1,0 +1,138 @@
+<UserControl
+    x:Class="XSharp.Project.XLanguagePropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    mc:Ignorable="d"
+    d:DesignHeight="500" d:DesignWidth="700"
+    UseLayoutRounding="True"
+    toolkit:Themes.UseVsTheme="True"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
+
+    <!--
+        Language property page - WPF/XAML implementation (SDK-style projects).
+        DataContext: XLanguagePropertyPageViewModel (set by XLanguagePropertyPageXamlHost).
+
+        Layout mirrors the WinForms XLanguagePropertyPagePanel (4-column table mapped to
+        a two-column Grid):
+          Left column  - General group (12 checkboxes)
+          Right column - Memory variables group, Namespaces group, Preprocessor group,
+                         Include Paths row, Standard Defs row.
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!-- BoolToVisibility: true -> Visible, false -> Collapsed -->
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <!-- BoolToInverseVisibility: true -> Collapsed, false -> Visible -->
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="8,8,8,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ============================================================ -->
+            <!-- LEFT COLUMN - General group                                   -->
+            <!-- ============================================================ -->
+            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+
+                <!-- Section header -->
+                <Label Content="General" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                <local:PropertyCheckBox Label="{Binding CaptLB}"                  Value="{Binding LB,                      Mode=TwoWay}" PropertyName="LB"                      IsEnabled="{Binding LBEnabled}"         ToolTip="{Binding DescLB}"                  Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptNamedArgs}"            Value="{Binding NamedArgs,               Mode=TwoWay}" PropertyName="NamedArgs"               ToolTip="{Binding DescNamedArgs}"           Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptUnsafe}"               Value="{Binding Unsafe,                  Mode=TwoWay}" PropertyName="Unsafe"                  ToolTip="{Binding DescUnsafe}"              Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptCS}"                   Value="{Binding CS,                      Mode=TwoWay}" PropertyName="CS"                      ToolTip="{Binding DescCS}"                  Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptInitLocals}"           Value="{Binding InitLocals,              Mode=TwoWay}" PropertyName="InitLocals"              ToolTip="{Binding DescInitLocals}"          Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptOVF}"                  Value="{Binding OVF,                     Mode=TwoWay}" PropertyName="OVF"                     ToolTip="{Binding DescOVF}"                 Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptAZ}"                   Value="{Binding AZ,                      Mode=TwoWay}" PropertyName="AZ"                      ToolTip="{Binding DescAZ}"                  Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptEnforceSelf}"          Value="{Binding EnforceSelf,             Mode=TwoWay}" PropertyName="EnforceSelf"             ToolTip="{Binding DescEnforceSelf}"         Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptAllowDot}"             Value="{Binding AllowDot,                Mode=TwoWay}" PropertyName="Allowdot"                ToolTip="{Binding DescAllowDot}"            Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptEnforceOverride}"      Value="{Binding EnforceOverride,         Mode=TwoWay}" PropertyName="EnforceOverride"         ToolTip="{Binding DescEnforceOverride}"     Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptOldStyleAssignments}"  Value="{Binding AllowOldStyleAssignments,Mode=TwoWay}" PropertyName="AllowOldStyleAssignments" ToolTip="{Binding DescOldStyleAssignments}" Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptModernSyntax}"         Value="{Binding ModernSyntax,            Mode=TwoWay}" PropertyName="ModernSyntax"            ToolTip="{Binding DescModernSyntax}"        Margin="0,3,0,0"/>
+
+            </StackPanel>
+
+            <!-- ============================================================ -->
+            <!-- RIGHT COLUMN - Memory variables, Namespaces, Preprocessor    -->
+            <!-- ============================================================ -->
+            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+
+                <!-- Memory variables section -->
+                <Label Content="Memory variables" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                <local:PropertyCheckBox Label="{Binding CaptMemVar}"     Value="{Binding MemVar,     Mode=TwoWay}" PropertyName="MemVar"     IsEnabled="{Binding MemVarEnabled}"     ToolTip="{Binding DescMemVar}"     Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptUndeclared}" Value="{Binding Undeclared, Mode=TwoWay}" PropertyName="Undeclared" IsEnabled="{Binding UndeclaredEnabled}" ToolTip="{Binding DescUndeclared}" Margin="0,3,0,0"/>
+
+                <!-- Namespaces section -->
+                <Label Content="Namespaces" FontWeight="Bold" Margin="0,10,0,4"/>
+
+                <local:PropertyCheckBox Label="{Binding CaptINS}" Value="{Binding INS, Mode=TwoWay}" PropertyName="INS" ToolTip="{Binding DescINS}" Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptNS}"  Value="{Binding NS,  Mode=TwoWay}" PropertyName="NS"  ToolTip="{Binding DescNS}"  Margin="0,3,0,0"/>
+
+                <!-- Preprocessor section -->
+                <Label Content="Preprocessor" FontWeight="Bold" Margin="0,10,0,4"/>
+
+                <local:PropertyCheckBox Label="{Binding CaptNoStandardDefs}" Value="{Binding NoStandardDefs, Mode=TwoWay}" PropertyName="NoStandardDefs" ToolTip="{Binding DescNoStandardDefs}" Margin="0,3,0,0"/>
+
+                <!-- Include Paths row: label + textbox + browse button + reset -->
+                <Label Content="{Binding CaptIncludePaths}"
+                       ToolTip="{Binding DescIncludePaths}"
+                       Margin="0,10,0,2"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding IncludePaths, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             ToolTip="{Binding DescIncludePaths}"/>
+                    <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                             ToolTip="{Binding DescIncludePaths}"
+                             Click="OnBrowseIncludePathsClick"/>
+                    <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
+                             Command="{Binding ResetCommand}" CommandParameter="IncludePaths"
+                             Margin="4,0,0,0"/>
+                </Grid>
+
+                <!-- Standard Defs row: label + textbox + browse button + reset -->
+                <Label Content="{Binding CaptStandardDefs}"
+                       ToolTip="{Binding DescStandardDefs}"
+                       Margin="0,8,0,2"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding StandardDefs, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             ToolTip="{Binding DescStandardDefs}"/>
+                    <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                             ToolTip="{Binding DescStandardDefs}"
+                             Click="OnBrowseStandardDefsClick"/>
+                    <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
+                             Command="{Binding ResetCommand}" CommandParameter="StandardDefs"
+                             Margin="4,0,0,0"/>
+                </Grid>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

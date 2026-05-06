@@ -1,0 +1,135 @@
+﻿<UserControl
+    x:Class="XSharp.Project.XDebugPropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    mc:Ignorable="d"
+    d:DesignHeight="350" d:DesignWidth="660"
+    UseLayoutRounding="True"
+    toolkit:Themes.UseVsTheme="True"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
+
+    <!--
+        Debug property page - WPF/XAML implementation (SDK-style projects).
+        DataContext: XDebugPropertyPageViewModel (set by XDebugPropertyPageXamlHost).
+        Layout mirrors the XDebugPropertyPagePanel from WinForms :
+          Row 0 - Debugger Command     (textbox + browse)
+          Row 1 - Command Arguments    (multiline textbox)
+          Row 2 - Debug Type           (combo)
+          Row 3 - Working Directory    (textbox + browse)
+          Row 4 - Unmanaged Debugging  (checkbox)
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+
+        <!-- Configuration selector -->
+        <DockPanel DockPanel.Dock="Top" Margin="8,8,8,4" LastChildFill="False">
+            <Label DockPanel.Dock="Left" Content="Configuration:" VerticalAlignment="Center" Padding="0,0,4,0"/>
+            <ComboBox DockPanel.Dock="Left"
+                      ItemsSource="{Binding ConfigSelector.ConfigNames}"
+                      SelectedItem="{Binding ConfigSelector.SelectedConfig, Mode=TwoWay}"
+                      Width="200" VerticalAlignment="Center"/>
+        </DockPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="8">
+
+            <!-- Debugger Command -->
+            <Label Content="{Binding CaptDebuggerCommand}"
+                   ToolTip="{Binding DescDebuggerCommand}"
+                   Margin="0,0,0,2"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding DebuggerCommand, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescDebuggerCommand}"/>
+                <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                        ToolTip="{Binding DescDebuggerCommand}"
+                        Click="OnBrowseCommandClick"/>
+                <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebuggerCommand"
+                        Margin="4,0,0,0"/>
+            </Grid>
+
+            <!-- Command Arguments (multiline) -->
+            <Label Content="{Binding CaptDebuggerCommandArguments}"
+                   ToolTip="{Binding DescDebuggerCommandArguments}"
+                   Margin="0,10,0,2"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding DebuggerCommandArguments, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescDebuggerCommandArguments}"
+                         AcceptsReturn="True"
+                         Height="64"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"/>
+                <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebuggerCommandArguments"
+                        Margin="4,0,0,0" VerticalAlignment="Top"/>
+            </Grid>
+
+            <!-- Debug Type combo -->
+            <local:PropertyComboBox
+                    Label="{Binding CaptDebugType}"
+                    Items="{Binding DebugTypeValues}"
+                    Value="{Binding DebugType, Mode=TwoWay}"
+                    PropertyName="DebugType"
+                    ToolTip="{Binding DescDebugType}"
+                    Margin="0,10,0,0"/>
+
+            <!-- Working Directory -->
+            <Label Content="{Binding CaptDebuggerWorkingDirectory}"
+                   ToolTip="{Binding DescDebuggerWorkingDirectory}"
+                   Margin="0,10,0,2"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding DebuggerWorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescDebuggerWorkingDirectory}"/>
+                <Button Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                        ToolTip="{Binding DescDebuggerWorkingDirectory}"
+                        Click="OnBrowseWorkingDirectoryClick"/>
+                <Button Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="DebuggerWorkingDirectory"
+                        Margin="4,0,0,0"/>
+            </Grid>
+
+            <!-- Unmanaged Debugging checkbox -->
+            <local:PropertyCheckBox
+                    Label="{Binding CaptEnableUnmanagedDebugging}"
+                    Value="{Binding EnableUnmanagedDebugging, Mode=TwoWay}"
+                    PropertyName="EnableUnmanagedDebugging"
+                    ToolTip="{Binding DescEnableUnmanagedDebugging}"
+                    Margin="0,12,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+    </DockPanel>
+</UserControl>

@@ -13,13 +13,6 @@ FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/loadpicture/*" />
-[FoxProFunction("LOADPICTURE", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION LoadPicture( cFileName ) AS OBJECT
-    THROW NotImplementedException{}
-    // RETURN NULL_OBJECT
-
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/locfile/*" />

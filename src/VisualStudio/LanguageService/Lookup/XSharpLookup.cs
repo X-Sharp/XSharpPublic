@@ -14,6 +14,7 @@ using System.Text;
 using XSharpModel;
 using XSharp.Settings;
 using XSharp.Support;
+using System.Windows.Controls;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup
@@ -1140,10 +1141,22 @@ namespace XSharp.LanguageService
             if (result.Count == 0 && symbols.Count > 0)
             {
                 result.Add(symbols.Pop());
-                if (result[0] is IXMemberSymbol xmember && xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
+                if (result[0] is IXMemberSymbol xmember)
                 {
-                    result.Clear();
-                    result.Add(AdjustGenericMember(xmember, symbols.Peek()));
+                    if (xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
+                    {
+                        result.Clear();
+                        result.Add(AdjustGenericMember(xmember, symbols.Peek()));
+                    }
+                    else
+                    {
+                        var overloads = xmember.GetOverloads();
+                        if (overloads.Length > 1)
+                        {
+                            result.Clear();
+                            result.AddRange(overloads);
+                        }
+                    }
                 }
             }
             if (result.Count > 0 && result[0] is IXTypeSymbol xtype && state == CompletionState.Constructors)
@@ -2004,10 +2017,10 @@ namespace XSharp.LanguageService
                 return result;
             }
             WriteOutputMessage($" SearchFunction {location.File.SourcePath}, '{name}' ");
-            IXMemberSymbol xMethod = location.File.Project.FindFunction(name);
-            if (xMethod != null)
+            var xMethods = location.File.Project.FindFunctions(name);
+            if (xMethods != null)
             {
-                result.Add(xMethod);
+                result.AddRange(xMethods);
             }
             else
             {

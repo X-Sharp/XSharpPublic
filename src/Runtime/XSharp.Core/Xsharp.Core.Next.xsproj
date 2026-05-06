@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Targets" />
   <PropertyGroup>
     <RootNamespace>XSharp</RootNamespace>
@@ -8,12 +8,47 @@
     <CS>true</CS>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
-    <Allowdot>True</Allowdot>
+    <Allowdot>true</Allowdot>
     <StartupObject />
-    <NamedArgs>True</NamedArgs>
-    <EnforceSelf>True</EnforceSelf>
+    <NamedArgs>true</NamedArgs>
+    <EnforceSelf>true</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <TargetFramework>net8.0</TargetFramework>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <NoWin32Manifest>false</NoWin32Manifest>
+    <VulcanCompatibleResources>true</VulcanCompatibleResources>
+    <AllowOldStyleAssignments>false</AllowOldStyleAssignments>
+    <ModernSyntax>false</ModernSyntax>
+    <IncludePaths />
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Vo17>false</Vo17>
+    <Fox2>false</Fox2>
+    <Xpp1>false</Xpp1>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NoWarn />
+    <Prefer32Bit>false</Prefer32Bit>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DelaySign>false</DelaySign>
+    <WarningsAsErrors />
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn />
+    <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DelaySign>false</DelaySign>
+    <WarningsAsErrors />
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <DebuggerCommand />
+    <DebuggerCommandArguments />
+    <DebuggerWorkingDirectory />
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonInclude)\Constants.prg" />

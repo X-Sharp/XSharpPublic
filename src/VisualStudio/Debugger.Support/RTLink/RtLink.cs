@@ -38,14 +38,16 @@ namespace XSharp.Debugger.Support
         {
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
             var loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
-            do
+            lock (LoadedAssemblies)
             {
-                LoadedAssemblies.UnionWith(loadedAssemblies);
-                loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
-                loadedAssemblies.RemoveWhere(a => a.IsDynamic);
-                loadedAssemblies.ExceptWith(LoadedAssemblies);
-            } while (loadedAssemblies.Count > 0);
-
+                do
+                {
+                    LoadedAssemblies.UnionWith(loadedAssemblies);
+                    loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+                    loadedAssemblies.RemoveWhere(a => a.IsDynamic);
+                    loadedAssemblies.ExceptWith(LoadedAssemblies);
+                } while (loadedAssemblies.Count > 0);
+            }
         }
 
 
@@ -64,7 +66,11 @@ namespace XSharp.Debugger.Support
         static Type FindType(string name, string asmName, out string error)
         {
             error = null;
-            var asm = LoadedAssemblies.First(a => a.FullName.ToLower().Contains(asmName.ToLower()));
+            Assembly asm;
+            lock (LoadedAssemblies)
+            {
+                asm = LoadedAssemblies.FirstOrDefault(a => a.FullName.ToLower().Contains(asmName.ToLower()));
+            }
             if (asm == null)
             {
                 error = string.Format(AssemblyNotFound, asmName);
@@ -100,8 +106,11 @@ namespace XSharp.Debugger.Support
         #endregion
         public static bool IsRTLoaded()
         {
-            return LoadedAssemblies.Any(a => a.FullName.ToLower().Contains("xsharp.rt")) &&
-                LoadedAssemblies.Any(a => a.FullName.ToLower().Contains("xsharp.core"));
+            lock (LoadedAssemblies)
+            {
+                return LoadedAssemblies.Any(a => a.FullName.ToLower().Contains("xsharp.rt")) &&
+                    LoadedAssemblies.Any(a => a.FullName.ToLower().Contains("xsharp.core"));
+            }
         }
 
         public static string GetGlobals()

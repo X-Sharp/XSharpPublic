@@ -1,0 +1,124 @@
+﻿<UserControl
+    x:Class="XSharp.Project.XGlobalUsingsPropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    mc:Ignorable="d"
+    d:DesignHeight="520" d:DesignWidth="660"
+    UseLayoutRounding="True"
+    toolkit:Themes.UseVsTheme="True"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
+
+    <!--
+        Global Usings property page - WPF/XAML implementation (SDK-style projects).
+        DataContext: XGlobalUsingsPropertyPageViewModel (set by XGlobalUsingsPropertyPageXamlHost).
+
+        Layout mirrors the WinForms XGlobalUsingsPropertyPagePanel:
+          Group 1 - Implicit Usings checkbox
+          Group 2 - Manage Implicit Globals
+                      Add row: Namespace TextBox | Alias TextBox | Static CheckBox | Add Button
+                      DataGrid: Namespace | Alias | Static | Delete button | (Imported hidden)
+                      "Show imported" checkbox
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+            <local:BoolNegationConverter     x:Key="BoolNegation"/>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="8">
+
+            <!-- ==================== Implicit Usings group ==================== -->
+            <GroupBox Header="{Binding CaptImplicitUsings}" Margin="0,0,0,8">
+                <local:PropertyCheckBox
+                        Label="{Binding CaptEnableImplicitUsings}"
+                        Value="{Binding ImplicitUsings, Mode=TwoWay}"
+                        PropertyName="ImplicitUsings"
+                        Margin="4"/>
+            </GroupBox>
+
+            <!-- ==================== Manage Implicit Globals group ==================== -->
+            <GroupBox Header="{Binding CaptManageUsings}">
+                <StackPanel Margin="4">
+
+                    <!-- Add-using input row -->
+                    <Grid Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding NewNamespace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Namespace"
+                                 x:Name="tbNewNamespace"/>
+                        <TextBox Grid.Column="2"
+                                 Text="{Binding NewAlias, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Alias"/>
+                        <CheckBox Grid.Column="4"
+                                  Content="Static"
+                                  IsChecked="{Binding NewStatic, Mode=TwoWay}"
+                                  VerticalAlignment="Center"/>
+                        <Button Grid.Column="6"
+                                Content="Add Using"
+                                MinWidth="80"
+                                Click="OnAddUsingClick"/>
+                    </Grid>
+
+                    <!-- Using items grid -->
+                    <DataGrid ItemsSource="{Binding Usings}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              Height="220"
+                              Margin="0,0,0,6"
+                              x:Name="gridUsings">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Namespace" Binding="{Binding Namespace}" Width="*"/>
+                            <DataGridTextColumn Header="Alias"     Binding="{Binding Alias}"     Width="80"/>
+                            <DataGridCheckBoxColumn Header="Static" Binding="{Binding Static}"   Width="50"/>
+                            <DataGridCheckBoxColumn Header="Imported" Binding="{Binding Imported}" Width="70"/>
+                            <DataGridTemplateColumn Header="Delete" Width="60">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Delete"
+                                                IsEnabled="{Binding Imported, Converter={StaticResource BoolNegation}}"
+                                                Click="OnDeleteUsingClick"
+                                                Tag="{Binding}"
+                                                Padding="4,2"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Show imported checkbox -->
+                    <CheckBox Content="{Binding CaptShowImported}"
+                              IsChecked="{Binding ShowImported, Mode=TwoWay}"
+                              Margin="0,2,0,0"/>
+
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

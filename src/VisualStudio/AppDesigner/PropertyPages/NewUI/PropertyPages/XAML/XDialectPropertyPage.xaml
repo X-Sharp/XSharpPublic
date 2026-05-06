@@ -1,0 +1,104 @@
+<UserControl
+    x:Class="XSharp.Project.XDialectPropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    mc:Ignorable="d"
+    d:DesignHeight="400" d:DesignWidth="700"
+    UseLayoutRounding="True"
+    toolkit:Themes.UseVsTheme="True"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
+
+    <!--
+        Dialect property page - WPF/XAML implementation (SDK-style projects).
+        DataContext: XDialectPropertyPageViewModel (set by XDialectPropertyPageXamlHost).
+
+        Layout mirrors the WinForms XDialectPropertyPagePanel two-column table:
+          Left column  - "All dialects" group  (VO1-VO4, VO8-VO10, VO2)
+          Right column - "Not in Core dialect" group (VO5-VO7, VO11-VO17)
+          Bottom row   - Visual FoxPro compatibility (Fox2, only FoxPro dialect)
+                       - Xbase++ compatibility (Xpp1, only XPP dialect)
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!-- BoolToVisibility: true -> Visible, false -> Collapsed -->
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <!-- BoolToInverseVisibility: true -> Collapsed, false -> Visible -->
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="8">
+
+            <!-- Two-column row for All Dialects / Not in Core -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ============================================================ -->
+                <!-- LEFT COLUMN - All dialects                                    -->
+                <!-- ============================================================ -->
+                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+
+                    <Label Content="{Binding CaptAllDialects}" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                    <local:PropertyCheckBox Label="{Binding CaptVO1}"  Value="{Binding Vo1,  Mode=TwoWay}" PropertyName="Vo1"  ToolTip="{Binding DescVO1}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO3}"  Value="{Binding Vo3,  Mode=TwoWay}" PropertyName="Vo3"  ToolTip="{Binding DescVO3}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO10}" Value="{Binding Vo10, Mode=TwoWay}" PropertyName="Vo10" ToolTip="{Binding DescVO10}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO8}"  Value="{Binding Vo8,  Mode=TwoWay}" PropertyName="Vo8"  ToolTip="{Binding DescVO8}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO9}"  Value="{Binding Vo9,  Mode=TwoWay}" PropertyName="Vo9"  ToolTip="{Binding DescVO9}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO4}"  Value="{Binding Vo4,  Mode=TwoWay}" PropertyName="Vo4"  ToolTip="{Binding DescVO4}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO2}"  Value="{Binding Vo2,  Mode=TwoWay}" PropertyName="Vo2"  ToolTip="{Binding DescVO2}"  Margin="0,3,0,0"/>
+
+                </StackPanel>
+
+                <!-- ============================================================ -->
+                <!-- RIGHT COLUMN - Not in Core dialect                            -->
+                <!-- ============================================================ -->
+                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+
+                    <Label Content="{Binding CaptNotInCore}" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                    <local:PropertyCheckBox Label="{Binding CaptVO12}" Value="{Binding Vo12, Mode=TwoWay}" PropertyName="Vo12" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO12}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO11}" Value="{Binding Vo11, Mode=TwoWay}" PropertyName="Vo11" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO11}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO13}" Value="{Binding Vo13, Mode=TwoWay}" PropertyName="Vo13" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO13}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO16}" Value="{Binding Vo16, Mode=TwoWay}" PropertyName="Vo16" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO16}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO5}"  Value="{Binding Vo5,  Mode=TwoWay}" PropertyName="Vo5"  IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO5}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO6}"  Value="{Binding Vo6,  Mode=TwoWay}" PropertyName="Vo6"  IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO6}"  Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO15}" Value="{Binding Vo15, Mode=TwoWay}" PropertyName="Vo15" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO15}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO14}" Value="{Binding Vo14, Mode=TwoWay}" PropertyName="Vo14" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO14}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO17}" Value="{Binding Vo17, Mode=TwoWay}" PropertyName="Vo17" IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO17}" Margin="0,3,0,0"/>
+                    <local:PropertyCheckBox Label="{Binding CaptVO7}"  Value="{Binding Vo7,  Mode=TwoWay}" PropertyName="Vo7"  IsEnabled="{Binding IsNotCoreDialect}" ToolTip="{Binding DescVO7}"  Margin="0,3,0,0"/>
+
+                </StackPanel>
+            </Grid>
+
+            <!-- ============================================================ -->
+            <!-- BOTTOM - Visual FoxPro compatibility (FoxPro dialect only)   -->
+            <!-- ============================================================ -->
+            <Label Content="{Binding CaptFoxCompat}" FontWeight="Bold" Margin="0,12,0,4"/>
+
+            <local:PropertyCheckBox Label="{Binding CaptFox2}" Value="{Binding Fox2, Mode=TwoWay}" PropertyName="Fox2" IsEnabled="{Binding Fox2Enabled}" ToolTip="{Binding DescFox2}" Margin="0,3,0,0"/>
+
+            <!-- ============================================================ -->
+            <!-- BOTTOM - Xbase++ compatibility (XPP dialect only)            -->
+            <!-- ============================================================ -->
+            <Label Content="{Binding CaptXppCompat}" FontWeight="Bold" Margin="0,12,0,4"/>
+
+            <local:PropertyCheckBox Label="{Binding CaptXpp1}" Value="{Binding Xpp1, Mode=TwoWay}" PropertyName="Xpp1" IsEnabled="{Binding Xpp1Enabled}" ToolTip="{Binding DescXpp1}" Margin="0,3,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

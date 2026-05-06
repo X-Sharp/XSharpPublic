@@ -3,30 +3,34 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
+
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.TextManager.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
-using XSharpModel;
 using System.Windows.Media;
-using LanguageService.SyntaxTree;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 using XSharp.Settings;
-using Microsoft.VisualStudio.TextManager.Interop;
+
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
     internal class CompletionHelpers
     {
-        internal IGlyphService _glyphService = null;
         private XDialect _dialect;
         private XFile _file;
         private bool _settingIgnoreCase;
-        internal CompletionHelpers(XDialect dialect, IGlyphService glyphService, XFile file, bool ignoreCase)
+        internal CompletionHelpers(XDialect dialect, XFile file, bool ignoreCase)
         {
             _dialect = dialect;
-            _glyphService = glyphService;
             _file = file;
             _settingIgnoreCase = ignoreCase;
         }
@@ -94,7 +98,7 @@ namespace XSharp.LanguageService
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
-                ImageSource icon = _glyphService.GetGlyph(type.getGlyphGroup(), type.getGlyphItem());
+                ImageSource icon = type.Kind.GetImageMoniker(type.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
                     break;
             }
@@ -120,7 +124,7 @@ namespace XSharp.LanguageService
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
-                ImageSource icon = _glyphService.GetGlyph(type.getGlyphGroup(), type.getGlyphItem());
+                ImageSource icon = type.Kind.GetImageMoniker(type.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
                     break;
             }
@@ -182,7 +186,7 @@ namespace XSharp.LanguageService
         {
             foreach (var kw in XSharpSyntax.GetKeywords().Where(ti => nameStartsWith(ti.Name, startWith)))
             {
-                ImageSource icon = _glyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
+                ImageSource icon = kw.Kind.GetImageMoniker(kw.Visibility).GetImageSource();
                 var item = new XSCompletion(kw.Name, kw.Name, kw.Prototype, icon, null, Kind.Keyword, "");
                 compList.Add(item);
             }
@@ -192,7 +196,7 @@ namespace XSharp.LanguageService
             var snippets = SnippetHelpers.FindSnippets(startWith);
             foreach (var snippet in snippets)
             {
-                ImageSource icon = _glyphService.GetGlyph(StandardGlyphGroup.GlyphCSharpExpansion, StandardGlyphItem.GlyphItemPublic);
+                ImageSource icon = KnownMonikers.Snippet.GetImageSource();
                 var item = new XSCompletion(snippet.title, "", snippet.description, icon, null, Kind.Snippet, snippet.shortcut);
                 item.Properties.AddProperty(typeof(VsExpansion), snippet);
                 compList.Add(item,false, true);
@@ -210,7 +214,7 @@ namespace XSharp.LanguageService
                     continue;
 
                 // Then remove it
-                ImageSource icon = _glyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
+                ImageSource icon = typeInfo.Kind.GetImageMoniker(typeInfo.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(typeInfo.Name, typeInfo.Name, typeInfo.FullName, icon, null, typeInfo.Kind, "")))
                     break;
             }
@@ -237,7 +241,7 @@ namespace XSharp.LanguageService
                 // Then remove it
                 if (dotPos > 0)
                     realTypeName = realTypeName.Substring(0, dotPos);
-                ImageSource icon = _glyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
+                ImageSource icon = typeInfo.Kind.GetImageMoniker(typeInfo.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Prototype, icon, null, Kind.Class, "")))
                     break;
             }
@@ -319,6 +323,7 @@ namespace XSharp.LanguageService
         }
         internal void AddGenericFunctionsAssembliesLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
+
             var found = location.Project.FindFunctionsInAssemblyReferences(startWith, true);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
@@ -334,8 +339,8 @@ namespace XSharp.LanguageService
             int dotPos = startWith.LastIndexOf('.');
             if (dotPos != -1)
                 startLen = dotPos + 1;
-            ImageSource icon = _glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupNamespace, StandardGlyphItem.GlyphItemPublic);
-            ImageSource iconClass = _glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupClass, StandardGlyphItem.GlyphItemPublic);
+            ImageSource icon = KnownMonikers.Namespace.GetImageSource();
+            ImageSource iconClass = KnownMonikers.ClassPublic.GetImageSource();
             foreach (string nameSpace in namespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
                 string displayName = nameSpace;
@@ -408,7 +413,7 @@ namespace XSharp.LanguageService
             // First, look after Parameters
             foreach (var paramVar in location.Member.Parameters.Where(p => nameStartsWith(p.Name, startWith)))
             {
-                ImageSource icon = _glyphService.GetGlyph(paramVar.getGlyphGroup(), paramVar.getGlyphItem());
+                ImageSource icon = paramVar.Kind.GetImageMoniker(paramVar.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Prototype, icon, null, Kind.Parameter, "")))
                     break;
             }
@@ -416,7 +421,7 @@ namespace XSharp.LanguageService
             // line numbers in the range are 1 based. currentLine = 0 based !
             foreach (var localVar in location.Member.GetLocals(location).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine <= location.LineNumber))
             {
-                ImageSource icon = _glyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
+                ImageSource icon = localVar.Kind.GetImageMoniker(localVar.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Prototype, icon, null, Kind.Local, "")))
                     break;
 
@@ -440,7 +445,7 @@ namespace XSharp.LanguageService
                     return;
                 foreach (var member in type.GetMembers(startWith))
                 {
-                    ImageSource icon = _glyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
+                    ImageSource icon = member.Kind.GetImageMoniker(member.Visibility).GetImageSource();
                     if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Prototype, icon, null, Kind.Field, "")))
                         break;
                 }
@@ -465,7 +470,7 @@ namespace XSharp.LanguageService
                     return;
                 foreach (var member in baseType.GetMembers(startWith))
                 {
-                    ImageSource icon = _glyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
+                    ImageSource icon = member.Kind.GetImageMoniker(member.Visibility).GetImageSource();
                     if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Prototype, icon, null, Kind.Field, "")))
                         break;
                 }
@@ -578,7 +583,7 @@ namespace XSharp.LanguageService
                     continue;
                 if (elt is XPESymbol peSym && peSym.IsSpecialName)
                     continue;
-                ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
+                ImageSource icon = elt.Kind.GetImageMoniker(elt.Visibility).GetImageSource();
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }
@@ -638,7 +643,7 @@ namespace XSharp.LanguageService
                 if (!add)
                     continue;
                 //
-                ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
+                ImageSource icon = elt.Kind.GetImageMoniker(elt.Visibility).GetImageSource();
                 string toAdd = AddOpenParen(elt.Kind);
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
@@ -652,6 +657,8 @@ namespace XSharp.LanguageService
         /// <param name="minVisibility"></param>
         internal void FillMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             FillMembers(location, compList, xType, xType.GetMembers(startWith), minVisibility, staticOnly);
         }
 
@@ -669,6 +676,7 @@ namespace XSharp.LanguageService
                 }
                 if (selection.Count() > 0)
                 {
+
                     FillMembers(location, compList, null, selection, Modifiers.Public, true);
                 }
             }

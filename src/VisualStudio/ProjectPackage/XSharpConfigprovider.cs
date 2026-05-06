@@ -34,7 +34,24 @@ namespace XSharp.Project
         {
             return new XSharpProjectConfig(base.ProjectMgr, canonicalName);
         }
-
+#if DEV17
+        /// <summary>
+        /// Returns configuration provider properties.
+        /// For SDK-style projects, hides the Configuration/Platform toolbar in the
+        /// Project Designer property page frame — matching C# CPS project system behaviour.
+        /// </summary>
+        public override int GetCfgProviderProperty(int propid, out object var)
+        {
+            // VSCFGPROPID_HideConfigurations = -16009 (from __VSCFGPROPID2, not available via NuGet)
+            const int VSCFGPROPID_HideConfigurations = -16009;
+            if (propid == VSCFGPROPID_HideConfigurations)
+            {
+                var = this.ProjectMgr is XSharpSdkProjectNode;
+                return VSConstants.S_OK;
+            }
+            return base.GetCfgProviderProperty(propid, out var);
+        }
+#endif
         public override int GetCfgOfName(string name, string platName, out IVsCfg cfg)
         {
             if (name.IndexOf("|") >= 0)

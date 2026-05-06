@@ -1,0 +1,173 @@
+<UserControl
+    x:Class="XSharp.Project.XPackagePropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    mc:Ignorable="d" d:DesignWidth="660"
+    UseLayoutRounding="True"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}"
+    toolkit:Themes.UseVsTheme="True"
+    Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
+
+    <!--
+        Package property page - WPF/XAML implementation (SDK-style projects only).
+        DataContext: XPackagePropertyPageViewModel (set by XPackagePropertyPageXamlHost).
+
+        Two sections:
+          Assembly Information - Title, Description, Company, Copyright, NeutralLanguage
+          NuGet Package        - PackageId, PackageVersion, Authors, PackageTags,
+                                 PackageLicenseExpression, PackageProjectUrl,
+                                 RepositoryUrl, RepositoryType,
+                                 GeneratePackageOnBuild, IsPackable
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+            <local:PropertyOverriddenConverter x:Key="PropertyOverridden"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="8"
+                    Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
+
+            <!-- ============================================================ -->
+            <!-- Assembly Information                                          -->
+            <!-- ============================================================ -->
+            <Label Content="Assembly Information" FontWeight="SemiBold" Margin="0,4,0,2"/>
+            <Separator Margin="0,0,0,4"/>
+
+            <local:PropertyTextBox
+                    Label="Title:"
+                    Value="{Binding AssemblyTitle, Mode=TwoWay}"
+                    PropertyName="AssemblyTitle"
+                    ToolTip="AssemblyTitle - human-readable name for the assembly."
+                    LabelMargin="0,4,0,2"/>
+
+            <!-- Description stays as raw Grid - multiline textbox -->
+            <Label Content="Description:" Margin="0,4,0,0"
+                   ToolTip="Description - used as both the assembly description and the NuGet package description when PackageDescription is not set."/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                         ToolTip="Description - used as both the assembly description and the NuGet package description when PackageDescription is not set."/>
+                <Button Grid.Column="1" Style="{DynamicResource ResetButtonStyle}"
+                        Command="{Binding ResetCommand}" CommandParameter="Description"
+                        Margin="4,0,0,0" VerticalAlignment="Top"/>
+            </Grid>
+
+            <local:PropertyTextBox
+                    Label="Company:"
+                    Value="{Binding Company, Mode=TwoWay}"
+                    PropertyName="Company"
+                    ToolTip="Company - maps to [AssemblyCompany]."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Copyright:"
+                    Value="{Binding Copyright, Mode=TwoWay}"
+                    PropertyName="Copyright"
+                    ToolTip="Copyright - maps to [AssemblyCopyright] and the NuGet Copyright field."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Neutral Language:"
+                    Value="{Binding NeutralLanguage, Mode=TwoWay}"
+                    PropertyName="NeutralLanguage"
+                    ToolTip="NeutralLanguage - the culture of the assembly's neutral resources, e.g. en-US."
+                    LabelMargin="0,4,0,2"/>
+
+            <!-- ============================================================ -->
+            <!-- NuGet Package                                                 -->
+            <!-- ============================================================ -->
+            <Label Content="NuGet Package" FontWeight="SemiBold" Margin="0,16,0,2"/>
+            <Separator Margin="0,0,0,4"/>
+
+            <local:PropertyTextBox
+                    Label="Package ID:"
+                    Value="{Binding PackageId, Mode=TwoWay}"
+                    PropertyName="PackageId"
+                    ToolTip="PackageId - the NuGet package identifier. Defaults to AssemblyName when not set."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Package Version:"
+                    Value="{Binding PackageVersion, Mode=TwoWay}"
+                    PropertyName="PackageVersion"
+                    ToolTip="PackageVersion - semver version string, e.g. 1.0.0 or 1.0.0-beta."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Authors:"
+                    Value="{Binding Authors, Mode=TwoWay}"
+                    PropertyName="Authors"
+                    ToolTip="Authors - semicolon-separated list of package authors."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Tags:"
+                    Value="{Binding PackageTags, Mode=TwoWay}"
+                    PropertyName="PackageTags"
+                    ToolTip="PackageTags - semicolon-delimited list of tags for the NuGet gallery."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="License Expression (SPDX):"
+                    Value="{Binding PackageLicenseExpression, Mode=TwoWay}"
+                    PropertyName="PackageLicenseExpression"
+                    ToolTip="PackageLicenseExpression - an SPDX license identifier or expression, e.g. MIT or Apache-2.0."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Project URL:"
+                    Value="{Binding PackageProjectUrl, Mode=TwoWay}"
+                    PropertyName="PackageProjectUrl"
+                    ToolTip="PackageProjectUrl - URL to the project home page."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Repository URL:"
+                    Value="{Binding RepositoryUrl, Mode=TwoWay}"
+                    PropertyName="RepositoryUrl"
+                    ToolTip="RepositoryUrl - URL used to clone or retrieve source code."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyTextBox
+                    Label="Repository Type:"
+                    Value="{Binding RepositoryType, Mode=TwoWay}"
+                    PropertyName="RepositoryType"
+                    ToolTip="RepositoryType - type of the source repository, e.g. git or tfs."
+                    LabelMargin="0,4,0,2"/>
+
+            <local:PropertyCheckBox
+                    Label="Generate NuGet package on build"
+                    Value="{Binding GeneratePackageOnBuild, Mode=TwoWay}"
+                    PropertyName="GeneratePackageOnBuild"
+                    ToolTip="GeneratePackageOnBuild - automatically creates a .nupkg file whenever the project is built."
+                    Margin="0,8,0,0"/>
+
+            <local:PropertyCheckBox
+                    Label="Package this project"
+                    Value="{Binding IsPackable, Mode=TwoWay}"
+                    PropertyName="IsPackable"
+                    ToolTip="IsPackable - when unchecked, msbuild -t:pack will not produce a package for this project."
+                    Margin="0,6,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

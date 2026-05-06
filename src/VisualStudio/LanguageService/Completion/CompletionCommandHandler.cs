@@ -8,6 +8,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.OLE.Interop;
+using OLE=Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -24,12 +25,12 @@ using Community.VisualStudio.Toolkit;
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
-    internal class XSharpCompletionCommandHandler : IOleCommandTarget
+    internal class XSharpCompletionCommandHandler : OLE.IOleCommandTarget
     {
         readonly ITextView _textView;
         readonly ICompletionBroker _completionBroker;
         private readonly XDocument _doc;
-        private readonly IOleCommandTarget m_nextCommandHandler;
+        private readonly OLE.IOleCommandTarget m_nextCommandHandler;
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
         private readonly IVsTextView _textViewAdapter;
         bool completionWasSelected = false;

@@ -8,12 +8,12 @@ namespace Microsoft.VisualStudio.Project
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.ComponentModel;
     using System.ComponentModel.Design;
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
     using System.Globalization;
-    using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
@@ -24,6 +24,7 @@ namespace Microsoft.VisualStudio.Project
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
+    using XSharp.Project;
 
     /// <summary>
     /// Abstract base class for a project property page.
@@ -40,14 +41,17 @@ namespace Microsoft.VisualStudio.Project
 
         private bool active;
         private bool isDirty;
-        private XPropertyPagePanel propertyPagePanel;
+        private IPropertyPagePanel propertyPagePanel;
         private string pageName;
         private IPropertyPageSite pageSite;
         private XProjectNode project;
         private XProjectConfig[] projectConfigs;
         private PROPPAGEINFO propPageInfo;
+        private IntPtr hwndPageHost; // parent HWND passed to Activate; used in Show to collapse the config row
 
         protected bool PerConfig { get; set; } = false;
+
+        protected bool IsSdkProject => !string.IsNullOrEmpty(ProjectMgr?.BuildProject.Xml.Sdk);
 
         // =========================================================================================
         // Constructors
@@ -131,8 +135,10 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Gets the main control that hosts the property page.
+        /// This is either a WinForms <see cref="XPropertyPagePanel"/> or a
+        /// <see cref="XPropertyPageXamlHost"/> depending on the project type.
         /// </summary>
-        protected XPropertyPagePanel PropertyPagePanel
+        protected IPropertyPagePanel PropertyPagePanel
         {
             get { return this.propertyPagePanel; }
             private set { this.propertyPagePanel = value; }
@@ -141,7 +147,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Gets the currently active collection of configurations for the page.
         /// </summary>
-        protected IList<XProjectConfig> ProjectConfigs
+        public IList<XProjectConfig> ProjectConfigs
         {
             get { return this.projectConfigs; }
         }
@@ -158,21 +164,26 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="modal">Indicates whether the dialog box is shown modally or not.</param>
         void IPropertyPage.Activate(IntPtr hwndParent, RECT[] rects, int modal)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             // create the panel control
             this.PropertyPagePanel = this.CreatePropertyPagePanel();
             this.PropertyPagePanel.HookupEvents();
 
             // we need to create the control so the handle is valid
-            this.PropertyPagePanel.CreateControl();
+            this.PropertyPagePanel.Control.CreateControl();
 
-            //this.PropertyPagePanel.HelpRequested += new HelpEventHandler(this.PropertyPagePanel_HelpRequested);
+            //this.PropertyPagePanel.Control.HelpRequested += new HelpEventHandler(this.PropertyPagePanel_HelpRequested);
 
             // set our parent
-            NativeMethods.SetParent(this.PropertyPagePanel.Handle, hwndParent);
+            NativeMethods.SetParent(this.PropertyPagePanel.Control.Handle, hwndParent);
+            this.hwndPageHost = hwndParent; // saved for Show() to collapse config row after Init runs
+            // Disable AutoScroll early so the native scrollbar never flashes on first paint.
+            // The full collapse (padding/row) is repeated in Show() after VS calls Init().
+            CollapseConfigPanelRowForHost(hwndParent);
 
             // set our initial size
             this.ResizeContents(rects[0]);
-            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.PropertyPagePanel.BindProperties();
             this.active = true;
@@ -202,9 +213,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (this.PropertyPagePanel != null)
+            if (this.PropertyPagePanel != null && this.IsDirty)
             {
-                this.PropertyPagePanel.Apply();
+                this.PropertyPagePanel.ApplyChanges();
             }
 
             // Changes are all applied to the build project in real-time, so nothing to do here.
@@ -272,8 +283,8 @@ namespace Microsoft.VisualStudio.Project
             info.pszDocString = null;
             info.pszHelpFile = null;
             info.pszTitle = this.PageName;
-            info.SIZE.cx = this.PropertyPagePanel.Width;
-            info.SIZE.cy = this.PropertyPagePanel.Height;
+            info.SIZE.cx = this.PropertyPagePanel.Control.Width;
+            info.SIZE.cy = this.PropertyPagePanel.Control.Height;
             pageInfos[0] = info;
             this.propPageInfo = info;
         }
@@ -538,16 +549,22 @@ namespace Microsoft.VisualStudio.Project
         /// </param>
         void IPropertyPage.Show(uint cmdShow)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.PropertyPagePanel != null)
             {
                 if (cmdShow == Win32SwHide)
                 {
-                    this.PropertyPagePanel.Hide();
+                    this.PropertyPagePanel.Control.Hide();
                 }
                 else
                 {
-                    this.PropertyPagePanel.Show();
+                    this.PropertyPagePanel.Control.Show();
                     this.SetHelpContext();
+                    // Collapse the config-toolbar row *after* VS has called Init/SetConfigDropdownVisibility,
+                    // which happens before Show(SW_SHOW). At this point ConfigurationPanel.Visible is
+                    // already set correctly and we can safely collapse the empty row.
+                    if (this.hwndPageHost != IntPtr.Zero)
+                        CollapseConfigPanelRowForHost(this.hwndPageHost);
                 }
             }
         }
@@ -670,6 +687,115 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        // =========================================================================================
+        // Per-config helpers (used by Build / Debug / BuildEvents ViewModels with own selector)
+        // =========================================================================================
+
+        /// <summary>
+        /// Returns all <see cref="XProjectConfig"/> objects defined in the project,
+        /// regardless of which configuration VS currently has active.
+        /// </summary>
+        public IReadOnlyList<XProjectConfig> GetAllProjectConfigs()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.project == null)
+                return Array.Empty<XProjectConfig>();
+
+            IVsCfgProvider provider;
+            if (ErrorHandler.Failed(this.project.GetCfgProvider(out provider)) || provider == null)
+                return Array.Empty<XProjectConfig>();
+
+            uint[] expected = new uint[1];
+            if (ErrorHandler.Failed(provider.GetCfgs(0, null, expected, null)) || expected[0] == 0)
+                return Array.Empty<XProjectConfig>();
+
+            XProjectConfig[] configs = new XProjectConfig[expected[0]];
+            uint[] actual = new uint[1];
+            int hr = provider.GetCfgs(expected[0], configs, actual, null);
+            if (hr != 0)
+                Marshal.ThrowExceptionForHR(hr);
+
+            return configs;
+        }
+
+        /// <summary>
+        /// Gets a per-config property value for an explicit list of configurations.
+        /// When all configs agree the common value is returned; when they differ, null is returned.
+        /// </summary>
+        /// <param name="propertyName">MSBuild property name.</param>
+        /// <param name="configs">Configurations to read from.</param>
+        public string GetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (configs == null || configs.Count == 0)
+                return null;
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
+            return property.GetValue(false, configs.Cast<ProjectConfig>().ToList());
+        }
+
+        /// <summary>
+        /// Sets a per-config property value for an explicit list of configurations.
+        /// </summary>
+        /// <param name="propertyName">MSBuild property name.</param>
+        /// <param name="value">Value to write.</param>
+        /// <param name="configs">Configurations to write to.</param>
+        public void SetPropertyForConfigs(string propertyName, string value, IList<XProjectConfig> configs)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (configs == null || configs.Count == 0)
+                return;
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, perConfig: true);
+            IList<ProjectConfig> baseConfigs = configs.Cast<ProjectConfig>().ToList();
+            string oldValue = property.GetValue(false, baseConfigs);
+            if (!String.Equals(value, oldValue, StringComparison.Ordinal))
+            {
+                property.SetValue(value, configs);
+                this.IsDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Removes (resets) a per-config property from the MSBuild property groups that
+        /// match each config in <paramref name="configs"/>, then re-evaluates the project.
+        /// </summary>
+        /// <param name="propertyName">MSBuild property name.</param>
+        /// <param name="configs">Configurations whose property group entries should be removed.</param>
+        public void ResetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (configs == null || configs.Count == 0 || this.project == null)
+                return;
+
+            var buildProject = this.project.BuildProject;
+            bool changed = false;
+
+            foreach (XProjectConfig config in configs)
+            {
+                string conditionTrimmed = config.Condition.Trim();
+                foreach (var propGroup in buildProject.Xml.PropertyGroups)
+                {
+                    if (!string.Equals(propGroup.Condition.Trim(), conditionTrimmed, StringComparison.Ordinal))
+                        continue;
+                    foreach (var prop in propGroup.Properties)
+                    {
+                        if (string.Equals(prop.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            propGroup.RemoveChild(prop);
+                            changed = true;
+                            break; // only one per group
+                        }
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                this.project.BuildProject.ReevaluateIfNecessary();
+                this.project.SetProjectFileDirty(true);
+                this.IsDirty = true;
+            }
+        }
+
         /// <summary>
         /// Normalizes a text-field property value by trimming whitespace.
         /// Subclasses may override to do additional normalization.
@@ -689,7 +815,7 @@ namespace Microsoft.VisualStudio.Project
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
         /// <returns>The newly created main control that hosts the property page.</returns>
-        protected abstract XPropertyPagePanel CreatePropertyPagePanel();
+        protected abstract IPropertyPagePanel CreatePropertyPagePanel();
 
         /// <summary>
         /// Updates the page as necessary when the project output type changed.
@@ -698,6 +824,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Name of the property that changed.</param>
         protected virtual void HandleOutputTypeChanged(object source, PropertyChangedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.PropertyPagePanel.BindProperties();
         }
 
@@ -707,7 +834,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="newBounds">The total area of the property page.</param>
         private void ResizeContents(RECT newBounds)
         {
-            if (this.PropertyPagePanel != null && this.PropertyPagePanel.IsHandleCreated)
+            if (this.PropertyPagePanel != null && this.PropertyPagePanel.Control.IsHandleCreated)
             {
                 int minimumWidth = 0;
                 int minimumHeight = 0;
@@ -721,7 +848,7 @@ namespace Microsoft.VisualStudio.Project
                 // Visual Studio sends us the size of the area in which it wants us to size.
                 // However, we don't want to size smaller than the property page's minimum
                 // size, which scales according to the screen DPI.
-                this.PropertyPagePanel.Bounds = new Rectangle(
+                this.PropertyPagePanel.Control.Bounds = new Rectangle(
                     newBounds.left,
                     newBounds.top,
                     Math.Max(newBounds.right - newBounds.left, minimumWidth),
@@ -745,6 +872,72 @@ namespace Microsoft.VisualStudio.Project
                         helpService.AddContextAttribute("Keyword", String.Empty, HelpKeywordType.F1Keyword);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Walks the managed-control chain from <paramref name="hwndOurControl"/> upward to find
+        /// <c>PropPageDesignerViewLayoutPanel</c> and collapses its row 0 to height 0 when the
+        /// <c>ConfigurationPanel</c> (row 0 child) is hidden — eliminating the gray gap that
+        /// appears above the WPF page content in SDK-style projects.
+        /// </summary>
+        private static void CollapseConfigPanelRowForHost(IntPtr hwndParent)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Control c = Control.FromHandle(hwndParent);
+            while (c != null)
+            {
+                if (c is TableLayoutPanel tlp && tlp.Name == "PropPageDesignerViewLayoutPanel")
+                {
+                    Control configPanel = null;
+                    Control pagePanel = null;
+                    foreach (Control child in tlp.Controls)
+                    {
+                        if (tlp.GetRow(child) == 0) configPanel = child;
+                        else if (tlp.GetRow(child) == 1) pagePanel = child;
+                    }
+
+                    if (configPanel != null && !configPanel.Visible)
+                    {
+                        // Collapse the hidden config row completely
+                        configPanel.MinimumSize = Size.Empty;
+                        configPanel.Size = Size.Empty;
+                        configPanel.Margin = new Padding(0);
+                        tlp.RowStyles[0] = new RowStyle(SizeType.Absolute, 0);
+                        // Remove all TLP padding and PagePanel margins so WPF fills edge-to-edge
+                        tlp.Padding = new Padding(0);
+                        if (pagePanel != null)
+                            pagePanel.Margin = new Padding(0);
+                        tlp.PerformLayout();
+                    }
+
+                    // The WPF content has its own ScrollViewer but ElementHost with Dock=Fill
+                    // gives WPF infinite height so ScrollViewer never activates.
+                    // The WinForms AutoScroll on the ScrollablePanel provides working scrolling —
+                    // leave it enabled.
+                    // Set the panel background to match VS theme so the scrollbar gutter
+                    // and any exposed panel area uses the correct color rather than default gray.
+                    if (pagePanel != null)
+                    {
+                        try
+                        {
+                            var shell2 = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
+                            if (shell2 != null && shell2.GetVSSysColorEx(
+                                    -105, // __VSSYSCOLOREX.VSCOLOR_TOOLWINDOW_BACKGROUND
+                                    out uint colorRef) == VSConstants.S_OK)
+                            {
+                                pagePanel.BackColor = Color.FromArgb(
+                                    (int)(colorRef & 0xFF),
+                                    (int)((colorRef >> 8) & 0xFF),
+                                    (int)((colorRef >> 16) & 0xFF));
+                            }
+                        }
+                        catch { }
+                    }
+
+                    return;
+                }
+                c = c.Parent;
             }
         }
 

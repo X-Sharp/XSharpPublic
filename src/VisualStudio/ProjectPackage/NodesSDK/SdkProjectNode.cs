@@ -77,6 +77,15 @@ namespace XSharp.Project
             }
         }
 
+        private OAXSharpSdkProject _automationObject;
+        public override object GetAutomationObject()
+        {
+            if (_automationObject == null)
+                _automationObject = new OAXSharpSdkProject(this);
+            return _automationObject;
+        }
+
+
         public override void OnItemAdded(HierarchyNode parent, HierarchyNode child)
         {
             base.OnItemAdded(parent, child);

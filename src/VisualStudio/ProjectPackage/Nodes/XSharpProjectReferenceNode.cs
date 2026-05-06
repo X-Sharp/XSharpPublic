@@ -3,11 +3,16 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Imaging;
-using System;
 
 namespace XSharp.Project
 {
@@ -55,7 +60,7 @@ namespace XSharp.Project
         protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.Library;
         private void AddProject()
         {
-            var project = this.ProjectMgr as XSharpProjectNode;
+            XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
             if (project != null)
                 project.AddURL(this.Url, this);
             project.ProjectModel.AddProjectReference(this.Url);

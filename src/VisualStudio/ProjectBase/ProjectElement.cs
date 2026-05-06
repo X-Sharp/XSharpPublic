@@ -99,7 +99,7 @@ namespace Microsoft.VisualStudio.Project
                     {
                         throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
                     }
-                    if (! this.item.IsImported)
+                    if (! this.IsImported)
                     {
                     this.item.ItemType = value;
                     this.itemProject.SetProjectFileDirty(true);
@@ -141,7 +141,7 @@ namespace Microsoft.VisualStudio.Project
 
             // create and add the item to the project
 
-            this.item = project.BuildProject.AddItem(itemType, ProjectCollection.Escape(itemPath))[0];
+            this.item = project.BuildProject.AddItem(itemType, Microsoft.Build.Evaluation.ProjectCollection.Escape(itemPath))[0];
             if (itemType != ProjectFileConstants.Folder)
                 this.itemProject.SetProjectFileDirty(true);
             this.RefreshProperties();
@@ -184,8 +184,8 @@ namespace Microsoft.VisualStudio.Project
                 deleted = true;
                 if (!IsImported)
                 {
-                    itemProject.BuildProject.RemoveItem(item);
-                    this.itemProject.SetProjectFileDirty(true);
+                itemProject.BuildProject.RemoveItem(item);
+                this.itemProject.SetProjectFileDirty(true);
                 }
             }
             itemProject = null;

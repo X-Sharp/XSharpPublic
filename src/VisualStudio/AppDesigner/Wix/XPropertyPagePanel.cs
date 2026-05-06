@@ -15,9 +15,13 @@ namespace Microsoft.VisualStudio.Project
     using System.Windows.Forms;
     using XSharp.Project;
     /// <summary>
-    /// Property page contents for the Project Build Settings page.
+    /// Base WinForms panel for a project property page.
+    /// Provides tag-driven property binding (controls with a <c>Tag</c> set to an MSBuild
+    /// property name are automatically read and written by <see cref="BindProperties"/> and
+    /// the control-validated handlers) and implements <see cref="IPropertyPagePanel"/>
+    /// so that <see cref="XPropertyPage"/> can treat WinForms and XAML panels uniformly.
     /// </summary>
-    public partial class XPropertyPagePanel : XColorUserControl
+    public partial class XPropertyPagePanel : XColorUserControl, IPropertyPagePanel
     {
         // =========================================================================================
         // Member Variables
@@ -48,6 +52,7 @@ namespace Microsoft.VisualStudio.Project
 
             this.Font = XHelperMethods.GetDialogFont();
             this.ForeColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONTEXT);
+            this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_WINDOW);
         }
 
         // =========================================================================================
@@ -331,6 +336,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Parameters for the event.</param>
         private void HandleControlValidating(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Control control = (Control)sender;
             string propertyName = (string)control.Tag;
             string value = control.Text;
@@ -464,6 +470,53 @@ namespace Microsoft.VisualStudio.Project
                 tb.Text = form.PropertyText.Text;
                 this.ParentPropertyPage.SetProperty((string)tb.Tag, tb.Text);
             }
+        }
+
+        // =========================================================================================
+        // IPropertyPagePanel — explicit implementation
+        // =========================================================================================
+
+        /// <summary>
+        /// Returns this control as the <see cref="System.Windows.Forms.Control"/> that
+        /// Visual Studio hosts inside its property sheet frame.
+        /// </summary>
+        Control IPropertyPagePanel.Control => this;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this panel has unsaved changes.
+        /// Reads and writes the owning <see cref="XPropertyPage.IsDirty"/> flag.
+        /// </summary>
+        bool IPropertyPagePanel.IsDirty
+        {
+            get => ParentPropertyPage?.IsDirty ?? false;
+            set
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                if (ParentPropertyPage != null)
+                    ParentPropertyPage.IsDirty = value;
+            }
+        }
+
+        /// <summary>
+        /// Wires up change-notification event handlers on all tagged controls.
+        /// Delegates to <see cref="HookupEvents()"/>.
+        /// </summary>
+        void IPropertyPagePanel.HookupEvents() => this.HookupEvents();
+
+        /// <summary>
+        /// Loads project property values into the panel's controls.
+        /// Delegates to <see cref="BindProperties()"/>.
+        /// </summary>
+        void IPropertyPagePanel.BindProperties() => this.BindProperties();
+
+        /// <summary>
+        /// Saves the panel's control values back to the MSBuild project.
+        /// Delegates to <see cref="Apply()"/>.
+        /// </summary>
+        void IPropertyPagePanel.ApplyChanges()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            this.Apply();
         }
 
     }

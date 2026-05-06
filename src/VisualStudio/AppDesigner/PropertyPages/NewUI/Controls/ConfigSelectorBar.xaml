@@ -1,0 +1,32 @@
+<UserControl
+    x:Class="XSharp.Project.ConfigSelectorBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    x:Name="root">
+
+    <!--
+        ConfigSelectorBar — composite control: "Configuration:" label + ComboBox.
+
+        DataContext is NOT set here — inherits the page ViewModel.
+
+        Dependency properties (set by the page):
+          ConfigSelector — XConfigSelectorViewModel; drives ItemsSource and SelectedItem.
+    -->
+
+    <StackPanel Orientation="Vertical" >
+		<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+			<TextBlock Text="Configuration:"
+					   VerticalAlignment="Center"
+					   Margin="0,0,8,0"
+					   Style="{DynamicResource ThemedTextBlockStyle}"/>
+			<ComboBox ItemsSource="{Binding ConfigSelector.ConfigNames, ElementName=root}"
+					  SelectedItem="{Binding ConfigSelector.SelectedConfig, ElementName=root, Mode=TwoWay}"
+					  MinWidth="150"/>
+		</StackPanel>
+		<Separator Margin="0,8,0,0"/>
+    </StackPanel>
+
+</UserControl>

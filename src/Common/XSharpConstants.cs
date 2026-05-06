@@ -64,10 +64,17 @@ namespace XSharp
         internal const string LanguagePropertiesPage = "0DFC7EF7-3F1A-4ACB-AFD8-DF56AEF9467A";
         internal const string BuildEventsPropertiesPage = "49306259-9119-466E-8780-486CFBE2597D";
         internal const string GlobalUsingsPropertiesPage = "5BF73771-1E08-40D9-8A48-EC06552C138B";
+        internal const string PackagePropertiesPage = "A3C1A9C7-4F8B-4E2D-9A7E-3D2B6C8F1E05";
         internal const string DebuggerWorkareasPane = "B5B41BAB-62F9-48E0-80D8-947F2F14D1C5";
         internal const string DebuggerSettingsPane = "F7ED7826-137A-462D-8757-37A02BEF4DCF";
         internal const string DebuggerGlobalsPane = "53B7968B-251B-44E0-BDF5-A225BF0DBC77";
         internal const string DebuggerPublicsPrivatesPane = "7C2FC14E-4BBE-4B95-B0CB-B3B7E0658A23";
+
+        /// <summary>GUID for the Document Outline tool window pane.</summary>
+        internal const string DocumentOutlinePaneGuidString = "23C56229-5AA9-4CE7-A4D6-691E88BCAE59";
+
+        /// <summary>OLE command ID used to show the Document Outline window (must match XSharpLanguagePackage.vsct).</summary>
+        internal const int cmdidDocumentOutlineWindow = 0x7001;
 
     }
 
@@ -219,5 +226,22 @@ namespace XSharp
         internal const string TargetFrameworks = nameof(TargetFrameworks);
         internal const string XTargetFrameworks = nameof(XTargetFrameworks);
         internal const string ActiveTargetFramework = nameof(ActiveTargetFramework);
+        // Assembly info properties
+        internal const string AssemblyTitle = nameof(AssemblyTitle);
+        internal const string Description = nameof(Description);
+        internal const string Company = nameof(Company);
+        internal const string Copyright = nameof(Copyright);
+        internal const string NeutralLanguage = nameof(NeutralLanguage);
+        // NuGet package metadata properties
+        internal const string PackageId = nameof(PackageId);
+        internal const string PackageVersion = nameof(PackageVersion);
+        internal const string Authors = nameof(Authors);
+        internal const string PackageTags = nameof(PackageTags);
+        internal const string PackageLicenseExpression = nameof(PackageLicenseExpression);
+        internal const string PackageProjectUrl = nameof(PackageProjectUrl);
+        internal const string RepositoryUrl = nameof(RepositoryUrl);
+        internal const string RepositoryType = nameof(RepositoryType);
+        internal const string GeneratePackageOnBuild = nameof(GeneratePackageOnBuild);
+        internal const string IsPackable = nameof(IsPackable);
     }
 }

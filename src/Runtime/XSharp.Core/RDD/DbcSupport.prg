@@ -349,7 +349,7 @@ BEGIN NAMESPACE XSharp.RDD
                     THROW Error.ArgumentError(__FUNCTION__, nameof(cName), "Could not find Connection '"+cName+"'")
                 ENDIF
             CASE "database"
-                RETURN NIL
+                RETURN NULL
             CASE "field"
                 var names := cName:Split( '.')
                 if (names:Length == 1)

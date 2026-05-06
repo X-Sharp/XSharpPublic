@@ -1,0 +1,37 @@
+<UserControl
+    x:Class="XSharp.Project.PropertyCheckBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    x:Name="root">
+
+    <!--
+        PropertyCheckBox — composite control: CheckBox + Reset button.
+
+        DataContext is intentionally NOT set on this control — it inherits the
+        page ViewModel from the parent so that:
+          • Button.Command binds to ResetCommand on the ViewModel directly.
+          • Button.IsEnabled binds to the ViewModel indexer [PropertyName].
+
+        Dependency properties (set by the page):
+          Label        — text/object shown as the CheckBox label (Content)
+          Value        — bool, TwoWay-bound to IsChecked
+          PropertyName — string; drives CommandParameter and IsEnabled indexer
+                         wiring performed in code-behind.
+    -->
+
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <CheckBox x:Name="checkBox"
+                  Content="{Binding Label, ElementName=root}"
+                  IsChecked="{Binding Value, ElementName=root, Mode=TwoWay}"
+                  VerticalAlignment="Center"/>
+        <Button x:Name="resetButton"
+                Style="{DynamicResource ResetButtonStyle}"
+                Command="{Binding ResetCommand}"
+                Margin="4,0,0,0"
+                VerticalAlignment="Center"/>
+    </StackPanel>
+
+</UserControl>

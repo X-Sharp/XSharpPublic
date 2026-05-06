@@ -35,7 +35,7 @@ namespace XSharp.Project
         public XSharpBuildEventsPropertyPage()
         {
             this.PageName = "Build Events";
-            this.PerConfig = true;
+            this.PerConfig = false;
         }
 
         // =========================================================================================
@@ -100,8 +100,10 @@ namespace XSharp.Project
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
         /// <returns>The newly created main control that hosts the property page.</returns>
-        protected override XPropertyPagePanel CreatePropertyPagePanel()
+        protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
+            if (IsSdkProject)
+                return new XBuildEventsPropertyPageXamlHost(this, names);
             return new XBuildEventsPropertyPagePanel(this, names);
         }
     }

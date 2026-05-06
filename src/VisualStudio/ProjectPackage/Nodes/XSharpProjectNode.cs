@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+
 using stdole;
 
 using System;
@@ -49,18 +50,21 @@ namespace XSharp.Project
     public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsProject5
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
+
         internal static XSharpProjectNode FindProject(string url)
         {
-            var file = System.IO.Path.GetFileName(url);
-            foreach (var proj in nodes)
+            lock (nodes)
             {
-                if (string.Compare(proj.FileName, url, true) == 0)
-                    return proj;
-                var pFile = System.IO.Path.GetFileName(proj.FileName);
-                if (string.Compare(pFile, url, true) == 0)
-                    return proj;
+                var file = System.IO.Path.GetFileName(url);
+                foreach (var proj in nodes)
+                {
+                    if (string.Compare(proj.FileName, url, true) == 0)
+                        return proj;
+                    var pFile = System.IO.Path.GetFileName(proj.FileName);
+                    if (string.Compare(pFile, url, true) == 0)
+                        return proj;
+                }
             }
-
             return null;
         }
 
@@ -86,7 +90,7 @@ namespace XSharp.Project
             _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
-        internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
+        internal static XSharpProjectNode[] AllProjects { get { lock (nodes) { return nodes.ToArray(); } } }
 
         #region Constants
         internal const string ProjectTypeName = XSharpConstants.LanguageName;
@@ -311,8 +315,6 @@ namespace XSharp.Project
 
         protected override int ShowContextMenu(int menuId, Guid menuGroup, POINTS points)
         {
-            // Save the fact that we are showing a context menu, we need that to fool the Nuget tools.
-            // See OAXSharpProject.cs
             InContextMenu = true;
             var result = base.ShowContextMenu(menuId, menuGroup, points);
             InContextMenu = false;
@@ -461,17 +463,6 @@ namespace XSharp.Project
                         return VSConstants.S_OK;
                 }
             }
-            //else if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet2K)
-            //{
-
-            //    switch ((VsCommands2K)cmd)
-            //    {
-            //        case VsCommands2K.ECMD_PUBLISHSELECTION:
-            //        case VsCommands2K.ECMD_PUBLISHSLNCTX:
-            //            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
-            //            return VSConstants.S_OK;
-            //    }
-            //}
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
         public override void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
@@ -674,8 +665,8 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-                /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,
-                */typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpGlobalUsingsPropertiesPage).GUID,
+                typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
                 };
@@ -688,14 +679,23 @@ namespace XSharp.Project
         /// <returns>List of pages GUIDs.</returns>
         protected override Guid[] GetConfigurationIndependentPropertyPages()
         {
-            Guid[] result = new Guid[]
+            if (IsSdkProject)
+            {
+                return new Guid[]
                 {
+                    typeof(XSharpGeneralPropertyPage).GUID,
+                    typeof(XSharpLanguagePropertyPage).GUID,
+                    typeof(XSharpDialectPropertyPage).GUID,
+                    typeof(XSharpPackagePropertyPage).GUID,
+                    typeof(XSharpGlobalUsingsPropertiesPage).GUID
+                };
+            }
+            return new Guid[]
+            {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
-                 typeof(XSharpDialectPropertyPage).GUID,
-                 /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
-                };
-            return result;
+                typeof(XSharpDialectPropertyPage).GUID
+            };
         }
 
         /// <summary>
@@ -1357,12 +1357,11 @@ namespace XSharp.Project
         public XSharpPackageReferenceContainerNode GetPackageReferenceContainerNode()
         {
             var node = FindChild(XSharpPackageReferenceContainerNode.PackageReferencesNodeVirtualName) as XSharpPackageReferenceContainerNode;
-            if (node == null )
+            if (node == null)
             {
                 var referenceContainerNode = GetReferenceContainer() as HierarchyNode;
                 node = new XSharpPackageReferenceContainerNode(this);
                 referenceContainerNode.AddChild(node);
-
             }
             return node;
         }
@@ -1577,7 +1576,7 @@ namespace XSharp.Project
                 }
                 _taskListManager.Refresh();
             }
-            RefreshIncludeFiles();
+            ThreadUtilities.runSafe(RefreshIncludeFiles);
 
         }
 
@@ -1640,14 +1639,10 @@ namespace XSharp.Project
             finally
             {
                 this.EventTriggeringFlag = oldEvents;
-                ThreadUtilities.runSafe(() =>
+                if (hasChanged)
                 {
-                    if (hasChanged)
-                    {
-                        this.OnItemsAppended(includeNode);
-                    }
-
-                });
+                    this.OnItemsAppended(includeNode);
+                }
             }
         }
         private void OnFileWalkComplete(XFile xfile)
@@ -1840,7 +1835,7 @@ namespace XSharp.Project
                 {
                     switch (item.ItemType.ToLower())
                     {
-                        case "reference" when ! isSdk:
+                        case "reference" when !isSdk:
                             allReferenceAssemblies.AddUnique(item);
                             break;
                         case "referencepath" when isSdk:
@@ -1862,6 +1857,7 @@ namespace XSharp.Project
                         default:
                             continue;
                     }
+
                     Logger.Information($"Item: {item.ItemType} {item.EvaluatedInclude}");
                 }
                 if (commandLineArguments.Count > 0)
@@ -3140,7 +3136,6 @@ namespace XSharp.Project
                 case WPF:
                 case XSharp:
                     return true;
-                // If we return true then sometimes builds with solutionwide restores will start very slowly
                 case PackageReferences:
                     return false;
                 case AspNetCore:

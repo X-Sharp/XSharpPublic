@@ -1,0 +1,197 @@
+﻿<UserControl
+    x:Class="XSharp.Project.XGeneralPropertyPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XSharp.Project"
+    xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    mc:Ignorable="d"
+    d:DesignHeight="400" d:DesignWidth="660"
+    UseLayoutRounding="True"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}"
+    toolkit:Themes.UseVsTheme="True" >
+
+    <!--
+        General (Application) property page - WPF/XAML implementation (SDK-style projects).
+        DataContext: XGeneralPropertyPageViewModel (set by XGeneralPropertyPageXamlHost).
+
+        Layout mirrors the WinForms XGeneralPropertyPagePanel (two-column table):
+          Left column  - Application name, Target Framework, Dialect,
+                         Auto-generate binding redirects, Resources header,
+                         Icon, Suppress manifest, Prefer native, Vulcan resources.
+          Right column - Default namespace, Output type, Startup object.
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!-- BoolToVisibility: true â†’ Visible, false â†’ Collapsed -->
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
+            <!-- BoolToInverseVisibility: true â†’ Collapsed, false â†’ Visible -->
+            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="8,8,8,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- 0 label row -->
+                <RowDefinition Height="Auto"/>  <!-- 1 input row -->
+                <RowDefinition Height="Auto"/>  <!-- 2 label -->
+                <RowDefinition Height="Auto"/>  <!-- 3 input (framework) -->
+                <RowDefinition Height="Auto"/>  <!-- 4 label -->
+                <RowDefinition Height="Auto"/>  <!-- 5 input (dialect) -->
+                <RowDefinition Height="Auto"/>  <!-- 6 checkbox -->
+                <RowDefinition Height="Auto"/>  <!-- 7 section header -->
+                <RowDefinition Height="Auto"/>  <!-- 8 icon label -->
+                <RowDefinition Height="Auto"/>  <!-- 9 icon input -->
+                <RowDefinition Height="Auto"/>  <!-- 10 checkbox -->
+                <RowDefinition Height="Auto"/>  <!-- 11 checkbox -->
+                <RowDefinition Height="Auto"/>  <!-- 12 checkbox -->
+            </Grid.RowDefinitions>
+
+            <!-- ============================================================ -->
+            <!-- LEFT COLUMN                                                   -->
+            <!-- ============================================================ -->
+
+            <!-- Row 0/1: Application Name -->
+            <Label  Grid.Column="0" Grid.Row="0" Content="{Binding CaptAppName}"
+                    Margin="0,4,8,0" VerticalAlignment="Center"/>
+            <local:PropertyTextBox Grid.Column="0" Grid.Row="1"
+                    Value="{Binding AssemblyName, Mode=TwoWay}"
+                    PropertyName="AssemblyName"
+                    ToolTip="{Binding DescAssembly}"
+                    Margin="0,2,8,0"/>
+
+            <!-- Row 2/3: Target Framework (combo for single, textbox for multi) -->
+            <!-- Single-target combo + reset -->
+            <local:PropertyComboBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
+                    Label="{Binding TargetFrameworkLabel}"
+                    Items="{Binding FrameworkItems}"
+                    Value="{Binding TargetFramework, Mode=TwoWay}"
+                    PropertyName="TargetFramework"
+                    Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToInverseVisibility}}"
+                    Margin="0,6,8,0"/>
+            <!-- Multi-target textbox + reset -->
+            <local:PropertyTextBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
+                    Label="{Binding TargetFrameworkLabel}"
+                    Value="{Binding TargetFrameworks, Mode=TwoWay}"
+                    PropertyName="TargetFrameworks"
+                    Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToVisibility}}"
+                    Margin="0,6,8,0"/>
+
+            <!-- Row 4/5: Dialect -->
+            <local:PropertyComboBox Grid.Column="0" Grid.Row="4" Grid.RowSpan="2"
+                    Label="Dialect:"
+                    Items="{Binding DialectItems}"
+                    Value="{Binding Dialect, Mode=TwoWay}"
+                    PropertyName="Dialect"
+                    ToolTip="{Binding DescDialect}"
+                    Margin="0,6,8,0"/>
+
+            <!-- Row 6: Auto-generate binding redirects -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="6"
+                    Label="{Binding CaptBindingRedirects}"
+                    Value="{Binding AutoGenerateBindingRedirects, Mode=TwoWay}"
+                    PropertyName="AutoGenerateBindingRedirects"
+                    ToolTip="{Binding DescBindingRedirects}"
+                    Margin="0,8,8,0"/>
+
+            <!-- Row 7: Resources section header -->
+            <Label  Grid.Column="0" Grid.Row="7" Content="Resources:"
+                    FontWeight="Bold" Margin="0,10,8,0" VerticalAlignment="Center"/>
+
+            <!-- Row 8: Icon label -->
+            <Label  Grid.Column="0" Grid.Row="8" Content="{Binding CaptIcon}"
+                    IsEnabled="{Binding IconEnabled}"
+                    ToolTip="{Binding DescIcon}"
+                    Margin="0,4,8,0" VerticalAlignment="Center"/>
+
+            <!-- Row 9: Icon textbox + browse button + reset button -->
+            <Grid   Grid.Column="0" Grid.Row="9" Margin="0,2,8,0"
+                    IsEnabled="{Binding IconEnabled}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding ApplicationIcon, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="{Binding DescIcon}"/>
+                <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
+                         ToolTip="{Binding DescIcon}"
+                         Click="OnBrowseIconClick"/>
+                 <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
+                          Command="{Binding ResetCommand}" CommandParameter="ApplicationIcon"
+                          Margin="4,0,0,0"/>
+            </Grid>
+
+            <!-- Row 10: Suppress default Win32 manifest -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="10"
+                    Label="{Binding CaptWin32Manifest}"
+                    Value="{Binding SuppressDefaultManifest, Mode=TwoWay}"
+                    PropertyName="NoWin32Manifest"
+                    ToolTip="{Binding DescWin32Manifest}"
+                    Margin="0,8,8,0"/>
+
+            <!-- Row 11: Prefer native version -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="11"
+                    Label="{Binding CaptPreferNative}"
+                    Value="{Binding PreferNativeVersion, Mode=TwoWay}"
+                    PropertyName="UseNativeVersion"
+                    ToolTip="{Binding DescPreferNative}"
+                    Margin="0,6,8,0"/>
+
+            <!-- Row 12: Vulcan compatible managed resources -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="12"
+                    Label="{Binding CaptVulcanCompatibleResources}"
+                    Value="{Binding VulcanCompatibleResources, Mode=TwoWay}"
+                    PropertyName="VulcanCompatibleResources"
+                    ToolTip="{Binding DescVulcanCompatibleResources}"
+                    Margin="0,6,8,0"/>
+
+            <!-- ============================================================ -->
+            <!-- RIGHT COLUMN                                                  -->
+            <!-- ============================================================ -->
+
+            <!-- Row 0/1: Default Namespace -->
+            <Label  Grid.Column="1" Grid.Row="0" Content="{Binding CaptNamespace}"
+                    ToolTip="{Binding DescNamespace}"
+                    Margin="8,4,0,0" VerticalAlignment="Center"/>
+            <local:PropertyTextBox Grid.Column="1" Grid.Row="1"
+                    Value="{Binding RootNamespace, Mode=TwoWay}"
+                    PropertyName="RootNamespace"
+                    ToolTip="{Binding DescNamespace}"
+                    Margin="8,2,0,0"/>
+
+            <!-- Row 2/3: Output Type -->
+            <local:PropertyComboBox Grid.Column="1" Grid.Row="2" Grid.RowSpan="2"
+                    Label="Output Type:"
+                    Items="{Binding OutputTypeItems}"
+                    Value="{Binding OutputType, Mode=TwoWay}"
+                    PropertyName="OutputType"
+                    ToolTip="{Binding DescOutputType}"
+                    Margin="8,6,0,0"/>
+
+            <!-- Row 4/5: Startup Object (aligned to Dialect rows on left) -->
+            <local:PropertyComboBox Grid.Column="1" Grid.Row="4" Grid.RowSpan="2"
+                    Label="{Binding CaptStartup}"
+                    Items="{Binding StartupItems}"
+                    Value="{Binding StartupObject, Mode=TwoWay}"
+                    PropertyName="StartupObject"
+                    IsEnabled="{Binding StartupObjectEnabled}"
+                    ToolTip="{Binding DescStartup}"
+                    Margin="8,6,0,0"/>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

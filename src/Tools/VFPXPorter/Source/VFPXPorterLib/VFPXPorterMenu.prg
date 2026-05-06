@@ -215,9 +215,12 @@ BEGIN NAMESPACE VFPXPorterLib
                         menuElts:Add(elt:Key, elt:Value)
                     ENDIF
                 NEXT
+                LOCAL colorProps AS List<STRING>
+                colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
                 SELF:_menuConverter := CodeConverter{ FALSE, FALSE, TRUE, TRUE, FALSE }
                 SELF:_menuConverter:Statements := sttmnts
                 SELF:_menuConverter:VFPElements := menuElts
+                SELF:_menuConverter:ColorProperties := colorProps
             ENDIF
             // Convert COMMAND (single-line inline VFP code)
             IF !String.IsNullOrEmpty(item:COMMAND)
@@ -300,16 +303,16 @@ BEGIN NAMESPACE VFPXPorterLib
             FOREACH VAR bar IN bars
                 IF bar:PROMPT == "\-"
                     code:Append(popupVar)
-                    code:Append(':AddBar( "')
+                    code:Append(e":AddBar( \"")
                     code:Append(bar:Name)
-                    code:AppendLine('", "--" )')
+                    code:AppendLine(e"\", \"--\" )")
                 ELSE
                     code:Append(popupVar)
-                    code:Append(':AddBar( "')
+                    code:Append(e":AddBar( \"")
                     code:Append(bar:Name)
-                    code:Append('", "')
+                    code:Append(e"\", \"")
                     code:Append(bar:PROMPT)
-                    code:AppendLine('" )')
+                    code:AppendLine(e"\" )")
                     IF bar:Childs:Count > 0
                         // Sub-menu: create a named popup variable and recurse
                         LOCAL subVar := "oPopup_" + bar:Name AS STRING
@@ -322,9 +325,9 @@ BEGIN NAMESPACE VFPXPorterLib
                         // Attach sub-popup to the bar (barIndex tracked below via Bars[])
                         // We reference by name since AddBar registered it as a dynamic property
                         code:Append(popupVar)
-                        code:Append(':')
+                        code:Append(":")
                         code:Append(bar:Name)
-                        code:Append(':Popup := ')
+                        code:Append(":Popup := ")
                         code:AppendLine(subVar)
                     ENDIF
                 ENDIF
@@ -339,9 +342,9 @@ BEGIN NAMESPACE VFPXPorterLib
                             code:Append(popupVar)
                             code:Append(":Bars[")
                             code:Append(barIndex:ToString())
-                            code:Append(']:vfpClick := "')
+                            code:Append(e"]:vfpClick := \"")
                             code:Append(bar:Name)
-                            code:AppendLine('"')
+                            code:AppendLine(e"\"")
                         ENDIF
                     ENDIF
                 ENDIF

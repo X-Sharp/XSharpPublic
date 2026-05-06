@@ -227,9 +227,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Generated\VFPItems.xh" />
-    <None Include="Generated\VFPContainer.xh" />
-    <None Include="Generated\VFPImage.xh" />
+    <None Include="Headers\VFPContainer.xh" />
     <None Include="Headers\AEventsSupport.xh" />
     <None Include="Headers\Anchor.xh" />
     <None Include="Headers\ButtonControlProperties.xh" />
@@ -242,10 +240,11 @@
     <None Include="Headers\MousePointer.xh" />
     <None Include="Headers\TextControlProperties.xh" />
     <None Include="Headers\Tooltips.xh" />
-    <None Include="Generated\VFPGroup.xh" />
-    <None Include="Generated\VFPList.xh" />
-    <None Include="Generated\VFPControl.xh" />
-    <None Include="Generated\VFPObject.xh" />
+    <None Include="Headers\VFPControl.xh" />
+    <None Include="Headers\VFPGroup.xh" />
+    <None Include="Headers\VFPImage.xh" />
+    <None Include="Headers\VFPItems.xh" />
+    <None Include="Headers\VFPList.xh" />
     <None Include="Headers\VFPObject.xh" />
     <None Include="Headers\VFPPropertiesDynamic.xh" />
     <None Include="Properties\XSharp.bmp" />

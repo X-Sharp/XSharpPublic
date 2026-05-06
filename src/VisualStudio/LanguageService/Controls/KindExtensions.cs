@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -168,7 +169,13 @@ namespace XSharp.LanguageService
         /// </summary>
         internal static ImageSource GetImageSource(this ImageMoniker moniker)
         {
-            var imageService = Package.GetGlobalService(typeof(SVsImageService)) as IVsImageService2;
+            IVsImageService2 imageService = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                imageService = await VS.GetServiceAsync<SVsImageService, IVsImageService2>();
+            });
+
             if (imageService == null)
                 return null;
 
@@ -181,13 +188,18 @@ namespace XSharp.LanguageService
                 LogicalHeight = 16,
                 Flags = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
             };
+            IVsUIObject uiObject = null;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                uiObject = imageService.GetImage(moniker, attributes);
+                if (uiObject == null)
+                    return null;
+                uiObject.get_Data(out object data);
+                return data as BitmapSource;
+            });
 
-            IVsUIObject uiObject = imageService.GetImage(moniker, attributes);
-            if (uiObject == null)
-                return null;
 
-            uiObject.get_Data(out object data);
-            return data as BitmapSource;
         }
     }
 }

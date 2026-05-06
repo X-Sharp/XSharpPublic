@@ -676,7 +676,6 @@ namespace XSharp.LanguageService
                 }
                 if (selection.Count() > 0)
                 {
-                    ThreadHelper.ThrowIfNotOnUIThread();
 
                     FillMembers(location, compList, null, selection, Modifiers.Public, true);
                 }

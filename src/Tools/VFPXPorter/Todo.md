@@ -4,7 +4,8 @@
  Or capture Enter to provide When, and then Execute GotFocus
 
 #### Statements Handling
-Take care of statement vs method in UserCode also, and not only on EventHandlers
+~~Take care of statement vs method in UserCode also, and not only on EventHandlers~~  
+Done: `ProcessProcedure` in PRG export now applies `ChangeStatement` (and menu handler code goes through `ProcessMenuCode`).
 
 #### Add Default Property Value
 Inject Default Value in Forms :  

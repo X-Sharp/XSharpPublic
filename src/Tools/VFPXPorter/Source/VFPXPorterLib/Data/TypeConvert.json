@@ -85,17 +85,17 @@
     "true"
   ],
   "header": [
-    "ColumnHeader",
+    "Header",
     "false",
     "true"
   ],
   "shape": [
-    "Container",
+    "Shape",
     "false",
     "true"
   ],
   "line": [
-    "Container",
+    "Line",
     "false",
     "true"
   ],
@@ -106,6 +106,31 @@
   ],
   "Cursor": [
     "DbCursor",
+    "false",
+    "false"
+  ],
+  "page": [
+    "Page",
+    "true",
+    "true"
+  ],
+  "pageframe": [
+    "PageFrame",
+    "true",
+    "true"
+  ],
+  "column": [
+    "Column",
+    "false",
+    "true"
+  ],
+  "toolbar": [
+    "ToolBar",
+    "false",
+    "false"
+  ],
+  "contextmenu": [
+    "ContextMenu",
     "false",
     "false"
   ],

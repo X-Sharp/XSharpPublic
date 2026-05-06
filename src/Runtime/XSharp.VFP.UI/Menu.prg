@@ -18,11 +18,21 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Menu INHERIT System.Windows.Forms.MenuStrip
 
-		PRIVATE _pads AS List<Pad>
+		PRIVATE _pads    AS List<Pad>
+		PRIVATE _theForm AS Form
 
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_pads := List<Pad>{}
+
+		// ── ThisForm ──────────────────────────────────────────────────────────
+		// Set automatically by Activate(). Lets menu handler code use SELF:ThisForm:
+		// the same way VFP's THISFORM keyword works.
+		PROPERTY ThisForm AS Form
+			GET
+				RETURN SELF:_theForm
+			END GET
+		END PROPERTY
 
 		// ── PadCount ──────────────────────────────────────────────────────────
 		PROPERTY PadCount AS LONG
@@ -59,11 +69,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── Activate ──────────────────────────────────────────────────────────
 		// Attaches this menu to a Form.
 		METHOD Activate( oForm ) AS VOID CLIPPER
-			IF oForm IS System.Windows.Forms.Form VAR frm
+			IF oForm IS Form VAR frm
 				IF !frm:Controls:Contains( SELF )
 					frm:Controls:Add( SELF )
 				ENDIF
 				frm:MainMenuStrip := SELF
+				SELF:_theForm := frm
 			ENDIF
 
 		// ── Deactivate ────────────────────────────────────────────────────────
@@ -75,6 +86,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				frm:MainMenuStrip := NULL_OBJECT
 				frm:Controls:Remove( SELF )
 			ENDIF
+			SELF:_theForm := NULL_OBJECT
 
 		// ── Release ───────────────────────────────────────────────────────────
 		METHOD Release() AS USUAL CLIPPER

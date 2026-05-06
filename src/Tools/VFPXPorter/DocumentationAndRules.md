@@ -190,6 +190,12 @@ We have special *\<FoxProClassName>* for Menu strips, Menu items and separator :
 + xsPorterMenuItem
 + xsPorterMenuSeparator
 
+Notable mappings:
+- `shape` → `Shape`, `line` → `Line` (not `Container` — they have dedicated classes in XSharp.VFP.UI)
+- `header` → `Header` (grid column header — not `ColumnHeader`)
+- `page` → `Page`, `pageframe` → `PageFrame`, `column` → `Column` (tab controls and grid columns)
+- `toolbar` → `ToolBar`, `contextmenu` → `ContextMenu`
+
 #### Statements.json
 Simple array with Methods that are sometimes used without the parenthesis.  
 You can manually achieve the same process by searching these and add the () after the "keyword"
@@ -259,6 +265,8 @@ Contains the template used when exporting VFP menu definitions (MNX files).
   - `<@MenuCode@>` — one `METHOD name() AS USUAL STRICT` per bar action, containing the converted handler code
 
 The generated file also produces a companion `<MenuName>.MPR` class that inherits the main menu class, preserving the VFP convention of running a menu via `DO <menu>.MPR`.
+
+`Menu.ThisForm` is set automatically by `Activate(oForm)` to the hosting form. This means handler code that was translated from `THISFORM.xxx` to `SELF:ThisForm:xxx` resolves correctly at runtime.
 
 Handler code inside the menu goes through `ProcessMenuCode()` (in `CodeConverter.prg`), which applies `ChangeStatement` (parentheses insertion) and `ChangeThisObject` (THISFORM/THISFORMSET substitution) but skips form-perspective transformations that are not relevant to menus.
 

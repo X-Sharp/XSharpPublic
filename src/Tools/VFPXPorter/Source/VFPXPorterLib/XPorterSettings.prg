@@ -69,6 +69,7 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY ConvertTableFile		AS STRING GET XPorterSettings.DataFolder + "\\TypeConvert.json"
 	PUBLIC STATIC PROPERTY StatementsFile		AS STRING GET XPorterSettings.DataFolder + "\\Statements.json"
 	PUBLIC STATIC PROPERTY VFPElementsFile		AS STRING GET XPorterSettings.DataFolder + "\\VFP2WinForms.json"
+	PUBLIC STATIC PROPERTY ColorPropertiesFile	AS STRING GET XPorterSettings.DataFolder + "\\ColorProperties.json"
 
 	PUBLIC STATIC PROPERTY StartFile				AS STRING GET XPorterSettings.OthersFolder + "\\VFPStart.prg"
 

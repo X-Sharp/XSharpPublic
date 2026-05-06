@@ -12,7 +12,6 @@ USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
 USING System.Drawing
-USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
@@ -22,110 +21,115 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS CheckBox INHERIT System.Windows.Forms.CheckBox
 
 		// Common properties that all VFP Objects support
-		#include "Headers/VFPObject.xh"
+#include "Headers/VFPObject.xh"
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _value AS USUAL
-		PRIVATE _vfpAlignment AS INT
-		PRIVATE _vfpStyle AS INT
+#include "VFPProperties.xh"
 
-		/// <summary>
-		/// Constructor for CheckBox control.
-		/// </summary>
-		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			SELF:Size := Size{100, 17}
-			SELF:_value := FALSE
-			SELF:_vfpAlignment := 0
-			SELF:_vfpStyle := 0
-			RETURN
+#include "ControlProperties.xh"
 
-		#include ".\Headers\ControlProperties.xh"
-		#include ".\Headers\ControlFocus.xh"
+#include "ControlSource.xh"
 
-		#include ".\Headers\ControlSource.xh"
+#include "Headers/VFPButtonImage.xh"
 
-		/// <summary>
-		/// Gets or sets the value of the checkbox.
-		/// In VFP, this can be .F. (False), .T. (True), or .NULL.
-		/// WinForms Checked is TRUE/FALSE only.
-		/// </summary>
-		/// <value>The checkbox value as USUAL (TRUE, FALSE, or NIL for .NULL.).</value>
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)];
-		[Browsable(FALSE)];
+		// ── Centered ─────────────────────────────────────────────────────────
+		// VFP Centered = .T. centres the check mark — maps to MiddleCenter.
+		// Centered = .F. restores the default MiddleLeft alignment.
+
+		PRIVATE _centered AS LOGIC
+		PROPERTY Centered AS LOGIC
+			GET
+				RETURN _centered
+			END GET
+			SET
+				_centered := VALUE
+				IF VALUE
+					SELF:CheckAlign := System.Drawing.ContentAlignment.MiddleCenter
+				ELSE
+					SELF:CheckAlign := System.Drawing.ContentAlignment.MiddleLeft
+				ENDIF
+			END SET
+		END PROPERTY
+
+		// ── ReadOnly ─────────────────────────────────────────────────────────
+		// VFP ReadOnly = .T. prevents the user from changing the check state.
+
+		PRIVATE _readOnly AS LOGIC
+		PROPERTY ReadOnly AS LOGIC
+			GET
+				RETURN _readOnly
+			END GET
+			SET
+				_readOnly := VALUE
+			END SET
+		END PROPERTY
+
+		PROTECTED METHOD OnClick( e AS System.EventArgs ) AS VOID
+			IF _readOnly
+				// Suppress the state change — restore previous CheckState
+				SELF:Checked := !SELF:Checked
+				RETURN
+			ENDIF
+			SUPER:OnClick( e )
+		END METHOD
+
+		// ── Value ────────────────────────────────────────────────────────────
+		// VFP Value: 0=Unchecked, 1=Checked, 2=Indeterminate.
+		// Also accepts .T./.F. for backwards compatibility.
+
 		PROPERTY Value AS USUAL
 			GET
-				RETURN SELF:_value
+				RETURN (USUAL)(LONG) SELF:CheckState
 			END GET
 			SET
-				SELF:_value := VALUE
-			IF IsNil(VALUE)
-				// .NULL. - set to indeterminate if ThreeState is enabled
-				SELF:CheckState := CheckState.Indeterminate
-			ELSE
-				// Try to convert to boolean
-				TRY
-					SELF:Checked := (LOGIC)VALUE
-					CATCH
-						SELF:Checked := FALSE
-					END TRY
-				ENDIF
+				LOCAL state AS System.Windows.Forms.CheckState
+				DO CASE
+				CASE IsLogic(VALUE)
+					state := IIF( (LOGIC)VALUE, CheckState.Checked, CheckState.Unchecked )
+				CASE IsLong(VALUE)
+					LOCAL n AS LONG
+					n := (LONG) VALUE
+					DO CASE
+					CASE n == 0
+						state := CheckState.Unchecked
+					CASE n == 1
+						state := CheckState.Checked
+					OTHERWISE
+						state := CheckState.Indeterminate
+					END CASE
+				OTHERWISE
+					RETURN
+				END CASE
+				SELF:CheckState := state
+				SELF:OnVFPProgrammaticChange()
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the alignment of the checkbox text.
-		/// 0 = Left (text on right), 1 = Right (text on left).
-		/// Equivalent to VFP's Alignment property.
-		/// </summary>
-		/// <value>0 for left, 1 for right. Default is 0.</value>
-		[Category("VFP Properties"), Description("Text alignment: 0=Left, 1=Right")];
-		[DefaultValue(0)];
-		PROPERTY Alignment AS INT
-			GET
-				RETURN SELF:_vfpAlignment
-			END GET
-			SET
-				SELF:_vfpAlignment := VALUE
-				IF VALUE == 0
-					SELF:TextAlign := ContentAlignment.MiddleLeft
-					SELF:CheckAlign := ContentAlignment.MiddleLeft
-				ELSE
-					SELF:TextAlign := ContentAlignment.MiddleRight
-					SELF:CheckAlign := ContentAlignment.MiddleRight
-				ENDIF
-			END SET
-		END PROPERTY
+		// ── ProgrammaticChange ───────────────────────────────────────────────
 
-		/// <summary>
-		/// Gets or sets the style of the checkbox.
-		/// 0 = Standard, 1 = Graphical.
-		/// Equivalent to VFP's Style property.
-		/// </summary>
-		/// <value>The checkbox style value. Default is 0.</value>
-		[Category("VFP Properties"), Description("Style: 0=Standard, 1=Graphical")];
-		[DefaultValue(0)];
-		PROPERTY Style AS INT
-			GET
-				RETURN SELF:_vfpStyle
-			END GET
-			SET
-				SELF:_vfpStyle := VALUE
-				IF VALUE == 1
-					SELF:Appearance := Appearance.Button
-				ELSE
-					SELF:Appearance := Appearance.Normal
-				ENDIF
-			END SET
-		END PROPERTY
+		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
-		PROPERTY Centered AS LOGIC AUTO
-		PROPERTY ReadOnly  AS LOGIC AUTO
-		PROPERTY WordWrap AS LOGIC AUTO
+		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
+			IF SELF:_VFPProgrammaticChange != NULL
+				SELF:_VFPProgrammaticChange:Call()
+			ENDIF
+
+		// ── InteractiveChange ────────────────────────────────────────────────
+
+		PROTECTED METHOD OnCheckedChanged( e AS System.EventArgs ) AS VOID
+			SUPER:OnCheckedChanged( e )
+			IF !_readOnly
+				SELF:_ApplyPicture()
+				SELF:OnVFPInteractiveChange( SELF, e )
+			ENDIF
+		END METHOD
+
+		CONSTRUCTOR(  ) STRICT
+            SUPER()
+            SELF:Size := Size{100, 17}
+			RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.VFP.UI

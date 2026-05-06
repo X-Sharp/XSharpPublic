@@ -3,15 +3,8 @@
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
-//
-// VFP Page Class Implementation
-// Reference: VFP 9 SP2 Help File
-// https://github.com/VFPX/HelpFile/tree/master/sources/dv_foxhelp
-// Page Object GUID: 83a4017f-483a-4c8f-b63c-e16a58e011af
 
 USING System
-USING System.Collections.Generic
-USING System.Text
 USING System.Windows.Forms
 USING System.Drawing
 USING System.ComponentModel
@@ -20,112 +13,135 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
 	/// The VFP compatible Page class.
-	/// A Page is a container object within a PageFrame that contains controls.
+	/// Maps to System.Windows.Forms.TabPage.
 	/// </summary>
-	/// <remarks>
-	/// Pages are used to create tabbed forms or dialog boxes. You can refer to a page
-	/// by name (PageFrame.PageName) or by index (PageFrame.Pages(n)).
-	/// Only the active page is refreshed when the Form.Refresh method occurs.
-	/// VFP Help Reference: https://github.com/VFPX/HelpFile/blob/master/sources/dv_foxhelp/html/83a4017f-483a-4c8f-b63c-e16a58e011af.htm
-	/// </remarks>
-	PARTIAL CLASS Page INHERIT System.Windows.Forms.Panel
+	PARTIAL CLASS Page INHERIT System.Windows.Forms.TabPage
 
-		// Common properties that all VFP Objects support
-		// #include "Headers\VFPObject.xh" // Already included in VFPContainer.xh that is in Generated/Page.generated.prg
+		// Note: VFPObject.xh and VFPProperties.xh are included by Page.generated.prg
+		// (via VFPControl.xh + VFPContainer.xh) — do not include again here.
 
-// #include "XSharp\VFPProperties.xh"  // Already included in VFPContainer.xh that is in Generated/Page.generated.prg
+		#include "ControlProperties.xh"
 
-		#include "Headers\ControlProperties.xh"
-        // #include ".\Headers\ControlFocus.xh"
-		#include "Headers\Tooltips.xh"
+		#include "FontProperties.xh"
 
-		// Page-specific property: Order of the page in the PageFrame
-		// This is different from the index - PageOrder determines visual order
-		// Reference: VFP Help - PageOrder property determines display order
-		PRIVATE _pageOrder := 0 AS INT
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Determines the display order of the page within the PageFrame")];
-		[System.ComponentModel.DefaultValue(0)];
-		PROPERTY PageOrder AS INT
+		CONSTRUCTOR() STRICT
+			SUPER()
+			SELF:Size := Size{290, 170}
+
+		// ── Caption ───────────────────────────────────────────────────────────
+		// VFP Caption is the tab label text; maps to TabPage.Text.
+		// ControlProperties.xh already maps Caption -> Text via the base include,
+		// but TabPage uses Text as the tab header — no override needed.
+
+		// ── PageOrder ─────────────────────────────────────────────────────────
+		// Returns/sets the 1-based position of this page within its parent PageFrame.
+		PROPERTY PageOrder AS USUAL
 			GET
-				RETURN _pageOrder
+				VAR parent := SELF:Parent ASTYPE System.Windows.Forms.TabControl
+				IF parent != NULL_OBJECT
+					RETURN parent:TabPages:IndexOf(SELF) + 1
+				ENDIF
+				RETURN 1
 			END GET
 			SET
-				_pageOrder := VALUE
-				// Update parent PageFrame if available
-				IF SELF:Parent IS PageFrame
-					VAR pageFrame := (PageFrame)SELF:Parent
-					pageFrame:RefreshPageOrder()
+				VAR parent := SELF:Parent ASTYPE System.Windows.Forms.TabControl
+				IF parent == NULL_OBJECT
+					RETURN
+				ENDIF
+				VAR targetIdx := (INT) VALUE - 1
+				VAR currentIdx := parent:TabPages:IndexOf(SELF)
+				IF targetIdx == currentIdx .OR. targetIdx < 0 .OR. targetIdx >= parent:TabPages:Count
+					RETURN
+				ENDIF
+				// WinForms TabControl does not support direct reordering;
+				// simulate by remove + re-insert.
+				parent:TabPages:Remove(SELF)
+				parent:TabPages:Insert(targetIdx, SELF)
+			END SET
+		END PROPERTY
+
+		// ── Picture ───────────────────────────────────────────────────────────
+		// VFP Picture sets a background image on the page.
+		PRIVATE _picture AS STRING
+		PROPERTY Picture AS STRING
+			GET
+				RETURN SELF:_picture
+			END GET
+			SET
+				SELF:_picture := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					SELF:BackgroundImage := VFPTools.ImageFromFile(VALUE)
+					SELF:BackgroundImageLayout := ImageLayout.Stretch
+				ELSE
+					SELF:BackgroundImage := NULL_OBJECT
 				ENDIF
 			END SET
 		END PROPERTY
 
-		// Picture property for page background
-		// Not commonly used but part of VFP specification
-		PRIVATE _picture AS STRING
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Specifies a background picture for the page")];
+		// ── Activate / Deactivate events ──────────────────────────────────────
+		// Fired by the parent PageFrame when this page is selected/deselected.
+		PRIVATE _VFPActivate   AS VFPOverride
+		PRIVATE _VFPDeactivate AS VFPOverride
+
+		[System.ComponentModel.Category("VFP Events")];
 		[System.ComponentModel.DefaultValue(NULL)];
-		PROPERTY Picture AS STRING
+		PROPERTY vfpActivate AS STRING
 			GET
-				RETURN _picture
+				RETURN SELF:_VFPActivate?:SendTo
 			END GET
 			SET
-				_picture := VALUE
-				// TODO: Implement picture loading if needed
+				SELF:_VFPActivate := VFPOverride{ SELF, VALUE }
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Constructor for Page class
-		/// </summary>
-		CONSTRUCTOR() STRICT
-			SUPER()
-			// Initialize as a transparent panel
-			SELF:SetStyle(ControlStyles.SupportsTransparentBackColor, TRUE)
-			SELF:BackColor := Color.Transparent
-			SELF:AutoScroll := TRUE
+		[System.ComponentModel.Category("VFP Events")];
+		[System.ComponentModel.DefaultValue(NULL)];
+		PROPERTY vfpDeactivate AS STRING
+			GET
+				RETURN SELF:_VFPDeactivate?:SendTo
+			END GET
+			SET
+				SELF:_VFPDeactivate := VFPOverride{ SELF, VALUE }
+			END SET
+		END PROPERTY
 
-			// Set default size
-			SELF:Size := Size{200, 200}
-
-			// Initialize properties
-			_pageOrder := 0
-			_picture := NULL
-
-		RETURN
-
-		/// <summary>
-		/// Override OnPaint to handle transparency and custom drawing
-		/// </summary>
-		OVERRIDE PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
-			// Call base implementation
-			SUPER:OnPaint(e)
-
-			// TODO: Implement picture drawing if Picture property is set
-			IF !String.IsNullOrEmpty(_picture)
-				// Picture drawing would go here
-				// This is optional as pages typically don't show backgrounds in VFP forms
-                NOP
+		METHOD FireActivate() AS VOID STRICT
+			IF SELF:_VFPActivate != NULL
+				SELF:_VFPActivate:Call()
 			ENDIF
 
-		RETURN
-
-		/// <summary>
-		/// Sets focus to this page (makes it active in its PageFrame)
-		/// Reference: VFP Help - SetFocus method
-		/// </summary>
-		METHOD SetFocus() AS VOID STRICT
-			// If this page is part of a PageFrame, activate it
-			IF SELF:Parent IS PageFrame
-				VAR pageFrame := (PageFrame)SELF:Parent
-				pageFrame:ActivePage := pageFrame:GetPageIndex(SELF)
+		METHOD FireDeactivate() AS VOID STRICT
+			IF SELF:_VFPDeactivate != NULL
+				SELF:_VFPDeactivate:Call()
 			ENDIF
 
-			// Set focus to this control
-			SELF:Focus()
+		// ── BackStyle ─────────────────────────────────────────────────────────
+		PRIVATE _backStyle := 1 AS INT
+		PROPERTY BackStyle AS INT
+			GET ; RETURN _backStyle ; END GET
+			SET
+				_backStyle := VALUE
+				SELF:BackColor := IIF(VALUE == 0, System.Drawing.Color.Transparent, System.Drawing.SystemColors.Control)
+			END SET
+		END PROPERTY
 
-		RETURN
+		// ── Resize / Moved events ─────────────────────────────────────────────
+		PRIVATE _VFPResize AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
+
+		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
+			SUPER:OnResize(e)
+			IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
+
+		PRIVATE _VFPMoved AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
+
+		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
+			SUPER:OnMove(e)
+			IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
 
 	END CLASS
 
 END NAMESPACE
-

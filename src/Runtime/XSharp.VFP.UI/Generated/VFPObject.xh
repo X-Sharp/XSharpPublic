@@ -1,5 +1,5 @@
-﻿#ifndef VFP_OBJECT_XH
-#define VFP_OBJECT_XH
+﻿#ifndef VFP_GENERATED_OBJECT_XH
+#define VFP_GENERATED_OBJECT_XH
 // Common properties that all VFP Objects support.
 // Some are only necessary in a design environment like VFP
 PROPERTY BaseClass AS STRING AUTO
@@ -32,6 +32,3 @@ METHOD SaveAsClass(ClassLibName AS STRING, ClassName AS STRING, Description AS S
 	RETURN FALSE
 
 #endif
-
-
-

@@ -17,171 +17,73 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS EditBox INHERIT TextBox
 
-		// Common properties that all VFP Objects support
-		#include "Headers/VFPObject.xh"
-
 		/// <summary>
-		/// Backing fields for VFP properties
+		/// When .T., inserts CHR(10) after each CHR(13) in the text whenever Value
+		/// is read — matching VFP behaviour where the Value property returns CRLF pairs.
 		/// </summary>
-		PRIVATE _uValue AS USUAL
-
-		/// <summary>
-		/// Constructor for EditBox control.
-		/// </summary>
-		CONSTRUCTOR( )
-			SUPER()
-			SELF:Multiline := TRUE
-			SELF:ScrollBars := ScrollBars.Both
-			SELF:Size := Size{100,75}
-			SELF:_uValue := NIL
-			RETURN
-
-		OVERRIDE PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
-			// Handle AllowTabs property
-			IF e:KeyCode == Keys.Tab .AND. !SELF:AllowTabs
-				e:SuppressKeyPress := TRUE
-				e:Handled := TRUE
-				RETURN
-			ENDIF
-			SUPER:OnKeyDown(e)
-		END METHOD
-
-		#include ".\Headers\ControlProperties.xh"
-        #include ".\Headers\ControlFocus.xh"
-		#include ".\Headers\ControlSource.xh"
-
-		/// <summary>
-		/// Gets or sets the text value of the EditBox.
-		/// In VFP, this is the Value property.
-		/// </summary>
-		/// <value>The text value as USUAL.</value>
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)];
-		[Browsable(FALSE)];
-		PROPERTY Value AS USUAL
-			GET
-				RETURN SELF:Text
-			END GET
-			SET
-				IF !IsNil(VALUE)
-					SELF:_uValue := VALUE
-					SELF:Text := Str( VALUE )
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Specifies that the EditBox should insert linefeed characters (CHR(10)) after carriage return characters
-		/// (CHR(13)) within the text of an EditBox whenever the Value property is read or whenever the value is
-		/// stored to the ControlSource.
-		/// </summary>
-		/// <value>True to insert linefeeds; otherwise, false.</value>
-		[Category("VFP Properties"), Description("Insert linefeeds after carriage returns")];
-		[DefaultValue(FALSE)];
 		PROPERTY AddLineFeeds AS LOGIC AUTO
 
 		/// <summary>
-		/// Specifies whether to allow tabs in an EditBox control.
+		/// When .T., pressing Tab inserts a tab character instead of moving focus
+		/// to the next control.
 		/// </summary>
-		/// <value>True to allow tabs; otherwise, false.</value>
-		[Category("VFP Properties"), Description("Allow tab characters in the edit box")];
-		[DefaultValue(FALSE)];
 		PROPERTY AllowTabs AS LOGIC AUTO
 
-		/// <summary>
-		/// Gets or sets the type of scroll bars to display.
-		/// Equivalent to VFP's ScrollBars property.
-		/// </summary>
-		/// <value>0=None, 1=Horizontal, 2=Vertical, 3=Both. Default is 3.</value>
-		[Category("VFP Properties"), Description("Scroll bar type: 0=None, 1=Horizontal, 2=Vertical, 3=Both")];
-		[DefaultValue(3)];
-		PROPERTY VFPScrollBars AS INT
+		CONSTRUCTOR( )
+			SUPER()
+			SELF:Multiline    := TRUE
+			SELF:ScrollBars   := 3           // 3 = Both (VFP convention)
+			SELF:Size         := Size{100, 75}
+			SELF:AcceptsTab   := FALSE    // controlled by AllowTabs
+
+		// ── AllowTabs — override OnKeyDown to intercept Tab ───────────────────
+		OVERRIDE PROTECTED METHOD OnKeyDown( e AS KeyEventArgs ) AS VOID
+			IF SELF:AllowTabs .AND. e:KeyCode == Keys.Tab
+				// Insert a tab character at the caret
+				VAR start  := SELF:SelectionStart
+				VAR len    := SELF:SelectionLength
+				VAR txt    := SELF:Text
+				SELF:Text           := txt:Remove(start, len):Insert(start, Chr(9))
+				SELF:SelectionStart := start + 1
+				e:Handled           := TRUE
+				e:SuppressKeyPress  := TRUE
+				RETURN
+			ENDIF
+			SUPER:OnKeyDown(e)
+
+		// ── AddLineFeeds — override Value getter to normalise line endings ─────
+		// VFP AddLineFeeds: Value returns text with CRLF (CR+LF) pairs.
+		// The underlying storage uses bare CR (WinForms multiline uses CRLF natively,
+		// but VFP ControlSource data often arrives with bare CRs).
+		NEW PROPERTY Value AS USUAL
 			GET
-				RETURN (INT)SELF:ScrollBars
+				VAR raw := (USUAL) SUPER:Value
+				IF SELF:AddLineFeeds .AND. raw != NIL
+					VAR s := Str(raw)
+					// Normalise: first collapse any existing CRLF, then ensure all CR → CRLF
+					s := s:Replace(Chr(13) + Chr(10), Chr(13))
+					s := s:Replace(Chr(13), Chr(13) + Chr(10))
+					RETURN (USUAL) s
+				ENDIF
+				RETURN raw
 			END GET
 			SET
-				SWITCH VALUE
-					CASE 0
-						SELF:ScrollBars := ScrollBars.None
-					CASE 1
-						SELF:ScrollBars := ScrollBars.Horizontal
-					CASE 2
-						SELF:ScrollBars := ScrollBars.Vertical
-					CASE 3
-						SELF:ScrollBars := ScrollBars.Both
-				END SWITCH
+				SUPER:Value := VALUE
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Finds the first occurrence of a search string in the EditBox text.
-		/// Equivalent to VFP's FindText method.
-		/// </summary>
-		/// <param name="cSearchString">The text to search for.</param>
-		/// <param name="nStartPosition">Optional starting position (0-based). Default is 0 (from beginning).</param>
-		/// <param name="lIgnoreCase">Optional case-sensitivity flag. Default is TRUE (case-insensitive).</param>
-		/// <returns>The 0-based position of the found text, or -1 if not found.</returns>
-		/// <remarks>
-		/// Searches for cSearchString within the EditBox text starting at nStartPosition.
-		/// Returns the 0-based character position where the text was found.
-		/// </remarks>
-		PUBLIC METHOD FindText(cSearchString AS STRING, nStartPosition AS INT := 0, lIgnoreCase AS LOGIC := TRUE) AS INT STRICT
-			IF String.IsNullOrEmpty(cSearchString) .OR. String.IsNullOrEmpty(SELF:Text)
-				RETURN -1
-			ENDIF
-
-			VAR compareOption := IF(lIgnoreCase, System.StringComparison.OrdinalIgnoreCase, System.StringComparison.Ordinal)
-			VAR position := SELF:Text.IndexOf(cSearchString, nStartPosition, compareOption)
-			RETURN position
-		END METHOD
-
-		/// <summary>
-		/// Finds and replaces text in the EditBox.
-		/// Equivalent to VFP's ReplaceText method.
-		/// </summary>
-		/// <param name="cSearchString">The text to search for.</param>
-		/// <param name="cReplacementString">The replacement text.</param>
-		/// <param name="nStartPosition">Optional starting position (0-based). Default is 0 (from beginning).</param>
-		/// <param name="lReplaceAll">Optional flag to replace all occurrences. Default is FALSE (first only).</param>
-		/// <param name="lIgnoreCase">Optional case-sensitivity flag. Default is TRUE (case-insensitive).</param>
-		/// <returns>The number of replacements made.</returns>
-		/// <remarks>
-		/// Replaces cSearchString with cReplacementString, starting at nStartPosition.
-		/// If lReplaceAll is TRUE, replaces all occurrences; otherwise replaces first match only.
-		/// </remarks>
-		PUBLIC METHOD ReplaceText(cSearchString AS STRING, cReplacementString AS STRING, nStartPosition AS INT := 0, lReplaceAll AS LOGIC := FALSE, lIgnoreCase AS LOGIC := TRUE) AS INT STRICT
-			IF String.IsNullOrEmpty(cSearchString) .OR. String.IsNullOrEmpty(SELF:Text)
-				RETURN 0
-			ENDIF
-
-			VAR text := SELF:Text
-			VAR replaceCount := 0
-			VAR currentPos := nStartPosition
-			VAR compareOption := IF(lIgnoreCase, System.StringComparison.OrdinalIgnoreCase, System.StringComparison.Ordinal)
-
-			DO WHILE currentPos < text:Length
-				VAR foundPos := text:IndexOf(cSearchString, currentPos, compareOption)
-				IF foundPos == -1
-					EXIT
+		// ── ScrollBars — expose as settable VFP property ──────────────────────
+		// VFP: 0=None, 1=Horizontal, 2=Vertical, 3=Both
+		NEW PROPERTY ScrollBars AS LONG
+			GET
+				RETURN (LONG) SUPER:ScrollBars
+			END GET
+			SET
+				IF VALUE >= 0 .AND. VALUE <= 3
+					SUPER:ScrollBars := (System.Windows.Forms.ScrollBars) VALUE
 				ENDIF
-
-				text := text:Remove(foundPos, cSearchString:Length):Insert(foundPos, cReplacementString)
-				replaceCount++
-				currentPos := foundPos + cReplacementString:Length
-
-				IF !lReplaceAll
-					EXIT
-				ENDIF
-			ENDDO
-
-			IF replaceCount > 0
-				SELF:Text := text
-				SELF:_uValue := text
-			ENDIF
-
-			RETURN replaceCount
-		END METHOD
+			END SET
+		END PROPERTY
 
 	END CLASS
 

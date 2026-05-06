@@ -14,7 +14,7 @@ PROPERTY DisabledForeColor AS LONG AUTO
 PROPERTY DisabledEditItemBackColor AS LONG AUTO
 PROPERTY DisabledEditItemForeColor AS LONG AUTO
 PROPERTY IncrementalSearch AS LOGIC AUTO
-// MultiSelect - defined in Listbox.prg with custom implementation
+// MultiSelect implemented in ListBox.prg; not applicable to ComboBox
 PROPERTY NewIndex AS LONG AUTO GET
 PROPERTY NewItemID AS LONG AUTO
 PROPERTY NumberOfElements AS LONG AUTO

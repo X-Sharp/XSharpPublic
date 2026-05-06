@@ -42,6 +42,14 @@ METHOD ResetToDefault(cPropertyName AS STRING) AS VOID
 METHOD SaveAsClass(ClassLibName AS STRING, ClassName AS STRING, Description AS STRING) AS LOGIC
    RETURN FALSE
 
+[Obsolete];
+METHOD ShowWhatsThis() AS VOID STRICT
+   RETURN
+
+[Obsolete];
+METHOD CloneObject() AS OBJECT STRICT
+   RETURN NULL_OBJECT
+
 #endif
 
 

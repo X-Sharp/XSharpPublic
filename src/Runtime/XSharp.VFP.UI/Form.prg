@@ -41,8 +41,30 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY WindowType AS INT AUTO
 			// Todo
 		PROPERTY ScrollBars AS INT AUTO
-			// Todo
-		PROPERTY BorderStyle AS INT AUTO
+			// BorderStyle: VFP values 0=None, 1=Fixed Single, 2=Fixed Dialog, 3=Sizable (default), 4=Fixed ToolWindow, 5=Sizable ToolWindow
+		PROPERTY BorderStyle AS INT
+			GET
+				SWITCH SELF:FormBorderStyle
+					CASE FormBorderStyle.None            ; RETURN 0
+					CASE FormBorderStyle.FixedSingle     ; RETURN 1
+					CASE FormBorderStyle.FixedDialog     ; RETURN 2
+					CASE FormBorderStyle.Sizable         ; RETURN 3
+					CASE FormBorderStyle.FixedToolWindow ; RETURN 4
+					CASE FormBorderStyle.SizableToolWindow ; RETURN 5
+				END SWITCH
+				RETURN 3
+			END GET
+			SET
+				SWITCH VALUE
+					CASE 0 ; SELF:FormBorderStyle := FormBorderStyle.None
+					CASE 1 ; SELF:FormBorderStyle := FormBorderStyle.FixedSingle
+					CASE 2 ; SELF:FormBorderStyle := FormBorderStyle.FixedDialog
+					CASE 3 ; SELF:FormBorderStyle := FormBorderStyle.Sizable
+					CASE 4 ; SELF:FormBorderStyle := FormBorderStyle.FixedToolWindow
+					CASE 5 ; SELF:FormBorderStyle := FormBorderStyle.SizableToolWindow
+				END SWITCH
+			END SET
+		END PROPERTY
 			// Todo
 		PROPERTY ColorSource AS INT AUTO
 					// Todo
@@ -75,11 +97,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
         [System.ComponentModel.DefaultValue(1)];
         PROPERTY TitleBar AS INT
 		SET
-			IF ( VALUE == 0 )
-				SELF:FormBorderStyle := FormBorderStyle.None
-			ELSEIF ( VALUE == 1 )
-				SELF:FormBorderStyle := FormBorderStyle.Sizable
-			ENDIF
+			// 0 = no title bar (None), 1 = title bar (Sizable); other values not supported in WinForms
+			SWITCH VALUE
+				CASE 0 ; SELF:FormBorderStyle := FormBorderStyle.None
+				CASE 1 ; SELF:FormBorderStyle := FormBorderStyle.Sizable
+				OTHERWISE
+					THROW NotSupportedException{"TitleBar value " + VALUE:ToString() + " is not supported; use 0 (no title) or 1 (title)."}
+			END SWITCH
 		END SET
 		END PROPERTY
 
@@ -97,6 +121,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #region Support of VFP DataBinding, DataEnvironment, Cursors
 
 		METHOD DataSession( setSession AS INT ) AS VOID
+		// TODO: full DataSession switching support
+		END METHOD
+
+		// HWND: returns the native window handle as an integer (VFP compatibility)
+		PROPERTY HWND AS INT GET SELF:Handle:ToInt32()
 
 #include "Anchor.xh"
 
@@ -211,13 +240,37 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET Set_Load( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_Load( methodCall AS VFPOverride ) AS VOID
-			SELF:Load += System.EventHandler{ SELF, @OnVFPLoadCall() }
 			SELF:_VFPLoad := methodCall
 
+		PROTECTED OVERRIDE METHOD OnLoad(e AS System.EventArgs) AS VOID
+			SUPER:OnLoad(e)
+			SELF:Load()
+
 		PRIVATE METHOD OnVFPLoadCall( sender AS OBJECT, e AS System.EventArgs) AS VOID
-			//
+			SELF:Load()
+
+		// ── B-2: Load virtual stub — subclass overrides are called ────────────
+		NEW METHOD Load() AS VOID
 			IF SELF:_VFPLoad != NULL
-				SELF:_VFPLoad:Call( )
+				SELF:_VFPLoad:Call()
+			ENDIF
+
+		// ── B-2: Unload virtual stub ─────────────────────────────────────────
+		PRIVATE _VFPUnload AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form is unloaded.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpUnload AS STRING GET _VFPUnload?:SendTo SET Set_Unload( VFPOverride{SELF, VALUE} )
+
+		METHOD Set_Unload( methodCall AS VFPOverride ) AS VOID
+			SELF:FormClosed += System.Windows.Forms.FormClosedEventHandler{ SELF, @OnVFPUnloadCall() }
+			SELF:_VFPUnload := methodCall
+
+		PRIVATE METHOD OnVFPUnloadCall( sender AS OBJECT, e AS System.Windows.Forms.FormClosedEventArgs ) AS VOID
+			SELF:Unload()
+
+		VIRTUAL METHOD Unload() AS VOID
+			IF SELF:_VFPUnload != NULL
+				SELF:_VFPUnload:Call()
 			ENDIF
 
 		PRIVATE _VFPQueryUnload AS VFPOverride
@@ -229,8 +282,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:FormClosing += System.Windows.Forms.FormClosingEventHandler{ SELF, @OnVFPQueryUnload() }
 			SELF:_VFPQueryUnload := methodCall
 
+		// ── C-18: QueryUnload cancel-logic state machine ─────────────────────
+		// Flow: FormClosing fires → _validQueryUnload := TRUE (allow close by default)
+		//   → VFP string-wired handler runs (vfpQueryUnLoad assignment)
+		//     → if it calls NODEFAULT(), _validQueryUnload becomes FALSE → e.Cancel := TRUE
+		//   → virtual QueryUnload stub runs (subclass overrides call NODEFAULT() to cancel)
+		//     → if _validQueryUnload still FALSE → e.Cancel := TRUE
+		// NODEFAULT() also sets _handledKeypress := TRUE (shared flag; both live in the same method).
 		PRIVATE METHOD OnVFPQueryUnload( sender AS OBJECT, e AS FormClosingEventArgs) AS VOID
-			//
 			IF SELF:_VFPQueryUnload != NULL
 				SELF:_validQueryUnload := TRUE
 				SELF:_VFPQueryUnload:Call( )
@@ -238,6 +297,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					e:Cancel := TRUE
 				ENDIF
 			ENDIF
+			SELF:QueryUnload((INT) e:CloseReason)
+			IF !SELF:_validQueryUnload
+				e:Cancel := TRUE
+			ENDIF
+
+		// ── B-2: QueryUnload virtual stub ────────────────────────────────────
+		VIRTUAL METHOD QueryUnload(nUnloadType AS INT) AS VOID
+			// Override in subclass; call NODEFAULT() to cancel the close
+			NOP
 
 #include "InitCall.xh"
 
@@ -249,12 +317,162 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 		NEW METHOD Show() AS VOID
-			IF SELF:MDIForm
+			// WindowType: 0 = Modeless, 1 = Modal (VFP default is 1 for standalone forms)
+			IF SELF:MDIForm .OR. SELF:WindowType == 0
 				SUPER:Show()
 			ELSE
 				SELF:ShowDialog()
 			ENDIF
 		END METHOD
+
+		// ── B-5: ActiveControl ───────────────────────────────────────────────
+		NEW PROPERTY ActiveControl AS USUAL
+			GET
+				RETURN SUPER:ActiveControl
+			END GET
+		END PROPERTY
+
+		// ── B-3: KeyPreview ──────────────────────────────────────────────────
+		NEW PROPERTY KeyPreview AS LOGIC
+			GET
+				RETURN SUPER:KeyPreview
+			END GET
+			SET
+				SUPER:KeyPreview := VALUE
+			END SET
+		END PROPERTY
+
+		// ── B-1: Activate / Deactivate ───────────────────────────────────────
+		PRIVATE _VFPActivate AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form receives focus.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpActivate AS STRING GET _VFPActivate?:SendTo SET SELF:_VFPActivate := VFPOverride{SELF, VALUE}
+
+		NEW METHOD Activate() AS VOID
+			IF SELF:_VFPActivate != NULL
+				SELF:_VFPActivate:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnActivated(e AS System.EventArgs) AS VOID
+			SUPER:OnActivated(e)
+			SELF:Activate()
+
+		PRIVATE _VFPDeactivate AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form loses focus.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpDeactivate AS STRING GET _VFPDeactivate?:SendTo SET SELF:_VFPDeactivate := VFPOverride{SELF, VALUE}
+
+		NEW METHOD Deactivate() AS VOID
+			IF SELF:_VFPDeactivate != NULL
+				SELF:_VFPDeactivate:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnDeactivate(e AS System.EventArgs) AS VOID
+			SUPER:OnDeactivate(e)
+			SELF:Deactivate()
+
+		// ── B-4: GotFocus / LostFocus ────────────────────────────────────────
+		PRIVATE _VFPGotFocus AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form receives keyboard focus.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpGotFocus AS STRING GET _VFPGotFocus?:SendTo SET SELF:_VFPGotFocus := VFPOverride{SELF, VALUE}
+
+		NEW METHOD GotFocus() AS VOID
+			IF SELF:_VFPGotFocus != NULL
+				SELF:_VFPGotFocus:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnGotFocus(e AS System.EventArgs) AS VOID
+			SUPER:OnGotFocus(e)
+			SELF:GotFocus()
+
+		PRIVATE _VFPLostFocus AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form loses keyboard focus.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpLostFocus AS STRING GET _VFPLostFocus?:SendTo SET SELF:_VFPLostFocus := VFPOverride{SELF, VALUE}
+
+		NEW METHOD LostFocus() AS VOID
+			IF SELF:_VFPLostFocus != NULL
+				SELF:_VFPLostFocus:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnLostFocus(e AS System.EventArgs) AS VOID
+			SUPER:OnLostFocus(e)
+			SELF:LostFocus()
+
+		// ── B-4: Click / DblClick ────────────────────────────────────────────
+		PRIVATE _VFPClick AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the user clicks the form.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpClick AS STRING GET _VFPClick?:SendTo SET SELF:_VFPClick := VFPOverride{SELF, VALUE}
+
+		NEW METHOD Click() AS VOID
+			IF SELF:_VFPClick != NULL
+				SELF:_VFPClick:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnClick(e AS System.EventArgs) AS VOID
+			SUPER:OnClick(e)
+			SELF:Click()
+
+		PRIVATE _VFPDblClick AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the user double-clicks the form.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpDblClick AS STRING GET _VFPDblClick?:SendTo SET SELF:_VFPDblClick := VFPOverride{SELF, VALUE}
+
+		METHOD DblClick() AS VOID
+			IF SELF:_VFPDblClick != NULL
+				SELF:_VFPDblClick:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnDoubleClick(e AS System.EventArgs) AS VOID
+			SUPER:OnDoubleClick(e)
+			SELF:DblClick()
+
+		// ── B-4: KeyPress ────────────────────────────────────────────────────
+		PRIVATE _VFPKeyPress AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the user presses a key while the form has focus.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpKeyPress AS STRING GET _VFPKeyPress?:SendTo SET SELF:_VFPKeyPress := VFPOverride{SELF, VALUE}
+
+		NEW METHOD KeyPress(nKeyCode AS INT, nShiftAltCtrl AS INT) AS VOID
+			IF SELF:_VFPKeyPress != NULL
+				SELF:_VFPKeyPress:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+			SUPER:OnKeyPress(e)
+			SELF:KeyPress((INT) e:KeyChar, 0)
+
+		// ── B-4: Resize ──────────────────────────────────────────────────────
+		PRIVATE _VFPResize AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form is resized.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET SELF:_VFPResize := VFPOverride{SELF, VALUE}
+
+		NEW METHOD Resize() AS VOID
+			IF SELF:_VFPResize != NULL
+				SELF:_VFPResize:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
+			SUPER:OnResize(e)
+			SELF:Resize()
+
+		// ── B-4: Paint ───────────────────────────────────────────────────────
+		PRIVATE _VFPPaint AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form is repainted.")];
+		[System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpPaint AS STRING GET _VFPPaint?:SendTo SET SELF:_VFPPaint := VFPOverride{SELF, VALUE}
+
+		NEW METHOD Paint() AS VOID
+			IF SELF:_VFPPaint != NULL
+				SELF:_VFPPaint:Call()
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnPaint(e AS System.Windows.Forms.PaintEventArgs) AS VOID
+			SUPER:OnPaint(e)
+			SELF:Paint()
 
 		NEW PROPERTY Visible AS LOGIC
 			GET
@@ -270,128 +488,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ENDIF
 			END SET
 		END PROPERTY
-
-		/// <summary>
-		/// Centers the form on the screen.
-		/// Equivalent to VFP's Center() method.
-		/// </summary>
-		[Category("VFP Properties"), Description("Center the form on the screen")];
-		PUBLIC METHOD Center() AS VOID
-			SELF:CenterToScreen()
-
-		/// <summary>
-		/// Hides the form without closing it.
-		/// Equivalent to VFP's Hide() method.
-		/// </summary>
-		[Category("VFP Properties"), Description("Hide the form without closing")];
-		PUBLIC METHOD Hide() AS VOID
-			SELF:Visible := FALSE
-
-		/// <summary>
-		/// Activates the form (brings it to the front).
-		/// Equivalent to VFP's Activate() method.
-		/// </summary>
-		[Category("VFP Properties"), Description("Activate the form")];
-		PUBLIC METHOD DoActivate() AS VOID
-			SELF:BringToFront()
-
-		/// <summary>
-		/// Adds a control object to the Form.
-		/// Equivalent to VFP's AddObject method.
-		/// </summary>
-		/// <param name="cObjectName">The name to assign to the object.</param>
-		/// <param name="cClassName">The class of the object to add.</param>
-		/// <param name="aParameters">Optional parameters to pass to the object constructor.</param>
-		/// <returns>Reference to the newly added object, or NIL if unsuccessful.</returns>
-		/// <remarks>
-		/// Creates an instance of cClassName with the given name and adds it to the Form.
-		/// The object must be a System.Windows.Forms.Control or compatible type.
-		/// </remarks>
-		PUBLIC METHOD AddObject(cObjectName AS STRING, cClassName AS STRING, aParameters AS ARRAY := NIL) AS OBJECT STRICT
-			LOCAL oObject AS OBJECT
-			LOCAL oControl AS System.Windows.Forms.Control
-
-			TRY
-				// Try to create an instance of the class
-				// This is a simplified implementation - in reality VFP uses a class factory
-				VAR objectType := System.Type.GetType(cClassName)
-				IF objectType == NULL
-					// Try with namespace prepend
-					objectType := System.Type.GetType("XSharp.VFP.UI." + cClassName)
-				ENDIF
-
-				IF objectType != NULL
-					oObject := System.Activator.CreateInstance(objectType)
-					oControl := oObject AS System.Windows.Forms.Control
-
-					IF oControl != NULL
-						oControl:Name := cObjectName
-						SELF:Controls:Add(oControl)
-						RETURN oObject
-					ENDIF
-				ENDIF
-			CATCH AS e
-				// Log exception if needed
-				RETURN NIL
-			END TRY
-
-			RETURN NIL
-		END METHOD
-
-		/// <summary>
-		/// Removes a control object from the Form.
-		/// Equivalent to VFP's RemoveObject method.
-		/// </summary>
-		/// <param name="cObjectName">The name of the object to remove.</param>
-		/// <remarks>
-		/// Removes the named control from the Form and disposes it.
-		/// </remarks>
-		PUBLIC METHOD RemoveObject(cObjectName AS STRING) AS VOID STRICT
-			LOCAL oControl AS System.Windows.Forms.Control
-
-			// Find control by name
-			VAR controls := SELF:Controls:Find(cObjectName, FALSE)
-			IF controls:Length > 0
-				oControl := controls[0]
-				SELF:Controls:Remove(oControl)
-				oControl:Dispose()
-			ENDIF
-		END METHOD
-
-		/// <summary>
-		/// Creates a new object instance.
-		/// Equivalent to VFP's NewObject function.
-		/// </summary>
-		/// <param name="cClassName">The class of the object to create.</param>
-		/// <param name="cClassLibrary">Optional class library name (for custom classes).</param>
-		/// <param name="aParameters">Optional parameters to pass to the object constructor.</param>
-		/// <returns>Reference to the newly created object, or NIL if unsuccessful.</returns>
-		/// <remarks>
-		/// Creates a new instance of the specified class.
-		/// This is a simplified implementation for built-in VFP classes.
-		/// </remarks>
-		PUBLIC METHOD NewObject(cClassName AS STRING, cClassLibrary AS STRING := "", aParameters AS ARRAY := NIL) AS OBJECT STRICT
-			LOCAL oObject AS OBJECT
-
-			TRY
-				// Try to create an instance of the class
-				VAR objectType := System.Type.GetType(cClassName)
-				IF objectType == NULL
-					// Try with namespace prepend
-					objectType := System.Type.GetType("XSharp.VFP.UI." + cClassName)
-				ENDIF
-
-				IF objectType != NULL
-					oObject := System.Activator.CreateInstance(objectType)
-					RETURN oObject
-				ENDIF
-			CATCH AS e
-				// Log exception if needed
-				RETURN NIL
-			END TRY
-
-			RETURN NIL
-		END METHOD
 
 	END CLASS
 

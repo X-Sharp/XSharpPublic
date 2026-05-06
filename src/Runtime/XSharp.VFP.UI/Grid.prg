@@ -18,26 +18,28 @@ BEGIN NAMESPACE XSharp.VFP.UI
     /// <summary>
     /// The VFP compatible Grid class.
     /// </summary>
-    CLASS Grid INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
+    PARTIAL CLASS Grid INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
 
 
         PROPERTY HighlightBackColor AS LONG AUTO
         PROPERTY HighlightForeColor AS LONG AUTO
 
+        PROPERTY DeleteMark AS LOGIC AUTO
+        PROPERTY RecordMark AS LOGIC AUTO
+        PROPERTY Panel AS INT AUTO
+
+
+
         PRIVATE _oldRowIndex AS LONG
         PRIVATE _oldColIndex AS LONG
         PRIVATE _rowColChange AS LONG
 
-        // GridLines property backing field
-        // Values: 0=None, 1=Horizontal, 2=Vertical, 3=Both
-        PRIVATE _gridLines := 0 AS INT
+        #include "Generated/VFPContainer.xh"
+        #include "VFPProperties.xh"
 
-        #include "Generated\VFPContainer.xh"
-        #include "XSharp\VFPProperties.xh"
+        #include "ControlProperties.xh"
 
-        #include ".\Headers\ControlProperties.xh"
-        #include ".\Headers\ControlFocus.xh"
 
         CONSTRUCTOR(  ) STRICT
             SUPER()
@@ -50,30 +52,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
             SELF:CurrentCellChanged += System.EventHandler{ SELF, @VFPCurrentCellChanged() }
-            // Add handler for column header clicks to enable sorting
-            SELF:ColumnHeaderMouseClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderClick() }
             SELF:Size := System.Drawing.Size{320, 200}
 
-            // Initialize grid properties with defaults
-            SELF:ApplyGridLineStyle()
-
             RETURN
-
-        /// <summary>
-        /// Handle column header clicks for sorting
-        /// </summary>
-        PRIVATE METHOD OnColumnHeaderClick(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID
-            // Click on a column header initiates sorting
-            IF e:ColumnIndex >= 0
-                // Toggle sort order if clicking same column, otherwise sort ascending
-                IF _sortColumn == e:ColumnIndex
-                    _sortAscending := !_sortAscending
-                ELSE
-                    _sortAscending := TRUE
-                ENDIF
-                SELF:Sort(e:ColumnIndex, _sortAscending)
-            ENDIF
-        END METHOD
 
         PUBLIC METHOD Column( i AS INT ) AS Column
             // Looking for a Column
@@ -99,232 +80,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END SET
         END PROPERTY
 
-        // ============================================================================
-        // GridLines Property - Controls visibility of grid lines
-        // Values: 0=None, 1=Horizontal, 2=Vertical, 3=Both
-        // Reference: VFP Help - GridLines determines which grid lines are visible
-        // ============================================================================
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Controls the display of grid lines (0=None, 1=Horizontal, 2=Vertical, 3=Both)")];
-        [System.ComponentModel.DefaultValue(0)];
-        PROPERTY GridLines AS INT
-            GET
-                RETURN _gridLines
-            END GET
-            SET
-                _gridLines := VALUE
-                SELF:ApplyGridLineStyle()
-            END SET
-        END PROPERTY
 
-        /// <summary>
-        /// Internal method to apply grid line style based on GridLines property
-        /// </summary>
-        PRIVATE METHOD ApplyGridLineStyle() AS VOID
-            SWITCH _gridLines
-                CASE 0
-                    // None - no grid lines
-                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.None
-                    SELF:GridColor := System.Drawing.Color.LightGray
-                CASE 1
-                    // Horizontal only
-                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.SingleHorizontal
-                    SELF:GridColor := System.Drawing.Color.LightGray
-                CASE 2
-                    // Vertical only
-                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.SingleVertical
-                    SELF:GridColor := System.Drawing.Color.LightGray
-                CASE 3
-                    // Both horizontal and vertical
-                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.Single
-                    SELF:GridColor := System.Drawing.Color.LightGray
-                OTHERWISE
-                    // Default to both if invalid value
-                    _gridLines := 3
-                    SELF:CellBorderStyle := DataGridViewCellBorderStyle.Single
-            END SWITCH
-        END METHOD
-
-        // ============================================================================
-        // Column Freezing Support
-        // ============================================================================
-        PRIVATE _frozenColumnCount := 0 AS INT
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Number of leftmost columns to freeze")];
-        [System.ComponentModel.DefaultValue(0)];
-        PROPERTY FrozenColumnCount AS INT
-            GET
-                RETURN _frozenColumnCount
-            END GET
-            SET
-                IF VALUE >= 0 .AND. VALUE <= SELF:ColumnCount
-                    _frozenColumnCount := VALUE
-                    SELF:ApplyColumnFreeze()
-                ENDIF
-            END SET
-        END PROPERTY
-
-        /// <summary>
-        /// Freeze specified number of columns (locked from horizontal scrolling)
-        /// </summary>
-        PUBLIC METHOD FreezeColumns(columnCount AS INT) AS VOID
-            SELF:FrozenColumnCount := columnCount
-        END METHOD
-
-        /// <summary>
-        /// Internal method to apply column freezing
-        /// </summary>
-        PRIVATE METHOD ApplyColumnFreeze() AS VOID
-            TRY
-                LOCAL i AS INT
-                FOR i := 0 UPTO SELF:ColumnCount - 1
-                    IF i < _frozenColumnCount
-                        SELF:Columns[i]:Frozen := TRUE
-                    ELSE
-                        SELF:Columns[i]:Frozen := FALSE
-                    ENDIF
-                NEXT
-            CATCH
-                // Silently handle any errors during freezing
-                NOP
-            END TRY
-        END METHOD
-
-        // ============================================================================
-        // Sorting Support
-        // ============================================================================
-        PRIVATE _sortColumn := -1 AS INT
-        PRIVATE _sortAscending := TRUE AS LOGIC
-
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Index of column used for sorting")];
-        [System.ComponentModel.DefaultValue(-1)];
-        PROPERTY SortColumn AS INT
-            GET
-                RETURN _sortColumn
-            END GET
-            SET
-                _sortColumn := VALUE
-            END SET
-        END PROPERTY
-
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Sort order (TRUE=Ascending, FALSE=Descending)")];
-        [System.ComponentModel.DefaultValue(TRUE)];
-        PROPERTY SortAscending AS LOGIC
-            GET
-                RETURN _sortAscending
-            END GET
-            SET
-                _sortAscending := VALUE
-            END SET
-        END PROPERTY
-
-        /// <summary>
-        /// Apply sorting to the grid based on specified column
-        /// </summary>
-        PUBLIC METHOD Sort(columnIndex AS INT, ascending AS LOGIC) AS VOID
-            _sortColumn := columnIndex
-            _sortAscending := ascending
-
-            TRY
-                IF SELF:_bindingSource != NULL
-                    IF columnIndex >= 0 .AND. columnIndex < SELF:ColumnCount
-                        VAR columnName := SELF:Columns[columnIndex]:DataPropertyName
-                        IF !String.IsNullOrEmpty(columnName)
-                            VAR sortOrder := IF(ascending, " ASC", " DESC")
-                            SELF:_bindingSource:Sort := columnName + sortOrder
-                        ENDIF
-                    ENDIF
-                ENDIF
-            CATCH
-                // Silently handle sort errors
-                NOP
-            END TRY
-        END METHOD
-
-        // ============================================================================
-        // Filtering Support
-        // ============================================================================
-        PRIVATE _filterExpression := "" AS STRING
-
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Filter expression for data rows")];
-        [System.ComponentModel.DefaultValue("")];
-        PROPERTY FilterExpression AS STRING
-            GET
-                RETURN _filterExpression
-            END GET
-            SET
-                _filterExpression := VALUE
-                SELF:ApplyFilter()
-            END SET
-        END PROPERTY
-
-        /// <summary>
-        /// Apply filter to the grid data
-        /// </summary>
-        PUBLIC METHOD ApplyFilter() AS VOID
-            TRY
-                IF SELF:_bindingSource != NULL
-                    IF String.IsNullOrEmpty(_filterExpression)
-                        SELF:_bindingSource:Filter := NULL
-                    ELSE
-                        SELF:_bindingSource:Filter := _filterExpression
-                    ENDIF
-                ENDIF
-            CATCH
-                // Reset filter on error
-                TRY
-                    IF SELF:_bindingSource != NULL
-                        SELF:_bindingSource:Filter := NULL
-                    ENDIF
-                CATCH
-                    NOP
-                END TRY
-            END TRY
-        END METHOD
-
-        // ============================================================================
-        // Additional Visual Properties
-        // ============================================================================
-        PRIVATE _headerHeight := 21 AS INT
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Height of column headers in pixels")];
-        [System.ComponentModel.DefaultValue(21)];
-        PROPERTY HeaderHeight AS INT
-            GET
-                RETURN _headerHeight
-            END GET
-            SET
-                _headerHeight := VALUE
-                SELF:ColumnHeadersHeight := VALUE
-            END SET
-        END PROPERTY
-
-        PRIVATE _highlightRow := FALSE AS LOGIC
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("When TRUE, highlights entire row when selected")];
-        [System.ComponentModel.DefaultValue(FALSE)];
-        PROPERTY HighlightRow AS LOGIC
-            GET
-                RETURN _highlightRow
-            END GET
-            SET
-                _highlightRow := VALUE
-                IF VALUE
-                    SELF:SelectionMode := DataGridViewSelectionMode.FullRowSelect
-                ELSE
-                    SELF:SelectionMode := DataGridViewSelectionMode.CellSelect
-                ENDIF
-            END SET
-        END PROPERTY
-
-        PRIVATE _alternatingRowColor := System.Drawing.Color.White AS System.Drawing.Color
-        [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Background color for alternating rows")];
-        PROPERTY AlternatingRowColor AS System.Drawing.Color
-            GET
-                RETURN _alternatingRowColor
-            END GET
-            SET
-                _alternatingRowColor := VALUE
-                SELF:AlternatingRowsDefaultCellStyle:BackColor := VALUE
-            END SET
-        END PROPERTY
-
+        // Override ColumnCount
         PUBLIC NEW PROPERTY ColumnCount AS LONG
             GET
                 RETURN Columns:Count
@@ -373,16 +130,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 ENDIF
             END WHILE
 
-            // Todo
-            PROPERTY DeleteMark AS LOGIC AUTO
-            // Todo
-        PROPERTY RecordMark AS LOGIC AUTO
-
-            // Todo
-        PROPERTY Panel AS INT AUTO
-
-
-        PROTECTED _currentSource	AS DbDataSource
+            PROTECTED _currentSource	AS DbDataSource
         PROTECTED _nameOfTable		AS STRING
         PROTECTED _bindingSource	AS System.Windows.Forms.BindingSource
 
@@ -399,7 +147,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                                 SELF:_nameOfTable := VALUE
                                 SELF:_currentSource := DbDataSource()
                                 IF SELF:_currentSource != NULL
-                                    SELF:_currentSource:ShowDeleted := FALSE
+                                    SELF:_currentSource:ShowDeleted := SELF:_showDeleted
                                     SELF:_currentSource:ShowRecno := FALSE
                                     DbSelectArea( current )
                                     // Now attach the DataTable to the DataGridView as DataSource
@@ -504,11 +252,23 @@ BEGIN NAMESPACE XSharp.VFP.UI
         METHOD Set_AfterRowColChange( methodCall AS VFPOverride ) AS VOID
             SELF:_VFPAfterRowColChange := methodCall
 
+        // Overrideable VFP event method — subclasses override this
+        VIRTUAL METHOD AfterRowColChange( nLocation AS LONG ) AS VOID
+            IF SELF:_VFPAfterRowColChange != NULL
+                SELF:_VFPAfterRowColChange:Call( <USUAL>{nLocation} )
+            ENDIF
+
         PRIVATE _VFPBeforeRowColChange AS VFPOverride
         PROPERTY vfpBeforeRowColChange AS STRING GET _VFPBeforeRowColChange?:SendTo SET SELF:Set_BeforeRowColChange( VFPOverride{SELF, VALUE} )
 
         METHOD Set_BeforeRowColChange( methodCall AS VFPOverride ) AS VOID
             SELF:_VFPBeforeRowColChange := methodCall
+
+        // Overrideable VFP event method — subclasses override this
+        VIRTUAL METHOD BeforeRowColChange( nLocation AS LONG ) AS VOID
+            IF SELF:_VFPBeforeRowColChange != NULL
+                SELF:_VFPBeforeRowColChange:Call( <USUAL>{nLocation} )
+            ENDIF
 
         /// <summary>
         /// Internal CurrentCellChanged. Will root to AfterRowColChange event
@@ -529,12 +289,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 ENDIF
             ENDIF
             //
-            IF SELF:_VFPBeforeRowColChange != NULL
-                SELF:_VFPBeforeRowColChange:Call( <USUAL>{nRowColIndex} )
-            ENDIF
-            IF SELF:_VFPAfterRowColChange != NULL
-                SELF:_VFPAfterRowColChange:Call( <USUAL>{nRowColIndex} )
-            ENDIF
+            SELF:BeforeRowColChange( nRowColIndex )
+            SELF:AfterRowColChange( nRowColIndex )
 
         /// <summary>
         /// Internal SelectionChanged, use to get "old" Row & Col
@@ -556,12 +312,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY RowColChange AS LONG GET SELF:_rowColChange
 
         OVERRIDE METHOD Refresh() AS VOID
-            LOCAL ds AS BindingSource
-            //
             TRY
-                ds := SELF:DataSource
-                IF SELF:_currentSource != NULL
-                    ds:Position := (INT) SELF:_currentSource:RecNo
+                IF SELF:_currentSource != NULL .AND. SELF:_bindingSource != NULL
+                    SELF:_bindingSource:Position := (INT) SELF:_currentSource:RecNo
                 ENDIF
             CATCH
                 NOP
@@ -588,11 +341,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
             GET
                 LOCAL nRow := 0 AS INT
                 IF SELF:CurrentCell != NULL
-                    nRow := SELF:CurrentCell:RowIndex
-                    // One-based
-                    nRow += 1
+                    nRow := SELF:CurrentCell:RowIndex + 1  // 1-based
                 ENDIF
                 RETURN nRow
+            END GET
+        END PROPERTY
+
+        PROPERTY ActiveColumn AS INT
+            GET
+                LOCAL nCol := 0 AS INT
+                IF SELF:CurrentCell != NULL
+                    nCol := SELF:CurrentCell:ColumnIndex + 1  // 1-based
+                ENDIF
+                RETURN nCol
             END GET
         END PROPERTY
 
@@ -626,86 +387,98 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY AllowAutoColumnFit AS LONG AUTO
         PROPERTY Themes AS LOGIC AUTO
 
-        /// <summary>
-        /// Adds a new column to the Grid at the specified 1-based position.
-        /// Equivalent to VFP's AddColumn method.
-        /// </summary>
-        /// <param name="cColumnName">The name of the new column.</param>
-        /// <param name="nPosition">Optional 1-based position for the column. Default is append to end.</param>
-        /// <returns>The newly created Column object.</returns>
-        /// <remarks>
-        /// Creates a new TextBoxColumn and inserts it at the specified position.
-        /// If nPosition is out of range, appends to the end.
-        /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
-        /// </remarks>
-        PUBLIC METHOD AddColumn(cColumnName AS STRING, nPosition AS INT := -1) AS Column STRICT
-            VAR newColumn := Column{}
-            newColumn:Name := cColumnName
-            newColumn:HeaderText := cColumnName
-            newColumn:CellTemplate := System.Windows.Forms.DataGridViewTextBoxCell{}
-            newColumn:AutoSizeMode := DataGridViewAutoSizeColumnMode.None
-            newColumn:Width := 100
+        // C-13: Value = the current cell's value
+        PROPERTY Value AS USUAL
+            GET
+                IF SELF:CurrentCell != NULL
+                    RETURN (USUAL) SELF:CurrentCell:Value
+                ENDIF
+                RETURN NIL
+            END GET
+        END PROPERTY
 
-            // Convert VFP 1-based index to 0-based .NET index
-            IF nPosition <= 0 .OR. nPosition > SELF:Columns:Count + 1
-                // Append to end
-                SELF:Columns:Add(newColumn)
-            ELSE
-                // Insert at specific position (convert 1-based to 0-based)
-                SELF:Columns:Insert(nPosition - 1, newColumn)
-            ENDIF
+        // C-14: ShowDeleted — controls whether deleted records are visible in the DataSource
+        PRIVATE _showDeleted AS LOGIC
+        PROPERTY ShowDeleted AS LOGIC
+            GET
+                RETURN _showDeleted
+            END GET
+            SET
+                _showDeleted := VALUE
+                IF SELF:_currentSource != NULL
+                    SELF:_currentSource:ShowDeleted := VALUE
+                ENDIF
+            END SET
+        END PROPERTY
 
-            RETURN newColumn
-        END METHOD
+        // DataGridView does not subscribe to KeyPress automatically.
+        // ControlEventHandlers.xh only stores the handler; we must dispatch it here.
+        PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+            SUPER:OnKeyPress(e)
+            SELF:OnVFPKeyPress(SELF, e)
 
-        /// <summary>
-        /// Removes a column from the Grid by its 1-based index.
-        /// Equivalent to VFP's RemoveColumn method.
-        /// </summary>
-        /// <param name="nPosition">The 1-based position of the column to remove.</param>
-        /// <remarks>
-        /// Removes the column at the specified position.
-        /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
-        /// If nPosition is out of range, nothing happens.
-         /// </remarks>
-         PUBLIC METHOD RemoveColumn(nPosition AS INT) AS VOID STRICT
-             // Convert VFP 1-based index to 0-based .NET index
-             VAR zeroBasedIndex := nPosition - 1
-             IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Columns:Count
-                 SELF:Columns:RemoveAt(zeroBasedIndex)
-             ENDIF
-         END METHOD
+        // ── GridLines ─────────────────────────────────────────────────────────
+        // VFP: 0=None, 1=Horizontal, 2=Vertical, 3=Both (default)
+        PROPERTY GridLines AS LONG
+            GET
+                SWITCH SELF:CellBorderStyle
+                CASE DataGridViewCellBorderStyle.SingleHorizontal  ; RETURN 1
+                CASE DataGridViewCellBorderStyle.SingleVertical    ; RETURN 2
+                CASE DataGridViewCellBorderStyle.Single            ; RETURN 3
+                OTHERWISE                                          ; RETURN 0
+                END SWITCH
+            END GET
+            SET
+                SWITCH VALUE
+                CASE 0 ; SELF:CellBorderStyle := DataGridViewCellBorderStyle.None
+                CASE 1 ; SELF:CellBorderStyle := DataGridViewCellBorderStyle.SingleHorizontal
+                CASE 2 ; SELF:CellBorderStyle := DataGridViewCellBorderStyle.SingleVertical
+                OTHERWISE ; SELF:CellBorderStyle := DataGridViewCellBorderStyle.Single
+                END SWITCH
+            END SET
+        END PROPERTY
 
-         /// <summary>
-         /// Appends a new row to the Grid.
-         /// Equivalent to VFP's AppendRow method.
-         /// </summary>
-         /// <returns>The index of the newly added row (0-based).</returns>
-         /// <remarks>
-         /// Adds a new empty row to the end of the Grid.
-         /// </remarks>
-         PUBLIC METHOD AppendRow() AS INT STRICT
-             VAR newRowIndex := SELF:Rows:Add()
-             RETURN newRowIndex
-         END METHOD
+        // ── GridLineColor ─────────────────────────────────────────────────────
+        // VFP LONG color (r + g*256 + b*65536) → DataGridView.GridColor
+        PROPERTY GridLineColor AS LONG
+            GET
+                VAR c := SELF:GridColor
+                RETURN c:R + c:G * 256 + c:B * 65536
+            END GET
+            SET
+                SELF:GridColor := System.Drawing.Color.FromArgb(VALUE & 0xFF, (VALUE >> 8) & 0xFF, (VALUE >> 16) & 0xFF)
+            END SET
+        END PROPERTY
 
-         /// <summary>
-         /// Deletes a row from the Grid by its 1-based index.
-         /// Equivalent to VFP's DeleteRow method.
-         /// </summary>
-         /// <param name="nRowIndex">The 1-based index of the row to delete.</param>
-         /// <remarks>
-         /// Removes the row at the specified position.
-         /// VFP uses 1-based indexing; converted to 0-based for .NET DataGridView.
-         /// If nRowIndex is out of range, nothing happens.
-         /// </remarks>
-         PUBLIC METHOD DeleteRow(nRowIndex AS INT) AS VOID STRICT
-             // Convert VFP 1-based index to 0-based .NET index
-             VAR zeroBasedIndex := nRowIndex - 1
-             IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Rows:Count
-                 SELF:Rows:RemoveAt(zeroBasedIndex)
-             ENDIF
-         END METHOD
+        // ── HeaderHeight ──────────────────────────────────────────────────────
+        PROPERTY HeaderHeight AS INT
+            GET ; RETURN SELF:ColumnHeadersHeight ; END GET
+            SET ; IF VALUE > 0 ; SELF:ColumnHeadersHeight := VALUE ; SELF:ColumnHeadersHeightSizeMode := DataGridViewColumnHeadersHeightSizeMode.DisableResizing ; ENDIF ; END SET
+        END PROPERTY
 
-     END CLASS
+        // ── NullDisplay ───────────────────────────────────────────────────────
+        // VFP NullDisplay: string shown when cell value is NULL
+        PROPERTY NullDisplay AS STRING
+            GET ; RETURN (STRING) SELF:DefaultCellStyle:NullValue ; END GET
+            SET ; SELF:DefaultCellStyle:NullValue := VALUE ; END SET
+        END PROPERTY
+
+        // ── Resize / Moved events ─────────────────────────────────────────────
+        PRIVATE _VFPResize AS VFPOverride
+        [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+        PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
+
+        PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
+            SUPER:OnResize(e)
+            IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
+
+        PRIVATE _VFPMoved AS VFPOverride
+        [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+        PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
+
+        PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
+            SUPER:OnMove(e)
+            IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
+
+    END CLASS
 END NAMESPACE // XSharp.VFP.UI

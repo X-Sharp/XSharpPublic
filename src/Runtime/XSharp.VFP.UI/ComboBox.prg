@@ -11,7 +11,6 @@ USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
 USING System.Drawing
-USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
@@ -23,312 +22,291 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// Common properties that all VFP Objects support
 		#include "Headers/VFPObject.xh"
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _uValue AS USUAL
-		PRIVATE _rowSource AS STRING
-		PRIVATE _rowSourceType AS INT
-		PRIVATE _columnCount AS INT
-		PRIVATE _boundColumn AS INT
-		PRIVATE _vfpStyle AS INT
-		PRIVATE _listIndex AS INT
-		PRIVATE _displayCount AS INT
+#include "VFPProperties.xh"
 
 		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			SELF:Size := Size{100,24}
-			SELF:_uValue := NIL
-			SELF:_rowSource := ""
-			SELF:_rowSourceType := 0
-			SELF:_columnCount := 1
-			SELF:_boundColumn := 1
-			SELF:_vfpStyle := 0
-			SELF:_listIndex := -1
-			SELF:_displayCount := 0
+            SUPER()
+            SELF:Size := Size{100,24}
 			RETURN
 
-		#include ".\Headers\ControlProperties.xh"
-        #include ".\Headers\ControlFocus.xh"
-		#include ".\Headers\ControlSource.xh"
+#include "ControlProperties.xh"
 
-		/// <summary>
-		/// Gets or sets the value of the selected item.
-		/// In VFP, this returns the value of the BoundColumn.
-		/// </summary>
-		/// <value>The selected item value as USUAL.</value>
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)];
-		[Browsable(FALSE)];
-		PROPERTY Value AS USUAL
+#include "ControlSource.xh"
+
+		PROPERTY DisplayCount AS LONG
 			GET
-				RETURN SELF:_uValue
+				RETURN SELF:MaxDropDownItems
 			END GET
 			SET
-				IF !IsNil(VALUE)
-					SELF:_uValue := VALUE
-					// Try to find and select matching item
-					SELF:SelectByValue(VALUE)
-				ENDIF
+				SELF:MaxDropDownItems := (INT) VALUE
 			END SET
 		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the row source for the list.
-		/// Equivalent to VFP's RowSource property.
-		/// </summary>
-		/// <value>The row source string.</value>
-		[Category("VFP Properties"), Description("Data source for list items")];
-		[DefaultValue("")];
-		PROPERTY RowSource AS STRING
-			GET
-				RETURN SELF:_rowSource
-			END GET
-			SET
-				SELF:_rowSource := VALUE
-				SELF:PopulateFromRowSource()
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the type of row source.
-		/// 0=None, 1=Value, 5=Array.
-		/// Equivalent to VFP's RowSourceType property.
-		/// </summary>
-		/// <value>The row source type (0, 1, or 5). Default is 0.</value>
-		[Category("VFP Properties"), Description("Row source type: 0=None, 1=Value, 5=Array")];
-		[DefaultValue(0)];
-		PROPERTY RowSourceType AS INT
-			GET
-				RETURN SELF:_rowSourceType
-			END GET
-			SET
-				SELF:_rowSourceType := VALUE
-				SELF:PopulateFromRowSource()
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the number of columns in the list.
-		/// Equivalent to VFP's ColumnCount property.
-		/// </summary>
-		/// <value>The number of columns. Default is 1.</value>
-		[Category("VFP Properties"), Description("Number of columns in the list")];
-		[DefaultValue(1)];
-		PROPERTY ColumnCount AS INT
-			GET
-				RETURN SELF:_columnCount
-			END GET
-			SET
-				SELF:_columnCount := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets which column provides the value.
-		/// Equivalent to VFP's BoundColumn property.
-		/// </summary>
-		/// <value>The column index (1-based). Default is 1.</value>
-		[Category("VFP Properties"), Description("Which column returns as Value")];
-		[DefaultValue(1)];
-		PROPERTY BoundColumn AS INT
-			GET
-				RETURN SELF:_boundColumn
-			END GET
-			SET
-				SELF:_boundColumn := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the style of the combo box.
-		/// 0=Dropdown, 1=DropdownList.
-		/// Equivalent to VFP's Style property.
-		/// </summary>
-		/// <value>The combo box style (0 or 1). Default is 0.</value>
-		[Category("VFP Properties"), Description("Combo box style: 0=Dropdown, 1=DropdownList")];
-		[DefaultValue(0)];
-		PROPERTY Style AS INT
-			GET
-				RETURN SELF:_vfpStyle
-			END GET
-			SET
-				SELF:_vfpStyle := VALUE
-				SWITCH VALUE
-					CASE 0
-						SELF:DropDownStyle := ComboBoxStyle.DropDown
-					CASE 1
-						SELF:DropDownStyle := ComboBoxStyle.DropDownList
-				END SWITCH
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the current selected index.
-		/// Equivalent to VFP's ListIndex property.
-		/// </summary>
-		/// <value>The selected index (0-based). -1 if no selection.</value>
-		[Category("VFP Properties"), Description("Current selected index")];
-		[DefaultValue(-1)];
-		PROPERTY ListIndex AS INT
-			GET
-				RETURN SELF:SelectedIndex
-			END GET
-			SET
-				SELF:_listIndex := VALUE
-				IF VALUE >= 0 .AND. VALUE < SELF:Items:Count
-					SELF:SelectedIndex := VALUE
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets the number of items in the list.
-		/// Equivalent to VFP's ListCount property.
-		/// </summary>
-		/// <value>The total number of items.</value>
-		[Category("VFP Properties"), Description("Total number of items in the list")];
-		[DefaultValue(0)];
-		PROPERTY ListCount AS INT
-			GET
-				RETURN SELF:Items:Count
-			END GET
-		END PROPERTY
-
-		PROPERTY DisplayCount AS LONG AUTO
 		PROPERTY InputMask AS STRING AUTO
 		PROPERTY NullDisplay AS String AUTO
 		PROPERTY OLEDropTextInsertion AS LONG AUTO
 
 		PROPERTY Picture AS STRING AUTO
 		PROPERTY PictureSelectionDisplay  AS LONG AUTO
-		PROPERTY ReadOnly AS LOGIC AUTO
+		// ── ReadOnly ─────────────────────────────────────────────────────────
+		// .T. → force DropDownList (non-editable); .F. → restore previous style.
 
-		PROPERTY SelLength AS LONG GET SELF:SelectionLength SET SELF:SelectionLength := Value
+		PRIVATE _savedDropDownStyle AS ComboBoxStyle
+
+		PROPERTY ReadOnly AS LOGIC
+			GET
+				RETURN SELF:DropDownStyle == ComboBoxStyle.DropDownList
+			END GET
+			SET
+				IF VALUE
+					_savedDropDownStyle := SELF:DropDownStyle
+					SELF:DropDownStyle := ComboBoxStyle.DropDownList
+				ELSE
+					SELF:DropDownStyle := _savedDropDownStyle
+				ENDIF
+			END SET
+		END PROPERTY
+
+		// ── Style ────────────────────────────────────────────────────────────
+		// VFP Style: 0=dropdown combo (editable+list), 1=text only, 2=dropdown list (non-editable)
+		// Maps to WinForms DropDownStyle: DropDown=editable, Simple=always-open, DropDownList=non-editable
+
+		PROPERTY Style AS LONG
+			GET
+				DO CASE
+				CASE SELF:DropDownStyle == ComboBoxStyle.DropDownList
+					RETURN 2
+				CASE SELF:DropDownStyle == ComboBoxStyle.Simple
+					RETURN 1
+				OTHERWISE
+					RETURN 0
+				END CASE
+			END GET
+			SET
+				DO CASE
+				CASE VALUE == 2
+					SELF:DropDownStyle := ComboBoxStyle.DropDownList
+				CASE VALUE == 1
+					SELF:DropDownStyle := ComboBoxStyle.Simple
+				OTHERWISE
+					SELF:DropDownStyle := ComboBoxStyle.DropDown
+				END CASE
+			END SET
+		END PROPERTY
 		PROPERTY SelStart AS LONG GET SELF:SelectionStart SET SELF:SelectionStart := Value
 		PROPERTY SelText AS STRING GET SELF:SelectedText  SET SelectedText  := Value
 		PROPERTY SelectOnEntry AS LOGIC AUTO
 
-		/// <summary>
-		/// Populates the list from the RowSource based on RowSourceType.
-		/// </summary>
-		PRIVATE METHOD PopulateFromRowSource() AS VOID
-			SELF:Items:Clear()
-			IF String.IsNullOrEmpty(SELF:_rowSource) .OR. SELF:_rowSourceType == 0
-				RETURN
+		// ── RowSource / RowSourceType ────────────────────────────────────────
+		// Override the AUTO stubs from VFPList.xh with real implementations.
+		// RowSourceType: 0=None, 1=Value (CSV), 5=Array — others are TODO.
+		// For type 5, populate via SetRowSourceArray() before or after setting RowSourceType.
+
+		PRIVATE _rowSource AS STRING
+		PRIVATE _rowSourceType AS LONG
+		PRIVATE _rowSourceArray AS System.Array
+
+		PROPERTY RowSourceType AS LONG
+			GET
+				RETURN _rowSourceType
+			END GET
+			SET
+				_rowSourceType := VALUE
+				SELF:ApplyRowSource()
+			END SET
+		END PROPERTY
+
+		PROPERTY RowSource AS STRING
+			GET
+				RETURN _rowSource
+			END GET
+			SET
+				_rowSource := VALUE
+				SELF:ApplyRowSource()
+			END SET
+		END PROPERTY
+
+		/// <summary>Supply a .NET array as the item source for RowSourceType=5.</summary>
+		METHOD SetRowSourceArray( arr AS System.Array ) AS VOID
+			SELF:_rowSourceArray := arr
+			IF SELF:_rowSourceType == 5
+				SELF:ApplyRowSource()
 			ENDIF
 
-		SWITCH SELF:_rowSourceType
-			CASE 1  // Value - comma-separated
-				VAR values := SELF:_rowSource:Split( c',' )
-				FOREACH VAR val IN values
-					SELF:Items:Add(val:Trim())
+		/// <summary>Populate Items from RowSource according to RowSourceType.</summary>
+		PRIVATE METHOD ApplyRowSource() AS VOID
+			DO CASE
+			CASE _rowSourceType == 1 .AND. !String.IsNullOrEmpty(_rowSource)
+				// RowSourceType 1: comma-delimited value list
+				SELF:Items:Clear()
+				VAR parts := _rowSource:Split( <CHAR>{ Char.Parse(",") } )
+				FOREACH VAR part IN parts
+					SELF:Items:Add( part:Trim() )
 				NEXT
-		END SWITCH
+			CASE _rowSourceType == 5 .AND. SELF:_rowSourceArray != NULL_OBJECT
+				// RowSourceType 5: array — load from SetRowSourceArray()
+				SELF:Items:Clear()
+				FOREACH VAR item IN SELF:_rowSourceArray
+					IF item != NULL_OBJECT
+						SELF:Items:Add( item:ToString() )
+					ENDIF
+				NEXT
+			// RowSourceType 0 = programmatic (AddItem); nothing to do here
+			// Types 2/3/4/6/7/8/9 require data environment — not yet implemented
+			END CASE
 		END METHOD
 
-		/// <summary>
-		/// Selects an item by its value (searching in BoundColumn).
-		/// </summary>
-		PRIVATE METHOD SelectByValue(value AS USUAL) AS VOID
-			VAR valueStr := Str( value )
-			FOR VAR i := 0 TO SELF:Items:Count - 1
-				IF SELF:Items[i]:ToString() == valueStr
-					SELF:SelectedIndex := i
-					SELF:_uValue := value
-					RETURN
-				ENDIF
-			NEXT
-		END METHOD
+		// ── ListCount / ListIndex ────────────────────────────────────────────
 
-		/// <summary>
-		/// Adds a new item to the list at the specified 1-based position.
-		/// Equivalent to VFP's AddItem method.
-		/// </summary>
-		/// <param name="cItem">The item text to add.</param>
-		/// <param name="nIndex">Optional 1-based position (default: append to end). Use -1 to append.</param>
-		/// <remarks>
-		/// VFP uses 1-based indexing; this method converts to 0-based for .NET ComboBox.
-		/// If nIndex is out of range, item is appended to the end.
-		/// </remarks>
-		PUBLIC METHOD AddItem(cItem AS STRING, nIndex AS INT := -1) AS VOID STRICT
-			IF String.IsNullOrEmpty(cItem)
-				cItem := ""
-			ENDIF
+		PROPERTY ListCount AS LONG GET SELF:Items:Count
 
-			// Convert VFP 1-based index to 0-based .NET index
-			IF nIndex <= 0 .OR. nIndex > SELF:Items:Count + 1
-				// Append to end
-				SELF:Items:Add(cItem)
+		PROPERTY ListIndex AS LONG
+			GET
+				RETURN SELF:SelectedIndex + 1  // VFP is 1-based
+			END GET
+			SET
+				SELF:SelectedIndex := VALUE - 1
+			END SET
+		END PROPERTY
+
+		// ── AddItem / RemoveItem / Clear / Requery ───────────────────────────
+
+		METHOD AddItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
+			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count + 1
+				SELF:Items:Insert( nIndex - 1, cItem )
 			ELSE
-				// Insert at specific position (convert 1-based to 0-based)
-				SELF:Items:Insert(nIndex - 1, cItem)
+				SELF:Items:Add( cItem )
 			ENDIF
 		END METHOD
 
-		/// <summary>
-		/// Removes an item from the list by its 1-based index.
-		/// Equivalent to VFP's RemoveItem method.
-		/// </summary>
-		/// <param name="nIndex">The 1-based index of the item to remove.</param>
-		/// <remarks>
-		/// VFP uses 1-based indexing; this method converts to 0-based for .NET ComboBox.
-		/// If nIndex is out of range, nothing happens.
-		/// </remarks>
-		PUBLIC METHOD RemoveItem(nIndex AS INT) AS VOID STRICT
-			// Convert VFP 1-based index to 0-based .NET index
-			VAR zeroBasedIndex := nIndex - 1
-			IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Items:Count
-				SELF:Items:RemoveAt(zeroBasedIndex)
-				// If removed item was selected, update ListIndex
-				IF SELF:SelectedIndex >= SELF:Items:Count .AND. SELF:Items:Count > 0
-					SELF:SelectedIndex := SELF:Items:Count - 1
-				ENDIF
+		METHOD RemoveItem( nIndex AS LONG ) AS VOID
+			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count
+				SELF:Items:RemoveAt( nIndex - 1 )
 			ENDIF
 		END METHOD
 
-		/// <summary>
-		/// Removes all items from the list.
-		/// Equivalent to VFP's Clear method.
-		/// </summary>
-		/// <remarks>
-		/// Clears the Items collection, resets ListIndex to -1, and clears the text field.
-		/// </remarks>
-		PUBLIC METHOD Clear() AS VOID STRICT
+		METHOD Clear() AS VOID CLIPPER
 			SELF:Items:Clear()
-			SELF:_listIndex := -1
-			SELF:_uValue := NIL
-			SELF:Text := ""
 		END METHOD
 
-		/// <summary>
-		/// Finds an item in the list that matches the search string.
-		/// Equivalent to VFP's FindString method.
-		/// </summary>
-		/// <param name="cSearchString">The text to search for (case-insensitive, partial match).</param>
-		/// <param name="nStartIndex">Optional 0-based starting index. Default is 0 (start from beginning).</param>
-		/// <returns>The 1-based index of the found item, or -1 if not found.</returns>
-		/// <remarks>
-		/// Searches for items that start with cSearchString (case-insensitive).
-		/// Returns VFP 1-based index (add 1 to .NET 0-based index).
-		/// </remarks>
-		PUBLIC METHOD FindString(cSearchString AS STRING, nStartIndex AS INT := 0) AS INT STRICT
-			IF String.IsNullOrEmpty(cSearchString)
-				RETURN -1
+		METHOD Requery() AS VOID STRICT
+			SELF:ApplyRowSource()
+		END METHOD
+
+		// ── Value ────────────────────────────────────────────────────────────
+		// In VFP, Value holds the selected item text (or numeric index depending
+		// on Style). We implement the most common case: string of selected item.
+
+		PRIVATE _isProgrammatic   AS LOGIC
+
+		PROPERTY Value AS USUAL
+			GET
+				IF SELF:SelectedItem != NULL
+					RETURN (USUAL) SELF:SelectedItem:ToString()
+				ENDIF
+				RETURN (USUAL) SELF:Text
+			END GET
+			SET
+				LOCAL cVal AS STRING
+				cVal := Str(VALUE)
+				_isProgrammatic := TRUE
+				VAR idx := SELF:Items:IndexOf( cVal )
+				IF idx >= 0
+					SELF:SelectedIndex := idx
+				ELSE
+					SELF:Text := cVal
+				ENDIF
+				_isProgrammatic := FALSE
+				SELF:OnVFPProgrammaticChange()
+			END SET
+		END PROPERTY
+
+		// ── DisplayValue ─────────────────────────────────────────────────────
+		// Implements DisplayValue from IVFPList — returns the selected item text.
+		PROPERTY DisplayValue AS USUAL
+			GET
+				IF SELF:SelectedItem != NULL
+					RETURN (USUAL) SELF:SelectedItem:ToString()
+				ENDIF
+				RETURN (USUAL) SELF:Text
+			END GET
+			SET
+				SELF:Value := VALUE
+			END SET
+		END PROPERTY
+
+		// ── ListItem ─────────────────────────────────────────────────────────
+		// VFP ListItem(nIndex): returns display text of item at 1-based index.
+		METHOD ListItem(nIndex AS LONG) AS STRING
+			IF nIndex >= 1 .AND. nIndex <= SELF:Items:Count
+				RETURN SELF:Items[nIndex - 1]:ToString()
+			ENDIF
+			RETURN ""
+
+		// ── ProgrammaticChange ───────────────────────────────────────────────
+		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
+
+		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
+			IF SELF:_VFPProgrammaticChange != NULL
+				SELF:_VFPProgrammaticChange:Call()
 			ENDIF
 
-			VAR searchUpper := cSearchString:ToUpper()
-			FOR VAR i := nStartIndex TO SELF:Items:Count - 1
-				VAR itemText := SELF:Items[i]:ToString():ToUpper()
-				IF itemText:StartsWith(searchUpper)
-					// Return 1-based index
-					RETURN i + 1
-				ENDIF
-			NEXT
+		// ── DropDown event ───────────────────────────────────────────────────
 
-			// Not found
-			RETURN -1
+		PRIVATE _VFPDropDown AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpDropDown AS STRING GET _VFPDropDown?:SendTo SET Set_DropDown( VFPOverride{SELF, VALUE} )
+
+		METHOD Set_DropDown( methodCall AS VFPOverride ) AS VOID
+			SELF:_VFPDropDown := methodCall
+
+		PROTECTED OVERRIDE METHOD OnDropDown(e AS System.EventArgs) AS VOID
+			SUPER:OnDropDown(e)
+			SELF:FireDropDown()
+
+		VIRTUAL METHOD FireDropDown() AS VOID
+			IF SELF:_VFPDropDown != NULL
+				SELF:_VFPDropDown:Call()
+			ENDIF
+
+		// ── SelectOnEntry ────────────────────────────────────────────────────
+
+		PROTECTED OVERRIDE METHOD OnGotFocus(e AS System.EventArgs) AS VOID
+			SUPER:OnGotFocus(e)
+			IF SELF:SelectOnEntry
+				SELF:SelectionStart := 0
+				SELF:SelectionLength := SELF:Text:Length
+			ENDIF
+
+		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
+		// Declared in VFPItems.xh (via ComboBox.generated.prg) — no re-declaration needed here.
+
+		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
+			SUPER:OnEnabledChanged(e)
+			IF !SELF:Enabled
+				IF SELF:DisabledBackColor != 0
+					SELF:BackColor := VFPTools.ColorFromVFP(SELF:DisabledBackColor)
+				ENDIF
+				IF SELF:DisabledForeColor != 0
+					SELF:ForeColor := VFPTools.ColorFromVFP(SELF:DisabledForeColor)
+				ENDIF
+			ELSE
+				SELF:ResetBackColor()
+				SELF:ResetForeColor()
+			ENDIF
+		END METHOD
+
+		// ── InteractiveChange ────────────────────────────────────────────────
+		// OnTextChanged fires InteractiveChange for both user typing and item
+		// selection. _isProgrammatic gates out programmatic Value assignments.
+
+		PROTECTED OVERRIDE METHOD OnTextChanged( e AS System.EventArgs ) AS VOID
+			SUPER:OnTextChanged( e )
+			IF !_isProgrammatic
+				SELF:OnVFPInteractiveChange( SELF, e )
+			ENDIF
 		END METHOD
 
 	END CLASS

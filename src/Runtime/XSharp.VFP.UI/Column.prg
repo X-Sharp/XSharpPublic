@@ -16,261 +16,84 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
 	/// The VFP compatible Column class.
-	/// Represents a single column in a Grid control with support for sorting, filtering, and visual customization.
 	/// </summary>
-	/// <remarks>
-	/// A Column is a container within a Grid that displays data in a vertical arrangement.
-	/// Each Column can contain controls (TextBox, ComboBox, etc.) and has a Header object.
-	/// Columns support sorting, filtering, reordering, and resizing.
-	/// VFP Help Reference: https://github.com/VFPX/HelpFile/tree/master/sources/dv_foxhelp
-	/// </remarks>
 	PARTIAL CLASS Column INHERIT System.Windows.Forms.DataGridViewTextBoxColumn IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
-
-		// ============================================================================
-		// PHASE C: Column Enhancements
-		// Reference: VFP 9 SP2 Help File - Grid/Column integration
-		// ============================================================================
-
-		// Sorting support backing fields
-		PRIVATE _allowSorting := TRUE AS LOGIC
-		PRIVATE _sortOrder := 0 AS INT  // 0=None, 1=Ascending, 2=Descending
-
-		// Column management backing fields
-		PRIVATE _columnReorder := TRUE AS LOGIC
-		PRIVATE _columnResize := TRUE AS LOGIC
-		PRIVATE _autoColumnWidth := FALSE AS LOGIC
-		PRIVATE _minWidth := 20 AS INT
-		PRIVATE _maxWidth := 1000 AS INT
-
-		// Filtering support backing fields
-		PRIVATE _allowFiltering := FALSE AS LOGIC
-		PRIVATE _filterType := 0 AS INT  // 0=Text, 1=Numeric, 2=Date, 3=Logical
-
-		// Visual properties backing fields
-		PRIVATE _sortIndicator := TRUE AS LOGIC
-		PRIVATE _headerColor := System.Drawing.SystemColors.ButtonFace AS System.Drawing.Color
-		PRIVATE _headerAlignment := System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter AS System.Windows.Forms.DataGridViewContentAlignment
 
 		CONSTRUCTOR(  )
             SUPER()
             SELF:Width := 75
-            SELF:DefaultCellStyle:Alignment := System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
 			RETURN
 
-			// Todo
-		PROPERTY ControlSource AS STRING AUTO
-
-		// ============================================================================
-		// Sorting Support Properties
-		// ============================================================================
-
-		/// <summary>
-		/// Allow this column to be sorted when clicking the column header
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Allow column to be sorted")];
-		[System.ComponentModel.DefaultValue(TRUE)];
-		PROPERTY AllowSorting AS LOGIC
+			// ControlSource: maps to DataGridViewColumn.DataPropertyName so data binding works.
+		// In VFP a column's ControlSource is the field name from the cursor/alias.
+		PROPERTY ControlSource AS STRING
 			GET
-				RETURN _allowSorting
+				RETURN SELF:DataPropertyName
 			END GET
 			SET
-				_allowSorting := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Current sort order for this column
-		/// 0 = No sort, 1 = Ascending, 2 = Descending
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Sort order (0=None, 1=Ascending, 2=Descending)")];
-		[System.ComponentModel.DefaultValue(0)];
-		PROPERTY SortOrder AS INT
-			GET
-				RETURN _sortOrder
-			END GET
-			SET
-				IF VALUE >= 0 .AND. VALUE <= 2
-					_sortOrder := VALUE
-				ENDIF
-			END SET
-		END PROPERTY
-
-		// ============================================================================
-		// Column Management Properties
-		// ============================================================================
-
-		/// <summary>
-		/// Allow column to be reordered by dragging the header
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Allow column to be reordered via drag")];
-		[System.ComponentModel.DefaultValue(TRUE)];
-		PROPERTY ColumnReorder AS LOGIC
-			GET
-				RETURN _columnReorder
-			END GET
-			SET
-				_columnReorder := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Allow column width to be resized by dragging the edge
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Allow column width to be resized")];
-		[System.ComponentModel.DefaultValue(TRUE)];
-		PROPERTY ColumnResize AS LOGIC
-			GET
-				RETURN _columnResize
-			END GET
-			SET
-				_columnResize := VALUE
-				SELF:Resizable := IF(VALUE, System.Windows.Forms.DataGridViewTriState.True, System.Windows.Forms.DataGridViewTriState.False)
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Automatically fit column width to content
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Auto-fit column width to content")];
-		[System.ComponentModel.DefaultValue(FALSE)];
-		PROPERTY AutoColumnWidth AS LOGIC
-			GET
-				RETURN _autoColumnWidth
-			END GET
-			SET
-				_autoColumnWidth := VALUE
-				IF VALUE
-					SELF:AutoSizeMode := System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-				ELSE
-					SELF:AutoSizeMode := System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Minimum column width in pixels
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Minimum column width in pixels")];
-		[System.ComponentModel.DefaultValue(20)];
-		PROPERTY MinWidth AS INT
-			GET
-				RETURN _minWidth
-			END GET
-			SET
-				IF VALUE >= 10 .AND. VALUE <= 500
-					_minWidth := VALUE
-					IF SELF:Width < VALUE
-						SELF:Width := VALUE
-					ENDIF
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Maximum column width in pixels
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Maximum column width in pixels")];
-		[System.ComponentModel.DefaultValue(1000)];
-		PROPERTY MaxWidth AS INT
-			GET
-				RETURN _maxWidth
-			END GET
-			SET
-				IF VALUE >= 100 .AND. VALUE <= 5000
-					_maxWidth := VALUE
-					IF SELF:Width > VALUE
-						SELF:Width := VALUE
-					ENDIF
-				ENDIF
-			END SET
-		END PROPERTY
-
-		// ============================================================================
-		// Filtering Support Properties
-		// ============================================================================
-
-		/// <summary>
-		/// Allow column to be filtered
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Allow column to be filtered")];
-		[System.ComponentModel.DefaultValue(FALSE)];
-		PROPERTY AllowFiltering AS LOGIC
-			GET
-				RETURN _allowFiltering
-			END GET
-			SET
-				_allowFiltering := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Filter type for this column (0=Text, 1=Numeric, 2=Date, 3=Logical)
-		/// Determines what kind of filtering UI to show
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Filter type (0=Text, 1=Numeric, 2=Date, 3=Logical)")];
-		[System.ComponentModel.DefaultValue(0)];
-		PROPERTY FilterType AS INT
-			GET
-				RETURN _filterType
-			END GET
-			SET
-				IF VALUE >= 0 .AND. VALUE <= 3
-					_filterType := VALUE
-				ENDIF
-			END SET
-		END PROPERTY
-
-		// ============================================================================
-		// Visual Properties
-		// ============================================================================
-
-		/// <summary>
-		/// Show sort direction indicator (up/down arrow) in header
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Show sort direction indicator in header")];
-		[System.ComponentModel.DefaultValue(TRUE)];
-		PROPERTY SortIndicator AS LOGIC
-			GET
-				RETURN _sortIndicator
-			END GET
-			SET
-				_sortIndicator := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Header background color for this column
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Header background color")];
-		PROPERTY HeaderColor AS System.Drawing.Color
-			GET
-				RETURN _headerColor
-			END GET
-			SET
-				_headerColor := VALUE
-				IF SELF:HeaderCell != NULL
-					SELF:HeaderCell:Style:BackColor := VALUE
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Header text alignment
-		/// </summary>
-		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Header text alignment")];
-		PROPERTY HeaderAlignment AS System.Windows.Forms.DataGridViewContentAlignment
-			GET
-				RETURN _headerAlignment
-			END GET
-			SET
-				_headerAlignment := VALUE
-				IF SELF:HeaderCell != NULL
-					SELF:HeaderCell:Style:Alignment := VALUE
-				ENDIF
+				SELF:DataPropertyName := IIF( VALUE == NULL, "", VALUE )
 			END SET
 		END PROPERTY
 
 		PROPERTY Font AS System.Drawing.Font GET SELF:DefaultCellStyle:Font SET SELF:DefaultCellStyle:Font := VALUE
+
+		// ── BackColor / ForeColor ─────────────────────────────────────────────
+		// Map to DefaultCellStyle so the colour applies to all cells in this column.
+
+		PROPERTY BackColor AS System.Drawing.Color
+			GET
+				RETURN SELF:DefaultCellStyle:BackColor
+			END GET
+			SET
+				SELF:DefaultCellStyle:BackColor := VALUE
+			END SET
+		END PROPERTY
+
+		PROPERTY ForeColor AS System.Drawing.Color
+			GET
+				RETURN SELF:DefaultCellStyle:ForeColor
+			END GET
+			SET
+				SELF:DefaultCellStyle:ForeColor := VALUE
+			END SET
+		END PROPERTY
+
+		// ── Alignment ────────────────────────────────────────────────────────
+		// VFP Alignment: 0=Left, 1=Right, 2=Center — maps to DataGridViewContentAlignment.
+
+		PROPERTY Alignment AS LONG
+			GET
+				DO CASE
+				CASE SELF:DefaultCellStyle:Alignment == DataGridViewContentAlignment.MiddleRight
+					RETURN 1
+				CASE SELF:DefaultCellStyle:Alignment == DataGridViewContentAlignment.MiddleCenter
+					RETURN 2
+				OTHERWISE
+					RETURN 0
+				END CASE
+			END GET
+			SET
+				DO CASE
+				CASE VALUE == 1
+					SELF:DefaultCellStyle:Alignment := DataGridViewContentAlignment.MiddleRight
+				CASE VALUE == 2
+					SELF:DefaultCellStyle:Alignment := DataGridViewContentAlignment.MiddleCenter
+				OTHERWISE
+					SELF:DefaultCellStyle:Alignment := DataGridViewContentAlignment.MiddleLeft
+				END CASE
+			END SET
+		END PROPERTY
+
+		// ── ColumnOrder ───────────────────────────────────────────────────────
+
+		PROPERTY ColumnOrder AS LONG
+			GET
+				RETURN SELF:DisplayIndex + 1  // VFP is 1-based
+			END GET
+			SET
+				SELF:DisplayIndex := VALUE - 1
+			END SET
+		END PROPERTY
 
 		PROPERTY Header AS Header
 		GET
@@ -286,7 +109,122 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END SET
 		END PROPERTY
 
+		// ── Format / InputMask ───────────────────────────────────────────────
+		// Store the raw VFP format/mask strings.
+		// Where a direct .NET DataGridViewCellStyle.Format mapping exists it is applied
+		// immediately; otherwise a CellFormatting handler applies the conversion at
+		// paint time once the column is attached to a DataGridView.
+
+		PRIVATE _vfpFormat    AS STRING
+		PRIVATE _vfpInputMask AS STRING
+
+		PROPERTY Format AS STRING
+			GET
+				RETURN SELF:_vfpFormat
+			END GET
+			SET
+				SELF:_vfpFormat := VALUE
+				SELF:ApplyVFPFormat()
+			END SET
+		END PROPERTY
+
+		PROPERTY InputMask AS STRING
+			GET
+				RETURN SELF:_vfpInputMask
+			END GET
+			SET
+				SELF:_vfpInputMask := VALUE
+				SELF:ApplyVFPFormat()
+			END SET
+		END PROPERTY
+
+		// Convert VFP Format/InputMask to a .NET CellStyle.Format string where possible.
+		PRIVATE METHOD ApplyVFPFormat() AS VOID STRICT
+			VAR fmt := IIF( String.IsNullOrEmpty(SELF:_vfpFormat), "", SELF:_vfpFormat:ToUpper():Trim() )
+			VAR mask := IIF( String.IsNullOrEmpty(SELF:_vfpInputMask), "", SELF:_vfpInputMask:Trim() )
+			// Date / DateTime
+			IF fmt:Contains("@D") .OR. fmt:Contains("@DL") .OR. fmt:Contains("@DS")
+				SELF:DefaultCellStyle:Format := "d"  // short date
+				RETURN
+			ENDIF
+			IF fmt:Contains("@DT")
+				SELF:DefaultCellStyle:Format := "g"  // short date+time
+				RETURN
+			ENDIF
+			// Currency
+			IF fmt:Contains("$") .OR. mask:Contains("$")
+				SELF:DefaultCellStyle:Format := "C2"
+				RETURN
+			ENDIF
+			// Numeric picture mask: count digits after decimal point
+			VAR decSep := mask:IndexOf(".")
+			IF decSep >= 0
+				VAR decimals := 0
+				FOR VAR i := decSep + 1 TO mask:Length - 1
+					VAR ch := mask:Substring(i, 1)
+					IF ch == "9" .OR. ch == "#" .OR. ch == "*"
+						decimals++
+					ENDIF
+				NEXT
+				SELF:DefaultCellStyle:Format := "N" + decimals:ToString()
+				RETURN
+			ENDIF
+			// Pure integer mask
+			IF mask:Length > 0 .AND. mask:Replace("9",""):Replace("#",""):Replace("*",""):Replace(",",""):Trim():Length == 0
+				SELF:DefaultCellStyle:Format := "N0"
+				RETURN
+			ENDIF
+			// Uppercase (@!) — handled by CellFormatting; no .NET equivalent format string
+			// Everything else: clear any previously set format
+			IF String.IsNullOrEmpty(fmt) .AND. String.IsNullOrEmpty(mask)
+				SELF:DefaultCellStyle:Format := ""
+			ENDIF
+
+		// Hook CellFormatting on the parent DataGridView to handle @! uppercase etc.
+		PROTECTED OVERRIDE METHOD OnDataGridViewChanged() AS VOID STRICT
+			SUPER:OnDataGridViewChanged()
+			IF SELF:DataGridView != NULL_OBJECT
+				// Wire CellFormatting for VFP format/mask support
+				SELF:DataGridView:CellFormatting += DataGridViewCellFormattingEventHandler{ SELF, @OnCellFormatting() }
+				// Wire ColumnHeaderMouseClick so Header.vfpClick fires
+				SELF:DataGridView:ColumnHeaderMouseClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseClick() }
+			ENDIF
+
+		PRIVATE METHOD OnColumnHeaderMouseClick( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				IF SELF:HeaderCell IS Header VAR hdr
+					hdr:FireClick()
+				ENDIF
+			ENDIF
+
+		PRIVATE METHOD OnCellFormatting( sender AS OBJECT, e AS DataGridViewCellFormattingEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex != SELF:Index .OR. e:Value == NULL_OBJECT
+				RETURN
+			ENDIF
+			VAR fmt := IIF( String.IsNullOrEmpty(SELF:_vfpFormat), "", SELF:_vfpFormat:ToUpper():Trim() )
+			// @! — uppercase string value
+			IF fmt:Contains("@!")
+				e:Value           := e:Value:ToString():ToUpper()
+				e:FormattingApplied := TRUE
+			ENDIF
+
+		// ── TextBox (configuration proxy) ────────────────────────────────────
+		// VFP Column.TextBox is the embedded editing control.
+		// WinForms equivalent is DataGridViewTextBoxEditingControl, accessible via
+		// DataGridView.EditingControl at runtime while a cell is in edit mode.
+		// This stub satisfies migrated code that reads Column.TextBox.InputMask etc.;
+		// it is NOT the live editing control.
 		PROPERTY TextBox AS TextBox AUTO
+
+		// ── Resizable ─────────────────────────────────────────────────────────
+		// VFP: .T.=user can resize column, .F.=fixed width
+		// We shadow the base DataGridViewTriState property with a VFP-style LOGIC wrapper.
+		NEW PROPERTY Resizable AS LOGIC
+			GET ; RETURN SUPER:Resizable == DataGridViewTriState.True ; END GET
+			SET
+				SUPER:Resizable := IIF(VALUE, DataGridViewTriState.True, DataGridViewTriState.False)
+			END SET
+		END PROPERTY
 
 #include "FontProperties.xh"
 

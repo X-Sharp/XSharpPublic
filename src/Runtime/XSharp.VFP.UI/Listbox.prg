@@ -11,7 +11,6 @@ USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
 USING System.Drawing
-USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
@@ -19,345 +18,244 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// The VFP compatible Listbox class.
 	/// </summary>
 	PARTIAL CLASS ListBox INHERIT System.Windows.Forms.ListBox
-
 		// Common properties that all VFP Objects support
-		#include "Headers/VFPObject.xh"
+#include "Headers/VFPObject.xh"
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _uValue AS USUAL
-		PRIVATE _rowSource AS STRING
-		PRIVATE _rowSourceType AS INT
-		PRIVATE _columnCount AS INT
-		PRIVATE _columnWidths AS STRING
-		PRIVATE _boundColumn AS INT
-		PRIVATE _multiSelect AS INT
-		PRIVATE _listIndex AS INT
-		PRIVATE _displayCount AS INT
+#include "VFPProperties.xh"
 
-		/// <summary>
-		/// Constructor for ListBox control.
-		/// </summary>
 		CONSTRUCTOR(  ) STRICT
-			SUPER()
-			SELF:Size := Size{100,170}
-			SELF:_uValue := NIL
-			SELF:_rowSource := ""
-			SELF:_rowSourceType := 0
-			SELF:_columnCount := 1
-			SELF:_columnWidths := ""
-			SELF:_boundColumn := 1
-			SELF:_multiSelect := 0
-			SELF:_listIndex := -1
-			SELF:_displayCount := 0
+            SUPER()
+            SELF:Size := Size{100,170}
+
 			RETURN
 
-		#include ".\Headers\ControlProperties.xh"
-        #include ".\Headers\ControlFocus.xh"
-		#include ".\Headers\ControlSource.xh"
+#include "ControlProperties.xh"
 
-		/// <summary>
-		/// Gets or sets the value of the selected item.
-		/// In VFP, this returns the value of the BoundColumn.
-		/// </summary>
-		/// <value>The selected item value as USUAL.</value>
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)];
-		[Browsable(FALSE)];
-		PROPERTY Value AS USUAL
-			GET
-				RETURN SELF:_uValue
-			END GET
-			SET
-				IF !IsNil(VALUE)
-					SELF:_uValue := VALUE
-					// Try to find and select matching item
-					SELF:SelectByValue(VALUE)
-				ENDIF
-			END SET
-		END PROPERTY
+#include "ControlSource.xh"
 
-		/// <summary>
-		/// Gets or sets the row source for the list.
-		/// Equivalent to VFP's RowSource property.
-		/// </summary>
-		/// <value>The row source string.</value>
-		[Category("VFP Properties"), Description("Data source for list items")];
-		[DefaultValue("")];
-		PROPERTY RowSource AS STRING
-			GET
-				RETURN SELF:_rowSource
-			END GET
-			SET
-				SELF:_rowSource := VALUE
-				SELF:PopulateFromRowSource()
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the type of row source.
-		/// 0=None, 1=Value, 5=Array.
-		/// Equivalent to VFP's RowSourceType property.
-		/// </summary>
-		/// <value>The row source type (0, 1, or 5). Default is 0.</value>
-		[Category("VFP Properties"), Description("Row source type: 0=None, 1=Value, 5=Array")];
-		[DefaultValue(0)];
-		PROPERTY RowSourceType AS INT
-			GET
-				RETURN SELF:_rowSourceType
-			END GET
-			SET
-				SELF:_rowSourceType := VALUE
-				SELF:PopulateFromRowSource()
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the number of columns in the list.
-		/// Equivalent to VFP's ColumnCount property.
-		/// </summary>
-		/// <value>The number of columns. Default is 1.</value>
-		[Category("VFP Properties"), Description("Number of columns in the list")];
-		[DefaultValue(1)];
-		PROPERTY ColumnCount AS INT
-			GET
-				RETURN SELF:_columnCount
-			END GET
-			SET
-				SELF:_columnCount := VALUE
-				// Update column widths if needed
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the column widths as a comma-separated string.
-		/// Equivalent to VFP's ColumnWidths property.
-		/// </summary>
-		/// <value>Comma-separated column widths in pixels.</value>
-		[Category("VFP Properties"), Description("Column widths in pixels, comma-separated")];
-		[DefaultValue("")];
-		PROPERTY ColumnWidths AS STRING
-			GET
-				RETURN SELF:_columnWidths
-			END GET
-			SET
-				SELF:_columnWidths := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets which column provides the value.
-		/// Equivalent to VFP's BoundColumn property.
-		/// </summary>
-		/// <value>The column index (1-based). Default is 1.</value>
-		[Category("VFP Properties"), Description("Which column returns as Value")];
-		[DefaultValue(1)];
-		PROPERTY BoundColumn AS INT
-			GET
-				RETURN SELF:_boundColumn
-			END GET
-			SET
-				SELF:_boundColumn := VALUE
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the multi-select mode.
-		/// 0=None, 1=Simple, 2=Extended.
-		/// Equivalent to VFP's MultiSelect property.
-		/// </summary>
-		/// <value>Multi-select mode (0, 1, or 2). Default is 0.</value>
-		[Category("VFP Properties"), Description("Multi-select: 0=None, 1=Simple, 2=Extended")];
-		[DefaultValue(0)];
-		PROPERTY MultiSelect AS INT
-			GET
-				RETURN SELF:_multiSelect
-			END GET
-			SET
-				SELF:_multiSelect := VALUE
-				SWITCH VALUE
-					CASE 0
-						SELF:SelectionMode := SelectionMode.One
-					CASE 1
-						SELF:SelectionMode := SelectionMode.MultiSimple
-					CASE 2
-						SELF:SelectionMode := SelectionMode.MultiExtended
-				END SWITCH
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the current selected index.
-		/// Equivalent to VFP's ListIndex property.
-		/// </summary>
-		/// <value>The selected index (0-based). -1 if no selection.</value>
-		[Category("VFP Properties"), Description("Current selected index")];
-		[DefaultValue(-1)];
-		PROPERTY ListIndex AS INT
-			GET
-				RETURN SELF:SelectedIndex
-			END GET
-			SET
-				SELF:_listIndex := VALUE
-				IF VALUE >= 0 .AND. VALUE < SELF:Items:Count
-					SELF:SelectedIndex := VALUE
-				ENDIF
-			END SET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets the number of items in the list.
-		/// Equivalent to VFP's ListCount property.
-		/// </summary>
-		/// <value>The total number of items.</value>
-		[Category("VFP Properties"), Description("Total number of items in the list")];
-		[DefaultValue(0)];
-		PROPERTY ListCount AS INT
-			GET
-				RETURN SELF:Items:Count
-			END GET
-		END PROPERTY
-
-		/// <summary>
-		/// Gets or sets the maximum number of items to display.
-		/// Equivalent to VFP's DisplayCount property.
-		/// </summary>
-		/// <value>Maximum visible items. 0 for all items.</value>
-		[Category("VFP Properties"), Description("Maximum number of visible items")];
-		[DefaultValue(0)];
-		PROPERTY DisplayCount AS INT
-			GET
-				RETURN SELF:_displayCount
-			END GET
-			SET
-				SELF:_displayCount := VALUE
-			END SET
-		END PROPERTY
-
-		PROPERTY AutoHideScrollBar AS LONG AUTO
+		// C-11: was LONG — must be LOGIC to match VFP type
+		PROPERTY AutoHideScrollBar AS LOGIC AUTO
+		// C-10: MoverBars / MoveItem — UI drag-reorder; requires owner-draw overlay (not yet implemented)
+		PROPERTY MoverBars AS LOGIC AUTO
+		METHOD MoveItem(nFrom AS LONG, nTo AS LONG) AS VOID
+			// NOT IMPLEMENTED — full implementation requires owner-draw item reordering
+			NOP
+		END METHOD
 		PROPERTY NullDisplay AS String AUTO
 		PROPERTY Picture AS STRING AUTO
 
-		/// <summary>
-		/// Populates the list from the RowSource based on RowSourceType.
-		/// </summary>
-		PRIVATE METHOD PopulateFromRowSource() AS VOID
-			SELF:Items:Clear()
-			IF String.IsNullOrEmpty(SELF:_rowSource) .OR. SELF:_rowSourceType == 0
-				RETURN
+		// ── MultiSelect ──────────────────────────────────────────────────────
+		// VFP MultiSelect: 0=none, 1=standard (simple toggle), 2=extended (shift/ctrl)
+		// Maps to WinForms SelectionMode: One, MultiSimple, MultiExtended
+
+		PROPERTY MultiSelect AS LONG
+			GET
+				DO CASE
+				CASE SELF:SelectionMode == SelectionMode.MultiSimple
+					RETURN 1
+				CASE SELF:SelectionMode == SelectionMode.MultiExtended
+					RETURN 2
+				OTHERWISE
+					RETURN 0
+				END CASE
+			END GET
+			SET
+				DO CASE
+				CASE VALUE == 1
+					SELF:SelectionMode := SelectionMode.MultiSimple
+				CASE VALUE == 2
+					SELF:SelectionMode := SelectionMode.MultiExtended
+				OTHERWISE
+					SELF:SelectionMode := SelectionMode.One
+				END CASE
+			END SET
+		END PROPERTY
+
+		// ── RowSource / RowSourceType ────────────────────────────────────────
+		// Override the AUTO stubs from VFPList.xh with real implementations.
+		// RowSourceType: 0=None, 1=Value (CSV), 5=Array — others are TODO.
+		// For type 5, populate via SetRowSourceArray() before or after setting RowSourceType.
+
+		PRIVATE _rowSource AS STRING
+		PRIVATE _rowSourceType AS LONG
+		PRIVATE _rowSourceArray AS System.Array
+
+		PROPERTY RowSourceType AS LONG
+			GET
+				RETURN _rowSourceType
+			END GET
+			SET
+				_rowSourceType := VALUE
+				SELF:ApplyRowSource()
+			END SET
+		END PROPERTY
+
+		PROPERTY RowSource AS STRING
+			GET
+				RETURN _rowSource
+			END GET
+			SET
+				_rowSource := VALUE
+				SELF:ApplyRowSource()
+			END SET
+		END PROPERTY
+
+		/// <summary>Supply a .NET array as the item source for RowSourceType=5.</summary>
+		METHOD SetRowSourceArray( arr AS System.Array ) AS VOID
+			SELF:_rowSourceArray := arr
+			IF SELF:_rowSourceType == 5
+				SELF:ApplyRowSource()
 			ENDIF
 
-		SWITCH SELF:_rowSourceType
-			CASE 1  // Value - comma-separated
-				VAR values := SELF:_rowSource:Split( c',' )
-				FOREACH VAR val IN values
-					SELF:Items:Add(val:Trim())
+		/// <summary>Populate Items from RowSource according to RowSourceType.</summary>
+		PRIVATE METHOD ApplyRowSource() AS VOID
+			DO CASE
+			CASE _rowSourceType == 1 .AND. !String.IsNullOrEmpty(_rowSource)
+				// RowSourceType 1: comma-delimited value list
+				SELF:Items:Clear()
+				VAR parts := _rowSource:Split( <CHAR>{ Char.Parse(",") } )
+				FOREACH VAR part IN parts
+					SELF:Items:Add( part:Trim() )
 				NEXT
-		END SWITCH
+			CASE _rowSourceType == 5 .AND. SELF:_rowSourceArray != NULL_OBJECT
+				// RowSourceType 5: array — load from SetRowSourceArray()
+				SELF:Items:Clear()
+				FOREACH VAR item IN SELF:_rowSourceArray
+					IF item != NULL_OBJECT
+						SELF:Items:Add( item:ToString() )
+					ENDIF
+				NEXT
+			// RowSourceType 0 = programmatic (AddItem); nothing to do here
+			// Types 2/3/4/6/7/8/9 require data environment — not yet implemented
+			END CASE
 		END METHOD
 
-		/// <summary>
-		/// Selects an item by its value (searching in BoundColumn).
-		/// </summary>
-		PRIVATE METHOD SelectByValue(value AS USUAL) AS VOID
-			VAR valueStr := Str( value )
-			FOR VAR i := 0 TO SELF:Items:Count - 1
-				IF SELF:Items[i]:ToString() == valueStr
-					SELF:SelectedIndex := i
-					SELF:_uValue := value
-					RETURN
-				ENDIF
-			NEXT
-		END METHOD
+		// ── ListCount / ListIndex ────────────────────────────────────────────
 
-		/// <summary>
-		/// Adds a new item to the list at the specified 1-based position.
-		/// Equivalent to VFP's AddItem method.
-		/// </summary>
-		/// <param name="cItem">The item text to add.</param>
-		/// <param name="nIndex">Optional 1-based position (default: append to end). Use -1 to append.</param>
-		/// <remarks>
-		/// VFP uses 1-based indexing; this method converts to 0-based for .NET ListBox.
-		/// If nIndex is out of range, item is appended to the end.
-		/// </remarks>
-		PUBLIC METHOD AddItem(cItem AS STRING, nIndex AS INT := -1) AS VOID STRICT
-			IF String.IsNullOrEmpty(cItem)
-				cItem := ""
-			ENDIF
+		PROPERTY ListCount AS LONG GET SELF:Items:Count
 
-			// Convert VFP 1-based index to 0-based .NET index
-			IF nIndex <= 0 .OR. nIndex > SELF:Items:Count + 1
-				// Append to end
-				SELF:Items:Add(cItem)
+		PROPERTY ListIndex AS LONG
+			GET
+				RETURN SELF:SelectedIndex + 1  // VFP is 1-based
+			END GET
+			SET
+				SELF:SelectedIndex := VALUE - 1
+			END SET
+		END PROPERTY
+
+		// ── AddItem / RemoveItem / Clear / Requery ───────────────────────────
+
+		METHOD AddItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
+			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count + 1
+				SELF:Items:Insert( nIndex - 1, cItem )
 			ELSE
-				// Insert at specific position (convert 1-based to 0-based)
-				SELF:Items:Insert(nIndex - 1, cItem)
+				SELF:Items:Add( cItem )
 			ENDIF
 		END METHOD
 
-		/// <summary>
-		/// Removes an item from the list by its 1-based index.
-		/// Equivalent to VFP's RemoveItem method.
-		/// </summary>
-		/// <param name="nIndex">The 1-based index of the item to remove.</param>
-		/// <remarks>
-		/// VFP uses 1-based indexing; this method converts to 0-based for .NET ListBox.
-		/// If nIndex is out of range, nothing happens.
-		/// </remarks>
-		PUBLIC METHOD RemoveItem(nIndex AS INT) AS VOID STRICT
-			// Convert VFP 1-based index to 0-based .NET index
-			VAR zeroBasedIndex := nIndex - 1
-			IF zeroBasedIndex >= 0 .AND. zeroBasedIndex < SELF:Items:Count
-				SELF:Items:RemoveAt(zeroBasedIndex)
-				// If removed item was selected, update ListIndex
-				IF SELF:SelectedIndex >= SELF:Items:Count .AND. SELF:Items:Count > 0
-					SELF:SelectedIndex := SELF:Items:Count - 1
-				ENDIF
+		METHOD RemoveItem( nIndex AS LONG ) AS VOID
+			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count
+				SELF:Items:RemoveAt( nIndex - 1 )
 			ENDIF
 		END METHOD
 
-		/// <summary>
-		/// Removes all items from the list.
-		/// Equivalent to VFP's Clear method.
-		/// </summary>
-		/// <remarks>
-		/// Clears the Items collection and resets ListIndex to -1.
-		/// </remarks>
-		PUBLIC METHOD Clear() AS VOID STRICT
+		METHOD Clear() AS VOID CLIPPER
 			SELF:Items:Clear()
-			SELF:_listIndex := -1
-			SELF:_uValue := NIL
 		END METHOD
 
-		/// <summary>
-		/// Finds an item in the list that matches the search string.
-		/// Equivalent to VFP's FindString method.
-		/// </summary>
-		/// <param name="cSearchString">The text to search for (case-insensitive, partial match).</param>
-		/// <param name="nStartIndex">Optional 0-based starting index. Default is 0 (start from beginning).</param>
-		/// <returns>The 1-based index of the found item, or -1 if not found.</returns>
-		/// <remarks>
-		/// Searches for items that start with cSearchString (case-insensitive).
-		/// Returns VFP 1-based index (add 1 to .NET 0-based index).
-		/// </remarks>
-		PUBLIC METHOD FindString(cSearchString AS STRING, nStartIndex AS INT := 0) AS INT STRICT
-			IF String.IsNullOrEmpty(cSearchString)
-				RETURN -1
+		METHOD Requery() AS VOID STRICT
+			SELF:ApplyRowSource()
+		END METHOD
+
+		// ── Value ────────────────────────────────────────────────────────────
+
+		PRIVATE _isProgrammatic AS LOGIC
+
+		PROPERTY Value AS USUAL
+			GET
+				IF SELF:SelectedItem != NULL
+					RETURN (USUAL) SELF:SelectedItem:ToString()
+				ENDIF
+				RETURN (USUAL) ""
+			END GET
+			SET
+				LOCAL cVal AS STRING
+				cVal := Str(VALUE)
+				VAR idx := SELF:Items:IndexOf( cVal )
+				IF idx >= 0
+					_isProgrammatic := TRUE
+					SELF:SelectedIndex := idx
+					_isProgrammatic := FALSE
+					SELF:OnVFPProgrammaticChange()
+				ENDIF
+			END SET
+		END PROPERTY
+
+		// ── DisplayValue ─────────────────────────────────────────────────────
+		// Implements DisplayValue from IVFPList — returns the selected item text.
+		PROPERTY DisplayValue AS USUAL
+			GET
+				IF SELF:SelectedItem != NULL
+					RETURN (USUAL) SELF:SelectedItem:ToString()
+				ENDIF
+				RETURN (USUAL) ""
+			END GET
+			SET
+				SELF:Value := VALUE
+			END SET
+		END PROPERTY
+
+		// ── ListItem ─────────────────────────────────────────────────────────
+		// VFP ListItem(nIndex): returns display text of item at 1-based index.
+		METHOD ListItem(nIndex AS LONG) AS STRING
+			IF nIndex >= 1 .AND. nIndex <= SELF:Items:Count
+				RETURN SELF:Items[nIndex - 1]:ToString()
+			ENDIF
+			RETURN ""
+
+		// ── Selected ─────────────────────────────────────────────────────────
+		// VFP Selected(nIndex): returns .T. if item at 1-based index is selected.
+		METHOD Selected(nIndex AS LONG) AS LOGIC
+			IF nIndex >= 1 .AND. nIndex <= SELF:Items:Count
+				RETURN SELF:GetSelected(nIndex - 1)
+			ENDIF
+			RETURN FALSE
+
+		// ── ProgrammaticChange ───────────────────────────────────────────────
+		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
+
+		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
+			IF SELF:_VFPProgrammaticChange != NULL
+				SELF:_VFPProgrammaticChange:Call()
 			ENDIF
 
-			VAR searchUpper := cSearchString:ToUpper()
-			FOR VAR i := nStartIndex TO SELF:Items:Count - 1
-				VAR itemText := SELF:Items[i]:ToString():ToUpper()
-				IF itemText:StartsWith(searchUpper)
-					// Return 1-based index
-					RETURN i + 1
-				ENDIF
-			NEXT
+		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
 
-			// Not found
-			RETURN -1
+		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
+			SUPER:OnEnabledChanged(e)
+			IF !SELF:Enabled
+				IF SELF:DisabledBackColor != 0
+					SELF:BackColor := VFPTools.ColorFromVFP(SELF:DisabledBackColor)
+				ENDIF
+				IF SELF:DisabledForeColor != 0
+					SELF:ForeColor := VFPTools.ColorFromVFP(SELF:DisabledForeColor)
+				ENDIF
+			ELSE
+				SELF:ResetBackColor()
+				SELF:ResetForeColor()
+			ENDIF
+		END METHOD
+
+		// ── InteractiveChange ────────────────────────────────────────────────
+
+		PROTECTED METHOD OnSelectedIndexChanged( e AS System.EventArgs ) AS VOID
+			SUPER:OnSelectedIndexChanged( e )
+			IF !_isProgrammatic
+				SELF:OnVFPInteractiveChange( SELF, e )
+			ENDIF
 		END METHOD
 
 	END CLASS

@@ -4,10 +4,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Image IMPLEMENTS IVFPControl
 #include "VFPControl.xh"
 		PROPERTY BorderColor AS LONG AUTO
-		// Picture - defined in Image.prg with custom implementation
+		// Picture and Stretch are implemented in Image.prg with real logic
 		PROPERTY PictureVal AS USUAL AUTO
-		PROPERTY RotateFlip AS LONG AUTO
-		// Stretch - defined in Image.prg with custom implementation
+		// RotateFlip is implemented with real logic in Image.prg
 
 	END CLASS
-	END NAMESPACE
+	END NAMESPACE      

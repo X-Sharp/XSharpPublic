@@ -6,14 +6,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "VFPObject.xh"
 
 #include "VFPControl.xh"
-		PROPERTY BorderColor AS LONG AUTO
-		PROPERTY BorderWidth AS USUAL AUTO
-		PROPERTY DrawMode AS LONG AUTO
-		PROPERTY LineSlant AS USUAL AUTO
-		PROPERTY PolyPoints AS USUAL AUTO
-		PROPERTY Rotation AS USUAL AUTO
-		METHOD SetFocus() AS VOID STRICT
-			//SELF:Focus()
+		// BorderColor, BorderWidth, LineSlant — implemented in Line.prg
+		PROPERTY DrawMode    AS LONG   AUTO
+		PROPERTY PolyPoints  AS USUAL  AUTO
+		PROPERTY Rotation    AS USUAL  AUTO
 
 	END CLASS
-	END NAMESPACE      
+	END NAMESPACE

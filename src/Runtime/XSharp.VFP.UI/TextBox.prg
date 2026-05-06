@@ -18,81 +18,58 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS TextBox INHERIT System.Windows.Forms.TextBox
 
 		// Common properties that all VFP Objects support
-		#include "Headers\VFPObject.xh"
+		#include "Headers/VFPObject.xh"
 
 		#include "VFPProperties.xh"
 
-		//
+		// Format: VFP @-clause picture string (e.g. "@K", "@!") — independent of InputMask
 		PRIVATE _format AS STRING
 		PROPERTY Format AS STRING
 			GET
-				IF SELF:DesignMode
-					RETURN _format
-				ELSE
-					IF SELF:maskCheck != NULL
-						RETURN SELF:maskCheck:Format
-					ENDIF
-				ENDIF
 				RETURN _format
 			END GET
 			SET
 				_format := Upper( VALUE )
-				IF !SELF:DesignMode
-					IF SELF:maskCheck == NULL
-						IF SELF:_format != NULL
-							SELF:maskCheck := MaskProvider{ SELF, SELF:_inputMask, SELF:_format, SELF:_valueType }
-						ENDIF
-					ELSE
-						IF SELF:_inputMask == NULL .AND. SELF:_format == NULL
-							SELF:maskCheck := NULL
-						ELSE
-							VAR savedValue := SELF:Value
-							SELF:maskCheck:Format := SELF:_format
-							SELF:maskCheck:Value := savedValue
-						ENDIF
+				IF !String.IsNullOrEmpty(_format)
+					SELF:CharacterCasing := IIF(_format:Contains("!"), CharacterCasing.Upper, CharacterCasing.Normal)
+					IF _format:Contains("K")
+						SELF:SelectOnEntry := TRUE
 					ENDIF
+				ELSE
+					SELF:CharacterCasing := CharacterCasing.Normal
 				ENDIF
 			END SET
 		END PROPERTY
 
-		// Todo
+		// InputMask: positional mask string (e.g. "999-99-9999")
+		// Wired to InputMaskHandler for key routing and display formatting.
 		PRIVATE _inputMask AS STRING
 		PROPERTY InputMask AS STRING
 			GET
-				IF SELF:DesignMode
-					RETURN _inputMask
-				ELSE
-					IF SELF:maskCheck != NULL
-						RETURN SELF:maskCheck:Mask
-					ENDIF
+				IF SELF:_maskHandler != NULL .AND. SELF:_maskHandler:Pattern != NULL
+					RETURN SELF:_maskHandler:Pattern:MaskString
 				ENDIF
 				RETURN _inputMask
 			END GET
-
 			SET
 				_inputMask := VALUE
 				IF !SELF:DesignMode
-					VAR savedValue := SELF:Value
-					IF SELF:maskCheck == NULL .AND. ( !String.IsNullOrEmpty(SELF:_inputMask) .OR. !String.IsNullOrEmpty(SELF:_format) )
-						SELF:maskCheck := MaskProvider{ SELF, SELF:_inputMask, SELF:_format, SELF:_valueType }
-						IF !IsNil( savedValue )
-							SELF:maskCheck:Value := savedValue
-						ENDIF
+					IF String.IsNullOrEmpty(_inputMask)
+						SELF:_maskHandler := NULL
 					ELSE
-						IF String.IsNullOrEmpty(SELF:_inputMask) .AND. String.IsNullOrEmpty(SELF:_format)
-							SELF:maskCheck := NULL
-						ELSE
-							SELF:maskCheck := MaskProvider{ SELF, SELF:_inputMask, SELF:_format, SELF:_valueType }
-							IF !IsNil( savedValue )
-								SELF:maskCheck:Value := savedValue
-							ENDIF
+						SELF:_maskHandler := InputMaskHandler{}
+						SELF:_maskHandler:SetPattern(_inputMask)
+						// Re-apply current value through the new mask
+						IF !IsNil(SELF:_uValue)
+							SELF:_maskHandler:InitializeTextBox(SELF)
 						ENDIF
 					ENDIF
 				ENDIF
 			END SET
 		END PROPERTY
 
-		INTERNAL PROPERTY maskCheck AS MaskProvider AUTO
+		// The active InputMaskHandler; NULL when no InputMask is set
+		INTERNAL PROPERTY _maskHandler AS InputMaskHandler AUTO
 
 
 
@@ -103,50 +80,48 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, TRUE)
 			SELF:BackColor := Color.Transparent
 			// Default work
-			SELF:_format := NULL
-			SELF:_inputMask := NULL
-            SELF:_valueType := "C"
-            SELF:Size := Size{100,21}
+			SELF:_format     := NULL
+			SELF:_inputMask  := NULL
+			SELF:_maskHandler := NULL
+            SELF:_valueType  := "C"
+            SELF:Size        := Size{100,21}
 
 
 		OVERRIDE PROTECTED METHOD OnKeyDown( e AS KeyEventArgs ) AS VOID
-			IF SELF:maskCheck == NULL
+			IF SELF:_maskHandler == NULL
 				SUPER:OnKeyDown(e)
 				RETURN
 			ENDIF
-			//
-			SELF:maskCheck:OnKeyDown(e)
+			SELF:_maskHandler:HandleKeyDown(e, SELF)
+			IF !e:Handled
+				SUPER:OnKeyDown(e)
+			ENDIF
 
 		OVERRIDE PROTECTED METHOD OnKeyUp( e AS KeyEventArgs ) AS VOID
-			IF SELF:maskCheck == NULL
+			IF SELF:_maskHandler == NULL
 				SUPER:OnKeyUp(e)
 				RETURN
 			ENDIF
-			//
+			// Nothing extra needed — base handles caret; mask state updated in TextChanged
 
         OVERRIDE PROTECTED METHOD OnKeyPress( e AS KeyPressEventArgs) AS VOID
-            // First call our VPF handling
+            // Fire VFP KeyPress event once, before default processing
             SELF:OnVFPKeyPress( SELF, e )
             //
-            // TODO : Don't forget that if NODEFAULT has been calledd previously we should mark the Event has handled and return
-            // .....
+            // TODO : Don't forget that if NODEFAULT has been called previously we should mark the Event as handled and return
             //
-			IF SELF:maskCheck == NULL
+			IF SELF:_maskHandler == NULL
                 SUPER:OnKeyPress(e)
             ELSE
 				IF !SELF:ReadOnly
-					// First position ?
-					IF SELF:CursorPos == 1
-						SELF:maskCheck:MoveToFirstEditingPosition()
+					SELF:_maskHandler:HandleKeyPress(e, SELF)
+					IF !e:Handled
+						SUPER:OnKeyPress(e)
 					ENDIF
-					// we have a valid picture, apply the mask
-					SELF:maskCheck:OnKeyPress( e )
 				ELSE
 					e:Handled := TRUE
 				ENDIF
             ENDIF
-            // How do we ignore a KeyPress in VFP ???
-            SELF:OnVFPKeyPress( SELF, e )
 
 
 		OVERRIDE PROTECTED METHOD OnTextChanged ( e AS EventArgs) AS VOID
@@ -154,6 +129,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF SELF:Modified
 				// VFP fallback Code ??
                 SELF:OnVFPInteractiveChange( SELF, e )
+			ENDIF
+			// Let the mask handler reformat the display after each edit
+			IF SELF:_maskHandler != NULL
+				SELF:_maskHandler:HandleTextChanged(SELF)
 			ENDIF
 			//
 			RETURN
@@ -180,18 +159,30 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				[Browsable(FALSE)];
 		PROPERTY Value AS USUAL
 			GET
+				IF IsNil(_uValue) .AND. !String.IsNullOrEmpty(SELF:NullDisplay)
+					RETURN (USUAL) SELF:NullDisplay
+				ENDIF
 				RETURN _uValue
 			END GET
 			SET
+				IF ValType(VALUE) == "C" .AND. !String.IsNullOrEmpty(SELF:NullDisplay) .AND. (STRING)VALUE == SELF:NullDisplay
+					_uValue := NIL
+					SELF:Text := SELF:NullDisplay
+					RETURN
+				ENDIF
 				IF !IsNil( VALUE )
 					// Set uValue first, as setting Text will call TextChanged
 					_uValue := VALUE
 					_valueType := ValType(_uValue )
-					IF SELF:maskCheck != NULL
-						SELF:maskCheck:Value := _uValue
+					IF SELF:_maskHandler != NULL
+						// Format the value through the mask and display it
+						VAR strVal := ((OBJECT)VALUE):ToString()
+						SELF:Text := strVal
+						SELF:_maskHandler:HandleTextChanged(SELF)
 					ELSE
 						SELF:Text := ((OBJECT)VALUE):ToString()
 					ENDIF
+					SELF:OnVFPProgrammaticChange()
 				ENDIF
 			END SET
 		END PROPERTY
@@ -202,15 +193,31 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			[Browsable(FALSE)];
 		PROPERTY SelStart AS INT GET SELF:SelectionStart SET SELF:SelectionStart := VALUE
 
-			// Don't Care
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-			[EditorBrowsable(EditorBrowsableState.Never)];
-			[Bindable(FALSE)];
-			[Browsable(FALSE)];
-		PROPERTY Style AS INT AUTO
+		// VFP Style: 0=Standard (editable), 1=Read-only display (like a label).
+		PRIVATE _style AS INT
+		PROPERTY Style AS INT
+			GET
+				RETURN _style
+			END GET
+			SET
+				_style := VALUE
+				SELF:ReadOnly := (VALUE == 1)
+			END SET
+		END PROPERTY
 
-			// TODO
 		PROPERTY SelectOnEntry AS LOGIC AUTO
+
+		// ── ProgrammaticChange ───────────────────────────────────────────────
+
+		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
+
+		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
+			IF SELF:_VFPProgrammaticChange != NULL
+				SELF:_VFPProgrammaticChange:Call()
+			ENDIF
 
 			// This will include a call to VFPAfterWhen() if When() is True, and before VFPGotFocus()
 			// It has to be set BEFORE the #include "TextControlProperties.xh"
@@ -249,14 +256,36 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		OVERRIDE PROTECTED METHOD OnLostFocus( e AS EventArgs ) AS VOID
-			IF SELF:maskCheck != NULL
-				SELF:maskCheck:UpdateValue()
+			IF SELF:_maskHandler != NULL
+				// Extract clean data value from masked display
+				SELF:_uValue := SELF:_maskHandler:GetDataValue(SELF:Text)
 			ELSE
-				SELF:_uValue := SELF:Text
+				IF !String.IsNullOrEmpty(SELF:NullDisplay) .AND. SELF:Text == SELF:NullDisplay
+					SELF:_uValue := NIL
+				ELSE
+					SELF:_uValue := SELF:Text
+				ENDIF
 			ENDIF
 			SUPER:OnLostFocus( e )
 		END METHOD
 
+
+		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
+
+		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
+			SUPER:OnEnabledChanged(e)
+			IF !SELF:Enabled
+				IF SELF:DisabledBackColor != 0
+					SELF:BackColor := VFPTools.ColorFromVFP(SELF:DisabledBackColor)
+				ENDIF
+				IF SELF:DisabledForeColor != 0
+					SELF:ForeColor := VFPTools.ColorFromVFP(SELF:DisabledForeColor)
+				ENDIF
+			ELSE
+				SELF:ResetBackColor()
+				SELF:ResetForeColor()
+			ENDIF
+		END METHOD
 
 		#include "TextControlProperties.xh"
 
@@ -264,98 +293,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "ControlSource.xh"
 
-		/// <summary>
-		/// Selects all text in the TextBox.
-		/// Equivalent to VFP's SelectAll method.
-		/// </summary>
-		/// <remarks>
-		/// Selects all text and moves cursor to the beginning.
-		/// </remarks>
-		PUBLIC METHOD SelectAll() AS VOID STRICT
-			SUPER:SelectAll()
-		END METHOD
-
-		/// <summary>
-		/// Clears all text from the TextBox.
-		/// Equivalent to VFP's Clear method.
-		/// </summary>
-		/// <remarks>
-		/// Removes all text and resets the Value property.
-		/// </remarks>
-		PUBLIC METHOD Clear() AS VOID STRICT
-			SELF:Text := ""
-			SELF:_uValue := NIL
-		END METHOD
-
-		/// <summary>
-		/// Copies selected text to the clipboard.
-		/// Equivalent to VFP's Copy method.
-		/// </summary>
-		/// <remarks>
-		/// Copies the currently selected text. If no text is selected, does nothing.
-		/// </remarks>
-		PUBLIC METHOD Copy() AS VOID STRICT
-			IF SELF:SelectionLength > 0
-				System.Windows.Forms.Clipboard.SetText(SELF:SelectedText)
-			ENDIF
-		END METHOD
-
-		/// <summary>
-		/// Cuts selected text to the clipboard.
-		/// Equivalent to VFP's Cut method.
-		/// </summary>
-		/// <remarks>
-		/// Cuts the currently selected text (copies and deletes).
-		/// If ReadOnly is TRUE, does nothing.
-		/// </remarks>
-		PUBLIC METHOD Cut() AS VOID STRICT
-			IF !SELF:ReadOnly .AND. SELF:SelectionLength > 0
-				System.Windows.Forms.Clipboard.SetText(SELF:SelectedText)
-				SELF:SelectedText := ""
-			ENDIF
-		END METHOD
-
-		/// <summary>
-		/// Pastes text from the clipboard.
-		/// Equivalent to VFP's Paste method.
-		/// </summary>
-		/// <remarks>
-		/// Inserts clipboard contents at the cursor position, replacing any selection.
-		/// If ReadOnly is TRUE, does nothing.
-		/// </remarks>
-		PUBLIC METHOD Paste() AS VOID STRICT
-			IF !SELF:ReadOnly
-				IF System.Windows.Forms.Clipboard.ContainsText()
-					SELF:SelectedText := System.Windows.Forms.Clipboard.GetText()
+		// ── ControlSource ─────────────────────────────────────────────────────
+		// VFP ControlSource: "alias.fieldname" or "fieldname" string that registers
+		// this control for data binding via Form.DoBindings / Form.PopulateBindings.
+		// Setting it calls SetBinding(SELF, VALUE) which populates BindingDefinition.
+		PRIVATE _controlSource AS STRING
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)];
+		[Browsable(FALSE)];
+		PROPERTY ControlSource AS STRING
+			GET
+				RETURN SELF:_controlSource
+			END GET
+			SET
+				SELF:_controlSource := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					SELF:SetBinding(SELF, VALUE)
 				ENDIF
-			ENDIF
-		END METHOD
-
-		/// <summary>
-		/// Undoes the last editing operation.
-		/// Equivalent to VFP's Undo method.
-		/// </summary>
-		/// <remarks>
-		/// Reverts the TextBox to its previous state if undo is available.
-		/// </remarks>
-		PUBLIC METHOD Undo() AS VOID STRICT
-			IF SELF:CanUndo
-				SUPER:Undo()
-			ENDIF
-		END METHOD
-
-		/// <summary>
-		/// Redoes the last undone editing operation.
-		/// Equivalent to VFP's Redo method.
-		/// </summary>
-		/// <remarks>
-		/// Reapplies the last undone action if redo is available.
-		/// </remarks>
-		PUBLIC METHOD Redo() AS VOID STRICT
-			IF SELF:CanRedo
-				SUPER:Redo()
-			ENDIF
-		END METHOD
+			END SET
+		END PROPERTY
 
 	END CLASS
 

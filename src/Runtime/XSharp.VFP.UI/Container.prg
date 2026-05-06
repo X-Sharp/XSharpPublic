@@ -9,6 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Windows.Forms
 USING System.Drawing
+USING System.Drawing.Drawing2D
 USING System.ComponentModel
 
 
@@ -23,11 +24,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Container INHERIT System.Windows.Forms.UserControl
 
 
+         #include "VFPProperties.xh"
+		 #include "ControlProperties.xh"
 
-         #include ".\XSharp\VFPProperties.xh"
-		 #include ".\Headers\ControlProperties.xh"
-         #include ".\Headers\ControlFocus.xh"
-		 #include ".\Headers\Tooltips.xh"
+		 #include "Tooltips.xh"
 
 			// This is a fake property, just here to ease Code Generation
 			//PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
@@ -40,7 +40,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 
 
-        PROPERTY BorderColor AS System.Drawing.Color AUTO
+        PROPERTY BorderColor AS LONG
+            GET ; RETURN _borderColor ; END GET
+            SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
+        END PROPERTY
+        PRIVATE _borderColor AS LONG
 
 		PRIVATE _backStyle := 1 AS INT
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
@@ -51,66 +55,43 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET
 				_backStyle := VALUE
 				IF (VALUE == 0 )
-					// Todo No Transparency on Panel
 					SELF:BackColor := System.Drawing.Color.Transparent
+				ELSE
+					SELF:BackColor := System.Drawing.SystemColors.Control
 				ENDIF
 			END SET
 		END PROPERTY
 
+        // ── OnKeyPress ────────────────────────────────────────────────────────
+        PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+            SUPER:OnKeyPress(e)
+            SELF:OnVFPKeyPress(SELF, e)
 
+        // ── OnPaint ───────────────────────────────────────────────────────────
+        PROTECTED OVERRIDE METHOD OnPaint(e AS PaintEventArgs) AS VOID
+            SUPER:OnPaint(e)
+            // Only paint a custom border when BorderStyle=0 (None) — WinForms FixedSingle
+            // draws its own border when BorderStyle=1 is set on the UserControl.
+            IF SELF:BorderStyle == 0 .AND. SELF:_borderColor != 0
+                VAR pw := 1
+                VAR c  := System.Drawing.Color.FromArgb( _borderColor & 0xFF, (_borderColor >> 8) & 0xFF, (_borderColor >> 16) & 0xFF )
+                VAR pen := Pen{ c, (SINGLE) pw }
+                e:Graphics:DrawRectangle( pen, 0, 0, SELF:ClientSize:Width - 1, SELF:ClientSize:Height - 1 )
+                pen:Dispose()
+            ENDIF
 
-		// Todo : BorderColor Currently ... do nothing
-		//PROPERTY BorderColor AS System.Drawing.Color AUTO
-
-		/*
-		All this is still experimental.....
-		// Capture the Parent call
-		// With the Attribute, during compilation the generated code will receive the name of the Method in which this code is called.
-		// So, we will check if it is in form of <objectName>_<Event>
-		// So first, extract the objectName, search it in the Properties list
-		NEW PROPERTY Parent[ [System.Runtime.CompilerServices.CallerMemberName]memberName := "" AS STRING] AS OBJECT
-		GET
-		// We are trying to check from which Method the Parent property was called.
-		// If it is in form of <objectName>_<Event>, it might be some VFPXPorter generated method that contains the original code
-		// In VFP, the code was "contained" by the control, where in WinForms it is "contained" by the Container (Panel/Form/...)
-
-		// Normal behaviour
-		IF !memberName:Contains("_")
-		RETURN Super:Parent
-		ELSE
-		VAR underScore := memberName:IndexOf("_")
-		if memberName:Length == underScore +1
-		RETURN Super:Parent
-		ENDIF
-		// Now, check who is calling the Parent.
-		//
-		VAR objectName := memberName:SubString( 0, underScore )
-		VAR eventName := memberName:SubString(underScore+1)
-		// Do we already have a list of Controls here ?
-		if SELF:_ControlDict == NULL
-		SELF:_ControlDict := HashSet<String>{}
-		VAR topParent := ScrollableControl{}:GetType()
-		FOREACH VAR fieldInfo IN SELF:GetType():GetFields( System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic )
-		// We have the Field
-		// IsAssignable check if the parameter is derived either directly or indirectly from the current instance.
-		// So we check if the FieldType is not derived from ScrollableControl, which is the Parent of Panel, Form, ... but not Control
-
-		if !topParent:IsAssignableFrom( fieldInfo:FieldType )
-		// TODO !! Warning we are Case-Insensitive here
-		_ControlDict:Add( fieldInfo:Name:ToLower() )
-		ENDIF
-		NEXT
-		ENDIF
-		ENDIF
-		RETURN NULL
-		END GET
-		END PROPERTY
-
-
-		// This Dictionary contains the Controls
-		PRIVATE _ControlDict AS HashSet<String>
-
-		*/
+        // ── Refresh ───────────────────────────────────────────────────────────
+        OVERRIDE METHOD Refresh() AS VOID
+            SUPER:Refresh()
+            IF SELF:_VFPRefresh != NULL
+                SELF:_VFPRefresh:Call()
+            ENDIF
+            FOREACH VAR ctrl IN SELF:Controls
+                IF ctrl IS System.Windows.Forms.Control VAR c
+                    c:Refresh()
+                ENDIF
+            NEXT
+        END METHOD
 
 
 	END CLASS

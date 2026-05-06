@@ -4,59 +4,39 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
-
 USING System
-USING System.Collections.Generic
-USING System.Text
 USING System.Windows.Forms
 USING System.Drawing
+USING System.Drawing.Drawing2D
 USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
 	/// The VFP compatible Line class.
-	/// Draws a line on the form.
+	/// Draws a straight line inside a transparent UserControl.
+	/// VFP properties: BorderColor, BorderWidth, LineSlant ("/", "\"), Rotation.
 	/// </summary>
-	PARTIAL CLASS Line INHERIT System.Windows.Forms.Control
+	PARTIAL CLASS Line INHERIT System.Windows.Forms.UserControl
 
-		// Common properties that all VFP Objects support
-		#include "Headers\VFPObject.xh"
+		// Note: VFPObject.xh is included by Line.generated.prg — do not include again here.
 
-		/// <summary>
-		/// Backing fields for VFP properties
-		/// </summary>
-		PRIVATE _borderColor AS Color
-		PRIVATE _borderWidth AS INT
-		PRIVATE _drawMode AS INT
-		PRIVATE _lineSlant AS STRING
+		#include "ControlProperties.xh"
 
-		/// <summary>
-		/// Constructor for Line control.
-		/// </summary>
-		CONSTRUCTOR(  ) STRICT
+		CONSTRUCTOR() STRICT
 			SUPER()
-			SELF:Size := Size{100, 0}
-			SELF:_borderColor := Color.Black
+			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor ;
+			             | ControlStyles.AllPaintingInWmPaint ;
+			             | ControlStyles.UserPaint, TRUE )
+			SELF:BackColor    := Color.Transparent
+			SELF:_borderColor := ColorTranslator.ToOle( Color.Black )
 			SELF:_borderWidth := 1
-			SELF:_drawMode := 13  // Copy pen
-			SELF:_lineSlant := "/"  // Forward slash by default
-			SELF:SetStyle(ControlStyles.UserPaint, TRUE)
-			SELF:SetStyle(ControlStyles.AllPaintingInWmPaint, TRUE)
-			SELF:SetStyle(ControlStyles.DoubleBuffer, TRUE)
-			SELF:SetStyle(ControlStyles.Selectable, FALSE)
-			RETURN
+			SELF:_lineSlant   := "\"
+			SELF:Size         := Size{100, 2}
 
-		#include ".\Headers\ControlProperties.xh"
-
-		/// <summary>
-		/// Gets or sets the border color of the line.
-		/// Equivalent to VFP's BorderColor property.
-		/// </summary>
-		/// <value>The border color. Default is black.</value>
-		[Category("VFP Properties"), Description("Line color")];
-		[DefaultValue(typeof(Color), "Black")];
-		PROPERTY BorderColor AS Color
+		// ── BorderColor ───────────────────────────────────────────────────────
+		PRIVATE _borderColor AS LONG
+		PROPERTY BorderColor AS LONG
 			GET
 				RETURN SELF:_borderColor
 			END GET
@@ -66,87 +46,70 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the border width (thickness) of the line.
-		/// Equivalent to VFP's BorderWidth property.
-		/// </summary>
-		/// <value>The line thickness in pixels. Default is 1.</value>
-		[Category("VFP Properties"), Description("Line thickness in pixels")];
-		[DefaultValue(1)];
-		PROPERTY BorderWidth AS INT
+		// ── BorderWidth ───────────────────────────────────────────────────────
+		PRIVATE _borderWidth AS LONG
+		PROPERTY BorderWidth AS USUAL
 			GET
 				RETURN SELF:_borderWidth
 			END GET
 			SET
-				SELF:_borderWidth := VALUE
+				SELF:_borderWidth := (LONG) VALUE
 				SELF:Invalidate()
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the draw mode.
-		/// Equivalent to VFP's DrawMode property.
-		/// </summary>
-		/// <value>The draw mode. Default is 13 (Copy Pen).</value>
-		[Category("VFP Properties"), Description("Draw mode")];
-		[DefaultValue(13)];
-		PROPERTY DrawMode AS INT
+		// ── BorderStyle ──────────────────────────────────────────────────────
+		// VFP: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible, 6=InsideSolid
+		PRIVATE _borderStyle AS LONG
+		PROPERTY BorderStyle AS LONG
 			GET
-				RETURN SELF:_drawMode
+				RETURN SELF:_borderStyle
 			END GET
 			SET
-				SELF:_drawMode := VALUE
+				SELF:_borderStyle := VALUE
+				SELF:Invalidate()
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Gets or sets the line slant direction.
-		/// "/" for forward slash (bottom-left to top-right)
-		/// "\" for backslash (top-left to bottom-right)
-		/// Equivalent to VFP's LineSlant property.
-		/// </summary>
-		/// <value>The line slant direction. Default is "/".</value>
-		[Category("VFP Properties"), Description("Line slant: / or \\")];
-		[DefaultValue("/")];
-		PROPERTY LineSlant AS STRING
+		// ── LineSlant ─────────────────────────────────────────────────────────
+		// "\" = top-left to bottom-right (default)
+		// "/" = bottom-left to top-right
+		PRIVATE _lineSlant AS STRING
+		PROPERTY LineSlant AS USUAL
 			GET
 				RETURN SELF:_lineSlant
 			END GET
 			SET
-				IF VALUE == "/" .OR. VALUE == "\"
-					SELF:_lineSlant := VALUE
-					SELF:Invalidate()
-				ENDIF
+				SELF:_lineSlant := Str(VALUE)
+				SELF:Invalidate()
 			END SET
 		END PROPERTY
 
-		/// <summary>
-		/// Handles the Paint event to draw the line.
-		/// </summary>
-		PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID
-			LOCAL g AS Graphics
-			LOCAL pen AS Pen
-			LOCAL startPoint AS Point
-			LOCAL endPoint AS Point
-
-			g := e:Graphics
-			pen := Pen{SELF:_borderColor, SELF:_borderWidth}
-
-			// Determine start and end points based on LineSlant
-			IF SELF:_lineSlant == "/"
-				// Forward slash: bottom-left to top-right
-				startPoint := Point{0, SELF:Height - 1}
-				endPoint := Point{SELF:Width - 1, 0}
-			ELSE
-				// Backslash: top-left to bottom-right
-				startPoint := Point{0, 0}
-				endPoint := Point{SELF:Width - 1, SELF:Height - 1}
+		// ── OnPaint ───────────────────────────────────────────────────────────
+		OVERRIDE PROTECTED METHOD OnPaint( e AS PaintEventArgs ) AS VOID
+			SUPER:OnPaint(e)
+			VAR g     := e:Graphics
+			VAR color := ColorTranslator.FromOle( SELF:_borderColor )
+			VAR pen   := Pen{ color, (SINGLE) SELF:_borderWidth }
+			SWITCH SELF:_borderStyle
+			CASE 1 ; pen:DashStyle := DashStyle.Dash
+			CASE 2 ; pen:DashStyle := DashStyle.Dot
+			CASE 3 ; pen:DashStyle := DashStyle.DashDot
+			CASE 4 ; pen:DashStyle := DashStyle.DashDotDot
+			OTHERWISE ; pen:DashStyle := DashStyle.Solid
+			END SWITCH
+			VAR w := SELF:ClientSize:Width  - 1
+			VAR h := SELF:ClientSize:Height - 1
+			IF SELF:_borderStyle != 5
+				IF SELF:_lineSlant == "/"
+					g:DrawLine( pen, 0, h, w, 0 )
+				ELSE
+					// Default: "\" — top-left to bottom-right
+					g:DrawLine( pen, 0, 0, w, h )
+				ENDIF
 			ENDIF
-
-			g:DrawLine(pen, startPoint, endPoint)
-
 			pen:Dispose()
-			RETURN
+		END METHOD
 
 	END CLASS
 

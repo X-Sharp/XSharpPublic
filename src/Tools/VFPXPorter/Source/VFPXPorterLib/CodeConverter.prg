@@ -457,8 +457,8 @@ BEGIN NAMESPACE VFPXPorterLib
 						IF candidate == prop:ToLower()
 							// make sure it's not part of a longer identifier
 							IF propEnd < line:Length
-								LOCAL next := line[propEnd] AS CHAR
-								IF Char.IsLetterOrDigit(next) .OR. next == '_'
+								LOCAL nextClr := line[propEnd] AS CHAR
+								IF Char.IsLetterOrDigit(nextClr) .OR. nextClr == '_'
 									LOOP
 								ENDIF
 							ENDIF

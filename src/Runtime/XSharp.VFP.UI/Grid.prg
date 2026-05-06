@@ -22,8 +22,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 
-        PROPERTY HighlightBackColor AS LONG AUTO
-        PROPERTY HighlightForeColor AS LONG AUTO
+        PROPERTY HighlightBackColor AS System.Drawing.Color AUTO
+        PROPERTY HighlightForeColor AS System.Drawing.Color AUTO
 
         PROPERTY DeleteMark AS LOGIC AUTO
         PROPERTY RecordMark AS LOGIC AUTO
@@ -35,7 +35,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PRIVATE _oldColIndex AS LONG
         PRIVATE _rowColChange AS LONG
 
-        #include "Generated/VFPContainer.xh"
+        #include "Headers/VFPContainer.xh"
+        #include "Headers/VFPPropertiesDynamic.xh"
         #include "VFPProperties.xh"
 
         #include "ControlProperties.xh"
@@ -439,15 +440,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
         // ── GridLineColor ─────────────────────────────────────────────────────
-        // VFP LONG color (r + g*256 + b*65536) → DataGridView.GridColor
-        PROPERTY GridLineColor AS LONG
-            GET
-                VAR c := SELF:GridColor
-                RETURN c:R + c:G * 256 + c:B * 65536
-            END GET
-            SET
-                SELF:GridColor := System.Drawing.Color.FromArgb(VALUE & 0xFF, (VALUE >> 8) & 0xFF, (VALUE >> 16) & 0xFF)
-            END SET
+        PROPERTY GridLineColor AS System.Drawing.Color
+            GET ; RETURN SELF:GridColor ; END GET
+            SET ; SELF:GridColor := VALUE ; END SET
         END PROPERTY
 
         // ── HeaderHeight ──────────────────────────────────────────────────────

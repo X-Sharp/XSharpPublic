@@ -50,11 +50,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROPERTY Rotation AS INT AUTO
 
-		[System.ComponentModel.DefaultValue(0)];
-        PROPERTY DisabledBackColor AS LONG AUTO
+		PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
-        [System.ComponentModel.DefaultValue(0)];
-        PROPERTY DisabledForeColor AS LONG AUTO
+        PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
 		// WordWrap: .T. = fixed-size label, text wraps within bounds (AutoSize=.F.)
 		//           .F. = label auto-sizes to single line (AutoSize=.T.)
@@ -102,11 +100,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnEnabledChanged(e)
 			IF !SELF:Enabled
-				IF SELF:DisabledBackColor != 0
-					SELF:BackColor := VFPTools.ColorFromVFP(SELF:DisabledBackColor)
+				IF SELF:DisabledBackColor != System.Drawing.Color.Empty
+					SELF:BackColor := SELF:DisabledBackColor
 				ENDIF
-				IF SELF:DisabledForeColor != 0
-					SELF:ForeColor := VFPTools.ColorFromVFP(SELF:DisabledForeColor)
+				IF SELF:DisabledForeColor != System.Drawing.Color.Empty
+					SELF:ForeColor := SELF:DisabledForeColor
 				ENDIF
 			ELSE
 				SELF:ResetBackColor()

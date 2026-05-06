@@ -5,6 +5,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #define VFP_CONTROLCOUNT_OVERRIDE
 #include "VFPControl.xh"
 #include "VFPContainer.xh"
+#include "VFPPropertiesDynamic.xh"
 
 		// BorderColor, BackStyle, ControlCount, Resize/Moved, ProgrammaticChange — implemented in OptionGroup.prg
 		// SetFocus() provided by ControlProperties.xh in OptionGroup.prg

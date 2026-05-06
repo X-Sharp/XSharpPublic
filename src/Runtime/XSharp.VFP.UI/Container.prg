@@ -40,11 +40,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 
 
-        PROPERTY BorderColor AS LONG
+        PROPERTY BorderColor AS System.Drawing.Color
             GET ; RETURN _borderColor ; END GET
             SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
         END PROPERTY
-        PRIVATE _borderColor AS LONG
+        PRIVATE _borderColor AS System.Drawing.Color
 
 		PRIVATE _backStyle := 1 AS INT
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
@@ -72,10 +72,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SUPER:OnPaint(e)
             // Only paint a custom border when BorderStyle=0 (None) — WinForms FixedSingle
             // draws its own border when BorderStyle=1 is set on the UserControl.
-            IF SELF:BorderStyle == 0 .AND. SELF:_borderColor != 0
+            IF SELF:BorderStyle == 0 .AND. SELF:_borderColor != System.Drawing.Color.Empty
                 VAR pw := 1
-                VAR c  := System.Drawing.Color.FromArgb( _borderColor & 0xFF, (_borderColor >> 8) & 0xFF, (_borderColor >> 16) & 0xFF )
-                VAR pen := Pen{ c, (SINGLE) pw }
+                VAR pen := Pen{ _borderColor, (SINGLE) pw }
                 e:Graphics:DrawRectangle( pen, 0, 0, SELF:ClientSize:Width - 1, SELF:ClientSize:Height - 1 )
                 pen:Dispose()
             ENDIF

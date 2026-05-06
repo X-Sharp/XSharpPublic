@@ -29,14 +29,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			             | ControlStyles.AllPaintingInWmPaint ;
 			             | ControlStyles.UserPaint, TRUE )
 			SELF:BackColor    := Color.Transparent
-			SELF:_borderColor := ColorTranslator.ToOle( Color.Black )
+			SELF:_borderColor := Color.Black
 			SELF:_borderWidth := 1
 			SELF:_lineSlant   := "\"
 			SELF:Size         := Size{100, 2}
 
 		// ── BorderColor ───────────────────────────────────────────────────────
-		PRIVATE _borderColor AS LONG
-		PROPERTY BorderColor AS LONG
+		PRIVATE _borderColor AS System.Drawing.Color
+		PROPERTY BorderColor AS System.Drawing.Color
 			GET
 				RETURN SELF:_borderColor
 			END GET
@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		OVERRIDE PROTECTED METHOD OnPaint( e AS PaintEventArgs ) AS VOID
 			SUPER:OnPaint(e)
 			VAR g     := e:Graphics
-			VAR color := ColorTranslator.FromOle( SELF:_borderColor )
+			VAR color := SELF:_borderColor
 			VAR pen   := Pen{ color, (SINGLE) SELF:_borderWidth }
 			SWITCH SELF:_borderStyle
 			CASE 1 ; pen:DashStyle := DashStyle.Dash

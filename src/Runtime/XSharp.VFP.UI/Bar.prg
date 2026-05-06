@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// Mirrors Pad.Popup so nested menus follow the same VFP convention.
 		PROPERTY Popup AS Popup
 			GET
-				RETURN SELF:DropDown AS Popup
+				RETURN SELF:DropDown ASTYPE Popup
 			END GET
 			SET
 				SELF:DropDown := VALUE

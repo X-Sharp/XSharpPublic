@@ -5,6 +5,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IVFPObject
 #define VFP_CONTROLCOUNT_OVERRIDE
 #define NOSET
 #include "VFPContainer.xh"
+#include "VFPPropertiesDynamic.xh"
 PROPERTY AutoRelease AS LOGIC AUTO
 PROPERTY BufferMode AS LONG AUTO
 PROPERTY DataSession AS USUAL AUTO

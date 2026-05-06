@@ -29,8 +29,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── BorderColor ───────────────────────────────────────────────────────
-		PRIVATE _borderColor AS LONG
-		PROPERTY BorderColor AS LONG
+		PRIVATE _borderColor AS System.Drawing.Color
+		PROPERTY BorderColor AS System.Drawing.Color
 			GET ; RETURN _borderColor ; END GET
 			SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
 		END PROPERTY
@@ -65,9 +65,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── OnPaint — custom BorderColor border ───────────────────────────────
 		PROTECTED OVERRIDE METHOD OnPaint(e AS PaintEventArgs) AS VOID
 			SUPER:OnPaint(e)
-			IF SELF:_borderColor != 0
-				VAR c   := System.Drawing.Color.FromArgb(_borderColor & 0xFF, (_borderColor >> 8) & 0xFF, (_borderColor >> 16) & 0xFF)
-				VAR pen := Pen{c, (SINGLE)1}
+			IF SELF:_borderColor != System.Drawing.Color.Empty
+				VAR pen := Pen{_borderColor, (SINGLE)1}
 				e:Graphics:DrawRectangle(pen, 0, 0, SELF:ClientSize:Width - 1, SELF:ClientSize:Height - 1)
 				pen:Dispose()
 			ENDIF

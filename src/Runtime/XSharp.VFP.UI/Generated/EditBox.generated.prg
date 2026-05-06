@@ -10,14 +10,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
         // SelectOnEntry — inherited from TextBox
         // NullDisplay — inherited from TextBox
 
-        [DefaultValue(0)];
-        PROPERTY BorderColor AS LONG AUTO
+        PROPERTY BorderColor AS System.Drawing.Color AUTO
 
-        [DefaultValue(0)];
-        PROPERTY DisabledBackColor AS LONG AUTO
+        PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
-        [DefaultValue(0)];
-        PROPERTY DisabledForeColor AS LONG AUTO
+        PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
         PROPERTY EnableHyperLinks AS LOGIC AUTO
 
@@ -37,11 +34,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         // PasswordChar: WinForms TextBox.PasswordChar is CHAR — do not re-declare as STRING (type mismatch)
 
-        [DefaultValue(0)];
-        PROPERTY SelectedBackColor AS LONG AUTO
+        PROPERTY SelectedBackColor AS System.Drawing.Color AUTO
 
-        [DefaultValue(0)];
-        PROPERTY SelectedForeColor AS LONG AUTO
+        PROPERTY SelectedForeColor AS System.Drawing.Color AUTO
 
         // SelLength, SelText — mapped to WinForms SelectionLength/SelectedText
         // SelStart is inherited from TextBox — do not re-declare here

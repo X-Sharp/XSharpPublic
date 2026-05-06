@@ -3,6 +3,7 @@
 BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Column  IMPLEMENTS IVFPOwner,IVFPEditable
 #include "VFPContainer.xh"
+#include "VFPPropertiesDynamic.xh"
 		PROPERTY ActiveControl AS USUAL AUTO
 
 		METHOD AutoFit AS LOGIC CLIPPER

@@ -87,6 +87,9 @@
     <Compile Include="XPorterCtrlForm.prg" />
     <Compile Include="XPorterSCXVCX.prg" />
     <Compile Include="XPorterTools.prg" />
+    <None Include="Data\ColorProperties.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\Statements.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

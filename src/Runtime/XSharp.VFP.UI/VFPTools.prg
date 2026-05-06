@@ -73,5 +73,12 @@ STATIC PUBLIC CLASS VFPTools
         VAR b := (INT)((nColor >> 16) & 0xFF)
         RETURN System.Drawing.Color.FromArgb(r, g, b)
 
+    // Convert a System.Drawing.Color back to a VFP COLORREF long (R + G*256 + B*65536).
+    STATIC METHOD ColorToVFP(c AS System.Drawing.Color) AS LONG
+        IF c == System.Drawing.Color.Empty
+            RETURN 0
+        ENDIF
+        RETURN (LONG)c:R + (LONG)c:G * 256 + (LONG)c:B * 65536
+
 END CLASS
 END NAMESPACE // XSharp.VFP.UI

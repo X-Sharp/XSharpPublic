@@ -92,11 +92,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER:OnEnabledChanged(e)
 			SELF:ApplyGraphicalImages()
 			IF !SELF:Enabled
-				IF SELF:DisabledBackColor != 0
-					SELF:BackColor := VFPTools.ColorFromVFP(SELF:DisabledBackColor)
+				IF SELF:DisabledBackColor != System.Drawing.Color.Empty
+					SELF:BackColor := SELF:DisabledBackColor
 				ENDIF
-				IF SELF:DisabledForeColor != 0
-					SELF:ForeColor := VFPTools.ColorFromVFP(SELF:DisabledForeColor)
+				IF SELF:DisabledForeColor != System.Drawing.Color.Empty
+					SELF:ForeColor := SELF:DisabledForeColor
 				ENDIF
 			ELSE
 				SELF:ResetBackColor()

@@ -6,6 +6,7 @@ PARTIAL CLASS ToolBar IMPLEMENTS IVFPObject, IVFPOwner
 // Suppress the generic AddObject from VFPContainer.xh — ToolBar.prg provides its own override
 #define NO_VFPCONTAINER_ADDOBJECT
 	#include "VFPContainer.xh"
+	#include "VFPPropertiesDynamic.xh"
 // Wire standard VFP events: Move(), SetFocus(), Valid, When, GotFocus, etc.
 // ControlProperties.xh included in ToolBar.prg (requires USING System.ComponentModel)
 

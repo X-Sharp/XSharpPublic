@@ -30,17 +30,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			             | ControlStyles.AllPaintingInWmPaint ;
 			             | ControlStyles.UserPaint, TRUE )
 			SELF:BackColor     := Color.Transparent
-			SELF:_borderColor  := ColorTranslator.ToOle( Color.Black )
+			SELF:_borderColor  := Color.Black
 			SELF:_borderWidth  := 1
 			SELF:_curvature    := 0
-			SELF:_fillColor    := ColorTranslator.ToOle( Color.White )
+			SELF:_fillColor    := Color.White
 			SELF:_fillStyle    := 1   // 1 = Transparent (VFP default)
 			SELF:_style        := 0   // Rectangle
 			SELF:Size          := Size{100, 60}
 
 		// ── BorderColor ───────────────────────────────────────────────────────
-		PRIVATE _borderColor AS LONG
-		PROPERTY BorderColor AS LONG
+		PRIVATE _borderColor AS System.Drawing.Color
+		PROPERTY BorderColor AS System.Drawing.Color
 			GET ; RETURN SELF:_borderColor
 			END GET
 			SET ; SELF:_borderColor := VALUE ; SELF:Invalidate()
@@ -70,8 +70,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── FillColor ─────────────────────────────────────────────────────────
-		PRIVATE _fillColor AS LONG
-		PROPERTY FillColor AS LONG
+		PRIVATE _fillColor AS System.Drawing.Color
+		PROPERTY FillColor AS System.Drawing.Color
 			GET ; RETURN SELF:_fillColor
 			END GET
 			SET ; SELF:_fillColor := VALUE ; SELF:Invalidate()
@@ -125,20 +125,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 			// Fill
 			IF SELF:_fillStyle == 0
-				VAR brush := SolidBrush{ ColorTranslator.FromOle(SELF:_fillColor) }
+				VAR brush := SolidBrush{ SELF:_fillColor }
 				SELF:PaintShape(g, r, brush)
 				brush:Dispose()
 			ELSEIF SELF:_fillStyle >= 2 .AND. SELF:_fillStyle <= 7
 				// Map VFP hatch styles (2-7) to HatchStyle enum (0-5)
 				VAR hatch := (HatchStyle)(SELF:_fillStyle - 2)
-				VAR brush := HatchBrush{ hatch, ColorTranslator.FromOle(SELF:_fillColor), Color.Transparent }
+				VAR brush := HatchBrush{ hatch, SELF:_fillColor, Color.Transparent }
 				SELF:PaintShape(g, r, brush)
 				brush:Dispose()
 			ENDIF
 
 			// Border
 			IF pw > 0 .AND. SELF:_borderStyle != 5
-				VAR pen := Pen{ ColorTranslator.FromOle(SELF:_borderColor), (SINGLE) pw }
+				VAR pen := Pen{ SELF:_borderColor, (SINGLE) pw }
 				SWITCH SELF:_borderStyle
 				CASE 1 ; pen:DashStyle := DashStyle.Dash
 				CASE 2 ; pen:DashStyle := DashStyle.Dot

@@ -44,6 +44,7 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
     <IncludePaths>$(ProjectDir)..\XSharp.VFP%3b$(ProjectDir)\Headers</IncludePaths>
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

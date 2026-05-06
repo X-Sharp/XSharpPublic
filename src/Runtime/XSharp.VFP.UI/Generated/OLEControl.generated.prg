@@ -8,6 +8,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS OLEControl  IMPLEMENTS IVFPList, IVFPOwner, IVFPGraphics
 #include "VFPList.xh"
 #include "VFPContainer.xh"
+#include "VFPPropertiesDynamic.xh"
 #include "VFPItems.xh"
 
 		PROPERTY AutoHideScrollBar AS LONG AUTO

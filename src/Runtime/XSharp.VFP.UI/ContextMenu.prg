@@ -18,7 +18,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// Action methods live on a subclass — vfpClick dispatch finds them via
 	/// Bar.Owner (which is this ContextMenu instance directly).
 	/// </summary>
-	PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
+PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
+
 
 		PRIVATE _bars AS List<Bar>
 

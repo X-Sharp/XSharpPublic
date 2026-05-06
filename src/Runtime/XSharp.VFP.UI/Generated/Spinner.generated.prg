@@ -4,22 +4,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Spinner  IMPLEMENTS IVFPControl, IVFPText, IVFPEditable
         #include "VFPControl.xh"
 
-        [System.ComponentModel.DefaultValue(0)];
-        PROPERTY BorderColor AS LONG AUTO
+        PROPERTY BorderColor AS System.Drawing.Color AUTO
 
-        [System.ComponentModel.DefaultValue(0)];
-            PROPERTY DisabledBackColor AS LONG AUTO
+        PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
-        [System.ComponentModel.DefaultValue(0)];
-		PROPERTY DisabledForeColor AS LONG AUTO
+        PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 		PROPERTY NullDisplay AS String AUTO
         PROPERTY OLEDropTextInsertion AS LONG AUTO
 
-        [System.ComponentModel.DefaultValue(0)];
-            PROPERTY SelectedBackColor AS LONG AUTO
+        PROPERTY SelectedBackColor AS System.Drawing.Color AUTO
 
-        [System.ComponentModel.DefaultValue(0)];
-		PROPERTY SelectedForeColor AS LONG AUTO
+        PROPERTY SelectedForeColor AS System.Drawing.Color AUTO
 		PROPERTY SelectOnEntry AS LOGIC AUTO
 			//SELF:Focus()
 

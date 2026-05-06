@@ -17,17 +17,20 @@ BEGIN NAMESPACE VFPXPorterLib
 	/// Provide several methods to convert some VFP code to XSharp
 	/// </summary>
 	CLASS CodeConverter
-		
+
 		PRIVATE _keepOriginal AS LOGIC
 		PRIVATE _convertThisParent AS LOGIC
 		PRIVATE _convertThisObject AS LOGIC
 		PRIVATE _convertStatement AS LOGIC
 		PRIVATE _convertStatementOnlyIfLast AS LOGIC
 		PRIVATE _lineContent AS SortedDictionary<INT,STRING>
+
 			
 		PROPERTY Statements AS List<STRING> AUTO
-			
+
 		PROPERTY VFPElements AS Dictionary<STRING,STRING> AUTO
+
+		PROPERTY ColorProperties AS List<STRING> AUTO
 			
 			
 		CONSTRUCTOR( ko AS LOGIC, cvtThisParent AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC )
@@ -41,6 +44,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			SELF:_lineContent := SortedDictionary<INT,STRING>{ ReverseInt{} }
 			SELF:Statements := List<String>{}
 			SELF:VFPElements := Dictionary<STRING,STRING>{}
+			SELF:ColorProperties := List<STRING>{}
 			
 			// The lines of source code that will handle that Code
 		PROPERTY Source AS List<STRING> AUTO
@@ -67,6 +71,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
+			SELF:ChangeColorProperties()
 			// Convert ThisObject has priority over ThisParent
 			IF SELF:_convertThisObject
 				IF cdeBlock:Owner != NULL
@@ -94,6 +99,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
+			SELF:ChangeColorProperties()
 
 		// Converts a block of menu handler code: applies statement→method-call conversions
 		// and VFPElements substitutions (THISFORM./THISFORMSET.) without the form-perspective
@@ -103,6 +109,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
+			SELF:ChangeColorProperties()
 			IF SELF:_convertThisObject
 				SELF:ChangeThisObject()
 			ENDIF
@@ -383,6 +390,148 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:Source:Insert( 0, "PROCEDURE " + procedureName )
 			ENDIF
 			
+		// Returns the index of the first && comment that is not inside a string literal,
+		// starting search at startPos. Returns -1 if none found.
+		PRIVATE METHOD FindComment( line AS STRING, startPos AS INT ) AS INT
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL i AS INT
+			i := startPos
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar == (CHAR)0
+					IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+						quoteChar := IIF( c == '[', ']', c )
+					ELSEIF c == '&' .AND. i + 1 < line:Length .AND. line[i+1] == '&'
+						RETURN i
+					ENDIF
+				ELSEIF c == quoteChar
+					quoteChar := (CHAR)0
+				ENDIF
+				i++
+			ENDDO
+			RETURN -1
+
+		// Scans the line for a pattern: .<colorPropName><spaces>=<not=> outside strings/comments.
+		// Returns the index of the first character of the RHS expression (after the =), or -1.
+		// Also returns the index of the dot via dotPos.
+		PRIVATE METHOD FindColorAssignment( line AS STRING, dotPos REF INT ) AS INT
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL amp := FALSE AS LOGIC
+			LOCAL i AS INT
+			i := 0
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				// track string literals
+				IF quoteChar == (CHAR)0
+					IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+						quoteChar := IIF( c == '[', ']', c )
+						i++ ; LOOP
+					ENDIF
+				ELSE
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++ ; LOOP
+				ENDIF
+				// track comments
+				IF c == '&'
+					IF amp
+						RETURN -1   // rest of line is comment
+					ENDIF
+					amp := TRUE
+					i++ ; LOOP
+				ELSE
+					amp := FALSE
+				ENDIF
+				// look for dot
+				IF c != '.'
+					i++ ; LOOP
+				ENDIF
+				// found a dot — check if followed by a known color property
+				LOCAL propStart := i + 1 AS INT
+				LOCAL matched := "" AS STRING
+				FOREACH prop AS STRING IN SELF:ColorProperties
+					LOCAL propEnd := propStart + prop:Length AS INT
+					IF propEnd <= line:Length
+						LOCAL candidate := line:Substring( propStart, prop:Length ):ToLower() AS STRING
+						IF candidate == prop:ToLower()
+							// make sure it's not part of a longer identifier
+							IF propEnd < line:Length
+								LOCAL next := line[propEnd] AS CHAR
+								IF Char.IsLetterOrDigit(next) .OR. next == '_'
+									LOOP
+								ENDIF
+							ENDIF
+							matched := prop
+							EXIT
+						ENDIF
+					ENDIF
+				NEXT
+				IF String.IsNullOrEmpty(matched)
+					i++ ; LOOP
+				ENDIF
+				// found the property — skip spaces, expect = but not ==
+				LOCAL eqIdx := propStart + matched:Length AS INT
+				DO WHILE eqIdx < line:Length .AND. line[eqIdx] == ' '
+					eqIdx++
+				ENDDO
+				IF eqIdx >= line:Length .OR. line[eqIdx] != '='
+					i++ ; LOOP
+				ENDIF
+				IF eqIdx + 1 < line:Length .AND. line[eqIdx+1] == '='
+					i++ ; LOOP   // == comparison, not assignment
+				ENDIF
+				// also skip if RHS already starts with VFPTools.ColorFromVFP
+				LOCAL rhsStart := eqIdx + 1 AS INT
+				DO WHILE rhsStart < line:Length .AND. line[rhsStart] == ' '
+					rhsStart++
+				ENDDO
+				IF rhsStart < line:Length
+					LOCAL remaining := line:Substring(rhsStart) AS STRING
+					IF remaining:ToLower():StartsWith("vfptools.colorFromvfp(")
+						RETURN -1
+					ENDIF
+				ENDIF
+				dotPos := i
+				RETURN rhsStart
+				i++
+			ENDDO
+			RETURN -1
+
+		// Converts assignments to color properties in the current Source lines:
+		//   obj.BackColor = expr  →  obj.BackColor = VFPTools.ColorFromVFP(expr)
+		PRIVATE METHOD ChangeColorProperties() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				LOCAL line := SELF:Source[i] AS STRING
+				// skip empty lines and full-line comments
+				LOCAL trimmed := line:TrimStart() AS STRING
+				IF String.IsNullOrEmpty(trimmed) .OR. trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&")
+					LOOP
+				ENDIF
+				LOCAL dotPos := 0 AS INT
+				LOCAL rhsStart := SELF:FindColorAssignment(line, REF dotPos) AS INT
+				IF rhsStart < 0
+					LOOP
+				ENDIF
+				// separate RHS expression from trailing comment
+				LOCAL commentIdx := SELF:FindComment(line, rhsStart) AS INT
+				LOCAL rhs AS STRING
+				LOCAL comment AS STRING
+				IF commentIdx >= 0
+					rhs     := line:Substring(rhsStart, commentIdx - rhsStart):TrimEnd()
+					comment := " " + line:Substring(commentIdx)
+				ELSE
+					rhs     := line:Substring(rhsStart):TrimEnd()
+					comment := String.Empty
+				ENDIF
+				IF String.IsNullOrWhiteSpace(rhs)
+					LOOP
+				ENDIF
+				// rebuild: prefix + VFPTools.ColorFromVFP(rhs) + comment
+				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
+				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP(" + rhs + ")" + comment
+			NEXT
+
 		METHOD ToString() AS STRING
 			VAR code := StringBuilder{ }
 			//code:AppendLine( SELF:Definition )

@@ -370,9 +370,12 @@ BEGIN NAMESPACE VFPXPorterLib
                                     LOCAL sttmnts AS List<STRING>
                                     // Todo Use a Extension Method, in order to centralize
                                     sttmnts := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.StatementsFile) )
+                                    LOCAL colorProps AS List<STRING>
+                                    colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
                                     // Now, copy
                                     VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast }
                                     converter:Statements := sttmnts
+                                    converter:ColorProperties := colorProps
                                     converter:ProcessProcedure( File.ReadAllText(orgFile), Path.GetFileNameWithoutExtension( orgFile ) )
                                     File.WriteAllText( destFile, converter:ToString() )
                                     //File.Copy(orgFile, destFile, TRUE )

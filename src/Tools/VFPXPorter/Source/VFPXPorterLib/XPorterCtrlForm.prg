@@ -210,6 +210,8 @@ BEGIN NAMESPACE VFPXPorterLib
             sttmnts := JsonConvert.DeserializeObject<List<STRING>>( SELF:Statements )
             LOCAL vfpElts AS Dictionary<STRING,STRING>
             vfpElts := JsonConvert.DeserializeObject<Dictionary<STRING,STRING>>( SELF:VFPElements )
+            LOCAL colorProps AS List<STRING>
+            colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
             //
             LOCAL items AS List<BaseItem>
             items := List<BaseItem>{}
@@ -224,13 +226,13 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF SELF:Canceled
                         EXIT
                     ENDIF
-                    SELF:ConvertHandlerCode( subItem, typeList, eventList, sttmnts, vfpElts,TRUE )
+                    SELF:ConvertHandlerCode( subItem, typeList, eventList, sttmnts, vfpElts, colorProps, TRUE )
                 NEXT
                 IF SELF:Canceled
                     EXIT
                 ENDIF
                 // Don't forget to process the Item itself
-                SELF:ConvertHandlerCode( item, typeList, eventList, sttmnts, vfpElts,FALSE )
+                SELF:ConvertHandlerCode( item, typeList, eventList, sttmnts, vfpElts, colorProps, FALSE )
             NEXT
             RETURN !SELF:Canceled
 
@@ -243,7 +245,7 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <param name="typeList"></param>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        PROTECTED METHOD ConvertHandlerCode( subItem AS SCXVCXItem, typeList AS Dictionary<STRING,STRING[]>, eventList AS Dictionary<STRING, Dictionary<STRING,STRING[]>>, sttmnt AS List<STRING>, vfpElt AS Dictionary<STRING,STRING>, isChild AS LOGIC ) AS VOID
+        PROTECTED METHOD ConvertHandlerCode( subItem AS SCXVCXItem, typeList AS Dictionary<STRING,STRING[]>, eventList AS Dictionary<STRING, Dictionary<STRING,STRING[]>>, sttmnt AS List<STRING>, vfpElt AS Dictionary<STRING,STRING>, colorProps AS List<STRING>, isChild AS LOGIC ) AS VOID
             subItem:ConvertClassName( typeList )
             // Extract the code, and split it to Events
             subItem:XPortedCode := ItemCode{ subItem, isChild }
@@ -252,7 +254,7 @@ BEGIN NAMESPACE VFPXPorterLib
             // Use the Rendering ClassName in order to get the Events name
             evtRules := SELF:BuildEventRules( eventList, subItem:BaseClassName )
             // Apply Rules and Create EventHandlers
-            subItem:ConvertEvents( evtRules, sttmnt, vfpElt, SELF:Settings )
+            subItem:ConvertEvents( evtRules, sttmnt, vfpElt, colorProps, SELF:Settings )
             //
             SELF:UpdateProgress()
             RETURN

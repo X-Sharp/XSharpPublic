@@ -76,6 +76,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				frm:MainMenuStrip := SELF
 				SELF:_theForm := frm
 			ENDIF
+			IF oForm IS MainWindow VAR mw
+				mw:ActiveMenu := SELF
+			ENDIF
 
 		// ── Deactivate ────────────────────────────────────────────────────────
 		// Detaches from the hosting form without destroying the object.
@@ -87,6 +90,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				frm:Controls:Remove( SELF )
 			ENDIF
 			SELF:_theForm := NULL_OBJECT
+			IF MainWindow.Current != NULL_OBJECT .AND. MainWindow.Current:ActiveMenu == SELF
+				MainWindow.Current:ActiveMenu := NULL_OBJECT
+			ENDIF
 
 		// ── Release ───────────────────────────────────────────────────────────
 		METHOD Release() AS USUAL CLIPPER

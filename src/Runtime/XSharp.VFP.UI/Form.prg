@@ -244,6 +244,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROTECTED OVERRIDE METHOD OnLoad(e AS System.EventArgs) AS VOID
 			SUPER:OnLoad(e)
+			MainWindow.Current?:RegisterForm(SELF)
 			SELF:Load()
 
 		PRIVATE METHOD OnVFPLoadCall( sender AS OBJECT, e AS System.EventArgs) AS VOID

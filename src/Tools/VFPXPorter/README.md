@@ -23,7 +23,10 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
 5. Added User-Defined elements in export : Fields, Field-Arrays, Methods
     - Help/Documentation is also added at export time
 6. Export Menu definitions
-    - Menu Event are exported in Menu code (Needs to be tested, I'm looking for samples here)
+    - Menu definition (MNX) is exported as a class inheriting `XSharp.VFP.UI.Menu`
+    - Pads, Popups and Bars are created via `AddPad` / `AddPopup` / `AddBar` calls in `Init()`
+    - Each bar action is emitted as a `METHOD` with converted handler code (statement conversion + THISFORM/THISFORMSET substitution)
+    - A companion `.MPR` class is generated to keep the `DO <menu>.MPR` convention
 7. First Report reading and Backup
     - No real export by now (Maybe export to ReportPro ??)
 

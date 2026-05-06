@@ -17,3 +17,4 @@ METHOD SetBinding( sender AS System.Windows.Forms.Control, bindingInfo AS STRING
 		SELF:BindingDefinition := System.Collections.Generic.Dictionary<System.Windows.Forms.Control,STRING>{}
 	ENDIF
 	SELF:BindingDefinition:Add( sender, bindingInfo )
+

@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PUBLIC PROPERTY Index AS INT AUTO
         
         /// <summary>
-        /// Type of position: "digit", "letter", "alphanumeric", "literal", "modifier"
+        /// Type of position: "digit", "letter", "alphanumeric", "literal", "modifier", "decimal", "hex", "logical"
         /// </summary>
         PUBLIC PROPERTY Type AS STRING AUTO
         
@@ -21,6 +21,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// Literal character value (if Type == "literal")
         /// </summary>
         PUBLIC PROPERTY Literal AS STRING AUTO
+        
+        /// <summary>
+        /// The original mask character that defined this position (e.g., 'a', 'x', 'A', 'X', '9', '#').
+        /// Used to distinguish required vs. optional variants and case intent.
+        /// </summary>
+        PUBLIC PROPERTY OriginalChar AS CHAR AUTO
         
         /// <summary>
         /// Whether this position is required (must be filled)

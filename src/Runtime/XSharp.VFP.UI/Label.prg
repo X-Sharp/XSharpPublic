@@ -1,4 +1,4 @@
-// Label.prg
+﻿// Label.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -6,156 +6,118 @@
 
 USING System
 USING System.Collections.Generic
+USING System.Text
 USING System.Windows.Forms
 USING System.Drawing
 USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
+	/// <summary>
+	/// The VFP compatible Label class.
+	/// </summary>
+	PARTIAL CLASS Label INHERIT System.Windows.Forms.Label
 
-    /// <summary>
-    /// VFP Label Control - Static text display
-    /// Maps VFP Label properties and methods to WinForms Label
-    ///
-    /// Implements: IVFPObject, IVFPControl
-    /// Includes: VFPObject.xh, VFPProperties.xh, TextControlProperties.xh, FontProperties.xh
-    ///
-    /// Base Class: System.Windows.Forms.Label
-    /// </summary>
-    PARTIAL CLASS Label INHERIT System.Windows.Forms.Label IMPLEMENTS IVFPObject, IVFPControl
+		// Common properties that all VFP Objects support
+		#include "Headers/VFPObject.xh"
 
-        // ============================================================================
-        // Include VFPObject base implementation (IVFPObject, IVFPHelp)
-        // ============================================================================
-        #include "Headers/VFPObject.xh"
+	    #include "VFPProperties.xh"
 
-        // ============================================================================
-        // Include shared VFP property constants/helpers (VFPAlignmentConvert etc.)
-        // ============================================================================
-        #include "XSharp/VFPProperties.xh"
+		PROPERTY Alignment AS INT
+			GET
+				RETURN VFPAlignmentConvert( SELF:TextAlign )
+			END GET
+			SET
+				SELF:TextAlign := VFPAlignmentConvert(VALUE)
+			END SET
+		END PROPERTY
 
-        // ============================================================================
-        // PRIVATE FIELDS
-        // ============================================================================
+		// VFP Style: 0=Standard (opaque background), 1=Transparent.
+		// Mirrors BackStyle — setting Style also sets BackStyle.
+		PRIVATE _style AS INT
+		PROPERTY Style AS INT
+			GET
+				RETURN _style
+			END GET
+			SET
+				_style := VALUE
+				IF VALUE == 1
+					SELF:BackColor := System.Drawing.Color.Transparent
+				ELSE
+					SELF:ResetBackColor()
+				ENDIF
+			END SET
+		END PROPERTY
 
-        PRIVATE _dragMode AS INT
-        PRIVATE _dragIcon AS STRING
-        PRIVATE _baseClass AS STRING
-        PRIVATE _class AS STRING
-        PRIVATE _classLibrary AS STRING
-        PRIVATE _comment AS STRING
-        PRIVATE _helpContextID AS LONG
-        PRIVATE _whatsThisHelpID AS LONG
+		PROPERTY Rotation AS INT AUTO
 
-        // ============================================================================
-        // PROPERTIES
-        // ============================================================================
-
-        /// <summary>Alignment - Text alignment using VFP convention</summary>
-        PROPERTY Alignment AS INT
-            GET
-                RETURN VFPAlignmentConvert(SELF:TextAlign)
-            END GET
-            SET
-                SELF:TextAlign := VFPAlignmentConvert(VALUE)
-            END SET
-        END PROPERTY
-
-        /// <summary>Style - VFP label style (placeholder)</summary>
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
-        PROPERTY Style AS INT AUTO
-
-        /// <summary>Rotation - Text rotation in degrees</summary>
-        PROPERTY Rotation AS INT AUTO
-
-        /// <summary>DisabledBackColor - Background color when disabled</summary>
-        [System.ComponentModel.DefaultValue(0)];
+		[System.ComponentModel.DefaultValue(0)];
         PROPERTY DisabledBackColor AS LONG AUTO
 
-        /// <summary>DisabledForeColor - Foreground color when disabled</summary>
         [System.ComponentModel.DefaultValue(0)];
         PROPERTY DisabledForeColor AS LONG AUTO
 
-        /// <summary>WordWrap - Whether caption word-wraps</summary>
-        PROPERTY WordWrap AS LOGIC AUTO
+		// WordWrap: .T. = fixed-size label, text wraps within bounds (AutoSize=.F.)
+		//           .F. = label auto-sizes to single line (AutoSize=.T.)
+		PROPERTY WordWrap AS LOGIC
+			GET
+				RETURN SELF:_wordWrap
+			END GET
+			SET
+				SELF:_wordWrap := VALUE
+				IF VALUE
+					SELF:AutoSize := FALSE
+				ELSE
+					SELF:AutoSize := TRUE
+				ENDIF
+			END SET
+		END PROPERTY
+		PRIVATE _wordWrap AS LOGIC
 
-        // ============================================================================
-        // IVFPControl Implementation
-        // ============================================================================
+		CONSTRUCTOR(  ) STRICT
+			SUPER()
+			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, TRUE)
+			SELF:BackColor := Color.Transparent
 
-        [Category("VFP Behavior")];
-        [Description("Drag icon path")];
-        [DefaultValue("")];
-        PROPERTY DragIcon AS STRING
-            GET
-                RETURN SELF:_dragIcon
-            END GET
-            SET
-                SELF:_dragIcon := VALUE
-            END SET
-        END PROPERTY
-
-        [Category("VFP Behavior")];
-        [Description("Drag mode (0=manual, 1=automatic)")];
-        [DefaultValue(0)];
-        PROPERTY DragMode AS LONG
-            GET
-                RETURN SELF:_dragMode
-            END GET
-            SET
-                SELF:_dragMode := VALUE
-            END SET
-        END PROPERTY
-
-        PUBLIC METHOD Drag(nAction) AS USUAL CLIPPER
-            RETURN NIL
-        END METHOD
-
-        PUBLIC METHOD SetFocus() AS VOID STRICT
-            SELF:Focus()
-        END METHOD
-
-        // ============================================================================
-        // EVENT HANDLERS
-        // ============================================================================
-
-        /// <summary>Custom paint to support Rotation property</summary>
-        PROTECTED OVERRIDE METHOD OnPaint(e AS PaintEventArgs) AS VOID STRICT
+        PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID STRICT
             IF SELF:Rotation != 0
-                VAR b := SolidBrush{SELF:ForeColor}
-                e:Graphics:TranslateTransform(SELF:Width, SELF:Height / 2)
-                e:Graphics:RotateTransform(SELF:Rotation)
-                e:Graphics:DrawString(SELF:Text, SELF:Font, b, PointF{0, 0})
+                // Fill background first (respects BackStyle/BackColor)
+                IF SELF:BackColor != Color.Transparent
+                    e:Graphics:Clear( SELF:BackColor )
+                ENDIF
+                VAR b := SolidBrush{ SELF:ForeColor }
+                VAR sf := StringFormat{ StringFormatFlags.NoClip }
+                sf:Alignment     := StringAlignment.Center
+                sf:LineAlignment := StringAlignment.Center
+                // Translate to the center of the control, rotate, then draw at origin
+                e:Graphics:TranslateTransform( (REAL4)(SELF:Width / 2), (REAL4)(SELF:Height / 2) )
+                e:Graphics:RotateTransform( SELF:Rotation )
+                VAR sz := e:Graphics:MeasureString( SELF:Text, SELF:Font )
+                e:Graphics:DrawString( SELF:Text, SELF:Font, b, RectangleF{ -sz:Width/2, -sz:Height/2, sz:Width, sz:Height }, sf )
+            ELSE
+                SUPER:OnPaint( e )
             ENDIF
-            SUPER:OnPaint(e)
-        END METHOD
 
-        // ============================================================================
-        // Include text control VFP event wiring
-        // ============================================================================
-        #include "Headers/TextControlProperties.xh"
+		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
 
-        // ============================================================================
-        // Include font properties
-        // ============================================================================
-        #include "Headers/FontProperties.xh"
+		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
+			SUPER:OnEnabledChanged(e)
+			IF !SELF:Enabled
+				IF SELF:DisabledBackColor != 0
+					SELF:BackColor := VFPTools.ColorFromVFP(SELF:DisabledBackColor)
+				ENDIF
+				IF SELF:DisabledForeColor != 0
+					SELF:ForeColor := VFPTools.ColorFromVFP(SELF:DisabledForeColor)
+				ENDIF
+			ELSE
+				SELF:ResetBackColor()
+				SELF:ResetForeColor()
+			ENDIF
+		END METHOD
 
-        // ============================================================================
-        // CONSTRUCTOR
-        // ============================================================================
+		#include "TextControlProperties.xh"
 
-        CONSTRUCTOR() STRICT
-            SUPER()
-            SELF:SetStyle(ControlStyles.SupportsTransparentBackColor, TRUE)
-            SELF:BackColor := Color.Transparent
-            SELF:_dragMode := 0
-            SELF:_dragIcon := ""
-            SELF:_baseClass := "Label"
-            SELF:_class := "Label"
-            SELF:_classLibrary := ""
-            SELF:_comment := ""
-            SELF:_helpContextID := 0
-            SELF:_whatsThisHelpID := 0
+		#include "FontProperties.xh"
 
-    END CLASS
+	END CLASS
 
 END NAMESPACE

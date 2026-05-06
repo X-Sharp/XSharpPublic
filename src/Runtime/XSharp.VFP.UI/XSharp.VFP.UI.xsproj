@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.Targets" />
   <PropertyGroup>
     <ProjectGuid>7e2cbef6-9945-42c4-a7df-f9b8e2e68d44</ProjectGuid>
     <RootNamespace>XSharp.VFP.UI</RootNamespace>
     <AssemblyName>XSharp.VFP.UI</AssemblyName>
     <Name>XSharp.VFP.UI</Name>
     <Dialect>FoxPro</Dialect>
+    <OutputType>Library</OutputType>
     <OutputName>XSharp.VFP.UI</OutputName>
     <na>false</na>
     <az>false</az>
@@ -69,14 +69,36 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="XSharp.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>C:\Program Files (x86)\XSharp\Assemblies\XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Data</Name>
+      <AssemblyName>XSharp.Data.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>C:\Program Files (x86)\XSharp\Assemblies\XSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>C:\Program Files (x86)\XSharp\Assemblies\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VFP, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VFP</Name>
+      <AssemblyName>XSharp.VFP.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>C:\Program Files (x86)\XSharp\Assemblies\XSharp.VFP.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>Properties\constants.prg</Link>
-    </Compile>
     <Compile Include="AEventsDefinition.prg" />
     <Compile Include="AssertDialog.designer.prg">
       <DependentUpon>AssertDialog.prg</DependentUpon>
@@ -85,6 +107,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AutoCloseMessageBox.prg" />
+    <Compile Include="Generated\Bar.generated.prg" />
+    <Compile Include="Generated\ContextMenu.generated.prg" />
     <Compile Include="Generated\CheckBox.generated.prg" />
     <Compile Include="Generated\_Interfaces.prg" />
     <Compile Include="Generated\Column.generated.prg" />
@@ -98,12 +122,15 @@
     <Compile Include="Generated\FormSet.generated.prg" />
     <Compile Include="Generated\Image.generated.prg" />
     <Compile Include="Generated\Label.generated.prg" />
+    <Compile Include="Generated\Menu.generated.prg" />
     <Compile Include="Generated\Line.generated.prg" />
     <Compile Include="Generated\ListBox.generated.prg" />
     <Compile Include="Generated\OLEControl.generated.prg" />
     <Compile Include="Generated\OptionButton.generated.prg" />
     <Compile Include="Generated\OptionGroup.generated.prg" />
+    <Compile Include="Generated\Pad.generated.prg" />
     <Compile Include="Generated\Page.generated.prg" />
+    <Compile Include="Generated\Popup.generated.prg" />
     <Compile Include="Generated\PageFrame.generated.prg" />
     <Compile Include="Generated\ProjectHook.generated.prg" />
     <Compile Include="Generated\Relation.generated.prg" />
@@ -117,6 +144,8 @@
     <Compile Include="Generated\XMLAdapter.generated.prg" />
     <Compile Include="Generated\XMLField.generated.prg" />
     <Compile Include="Generated\XMLTable.generated.prg" />
+    <Compile Include="Bar.prg" />
+    <Compile Include="ContextMenu.prg" />
     <Compile Include="MaskProvider.prg" />
     <Compile Include="Application.prg" />
     <Compile Include="Checkbox.prg" />
@@ -154,6 +183,15 @@
     </Compile>
     <Compile Include="Tools.prg" />
     <Compile Include="CommandButton.prg" />
+    <Compile Include="PageFrame.prg" />
+    <Compile Include="Page.prg" />
+    <Compile Include="Line.prg" />
+    <Compile Include="Shape.prg" />
+    <Compile Include="Menu.prg" />
+    <Compile Include="Pad.prg" />
+    <Compile Include="Popup.prg" />
+    <Compile Include="Separator.prg" />
+    <Compile Include="ToolBar.prg" />
     <Compile Include="Cursor.prg" />
     <Compile Include="DataEnvironment.prg" />
     <Compile Include="Form.prg">
@@ -168,11 +206,17 @@
     <Compile Include="VFPTools.prg" />
     <Compile Include="VfpUIProvider.prg" />
     <Compile Include="Win32UI.prg" />
-    <Compile Include="_OtherClasses.prg" />
+    <Compile Include="InputMask\InputMaskHandler.prg" />
+    <Compile Include="InputMask\InputMaskFormatter.prg" />
+    <Compile Include="InputMask\InputMaskValidator.prg" />
+    <Compile Include="InputMask\InputMaskPattern.prg" />
+    <Compile Include="InputMask\MaskPosition.prg" />
+    <Compile Include="Generated\EditBox.generated.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Headers" />
     <Folder Include="Generated\" />
+    <Folder Include="InputMask\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -206,28 +250,6 @@
     <None Include="Properties\XSharp.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj">
-      <Name>XSharp.Data</Name>
-      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -241,7 +263,8 @@
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
@@ -259,5 +282,4 @@
     <WarningsAsErrors />
     <DefineConstants>TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
   </PropertyGroup>
-  <Import Project="..\XmlDoc.Targets" />
 </Project>

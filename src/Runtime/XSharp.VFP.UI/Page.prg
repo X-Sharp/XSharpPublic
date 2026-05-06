@@ -1,174 +1,147 @@
+// Page.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 USING System
-USING System.ComponentModel
 USING System.Windows.Forms
+USING System.Drawing
+USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
-/// <summary>
-/// Page control - Embedded tab page within a PageFrame
-/// Inherits from TabPage to provide VFP-style page properties
-/// Used as a container for controls within a multi-tab interface
-/// See Also: PageFrame for the parent TabControl
-/// </summary>
-PUBLIC CLASS Page INHERIT System.Windows.Forms.TabPage IMPLEMENTS IVFPObject, IVFPOwner
-
-	#include "Headers/VFPContainer.xh"
-	
-	// ============================================================================
-	// Include VFPObject base implementation (IVFPObject, IVFPHelp)
-	// ============================================================================
-	#include "Headers/VFPObject.xh"
-
-	PRIVATE _pageIndex AS INT32
-	PRIVATE _caption AS STRING
-	PRIVATE _enabled AS LOGIC
-	PRIVATE _baseClass AS STRING
-	PRIVATE _class AS STRING
-	PRIVATE _classLibrary AS STRING
-	PRIVATE _comment AS STRING
-	PRIVATE _helpContextID AS LONG
-	PRIVATE _whatsThisHelpID AS LONG
-
 	/// <summary>
-	/// Gets or sets the caption of the page
+	/// The VFP compatible Page class.
+	/// Maps to System.Windows.Forms.TabPage.
 	/// </summary>
-	PUBLIC PROPERTY Caption AS STRING
-		GET
-			RETURN SELF:_caption
-		END GET
-		SET
-			SELF:_caption := VALUE
-			SELF:Text := VALUE
-		END SET
-	END PROPERTY
+	PARTIAL CLASS Page INHERIT System.Windows.Forms.TabPage
 
-	/// <summary>
-	/// Gets or sets the page index (0-based)
-	/// </summary>
-	PUBLIC PROPERTY PageIndex AS INT32
-		GET
-			RETURN SELF:_pageIndex
-		END GET
-		SET
-			SELF:_pageIndex := VALUE
-		END SET
-	END PROPERTY
+		// Note: VFPObject.xh and VFPProperties.xh are included by Page.generated.prg
+		// (via VFPControl.xh + VFPContainer.xh) — do not include again here.
 
-	/// <summary>
-	/// Gets or sets whether the page is enabled
-	/// </summary>
-	PUBLIC PROPERTY PageEnabled AS LOGIC
-		GET
-			RETURN SELF:_enabled
-		END GET
-		SET
-			SELF:_enabled := VALUE
-			SELF:Enabled := VALUE
-		END SET
-	END PROPERTY
+		#include "ControlProperties.xh"
 
-	/// <summary>
-	/// Gets the controls collection for this page
-	/// </summary>
-	PUBLIC PROPERTY PageControls AS Control.ControlCollection
-		GET
-			RETURN SELF:Controls
-		END GET
-	END PROPERTY
+		#include "FontProperties.xh"
 
-	/// <summary>
-	/// Constructor - initializes the Page with defaults
-	/// </summary>
-	PUBLIC CONSTRUCTOR()
-		SUPER()
-		SELF:_pageIndex := 0
-		SELF:_caption := "Page"
-		SELF:_enabled := TRUE
-		SELF:_baseClass := "Page"
-		SELF:_class := "Page"
-		SELF:_classLibrary := ""
-		SELF:_comment := ""
-		SELF:_helpContextID := 0
-		SELF:_whatsThisHelpID := 0
-		SELF:Text := SELF:_caption
-		SELF:BackColor := System.Drawing.SystemColors.Control
-		SELF:Enabled := TRUE
-		SELF:AutoScroll := TRUE
-	END CONSTRUCTOR
+		CONSTRUCTOR() STRICT
+			SUPER()
+			SELF:Size := Size{290, 170}
 
-	/// <summary>
-	/// Constructor with caption parameter
-	/// </summary>
-	PUBLIC CONSTRUCTOR(cCaption AS STRING)
-		SELF:Constructor()
-		SELF:Caption := cCaption
-	END CONSTRUCTOR
+		// ── Caption ───────────────────────────────────────────────────────────
+		// VFP Caption is the tab label text; maps to TabPage.Text.
+		// ControlProperties.xh already maps Caption -> Text via the base include,
+		// but TabPage uses Text as the tab header — no override needed.
 
+		// ── PageOrder ─────────────────────────────────────────────────────────
+		// Returns/sets the 1-based position of this page within its parent PageFrame.
+		PROPERTY PageOrder AS USUAL
+			GET
+				VAR parent := SELF:Parent ASTYPE System.Windows.Forms.TabControl
+				IF parent != NULL_OBJECT
+					RETURN parent:TabPages:IndexOf(SELF) + 1
+				ENDIF
+				RETURN 1
+			END GET
+			SET
+				VAR parent := SELF:Parent ASTYPE System.Windows.Forms.TabControl
+				IF parent == NULL_OBJECT
+					RETURN
+				ENDIF
+				VAR targetIdx := (INT) VALUE - 1
+				VAR currentIdx := parent:TabPages:IndexOf(SELF)
+				IF targetIdx == currentIdx .OR. targetIdx < 0 .OR. targetIdx >= parent:TabPages:Count
+					RETURN
+				ENDIF
+				// WinForms TabControl does not support direct reordering;
+				// simulate by remove + re-insert.
+				parent:TabPages:Remove(SELF)
+				parent:TabPages:Insert(targetIdx, SELF)
+			END SET
+		END PROPERTY
 
+		// ── Picture ───────────────────────────────────────────────────────────
+		// VFP Picture sets a background image on the page.
+		PRIVATE _picture AS STRING
+		PROPERTY Picture AS STRING
+			GET
+				RETURN SELF:_picture
+			END GET
+			SET
+				SELF:_picture := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					SELF:BackgroundImage := VFPTools.ImageFromFile(VALUE)
+					SELF:BackgroundImageLayout := ImageLayout.Stretch
+				ELSE
+					SELF:BackgroundImage := NULL_OBJECT
+				ENDIF
+			END SET
+		END PROPERTY
 
-	/// <summary>
-	/// Constructor with caption and index parameters
-	/// </summary>
-	PUBLIC CONSTRUCTOR(cCaption AS STRING, nIndex AS INT32)
-		SELF:Constructor(cCaption)
-		SELF:PageIndex := nIndex
-	END CONSTRUCTOR
+		// ── Activate / Deactivate events ──────────────────────────────────────
+		// Fired by the parent PageFrame when this page is selected/deselected.
+		PRIVATE _VFPActivate   AS VFPOverride
+		PRIVATE _VFPDeactivate AS VFPOverride
 
-	/// <summary>
-	/// Initializes the page with complete properties
-	/// </summary>
-	PUBLIC METHOD Initialize(cCaption AS STRING, nIndex AS INT32, lEnabled AS LOGIC) AS VOID
-		SELF:Caption := cCaption
-		SELF:PageIndex := nIndex
-		SELF:PageEnabled := lEnabled
-	END METHOD
+		[System.ComponentModel.Category("VFP Events")];
+		[System.ComponentModel.DefaultValue(NULL)];
+		PROPERTY vfpActivate AS STRING
+			GET
+				RETURN SELF:_VFPActivate?:SendTo
+			END GET
+			SET
+				SELF:_VFPActivate := VFPOverride{ SELF, VALUE }
+			END SET
+		END PROPERTY
 
-	/// <summary>
-	/// Activates this page (makes it the active tab)
-	/// </summary>
-	PUBLIC METHOD Activate() AS VOID
-		IF SELF:Parent != NULL .AND. SELF:Parent IS TabControl
-			VAR tc := (TabControl)SELF:Parent
-			IF tc:TabPages:Contains(SELF)
-				tc:SelectedTab := SELF
+		[System.ComponentModel.Category("VFP Events")];
+		[System.ComponentModel.DefaultValue(NULL)];
+		PROPERTY vfpDeactivate AS STRING
+			GET
+				RETURN SELF:_VFPDeactivate?:SendTo
+			END GET
+			SET
+				SELF:_VFPDeactivate := VFPOverride{ SELF, VALUE }
+			END SET
+		END PROPERTY
+
+		METHOD FireActivate() AS VOID STRICT
+			IF SELF:_VFPActivate != NULL
+				SELF:_VFPActivate:Call()
 			ENDIF
-		ENDIF
-	END METHOD
 
-	/// <summary>
-	/// Clears all controls from this page
-	/// </summary>
-	PUBLIC METHOD ClearControls() AS VOID
-		LOCAL i AS INT32
-		FOR i := SELF:Controls:Count - 1 DOWNTO 0
-			SELF:Controls[i]:Dispose()
-		NEXT
-		SELF:Controls:Clear()
-	END METHOD
-
-	/// <summary>
-	/// Gets a control from the page by name
-	/// </summary>
-	PUBLIC METHOD GetControl(cControlName AS STRING) AS Control
-		FOREACH ctrl AS Control IN SELF:Controls
-			IF ctrl:Name == cControlName
-				RETURN ctrl
+		METHOD FireDeactivate() AS VOID STRICT
+			IF SELF:_VFPDeactivate != NULL
+				SELF:_VFPDeactivate:Call()
 			ENDIF
-		NEXT
-		RETURN NULL
-	END METHOD
 
-	/// <summary>
-	/// Resets page to default appearance
-	/// </summary>
-	PUBLIC METHOD Reset() AS VOID
-		SELF:ClearControls()
-		SELF:Caption := "Page"
-		SELF:PageIndex := 0
-		SELF:PageEnabled := TRUE
-		SELF:BackColor := System.Drawing.SystemColors.Control
-	END METHOD
+		// ── BackStyle ─────────────────────────────────────────────────────────
+		PRIVATE _backStyle := 1 AS INT
+		PROPERTY BackStyle AS INT
+			GET ; RETURN _backStyle ; END GET
+			SET
+				_backStyle := VALUE
+				SELF:BackColor := IIF(VALUE == 0, System.Drawing.Color.Transparent, System.Drawing.SystemColors.Control)
+			END SET
+		END PROPERTY
 
-END CLASS
+		// ── Resize / Moved events ─────────────────────────────────────────────
+		PRIVATE _VFPResize AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
+
+		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
+			SUPER:OnResize(e)
+			IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
+
+		PRIVATE _VFPMoved AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
+
+		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
+			SUPER:OnMove(e)
+			IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
+
+	END CLASS
 
 END NAMESPACE

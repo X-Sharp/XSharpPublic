@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// </summary>
         PUBLIC METHOD SetPattern(maskString AS STRING) AS VOID
             IF String.IsNullOrEmpty(maskString)
-                SELF:_pattern := NIL
+                SELF:_pattern := NULL_OBJECT
                 RETURN
             ENDIF
 
@@ -51,12 +51,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         /// <summary>
         /// Handle keyboard input on KeyPress event.
-        /// Validates characters and prevents invalid input before it appears.
+        /// Validates printable characters and prevents invalid input before it appears.
+        /// Special keys (Delete, Tab, Arrow) must be handled separately via HandleKeyDown.
         /// </summary>
-        /// <param name="e">KeyPress event args; sets <c>e.Handled = TRUE</c> to suppress invalid input.</param>
-        /// <param name="textBox">The text box being edited.
-        /// <c>textBox.SelectionStart</c> is a 0-based character offset, consistent with
-        /// the 0-based <see cref="InputMaskPattern.Positions"/> index.</param>
         PUBLIC METHOD HandleKeyPress(e AS KeyPressEventArgs, textBox AS TextBox) AS VOID
             IF SELF:_pattern == NIL .OR. !SELF:_pattern:IsValid()
                 RETURN
@@ -71,7 +68,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             VAR keyChar := e:KeyChar
 
             // ===================================================================
-            // Handle special control keys
+            // Handle special control keys available in KeyPressEventArgs
             // ===================================================================
 
             // Backspace key (ASCII 8)
@@ -81,31 +78,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 RETURN
             ENDIF
 
-            // Delete key
-            IF e:KeyCode == Keys.Delete
-                SELF:HandleDelete(textBox)
-                e:Handled := TRUE
-                RETURN
-            ENDIF
-
-            // Tab key - move to next data position
-            IF e:KeyCode == Keys.Tab
-                SELF:MoveToNextDataPosition(textBox)
-                e:Handled := FALSE  // Allow tab to propagate
-                RETURN
-            ENDIF
-
             // Enter key - allow it
             IF keyChar == (CHAR)13
-                e:Handled := FALSE
-                RETURN
-            ENDIF
-
-            // Arrow keys - allow navigation
-            IF e:KeyCode == Keys.Left .OR. e:KeyCode == Keys.Right .OR. _
-               e:KeyCode == Keys.Up .OR. e:KeyCode == Keys.Down .OR. _
-               e:KeyCode == Keys.Home .OR. e:KeyCode == Keys.End
-                SELF:HandleArrowKey(textBox, e:KeyCode)
                 e:Handled := FALSE
                 RETURN
             ENDIF
@@ -117,7 +91,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             VAR position := textBox:SelectionStart
 
             // Skip to next data position if cursor is on a literal
-            WHILE position < SELF:_pattern:Positions:Count .AND. _
+            WHILE position < SELF:_pattern:Positions:Count .AND. ;
                   (SELF:_pattern:IsLiteralPosition(position) .OR. SELF:_pattern:IsModifierPosition(position))
                 position := position + 1
             END WHILE
@@ -145,10 +119,39 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Handle text changed event - format the display after each edit.
+        /// Handle keyboard input on KeyDown event.
+        /// Handles Delete, Tab, and Arrow key navigation within the mask.
+        /// Wire this to the TextBox KeyDown event alongside HandleKeyPress on KeyPress.
         /// </summary>
-        /// <param name="textBox">The text box whose content changed.
-        /// Cursor restoration uses 0-based <c>SelectionStart</c> offsets.</param>
+        PUBLIC METHOD HandleKeyDown(e AS KeyEventArgs, textBox AS TextBox) AS VOID
+            IF SELF:_pattern == NIL .OR. !SELF:_pattern:IsValid()
+                RETURN
+            ENDIF
+
+            SWITCH e:KeyCode
+                CASE Keys.Delete
+                    SELF:HandleDelete(textBox)
+                    e:Handled := TRUE
+
+                CASE Keys.Tab
+                    SELF:MoveToNextDataPosition(textBox)
+                    e:Handled := FALSE  // Allow tab to propagate to next control
+
+                CASE Keys.Left
+                CASE Keys.Right
+                CASE Keys.Up
+                CASE Keys.Down
+                CASE Keys.Home
+                CASE Keys.End
+                    SELF:HandleArrowKey(textBox, e:KeyCode)
+                    e:Handled := FALSE
+            END SWITCH
+
+        END METHOD
+
+        /// <summary>
+        /// Handle text changed event - format the display after each edit
+        /// </summary>
         PUBLIC METHOD HandleTextChanged(textBox AS TextBox) AS VOID
             IF SELF:_pattern == NIL .OR. !SELF:_pattern:IsValid()
                 RETURN
@@ -172,7 +175,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     // Restore cursor position, but move past literals
                     IF oldSelection < formatted:Length
                         // Move cursor to next data position if on literal
-                        WHILE oldSelection < SELF:_pattern:Positions:Count .AND. _
+                        WHILE oldSelection < SELF:_pattern:Positions:Count .AND. ;
                               SELF:_pattern:IsLiteralPosition(oldSelection)
                             oldSelection := oldSelection + 1
                         END WHILE
@@ -185,9 +188,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Handle backspace key - delete character before cursor.
-        /// After the operation <c>textBox.SelectionStart</c> is restored to the
-        /// 0-based position of the cleared slot.
+        /// Handle backspace key - delete character before cursor
         /// </summary>
         PUBLIC METHOD HandleBackspace(textBox AS TextBox) AS VOID
             IF SELF:_isUpdatingMask
@@ -199,14 +200,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 IF textBox:SelectionLength > 0
                     // Delete selected text
                     VAR startS := textBox:SelectionStart
-                    VAR endS := start + textBox:SelectionLength
+                    VAR endS := startS + textBox:SelectionLength
 
                     VAR text := textBox:Text
-                    VAR before := Text:Substring(0, startS)
-                    VAR after := Text:Substring(endS)
+                    VAR before := text:Substring(0, startS)
+                    VAR after := text:Substring(endS)
 
                     textBox:Text := before + after
-                    textBox:SelectionStart := start
+                    textBox:SelectionStart := startS
                 ELSE
                     // Delete character before cursor
                     VAR pos := textBox:SelectionStart
@@ -219,8 +220,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
                         VAR text := textBox:Text
                         IF pos < text:Length
-                            VAR sb := StringBuilder{text}
-                            sb[pos] := '_'
+                            VAR sb := System.Text.StringBuilder{text}
+                            sb[pos] := Char.Parse("_")
 
                             // Rebuild formatted value
                             VAR rebuilt := SELF:_formatter:RebuildFormattedValue(SELF:_pattern, sb:ToString())
@@ -235,9 +236,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Handle delete key - delete character at cursor.
-        /// After the operation <c>textBox.SelectionStart</c> is restored to the
-        /// 0-based position of the cleared slot.
+        /// Handle delete key - delete character at cursor
         /// </summary>
         PUBLIC METHOD HandleDelete(textBox AS TextBox) AS VOID
             IF SELF:_isUpdatingMask
@@ -261,14 +260,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     VAR text := textBox:Text
 
                     // Skip over literals to find next data position
-                    WHILE pos < SELF:_pattern:Positions:Count .AND. _
+                    WHILE pos < SELF:_pattern:Positions:Count .AND. ;
                           SELF:_pattern:IsLiteralPosition(pos)
                         pos := pos + 1
                     END WHILE
 
                     IF pos < text:Length
-                        VAR sb := StringBuilder{text}
-                        sb[pos] := '_'
+                        VAR sb := System.Text.StringBuilder{text}
+                        sb[pos] := Char.Parse("_")
 
                         // Rebuild formatted value
                         VAR rebuilt := SELF:_formatter:RebuildFormattedValue(SELF:_pattern, sb:ToString())
@@ -282,9 +281,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Handle arrow key navigation.
-        /// Updates <c>textBox.SelectionStart</c> using 0-based offsets,
-        /// skipping literal positions automatically.
+        /// Handle arrow key navigation
         /// </summary>
         PUBLIC METHOD HandleArrowKey(textBox AS TextBox, keyCode AS Keys) AS VOID
             VAR pos := textBox:SelectionStart
@@ -304,7 +301,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     // Move right, skip over literals
                     IF pos < textBox:Text:Length
                         pos := pos + 1
-                        WHILE pos < SELF:_pattern:Positions:Count .AND. _
+                        WHILE pos < SELF:_pattern:Positions:Count .AND. ;
                               SELF:_pattern:IsLiteralPosition(pos)
                             pos := pos + 1
                         END WHILE
@@ -325,9 +322,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Move to next data position.
-        /// Sets <c>textBox.SelectionStart</c> to the 0-based index returned by
-        /// <see cref="InputMaskPattern.GetNextDataPosition"/>.
+        /// Move to next data position
         /// </summary>
         PUBLIC METHOD MoveToNextDataPosition(textBox AS TextBox) AS VOID
             VAR pos := textBox:SelectionStart
@@ -342,9 +337,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Move to previous data position.
-        /// Sets <c>textBox.SelectionStart</c> to the 0-based index returned by
-        /// <see cref="InputMaskPattern.GetPreviousDataPosition"/>.
+        /// Move to previous data position
         /// </summary>
         PUBLIC METHOD MoveToPreviousDataPosition(textBox AS TextBox) AS VOID
             VAR pos := textBox:SelectionStart
@@ -360,8 +353,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
 
         /// <summary>
-        /// Initialize TextBox with mask - show placeholder.
-        /// Sets <c>textBox.SelectionStart</c> to the 0-based first data position.
+        /// Initialize TextBox with mask - show placeholder
         /// </summary>
         PUBLIC METHOD InitializeTextBox(textBox AS TextBox) AS VOID
             IF SELF:_pattern == NIL .OR. !SELF:_pattern:IsValid()

@@ -1,82 +1,154 @@
-// Header.prg
+﻿// Header.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
+
 USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.ComponentModel
+USING System.Drawing
+USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
-    /// <summary>
-    /// VFP Header Control - Grid column header cell
-    /// Inherits from DataGridViewColumnHeaderCell; adds copy-constructor and Clone()
-    ///
-    /// Base Class: System.Windows.Forms.DataGridViewColumnHeaderCell
-    /// </summary>
-    CLASS Header INHERIT System.Windows.Forms.DataGridViewColumnHeaderCell
+	/// <summary>
+	/// The VFP compatible Header class.
+	/// Maps to DataGridViewColumnHeaderCell.
+	/// </summary>
+	CLASS Header INHERIT System.Windows.Forms.DataGridViewColumnHeaderCell
 
-        CONSTRUCTOR()
-            SUPER()
-            RETURN
+		CONSTRUCTOR(  )
+			SUPER()
+			RETURN
 
-        CONSTRUCTOR(source AS System.Windows.Forms.DataGridViewColumnHeaderCell)
-            SUPER()
-            //
-            SELF:ErrorText := source:ErrorText
+		CONSTRUCTOR(  source AS System.Windows.Forms.DataGridViewColumnHeaderCell )
+			SUPER()
+			//
+			SELF:ErrorText := source:ErrorText
             SELF:Tag := source:Tag
             SELF:ToolTipText := source:ToolTipText
             SELF:Value := source:Value
             SELF:ContextMenuStrip := source:ContextMenuStrip
             SELF:ValueType := source:ValueType
-            IF source:HasStyle
+            IF (source:HasStyle)
                 SELF:Style := source:Style
-            ENDIF
-            RETURN
+			ENDIF
+			RETURN
 
-        /// <summary>
-        /// Text is the Value of the HeaderCell
-        /// </summary>
-        PROPERTY Text AS STRING
-            GET
-                IF SELF:Value != NULL
-                    RETURN SELF:Value:ToString()
-                ELSE
-                    RETURN NULL
-                ENDIF
-            END GET
-            SET
-                SUPER:Value := (OBJECT)VALUE
-            END SET
-        END PROPERTY
+		/// <summary>
+		/// Text is the Value of the HeaderCell
+		/// </summary>
+		PROPERTY Text AS STRING
+			GET
+				IF SELF:Value != NULL
+					RETURN SELF:Value:ToString()
+				ELSE
+					RETURN NULL
+				ENDIF
+			END GET
+			SET
+				SUPER:Value := (OBJECT) VALUE
+			END SET
+		END PROPERTY
 
-        PROPERTY Name AS STRING AUTO
+		// ── Caption ───────────────────────────────────────────────────────────
+		// VFP Caption is the header label; alias for Text.
+		PROPERTY Caption AS STRING
+			GET ; RETURN SELF:Text ; END GET
+			SET ; SELF:Text := VALUE ; END SET
+		END PROPERTY
 
-        PROPERTY FontSize AS LONG AUTO
+		PROPERTY Name AS STRING AUTO
 
-        PROPERTY TextAlign AS System.Drawing.ContentAlignment AUTO
+		// ── FontSize ─────────────────────────────────────────────────────────
+		// Applies to the header cell's style font.
+		PROPERTY FontSize AS LONG
+			GET
+				IF SELF:Style:Font != NULL
+					RETURN (LONG) SELF:Style:Font:Size
+				ENDIF
+				RETURN 0
+			END GET
+			SET
+				IF VALUE > 0
+					VAR existing := IIF(SELF:Style:Font != NULL, SELF:Style:Font, SystemFonts.DefaultFont)
+					SELF:Style:Font := Font{existing:FontFamily, (SINGLE) VALUE, existing:Style}
+				ENDIF
+			END SET
+		END PROPERTY
 
-        OVERRIDE METHOD Clone() AS OBJECT
-            LOCAL source AS Header
-            //
-            source := Header{}
-            SELF:ErrorText := source:ErrorText
+		// ── FontBold ──────────────────────────────────────────────────────────
+		PROPERTY FontBold AS LOGIC
+			GET
+				IF SELF:Style:Font != NULL
+					RETURN SELF:Style:Font:Bold
+				ENDIF
+				RETURN FALSE
+			END GET
+			SET
+				VAR existing := IIF(SELF:Style:Font != NULL, SELF:Style:Font, SystemFonts.DefaultFont)
+				VAR style    := IIF(VALUE, existing:Style | FontStyle.Bold, existing:Style & ~FontStyle.Bold)
+				SELF:Style:Font := Font{existing:FontFamily, existing:Size, style}
+			END SET
+		END PROPERTY
+
+		// ── Alignment ─────────────────────────────────────────────────────────
+		// VFP: 0=Left, 1=Right, 2=Center
+		PROPERTY Alignment AS LONG
+			GET
+				SWITCH SELF:Style:Alignment
+				CASE DataGridViewContentAlignment.MiddleRight  ; RETURN 1
+				CASE DataGridViewContentAlignment.MiddleCenter ; RETURN 2
+				OTHERWISE                                      ; RETURN 0
+				END SWITCH
+			END GET
+			SET
+				SWITCH VALUE
+				CASE 1 ; SELF:Style:Alignment := DataGridViewContentAlignment.MiddleRight
+				CASE 2 ; SELF:Style:Alignment := DataGridViewContentAlignment.MiddleCenter
+				OTHERWISE ; SELF:Style:Alignment := DataGridViewContentAlignment.MiddleLeft
+				END SWITCH
+			END SET
+		END PROPERTY
+
+		// ── Click event ───────────────────────────────────────────────────────
+		// VFP Header.Click fires when the user clicks the column header.
+		// Since DataGridViewColumnHeaderCell is not a Control, we wire into
+		// DataGridView.ColumnHeaderMouseClick from within the owning Column.
+		// This property stores the handler reference; Column.OnDataGridViewChanged wires it.
+		PRIVATE _VFPClick AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpClick AS STRING
+			GET ; RETURN SELF:_VFPClick?:SendTo ; END GET
+			SET ; SELF:_VFPClick := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireClick() AS VOID STRICT
+			IF SELF:_VFPClick != NULL
+				SELF:_VFPClick:Call()
+			ENDIF
+
+		PROPERTY TextAlign AS System.Drawing.ContentAlignment AUTO
+
+		OVERRIDE METHOD Clone() AS OBJECT
+			LOCAL source AS Header
+			//
+			source := Header{}
+			SELF:ErrorText := source:ErrorText
             SELF:Tag := source:Tag
             SELF:ToolTipText := source:ToolTipText
             SELF:Value := source:Value
             SELF:ContextMenuStrip := source:ContextMenuStrip
             SELF:ValueType := source:ValueType
-            // Avoid creating a new style object if the Style property has not previously been set.
-            IF source:HasStyle
+            IF (source:HasStyle)
                 SELF:Style := source:Style
-            ENDIF
-            source:Name := SELF:Name
-            //
-            RETURN source
+			ENDIF
+			source:Name := SELF:Name
+			//
+			RETURN source
 
-    END CLASS
-
+	END CLASS
 END NAMESPACE // XSharp.VFP.UI

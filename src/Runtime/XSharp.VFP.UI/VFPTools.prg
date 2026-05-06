@@ -62,5 +62,16 @@ STATIC PUBLIC CLASS VFPTools
 
 
 
+    // Convert a VFP COLORREF long (0x00BBGGRR) to a System.Drawing.Color.
+    // VFP stores color as R + G*256 + B*65536 (low byte = red).
+    STATIC METHOD ColorFromVFP(nColor AS LONG) AS System.Drawing.Color
+        IF nColor == 0
+            RETURN System.Drawing.Color.Empty
+        ENDIF
+        VAR r := (INT)(nColor & 0xFF)
+        VAR g := (INT)((nColor >> 8) & 0xFF)
+        VAR b := (INT)((nColor >> 16) & 0xFF)
+        RETURN System.Drawing.Color.FromArgb(r, g, b)
+
 END CLASS
 END NAMESPACE // XSharp.VFP.UI

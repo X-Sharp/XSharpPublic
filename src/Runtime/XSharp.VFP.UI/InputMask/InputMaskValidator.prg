@@ -10,12 +10,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
     PUBLIC CLASS InputMaskValidator
         
         /// <summary>
-        /// Check if character is valid for the mask position.
-        /// Returns <c>TRUE</c> if character can be placed at this position.
+        /// Check if character is valid for the mask position
+        /// Returns TRUE if character can be placed at this position
         /// </summary>
-        /// <param name="pattern">Parsed mask pattern.</param>
-        /// <param name="position">0-based index into <c>pattern.Positions</c>.</param>
-        /// <param name="character">Single-character string to validate.</param>
         PUBLIC METHOD IsValidCharacter(pattern AS InputMaskPattern, position AS INT, character AS STRING) AS LOGIC
             // Validate parameters
             IF pattern == NIL .OR. position < 0 .OR. position >= pattern:Positions:Count
@@ -56,13 +53,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
         
         /// <summary>
-        /// Transform character according to modifiers and pattern rules.
+        /// Transform character according to modifiers and pattern rules
         /// Applies case conversions, uppercasing, etc.
         /// </summary>
-        /// <param name="pattern">Parsed mask pattern.</param>
-        /// <param name="position">0-based index into <c>pattern.Positions</c>.</param>
-        /// <param name="character">Single-character string to transform.</param>
-        /// <returns>Transformed character string (may be uppercased or lowercased).</returns>
         PUBLIC METHOD TransformCharacter(pattern AS InputMaskPattern, position AS INT, character AS STRING) AS STRING
             // Validate parameters
             IF String.IsNullOrEmpty(character)
@@ -89,18 +82,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 ENDIF
             ENDIF
             
-            // For lowercase letter type ('a'), convert to lowercase
+            // For lowercase letter type ('a' in mask = lowercase optional letter), convert to lowercase
             IF maskPos:Type == "letter"
-                IF maskPos:Literal != NIL .AND. maskPos:Literal == "a"
+                IF maskPos:OriginalChar == Char.Parse("a")
                     IF Char.IsLetter(character[1])
                         result := result:ToLower()
                     ENDIF
                 ENDIF
             ENDIF
             
-            // For lowercase alphanumeric type ('x'), letters are lowercase
+            // For lowercase alphanumeric type ('x' in mask = lowercase optional alphanumeric), letters are lowercase
             IF maskPos:Type == "alphanumeric"
-                IF maskPos:Literal != NIL .AND. maskPos:Literal == "x"
+                IF maskPos:OriginalChar == Char.Parse("x")
                     IF Char.IsLetter(character[1])
                         result := result:ToLower()
                     ENDIF
@@ -111,11 +104,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
         
         /// <summary>
-        /// Check if character can be inserted at this position.
+        /// Check if character can be inserted at this position
         /// </summary>
-        /// <param name="pattern">Parsed mask pattern.</param>
-        /// <param name="position">0-based index into <c>pattern.Positions</c>.</param>
-        /// <returns><c>TRUE</c> when the position is a data slot (not a literal or modifier).</returns>
         PUBLIC METHOD CanInsertAt(pattern AS InputMaskPattern, position AS INT) AS LOGIC
             IF position < 0 .OR. position >= pattern:Positions:Count
                 RETURN FALSE
@@ -128,12 +118,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
         
         /// <summary>
-        /// Get the next writable position after the given position.
-        /// Skips literals and modifiers automatically.
+        /// Get the next writable position after the given position
+        /// Skips literals and modifiers automatically
         /// </summary>
-        /// <param name="pattern">Parsed mask pattern.</param>
-        /// <param name="fromPos">0-based starting index (exclusive).</param>
-        /// <returns>0-based index of the next writable position, or <c>-1</c> if none.</returns>
         PUBLIC METHOD GetNextWritePosition(pattern AS InputMaskPattern, fromPos AS INT) AS INT
             IF pattern == NIL
                 RETURN -1
@@ -161,7 +148,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 IF maskPos:Type != "literal" .AND. maskPos:Type != "modifier"
                     IF maskPos:Required
                         requiredCount := requiredCount + 1
-                        IF inputIndex < inputValue:Length .AND. inputValue[inputIndex] != '_'
+                        IF inputIndex < inputValue:Length .AND. inputValue[inputIndex] != Char.Parse("_")
                             filledCount := filledCount + 1
                             inputIndex := inputIndex + 1
                         ENDIF

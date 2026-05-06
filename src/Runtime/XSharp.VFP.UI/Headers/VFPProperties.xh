@@ -44,13 +44,14 @@
         SELF:__InitProperties()
         RETURN _Properties:GetPropertyNames()
 
-    METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
+    METHOD AddProperty(cPropertyName AS STRING, uValue AS USUAL, nVisibility := PropertyVisibility.Public AS LONG, cDescription := "" AS STRING) AS LOGIC
         RETURN SELF:_AddProperty(cPropertyName, uValue, nVisibility, cDescription)
 
     METHOD RemoveProperty(cPropertyName AS STRING) AS LOGIC
         RETURN SELF:_RemoveProperty(cPropertyName)
 
     METHOD HasProperty(cPropertyName AS STRING) AS LOGIC
+         SELF:__InitProperties()
          RETURN _Properties:HasProperty(cPropertyName)
     #endregion
 

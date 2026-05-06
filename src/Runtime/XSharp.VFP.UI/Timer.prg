@@ -1,126 +1,92 @@
-// Timer.prg
+﻿// Timer.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
+
 USING System
+USING System.Collections.Generic
+USING System.Text
 USING System.ComponentModel
-USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
-    /// <summary>
-    /// VFP Timer Control - Event-driven timer
-    /// Maps VFP Timer properties and methods to WinForms Timer
-    ///
-    /// Implements: IVFPObject
-    ///
-    /// Base Class: System.Windows.Forms.Timer
-    ///
-    /// Note: Preserves Current's VFP-compatible Interval/Enabled auto-enable logic:
-    ///       In VFP, setting a non-zero Interval auto-enables the timer on first set.
-    ///       Setting Interval to 0 disables the timer.
-    /// </summary>
-    PARTIAL CLASS Timer INHERIT System.Windows.Forms.Timer IMPLEMENTS IVFPObject
+	/// <summary>
+	/// The VFP compatible Timer class.
+	/// </summary>
+	PARTIAL CLASS Timer INHERIT System.Windows.Forms.Timer
 
-        // ============================================================================
-        // Include VFPObject base implementation (IVFPObject, IVFPHelp)
-        // ============================================================================
-        #include "Headers/VFPObject.xh"
+		#include "Headers/VFPObject.xh"
 
-        // ============================================================================
-        // PRIVATE FIELDS
-        // ============================================================================
+		// ── Non-visual position/size stubs ───────────────────────────────────
+		// Timer has no visual representation; these prevent VFP code from erroring.
+		PROPERTY Height AS LONG AUTO
+		PROPERTY Width  AS LONG AUTO
+		PROPERTY Left   AS LONG AUTO
+		PROPERTY Top    AS LONG AUTO
+		PROPERTY Parent AS OBJECT AUTO
 
-        PROTECTED firstSet AS LOGIC
-        PRIVATE _baseClass AS STRING
-        PRIVATE _class AS STRING
-        PRIVATE _classLibrary AS STRING
-        PRIVATE _comment AS STRING
-        PRIVATE _helpContextID AS LONG
-        PRIVATE _whatsThisHelpID AS LONG
+		// ── vfpTimer event ───────────────────────────────────────────────────
+		// VFP Timer event: fires at each Interval tick.
+		PRIVATE _VFPTimer AS VFPOverride
+		[Category("VFP Events"), Description("Occurs at each timer interval.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpTimer AS STRING GET _VFPTimer?:SendTo SET Set_VFPTimer( VFPOverride{SELF, VALUE} )
 
-        // ============================================================================
-        // PROPERTIES
-        // ============================================================================
+		METHOD Set_VFPTimer( methodCall AS VFPOverride ) AS VOID
+			IF SELF:_VFPTimer == NULL
+				SELF:Tick += System.EventHandler{ SELF, @OnVFPTimer() }
+			ENDIF
+			SELF:_VFPTimer := methodCall
 
-        /// <summary>
-        /// Enabled - Override to expose VFP-compatible Enabled property
-        /// </summary>
-        PUBLIC NEW PROPERTY Enabled AS LOGIC
-            GET
-                RETURN SUPER:Enabled
-            END GET
-            SET
-                SUPER:Enabled := VALUE
-            END SET
-        END PROPERTY
+		PRIVATE METHOD OnVFPTimer( sender AS OBJECT, e AS System.EventArgs ) AS VOID
+			IF SELF:_VFPTimer != NULL
+				SELF:_VFPTimer:Call()
+			ENDIF
 
-        /// <summary>
-        /// Interval - Override with VFP-compatible auto-enable behavior:
-        ///   Setting Interval to 0 disables the timer.
-        ///   Setting Interval to non-zero on first set auto-enables the timer.
-        /// </summary>
-        PUBLIC NEW PROPERTY Interval AS INT
-            GET
-                RETURN SUPER:Interval
-            END GET
-            SET
-                IF VALUE == 0
-                    SELF:firstSet := SELF:Enabled
-                    SELF:Enabled := FALSE
-                ELSE
-                    SUPER:Interval := VALUE
-                    IF SELF:firstSet
-                        SELF:Enabled := TRUE
-                        SELF:firstSet := FALSE
-                    ENDIF
-                ENDIF
-            END SET
-        END PROPERTY
+		PROTECTED firstSet AS LOGIC
 
-        // ============================================================================
-        // METHODS
-        // ============================================================================
+		CONSTRUCTOR( )
+			// In VFP, Timer is enabled per default
+			// So, on first Interval set, we enable the Timer
+			SELF:firstSet := TRUE
 
-        /// <summary>Start - Enable the timer</summary>
-        PUBLIC METHOD Start() AS VOID
-            SELF:Enabled := TRUE
-        END METHOD
+			RETURN
 
-        /// <summary>Stop - Disable the timer</summary>
-        PUBLIC METHOD Stop() AS VOID
-            SELF:Enabled := FALSE
-        END METHOD
+		PUBLIC NEW PROPERTY Enabled AS LOGIC
+			GET
+				RETURN SUPER:Enabled
+			END GET
 
-        /// <summary>Reset - Stop and restart the timer (resets interval countdown)</summary>
-        METHOD Reset() AS VOID STRICT
-            SELF:Stop()
-            System.Threading.Thread.Sleep(10)
-            SELF:Start()
-        END METHOD
+			SET
+				SUPER:Enabled := VALUE
+			END SET
+		END PROPERTY
 
-        /// <summary>Toggle - Toggle between enabled/disabled</summary>
-        PUBLIC METHOD Toggle() AS VOID
-            SELF:Enabled := !SELF:Enabled
-        END METHOD
+		PUBLIC NEW PROPERTY Interval AS INT
+			GET
+				RETURN SUPER:Interval
+			END GET
 
-        // ============================================================================
-        // CONSTRUCTOR
-        // ============================================================================
+			SET
+				IF VALUE == 0
+					SELF:firstSet := SELF:Enabled
+					SELF:Enabled := FALSE
+				ELSE
+					SUPER:Interval := VALUE
+					IF SELF:firstSet
+						SELF:Enabled := TRUE
+						SELF:firstSet := FALSE
+					ENDIF
+				ENDIF
+			END SET
+		END PROPERTY
 
-        CONSTRUCTOR()
-            SUPER()
-            // In VFP, Timer is enabled by default on first Interval set
-            SELF:firstSet := TRUE
-            SELF:_baseClass := "Timer"
-            SELF:_class := "Timer"
-            SELF:_classLibrary := ""
-            SELF:_comment := ""
-            SELF:_helpContextID := 0
-            SELF:_whatsThisHelpID := 0
+		METHOD Reset AS VOID Strict
+			SELF:Enabled := FALSE
+			SELF:Enabled := TRUE
+			RETURN
 
-    END CLASS
-
-END NAMESPACE
+	END CLASS
+END NAMESPACE // XSharp.VFP.UI

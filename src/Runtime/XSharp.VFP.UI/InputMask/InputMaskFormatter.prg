@@ -19,12 +19,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END CONSTRUCTOR
         
         /// <summary>
-        /// Format a raw value with the mask.
-        /// Iterates <c>pattern.Positions</c> using 0-based indices.
+        /// Format a raw value with the mask
         /// Example: "5551234567" with mask "(999) 999-9999" → "(555) 123-4567"
         /// </summary>
-        /// <param name="pattern">Parsed mask pattern.</param>
-        /// <param name="inputValue">Raw data string (no mask characters).</param>
         PUBLIC METHOD FormatValue(pattern AS InputMaskPattern, inputValue AS STRING) AS STRING
             IF pattern == NIL .OR. !pattern:IsValid()
                 RETURN inputValue
@@ -83,11 +80,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
         
         /// <summary>
-        /// Extract clean data without mask formatting.
-        /// Iterates <c>maskedValue</c> using 0-based character indices aligned with
-        /// <c>pattern.Positions</c>.
+        /// Extract clean data without mask formatting
         /// Example: "(555) 123-4567" with mask "(999) 999-9999" → "5551234567"
-        /// Removes all literals and placeholders, returns only data characters.
+        /// Removes all literals and placeholders, returns only data characters
         /// </summary>
         PUBLIC METHOD ExtractDataValue(pattern AS InputMaskPattern, maskedValue AS STRING) AS STRING
             IF pattern == NIL .OR. String.IsNullOrEmpty(maskedValue)
@@ -109,7 +104,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     VAR ch := maskedValue[i]
                     
                     // Skip placeholder characters
-                    IF ch != '_' .AND. ch != ' '
+                    IF ch != Char.Parse("_") .AND. ch != Char.Parse(" ")
                         result:Append(ch)
                     ENDIF
                 ENDIF
@@ -130,13 +125,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END METHOD
         
         /// <summary>
-        /// Apply mask at a specific position.
-        /// Used when inserting a single character.
+        /// Apply mask at a specific position
+        /// Used when inserting a single character
         /// </summary>
-        /// <param name="pattern">Parsed mask pattern.</param>
-        /// <param name="position">0-based index into <c>pattern.Positions</c>.</param>
-        /// <param name="inputChar">Single-character string to insert.</param>
-        /// <returns>Transformed/validated character, or <c>""</c> if not valid at that position.</returns>
         PUBLIC METHOD ApplyMaskAtPosition(pattern AS InputMaskPattern, position AS INT, inputChar AS STRING) AS STRING
             IF pattern == NIL .OR. String.IsNullOrEmpty(inputChar)
                 RETURN inputChar

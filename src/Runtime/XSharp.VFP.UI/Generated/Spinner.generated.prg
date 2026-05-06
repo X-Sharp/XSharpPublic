@@ -12,8 +12,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         [System.ComponentModel.DefaultValue(0)];
 		PROPERTY DisabledForeColor AS LONG AUTO
-		PROPERTY Format AS STRING AUTO
-		// InputMask - defined in Spinner.prg with custom implementation
 		PROPERTY NullDisplay AS String AUTO
         PROPERTY OLEDropTextInsertion AS LONG AUTO
 
@@ -27,4 +25,4 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 	END CLASS
-	END NAMESPACE
+	END NAMESPACE      

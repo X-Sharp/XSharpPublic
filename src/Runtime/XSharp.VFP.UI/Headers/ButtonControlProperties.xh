@@ -10,37 +10,37 @@
 
 
 
-				PRIVATE _backStyle := 1 AS INT
-	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-	[EditorBrowsable(EditorBrowsableState.Never)];
-	[Bindable(false)];
-	[Browsable(FALSE)];
-	PROPERTY BackStyle AS INT
-		GET
-			RETURN _backStyle
-		END GET
-		SET
-			_backStyle := VALUE
-			// Controls doesn't support transparent colors.....
-			// Remove it in DesignMode to avoid Designer crash
-			IF (VALUE == 0 )
-				SELF:FlatStyle := FlatStyle.Flat
-				SELF:BackColor := System.Drawing.Color.Transparent
-			ENDIF
-		END SET
-		END PROPERTY
+					PRIVATE _backStyle := 1 AS INT
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(false)];
+		[Browsable(FALSE)];
+		PROPERTY BackStyle AS INT
+			GET
+				RETURN _backStyle
+			END GET
+			SET
+				_backStyle := VALUE
+				// Controls doesn't support transparent colors.....
+				// Remove it in DesignMode to avoid Designer crash
+				IF (VALUE == 0 )
+					SELF:FlatStyle := FlatStyle.Flat
+					SELF:BackColor := System.Drawing.Color.Transparent
+				ENDIF
+			END SET
+			END PROPERTY
 
 
 
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-        [EditorBrowsable(EditorBrowsableState.Never)];
-	[Browsable(FALSE)];
-	NEW PROPERTY Image AS System.Drawing.Image
-        GET
-			RETURN SUPER:Image
-		END GET
+	    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+            [EditorBrowsable(EditorBrowsableState.Never)];
+		[Browsable(FALSE)];
+		NEW PROPERTY Image AS System.Drawing.Image
+            GET
+				RETURN SUPER:Image
+			END GET
 
-        SET
-            SUPER:Image := VALUE
-		END SET
-		END PROPERTY
+            SET
+                SUPER:Image := VALUE
+			END SET
+			END PROPERTY

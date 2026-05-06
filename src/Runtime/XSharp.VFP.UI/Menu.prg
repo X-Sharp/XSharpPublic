@@ -1,0 +1,94 @@
+// Menu.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+USING System
+USING System.Collections.Generic
+USING System.Windows.Forms
+
+BEGIN NAMESPACE XSharp.VFP.UI
+
+	/// <summary>
+	/// VFP-compatible Menu class. Represents a complete menu bar.
+	/// Maps to System.Windows.Forms.MenuStrip.
+	/// Use AddPad() to add top-level entries, then attach Popup objects to each Pad.
+	/// Call Activate(oForm) to attach the menu to a Form.
+	/// </summary>
+	PARTIAL CLASS Menu INHERIT System.Windows.Forms.MenuStrip
+
+		PRIVATE _pads AS List<Pad>
+
+		CONSTRUCTOR() STRICT
+			SUPER()
+			SELF:_pads := List<Pad>{}
+
+		// ── PadCount ──────────────────────────────────────────────────────────
+		PROPERTY PadCount AS LONG
+			GET
+				RETURN (LONG) SELF:_pads:Count
+			END GET
+		END PROPERTY
+
+		// ── Pads[i] ───────────────────────────────────────────────────────────
+		// 1-based indexed access to Pad items.
+		PROPERTY Pads[ i AS LONG ] AS Pad
+			GET
+				RETURN SELF:_pads[ (INT) i - 1 ]
+			END GET
+		END PROPERTY
+
+		// ── AddPad ────────────────────────────────────────────────────────────
+		// Creates a Pad, registers it, and returns it so the caller can chain
+		// a Popup onto it immediately.
+		METHOD AddPad( cName, cCaption ) AS Pad CLIPPER
+			LOCAL sName    AS STRING
+			LOCAL sCaption AS STRING
+			LOCAL oPad     AS Pad
+			sName    := (STRING) cName
+			sCaption := (STRING) cCaption
+			oPad         := Pad{}
+			oPad:Name    := sName
+			oPad:Caption := sCaption
+			SELF:Items:Add( oPad )
+			SELF:_pads:Add( oPad )
+			SELF:AddProperty( sName, oPad, PropertyVisibility.Public, "AddPad" )
+			RETURN oPad
+
+		// ── Activate ──────────────────────────────────────────────────────────
+		// Attaches this menu to a Form.
+		METHOD Activate( oForm ) AS VOID CLIPPER
+			IF oForm IS System.Windows.Forms.Form VAR frm
+				IF !frm:Controls:Contains( SELF )
+					frm:Controls:Add( SELF )
+				ENDIF
+				frm:MainMenuStrip := SELF
+			ENDIF
+
+		// ── Deactivate ────────────────────────────────────────────────────────
+		// Detaches from the hosting form without destroying the object.
+		METHOD Deactivate() AS VOID STRICT
+			LOCAL frm AS System.Windows.Forms.Form
+			frm := SELF:FindForm()
+			IF frm != NULL_OBJECT
+				frm:MainMenuStrip := NULL_OBJECT
+				frm:Controls:Remove( SELF )
+			ENDIF
+
+		// ── Release ───────────────────────────────────────────────────────────
+		METHOD Release() AS USUAL CLIPPER
+			SELF:Deactivate()
+			SELF:Dispose()
+			RETURN NIL
+
+		// ── Lifecycle stubs ───────────────────────────────────────────────────
+		VIRTUAL METHOD Init() AS USUAL CLIPPER
+			RETURN NIL
+
+		VIRTUAL METHOD Destroy() AS USUAL CLIPPER
+			RETURN NIL
+
+	END CLASS
+
+END NAMESPACE

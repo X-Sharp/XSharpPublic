@@ -1,180 +1,135 @@
-// CheckBox.prg
+// Checkbox.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
+
+
 USING System
 USING System.Collections.Generic
+USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
 USING System.Drawing
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
-    /// <summary>
-    /// VFP CheckBox Control - Boolean selection with caption
-    /// Maps VFP CheckBox properties and methods to WinForms CheckBox
-    ///
-    /// Implements: IVFPObject, IVFPControl, IVFPButton
-    /// Includes: VFPButton.xh (shared button control code)
-    ///           ControlProperties.xh (VFP control event wiring)
-    ///           ControlSource.xh (data binding)
-    ///
-    /// Base Class: System.Windows.Forms.CheckBox
-    /// </summary>
-    PARTIAL CLASS CheckBox INHERIT System.Windows.Forms.CheckBox IMPLEMENTS IVFPObject, IVFPControl, IVFPButton
+	/// <summary>
+	/// The VFP compatible Checkbox class.
+	/// </summary>
+	PARTIAL CLASS CheckBox INHERIT System.Windows.Forms.CheckBox
 
-        // ============================================================================
-        // Include shared VFP button control properties and methods
-        // ============================================================================
-        #include "Headers/VFPButton.xh"
+		// Common properties that all VFP Objects support
+#include "Headers/VFPObject.xh"
 
-        // ============================================================================
-        // Include VFPObject base implementation (IVFPObject, IVFPHelp)
-        // ============================================================================
-        #include "Headers/VFPObject.xh"
+#include "VFPProperties.xh"
 
-        // ============================================================================
-        // Include common VFP control properties and event wiring
-        // ============================================================================
-        #include "Headers/ControlProperties.xh"
+#include "ControlProperties.xh"
 
-        // ============================================================================
-        // Include ControlSource data binding support
-        // ============================================================================
-        #include "Headers/ControlSource.xh"
+#include "ControlSource.xh"
 
-        // ============================================================================
-        // PRIVATE FIELDS - Additional CheckBox-specific backing storage
-        // ============================================================================
+#include "Headers/VFPButtonImage.xh"
 
-        PRIVATE _dragMode AS INT
-        PRIVATE _dragIcon AS STRING
-        PRIVATE _baseClass AS STRING
-        PRIVATE _class AS STRING
-        PRIVATE _classLibrary AS STRING
-        PRIVATE _comment AS STRING
-        PRIVATE _helpContextID AS LONG
-        PRIVATE _whatsThisHelpID AS LONG
+		// ── Centered ─────────────────────────────────────────────────────────
+		// VFP Centered = .T. centres the check mark — maps to MiddleCenter.
+		// Centered = .F. restores the default MiddleLeft alignment.
 
-        // ============================================================================
-        // PROPERTIES - VFP CheckBox API
-        // ============================================================================
+		PRIVATE _centered AS LOGIC
+		PROPERTY Centered AS LOGIC
+			GET
+				RETURN _centered
+			END GET
+			SET
+				_centered := VALUE
+				IF VALUE
+					SELF:CheckAlign := System.Drawing.ContentAlignment.MiddleCenter
+				ELSE
+					SELF:CheckAlign := System.Drawing.ContentAlignment.MiddleLeft
+				ENDIF
+			END SET
+		END PROPERTY
 
-        /// <summary>Value - Checkbox value (TRUE/FALSE/NIL for indeterminate)</summary>
-        [System.ComponentModel.Category("VFP Properties")];
-        [System.ComponentModel.Description("Checkbox value")];
-        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)];
-        PROPERTY Value AS USUAL
-            GET
-                IF SELF:CheckState == CheckState.Checked
-                    RETURN TRUE
-                ELSEIF SELF:CheckState == CheckState.Unchecked
-                    RETURN FALSE
-                ELSE
-                    RETURN NIL
-                ENDIF
-            END GET
-            SET
-                IF VALUE == TRUE
-                    SELF:CheckState := CheckState.Checked
-                ELSEIF VALUE == FALSE
-                    SELF:CheckState := CheckState.Unchecked
-                ELSEIF IsNil(VALUE)
-                    IF SELF:ThreeState
-                        SELF:CheckState := CheckState.Indeterminate
-                    ELSE
-                        SELF:CheckState := CheckState.Unchecked
-                    ENDIF
-                ENDIF
-            END SET
-        END PROPERTY
+		// ── ReadOnly ─────────────────────────────────────────────────────────
+		// VFP ReadOnly = .T. prevents the user from changing the check state.
 
-        /// <summary>Centered - Whether text is centered</summary>
-        PROPERTY Centered AS LOGIC AUTO
+		PRIVATE _readOnly AS LOGIC
+		PROPERTY ReadOnly AS LOGIC
+			GET
+				RETURN _readOnly
+			END GET
+			SET
+				_readOnly := VALUE
+			END SET
+		END PROPERTY
 
-        /// <summary>ReadOnly - Whether the checkbox is read-only</summary>
-        PROPERTY ReadOnly AS LOGIC AUTO
+		PROTECTED METHOD OnClick( e AS System.EventArgs ) AS VOID
+			IF _readOnly
+				// Suppress the state change — restore previous CheckState
+				SELF:Checked := !SELF:Checked
+				RETURN
+			ENDIF
+			SUPER:OnClick( e )
+		END METHOD
 
-        /// <summary>WordWrap - Whether caption word-wraps</summary>
-        PROPERTY WordWrap AS LOGIC AUTO
+		// ── Value ────────────────────────────────────────────────────────────
+		// VFP Value: 0=Unchecked, 1=Checked, 2=Indeterminate.
+		// Also accepts .T./.F. for backwards compatibility.
 
-        // ============================================================================
-        // IVFPControl Implementation
-        // ============================================================================
+		PROPERTY Value AS USUAL
+			GET
+				RETURN (USUAL)(LONG) SELF:CheckState
+			END GET
+			SET
+				LOCAL state AS System.Windows.Forms.CheckState
+				DO CASE
+				CASE IsLogic(VALUE)
+					state := IIF( (LOGIC)VALUE, CheckState.Checked, CheckState.Unchecked )
+				CASE IsLong(VALUE)
+					LOCAL n AS LONG
+					n := (LONG) VALUE
+					DO CASE
+					CASE n == 0
+						state := CheckState.Unchecked
+					CASE n == 1
+						state := CheckState.Checked
+					OTHERWISE
+						state := CheckState.Indeterminate
+					END CASE
+				OTHERWISE
+					RETURN
+				END CASE
+				SELF:CheckState := state
+				SELF:OnVFPProgrammaticChange()
+			END SET
+		END PROPERTY
 
-        [Category("VFP Behavior")];
-        [Description("Drag icon path")];
-        [DefaultValue("")];
-        PROPERTY DragIcon AS STRING
-            GET
-                RETURN SELF:_dragIcon
-            END GET
-            SET
-                SELF:_dragIcon := VALUE
-            END SET
-        END PROPERTY
+		// ── ProgrammaticChange ───────────────────────────────────────────────
 
-        [Category("VFP Behavior")];
-        [Description("Drag mode (0=manual, 1=automatic)")];
-        [DefaultValue(0)];
-        PROPERTY DragMode AS LONG
-            GET
-                RETURN SELF:_dragMode
-            END GET
-            SET
-                SELF:_dragMode := VALUE
-            END SET
-        END PROPERTY
+		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
-        PUBLIC METHOD Drag(nAction) AS USUAL CLIPPER
-            RETURN NIL
-        END METHOD
+		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
+			IF SELF:_VFPProgrammaticChange != NULL
+				SELF:_VFPProgrammaticChange:Call()
+			ENDIF
 
-        PUBLIC METHOD SetFocus() AS VOID STRICT
-            SELF:Focus()
-        END METHOD
+		// ── InteractiveChange ────────────────────────────────────────────────
 
-        // ============================================================================
-        // METHODS - VFP CheckBox Methods
-        // ============================================================================
+		PROTECTED METHOD OnCheckedChanged( e AS System.EventArgs ) AS VOID
+			SUPER:OnCheckedChanged( e )
+			IF !_readOnly
+				SELF:_ApplyPicture()
+				SELF:OnVFPInteractiveChange( SELF, e )
+			ENDIF
+		END METHOD
 
-        /// <summary>Click - Programmatically trigger click</summary>
-        PUBLIC METHOD ClickBox() AS VOID
-            SELF:PerformClick()
-        END METHOD
-
-        // ============================================================================
-        // EVENT HANDLERS
-        // ============================================================================
-
-        /// <summary>Update value when check state changes</summary>
-        PROTECTED OVERRIDE METHOD OnCheckedChanged(e AS System.EventArgs) AS VOID
-            SUPER:OnCheckedChanged(e)
-        END METHOD
-
-        // ============================================================================
-        // CONSTRUCTOR
-        // ============================================================================
-
-        CONSTRUCTOR() STRICT
+		CONSTRUCTOR(  ) STRICT
             SUPER()
-            // Initialize backing fields for VFP properties
-            SELF:_dragMode := 0
-            SELF:_dragIcon := ""
-            SELF:_baseClass := "CheckBox"
-            SELF:_class := "CheckBox"
-            SELF:_classLibrary := ""
-            SELF:_comment := ""
-            SELF:_helpContextID := 0
-            SELF:_whatsThisHelpID := 0
-            SELF:Checked := FALSE
-            SELF:ThreeState := FALSE
-            SELF:AutoSize := TRUE
             SELF:Size := Size{100, 17}
-        END CONSTRUCTOR
+			RETURN
 
-    END CLASS
-
-END NAMESPACE
+	END CLASS
+END NAMESPACE // XSharp.VFP.UI

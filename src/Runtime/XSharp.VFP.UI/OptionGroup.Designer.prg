@@ -1,36 +1,29 @@
-// OptionGroup.Designer.prg
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.
-// See License.txt in the project root for license information.
-
-BEGIN NAMESPACE XSharp.VFP.UI
+﻿BEGIN NAMESPACE XSharp.VFP.UI
 
     PUBLIC PARTIAL CLASS OptionGroup
+    PRIVATE gBox AS System.Windows.Forms.GroupBox
 
-        PRIVATE gBox AS System.Windows.Forms.GroupBox
+       /// <summary>
+       /// Required designer variable.
+       /// </summary>
+       PRIVATE INSTANCE components := NULL AS System.ComponentModel.IContainer
 
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        PRIVATE INSTANCE components := NULL AS System.ComponentModel.IContainer
+       /// <summary>
+       /// Clean up any resources being used.
+       /// </summary>
+       /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+       PROTECTED METHOD Dispose( disposing AS LOGIC ) AS VOID STRICT
+          IF disposing .AND. components != null
+             components:Dispose()
+          ENDIF
+          SUPER:Dispose( disposing )
+          RETURN
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        PROTECTED METHOD Dispose(disposing AS LOGIC) AS VOID STRICT
-            IF disposing .AND. components != NULL
-                components:Dispose()
-            ENDIF
-            SUPER:Dispose(disposing)
-            RETURN
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        PRIVATE METHOD InitializeComponent() AS VOID STRICT
+       /// <summary>
+       /// Required method for Designer support - do not modify
+       /// the contents of this method with the code editor.
+       /// </summary>
+       PRIVATE METHOD InitializeComponent() AS VOID STRICT
             SELF:gBox := System.Windows.Forms.GroupBox{}
             SELF:SuspendLayout()
             //
@@ -41,17 +34,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:gBox:Name := "gBox"
             SELF:gBox:Size := System.Drawing.Size{91, 67}
             SELF:gBox:TabIndex := 0
-            SELF:gBox:TabStop := FALSE
+            SELF:gBox:TabStop := false
             //
-            // OptionGroup
+            // VFPOptionGroup
             //
             SELF:AutoScaleDimensions := System.Drawing.SizeF{8, 16}
             SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
             SUPER:Controls:Add(SELF:gBox)
             SELF:Name := "OptionGroup"
             SELF:Size := System.Drawing.Size{91, 67}
-            SELF:ResumeLayout(FALSE)
+            SELF:ResumeLayout(false)
 
     END CLASS
-
-END NAMESPACE // XSharp.VFP.UI
+END NAMESPACE

@@ -1,6 +1,16 @@
-﻿using Microsoft.VisualStudio;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using Microsoft.VisualStudio;
+#if DEV17
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
+#else
+using System.Drawing;
+using MVP = Microsoft.VisualStudio.Package;
+#endif
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -16,8 +26,11 @@ using File = System.IO.File;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
 using XSharp.Support;
+
+
 namespace XSharp.LanguageService
 {
+
     internal class DropdownSettings
     {
         internal bool CurrentTypeOnly { get; private set; }
@@ -46,12 +59,18 @@ namespace XSharp.LanguageService
 
     }
 
-    public class XSharpDropDownClient : IVsDropdownBarClient, IVsDropdownBarClient4
+
+    public class XSharpDropDownClient : IVsDropdownBarClient
+#if DEV17
+    , IVsDropdownBarClient4
+#endif
     {
         const int PROJECTINDEX = 0;
         const int TYPEINDEX = 1;
         const int MEMBERINDEX = 2;
-
+#if !DEV17
+		static readonly ImageList _imageList = new ImageList();
+#endif
         private IVsDropdownBar _dropDownBar;
         readonly Dictionary<ITextView, ITextView> _textViews;
         ITextView _activeView = null;
@@ -73,6 +92,9 @@ namespace XSharp.LanguageService
         private DropdownSettings _settings;
         private List<string> _relatedFiles;
         private DateTime _lastFileChanged = DateTime.MinValue;
+#if !DEV17
+        private static readonly int projectIcon = -1;
+#endif
         private XDocument _document;
         XProject ActiveProject
         {
@@ -85,6 +107,20 @@ namespace XSharp.LanguageService
                 return null;
             }
         }
+#if !DEV17
+        static XSharpDropDownClient()
+        {
+            // Load images from Microsoft and Our project system (linked resource file)
+            Stream stream = typeof(MVP.LanguageService).Assembly.GetManifestResourceStream("Resources.completionset.bmp");
+            _imageList.ImageSize = new Size(16, 16);
+            _imageList.TransparentColor = Color.FromArgb(255, 0, 255);
+            _imageList.Images.AddStrip(new Bitmap(stream));
+            // the project Icon is the first in the ImageList from the project package
+            projectIcon = _imageList.Images.Count;
+            stream = typeof(XSharpDropDownClient).Assembly.GetManifestResourceStream("XSharp.LanguageService.Resources.XSharpProjectImageList.bmp");
+            _imageList.Images.AddStrip(new Bitmap(stream));
+        }
+#endif
 
         public XSharpDropDownClient(IVsDropdownBarManager manager, XFile file)
         {
@@ -509,7 +545,11 @@ namespace XSharp.LanguageService
                 {
                     name = "?";
                 }
+#if DEV17
                 elt = new XDropDownMember(name, sp, eltType.Kind.GetImageMoniker(eltType.Visibility), ft, eltType);
+#else
+                elt = new XDropDownMember(name, sp, eltType.Glyph, ft, eltType);
+#endif
                 nSelect = _types.Count;
                 _types.Add(elt);
                 if (eltType.Range.StartLine <= nLine && eltType.Range.EndLine >= nLine)
@@ -586,21 +626,36 @@ namespace XSharp.LanguageService
                 {
                     if (currentType.Kind != Kind.Delegate)
                     {
+#if DEV17
                         elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Kind.GetImageMoniker(currentType.Visibility), ft, currentType);
+#else
+                        elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Glyph, ft, currentType);
+
+#endif
                         _members.Add(elt);
                         _addToDict(currentType);
                     }
                 }
                 else
                 {
+#if DEV17
                     elt = new XDropDownMember(currentType.Name, spM, currentType.Kind.GetImageMoniker(currentType.Visibility), ft, currentType);
+#else
+                    elt = new XDropDownMember(currentType.Name, spM, currentType.Glyph, ft, currentType);
+
+#endif
                     _members.Add(elt);
                     _addToDict(currentType);
                 }
             }
             else if (!_settings.IncludeFields)
             {
+#if DEV17
                 elt = new XDropDownMember(globalType.Name, spM, globalType.Kind.GetImageMoniker(globalType.Visibility), ft, globalType);
+#else
+                elt = new XDropDownMember(globalType.Name, spM, globalType.Glyph, ft, globalType);
+
+#endif
                 _members.Add(elt);
                 _addToDict(globalType);
             }
@@ -661,7 +716,13 @@ namespace XSharp.LanguageService
                         ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
                         prototype += " (" + System.IO.Path.GetFileName(member.File.SourcePath) + ")";
                     }
+#if DEV17
                     elt = new XDropDownMember(prototype, spM, member.Kind.GetImageMoniker(member.Visibility), ft, member);
+#else
+                    elt = new XDropDownMember(prototype, spM, member.Glyph, ft, member);
+
+#endif
+
                     var nSelect = _members.Count;
                     _members.Add(elt);
                     _addToDict(member);
@@ -758,7 +819,11 @@ namespace XSharp.LanguageService
         public int GetComboAttributes(int combo, out uint entries, out uint entryType, out IntPtr imageList)
         {
             entries = 0;
+#if DEV17
             imageList = IntPtr.Zero;   // no HIMAGELIST needed; IVsDropdownBarClient4.GetEntryImage returns monikers
+#else
+			imageList = _imageList.Handle;
+#endif
             entryType = (uint)(DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE | DROPDOWNENTRYTYPE.ENTRY_TEXT);
             switch (combo)
             {
@@ -812,10 +877,36 @@ namespace XSharp.LanguageService
         public int GetEntryImage(int combo, int index, out int imageIndex)
         {
             // IVsDropdownBarClient4.GetEntryImage is called instead when VS supports it
+#if DEV17
             imageIndex = -1;
             return VSConstants.E_NOTIMPL;
-        }
+#else
+         imageIndex = 0;
+            if (index < 0)
+            {
+                return VSConstants.E_FAIL;
+            }
+            switch (combo)
+            {
+                case TYPEINDEX: // types
+                    if (index < _types.Count)
+                        imageIndex = _types[index].Glyph;
+                    break;
+                case MEMBERINDEX: // members
+                    if (index < _members.Count)
+                        imageIndex = _members[index].Glyph;
+                    break;
+                case PROJECTINDEX: // projects
+                    imageIndex = projectIcon;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
 
+            }
+            return 0;
+#endif
+        }
+#if DEV17
         ImageMoniker IVsDropdownBarClient4.GetEntryImage(int combo, int index)
         {
             switch (combo)
@@ -833,7 +924,7 @@ namespace XSharp.LanguageService
             }
             return default;
         }
-
+#endif
         public int GetEntryText(int combo, int index, out string text)
         {
             text = "";
@@ -965,14 +1056,27 @@ namespace XSharp.LanguageService
         {
             public TextSpan Span { get; set; }
             public string Label { get; set; }
+#if DEV17
             public ImageMoniker Moniker { get; set; }
+#else
+            public int Glyph { get; set; }
+
+#endif
             public DROPDOWNFONTATTR FontAttr { get; set; }
             public XSourceEntity Entity { get; set; }
+#if DEV17
             internal XDropDownMember(string label, TextSpan span, ImageMoniker moniker, DROPDOWNFONTATTR fontAttribute, XSourceEntity element)
+#else
+            internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute, XSourceEntity element)
+#endif
             {
                 Label = label;
                 Span = span;
+#if DEV17
                 Moniker = moniker;
+#else
+                Glyph = glyph;
+#endif
                 FontAttr = fontAttribute;
                 Entity = element;
             }
@@ -981,3 +1085,4 @@ namespace XSharp.LanguageService
 
     }
 }
+

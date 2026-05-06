@@ -19,7 +19,7 @@ namespace XSharp.LanguageService
         /// Called by <see cref="AbstractCommand.InitializeCommands"/> via reflection.
         /// Registers the OLE menu-command handler with the VS shell.
         /// </summary>
-        public static async Task InitializeAsync()
+        public static async System.Threading.Tasks.Task InitializeAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

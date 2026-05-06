@@ -34,7 +34,7 @@ namespace XSharp.Project
         {
             return new XSharpProjectConfig(base.ProjectMgr, canonicalName);
         }
-
+#if DEV17
         /// <summary>
         /// Returns configuration provider properties.
         /// For SDK-style projects, hides the Configuration/Platform toolbar in the
@@ -51,7 +51,7 @@ namespace XSharp.Project
             }
             return base.GetCfgProviderProperty(propid, out var);
         }
-
+#endif
         public override int GetCfgOfName(string name, string platName, out IVsCfg cfg)
         {
             if (name.IndexOf("|") >= 0)

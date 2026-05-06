@@ -101,6 +101,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			RETURN NULL_OBJECT
 
+		// ── Popup ─────────────────────────────────────────────────────────────
+		// Attaches a Popup as this bar's sub-menu dropdown.
+		// Mirrors Pad.Popup so nested menus follow the same VFP convention.
+		PROPERTY Popup AS Popup
+			GET
+				RETURN SELF:DropDown AS Popup
+			END GET
+			SET
+				SELF:DropDown := VALUE
+			END SET
+		END PROPERTY
+
 		// ── Lifecycle stubs ───────────────────────────────────────────────────
 		VIRTUAL METHOD Init() AS USUAL CLIPPER
 			RETURN NIL

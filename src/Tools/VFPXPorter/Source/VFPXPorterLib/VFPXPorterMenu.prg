@@ -322,47 +322,66 @@ BEGIN NAMESPACE VFPXPorterLib
                 //
                 IF pad:Childs:Count > 0
                     initCode:AppendLine("oPopup := XSharp.VFP.UI.Popup{}")
-                    // AddBar for each child
-                    FOREACH VAR bar IN pad:Childs
-                        IF bar:PROMPT == "\-"
-                            initCode:Append('oPopup:AddBar( "')
-                            initCode:Append(bar:Name)
-                            initCode:Append('", "--" )')
-                            initCode:Append(Environment.NewLine)
-                        ELSE
-                            initCode:Append('oPopup:AddBar( "')
-                            initCode:Append(bar:Name)
-                            initCode:Append('", "')
-                            initCode:Append(bar:PROMPT)
-                            initCode:Append('" )')
-                            initCode:Append(Environment.NewLine)
-                            IF bar:Childs:Count > 0
-                                initCode:Append('// TODO: nested sub-menu "')
-                                initCode:Append(bar:Name)
-                                initCode:AppendLine('" — add sub-items manually')
-                            ENDIF
-                        ENDIF
-                    NEXT
-                    // Wire vfpClick — 1-based, separators excluded
-                    LOCAL barIndex := 0 AS INT
-                    FOREACH VAR bar IN pad:Childs
-                        IF bar:PROMPT != "\-"
-                            barIndex++
-                            IF !String.IsNullOrEmpty(bar:COMMAND) .OR. !String.IsNullOrEmpty(bar:PROCEDURE)
-                                initCode:Append("oPopup:Bars[")
-                                initCode:Append(barIndex:ToString())
-                                initCode:Append(']:vfpClick := "')
-                                initCode:Append(bar:Name)
-                                initCode:Append('"')
-                                initCode:Append(Environment.NewLine)
-                            ENDIF
-                        ENDIF
-                    NEXT
+                    SELF:AppendPopupInit( initCode, pad:Childs, "oPopup" )
                     initCode:AppendLine("oPad:Popup := oPopup")
                 ENDIF
                 initCode:Append(Environment.NewLine)
             NEXT
             RETURN initCode:ToString()
+
+        // Recursive helper: emits AddBar calls, sub-popup wiring and vfpClick
+        // assignments for a list of bars into an already-declared popup variable.
+        PRIVATE METHOD AppendPopupInit( code AS StringBuilder, bars AS List<MNXItem>, popupVar AS STRING ) AS VOID
+            // Pass 1 — AddBar + sub-popups
+            FOREACH VAR bar IN bars
+                IF bar:PROMPT == "\-"
+                    code:Append(popupVar)
+                    code:Append(':AddBar( "')
+                    code:Append(bar:Name)
+                    code:AppendLine('", "--" )')
+                ELSE
+                    code:Append(popupVar)
+                    code:Append(':AddBar( "')
+                    code:Append(bar:Name)
+                    code:Append('", "')
+                    code:Append(bar:PROMPT)
+                    code:AppendLine('" )')
+                    IF bar:Childs:Count > 0
+                        // Sub-menu: create a named popup variable and recurse
+                        LOCAL subVar := "oPopup_" + bar:Name AS STRING
+                        code:Append("LOCAL ")
+                        code:Append(subVar)
+                        code:AppendLine(" AS XSharp.VFP.UI.Popup")
+                        code:Append(subVar)
+                        code:AppendLine(" := XSharp.VFP.UI.Popup{}")
+                        SELF:AppendPopupInit( code, bar:Childs, subVar )
+                        // Attach sub-popup to the bar (barIndex tracked below via Bars[])
+                        // We reference by name since AddBar registered it as a dynamic property
+                        code:Append(popupVar)
+                        code:Append(':')
+                        code:Append(bar:Name)
+                        code:Append(':Popup := ')
+                        code:AppendLine(subVar)
+                    ENDIF
+                ENDIF
+            NEXT
+            // Pass 2 — wire vfpClick for action bars (non-separator, no sub-menu)
+            LOCAL barIndex := 0 AS INT
+            FOREACH VAR bar IN bars
+                IF bar:PROMPT != "\-"
+                    barIndex++
+                    IF bar:Childs:Count == 0
+                        IF !String.IsNullOrEmpty(bar:COMMAND) .OR. !String.IsNullOrEmpty(bar:PROCEDURE)
+                            code:Append(popupVar)
+                            code:Append(":Bars[")
+                            code:Append(barIndex:ToString())
+                            code:Append(']:vfpClick := "')
+                            code:Append(bar:Name)
+                            code:AppendLine('"')
+                        ENDIF
+                    ENDIF
+                ENDIF
+            NEXT
 
         PROTECTED METHOD ProcessEvents( itemList AS List<MNXItem> ) AS STRING
             LOCAL eventCode AS StringBuilder

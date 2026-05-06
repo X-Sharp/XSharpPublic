@@ -17,9 +17,9 @@ PROPERTY BoundTo AS LOGIC AUTO
 PROPERTY FirstElement AS LONG AUTO
 METHOD IndexToItemID(nIndex as LONG) AS LONG
 RETURN -1
-PROPERTY ItemBackColor AS LONG AUTO
+PROPERTY ItemBackColor AS System.Drawing.Color AUTO
 PROPERTY ItemData AS LONG AUTO
-PROPERTY ItemForeColor AS LONG AUTO
+PROPERTY ItemForeColor AS System.Drawing.Color AUTO
 // Todo: ItemIDData property
 //PROPERTY ItemIDData[nItemId as LONG] AS LONG AUTO
 
@@ -37,8 +37,8 @@ METHOD RemoveListItem(nIndex AS LONG) AS VOID
 		//PROPERTY SelectedID[nItem AS LONG] AS LOGIC GET SET
 
 
-PROPERTY SelectedItemBackColor AS LONG AUTO
-PROPERTY SelectedItemForeColor AS LONG AUTO
+PROPERTY SelectedItemBackColor AS System.Drawing.Color AUTO
+PROPERTY SelectedItemForeColor AS System.Drawing.Color AUTO
 
 #endif
 

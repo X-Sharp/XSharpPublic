@@ -2,13 +2,11 @@
 #include "VFPControl.xh"
 #ifndef VFP_ITEMS_XH
 #define VFP_ITEMS_XH
-PROPERTY BorderColor AS LONG AUTO
+PROPERTY BorderColor AS System.Drawing.Color AUTO
 
-[System.ComponentModel.DefaultValue(0)];
-PROPERTY DisabledBackColor AS LONG AUTO
+PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
-[System.ComponentModel.DefaultValue(0)];
-PROPERTY DisabledForeColor AS LONG AUTO
+PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
 
 PROPERTY DisabledEditItemBackColor AS LONG AUTO
@@ -18,7 +16,7 @@ PROPERTY IncrementalSearch AS LOGIC AUTO
 PROPERTY NewIndex AS LONG AUTO GET
 PROPERTY NewItemID AS LONG AUTO
 PROPERTY NumberOfElements AS LONG AUTO
-PROPERTY SelectedBackColor AS LONG AUTO
-PROPERTY SelectedForeColor AS LONG AUTO
+PROPERTY SelectedBackColor AS System.Drawing.Color AUTO
+PROPERTY SelectedForeColor AS System.Drawing.Color AUTO
 #endif
 

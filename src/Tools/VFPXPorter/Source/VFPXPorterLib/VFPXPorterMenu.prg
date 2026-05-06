@@ -265,42 +265,6 @@ BEGIN NAMESPACE VFPXPorterLib
             NEXT
             RETURN sb:ToString()
 
-        PROTECTED METHOD ProcessDeclarations( itemList AS List<MNXItem>, typeList AS Dictionary<STRING,STRING[]> ) AS STRING
-            LOCAL declaration AS StringBuilder
-            declaration := StringBuilder{}
-            //
-            FOREACH VAR menuItem IN itemList
-                //
-                IF SELF:Canceled
-                    RETURN ""
-                ENDIF
-                SELF:UpdateProgress()
-                //
-                LOCAL itemClassName AS STRING
-                itemClassName := "unknown"
-                // set default item ClassName and apply conversion
-                IF ( menuItem:OBJTYPE == MenuObjType.Menu ) .OR. ( menuItem:OBJTYPE == MenuObjType.SdiMenu )
-                    itemClassName := "xsPorterMenuStrip"
-                ELSEIF ( menuItem:OBJTYPE == MenuObjType.Item )
-                    itemClassName := "xsPorterMenuItem"
-                    IF menuItem:PROMPT == "\-"
-                        itemClassName := "xsPorterMenuSeparator"
-                    ENDIF
-                ENDIF
-                itemClassName := SELF:ConvertClassName( itemClassName, typeList )
-                // The Class will exist also in a .MPR version, so members must be visible, so PROTECT instead of PRIVATE
-                declaration:Append("PROTECTED ")
-                declaration:Append(menuItem:GeneratedName)
-                declaration:Append(" AS ")
-                declaration:Append(itemClassName)
-                declaration:Append(Environment.NewLine)
-                //
-                IF menuItem:Childs:Count > 0
-                    declaration:Append(SELF:ProcessDeclarations( menuItem:Childs, typeList  ))
-                ENDIF
-            NEXT
-            RETURN declaration:ToString()
-
         PROTECTED METHOD ProcessInits( itemList AS List<MNXItem> ) AS STRING
             LOCAL initCode AS StringBuilder
             initCode := StringBuilder{}

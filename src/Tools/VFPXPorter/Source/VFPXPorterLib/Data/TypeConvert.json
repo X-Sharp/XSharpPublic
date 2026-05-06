@@ -133,20 +133,5 @@
     "ContextMenu",
     "false",
     "false"
-  ],
-  "xsPorterMenuStrip": [
-    "System.Windows.Forms.MenuStrip",
-    "false",
-    "true"
-  ],
-  "xsPorterMenuItem": [
-    "System.Windows.Forms.ToolStripMenuItem",
-    "false",
-    "false"
-  ],
-  "xsPorterMenuSeparator": [
-    "System.Windows.Forms.ToolStripSeparator",
-    "false",
-    "false"
   ]
 }

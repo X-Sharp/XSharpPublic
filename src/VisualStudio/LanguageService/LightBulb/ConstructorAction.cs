@@ -71,7 +71,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return Task.FromResult<object>(null);
         }
 
-      
+
         public override string DisplayText
         {
             get
@@ -150,7 +150,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 String indent = new string(' ', indentSize);
                 //
                 StringBuilder insertText = new StringBuilder();
-                
+
                 //
                 if (_fieldsNProps == null)
                 {
@@ -169,7 +169,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 {
                     CtorParamsDlg dlg = new CtorParamsDlg();
                     dlg.FillMembers(_fieldsNProps);
-                    if ( dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK )
+                    if (dlg.ShowDialog() == true)
                     {
                         insertText.Append(prefix);
                         insertText.Append("PUBLIC ");
@@ -179,17 +179,18 @@ namespace XSharp.LanguageService.Editors.LightBulb
                         List<String> usedParams = new List<string>();
                         string ctorDef = "";
                         int max = dlg.FieldsNProps.Count;
-                        foreach ( var mbr in dlg.FieldsNProps)
+                        foreach (var mbr in dlg.FieldsNProps)
                         {
                             insertText.Append(" ");
-                            // xxx AS xsType
-                            string paramDef = mbr.Prototype.Trim( new char[] { '_' });
                             // xxx
-                            string paramName = paramDef.Substring(0,paramDef.IndexOf(' '));
-                            // AS xsType
-                            paramDef = paramDef.Substring(paramName.Length);
+                            string paramName = mbr.Name;
+                            if ( XLiterals.IsKeyword(paramName))
+                            {
+                                paramName = "@@" + paramName;
+                            }
+                            string paramType = mbr.TypeName;
                             string candidate = paramName;
-                            while ( usedParams.Contains(candidate.ToLower()))
+                            while (usedParams.Contains(candidate.ToLower()))
                             {
                                 int seq = 1;
                                 candidate = paramName + "_" + seq.ToString();
@@ -198,9 +199,10 @@ namespace XSharp.LanguageService.Editors.LightBulb
                             usedParams.Add(paramName.ToLower());
                             //
                             insertText.Append(paramName);
-                            insertText.Append(paramDef);
+                            insertText.Append(" AS ");
+                            insertText.Append(paramType);
                             max--;
-                            if ( max > 0)
+                            if (max > 0)
                                 insertText.Append(",");
                             //
                             insertCode.Append(prefix);
@@ -215,7 +217,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                                 ctorDef += ",";
                         }
                         // Does this Constructor already exist ?
-                        if ( _existingCtor.FindIndex(x => string.Compare(x, ctorDef, true) == 0) == -1 )
+                        if (_existingCtor.FindIndex(x => string.Compare(x, ctorDef, true) == 0) == -1)
                         {
                             //
                             insertText.Append(" )");

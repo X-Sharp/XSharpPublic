@@ -31,7 +31,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				RETURN SELF:DataPropertyName
 			END GET
 			SET
-				SELF:DataPropertyName := IIF( VALUE == NULL, "", VALUE )
+				LOCAL fieldName := IIF( VALUE == NULL, "", VALUE ) AS STRING
+				IF fieldName:IndexOf(".") > 0
+					fieldName := fieldName:Substring(fieldName:IndexOf(".") + 1)
+				ENDIF
+				SELF:DataPropertyName := fieldName
 			END SET
 		END PROPERTY
 

@@ -121,7 +121,7 @@
 
       <!--This will be on the ToolMenu in the ToolMenuGroup-->
       <Button guid="guidProjectPackage" id="idXporter" priority="0x0100" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Redo" />
+        <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -133,7 +133,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idVOXporter" priority="0x0100" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Redo" />
+        <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -157,7 +157,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idFoxXporter" priority="0x0100" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Redo" />
+        <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -271,7 +271,7 @@
         </Strings>
       </Button>
       <Button guid="guidVOFormEditorCmdSet" id="cmdIdXsTabOrder" priority="0x0400" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Redo" />
+        <Icon guid="ImageCatalogGuid" id="Tab" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
@@ -397,7 +397,7 @@
 
 
       <Button guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0400" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Redo" />
+        <Icon guid="ImageCatalogGuid" id="Transform" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>

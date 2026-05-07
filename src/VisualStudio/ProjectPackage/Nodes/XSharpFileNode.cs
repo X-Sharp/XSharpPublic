@@ -40,26 +40,21 @@ namespace XSharp.Project
 
         static XSharpFileNode()
         {
-            AddExtension(".prg", KnownMonikers.Script);
-            AddExtension(".prgx", KnownMonikers.Script);
-            AddExtension(".xs", KnownMonikers.Script);
-            AddExtension(".ppo", KnownMonikers.Script);
-            AddExtension(".vh", KnownMonikers.Script);
-            AddExtension(".xh", KnownMonikers.Script);
-            AddExtension(".ch", KnownMonikers.Script);
-            AddExtension(".vnfrm", KnownMonikers.FormInstance);
-            AddExtension(".xsfrm", KnownMonikers.FormInstance);
-            AddExtension(".vndbs", KnownMonikers.Database);
-            AddExtension(".vnmnu", KnownMonikers.MainMenuControl);
-            AddExtension(".xsmnu", KnownMonikers.MainMenuControl);
-            AddExtension(".xsdbs", KnownMonikers.Database);
-            AddExtension(".vnfs", KnownMonikers.ValidationRule);
-            AddExtension(".xsfs", KnownMonikers.ValidationRule);
-            AddExtension(".xssql", KnownMonikers.Database);
-            AddExtension(".xsrep", KnownMonikers.Report);
-            AddExtension(".vnsqs", KnownMonikers.Database);
-            AddExtension(".vnrep", KnownMonikers.Report);
+            AddExtensions(KnownMonikers.Script, ".prg", ".prgx", ".xs", ".ppo", ".vh", ".xh", ".ch");
+            AddExtensions(KnownMonikers.FormInstance, ".vnfrm", ".xsfrm");
+            AddExtensions(KnownMonikers.Database, ".vndbs", ".xsdbs", ".xssql", ".vnsqs");
+            AddExtensions(KnownMonikers.MainMenuControl, ".vnmnu", ".xsmnu");
+            AddExtensions(KnownMonikers.ValidationRule, ".vnfs", ".xsfs");
+            AddExtensions(KnownMonikers.Report, ".xsrep", ".vnrep");
             AddExtension(".xaml", KnownMonikers.WPFFile);
+        }
+
+        private static void AddExtensions(ImageMoniker moniker, params string[] extensions)
+        {
+            foreach (string extension in extensions)
+            {
+                AddExtension(extension, moniker);
+            }
         }
 
         /// <summary>

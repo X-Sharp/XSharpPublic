@@ -40,16 +40,16 @@ namespace XSharp.Project
 
         static XSharpFileNode()
         {
-            AddExtensions(KnownMonikers.Script, ".prg", ".prgx", ".xs", ".ppo", ".vh", ".xh", ".ch");
-            AddExtensions(KnownMonikers.FormInstance, ".vnfrm", ".xsfrm");
-            AddExtensions(KnownMonikers.Database, ".vndbs", ".xsdbs", ".xssql", ".vnsqs");
-            AddExtensions(KnownMonikers.MainMenuControl, ".vnmnu", ".xsmnu");
-            AddExtensions(KnownMonikers.ValidationRule, ".vnfs", ".xsfs");
-            AddExtensions(KnownMonikers.Report, ".xsrep", ".vnrep");
+            MapExtensionsToMoniker(KnownMonikers.Script, ".prg", ".prgx", ".xs", ".ppo", ".vh", ".xh", ".ch");
+            MapExtensionsToMoniker(KnownMonikers.FormInstance, ".vnfrm", ".xsfrm");
+            MapExtensionsToMoniker(KnownMonikers.Database, ".vndbs", ".xsdbs", ".xssql", ".vnsqs");
+            MapExtensionsToMoniker(KnownMonikers.MainMenuControl, ".vnmnu", ".xsmnu");
+            MapExtensionsToMoniker(KnownMonikers.ValidationRule, ".vnfs", ".xsfs");
+            MapExtensionsToMoniker(KnownMonikers.Report, ".xsrep", ".vnrep");
             AddExtension(".xaml", KnownMonikers.WPFFile);
         }
 
-        private static void AddExtensions(ImageMoniker moniker, params string[] extensions)
+        private static void MapExtensionsToMoniker(ImageMoniker moniker, params string[] extensions)
         {
             foreach (string extension in extensions)
             {

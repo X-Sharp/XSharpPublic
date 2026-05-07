@@ -925,9 +925,10 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return this.Node.ProjectMgr.ProjectFolder;
+                return this.Node.ProjectMgr.ProjectFolder+System.IO.Path.DirectorySeparatorChar.ToString();
             }
         }
+
 
         [SRCategoryAttribute(SR.Misc)]
         [LocDisplayName(SR.ProjectFile)]
@@ -985,20 +986,16 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        [Browsable(false)]
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.FullPath)]
+        [SRDescriptionAttribute(SR.FullPathDescription)]
+        [AutomationBrowsable(false)]
         public string FullPath
         {
             get
             {
-                string fullPath = this.Node.ProjectMgr.ProjectFolder;
-                if(!fullPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-                {
-                    return fullPath + Path.DirectorySeparatorChar;
-                }
-                else
-                {
-                    return fullPath;
-                }
+                var prj = this.Node.ProjectMgr;
+                return IO.Path.Combine(prj.ProjectFolder, prj.ProjectFile);
             }
         }
         #endregion

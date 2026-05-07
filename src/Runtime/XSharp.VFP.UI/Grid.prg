@@ -139,46 +139,38 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY RecordSource AS STRING
             SET
                 IF !String.IsNullOrEmpty( VALUE )
-                    IF SELF:DesignMode
-                        _nameOfTable := VALUE
-                    ELSE
-                        TRY
-                            VAR current := DbGetSelect()
-                            IF DbSelectArea( VALUE )
-                                SELF:_nameOfTable := VALUE
-                                SELF:_currentSource := DbDataSource()
-                                IF SELF:_currentSource != NULL
-                                    SELF:_currentSource:ShowDeleted := SELF:_showDeleted
-                                    SELF:_currentSource:ShowRecno := FALSE
-                                    DbSelectArea( current )
-                                    // Now attach the DataTable to the DataGridView as DataSource
-                                    SELF:_bindingSource := System.Windows.Forms.BindingSource{}
-                                    SELF:_bindingSource:DataSource := SELF:_currentSource
-                                    SELF:DataSource := SELF:_bindingSource
-                                    //
-                                    SELF:CreateDataColumns()
-                                ENDIF
-                            ENDIF
-                        CATCH
-                            NOP
-                        END TRY
+                    SELF:_nameOfTable := VALUE
+                    IF !SELF:DesignMode
+                        SELF:ApplyRecordSource()
                     ENDIF
-                    //
                 ENDIF
             END SET
-
             GET
-                IF SELF:DesignMode
-                    RETURN _nameOfTable
-                ELSE
-                    IF _currentSource != NULL
-                        RETURN _nameOfTable
-                    ENDIF
-                    RETURN String.Empty
-                ENDIF
+                RETURN IIF( String.IsNullOrEmpty(SELF:_nameOfTable), String.Empty, SELF:_nameOfTable )
             END GET
-
         END PROPERTY
+
+        METHOD ApplyRecordSource() AS VOID
+            IF String.IsNullOrEmpty(SELF:_nameOfTable) .OR. SELF:_currentSource != NULL
+                RETURN
+            ENDIF
+            TRY
+                VAR current := DbGetSelect()
+                IF DbSelectArea( SELF:_nameOfTable )
+                    SELF:_currentSource := DbDataSource()
+                    IF SELF:_currentSource != NULL
+                        SELF:_currentSource:ShowDeleted := SELF:_showDeleted
+                        SELF:_currentSource:ShowRecno := FALSE
+                        DbSelectArea( current )
+                        SELF:_bindingSource := System.Windows.Forms.BindingSource{}
+                        SELF:_bindingSource:DataSource := SELF:_currentSource
+                        SELF:DataSource := SELF:_bindingSource
+                        SELF:CreateDataColumns()
+                    ENDIF
+                ENDIF
+            CATCH
+                NOP
+            END TRY
 
         /// <summary>
         ///
@@ -222,29 +214,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY RowHeight AS INT GET SELF:RowTemplate:Height SET SELF:RowTemplate:Height := VALUE
 
         PROTECTED METHOD CreateDataColumns() AS VOID
-            IF SELF:DataSource != NULL
-                IF SELF:DataSource IS BindingSource VAR BngSrc
-                    IF BngSrc:DataSource IS DbDataSource VAR DbfDataSource
-                        //
-                        VAR _oRDD := (IRdd)DbfDataSource:SyncRoot
-                        //
-                        LOCAL f AS INT
-                        LOCAL fieldCount := _oRDD:FieldCount AS LONG
-                        // If ColumnCount < FieldCount
-                        IF fieldCount > SELF:ColumnCount
-                            SELF:_SetColumnCount( fieldCount )
-                        ENDIF
-                        FOR f:=1 UPTO fieldCount
-                            LOCAL oCol    AS Column
-                            // Get the existing Column, and Set it's value
-                            oCol := (Column)SELF:Columns[ f-1 ]
-                            oCol:DataPropertyName := _oRDD:FieldName(f)
-                            oCol:HeaderText := _oRDD:FieldName(f)
-                            oCol:Name := _oRDD:FieldName(f)
-                        NEXT
+            // Set HeaderText for columns that have DataPropertyName bound via ControlSource.
+            // Never auto-generate columns — VFP grids always have explicit column definitions.
+            LOCAL f AS INT
+            FOR f := 1 UPTO SELF:ColumnCount
+                LOCAL oCol AS Column
+                oCol := (Column)SELF:Columns[ f-1 ]
+                IF !String.IsNullOrEmpty( oCol:DataPropertyName )
+                    IF String.IsNullOrEmpty( oCol:HeaderText ) .OR. oCol:HeaderText == oCol:Name
+                        oCol:HeaderText := oCol:DataPropertyName
                     ENDIF
                 ENDIF
-            ENDIF
+            NEXT
 
 
         PRIVATE _VFPAfterRowColChange AS VFPOverride

@@ -78,10 +78,8 @@ namespace XSharp.Project
         public const int idFramework4 = 0x7014;
         public const int DebugTargetMenuControllerGroup = 0x1000;
         public const int DebugTargetMenuControllerFooterGroup = 0x2000;
-        public const int bmpProject = 0x0001;
         public const int bmpXSharp = 0x0002;
         public const int bmpVO = 0x0007;
-        public const int bmpTabOrder = 0x000D;
         public const int bmpFoxPro = 0x000E;
         public const int IDM_IF_TOOLBAR_FORMAT = 0x0601;
         public const int IDG_IF_KEYBOARD = 0x0320;

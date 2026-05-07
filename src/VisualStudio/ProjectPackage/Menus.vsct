@@ -121,8 +121,7 @@
 
       <!--This will be on the ToolMenu in the ToolMenuGroup-->
       <Button guid="guidProjectPackage" id="idXporter" priority="0x0100" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Export" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <CommandName>&amp;Export a Vulcan.NET Project</CommandName>
@@ -133,8 +132,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idVOXporter" priority="0x0100" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Export" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="guidImages" id="bmpVO" />
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <CommandName>E&amp;xport a Visual Objects Project</CommandName>
@@ -157,8 +155,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idFoxXporter" priority="0x0100" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Export" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="guidImages" id="bmpFoxPro" />
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <CommandName>Export a Visual &amp;FoxPro Project</CommandName>
@@ -271,8 +268,7 @@
         </Strings>
       </Button>
       <Button guid="guidVOFormEditorCmdSet" id="cmdIdXsTabOrder" priority="0x0400" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Tab" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="ImageCatalogGuid" id="ReorderList" />
         <CommandFlag>IconAndText</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -397,8 +393,7 @@
 
 
       <Button guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0400" type="Button">
-        <Icon guid="ImageCatalogGuid" id="Transform" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -424,8 +419,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idAddDesignerFile" priority="0x0400" type="Button">
-        <Icon guid="ImageCatalogGuid" id="WindowsForm" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -442,6 +436,9 @@
         </Strings>
       </Button>
     </Buttons>
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" />
+    </Bitmaps>
   </Commands>
   <CommandPlacements>
     <!--Group for Tools XSharp Menu-->
@@ -592,6 +589,11 @@
       <IDSymbol name="DebugTargetMenuControllerFooterGroup" value="0x2000" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidImages" value="{9f1c712d-4803-4aff-9153-28b74c34e1bf}">
+      <IDSymbol name="bmpXSharp" value="2" />
+      <IDSymbol name="bmpVO" value="7" />
+      <IDSymbol name="bmpFoxPro" value="14" />
+    </GuidSymbol>
     <!--
     Next symbols are defined by Visual Studio
     They are defined in the file WinformsDesignerMenus.vsct  that you can find

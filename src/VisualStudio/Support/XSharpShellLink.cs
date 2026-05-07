@@ -1,5 +1,7 @@
 ﻿using Community.VisualStudio.Toolkit;
 
+//using EnvDTE;
+
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -10,6 +12,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -288,6 +291,7 @@ namespace XSharp.Support
         }
         private void SolutionEvents_OnBeforeCloseSolution()
         {
+            _projects.Clear();
             Logger.SingleLine();
             Logger.Information("Closing solution: " + solutionName);
             Logger.SingleLine();
@@ -364,12 +368,21 @@ namespace XSharp.Support
             Logger.SingleLine();
             Logger.Information("Opened project: " + project.FullPath ?? "");
             Logger.SingleLine();
+            if (!_projects.ContainsKey(project.FullPath))
+            {
+                _projects.TryAdd(project.FullPath, project);
+            }
+
         }
         private void SolutionEvents_OnAfterLoadProject(Project project)
         {
             Logger.SingleLine();
             Logger.Information("Loaded project: " + project.FullPath ?? "");
             Logger.SingleLine();
+            if (! _projects.ContainsKey(project.FullPath))
+            {
+                _projects.TryAdd(project.FullPath, project);
+            }
         }
 
         private void SolutionEvents_OnBeforeUnloadProject(Project project)
@@ -377,6 +390,11 @@ namespace XSharp.Support
             Logger.SingleLine();
             Logger.Information("Unloading project: " + project.FullPath ?? "");
             Logger.SingleLine();
+            if (_projects.ContainsKey(project.FullPath))
+            {
+                _projects.TryRemove(project.FullPath, out _);
+            }
+
         }
 
         private void SolutionEvents_OnBeforeCloseProject(Project project)
@@ -384,6 +402,11 @@ namespace XSharp.Support
             Logger.SingleLine();
             Logger.Information("Closing project: " + project.FullPath ?? "");
             Logger.SingleLine();
+            if (_projects.ContainsKey(project.FullPath))
+            {
+                _projects.TryRemove(project.FullPath, out _);
+            }
+
         }
 
         private void SolutionEvents_OnAfterRenameProject(Project project)
@@ -391,6 +414,8 @@ namespace XSharp.Support
             Logger.SingleLine();
             Logger.Information("Renamed project: " + project?.FullPath ?? "");
             Logger.SingleLine();
+
+
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
@@ -401,6 +426,10 @@ namespace XSharp.Support
             else
                 Logger.Information("Opening folder: " + projectFileName ?? "");
             Logger.SingleLine();
+            if (_projects.ContainsKey(projectFileName))
+            {
+                _projects.TryRemove(projectFileName, out _);
+            }
         }
 
 
@@ -451,10 +480,16 @@ namespace XSharp.Support
         #endregion
 
 
+        public ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
+
         public object FindProject(string sUrl)
         {
+            if (_projects.ContainsKey(sUrl))
+                return _projects[sUrl];
             var sol = VS.Solutions.GetCurrentSolution();
-            return findProject(sol, sUrl);
+            var prj = findProject(sol, sUrl);
+            _projects.TryAdd(sUrl, prj);
+            return prj;
         }
         private Project findProject(SolutionItem parent, string sUrl)
         {

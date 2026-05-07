@@ -40,7 +40,7 @@ namespace XSharp.Project
 
         static XSharpFileNode()
         {
-            MapExtensionsToMoniker(KnownMonikers.Script, ".prg", ".prgx", ".xs", ".ppo", ".vh", ".xh", ".ch");
+            //MapExtensionsToMoniker(KnownMonikers.Script, ".prg", ".prgx", ".xs", ".ppo", ".vh", ".xh", ".ch");
             MapExtensionsToMoniker(KnownMonikers.FormInstance, ".vnfrm", ".xsfrm");
             MapExtensionsToMoniker(KnownMonikers.Database, ".vndbs", ".xsdbs", ".xssql", ".vnsqs");
             MapExtensionsToMoniker(KnownMonikers.MainMenuControl, ".vnmnu", ".xsmnu");
@@ -96,7 +96,10 @@ namespace XSharp.Project
                 if (IsForm || IsUserControl || IsNonMemberItem)
                     return true;
 #if DEV17
-                return base.SupportsIconMonikers || !File.Exists(this.Url);
+                //return base.SupportsIconMonikers || !File.Exists(this.Url);
+                if (!File.Exists(this.Url))
+                    return true;
+                return false;
 #else
                 return base.SupportsIconMonikers;
 #endif

@@ -40,19 +40,21 @@ namespace XSharp.Project
 
         static XSharpFileNode()
         {
-            AddExtension(".vnfrm", KnownMonikers.FormInstance);
-            AddExtension(".xsfrm", KnownMonikers.FormInstance);
-            AddExtension(".vndbs", KnownMonikers.Database);
-            AddExtension(".vnmnu", KnownMonikers.MainMenuControl);
-            AddExtension(".xsmnu", KnownMonikers.MainMenuControl);
-            AddExtension(".xsdbs", KnownMonikers.Database);
-            AddExtension(".vnfs", KnownMonikers.ValidationRule);
-            AddExtension(".xsfs", KnownMonikers.ValidationRule);
-            AddExtension(".xssql", KnownMonikers.Database);
-            AddExtension(".xsrep", KnownMonikers.Report);
-            AddExtension(".vnsqs", KnownMonikers.Database);
-            AddExtension(".vnrep", KnownMonikers.Report);
+            MapExtensionsToMoniker(KnownMonikers.Script, ".prg", ".prgx", ".xs", ".ppo", ".vh", ".xh", ".ch");
+            MapExtensionsToMoniker(KnownMonikers.FormInstance, ".vnfrm", ".xsfrm");
+            MapExtensionsToMoniker(KnownMonikers.Database, ".vndbs", ".xsdbs", ".xssql", ".vnsqs");
+            MapExtensionsToMoniker(KnownMonikers.MainMenuControl, ".vnmnu", ".xsmnu");
+            MapExtensionsToMoniker(KnownMonikers.ValidationRule, ".vnfs", ".xsfs");
+            MapExtensionsToMoniker(KnownMonikers.Report, ".xsrep", ".vnrep");
             AddExtension(".xaml", KnownMonikers.WPFFile);
+        }
+
+        private static void MapExtensionsToMoniker(ImageMoniker moniker, params string[] extensions)
+        {
+            foreach (string extension in extensions)
+            {
+                AddExtension(extension, moniker);
+            }
         }
 
         /// <summary>
@@ -94,9 +96,7 @@ namespace XSharp.Project
                 if (IsForm || IsUserControl || IsNonMemberItem)
                     return true;
 #if DEV17
-                if (!File.Exists(this.Url))
-                    return true;
-                return false;
+                return base.SupportsIconMonikers || !File.Exists(this.Url);
 #else
                 return base.SupportsIconMonikers;
 #endif

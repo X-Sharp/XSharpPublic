@@ -163,8 +163,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 						fieldName := fieldName.Substring(fieldName:IndexOf(".")+1)
 					ENDIF
 					IF ds != NULL
-						// Always "Text"...We may have to change that
-						sender.DataBindings.Add( Binding{ "Text", ds , fieldName } )
+						LOCAL propName AS STRING
+						DO CASE
+						CASE sender IS System.Windows.Forms.CheckBox
+							propName := "Checked"
+						CASE sender IS System.Windows.Forms.NumericUpDown
+							propName := "Value"
+						CASE sender IS System.Windows.Forms.ComboBox
+							propName := "SelectedValue"
+						CASE sender IS System.Windows.Forms.ListBox
+							propName := "SelectedValue"
+						OTHERWISE
+							propName := "Text"
+						END CASE
+						sender.DataBindings.Add( Binding{ propName, ds , fieldName } )
+					ENDIF
+				NEXT
+				// Apply Grid RecordSources now that tables are open
+				FOREACH VAR ctrl IN SELF:Controls
+					IF ctrl IS Grid VAR grid
+						grid:ApplyRecordSource()
 					ENDIF
 				NEXT
 			ENDIF

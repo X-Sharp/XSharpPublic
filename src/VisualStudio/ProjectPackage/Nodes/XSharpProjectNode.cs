@@ -10,6 +10,8 @@ using EnvDTE;
 
 using Microsoft.Build.Execution;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
@@ -80,6 +82,7 @@ namespace XSharp.Project
             dependencies.Add(".vh", ".prg");
             dependencies.Add(".xh", ".prg");
             dependencies.Add(".resx", ".prg");
+#if !DEV17
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
@@ -87,6 +90,7 @@ namespace XSharp.Project
             catch (Exception)
             {
             }
+#endif
             _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
@@ -98,7 +102,9 @@ namespace XSharp.Project
 
         #region Fields
         private XSharpProjectPackage package;
+#if !DEV17
         private static ImageList imageList;
+#endif
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
         XSharpModel.XProject projectModel;
@@ -119,7 +125,9 @@ namespace XSharp.Project
             this.package = package;
             _cachedProjectProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
+#if !DEV17
             InitializeImageList();
+#endif
             InitializeCATIDs();
 
             // Used by (at least) the AddFromTemplate in order (for eg) to have Form1.Designer.Prg depending on Form1.prg
@@ -250,6 +258,7 @@ namespace XSharp.Project
         #region Properties
 
         internal bool IsLoading => isLoading;
+#if !DEV17
         /// <summary>
         /// Gets or sets the image list.
         /// </summary>
@@ -265,6 +274,7 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
+#endif
         /// <summary>
         /// Gets the XSharpPackage instance for this project.
         /// </summary>
@@ -347,6 +357,11 @@ namespace XSharp.Project
         /// </summary>
         /// <value></value>
         /// <returns></returns>
+ #if DEV17
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.Application;
+        public override int ImageIndex => HierarchyNode.NoImage;
+ #else
         public override int ImageIndex
         {
             get
@@ -354,6 +369,7 @@ namespace XSharp.Project
                 return imageOffset;
             }
         }
+ #endif
 
         public override object Object
         {
@@ -1419,6 +1435,7 @@ namespace XSharp.Project
         }
 
 
+ #if !DEV17
         private void InitializeImageList()
         {
             imageOffset = this.ImageHandler.ImageList.Images.Count;
@@ -1428,6 +1445,7 @@ namespace XSharp.Project
                 this.ImageHandler.AddImage(img);
             }
         }
+ #endif
         /// <summary>
         /// Factory method for reference container node
         /// </summary>

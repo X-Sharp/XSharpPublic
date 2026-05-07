@@ -10,6 +10,8 @@
  * ***************************************************************************/
 
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -180,11 +182,21 @@ namespace Microsoft.VisualStudio.Project
         {
             return null;
         }
-
+        #if DEV17
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            return KnownMonikers.ReferenceGroup;
+        }
+        #endif
 
         public override object GetIconHandle(bool open)
         {
+            #if DEV17
+            return base.GetIconHandle(open);
+            #else
             return this.ProjectMgr.ImageHandler.GetIconHandle(open ? (int)ProjectNode.ImageName.OpenReferenceFolder : (int)ProjectNode.ImageName.ReferenceFolder);
+            #endif
         }
 
 

@@ -40,6 +40,13 @@ namespace XSharp.Project
 
         static XSharpFileNode()
         {
+            AddExtension(".prg", KnownMonikers.Script);
+            AddExtension(".prgx", KnownMonikers.Script);
+            AddExtension(".xs", KnownMonikers.Script);
+            AddExtension(".ppo", KnownMonikers.Script);
+            AddExtension(".vh", KnownMonikers.Script);
+            AddExtension(".xh", KnownMonikers.Script);
+            AddExtension(".ch", KnownMonikers.Script);
             AddExtension(".vnfrm", KnownMonikers.FormInstance);
             AddExtension(".xsfrm", KnownMonikers.FormInstance);
             AddExtension(".vndbs", KnownMonikers.Database);
@@ -94,9 +101,7 @@ namespace XSharp.Project
                 if (IsForm || IsUserControl || IsNonMemberItem)
                     return true;
 #if DEV17
-                if (!File.Exists(this.Url))
-                    return true;
-                return false;
+                return base.SupportsIconMonikers || !File.Exists(this.Url);
 #else
                 return base.SupportsIconMonikers;
 #endif

@@ -263,8 +263,7 @@
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(Targetpath)" "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
@@ -274,7 +273,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
+    <PostBuildEvent>copy "$(Targetpath)" "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

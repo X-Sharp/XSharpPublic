@@ -1,7 +1,7 @@
 ﻿// CodeConverter.prg
 // Created by    : fabri
 // Creation Date : 1/11/2021 2:06:32 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -11,7 +11,7 @@ USING System.Text
 USING System.IO
 
 BEGIN NAMESPACE VFPXPorterLib
-	
+
 	/// <summary>
 	/// The CodeConverter class.
 	/// Provide several methods to convert some VFP code to XSharp
@@ -25,14 +25,14 @@ BEGIN NAMESPACE VFPXPorterLib
 		PRIVATE _convertStatementOnlyIfLast AS LOGIC
 		PRIVATE _lineContent AS SortedDictionary<INT,STRING>
 
-			
+
 		PROPERTY Statements AS List<STRING> AUTO
 
 		PROPERTY VFPElements AS Dictionary<STRING,STRING> AUTO
 
 		PROPERTY ColorProperties AS List<STRING> AUTO
-			
-			
+
+
 		CONSTRUCTOR( ko AS LOGIC, cvtThisParent AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC )
 			SELF:_keepOriginal := ko
 			SELF:_convertThisParent := cvtThisParent
@@ -45,12 +45,12 @@ BEGIN NAMESPACE VFPXPorterLib
 			SELF:Statements := List<String>{}
 			SELF:VFPElements := Dictionary<STRING,STRING>{}
 			SELF:ColorProperties := List<STRING>{}
-			
+
 			// The lines of source code that will handle that Code
 		PROPERTY Source AS List<STRING> AUTO
-		
+
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="cdeBlock"></param>
 		PUBLIC METHOD ProcessEvent( cdeBlock AS EventCode ) AS VOID
@@ -85,14 +85,14 @@ BEGIN NAMESPACE VFPXPorterLib
 				ENDIF
 			ENDIF
 			// Now, add the original line as Comment, just before the changed one
-			IF SELF:_keepOriginal .AND. _lineContent:Count > 0 
+			IF SELF:_keepOriginal .AND. _lineContent:Count > 0
 				FOREACH VAR lineInfo IN _lineContent
 					SELF:Source:Insert( lineInfo:Key, "** VFPXPorter -=>" + lineInfo:Value)
 				NEXT
 			ENDIF
 			//
 			cdeBlock:Source := SELF:Source
-			
+
 		PUBLIC METHOD ProcessProcedure( sourceCode AS STRING, procedureName AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
 			SELF:CheckForProcedureName(procedureName)
@@ -132,7 +132,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							startLine := i
 						ENDIF
 					ENDIF
-				ENDIF  
+				ENDIF
 				// Change this.Parent to an impossible element, $$XSHARP$$
 				line := SELF:SearchAndReplace( startLine, line, "this.parent.", "$$XSHARP$$.", null )
 				// Now, Change this to $$XSHARP$$.<NameOfTheControl>
@@ -151,10 +151,10 @@ BEGIN NAMESPACE VFPXPorterLib
 				line := line:Replace( "$$XSHARP$$.", "THIS." )
 				//
 				SELF:Source[i] := line
-			NEXT			
+			NEXT
 			RETURN
-			
-			
+
+
 			// We will enumerate the lines of source code
 			// and change the "perspective" : FoxPro handler is from the Control perspective; .NET are from the Form perspective
 			// -> change this. to thisObject.
@@ -177,7 +177,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							startLine := i
 						ENDIF
 					ENDIF
-				ENDIF  
+				ENDIF
 				// Change this. to thisObject.
 				//line := SELF:SearchAndReplace( startLine, line, "this.", "thisObject.", null )
 				// Change Parent. to _Parent.
@@ -191,14 +191,14 @@ BEGIN NAMESPACE VFPXPorterLib
 			NEXT
 			RETURN
 		END METHOD
-		
+
 		// We will enumerate the lines of source code
 		PRIVATE METHOD ChangeStatement( ) AS VOID
 			LOCAL line AS STRING
 			LOCAL startLine := 0 AS INT
 			LOCAL toBeContinued := FALSE AS LOGIC
 			// First, process Parent Call
-			
+
 			FOR VAR i := 0 TO SELF:Source:Count-1
 				line := SELF:Source[i]
 				// TODO : Try to do this only once...will be three times faster...
@@ -212,7 +212,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							startLine := i
 						ENDIF
 					ENDIF
-				ENDIF  
+				ENDIF
 				// Change Statement to Statement
 				FOREACH VAR statement IN SELF:Statements
 					line := SELF:SearchAndReplace( startLine, line, statement, statement+"()", null, true, SELF:_convertStatementOnlyIfLast )
@@ -220,10 +220,10 @@ BEGIN NAMESPACE VFPXPorterLib
 				//
 				SELF:Source[i] := line
 			NEXT
-			
+
 			RETURN
 		END METHOD
-		
+
 		/// <summary>
 		/// Search for a String and replace it by something else.
 		/// Take care we don't have a letter or an underscore before the searched string
@@ -349,8 +349,8 @@ BEGIN NAMESPACE VFPXPorterLib
 			END TRY
 			//
 			RETURN line
-			
-			
+
+
 		PRIVATE METHOD CheckForProcedureName(procedureName AS STRING) AS VOID
 			LOCAL isComment := FALSE AS LOGIC
 			LOCAL needPrototype := TRUE AS LOGIC
@@ -366,7 +366,7 @@ BEGIN NAMESPACE VFPXPorterLib
 						isComment := TRUE
 					ENDIF
 					LOOP
-				ELSEIF currentLine:StartsWith("#")		
+				ELSEIF currentLine:StartsWith("#")
 					LOOP
 				ENDIF
 				IF isComment
@@ -374,8 +374,8 @@ BEGIN NAMESPACE VFPXPorterLib
 						isComment := TRUE
 					ELSE
 						isComment := FALSE
-					ENDIF					
-					LOOP				
+					ENDIF
+					LOOP
 				ENDIF
 				IF currentLine:StartsWith("PROCEDURE ") .OR. currentLine:StartsWith("FUNCTION ")
 					needPrototype := FALSE
@@ -389,7 +389,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:Source:Insert( 0, "** VFPXPorter -=> Add procedure name." )
 				SELF:Source:Insert( 0, "PROCEDURE " + procedureName )
 			ENDIF
-			
+
 		// Returns the index of the first && comment that is not inside a string literal,
 		// starting search at startPos. Returns -1 if none found.
 		PRIVATE METHOD FindComment( line AS STRING, startPos AS INT ) AS INT
@@ -439,7 +439,7 @@ BEGIN NAMESPACE VFPXPorterLib
 						RETURN -1   // rest of line is comment
 					ENDIF
 					amp := TRUE
-					i++ ; LOOP
+                    i++ ; LOOP
 				ELSE
 					amp := FALSE
 				ENDIF
@@ -494,7 +494,6 @@ BEGIN NAMESPACE VFPXPorterLib
 				ENDIF
 				dotPos := i
 				RETURN rhsStart
-				i++
 			ENDDO
 			RETURN -1
 
@@ -539,12 +538,12 @@ BEGIN NAMESPACE VFPXPorterLib
 				code:AppendLine( line )
 			NEXT
 			RETURN code:ToString()
-			
-			
+
+
 	END CLASS
-	
+
 	CLASS ReverseInt IMPLEMENTS IComparer<INT>
-		
+
 		PUBLIC METHOD Compare( x AS INT, y AS INT ) AS INT
 			IF ( x > y )
 				RETURN -1
@@ -555,6 +554,6 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			RETURN 0
 	END CLASS
-	
-	
+
+
 END NAMESPACE // VFPXPorterLib

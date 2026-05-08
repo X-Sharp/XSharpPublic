@@ -113,25 +113,22 @@ BEGIN NAMESPACE VFPXPorterLib
                                 // Tell that Parent, he has a child
                                 parent:Childs:Add( itm )
                             ELSE
-                                VAR parentName := itm:Parent:ToLower()
-                                // Ok, or the parent doesn't exist, or it "might" be a Grid....
-                                IF parentName:Contains( ".grid" )
-                                    // This is certainly a Header, or a TextBox, inside a Column
-                                    // ok, extract the Grid name
-                                    VAR gridName := String.Empty
-                                    VAR startG := parentName:IndexOf( ".grid" )
-                                    VAR endG := parentName:IndexOf( ".", startG+5 ) // +5 == ".grid":Length
-                                    IF ( endG > -1 )
-                                        gridName := parentName:Substring( startG+1, endG - startG -1 )
+                                // No direct parent record found — the parent path contains a virtual
+                                // container (Grid Column, PageFrame Page, etc.) that has no SCX record.
+                                // Walk backwards through the path until a real ancestor is found.
+                                VAR parentPath := itm:Parent
+                                DO WHILE !String.IsNullOrEmpty( parentPath )
+                                    VAR ancestor := tmpitems:Find( { it => String.Compare(it:FullName, parentPath, TRUE) == 0 })
+                                    IF ancestor != NULL
+                                        ancestor:Childs:Add( itm )
+                                        EXIT
                                     ENDIF
-                                    // Do it again
-                                    parent := tmpitems:Find( { it => String.Compare(it:Name, gridName, TRUE) == 0 })
-                                    // Yes !
-                                    IF ( parent != NULL )
-                                        // Tell that Parent, he has a child
-                                        parent:Childs:Add( itm )
+                                    VAR lastDot := parentPath:LastIndexOf('.')
+                                    IF lastDot < 0
+                                        EXIT
                                     ENDIF
-                                ENDIF
+                                    parentPath := parentPath:Substring(0, lastDot)
+                                ENDDO
                             ENDIF
                         ENDIF
                     NEXT

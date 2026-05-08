@@ -1112,68 +1112,48 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROTECTED METHOD GenerateGrids( Grids AS List<SCXVCXItem> ) AS StringBuilder
             VAR columnSettings := StringBuilder{}
-            VAR locals := List<STRING>{}
-            LOCAL ctrlRules AS Dictionary<STRING,STRING>
             FOREACH VAR grid IN Grids
-                // Todo : If we have more than one grid, prefix the Column Setting with the Grid Name ??
-                // Column settings are Childs of the Grid
+                // grid:Childs contains column sub-controls (Header, TextBox, Spinner …)
+                // whose PARENT path ends with ".Column<n>" pointing to a virtual column.
                 FOREACH VAR subItem IN grid:Childs
-                    LOCAL columnSetting AS SCXVCXItem
-                    columnSetting := (SCXVCXItem) subItem
-                    columnSetting:ConvertClassName( SELF:_typeList )
-                    // Set of Rules
-                    ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, columnSetting:FullyQualifiedFoxClassName )
-                    columnSetting:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
-                    // Var Already defined ?
-                    IF !locals:Contains( columnSetting:Name:ToLower() )
-                        columnSettings:Append("LOCAL ")
-                        columnSettings:Append(columnSetting:Name)
-                        columnSettings:Append(" AS ")
-                        // NameSpace addition ??
-                        columnSettings:Append(columnSetting:FullyQualifiedName)
-                        columnSettings:Append(Environment.NewLine)
-                        //
-                        locals:Add( columnSetting:Name:ToLower() )
+                    LOCAL child AS SCXVCXItem
+                    child := (SCXVCXItem) subItem
+                    // Resolve which column this child belongs to
+                    LOCAL colIndex AS INT
+                    IF !SELF:TryGetColumnIndex( child:Parent, OUT colIndex )
+                        LOOP
                     ENDIF
-                    //
-                    columnSettings:Append(columnSetting:Name)
-                    columnSettings:Append(" := ")
-                    columnSettings:Append(columnSetting:ClassName)
-                    columnSettings:Append("{}")
-                    columnSettings:Append(Environment.NewLine)
-                    //
-                    // true => to get the Item name: true => as Local, so no SELF prefix
-                    columnSettings:Append( columnSetting:ApplyPropertiesRules( TRUE, TRUE ) )
-                    // The parentName contains the Grid and the Column, on form of form1.grid1.column1
-                    // so extract the grid and column grid1.column1
-                    VAR gridName := String.Empty
-                    VAR startG := columnSetting:Parent:ToLower():IndexOf( ".grid" )
-                    gridName := columnSetting:Parent:Substring( startG+1 )
-                    // then turn it to grid1.column(1)
-                    VAR columnNumber := StringBuilder{}
-                    FOR VAR i := gridName:Length-1 TO 0 STEP -1
-                        IF !Char.IsDigit( gridName[i] )
-                            gridName := gridName:Substring( 0, i+1 )
-                            EXIT
-                        ELSE
-                            columnNumber:Insert( 0, gridName[i] )
+                    // Header → emit HeaderText from VFP Caption
+                    IF String.Compare( child:BaseClassName, "header", TRUE ) == 0
+                        IF child:PropertiesDict:ContainsKey("Caption")
+                            VAR caption := child:PropertiesDict["Caption"]
+                            IF !String.IsNullOrEmpty(caption) .AND. caption != "Nil"
+                                columnSettings:Append("SELF:")
+                                columnSettings:Append(grid:Name)
+                                columnSettings:Append(":Column(")
+                                columnSettings:Append(colIndex:ToString())
+                                columnSettings:Append("):HeaderText := ")
+                                columnSettings:AppendLine(caption)
+                            ENDIF
                         ENDIF
-                    NEXT
-                    //
-                    columnSettings:Append("SELF:")
-                    columnSettings:Append(gridName)
-                    columnSettings:Append("(")
-                    columnSettings:Append(columnNumber:ToString())
-                    columnSettings:Append("):")
-                    columnSettings:Append(columnSetting:BASECLASS)
-                    columnSettings:Append(" := ")
-                    columnSettings:Append(columnSetting:Name)
-                    columnSettings:Append(Environment.NewLine)
-                    columnSettings:Append(Environment.NewLine)
+                    ENDIF
                 NEXT
             NEXT
-            //
             RETURN columnSettings
+        END METHOD
+
+        // Returns TRUE and sets colIndex when parentPath ends with ".Column<n>".
+        PRIVATE METHOD TryGetColumnIndex( parentPath AS STRING, colIndex OUT INT ) AS LOGIC
+            colIndex := 0
+            IF String.IsNullOrEmpty(parentPath)
+                RETURN FALSE
+            ENDIF
+            VAR lastDot := parentPath:LastIndexOf('.')
+            VAR lastSeg := IIF( lastDot >= 0, parentPath:Substring(lastDot + 1), parentPath )
+            IF lastSeg:Length > 6 .AND. lastSeg:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                RETURN Int32.TryParse( lastSeg:Substring(6), OUT colIndex )
+            ENDIF
+            RETURN FALSE
         END METHOD
 
 

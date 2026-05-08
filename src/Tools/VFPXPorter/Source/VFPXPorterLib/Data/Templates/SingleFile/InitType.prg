@@ -35,11 +35,15 @@ PUBLIC CONSTRUCTOR( InitParamsList ) CLIPPER
 	PreInitializeComponent()
 	InitializeComponent()
 	InitContainers()
+	InitGrids()
 	SetDataEnvironment()
 	<@userdefProps@>
 
 METHOD InitContainers() AS Void
 	<@InitContainers@>
+
+METHOD InitGrids() AS VOID
+	<@InitGrids@>
 
 	<@EventHandlers@>
 

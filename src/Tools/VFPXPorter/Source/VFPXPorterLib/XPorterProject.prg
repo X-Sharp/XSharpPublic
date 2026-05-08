@@ -26,14 +26,20 @@ BEGIN NAMESPACE VFPXPorterLib
     CLASS XPorterProject
 
 
-
+        /// <summary>
+        /// File path to the .pjx file to process
+        /// </summary>
         PRIVATE pjxFilePath AS STRING
+
+        /// <summary>
+        /// Output "Root" Folder where the generated files will be stored
+        /// </summary>
         PRIVATE outputPath AS STRING
 
         PROPERTY Project AS VFPProject AUTO
 
         /// <summary>
-        /// Folder where all "injected" files are
+        /// Folder where all "injected" files are coming from (like the StartBlock, or any helper Tools)
         /// </summary>
         PROPERTY ToolsFolder AS STRING AUTO
 
@@ -57,13 +63,10 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY CurrentFileName AS STRING AUTO GET PRIVATE SET
 
-        PROPERTY SolutionPath AS STRING AUTO
-
-
-        CONSTRUCTOR( filePath AS STRING, destPath AS STRING )
+        CONSTRUCTOR( projectFullFilePath AS STRING, destinationRootFolder AS STRING )
             //
-            SELF:pjxFilePath := filePath
-            SELF:outputPath := destPath
+            SELF:pjxFilePath := projectFullFilePath
+            SELF:outputPath := destinationRootFolder
             //
             SELF:ToolsFolder := XPorterSettings.ToolsFolder
             SELF:StartBlockFile := XPorterSettings.StartFile
@@ -621,19 +624,20 @@ BEGIN NAMESPACE VFPXPorterLib
                 VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj")
                 // Save the MSBuild file for the Libraries
                 xsLibs:Save( libProjPath, stdDef )
+                // Per default the Solution is one level Up to the OutputPath, so we need to set the relative path to the Libs Project
                 LOCAL relativeLibPath AS STRING
                 IF SELF:Settings:PlaceSolutionInSameDirectory
                     relativeLibPath := "ClassLibraries.xsproj"
                 ELSE
-                    relativeLibPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:pjxFilePath ), "ClassLibraries.xsproj")
+                    relativeLibPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:outputPath ), "ClassLibraries.xsproj")
                 ENDIF
                 // Set for Solution
                 xsLibs:RelativePath := relativeLibPath
             ENDIF
 
             // Now the Main Project
-            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )
-            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj")
+            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )     // The .pjx file
+            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj")  // the new xsproj file
 
             // The imported Project : We will add "App" at the end of the ProjectName to avoid conflicts in the Name Property
             VAR xsProj := VSProject{ projectName }
@@ -664,28 +668,21 @@ BEGIN NAMESPACE VFPXPorterLib
             // Save the MSBuild file for the "main" Project
             xsProj:Save( projectPath, stdDef )
 
-            LOCAL relativeProjPath AS STRING
-            IF SELF:Settings:PlaceSolutionInSameDirectory
-                relativeProjPath := projectName + ".xsproj"
-            ELSE
-                relativeProjPath := Path.Combine(projectName, projectName + ".xsproj")
-            ENDIF
-
             // Now the Solution
             VAR xsSolution := VSSolution{}
 
             LOCAL solutionBasePath AS STRING
-            IF String.IsNullOrWhiteSpace(SELF:SolutionPath)
-                solutionBasePath := String.Empty
+            IF SELF:Settings:PlaceSolutionInSameDirectory
+                solutionBasePath := SELF:outputPath
             ELSE
-                solutionBasePath := SELF:SolutionPath:TrimEnd(Path.DirectorySeparatorChar)
+                solutionBasePath := Path.GetDirectoryName( SELF:outputPath )  // One level up to the OutputPath
             ENDIF
 
             LOCAL solutionName AS STRING
             IF !String.IsNullOrWhiteSpace(SELF:Settings:SolutionName)
                 solutionName := SELF:Settings:SolutionName
             ELSE
-                solutionName := Path.GetFileName(solutionBasePath)
+                solutionName := projectName//Path.GetFileName(solutionBasePath)
             ENDIF
 
             VAR solutionFile := Path.Combine(solutionBasePath, solutionName + ".sln")
@@ -700,6 +697,12 @@ BEGIN NAMESPACE VFPXPorterLib
                 xsSolution:Projects:Remove(existing)
             ENDIF
 
+            LOCAL relativeProjPath AS STRING
+            IF SELF:Settings:PlaceSolutionInSameDirectory
+                relativeProjPath := projectName + ".xsproj"
+            ELSE
+                relativeProjPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:outputPath ), projectName + ".xsproj")
+            ENDIF
             xsProj:RelativePath := relativeProjPath
             xsSolution:Projects:Add( xsProj )
 

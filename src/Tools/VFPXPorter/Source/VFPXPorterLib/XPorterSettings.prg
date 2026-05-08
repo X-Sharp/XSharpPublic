@@ -71,6 +71,11 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY VFPElementsFile		AS STRING GET XPorterSettings.DataFolder + "\\VFP2WinForms.json"
 	PUBLIC STATIC PROPERTY ColorPropertiesFile	AS STRING GET XPorterSettings.DataFolder + "\\ColorProperties.json"
 
+    /// <summary>
+    /// The name of the file used as the main entry point of the generated project, containing the Main method that initializes and runs the application.
+    /// VFPStart.prg per default.
+    /// </summary>
+    /// <value></value>
 	PUBLIC STATIC PROPERTY StartFile				AS STRING GET XPorterSettings.OthersFolder + "\\VFPStart.prg"
 
 	PUBLIC STATIC PROPERTY MenuContainerFile		AS STRING GET XPorterSettings.MenuFolder + "\\MenuContainer.prg"

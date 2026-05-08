@@ -133,8 +133,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF !String.IsNullOrEmpty( SELF:Order )
 					OrdSetFocus( SELF:Order )
 				ENDIF
-				// Apply filter if specified
-				IF !String.IsNullOrEmpty( SELF:Filter )
+				// NoDataOnLoad: open empty — a later REQUERY() call loads the real data
+				IF SELF:NoDataOnLoad
+					DbSetFilter( , "1 = 0" )
+				ELSEIF !String.IsNullOrEmpty( SELF:Filter )
 					DbSetFilter( , SELF:Filter )
 				ENDIF
 			ELSE
@@ -175,8 +177,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF !String.IsNullOrEmpty( SELF:Order )
 					OrdSetFocus( SELF:Order )
 				ENDIF
-				// Apply filter if specified
-				IF !String.IsNullOrEmpty( SELF:Filter )
+				// NoDataOnLoad: open empty — a later REQUERY() call loads the real data
+				IF SELF:NoDataOnLoad
+					DbSetFilter( , "1 = 0" )
+				ELSEIF !String.IsNullOrEmpty( SELF:Filter )
 					DbSetFilter( , SELF:Filter )
 				ENDIF
 			ENDIF

@@ -175,10 +175,25 @@ BEGIN NAMESPACE VFPXPorterLib
                     XPorterLogger.Instance:Information( "High Level Items : "+ _Items:Count:ToString() )
                     //
                     VAR ent := SCXVCXEntity{ SELF }
+                    LOCAL dataEnvItem AS SCXVCXItem
+                    dataEnvItem := NULL
+                    LOCAL dataEnvAssigned AS LOGIC
+                    dataEnvAssigned := FALSE
                     FOREACH VAR itm IN SELF:_Items
                         IF ( String.Compare( itm:BaseClassName, "dataenvironment", TRUE ) == 0 )
-                            ent:DataEnvironment := itm
+                            // Store DataEnvironment for the first real form entity.
+                            // Do NOT assign to ent here — the current ent may become
+                            // a FormSet or other non-form entity.
+                            dataEnvItem := itm
                         ELSE
+                            // Assign DataEnvironment only to the first "form" entity.
+                            // In a simple SCX this is the only form.
+                            // In a FormSet SCX this targets Form1 (not the wrapper or siblings).
+                            IF dataEnvItem != NULL .AND. !dataEnvAssigned .AND. ;
+                               String.Compare( itm:BaseClassName, "form", TRUE ) == 0
+                                ent:DataEnvironment := dataEnvItem
+                                dataEnvAssigned := TRUE
+                            ENDIF
                             ent:Item := itm
                             ent:Analyze()
                             SELF:Entities:Add( ent )

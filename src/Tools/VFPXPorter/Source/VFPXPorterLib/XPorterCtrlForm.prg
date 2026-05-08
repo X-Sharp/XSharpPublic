@@ -536,7 +536,7 @@ BEGIN NAMESPACE VFPXPorterLib
             formInitReplacements["InitContainers"] := containerHandlers:ToString()
             VAR columnSettings := SELF:GenerateGrids( Grids )
             formInitReplacements["InitGrids"] := columnSettings:ToString()
-            formInitReplacements["setdataenvironment"] := IIF(oneItem:IsForm, setDataEnv:ToString(), "")
+            formInitReplacements["setdataenvironment"] := IIF(dataEnvItem != NULL, setDataEnv:ToString(), "")
             IF oneItem:UserDefItems != NULL
                 VAR userdefProp := StringBuilder{}
                 userdefProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 2 ))
@@ -887,7 +887,7 @@ BEGIN NAMESPACE VFPXPorterLib
              singleFileInitReplacements["addChildsToParent"] := addCtrl:ToString()
              singleFileInitReplacements["formProps"] := formProp:ToString()
              singleFileInitReplacements["userdefProps"] := userdefProp:ToString()
-             singleFileInitReplacements["setdataenvironment"] := IIF(oneItem:IsForm, setDataEnv:ToString(), "")
+             singleFileInitReplacements["setdataenvironment"] := IIF(dataEnvItem != NULL, setDataEnv:ToString(), "")
              // Add EventHandlers
              VAR handlers := StringBuilder{}
              FOREACH VAR subItem IN oneItem:Childs

@@ -313,6 +313,53 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 				ENDIF
 			NEXT
+			// Second pass: apply simple rename/removal rules to dotted child-property overrides.
+			// E.g. "BTN_EXIT.Caption" → "BTN_EXIT.Text" when the Caption→Text rule exists.
+			// Skips template (<@...@>), method-call (::/:), constructor, and positional (Column(1).X) keys.
+			VAR dotKeys := propList:Keys:Where({ k => k:IndexOf('.') > 0 }):ToList()
+			IF dotKeys:Count > 0
+				FOREACH VAR dotKey IN dotKeys
+					VAR dotPos := dotKey:LastIndexOf('.')
+					VAR dotPrefix := dotKey:Substring(0, dotPos + 1)   // "BTN_EXIT."
+					VAR dotSuffix := dotKey:Substring(dotPos + 1)      // "Caption"
+					// Skip positional/synthetic prefixes like "Column(1)." or "Button(1)."
+					IF dotPrefix:IndexOfAny( <CHAR>{'(', ')', '[', ']'} ) >= 0
+						LOOP
+					ENDIF
+					// Look for a matching rule for this suffix
+					FOREACH convRule AS KeyValuePair<STRING, STRING> IN ConversionList
+						IF convRule:Key:StartsWith("^")
+							LOOP
+						ENDIF
+						VAR ruleKey := convRule:Key
+						IF ruleKey:StartsWith("!")
+							ruleKey := ruleKey:Substring(1)
+						ENDIF
+						IF String.Compare(ruleKey, dotSuffix, TRUE) != 0
+							LOOP
+						ENDIF
+						// Skip complex rules: templates, method calls, constructors
+						IF convRule:Value:Contains("<@") .OR. convRule:Value:StartsWith(":") .OR. ;
+						   ( convRule:Value:EndsWith(")") .AND. convRule:Value:Contains("(") ) .OR. ;
+						   ( convRule:Value:EndsWith("}") .AND. convRule:Value:Contains("{") )
+							EXIT
+						ENDIF
+						VAR dotVal := propList[dotKey]
+						propList:Remove(dotKey)
+						IF !String.IsNullOrEmpty(convRule:Value)
+							// Simple rename — propagate !forceUsual marker if present in value
+							VAR ruleIsForce := convRule:Value:StartsWith("!")
+							VAR newSuffix := IIF(ruleIsForce, convRule:Value:Substring(1), convRule:Value)
+							VAR newDotKey := IIF(ruleIsForce, "!", "") + dotPrefix + newSuffix
+							IF !propList:ContainsKey(newDotKey)
+								propList:Add(newDotKey, dotVal)
+							ENDIF
+						ENDIF
+						// Empty rule value → removal (don't re-add)
+						EXIT
+					NEXT
+				NEXT
+			ENDIF
 			// After "conversion", the new Properties list is...
 			SELF:PropertiesDict := propList
 			RETURN

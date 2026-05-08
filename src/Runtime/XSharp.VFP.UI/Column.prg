@@ -89,13 +89,24 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── ColumnOrder ───────────────────────────────────────────────────────
+		// DisplayIndex can only be set after the column is added to a DataGridView.
+		// Store the requested value and apply it in OnDataGridViewChanged() if the
+		// column is not yet in a grid.
+
+		PRIVATE _pendingColumnOrder AS INT
+		PRIVATE _hasPendingColumnOrder AS LOGIC
 
 		PROPERTY ColumnOrder AS LONG
 			GET
 				RETURN SELF:DisplayIndex + 1  // VFP is 1-based
 			END GET
 			SET
-				SELF:DisplayIndex := VALUE - 1
+				IF SELF:DataGridView != NULL_OBJECT
+					SELF:DisplayIndex := VALUE - 1
+				ELSE
+					SELF:_pendingColumnOrder := VALUE
+					SELF:_hasPendingColumnOrder := TRUE
+				ENDIF
 			END SET
 		END PROPERTY
 
@@ -188,6 +199,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROTECTED OVERRIDE METHOD OnDataGridViewChanged() AS VOID STRICT
 			SUPER:OnDataGridViewChanged()
 			IF SELF:DataGridView != NULL_OBJECT
+				// Apply deferred ColumnOrder (DisplayIndex requires the column to be in a grid)
+				IF SELF:_hasPendingColumnOrder
+					SELF:DisplayIndex := SELF:_pendingColumnOrder - 1
+					SELF:_hasPendingColumnOrder := FALSE
+				ENDIF
 				// Wire CellFormatting for VFP format/mask support
 				SELF:DataGridView:CellFormatting += DataGridViewCellFormattingEventHandler{ SELF, @OnCellFormatting() }
 				// Wire ColumnHeaderMouseClick so Header.vfpClick fires

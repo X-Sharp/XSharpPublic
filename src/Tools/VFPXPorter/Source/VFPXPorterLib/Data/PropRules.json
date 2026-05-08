@@ -126,16 +126,45 @@
      "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
    },
 
-    "Grid": {
-      "^Column99": "Column(99)",
-      "Scrollbars": "VFPScrollbars",
-      "FrozenColumnCount": "::FreezeColumns(<@FrozenColumnCount@>)",
-      "AlternatingRowColor": ""
-     },
+     "Grid": {
+       "^Column99": "Column(99)",
+       "Scrollbars": "VFPScrollbars",
+       "FrozenColumnCount": "::FreezeColumns(<@FrozenColumnCount@>)",
+       "AlternatingRowColor": ""
+      },
 
-    "header": {
-      "HeaderColor": ""
-     },
+     "Column": {
+       "ControlSource": "ControlSource",
+       "Alignment": "Alignment",
+       "ColumnOrder": "ColumnOrder",
+       "Sparse": "Sparse",
+       "CurrentControl": "",
+       "Resizable": "Resizable",
+       "Format": "Format",
+       "InputMask": "InputMask",
+       "TextAlign": ""
+      },
+
+     "PageFrame": {
+       "PageCount": "PageCount",
+       "ActivePage": "ActivePage",
+       "TabOrientation": "TabOrientation",
+       "TabStyle": "TabStyle",
+       "TabStretch": "TabStretch",
+       "Tabs": "Tabs",
+       "Caption": "",
+       "^Page99": "Pages(99)"
+      },
+
+     "Page": {
+       "Caption": "Text",
+       "PageOrder": "PageOrder",
+       "BackStyle": "BackStyle"
+      },
+
+     "header": {
+       "HeaderColor": ""
+      },
 
     "Common": {
      "Caption": "Text",

@@ -212,6 +212,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				e:FormattingApplied := TRUE
 			ENDIF
 
+		// VFP CurrentControl: name of the active editing control inside this column.
+		// In WinForms the editing control is managed by DataGridView itself; this
+		// property is stored so generated code can assign it without compile errors.
+		PROPERTY CurrentControl AS STRING AUTO
+
+		// VFP Sparse: .T. = only the active cell shows its editing control;
+		// .F. = every cell in the column shows the control permanently.
+		// Maps to DataGridViewColumn.Frozen is NOT the right mapping — WinForms
+		// has no direct equivalent, so we store the value for completeness.
+		PROPERTY Sparse AS LOGIC AUTO := TRUE
+
 		// ── TextBox (configuration proxy) ────────────────────────────────────
 		// VFP Column.TextBox is the embedded editing control.
 		// WinForms equivalent is DataGridViewTextBoxEditingControl, accessible via

@@ -32,10 +32,16 @@
                       SelectedItem="{Binding Value, ElementName=root, Mode=TwoWay}"
                       MinWidth="200"/>
             <Button x:Name="resetButton"
-                    Style="{DynamicResource ResetButtonStyle}"
-                    Command="{Binding ResetCommand}"
-                    Margin="4,0,0,0"
-                    VerticalAlignment="Center"/>
+                Style="{DynamicResource ResetButtonStyle}"
+                Command="{Binding ResetCommand}"
+                Margin="4,0,0,0"
+                Width="16"
+                Height="16"
+                ToolTip="Reset value"
+                VerticalAlignment="Center">
+                <Image Source="/Settings.png" />
+            </Button>
+
         </StackPanel>
     </StackPanel>
 

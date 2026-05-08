@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					SELF:Alias := System.IO.Path.GetFileNameWithoutExtension( SELF:CursorSource )
 				ENDIF
 				// Open the Table
-				DbUseArea(TRUE, "DBFVFP", SELF:CursorSource , SELF:Alias )
+				DbUseArea(TRUE, "DBFVFP", SELF:CursorSource, SELF:Alias, !SELF:Exclusive, SELF:ReadOnly )
 				// And Attached the corresponding DataSource
 				LOCAL oResult := NULL AS OBJECT
 				IF CoreDb.Info(DBI_RDD_OBJECT,REF oResult)
@@ -128,6 +128,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					SELF:BindingSource:DataSource := DbDataSource{SELF:_oRDD}
 					// Do we have an Auto Refresh of the BindingSource if the underlying DataBase is moving/changing ??
 					//CoreDb.Notify += SELF:Notify
+				ENDIF
+				// Apply index order if specified
+				IF !String.IsNullOrEmpty( SELF:Order )
+					OrdSetFocus( SELF:Order )
+				ENDIF
+				// Apply filter if specified
+				IF !String.IsNullOrEmpty( SELF:Filter )
+					DbSetFilter( , SELF:Filter )
 				ENDIF
 			ELSE
 				// DBC table
@@ -156,12 +164,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 						SELF:CursorSource + ".dbf" )
 				ENDIF
 				// Open the table in its own work area
-				DbUseArea( TRUE, "DBFVFP", cFullPath, SELF:Alias )
+				DbUseArea( TRUE, "DBFVFP", cFullPath, SELF:Alias, !SELF:Exclusive, SELF:ReadOnly )
 				// Attach the DataSource
 				LOCAL oResult := NULL AS OBJECT
 				IF CoreDb.Info( DBI_RDD_OBJECT, REF oResult )
 					SELF:_oRDD := (IRdd) oResult
 					SELF:BindingSource:DataSource := DbDataSource{ SELF:_oRDD }
+				ENDIF
+				// Apply index order if specified
+				IF !String.IsNullOrEmpty( SELF:Order )
+					OrdSetFocus( SELF:Order )
+				ENDIF
+				// Apply filter if specified
+				IF !String.IsNullOrEmpty( SELF:Filter )
+					DbSetFilter( , SELF:Filter )
 				ENDIF
 			ENDIF
 

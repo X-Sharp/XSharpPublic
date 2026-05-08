@@ -75,6 +75,7 @@
   },
 
   "DataEnvironment": {
+    "InitialSelectedAlias": "InitialSelectedAlias",
     "Top": "",
     "Left": "",
     "Width": "",
@@ -82,8 +83,13 @@
   },
 
   "Cursor": {
+    "Alias": "Alias",
     "CursorSource": "CursorSource",
     "Database": "DataBase",
+    "Exclusive": "Exclusive",
+    "Filter": "Filter",
+    "Order": "Order",
+    "ReadOnly": "ReadOnly",
     "Location": "",
     "Width": "",
     "Height": "",

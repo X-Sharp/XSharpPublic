@@ -82,8 +82,8 @@
   },
 
   "Cursor": {
-    "CursorSource": "??<@CursorSource@>??",
-    "Database": "??<@Database@>??",
+    "CursorSource": "CursorSource",
+    "Database": "DataBase",
     "Location": "",
     "Width": "",
     "Height": "",

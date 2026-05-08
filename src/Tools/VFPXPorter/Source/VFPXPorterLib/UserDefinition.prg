@@ -33,7 +33,8 @@ BEGIN NAMESPACE VFPXPorterLib
 		PROPERTY Modifier AS Visibility AUTO
 		PROPERTY Kind AS ItemKind AUTO
 		PROPERTY Help AS STRING AUTO
-		
+		PROPERTY InitialValue AS STRING AUTO
+
 		PROPERTY Code AS BlockCode AUTO
 		
 		CONSTRUCTOR()
@@ -45,6 +46,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			SELF:Modifier := itemToCopy:Modifier
 			SELF:Kind := itemToCopy:Kind
 			SELF:Help := itemToCopy:Help
+			SELF:InitialValue := itemToCopy:InitialValue
 			IF itemToCopy:Code != NULL
 				SELF:Code := BlockCode{ itemToCopy:Code }
 			ENDIF
@@ -115,7 +117,27 @@ BEGIN NAMESPACE VFPXPorterLib
 				IF SELF:Kind == UserDefinition.ItemKind.Method
 					declaration:Append("()")
 				ENDIF
-				declaration:Append(" AS USUAL")
+				// Infer type from initial value when available
+				LOCAL inferredType AS STRING
+				inferredType := "USUAL"
+				IF SELF:Kind == UserDefinition.ItemKind.Field .AND. !String.IsNullOrEmpty(SELF:InitialValue)
+					LOCAL v AS STRING
+					v := SELF:InitialValue:Trim()
+					IF String.Compare(v, ".T.", TRUE) == 0 .OR. String.Compare(v, ".F.", TRUE) == 0
+						inferredType := "LOGIC"
+					ELSEIF v:StartsWith(e"\"") .OR. v:StartsWith("'") .OR. v:StartsWith("[")
+						inferredType := "STRING"
+					ELSE
+						LOCAL dummy AS LONG
+						LOCAL dummyD AS Double
+						IF Long.TryParse(v, OUT dummy)
+							inferredType := "LONG"
+						ELSEIF Double.TryParse(v, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, OUT dummyD)
+							inferredType := "DOUBLE"
+						ENDIF
+					ENDIF
+				ENDIF
+				declaration:Append(" AS " + inferredType)
 				//
 				IF SELF:Kind != UserDefinition.ItemKind.Method .AND. ;
 					!String.IsNullOrEmpty(SELF:Help)

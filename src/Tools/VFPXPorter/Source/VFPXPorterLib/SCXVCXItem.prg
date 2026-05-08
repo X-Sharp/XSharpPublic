@@ -210,6 +210,10 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 					// Just a simple one-to-one property replacement
 					IF propList:ContainsKey( conversionKey )
+						// Skip user-defined properties — PropRules must not rewrite them
+						IF SELF:UserDefItems != NULL .AND. SELF:UserDefItems:Find({ x => String.Compare(x:Name, conversionKey, TRUE) == 0 }) != NULL
+							LOOP
+						ENDIF
 						// For this element, retrieve the current FoxPro value
 						prop := propList:Item[ conversionKey ]
 						// Remove the current "Fox" Property

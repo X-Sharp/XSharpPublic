@@ -66,6 +66,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 FOREACH VAR line IN lines
                     item:UserDefItems:Add( UserDefinition{ line } )
                 NEXT
+                // Populate InitialValue for each field from the properties dictionary
+                FOREACH VAR userDef IN item:UserDefItems
+                    IF ( userDef:Kind == UserDefinition.ItemKind.Field .OR. userDef:Kind == UserDefinition.ItemKind.FieldArray ) .AND. ;
+                        item:PropertiesDict:ContainsKey( userDef:Name )
+                        userDef:InitialValue := item:PropertiesDict[ userDef:Name ]
+                    ENDIF
+                NEXT
                 // Do we have User Defined elements that belongs to this item ? ( Method, Field )
                 // If there, they are at least Protected (or more)
                 IF !String.IsNullOrEmpty(item:Protected)

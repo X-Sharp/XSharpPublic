@@ -9,6 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
+USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
@@ -58,11 +59,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF !String.IsNullOrEmpty( SELF:InitialSelectedAlias )
 				VAR selectedCursor := SELF[ SELF:InitialSelectedAlias ]
 				IF ( selectedCursor != NULL )
-					IF selectedCursor:IsFreeTable
-						DbSelectArea( SELF:InitialSelectedAlias )
-					ELSE
-						NOP
-					ENDIF
+					DbSelectArea( SELF:InitialSelectedAlias )
 				ENDIF
 			ELSE
 				IF SELF:Cursors:Count > 0
@@ -73,8 +70,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		METHOD DataEnvironment_FormClosing( sender AS OBJECT, e AS System.Windows.Forms.FormClosingEventArgs) AS VOID
 			//
 			IF SELF:AutoCloseTables
+				// First close all work areas
 				FOREACH cursor AS DbCursor IN Cursors
 					cursor:Close()
+				NEXT
+				// Then close each unique DBC that was used (once per distinct database file)
+				VAR closedDbs := HashSet<STRING>{ StringComparer.InvariantCultureIgnoreCase }
+				FOREACH cursor AS DbCursor IN Cursors
+					IF !cursor:IsFreeTable .AND. !String.IsNullOrEmpty( cursor:DataBase )
+						IF closedDbs:Add( cursor:DataBase )
+							// Look up by filename and close by logical name
+							VAR oDb := DbcManager.FindDatabase( cursor:DataBase )
+							IF oDb != NULL
+								DbcManager.Close( oDb:Name )
+							ENDIF
+						ENDIF
+					ENDIF
 				NEXT
 			ENDIF
 

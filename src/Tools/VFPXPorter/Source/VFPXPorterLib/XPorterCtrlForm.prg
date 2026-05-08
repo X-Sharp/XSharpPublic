@@ -227,6 +227,15 @@ BEGIN NAMESPACE VFPXPorterLib
                         EXIT
                     ENDIF
                     SELF:ConvertHandlerCode( subItem, typeList, eventList, sttmnts, vfpElts, colorProps, TRUE )
+                    // Also process children of non-grid containers (e.g., PageFrame page controls)
+                    IF String.Compare( subItem:BaseClassName, "grid", TRUE ) != 0 .AND. subItem:Childs:Count > 0
+                        FOREACH grandSubItem AS SCXVCXItem IN subItem:Childs
+                            IF SELF:Canceled
+                                EXIT
+                            ENDIF
+                            SELF:ConvertHandlerCode( grandSubItem, typeList, eventList, sttmnts, vfpElts, colorProps, TRUE )
+                        NEXT
+                    ENDIF
                 NEXT
                 IF SELF:Canceled
                     EXIT
@@ -493,6 +502,7 @@ BEGIN NAMESPACE VFPXPorterLib
             // Now, the Core-Code
             code := StringBuilder{SELF:FormInitType}
             //
+            VAR windowDescendants := SELF:CollectContainerDescendants( oneItem )
             LOCAL handlers AS StringBuilder
             handlers := StringBuilder{}
             FOREACH VAR subItem IN oneItem:Childs
@@ -502,6 +512,10 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
                 // Add EventHandlers
                 handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
+            NEXT
+            // Also add event handlers from container descendants
+            FOREACH VAR pair IN windowDescendants
+                handlers:AppendLine( SELF:BuildEventHandlers( pair:Item1 ) )
             NEXT
             IF SELF:Canceled
                 RETURN
@@ -524,6 +538,16 @@ BEGIN NAMESPACE VFPXPorterLib
                 // Grid ?
                 IF String.Compare( scxSubItem:BaseClassName, "grid", TRUE ) == 0
                     Grids:Add( scxSubItem )
+                ENDIF
+            NEXT
+            // Also collect containerHandlers and grids from descendants
+            FOREACH VAR pair IN windowDescendants
+                VAR scxDescItem := pair:Item1
+                IF scxDescItem:XPortedCode != NULL
+                    containerHandlers:Append( scxDescItem:CreateEventHandlers( TRUE, SELF:Settings ) )
+                ENDIF
+                IF String.Compare( scxDescItem:BaseClassName, "grid", TRUE ) == 0
+                    Grids:Add( scxDescItem )
                 ENDIF
             NEXT
             IF SELF:Canceled
@@ -607,6 +631,18 @@ BEGIN NAMESPACE VFPXPorterLib
                  declaration:Append(subItem:FullyQualifiedName)
                  declaration:Append(Environment.NewLine)
              NEXT
+             // Also declare descendants of non-grid containers (e.g., controls inside PageFrame pages)
+             VAR designerDescendants := SELF:CollectContainerDescendants( oneItem )
+             FOREACH VAR pair IN designerDescendants
+                 VAR scxDescItem := pair:Item1
+                 scxDescItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxDescItem:Name)
+                 declaration:Append(" AS ")
+                 declaration:Append(scxDescItem:FullyQualifiedName)
+                 declaration:Append(Environment.NewLine)
+             NEXT
              designerStartReplacements["childsDeclaration"] := declaration:ToString()
              code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:DesignerStartType, "DesignerStartType", designerStartReplacements)}
              dest:Write( code:ToString() )
@@ -643,6 +679,25 @@ BEGIN NAMESPACE VFPXPorterLib
                      controlStack:Push(scxSubItem:Name)
                  ENDIF
              NEXT
+             // Also instantiate and init descendants of non-grid containers
+             FOREACH VAR pair IN designerDescendants
+                 VAR scxDescItem := pair:Item1
+                 VAR descContainer := pair:Item2
+                 instantiate:Append("SELF:")
+                 instantiate:Append(scxDescItem:Name)
+                 instantiate:Append(" := ")
+                 instantiate:Append(scxDescItem:FullyQualifiedName)
+                 instantiate:Append("{}")
+                 instantiate:Append(Environment.NewLine)
+                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxDescItem:FullyQualifiedFoxClassName )
+                 scxDescItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 initChilds:Append( scxDescItem:ApplyPropertiesRules( TRUE ) )
+                 IF scxDescItem:XPortedCode != NULL
+                     initChilds:Append( scxDescItem:CreateEventHandlers( FALSE, SELF:Settings ) )
+                 ENDIF
+                 initChilds:Append("//")
+                 initChilds:Append(Environment.NewLine)
+             NEXT
              // Controls must be added in reverse order
              VAR addCtrl := StringBuilder{}
              WHILE controlStack:Count > 0
@@ -651,6 +706,11 @@ BEGIN NAMESPACE VFPXPorterLib
                  addCtrl:Append(")")
                  addCtrl:Append(Environment.NewLine)
              ENDDO
+             // Add page-level descendants to their virtual containers
+             FOREACH VAR pair IN designerDescendants
+                 addCtrl:Append( SELF:GetPageAddStatement( pair:Item1, pair:Item2 ) )
+                 addCtrl:Append(Environment.NewLine)
+             NEXT
              // Build replacements for DesignerInitType
              VAR designerInitReplacements := Dictionary<STRING, STRING>{}
              designerInitReplacements["childsInstantiate"] := instantiate:ToString()
@@ -802,6 +862,18 @@ BEGIN NAMESPACE VFPXPorterLib
                  declaration:Append(scxSubItem:FullyQualifiedName)
                  declaration:Append(Environment.NewLine)
              NEXT
+             // Also declare descendants of non-grid containers (e.g., controls inside PageFrame pages)
+             VAR descendants := SELF:CollectContainerDescendants( oneItem )
+             FOREACH VAR pair IN descendants
+                 VAR scxDescItem := pair:Item1
+                 scxDescItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxDescItem:Name)
+                 declaration:Append(" AS ")
+                 declaration:Append(scxDescItem:FullyQualifiedName)
+                 declaration:Append(Environment.NewLine)
+             NEXT
              // Declaration of User-Defined Properties (If Any)
              IF oneItem:UserDefItems != NULL
                  FOREACH VAR userDefItem IN oneItem:UserDefItems
@@ -877,6 +949,34 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
                 //
              NEXT
+             // Also process descendants of non-grid containers (e.g., controls in PageFrame pages)
+             FOREACH VAR pair IN descendants
+                 VAR scxDescItem := pair:Item1
+                 VAR container := pair:Item2
+                 IF SELF:Canceled
+                     EXIT
+                 ENDIF
+                 instantiate:Append("SELF:")
+                 instantiate:Append(scxDescItem:Name)
+                 instantiate:Append(" := ")
+                 instantiate:Append(scxDescItem:FullyQualifiedName)
+                 instantiate:Append("{}")
+                 instantiate:Append(Environment.NewLine)
+                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxDescItem:FullyQualifiedFoxClassName )
+                 scxDescItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 initChilds:Append( scxDescItem:ApplyPropertiesRules( TRUE ) )
+                 IF scxDescItem:XPortedCode != NULL
+                     initChilds:Append( scxDescItem:CreateEventHandlers( FALSE, SELF:Settings ) )
+                     containerHandlers:Append( scxDescItem:CreateEventHandlers( TRUE, SELF:Settings ) )
+                 ENDIF
+                 initChilds:Append("//")
+                 initChilds:Append(Environment.NewLine)
+                 addCtrl:Append( SELF:GetPageAddStatement( scxDescItem, container ) )
+                 addCtrl:Append(Environment.NewLine)
+                 IF String.Compare( scxDescItem:BaseClassName, "grid", TRUE ) == 0
+                     Grids:Add( scxDescItem )
+                 ENDIF
+             NEXT
              IF oneItem:XPortedCode != NULL
                  formProp:Append( oneItem:CreateEventHandlers( FALSE , SELF:Settings ) )
              ENDIF
@@ -893,6 +993,10 @@ BEGIN NAMESPACE VFPXPorterLib
              FOREACH VAR subItem IN oneItem:Childs
                  //
                  handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
+             NEXT
+             // Also collect event handlers from container descendants
+             FOREACH VAR pair IN descendants
+                 handlers:AppendLine( SELF:BuildEventHandlers( pair:Item1 ) )
              NEXT
              // Any event for the Form ?
              handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
@@ -1154,6 +1258,46 @@ BEGIN NAMESPACE VFPXPorterLib
                 RETURN Int32.TryParse( lastSeg:Substring(6), OUT colIndex )
             ENDIF
             RETURN FALSE
+        END METHOD
+
+        // Collect all non-virtual descendants of non-grid containers within item.
+        // Returns pairs of (descendant, real-parent-container).
+        // Grid sub-controls (column headers, edit controls) are excluded — they are virtual.
+        PRIVATE METHOD CollectContainerDescendants( item AS SCXVCXItem ) AS List<Tuple<SCXVCXItem,SCXVCXItem>>
+            VAR result := List<Tuple<SCXVCXItem,SCXVCXItem>>{}
+            FOREACH VAR subItem IN item:Childs
+                VAR child := (SCXVCXItem) subItem
+                IF String.Compare( child:BaseClassName, "grid", TRUE ) == 0
+                    LOOP
+                ENDIF
+                IF child:Childs:Count > 0
+                    FOREACH VAR grandSubItem IN child:Childs
+                        result:Add( Tuple.Create( (SCXVCXItem)grandSubItem, child ) )
+                    NEXT
+                ENDIF
+            NEXT
+            RETURN result
+        END METHOD
+
+        // Build the Controls:Add statement for a descendant whose direct parent is a virtual
+        // Page<n> inside the given real ancestor container.
+        PRIVATE METHOD GetPageAddStatement( child AS SCXVCXItem, ancestor AS SCXVCXItem ) AS STRING
+            VAR prefix := ancestor:FullName + "."
+            IF child:Parent:Length > prefix:Length .AND. child:Parent:StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                VAR virtualSeg := child:Parent:Substring(prefix:Length)
+                VAR dotPos := virtualSeg:IndexOf('.')
+                IF dotPos > 0
+                    virtualSeg := virtualSeg:Substring(0, dotPos)
+                ENDIF
+                IF virtualSeg:Length > 4 .AND. virtualSeg:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                    LOCAL pageNum AS INT
+                    IF Int32.TryParse( virtualSeg:Substring(4), OUT pageNum )
+                        RETURN "SELF:" + ancestor:Name + ":Page(" + pageNum:ToString() + "):Controls:Add(SELF:" + child:Name + ")"
+                    ENDIF
+                ENDIF
+                RETURN "SELF:" + ancestor:Name + ":Controls:Add(SELF:" + child:Name + ")"
+            ENDIF
+            RETURN "SELF:" + ancestor:Name + ":Controls:Add(SELF:" + child:Name + ")"
         END METHOD
 
 

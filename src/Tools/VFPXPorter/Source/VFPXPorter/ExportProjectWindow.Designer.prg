@@ -4,7 +4,7 @@
 //     Runtime version: 4.0.30319.42000
 //     Generator      : XSharp.CodeDomProvider 2.24.0.1
 //     Timestamp      : 28/12/2025 12:51:12
-//     
+//
 //     Changes to this file may cause incorrect behavior and may be lost if
 //     the code is regenerated.
 //  </auto-generated>
@@ -81,9 +81,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:label4	:=	System.Windows.Forms.Label{}
 			SELF:infoStrip:SuspendLayout()
 			SELF:SuspendLayout()
-			//	
+			//
 			//	label1
-			//	
+			//
 			SELF:label1:AutoSize	:=	true
 			SELF:label1:Location	:=	System.Drawing.Point{417, 10}
 			SELF:label1:Margin	:=	System.Windows.Forms.Padding{2, 0, 2, 0}
@@ -91,9 +91,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:label1:Size	:=	System.Drawing.Size{51, 13}
 			SELF:label1:TabIndex	:=	0
 			SELF:label1:Text	:=	"Analysis :"
-			//	
+			//
 			//	resultText
-			//	
+			//
 			SELF:resultText:Anchor	:=	((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 	;
 						| System.Windows.Forms.AnchorStyles.Left) 	;
 						| System.Windows.Forms.AnchorStyles.Right)))
@@ -106,9 +106,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:resultText:Size	:=	System.Drawing.Size{266, 223}
 			SELF:resultText:TabIndex	:=	1
 			SELF:resultText:WordWrap	:=	false
-			//	
+			//
 			//	exportButton
-			//	
+			//
 			SELF:exportButton:Location	:=	System.Drawing.Point{169, 231}
 			SELF:exportButton:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:exportButton:Name	:=	"exportButton"
@@ -117,9 +117,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:exportButton:Text	:=	"Export"
 			SELF:exportButton:UseVisualStyleBackColor	:=	true
 			SELF:exportButton:Click	+=	System.EventHandler{ SELF, @exportButton_Click() }
-			//	
+			//
 			//	label2
-			//	
+			//
 			SELF:label2:AutoSize	:=	true
 			SELF:label2:Location	:=	System.Drawing.Point{13, 53}
 			SELF:label2:Margin	:=	System.Windows.Forms.Padding{2, 0, 2, 0}
@@ -127,17 +127,17 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:label2:Size	:=	System.Drawing.Size{67, 13}
 			SELF:label2:TabIndex	:=	3
 			SELF:label2:Text	:=	"Input Project"
-			//	
+			//
 			//	pjxPathTextBox
-			//	
+			//
 			SELF:pjxPathTextBox:Location	:=	System.Drawing.Point{15, 70}
 			SELF:pjxPathTextBox:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:pjxPathTextBox:Name	:=	"pjxPathTextBox"
 			SELF:pjxPathTextBox:Size	:=	System.Drawing.Size{270, 20}
 			SELF:pjxPathTextBox:TabIndex	:=	0
-			//	
+			//
 			//	scxButton
-			//	
+			//
 			SELF:scxButton:Location	:=	System.Drawing.Point{289, 70}
 			SELF:scxButton:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:scxButton:Name	:=	"scxButton"
@@ -146,9 +146,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:scxButton:Text	:=	"..."
 			SELF:scxButton:UseVisualStyleBackColor	:=	true
 			SELF:scxButton:Click	+=	System.EventHandler{ SELF, @scxButton_Click() }
-			//	
+			//
 			//	outputButton
-			//	
+			//
 			SELF:outputButton:Location	:=	System.Drawing.Point{289, 118}
 			SELF:outputButton:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:outputButton:Name	:=	"outputButton"
@@ -157,27 +157,27 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:outputButton:Text	:=	"..."
 			SELF:outputButton:UseVisualStyleBackColor	:=	true
 			SELF:outputButton:Click	+=	System.EventHandler{ SELF, @outputButton_Click() }
-			//	
+			//
 			//	outputPathTextBox
-			//	
+			//
 			SELF:outputPathTextBox:Location	:=	System.Drawing.Point{15, 118}
 			SELF:outputPathTextBox:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:outputPathTextBox:Name	:=	"outputPathTextBox"
 			SELF:outputPathTextBox:Size	:=	System.Drawing.Size{270, 20}
 			SELF:outputPathTextBox:TabIndex	:=	2
-			//	
+			//
 			//	label3
-			//	
+			//
 			SELF:label3:AutoSize	:=	true
 			SELF:label3:Location	:=	System.Drawing.Point{13, 101}
 			SELF:label3:Margin	:=	System.Windows.Forms.Padding{2, 0, 2, 0}
 			SELF:label3:Name	:=	"label3"
 			SELF:label3:Size	:=	System.Drawing.Size{71, 13}
 			SELF:label3:TabIndex	:=	6
-			SELF:label3:Text	:=	"Output Folder"
-			//	
+			SELF:label3:Text	:=	"Project Output Folder"
+			//
 			//	analysisButton
-			//	
+			//
 			SELF:analysisButton:Location	:=	System.Drawing.Point{359, 27}
 			SELF:analysisButton:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:analysisButton:Name	:=	"analysisButton"
@@ -186,9 +186,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:analysisButton:Text	:=	"Analyze"
 			SELF:analysisButton:UseVisualStyleBackColor	:=	true
 			SELF:analysisButton:Click	+=	System.EventHandler{ SELF, @analysisButton_Click() }
-			//	
+			//
 			//	infoStrip
-			//	
+			//
 			SELF:infoStrip:ImageScalingSize	:=	System.Drawing.Size{20, 20}
 			SELF:infoStrip:Items:AddRange(<System.Windows.Forms.ToolStripItem>{ SELF:infoStripBar, SELF:infoStripLabel, SELF:infoStripError })
 			SELF:infoStrip:Location	:=	System.Drawing.Point{0, 263}
@@ -197,26 +197,26 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:infoStrip:Size	:=	System.Drawing.Size{695, 22}
 			SELF:infoStrip:TabIndex	:=	10
 			SELF:infoStrip:Text	:=	"statusStrip1"
-			//	
+			//
 			//	infoStripBar
-			//	
+			//
 			SELF:infoStripBar:Name	:=	"infoStripBar"
 			SELF:infoStripBar:Size	:=	System.Drawing.Size{75, 16}
-			//	
+			//
 			//	infoStripLabel
-			//	
+			//
 			SELF:infoStripLabel:Name	:=	"infoStripLabel"
 			SELF:infoStripLabel:Size	:=	System.Drawing.Size{0, 17}
-			//	
+			//
 			//	infoStripError
-			//	
+			//
 			SELF:infoStripError:ForeColor	:=	System.Drawing.Color.Red
 			SELF:infoStripError:IsLink	:=	true
 			SELF:infoStripError:Name	:=	"infoStripError"
 			SELF:infoStripError:Size	:=	System.Drawing.Size{0, 17}
-			//	
+			//
 			//	openButton
-			//	
+			//
 			SELF:openButton:Location	:=	System.Drawing.Point{229, 230}
 			SELF:openButton:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:openButton:Name	:=	"openButton"
@@ -225,17 +225,17 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:openButton:Text	:=	"Open"
 			SELF:openButton:UseVisualStyleBackColor	:=	true
 			SELF:openButton:Click	+=	System.EventHandler{ SELF, @openButton_Click() }
-			//	
+			//
 			//	backgroundExport
-			//	
+			//
 			SELF:backgroundExport:WorkerReportsProgress	:=	true
 			SELF:backgroundExport:WorkerSupportsCancellation	:=	true
 			SELF:backgroundExport:DoWork	+=	System.ComponentModel.DoWorkEventHandler{ SELF, @backgroundExport_DoWork() }
 			SELF:backgroundExport:ProgressChanged	+=	System.ComponentModel.ProgressChangedEventHandler{ SELF, @backgroundExport_ProgressChanged() }
 			SELF:backgroundExport:RunWorkerCompleted	+=	System.ComponentModel.RunWorkerCompletedEventHandler{ SELF, @backgroundExport_RunWorkerCompleted() }
-			//	
+			//
 			//	cancelBtn
-			//	
+			//
 			SELF:cancelBtn:Location	:=	System.Drawing.Point{109, 231}
 			SELF:cancelBtn:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:cancelBtn:Name	:=	"cancelBtn"
@@ -245,9 +245,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:cancelBtn:UseVisualStyleBackColor	:=	true
 			SELF:cancelBtn:Visible	:=	false
 			SELF:cancelBtn:Click	+=	System.EventHandler{ SELF, @cancelBtn_Click() }
-			//	
+			//
 			//	LabelType
-			//	
+			//
 			SELF:LabelType:AutoSize	:=	true
 			SELF:LabelType:Location	:=	System.Drawing.Point{12, 10}
 			SELF:LabelType:Margin	:=	System.Windows.Forms.Padding{2, 0, 2, 0}
@@ -255,9 +255,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:LabelType:Size	:=	System.Drawing.Size{70, 13}
 			SELF:LabelType:TabIndex	:=	14
 			SELF:LabelType:Text	:=	"Project Type:"
-			//	
+			//
 			//	TypeComboBox
-			//	
+			//
 			SELF:TypeComboBox:DropDownStyle	:=	System.Windows.Forms.ComboBoxStyle.DropDownList
 			SELF:TypeComboBox:FormattingEnabled	:=	true
 			SELF:TypeComboBox:Items:AddRange(<System.Object>{ "Windows EXE", "Class Library (DLL)", "Console App" })
@@ -265,9 +265,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:TypeComboBox:Name	:=	"TypeComboBox"
 			SELF:TypeComboBox:Size	:=	System.Drawing.Size{123, 21}
 			SELF:TypeComboBox:TabIndex	:=	15
-			//	
+			//
 			//	AppendCheckBox
-			//	
+			//
 			SELF:AppendCheckBox:AutoSize	:=	true
 			SELF:AppendCheckBox:Location	:=	System.Drawing.Point{143, 28}
 			SELF:AppendCheckBox:Name	:=	"AppendCheckBox"
@@ -275,9 +275,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:AppendCheckBox:TabIndex	:=	16
 			SELF:AppendCheckBox:Text	:=	"Append to existing Solution (.sln)"
 			SELF:AppendCheckBox:UseVisualStyleBackColor	:=	true
-			//	
+			//
 			//	PlaceSolutionInSameDirectory
-			//	
+			//
 			SELF:PlaceSolutionInSameDirectory:AutoSize	:=	true
 			SELF:PlaceSolutionInSameDirectory:Location	:=	System.Drawing.Point{16, 198}
 			SELF:PlaceSolutionInSameDirectory:Name	:=	"PlaceSolutionInSameDirectory"
@@ -285,17 +285,17 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:PlaceSolutionInSameDirectory:TabIndex	:=	17
 			SELF:PlaceSolutionInSameDirectory:Text	:=	"Place solution and project in the same directory"
 			SELF:PlaceSolutionInSameDirectory:UseVisualStyleBackColor	:=	true
-			//	
+			//
 			//	SolutionName
-			//	
+			//
 			SELF:SolutionName:Location	:=	System.Drawing.Point{16, 169}
 			SELF:SolutionName:Margin	:=	System.Windows.Forms.Padding{2}
 			SELF:SolutionName:Name	:=	"SolutionName"
 			SELF:SolutionName:Size	:=	System.Drawing.Size{270, 20}
 			SELF:SolutionName:TabIndex	:=	18
-			//	
+			//
 			//	label4
-			//	
+			//
 			SELF:label4:AutoSize	:=	true
 			SELF:label4:Location	:=	System.Drawing.Point{14, 152}
 			SELF:label4:Margin	:=	System.Windows.Forms.Padding{2, 0, 2, 0}
@@ -303,9 +303,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:label4:Size	:=	System.Drawing.Size{76, 13}
 			SELF:label4:TabIndex	:=	19
 			SELF:label4:Text	:=	"Solution Name"
-			//	
+			//
 			//	ExportProjectWindow
-			//	
+			//
 			SELF:AutoScaleDimensions	:=	System.Drawing.SizeF{6, 13}
 			SELF:AutoScaleMode	:=	System.Windows.Forms.AutoScaleMode.Font
 			SELF:ClientSize	:=	System.Drawing.Size{695, 285}
@@ -335,9 +335,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:infoStrip:PerformLayout()
 			SELF:ResumeLayout(false)
 			SELF:PerformLayout()
-		END METHOD 
+		END METHOD
 
         #endregion
 
-    END CLASS 
+    END CLASS
 END NAMESPACE

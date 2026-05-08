@@ -129,6 +129,11 @@ CLASS VSProject
     PUBLIC METHOD AddReference( refer AS Reference ) AS VOID
         SELF:ReferenceList:Add( refer )
 
+    /// <summary>
+    /// Save the XML document to the given path, using the project name and the standard definitions
+    /// </summary>
+    /// <param name="projectFileNameFullPath">The full path to the project file.</param>
+    /// <param name="stdDef">The standard definitions to use.</param>
     PUBLIC METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
         XmlDoc := XmlDocument{}
         //

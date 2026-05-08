@@ -10,7 +10,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN FALSE
 		PROPERTY Bound AS USUAL AUTO
 		// ColumnOrder implemented with real logic in Column.prg
-		PROPERTY CurrentControl AS STRING AUTO
 		PROPERTY DynamicAlignment AS LONG AUTO
 		PROPERTY DynamicBackColor AS LONG AUTO
 		PROPERTY DynamicCurrentControl AS STRING AUTO
@@ -29,7 +28,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY MouseIcon AS STRING AUTO
 		PROPERTY Movable  AS LOGIC AUTO
 		PROPERTY SelectOnEntry AS LOGIC AUTO
-		PROPERTY Sparse  AS LOGIC AUTO
 
 	END CLASS
 	END NAMESPACE

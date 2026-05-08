@@ -995,7 +995,7 @@ namespace Microsoft.VisualStudio.Project
             get
             {
                 var prj = this.Node.ProjectMgr;
-                return IO.Path.Combine(prj.ProjectFolder, prj.ProjectFile);
+                return System.IO.Path.Combine(prj.ProjectFolder, prj.ProjectFile);
             }
         }
         #endregion

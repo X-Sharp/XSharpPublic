@@ -426,9 +426,12 @@ namespace XSharp.Support
             else
                 Logger.Information("Opening folder: " + projectFileName ?? "");
             Logger.SingleLine();
-            if (_projects.ContainsKey(projectFileName))
+            if (!string.IsNullOrEmpty(projectFileName))
             {
-                _projects.TryRemove(projectFileName, out _);
+                if (_projects.ContainsKey(projectFileName))
+                {
+                    _projects.TryRemove(projectFileName, out _);
+                }
             }
         }
 

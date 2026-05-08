@@ -566,8 +566,11 @@ namespace XSharp.Project
         {
             if (automationobject == null)
             {
-                //automationobject = new OAXSharpProject(this);
+#if !DEV17
+                automationobject = new OAXSharpProject(this);
+#else
                 automationobject = new OAXSharpSdkProject(this);
+#endif
 
             }
             return automationobject;

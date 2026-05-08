@@ -9,6 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
+USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
@@ -129,9 +130,39 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					//CoreDb.Notify += SELF:Notify
 				ENDIF
 			ELSE
-                    NOP
-				// DBC
-				NOP
+				// DBC table
+				IF String.IsNullOrEmpty( SELF:Alias )
+					SELF:Alias := SELF:CursorSource
+				ENDIF
+				// Open the DBC — silently ignored if already open
+				DbcManager.Open( SELF:DataBase, TRUE, SELF:ReadOnly, FALSE )
+				// Resolve full .dbf path via the DBC metadata, fall back to DBC directory
+				LOCAL cFullPath AS STRING
+				LOCAL oDb AS DbcDatabase
+				oDb := DbcManager.FindDatabase( SELF:DataBase )
+				IF oDb != NULL
+					LOCAL oTable AS DbcTable
+					oTable := oDb:FindTable( SELF:CursorSource )
+					IF oTable != NULL .AND. !String.IsNullOrEmpty( oTable:Path )
+						cFullPath := oTable:Path
+					ELSE
+						cFullPath := System.IO.Path.Combine( ;
+							System.IO.Path.GetDirectoryName( SELF:DataBase ), ;
+							SELF:CursorSource + ".dbf" )
+					ENDIF
+				ELSE
+					cFullPath := System.IO.Path.Combine( ;
+						System.IO.Path.GetDirectoryName( SELF:DataBase ), ;
+						SELF:CursorSource + ".dbf" )
+				ENDIF
+				// Open the table in its own work area
+				DbUseArea( TRUE, "DBFVFP", cFullPath, SELF:Alias )
+				// Attach the DataSource
+				LOCAL oResult := NULL AS OBJECT
+				IF CoreDb.Info( DBI_RDD_OBJECT, REF oResult )
+					SELF:_oRDD := (IRdd) oResult
+					SELF:BindingSource:DataSource := DbDataSource{ SELF:_oRDD }
+				ENDIF
 			ENDIF
 
 		METHOD Close() AS VOID
@@ -141,8 +172,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				// Todo : Don't forget to remove the Notify EventHandler...
 				//CoreDb.Notify -= SELF:Notify
 			ELSE
-				NOP
-				// DBC
+				// DBC table — close work area only, not the DBC (may be shared by other cursors)
+				DbCloseArea( SELF:Alias )
 			ENDIF
 
 		METHOD Sync() AS VOID

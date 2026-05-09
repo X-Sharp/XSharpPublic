@@ -13,7 +13,7 @@ BEGIN NAMESPACE VFPXPorterTest
 	CLASS TestCodeConverter
 		CONSTRUCTOR()  STRICT
 			RETURN
-			
+
 		METHOD GetStatements() AS List<String>
 			VAR stmt := List<String>{}
 			stmt:Add( "Refresh" )
@@ -52,8 +52,8 @@ PROCEDURE RefreshMe
 RELEASE This
 			ENDTEXT
 			RETURN code
-					
-					
+
+
 		METHOD GetCode4() AS STRING
 			LOCAL code AS STRING
 			TEXT TO code
@@ -70,11 +70,11 @@ RELEASE This
 			ENDTEXT
 			RETURN code
 
-			
+
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckProcName AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			cv:ProcessProcedure( SELF:GetCode1(), __FUNCTION__ )
@@ -87,7 +87,7 @@ RELEASE This
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckAddParenthesis1() AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			VAR testItemCode := TestItemCode{}
@@ -106,7 +106,7 @@ RELEASE This
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckAddParenthesis2() AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			VAR testItemCode := TestItemCode{}
@@ -125,7 +125,7 @@ RELEASE This
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckAddParenthesis3() AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			VAR testItemCode := TestItemCode{}
@@ -140,6 +140,6 @@ RELEASE This
 			Assert.AreEqual(1, cv:Source:Count )
 			Assert.AreEqual(true, cv:Source[0]:IndexOf("()") == -1 )
 			RETURN
-			
+
 	END CLASS
 END NAMESPACE

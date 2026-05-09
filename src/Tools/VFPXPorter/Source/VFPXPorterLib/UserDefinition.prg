@@ -130,7 +130,7 @@ BEGIN NAMESPACE VFPXPorterLib
 					ELSE
 						LOCAL dummy AS LONG
 						LOCAL dummyD AS Double
-						IF Long.TryParse(v, OUT dummy)
+						IF Int32.TryParse(v, OUT dummy)
 							inferredType := "LONG"
 						ELSEIF Double.TryParse(v, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, OUT dummyD)
 							inferredType := "DOUBLE"

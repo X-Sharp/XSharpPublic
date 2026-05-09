@@ -73,6 +73,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE buttons AS List<OptionButton>
 
+		// Factory delegate — set by generated code when MemberClass is a custom type.
+		PUBLIC PROPERTY ButtonFactory AS Func<OptionButton> AUTO
+
 		PUBLIC PROPERTY ButtonCount AS INT
 			GET
 				RETURN SELF:buttons:Count
@@ -90,7 +93,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ELSEIF value > SELF:buttons:Count
 					FOR VAR i := SELF:buttons:Count + 1 TO value
 						LOCAL rb AS OptionButton
-						rb := OptionButton{}
+						rb := IIF(SELF:ButtonFactory != NULL, SELF:ButtonFactory:Invoke(), OptionButton{})
 						rb:AutoSize := TRUE
 						// C-7: use actual preferred height so larger fonts don't cause overlap
 						VAR btnH := rb:PreferredSize:Height

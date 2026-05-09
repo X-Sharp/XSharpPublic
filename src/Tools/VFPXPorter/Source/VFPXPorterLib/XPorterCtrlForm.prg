@@ -664,9 +664,13 @@ BEGIN NAMESPACE VFPXPorterLib
                  instantiate:Append(Environment.NewLine)
 
                  // Set of Rules
+                 VAR memberFactoryDes := SELF:BuildMemberFactory( scxSubItem )
                  ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
                  // Apply Rules to Properties
                  scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 IF !String.IsNullOrEmpty(memberFactoryDes)
+                     initChilds:Append(memberFactoryDes)
+                 ENDIF
                  initChilds:Append(scxSubItem:ApplyPropertiesRules( TRUE ))
                  // Add EventHandlers
                  IF scxSubItem:XPortedCode != NULL
@@ -917,9 +921,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 instantiate:Append(Environment.NewLine)
 
                 // Set of Rules
+                VAR memberFactorySF := SELF:BuildMemberFactory( scxSubItem )
                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
                 // Apply Rules to Properties
                 scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                IF !String.IsNullOrEmpty(memberFactorySF)
+                    initChilds:Append(memberFactorySF)
+                ENDIF
                 initChilds:Append( scxSubItem:ApplyPropertiesRules( TRUE ) )
                 // Add EventHandlers
                 IF scxSubItem:XPortedCode != NULL
@@ -1300,6 +1308,35 @@ BEGIN NAMESPACE VFPXPorterLib
             RETURN "SELF:" + ancestor:Name + ":Controls:Add(SELF:" + child:Name + ")"
         END METHOD
 
+        /// <summary>
+        /// Returns a ButtonFactory assignment line for CommandGroup/OptionGroup items whose
+        /// MemberClass is a non-default custom type. Must be called BEFORE ConvertProperties
+        /// so MemberClass is still in PropertiesDict. Returns empty string when not applicable.
+        /// </summary>
+        PRIVATE METHOD BuildMemberFactory( item AS SCXVCXItem ) AS STRING
+            VAR baseClass := item:BaseClassName
+            IF String.Compare(baseClass, "commandgroup", TRUE) != 0 .AND. ;
+               String.Compare(baseClass, "optiongroup",  TRUE) != 0
+                RETURN ""
+            ENDIF
+            IF !item:PropertiesDict:ContainsKey("MemberClass")
+                RETURN ""
+            ENDIF
+            VAR memberClass := item:PropertiesDict["MemberClass"]:Trim()
+            IF String.IsNullOrEmpty(memberClass)
+                RETURN ""
+            ENDIF
+            VAR defaultMember := IIF(String.Compare(baseClass, "commandgroup", TRUE) == 0, "commandbutton", "optionbutton")
+            IF String.Compare(memberClass, defaultMember, TRUE) == 0
+                RETURN ""
+            ENDIF
+            // Map VFP class name to X# type via TypeConvert, fall back to as-is
+            VAR typeName := memberClass
+            IF SELF:_typeList != NULL .AND. SELF:_typeList:ContainsKey(memberClass)
+                typeName := SELF:_typeList[memberClass]
+            ENDIF
+            RETURN "SELF:" + item:Name + ":ButtonFactory := { => " + typeName + "{} }" + Environment.NewLine
+        END METHOD
 
         PROTECTED METHOD ProcessUserDefinition( userDefs AS List<UserDefinition>, userDefCode AS STRING ) AS VOID
             LOCAL sourceLines AS List<STRING>

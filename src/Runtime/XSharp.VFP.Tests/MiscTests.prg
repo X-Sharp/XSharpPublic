@@ -344,6 +344,15 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(0, ImeStatus(1))
         END METHOD
 
+        [Fact, Trait("Category", "Printer")];
+        METHOD PRowTest() AS VOID
+            Assert.Equal(0, PRow())
+        END METHOD
+
+        [Fact, Trait("Category", "Printer")];
+        METHOD PColTest() AS VOID
+            Assert.Equal(0, PCol())
+        END METHOD
 	END CLASS
 
 END NAMESPACE

@@ -22,11 +22,52 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 
-        PROPERTY HighlightBackColor AS System.Drawing.Color AUTO
-        PROPERTY HighlightForeColor AS System.Drawing.Color AUTO
+        // ── Selection colours ────────────────────────────────────────────────
+        // VFP HighlightBackColor/ForeColor → DataGridView selection cell style
+        PROPERTY HighlightBackColor AS System.Drawing.Color
+            GET ; RETURN SELF:DefaultCellStyle:SelectionBackColor ; END GET
+            SET ; SELF:DefaultCellStyle:SelectionBackColor := VALUE ; END SET
+        END PROPERTY
 
+        PROPERTY HighlightForeColor AS System.Drawing.Color
+            GET ; RETURN SELF:DefaultCellStyle:SelectionForeColor ; END GET
+            SET ; SELF:DefaultCellStyle:SelectionForeColor := VALUE ; END SET
+        END PROPERTY
+
+        // ── Alternating row colour ───────────────────────────────────────────
+        PROPERTY AlternatingRowColor AS System.Drawing.Color
+            GET ; RETURN SELF:AlternatingRowsDefaultCellStyle:BackColor ; END GET
+            SET ; SELF:AlternatingRowsDefaultCellStyle:BackColor := VALUE ; END SET
+        END PROPERTY
+
+        // ── Row / column editing permissions ────────────────────────────────
+        PROPERTY AllowAddNew AS LOGIC
+            GET ; RETURN SELF:AllowUserToAddRows ; END GET
+            SET ; SELF:AllowUserToAddRows := VALUE ; END SET
+        END PROPERTY
+
+        PROPERTY AllowDelete AS LOGIC
+            GET ; RETURN SELF:AllowUserToDeleteRows ; END GET
+            SET ; SELF:AllowUserToDeleteRows := VALUE ; END SET
+        END PROPERTY
+
+        PROPERTY AllowUpdate AS LOGIC
+            GET ; RETURN !SELF:ReadOnly ; END GET
+            SET ; SELF:ReadOnly := !VALUE ; END SET
+        END PROPERTY
+
+        // ── RecordMark / DeleteMark ──────────────────────────────────────────
+        // VFP RecordMark: shows a row-selector arrow on the left of the current record.
+        // Maps to DataGridView.RowHeadersVisible (.T. = show, .F. = hide).
+        // Note: Grid constructor sets RowHeadersVisible := FALSE; setting RecordMark := .T.
+        // re-enables the row header panel.
+        PROPERTY RecordMark AS LOGIC
+            GET ; RETURN SELF:RowHeadersVisible ; END GET
+            SET ; SELF:RowHeadersVisible := VALUE ; END SET
+        END PROPERTY
+
+        // VFP DeleteMark: shows a delete-mark column. No direct WinForms equivalent — stored only.
         PROPERTY DeleteMark AS LOGIC AUTO
-        PROPERTY RecordMark AS LOGIC AUTO
         PROPERTY Panel AS INT AUTO
 
 

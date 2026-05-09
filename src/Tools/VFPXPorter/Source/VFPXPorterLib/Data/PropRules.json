@@ -98,6 +98,18 @@
     "ClientSize": ""
   },
 
+  "Relation": {
+    "ChildAlias": "ChildAlias",
+    "ChildOrder": "ChildOrder",
+    "RelationalExpr": "RelationalExpr",
+    "OneToMany": "OneToMany",
+    "ParentAlias": "ParentAlias",
+    "Top": "",
+    "Left": "",
+    "Width": "",
+    "Height": ""
+  },
+
     "Panel": {
     },
 

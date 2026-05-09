@@ -30,7 +30,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebuggerCommand>$(TargetPath)</DebuggerCommand>
-    <DebuggerCommandArguments>-p:"C:\Users\fabri\OneDrive\Fabrice\Visual FoxPro Projects\MyDemo\myDemo\MyDemo.pjx" -o:"C:\Users\fabri\OneDrive\Fabrice\Visual FoxPro Projects\Form_Export\MyDemo"</DebuggerCommandArguments>
+    <DebuggerCommandArguments>-f:"TestDataSet\form1.scx" -o:"VFPXPorter" -b</DebuggerCommandArguments>
     <DebuggerWorkingDirectory />
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

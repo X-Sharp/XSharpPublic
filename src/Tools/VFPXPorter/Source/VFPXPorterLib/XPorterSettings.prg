@@ -49,7 +49,19 @@ CLASS XPorterSettings
 	END PROPERTY
 
 #region Various Folders definitions
-    PUBLIC STATIC DataFolder AS STRING GET System.IO.Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Data" )
+    PRIVATE STATIC _DataFolder := String.Empty AS STRING
+    PUBLIC STATIC PROPERTY DataFolder AS STRING
+        GET
+            IF _DataFolder == String.Empty
+                RETURN System.IO.Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Data" )
+            ELSE
+                RETURN _DataFolder
+            ENDIF
+        END GET
+        SET
+            _DataFolder := VALUE
+        END SET
+	END PROPERTY
 
     /// <summary>
     /// Namespace of the library that contains VFP-support controls/classes/tools

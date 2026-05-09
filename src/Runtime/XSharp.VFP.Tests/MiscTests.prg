@@ -331,6 +331,19 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(nLine > 0)
         END METHOD
 
+        [Fact, Trait("Category", "UI")];
+        METHOD IsPenTest() AS VOID
+            Assert.False(IsPen())
+        END METHOD
+
+        [Fact, Trait("Category", "UI")];
+        METHOD ImeStatusTest() AS VOID
+            // No IME installed
+            Assert.Equal(0, ImeStatus())
+            Assert.Equal(0, ImeStatus(0))
+            Assert.Equal(0, ImeStatus(1))
+        END METHOD
+
 	END CLASS
 
 END NAMESPACE

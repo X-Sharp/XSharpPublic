@@ -194,6 +194,7 @@
     <Compile Include="Separator.prg" />
     <Compile Include="ToolBar.prg" />
     <Compile Include="Cursor.prg" />
+    <Compile Include="Relation.prg" />
     <Compile Include="DataEnvironment.prg" />
     <Compile Include="Form.prg">
       <SubType>Form</SubType>

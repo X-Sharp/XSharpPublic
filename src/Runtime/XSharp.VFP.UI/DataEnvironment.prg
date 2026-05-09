@@ -30,6 +30,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROPERTY Cursors AS List<DbCursor> AUTO
 
+		PROPERTY Relations AS List<Relation> AUTO
+
 		PROPERTY SELF[ cursorName AS STRING ] AS DbCursor
 			GET
 				FOREACH cursor AS DbCursor IN Cursors
@@ -42,7 +44,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		CONSTRUCTOR( )
-			SELF:Cursors := List<DbCursor>{}
+			SELF:Cursors   := List<DbCursor>{}
+			SELF:Relations := List<Relation>{}
 			SELF:AutoCloseTables := TRUE
 			SELF:AutoOpenTables := TRUE
 			RETURN
@@ -53,8 +56,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				FOREACH cursor AS DbCursor IN Cursors
 					cursor:Open()
 				NEXT
-
 			ENDIF
+			// Apply relations after all cursors are open
+			FOREACH VAR rel IN SELF:Relations
+				IF !String.IsNullOrEmpty(rel:ParentAlias)
+					DbSelectArea(rel:ParentAlias)
+				ENDIF
+				IF !String.IsNullOrEmpty((STRING)rel:ChildOrder)
+					OrdSetFocus(rel:ChildOrder, rel:ChildAlias)
+				ENDIF
+				DbSetRelation(rel:ChildAlias, MCompile((STRING)rel:RelationalExpr), (STRING)rel:RelationalExpr)
+			NEXT
 			//
 			IF !String.IsNullOrEmpty( SELF:InitialSelectedAlias )
 				VAR selectedCursor := SELF[ SELF:InitialSelectedAlias ]

@@ -1174,10 +1174,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 // Apply Rules to Properties
                 dataEnvItem:ConvertProperties( dataRules, SELF:_defaultValues )
                 setDataEnv:Append( dataEnvItem:ApplyPropertiesRules( TRUE ) )
-                // For each Cursor
+                // Pass 1 — Cursors
                 FOREACH VAR dataCursor IN dataEnvItem:Childs
                     LOCAL cursorItem AS SCXVCXItem
                     cursorItem := (SCXVCXItem) dataCursor
+                    IF String.Compare( cursorItem:BaseClassName, "cursor", TRUE ) != 0
+                        LOOP
+                    ENDIF
                     cursorItem:ConvertClassName( SELF:_typeList )
                     declareDataEnv:Append( SELF:Settings:Modifier )
                     declareDataEnv:Append(" ")
@@ -1201,6 +1204,39 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append(dataEnvItem:Name)
                     setDataEnv:Append(":Cursors:Add( ")
                     setDataEnv:Append(cursorItem:Name)
+                    setDataEnv:Append(" )")
+                    setDataEnv:Append(Environment.NewLine)
+                NEXT
+                // Pass 2 — Relations
+                FOREACH VAR dataRel IN dataEnvItem:Childs
+                    LOCAL relItem AS SCXVCXItem
+                    relItem := (SCXVCXItem) dataRel
+                    IF String.Compare( relItem:BaseClassName, "relation", TRUE ) != 0
+                        LOOP
+                    ENDIF
+                    relItem:ConvertClassName( SELF:_typeList )
+                    declareDataEnv:Append( SELF:Settings:Modifier )
+                    declareDataEnv:Append(" ")
+                    declareDataEnv:Append(relItem:Name)
+                    declareDataEnv:Append(" AS ")
+                    declareDataEnv:Append(relItem:ClassName)
+                    declareDataEnv:Append(Environment.NewLine)
+                    //
+                    setDataEnv:Append("SELF:")
+                    setDataEnv:Append(relItem:Name)
+                    setDataEnv:Append(" := ")
+                    setDataEnv:Append(relItem:ClassName)
+                    setDataEnv:Append("{}")
+                    setDataEnv:Append(Environment.NewLine)
+                    // Set of Rules
+                    dataRules := SELF:BuildControlRules( SELF:_propertiesRules, relItem:FoxClassName )
+                    // Apply Rules to Properties
+                    relItem:ConvertProperties( dataRules, SELF:_defaultValues )
+                    setDataEnv:Append( relItem:ApplyPropertiesRules( TRUE ) )
+                    setDataEnv:Append("SELF:")
+                    setDataEnv:Append(dataEnvItem:Name)
+                    setDataEnv:Append(":Relations:Add( ")
+                    setDataEnv:Append(relItem:Name)
                     setDataEnv:Append(" )")
                     setDataEnv:Append(Environment.NewLine)
                 NEXT

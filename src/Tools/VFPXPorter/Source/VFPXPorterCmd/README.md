@@ -12,8 +12,13 @@ is also used by the GUI tool (**VFPXPorter**).
 ## Usage
 
 ```
-VFPXPorterCmd -o:<output> [-f:<file> ...] [-p:<project>] [-b] [-l:<logfile>]
+VFPXPorterCmd -o:<output> [-f:<file> ...] [-p:<project>] [-b] [-l:<logfile>] [conversion options]
 ```
+
+Paths may be absolute or relative to the current directory. Wrap paths containing
+spaces in double quotes: `-f:"C:\My App\myform.scx"`.
+
+### Input / output
 
 | Argument | Description |
 |----------|-------------|
@@ -22,6 +27,18 @@ VFPXPorterCmd -o:<output> [-f:<file> ...] [-p:<project>] [-b] [-l:<logfile>]
 | `-o:<path>` | Output folder. **Created automatically** if it does not exist. |
 | `-b` | Back up the source structure to XML files before converting. |
 | `-l:<path>` | Write log output to a file in addition to the console. |
+
+### Conversion options
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `-keepOriginal` | on | Keep original VFP code as comments in the output. |
+| `-noKeepOriginal` | — | Suppress the original code comments. |
+| `-convertHandlers` | off | Apply the code converter to event handler bodies. |
+| `-convertUserDef` | off | Apply the code converter to user-defined method bodies. |
+| `-storeInFolders` | off | Organize output into Forms / Libs / Menus / Code subfolders. |
+| `-outputType:<type>` | `WindowsExe` | Target project type: `WindowsExe`, `ClassLibrary`, or `Console`. |
+| `-modifier:<mod>` | `PUBLIC` | Access modifier for generated fields: `PUBLIC`, `PROTECTED`, or `PRIVATE`. |
 
 Exit codes: `0` = success, `1` = error.
 
@@ -107,17 +124,15 @@ Data\
 | Exit codes | Working | 0 = OK, 1 = error |
 | Auto-create output folder | Working | |
 | Batch (multiple `-f`) | Working | Repeat `-f` as needed |
+| Settings overrides | Working | `-keepOriginal`, `-convertHandlers`, `-storeInFolders`, `-outputType`, `-modifier` |
 
 ---
 
 ## Planned / Not yet implemented
 
 - **Report (FRX) export** — conversion of VFP reports to a .NET reporting format.
-- **Settings overrides from CLI** — flags to control `XPorterSettings` options
-  such as `-keepOriginal`, `-storeInFolders`, `-convertHandlers`, etc.
-  Currently all settings use their defaults (see `XPorterSettings` in VFPXPorterLib).
 - **Config file** — load settings from a JSON/INI file per project instead of
-  hardcoding them.
+  specifying them on every command line.
 
 ---
 

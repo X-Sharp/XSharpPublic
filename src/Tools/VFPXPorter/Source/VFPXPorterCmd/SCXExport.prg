@@ -22,10 +22,21 @@ FUNCTION SCXExport( inputFile AS STRING, outputFolder AS STRING, doBackup AS LOG
 /// </summary>
 FUNCTION PJXExport( pjxFile AS STRING, outputFolder AS STRING, doBackup AS LOGIC, settings AS XPorterSettings ) AS LOGIC
 	LOCAL success AS LOGIC
+	Console.WriteLine("Processing project: " + pjxFile)
 	VAR xPorter := XPorterProject{pjxFile, outputFolder}
 	xPorter:Settings := settings
 	success := xPorter:ProcessPJX()
-	IF success
-		success := xPorter:ExportProject(doBackup, NULL)
+	IF !success
+		Console.ForegroundColor := ConsoleColor.Red
+		Console.WriteLine("Error: failed to load project file.")
+		Console.ResetColor()
+		RETURN FALSE
+	ENDIF
+	Console.WriteLine("Exporting to: " + outputFolder)
+	success := xPorter:ExportProject(doBackup, NULL)
+	IF !success
+		Console.ForegroundColor := ConsoleColor.Red
+		Console.WriteLine("Error: export failed.")
+		Console.ResetColor()
 	ENDIF
 	RETURN success

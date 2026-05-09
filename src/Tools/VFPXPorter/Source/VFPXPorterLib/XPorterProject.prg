@@ -108,7 +108,11 @@ BEGIN NAMESPACE VFPXPorterLib
             //
             TRY
                 // Open the PJX (DBF) File
-                DbUseArea(TRUE, "DBFVFP", SELF:pjxFilePath, SELF:pjxFilePath,FALSE,TRUE )
+                VAR alias := System.IO.Path.GetFileNameWithoutExtension(SELF:pjxFilePath)
+                IF !DbUseArea(TRUE, "DBFVFP", SELF:pjxFilePath, alias, FALSE, TRUE )
+                    XPorterLogger.Instance:Error("LoadProject: DbUseArea failed to open: " + SELF:pjxFilePath)
+                    RETURN FALSE
+                ENDIF
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()

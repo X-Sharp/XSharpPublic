@@ -62,7 +62,11 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR tmpitems := List<SCXVCXItem>{}
             TRY
                 // Open the SCX (DBF) File
-                DbUseArea(TRUE, "DBFVFP", SELF:_fileName, SELF:_fileName,FALSE,TRUE )
+                VAR alias := System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName)
+                IF !DbUseArea(TRUE, "DBFVFP", SELF:_fileName, alias, FALSE, TRUE )
+                    XPorterLogger.Instance:Error("LoadFile: DbUseArea failed to open: " + SELF:_fileName)
+                    RETURN FALSE
+                ENDIF
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()

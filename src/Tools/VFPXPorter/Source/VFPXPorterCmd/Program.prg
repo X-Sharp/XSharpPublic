@@ -49,10 +49,6 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:KeepOriginal := TRUE
 			ELSEIF String.Compare(arg, "-noKeepOriginal", TRUE) == 0
 				settings:KeepOriginal := FALSE
-			ELSEIF String.Compare(arg, "-convertHandlers", TRUE) == 0
-				settings:ConvertHandlers := TRUE
-			ELSEIF String.Compare(arg, "-convertUserDef", TRUE) == 0
-				settings:ConvertUserDef := TRUE
 			ELSEIF String.Compare(arg, "-storeInFolders", TRUE) == 0
 				settings:StoreInFolders := TRUE
 			ELSE

@@ -126,8 +126,6 @@ CLASS XPorterSettings
 
 		SELF:OutputPath := ""
 		SELF:ItemsPath := ""
-		SELF:ConvertHandlers := FALSE
-		SELF:ConvertUserDef := FALSE
 		SELF:ConvertThisObject := TRUE
 		SELF:ConvertStatement := TRUE
 		SELF:ConvertStatementOnlyIfLast := FALSE
@@ -253,11 +251,6 @@ CLASS XPorterSettings
 	PROPERTY IgnoreErrors AS LOGIC AUTO
 
 	/// <summary>
-	/// Apply CodeConverter to Event Handlers
-	/// </summary>
-	PROPERTY ConvertHandlers AS LOGIC AUTO
-
-	/// <summary>
 	/// Convert Statement to Method Call
 	/// </summary>
 	/// <value></value>
@@ -268,11 +261,6 @@ CLASS XPorterSettings
 	/// </summary>
 	/// <value></value>
 	PROPERTY ConvertStatementOnlyIfLast AS LOGIC AUTO
-
-	/// <summary>
-	/// Apply CodeConverter to User-Def Methods
-	/// </summary>
-	PROPERTY ConvertUserDef AS LOGIC AUTO
 
 	/// <summary>
 	/// Apply ThisObject CodeConverter to all Methods

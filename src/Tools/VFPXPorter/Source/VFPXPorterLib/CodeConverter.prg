@@ -19,7 +19,6 @@ BEGIN NAMESPACE VFPXPorterLib
 	CLASS CodeConverter
 
 		PRIVATE _keepOriginal AS LOGIC
-		PRIVATE _convertThisParent AS LOGIC
 		PRIVATE _convertThisObject AS LOGIC
 		PRIVATE _convertStatement AS LOGIC
 		PRIVATE _convertStatementOnlyIfLast AS LOGIC
@@ -33,9 +32,8 @@ BEGIN NAMESPACE VFPXPorterLib
 		PROPERTY ColorProperties AS List<STRING> AUTO
 
 
-		CONSTRUCTOR( ko AS LOGIC, cvtThisParent AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC )
+		CONSTRUCTOR( ko AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC )
 			SELF:_keepOriginal := ko
-			SELF:_convertThisParent := cvtThisParent
 			SELF:_convertThisObject := cvtThisObject
 			SELF:_convertStatement := cvtStatement
 			SELF:_convertStatementOnlyIfLast := cvtOnlyIfLast
@@ -72,16 +70,9 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
-			// Convert ThisObject has priority over ThisParent
 			IF SELF:_convertThisObject
 				IF cdeBlock:Owner != NULL
 					SELF:ChangeThisObject( cdeBlock:Owner:FoxClassName )
-				ENDIF
-			ELSE
-				IF SELF:_convertThisParent
-					IF cdeBlock:Owner != NULL
-						SELF:ChangeThisAndParent( cdeBlock:Owner:FoxClassName, Name )
-					ENDIF
 				ENDIF
 			ENDIF
 			// Now, add the original line as Comment, just before the changed one
@@ -114,45 +105,6 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeThisObject()
 			ENDIF
 
-		PRIVATE METHOD ChangeThisAndParent( FoxClassName := "" AS STRING, Name := "" AS STRING ) AS VOID
-			LOCAL line AS STRING
-			LOCAL startLine := 0 AS INT
-			LOCAL toBeContinued := FALSE AS LOGIC
-			// First, process Parent Call
-			FOR VAR i := 0 TO SELF:Source:Count-1
-				line := SELF:Source[i]
-				// TODO : Try to do this only once...will be three times faster...
-				IF SELF:_keepOriginal
-					IF line:TrimEnd():EndsWith(";")
-						toBeContinued := TRUE
-					ELSE
-						IF toBeContinued
-							toBeContinued := FALSE
-						ELSE
-							startLine := i
-						ENDIF
-					ENDIF
-				ENDIF
-				// Change this.Parent to an impossible element, $$XSHARP$$
-				line := SELF:SearchAndReplace( startLine, line, "this.parent.", "$$XSHARP$$.", null )
-				// Now, Change this to $$XSHARP$$.<NameOfTheControl>
-				IF (String.Compare( FoxClassName,"form",TRUE)!=0) .AND. !String.IsNullOrEmpty( Name )
-					line := SELF:SearchAndReplace( startLine, line, "thisform.", "$$XSHARP$$.", Name+".")
-				ELSE
-					line := SELF:SearchAndReplace( startLine, line, "thisform.", "$$XSHARP$$.", null )
-				ENDIF
-				//
-				SELF:Source[i] := line
-			NEXT
-			// Ok, now ... Brute-Force ;)
-			FOR VAR i := 0 TO SELF:Source:Count-1
-				line := SELF:Source[i]
-				//
-				line := line:Replace( "$$XSHARP$$.", "THIS." )
-				//
-				SELF:Source[i] := line
-			NEXT
-			RETURN
 
 
 			// We will enumerate the lines of source code

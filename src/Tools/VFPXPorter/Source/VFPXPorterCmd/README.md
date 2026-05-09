@@ -34,8 +34,6 @@ spaces in double quotes: `-f:"C:\My App\myform.scx"`.
 |----------|---------|-------------|
 | `-keepOriginal` | on | Keep original VFP code as comments in the output. |
 | `-noKeepOriginal` | — | Suppress the original code comments. |
-| `-convertHandlers` | off | Apply the code converter to event handler bodies. |
-| `-convertUserDef` | off | Apply the code converter to user-defined method bodies. |
 | `-storeInFolders` | off | Organize output into Forms / Libs / Menus / Code subfolders. |
 | `-outputType:<type>` | `WindowsExe` | Target project type: `WindowsExe`, `ClassLibrary`, or `Console`. |
 | `-modifier:<mod>` | `PUBLIC` | Access modifier for generated fields: `PUBLIC`, `PROTECTED`, or `PRIVATE`. |
@@ -144,8 +142,6 @@ modifying the library or the generated code by hand.
 | Setting | Default | Meaning |
 |---------|---------|---------|
 | `KeepOriginal` | `TRUE` | Keep original VFP code as comments |
-| `ConvertHandlers` | `FALSE` | Apply code converter to event handlers |
-| `ConvertUserDef` | `FALSE` | Apply code converter to user-defined methods |
 | `ConvertThisObject` | `TRUE` | Replace `this` with `thisObject` |
 | `ConvertStatement` | `TRUE` | Convert VFP statements to method calls |
 | `RemoveSet` | `TRUE` | Remove `Set_` prefix in event handler names |

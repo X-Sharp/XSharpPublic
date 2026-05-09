@@ -1278,6 +1278,68 @@ BEGIN NAMESPACE VFPXPorterLib
                         LOOP
                     ENDIF
                     VAR colPrefix := "SELF:" + grid:Name + ":Column(" + colIdx:ToString() + "):"
+                    // Detect non-text CurrentControl (ComboBox, CheckBox, etc.)
+                    LOCAL currentControl := "" AS STRING
+                    LOCAL currentControlItem AS SCXVCXItem
+                    currentControlItem := NULL_OBJECT
+                    IF col:PropertiesDict:ContainsKey("CurrentControl")
+                        currentControl := col:PropertiesDict["CurrentControl"]:Trim():Trim( <CHAR>{ '"' } ):Trim()
+                    ENDIF
+                    IF String.IsNullOrEmpty(currentControl)
+                        // Fall back: look for a non-Header, non-TextBox child
+                        FOREACH VAR childItem IN col:Childs
+                            VAR child := (SCXVCXItem)childItem
+                            VAR childBase := child:BaseClassName:ToLowerInvariant()
+                            IF childBase != "header" .AND. childBase != "textbox"
+                                currentControl := childBase
+                                currentControlItem := child
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ELSE
+                        // Find the matching child item by name for property extraction
+                        FOREACH VAR childItem IN col:Childs
+                            VAR child := (SCXVCXItem)childItem
+                            IF String.Compare(child:Name, currentControl, TRUE) == 0 .OR. ;
+                               String.Compare(child:BaseClassName, currentControl, TRUE) == 0
+                                currentControlItem := child
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ENDIF
+                    IF !String.IsNullOrEmpty(currentControl)
+                        LOCAL colType AS INT
+                        colType := -1
+                        SWITCH currentControl:ToLowerInvariant()
+                        CASE "checkbox" ; colType := 3
+                        CASE "check1"   ; colType := 3
+                        CASE "combobox" ; colType := 5
+                        CASE "combo1"   ; colType := 5
+                        END SWITCH
+                        IF colType > 0
+                            columnSettings:Append(colPrefix)
+                            columnSettings:AppendLine("ColumnType := " + colType:ToString())
+                            IF colType == 5 .AND. currentControlItem != NULL_OBJECT
+                                LOCAL rowSourceType := 0 AS INT
+                                IF currentControlItem:PropertiesDict:ContainsKey("RowSourceType")
+                                    Int32.TryParse(currentControlItem:PropertiesDict["RowSourceType"]:Trim(), OUT rowSourceType)
+                                ENDIF
+                                columnSettings:Append(colPrefix)
+                                columnSettings:AppendLine("RowSourceType := " + rowSourceType:ToString())
+                                IF currentControlItem:PropertiesDict:ContainsKey("RowSource")
+                                    VAR rowSource := currentControlItem:PropertiesDict["RowSource"]:Trim()
+                                    IF !String.IsNullOrEmpty(rowSource) .AND. rowSource != "Nil"
+                                        columnSettings:Append(colPrefix)
+                                        columnSettings:AppendLine("RowSource := " + rowSource)
+                                    ENDIF
+                                ENDIF
+                            ENDIF
+                        ELSE
+                            VAR msg := "Column " + colIdx:ToString() + " of grid '" + grid:Name + "' uses '" + currentControl + "' as CurrentControl — ColumnType not yet mapped"
+                            XPorterLogger.Instance:Warning(msg)
+                            columnSettings:AppendLine("// TODO VFPXPorter: " + msg)
+                        ENDIF
+                    ENDIF
                     // Emit column properties from the synthetic column's PropertiesDict
                     FOREACH VAR kv IN col:PropertiesDict
                         VAR mapped := SELF:MapColumnProperty( kv:Key )

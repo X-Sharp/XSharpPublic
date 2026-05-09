@@ -233,6 +233,59 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// property is stored so generated code can assign it without compile errors.
 		PROPERTY CurrentControl AS STRING AUTO
 
+		// VFP ColumnType: determines the cell editor type used in this column.
+		// 0 = Default/Text, 3 = CheckBox, 5 = ComboBox (others not yet supported).
+		// Swaps the CellTemplate so the DataGridView renders the correct cell type.
+		PRIVATE _columnType AS INT
+		PROPERTY ColumnType AS INT
+			GET
+				RETURN _columnType
+			END GET
+			SET
+				_columnType := VALUE
+				SWITCH VALUE
+				CASE 3  // CheckBox
+					SELF:CellTemplate := DataGridViewCheckBoxCell{}
+					SELF:ValueType    := TypeOf(LOGIC)
+				CASE 5  // ComboBox
+					SELF:CellTemplate := DataGridViewComboBoxCell{}
+					SELF:ValueType    := TypeOf(STRING)
+				END SWITCH
+			END SET
+		END PROPERTY
+
+		// VFP RowSourceType: how the ComboBox items are populated.
+		// 0=None, 1=Value (comma-separated list), 2=Alias, 3=SQL, 5=Array.
+		PRIVATE _rowSourceType AS INT
+		PROPERTY RowSourceType AS INT
+			GET
+				RETURN _rowSourceType
+			END GET
+			SET
+				_rowSourceType := VALUE
+			END SET
+		END PROPERTY
+
+		// VFP RowSource: the data source for the ComboBox items.
+		// For RowSourceType=1, a comma-separated list of values populated into the cell template.
+		PRIVATE _rowSource AS STRING
+		PROPERTY RowSource AS STRING
+			GET
+				RETURN _rowSource
+			END GET
+			SET
+				_rowSource := VALUE
+				IF _rowSourceType == 1 .AND. !String.IsNullOrEmpty(VALUE)
+					IF SELF:CellTemplate IS DataGridViewComboBoxCell VAR comboCell
+						comboCell:Items:Clear()
+						FOREACH VAR item IN VALUE:Split( <CHAR>{','} )
+							comboCell:Items:Add( item:Trim() )
+						NEXT
+					ENDIF
+				ENDIF
+			END SET
+		END PROPERTY
+
 		// VFP Sparse: .T. = only the active cell shows its editing control;
 		// .F. = every cell in the column shows the control permanently.
 		// Maps to DataGridViewColumn.Frozen is NOT the right mapping — WinForms

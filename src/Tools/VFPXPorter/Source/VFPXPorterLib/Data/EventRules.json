@@ -29,6 +29,9 @@
 
    "grid": {
      "AfterRowColChange": [ "vfpAfterRowColChange:=", "", "" ],
+     "BeforeRowColChange": [ "vfpBeforeRowColChange:=", "", "" ],
+     "BeforeEditCell": [ "vfpBeforeEditCell:=", "", "" ],
+     "AfterEditCell": [ "vfpAfterEditCell:=", "", "" ],
      "OnColumnHeaderClick": [ "vfpColumnHeaderClick:=", "", "" ]
    },
 

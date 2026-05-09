@@ -1358,10 +1358,12 @@ BEGIN NAMESPACE VFPXPorterLib
                             columnSettings:AppendLine(kv:Value)
                         ENDIF
                     NEXT
-                    // Emit HeaderText from the Header grandchild
+                    // Emit HeaderText and Header style properties from the Header grandchild
                     FOREACH VAR grandSubItem IN col:Childs
                         VAR grandChild := (SCXVCXItem) grandSubItem
                         IF String.Compare( grandChild:BaseClassName, "header", TRUE ) == 0
+                            VAR hdrPrefix := colPrefix + "Header:"
+                            // Caption → column HeaderText (convenience shortcut on the column itself)
                             IF grandChild:PropertiesDict:ContainsKey("Caption")
                                 VAR caption := grandChild:PropertiesDict["Caption"]
                                 IF !String.IsNullOrEmpty(caption) .AND. caption != "Nil"
@@ -1370,6 +1372,31 @@ BEGIN NAMESPACE VFPXPorterLib
                                     columnSettings:AppendLine(caption)
                                 ENDIF
                             ENDIF
+                            // Color properties — wrap with ColorFromVFP
+                            FOREACH VAR colorKey IN <STRING>{ "ForeColor", "BackColor" }
+                                IF grandChild:PropertiesDict:ContainsKey(colorKey)
+                                    VAR val := grandChild:PropertiesDict[colorKey]:Trim()
+                                    IF !String.IsNullOrEmpty(val) .AND. val != "Nil"
+                                        columnSettings:Append(hdrPrefix)
+                                        columnSettings:Append(colorKey)
+                                        columnSettings:Append(" := VFPTools.ColorFromVFP(")
+                                        columnSettings:Append(val)
+                                        columnSettings:AppendLine(")")
+                                    ENDIF
+                                ENDIF
+                            NEXT
+                            // Style properties — direct assignment
+                            FOREACH VAR propKey IN <STRING>{ "Alignment", "FontBold", "FontName", "FontSize", "FontItalic", "FontUnderline" }
+                                IF grandChild:PropertiesDict:ContainsKey(propKey)
+                                    VAR val := grandChild:PropertiesDict[propKey]:Trim()
+                                    IF !String.IsNullOrEmpty(val) .AND. val != "Nil"
+                                        columnSettings:Append(hdrPrefix)
+                                        columnSettings:Append(propKey)
+                                        columnSettings:Append(" := ")
+                                        columnSettings:AppendLine(val)
+                                    ENDIF
+                                ENDIF
+                            NEXT
                         ENDIF
                     NEXT
                 NEXT
@@ -1395,6 +1422,7 @@ BEGIN NAMESPACE VFPXPorterLib
             CASE "CURRENTCONTROL"
             CASE "TEXTALIGN"
             CASE "TEXTUALIGN"
+            CASE "MOUSEPOINTER"   // no per-column cursor in WinForms DataGridViewColumn
                 RETURN NULL  // removed
             END SWITCH
             RETURN propName  // unknown — pass through

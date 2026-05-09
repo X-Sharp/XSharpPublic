@@ -163,6 +163,11 @@
        "AllowUpdate": "AllowUpdate",
        "RecordMark": "RecordMark",
        "DeleteMark": "DeleteMark",
+       "AllowHeaderSizing": "AllowHeaderSizing",
+       "AllowRowSizing": "AllowRowSizing",
+       "HighlightStyle": "HighlightStyle",
+       "AllowAutoColumnFit": "AllowAutoColumnFit",
+       "Themes": "Themes",
        "SplitBar": "",
        "Panel": ""
       },

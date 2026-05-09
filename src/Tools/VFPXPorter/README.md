@@ -37,9 +37,17 @@ What about Reports ? We may/will have to consider another tool; or introduce her
 
 During 1. step, the Form definition is exported in ~~JSON~~ XML format and source code file (.PRG) is created
 
-Don't forget to have a deep look at the **ExportAdvices.md** document, as some modification cannot be done.
+Don't forget to have a deep look at the **[ExportAdvices.md](ExportAdvices.md)** document, as some modification cannot be done.
 
-If you want to change the way the Application is doing some transporting, don't forget to have a look at **DocumentationAndRules.md**
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [DocumentationAndRules.md](DocumentationAndRules.md) | Overview of all rule files, template folders and placeholder syntax |
+| [RulesForProperties.md](RulesForProperties.md) | Full reference for `PropRules.json` — all property conversion patterns with examples |
+| [RulesForEvents.md](RulesForEvents.md) | Full reference for `EventRules.json` — all event mapping patterns, handler naming, current rules inventory |
+| [DocForTemplates.md](DocForTemplates.md) | Full reference for all template files and their placeholders (Designer, Form, SingleFile, Menu, Others, Tools) |
+| [Source/VFPXPorterCmd/README.md](Source/VFPXPorterCmd/README.md) | CLI tool usage, all command-line switches, and deployment requirements |
 
 
 #### Todo

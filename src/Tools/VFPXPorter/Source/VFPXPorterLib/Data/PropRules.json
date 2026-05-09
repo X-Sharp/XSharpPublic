@@ -86,7 +86,7 @@
 
   "Cursor": {
     "Alias": "Alias",
-    "CursorSource": "CursorSource",
+    "CursorSource": "??<@CursorSource@>??",
     "Database": "DataBase",
     "Exclusive": "Exclusive",
     "Filter": "Filter",

@@ -278,13 +278,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF _rowSourceType == 1 .AND. !String.IsNullOrEmpty(VALUE)
 					IF SELF:CellTemplate IS DataGridViewComboBoxCell VAR comboCell
 						comboCell:Items:Clear()
-						FOREACH VAR item IN VALUE:Split( <CHAR>{','} )
+						FOREACH VAR item IN VALUE:Split( <CHAR>{(CHAR)','} )
 							comboCell:Items:Add( item:Trim() )
 						NEXT
 					ENDIF
 				ENDIF
 			END SET
 		END PROPERTY
+
+		// VFP Enabled = .F. makes the column non-editable; maps to DataGridViewColumn.ReadOnly (inverse).
+		PROPERTY Enabled AS LOGIC
+			GET ; RETURN !SELF:ReadOnly ; END GET
+			SET ; SELF:ReadOnly := !VALUE ; END SET
+		END PROPERTY
+
+		// VFP MousePointer — no per-column cursor in WinForms; stored for compatibility.
+		PROPERTY MousePointer AS INT AUTO
 
 		// VFP Sparse: .T. = only the active cell shows its editing control;
 		// .F. = every cell in the column shows the control permanently.

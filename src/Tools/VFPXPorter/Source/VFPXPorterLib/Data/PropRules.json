@@ -146,7 +146,25 @@
        "^Column99": "Column(99)",
        "Scrollbars": "VFPScrollbars",
        "FrozenColumnCount": "::FreezeColumns(<@FrozenColumnCount@>)",
-       "AlternatingRowColor": ""
+       "AlternatingRowColor": "AlternatingRowColor",
+       "HighlightBackColor": "HighlightBackColor",
+       "HighlightForeColor": "HighlightForeColor",
+       "GridLines": "GridLines",
+       "GridLineColor": "GridLineColor",
+       "GridLineWidth": "GridLineWidth",
+       "RowHeight": "RowHeight",
+       "HeaderHeight": "HeaderHeight",
+       "NullDisplay": "NullDisplay",
+       "ShowDeleted": "ShowDeleted",
+       "ColumnHeadersVisible": "ColumnHeadersVisible",
+       "RowHeadersVisible": "RowHeadersVisible",
+       "AllowAddNew": "AllowAddNew",
+       "AllowDelete": "AllowDelete",
+       "AllowUpdate": "AllowUpdate",
+       "RecordMark": "RecordMark",
+       "DeleteMark": "DeleteMark",
+       "SplitBar": "",
+       "Panel": ""
       },
 
      "Column": {

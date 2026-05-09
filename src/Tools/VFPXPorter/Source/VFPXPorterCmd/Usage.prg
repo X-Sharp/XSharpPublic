@@ -22,8 +22,6 @@ FUNCTION Usage AS VOID
 	Console.WriteLine("Conversion options:")
 	Console.WriteLine("  -keepOriginal         Keep original VFP code as comments (default).")
 	Console.WriteLine("  -noKeepOriginal       Do not keep original VFP code as comments.")
-	Console.WriteLine("  -convertHandlers      Apply code converter to event handlers.")
-	Console.WriteLine("  -convertUserDef       Apply code converter to user-defined methods.")
 	Console.WriteLine("  -storeInFolders       Organize output into Forms/Libs/Menus/Code subfolders.")
 	Console.WriteLine("  -outputType:<type>    WindowsExe (default) | ClassLibrary | Console.")
 	Console.WriteLine("  -modifier:<mod>       Field access modifier: PUBLIC (default) | PROTECTED | PRIVATE.")

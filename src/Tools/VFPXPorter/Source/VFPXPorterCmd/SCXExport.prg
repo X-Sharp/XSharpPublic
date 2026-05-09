@@ -9,9 +9,9 @@ USING VFPXPorterLib
 /// Export a single SCX (form) or VCX (class library) file.
 /// Returns TRUE on success.
 /// </summary>
-FUNCTION SCXExport( inputFile AS STRING, outputFolder AS STRING, doBackup AS LOGIC ) AS LOGIC
+FUNCTION SCXExport( inputFile AS STRING, outputFolder AS STRING, doBackup AS LOGIC, settings AS XPorterSettings ) AS LOGIC
 	VAR xPorter := XPorterSCXVCX{}
-	xPorter:Initialize(inputFile, outputFolder, XPorterSettings{})
+	xPorter:Initialize(inputFile, outputFolder, settings)
 	xPorter:Export(doBackup)
 	RETURN TRUE
 
@@ -20,10 +20,10 @@ FUNCTION SCXExport( inputFile AS STRING, outputFolder AS STRING, doBackup AS LOG
 /// Export a full VFP project (.pjx) — forms, libraries, menus, programs.
 /// Returns TRUE on success.
 /// </summary>
-FUNCTION PJXExport( pjxFile AS STRING, outputFolder AS STRING, doBackup AS LOGIC ) AS LOGIC
+FUNCTION PJXExport( pjxFile AS STRING, outputFolder AS STRING, doBackup AS LOGIC, settings AS XPorterSettings ) AS LOGIC
 	LOCAL success AS LOGIC
 	VAR xPorter := XPorterProject{pjxFile, outputFolder}
-	xPorter:Settings := XPorterSettings{}
+	xPorter:Settings := settings
 	success := xPorter:ProcessPJX()
 	IF success
 		success := xPorter:ExportProject(doBackup, NULL)

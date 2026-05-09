@@ -132,6 +132,13 @@ BEGIN NAMESPACE VFPXPorterLib
                             ENDIF
                         ENDIF
                     NEXT
+                    // Synthesize virtual Column items for every Grid so that column children
+                    // are attached to typed synthetic items rather than dumped flat on the Grid.
+                    FOREACH VAR itm IN tmpitems
+                        IF String.Compare( itm:BaseClassName, "grid", TRUE ) == 0
+                            SELF:SynthesizeGridColumns( itm )
+                        ENDIF
+                    NEXT
                     // Now, we should only have "top" level Items
                     FOREACH VAR itm IN tmpitems
                         // The item has a Parent ?
@@ -203,6 +210,91 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             RETURN success
 
+
+        /// <summary>
+        /// For a Grid item, creates synthetic SCXVCXItem objects (one per column) and
+        /// re-parents column children from the Grid to the correct synthetic column.
+        /// Column sub-properties (Column1.Width, Column2.ControlSource…) are moved
+        /// from the Grid's PropertiesDict into each synthetic column's PropertiesDict.
+        /// </summary>
+        PRIVATE METHOD SynthesizeGridColumns( grid AS SCXVCXItem ) AS VOID
+            // Step 1: collect all column indices referenced by dotted keys in PropertiesDict
+            VAR colIndices := SortedSet<INT>{}
+            FOREACH VAR kv IN grid:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 6 .AND. kv:Key:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(6, dotPos - 6), OUT n )
+                        colIndices:Add( n )
+                    ENDIF
+                ENDIF
+            NEXT
+            IF colIndices:Count == 0
+                RETURN
+            ENDIF
+            // Step 2: create one synthetic SCXVCXItem per column index
+            VAR synthCols := Dictionary<INT, SCXVCXItem>{}
+            FOREACH VAR idx IN colIndices
+                VAR col := SCXVCXItem{}
+                col:Name         := "Column" + idx:ToString()
+                col:BaseClassName := "column"
+                col:ClassName    := "column"
+                col:Parent       := grid:FullName
+                col:FileName     := grid:FileName
+                synthCols:Add( idx, col )
+            NEXT
+            // Step 3: move Column\d+.* properties from grid to the matching synthetic column
+            VAR toRemove := List<STRING>{}
+            FOREACH VAR kv IN grid:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 6 .AND. kv:Key:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(6, dotPos - 6), OUT n ) .AND. synthCols:ContainsKey(n)
+                        VAR propName := kv:Key:Substring(dotPos + 1)
+                        IF !synthCols[n]:PropertiesDict:ContainsKey(propName)
+                            synthCols[n]:PropertiesDict:Add( propName, kv:Value )
+                        ENDIF
+                        toRemove:Add( kv:Key )
+                    ENDIF
+                ENDIF
+            NEXT
+            FOREACH VAR key IN toRemove
+                grid:PropertiesDict:Remove(key)
+            NEXT
+            // Step 4: re-parent column sub-controls from Grid to their synthetic column
+            VAR leftover := List<BaseItem>{}
+            FOREACH VAR baseChild IN grid:Childs
+                VAR child := (SCXVCXItem) baseChild
+                LOCAL colIdx AS INT
+                IF SELF:TryExtractColumnIndex( child:Parent, OUT colIdx ) .AND. synthCols:ContainsKey(colIdx)
+                    synthCols[colIdx]:Childs:Add( child )
+                ELSE
+                    leftover:Add( child )
+                ENDIF
+            NEXT
+            // Step 5: replace Grid.Childs with synthetic columns (sorted) + any leftovers
+            grid:Childs := List<BaseItem>{}
+            FOREACH VAR idx IN colIndices
+                grid:Childs:Add( synthCols[idx] )
+            NEXT
+            FOREACH VAR item IN leftover
+                grid:Childs:Add( item )
+            NEXT
+        END METHOD
+
+        // Returns TRUE and sets colIndex when parentPath ends in ".Column<n>" or is "Column<n>".
+        PRIVATE METHOD TryExtractColumnIndex( parentPath AS STRING, colIndex OUT INT ) AS LOGIC
+            colIndex := 0
+            IF String.IsNullOrEmpty(parentPath)
+                RETURN FALSE
+            ENDIF
+            VAR lastDot := parentPath:LastIndexOf('.')
+            VAR lastSeg := IIF( lastDot >= 0, parentPath:Substring(lastDot + 1), parentPath )
+            IF lastSeg:Length > 6 .AND. lastSeg:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                RETURN Int32.TryParse( lastSeg:Substring(6), OUT colIndex )
+            ENDIF
+            RETURN FALSE
+        END METHOD
 
         PROTECTED METHOD IgnoreItemType( typeOfItem AS STRING ) AS LOGIC
             //

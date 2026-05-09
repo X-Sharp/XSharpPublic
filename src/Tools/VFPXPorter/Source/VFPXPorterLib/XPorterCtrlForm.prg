@@ -1225,47 +1225,81 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECTED METHOD GenerateGrids( Grids AS List<SCXVCXItem> ) AS StringBuilder
             VAR columnSettings := StringBuilder{}
             FOREACH VAR grid IN Grids
-                // grid:Childs contains column sub-controls (Header, TextBox, Spinner …)
-                // whose PARENT path ends with ".Column<n>" pointing to a virtual column.
+                // grid:Childs now contains synthetic Column items (BaseClassName="column")
+                // produced by SCXVCXFile.SynthesizeGridColumns.  Each synthetic column
+                // carries its own PropertiesDict and a Childs list with Header/Text/Spinner.
                 FOREACH VAR subItem IN grid:Childs
-                    LOCAL child AS SCXVCXItem
-                    child := (SCXVCXItem) subItem
-                    // Resolve which column this child belongs to
-                    LOCAL colIndex AS INT
-                    IF !SELF:TryGetColumnIndex( child:Parent, OUT colIndex )
+                    VAR col := (SCXVCXItem) subItem
+                    IF String.Compare( col:BaseClassName, "column", TRUE ) != 0
                         LOOP
                     ENDIF
-                    // Header → emit HeaderText from VFP Caption
-                    IF String.Compare( child:BaseClassName, "header", TRUE ) == 0
-                        IF child:PropertiesDict:ContainsKey("Caption")
-                            VAR caption := child:PropertiesDict["Caption"]
-                            IF !String.IsNullOrEmpty(caption) .AND. caption != "Nil"
-                                columnSettings:Append("SELF:")
-                                columnSettings:Append(grid:Name)
-                                columnSettings:Append(":Column(")
-                                columnSettings:Append(colIndex:ToString())
-                                columnSettings:Append("):HeaderText := ")
-                                columnSettings:AppendLine(caption)
+                    // Extract 1-based index from "Column<n>"
+                    LOCAL colIdx AS INT
+                    IF col:Name:Length <= 6 .OR. !col:Name:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                        LOOP
+                    ENDIF
+                    IF !Int32.TryParse( col:Name:Substring(6), OUT colIdx )
+                        LOOP
+                    ENDIF
+                    VAR colPrefix := "SELF:" + grid:Name + ":Column(" + colIdx:ToString() + "):"
+                    // Emit column properties from the synthetic column's PropertiesDict
+                    FOREACH VAR kv IN col:PropertiesDict
+                        VAR mapped := SELF:MapColumnProperty( kv:Key )
+                        IF mapped == NULL
+                            LOOP  // removed by rule
+                        ENDIF
+                        columnSettings:Append(colPrefix)
+                        columnSettings:Append(mapped)
+                        columnSettings:Append(" := ")
+                        IF ( String.Compare(kv:Key, "ForeColor", TRUE) == 0 .OR. ;
+                             String.Compare(kv:Key, "BackColor", TRUE) == 0 )
+                            columnSettings:Append("VFPTools.ColorFromVFP(")
+                            columnSettings:Append(kv:Value)
+                            columnSettings:AppendLine(")")
+                        ELSE
+                            columnSettings:AppendLine(kv:Value)
+                        ENDIF
+                    NEXT
+                    // Emit HeaderText from the Header grandchild
+                    FOREACH VAR grandSubItem IN col:Childs
+                        VAR grandChild := (SCXVCXItem) grandSubItem
+                        IF String.Compare( grandChild:BaseClassName, "header", TRUE ) == 0
+                            IF grandChild:PropertiesDict:ContainsKey("Caption")
+                                VAR caption := grandChild:PropertiesDict["Caption"]
+                                IF !String.IsNullOrEmpty(caption) .AND. caption != "Nil"
+                                    columnSettings:Append(colPrefix)
+                                    columnSettings:Append("HeaderText := ")
+                                    columnSettings:AppendLine(caption)
+                                ENDIF
                             ENDIF
                         ENDIF
-                    ENDIF
+                    NEXT
                 NEXT
             NEXT
             RETURN columnSettings
         END METHOD
 
-        // Returns TRUE and sets colIndex when parentPath ends with ".Column<n>".
-        PRIVATE METHOD TryGetColumnIndex( parentPath AS STRING, colIndex OUT INT ) AS LOGIC
-            colIndex := 0
-            IF String.IsNullOrEmpty(parentPath)
-                RETURN FALSE
-            ENDIF
-            VAR lastDot := parentPath:LastIndexOf('.')
-            VAR lastSeg := IIF( lastDot >= 0, parentPath:Substring(lastDot + 1), parentPath )
-            IF lastSeg:Length > 6 .AND. lastSeg:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
-                RETURN Int32.TryParse( lastSeg:Substring(6), OUT colIndex )
-            ENDIF
-            RETURN FALSE
+        // Maps a raw VFP column property name to its .NET counterpart.
+        // Returns NULL to indicate the property should be dropped.
+        // Returns the original name for unknown properties (pass-through).
+        PRIVATE METHOD MapColumnProperty( propName AS STRING ) AS STRING
+            SWITCH propName:ToUpperInvariant()
+            CASE "CONTROLSOURCE" ; RETURN "ControlSource"
+            CASE "WIDTH"         ; RETURN "Width"
+            CASE "ALIGNMENT"     ; RETURN "Alignment"
+            CASE "COLUMNORDER"   ; RETURN "ColumnOrder"
+            CASE "SPARSE"        ; RETURN "Sparse"
+            CASE "RESIZABLE"     ; RETURN "Resizable"
+            CASE "FORMAT"        ; RETURN "Format"
+            CASE "INPUTMASK"     ; RETURN "InputMask"
+            CASE "FORECOLOR"     ; RETURN "ForeColor"
+            CASE "BACKCOLOR"     ; RETURN "BackColor"
+            CASE "CURRENTCONTROL"
+            CASE "TEXTALIGN"
+            CASE "TEXTUALIGN"
+                RETURN NULL  // removed
+            END SWITCH
+            RETURN propName  // unknown — pass through
         END METHOD
 
         // Collect all non-virtual descendants of non-grid containers within item.

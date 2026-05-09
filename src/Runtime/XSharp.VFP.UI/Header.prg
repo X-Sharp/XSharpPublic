@@ -80,6 +80,48 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		// ── ForeColor / BackColor ─────────────────────────────────────────────
+		PROPERTY ForeColor AS System.Drawing.Color
+			GET ; RETURN SELF:Style:ForeColor ; END GET
+			SET ; SELF:Style:ForeColor := VALUE ; END SET
+		END PROPERTY
+
+		PROPERTY BackColor AS System.Drawing.Color
+			GET ; RETURN SELF:Style:BackColor ; END GET
+			SET ; SELF:Style:BackColor := VALUE ; END SET
+		END PROPERTY
+
+		// ── Font helpers ──────────────────────────────────────────────────────
+		PRIVATE METHOD _GetStyle() AS System.Drawing.Font
+			RETURN IIF(SELF:Style:Font != NULL, SELF:Style:Font, SystemFonts.DefaultFont)
+		END METHOD
+
+		PROPERTY FontName AS STRING
+			GET ; RETURN SELF:_GetStyle():Name ; END GET
+			SET
+				VAR f := SELF:_GetStyle()
+				SELF:Style:Font := System.Drawing.Font{VALUE, f:Size, f:Style}
+			END SET
+		END PROPERTY
+
+		PROPERTY FontItalic AS LOGIC
+			GET ; RETURN SELF:_GetStyle():Italic ; END GET
+			SET
+				VAR f := SELF:_GetStyle()
+				VAR s := IIF(VALUE, f:Style | System.Drawing.FontStyle.Italic, f:Style & ~System.Drawing.FontStyle.Italic)
+				SELF:Style:Font := System.Drawing.Font{f:FontFamily, f:Size, s}
+			END SET
+		END PROPERTY
+
+		PROPERTY FontUnderline AS LOGIC
+			GET ; RETURN SELF:_GetStyle():Underline ; END GET
+			SET
+				VAR f := SELF:_GetStyle()
+				VAR s := IIF(VALUE, f:Style | System.Drawing.FontStyle.Underline, f:Style & ~System.Drawing.FontStyle.Underline)
+				SELF:Style:Font := System.Drawing.Font{f:FontFamily, f:Size, s}
+			END SET
+		END PROPERTY
+
 		// ── FontBold ──────────────────────────────────────────────────────────
 		PROPERTY FontBold AS LOGIC
 			GET

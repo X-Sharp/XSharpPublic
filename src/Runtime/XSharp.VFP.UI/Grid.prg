@@ -94,6 +94,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
             SELF:CurrentCellChanged += System.EventHandler{ SELF, @VFPCurrentCellChanged() }
+            SELF:CellLeave += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @VFPCellLeave() }
+            SELF:CellBeginEdit += System.Windows.Forms.DataGridViewCellCancelEventHandler{ SELF, @VFPCellBeginEdit() }
+            SELF:CellEndEdit += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @VFPCellEndEdit() }
+            SELF:ColumnHeaderMouseClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @VFPColumnHeaderMouseClick() }
             SELF:Size := System.Drawing.Size{320, 200}
 
             RETURN
@@ -293,27 +297,72 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 SELF:_VFPBeforeRowColChange:Call( <USUAL>{nLocation} )
             ENDIF
 
+        // ── BeforeEditCell / AfterEditCell ────────────────────────────────────
+        PRIVATE _VFPBeforeEditCell AS VFPOverride
+        PROPERTY vfpBeforeEditCell AS STRING GET _VFPBeforeEditCell?:SendTo SET SELF:Set_BeforeEditCell( VFPOverride{SELF, VALUE} )
+
+        METHOD Set_BeforeEditCell( methodCall AS VFPOverride ) AS VOID
+            SELF:_VFPBeforeEditCell := methodCall
+
+        VIRTUAL METHOD BeforeEditCell( nRow AS LONG, nCol AS LONG ) AS VOID
+            IF SELF:_VFPBeforeEditCell != NULL
+                SELF:_VFPBeforeEditCell:Call( <USUAL>{nRow, nCol} )
+            ENDIF
+
+        METHOD VFPCellBeginEdit( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellCancelEventArgs ) AS VOID
+            SELF:BeforeEditCell( e:RowIndex + 1, e:ColumnIndex + 1 )
+
+        PRIVATE _VFPAfterEditCell AS VFPOverride
+        PROPERTY vfpAfterEditCell AS STRING GET _VFPAfterEditCell?:SendTo SET SELF:Set_AfterEditCell( VFPOverride{SELF, VALUE} )
+
+        METHOD Set_AfterEditCell( methodCall AS VFPOverride ) AS VOID
+            SELF:_VFPAfterEditCell := methodCall
+
+        VIRTUAL METHOD AfterEditCell( nRow AS LONG, nCol AS LONG ) AS VOID
+            IF SELF:_VFPAfterEditCell != NULL
+                SELF:_VFPAfterEditCell:Call( <USUAL>{nRow, nCol} )
+            ENDIF
+
+        METHOD VFPCellEndEdit( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID
+            SELF:AfterEditCell( e:RowIndex + 1, e:ColumnIndex + 1 )
+
+        // ── OnColumnHeaderClick ───────────────────────────────────────────────
+        PRIVATE _VFPColumnHeaderClick AS VFPOverride
+        PROPERTY vfpColumnHeaderClick AS STRING GET _VFPColumnHeaderClick?:SendTo SET SELF:Set_ColumnHeaderClick( VFPOverride{SELF, VALUE} )
+
+        METHOD Set_ColumnHeaderClick( methodCall AS VFPOverride ) AS VOID
+            SELF:_VFPColumnHeaderClick := methodCall
+
+        VIRTUAL METHOD ColumnHeaderClick( nCol AS LONG ) AS VOID
+            IF SELF:_VFPColumnHeaderClick != NULL
+                SELF:_VFPColumnHeaderClick:Call( <USUAL>{nCol} )
+            ENDIF
+
+        METHOD VFPColumnHeaderMouseClick( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID
+            SELF:ColumnHeaderClick( e:ColumnIndex + 1 )
+
+        // CellLeave fires before focus moves to the next cell — correct timing for BeforeRowColChange.
+        // e.RowIndex / e.ColumnIndex are the cell being LEFT (VFP nLocation = old position).
+        METHOD VFPCellLeave( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID
+            SELF:BeforeRowColChange( e:RowIndex + 1 )
+
         /// <summary>
-        /// Internal CurrentCellChanged. Will root to AfterRowColChange event
+        /// Internal CurrentCellChanged. Fires AfterRowColChange with the NEW cell position.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         METHOD VFPCurrentCellChanged(sender AS OBJECT, e AS System.EventArgs) AS VOID
-            LOCAL nRowColIndex AS LONG
-            // Same Row ? So, Column have changed
+            // Track what changed (row, col, or both) for the RowColChange property.
             IF SELF:CurrentCell != NULL
                 IF SELF:_oldRowIndex != SELF:CurrentCell:RowIndex
                     SELF:_rowColChange := 1 // Row
-                    nRowColIndex := SELF:_oldRowIndex
                 ENDIF
                 IF SELF:_oldColIndex != SELF:CurrentCell:ColumnIndex
-                    SELF:_rowColChange += 2 // == 2 Col only; ==3 Both
-                    nRowColIndex := SELF:_oldColIndex
+                    SELF:_rowColChange += 2 // == 2 Col only; == 3 Both
                 ENDIF
+                // AfterRowColChange receives the NEW location (1-based row index).
+                SELF:AfterRowColChange( SELF:CurrentCell:RowIndex + 1 )
             ENDIF
-            //
-            SELF:BeforeRowColChange( nRowColIndex )
-            SELF:AfterRowColChange( nRowColIndex )
 
         /// <summary>
         /// Internal SelectionChanged, use to get "old" Row & Col
@@ -403,12 +452,50 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END SET
         END PROPERTY
 
-        PROPERTY AllowHeaderSizing AS LOGIC AUTO
-        PROPERTY AllowRowSizing AS LOGIC AUTO
-        //OVERRIDE PROPERTY ReadOnly AS LOGIC AUTO
-        PROPERTY HighlightStyle AS LONG AUTO
-        PROPERTY AllowAutoColumnFit AS LONG AUTO
-        PROPERTY Themes AS LOGIC AUTO
+        // ── AllowHeaderSizing ─────────────────────────────────────────────────
+        // VFP: .T. = user can drag column header height. Maps to ColumnHeadersHeightSizeMode.
+        PROPERTY AllowHeaderSizing AS LOGIC
+            GET ; RETURN SELF:ColumnHeadersHeightSizeMode == DataGridViewColumnHeadersHeightSizeMode.EnableResizing ; END GET
+            SET ; SELF:ColumnHeadersHeightSizeMode := IIF(VALUE, DataGridViewColumnHeadersHeightSizeMode.EnableResizing, DataGridViewColumnHeadersHeightSizeMode.DisableResizing) ; END SET
+        END PROPERTY
+
+        // ── AllowRowSizing ────────────────────────────────────────────────────
+        // VFP: .T. = user can drag row dividers to resize rows.
+        PROPERTY AllowRowSizing AS LOGIC
+            GET ; RETURN SELF:AllowUserToResizeRows ; END GET
+            SET ; SELF:AllowUserToResizeRows := VALUE ; END SET
+        END PROPERTY
+
+        // ── HighlightStyle ────────────────────────────────────────────────────
+        // VFP: 0=Standard full-row, 1=Cell-level box. Maps to DataGridView.SelectionMode.
+        PROPERTY HighlightStyle AS LONG
+            GET
+                SWITCH SELF:SelectionMode
+                CASE DataGridViewSelectionMode.CellSelect ; RETURN 1
+                OTHERWISE                                 ; RETURN 0
+                END SWITCH
+            END GET
+            SET
+                SWITCH VALUE
+                CASE 1 ; SELF:SelectionMode := DataGridViewSelectionMode.CellSelect
+                OTHERWISE ; SELF:SelectionMode := DataGridViewSelectionMode.FullRowSelect
+                END SWITCH
+            END SET
+        END PROPERTY
+
+        // ── AllowAutoColumnFit ────────────────────────────────────────────────
+        // VFP: 0=None, 1=Auto-size all columns to content.
+        PROPERTY AllowAutoColumnFit AS LONG
+            GET ; RETURN IIF(SELF:AutoSizeColumnsMode == DataGridViewAutoSizeColumnsMode.None, 0, 1) ; END GET
+            SET ; SELF:AutoSizeColumnsMode := IIF(VALUE != 0, DataGridViewAutoSizeColumnsMode.AllCells, DataGridViewAutoSizeColumnsMode.None) ; END SET
+        END PROPERTY
+
+        // ── Themes ────────────────────────────────────────────────────────────
+        // VFP: .T. = use OS visual styles for column headers.
+        PROPERTY Themes AS LOGIC
+            GET ; RETURN SELF:EnableHeadersVisualStyles ; END GET
+            SET ; SELF:EnableHeadersVisualStyles := VALUE ; END SET
+        END PROPERTY
 
         // C-13: Value = the current cell's value
         PROPERTY Value AS USUAL

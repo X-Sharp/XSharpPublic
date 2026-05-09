@@ -76,6 +76,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE buttons AS List<CommandButton>
 
+		// Factory delegate — set by generated code when MemberClass is a custom type.
+		// When set, ButtonCount uses this to create buttons of the correct derived type.
+		PUBLIC PROPERTY ButtonFactory AS Func<CommandButton> AUTO
+
 		PUBLIC PROPERTY ButtonCount AS INT
 			GET
 				RETURN SELF:buttons:Count
@@ -93,7 +97,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ELSEIF value > SELF:buttons:Count
 					FOR VAR i := SELF:buttons:Count + 1 TO value
 						LOCAL btn AS CommandButton
-						btn := CommandButton{}
+						btn := IIF(SELF:ButtonFactory != NULL, SELF:ButtonFactory:Invoke(), CommandButton{})
 						btn:AutoSize := TRUE
 						btn:Location := System.Drawing.Point{6, 11 + (i-1)*(21+6)}
 						btn:Name := "Command" + i:ToString()

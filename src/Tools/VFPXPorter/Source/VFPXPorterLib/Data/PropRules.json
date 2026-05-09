@@ -62,7 +62,9 @@
 
   "CommandGroup": {
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "^Button99": "Buttons(99)"
+    "^Button99": "Buttons(99)",
+    "MemberClass": "",
+    "MemberClassLibrary": ""
   },
 
   "Shape": {
@@ -113,7 +115,9 @@
 
    "OptionGroup": {
      "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "^Button99": "Buttons(99)"
+     "^Button99": "Buttons(99)",
+     "MemberClass": "",
+     "MemberClassLibrary": ""
    },
 
    "ListBox": {

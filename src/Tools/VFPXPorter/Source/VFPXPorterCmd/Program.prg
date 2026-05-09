@@ -32,6 +32,10 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				outputFolder := StripQuotes(arg:Substring(3))
 			ELSEIF arg:StartsWith("-l:", StringComparison.InvariantCultureIgnoreCase)
 				logFile := StripQuotes(arg:Substring(3))
+			ELSEIF arg:StartsWith("-dataFolder:", StringComparison.InvariantCultureIgnoreCase)
+				XPorterSettings.DataFolder := StripQuotes(arg:Substring(12))
+			ELSEIF arg:StartsWith("-folderNames:", StringComparison.InvariantCultureIgnoreCase)
+				settings:ItemsType := StripQuotes(arg:Substring(13))
 			ELSEIF arg:StartsWith("-outputType:", StringComparison.InvariantCultureIgnoreCase)
 				VAR typeName := StripQuotes(arg:Substring(12))
 				IF !Enum.TryParse<ProjectType>(typeName, TRUE, OUT VAR pt)
@@ -45,12 +49,81 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:Modifier := StripQuotes(arg:Substring(10)):ToUpperInvariant()
 			ELSEIF String.Compare(arg, "-b", TRUE) == 0
 				doBackup := TRUE
+			// ── KeepOriginal ──────────────────────────────────────────────
 			ELSEIF String.Compare(arg, "-keepOriginal", TRUE) == 0
 				settings:KeepOriginal := TRUE
 			ELSEIF String.Compare(arg, "-noKeepOriginal", TRUE) == 0
 				settings:KeepOriginal := FALSE
+			// ── StoreInFolders ────────────────────────────────────────────
 			ELSEIF String.Compare(arg, "-storeInFolders", TRUE) == 0
 				settings:StoreInFolders := TRUE
+			ELSEIF String.Compare(arg, "-noStoreInFolders", TRUE) == 0
+				settings:StoreInFolders := FALSE
+			// ── EmptyFolder ───────────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-emptyFolder", TRUE) == 0
+				settings:EmptyFolder := TRUE
+			ELSEIF String.Compare(arg, "-noEmptyFolder", TRUE) == 0
+				settings:EmptyFolder := FALSE
+			// ── LibInSubFolder ────────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-libInSubFolder", TRUE) == 0
+				settings:LibInSubFolder := TRUE
+			ELSEIF String.Compare(arg, "-noLibInSubFolder", TRUE) == 0
+				settings:LibInSubFolder := FALSE
+			// ── AddLibraryNamespace ───────────────────────────────────────
+			ELSEIF String.Compare(arg, "-addLibraryNamespace", TRUE) == 0
+				settings:AddLibraryNamespace := TRUE
+			ELSEIF String.Compare(arg, "-noAddLibraryNamespace", TRUE) == 0
+				settings:AddLibraryNamespace := FALSE
+			// ── IgnoreErrors ──────────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-ignoreErrors", TRUE) == 0
+				settings:IgnoreErrors := TRUE
+			ELSEIF String.Compare(arg, "-noIgnoreErrors", TRUE) == 0
+				settings:IgnoreErrors := FALSE
+			// ── PrefixClassFile ───────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-prefixClassFile", TRUE) == 0
+				settings:PrefixClassFile := TRUE
+			ELSEIF String.Compare(arg, "-noPrefixClassFile", TRUE) == 0
+				settings:PrefixClassFile := FALSE
+			// ── PrefixEvent ───────────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-prefixEvent", TRUE) == 0
+				settings:PrefixEvent := TRUE
+			ELSEIF String.Compare(arg, "-noPrefixEvent", TRUE) == 0
+				settings:PrefixEvent := FALSE
+			// ── KeepFoxProEventName ───────────────────────────────────────
+			ELSEIF String.Compare(arg, "-keepFoxProEventName", TRUE) == 0
+				settings:KeepFoxProEventName := TRUE
+			ELSEIF String.Compare(arg, "-noKeepFoxProEventName", TRUE) == 0
+				settings:KeepFoxProEventName := FALSE
+			// ── GenerateOnlyHandledEvent ──────────────────────────────────
+			ELSEIF String.Compare(arg, "-generateOnlyHandledEvent", TRUE) == 0
+				settings:GenerateOnlyHandledEvent := TRUE
+			ELSEIF String.Compare(arg, "-noGenerateOnlyHandledEvent", TRUE) == 0
+				settings:GenerateOnlyHandledEvent := FALSE
+			// ── ConvertThisObject ─────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-convertThisObject", TRUE) == 0
+				settings:ConvertThisObject := TRUE
+			ELSEIF String.Compare(arg, "-noConvertThisObject", TRUE) == 0
+				settings:ConvertThisObject := FALSE
+			// ── ConvertStatement ──────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-convertStatement", TRUE) == 0
+				settings:ConvertStatement := TRUE
+			ELSEIF String.Compare(arg, "-noConvertStatement", TRUE) == 0
+				settings:ConvertStatement := FALSE
+			// ── ConvertStatementOnlyIfLast ────────────────────────────────
+			ELSEIF String.Compare(arg, "-convertStatementOnlyIfLast", TRUE) == 0
+				settings:ConvertStatementOnlyIfLast := TRUE
+			ELSEIF String.Compare(arg, "-noConvertStatementOnlyIfLast", TRUE) == 0
+				settings:ConvertStatementOnlyIfLast := FALSE
+			// ── NameUDF ───────────────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-nameUDF", TRUE) == 0
+				settings:NameUDF := TRUE
+			ELSEIF String.Compare(arg, "-noNameUDF", TRUE) == 0
+				settings:NameUDF := FALSE
+			// ── RemoveSet ─────────────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-removeSet", TRUE) == 0
+				settings:RemoveSet := TRUE
+			ELSEIF String.Compare(arg, "-noRemoveSet", TRUE) == 0
+				settings:RemoveSet := FALSE
 			ELSE
 				Console.ForegroundColor := ConsoleColor.Yellow
 				Console.WriteLine("Warning: unknown argument '" + arg + "'")
@@ -77,9 +150,10 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 		ENDIF
 		//
 		// Configure logger
-		IF !String.IsNullOrEmpty(logFile)
-			XPorterLogger.SetLoggerToFile(logFile)
-		ENDIF
+        IF String.IsNullOrEmpty(logFile)
+            logFile := Path.Combine(outputFolder, "VFPXPorter.log")
+        ENDIF
+        XPorterLogger.SetLoggerToFile(logFile)
 		//
 		// Project export (-p)
 		IF !String.IsNullOrEmpty(pjxFile)
@@ -135,6 +209,7 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 	// Strip leading and trailing double-quote characters from a path value.
 	// Handles the case where the shell passes quotes through to the argument string.
 	FUNCTION StripQuotes( value AS STRING ) AS STRING
-		RETURN value:Trim('"')
+		RETURN value:Trim():Trim( <CHAR>{ '"' } ):Trim()
 
 END NAMESPACE
+

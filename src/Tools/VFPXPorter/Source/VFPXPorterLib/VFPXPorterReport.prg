@@ -36,7 +36,7 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR tmpitems := List<FRXItem>{}
             TRY
                 // Open the MNX (DBF) File
-                DbUseArea(TRUE, "DBFVFP", SELF:Settings:ItemsPath, SELF:Settings:ItemsPath,FALSE,TRUE )
+                DbUseArea(TRUE, "DBFVFP", SELF:Settings:ItemsPath, System.IO.Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath),FALSE,TRUE )
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()

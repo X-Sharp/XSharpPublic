@@ -225,3 +225,15 @@ FUNCTION IsNull(eExpression AS USUAL) AS LOGIC
 
     RETURN System.Convert.IsDBNull(eExpression)
 ENDFUNC
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/imestatus/*" />
+[FoxProFunction("IMESTATUS", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION ImeStatus(nExpression := 0 AS LONG) AS LONG
+    RETURN 0
+ENDFUNC
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/ispen/*" />
+[FoxProFunction("ISPEN", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION IsPen() AS LOGIC
+    RETURN FALSE
+ENDFUNC

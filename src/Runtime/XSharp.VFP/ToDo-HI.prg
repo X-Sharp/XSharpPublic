@@ -5,14 +5,6 @@
 //
 #pragma options("vo15", on)
 
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/imestatus/*" />
-[FoxProFunction("IMESTATUS", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION ImeStatus( nExpression ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indbc/*" />
 [FoxProFunction("INDBC", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
@@ -45,13 +37,6 @@ FUNCTION IsExclusive( uArea, nType) AS LOGIC
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ismemofetched/*" />
 [FoxProFunction("ISMEMOFETCHED", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION IsMemoFetched( uField , uArea) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ispen/*" />
-[FoxProFunction("ISPEN", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION IsPen( ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 

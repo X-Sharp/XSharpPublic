@@ -206,14 +206,87 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ENDIF
 				// Wire CellFormatting for VFP format/mask support
 				SELF:DataGridView:CellFormatting += DataGridViewCellFormattingEventHandler{ SELF, @OnCellFormatting() }
-				// Wire ColumnHeaderMouseClick so Header.vfpClick fires
-				SELF:DataGridView:ColumnHeaderMouseClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseClick() }
+				// Wire column-header mouse events so Header vfp* callbacks fire
+				SELF:DataGridView:ColumnHeaderMouseClick       += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseClick() }
+				SELF:DataGridView:ColumnHeaderMouseDoubleClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseDblClick() }
+				SELF:DataGridView:ColumnHeaderMouseDown        += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseDown() }
+				SELF:DataGridView:ColumnHeaderMouseUp          += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseUp() }
+				SELF:DataGridView:ColumnHeaderMouseMove        += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseMove() }
+				SELF:DataGridView:CellMouseEnter               += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellMouseEnter() }
+				SELF:DataGridView:CellMouseLeave               += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellMouseLeave() }
+				// Wire column cell events for vfp* callbacks
+				SELF:DataGridView:CellMouseClick  += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnCellMouseClick() }
+				SELF:DataGridView:CellDoubleClick += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellDoubleClick() }
+				SELF:DataGridView:CellEnter       += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellEnter() }
+				SELF:DataGridView:CellLeave       += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellLeave() }
+				SELF:DataGridView:CellMouseDown   += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnCellMouseDownInner() }
+				SELF:DataGridView:CellMouseUp     += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnCellMouseUpInner() }
+				SELF:DataGridView:CellMouseMove   += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnCellMouseMoveInner() }
+				SELF:DataGridView:CellValidating  += System.Windows.Forms.DataGridViewCellValidatingEventHandler{ SELF, @OnCellValidating() }
+				SELF:DataGridView:CellBeginEdit   += System.Windows.Forms.DataGridViewCellCancelEventHandler{ SELF, @OnCellBeginEdit() }
+				SELF:DataGridView:KeyPress        += System.Windows.Forms.KeyPressEventHandler{ SELF, @OnGridKeyPress() }
+				SELF:DataGridView:EditingControlShowing += System.Windows.Forms.DataGridViewEditingControlShowingEventHandler{ SELF, @OnEditingControlShowing() }
+				// Fire Init the first time this column is attached to a grid
+				IF !SELF:_initFired
+					SELF:_initFired := TRUE
+					SELF:_VFPInit?:Call()
+				ENDIF
 			ENDIF
+
+		PRIVATE METHOD _GetHeader() AS Header
+			IF SELF:HeaderCell IS Header VAR hdr
+				RETURN hdr
+			ENDIF
+			RETURN NULL_OBJECT
 
 		PRIVATE METHOD OnColumnHeaderMouseClick( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
 			IF e:ColumnIndex == SELF:Index
-				IF SELF:HeaderCell IS Header VAR hdr
-					hdr:FireClick()
+				VAR hdr := SELF:_GetHeader()
+				IF hdr != NULL_OBJECT
+					IF e:Button == System.Windows.Forms.MouseButtons.Right
+						hdr:FireRightClick()
+					ELSE
+						hdr:FireClick()
+					ENDIF
+				ENDIF
+			ENDIF
+
+		PRIVATE METHOD OnColumnHeaderMouseDblClick( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				SELF:_GetHeader()?:FireDblClick()
+			ENDIF
+
+		PRIVATE METHOD OnColumnHeaderMouseDown( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				SELF:_GetHeader()?:FireMouseDown()
+			ENDIF
+
+		PRIVATE METHOD OnColumnHeaderMouseUp( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				SELF:_GetHeader()?:FireMouseUp()
+			ENDIF
+
+		PRIVATE METHOD OnColumnHeaderMouseMove( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				SELF:_GetHeader()?:FireMouseMove()
+			ENDIF
+
+		// CellMouseEnter/Leave: RowIndex == -1 is the header row, >= 0 is a data cell.
+		PRIVATE METHOD OnCellMouseEnter( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				IF e:RowIndex == -1
+					SELF:_GetHeader()?:FireMouseEnter()
+				ELSE
+					SELF:_VFPMouseEnter?:Call()
+				ENDIF
+			ENDIF
+
+		PRIVATE METHOD OnCellMouseLeave( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID STRICT
+			IF e:ColumnIndex == SELF:Index
+				IF e:RowIndex == -1
+					SELF:_GetHeader()?:FireMouseLeave()
+				ELSE
+					SELF:_VFPMouseLeave?:Call()
 				ENDIF
 			ENDIF
 
@@ -318,6 +391,219 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SUPER:Resizable := IIF(VALUE, DataGridViewTriState.True, DataGridViewTriState.False)
 			END SET
 		END PROPERTY
+
+// ── Tag ───────────────────────────────────────────────────────────────
+// VFP Tag is a string; base DataGridViewBand.Tag is Object.
+NEW PROPERTY Tag AS STRING
+    GET
+        LOCAL t := SUPER:Tag AS OBJECT
+        RETURN IIF(t == NULL_OBJECT, "", t:ToString())
+    END GET
+    SET ; SUPER:Tag := (OBJECT) VALUE ; END SET
+END PROPERTY
+
+// ── SelectOnEntry ─────────────────────────────────────────────────────
+// VFP: entering a column selects all cell content. No WinForms equivalent.
+PROPERTY SelectOnEntry AS LOGIC AUTO
+
+// ── FontOutline / FontShadow / DragMode ───────────────────────────────
+// VFP-only; no WinForms equivalent. Stored for compatibility.
+PROPERTY FontOutline AS LOGIC AUTO
+PROPERTY FontShadow  AS LOGIC AUTO
+PROPERTY DragMode    AS INT AUTO
+
+// ── Refresh ───────────────────────────────────────────────────────────
+METHOD Refresh() AS VOID STRICT
+    IF SELF:DataGridView != NULL_OBJECT
+        SELF:DataGridView:InvalidateColumn(SELF:Index)
+    ENDIF
+
+// ── Dispose: fire vfpDestroy ──────────────────────────────────────────
+PROTECTED OVERRIDE METHOD Dispose(disposing AS LOGIC) AS VOID STRICT
+    IF disposing
+        SELF:_VFPDestroy?:Call()
+    ENDIF
+    SUPER:Dispose(disposing)
+
+// ── vfp* event properties ─────────────────────────────────────────────
+PRIVATE _VFPClick      AS VFPOverride
+PRIVATE _VFPRightClick AS VFPOverride
+PRIVATE _VFPDblClick   AS VFPOverride
+PRIVATE _VFPGotFocus   AS VFPOverride
+PRIVATE _VFPLostFocus  AS VFPOverride
+PRIVATE _VFPMouseDown  AS VFPOverride
+PRIVATE _VFPMouseUp    AS VFPOverride
+PRIVATE _VFPMouseMove  AS VFPOverride
+PRIVATE _VFPMouseEnter AS VFPOverride
+PRIVATE _VFPMouseLeave AS VFPOverride
+PRIVATE _VFPValid      AS VFPOverride
+PRIVATE _VFPWhen       AS VFPOverride
+PRIVATE _VFPKeyPress   AS VFPOverride
+PRIVATE _VFPInit       AS VFPOverride
+PRIVATE _VFPDestroy    AS VFPOverride
+PRIVATE _VFPRefresh    AS VFPOverride
+PRIVATE _initFired     AS LOGIC
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpClick AS STRING
+    GET ; RETURN SELF:_VFPClick?:SendTo ; END GET
+    SET ; SELF:_VFPClick := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpRightClick AS STRING
+    GET ; RETURN SELF:_VFPRightClick?:SendTo ; END GET
+    SET ; SELF:_VFPRightClick := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpDblClick AS STRING
+    GET ; RETURN SELF:_VFPDblClick?:SendTo ; END GET
+    SET ; SELF:_VFPDblClick := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpGotFocus AS STRING
+    GET ; RETURN SELF:_VFPGotFocus?:SendTo ; END GET
+    SET ; SELF:_VFPGotFocus := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpLostFocus AS STRING
+    GET ; RETURN SELF:_VFPLostFocus?:SendTo ; END GET
+    SET ; SELF:_VFPLostFocus := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpMouseDown AS STRING
+    GET ; RETURN SELF:_VFPMouseDown?:SendTo ; END GET
+    SET ; SELF:_VFPMouseDown := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpMouseUp AS STRING
+    GET ; RETURN SELF:_VFPMouseUp?:SendTo ; END GET
+    SET ; SELF:_VFPMouseUp := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpMouseMove AS STRING
+    GET ; RETURN SELF:_VFPMouseMove?:SendTo ; END GET
+    SET ; SELF:_VFPMouseMove := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpMouseEnter AS STRING
+    GET ; RETURN SELF:_VFPMouseEnter?:SendTo ; END GET
+    SET ; SELF:_VFPMouseEnter := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpMouseLeave AS STRING
+    GET ; RETURN SELF:_VFPMouseLeave?:SendTo ; END GET
+    SET ; SELF:_VFPMouseLeave := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpValid AS STRING
+    GET ; RETURN SELF:_VFPValid?:SendTo ; END GET
+    SET ; SELF:_VFPValid := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpWhen AS STRING
+    GET ; RETURN SELF:_VFPWhen?:SendTo ; END GET
+    SET ; SELF:_VFPWhen := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpKeyPress AS STRING
+    GET ; RETURN SELF:_VFPKeyPress?:SendTo ; END GET
+    SET ; SELF:_VFPKeyPress := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpInit AS STRING
+    GET ; RETURN SELF:_VFPInit?:SendTo ; END GET
+    SET ; SELF:_VFPInit := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpDestroy AS STRING
+    GET ; RETURN SELF:_VFPDestroy?:SendTo ; END GET
+    SET ; SELF:_VFPDestroy := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+PROPERTY vfpRefresh AS STRING
+    GET ; RETURN SELF:_VFPRefresh?:SendTo ; END GET
+    SET ; SELF:_VFPRefresh := VFPOverride{NULL, VALUE} ; END SET
+END PROPERTY
+
+// ── Cell event handlers ───────────────────────────────────────────────
+PRIVATE METHOD OnCellMouseClick(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        IF e:Button == System.Windows.Forms.MouseButtons.Right
+            SELF:_VFPRightClick?:Call()
+        ELSE
+            SELF:_VFPClick?:Call()
+        ENDIF
+    ENDIF
+
+PRIVATE METHOD OnCellDoubleClick(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        SELF:_VFPDblClick?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellEnter(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        SELF:_VFPGotFocus?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellLeave(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        SELF:_VFPLostFocus?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellMouseDownInner(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        SELF:_VFPMouseDown?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellMouseUpInner(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        SELF:_VFPMouseUp?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellMouseMoveInner(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
+        SELF:_VFPMouseMove?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellValidating(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellValidatingEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index
+        SELF:_VFPValid?:Call()
+    ENDIF
+
+PRIVATE METHOD OnCellBeginEdit(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellCancelEventArgs) AS VOID STRICT
+    IF e:ColumnIndex == SELF:Index
+        SELF:_VFPWhen?:Call()
+    ENDIF
+
+// KeyPress on the DataGridView filters to the currently active cell's column.
+PRIVATE METHOD OnGridKeyPress(sender AS OBJECT, e AS System.Windows.Forms.KeyPressEventArgs) AS VOID STRICT
+    IF SELF:DataGridView:CurrentCell != NULL_OBJECT .AND. SELF:DataGridView:CurrentCell:ColumnIndex == SELF:Index
+        SELF:_VFPKeyPress?:Call()
+    ENDIF
+
+// SelectOnEntry: when .T., select all cell text as soon as the editing control appears.
+// BeginInvoke defers the SelectAll() until after the editing control is fully populated.
+PRIVATE METHOD OnEditingControlShowing(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) AS VOID STRICT
+    IF SELF:SelectOnEntry .AND. SELF:DataGridView:CurrentCell != NULL_OBJECT .AND. SELF:DataGridView:CurrentCell:ColumnIndex == SELF:Index
+        IF e:Control IS System.Windows.Forms.TextBox VAR tb
+            SELF:DataGridView:BeginInvoke(System.Windows.Forms.MethodInvoker{ tb, @tb:SelectAll() })
+        ENDIF
+    ENDIF
 
 #include "FontProperties.xh"
 

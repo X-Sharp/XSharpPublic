@@ -156,6 +156,28 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		// ── FontStrikeThru ───────────────────────────────────────────────────
+		PROPERTY FontStrikeThru AS LOGIC
+			GET ; RETURN SELF:_GetStyle():Strikeout ; END GET
+			SET
+				VAR f := SELF:_GetStyle()
+				VAR s := IIF(VALUE, f:Style | System.Drawing.FontStyle.Strikeout, f:Style & ~System.Drawing.FontStyle.Strikeout)
+				SELF:Style:Font := System.Drawing.Font{f:FontFamily, f:Size, s}
+			END SET
+		END PROPERTY
+
+		// ── Picture ───────────────────────────────────────────────────────────
+		// VFP Picture: file path to an image shown in the column header.
+		// Maps to DataGridViewColumnHeaderCell.Image.
+		PRIVATE _picture AS STRING
+		PROPERTY Picture AS STRING
+			GET ; RETURN IIF(SELF:_picture == NULL, "", SELF:_picture) ; END GET
+			SET
+				SELF:_picture := VALUE
+				SELF:Image := IIF(String.IsNullOrEmpty(VALUE), NULL_OBJECT, VFPTools.ImageFromFile(VALUE))
+			END SET
+		END PROPERTY
+
 		// ── Click event ───────────────────────────────────────────────────────
 		// VFP Header.Click fires when the user clicks the column header.
 		// Since DataGridViewColumnHeaderCell is not a Control, we wire into
@@ -171,6 +193,105 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		METHOD FireClick() AS VOID STRICT
 			IF SELF:_VFPClick != NULL
 				SELF:_VFPClick:Call()
+			ENDIF
+
+		// ── RightClick event ─────────────────────────────────────────────────
+		PRIVATE _VFPRightClick AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpRightClick AS STRING
+			GET ; RETURN SELF:_VFPRightClick?:SendTo ; END GET
+			SET ; SELF:_VFPRightClick := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireRightClick() AS VOID STRICT
+			IF SELF:_VFPRightClick != NULL
+				SELF:_VFPRightClick:Call()
+			ENDIF
+
+		// ── DblClick event ────────────────────────────────────────────────────
+		PRIVATE _VFPDblClick AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpDblClick AS STRING
+			GET ; RETURN SELF:_VFPDblClick?:SendTo ; END GET
+			SET ; SELF:_VFPDblClick := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireDblClick() AS VOID STRICT
+			IF SELF:_VFPDblClick != NULL
+				SELF:_VFPDblClick:Call()
+			ENDIF
+
+		// ── MouseDown event ───────────────────────────────────────────────────
+		PRIVATE _VFPMouseDown AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMouseDown AS STRING
+			GET ; RETURN SELF:_VFPMouseDown?:SendTo ; END GET
+			SET ; SELF:_VFPMouseDown := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireMouseDown() AS VOID STRICT
+			IF SELF:_VFPMouseDown != NULL
+				SELF:_VFPMouseDown:Call()
+			ENDIF
+
+		// ── MouseUp event ─────────────────────────────────────────────────────
+		PRIVATE _VFPMouseUp AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMouseUp AS STRING
+			GET ; RETURN SELF:_VFPMouseUp?:SendTo ; END GET
+			SET ; SELF:_VFPMouseUp := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireMouseUp() AS VOID STRICT
+			IF SELF:_VFPMouseUp != NULL
+				SELF:_VFPMouseUp:Call()
+			ENDIF
+
+		// ── MouseMove event ───────────────────────────────────────────────────
+		PRIVATE _VFPMouseMove AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMouseMove AS STRING
+			GET ; RETURN SELF:_VFPMouseMove?:SendTo ; END GET
+			SET ; SELF:_VFPMouseMove := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireMouseMove() AS VOID STRICT
+			IF SELF:_VFPMouseMove != NULL
+				SELF:_VFPMouseMove:Call()
+			ENDIF
+
+		// ── MouseEnter event ──────────────────────────────────────────────────
+		PRIVATE _VFPMouseEnter AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMouseEnter AS STRING
+			GET ; RETURN SELF:_VFPMouseEnter?:SendTo ; END GET
+			SET ; SELF:_VFPMouseEnter := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireMouseEnter() AS VOID STRICT
+			IF SELF:_VFPMouseEnter != NULL
+				SELF:_VFPMouseEnter:Call()
+			ENDIF
+
+		// ── MouseLeave event ──────────────────────────────────────────────────
+		PRIVATE _VFPMouseLeave AS VFPOverride
+		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		PROPERTY vfpMouseLeave AS STRING
+			GET ; RETURN SELF:_VFPMouseLeave?:SendTo ; END GET
+			SET ; SELF:_VFPMouseLeave := VFPOverride{NULL, VALUE} ; END SET
+		END PROPERTY
+
+		METHOD FireMouseLeave() AS VOID STRICT
+			IF SELF:_VFPMouseLeave != NULL
+				SELF:_VFPMouseLeave:Call()
+			ENDIF
+
+		// ── Refresh stub ──────────────────────────────────────────────────────
+		// VFP Header.Refresh() redraws the header; no direct WinForms equivalent
+		// for a cell header, so we invalidate the owning DataGridView if available.
+		METHOD Refresh() AS VOID STRICT
+			IF SELF:DataGridView != NULL_OBJECT
+				SELF:DataGridView:Invalidate()
 			ENDIF
 
 		PROPERTY TextAlign AS System.Drawing.ContentAlignment AUTO

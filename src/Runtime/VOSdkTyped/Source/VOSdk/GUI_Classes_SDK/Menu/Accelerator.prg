@@ -18,7 +18,7 @@ class AcceleratorKey
         ASCII := wASCII
         ID	  := wID
     /// <include file="Gui.xml" path="doc/AcceleratorKey.ShortCut/*" />
-    access Shortcut as System.Windows.Forms.Shortcut
+    access Shortcut as System.Windows.Forms.Keys
         local iKey as long
         if _and(Flags, FALT) == FALT
             iKey += System.Windows.Forms.Keys.Alt
@@ -34,7 +34,7 @@ class AcceleratorKey
         else
             iKey += ASCII
         endif
-        return (System.Windows.Forms.Shortcut) iKey
+        return (System.Windows.Forms.Keys) iKey
 
 
 

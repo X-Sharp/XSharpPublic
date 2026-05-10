@@ -5,7 +5,7 @@
 //
 
 
-
+USING System.Linq
 USING System.Collections.Generic
 /// <include file="Gui.xml" path="doc/ToolBar/*" />
 CLASS ToolBar INHERIT Control
@@ -40,25 +40,25 @@ CLASS ToolBar INHERIT Control
     /// <exclude />
 	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oControl := (VOToolBar) oC
-		oControl:ShowToolTips := TRUE
-		oControl:Wrappable := FALSE
-		oControl:ButtonClick += ButtonClick
+		oControl:ShowItemToolTips := TRUE
+		oControl:GripStyle := System.Windows.Forms.ToolStripGripStyle.Hidden
+		oControl:ItemClicked += ItemClicked
 		RETURN
 
 
     /// <exclude />
-	VIRTUAL METHOD ButtonClick (Sender AS OBJECT, e AS System.Windows.Forms.ToolBarButtonClickEventArgs) AS VOID
+	VIRTUAL METHOD ItemClicked(Sender AS OBJECT, e AS System.Windows.Forms.ToolStripItemClickedEventArgs) AS VOID
 		LOCAL nID AS LONG
 		LOCAL oWin AS Window
 		LOCAL oEvt AS MenuCommandEvent
-		IF e:Button != NULL_OBJECT .and. e:Button:GetType() == typeof(VOToolBarButton)
-			nID := ((VOToolBarButton) e:Button):MenuID
+		IF e:ClickedItem != NULL_OBJECT .AND. e:ClickedItem IS VOToolBarButton VAR oBtn
+			nID := oBtn:MenuID
 			oWin := (Window) SELF:Owner
 			IF oWin:Menu != NULL_OBJECT
-				oEvt := MenuCommandEvent{oWin:Menu,oWin, nID}
+				oEvt := MenuCommandEvent{oWin:Menu, oWin, nID}
 				oWin:__PreMenuCommand(oEvt)
 			ENDIF
-		endif
+		ENDIF
 		RETURN
 
     /// <exclude />
@@ -72,7 +72,7 @@ CLASS ToolBar INHERIT Control
 		RETURN cText
 
     /// <exclude />
-	METHOD __CreateButton(cCaption AS STRING, nID AS LONG) AS System.Windows.Forms.ToolBarButton
+	METHOD __CreateButton(cCaption AS STRING, nID AS LONG) AS VOToolBarButton
 		LOCAL oButton AS VOToolBarButton
 		LOCAL cText AS STRING
 		oButton := VOToolBarButton{}
@@ -96,7 +96,7 @@ CLASS ToolBar INHERIT Control
 		RETURN (VOToolBar) oCtrl
 
     /// <exclude />
-	METHOD __GetButton(nID, symIDType, symTB) AS System.Windows.Forms.ToolBarButton
+	METHOD __GetButton(nID, symIDType, symTB) AS VOToolBarButton
 		LOCAL oTB AS VOToolBar
 		Default(ref symTB, #MAINTOOLBAR)
 		oTB := SELF:__FindToolBarHandle(symTB)
@@ -489,7 +489,7 @@ CLASS ToolBar INHERIT Control
 		LOCAL oUpdate		 	AS ToolBarUpdate
 		LOCAL oExtraBitmap		AS ToolBarExtraBitmap
 		LOCAL oTB				AS VOToolBar
-		LOCAL oButton			as System.Windows.Forms.ToolBarButton
+		LOCAL oButton			AS VOToolBarButton
 
 
 		Default(ref symTB, #MAINTOOLBAR)
@@ -506,17 +506,13 @@ CLASS ToolBar INHERIT Control
 		IF oTB != NULL_OBJECT
 
 			IF IsLong(nButtonID) .AND. nButtonID >= I_IMAGENONE
-				oButton := SELF:__CreateButton(cTitle, nMenuItemID)
-				oButton:ImageIndex := nButtonID-1
 				IF nButtonID == IDT_SEPARATOR
-					oButton:Style := System.Windows.Forms.ToolBarButtonStyle.Separator
-					oButton:Pushed := TRUE
-					oButton:PartialPush := TRUE
+					// Create a separator item (no VOToolBarButton needed)
+					oTB:Items:Add(VOSeparator{})
 				ELSEIF IsLong(nMenuItemID)
+					oButton := SELF:__CreateButton(cTitle, nMenuItemID)
+					oButton:ImageIndex := nButtonID-1
 					// Button
-					//strucButton:idCommand := nMenuItemID
-					//strucButton:fsState := TBSTATE_ENABLED
-					//strucButton:fsStyle := TBSTYLE_BUTTON
 					IF oBitmap != NULL_OBJECT .AND. IsObject(oBmp) .AND. oBmp != NULL_OBJECT .AND. SELF:__ButtonStyle != TB_TEXTONLY
 						DEFAULT(ref nImgCount, 1)
 						oExtraBitmap := SELF:__FindExtraBitMap(oBmp, symTB)
@@ -527,10 +523,6 @@ CLASS ToolBar INHERIT Control
 							aExtraBitmaps:Add(oExtraBitmap)
 						ENDIF
 						IF oExtraBitmap:NameSym == NULL_SYMBOL
-							//strucAddBitmap:hInst 	:= NULL_PTR
-							//strucAddBitmap:nID 		:= DWORD(_CAST, oBmp:Handle())
-							//nImgCount := Max(nImgCount, oExtraBitmap:ImageCount)
-							//oExtraBitmap:FirstImageIndex:= SendMessage(hWndTB, TB_ADDBITMAP, nImgCount, LONGINT(_CAST, @strucAddBitmap))
 							oExtraBitmap:NameSym	:= symTB
 						ENDIF
 
@@ -538,54 +530,31 @@ CLASS ToolBar INHERIT Control
 
 					IF SELF:__ButtonStyle != TB_TEXTONLY
 						IF oBitmap != NULL_OBJECT
-							//		IF nButtonID < 0
-							//			strucButton:iBitmap := nButtonID
-							//		ELSEIF nButtonID <= IDT_CUSTOMBITMAP
-							//			strucButton:iBitmap := nButtonID - 1l
-							//		ELSEIF IsLong(nPosition)
-							//			strucButton:iBitmap := oExtraBitmap:FirstImageIndex + nPosition - 1l
-							//		ELSE
-							//			strucButton:iBitmap := 1l
-							//		ENDIF
                             NOP
 
 						ELSE
-							//		strucButton:iBitmap := nButtonID - 1
                             NOP
 						ENDIF
 					ELSE
-						//	strucButton:iBitmap := -1l
                         NOP
 					ENDIF
 
-					//strucButton:iString := -1l
 					IF SELF:__ButtonStyle != TB_ICONONLY
 						IF !String.IsNullOrEmpty(cTitle)
-							//		IF ! cTitle == NULL_STRING
-							//			pszTitle := StringAlloc(cTitle+CHR(0))
-							//			strucButton:iString := SendMessage(hwndTB, TB_ADDSTRING, 0, LONGINT(_CAST, pszTitle))
-							//			MemFree(pszTitle)
-							//		ENDIF
                             NOP
 
 						ELSEIF nButtonID > 0 .AND. nButtonID <= IDT_CUSTOMBITMAP .AND. oBitmap != NULL_OBJECT
-							//		LOCAL cText AS STRING
 							cTitle := __CavoStr( __WCToolBarOffset + nButtonID )
-							//		strucButton:iString := SendMessage(hWndTB, TB_ADDSTRING, 0, LONGINT(_CAST, String2Psz( cText ) ) )
 						ENDIF
 						oButton:Text := cTitle
 					ENDIF
 
-					//IF IsNumeric(bState)
-					//	strucButton:fsState := bState
-					//ENDIF
-					//IF IsNumeric(bStyle)
-					//	strucButton:fsStyle := bStyle
-					//ENDIF
 				ELSE
 					RETURN FALSE
 				ENDIF
-				oTB:Buttons:Add(oButton)
+				IF oButton != NULL_OBJECT
+					oTB:Items:Add(oButton)
+				ENDIF
 			ENDIF
 			RETURN FALSE
 		ELSEIF SELF:aUpdates != NULL
@@ -707,7 +676,7 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		oTB := SELF:__FindToolBarHandle(symToolBar)
 		IF (oTB != NULL_OBJECT)
-			RETURN oTB:Buttons:Count
+			RETURN oTB:Items:Count
 		ENDIF
 		RETURN 0
 
@@ -735,7 +704,7 @@ CLASS ToolBar INHERIT Control
 			ELSE
 				nButtonStyle := (DWORD) kButtonStyle
 				IF (nButtonStyle == TB_TEXTONLY)
-					foreach oButton as VOToolBarButton in __ToolBar:Buttons
+					FOREACH oButton AS VOToolBarButton IN __ToolBar:Items:OfType<VOToolBarButton>()
 						oButton:ImageIndex := -1
 					NEXT
 					//IF oButtonSize:Height > 1
@@ -984,10 +953,10 @@ CLASS ToolBar INHERIT Control
 				liIndex := -1 * nMenuItemID
 			ELSE
 				LOCAL IMPLIED oButton := oTB:GetButton(nMenuItemID, TRUE)
-				liIndex := oTB:Buttons:IndexOf(oButton)
+				liIndex := oTB:Items:IndexOf(oButton)
 			ENDIF
 			IF liIndex >= 0
-				oTB:Buttons:RemoveAt(liIndex)
+				oTB:Items:RemoveAt(liIndex)
 			ENDIF
 		ELSE
 			SELF:__TryDeferAction(#DeleteItem, nMenuItemID, symTB)
@@ -1134,9 +1103,9 @@ CLASS ToolBar INHERIT Control
 		lFlat := lNewVal
 		IF oCtrl != NULL_OBJECT
 			IF lFlat
-				SELF:__ToolBar:Appearance := System.Windows.Forms.ToolBarAppearance.Flat
+				SELF:__ToolBar:RenderMode := System.Windows.Forms.ToolStripRenderMode.System
 			ELSE
-				SELF:__ToolBar:Appearance := System.Windows.Forms.ToolBarAppearance.Normal
+				SELF:__ToolBar:RenderMode := System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode
 			ENDIF
 		ENDIF
 
@@ -1332,7 +1301,7 @@ CLASS ToolBar INHERIT Control
 		//RvdH 070206 Changed to use ToolBarUpdate class
 		LOCAL oUpdate 		AS ToolBarUpdate
 		LOCAL oTB 		AS VOToolBar
-		LOCAL oButton			as System.Windows.Forms.ToolBarButton
+		LOCAL oButton			AS VOToolBarButton
 
 		DEFAULT( ref symTB, #MAINTOOLBAR)
 		DEFAULT( ref nButtonID, 0)
@@ -1342,21 +1311,28 @@ CLASS ToolBar INHERIT Control
 
 		IF (oTB != NULL_OBJECT)
 			IF IsLong(nButtonID)
-				oButton := SELF:__CreateButton("",nMenuItemID)
-				oButton:ImageIndex := nButtonID-1
 				// Convert to zero-base
 				IF (nBeforeID != -1)
 					nBeforeID -= 1
 				ENDIF
 				IF (nButtonID == IDT_SEPARATOR)
-					// Separator
-					oButton:Style := System.Windows.Forms.ToolBarButtonStyle.Separator
+					// Separator - insert a ToolStripSeparator
+					LOCAL oSep AS VOSeparator
+					oSep := VOSeparator{}
+					IF nBeforeID >= 0
+						oTB:Items:Insert(nBeforeID, oSep)
+					ELSE
+						oTB:Items:Add(oSep)
+					ENDIF
 				ELSEIF IsLong(nMenuItemID)
-					// Button
-                    NOP
-
+					oButton := SELF:__CreateButton("", nMenuItemID)
+					oButton:ImageIndex := nButtonID-1
+					IF nBeforeID >= 0
+						oTB:Items:Insert(nBeforeID, oButton)
+					ELSE
+						oTB:Items:Add(oButton)
+					ENDIF
 				ENDIF
-				oTB:Buttons:Insert(nBeforeID, oButton)
 			ENDIF
 
 

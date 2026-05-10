@@ -21,17 +21,17 @@ CLASS ResourceReader
 			pWORD += 1
 			sID   := ReadText(pWORD)
 			pWORD += sID:Length+1
-		ENDIF							
+		ENDIF
 		RETURN pWORD
-	
+
 	STATIC METHOD ReadText(pWORD AS WORD PTR) AS STRING
-		LOCAL SB AS StringBuilder
-		SB := StringBuilder{}
-		DO WHILE pWORD[1] != 0
+        LOCAL SB AS StringBuilder
+    	SB := StringBuilder{}
+        DO WHILE pWORD[1] != 0
 			SB:Append((Char) pWORD[1])
-			pWORD++
+    		pWORD++
 		ENDDO
 		RETURN SB:ToString()
-	
+
 
 END CLASS

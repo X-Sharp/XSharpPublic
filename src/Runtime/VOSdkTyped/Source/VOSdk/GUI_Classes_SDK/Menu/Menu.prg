@@ -44,11 +44,15 @@ CLASS Menu INHERIT VObject
         ELSE
             oItem:Text	:= cCaption
         ENDIF
-        oItem:ShowShortcut := FALSE
-        oItem:MenuItemID   := nId
-        oItem:Click  += OnItemClick
-        oItem:Select += OnItemSelect
-        oItem:Popup  += OnItemPopup
+        oItem:ShowShortcutKeys := FALSE
+        oItem:MenuItemID       := nId
+        // Store handler delegates in item for later cloning (e.g., for ContextMenuStrip)
+        oItem:OnClickHandler   := OnItemClick
+        oItem:OnSelectHandler  := OnItemSelect
+        oItem:OnPopupHandler   := OnItemPopup
+        oItem:Click          += OnItemClick
+        oItem:MouseEnter     += OnItemSelect
+        oItem:DropDownOpened += OnItemPopup
         RETURN oItem
 
     /// <include file="Gui.xml" path="doc/Menu.Accelerator/*" />
@@ -68,36 +72,38 @@ CLASS Menu INHERIT VObject
         LOCAL oSubMenu	AS Menu
         LOCAL oItem	    AS VOMenuItem
         LOCAL oHl		AS HyperLabel
-        LOCAL aItems	AS VOMenuItem[]
         if nItemID is Menu var oMenu
             oSubMenu := oMenu
             oSubMenu:SetParent(SELF)
             SELF:AddChild(nItemID)
             cNewItem := xNewItem
             oItem := SELF:__CreateMenuItem(cNewItem, oSubMenu:GetHashCode())
-            SELF:oMenu:MenuItems:Add(oItem)
-
-            aItems := VOMenuItem[]{oSubMenu:__Menu:MenuItems:Count}
-            oSubMenu:__Menu:MenuItems:CopyTo(aItems, 0)
-            oItem:MenuItems:AddRange(aItems)
+            SELF:oMenu:Items:Add(oItem)
+            // Move submenu items into this item's drop-down
+            LOCAL aSubItems AS VOMenuItem[]
+            aSubItems := oSubMenu:__Menu:Items:OfType<VOMenuItem>():ToArray()
+            FOREACH IMPLIED oSubItem IN aSubItems
+                oSubMenu:__Menu:Items:Remove(oSubItem)
+                oItem:DropDownItems:Add(oSubItem)
+            NEXT
 
         ELSEIF IsNumeric(nItemID)
             IF nItemID == MENUSEPARATOR
-                oItem := SELF:__CreateMenuItem("-", nItemID)
-                SELF:oMenu:MenuItems:Add(oItem)
+                SELF:oMenu:Items:Add(System.Windows.Forms.ToolStripSeparator{})
+                RETURN TRUE
             ELSE
                 if xNewItem is HyperLabel
                     oHl := xNewItem
                     cNewItem := oHl:Caption
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
-                    SELF:oMenu:MenuItems:Add(oItem)
+                    SELF:oMenu:Items:Add(oItem)
                     AAdd(aItem, {nItemID, oHl})
                 ELSEIF IsString(xNewItem)
+                    cNewItem := xNewItem
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
-                    SELF:oMenu:MenuItems:Add(oItem)
+                    SELF:oMenu:Items:Add(oItem)
                 elseif xNewItem is Bitmap
                     // todo Menu Bitmaps
-                    //lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_BITMAP, MF_ENABLED), nItemID, xNewItem:Handle())
                     NOP
                 ENDIF
             ENDIF
@@ -146,7 +152,7 @@ CLASS Menu INHERIT VObject
             IF oItem != NULL_OBJECT
                 SELF:DeleteChild(xItemIdOrMenu)
                 IF oItem != NULL_OBJECT
-                    oItem:Parent:MenuItems:Remove(oItem)
+                    oItem:RemoveFromParent()
                     retVal := TRUE
                 ENDIF
             ENDIF
@@ -154,7 +160,7 @@ CLASS Menu INHERIT VObject
             nItemID := xItemIdOrMenu
             local implied oItem := self:oMenu:GetItemByID(nItemID)
             IF oItem != NULL_OBJECT
-                oItem:Parent:MenuItems:Remove(oItem)
+                oItem:RemoveFromParent()
                 retVal := TRUE
             ENDIF
             IF (oToolBar != NULL_OBJECT)
@@ -218,9 +224,11 @@ CLASS Menu INHERIT VObject
     /// <include file="Gui.xml" path="doc/Menu.GetSubMenu/*" />
     METHOD GetSubMenu(nIndex AS DWORD)  AS Menu
         LOCAL oResult AS Menu
-        LOCAL oSubMenu AS System.Windows.Forms.Menu
-        oSubMenu := SELF:__Menu:MenuItems[(LONG) nIndex]:CloneMenu()
-        oResult := Menu{oSubMenu}
+        LOCAL oItem AS VOMenuItem
+        oItem := (VOMenuItem) SELF:__Menu:Items[(LONG) nIndex]
+        LOCAL oClone AS VOMenuItem
+        oClone := oItem:CloneMenu()
+        oResult := Menu{oClone}
         FOREACH aItem AS ARRAY IN SELF:aItem
             oResult:RegisterItem(aItem[1], aItem[2])		// ID, HyperLabel
         NEXT
@@ -273,7 +281,7 @@ CLASS Menu INHERIT VObject
             oItem := xResourceID
             oMenu := VOMenu{}
             FOREACH IMPLIED oSubItem IN oItem:MenuItemArray
-                oMenu:MenuItems:Add(oSubItem:CloneMenu())
+                oMenu:Items:Add(oSubItem:CloneMenu())
             NEXT
 
         ELSE
@@ -302,7 +310,6 @@ CLASS Menu INHERIT VObject
         LOCAL cNewItem AS STRING
         LOCAL oSubMenu AS Menu
         LOCAL oItem	    as VOMenuItem
-        LOCAL aItems	as VOMenuItem[]
         LOCAL oHl		as HyperLabel
 
         if nItemID is Menu
@@ -311,27 +318,30 @@ CLASS Menu INHERIT VObject
             SELF:AddChild(oSubMenu)
             cNewItem := xNewItem
             oItem := SELF:__CreateMenuItem(cNewItem, oSubMenu:GetHashCode())
-            oItem := VOMenuItem{cNewItem}
-            SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
-            aItems := VOMenuItem[]{oSubMenu:__Menu:MenuItems:Count}
-            oSubMenu:__Menu:MenuItems:CopyTo(aItems, 0)
-            oItem:MenuItems:AddRange(aItems)
+            SELF:oMenu:Items:Insert(nBeforeID, oItem)
+            // Move submenu items into this item's drop-down
+            LOCAL aSubItems AS VOMenuItem[]
+            aSubItems := oSubMenu:__Menu:Items:OfType<VOMenuItem>():ToArray()
+            FOREACH IMPLIED oSubItem IN aSubItems
+                oSubMenu:__Menu:Items:Remove(oSubItem)
+                oItem:DropDownItems:Add(oSubItem)
+            NEXT
 
         ELSEIF IsNumeric(nItemID)
             IF (nItemID == MENUSEPARATOR)
-                oItem := SELF:__CreateMenuItem("-", nItemID)
-                SELF:oMenu:MenuItems:Add(nBeforeID, oItem )
+                SELF:oMenu:Items:Insert(nBeforeID, System.Windows.Forms.ToolStripSeparator{})
+                retVal := TRUE
 
             ELSE
                 if xNewItem is HyperLabel
                     oHl := xNewItem
                     cNewItem := oHl:Caption
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
-                    SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
+                    SELF:oMenu:Items:Insert(nBeforeID, oItem)
                 ELSEIF IsString(xNewItem)
                     cNewItem := xNewItem
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
-                    SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
+                    SELF:oMenu:Items:Insert(nBeforeID, oItem)
                 elseif xNewItem is Bitmap
                     //retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_BITMAP), MF_ENABLED), nItemID, PSZ(_CAST, xNewItem:Handle()))
                     NOP
@@ -421,22 +431,24 @@ CLASS Menu INHERIT VObject
 
     /// <include file="Gui.xml" path="doc/Menu.SetShortCuts/*" />
     METHOD SetShortCuts(oAccelerator AS Accelerator) AS VOID
-        SELF:__ClearShortCuts(SELF:__Menu)
+        SELF:__ClearShortCuts(SELF:__Menu:Items)
         IF oAccelerator != NULL_OBJECT
             FOREACH IMPLIED oKey IN oAccelerator:Keys
                 LOCAL IMPLIED oItem := SELF:__Menu:GetItemByID(oKey:ID)
                 if oItem != null_object
                     // Some shortcuts require special handling
-                    oItem:SetShortCut(oKey:Shortcut)
+                    oItem:SetShortCut((LONG) oKey:Shortcut)
                 ENDIF
             NEXT
         ENDIF
 
 
-    METHOD __ClearShortCuts(oMenu as System.Windows.Forms.Menu) as VOID
-        FOREACH oItem AS System.Windows.Forms.MenuItem in oMenu:MenuItems
-            oItem:Shortcut := System.Windows.Forms.Shortcut.None
-            SELF:__ClearShortCuts(oItem)
+    METHOD __ClearShortCuts(oItems AS System.Windows.Forms.ToolStripItemCollection) AS VOID
+        FOREACH oItem AS VOMenuItem IN oItems:OfType<VOMenuItem>()
+            oItem:ShortcutKeys := System.Windows.Forms.Keys.None
+            IF oItem:HasDropDownItems
+                SELF:__ClearShortCuts(oItem:DropDownItems)
+            ENDIF
         NEXT
         RETURN
 
@@ -683,13 +695,13 @@ END CLASS
 //END CLASS
 
 FUNCTION GetMenuItemCount(oMenu AS VOMenu) AS LONG
-    RETURN oMenu:MenuItems:Count
+    RETURN oMenu:Items:Count
 
 FUNCTION GetSubMenu(oMenu AS VOMenu, nItem AS LONG) AS VOMenuItem
     LOCAL nCurrent AS LONG
     nCurrent := 0
-    FOREACH oItem AS VOMenuItem IN oMenu:MenuItems
-        IF oItem:MenuItems:Count > 0
+    FOREACH oItem AS VOMenuItem IN oMenu:Items:OfType<VOMenuItem>()
+        IF oItem:DropDownItems:Count > 0
             // This is a SubMenu
             IF nCurrent == nItem
                 RETURN oItem

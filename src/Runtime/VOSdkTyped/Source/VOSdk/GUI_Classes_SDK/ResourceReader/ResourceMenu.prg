@@ -165,14 +165,19 @@ CLASS ResourceMenu INHERIT ResourceReader
 		RETURN cResult
 
 	METHOD AddItemsTo(oMenu as Menu) AS VOID
-		LOCAL aStack as List<System.Windows.Forms.Menu>
-		LOCAL oCurrent	as System.Windows.Forms.Menu
+		LOCAL aStack as List<OBJECT>
+		LOCAL oCurrent	as OBJECT
 		LOCAL oNew as VOMenuItem
-		aStack := List<System.Windows.Forms.Menu>{}
+		aStack := List<OBJECT>{}
 		oCurrent := oMenu:__Menu
 		FOREACH oItem as ResourceMenuItem in MenuItems
 			oNew := oMenu:__CreateMenuItem(oItem:Caption, oItem:ItemID)
-			oCurrent:MenuItems:Add(oNew)
+			// Add to the correct collection depending on whether current is a VOMenu or VOMenuItem
+			IF oCurrent IS VOMenu VAR oVOMenu
+				oVOMenu:Items:Add(oNew)
+			ELSEIF oCurrent IS VOMenuItem VAR oVOItem
+				oVOItem:DropDownItems:Add(oNew)
+			ENDIF
 			oNew:Enabled	:= !oItem:IsDisabled
 			oNew:Checked	:= oItem:IsChecked
 

@@ -63,16 +63,20 @@ CLASS ChildAppWindow INHERIT AppWindow
             RETURN SUPER:Menu
         END GET
         SET
-            LOCAL i AS DWORD
+            LOCAL nAutoUpdate AS LONG
             SUPER:Menu := VALUE
             IF oShell != NULL_OBJECT
+                nAutoUpdate := (LONG) VALUE:GetAutoUpdate()
+                // For MDI child menus: set the MDI window list item via Form.MdiWindowListItem
+                // MergeType/MdiList are not supported in ToolStrip-based menus
+                LOCAL i AS LONG
                 i := 0
-                FOREACH oItem AS VOMenuItem IN VALUE:__Menu:MenuItems
-                    IF i == VALUE:GetAutoUpdate()
-                        oItem:MdiList := TRUE
+                FOREACH oItem AS VOMenuItem IN VALUE:__Menu:Items:OfType<VOMenuItem>()
+                    IF i == nAutoUpdate .AND. oShell:__Form != NULL_OBJECT
+                        // Tell the shell form which menu item should contain the MDI window list
+                        oShell:__Form:MdiWindowListItem := oItem
                     ENDIF
                     ++i
-                    oItem:MergeType := System.Windows.Forms.MenuMerge.Add
                 NEXT
             ENDIF
             RETURN

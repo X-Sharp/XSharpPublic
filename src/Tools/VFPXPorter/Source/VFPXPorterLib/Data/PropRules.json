@@ -174,14 +174,31 @@
 
      "Column": {
        "ControlSource": "ControlSource",
-       "Alignment": "Alignment",
-       "ColumnOrder": "ColumnOrder",
-       "Sparse": "Sparse",
-       "CurrentControl": "",
-       "Resizable": "Resizable",
-       "Format": "Format",
-       "InputMask": "InputMask",
-       "TextAlign": ""
+       "Alignment":     "Alignment",
+       "ColumnOrder":   "ColumnOrder",
+       "Sparse":        "Sparse",
+       "CurrentControl":"",
+       "Resizable":     "Resizable",
+       "Format":        "Format",
+       "InputMask":     "InputMask",
+       "TextAlign":     "",
+       "Width":         "Width",
+       "SelectOnEntry": "SelectOnEntry",
+       "Caption":       "",
+       "Location":      "",
+       "Size":          "",
+       "Anchor":        "",
+       "Image":         "",
+       "FontOutline":   "",
+       "FontShadow":    "",
+       "DragMode":      "",
+       "DragIcon":      "",
+       "MouseIcon":     "",
+       "OLEDragPicture":"",
+       "OLEDragMode":   "",
+       "OLEDropEffects":"",
+       "OLEDropHasData":"",
+       "OLEDropMode":   ""
       },
 
      "PageFrame": {
@@ -202,7 +219,20 @@
       },
 
      "header": {
-       "HeaderColor": ""
+       "HeaderColor":     "",
+       "FontOutline":     "",
+       "FontShadow":      "",
+       "SpecialEffect":   "",
+       "Enabled":         "",
+       "DragMode":        "",
+       "MousePointer":    "",
+       "OLEDragMode":     "",
+       "OLEDropEffects":  "",
+       "OLEDropHasData":  "",
+       "OLEDropMode":     "",
+       "DragIcon":        "",
+       "OLEDragPicture":  "",
+       "MouseIcon":       ""
       },
 
     "Common": {

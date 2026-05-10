@@ -22,26 +22,12 @@ FUNCTION OldVal( cExpression , uArea ) AS USUAL
     // RETURN NIL
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/pcol/*" />
-[FoxProFunction("PCOL", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION PCol( ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/primary/*" />
 // Note needs Database Container support
 [FoxProFunction("PRIMARY", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION Primary( nIndexNumber, uArea) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/prow/*" />
-[FoxProFunction("PROW", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION PRow( ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/prtinfo/*" />

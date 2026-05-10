@@ -7,6 +7,11 @@ USING System
 USING XSharp.VFP
 USING XSharp.Internal
 
+/// <summary>Internal printer row position. Reset by EJECT.</summary>
+GLOBAL __FoxPrinterRow := 0 AS LONG
+/// <summary>Internal printer column position. Reset by EJECT.</summary>
+GLOBAL __FoxPrinterCol := 0 AS LONG
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
 [FoxArrayInputParameter(1)];
 [FoxProFunction("APRINTERS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -38,3 +43,13 @@ FUNCTION APrinters( ArrayName AS USUAL, nValue := 0 AS INT ) AS INT
 
     RETURN (INT)nRows
 ENDFUNC
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/pcol/*" />
+[FoxProFunction("PCOL", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION PCol() AS LONG
+    RETURN __FoxPrinterRow
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/prow/*" />
+[FoxProFunction("PROW", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION PRow() AS LONG
+    RETURN __FoxPrinterCol

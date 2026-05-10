@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+USING System.Linq
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 /// <include file="Gui.xml" path="doc/ChildAppWindow/*" />
@@ -63,16 +63,22 @@ CLASS ChildAppWindow INHERIT AppWindow
             RETURN SUPER:Menu
         END GET
         SET
-            LOCAL i AS DWORD
+            LOCAL nAutoUpdate AS LONG
             SUPER:Menu := VALUE
             IF oShell != NULL_OBJECT
+                nAutoUpdate := (LONG) VALUE:GetAutoUpdate()
+                LOCAL i AS LONG
                 i := 0
-                FOREACH oItem AS VOMenuItem IN VALUE:__Menu:MenuItems
-                    IF i == VALUE:GetAutoUpdate()
-                        oItem:MdiList := TRUE
+                FOREACH oItem AS VOMenuItem IN VALUE:__Menu:Items:OfType<VOMenuItem>()
+                    IF i == nAutoUpdate .AND. oShell:__Form != NULL_OBJECT
+                        // Tell the shell form which menu item should contain the MDI window list
+                        var oMenu := oShell:__Form:MainMenuStrip
+                        if oMenu != null
+                            oMenu:MdiWindowListItem := oItem
+                        endif
+
                     ENDIF
                     ++i
-                    oItem:MergeType := System.Windows.Forms.MenuMerge.Add
                 NEXT
             ENDIF
             RETURN

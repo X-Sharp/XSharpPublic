@@ -417,9 +417,9 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 oContextMenu := VALUE
                 IF oCtrl IS System.Windows.Forms.Control VAR oC
                     IF oContextMenu != NULL_OBJECT
-                        oC:ContextMenu := oContextMenu:__Menu:AsContextMenu()
+                        oC:ContextMenuStrip := oContextMenu:__Menu:AsContextMenuStrip()
                     ELSE
-                        oC:ContextMenu := NULL_OBJECT
+                        oC:ContextMenuStrip := NULL_OBJECT
                     ENDIF
                 ENDIF
             ENDIF

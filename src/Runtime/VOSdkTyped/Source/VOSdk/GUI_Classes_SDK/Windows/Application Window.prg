@@ -30,8 +30,13 @@ CLASS AppWindow INHERIT Window
     METHOD Activate(oEvent  AS Event) as USUAL
         SUPER:Activate(oEvent)
         IF SELF:__Form:IsMdiChild
-            VAR oShell  := SELF:__Form:ParentForm
-            oSHell:Menu := SELF:__Form:Menu
+            // For MDI child activation, merge the child's MenuStrip into the parent's MenuStrip
+            VAR oParentForm := SELF:__Form:ParentForm
+            VAR oChildMenu  := SELF:__Form:MainMenuStrip
+            VAR oParentMenu := oParentForm:MainMenuStrip
+            IF oChildMenu != NULL_OBJECT .AND. oParentMenu != NULL_OBJECT
+                //ToolStripManager.Merge(oChildMenu, oParentMenu)
+            ENDIF
         ENDIF
         RETURN SELF
 

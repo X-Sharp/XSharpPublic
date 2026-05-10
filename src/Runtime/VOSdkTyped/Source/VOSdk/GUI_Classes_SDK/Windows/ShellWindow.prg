@@ -289,7 +289,7 @@ CLASS ShellWindow INHERIT AppWindow
                 nstartindex := oMdi:Controls:IndexOf(oChild)
                 nCount := oMdi:Controls:Count
                 IF nCount > 1
-                    // Modulo-Ring, endet wenn gültiges Form gefunden (Return in Schleife) oder Startindex erreicht
+                    // Modulo-Ring, endet wenn gï¿½ltiges Form gefunden (Return in Schleife) oder Startindex erreicht
                     i := (nstartindex + 1) % nCount
                     DO WHILE i!=nstartindex
                         IF oMdi:Controls[i] IS VoForm VAR oRet
@@ -333,8 +333,13 @@ CLASS ShellWindow INHERIT AppWindow
             LOCAL nAuto as LONG
             SUPER:Menu := value
             nAuto := value:GetAutoUpdate()
-            IF nAuto >= 0 .and. nAuto < value:__Menu:MenuItems:Count
-                value:__Menu:MenuItems[nAuto]:MdiList := TRUE
+            IF nAuto >= 0 .and. nAuto < value:__Menu:Items:Count
+                IF SELF:__Form != NULL_OBJECT .AND. value:__Menu:Items[nAuto] IS VOMenuItem VAR oMdiItem
+                    var oMenu := SELF:__Form:MainMenuStrip
+                    if oMenu != null_object
+                        oMenu:MdiWindowListItem := oMdiItem
+                    endif
+                ENDIF
             ENDIF
             SELF:oActualMenu := value
         END SET

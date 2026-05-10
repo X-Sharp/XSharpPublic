@@ -67,6 +67,7 @@
     <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b4f3862c-82bc-407f-8a84-5241f7321f9f" />
   </Folder>
   <Folder Name="/VOSDK-Typed/">
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Common.Targets" />
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Targets" />
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDKDocs.Targets" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="0ee10ced-b863-4b5e-8ac2-443b2cc6eb7a" />

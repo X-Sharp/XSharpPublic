@@ -152,7 +152,7 @@ CLASS GuiFactory
         METHOD CreateWindow(oWindow AS Window) AS VOForm
             RETURN VOForm{oWindow}
 
-        METHOD CreateListViewElement(type AS ControlType, owner AS OBJECT) AS OBJECT
+        METHOD CreateListViewElement(type IN ControlType, owner IN OBJECT) AS OBJECT
             SWITCH type
             CASE ControlType.ListViewItem
                 return VoListViewItem{(ListViewItem) owner}

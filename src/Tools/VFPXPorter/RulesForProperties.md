@@ -250,7 +250,9 @@ warning without mapping any properties.
 | `Spinner` | `ControlSource`→`SetBinding`, `Value` forced USUAL |
 | `CommandGroup` | `ControlSource`→`SetBinding`, `^Button99`→`Buttons(99)` prefix pattern |
 | `OptionGroup` | `ControlSource`→`SetBinding`, `^Option99`→`Buttons(99)` prefix pattern |
-| `Grid` | Column-level properties (ColumnCount, RecordSource, RecordSourceType) |
+| `Grid` | `ColumnCount`, `RecordSource`, `RecordSourceType`; color props (`HighlightBackColor`, `HighlightForeColor`, `AlternatingRowColor`, `GridLineColor`) wrapped via `VFPTools.ColorFromVFP()`; layout (`GridLines`, `GridLineWidth`, `RowHeight`, `HeaderHeight`); behavior (`AllowAddNew`, `AllowDelete`, `AllowUpdate`, `AllowHeaderSizing`, `AllowRowSizing`, `AllowAutoColumnFit`); display (`RecordMark`, `DeleteMark`, `HighlightStyle`, `NullDisplay`, `ShowDeleted`, `Themes`); `SplitBar` and `Panel` silenced |
+| `Column` | `ControlSource`, `Alignment`, `ColumnOrder`, `Sparse`, `Resizable`, `Format`, `InputMask`, `Width` pass-through; `CurrentControl`, `TextAlign`, `Caption`, `Location`, `Size`, `Anchor`, `Image`, `FontOutline`, `FontShadow`, `DragMode`, `DragIcon`, `MouseIcon`, all OLE* silenced |
+| `Header` | `HeaderColor` silenced; `Picture` handled via Common (`??` quoting → `Picture` property loads image via `VFPTools.ImageFromFile`) |
 | `DataEnvironment` | Removes Top/Left/Width/Height |
 | `Cursor` | `CursorSource` quoted via `??`, `Location`/Width/Height removed |
 | `Relation` | ChildAlias, ChildOrder, RelationalExpr, OneToMany, ParentAlias |

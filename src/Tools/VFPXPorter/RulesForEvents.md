@@ -239,6 +239,9 @@ is marked as unhandled in the output.
 | VFP Event | Net Target | Pattern |
 |-----------|-----------|---------|
 | `AfterRowColChange` | `vfpAfterRowColChange` | `:=` |
+| `BeforeRowColChange` | `vfpBeforeRowColChange` | `:=` |
+| `BeforeEditCell` | `vfpBeforeEditCell` | `:=` |
+| `AfterEditCell` | `vfpAfterEditCell` | `:=` |
 | `OnColumnHeaderClick` | `vfpColumnHeaderClick` | `:=` |
 
 ### Form

@@ -35,6 +35,20 @@
      "OnColumnHeaderClick": [ "vfpColumnHeaderClick:=", "", "" ]
    },
 
+  "column": {
+    "InteractiveChange": [ "", "", "" ]
+  },
+
+  "header": {
+    "GotFocus":  [ "", "", "" ],
+    "LostFocus": [ "", "", "" ],
+    "Valid":     [ "", "", "" ],
+    "When":      [ "", "", "" ],
+    "KeyPress":  [ "", "", "" ],
+    "Init":      [ "", "", "" ],
+    "Destroy":   [ "", "", "" ]
+  },
+
   "form": {
     "QueryUnload": [ "vfpQueryUnload:=", "", "" ],
     "Load": [ "vfpLoad:=", "", "" ]

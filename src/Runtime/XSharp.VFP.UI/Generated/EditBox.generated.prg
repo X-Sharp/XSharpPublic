@@ -38,27 +38,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROPERTY SelectedForeColor AS System.Drawing.Color AUTO
 
-        // SelLength, SelText — mapped to WinForms SelectionLength/SelectedText
-        // SelStart is inherited from TextBox — do not re-declare here
-        PROPERTY SelLength AS LONG
-            GET
-                RETURN SELF:SelectionLength
-            END GET
-            SET
-                SELF:SelectionLength := VALUE
-            END SET
-        END PROPERTY
-
-        // SelStart is inherited from TextBox — do not re-declare here
-
-        PROPERTY SelText AS STRING
-            GET
-                RETURN SELF:SelectedText
-            END GET
-            SET
-                SELF:SelectedText := VALUE
-            END SET
-        END PROPERTY
+        // SelStart, SelLength, SelText — inherited from XSharp.VFP.UI.TextBox; do not re-declare here
 
         PROPERTY TerminateRead AS LOGIC AUTO
 

@@ -27,6 +27,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #include "ControlProperties.xh"
 
+#include "FontProperties.xh"
+
 #include "ControlSource.xh"
 
 #include "Headers/VFPButtonImage.xh"
@@ -125,6 +127,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:OnVFPInteractiveChange( SELF, e )
 			ENDIF
 		END METHOD
+
+		// WinForms CheckBox does not raise KeyPress automatically.
+		// Override so vfpKeyPress subscribers fire correctly.
+		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+			SELF:OnVFPKeyPress(SELF, e)
+			SUPER:OnKeyPress(e)
 
 		CONSTRUCTOR(  ) STRICT
             SUPER()

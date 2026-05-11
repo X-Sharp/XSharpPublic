@@ -5,7 +5,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "VFPControl.xh"
 #define NO_PICTUREPOSITION
 #include "VFPImage.xh"
-
-
+		PROPERTY FontOutline AS LOGIC AUTO
+		PROPERTY FontShadow  AS LOGIC AUTO
 	END CLASS
-	END NAMESPACE      
+	END NAMESPACE

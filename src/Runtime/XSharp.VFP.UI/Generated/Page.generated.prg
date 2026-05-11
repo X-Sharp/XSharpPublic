@@ -6,7 +6,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		#include "VFPContainer.xh"
 		#include "VFPPropertiesDynamic.xh"
 
-		// PageOrder, Picture — implemented in Page.prg
+		// PageOrder, Picture, BackStyle, Activate/Deactivate — implemented in Page.prg
+		PROPERTY FontOutline AS LOGIC AUTO
+		PROPERTY FontShadow  AS LOGIC AUTO
 
 	END CLASS
 	END NAMESPACE

@@ -12,6 +12,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// Resize/Moved events — implemented in PageFrame.prg
 		PROPERTY BorderColor  AS System.Drawing.Color AUTO
 		PROPERTY BorderWidth  AS LONG AUTO
+		PROPERTY FontOutline  AS LOGIC AUTO
+		PROPERTY FontShadow   AS LOGIC AUTO
 
 	END CLASS
 	END NAMESPACE

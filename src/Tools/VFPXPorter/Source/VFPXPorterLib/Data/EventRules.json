@@ -16,7 +16,9 @@
     "Refresh": [ "vfpRefresh:=", "", "" ],
     "Valid": [ "vfpValid:=", "", "" ],
     "When": [ "vfpWhen:=", "", "" ],
-    "KeyPress": [ "vfpKeyPress:=", "", "" ]
+    "KeyPress": [ "vfpKeyPress:=", "", "" ],
+    "KeyDown": [ "vfpKeyDown:=", "", "" ],
+    "KeyUp": [ "vfpKeyUp:=", "", "" ]
   },
 
   "timer": {
@@ -32,7 +34,8 @@
      "BeforeRowColChange": [ "vfpBeforeRowColChange:=", "", "" ],
      "BeforeEditCell": [ "vfpBeforeEditCell:=", "", "" ],
      "AfterEditCell": [ "vfpAfterEditCell:=", "", "" ],
-     "OnColumnHeaderClick": [ "vfpColumnHeaderClick:=", "", "" ]
+     "OnColumnHeaderClick": [ "vfpColumnHeaderClick:=", "", "" ],
+     "Scrolled": [ "vfpScrolled:=", "", "" ]
    },
 
   "column": {
@@ -45,6 +48,8 @@
     "Valid":     [ "", "", "" ],
     "When":      [ "", "", "" ],
     "KeyPress":  [ "", "", "" ],
+    "KeyDown":   [ "", "", "" ],
+    "KeyUp":     [ "", "", "" ],
     "Init":      [ "", "", "" ],
     "Destroy":   [ "", "", "" ]
   },

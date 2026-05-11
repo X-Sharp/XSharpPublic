@@ -3,14 +3,15 @@
 BEGIN NAMESPACE XSharp.VFP.UI
     PARTIAL CLASS Grid
 
-        PROPERTY AllowAddRows AS LOGIC AUTO
-        PROPERTY AllowDeleteRows AS LOGIC AUTO
         PROPERTY ChildOrder AS STRING AUTO
         // GridLines, GridLineColor, HeaderHeight, NullDisplay — implemented as real properties in Grid.prg
+        PROPERTY HScrollSmallChange AS INT AUTO
+        PROPERTY InputDateFormat AS INT AUTO
         PROPERTY IntegralHeight AS LOGIC AUTO
         PROPERTY LinkMaster AS STRING AUTO
         PROPERTY Partition AS INT AUTO
         PROPERTY RelationalExpr AS STRING AUTO
+        PROPERTY ShowTips AS LOGIC AUTO
 
     END CLASS
 END NAMESPACE

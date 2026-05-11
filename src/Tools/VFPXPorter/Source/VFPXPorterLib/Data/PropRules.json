@@ -169,7 +169,10 @@
        "AllowAutoColumnFit": "AllowAutoColumnFit",
        "Themes": "Themes",
        "SplitBar": "",
-       "Panel": ""
+       "Panel": "",
+       "HScrollSmallChange": "",
+       "InputDateFormat": "",
+       "ShowTips": ""
       },
 
      "Column": {

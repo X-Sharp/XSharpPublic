@@ -353,6 +353,11 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         METHOD PColTest() AS VOID
             Assert.Equal(0, PCol())
         END METHOD
+
+        [Fact, Trait("Category", "Database")];
+        METHOD TxnLevelTest() AS VOID
+            Assert.Equal(0, TxnLevel())
+        END METHOD
 	END CLASS
 
 END NAMESPACE

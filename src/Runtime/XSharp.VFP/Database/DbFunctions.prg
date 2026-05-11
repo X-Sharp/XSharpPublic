@@ -12,6 +12,13 @@ USING XSharp.RDD
 USING System.Collections.Generic
 USING XSharp.RDD.Support
 USING XSharp.Internal
+
+/// <summary>Internal transaction nesting level.
+/// Incremented by BEGIN TRANSACTION, decremented
+/// by END TRANSACTION/ROLLBACK
+GLOBAL __FoxTnxLevel := 0 AS LONG
+
+/// </summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbgetprop/*" />
 /// <seealso cref="DbSetProp" />
 /// <seealso cref="DbcDatabase" />
@@ -553,6 +560,11 @@ FUNCTION Seek(uExpression, uWorkarea, uOrder) AS LOGIC CLIPPER
     	DbSelectArea( dwCurrentWorkarea )
     END IF
     RETURN lResult
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/txnlevel/*" />
+[FoxProFunction("TXNLEVEL", FoxFunctionCategory.Database, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION TxnLevel( ) AS LONG
+    RETURN __FoxTnxLevel
 
 FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     local acStruct as ARRAY

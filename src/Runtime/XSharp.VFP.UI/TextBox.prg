@@ -98,11 +98,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 
 		OVERRIDE PROTECTED METHOD OnKeyUp( e AS KeyEventArgs ) AS VOID
-			IF SELF:_maskHandler == NULL
-				SUPER:OnKeyUp(e)
-				RETURN
+			IF SELF:_maskHandler != NULL
+				// mask state updated in TextChanged; still call base so vfpKeyUp subscribers fire
+				NOP
 			ENDIF
-			// Nothing extra needed — base handles caret; mask state updated in TextChanged
+			SUPER:OnKeyUp(e)
 
         OVERRIDE PROTECTED METHOD OnKeyPress( e AS KeyPressEventArgs) AS VOID
             // Fire VFP KeyPress event once, before default processing
@@ -137,14 +137,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			//
 			RETURN
 
+		// VFP Alignment: 0=Left, 1=Right, 2=Center
+		// WinForms HorizontalAlignment: Left=0, Center=1, Right=2  (different order for 1 and 2)
 		PROPERTY Alignment AS INT
 			GET
-				RETURN (INT)SELF:TextAlign
+				SWITCH SELF:TextAlign
+				CASE HorizontalAlignment.Left   ; RETURN 0
+				CASE HorizontalAlignment.Right  ; RETURN 1
+				OTHERWISE                        ; RETURN 2  // Center
+				END SWITCH
 			END GET
 			SET
-				IF VALUE >= 0 .AND. VALUE < 3
-					SELF:TextAlign := (HorizontalAlignment) VALUE
-				ENDIF
+				SWITCH VALUE
+				CASE 0 ; SELF:TextAlign := HorizontalAlignment.Left
+				CASE 1 ; SELF:TextAlign := HorizontalAlignment.Right
+				CASE 2 ; SELF:TextAlign := HorizontalAlignment.Center
+				END SWITCH
 			END SET
 		END PROPERTY
 
@@ -286,6 +294,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:ResetForeColor()
 			ENDIF
 		END METHOD
+
+		// ── SelLength / SelText ───────────────────────────────────────────────
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)];
+		[Browsable(FALSE)];
+		PROPERTY SelLength AS INT GET SELF:SelectionLength SET SELF:SelectionLength := VALUE
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)];
+		[Browsable(FALSE)];
+		PROPERTY SelText AS STRING GET SELF:SelectedText SET SELF:SelectedText := VALUE
 
 		#include "TextControlProperties.xh"
 

@@ -17,6 +17,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
 		PROPERTY EnableHyperLinks AS LOGIC AUTO
+		PROPERTY FontOutline AS LOGIC AUTO
+		PROPERTY FontShadow AS LOGIC AUTO
 		PROPERTY Hours AS LONG AUTO
 		PROPERTY IntegralHeight AS LONG AUTO
         [Obsolete];

@@ -30,9 +30,11 @@
   "TextBox": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)",
+    "Alignment": "Alignment",
     "Value": "!Value",
-    "Style": ""
+    "Style": "Style",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "EditBox": {

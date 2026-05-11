@@ -15,7 +15,24 @@
     "ShowInTaskBar": "ShowInTaskbar",
     "ShowWindow": "ShowWindowState",
     "ScaleMode": "",
-    "ColorSource": ""
+    "ColorSource": "",
+    "BorderStyle": "BorderStyle",
+    "MaxButton": "MaxButton",
+    "MinButton": "MinButton",
+    "Closable": "Closable",
+    "AutoCenter": "AutoCenter",
+    "WindowType": "WindowType",
+    "KeyPreview": "KeyPreview",
+    "MDIForm": "MDIForm",
+    "AlwaysOnTop": "AlwaysOnTop",
+    "Movable": "Movable",
+    "TitleBar": "",
+    "FontName": "??<@FontName@>??",
+    "FontSize": "<@FontSize@>",
+    "FontBold": "<@FontBold@>",
+    "FontItalic": "<@FontItalic@>",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "CommandButton": {

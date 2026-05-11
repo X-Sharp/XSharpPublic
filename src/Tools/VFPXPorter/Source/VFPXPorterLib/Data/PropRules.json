@@ -136,12 +136,24 @@
 
    "ListBox": {
      "Value": "!Value",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+     "RowSource": "RowSource",
+     "RowSourceType": "RowSourceType",
+     "MultiSelect": "MultiSelect",
+     "Sorted": "Sorted",
+     "Style": "Style",
+     "FontOutline": "",
+     "FontShadow": ""
    },
 
    "ComboBox": {
      "Value": "!Value",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+     "RowSource": "RowSource",
+     "RowSourceType": "RowSourceType",
+     "Style": "Style",
+     "FontOutline": "",
+     "FontShadow": ""
    },
 
      "Grid": {

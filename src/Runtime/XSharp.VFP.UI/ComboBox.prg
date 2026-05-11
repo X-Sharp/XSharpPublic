@@ -31,6 +31,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #include "ControlProperties.xh"
 
+#include "FontProperties.xh"
+
 #include "ControlSource.xh"
 
 		PROPERTY DisplayCount AS LONG
@@ -92,8 +94,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				END CASE
 			END SET
 		END PROPERTY
-		PROPERTY SelStart AS LONG GET SELF:SelectionStart SET SELF:SelectionStart := Value
-		PROPERTY SelText AS STRING GET SELF:SelectedText  SET SelectedText  := Value
+		PROPERTY SelLength AS LONG GET SELF:SelectionLength SET SELF:SelectionLength := VALUE
+		PROPERTY SelStart  AS LONG GET SELF:SelectionStart  SET SELF:SelectionStart  := VALUE
+		PROPERTY SelText   AS STRING GET SELF:SelectedText  SET SELF:SelectedText    := VALUE
 		PROPERTY SelectOnEntry AS LOGIC AUTO
 
 		// ── RowSource / RowSourceType ────────────────────────────────────────
@@ -270,6 +273,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF SELF:_VFPDropDown != NULL
 				SELF:_VFPDropDown:Call()
 			ENDIF
+
+		// WinForms ComboBox does not raise KeyPress automatically for the edit portion.
+		// Override here so vfpKeyPress subscribers fire correctly.
+		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+			SELF:OnVFPKeyPress(SELF, e)
+			SUPER:OnKeyPress(e)
 
 		// ── SelectOnEntry ────────────────────────────────────────────────────
 

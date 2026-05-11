@@ -584,5 +584,82 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SUPER:OnMove(e)
             IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
 
+        // ── Scrolled event ────────────────────────────────────────────────────
+        // VFP nDirection: 1=up, 2=down, 3=left, 4=right, 5=pageup, 6=pagedown, 7=leftmost, 8=rightmost
+        PRIVATE _VFPScrolled AS VFPOverride
+        [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+        PROPERTY vfpScrolled AS STRING GET _VFPScrolled?:SendTo SET SELF:Set_Scrolled( VFPOverride{SELF, VALUE} )
+
+        METHOD Set_Scrolled( methodCall AS VFPOverride ) AS VOID
+            SELF:Scroll += System.Windows.Forms.ScrollEventHandler{ SELF, @VFPOnScroll() }
+            SELF:_VFPScrolled := methodCall
+
+        VIRTUAL METHOD Scrolled( nDirection AS LONG ) AS VOID
+            IF SELF:_VFPScrolled != NULL
+                SELF:_VFPScrolled:Call( <USUAL>{nDirection} )
+            ENDIF
+
+        PRIVATE METHOD VFPOnScroll( sender AS OBJECT, e AS System.Windows.Forms.ScrollEventArgs ) AS VOID
+            LOCAL nDir AS LONG
+            IF e:ScrollOrientation == System.Windows.Forms.ScrollOrientation.Vertical
+                SWITCH e:Type
+                CASE System.Windows.Forms.ScrollEventType.SmallDecrement  ; nDir := 1
+                CASE System.Windows.Forms.ScrollEventType.SmallIncrement  ; nDir := 2
+                CASE System.Windows.Forms.ScrollEventType.LargeDecrement  ; nDir := 5
+                CASE System.Windows.Forms.ScrollEventType.LargeIncrement  ; nDir := 6
+                OTHERWISE                                                   ; nDir := 0
+                END SWITCH
+            ELSE
+                SWITCH e:Type
+                CASE System.Windows.Forms.ScrollEventType.SmallDecrement  ; nDir := 3
+                CASE System.Windows.Forms.ScrollEventType.SmallIncrement  ; nDir := 4
+                CASE System.Windows.Forms.ScrollEventType.First           ; nDir := 7
+                CASE System.Windows.Forms.ScrollEventType.Last            ; nDir := 8
+                OTHERWISE                                                   ; nDir := 0
+                END SWITCH
+            ENDIF
+            IF nDir != 0
+                SELF:Scrolled( nDir )
+            ENDIF
+
+        // ── DeleteColumns ─────────────────────────────────────────────────────
+        // VFP: oGrid.DeleteColumns(nColumnIndex)  — 1-based
+        METHOD DeleteColumns( n AS INT ) AS VOID
+            IF n >= 1 .AND. n <= SELF:Columns:Count
+                SELF:Columns:RemoveAt( n - 1 )
+            ENDIF
+
+        // ── DoScroll ──────────────────────────────────────────────────────────
+        // VFP nDirection: 1=up, 2=down, 3=left, 4=right, 5=pageup, 6=pagedown, 7=leftmost, 8=rightmost
+        METHOD DoScroll( nDirection AS INT ) AS VOID
+            SWITCH nDirection
+            CASE 1 // up one row
+                IF SELF:FirstDisplayedScrollingRowIndex > 0
+                    SELF:FirstDisplayedScrollingRowIndex -= 1
+                ENDIF
+            CASE 2 // down one row
+                IF SELF:FirstDisplayedScrollingRowIndex < SELF:RowCount - 1
+                    SELF:FirstDisplayedScrollingRowIndex += 1
+                ENDIF
+            CASE 3 // left one column
+                IF SELF:FirstDisplayedScrollingColumnIndex > 0
+                    SELF:FirstDisplayedScrollingColumnIndex -= 1
+                ENDIF
+            CASE 4 // right one column
+                IF SELF:FirstDisplayedScrollingColumnIndex < SELF:ColumnCount - 1
+                    SELF:FirstDisplayedScrollingColumnIndex += 1
+                ENDIF
+            CASE 5 // page up
+                VAR visRows := SELF:DisplayedRowCount(FALSE)
+                SELF:FirstDisplayedScrollingRowIndex := Math.Max(0, SELF:FirstDisplayedScrollingRowIndex - visRows)
+            CASE 6 // page down
+                VAR visRows2 := SELF:DisplayedRowCount(FALSE)
+                SELF:FirstDisplayedScrollingRowIndex := Math.Min(SELF:RowCount - 1, SELF:FirstDisplayedScrollingRowIndex + visRows2)
+            CASE 7 // leftmost
+                SELF:FirstDisplayedScrollingColumnIndex := 0
+            CASE 8 // rightmost
+                SELF:FirstDisplayedScrollingColumnIndex := SELF:ColumnCount - 1
+            END SWITCH
+
     END CLASS
 END NAMESPACE // XSharp.VFP.UI

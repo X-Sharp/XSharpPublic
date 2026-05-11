@@ -507,6 +507,48 @@ PRIVATE METHOD OnVFPKeyPress( sender AS OBJECT, e AS System.Windows.Forms.KeyPre
     ENDIF
 
 
+PRIVATE _VFPKeyDown AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyDown")];
+[System.ComponentModel.DefaultValue(NULL)];
+PROPERTY vfpKeyDown AS STRING GET _VFPKeyDown?:SendTo SET Set_KeyDown( VFPOverride{SELF, VALUE} )
+
+METHOD Set_KeyDown( methodCall AS VFPOverride ) AS VOID
+    SELF:KeyDown += System.Windows.Forms.KeyEventHandler{ SELF, @OnVFPKeyDown() }
+    SELF:_VFPKeyDown := methodCall
+
+PRIVATE METHOD OnVFPKeyDown( sender AS OBJECT, e AS System.Windows.Forms.KeyEventArgs) AS VOID
+    IF SELF:_VFPKeyDown != NULL
+        LOCAL nShift AS INT
+        nShift := 0
+        IF e:Shift   ; nShift += 1 ; ENDIF
+        IF e:Control ; nShift += 2 ; ENDIF
+        IF e:Alt     ; nShift += 4 ; ENDIF
+        SELF:__aeventsData := AEventsDefinition{ sender, "KeyDown" }
+        SELF:_VFPKeyDown:Call( <USUAL>{ (INT)e:KeyValue, nShift } )
+    ENDIF
+
+
+PRIVATE _VFPKeyUp AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyUp")];
+[System.ComponentModel.DefaultValue(NULL)];
+PROPERTY vfpKeyUp AS STRING GET _VFPKeyUp?:SendTo SET Set_KeyUp( VFPOverride{SELF, VALUE} )
+
+METHOD Set_KeyUp( methodCall AS VFPOverride ) AS VOID
+    SELF:KeyUp += System.Windows.Forms.KeyEventHandler{ SELF, @OnVFPKeyUp() }
+    SELF:_VFPKeyUp := methodCall
+
+PRIVATE METHOD OnVFPKeyUp( sender AS OBJECT, e AS System.Windows.Forms.KeyEventArgs) AS VOID
+    IF SELF:_VFPKeyUp != NULL
+        LOCAL nShift AS INT
+        nShift := 0
+        IF e:Shift   ; nShift += 1 ; ENDIF
+        IF e:Control ; nShift += 2 ; ENDIF
+        IF e:Alt     ; nShift += 4 ; ENDIF
+        SELF:__aeventsData := AEventsDefinition{ sender, "KeyUp" }
+        SELF:_VFPKeyUp:Call( <USUAL>{ (INT)e:KeyValue, nShift } )
+    ENDIF
+
+
 PRIVATE _VFPRefresh AS VFPOverride
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
 [System.ComponentModel.DefaultValue(NULL)];

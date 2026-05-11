@@ -35,7 +35,7 @@
                 Height="16"
                 ToolTip="Reset value"
                 VerticalAlignment="Center">
-            <Image Source="/Settings.png" />
+            <Image Source="pack://application:,,,/Settings.png" />
         </Button>
     </StackPanel>
 

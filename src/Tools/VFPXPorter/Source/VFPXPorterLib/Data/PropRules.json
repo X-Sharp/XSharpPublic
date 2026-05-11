@@ -38,10 +38,22 @@
   "CommandButton": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "Caption": "Text",
+    "Style": "Style",
+    "WordWrap": "WordWrap",
+    "Cancel": "Cancel",
+    "Default": "Default",
+    "PicturePosition": "PicturePosition",
+    "DisabledPicture": "??<@DisabledPicture@>??",
+    "DownPicture": "??<@DownPicture@>??",
+    "BackStyle": "BackStyle",
     "FontName": "??<@FontName@>??",
     "FontSize": "<@FontSize@>",
     "FontBold": "<@FontBold@>",
-    "FontItalic": "<@FontItalic@>"
+    "FontItalic": "<@FontItalic@>",
+    "FontUnderline": "<@FontUnderline@>",
+    "FontStrikeThru": "<@FontStrikeThru@>",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "TextBox": {
@@ -115,8 +127,20 @@
   "CommandGroup": {
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "^Button99": "Buttons(99)",
+    "ButtonCount": "ButtonCount",
+    "Value": "!Value",
+    "BackStyle": "BackStyle",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "MemberClass": "",
-    "MemberClassLibrary": ""
+    "MemberClassLibrary": "",
+    "FontName": "??<@FontName@>??",
+    "FontSize": "<@FontSize@>",
+    "FontBold": "<@FontBold@>",
+    "FontItalic": "<@FontItalic@>",
+    "FontUnderline": "<@FontUnderline@>",
+    "FontStrikeThru": "<@FontStrikeThru@>",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Shape": {

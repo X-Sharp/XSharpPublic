@@ -67,6 +67,11 @@
     "Destroy":   [ "", "", "" ]
   },
 
+  "formset": {
+    "Activate":   [ "vfpActivate:=",   "", "" ],
+    "Deactivate": [ "vfpDeactivate:=", "", "" ]
+  },
+
   "pageframe": {
     "Resize": [ "vfpResize:=", "", "" ]
   },

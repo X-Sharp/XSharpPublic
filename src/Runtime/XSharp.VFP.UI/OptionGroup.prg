@@ -21,6 +21,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "ControlProperties.xh"
 
+		#include "FontProperties.xh"
+
 		// ── ControlCount ──────────────────────────────────────────────────────
 		// VFP_CONTROLCOUNT_OVERRIDE suppresses the AUTO stub in VFPContainer.xh.
 		PROPERTY ControlCount AS INT

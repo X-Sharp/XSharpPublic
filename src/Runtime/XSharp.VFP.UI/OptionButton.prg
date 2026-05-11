@@ -29,6 +29,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "Headers/VFPButtonImage.xh"
 
+		// ── Value ────────────────────────────────────────────────────────────
+		// VFP OptionButton Value: .T. = selected, .F. = not selected.
+		PROPERTY Value AS LOGIC
+			GET ; RETURN SELF:Checked ; END GET
+			SET ; SELF:Checked := VALUE ; END SET
+		END PROPERTY
+
+		// WinForms RadioButton does not raise KeyPress automatically.
+		// Override so vfpKeyPress subscribers fire correctly.
+		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+			SELF:OnVFPKeyPress(SELF, e)
+			SUPER:OnKeyPress(e)
+
 		// ── InteractiveChange ────────────────────────────────────────────────
 
 		PROTECTED METHOD OnCheckedChanged(e AS System.EventArgs) AS VOID

@@ -9,6 +9,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// BorderColor, BackStyle, ControlCount, Resize/Moved, ProgrammaticChange — implemented in OptionGroup.prg
 		// SetFocus() provided by ControlProperties.xh in OptionGroup.prg
+		PROPERTY FontOutline AS LOGIC AUTO
+		PROPERTY FontShadow  AS LOGIC AUTO
 
 
 

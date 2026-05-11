@@ -65,6 +65,13 @@
   },
 
   "Image": {
+    "Picture": "??<@Picture@>??",
+    "Stretch": "Stretch",
+    "BorderStyle": "BorderStyle",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
+    "BackStyle": "",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Spinner": {

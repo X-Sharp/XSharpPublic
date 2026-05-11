@@ -168,13 +168,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── Picture ───────────────────────────────────────────────────────────
 		// VFP Picture: file path to an image shown in the column header.
-		// Maps to DataGridViewColumnHeaderCell.Image.
-		PRIVATE _picture AS STRING
+		// DataGridViewColumnHeaderCell has no Image property — store and repaint.
+		PRIVATE _picture      AS STRING
+		PRIVATE _headerImage  AS System.Drawing.Image
 		PROPERTY Picture AS STRING
 			GET ; RETURN IIF(SELF:_picture == NULL, "", SELF:_picture) ; END GET
 			SET
-				SELF:_picture := VALUE
-				SELF:Image := IIF(String.IsNullOrEmpty(VALUE), NULL_OBJECT, VFPTools.ImageFromFile(VALUE))
+				SELF:_picture     := VALUE
+				SELF:_headerImage := IIF(String.IsNullOrEmpty(VALUE), NULL_OBJECT, VFPTools.ImageFromFile(VALUE))
+				SELF:DataGridView?:InvalidateColumn(SELF:ColumnIndex)
 			END SET
 		END PROPERTY
 

@@ -209,9 +209,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				// Wire column-header mouse events so Header vfp* callbacks fire
 				SELF:DataGridView:ColumnHeaderMouseClick       += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseClick() }
 				SELF:DataGridView:ColumnHeaderMouseDoubleClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseDblClick() }
-				SELF:DataGridView:ColumnHeaderMouseDown        += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseDown() }
-				SELF:DataGridView:ColumnHeaderMouseUp          += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseUp() }
-				SELF:DataGridView:ColumnHeaderMouseMove        += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @OnColumnHeaderMouseMove() }
 				SELF:DataGridView:CellMouseEnter               += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellMouseEnter() }
 				SELF:DataGridView:CellMouseLeave               += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @OnCellMouseLeave() }
 				// Wire column cell events for vfp* callbacks
@@ -256,20 +253,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:_GetHeader()?:FireDblClick()
 			ENDIF
 
-		PRIVATE METHOD OnColumnHeaderMouseDown( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
-			IF e:ColumnIndex == SELF:Index
-				SELF:_GetHeader()?:FireMouseDown()
-			ENDIF
-
-		PRIVATE METHOD OnColumnHeaderMouseUp( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
-			IF e:ColumnIndex == SELF:Index
-				SELF:_GetHeader()?:FireMouseUp()
-			ENDIF
-
-		PRIVATE METHOD OnColumnHeaderMouseMove( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs ) AS VOID STRICT
-			IF e:ColumnIndex == SELF:Index
-				SELF:_GetHeader()?:FireMouseMove()
-			ENDIF
 
 		// CellMouseEnter/Leave: RowIndex == -1 is the header row, >= 0 is a data cell.
 		PRIVATE METHOD OnCellMouseEnter( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID STRICT
@@ -351,7 +334,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF _rowSourceType == 1 .AND. !String.IsNullOrEmpty(VALUE)
 					IF SELF:CellTemplate IS DataGridViewComboBoxCell VAR comboCell
 						comboCell:Items:Clear()
-						FOREACH VAR item IN VALUE:Split( <CHAR>{(CHAR)','} )
+						FOREACH VAR item IN VALUE:Split( <CHAR>{ c',' } )
 							comboCell:Items:Add( item:Trim() )
 						NEXT
 					ENDIF
@@ -566,18 +549,30 @@ PRIVATE METHOD OnCellLeave(sender AS OBJECT, e AS System.Windows.Forms.DataGridV
     ENDIF
 
 PRIVATE METHOD OnCellMouseDownInner(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
-    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
-        SELF:_VFPMouseDown?:Call()
+    IF e:ColumnIndex == SELF:Index
+        IF e:RowIndex == -1
+            SELF:_GetHeader()?:FireMouseDown()
+        ELSEIF e:RowIndex >= 0
+            SELF:_VFPMouseDown?:Call()
+        ENDIF
     ENDIF
 
 PRIVATE METHOD OnCellMouseUpInner(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
-    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
-        SELF:_VFPMouseUp?:Call()
+    IF e:ColumnIndex == SELF:Index
+        IF e:RowIndex == -1
+            SELF:_GetHeader()?:FireMouseUp()
+        ELSEIF e:RowIndex >= 0
+            SELF:_VFPMouseUp?:Call()
+        ENDIF
     ENDIF
 
 PRIVATE METHOD OnCellMouseMoveInner(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellMouseEventArgs) AS VOID STRICT
-    IF e:ColumnIndex == SELF:Index .AND. e:RowIndex >= 0
-        SELF:_VFPMouseMove?:Call()
+    IF e:ColumnIndex == SELF:Index
+        IF e:RowIndex == -1
+            SELF:_GetHeader()?:FireMouseMove()
+        ELSEIF e:RowIndex >= 0
+            SELF:_VFPMouseMove?:Call()
+        ENDIF
     ENDIF
 
 PRIVATE METHOD OnCellValidating(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellValidatingEventArgs) AS VOID STRICT
@@ -601,7 +596,7 @@ PRIVATE METHOD OnGridKeyPress(sender AS OBJECT, e AS System.Windows.Forms.KeyPre
 PRIVATE METHOD OnEditingControlShowing(sender AS OBJECT, e AS System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) AS VOID STRICT
     IF SELF:SelectOnEntry .AND. SELF:DataGridView:CurrentCell != NULL_OBJECT .AND. SELF:DataGridView:CurrentCell:ColumnIndex == SELF:Index
         IF e:Control IS System.Windows.Forms.TextBox VAR tb
-            SELF:DataGridView:BeginInvoke(System.Windows.Forms.MethodInvoker{ tb, @tb:SelectAll() })
+            tb:SelectAll()
         ENDIF
     ENDIF
 

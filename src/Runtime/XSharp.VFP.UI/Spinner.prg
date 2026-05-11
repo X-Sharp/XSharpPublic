@@ -42,7 +42,8 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)]; [Browsable(FALSE)];
+        [Bindable(FALSE)];
+        [Browsable(FALSE)];
 		PROPERTY SelStart AS LONG
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -56,7 +57,8 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)]; [Browsable(FALSE)];
+        [Bindable(FALSE)];
+        [Browsable(FALSE)];
 		PROPERTY SelLength AS LONG
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -70,7 +72,8 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)]; [Browsable(FALSE)];
+        [Bindable(FALSE)];
+        [Browsable(FALSE)];
 		PROPERTY SelText AS STRING
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox

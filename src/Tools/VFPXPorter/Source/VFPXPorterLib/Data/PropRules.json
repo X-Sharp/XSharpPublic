@@ -38,9 +38,14 @@
   },
 
   "EditBox": {
-    "Scrollbars": "VFPScrollbars",
+    "Scrollbars": "ScrollBars",
     "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "Alignment": "Alignment",
+    "Style": "Style",
+    "ReadOnly": "ReadOnly",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Label": {

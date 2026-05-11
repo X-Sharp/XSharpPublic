@@ -108,6 +108,8 @@
   },
 
   "Timer": {
+    "Interval": "Interval",
+    "Enabled": "Enabled"
   },
 
   "CommandGroup": {

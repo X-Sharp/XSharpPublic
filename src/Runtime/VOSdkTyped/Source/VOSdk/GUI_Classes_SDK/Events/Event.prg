@@ -30,7 +30,7 @@ CLASS @@Event //inherit object
 		SUPER()
 
 	[DebuggerStepThrough];
-	CONSTRUCTOR(oEvt AS @@Event)
+	CONSTRUCTOR(oEvt IN @@Event)
 		SUPER()
 		hWnd	:= oEvt:hWnd
 		uMsg	:= oEvt:uMsg

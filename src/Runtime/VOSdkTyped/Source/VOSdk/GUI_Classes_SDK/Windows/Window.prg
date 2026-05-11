@@ -1294,17 +1294,17 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
             oContextMenu := value
             if self:__IsValid
                 if value == null_object
-                    oWnd:ContextMenu := null_object
+                    oWnd:ContextMenuStrip := null_object
                 else
-                    oWnd:ContextMenu := value:__Menu:AsContextMenu()
+                    oWnd:ContextMenuStrip := value:__Menu:AsContextMenuStrip()
 
                 endif
             endif
         end set
     end property
     method ContextMenuShow(oPos as Point) as void
-        if self:__IsValid .and. oWnd:ContextMenu != null_object
-            oWnd:ContextMenu:Show(oWnd, oPos)
+        if self:__IsValid .and. oWnd:ContextMenuStrip != null_object
+            oWnd:ContextMenuStrip:Show(oWnd, oPos)
         endif
         return
 
@@ -1887,16 +1887,18 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
                     nop
                 elseif control is IVOControl
                     var oControl := control astype IVOControlProperties
-                    aRet:Add(oControl:Control)
-                    // Get the children of the group boxes also in this list
-                    if oControl is VOGroupBox
-                        local aGroupChildren as IList<IVOControl>
-                        var oGroup :=  control astype VOGroupBox
-                        aGroupChildren := oGroup:getAllChildren(null)
-                        foreach oc as IVOCOntrolProperties in aGroupChildren
-                            AAdd(aRet,oC:Control)
-                        next
-                    endif
+                    if oControl != NULL_OBJECT  .and. oControl:Control != null_object
+                        aRet:Add(oControl:Control)
+                        // Get the children of the group boxes also in this list
+                        if oControl is VOGroupBox
+                            local aGroupChildren as IList<IVOControl>
+                            var oGroup :=  control astype VOGroupBox
+                            aGroupChildren := oGroup:getAllChildren(null)
+                            foreach oc as IVOCOntrolProperties in aGroupChildren
+                                AAdd(aRet,oC:Control)
+                            next
+                        endif
+                    ENDIF
                 endif
             next
         endif
@@ -2246,11 +2248,14 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
             oMenu := value
             oMenu:__Owner := self
             if self:__IsValid
-                self:__Form:Menu := oMenu:__Menu
+                LOCAL oMenuStrip AS VOMenu
+                oMenuStrip := oMenu:__Menu
+                IF NOT SELF:__Form:Controls:Contains(oMenuStrip)
+                    SELF:__Form:Controls:Add(oMenuStrip)
+                ENDIF
+                SELF:__Form:MainMenuStrip := oMenuStrip
             endif
-            foreach oItem as VOMenuItem in value:__Menu:MenuItems
-                oItem:MergeType := System.Windows.Forms.MenuMerge.Remove
-            next
+            // Note: MergeType is not supported with ToolStrip-based menus
 
             if (oMenu == null_object)
                 self:Accelerator := null_object

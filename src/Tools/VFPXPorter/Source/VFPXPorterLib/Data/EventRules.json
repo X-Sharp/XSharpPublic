@@ -43,6 +43,10 @@
     "DownClick": [ "vfpDownClick:=", "", "" ]
   },
 
+  "container": {
+    "Resize": [ "vfpResize:=", "", "" ]
+  },
+
   "commandgroup": {
     "InteractiveChange": [ "vfpInteractiveChange:=", "", "" ]
   },

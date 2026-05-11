@@ -39,6 +39,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY BorderWidth AS LONG AUTO
         PROPERTY ColorSource AS LONG AUTO
         PROPERTY SpecialEffect AS LONG AUTO
+        PROPERTY FontOutline AS LOGIC AUTO
+        PROPERTY FontShadow  AS LOGIC AUTO
 
         // ControlCount: live count of child controls
         NEW PROPERTY ControlCount AS LONG

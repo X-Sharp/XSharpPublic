@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// (through VFPContainer.xh) — do not include them again here.
 		// ControlProperties.xh wires Move(), SetFocus(), standard VFP event chain.
 		#include "ControlProperties.xh"
+		#include "FontProperties.xh"
 
 		// ── Buttons backing list ──────────────────────────────────────────────
 		PRIVATE _buttons AS List<VFPToolStripButton>

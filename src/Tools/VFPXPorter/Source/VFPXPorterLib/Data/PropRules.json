@@ -396,6 +396,35 @@
        "MouseIcon":       ""
       },
 
+    "FormSet": {
+      "Caption": "",
+      "Location": "",
+      "Size": "",
+      "ForeColor": "",
+      "BackColor": "",
+      "WindowType": "WindowType"
+    },
+
+    "ToolBar": {
+      "DockPosition": "DockPosition",
+      "Movable": "Movable",
+      "FontName": "??<@FontName@>??",
+      "FontSize": "<@FontSize@>",
+      "FontBold": "<@FontBold@>",
+      "FontItalic": "<@FontItalic@>",
+      "FontUnderline": "<@FontUnderline@>",
+      "FontStrikeThru": "<@FontStrikeThru@>",
+      "FontOutline": "",
+      "FontShadow": ""
+    },
+
+    "ContextMenu": {
+      "Location": "",
+      "Size": "",
+      "FontOutline": "",
+      "FontShadow": ""
+    },
+
     "Common": {
      "Caption": "Text",
      "Comment": "",

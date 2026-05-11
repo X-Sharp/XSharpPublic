@@ -61,7 +61,12 @@
 
   "form": {
     "QueryUnload": [ "vfpQueryUnload:=", "", "" ],
-    "Load": [ "vfpLoad:=", "", "" ]
+    "Load":        [ "vfpLoad:=",        "", "" ],
+    "Unload":      [ "vfpUnload:=",      "", "" ],
+    "Activate":    [ "vfpActivate:=",    "", "" ],
+    "Deactivate":  [ "vfpDeactivate:=",  "", "" ],
+    "Resize":      [ "vfpResize:=",      "", "" ],
+    "Paint":       [ "vfpPaint:=",       "", "" ]
   }
 }
 

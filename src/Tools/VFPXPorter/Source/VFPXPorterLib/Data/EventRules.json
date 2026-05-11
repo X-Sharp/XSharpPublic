@@ -43,6 +43,10 @@
     "DownClick": [ "vfpDownClick:=", "", "" ]
   },
 
+  "commandgroup": {
+    "InteractiveChange": [ "vfpInteractiveChange:=", "", "" ]
+  },
+
   "column": {
     "InteractiveChange": [ "", "", "" ]
   },

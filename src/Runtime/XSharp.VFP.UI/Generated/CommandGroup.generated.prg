@@ -7,10 +7,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "VFPContainer.xh"
 #include "VFPPropertiesDynamic.xh"
 #include "VFPGroup.xh"
+#include "FontProperties.xh"
 
 		// BorderColor, BackStyle, ControlCount, Resize/Moved, ProgrammaticChange — implemented in CommandGroup.prg
 		// SetFocus() provided by ControlProperties.xh in CommandGroup.prg
 
+		PROPERTY FontOutline AS LOGIC AUTO
+		PROPERTY FontShadow  AS LOGIC AUTO
 
 	END CLASS
-	END NAMESPACE      
+	END NAMESPACE

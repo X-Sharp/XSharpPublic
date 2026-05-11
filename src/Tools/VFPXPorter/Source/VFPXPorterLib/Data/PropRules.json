@@ -51,9 +51,17 @@
   "Label": {
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
     "Caption": "Text",
+    "Alignment": "Alignment",
+    "Style": "Style",
+    "WordWrap": "WordWrap",
     "FontName": "??<@FontName@>??",
     "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>"
+    "FontBold": "<@FontBold@>",
+    "FontItalic": "<@FontItalic@>",
+    "FontUnderline": "<@FontUnderline@>",
+    "FontStrikeThru": "<@FontStrikeThru@>",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Image": {
@@ -86,9 +94,24 @@
   },
 
   "Shape": {
+    "Style": "Style",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
+    "BorderWidth": "BorderWidth",
+    "BorderStyle": "BorderStyle",
+    "FillColor": "VFPTools.ColorFromVFP(<@FillColor@>)",
+    "FillStyle": "FillStyle",
+    "Curvature": "Curvature",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Line": {
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
+    "BorderWidth": "BorderWidth",
+    "BorderStyle": "BorderStyle",
+    "LineSlant": "LineSlant",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Container": {

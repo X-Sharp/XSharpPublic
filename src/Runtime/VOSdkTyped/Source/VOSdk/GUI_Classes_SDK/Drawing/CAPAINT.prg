@@ -33,8 +33,8 @@ FUNCTION DIBSaveAs(pWinBmp AS PTR, pszFName AS PSZ) AS VOID STRICT
 	RETURN
 
 
-FUNCTION DIBGetInfo(pWinBmp AS PTR) AS _WINBITMAPINFO STRICT
-	LOCAL sbmi AS _WINBITMAPINFO
+FUNCTION DIBGetInfo(pWinBmp AS PTR) AS IntPtr STRICT
+    LOCAL sbmi AS IntPtr
 	IF lCAPaintInitialized
 		sbmi := PCALL(pfnDIBGetInfo, pWinBmp)
 	ENDIF
@@ -116,13 +116,13 @@ FUNCTION FreeCAPaint        ()  AS LOGIC STRICT
 	LOCAL lRet	AS LOGIC
 
 	IF hCAPaint = NULL_PTR
-		lCAPaintInitialized := .F. 
-		lRet := .F. 
+		lCAPaintInitialized := .F.
+		lRet := .F.
 	ELSE
 		GuiWin32.FreeLibrary(hCAPaint)
 		hCAPaint := NULL_PTR
-		lCAPaintInitialized := .F. 
-		lRet := .T. 
+		lCAPaintInitialized := .F.
+		lRet := .T.
 	ENDIF
 
 	RETURN lRet

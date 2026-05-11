@@ -11,7 +11,7 @@ USING System.Diagnostics
 USING VOSDK := XSharp.VO.SDK
 
 CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
-    CONSTRUCTOR(oC IN Control) STRICT
+    CONSTRUCTOR(oC AS Control) STRICT
         SUPER(oC)
         /*
         CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
@@ -58,7 +58,7 @@ END CLASS
 CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
 PROTECTED oControl   AS VOSDK.Control
 
-    PROPERTY Control     AS VOSDK.Control GET oControl
+    PROPERTY Control     AS VOSDK.Control GET oControl INTERNAL SET oControl := VALUE
     PROPERTY ControlID   AS LONG GET Control:ControlID
     PROPERTY Description AS STRING GET HyperLabel:Description
     PROPERTY HelpContext AS STRING GET HyperLabel:HelpContext
@@ -75,13 +75,12 @@ PROTECTED oControl   AS VOSDK.Control
     PROPERTY NameSym	AS SYMBOL GET HyperLabel:NameSym
 
     [DebuggerStepThrough];
-    CONSTRUCTOR(loControl IN VOSDK.Control)
+    CONSTRUCTOR()
         SUPER()
-    oControl := loControl
 
     [DebuggerStepThrough];
         CONSTRUCTOR (m REF System.Windows.Forms.Message)
-        SUPER(m)
+        SUPER( REF m)
         IF m:lParam != IntPtr.Zero
             oControl := WC.GetControlByHandle(m:lParam)
         ENDIF
@@ -92,14 +91,16 @@ CLASS ControlFocusChangeEvent INHERIT ControlEvent
 PROTECT lGotFocus AS LOGIC
     PROPERTY GotFocus AS LOGIC GET lGotFocus
 
-    [DebuggerStepThrough];
-    CONSTRUCTOR(loControl IN VOSDK.Control, lFocus AS LOGIC)
-        SUPER(loControl)
+
+    CONSTRUCTOR(loControl AS VOSDK.Control, lFocus AS LOGIC)
+        SUPER()
+    SELF:Control := loControl
     lGotFocus := lFocus
 
     [DebuggerStepThrough];
-    CONSTRUCTOR(oFocusChangeEvent IN FocusChangeEvent, loControl IN VOSDK.Control)
-        SUPER(loControl)
+    CONSTRUCTOR(oFocusChangeEvent AS FocusChangeEvent, loControl AS VOSDK.Control)
+        SUPER()
+        SELF:Control := loControl
         lGotFocus := oFocusChangeEvent:GotFocus
 
 END CLASS
@@ -107,8 +108,9 @@ END CLASS
 CLASS ControlNotifyEvent INHERIT ControlEvent
 EXPORT NotifyCode AS DWORD
     [DebuggerStepThrough];
-    CONSTRUCTOR(oC IN Control)
-        SUPER(oC)
+    CONSTRUCTOR(oC AS Control)
+        SUPER()
+        SELF:Control := oC
     /*
     ACCESS NotifyCode AS DWORD STRICT
     LOCAL strucNotify AS _winNMHDR
@@ -122,8 +124,9 @@ END CLASS
 CLASS DateTimeSelectionEvent INHERIT ControlEvent
 
     [DebuggerStepThrough];
-    CONSTRUCTOR(loControl IN VOSDK.Control)
-    SUPER(loControl)
+    CONSTRUCTOR(loControl AS VOSDK.Control)
+        SUPER()
+SELF:Control := loControl
     PROPERTY __DtPicker as VODateTimePicker GET (VODateTimePicker) SELF:Control:__Control
 
 
@@ -148,7 +151,7 @@ CLASS DateTimeSelectionEvent INHERIT ControlEvent
 
 CLASS EditFocusChangeEvent INHERIT ControlFocusChangeEvent
     [DebuggerStepThrough];
-    CONSTRUCTOR(loControl IN VOSDK.Control, lFocus AS LOGIC)
+    CONSTRUCTOR(loControl AS VOSDK.Control, lFocus AS LOGIC)
         SUPER(loControl, lFocus)
         lGotFocus := lFocus
 
@@ -161,8 +164,9 @@ CLASS MonthCalSelectionEvent INHERIT ControlEvent
 PROTECT _lExplicit AS LOGIC
 
     [DebuggerStepThrough];
-    CONSTRUCTOR(loControl IN VOSDK.Control, lExplicit AS LOGIC)
-    SUPER(loControl)
+    CONSTRUCTOR(loControl AS VOSDK.Control, lExplicit AS LOGIC)
+    SUPER()
+    SELF:Control := loControl
     _lExplicit := lExplicit
 
     ACCESS Explicit AS LOGIC
@@ -180,7 +184,7 @@ PROTECT _lExplicit AS LOGIC
 
 CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
     //Todo RichEditProtectEvent
-    CONSTRUCTOR(oC IN Control) STRICT
+    CONSTRUCTOR(oC AS Control) STRICT
         SUPER(oC)
         /*
         //RvdH 061218 Declared properties for performance
@@ -213,7 +217,7 @@ CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 
 CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
     //Todo RichEditSelectionEvent
-    CONSTRUCTOR(oC IN Control) STRICT
+    CONSTRUCTOR(oC AS Control) STRICT
         SUPER(oC)
         /*
         //RvdH 061218 Declared properties for performance
@@ -256,7 +260,7 @@ CLASS SliderEvent INHERIT @@Event
     PROPERTY Slider AS Slider AUTO
     PROPERTY Position AS LONG AUTO
 
-    CONSTRUCTOR(oC IN Slider) STRICT
+    CONSTRUCTOR(oC AS Slider) STRICT
         SUPER()
         SELF:Slider := oC
         SELF:Position := oC:__TrackBar:Value
@@ -266,7 +270,7 @@ CLASS ScrollEvent INHERIT @@Event
     PROPERTY ScrollBar AS ScrollBar AUTO
     PROPERTY Position AS LONG AUTO
     PROPERTY IsWindowScroll AS LOGIC GET SELF:ScrollBar IS WindowScrollBar
-    CONSTRUCTOR(oC IN Scrollbar) STRICT
+    CONSTRUCTOR(oC AS Scrollbar) STRICT
         SUPER()
         SELF:ScrollBar  := oC
         SELF:Position   := oC:__ScrollBar:Value
@@ -277,7 +281,7 @@ CLASS SpinnerEvent INHERIT Event
     HIDDEN oSpinner AS Spinner
     PROPERTY SpinnerID  AS LONG     GET Spinner:ControlID
     PROPERTY Spinner    AS Spinner  GET oSpinner
-    CONSTRUCTOR (oC IN Spinner)
+    CONSTRUCTOR (oC AS Spinner)
         SELF:oSpinner := oC
 
     ACCESS OldPosition AS LONGINT STRICT
@@ -313,7 +317,7 @@ CLASS SpinnerEvent INHERIT Event
 
 CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
     //Todo SysLinkSelectEvent
-    CONSTRUCTOR(oC IN Control)
+    CONSTRUCTOR(oC AS Control)
         SUPER(oC)
         //RvdH 061218 Declared properties for performance
         /*

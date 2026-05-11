@@ -71,7 +71,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 
 	[DebuggerStepThrough];
 	CONSTRUCTOR(m REF System.Windows.Forms.Message)
-		SUPER(m)
+		SUPER( REF m)
 
 
 	ACCESS MaxPosition AS Point STRICT
@@ -148,7 +148,7 @@ CLASS ResizeEvent INHERIT @@Event
 
 	[DebuggerStepThrough];
 	CONSTRUCTOR(m REF System.Windows.Forms.Message)
-		SUPER(m)
+		SUPER(REF m)
 
 
 	ACCESS Height AS LONGINT STRICT
@@ -286,7 +286,7 @@ CLASS AppCommandEvent INHERIT @@Event
 	#endregion
 
 	CONSTRUCTOR(m REF System.Windows.Forms.Message)
-		SUPER(m)
+		SUPER( REF m)
 
 	ACCESS Command AS DWORD STRICT
 		RETURN AppCommandEvent.Get_AppCommand_lParam(DWORD(_CAST,SELF:lParam))

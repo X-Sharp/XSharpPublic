@@ -2497,7 +2497,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN
 
 		METHOD RenderColumnHeaderBorder(g AS Graphics , headerBounds AS Rectangle, colindex AS INT )  AS VOID
-		g:DrawRectangle(System.Drawing.Pen{System.Drawing.Color.White, 0.1}, Convert.ToSingle((headerBounds:Left + 0.5)), Convert.ToSingle((headerBounds:Top + 0.5)),;
+		g:DrawRectangle(System.Drawing.Pen{System.Drawing.Color.White, (REAL4) 0.1}, Convert.ToSingle((headerBounds:Left + 0.5)), Convert.ToSingle((headerBounds:Top + 0.5)),;
 					(REAL4)(headerBounds:Width-1),(REAL4)(headerBounds:Height-1))
 		ControlPaint.DrawBorder(g, headerBounds, System.Drawing.Color.Gray, 0, ButtonBorderStyle.Inset, ;
 											   System.Drawing.Color.Gray, 0, ButtonBorderStyle.Inset, ;

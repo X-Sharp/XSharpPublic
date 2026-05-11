@@ -155,7 +155,7 @@ CLASS TextControl INHERIT Control
 				hFont := oFont:Handle()
 			ELSE
 				hFont := GuiWin32.GetStockObject(DEFAULT_GUI_FONT)
-				IF (hFont == NULL_PTR)
+				IF (hFont == (PTR) NULL)
 					hFont := GuiWin32.GetStockObject(SYSTEM_FONT)
 				ENDIF
 			ENDIF
@@ -230,7 +230,7 @@ CLASS TextControl INHERIT Control
 			oFont:Create()
 		ELSE
 			hFont := GuiWin32.GetStockObject(DEFAULT_GUI_FONT)
-			IF hFont == NULL_PTR
+			IF (hFont == (PTR) NULL)
 				hFont := GuiWin32.GetStockObject(SYSTEM_FONT)
 			ENDIF
 			oFont := System.Drawing.Font.FromHfont(hFont)

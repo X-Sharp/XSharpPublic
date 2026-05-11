@@ -48,7 +48,7 @@ class VOTextBox inherit SWF.TextBox   implements IVOControlProperties
         local oEvent as ControlEvent
         super:OnTextChanged(e)
         if oProperties != null_object .and. self:oEdit != null_object
-            oEvent := ControlEvent{self:oEdit}
+            oEvent := ControlEvent{} {Control := self:oEdit}
             oWindow := (Window) self:oEdit:Owner
             if oWindow != null_object
                 oWindow:EditChange(oEvent)
@@ -186,7 +186,7 @@ class VOSpinnerTextBox inherit SWF.NumericUpDown implements IVOControlProperties
         local oEvent as ControlEvent
         super:OnTextChanged(e)
         if oProperties != null_object .and. self:oEdit != null_object
-            oEvent := ControlEvent{self:oEdit}
+            oEvent := ControlEvent{} {Control := self:oEdit}
             oWindow := (Window) self:oEdit:Owner
             if oWindow != null_object
                 oWindow:EditChange(oEvent)

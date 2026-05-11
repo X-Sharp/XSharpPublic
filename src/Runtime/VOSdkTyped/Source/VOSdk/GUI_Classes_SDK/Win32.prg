@@ -9,8 +9,10 @@
 
 USING System.Runtime.InteropServices
 USING System.Text
+USING System.Windows.Forms
 
-
+FUNCTION IsBidi() AS LOGIC
+    RETURN System.Windows.Forms.SystemInformation.MidEastEnabled
 
 INTERNAL STATIC CLASS GuiWin32
 #region Kernel32
@@ -69,13 +71,13 @@ INTERNAL STATIC CLASS GuiWin32
     STATIC METHOD IsWindowEnabled(hwnd AS IntPtr) AS LOGIC
 
     [DllImport("User32.dll")];
-    STATIC INTERNAL METHOD PeekMessage(lpMsg AS _winMSG, hwnd AS IntPtr, wMsgFilterMin AS DWORD, wMsgFilterMax AS DWORD, wRemoveMsg AS DWORD) AS LOGIC
+    STATIC INTERNAL METHOD PeekMessage(m REF Message, hwnd AS IntPtr, wMsgFilterMin AS DWORD, wMsgFilterMax AS DWORD, wRemoveMsg AS DWORD) AS LOGIC
 
     [DllImport("User32.dll")];
-    STATIC INTERNAL METHOD TranslateMessage( lpMsg AS _winMSG) AS LOGIC
+    STATIC INTERNAL METHOD TranslateMessage( m REF Message) AS LOGIC
 
     [DllImport("User32.dll")];
-    STATIC INTERNAL METHOD DispatchMessage(lpMsg AS _winMSG ) AS LONG
+    STATIC INTERNAL METHOD DispatchMessage(m REF Message) AS LONG
 
     [DllImport("User32.dll")];
     STATIC METHOD GetFocus() AS IntPtr STRICT
@@ -122,8 +124,6 @@ INTERNAL STATIC CLASS GuiWin32
     [DllImport("User32.dll", CharSet:=CharSet.Ansi, EntryPoint := "DefWindowProcA", SetLastError := TRUE)];
     STATIC METHOD DefWindowProc(hWnd AS IntPtr, Msg AS DWORD, wParam AS DWORD,lParam AS LONG ) AS LONG
 
-    [DllImport("User32.dll", SetLastError := TRUE)];
-    STATIC INTERNAL METHOD FillRect( hdc AS IntPtr, lprc AS _winRECT, hbr AS IntPtr) AS INT
 
     [DllImport("User32.dll", CharSet:=CharSet.Ansi, EntryPoint := "GetObjectA", SetLastError := TRUE)];
     STATIC METHOD GetObject(hgdiobj AS IntPtr, cbBuffer AS INT, lpvObject AS IntPtr) AS INT
@@ -270,13 +270,6 @@ INTERNAL STATIC CLASS GuiWin32
     [DllImport("User32.dll", SetLastError := TRUE)];
     STATIC METHOD EnableMenuItem(hWnd AS IntPtr , uIDEnableItem AS DWORD, uEnable AS DWORD) AS LONG
 
-    [Return: MarshalAs(UnmanagedType.Bool)];
-    [DllImport("User32.dll", SetLastError := TRUE)];
-    STATIC INTERNAL METHOD GetWindowPlacement(hWnd AS IntPtr, lpwndpl REF WindowPlacement) AS LOGIC STRICT
-
-    [Return: MarshalAs(UnmanagedType.Bool)];
-    [DllImport("User32.dll", SetLastError := TRUE)];
-    STATIC INTERNAL METHOD SetWindowPlacement(hWnd AS IntPtr, lpwndpl REF WindowPlacement) AS LOGIC STRICT
 
     [DllImport("User32.dll")];
     STATIC METHOD WindowFromPoint(pt AS System.Drawing.Point) AS IntPtr
@@ -308,9 +301,9 @@ INTERNAL STATIC CLASS GuiWin32
 
 
 
-    [DllImport("GDI32.dll", CharSet:=CharSet.Ansi, EntryPoint := "ExtTextOutA", SetLastError := TRUE)];
-    STATIC INTERNAL METHOD ExtTextOut(hdc AS IntPtr, X AS INT, Y AS INT, fOptions AS DWORD,;
-            lprc AS _winRECT,  lpString AS STRING, nCount AS DWORD, lpDx AS INT PTR) AS LOGIC
+    // [DllImport("GDI32.dll", CharSet:=CharSet.Ansi, EntryPoint := "ExtTextOutA", SetLastError := TRUE)];
+    // STATIC INTERNAL METHOD ExtTextOut(hdc AS IntPtr, X AS INT, Y AS INT, fOptions AS DWORD,;
+            // lprc AS _winRECT,  lpString AS STRING, nCount AS DWORD, lpDx AS INT PTR) AS LOGIC
 
 
 #endregion
@@ -337,28 +330,28 @@ INTERNAL STRUCTURE WINPOINT
 
 END STRUCTURE
 
-VOSTRUCT _WINBITMAPINFOHEADER
-    MEMBER biSize AS DWORD
-    MEMBER biWidth AS LONGINT
-    MEMBER biHeight AS LONGINT
-    MEMBER biPlanes AS WORD
-    MEMBER biBitCount AS WORD
-    MEMBER biCompression AS DWORD
-    MEMBER biSizeImage AS DWORD
-    MEMBER biXPelsPerMeter AS LONGINT
-    MEMBER biYPelsPerMeter AS LONGINT
-    MEMBER biClrUsed AS DWORD
-    MEMBER biClrImportant AS DWORD
+// VOSTRUCT _WINBITMAPINFOHEADER
+    // MEMBER biSize AS DWORD
+    // MEMBER biWidth AS LONGINT
+    // MEMBER biHeight AS LONGINT
+    // MEMBER biPlanes AS WORD
+    // MEMBER biBitCount AS WORD
+    // MEMBER biCompression AS DWORD
+    // MEMBER biSizeImage AS DWORD
+    // MEMBER biXPelsPerMeter AS LONGINT
+    // MEMBER biYPelsPerMeter AS LONGINT
+    // MEMBER biClrUsed AS DWORD
+    // MEMBER biClrImportant AS DWORD
 
-VOSTRUCT _WINRGBQUAD
-    MEMBER rgbBlue AS BYTE
-    MEMBER rgbGreen AS BYTE
-    MEMBER rgbRed AS BYTE
-    MEMBER rgbReserved AS BYTE
+// VOSTRUCT _WINRGBQUAD
+    // MEMBER rgbBlue AS BYTE
+    // MEMBER rgbGreen AS BYTE
+    // MEMBER rgbRed AS BYTE
+    // MEMBER rgbReserved AS BYTE
 
-VOSTRUCT _WINBITMAPINFO
-    MEMBER	bmiHeader IS _WINBITMAPINFOHEADER
-MEMBER	DIM	  bmiColors[1] IS _WINRGBQUAD
+// VOSTRUCT _WINBITMAPINFO
+    // MEMBER	bmiHeader IS _WINBITMAPINFOHEADER
+// MEMBER	DIM	  bmiColors[1] IS _WINRGBQUAD
 
 
 INTERNAL VOSTRUCT _winAccel
@@ -367,17 +360,17 @@ INTERNAL VOSTRUCT _winAccel
     MEMBER cmd AS WORD
 
 
-INTERNAL VOSTRUCT _winRECT
-    MEMBER left AS LONGINT
-    MEMBER top AS LONGINT
-    MEMBER right AS LONGINT
-    MEMBER bottom AS LONGINT
+// INTERNAL VOSTRUCT _winRECT
+    // MEMBER left AS LONGINT
+    // MEMBER top AS LONGINT
+    // MEMBER right AS LONGINT
+    // MEMBER bottom AS LONGINT
 
 
-INTERNAL VOSTRUCT _winLOGBRUSH
-    MEMBER lbStyle AS DWORD
-    MEMBER lbColor AS DWORD
-    MEMBER lbHatch AS LONGINT
+// INTERNAL VOSTRUCT _winLOGBRUSH
+    // MEMBER lbStyle AS DWORD
+    // MEMBER lbColor AS DWORD
+    // MEMBER lbHatch AS LONGINT
 
 
 INTERNAL VOSTRUCT _winMULTIKEYHELP  ALIGN 2 // RvdH 070411 added alignment
@@ -413,58 +406,50 @@ INTERNAL VOSTRUCT _winMINMAXINFO
     MEMBER ptMinTrackSize IS _winPOINT
     MEMBER ptMaxTrackSize IS _winPOINT
 
-INTERNAL VOSTRUCT _winNMLINK ALIGN 1
-    MEMBER hdr IS _winNMHDR
-    MEMBER item IS _winLITEM
+// INTERNAL VOSTRUCT _winNMLINK ALIGN 1
+    // MEMBER hdr IS _winNMHDR
+    // MEMBER item IS _winLITEM
+//
+
+
+// INTERNAL VOSTRUCT _winNMHDR
+    // MEMBER  hwndFrom AS PTR
+    // MEMBER  idFrom AS DWORD
+    // MEMBER  _code AS DWORD
+//
+//
+// INTERNAL VOSTRUCT _winLITEM //ALIGN 1 RvdH 070411 removed alignment
+    // MEMBER mask AS DWORD
+    // MEMBER iLink AS INT
+    // MEMBER state AS DWORD
+    // MEMBER stateMask AS DWORD
+    // MEMBER DIM szID[MAX_LINKID_TEXT] AS WORD
+    // MEMBER DIM szUrl[L_MAX_URL_LENGTH] AS WORD
 
 
 
-INTERNAL VOSTRUCT _winNMHDR
-    MEMBER  hwndFrom AS PTR
-    MEMBER  idFrom AS DWORD
-    MEMBER  _code AS DWORD
+// INTERNAL VOSTRUCT _winDRAWITEMSTRUCT
+    // MEMBER CtlType AS DWORD
+    // MEMBER CtlID AS DWORD
+    // MEMBER itemID AS DWORD
+    // MEMBER itemAction AS DWORD
+    // MEMBER itemState AS DWORD
+    // MEMBER hwndItem AS PTR
+    // MEMBER hdc AS PTR
+    // MEMBER rcItem IS _winRECT
+    // MEMBER itemData AS DWORD
 
 
-INTERNAL VOSTRUCT _winLITEM //ALIGN 1 RvdH 070411 removed alignment
-    MEMBER mask AS DWORD
-    MEMBER iLink AS INT
-    MEMBER state AS DWORD
-    MEMBER stateMask AS DWORD
-    MEMBER DIM szID[MAX_LINKID_TEXT] AS WORD
-    MEMBER DIM szUrl[L_MAX_URL_LENGTH] AS WORD
-
-
-
-INTERNAL VOSTRUCT _winDRAWITEMSTRUCT
-    MEMBER CtlType AS DWORD
-    MEMBER CtlID AS DWORD
-    MEMBER itemID AS DWORD
-    MEMBER itemAction AS DWORD
-    MEMBER itemState AS DWORD
-    MEMBER hwndItem AS PTR
-    MEMBER hdc AS PTR
-    MEMBER rcItem IS _winRECT
-    MEMBER itemData AS DWORD
-
-
-INTERNAL VOSTRUCT _winMSG
-    MEMBER hwnd AS PTR
-    MEMBER message AS DWORD
-    MEMBER wParam  AS DWORD
-    MEMBER lParam AS LONGINT
-    MEMBER time AS DWORD
-    MEMBER pt IS _winPOINT
-
-[Serializable];
-[StructLayout(LayoutKind.Sequential)];
-INTERNAL STRUCTURE WindowPlacement
-    PUBLIC length AS INT
-    PUBLIC flags AS INT
-    PUBLIC showCmd AS ShowWindowCommands
-    PUBLIC ptMinPosition AS System.Drawing.Point
-    PUBLIC ptMaxPosition AS System.Drawing.Point
-    PUBLIC rcNormalPosition AS System.Drawing.Rectangle
-END STRUCTURE
+// [Serializable];
+// [StructLayout(LayoutKind.Sequential)];
+// INTERNAL STRUCTURE WindowPlacement
+    // PUBLIC length AS INT
+    // PUBLIC flags AS INT
+    // PUBLIC showCmd AS ShowWindowCommands
+    // PUBLIC ptMinPosition AS System.Drawing.Point
+    // PUBLIC ptMaxPosition AS System.Drawing.Point
+    // PUBLIC rcNormalPosition AS System.Drawing.Rectangle
+// END STRUCTURE
 
 ENUM ShowWindowCommands
     MEMBER Hide := 0

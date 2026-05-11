@@ -163,7 +163,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
 		IF SELF:Control != NULL_OBJECT
-			oEvent := ControlEvent{Control}
+            oEvent := ControlEvent{} {Control := SELF:Control}
 			oWindow := (Window) SELF:Control:Owner
 			IF oWindow != NULL_OBJECT
 				// Wenn es ein Datawindow ist, muss hier PreventComboGather abgefragt werden, da durch einen Skip oder ein GoBottom kein Click-Event ausgelöst werden darf
@@ -181,7 +181,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
 		IF SELF:Control != NULL_OBJECT
-			oEvent := ControlEvent{Control}
+            oEvent := ControlEvent{} {Control := SELF:Control}
 			oWindow := (Window) SELF:Control:Owner
 			IF oWindow != NULL_OBJECT
 				oWindow:ButtonDoubleClick(oEvent)

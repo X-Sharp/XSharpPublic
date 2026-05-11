@@ -35,12 +35,10 @@ CLASS AppWindow INHERIT Window
             VAR oChildMenu  := SELF:__Form:MainMenuStrip
             VAR oParentMenu := oParentForm:MainMenuStrip
             IF oChildMenu != NULL_OBJECT .AND. oParentMenu != NULL_OBJECT
-                //ToolStripManager.Merge(oChildMenu, oParentMenu)
+                ToolStripManager.Merge(oChildMenu, oParentMenu)
             ENDIF
         ENDIF
         RETURN SELF
-
-
 
     /// <include file="Gui.xml" path="doc/AppWindow.Default/*" />
     METHOD Default(oEvent AS Event) as USUAL
@@ -49,7 +47,6 @@ CLASS AppWindow INHERIT Window
 
     /// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
     METHOD Destroy() AS USUAL CLIPPER
-
         IF (oVertScroll != NULL_OBJECT)
             oVertScroll:Destroy()
             oVertScroll := NULL_OBJECT

@@ -7,7 +7,7 @@ USING System.Runtime.InteropServices
 #region functions
 
 /// <include file="XSharp.VO.Docs.xml" path="doc/DoSendMail/*" />
-UNSAFE	FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
+UNSAFE FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
     /// THROW NotImplementedException{}
     RETURN
 

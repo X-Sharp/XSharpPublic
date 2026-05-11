@@ -165,6 +165,18 @@
   },
 
   "Container": {
+    "BackStyle": "BackStyle",
+    "BorderStyle": "BorderStyle",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
+    "Picture": "??<@Picture@>??",
+    "FontName": "??<@FontName@>??",
+    "FontSize": "<@FontSize@>",
+    "FontBold": "<@FontBold@>",
+    "FontItalic": "<@FontItalic@>",
+    "FontUnderline": "<@FontUnderline@>",
+    "FontStrikeThru": "<@FontStrikeThru@>",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "DataEnvironment": {

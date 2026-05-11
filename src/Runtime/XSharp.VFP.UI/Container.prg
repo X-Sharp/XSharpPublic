@@ -26,6 +26,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
          #include "VFPProperties.xh"
 		 #include "ControlProperties.xh"
+		 #include "FontProperties.xh"
 
 		 #include "Tooltips.xh"
 

@@ -29,10 +29,66 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		#include "ControlSource.xh"
 
-		//Todo: See how we can map this to the NumericUpdown
-		//PROPERTY SelLength AS LONG GET SELF:SelectionLength SET SELF:SelectionLength := Value
-		//PROPERTY SelStart AS LONG GET SELF:SelectionStart SET SELF:SelectionStart := Value
-		//PROPERTY SelText AS STRING GET SELF:SelectedText  SET SelectedText  := Value
+		// ── SelStart / SelLength / SelText ───────────────────────────────────
+		// NumericUpDown exposes selection via its internal TextBox (Controls[0]).
+		PRIVATE PROPERTY _editBox AS System.Windows.Forms.TextBox
+			GET
+				IF SELF:Controls:Count > 0 .AND. SELF:Controls[0] IS System.Windows.Forms.TextBox VAR tb
+					RETURN tb
+				ENDIF
+				RETURN NULL
+			END GET
+		END PROPERTY
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)]; [Browsable(FALSE)];
+		PROPERTY SelStart AS LONG
+			GET
+				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
+				RETURN IIF(tb != NULL, (LONG)tb:SelectionStart, 0)
+			END GET
+			SET
+				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
+				IF tb != NULL ; tb:SelectionStart := VALUE ; ENDIF
+			END SET
+		END PROPERTY
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)]; [Browsable(FALSE)];
+		PROPERTY SelLength AS LONG
+			GET
+				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
+				RETURN IIF(tb != NULL, (LONG)tb:SelectionLength, 0)
+			END GET
+			SET
+				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
+				IF tb != NULL ; tb:SelectionLength := VALUE ; ENDIF
+			END SET
+		END PROPERTY
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)]; [Browsable(FALSE)];
+		PROPERTY SelText AS STRING
+			GET
+				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
+				RETURN IIF(tb != NULL, tb:SelectedText, "")
+			END GET
+			SET
+				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
+				IF tb != NULL ; tb:SelectedText := VALUE ; ENDIF
+			END SET
+		END PROPERTY
+
+		// ── ReadOnly ──────────────────────────────────────────────────────────
+		// Prevents keyboard input; arrow-button spin still works.
+		PRIVATE _readOnly AS LOGIC
+		PROPERTY ReadOnly AS LOGIC
+			GET ; RETURN _readOnly ; END GET
+			SET ; _readOnly := VALUE ; END SET
+		END PROPERTY
 
 		PROPERTY SpinnerHighValue AS FLOAT GET (FLOAT) SUPER:Maximum SET SUPER:Maximum := (System.Decimal) VALUE
 		PROPERTY SpinnerLowValue AS FLOAT GET (FLOAT) SUPER:Minimum SET SUPER:Minimum := (System.Decimal) VALUE
@@ -78,6 +134,15 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				END SWITCH
 			END SET
 		END PROPERTY
+
+		// Fire vfpKeyPress and enforce ReadOnly (suppress typing; arrows still spin).
+		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+			SELF:OnVFPKeyPress(SELF, e)
+			IF _readOnly
+				e:Handled := TRUE
+				RETURN
+			ENDIF
+			SUPER:OnKeyPress(e)
 
 		PROTECTED OVERRIDE METHOD OnValidating( e AS System.ComponentModel.CancelEventArgs ) AS VOID STRICT
 			SUPER:OnValidating( e )

@@ -63,6 +63,15 @@
     "Destroy":   [ "", "", "" ]
   },
 
+  "pageframe": {
+    "Resize": [ "vfpResize:=", "", "" ]
+  },
+
+  "page": {
+    "Activate":   [ "vfpActivate:=",   "", "" ],
+    "Deactivate": [ "vfpDeactivate:=", "", "" ]
+  },
+
   "form": {
     "QueryUnload": [ "vfpQueryUnload:=", "", "" ],
     "Load":        [ "vfpLoad:=",        "", "" ],

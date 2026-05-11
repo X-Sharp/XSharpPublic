@@ -340,13 +340,31 @@
        "TabStretch": "TabStretch",
        "Tabs": "Tabs",
        "Caption": "",
-       "^Page99": "Pages(99)"
+       "^Page99": "Pages(99)",
+       "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
+       "FontName": "??<@FontName@>??",
+       "FontSize": "<@FontSize@>",
+       "FontBold": "<@FontBold@>",
+       "FontItalic": "<@FontItalic@>",
+       "FontUnderline": "<@FontUnderline@>",
+       "FontStrikeThru": "<@FontStrikeThru@>",
+       "FontOutline": "",
+       "FontShadow": ""
       },
 
      "Page": {
        "Caption": "Text",
        "PageOrder": "PageOrder",
-       "BackStyle": "BackStyle"
+       "BackStyle": "BackStyle",
+       "Picture": "??<@Picture@>??",
+       "FontName": "??<@FontName@>??",
+       "FontSize": "<@FontSize@>",
+       "FontBold": "<@FontBold@>",
+       "FontItalic": "<@FontItalic@>",
+       "FontUnderline": "<@FontUnderline@>",
+       "FontStrikeThru": "<@FontStrikeThru@>",
+       "FontOutline": "",
+       "FontShadow": ""
       },
 
      "header": {

@@ -56,7 +56,18 @@
 
   "Spinner": {
     "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)"
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "SpinnerHighValue": "SpinnerHighValue",
+    "SpinnerLowValue": "SpinnerLowValue",
+    "KeyboardHighValue": "KeyboardHighValue",
+    "KeyboardLowValue": "KeyboardLowValue",
+    "Alignment": "Alignment",
+    "Format": "Format",
+    "InputMask": "InputMask",
+    "ReadOnly": "ReadOnly",
+    "BackStyle": "",
+    "FontOutline": "",
+    "FontShadow": ""
   },
 
   "Timer": {

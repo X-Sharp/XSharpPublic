@@ -38,6 +38,11 @@
      "Scrolled": [ "vfpScrolled:=", "", "" ]
    },
 
+  "spinner": {
+    "UpClick":   [ "vfpUpClick:=",   "", "" ],
+    "DownClick": [ "vfpDownClick:=", "", "" ]
+  },
+
   "column": {
     "InteractiveChange": [ "", "", "" ]
   },

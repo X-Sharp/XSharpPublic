@@ -601,7 +601,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PRIVATE METHOD VFPOnScroll( sender AS OBJECT, e AS System.Windows.Forms.ScrollEventArgs ) AS VOID
             LOCAL nDir AS LONG
-            IF e:ScrollOrientation == System.Windows.Forms.ScrollOrientation.Vertical
+            IF e:ScrollOrientation == System.Windows.Forms.ScrollOrientation.VerticalScroll
                 SWITCH e:Type
                 CASE System.Windows.Forms.ScrollEventType.SmallDecrement  ; nDir := 1
                 CASE System.Windows.Forms.ScrollEventType.SmallIncrement  ; nDir := 2

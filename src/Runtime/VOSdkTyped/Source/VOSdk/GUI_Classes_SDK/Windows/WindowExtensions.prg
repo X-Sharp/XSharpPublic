@@ -7,15 +7,15 @@
 // WindowExtensions.prg
 
 FUNCTION YieldMessageLoop( oWin AS OBJECT ) AS VOID
-    LOCAL msg  IS _WINMSG
+    LOCAL msg  AS System.Windows.Forms.Message
     LOCAL hWnd AS PTR
 
     IF oWin is IGuiObject
         VAR oGui := (IGuiObject) oWin
         hWnd := oGui:__Handle
-        DO WHILE ( GuiWin32.PeekMessage( @msg, hWnd, 0, 0, PM_REMOVE ) )
-            GuiWin32.TranslateMessage( @msg )
-            GuiWin32.DispatchMessage( @msg )
+        DO WHILE ( GuiWin32.PeekMessage( REF msg, hWnd, 0, 0, PM_REMOVE ) )
+            GuiWin32.TranslateMessage( REF msg )
+            GuiWin32.DispatchMessage(  REF msg )
         ENDDO
     ENDIF
     RETURN

@@ -92,6 +92,10 @@
   </Folder>
   <Folder Name="/VOSDKTyped/">
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="273a5f69-9a7c-44d1-b84b-f01685167adb" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04">
+      <BuildType Solution="DocChinese|*" Project="Release" />
+      <BuildType Solution="Documentation|*" Project="Release" />
+    </Project>
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ece29add-aa72-41b5-9713-d50512eca3bb">
       <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" />
       <BuildDependency Project="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />

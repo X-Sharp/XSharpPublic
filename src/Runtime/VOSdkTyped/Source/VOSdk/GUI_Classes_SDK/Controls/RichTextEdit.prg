@@ -195,7 +195,7 @@ CLASS RichEdit INHERIT MultiLineEdit
         strucTextRange:chrg_Max := oRange:Max - 1
         strucTextRange:lpstrText := MemAlloc(oRange:Max - oRange:Min + 1)
 
-        IF (PTR(_CAST, strucTextRange:lpstrText) != NULL_PTR)
+        IF (PTR(_CAST, strucTextRange:lpstrText) != (PTR) NULL)
             GuiWin32.SendMessage(oCtrl:Handle, EM_GETTEXTRANGE, 0, LONGINT(_CAST, @strucTextRange))
             sRet := Psz2String(strucTextRange:lpstrText)
             MemFree(strucTextRange:lpstrText)

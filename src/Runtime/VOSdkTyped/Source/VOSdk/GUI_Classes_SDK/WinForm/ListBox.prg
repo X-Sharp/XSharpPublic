@@ -154,7 +154,7 @@ CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBo
 		IF SELF:Control != NULL_OBJECT
 			oWindow := (Window) SELF:Control:Owner
 			IF oWindow != NULL_OBJECT
-				oEvent := ControlEvent{SELF:Control}
+                oEvent := ControlEvent{} {Control := SELF:Control}
 				oWindow:ListBoxClick(oEvent)
 			ENDIF
 		ENDIF
@@ -170,7 +170,7 @@ CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBo
 				TRY
 					oWindow := (Window) SELF:Control:Owner
 					IF oWindow != NULL_OBJECT
-						oEvent := ControlEvent{SELF:Control}
+                        oEvent := ControlEvent{} {Control := SELF:Control}
 						oWindow:ListBoxSelect(oEvent)
 					ENDIF
 				FINALLY
@@ -343,7 +343,7 @@ CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseList
 			TRY
 				oWindow := (Window) SELF:Control:Owner
 				IF oWindow != NULL_OBJECT
-					oEvent := ControlEvent{SELF:Control}
+                    oEvent := ControlEvent{} {Control := SELF:Control}
 					oWindow:ListBoxSelect(oEvent)
 				ENDIF
 			FINALLY
@@ -360,7 +360,7 @@ CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseList
 		SUPER:OnMouseDoubleClick(e)
 		oWindow := (Window) SELF:Control:Owner
 		IF oWindow != NULL_OBJECT
-			oEvent := ControlEvent{SELF:Control}
+			oEvent := ControlEvent{} {Control := SELF:Control}
 			oWindow:ListBoxClick(oEvent)
 		ENDIF
 		RETURN
@@ -374,8 +374,8 @@ CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseList
 				SELF:ComboBox:__EditChange()
 				oWindow := (Window) SELF:Control:Owner
 
-				IF oWindow != NULL_OBJECT
-					oWindow:EditChange(ControlEvent{SELF:Control})
+                IF oWindow != NULL_OBJECT
+					oWindow:EditChange(ControlEvent{}{ Control := SELF:Control})
 				ENDIF
 			FINALLY
 				SELF:lBusy := FALSE

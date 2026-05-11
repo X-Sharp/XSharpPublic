@@ -82,7 +82,7 @@ CLASS Bitmap INHERIT VObject IMPLEMENTS IResource
             lpszBitmap := oResourceID:Address()
 
             hBitMap := GuiWin32.LoadImage(hInst, lpszBitmap, IMAGE_BITMAP, iWidth, iHeight, kLoadOption)
-            IF hBitMap != NULL_PTR
+            IF hBitMap != (PTR) NULL_PTR
                 oImage  := System.Drawing.Image.FromHbitmap(hBitMap)
             ENDIF
         ENDIF

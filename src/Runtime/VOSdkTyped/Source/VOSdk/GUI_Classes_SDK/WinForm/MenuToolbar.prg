@@ -16,7 +16,7 @@
 //   ContextMenu -> ContextMenuStrip
 //   ToolBar   -> ToolStrip
 //   ToolBarButton -> ToolStripButton
-
+#pragma options("az", on)
 USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING System.Collections.Generic
@@ -90,7 +90,6 @@ CLASS VOMenuItem INHERIT SWF.ToolStripMenuItem
         SUPER()
         SELF:DisplayStyle := SWF.ToolStripItemDisplayStyle.Text
 
-
     CONSTRUCTOR(cText AS STRING) STRICT
         SUPER(cText)
         SELF:DisplayStyle := SWF.ToolStripItemDisplayStyle.Text
@@ -148,9 +147,11 @@ CLASS VOMenuItem INHERIT SWF.ToolStripMenuItem
         SET
             // Strip Shortkey after tab character if present (e.g. "E&xit\tCtrl+X" -> "E&xit")
             var capt := value
+            SELF:ShortcutKeyDisplayString  := ""
             if capt:Contains(e"\t")
                 var parts := capt:Split(c'\t')
                 capt := parts[0]
+                SELF:ShortcutKeyDisplayString  := parts[1]
             endif
             SUPER:Text := capt
         END SET

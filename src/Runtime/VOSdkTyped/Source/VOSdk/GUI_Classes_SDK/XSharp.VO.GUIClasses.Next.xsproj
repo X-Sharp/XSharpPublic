@@ -1,7 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\VOSDK.SDK.Targets" />
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
+    <Description>XSharp Typed VO GUI Classes</Description>
+    <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Dialect>Vulcan</Dialect>
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
@@ -21,28 +23,16 @@
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
     <Vo5>False</Vo5>
+    <NoWarn>168;165</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{504a02d9-74ae-445f-85d7-af2544e06d81}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.Next.xsproj">
-      <Project>{583c4466-3bbe-4828-b5de-17068ea3a035}</Project>
-      <Name>XSharp.VO</Name>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.Next.xsproj">
-      <Name>XSharp.VOSystemClasses</Name>
-      <Private>True</Private>
-      <Project>{7650872d-77f3-45df-9942-595b2d75fe1c}</Project>
-    </ProjectReference>
+    <Compile Remove="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj" />
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.Next.xsproj" />
+    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.Next.xsproj" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
 </Project>

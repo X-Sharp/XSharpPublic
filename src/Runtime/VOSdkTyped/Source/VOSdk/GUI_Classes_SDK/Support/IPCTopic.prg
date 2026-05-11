@@ -9,7 +9,7 @@ CLASS IpcTopic INHERIT VObject
 	EXPORT cTopicName AS STRING
 	EXPORT aItemList AS ARRAY
 
-	METHOD AddItem (cItemString ) 
+	METHOD AddItem (cItemString )
 		LOCAL cItemName AS STRING
 		IF !IsString(cItemString)
 			WCError{#AddItem,#IpcTopic,__WCSTypeError,cItemString,1}:Throw()
@@ -19,12 +19,12 @@ CLASS IpcTopic INHERIT VObject
 
 		RETURN SELF
 
-	METHOD DeleteItem(cItemString) 
+	METHOD DeleteItem(cItemString)
 		//SE-060526
 		LOCAL cItemName AS STRING
 		LOCAL dwI, dwCount AS DWORD
 
-		
+
 
 		IF !IsString(cItemString)
 			WCError{#AddItem,#IpcTopic,__WCSTypeError,cItemString,1}:Throw()
@@ -43,7 +43,7 @@ CLASS IpcTopic INHERIT VObject
 		RETURN SELF
 
 	METHOD Destroy() AS USUAL  CLIPPER
-		
+
 
 		cTopicName := NULL_STRING
 		aItemList:={}
@@ -52,8 +52,8 @@ CLASS IpcTopic INHERIT VObject
 
 		RETURN SELF
 
-	CONSTRUCTOR(cTopicString) 
-		
+	CONSTRUCTOR(cTopicString)
+
 
 		aItemList := {}
 		SUPER()
@@ -63,9 +63,9 @@ CLASS IpcTopic INHERIT VObject
 		ENDIF
 
 		cTopicName := Upper(cTopicString)
-		
 
-		RETURN 
+
+		RETURN
 
 END CLASS
 
@@ -74,15 +74,15 @@ CLASS IpcTopicData INHERIT VObject
 	EXPORT liLen AS LONGINT
 	PROTECT lWasAlloc AS LOGIC
 
-	ACCESS Data 
-		
+	ACCESS Data
+
 
 		RETURN ptrData
 
 	METHOD Destroy() AS USUAL clipper
-		
 
-		IF ptrData!= NULL_PTR .and. lWasAlloc
+
+		IF ptrData!= (PTR) NULL_PTR .and. lWasAlloc
 			MemFree(ptrData)
 		ENDIF
 
@@ -92,8 +92,8 @@ CLASS IpcTopicData INHERIT VObject
 
 		RETURN SELF
 
-	CONSTRUCTOR(ptrString, nLength) 
-		
+	CONSTRUCTOR(ptrString, nLength)
+
 
 		SUPER()
 
@@ -114,10 +114,10 @@ CLASS IpcTopicData INHERIT VObject
 			liLen := INT(_CAST, PszLen(ptrData))
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	ACCESS Length 
-		
+	ACCESS Length
+
 
 		RETURN liLen
 END CLASS

@@ -36,12 +36,7 @@
                      MinWidth="300"/>
             <Button x:Name="resetButton"
                 Style="{DynamicResource ResetButtonStyle}"
-                Command="{Binding ResetCommand}"
-                Margin="4,0,0,0"
-                Width="16"
-                Height="16"
-                ToolTip="Reset value"
-                VerticalAlignment="Center">
+                Command="{Binding ResetCommand}">
                 <Image Source="pack://application:,,,/Settings.png" />
             </Button>
 

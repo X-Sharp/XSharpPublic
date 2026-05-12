@@ -29,7 +29,7 @@ PRIVATE METHOD InitializeComponent() AS VOID STRICT
 
 	SELF:ResumeLayout( FALSE )
 
-PUBLIC CONSTRUCTOR( InitParamsList ) CLIPPER
+PUBLIC CONSTRUCTOR( InitParamsListt PARAMS USUAL[] )
 	SUPER( InitParamsList )
 	//
 	PreInitializeComponent()

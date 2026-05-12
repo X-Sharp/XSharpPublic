@@ -62,6 +62,35 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		// ── DynamicBackColor / DynamicForeColor ──────────────────────────────
+		// Store the VFP expression string and compile it into a codeblock on assignment.
+		// OnCellFormatting evaluates the codeblock for each cell and applies the result.
+
+		PRIVATE _dynBackColorStr AS STRING
+		PRIVATE _dynBackColorCB  AS CODEBLOCK
+		PRIVATE _dynForeColorStr AS STRING
+		PRIVATE _dynForeColorCB  AS CODEBLOCK
+
+		PROPERTY DynamicBackColor AS STRING
+			GET
+				RETURN SELF:_dynBackColorStr
+			END GET
+			SET
+				SELF:_dynBackColorStr := VALUE
+				SELF:_dynBackColorCB  := IIF( String.IsNullOrEmpty(VALUE), NULL_OBJECT, MCompile("{|| " + VALUE + "}") )
+			END SET
+		END PROPERTY
+
+		PROPERTY DynamicForeColor AS STRING
+			GET
+				RETURN SELF:_dynForeColorStr
+			END GET
+			SET
+				SELF:_dynForeColorStr := VALUE
+				SELF:_dynForeColorCB  := IIF( String.IsNullOrEmpty(VALUE), NULL_OBJECT, MCompile("{|| " + VALUE + "}") )
+			END SET
+		END PROPERTY
+
 		// ── Alignment ────────────────────────────────────────────────────────
 		// VFP Alignment: 0=Left, 1=Right, 2=Center — maps to DataGridViewContentAlignment.
 
@@ -282,6 +311,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF fmt:Contains("@!")
 				e:Value           := e:Value:ToString():ToUpper()
 				e:FormattingApplied := TRUE
+			ENDIF
+			// DynamicBackColor / DynamicForeColor — evaluate codeblock per cell
+			IF SELF:_dynBackColorCB != NULL_OBJECT
+				TRY
+					e:CellStyle:BackColor := VFPTools.ColorFromVFP( (INT) Eval(SELF:_dynBackColorCB) )
+				CATCH
+				END TRY
+			ENDIF
+			IF SELF:_dynForeColorCB != NULL_OBJECT
+				TRY
+					e:CellStyle:ForeColor := VFPTools.ColorFromVFP( (INT) Eval(SELF:_dynForeColorCB) )
+				CATCH
+				END TRY
 			ENDIF
 
 		// VFP CurrentControl: name of the active editing control inside this column.

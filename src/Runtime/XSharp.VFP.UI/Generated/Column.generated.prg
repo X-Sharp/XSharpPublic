@@ -8,10 +8,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		METHOD AutoFit AS LOGIC CLIPPER
 			RETURN FALSE
-		PROPERTY Bound AS USUAL AUTO
+        PROPERTY Bound AS USUAL AUTO
+
+		// DynamicBackColor / DynamicForeColor implemented with real logic in Column.prg
 		// ColumnOrder implemented with real logic in Column.prg
 		PROPERTY DynamicAlignment AS LONG AUTO
-		PROPERTY DynamicBackColor AS LONG AUTO
 		PROPERTY DynamicCurrentControl AS STRING AUTO
 		PROPERTY DynamicFontBold AS LOGIC AUTO
 		PROPERTY DynamicFontItalic AS LOGIC AUTO
@@ -21,7 +22,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY DynamicFontSize AS FLOAT AUTO
 		PROPERTY DynamicFontStrikethru AS LOGIC AUTO
 		PROPERTY DynamicFontUnderline AS LOGIC AUTO
-		PROPERTY DynamicForeColor AS LONG AUTO
 		PROPERTY DynamicInputMask  AS STRING AUTO
 		PROPERTY HeaderClass AS STRING AUTO
 		PROPERTY HeaderClassLibrary AS STRING AUTO

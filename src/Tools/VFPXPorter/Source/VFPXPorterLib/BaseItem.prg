@@ -50,7 +50,7 @@ BEGIN NAMESPACE VFPXPorterLib
         END PROPERTY
 
         [XmlIgnore];
-        PROPERTY IsConverted AS LOGIC GET SELF:_isConverted
+        PROTECTED PROPERTY IsConverted AS LOGIC GET SELF:_isConverted
 
         [XmlIgnore];
         PROPERTY IsForm AS LOGIC GET ( String.Compare( SELF:BaseClassName, "form", TRUE ) == 0 )
@@ -74,6 +74,10 @@ BEGIN NAMESPACE VFPXPorterLib
                     LOCAL nSpace := "" AS STRING
                     IF !String.IsNullOrEmpty( SELF:ClassLocation )
                         nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ) + "."
+                    ELSE
+                        // No ClassLocation and not converted: the bare VFP class name is returned.
+                        // This will produce invalid output if the class was never mapped to a .NET type.
+                        XPorterLogger.Instance:Warning( "FullyQualifiedName: item '" + SELF:Name + "' has no ClassLocation and was not converted (ClassName='" + SELF:ClassName + "')" )
                     ENDIF
                     fqn := nSpace + SELF:ClassName
                 ENDIF
@@ -223,8 +227,8 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:PLATFORM := itemToCopy:PLATFORM
             SELF:UNIQUEID := itemToCopy:UNIQUEID
             SELF:TIMESTAMP := itemToCopy:TIMESTAMP
-            // !!! WARNING !!! This may incorrectly set the FoxClassName
-            SELF:ClassName := itemToCopy:ClassName
+            SELF:_className := itemToCopy:ClassName
+            SELF:_isConverted := itemToCopy:_isConverted
             SELF:FoxClassName := itemToCopy:FoxClassName
             //
             SELF:CLASSLOC := itemToCopy:CLASSLOC

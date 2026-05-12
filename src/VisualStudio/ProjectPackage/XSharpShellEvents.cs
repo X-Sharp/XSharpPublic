@@ -25,6 +25,7 @@ namespace XSharp.Project
 
         public int BuildEvents_SolutionBuildFinished { get; private set; }
         static bool hasEnvironmentvariable = false;
+        bool isInitialized = false;
         static XSharpShellEvents()
         {
             hasEnvironmentvariable = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
@@ -36,17 +37,34 @@ namespace XSharp.Project
 
         internal XSharpShellEvents()
         {
+            if (ThreadHelper.CheckAccess())
+            {
+                // Already on UI thread
+                Initialize();
+            }
+            else
+            {
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    Initialize();
+                });
+            }
+        }
+        internal void Initialize()
+        {
+            if (isInitialized)
+                return;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+            VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+            VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
+
+            VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+
+            VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
-                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
-                VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
-
-                VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
-
-                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
 
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
@@ -55,9 +73,8 @@ namespace XSharp.Project
                 {
                     SolutionEvents_OnAfterOpenSolution(sol);
                 }
-
             });
-
+            isInitialized = true;
         }
 
 

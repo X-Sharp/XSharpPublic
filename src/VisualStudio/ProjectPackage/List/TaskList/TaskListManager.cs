@@ -97,7 +97,8 @@ namespace XSharp.Project
         {
             if (_projects.TryGetValue(project.ProjectIDGuid, out var entry))
             {
-                _listprovider.RemoveListFactory(entry.Factory);
+                if (_listprovider != null)
+                    _listprovider.RemoveListFactory(entry.Factory);
                 return _projects.TryRemove(project.ProjectIDGuid, out _);
             }
             return false;

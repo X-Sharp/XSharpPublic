@@ -49,19 +49,7 @@ CLASS XPorterSettings
 	END PROPERTY
 
 #region Various Folders definitions
-    PRIVATE STATIC _DataFolder := String.Empty AS STRING
-    PUBLIC STATIC PROPERTY DataFolder AS STRING
-        GET
-            IF _DataFolder == String.Empty
-                RETURN System.IO.Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Data" )
-            ELSE
-                RETURN _DataFolder
-            ENDIF
-        END GET
-        SET
-            _DataFolder := VALUE
-        END SET
-	END PROPERTY
+    PUBLIC STATIC DataFolder := ".\Data"	AS STRING
 
     /// <summary>
     /// Namespace of the library that contains VFP-support controls/classes/tools
@@ -81,13 +69,7 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY ConvertTableFile		AS STRING GET XPorterSettings.DataFolder + "\\TypeConvert.json"
 	PUBLIC STATIC PROPERTY StatementsFile		AS STRING GET XPorterSettings.DataFolder + "\\Statements.json"
 	PUBLIC STATIC PROPERTY VFPElementsFile		AS STRING GET XPorterSettings.DataFolder + "\\VFP2WinForms.json"
-	PUBLIC STATIC PROPERTY ColorPropertiesFile	AS STRING GET XPorterSettings.DataFolder + "\\ColorProperties.json"
 
-    /// <summary>
-    /// The name of the file used as the main entry point of the generated project, containing the Main method that initializes and runs the application.
-    /// VFPStart.prg per default.
-    /// </summary>
-    /// <value></value>
 	PUBLIC STATIC PROPERTY StartFile				AS STRING GET XPorterSettings.OthersFolder + "\\VFPStart.prg"
 
 	PUBLIC STATIC PROPERTY MenuContainerFile		AS STRING GET XPorterSettings.MenuFolder + "\\MenuContainer.prg"
@@ -138,23 +120,24 @@ CLASS XPorterSettings
 
 		SELF:OutputPath := ""
 		SELF:ItemsPath := ""
+		SELF:ConvertHandlers := FALSE
+		SELF:ConvertUserDef := FALSE
 		SELF:ConvertThisObject := TRUE
 		SELF:ConvertStatement := TRUE
-		SELF:ConvertStatementOnlyIfLast := TRUE
+		SELF:ConvertStatementOnlyIfLast := FALSE
 		SELF:KeepOriginal := TRUE
 		SELF:NameUDF := FALSE
 		SELF:RemoveSet := TRUE
-		SELF:PrefixClassFile := FALSE
+		SELF:PrefixClassFile := TRUE
 		SELF:Modifier := "PUBLIC"
 		SELF:ItemsType := XPorterSettings.DefaultFolders
         SELF:LibInSubFolder := TRUE
         SELF:AddLibraryNamespace := TRUE
 		SELF:IgnoreErrors := TRUE
-		SELF:StoreInFolders := TRUE
+		SELF:StoreInFolders := FALSE
 		SELF:EmptyFolder := TRUE
-		SELF:PrefixEvent := TRUE
+		SELF:PrefixEvent := FALSE
         SELF:KeepFoxProEventName := TRUE
-        SELF:GenerateOnlyHandledEvent := TRUE
         SELF:OutputType := ProjectType.WindowsExe // Exe by default
         SELF:AppendToSolution := FALSE // New Solution by default
         SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
@@ -264,6 +247,11 @@ CLASS XPorterSettings
 	PROPERTY IgnoreErrors AS LOGIC AUTO
 
 	/// <summary>
+	/// Apply CodeConverter to Event Handlers
+	/// </summary>
+	PROPERTY ConvertHandlers AS LOGIC AUTO
+
+	/// <summary>
 	/// Convert Statement to Method Call
 	/// </summary>
 	/// <value></value>
@@ -274,6 +262,11 @@ CLASS XPorterSettings
 	/// </summary>
 	/// <value></value>
 	PROPERTY ConvertStatementOnlyIfLast AS LOGIC AUTO
+
+	/// <summary>
+	/// Apply CodeConverter to User-Def Methods
+	/// </summary>
+	PROPERTY ConvertUserDef AS LOGIC AUTO
 
 	/// <summary>
 	/// Apply ThisObject CodeConverter to all Methods

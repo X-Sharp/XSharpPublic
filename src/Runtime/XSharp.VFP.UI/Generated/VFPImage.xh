@@ -1,9 +1,11 @@
 ﻿
 #ifndef VFP_IMAGE_XH
 #define VFP_IMAGE_XH
-PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY DisabledBackColor AS LONG AUTO
 
-PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY DisabledForeColor AS LONG AUTO
 
 [System.ComponentModel.DefaultValue("")];
 PROPERTY DisabledPicture AS STRING AUTO
@@ -31,10 +33,8 @@ PROPERTY DisabledPicture AS STRING AUTO
 [System.ComponentModel.DefaultValue(0)];
         PROPERTY PictureMargin AS LONG AUTO
 
-#ifndef NO_PICTUREPOSITION
         [System.ComponentModel.DefaultValue(0)];
             PROPERTY PicturePosition AS LONG AUTO
-#endif
 
         [System.ComponentModel.DefaultValue(0)];
 		PROPERTY PictureSpacing AS LONG AUTO

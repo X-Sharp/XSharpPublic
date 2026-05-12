@@ -67,8 +67,6 @@ BEGIN NAMESPACE VFPXPorter
                     // Auto-Complete: if solution name is empty, we set it to the PJX folder
                     SELF:SolutionName:Text := Path.GetFileNameWithoutExtension(ofd:FileName)
                 ENDIF
-                // Per Default, we use the OutputDir from Settings, combined with the name of the VFP Project
-                SELF:outputPathTextBox:Text := Path.Combine(Settings:OutputPath, Path.GetFileNameWithoutExtension(ofd:FileName))
 			ENDIF
 			RETURN
 		PRIVATE METHOD outputButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
@@ -99,28 +97,44 @@ BEGIN NAMESPACE VFPXPorter
 				RETURN FALSE
             ENDIF
 
+			IF !Directory.Exists(baseOutputPath)
+				SELF:infoStripLabel:ForeColor := Color.Red
+				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
+				RETURN FALSE
+            ENDIF
             //
+
+			// Get the PJX File name, and use it as a SubFolder
+			VAR projectName := Path.GetFileNameWithoutExtension(pjxFilePath)
+            LOCAL projectPath AS STRING
+
+            IF !SELF:Settings:PlaceSolutionInSameDirectory
+                projectPath := Path.Combine(baseOutputPath, projectName)
+            ELSE
+                projectPath := baseOutputPath
+            ENDIF
+
 			// Warning, we may NOT be able to create the Directory
 			TRY
-                IF Directory.Exists(baseOutputPath)
+                IF Directory.Exists(projectPath)
                     // If Append: do not delete the folder. We might delete the solution.
                     // or sibling project folders. We just delete if not Append.
                     IF !SELF:Settings:AppendToSolution
-                        SELF:EraseFolder(baseOutputPath, FALSE )
+                        SELF:EraseFolder(projectPath, FALSE )
                     ELSE
                         // If Append: we just delete sub-folders of the current project
                         // to ensure a clean export of the current project.
-                        VAR codeDir := Path.Combine(baseOutputPath, "Code")
+                        VAR codeDir := Path.Combine(projectPath, "Code")
                         IF Directory.Exists(codeDir)
                             SELF:EraseFolder(codeDir, TRUE)
                         ENDIF
-                        var xsharpDir := Path.Combine(baseOutputPath, "XSharp")
+                        var xsharpDir := Path.Combine(projectPath, "XSharp")
                         IF Directory.Exists(xsharpDir)
                             SELF:EraseFolder(xsharpDir, TRUE)
                         ENDIF
                     ENDIF
                 ELSE
-				    Directory.CreateDirectory(baseOutputPath)
+				    Directory.CreateDirectory(projectPath)
 				ENDIF
 			CATCH e AS Exception
 				//
@@ -128,22 +142,10 @@ BEGIN NAMESPACE VFPXPorter
                 IF !SELF:Settings:IgnoreErrors
 				    THROW e
 				ENDIF
-            END TRY
-            //
-
-			IF !Directory.Exists(baseOutputPath)
-				SELF:infoStripLabel:ForeColor := Color.Red
-				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
-				RETURN FALSE
-            ENDIF
+			END TRY
 			//
-            SELF:xPorter := XPorterProject{ pjxFilePath, baseOutputPath }
-            // If the solution is in the same directory as the project, we use the same path for both.
-            // IF !SELF:Settings:PlaceSolutionInSameDirectory
-                // SELF:xPorter:SolutionPath := Path.GetDirectoryName(baseOutputPath)
-            // ELSE
-                // SELF:xPorter:SolutionPath := baseOutputPath
-            // ENDIF
+            SELF:xPorter := XPorterProject{ pjxFilePath, projectPath }
+            SELF:xPorter:SolutionPath := baseOutputPath
 
 			RETURN TRUE
 		PRIVATE METHOD analysisButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT

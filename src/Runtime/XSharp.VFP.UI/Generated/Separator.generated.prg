@@ -3,6 +3,6 @@
 BEGIN NAMESPACE XSharp.VFP.UI
 PARTIAL CLASS Separator IMPLEMENTS IVFPObject
 #include "VFPObject.xh"
-// Style — implemented in Separator.prg
+PROPERTY Style AS LONG AUTO
 END CLASS
-END NAMESPACE
+END NAMESPACE      

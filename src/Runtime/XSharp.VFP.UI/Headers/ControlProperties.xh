@@ -99,15 +99,11 @@ PROPERTY ZOrderSet AS INT
     END SET
 END PROPERTY
 PRIVATE PROPERTY _ZOrderSet AS INT AUTO
-// ZOrder(n) method above handles VFP call syntax oCtrl.ZOrder(0/1)
-// ZOrderSet property above provides GET/SET by index for designer use
 
 PROTECTED OVERRIDE METHOD InitLayout() AS VOID
     SUPER:InitLayout()
-    // Set the ZOrder — guard against NULL Parent during construction
-    IF SELF:Parent != NULL_OBJECT
-        SELF:Parent:Controls:SetChildIndex(SELF, ZOrderSet)
-    ENDIF
+    // Set the ZOrder
+    SELF:Parent:Controls:SetChildIndex(SELF,ZOrderSet)
 END METHOD
 
 
@@ -126,23 +122,6 @@ END METHOD
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description(".")];
 [System.ComponentModel.DefaultValue(System.Windows.Forms.AutoScaleMode.None)];
 PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
-
-// ── Move ─────────────────────────────────────────────────────────────────────
-// VFP: Move( nLeft, nTop [, nWidth [, nHeight]] )
-NEW METHOD Move( nLeft, nTop , nWidth , nHeight  ) AS VOID CLIPPER
-	IF IsNumeric( nLeft )
-		SELF:Left := (INT)(LONG) nLeft
-	ENDIF
-	IF IsNumeric( nTop )
-		SELF:Top  := (INT)(LONG) nTop
-	ENDIF
-	IF IsNumeric( nWidth )
-		SELF:Width  := (INT)(LONG) nWidth
-	ENDIF
-	IF IsNumeric( nHeight )
-		SELF:Height := (INT)(LONG) nHeight
-	ENDIF
-END METHOD
 
 // We cannot "capture" the color settings : It would ease the VFP Code port, but it would break the WinForms designer
 /*

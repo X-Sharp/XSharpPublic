@@ -7,7 +7,6 @@
 
 USING System
 USING System.Collections.Generic
-USING System.Linq
 USING System.Text
 USING System.IO
 USING System.Xml.Serialization
@@ -47,6 +46,7 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:_isLibrary := ( String.Compare( System.IO.Path.GetExtension( SELF:_fileName ), ".vcx", TRUE ) == 0 )
             //
             SELF:Entities := List<SCXVCXEntity>{}
+            SELF:_Items := List<SCXVCXItem>{}
             SELF:HasFormSet := FALSE
             RETURN
 
@@ -62,11 +62,7 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR tmpitems := List<SCXVCXItem>{}
             TRY
                 // Open the SCX (DBF) File
-                VAR alias := System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName)
-                IF !DbUseArea(TRUE, "DBFVFP", SELF:_fileName, alias, FALSE, TRUE )
-                    XPorterLogger.Instance:Error("LoadFile: DbUseArea failed to open: " + SELF:_fileName)
-                    RETURN FALSE
-                ENDIF
+                DbUseArea(TRUE, "DBFVFP", SELF:_fileName, SELF:_fileName,FALSE,TRUE )
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()
@@ -117,30 +113,26 @@ BEGIN NAMESPACE VFPXPorterLib
                                 // Tell that Parent, he has a child
                                 parent:Childs:Add( itm )
                             ELSE
-                                // No direct parent record found — the parent path contains a virtual
-                                // container (Grid Column, PageFrame Page, etc.) that has no SCX record.
-                                // Walk backwards through the path until a real ancestor is found.
-                                VAR parentPath := itm:Parent
-                                DO WHILE !String.IsNullOrEmpty( parentPath )
-                                    VAR ancestor := tmpitems:Find( { it => String.Compare(it:FullName, parentPath, TRUE) == 0 })
-                                    IF ancestor != NULL
-                                        ancestor:Childs:Add( itm )
-                                        EXIT
+                                VAR parentName := itm:Parent:ToLower()
+                                // Ok, or the parent doesn't exist, or it "might" be a Grid....
+                                IF parentName:Contains( ".grid" )
+                                    // This is certainly a Header, or a TextBox, inside a Column
+                                    // ok, extract the Grid name
+                                    VAR gridName := String.Empty
+                                    VAR startG := parentName:IndexOf( ".grid" )
+                                    VAR endG := parentName:IndexOf( ".", startG+5 ) // +5 == ".grid":Length
+                                    IF ( endG > -1 )
+                                        gridName := parentName:Substring( startG+1, endG - startG -1 )
                                     ENDIF
-                                    VAR lastDot := parentPath:LastIndexOf('.')
-                                    IF lastDot < 0
-                                        EXIT
+                                    // Do it again
+                                    parent := tmpitems:Find( { it => String.Compare(it:Name, gridName, TRUE) == 0 })
+                                    // Yes !
+                                    IF ( parent != NULL )
+                                        // Tell that Parent, he has a child
+                                        parent:Childs:Add( itm )
                                     ENDIF
-                                    parentPath := parentPath:Substring(0, lastDot)
-                                ENDDO
+                                ENDIF
                             ENDIF
-                        ENDIF
-                    NEXT
-                    // Synthesize virtual Column items for every Grid so that column children
-                    // are attached to typed synthetic items rather than dumped flat on the Grid.
-                    FOREACH VAR itm IN tmpitems
-                        IF String.Compare( itm:BaseClassName, "grid", TRUE ) == 0
-                            SELF:SynthesizeGridColumns( itm )
                         ENDIF
                     NEXT
                     // Now, we should only have "top" level Items
@@ -186,19 +178,10 @@ BEGIN NAMESPACE VFPXPorterLib
                     XPorterLogger.Instance:Information( "High Level Items : "+ _Items:Count:ToString() )
                     //
                     VAR ent := SCXVCXEntity{ SELF }
-                    LOCAL dataEnvItem AS SCXVCXItem
-                    dataEnvItem := NULL
                     FOREACH VAR itm IN SELF:_Items
                         IF ( String.Compare( itm:BaseClassName, "dataenvironment", TRUE ) == 0 )
-                            dataEnvItem := itm
+                            ent:DataEnvironment := itm
                         ELSE
-                            // Assign DataEnvironment to every form entity (simple SCX and all
-                            // FormSet sub-forms). The FormSet wrapper (baseclass "formset") is
-                            // intentionally excluded — it has no WinForms presence.
-                            IF dataEnvItem != NULL .AND. ;
-                               String.Compare( itm:BaseClassName, "form", TRUE ) == 0
-                                ent:DataEnvironment := dataEnvItem
-                            ENDIF
                             ent:Item := itm
                             ent:Analyze()
                             SELF:Entities:Add( ent )
@@ -215,98 +198,14 @@ BEGIN NAMESPACE VFPXPorterLib
             RETURN success
 
 
-        /// <summary>
-        /// For a Grid item, creates synthetic SCXVCXItem objects (one per column) and
-        /// re-parents column children from the Grid to the correct synthetic column.
-        /// Column sub-properties (Column1.Width, Column2.ControlSource…) are moved
-        /// from the Grid's PropertiesDict into each synthetic column's PropertiesDict.
-        /// </summary>
-        PRIVATE METHOD SynthesizeGridColumns( grid AS SCXVCXItem ) AS VOID
-            // Step 1: collect all column indices referenced by dotted keys in PropertiesDict
-            VAR colIndices := SortedSet<INT>{}
-            FOREACH VAR kv IN grid:PropertiesDict
-                VAR dotPos := kv:Key:IndexOf('.')
-                IF dotPos > 6 .AND. kv:Key:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
-                    LOCAL n AS INT
-                    IF Int32.TryParse( kv:Key:Substring(6, dotPos - 6), OUT n )
-                        colIndices:Add( n )
-                    ENDIF
-                ENDIF
-            NEXT
-            IF colIndices:Count == 0
-                RETURN
-            ENDIF
-            // Step 2: create one synthetic SCXVCXItem per column index
-            VAR synthCols := Dictionary<INT, SCXVCXItem>{}
-            FOREACH VAR idx IN colIndices
-                VAR col := SCXVCXItem{}
-                col:Name         := "Column" + idx:ToString()
-                col:BaseClassName := "column"
-                col:ClassName    := "column"
-                col:Parent       := grid:FullName
-                col:FileName     := grid:FileName
-                synthCols:Add( idx, col )
-            NEXT
-            // Step 3: move Column\d+.* properties from grid to the matching synthetic column
-            VAR toRemove := List<STRING>{}
-            FOREACH VAR kv IN grid:PropertiesDict
-                VAR dotPos := kv:Key:IndexOf('.')
-                IF dotPos > 6 .AND. kv:Key:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
-                    LOCAL n AS INT
-                    IF Int32.TryParse( kv:Key:Substring(6, dotPos - 6), OUT n ) .AND. synthCols:ContainsKey(n)
-                        VAR propName := kv:Key:Substring(dotPos + 1)
-                        IF !synthCols[n]:PropertiesDict:ContainsKey(propName)
-                            synthCols[n]:PropertiesDict:Add( propName, kv:Value )
-                        ENDIF
-                        toRemove:Add( kv:Key )
-                    ENDIF
-                ENDIF
-            NEXT
-            FOREACH VAR key IN toRemove
-                grid:PropertiesDict:Remove(key)
-            NEXT
-            // Step 4: re-parent column sub-controls from Grid to their synthetic column
-            VAR leftover := List<BaseItem>{}
-            FOREACH VAR baseChild IN grid:Childs
-                VAR child := (SCXVCXItem) baseChild
-                LOCAL colIdx AS INT
-                IF SELF:TryExtractColumnIndex( child:Parent, OUT colIdx ) .AND. synthCols:ContainsKey(colIdx)
-                    synthCols[colIdx]:Childs:Add( child )
-                ELSE
-                    leftover:Add( child )
-                ENDIF
-            NEXT
-            // Step 5: replace Grid.Childs with synthetic columns (sorted) + any leftovers
-            grid:Childs := List<BaseItem>{}
-            FOREACH VAR idx IN colIndices
-                grid:Childs:Add( synthCols[idx] )
-            NEXT
-            FOREACH VAR item IN leftover
-                grid:Childs:Add( item )
-            NEXT
-        END METHOD
-
-        // Returns TRUE and sets colIndex when parentPath ends in ".Column<n>" or is "Column<n>".
-        PRIVATE METHOD TryExtractColumnIndex( parentPath AS STRING, colIndex OUT INT ) AS LOGIC
-            colIndex := 0
-            IF String.IsNullOrEmpty(parentPath)
-                RETURN FALSE
-            ENDIF
-            VAR lastDot := parentPath:LastIndexOf('.')
-            VAR lastSeg := IIF( lastDot >= 0, parentPath:Substring(lastDot + 1), parentPath )
-            IF lastSeg:Length > 6 .AND. lastSeg:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
-                RETURN Int32.TryParse( lastSeg:Substring(6), OUT colIndex )
-            ENDIF
-            RETURN FALSE
-        END METHOD
-
         PROTECTED METHOD IgnoreItemType( typeOfItem AS STRING ) AS LOGIC
             //
             IF String.IsNullOrEmpty( typeOfItem )
                 RETURN TRUE
             ENDIF
             //
-            RETURN SCXVCXFile.ignoreTypeList:Any( { s => String.Compare( s, typeOfItem, TRUE ) == 0 } )
+            LOCAL pos := Array.IndexOf( SCXVCXFile.ignoreTypeList, typeOfItem ) AS INT
+            RETURN (pos >=0 )
 
         /// <summary>
         /// Backup the SCX Items : Create an XML File with Items info, and export the associated Code

@@ -3,30 +3,30 @@
 BEGIN NAMESPACE XSharp.VFP.UI
 PARTIAL CLASS ToolBar IMPLEMENTS IVFPObject, IVFPOwner
 #include "VFPObject.xh"
-// Suppress the generic AddObject from VFPContainer.xh — ToolBar.prg provides its own override
-#define NO_VFPCONTAINER_ADDOBJECT
 	#include "VFPContainer.xh"
-	#include "VFPPropertiesDynamic.xh"
-// Wire standard VFP events: Move(), SetFocus(), Valid, When, GotFocus, etc.
-// ControlProperties.xh included in ToolBar.prg (requires USING System.ComponentModel)
 
-// hWnd, Movable, Sizable, KeyPreview, LockScreen, Release — implemented in ToolBar.prg
-PROPERTY CONTROLBOX       AS USUAL AUTO
-PROPERTY DataSession       AS LONG  AUTO
-PROPERTY DataSessionID     AS USUAL AUTO
-PROPERTY HelpContextID     AS LONG  AUTO
-PROPERTY MouseIcon         AS STRING AUTO
+PROPERTY CONTROLBOX AS USUAL AUTO
+
+PROPERTY DataSession AS LONG AUTO
+PROPERTY DataSessionID AS USUAL AUTO
+PROPERTY HelpContextID AS LONG AUTO
+PROPERTY hWnd  AS USUAL AUTO
+PROPERTY KeyPreview AS LOGIC AUTO
+PROPERTY LockScreen AS LOGIC AUTO
+PROPERTY MouseIcon AS STRING AUTO
+PROPERTY Movable AS USUAL AUTO
 METHOD OLEDrag AS USUAL CLIPPER
 RETURN NIL
-PROPERTY OLEDragMode       AS LONG  AUTO
-PROPERTY OLEDragPicture    AS STRING AUTO
-PROPERTY OLEDropEffects    AS LONG  AUTO
-PROPERTY OLEDropHasData    AS LONG  AUTO
-PROPERTY OLEDropMode       AS LONG  AUTO
-PROPERTY ScaleMode         AS USUAL AUTO
-PROPERTY Themes            AS LOGIC AUTO
-PROPERTY WhatsThisHelpID   AS LONG  AUTO
-PROPERTY FontOutline       AS LOGIC AUTO
-PROPERTY FontShadow        AS LOGIC AUTO
+PROPERTY OLEDragMode AS LONG AUTO
+PROPERTY OLEDragPicture AS STRING AUTO
+PROPERTY OLEDropEffects AS LONG AUTO
+PROPERTY OLEDropHasData AS LONG AUTO
+PROPERTY OLEDropMode AS LONG AUTO
+METHOD Release AS USUAL CLIPPER
+RETURN NIL
+PROPERTY ScaleMode AS USUAL AUTO
+PROPERTY Sizable AS USUAL AUTO
+PROPERTY Themes as LOGIC AUTO
+PROPERTY WhatsThisHelpID AS LONG AUTO
 END CLASS
-END NAMESPACE
+END NAMESPACE      

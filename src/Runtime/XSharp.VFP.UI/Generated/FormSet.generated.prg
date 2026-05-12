@@ -2,10 +2,7 @@
 // Class FormSet  BaseClass   Formset  Class  Formset
 BEGIN NAMESPACE XSharp.VFP.UI
 PARTIAL CLASS FormSet IMPLEMENTS IVFPObject
-#define VFP_CONTROLCOUNT_OVERRIDE
-#define NOSET
 #include "VFPContainer.xh"
-#include "VFPPropertiesDynamic.xh"
 PROPERTY AutoRelease AS LOGIC AUTO
 PROPERTY BufferMode AS LONG AUTO
 PROPERTY DataSession AS USUAL AUTO
@@ -20,7 +17,8 @@ PROPERTY ReadMouse  AS USUAL AUTO
 PROPERTY ReadSave AS USUAL AUTO
 [Obsolete];
 PROPERTY ReadTimeout  AS USUAL AUTO
-// Release implemented in FormSet.prg
+METHOD Release AS USUAL CLIPPER
+RETURN NIL
 METHOD SaveAs(cFileName, oDataEnvironment) AS USUAL CLIPPER
 
 RETURN NIL

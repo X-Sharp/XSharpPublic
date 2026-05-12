@@ -4,11 +4,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Page  IMPLEMENTS IVFPControl, IVFPOwner, IVFPGraphics
 #include "VFPControl.xh"
 		#include "VFPContainer.xh"
-		#include "VFPPropertiesDynamic.xh"
 
-		// PageOrder, Picture, BackStyle, Activate/Deactivate — implemented in Page.prg
-		PROPERTY FontOutline AS LOGIC AUTO
-		PROPERTY FontShadow  AS LOGIC AUTO
+		PROPERTY PageOrder AS USUAL AUTO
+		PROPERTY Picture AS STRING AUTO
+		METHOD SetFocus() AS VOID STRICT
+			//SELF:Focus()
 
 	END CLASS
-	END NAMESPACE
+	END NAMESPACE      

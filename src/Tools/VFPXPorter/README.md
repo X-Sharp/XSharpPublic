@@ -23,10 +23,7 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
 5. Added User-Defined elements in export : Fields, Field-Arrays, Methods
     - Help/Documentation is also added at export time
 6. Export Menu definitions
-    - Menu definition (MNX) is exported as a class inheriting `XSharp.VFP.UI.Menu`
-    - Pads, Popups and Bars are created via `AddPad` / `AddPopup` / `AddBar` calls in `Init()`
-    - Each bar action is emitted as a `METHOD` with converted handler code (statement conversion + THISFORM/THISFORMSET substitution)
-    - A companion `.MPR` class is generated to keep the `DO <menu>.MPR` convention
+    - Menu Event are exported in Menu code (Needs to be tested, I'm looking for samples here)
 7. First Report reading and Backup
     - No real export by now (Maybe export to ReportPro ??)
 
@@ -37,17 +34,9 @@ What about Reports ? We may/will have to consider another tool; or introduce her
 
 During 1. step, the Form definition is exported in ~~JSON~~ XML format and source code file (.PRG) is created
 
-Don't forget to have a deep look at the **[ExportAdvices.md](ExportAdvices.md)** document, as some modification cannot be done.
+Don't forget to have a deep look at the **ExportAdvices.md** document, as some modification cannot be done.
 
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [DocumentationAndRules.md](DocumentationAndRules.md) | Overview of all rule files, template folders and placeholder syntax |
-| [RulesForProperties.md](RulesForProperties.md) | Full reference for `PropRules.json` — all property conversion patterns with examples |
-| [RulesForEvents.md](RulesForEvents.md) | Full reference for `EventRules.json` — all event mapping patterns, handler naming, current rules inventory |
-| [DocForTemplates.md](DocForTemplates.md) | Full reference for all template files and their placeholders (Designer, Form, SingleFile, Menu, Others, Tools) |
-| [Source/VFPXPorterCmd/README.md](Source/VFPXPorterCmd/README.md) | CLI tool usage, all command-line switches, and deployment requirements |
+If you want to change the way the Application is doing some transporting, don't forget to have a look at **DocumentationAndRules.md**
 
 
 #### Todo

@@ -26,20 +26,14 @@ BEGIN NAMESPACE VFPXPorterLib
     CLASS XPorterProject
 
 
-        /// <summary>
-        /// File path to the .pjx file to process
-        /// </summary>
-        PRIVATE pjxFilePath AS STRING
 
-        /// <summary>
-        /// Output "Root" Folder where the generated files will be stored
-        /// </summary>
+        PRIVATE pjxFilePath AS STRING
         PRIVATE outputPath AS STRING
 
         PROPERTY Project AS VFPProject AUTO
 
         /// <summary>
-        /// Folder where all "injected" files are coming from (like the StartBlock, or any helper Tools)
+        /// Folder where all "injected" files are
         /// </summary>
         PROPERTY ToolsFolder AS STRING AUTO
 
@@ -63,10 +57,13 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY CurrentFileName AS STRING AUTO GET PRIVATE SET
 
-        CONSTRUCTOR( projectFullFilePath AS STRING, destinationRootFolder AS STRING )
+        PROPERTY SolutionPath AS STRING AUTO
+
+
+        CONSTRUCTOR( filePath AS STRING, destPath AS STRING )
             //
-            SELF:pjxFilePath := projectFullFilePath
-            SELF:outputPath := destinationRootFolder
+            SELF:pjxFilePath := filePath
+            SELF:outputPath := destPath
             //
             SELF:ToolsFolder := XPorterSettings.ToolsFolder
             SELF:StartBlockFile := XPorterSettings.StartFile
@@ -108,11 +105,7 @@ BEGIN NAMESPACE VFPXPorterLib
             //
             TRY
                 // Open the PJX (DBF) File
-                VAR alias := System.IO.Path.GetFileNameWithoutExtension(SELF:pjxFilePath)
-                IF !DbUseArea(TRUE, "DBFVFP", SELF:pjxFilePath, alias, FALSE, TRUE )
-                    XPorterLogger.Instance:Error("LoadProject: DbUseArea failed to open: " + SELF:pjxFilePath)
-                    RETURN FALSE
-                ENDIF
+                DbUseArea(TRUE, "DBFVFP", SELF:pjxFilePath, SELF:pjxFilePath,FALSE,TRUE )
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()
@@ -130,8 +123,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDDO
             CATCH ex AS Exception
                 success := FALSE
-                XPorterLogger.Instance:Error("LoadProject: Failed to process PJX file: " + SELF:pjxFilePath)
-                XPorterLogger.Instance:Error("Exception: " + ex:Message)
+                XPorterLogger.Instance:Error( "Use PJX File" )
+                XPorterLogger.Instance:Error( ex:Message )
             FINALLY
                 DbCloseArea()
             END TRY
@@ -143,39 +136,39 @@ BEGIN NAMESPACE VFPXPorterLib
                 // Build some Result Info
                 XPorterLogger.Instance:Information( "Project : " + SELF:Project:Name )
                 XPorterLogger.Instance:Information( "HomeDir : " + SELF:Project:HomeDir )
-                XPorterLogger.Instance:Information( "Forms : " + SELF:Project:Forms:Count:ToString() )
+                XPorterLogger.Instance:Information( "Forms : " )
                 FOREACH form AS ProjectItem IN SELF:Project:Forms
-                    XPorterLogger.Instance:Verbose( "  - " + form:Name )
+                    XPorterLogger.Instance:Information( form:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Libraries/Dependencies : " + SELF:Project:Libraries:Count:ToString() )
+                XPorterLogger.Instance:Information( "Libraries/Dependencies : " )
                 FOREACH lib AS ProjectItem IN SELF:Project:Libraries
-                    XPorterLogger.Instance:Verbose( "  - " + lib:Name )
+                    XPorterLogger.Instance:Information( lib:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Menus : " + SELF:Project:Menus:Count:ToString() )
+                XPorterLogger.Instance:Information( "Menus : " )
                 FOREACH lib AS ProjectItem IN SELF:Project:Menus
-                    XPorterLogger.Instance:Verbose( "  - " + lib:Name )
+                    XPorterLogger.Instance:Information( lib:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Reports : " + SELF:Project:Reports:Count:ToString() )
+                XPorterLogger.Instance:Information( "Reports : " )
                 FOREACH report AS ProjectItem IN SELF:Project:Reports
-                    XPorterLogger.Instance:Verbose( "  - " + report:Name )
+                    XPorterLogger.Instance:Information( report:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "Programs : " + SELF:Project:Programs:Count:ToString() )
+                XPorterLogger.Instance:Information( "Programs : " )
                 FOREACH prg AS ProjectItem IN SELF:Project:Programs
-                    XPorterLogger.Instance:Verbose( "  - " + prg:Name )
+                    XPorterLogger.Instance:Information( prg:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "DataBases : " + SELF:Project:Databases:Count:ToString() )
+                XPorterLogger.Instance:Information( "DataBases : " )
                 FOREACH dbc AS ProjectItem IN SELF:Project:Databases
-                    XPorterLogger.Instance:Verbose( "  - " + dbc:Name )
+                    XPorterLogger.Instance:Information( dbc:Name )
                 NEXT
                 //
-                XPorterLogger.Instance:Information( "FreeTables : " + SELF:Project:FreeTables:Count:ToString() )
+                XPorterLogger.Instance:Information( "FreeTables : " )
                 FOREACH dbf AS ProjectItem IN SELF:Project:FreeTables
-                    XPorterLogger.Instance:Verbose( "  - " + dbf:Name )
+                    XPorterLogger.Instance:Information( dbf:Name )
                 NEXT
             ENDIF
             RETURN success
@@ -297,10 +290,9 @@ BEGIN NAMESPACE VFPXPorterLib
                             generatedNamespaces:Add( xPorter:NamespaceDefinition )
                         ENDIF
                         SELF:GeneratedFiles:AddRange( xPorter:GeneratedFiles )
-                        ELSE
-                            XPorterLogger.Instance:Error("ExportProject: Failed to export form: " + form:Name)
-                            XPorterLogger.Instance:Error("Details: " + xPorter:ResultText)
-                        ENDIF
+                    ELSE
+                        XPorterLogger.Instance:Error( form:Name + " : Processing raised an Error." )
+                    ENDIF
                 NEXT
                 IF !exitExport
                     // Then the libraries
@@ -332,8 +324,7 @@ BEGIN NAMESPACE VFPXPorterLib
                             ENDIF
                             SELF:GeneratedLibFiles:AddRange( xPorter:GeneratedFiles )
                         ELSE
-                            XPorterLogger.Instance:Error("ExportProject: Failed to export library: " + libName)
-                            XPorterLogger.Instance:Error("Details: " + xPorter:ResultText)
+                            XPorterLogger.Instance:Error( libName + " : Processing raised an Error." )
                         ENDIF
                     NEXT
                     IF !exitExport
@@ -377,12 +368,9 @@ BEGIN NAMESPACE VFPXPorterLib
                                     LOCAL sttmnts AS List<STRING>
                                     // Todo Use a Extension Method, in order to centralize
                                     sttmnts := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.StatementsFile) )
-                                    LOCAL colorProps AS List<STRING>
-                                    colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
                                     // Now, copy
-                                    VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast }
+                                    VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast }
                                     converter:Statements := sttmnts
-                                    converter:ColorProperties := colorProps
                                     converter:ProcessProcedure( File.ReadAllText(orgFile), Path.GetFileNameWithoutExtension( orgFile ) )
                                     File.WriteAllText( destFile, converter:ToString() )
                                     //File.Copy(orgFile, destFile, TRUE )
@@ -457,9 +445,8 @@ BEGIN NAMESPACE VFPXPorterLib
                                         SELF:GeneratedFiles:Add( GeneratedFile{destFile, FileAction.CopyAlways })
                                     CATCH e AS Exception
                                         // Log any trouble
-                                        XPorterLogger.Instance:Error("ExportProject: Failed to copy file: " + orgFile)
-                                        XPorterLogger.Instance:Error("Destination: " + destFile)
-                                        XPorterLogger.Instance:Error("Exception: " + e:Message)
+                                        XPorterLogger.Instance:Error( "Copy Other Files" )
+                                        XPorterLogger.Instance:Error( e.Message )
                                     END TRY
                                 ELSE
                                     XPorterLogger.Instance:Information( "Unknown file " + orgFile )
@@ -486,7 +473,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 File.Copy(toolFile, destFile, TRUE )
                                 IF toolFile:EndsWith( ".xh" )
                                     IF !stdDef:ToLower():EndsWith( "vfpxporter.xh" )
-                                        stdDef := "$(projectdir)"+GetRelativePath(SELF:outputPath,destFile)
+                                        stdDef := "$(Solutiondir)"+GetRelativePath(SELF:outputPath,destFile)
                                         vfpxporterPath := destFile
                                     ENDIF
                                 ENDIF
@@ -555,10 +542,8 @@ BEGIN NAMESPACE VFPXPorterLib
                                     start:AppendLine( "{} )" )
                                 ENDIF
                                 //
-                                VAR projectReplacements := Dictionary<STRING, STRING>{}
-                                projectReplacements["startcode"] := start:ToString()
-                                VAR resultCode := TemplateHelper.ReplaceAndValidate(code:ToString(), "StartBlock", projectReplacements)
-                                dest:Write( resultCode )
+                                code := code:Replace( "<@startcode@>", start:ToString())
+                                dest:Write( code:ToString() )
                                 dest:Close()
                                 //
                                 SELF:GeneratedFiles:Add( GeneratedFile{destFile})
@@ -570,8 +555,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
             CATCH e AS Exception
                 //
-                XPorterLogger.Instance:Error("ExportProject: Failed to complete project export")
-                XPorterLogger.Instance:Error("Exception: " + e.Message)
+                XPorterLogger.Instance:Error("Export Project")
+                XPorterLogger.Instance:Error( e.Message)
                 THROW e
             FINALLY
                 XPorterLogger.CloseLogger()
@@ -628,20 +613,11 @@ BEGIN NAMESPACE VFPXPorterLib
                 VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj")
                 // Save the MSBuild file for the Libraries
                 xsLibs:Save( libProjPath, stdDef )
-                // Per default the Solution is one level Up to the OutputPath, so we need to set the relative path to the Libs Project
-                LOCAL relativeLibPath AS STRING
-                IF SELF:Settings:PlaceSolutionInSameDirectory
-                    relativeLibPath := "ClassLibraries.xsproj"
-                ELSE
-                    relativeLibPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:outputPath ), "ClassLibraries.xsproj")
-                ENDIF
-                // Set for Solution
-                xsLibs:RelativePath := relativeLibPath
             ENDIF
 
             // Now the Main Project
-            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )     // The .pjx file
-            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj")  // the new xsproj file
+            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )
+            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj")
 
             // The imported Project : We will add "App" at the end of the ProjectName to avoid conflicts in the Name Property
             VAR xsProj := VSProject{ projectName }
@@ -672,21 +648,28 @@ BEGIN NAMESPACE VFPXPorterLib
             // Save the MSBuild file for the "main" Project
             xsProj:Save( projectPath, stdDef )
 
+            LOCAL relativeProjPath AS STRING
+            IF SELF:Settings:PlaceSolutionInSameDirectory
+                relativeProjPath := projectName + ".xsproj"
+            ELSE
+                relativeProjPath := Path.Combine(projectName, projectName + ".xsproj")
+            ENDIF
+
             // Now the Solution
             VAR xsSolution := VSSolution{}
 
             LOCAL solutionBasePath AS STRING
-            IF SELF:Settings:PlaceSolutionInSameDirectory
-                solutionBasePath := SELF:outputPath
+            IF String.IsNullOrWhiteSpace(SELF:SolutionPath)
+                solutionBasePath := String.Empty
             ELSE
-                solutionBasePath := Path.GetDirectoryName( SELF:outputPath )  // One level up to the OutputPath
+                solutionBasePath := SELF:SolutionPath:TrimEnd(Path.DirectorySeparatorChar)
             ENDIF
 
             LOCAL solutionName AS STRING
             IF !String.IsNullOrWhiteSpace(SELF:Settings:SolutionName)
                 solutionName := SELF:Settings:SolutionName
             ELSE
-                solutionName := projectName//Path.GetFileName(solutionBasePath)
+                solutionName := Path.GetFileName(solutionBasePath)
             ENDIF
 
             VAR solutionFile := Path.Combine(solutionBasePath, solutionName + ".sln")
@@ -700,13 +683,7 @@ BEGIN NAMESPACE VFPXPorterLib
             IF existing != NULL
                 xsSolution:Projects:Remove(existing)
             ENDIF
-
-            LOCAL relativeProjPath AS STRING
-            IF SELF:Settings:PlaceSolutionInSameDirectory
-                relativeProjPath := projectName + ".xsproj"
-            ELSE
-                relativeProjPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:outputPath ), projectName + ".xsproj")
-            ENDIF
+            
             xsProj:RelativePath := relativeProjPath
             xsSolution:Projects:Add( xsProj )
 

@@ -12,175 +12,46 @@
     "AutoScaleMode": "System.Windows.Forms.AutoScaleMode.None",
     "Picture": "??<@Picture@>??",
     "Icon": "System.Drawing.Icon{??<@Icon@>??}",
+    "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
     "ShowInTaskBar": "ShowInTaskbar",
-    "ShowWindow": "ShowWindowState",
-    "ScaleMode": "",
-    "ColorSource": "",
-    "BorderStyle": "BorderStyle",
-    "MaxButton": "MaxButton",
-    "MinButton": "MinButton",
-    "Closable": "Closable",
-    "AutoCenter": "AutoCenter",
-    "WindowType": "WindowType",
-    "KeyPreview": "KeyPreview",
-    "MDIForm": "MDIForm",
-    "AlwaysOnTop": "AlwaysOnTop",
-    "Movable": "Movable",
-    "TitleBar": "",
-    "FontName": "??<@FontName@>??",
-    "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>",
-    "FontItalic": "<@FontItalic@>",
-    "FontOutline": "",
-    "FontShadow": ""
+    "ShowWindow": "ShowWindowState"
   },
 
   "CommandButton": {
+    "Margin": "System.Windows.Forms.Padding{0,0,0,0}"
+  },
+
+  "OptionGroup": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
-    "Caption": "Text",
-    "Style": "Style",
-    "WordWrap": "WordWrap",
-    "Cancel": "Cancel",
-    "Default": "Default",
-    "PicturePosition": "PicturePosition",
-    "DisabledPicture": "??<@DisabledPicture@>??",
-    "DownPicture": "??<@DownPicture@>??",
-    "BackStyle": "BackStyle",
-    "FontName": "??<@FontName@>??",
-    "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>",
-    "FontItalic": "<@FontItalic@>",
-    "FontUnderline": "<@FontUnderline@>",
-    "FontStrikeThru": "<@FontStrikeThru@>",
-    "FontOutline": "",
-    "FontShadow": ""
+    "^Option99": "Buttons(99)"
   },
 
   "TextBox": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "Alignment": "Alignment",
-    "Value": "!Value",
-    "Style": "Style",
-    "FontOutline": "",
-    "FontShadow": ""
+    "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)",
+    "Value": "!Value"
   },
 
   "EditBox": {
-    "Scrollbars": "ScrollBars",
-    "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "Alignment": "Alignment",
-    "Style": "Style",
-    "ReadOnly": "ReadOnly",
-    "FontOutline": "",
-    "FontShadow": ""
+    "Scrollbars": "VFPScrollbars"
   },
 
   "Label": {
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
-    "Caption": "Text",
-    "Alignment": "Alignment",
-    "Style": "Style",
-    "WordWrap": "WordWrap",
-    "FontName": "??<@FontName@>??",
-    "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>",
-    "FontItalic": "<@FontItalic@>",
-    "FontUnderline": "<@FontUnderline@>",
-    "FontStrikeThru": "<@FontStrikeThru@>",
-    "FontOutline": "",
-    "FontShadow": ""
-  },
-
-  "Image": {
-    "Picture": "??<@Picture@>??",
-    "Stretch": "Stretch",
-    "BorderStyle": "BorderStyle",
-    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
-    "BackStyle": "",
-    "FontOutline": "",
-    "FontShadow": ""
-  },
-
-  "Spinner": {
-    "Value": "!Value",
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "SpinnerHighValue": "SpinnerHighValue",
-    "SpinnerLowValue": "SpinnerLowValue",
-    "KeyboardHighValue": "KeyboardHighValue",
-    "KeyboardLowValue": "KeyboardLowValue",
-    "Alignment": "Alignment",
-    "Format": "Format",
-    "InputMask": "InputMask",
-    "ReadOnly": "ReadOnly",
-    "BackStyle": "",
-    "FontOutline": "",
-    "FontShadow": ""
-  },
-
-  "Timer": {
-    "Interval": "Interval",
-    "Enabled": "Enabled"
-  },
-
-  "CommandGroup": {
-    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "^Button99": "Buttons(99)",
-    "ButtonCount": "ButtonCount",
-    "Value": "!Value",
-    "BackStyle": "BackStyle",
-    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
-    "MemberClass": "",
-    "MemberClassLibrary": "",
-    "FontName": "??<@FontName@>??",
-    "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>",
-    "FontItalic": "<@FontItalic@>",
-    "FontUnderline": "<@FontUnderline@>",
-    "FontStrikeThru": "<@FontStrikeThru@>",
-    "FontOutline": "",
-    "FontShadow": ""
+    "WordWrap": "",
+    "BackStyle": ""
   },
 
   "Shape": {
-    "Style": "Style",
-    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
-    "BorderWidth": "BorderWidth",
-    "BorderStyle": "BorderStyle",
-    "FillColor": "VFPTools.ColorFromVFP(<@FillColor@>)",
-    "FillStyle": "FillStyle",
-    "Curvature": "Curvature",
-    "FontOutline": "",
-    "FontShadow": ""
+    "FillColor": ""
   },
 
   "Line": {
-    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
-    "BorderWidth": "BorderWidth",
-    "BorderStyle": "BorderStyle",
-    "LineSlant": "LineSlant",
-    "FontOutline": "",
-    "FontShadow": ""
-  },
-
-  "Container": {
-    "BackStyle": "BackStyle",
-    "BorderStyle": "BorderStyle",
-    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
-    "Picture": "??<@Picture@>??",
-    "FontName": "??<@FontName@>??",
-    "FontSize": "<@FontSize@>",
-    "FontBold": "<@FontBold@>",
-    "FontItalic": "<@FontItalic@>",
-    "FontUnderline": "<@FontUnderline@>",
-    "FontStrikeThru": "<@FontStrikeThru@>",
-    "FontOutline": "",
-    "FontShadow": ""
+    "Size": "System.Drawing.Size{<@Width@>, 2}"
   },
 
   "DataEnvironment": {
-    "InitialSelectedAlias": "InitialSelectedAlias",
     "Top": "",
     "Left": "",
     "Width": "",
@@ -188,262 +59,63 @@
   },
 
   "Cursor": {
-    "Alias": "Alias",
     "CursorSource": "??<@CursorSource@>??",
-    "Database": "DataBase",
-    "Exclusive": "Exclusive",
-    "Filter": "Filter",
-    "Order": "Order",
-    "ReadOnly": "ReadOnly",
+    "Database": "??<@Database@>??",
     "Location": "",
     "Width": "",
     "Height": "",
     "ClientSize": ""
   },
 
-  "Relation": {
-    "ChildAlias": "ChildAlias",
-    "ChildOrder": "ChildOrder",
-    "RelationalExpr": "RelationalExpr",
-    "OneToMany": "OneToMany",
-    "ParentAlias": "ParentAlias",
+  "Timer": {
+    "Location": "",
+    "Name": "",
+    "Size": ""
+  },
+
+  "Container": {
+  },
+
+  "Panel": {
+    "MouseIcon": "??<@MouseIcon@>??"
+  },
+
+  "Image": {
+    "SizeMode": "VFPTools.ImageStrechConvert(<@Stretch@>)",
+    "Stretch": ""
+  },
+
+  "Grid": {
+    "^Column99": "Column(99)",
+    "Scrollbars": "VFPScrollbars"
+  },
+
+  "Common": {
+    "Caption": "Text",
+    "Comment": "",
+    "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",
+    "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
     "Top": "",
     "Left": "",
     "Width": "",
-    "Height": ""
-  },
-
-    "Panel": {
-    },
-
-    "CheckBox": {
-     "Caption": "Text",
-     "Value": "!Value",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "Style": "Style",
-     "Alignment": "Alignment",
-     "WordWrap": "WordWrap",
-     "Centered": "Centered",
-     "Picture": "Picture",
-     "DisabledPicture": "DisabledPicture",
-     "DownPicture": "DownPicture",
-     "PicturePosition": "PicturePosition",
-     "FontOutline": "",
-     "FontShadow": ""
-   },
-
-   "OptionButton": {
-     "Caption": "Text",
-     "Value": "!Value",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "Style": "Style",
-     "Alignment": "Alignment",
-     "WordWrap": "WordWrap",
-     "Picture": "Picture",
-     "DisabledPicture": "DisabledPicture",
-     "DownPicture": "DownPicture",
-     "PicturePosition": "PicturePosition",
-     "FontOutline": "",
-     "FontShadow": ""
-   },
-
-   "OptionGroup": {
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "^Button99": "Buttons(99)",
-     "ButtonCount": "ButtonCount",
-     "Value": "!Value",
-     "BackStyle": "BackStyle",
-     "BorderColor": "BorderColor",
-     "MemberClass": "",
-     "MemberClassLibrary": "",
-     "FontOutline": "",
-     "FontShadow": ""
-   },
-
-   "ListBox": {
-     "Value": "!Value",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "RowSource": "RowSource",
-     "RowSourceType": "RowSourceType",
-     "MultiSelect": "MultiSelect",
-     "Sorted": "Sorted",
-     "Style": "Style",
-     "FontOutline": "",
-     "FontShadow": ""
-   },
-
-   "ComboBox": {
-     "Value": "!Value",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "RowSource": "RowSource",
-     "RowSourceType": "RowSourceType",
-     "Style": "Style",
-     "FontOutline": "",
-     "FontShadow": ""
-   },
-
-     "Grid": {
-       "^Column99": "Column(99)",
-       "Scrollbars": "VFPScrollbars",
-       "FrozenColumnCount": "::FreezeColumns(<@FrozenColumnCount@>)",
-       "AlternatingRowColor": "AlternatingRowColor",
-       "HighlightBackColor": "HighlightBackColor",
-       "HighlightForeColor": "HighlightForeColor",
-       "GridLines": "GridLines",
-       "GridLineColor": "GridLineColor",
-       "GridLineWidth": "GridLineWidth",
-       "RowHeight": "RowHeight",
-       "HeaderHeight": "HeaderHeight",
-       "NullDisplay": "NullDisplay",
-       "ShowDeleted": "ShowDeleted",
-       "ColumnHeadersVisible": "ColumnHeadersVisible",
-       "RowHeadersVisible": "RowHeadersVisible",
-       "AllowAddNew": "AllowAddNew",
-       "AllowDelete": "AllowDelete",
-       "AllowUpdate": "AllowUpdate",
-       "RecordMark": "RecordMark",
-       "DeleteMark": "DeleteMark",
-       "AllowHeaderSizing": "AllowHeaderSizing",
-       "AllowRowSizing": "AllowRowSizing",
-       "HighlightStyle": "HighlightStyle",
-       "AllowAutoColumnFit": "AllowAutoColumnFit",
-       "Themes": "Themes",
-       "SplitBar": "",
-       "Panel": "",
-       "HScrollSmallChange": "",
-       "InputDateFormat": "",
-       "ShowTips": ""
-      },
-
-     "Column": {
-       "ControlSource": "ControlSource",
-       "Alignment":     "Alignment",
-       "ColumnOrder":   "ColumnOrder",
-       "Sparse":        "Sparse",
-       "CurrentControl":"",
-       "Resizable":     "Resizable",
-       "Format":        "Format",
-       "InputMask":     "InputMask",
-       "TextAlign":     "",
-       "Width":         "Width",
-       "SelectOnEntry": "SelectOnEntry",
-       "Caption":       "",
-       "Location":      "",
-       "Size":          "",
-       "Anchor":        "",
-       "Image":         "",
-       "FontOutline":   "",
-       "FontShadow":    "",
-       "DragMode":      "",
-       "DragIcon":      "",
-       "MouseIcon":     "",
-       "OLEDragPicture":"",
-       "OLEDragMode":   "",
-       "OLEDropEffects":"",
-       "OLEDropHasData":"",
-       "OLEDropMode":   ""
-      },
-
-     "PageFrame": {
-       "PageCount": "PageCount",
-       "ActivePage": "ActivePage",
-       "TabOrientation": "TabOrientation",
-       "TabStyle": "TabStyle",
-       "TabStretch": "TabStretch",
-       "Tabs": "Tabs",
-       "Caption": "",
-       "^Page99": "Pages(99)",
-       "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
-       "FontName": "??<@FontName@>??",
-       "FontSize": "<@FontSize@>",
-       "FontBold": "<@FontBold@>",
-       "FontItalic": "<@FontItalic@>",
-       "FontUnderline": "<@FontUnderline@>",
-       "FontStrikeThru": "<@FontStrikeThru@>",
-       "FontOutline": "",
-       "FontShadow": ""
-      },
-
-     "Page": {
-       "Caption": "Text",
-       "PageOrder": "PageOrder",
-       "BackStyle": "BackStyle",
-       "Picture": "??<@Picture@>??",
-       "FontName": "??<@FontName@>??",
-       "FontSize": "<@FontSize@>",
-       "FontBold": "<@FontBold@>",
-       "FontItalic": "<@FontItalic@>",
-       "FontUnderline": "<@FontUnderline@>",
-       "FontStrikeThru": "<@FontStrikeThru@>",
-       "FontOutline": "",
-       "FontShadow": ""
-      },
-
-     "header": {
-       "HeaderColor":     "",
-       "FontOutline":     "",
-       "FontShadow":      "",
-       "SpecialEffect":   "",
-       "Enabled":         "",
-       "DragMode":        "",
-       "MousePointer":    "",
-       "OLEDragMode":     "",
-       "OLEDropEffects":  "",
-       "OLEDropHasData":  "",
-       "OLEDropMode":     "",
-       "DragIcon":        "",
-       "OLEDragPicture":  "",
-       "MouseIcon":       ""
-      },
-
-    "FormSet": {
-      "Caption": "",
-      "Location": "",
-      "Size": "",
-      "ForeColor": "",
-      "BackColor": "",
-      "WindowType": "WindowType"
-    },
-
-    "ToolBar": {
-      "DockPosition": "DockPosition",
-      "Movable": "Movable",
-      "FontName": "??<@FontName@>??",
-      "FontSize": "<@FontSize@>",
-      "FontBold": "<@FontBold@>",
-      "FontItalic": "<@FontItalic@>",
-      "FontUnderline": "<@FontUnderline@>",
-      "FontStrikeThru": "<@FontStrikeThru@>",
-      "FontOutline": "",
-      "FontShadow": ""
-    },
-
-    "ContextMenu": {
-      "Location": "",
-      "Size": "",
-      "FontOutline": "",
-      "FontShadow": ""
-    },
-
-    "Common": {
-     "Caption": "Text",
-     "Comment": "",
-     "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",
-     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
-     "Top": "",
-     "Left": "",
-     "Width": "",
-     "Height": "",
-     "ForeColor": "VFPTools.ColorFromVFP(<@ForeColor@>)",
-     "BackColor": "VFPTools.ColorFromVFP(<@BackColor@>)",
-     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-     "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
-     "Image": "VFPTools.ImageFromFile(??<@Picture@>??)",
-     "Picture": "??<@Picture@>??",
-     "OLEDragPicture": "??<@OLEDragPicture@>??",
-     "DragIcon": "??<@DragIcon@>??",
-     "MouseIcon": "??<@MouseIcon@>??",
-     "FontName": "??<@FontName@>??",
-     "TextAlign": "VFPTools.AlignmentConvert(<@Alignment@>)"
-   }
+    "Height": "",
+    "ForeColor": "System.Drawing.Color.FromArgb(<@ForeColor@>)",
+    "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
+    "SelectedForeColor": "System.Drawing.Color.FromArgb(<@SelectedForeColor@>)",
+    "SelectedBackColor": "System.Drawing.Color.FromArgb(<@SelectedBackColor@>)",
+    "DisabledForeColor": "",
+    "DisabledBackColor": "",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
+    "Image": "VFPTools.ImageFromFile(??<@Picture@>??)",
+    "Picture": "??<@Picture@>??",
+    "OLEDragPicture": "??<@OLEDragPicture@>??",
+    "DragIcon": "??<@DragIcon@>??",
+    "MouseIcon": "??<@MouseIcon@>??",
+    "BorderColor": "",
+    "FontName": "??<@FontName@>??",
+    "TextAlign": "VFPTools.AlignmentConvert(<@Alignment@>)",
+    "Alignment": "",
+    "ToolTipText": ""
+  }
 }

@@ -9,7 +9,6 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Windows.Forms
 USING System.ComponentModel
-USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
@@ -30,8 +29,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROPERTY Cursors AS List<DbCursor> AUTO
 
-		PROPERTY Relations AS List<Relation> AUTO
-
 		PROPERTY SELF[ cursorName AS STRING ] AS DbCursor
 			GET
 				FOREACH cursor AS DbCursor IN Cursors
@@ -44,8 +41,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		CONSTRUCTOR( )
-			SELF:Cursors   := List<DbCursor>{}
-			SELF:Relations := List<Relation>{}
+			SELF:Cursors := List<DbCursor>{}
 			SELF:AutoCloseTables := TRUE
 			SELF:AutoOpenTables := TRUE
 			RETURN
@@ -56,22 +52,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				FOREACH cursor AS DbCursor IN Cursors
 					cursor:Open()
 				NEXT
+
 			ENDIF
-			// Apply relations after all cursors are open
-			FOREACH VAR rel IN SELF:Relations
-				IF !String.IsNullOrEmpty(rel:ParentAlias)
-					DbSelectArea(rel:ParentAlias)
-				ENDIF
-				IF !String.IsNullOrEmpty((STRING)rel:ChildOrder)
-					OrdSetFocus(rel:ChildOrder, rel:ChildAlias)
-				ENDIF
-				DbSetRelation(rel:ChildAlias, MCompile((STRING)rel:RelationalExpr), (STRING)rel:RelationalExpr)
-			NEXT
 			//
 			IF !String.IsNullOrEmpty( SELF:InitialSelectedAlias )
 				VAR selectedCursor := SELF[ SELF:InitialSelectedAlias ]
 				IF ( selectedCursor != NULL )
-					DbSelectArea( SELF:InitialSelectedAlias )
+					IF selectedCursor:IsFreeTable
+						DbSelectArea( SELF:InitialSelectedAlias )
+					ELSE
+						NOP
+					ENDIF
 				ENDIF
 			ELSE
 				IF SELF:Cursors:Count > 0
@@ -82,22 +73,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		METHOD DataEnvironment_FormClosing( sender AS OBJECT, e AS System.Windows.Forms.FormClosingEventArgs) AS VOID
 			//
 			IF SELF:AutoCloseTables
-				// First close all work areas
 				FOREACH cursor AS DbCursor IN Cursors
 					cursor:Close()
-				NEXT
-				// Then close each unique DBC that was used (once per distinct database file)
-				VAR closedDbs := HashSet<STRING>{ StringComparer.InvariantCultureIgnoreCase }
-				FOREACH cursor AS DbCursor IN Cursors
-					IF !cursor:IsFreeTable .AND. !String.IsNullOrEmpty( cursor:DataBase )
-						IF closedDbs:Add( cursor:DataBase )
-							// Look up by filename and close by logical name
-							VAR oDb := DbcManager.FindDatabase( cursor:DataBase )
-							IF oDb != NULL
-								DbcManager.Close( oDb:Name )
-							ENDIF
-						ENDIF
-					ENDIF
 				NEXT
 			ENDIF
 

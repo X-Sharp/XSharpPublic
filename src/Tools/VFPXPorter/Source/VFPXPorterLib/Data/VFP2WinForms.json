@@ -1,6 +1,4 @@
 ﻿{
-  "thisformset.": "SELF:ThisForm:ThisFormSet:",
-  "thisform.": "SELF:ThisForm:",
   "this.": "thisObject.",
   "Parent.": "_Parent.",
   "Click()": "_Click()"

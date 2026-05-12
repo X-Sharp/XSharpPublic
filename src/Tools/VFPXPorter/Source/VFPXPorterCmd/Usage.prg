@@ -1,50 +1,21 @@
-// Usage.prg
+﻿// Usage.prg
+// Created by    : fabri
+// Creation Date : 9/23/2020 11:57:54 AM
+// Created for   : 
+// WorkStation   : FABPORTABLE
+
 
 USING System
+USING System.Collections.Generic
+USING System.Text
 
 FUNCTION Usage AS VOID
-	Console.WriteLine("VFPXPorterCmd — VFP to X#/WinForms code generator")
+	Console.WriteLine("FabVFPXPorter Usage :" )
+	//-f:"TestDataSet\form1.scx" -o:"VFPXPorter" -b
+	Console.WriteLine(" -f:<fullpath to file>		Set the file to process")
+	Console.WriteLine(" -o:<output folder>			Set the Folder where generated files must be placed")
+	Console.WriteLine(" -b							Indicate to backup all content to XML files")
 	Console.WriteLine()
-	Console.WriteLine("Usage:")
-	Console.WriteLine("  VFPXPorterCmd -o:""<output>"" [-f:""<file>"" ...] [-p:""<project>""] [options]")
-	Console.WriteLine()
-	Console.WriteLine("Input:")
-	Console.WriteLine("  -f:""<path>""                     SCX (form) or VCX (class library) to convert.")
-	Console.WriteLine("                                  Can be repeated for multiple files.")
-	Console.WriteLine("  -p:""<path>""                     PJX (VFP project) to convert entirely.")
-	Console.WriteLine("  -o:""<path>""                     Output folder. Created if it does not exist.")
-	Console.WriteLine()
-	Console.WriteLine("General options:")
-	Console.WriteLine("  -b                              Backup source to XML before converting.")
-	Console.WriteLine("  -l:""<path>""                     Log file (default: VFPXPorter.log in output folder).")
-	Console.WriteLine("  -dataFolder:""<path>""            Override the Data folder (templates, rules, etc.).")
-	Console.WriteLine("  -outputType:""<type>""            WindowsExe (default) | ClassLibrary | Console.")
-	Console.WriteLine()
-	Console.WriteLine("Project options:                  [default]")
-	Console.WriteLine("  -storeInFolders / -no...        Organize into Forms/Libs/... subfolders.  [false]")
-	Console.WriteLine("  -emptyFolder    / -no...        Empty output folder before export.         [true]")
-	Console.WriteLine("  -libInSubFolder / -no...        Put lib files in a subfolder.              [true]")
-	Console.WriteLine("  -addLibraryNamespace / -no...   Add library namespace to VFPXPorter.xh.   [true]")
-	Console.WriteLine("  -ignoreErrors   / -no...        Keep exporting after non-fatal errors.     [true]")
-	Console.WriteLine("  -folderNames:""<map>""            Folder name mapping                        [Forms=Forms;Libs=Libs;...")
-	Console.WriteLine()
-	Console.WriteLine("Code conversion options:          [default]")
-	Console.WriteLine("  -keepOriginal        / -no...   Keep VFP code as comments.                [true]")
-	Console.WriteLine("  -convertThisObject   / -no...   Convert This/ThisForm references.         [true]")
-	Console.WriteLine("  -convertStatement    / -no...   Convert VFP statements to method calls.   [true]")
-	Console.WriteLine("  -convertStatementOnlyIfLast / -no...  Only convert if last on the line.  [false]")
-	Console.WriteLine("  -prefixClassFile     / -no...   Prefix file name with class/form name.    [true]")
-	Console.WriteLine("  -prefixEvent         / -no...   Prefix event methods with form name.      [false]")
-	Console.WriteLine("  -keepFoxProEventName / -no...   Keep FoxPro event name in handlers.       [true]")
-	Console.WriteLine("  -generateOnlyHandledEvent / -no... Only emit events in EventRules.json.  [false]")
-	Console.WriteLine("  -removeSet           / -no...   Remove Set_ prefix from event handlers.   [true]")
-	Console.WriteLine("  -nameUDF             / -no...   Use XPorter-built name for UDF methods.   [false]")
-	Console.WriteLine("  -modifier:""<mod>""               Field modifier: PUBLIC (default) | PROTECTED | PRIVATE.")
-	Console.WriteLine()
-	Console.WriteLine("Examples:")
-	Console.WriteLine(e"  VFPXPorterCmd -p:\"C:\\MyApp\\myapp.pjx\" -o:\"C:\\Output\"")
-	Console.WriteLine(e"  VFPXPorterCmd -p:\"C:\\MyApp\\myapp.pjx\" -o:\"C:\\Output\" -storeInFolders -prefixEvent -generateOnlyHandledEvent -convertStatementOnlyIfLast -noPrefixClassFile")
-	Console.WriteLine(e"  VFPXPorterCmd -f:\"C:\\MyApp\\myform.scx\" -o:\"C:\\Output\" -b")
-	Console.WriteLine()
-	Console.WriteLine("Exit codes:  0 = success,  1 = error")
-	RETURN
+	Console.WriteLine( "Example :")
+	Console.WriteLine( e"FabVFPXPorterCmd -f:\"TestDataSet\\form1.scx\" -o:\"VFPXPorter\" -b" )
+    RETURN

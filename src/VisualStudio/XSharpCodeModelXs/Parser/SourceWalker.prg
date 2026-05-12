@@ -30,8 +30,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 #region Properties
     PROPERTY HasParseErrors AS LOGIC AUTO
 
-    PRIVATE PROPERTY ProjectNode as IXSharpProject GET SELF:_file?:Project?:ProjectNode
-    PRIVATE PROPERTY ParseOptions AS XParseOptions GET SELF:_file?:Project?:ParseOptions
+    PRIVATE ParseOptions AS XParseOptions
 
     PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
     PROPERTY IncludeFiles AS IList<string>      GET _includeFiles
@@ -46,6 +45,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         SELF:SaveToDisk := lSaveResults
         IF (file != NULL)
             SELF:_file := file
+            SELF:ParseOptions   := file:Project:ProjectNode:ParseOptions
             SELF:SourcePath := SELF:_file:SourcePath
             SELF:_errors   := List<XError>{}
             SELF:_entities := List<XSourceEntity>{}
@@ -103,7 +103,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         // WriteOutputMessage("-->> AntlrParse() "+SELF:SourcePath+" Start "+DateTime.Now.ToString())
         // XSharp.Parser.VsParser.Parse(cSource, SELF:SourcePath,SELF:ParseOptions,SELF,OUT stream, OUT VAR tree, OUT VAR includeFiles)
         // AddIncludes(includeFiles)
-        // WriteOutputMessage("<<-- AntlrParse() "+SELF:SourcePath+" End "+DateTime.Now.ToString())
+         // WriteOutputMessage("<<-- AntlrParse() "+SELF:SourcePath+" End "+DateTime.Now.ToString())
         RETURN NULL // tree
 
     METHOD ParseLocals(source AS STRING, xmember AS XSourceMemberSymbol) AS List<XSourceVariableSymbol>

@@ -114,20 +114,11 @@ BEGIN NAMESPACE VFPXPorterLib
                     ENDIF
                 NEXT
             ENDIF
-            // We are processing a Library File ?
-            IF SELF:_container:IsLibrary
+            // We are processing a Library File ? Only register top-level items as control definitions.
+            IF SELF:_container:IsLibrary .AND. String.IsNullOrEmpty( item:Parent )
                 VAR nameSpace := Path.GetFileNameWithoutExtension( SELF:_container:FileName )
-                VAR FQN := nameSpace + "."
-                // Ok, we may define some new controls
-                IF String.IsNullOrEmpty( item:Parent )
-                    FQN += item:OBJNAME
-                    // In the library FQN ( myvcx.mycontrol ), we define Item:ClassName
-                    SELF:DefiningControls:Add( FQN, item ) // item:FullyQualifiedName )
-                ELSE
-                    FQN += item:Parent + "."
-                    FQN += item:OBJNAME
-                    SELF:DefiningControls:Add( FQN, item ) // item:FullyQualifiedName )
-                ENDIF
+                VAR FQN := nameSpace + "." + item:OBJNAME
+                SELF:DefiningControls:Add( FQN, item )
             ENDIF
 
         END METHOD

@@ -1207,7 +1207,7 @@ OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 
         aDate := CHAR[]{ACE.ADS_MAX_DATEMASK+1}
         DateLen := (WORD) aDate:Length
-        SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YYYY"))
+        SELF:_CheckError(ACE.AdsSetDateFormat("YYYY-MM-DD"))
         SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
         SELF:_CheckError(ACE.AdsSetDateFormat(RuntimeState.DateFormat))
         local sDate as string
@@ -1216,9 +1216,12 @@ OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         ENDIF
         sDate := String{aDate, 0, DateLen}
         local month, day, year as int
-        month := Convert.ToInt32(sDate:Substring(0,2))
-        day   := Convert.ToInt32(sDate:Substring(3,2))
-        year  := Convert.ToInt32(sDate:Substring(6,4))
+        year  := Convert.ToInt32(sDate:Substring(0,4))
+        month := Convert.ToInt32(sDate:Substring(5,2))
+        day   := Convert.ToInt32(sDate:Substring(8,2))
+        if (year == 0 .or. month == 0 .or. day == 0)
+            return DbDate{0,0,0}
+        endif
         return DbDate{year, month, day}
 
     CASE DbInfo.DBI_GETLOCKARRAY

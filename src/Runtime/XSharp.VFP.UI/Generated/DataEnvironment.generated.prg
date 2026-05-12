@@ -3,7 +3,9 @@
 BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS DataEnvironment IMPLEMENTS IVFPObject, IVFPOwner
 		#include "VFPObject.xh"
-		#include "VFPContainer.xh"
+        #include "VFPContainer.xh"
+        #include "VFPPropertiesDynamic.xh"
+        
 		METHOD CloseTables AS LOGIC CLIPPER
 			RETURN FALSE
 		PROPERTY DataSourceType AS STRING AUTO

@@ -12,7 +12,7 @@ PRIVATE METHOD InitializeComponent() AS VOID STRICT
 
 	<@formProps@>
 
-PUBLIC CONSTRUCTOR( InitParamsList  ) CLIPPER
+PUBLIC CONSTRUCTOR( InitParamsListt PARAMS USUAL[] )
 	SUPER( InitParamsList )
 
 	InitializeComponent()

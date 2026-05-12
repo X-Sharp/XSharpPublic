@@ -29,17 +29,21 @@ PRIVATE METHOD InitializeComponent() AS VOID STRICT
 
 	SELF:ResumeLayout( FALSE )
 
-PUBLIC CONSTRUCTOR( InitParamsList ) CLIPPER
+PUBLIC CONSTRUCTOR( InitParamsListt PARAMS USUAL[] )
 	SUPER( InitParamsList )
 	//
 	PreInitializeComponent()
 	InitializeComponent()
 	InitContainers()
+	InitGrids()
 	SetDataEnvironment()
 	<@userdefProps@>
 
 METHOD InitContainers() AS Void
 	<@InitContainers@>
+
+METHOD InitGrids() AS VOID
+	<@InitGrids@>
 
 	<@EventHandlers@>
 

@@ -7,21 +7,19 @@
 #ifndef VFP_LIST_XH
 #define VFP_LIST_XH
 
-METHOD AddItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
-	RETURN
+// AddItem is declared with NEW in each concrete class (ComboBox, ListBox) — no stub here
 METHOD AddListItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
 	RETURN
-METHOD Clear AS VOID CLIPPER
-	RETURN
+// Clear is declared with NEW in each concrete class (ComboBox, ListBox) — no stub here
 PROPERTY BoundColumn AS LONG AUTO
 PROPERTY BoundTo AS LOGIC AUTO
-PROPERTY DisplayValue AS USUAL AUTO
+// DisplayValue is declared with real implementation in ComboBox.prg / ListBox.prg
 PROPERTY FirstElement AS LONG AUTO
 METHOD IndexToItemID(nIndex as LONG) AS LONG
 RETURN -1
-PROPERTY ItemBackColor AS LONG AUTO
+PROPERTY ItemBackColor AS System.Drawing.Color AUTO
 PROPERTY ItemData AS LONG AUTO
-PROPERTY ItemForeColor AS LONG AUTO
+PROPERTY ItemForeColor AS System.Drawing.Color AUTO
 // Todo: ItemIDData property
 //PROPERTY ItemIDData[nItemId as LONG] AS LONG AUTO
 
@@ -29,25 +27,18 @@ METHOD ItemIDToIndex(nItemId as LONG) AS LONG
 	RETURN -1
 PROPERTY ItemTips AS LOGIC AUTO
 PROPERTY List AS ARRAY AUTO
-PROPERTY ListCount AS LONG AUTO
-PROPERTY ListIndex AS LONG AUTO
-// Todo: ListItem property
-//PROPERTY ListItem[nRow as INT, nCol as INT] AS USUAL AUTO
+// ListCount and ListIndex are declared with NEW in ComboBox/ListBox — no stub here
 PROPERTY ListItemID AS LONG AUTO
-METHOD RemoveItem(nIndex AS LONG) AS VOID
-	RETURN
+// RemoveItem and Requery are declared with NEW in ComboBox/ListBox — no stub here
 METHOD RemoveListItem(nIndex AS LONG) AS VOID
 	RETURN
-		METHOD Requery AS VOID STRICT
-			RETURN
-PROPERTY RowSource  AS STRING AUTO
-PROPERTY RowSourceType AS LONG AUTO
+// RowSource and RowSourceType are declared with NEW in ComboBox/ListBox — no stub here
 		//PROPERTY Selected[nItem AS LONG] AS LOGIC  GET SET
 		//PROPERTY SelectedID[nItem AS LONG] AS LOGIC GET SET
 
 
-PROPERTY SelectedItemBackColor AS LONG AUTO
-PROPERTY SelectedItemForeColor AS LONG AUTO
+PROPERTY SelectedItemBackColor AS System.Drawing.Color AUTO
+PROPERTY SelectedItemForeColor AS System.Drawing.Color AUTO
 
 #endif
 

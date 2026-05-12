@@ -3,12 +3,10 @@
 BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS OptionButton  IMPLEMENTS IVFPControl, IVFPImage
 #include "VFPControl.xh"
+#define NO_PICTUREPOSITION
 #include "VFPImage.xh"
-
-		PROPERTY Style AS LONG AUTO
-
-
-		PROPERTY WordWrap AS LOGIC AUTO
-
+		// Style, WordWrap, Alignment, PicturePosition — implemented via VFPButtonImage.xh in OptionButton.prg
+		PROPERTY FontOutline AS LOGIC AUTO
+		PROPERTY FontShadow  AS LOGIC AUTO
 	END CLASS
-	END NAMESPACE      
+	END NAMESPACE

@@ -21,6 +21,7 @@
     <Allowdot>True</Allowdot>
     <NoStandardDefs>True</NoStandardDefs>
     <EnforceSelf>True</EnforceSelf>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -58,21 +59,21 @@
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>$(RTBinariesDir)XSharp.Core.dll</HintPath>
+      <HintPath>..\Artifacts\XSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Rdd, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Rdd</Name>
       <AssemblyName>XSharp.Rdd.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>$(RTBinariesDir)XSharp.Rdd.dll</HintPath>
+      <HintPath>..\Artifacts\XSharp.Rdd.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>$(RTBinariesDir)XSharp.RT.dll</HintPath>
+      <HintPath>..\Artifacts\XSharp.RT.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

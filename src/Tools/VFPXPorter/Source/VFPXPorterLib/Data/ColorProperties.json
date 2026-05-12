@@ -1,0 +1,18 @@
+[
+  "BackColor",
+  "ForeColor",
+  "BorderColor",
+  "FillColor",
+  "DisabledBackColor",
+  "DisabledForeColor",
+  "SelectedBackColor",
+  "SelectedForeColor",
+  "HighlightBackColor",
+  "HighlightForeColor",
+  "GridLineColor",
+  "AlternatingRowColor",
+  "ItemBackColor",
+  "ItemForeColor",
+  "SelectedItemBackColor",
+  "SelectedItemForeColor"
+]

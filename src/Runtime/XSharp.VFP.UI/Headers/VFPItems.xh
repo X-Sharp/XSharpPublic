@@ -1,0 +1,22 @@
+﻿
+#include "VFPControl.xh"
+#ifndef VFP_ITEMS_XH
+#define VFP_ITEMS_XH
+PROPERTY BorderColor AS System.Drawing.Color AUTO
+
+PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
+
+PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
+
+
+PROPERTY DisabledEditItemBackColor AS LONG AUTO
+PROPERTY DisabledEditItemForeColor AS LONG AUTO
+PROPERTY IncrementalSearch AS LOGIC AUTO
+// MultiSelect implemented in ListBox.prg; not applicable to ComboBox
+PROPERTY NewIndex AS LONG AUTO GET
+PROPERTY NewItemID AS LONG AUTO
+PROPERTY NumberOfElements AS LONG AUTO
+PROPERTY SelectedBackColor AS System.Drawing.Color AUTO
+PROPERTY SelectedForeColor AS System.Drawing.Color AUTO
+#endif
+

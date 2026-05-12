@@ -66,6 +66,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 FOREACH VAR line IN lines
                     item:UserDefItems:Add( UserDefinition{ line } )
                 NEXT
+                // Populate InitialValue for each field from the properties dictionary
+                FOREACH VAR userDef IN item:UserDefItems
+                    IF ( userDef:Kind == UserDefinition.ItemKind.Field .OR. userDef:Kind == UserDefinition.ItemKind.FieldArray ) .AND. ;
+                        item:PropertiesDict:ContainsKey( userDef:Name )
+                        userDef:InitialValue := item:PropertiesDict[ userDef:Name ]
+                    ENDIF
+                NEXT
                 // Do we have User Defined elements that belongs to this item ? ( Method, Field )
                 // If there, they are at least Protected (or more)
                 IF !String.IsNullOrEmpty(item:Protected)
@@ -107,20 +114,11 @@ BEGIN NAMESPACE VFPXPorterLib
                     ENDIF
                 NEXT
             ENDIF
-            // We are processing a Library File ?
-            IF SELF:_container:IsLibrary
+            // We are processing a Library File ? Only register top-level items as control definitions.
+            IF SELF:_container:IsLibrary .AND. String.IsNullOrEmpty( item:Parent )
                 VAR nameSpace := Path.GetFileNameWithoutExtension( SELF:_container:FileName )
-                VAR FQN := nameSpace + "."
-                // Ok, we may define some new controls
-                IF String.IsNullOrEmpty( item:Parent )
-                    FQN += item:OBJNAME
-                    // In the library FQN ( myvcx.mycontrol ), we define Item:ClassName
-                    SELF:DefiningControls:Add( FQN, item ) // item:FullyQualifiedName )
-                ELSE
-                    FQN += item:Parent + "."
-                    FQN += item:OBJNAME
-                    SELF:DefiningControls:Add( FQN, item ) // item:FullyQualifiedName )
-                ENDIF
+                VAR FQN := nameSpace + "." + item:OBJNAME
+                SELF:DefiningControls:Add( FQN, item )
             ENDIF
 
         END METHOD
@@ -128,12 +126,10 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECTED METHOD EnumEntity( ) AS VOID
             //
             XPorterLogger.Instance:Information( "Entity : " + SELF:Item:Name )
-            XPorterLogger.Instance:Information( " Has DataEnvironment : " + IIF( SELF:DataEnvironment == NULL, "False", "True") )
+            XPorterLogger.Instance:Information( "Has DataEnvironment : " + IIF( SELF:DataEnvironment == NULL, "False", "True") )
             IF SELF:Item:Childs:Count > 0
-                XPorterLogger.Instance:Information( "----------" )
-                XPorterLogger.Instance:Information( "Contains "+ SELF:Item:Childs:Count:ToString() + " item(s)." )
+                XPorterLogger.Instance:Information( "Contains " + SELF:Item:Childs:Count:ToString() + " child item(s)" )
                 SELF:EnumChilds( SELF:Item:Childs, "   " )
-                XPorterLogger.Instance:Information( "----------" )
             ENDIF
             SELF:EnumDependencies()
             RETURN
@@ -141,21 +137,19 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECTED METHOD EnumChilds( itemList AS List<BaseItem>, indent AS STRING ) AS VOID
             FOREACH VAR item IN itemList
                 //
-                XPorterLogger.Instance:Information( indent + "Item : "+ item:Name )
+                XPorterLogger.Instance:Verbose( indent + "Item : "+ item:Name )
                 IF item:Childs:Count > 0
-                    XPorterLogger.Instance:Information( indent + "----------" )
-                    XPorterLogger.Instance:Information( indent + "Contains "+ item:Childs:Count:ToString() + " item(s)." )
-                    SELF:EnumChilds( item:Childs, indent + "   " )
-                    XPorterLogger.Instance:Information( indent + "----------" )
+                    XPorterLogger.Instance:Verbose( indent + "  Contains "+ item:Childs:Count:ToString() + " item(s)" )
+                    SELF:EnumChilds( item:Childs, indent + "  " )
                 ENDIF
             NEXT
         END METHOD
 
         PROTECTED METHOD EnumDependencies() AS VOID
             IF ( SELF:DependsOn:Count > 0 )
-                XPorterLogger.Instance:Information( "Depends On : " )
+                XPorterLogger.Instance:Information( "Depends On : " + SELF:DependsOn:Count:ToString() + " file(s)" )
                 FOREACH VAR externalFile IN DependsOn
-                    XPorterLogger.Instance:Information( externalFile )
+                    XPorterLogger.Instance:Verbose( "  - " + externalFile )
                 NEXT
             ENDIF
         END METHOD

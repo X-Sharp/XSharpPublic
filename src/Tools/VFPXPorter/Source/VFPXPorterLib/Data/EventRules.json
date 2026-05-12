@@ -16,7 +16,9 @@
     "Refresh": [ "vfpRefresh:=", "", "" ],
     "Valid": [ "vfpValid:=", "", "" ],
     "When": [ "vfpWhen:=", "", "" ],
-    "KeyPress": [ "vfpKeyPress:=", "", "" ]
+    "KeyPress": [ "vfpKeyPress:=", "", "" ],
+    "KeyDown": [ "vfpKeyDown:=", "", "" ],
+    "KeyUp": [ "vfpKeyUp:=", "", "" ]
   },
 
   "timer": {
@@ -27,13 +29,66 @@
     "InteractiveChange": [ "vfpInteractiveChange:=", "", "" ]
   },
 
-  "grid": {
-    "AfterRowColChange": [ "vfpAfterRowColChange:=", "", "" ]
+   "grid": {
+     "AfterRowColChange": [ "vfpAfterRowColChange:=", "", "" ],
+     "BeforeRowColChange": [ "vfpBeforeRowColChange:=", "", "" ],
+     "BeforeEditCell": [ "vfpBeforeEditCell:=", "", "" ],
+     "AfterEditCell": [ "vfpAfterEditCell:=", "", "" ],
+     "OnColumnHeaderClick": [ "vfpColumnHeaderClick:=", "", "" ],
+     "Scrolled": [ "vfpScrolled:=", "", "" ]
+   },
+
+  "spinner": {
+    "UpClick":   [ "vfpUpClick:=",   "", "" ],
+    "DownClick": [ "vfpDownClick:=", "", "" ]
+  },
+
+  "container": {
+    "Resize": [ "vfpResize:=", "", "" ]
+  },
+
+  "commandgroup": {
+    "InteractiveChange": [ "vfpInteractiveChange:=", "", "" ]
+  },
+
+  "column": {
+    "InteractiveChange": [ "", "", "" ]
+  },
+
+  "header": {
+    "GotFocus":  [ "", "", "" ],
+    "LostFocus": [ "", "", "" ],
+    "Valid":     [ "", "", "" ],
+    "When":      [ "", "", "" ],
+    "KeyPress":  [ "", "", "" ],
+    "KeyDown":   [ "", "", "" ],
+    "KeyUp":     [ "", "", "" ],
+    "Init":      [ "", "", "" ],
+    "Destroy":   [ "", "", "" ]
+  },
+
+  "formset": {
+    "Activate":   [ "vfpActivate:=",   "", "" ],
+    "Deactivate": [ "vfpDeactivate:=", "", "" ]
+  },
+
+  "pageframe": {
+    "Resize": [ "vfpResize:=", "", "" ]
+  },
+
+  "page": {
+    "Activate":   [ "vfpActivate:=",   "", "" ],
+    "Deactivate": [ "vfpDeactivate:=", "", "" ]
   },
 
   "form": {
     "QueryUnload": [ "vfpQueryUnload:=", "", "" ],
-    "Load": [ "vfpLoad:=", "", "" ]
+    "Load":        [ "vfpLoad:=",        "", "" ],
+    "Unload":      [ "vfpUnload:=",      "", "" ],
+    "Activate":    [ "vfpActivate:=",    "", "" ],
+    "Deactivate":  [ "vfpDeactivate:=",  "", "" ],
+    "Resize":      [ "vfpResize:=",      "", "" ],
+    "Paint":       [ "vfpPaint:=",       "", "" ]
   }
 }
 

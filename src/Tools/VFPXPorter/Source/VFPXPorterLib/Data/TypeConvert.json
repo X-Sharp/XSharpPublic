@@ -85,17 +85,17 @@
     "true"
   ],
   "header": [
-    "ColumnHeader",
+    "Header",
     "false",
     "true"
   ],
   "shape": [
-    "Container",
+    "Shape",
     "false",
     "true"
   ],
   "line": [
-    "Container",
+    "Line",
     "false",
     "true"
   ],
@@ -109,18 +109,33 @@
     "false",
     "false"
   ],
-  "xsPorterMenuStrip": [
-    "System.Windows.Forms.MenuStrip",
-    "false",
-    "true"
-  ],
-  "xsPorterMenuItem": [
-    "System.Windows.Forms.ToolStripMenuItem",
+  "Relation": [
+    "Relation",
     "false",
     "false"
   ],
-  "xsPorterMenuSeparator": [
-    "System.Windows.Forms.ToolStripSeparator",
+  "page": [
+    "Page",
+    "true",
+    "true"
+  ],
+  "pageframe": [
+    "PageFrame",
+    "true",
+    "true"
+  ],
+  "column": [
+    "Column",
+    "false",
+    "true"
+  ],
+  "toolbar": [
+    "ToolBar",
+    "false",
+    "false"
+  ],
+  "contextmenu": [
+    "ContextMenu",
     "false",
     "false"
   ]

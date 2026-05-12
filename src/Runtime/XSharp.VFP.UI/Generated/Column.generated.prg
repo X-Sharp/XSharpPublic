@@ -3,13 +3,13 @@
 BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Column  IMPLEMENTS IVFPOwner,IVFPEditable
 #include "VFPContainer.xh"
+#include "VFPPropertiesDynamic.xh"
 		PROPERTY ActiveControl AS USUAL AUTO
 
 		METHOD AutoFit AS LOGIC CLIPPER
 			RETURN FALSE
 		PROPERTY Bound AS USUAL AUTO
-		PROPERTY ColumnOrder AS LONG AUTO
-		PROPERTY CurrentControl AS STRING AUTO
+		// ColumnOrder implemented with real logic in Column.prg
 		PROPERTY DynamicAlignment AS LONG AUTO
 		PROPERTY DynamicBackColor AS LONG AUTO
 		PROPERTY DynamicCurrentControl AS STRING AUTO
@@ -23,14 +23,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY DynamicFontUnderline AS LOGIC AUTO
 		PROPERTY DynamicForeColor AS LONG AUTO
 		PROPERTY DynamicInputMask  AS STRING AUTO
-		PROPERTY Format AS STRING AUTO
 		PROPERTY HeaderClass AS STRING AUTO
 		PROPERTY HeaderClassLibrary AS STRING AUTO
-		PROPERTY InputMask AS STRING AUTO
 		PROPERTY MouseIcon AS STRING AUTO
 		PROPERTY Movable  AS LOGIC AUTO
-		PROPERTY SelectOnEntry AS LOGIC AUTO
-		PROPERTY Sparse  AS LOGIC AUTO
 
 	END CLASS
 	END NAMESPACE

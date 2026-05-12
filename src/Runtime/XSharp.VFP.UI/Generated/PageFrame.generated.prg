@@ -4,23 +4,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS PageFrame   IMPLEMENTS IVFPControl, IVFPOwner
 #include "VFPControl.xh"
 #include "VFPContainer.xh"
+#include "VFPPropertiesDynamic.xh"
 #include "VFPGroup.xh"
 
-		PROPERTY ActivePage AS LONG AUTO
-		PROPERTY BorderColor AS LONG AUTO
+		// ActivePage, PageCount, Pages, Tabs, TabOrientation, TabStyle — implemented in PageFrame.prg
+		// TabStretch, PageHeight, PageWidth — implemented as real properties in PageFrame.prg
+		// Resize/Moved events — implemented in PageFrame.prg
+		PROPERTY BorderColor  AS System.Drawing.Color AUTO
 		PROPERTY BorderWidth  AS LONG AUTO
-		PROPERTY PageCount  AS LONG AUTO
-		PROPERTY PageHeight  AS LONG AUTO
-		PROPERTY Pages  AS USUAL AUTO
-		PROPERTY PageWidth  AS USUAL AUTO
-		METHOD SetFocus() AS VOID STRICT
-			//SELF:Focus()
-
-		PROPERTY TabOrientation  AS LONG AUTO
-		PROPERTY Tabs  AS LOGIC AUTO
-		PROPERTY TabStretch  AS LONG AUTO
-		PROPERTY TabStyle  AS LONG AUTO
-
+		PROPERTY FontOutline  AS LOGIC AUTO
+		PROPERTY FontShadow   AS LOGIC AUTO
 
 	END CLASS
-	END NAMESPACE      
+	END NAMESPACE

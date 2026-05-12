@@ -36,7 +36,7 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR tmpitems := List<FRXItem>{}
             TRY
                 // Open the MNX (DBF) File
-                DbUseArea(TRUE, "DBFVFP", SELF:Settings:ItemsPath, SELF:Settings:ItemsPath,FALSE,TRUE )
+                DbUseArea(TRUE, "DBFVFP", SELF:Settings:ItemsPath, System.IO.Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath),FALSE,TRUE )
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()
@@ -50,7 +50,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDDO
             CATCH e AS Exception
                 success := FALSE
-                XPorterLogger.Instance:Error( e.Message )
+                XPorterLogger.Instance:Error("Analyze: Failed to analyze report file: " + SELF:Settings:ItemsPath)
+                XPorterLogger.Instance:Error("Exception: " + e.Message)
             FINALLY
                 DbCloseArea()
             END TRY

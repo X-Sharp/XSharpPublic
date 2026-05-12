@@ -2,6 +2,7 @@
 USING System.Collections.Generic
 USING System.Text
 USING System.Xml.Serialization
+USING System.Linq
 
 BEGIN NAMESPACE VFPXPorterLib
 
@@ -86,19 +87,23 @@ BEGIN NAMESPACE VFPXPorterLib
 		/// </summary>
 		/// <param name="ConversionList"></param>
 		/// <param name="asChild"></param>
-		PROTECTED METHOD AddSpecialProperties( ConversionList AS Dictionary<STRING,STRING>, asChild := FALSE AS LOGIC ) AS VOID
-			//
-			TRY
-				// Checking if we are in the Form (We should check if we are a parent..??)
-				//IF (String.Compare( SELF:BaseClassName, "form", TRUE ) == 0 )
-				IF !asChild
-					ConversionList:Add( "_currentobject_", "SELF" )
-				ELSE
-					ConversionList:Add( "_currentobject_", "SELF:" + SELF:Name )
-				ENDIF
-            CATCH
-                nop
-			END TRY
+	PROTECTED METHOD AddSpecialProperties( ConversionList AS Dictionary<STRING,STRING>, asChild := FALSE AS LOGIC ) AS VOID
+		//
+		IF String.IsNullOrEmpty(SELF:Name)
+			XPorterLogger.Instance:Error("AddSpecialProperties: Item has no Name, cannot add special properties")
+			RETURN
+		ENDIF
+		TRY
+			// Checking if we are in the Form (We should check if we are a parent..??)
+			//IF (String.Compare( SELF:BaseClassName, "form", TRUE ) == 0 )
+			IF !asChild
+				ConversionList:Add( "_currentobject_", "SELF" )
+			ELSE
+				ConversionList:Add( "_currentobject_", "SELF:" + SELF:Name )
+			ENDIF
+        CATCH e AS Exception
+            XPorterLogger.Instance:Verbose("AddSpecialProperties: '_currentobject_' property already exists in conversion list for item: " + SELF:Name)
+		END TRY
 
 		/// <summary>
 		/// Convert the dictionary of Properties, applying all replacement rules.
@@ -153,7 +158,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							FOREACH token AS STRING IN tokenList
 								IF defaultValues:ContainsKey( token )
 									// Get the value of this "Fox" Property
-									VAR data := propList:Item[ token ]
+									VAR data := defaultValues:Item[ token ]
 									// and put that value at the replaceable position
 									newProp := SELF:ReplaceCaseInsensitive( newProp, "<@"+token+"@>", data)
 									Found := TRUE
@@ -162,8 +167,17 @@ BEGIN NAMESPACE VFPXPorterLib
 							// Still missing ?
 							IF newProp:Contains("<@" )
 								// Forget it
+								VAR remaining := SELF:BuildTokenList( newProp )
+								XPorterLogger.Instance:Warning("ConvertProperties: Property '" + conversion:Key + "' has unresolved tokens: " + ;
+									String.Join(", ", remaining:Select({t => "<@" + t + "@>"})))
 								Found := FALSE
 							ENDIF
+						ELSE
+							// No tokens found in propList or defaultValues - discard silently
+							VAR unresolved := SELF:BuildTokenList( newProp )
+							XPorterLogger.Instance:Verbose("ConvertProperties: Property '" + conversion:Key + "' missing all required tokens: " + ;
+								String.Join(", ", unresolved:Select({t => "<@" + t + "@>"})))
+							Found := FALSE
 						ENDIF
 					ENDIF
 					IF Found
@@ -196,6 +210,10 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 					// Just a simple one-to-one property replacement
 					IF propList:ContainsKey( conversionKey )
+						// Skip user-defined properties — PropRules must not rewrite them
+						IF SELF:UserDefItems != NULL .AND. SELF:UserDefItems:Find({ x => String.Compare(x:Name, conversionKey, TRUE) == 0 }) != NULL
+							LOOP
+						ENDIF
 						// For this element, retrieve the current FoxPro value
 						prop := propList:Item[ conversionKey ]
 						// Remove the current "Fox" Property
@@ -211,12 +229,19 @@ BEGIN NAMESPACE VFPXPorterLib
 									prop := e"\"" + prop + e"\""
 								ENDIF
 							ENDIF
-							//
-							IF conversion:Value:EndsWith(")") .OR. conversion:Value:EndsWith("}")
-								// Oh !! The Property has been replaced by a Constructor or Method Call !
-								// Ok, recreate the Property, but set the "new" value
-								propList:Add( conversionKey, conversion:Value )
-							ELSE
+						//
+						IF conversion:Value:EndsWith(")") .OR. conversion:Value:EndsWith("}")
+							// Oh !! The Property has been replaced by a Constructor or Method Call !
+							// Validate that the value looks like valid code
+							IF !conversion:Value:Contains("(") .AND. conversion:Value:EndsWith(")")
+								XPorterLogger.Instance:Warning("ConvertProperties: Constructor/method call missing opening paren: '" + conversion:Value + "'")
+							ENDIF
+							IF !conversion:Value:Contains("{") .AND. conversion:Value:EndsWith("}")
+								XPorterLogger.Instance:Warning("ConvertProperties: Constructor missing opening brace: '" + conversion:Value + "'")
+							ENDIF
+							// Ok, recreate the Property, but set the "new" value
+							propList:Add( conversionKey, conversion:Value )
+						ELSE
 								// We simply replace Key with the new one, and keep the actual value
 								IF forceUsual
 									propList:Add( "!"+conversion:Value, prop )
@@ -288,6 +313,53 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 				ENDIF
 			NEXT
+			// Second pass: apply simple rename/removal rules to dotted child-property overrides.
+			// E.g. "BTN_EXIT.Caption" → "BTN_EXIT.Text" when the Caption→Text rule exists.
+			// Skips template (<@...@>), method-call (::/:), constructor, and positional (Column(1).X) keys.
+			VAR dotKeys := propList:Keys:Where({ k => k:IndexOf('.') > 0 }):ToList()
+			IF dotKeys:Count > 0
+				FOREACH VAR dotKey IN dotKeys
+					VAR dotPos := dotKey:LastIndexOf('.')
+					VAR dotPrefix := dotKey:Substring(0, dotPos + 1)   // "BTN_EXIT."
+					VAR dotSuffix := dotKey:Substring(dotPos + 1)      // "Caption"
+					// Skip positional/synthetic prefixes like "Column(1)." or "Button(1)."
+					IF dotPrefix:IndexOfAny( <CHAR>{'(', ')', '[', ']'} ) >= 0
+						LOOP
+					ENDIF
+					// Look for a matching rule for this suffix
+					FOREACH convRule AS KeyValuePair<STRING, STRING> IN ConversionList
+						IF convRule:Key:StartsWith("^")
+							LOOP
+						ENDIF
+						VAR ruleKey := convRule:Key
+						IF ruleKey:StartsWith("!")
+							ruleKey := ruleKey:Substring(1)
+						ENDIF
+						IF String.Compare(ruleKey, dotSuffix, TRUE) != 0
+							LOOP
+						ENDIF
+						// Skip complex rules: templates, method calls, constructors
+						IF convRule:Value:Contains("<@") .OR. convRule:Value:StartsWith(":") .OR. ;
+						   ( convRule:Value:EndsWith(")") .AND. convRule:Value:Contains("(") ) .OR. ;
+						   ( convRule:Value:EndsWith("}") .AND. convRule:Value:Contains("{") )
+							EXIT
+						ENDIF
+						VAR dotVal := propList[dotKey]
+						propList:Remove(dotKey)
+						IF !String.IsNullOrEmpty(convRule:Value)
+							// Simple rename — propagate !forceUsual marker if present in value
+							VAR ruleIsForce := convRule:Value:StartsWith("!")
+							VAR newSuffix := IIF(ruleIsForce, convRule:Value:Substring(1), convRule:Value)
+							VAR newDotKey := IIF(ruleIsForce, "!", "") + dotPrefix + newSuffix
+							IF !propList:ContainsKey(newDotKey)
+								propList:Add(newDotKey, dotVal)
+							ENDIF
+						ENDIF
+						// Empty rule value → removal (don't re-add)
+						EXIT
+					NEXT
+				NEXT
+			ENDIF
 			// After "conversion", the new Properties list is...
 			SELF:PropertiesDict := propList
 			RETURN
@@ -518,16 +590,17 @@ BEGIN NAMESPACE VFPXPorterLib
 		/// Value : An array : The .NET EventName, and the PostFix of the EventHandler Prototype (Usually the Params et Return type)
 		/// </param>
 		/// </summary>
-		METHOD ConvertEvents( eventRules AS Dictionary<STRING,STRING[]>, sttmnts AS List<String>, vfpElt AS Dictionary<STRING,STRING>, settings AS XPorterSettings ) AS VOID
+		METHOD ConvertEvents( eventRules AS Dictionary<STRING,STRING[]>, sttmnts AS List<String>, vfpElt AS Dictionary<STRING,STRING>, colorProps AS List<STRING>, settings AS XPorterSettings ) AS VOID
 			//
 			IF ( SELF:XPortedCode == NULL )
 				RETURN
 			ENDIF
 			//
 			LOCAL converter AS CodeConverter
-			converter := CodeConverter{settings:KeepOriginal, settings:ConvertHandlers, settings:ConvertThisObject, settings:ConvertStatement, settings:ConvertStatementOnlyIfLast }
+			converter := CodeConverter{settings:KeepOriginal, settings:ConvertThisObject, settings:ConvertStatement, settings:ConvertStatementOnlyIfLast }
 			converter:Statements := sttmnts
 			converter:VFPElements := vfpElt
+			converter:ColorProperties := colorProps
 			FOREACH cdeBlock AS EventCode IN SELF:XPortedCode:Events
 				// The Event belongs to a FORM
 				VAR formEvent := (String.Compare(cdeBlock:Owner:Owner:BaseClassName,"form",TRUE)==0)

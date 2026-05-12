@@ -16,6 +16,35 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// The VFP compatible Timer class.
 	/// </summary>
 	PARTIAL CLASS Timer INHERIT System.Windows.Forms.Timer
+
+		#include "Headers/VFPObject.xh"
+
+		// ── Non-visual position/size stubs ───────────────────────────────────
+		// Timer has no visual representation; these prevent VFP code from erroring.
+		PROPERTY Height AS LONG AUTO
+		PROPERTY Width  AS LONG AUTO
+		PROPERTY Left   AS LONG AUTO
+		PROPERTY Top    AS LONG AUTO
+		PROPERTY Parent AS OBJECT AUTO
+
+		// ── vfpTimer event ───────────────────────────────────────────────────
+		// VFP Timer event: fires at each Interval tick.
+		PRIVATE _VFPTimer AS VFPOverride
+		[Category("VFP Events"), Description("Occurs at each timer interval.")];
+		[DefaultValue(NULL)];
+		PROPERTY vfpTimer AS STRING GET _VFPTimer?:SendTo SET Set_VFPTimer( VFPOverride{SELF, VALUE} )
+
+		METHOD Set_VFPTimer( methodCall AS VFPOverride ) AS VOID
+			IF SELF:_VFPTimer == NULL
+				SELF:Tick += System.EventHandler{ SELF, @OnVFPTimer() }
+			ENDIF
+			SELF:_VFPTimer := methodCall
+
+		PRIVATE METHOD OnVFPTimer( sender AS OBJECT, e AS System.EventArgs ) AS VOID
+			IF SELF:_VFPTimer != NULL
+				SELF:_VFPTimer:Call()
+			ENDIF
+
 		PROTECTED firstSet AS LOGIC
 
 		CONSTRUCTOR( )
@@ -55,7 +84,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		METHOD Reset AS VOID Strict
-			// TODO: Implement Reset
+			SELF:Enabled := FALSE
+			SELF:Enabled := TRUE
 			RETURN
 
 	END CLASS

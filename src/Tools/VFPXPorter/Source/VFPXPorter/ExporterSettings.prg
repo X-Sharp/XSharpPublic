@@ -97,9 +97,11 @@ BEGIN NAMESPACE VFPXPorter
 			LOCAL settings AS XPorterSettings
 			//
 			settings := XPorterSettings{}
+			settings:ConvertHandlers := SELF:ConvertHandlers
 			settings:ConvertStatement := SELF:ConvertStatement
 			settings:ConvertStatementOnlyIfLast := SELF:ConvertStatementOnlyIfLast
 			settings:ConvertThisObject := SELF:ConvertThisObject
+			settings:ConvertUserDef	:= SELF:ConvertUserDef
 			settings:EmptyFolder	:= SELF:EmptyFolder
 			settings:IgnoreErrors	:= SELF:IgnoreErrors
 			settings:ItemsPath		:= SELF:Items

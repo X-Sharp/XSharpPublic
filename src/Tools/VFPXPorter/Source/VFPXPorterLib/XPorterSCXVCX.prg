@@ -49,8 +49,8 @@ BEGIN NAMESPACE VFPXPorterLib
         METHOD Analyze( doBackup := FALSE AS LOGIC ) AS LOGIC
             //
             IF SELF:_fileName == NULL  .OR. !File.Exists(SELF:_fileName)
-                VAR fileName := IIF(SELF:_fileName==NULL, "NULL", SELF:_fileName)
-                XPorterLogger.Instance:Error("Analyze: Unknown or missing file: " + fileName)
+                XPorterLogger.Instance:Error( "Unknown File : " )
+                XPorterLogger.Instance:Error( IIF(SELF:_fileName==NULL, "NULL", SELF:_fileName) )
                 RETURN FALSE
             ENDIF
             //
@@ -124,16 +124,22 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECTED METHOD CountItems( entities AS List<SCXVCXEntity> ) AS INT
             LOCAL total := 0 AS INT
             FOREACH VAR entity IN entities
+                //
                 total++
-                total += SELF:CountItems( entity:Item:Childs )
+                FOREACH VAR subItem IN entity:Item:Childs
+                    total += SELF:CountItems( subItem:Childs )
+                NEXT
             NEXT
             RETURN total
 
         PROTECTED METHOD CountItems( itemList AS List<BaseItem> ) AS INT
             LOCAL total := 0 AS INT
             FOREACH VAR item IN itemList
+                //
                 total++
-                total += SELF:CountItems( item:Childs )
+                FOREACH VAR subItem IN item:Childs
+                    total += SELF:CountItems( subItem:Childs )
+                NEXT
             NEXT
             RETURN total
 

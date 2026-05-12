@@ -32,8 +32,6 @@ Definitions are mostly stored in external files. The Folder structure is the fol
 |         +--  InitTypeNotContainer.prg
 |         +--  EndTypeNotContainer.prg
 |         +--  InitTypeBinding.prg
-|     +-- menu
-|         +--  MenuContainer.prg
 |     +-- Tools
 
 
@@ -190,12 +188,6 @@ We have special *\<FoxProClassName>* for Menu strips, Menu items and separator :
 + xsPorterMenuItem
 + xsPorterMenuSeparator
 
-Notable mappings:
-- `shape` → `Shape`, `line` → `Line` (not `Container` — they have dedicated classes in XSharp.VFP.UI)
-- `header` → `Header` (grid column header — not `ColumnHeader`)
-- `page` → `Page`, `pageframe` → `PageFrame`, `column` → `Column` (tab controls and grid columns)
-- `toolbar` → `ToolBar`, `contextmenu` → `ContextMenu`
-
 #### Statements.json
 Simple array with Methods that are sometimes used without the parenthesis.  
 You can manually achieve the same process by searching these and add the () after the "keyword"
@@ -213,19 +205,13 @@ This Rules are processed *before* the next one.
 A Simple Dictionary with elements that are replaced one-to-one.
 ~~~~
 {
-  "thisformset.": "SELF:ThisForm:ThisFormSet:",
-  "thisform.": "SELF:ThisForm:",
   "this.": "thisObject.",
   "Parent.": "_Parent.",
   "Click()": "_Click()"
 }
 ~~~~
 *thisObject* will be created by the VFPXPorter, and refer to the Control/Object that originally contained an EventHandler.  
-*_Parent* is a Property of each VFP* Controls, typed as Object to force Late-Bound call.  
-*THISFORM.* is translated to *SELF:ThisForm:* so menu handlers (and other code outside the form class) can reach the active form.  
-*THISFORMSET.* is translated to *SELF:ThisForm:ThisFormSet:* for the same reason.
-
-**Important**: entries are matched case-insensitively. The order matters — *thisformset.* must appear before *thisform.* so the longer prefix matches first.
+*_Parent* is a Property of each VFP* Controls, typed as Object to force Late-Bound call
 
 
 #### Templates and PlaceHolders
@@ -254,21 +240,6 @@ In Form :
 		<@setdataenvironment@>	: Place where DataEnvironment and Cursors are Initialized
 		<@EventHandlers@>		: Where ALL Event Handlers are placed; those of Controls and Form
 
-
-_Menu Folder_
-Contains the template used when exporting VFP menu definitions (MNX files).
-
-`MenuContainer.prg` generates a class that inherits `XSharp.VFP.UI.Menu`:
-- Placeholders:
-  - `<@MenuName@>` — the menu class name (derived from the MNX file name)
-  - `<@MenuInit@>` — the Init() body: `AddPad`, `AddPopup`, `AddBar` calls and `Bars[N]:vfpClick` wiring
-  - `<@MenuCode@>` — one `METHOD name() AS USUAL STRICT` per bar action, containing the converted handler code
-
-The generated file also produces a companion `<MenuName>.MPR` class that inherits the main menu class, preserving the VFP convention of running a menu via `DO <menu>.MPR`.
-
-`Menu.ThisForm` is set automatically by `Activate(oForm)` to the hosting form. This means handler code that was translated from `THISFORM.xxx` to `SELF:ThisForm:xxx` resolves correctly at runtime.
-
-Handler code inside the menu goes through `ProcessMenuCode()` (in `CodeConverter.prg`), which applies `ChangeStatement` (parentheses insertion) and `ChangeThisObject` (THISFORM/THISFORMSET substitution) but skips form-perspective transformations that are not relevant to menus.
 
 _Tools Folder_
 These files are used during Project Export.

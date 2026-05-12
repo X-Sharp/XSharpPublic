@@ -7,11 +7,10 @@
 #include "VFPObject.xh"
 // In order to support it, we also need to have VFPProperties.xh
 #include "VFPProperties.xh"
-// VFPPropertiesDynamic.xh removed — VFPProperties.xh already declares AddProperty/RemoveProperty/HasProperty
+#include "VFPPropertiesDynamic.xh"
 
 
 // METHOD AddObject(cName, cClass , cOLEClass , aInit1, aInit2 ) AS USUAL CLIPPER
-#ifndef NO_VFPCONTAINER_ADDOBJECT
 METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
     LOCAL oObject AS USUAL
     //
@@ -59,13 +58,9 @@ METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
     ENDIF
    return success
 
-#endif // NO_VFPCONTAINER_ADDOBJECT
 
 
-
-#ifndef VFP_CONTROLCOUNT_OVERRIDE
 PROPERTY ControlCount AS LONG AUTO
-#endif
 
 METHOD NewObject(cObjectName, cClassName , cModule , cInApplication, eParameter1, eParameter2) AS USUAL CLIPPER
     RETURN NIL

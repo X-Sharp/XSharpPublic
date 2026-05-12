@@ -323,9 +323,6 @@ PRIVATE METHOD OnVFPMouseUp(sender AS OBJECT, e AS System.Windows.Forms.MouseEve
         IF (e:Button == MouseButtons.Right )
             SELF:OnVFPRightClick( sender, e )
         ENDIF
-        IF (e:Button == MouseButtons.Middle )
-            SELF:OnVFPMiddleClick( sender, e )
-        ENDIF
 	ENDIF
     RETURN
 
@@ -430,66 +427,6 @@ PRIVATE METHOD OnVFPRightClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
     ENDIF
 
 
-PRIVATE _VFPMiddleClick AS VFPOverride
-[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MiddleClick")];
-[System.ComponentModel.DefaultValue(NULL)];
-PROPERTY vfpMiddleClick AS STRING GET _VFPMiddleClick?:SendTo SET Set_MiddleClick( VFPOverride{SELF, VALUE} )
-
-METHOD Set_MiddleClick( methodCall AS VFPOverride ) AS VOID
-	SELF:_VFPMiddleClick := methodCall
-
-PRIVATE METHOD OnVFPMiddleClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
-    IF SELF:_VFPMiddleClick != NULL
-        SELF:__aeventsData := AEventsDefinition{ sender, "MiddleClick" }
-		SELF:_VFPMiddleClick:Call( )
-    ENDIF
-
-
-PRIVATE _VFPMouseWheel AS VFPOverride
-[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseWheel")];
-[System.ComponentModel.DefaultValue(NULL)];
-PROPERTY vfpMouseWheel AS STRING GET _VFPMouseWheel?:SendTo SET Set_MouseWheel( VFPOverride{SELF, VALUE} )
-
-METHOD Set_MouseWheel( methodCall AS VFPOverride ) AS VOID
-	SELF:MouseWheel += System.Windows.Forms.MouseEventHandler{ SELF, @OnVFPMouseWheel() }
-	SELF:_VFPMouseWheel := methodCall
-
-PRIVATE METHOD OnVFPMouseWheel(sender AS OBJECT, e AS System.Windows.Forms.MouseEventArgs) AS VOID
-	IF _VFPMouseWheel != NULL
-		LOCAL nButton AS INT
-		LOCAL nShift  AS INT
-		SWITCH e:Button
-		CASE MouseButtons.Right  ; nButton := 2
-		CASE MouseButtons.Middle ; nButton := 4
-		OTHERWISE                ; nButton := 1
-		END SWITCH
-		nShift := 0
-		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Shift )   == Keys.Shift   ; nShift += 1 ; ENDIF
-		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Control ) == Keys.Control ; nShift += 2 ; ENDIF
-		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Alt )     == Keys.Alt     ; nShift += 4 ; ENDIF
-		SELF:__aeventsData := AEventsDefinition{ sender, "MouseWheel" }
-		SELF:_VFPMouseWheel:Call( <USUAL>{nButton, nShift, e:X, e:Y, e:Delta} )
-	ENDIF
-	RETURN
-
-
-PRIVATE _VFPMessage AS VFPOverride
-[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Occurs when the mouse pointer moves over a control; used to display StatusBarText.")];
-[System.ComponentModel.DefaultValue(NULL)];
-PROPERTY vfpMessage AS STRING GET _VFPMessage?:SendTo SET Set_Message( VFPOverride{SELF, VALUE} )
-
-METHOD Set_Message( methodCall AS VFPOverride ) AS VOID
-	SELF:MouseEnter += System.EventHandler{ SELF, @OnVFPMessage() }
-	SELF:_VFPMessage := methodCall
-
-PRIVATE METHOD OnVFPMessage(sender AS OBJECT, e AS System.EventArgs) AS VOID
-	IF SELF:_VFPMessage != NULL
-		SELF:__aeventsData := AEventsDefinition{ sender, "Message" }
-		SELF:_VFPMessage:Call()
-	ENDIF
-	RETURN
-
-
 PRIVATE _VFPKeyPress AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyPress")];
 [System.ComponentModel.DefaultValue(NULL)];
@@ -503,48 +440,6 @@ PRIVATE METHOD OnVFPKeyPress( sender AS OBJECT, e AS System.Windows.Forms.KeyPre
     IF SELF:_VFPKeyPress != NULL
         SELF:__aeventsData := AEventsDefinition{ sender, "KeyPress" }
 		SELF:_VFPKeyPress:Call( )
-    ENDIF
-
-
-PRIVATE _VFPKeyDown AS VFPOverride
-[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyDown")];
-[System.ComponentModel.DefaultValue(NULL)];
-PROPERTY vfpKeyDown AS STRING GET _VFPKeyDown?:SendTo SET Set_KeyDown( VFPOverride{SELF, VALUE} )
-
-METHOD Set_KeyDown( methodCall AS VFPOverride ) AS VOID
-    SELF:KeyDown += System.Windows.Forms.KeyEventHandler{ SELF, @OnVFPKeyDown() }
-    SELF:_VFPKeyDown := methodCall
-
-PRIVATE METHOD OnVFPKeyDown( sender AS OBJECT, e AS System.Windows.Forms.KeyEventArgs) AS VOID
-    IF SELF:_VFPKeyDown != NULL
-        LOCAL nShift AS INT
-        nShift := 0
-        IF e:Shift   ; nShift += 1 ; ENDIF
-        IF e:Control ; nShift += 2 ; ENDIF
-        IF e:Alt     ; nShift += 4 ; ENDIF
-        SELF:__aeventsData := AEventsDefinition{ sender, "KeyDown" }
-        SELF:_VFPKeyDown:Call( <USUAL>{ (INT)e:KeyValue, nShift } )
-    ENDIF
-
-
-PRIVATE _VFPKeyUp AS VFPOverride
-[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyUp")];
-[System.ComponentModel.DefaultValue(NULL)];
-PROPERTY vfpKeyUp AS STRING GET _VFPKeyUp?:SendTo SET Set_KeyUp( VFPOverride{SELF, VALUE} )
-
-METHOD Set_KeyUp( methodCall AS VFPOverride ) AS VOID
-    SELF:KeyUp += System.Windows.Forms.KeyEventHandler{ SELF, @OnVFPKeyUp() }
-    SELF:_VFPKeyUp := methodCall
-
-PRIVATE METHOD OnVFPKeyUp( sender AS OBJECT, e AS System.Windows.Forms.KeyEventArgs) AS VOID
-    IF SELF:_VFPKeyUp != NULL
-        LOCAL nShift AS INT
-        nShift := 0
-        IF e:Shift   ; nShift += 1 ; ENDIF
-        IF e:Control ; nShift += 2 ; ENDIF
-        IF e:Alt     ; nShift += 4 ; ENDIF
-        SELF:__aeventsData := AEventsDefinition{ sender, "KeyUp" }
-        SELF:_VFPKeyUp:Call( <USUAL>{ (INT)e:KeyValue, nShift } )
     ENDIF
 
 

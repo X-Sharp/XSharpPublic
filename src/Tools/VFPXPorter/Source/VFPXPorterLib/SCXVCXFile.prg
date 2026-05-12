@@ -7,6 +7,7 @@
 
 USING System
 USING System.Collections.Generic
+USING System.Linq
 USING System.Text
 USING System.IO
 USING System.Xml.Serialization
@@ -46,7 +47,6 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:_isLibrary := ( String.Compare( System.IO.Path.GetExtension( SELF:_fileName ), ".vcx", TRUE ) == 0 )
             //
             SELF:Entities := List<SCXVCXEntity>{}
-            SELF:_Items := List<SCXVCXItem>{}
             SELF:HasFormSet := FALSE
             RETURN
 
@@ -306,8 +306,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 RETURN TRUE
             ENDIF
             //
-            LOCAL pos := Array.IndexOf( SCXVCXFile.ignoreTypeList, typeOfItem ) AS INT
-            RETURN (pos >=0 )
+            RETURN SCXVCXFile.ignoreTypeList:Any( { s => String.Compare( s, typeOfItem, TRUE ) == 0 } )
 
         /// <summary>
         /// Backup the SCX Items : Create an XML File with Items info, and export the associated Code

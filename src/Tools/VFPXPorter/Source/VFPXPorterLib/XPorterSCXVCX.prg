@@ -124,22 +124,16 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECTED METHOD CountItems( entities AS List<SCXVCXEntity> ) AS INT
             LOCAL total := 0 AS INT
             FOREACH VAR entity IN entities
-                //
                 total++
-                FOREACH VAR subItem IN entity:Item:Childs
-                    total += SELF:CountItems( subItem:Childs )
-                NEXT
+                total += SELF:CountItems( entity:Item:Childs )
             NEXT
             RETURN total
 
         PROTECTED METHOD CountItems( itemList AS List<BaseItem> ) AS INT
             LOCAL total := 0 AS INT
             FOREACH VAR item IN itemList
-                //
                 total++
-                FOREACH VAR subItem IN item:Childs
-                    total += SELF:CountItems( subItem:Childs )
-                NEXT
+                total += SELF:CountItems( item:Childs )
             NEXT
             RETURN total
 

@@ -1991,19 +1991,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
             // Check for overloaded Clipper methods
-            foreach (var members in membersByName.Values)
+            if (XsHasClipperProblems(diagnostics))
             {
-                if (members.Length > 1)
-                {
-                    foreach (var member in members)
-                    {
-                        if (member is MethodSymbol && member.HasClipperCallingConvention())
-                        {
-                            diagnostics.Add(ErrorCode.ERR_ClipperOverloaded, member.Locations[0], member.ContainingType, member.Name);
-                            return;
-                        }
-                    }
-                }
+                return;
             }
 #endif
             foreach (var pair in membersByName)
@@ -2069,29 +2059,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 if (Locations.Length == 1 || IsPartial)
                                 {
 #if XSHARP
-                                    // Properties that are generated from an ACCESS and ASSIGN need special handling
-                                    // for their location. We have added a ErrorLocation property for this.
-                                    // We also suppress the error for protected fields when the conflicting member is a property
-                                    bool suppressError = false;
-                                    if (symbol.Kind == SymbolKind.Property)
-                                    {
-                                        suppressError = lastSym.Kind == SymbolKind.Field && lastSym.DeclaredAccessibility <= Accessibility.Protected;
-                                    }
-                                    else if (symbol.Kind == SymbolKind.Field)
-                                    {
-                                        suppressError = lastSym.Kind == SymbolKind.Property && symbol.DeclaredAccessibility <= Accessibility.Protected;
-                                    }
-                                    if (!suppressError)
-                                    {
-                                        if (symbol is SourcePropertySymbol ps)
-                                        {
-                                            diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, ps.ErrorLocation, this, symbol.Name);
-                                        }
-                                        else
-                                        {
-                                            diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.Locations[0], this, symbol.Name);
-                                        }
-                                    }
+                                    XsHandlePropertyErrors(symbol, lastSym, diagnostics);
 #else
                                     diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.GetFirstLocation(), this, symbol.Name);
 #endif
@@ -2294,7 +2262,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
 #if XSHARP
             if (indexer.IsIndexer())
-			{
+            {
 #endif
             if (!indexer.IsExplicitInterfaceImplementation) //explicit implementation names are not checked
             {
@@ -2327,7 +2295,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 #if XSHARP
-			}
+            }
 #endif
 
             if (indexersBySignature.TryGetValue(indexer, out var prevIndexerBySignature))
@@ -2919,31 +2887,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var membersAndInitializers = GetMembersAndInitializers();
 
 #if XSHARP
-            if ((this as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true && DeclaringCompilation.Options.HasRuntime)
-            {
-                foreach (var m in membersAndInitializers.NonTypeMembers)
-                {
-                    if (m.Kind == SymbolKind.Field)
-                    {
-                        var f = (FieldSymbol)m;
-                        if (!(f.Type.IsPointerType() ||
-                            (f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true ||
-                            (f.Type as Symbols.Metadata.PE.PENamedTypeSymbol)?.IsVoStructOrUnion() == true ||
-                            (f.Type.SpecialType == SpecialType.System_IntPtr) ||
-                            (f.Type.SpecialType == SpecialType.System_UIntPtr) ||
-                            (f.Type as NamedTypeSymbol).IsPszType() ||
-                            (f.Type as NamedTypeSymbol).IsWinBoolType() ||
-                            (f.Type as NamedTypeSymbol).IsWinDateType() ||
-                            (f.Type as NamedTypeSymbol).IsSymbolType() ||
-                            (f.Type as NamedTypeSymbol).IsDateType() ||
-                            f.Type.FixedBufferElementSizeInBytes() != 0))
-                        {
-                            diagnostics.Add(ErrorCode.ERR_IllegalVoStructMemberType, f.Locations[0], f.Type);
-                        }
-                    }
-                }
-            }
-
+            XsCheckVoStructMembers(membersAndInitializers, diagnostics);
 #endif
             // Most types don't have indexers.  If this is one of those types,
             // just reuse the dictionary we build for early attribute decoding.

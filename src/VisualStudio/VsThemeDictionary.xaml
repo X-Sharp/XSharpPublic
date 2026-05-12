@@ -82,4 +82,60 @@
     <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
         <Setter Property="BorderThickness" Value="0" />
     </Style>
+
+    <!--
+        ResetButtonStyle — used by the reset (↺) button next to each property field.
+        A small 18×18 flat button that shows the ↺ glyph.
+        Enabled only when the MSBuild property is explicitly overridden in the project file
+        (driven by IsEnabled binding in each XAML page).
+        Uses VS theme colors so it looks correct in all VS themes (Blue / Dark / Light / HC).
+    -->
+    <Style x:Key="ResetButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Width"            Value="18"/>
+        <Setter Property="Height"           Value="18"/>
+        <Setter Property="Padding"          Value="0"/>
+        <Setter Property="Margin"           Value="3,0,0,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Background"       Value="Transparent"/>
+        <Setter Property="BorderBrush"      Value="Transparent"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="Cursor"           Value="Hand"/>
+        <Setter Property="ToolTip"          Value="Reset to default"/>
+        <Setter Property="FontSize"         Value="12"/>
+        <Setter Property="Foreground"       Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2">
+                        <TextBlock Text="&#x2699;"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource {x:Static vsui:CommonControlsColors.ButtonHoverBrushKey}}"/>
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource {x:Static vsui:CommonControlsColors.ButtonBorderHoverBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource {x:Static vsui:CommonControlsColors.ButtonPressedBrushKey}}"/>
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource {x:Static vsui:CommonControlsColors.ButtonBorderPressedBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.3"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

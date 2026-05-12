@@ -66,7 +66,8 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN NULL
 
 
-
+        VIRTUAL METHOD EmptyValue() AS OBJECT
+            RETURN String.Empty
         PROTECTED CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType, nPos as DWORD)
             SUPER(oInfo)
             SELF:RDD        := oRDD
@@ -205,6 +206,8 @@ BEGIN NAMESPACE XSharp.ADS
                 SELF:RDD:_CheckError(result,EG_READ)
             END SWITCH
             RETURN String.Empty
+    VIRTUAL METHOD EmptyValue() AS OBJECT
+        RETURN String.Empty
 
     END CLASS
     /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsDateColumn/*" />
@@ -246,6 +249,8 @@ BEGIN NAMESPACE XSharp.ADS
             CATCH
                 SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Error converting Julian Number")
             END TRY
+            RETURN DbDate{0,0,0}
+        VIRTUAL METHOD EmptyValue() AS OBJECT
             RETURN DbDate{0,0,0}
 
         OVERRIDE METHOD PutValue(oValue AS OBJECT) AS LOGIC
@@ -316,6 +321,10 @@ BEGIN NAMESPACE XSharp.ADS
 
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0
+
+        VIRTUAL METHOD EmptyValue() AS OBJECT
+            RETURN FALSE
+
     END CLASS
 
     /// <include file="XSharp.RDD.Docs.xml" path="doc/AdsNumericColumn/*" />
@@ -395,6 +404,8 @@ BEGIN NAMESPACE XSharp.ADS
             ENDIF
             RETURN TRUE
 
+        VIRTUAL METHOD EmptyValue() AS OBJECT
+            RETURN 0
 
     END CLASS
 
@@ -537,6 +548,10 @@ BEGIN NAMESPACE XSharp.ADS
 
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 10 .AND.  SELF:Decimals == 0
+
+    VIRTUAL METHOD EmptyValue() AS OBJECT
+        RETURN String.Empty
+
 
     END CLASS
 

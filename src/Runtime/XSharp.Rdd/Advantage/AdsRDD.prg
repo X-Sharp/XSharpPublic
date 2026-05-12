@@ -837,6 +837,9 @@ OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
     ENDIF
     var column := SELF:_GetColumn(nFldPos)
     if column != null
+        IF SELF:_EoF .or. SELF:RecCount == 0
+            RETURN column:EmptyValue()
+        ENDIF
         RETURN column:GetValue()
     endif
     return NULL
@@ -1208,6 +1211,9 @@ OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
         SELF:_CheckError(ACE.AdsSetDateFormat(RuntimeState.DateFormat))
         local sDate as string
+        IF DateLen <= 0
+            RETURN DbDate{0,0,0}
+        ENDIF
         sDate := String{aDate, 0, DateLen}
         local month, day, year as int
         month := Convert.ToInt32(sDate:Substring(0,2))

@@ -489,7 +489,7 @@ BEGIN NAMESPACE VFPXPorterLib
             //NEXT
 //             IF String.IsNullOrEmpty( SELF:FormNameOverride )
             VAR formStartReplacements := Dictionary<STRING, STRING>{}
-            formStartReplacements["formName"] := oneItem.FullName
+            formStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
             formStartReplacements["superName"] := oneItem:FullyQualifiedName
             formStartReplacements["dataenvironment"] := declareDataEnv:ToString()
             formStartReplacements["childsDeclaration"] := declaration:ToString()
@@ -615,7 +615,7 @@ BEGIN NAMESPACE VFPXPorterLib
 
              // Build replacements for DesignerStartType
              VAR designerStartReplacements := Dictionary<STRING, STRING>{}
-             designerStartReplacements["formName"] := IIF( String.IsNullOrEmpty(oneItem:Parent), oneItem:Name, oneItem:Parent + "_" + oneItem:Name )
+             designerStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
              designerStartReplacements["superName"] := oneItem:FullyQualifiedName
              // Declaration of Childrens (Sub-Controls)
              VAR declaration := StringBuilder{}
@@ -851,7 +851,7 @@ BEGIN NAMESPACE VFPXPorterLib
              //
              // Build replacements for FormStartType
              VAR singleFileStartReplacements := Dictionary<STRING, STRING>{}
-             singleFileStartReplacements["formName"] := oneItem:Name
+             singleFileStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
              singleFileStartReplacements["superName"] := oneItem:ClassName
              // Declaration of Childrens (Sub-Controls)
              VAR declaration := StringBuilder{}
@@ -1030,35 +1030,38 @@ BEGIN NAMESPACE VFPXPorterLib
          END METHOD
 
 
+        /// <summary>
+        /// Returns the X# class name for a form/control entity.
+        /// - VCX: use the OBJNAME (each entry is an explicitly named class definition).
+        /// - SCX, simple form: use the SCX filename — that is the DO FORM identity in VFP.
+        /// - SCX, FormSet sub-form: use scxName_formOBJNAME to make each sub-form unique.
+        /// </summary>
+        PRIVATE METHOD GetFormClassName( item AS SCXVCXItem ) AS STRING
+            IF SELF:IsLibrary
+                RETURN item:Name
+            ENDIF
+            VAR scxName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath )
+            IF item:IsForm .AND. !String.IsNullOrEmpty( item:Parent )
+                RETURN scxName + "_" + item:Name
+            ENDIF
+            RETURN scxName
+        END METHOD
+
         PROTECTED METHOD GetOutputFilename( item AS BaseItem ) AS STRING
             LOCAL outFileName AS STRING
-            //
-//             IF String.IsNullOrEmpty( SELF:FormNameOverride )
-                // Only one Form ?
-                IF item != NULL
-                    VAR itemName := item:Name
-                    // We could be in a FormSet, add the Parent as a Prefix
-                    IF item:IsForm .AND. !String.IsNullOrEmpty(item:Parent)
-                        itemName := item:Parent + "_" + itemName
-                    ENDIF
-                    IF SELF:Settings:PrefixClassFile
-                        outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ) + "_" + itemName
-                    ELSE
-                        outFileName := itemName
-                    ENDIF
-                    outFileName := Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath ) + "_" + outFileName
-
+            IF item != NULL
+                VAR className := SELF:GetFormClassName( (SCXVCXItem)item )
+                // For VCX items, PrefixClassFile optionally groups files under the VCX name.
+                // For SCX items the class name already embeds the SCX filename, so no extra prefix.
+                IF SELF:IsLibrary .AND. SELF:Settings:PrefixClassFile
+                    outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ) + "_" + className
                 ELSE
-                    outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath )
+                    outFileName := className
                 ENDIF
-//             ELSE
-//                 outFileName := SELF:FormNameOverride
-//             ENDIF
-            // Create the File based on the Form Name, or the scx file in case of trouble...
-            LOCAL destFile AS STRING
-            destFile := Path.Combine(SELF:Settings:OutputPath, outFileName ) + ".prg"
-            //destFile := Path.ChangeExtension( destFile, "prg")
-            RETURN destFile
+            ELSE
+                outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath )
+            ENDIF
+            RETURN Path.Combine(SELF:Settings:OutputPath, outFileName ) + ".prg"
         END METHOD
 
         /// <summary>

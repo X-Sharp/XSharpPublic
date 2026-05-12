@@ -4,6 +4,6 @@ PUBLIC PARTIAL CLASS <@formName@> ;
 		INHERIT <@superName@>
 
 		<@dataenvironment@>
-		
-		<@childsDeclaration@>		
+
+		<@childsDeclaration@>
 

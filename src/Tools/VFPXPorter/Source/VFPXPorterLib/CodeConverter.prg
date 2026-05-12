@@ -440,7 +440,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				ENDDO
 				IF rhsStart < line:Length
 					LOCAL remaining := line:Substring(rhsStart) AS STRING
-					IF remaining:ToLower():StartsWith("vfptools.colorFromvfp(")
+					IF remaining:ToLower():StartsWith("VFPTools.ColorFromVFP(")
 						RETURN -1
 					ENDIF
 				ENDIF

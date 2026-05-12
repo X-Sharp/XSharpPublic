@@ -29,7 +29,7 @@ PRIVATE METHOD InitializeComponent() AS VOID STRICT
 
 	SELF:ResumeLayout( FALSE )
 
-PUBLIC CONSTRUCTOR( InitParamsListt PARAMS USUAL[] )
+PUBLIC CONSTRUCTOR( InitParamsList PARAMS USUAL[] )
 	SUPER( InitParamsList )
 	//
 	PreInitializeComponent()

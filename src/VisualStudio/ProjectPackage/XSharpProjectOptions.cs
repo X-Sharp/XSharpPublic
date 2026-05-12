@@ -33,7 +33,7 @@ namespace XSharp.Project
             _prjNode = prjNode;
 
         }
-        
+
         public void BuildCommandLine()
         {
             //List<String> args = new List<String>();
@@ -65,15 +65,22 @@ namespace XSharp.Project
                 options.Add("r:" + comNode.Url);
             }
 
-            var defines = "";
-            if (DefinedPreprocessorSymbols != null)
+            var defines = _prjNode.GetProjectProperty(XSharpProjectFileConstants.DefineConstants);
+            if (string.IsNullOrEmpty(defines))
             {
-                foreach (var d in DefinedPreprocessorSymbols)
+                defines = "";
+                if (DefinedPreprocessorSymbols != null)
                 {
-                    defines = defines + d + ";";
+                    foreach (var d in DefinedPreprocessorSymbols)
+                    {
+                        defines = defines + d + ";";
+                    }
                 }
             }
-            options.Add("d:" + defines);
+            if (!string.IsNullOrEmpty(defines))
+            {
+                options.Add("d:" + defines);
+            }
             var include = _prjNode.GetProjectProperty(XSharpProjectFileConstants.IncludePaths);
             if (!string.IsNullOrEmpty(include))
             {

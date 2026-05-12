@@ -37,7 +37,6 @@
             <Button x:Name="resetButton"
                 Style="{DynamicResource ResetButtonStyle}"
                 Command="{Binding ResetCommand}">
-                <Image Source="pack://application:,,,/Settings.png" />
             </Button>
 
         </StackPanel>

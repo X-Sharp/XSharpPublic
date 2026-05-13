@@ -683,12 +683,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (m1Clipper)
                     {
                         result = BetterResult.Right;
-                        useSiteInfo.AddDiagnostics(GenerateWarning(bothRT, m2.Member, m1.Member, ErrorCode.WRN_XSharpAmbiguous));
+                        // Do not warn when choosing the parameterless method
+                        if (m2.Member.GetParameterCount() != 0)
+                        {
+                            useSiteInfo.AddDiagnostics(GenerateWarning(bothRT, m2.Member, m1.Member, ErrorCode.WRN_XSharpAmbiguous));
+                        }
                     }
                     else
                     {
                         result = BetterResult.Left;
-                        useSiteInfo.AddDiagnostics(GenerateWarning(bothRT, m1.Member, m2.Member, ErrorCode.WRN_XSharpAmbiguous));
+                        // Do not warn when choosing the parameterless method
+                        if (m1.Member.GetParameterCount() != 0)
+                        {
+                            useSiteInfo.AddDiagnostics(GenerateWarning(bothRT, m1.Member, m2.Member, ErrorCode.WRN_XSharpAmbiguous));
+                        }
                     }
                     return result;
                 }

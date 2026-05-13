@@ -358,6 +358,24 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         METHOD TxnLevelTest() AS VOID
             Assert.Equal(0, TxnLevel())
         END METHOD
+
+        [Fact, Trait("Category", "Database")];
+        METHOD IsMemoFetched_NoTableTest() AS VOID
+            Assert.False(IsMemoFetched("memoField"))
+        END METHOD
+
+        [Fact, Trait("Category", "Database")];
+        METHOD IsMemoFetched_WithCursorTest() AS VOID
+            CREATE CURSOR TestCursor (custId I, notes C(10))
+            INSERT INTO TestCursor VALUES (1, "test memo")
+            GO TOP
+
+            Assert.True(IsMemoFetched("notes"))
+            Assert.True(IsMemoFetched(2))
+            GO BOTTOM
+            SKIP // go to EOF
+            Assert.False(IsMemoFetched("notes"))
+        END METHOD
 	END CLASS
 
 END NAMESPACE

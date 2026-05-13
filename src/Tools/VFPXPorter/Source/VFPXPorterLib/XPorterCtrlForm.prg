@@ -561,6 +561,7 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR columnSettings := SELF:GenerateGrids( Grids )
             formInitReplacements["InitGrids"] := columnSettings:ToString()
             formInitReplacements["setdataenvironment"] := IIF(dataEnvItem != NULL, setDataEnv:ToString(), "")
+            formInitReplacements["DoBindings"] := IIF(dataEnvItem != NULL, "DoBindings()", "")
             IF oneItem:UserDefItems != NULL
                 VAR userdefProp := StringBuilder{}
                 userdefProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 2 ))
@@ -996,6 +997,8 @@ BEGIN NAMESPACE VFPXPorterLib
              singleFileInitReplacements["formProps"] := formProp:ToString()
              singleFileInitReplacements["userdefProps"] := userdefProp:ToString()
              singleFileInitReplacements["setdataenvironment"] := IIF(dataEnvItem != NULL, setDataEnv:ToString(), "")
+             singleFileInitReplacements["DoBindings"] := IIF(dataEnvItem != NULL, "DoBindings()", "")
+
              // Add EventHandlers
              VAR handlers := StringBuilder{}
              FOREACH VAR subItem IN oneItem:Childs
@@ -1254,7 +1257,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 setDataEnv:Append(", @DataEnvironment.DataEnvironment_FormClosing() }")
                 setDataEnv:Append(Environment.NewLine)
                 //
-                setDataEnv:Append("DoBindings()")
+                //setDataEnv:Append("DoBindings()") Do The Binding in the Template
                 setDataEnv:Append(Environment.NewLine)
                 //
             ENDIF

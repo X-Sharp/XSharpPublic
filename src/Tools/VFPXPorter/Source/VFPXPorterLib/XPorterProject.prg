@@ -545,7 +545,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 // A prg with a Procedure ?
                                 IF SELF:Project:Main:Name:EndsWith(".prg")
                                     start:Append( Path.GetFileNameWithoutExtension( SELF:Project:Main:Name ) )
-                                    start:AppendLine( "()" )
+                                    start:Append( "()" )
                                 ELSE
                                     // A Form ?
                                     start:AppendLine( "Application.EnableVisualStyles()" )

@@ -9,6 +9,8 @@ USING XSharp.VFP.UI
 
 
 FUNCTION Start AS VOID
+    Application.EnableVisualStyles()
+    Application.SetCompatibleTextRenderingDefault( FALSE )
 	// Create the _Screen var
     _Screen := XSharp.VFP.UI.MainWindow{}
 
@@ -16,7 +18,9 @@ FUNCTION Start AS VOID
 	_vfp := XSharp.VFP.UI.Application{}
 
 	// The original Entry Point is here
-	<@startcode@>
+    _Screen:StartFunction := "<@startcode@>"
+    Application.Run( _Screen )
+    
     RETURN
 
 

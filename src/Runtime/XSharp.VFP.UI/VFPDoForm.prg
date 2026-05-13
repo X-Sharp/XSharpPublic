@@ -53,7 +53,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF !IsNil( varName )
 					MemVarPut( varName, formVar )
 				ENDIF
-				// and Show window
+                // and Show window (We should take car of the NOSHOW option here,
+                // but for now we will always show the form)
 				Send( formVar, "Show" )
 				//
 

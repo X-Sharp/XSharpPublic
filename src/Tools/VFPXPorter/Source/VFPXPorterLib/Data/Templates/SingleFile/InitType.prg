@@ -32,12 +32,16 @@ PRIVATE METHOD InitializeComponent() AS VOID STRICT
 PUBLIC CONSTRUCTOR( InitParamsList PARAMS USUAL[] )
 	SUPER( InitParamsList )
 	//
-	PreInitializeComponent()
+    PreInitializeComponent()
+	SetDataEnvironment()
+
 	InitializeComponent()
 	InitContainers()
 	InitGrids()
-	SetDataEnvironment()
-	<@userdefProps@>
+    <@userdefProps@>
+
+    // If DataEnv has been Set, we will generate a DoBindings()
+    <@DoBindings@>
 
 METHOD InitContainers() AS Void
 	<@InitContainers@>

@@ -67,8 +67,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 			// Todo
 		PROPERTY ColorSource AS INT AUTO
-					// Todo
-		PROPERTY ShowWindowState AS INT AUTO
+				// VFP ShowWindow: 0=MDI child of _SCREEN (default), 1=Modal top-level, 2=Top-level modeless
+		PRIVATE _showWindow AS INT
+		VIRTUAL PROPERTY ShowWindow AS INT
+			GET ; RETURN _showWindow ; END GET
+			SET ; _showWindow := VALUE ; END SET
+		END PROPERTY
 
 			// The Form is returned as Object to force late-bound code
 		PROPERTY ThisForm AS OBJECT GET SELF
@@ -336,12 +340,28 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 		NEW METHOD Show() AS VOID
-			// WindowType: 0 = Modeless, 1 = Modal (VFP default is 1 for standalone forms)
-			IF SELF:MDIForm .OR. SELF:WindowType == 0
+			// MDIForm = TRUE means this form IS its own MDI container — show normally.
+			IF SELF:MDIForm
 				SUPER:Show()
-			ELSE
-				SELF:ShowDialog()
+				RETURN
 			ENDIF
+			LOCAL screen AS MainWindow
+			screen := MainWindow.Current
+			SWITCH SELF:ShowWindow
+			CASE 0  // MDI child of _SCREEN
+				IF screen != NULL .AND. screen:IsMdiContainer .AND. SELF:MdiParent == NULL .AND. !SELF:IsMdiContainer
+					SELF:MdiParent := screen
+				ENDIF
+				IF SELF:WindowType == 1
+					SUPER:ShowDialog()
+				ELSE
+					SUPER:Show()
+				ENDIF
+			CASE 1  // Modal top-level
+				SUPER:ShowDialog()
+			OTHERWISE  // 2 = top-level modeless (or any future value)
+				SUPER:Show()
+			END SWITCH
 		END METHOD
 
 		// ── B-5: ActiveControl ───────────────────────────────────────────────

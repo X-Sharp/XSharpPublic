@@ -13,7 +13,7 @@
     "Picture": "??<@Picture@>??",
     "Icon": "System.Drawing.Icon{??<@Icon@>??}",
     "ShowInTaskBar": "ShowInTaskbar",
-    "ShowWindow": "ShowWindowState",
+    "ShowWindow": "ShowWindow",
     "ScaleMode": "",
     "ColorSource": "",
     "BorderStyle": "BorderStyle",

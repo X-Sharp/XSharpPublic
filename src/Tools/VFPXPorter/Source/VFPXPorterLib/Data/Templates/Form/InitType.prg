@@ -1,12 +1,17 @@
 ﻿PUBLIC CONSTRUCTOR( InitParamsList PARAMS USUAL[] )
 	Super( InitParamsList )
 	//
-	PreInitializeComponent()
+    PreInitializeComponent()
+    SetDataEnvironment()
+
 	InitializeComponent()
-	InitContainers()
+    InitContainers()
 	InitGrids()
-	SetDataEnvironment()
-	<@userdefProps@>
+
+    <@userdefProps@>
+
+    // If DataEnv has been Set, we will generate a DoBindings()
+    <@DoBindings@>
 
 PRIVATE METHOD PreInitializeComponent() AS VOID
     self:components := System.ComponentModel.Container{}
@@ -23,7 +28,4 @@ PRIVATE METHOD InitGrids() AS Void
 VIRTUAL METHOD SetDataEnvironment() AS VOID
 	<@setdataenvironment@>
 
-
 	<@EventHandlers@>
-
-

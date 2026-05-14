@@ -366,7 +366,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         [Fact, Trait("Category", "Database")];
         METHOD IsMemoFetched_WithCursorTest() AS VOID
-            CREATE CURSOR TestCursor (custId I, notes C(10))
+            CREATE CURSOR TestCursor (custId I, notes M)
             INSERT INTO TestCursor VALUES (1, "test memo")
             GO TOP
 
@@ -374,7 +374,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(IsMemoFetched(2))
             GO BOTTOM
             SKIP // go to EOF
-            Assert.False(IsMemoFetched("notes"))
+            Assert.True(IsNull(IsMemoFetched("notes")))
         END METHOD
 	END CLASS
 

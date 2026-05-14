@@ -568,17 +568,14 @@ FUNCTION TxnLevel( ) AS LONG
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ismemofetched/*" />
 [FoxProFunction("ISMEMOFETCHED", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Partial, FoxCriticality.Medium)];
-FUNCTION IsMemoFetched( uField AS USUAL, uArea := NIL AS USUAL) AS LOGIC
+FUNCTION IsMemoFetched( uField AS USUAL, uArea := NIL AS USUAL) AS USUAL
     IF !XSharp.RT.Functions.Used()
         RETURN FALSE
     ENDIF
-    RETURN _DoInArea(uArea, { =>
-        IF Bof() .OR. Eof()
-            RETURN FALSE
-        ENDIF
-        RETURN TRUE
-    }, FALSE, __FUNCTION__, 2)
-
+    IF XSharp.RT.Functions.Eof()
+        RETURN DBNull.Value
+    ENDIF
+    RETURN TRUE
 
 FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     local acStruct as ARRAY

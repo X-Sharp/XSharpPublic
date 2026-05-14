@@ -572,7 +572,7 @@ FUNCTION IsMemoFetched( uField AS USUAL, uArea := NIL AS USUAL) AS USUAL
     IF !XSharp.RT.Functions.Used()
         RETURN FALSE
     ENDIF
-    IF XSharp.RT.Functions.Eof()
+    IF XSharp.RT.Functions.Bof() .or. XSharp.RT.Functions.Eof()
         RETURN DBNull.Value
     ENDIF
     RETURN TRUE

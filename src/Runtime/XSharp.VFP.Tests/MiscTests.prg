@@ -372,6 +372,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Assert.True(IsMemoFetched("notes"))
             Assert.True(IsMemoFetched(2))
+            GO TOP
+            SKIP -1 // set BOF
+            Assert.True(IsNull(IsMemoFetched("notes")))
+
             GO BOTTOM
             SKIP // go to EOF
             Assert.True(IsNull(IsMemoFetched("notes")))

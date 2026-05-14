@@ -41,9 +41,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
         // ── Row / column editing permissions ────────────────────────────────
+        // AllowAddNew is decoupled from DataGridView.AllowUserToAddRows (always FALSE).
+        // We own the entire new-row lifecycle to avoid WinForms ghost-row crash chains.
         PROPERTY AllowAddNew AS LOGIC
-            GET ; RETURN SELF:AllowUserToAddRows ; END GET
-            SET ; SELF:AllowUserToAddRows := VALUE ; END SET
+            GET ; RETURN SELF:_allowAddNew ; END GET
+            SET ; SELF:_allowAddNew := VALUE ; END SET
         END PROPERTY
 
         PROPERTY AllowDelete AS LOGIC
@@ -76,6 +78,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PRIVATE _oldColIndex AS LONG
         PRIVATE _rowColChange AS LONG
 
+        PRIVATE _allowAddNew          AS LOGIC
+        PRIVATE _pendingNewRow        AS LOGIC
+        PRIVATE _pendingNewRowIndex   AS INT
+        PRIVATE _pendingNewRowDirty   AS LOGIC
+
         #include "Headers/VFPContainer.xh"
         #include "Headers/VFPPropertiesDynamic.xh"
         #include "VFPProperties.xh"
@@ -91,12 +98,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:AutoGenerateColumns := FALSE
             // Remove the "selection" column in front of each Row
             SELF:RowHeadersVisible := FALSE
+            // Per Default, in VFP you cannot add new rows to the grid
+            SELF:AllowAddNew := FALSE
+            // AllowUserToAddRows is always FALSE — we manage new rows ourselves
+            SELF:AllowUserToAddRows := FALSE
+            // TODO : Not sure about this one, but I guess that by default you cannot delete rows in a VFP Grid
+            SELF:AllowUserToDeleteRows := FALSE
+
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
             SELF:CurrentCellChanged += System.EventHandler{ SELF, @VFPCurrentCellChanged() }
             SELF:CellLeave += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @VFPCellLeave() }
             SELF:CellBeginEdit += System.Windows.Forms.DataGridViewCellCancelEventHandler{ SELF, @VFPCellBeginEdit() }
             SELF:CellEndEdit += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @VFPCellEndEdit() }
+            SELF:CellValueChanged += System.Windows.Forms.DataGridViewCellEventHandler{ SELF, @VFPCellValueChanged() }
             SELF:ColumnHeaderMouseClick += System.Windows.Forms.DataGridViewCellMouseEventHandler{ SELF, @VFPColumnHeaderMouseClick() }
             SELF:Size := System.Drawing.Size{320, 200}
 
@@ -176,7 +191,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 ENDIF
             END WHILE
 
-            PROTECTED _currentSource	AS DbDataSource
+            PROTECTED _currentSource	AS VFPDbDataSource
         PROTECTED _nameOfTable		AS STRING
         PROTECTED _bindingSource	AS System.Windows.Forms.BindingSource
 
@@ -201,8 +216,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
             TRY
                 VAR current := DbGetSelect()
-                IF DbSelectArea( SELF:_nameOfTable )
-                    SELF:_currentSource := DbDataSource()
+                IF Used( SELF:_nameOfTable )
+                    DbSelectArea( SELF:_nameOfTable )
+                    SELF:_currentSource := VFPDbDataSource.CreateForCurrentArea()
                     IF SELF:_currentSource != NULL
                         SELF:_currentSource:ShowDeleted := SELF:_showDeleted
                         SELF:_currentSource:ShowRecno := FALSE
@@ -352,6 +368,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// <param name="sender"></param>
         /// <param name="e"></param>
         METHOD VFPCurrentCellChanged(sender AS OBJECT, e AS System.EventArgs) AS VOID
+            // Detect leaving the pending new row
+            IF SELF:_pendingNewRow .AND. SELF:_oldRowIndex == SELF:_pendingNewRowIndex
+                IF SELF:CurrentCell == NULL .OR. SELF:CurrentCell:RowIndex != SELF:_pendingNewRowIndex
+                    IF SELF:_pendingNewRowDirty
+                        SELF:_CommitNewRow()
+                    ELSE
+                        SELF:_DiscardNewRow()
+                    ENDIF
+                ENDIF
+            ENDIF
             // Track what changed (row, col, or both) for the RowColChange property.
             IF SELF:CurrentCell != NULL
                 IF SELF:_oldRowIndex != SELF:CurrentCell:RowIndex
@@ -556,15 +582,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         // ── HeaderHeight ──────────────────────────────────────────────────────
         PROPERTY HeaderHeight AS INT
-            GET ; RETURN SELF:ColumnHeadersHeight ; END GET
-            SET ; IF VALUE > 0 ; SELF:ColumnHeadersHeight := VALUE ; SELF:ColumnHeadersHeightSizeMode := DataGridViewColumnHeadersHeightSizeMode.DisableResizing ; ENDIF ; END SET
+            GET
+                RETURN SELF:ColumnHeadersHeight
+            END GET
+            SET
+                IF VALUE > 0
+                    SELF:ColumnHeadersHeight := VALUE
+                    SELF:ColumnHeadersHeightSizeMode := DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+                ENDIF
+            END SET
         END PROPERTY
 
         // ── NullDisplay ───────────────────────────────────────────────────────
         // VFP NullDisplay: string shown when cell value is NULL
         PROPERTY NullDisplay AS STRING
-            GET ; RETURN (STRING) SELF:DefaultCellStyle:NullValue ; END GET
-            SET ; SELF:DefaultCellStyle:NullValue := VALUE ; END SET
+            GET
+                RETURN (STRING) SELF:DefaultCellStyle:NullValue
+            END GET
+            SET
+                SELF:DefaultCellStyle:NullValue := VALUE
+            END SET
         END PROPERTY
 
         // ── Resize / Moved events ─────────────────────────────────────────────
@@ -574,7 +611,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
             SUPER:OnResize(e)
-            IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
+            IF SELF:_VFPResize != NULL
+                SELF:_VFPResize:Call()
+            ENDIF
 
         PRIVATE _VFPMoved AS VFPOverride
         [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
@@ -582,7 +621,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
             SUPER:OnMove(e)
-            IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
+            IF SELF:_VFPMoved != NULL
+                SELF:_VFPMoved:Call()
+            ENDIF
 
         // ── Scrolled event ────────────────────────────────────────────────────
         // VFP nDirection: 1=up, 2=down, 3=left, 4=right, 5=pageup, 6=pagedown, 7=leftmost, 8=rightmost
@@ -660,6 +701,80 @@ BEGIN NAMESPACE XSharp.VFP.UI
             CASE 8 // rightmost
                 SELF:FirstDisplayedScrollingColumnIndex := SELF:ColumnCount - 1
             END SWITCH
+        END METHOD
+
+
+        METHOD VFPCellValueChanged( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID
+            IF SELF:_pendingNewRow .AND. e:RowIndex == SELF:_pendingNewRowIndex
+                SELF:_pendingNewRowDirty := TRUE
+            ENDIF
+
+        PROTECTED OVERRIDE METHOD ProcessDataGridViewKey( e AS System.Windows.Forms.KeyEventArgs ) AS LOGIC
+            IF SELF:_allowAddNew .AND. !SELF:_pendingNewRow .AND. SELF:_bindingSource != NULL .AND. SELF:CurrentCell != NULL
+                LOCAL isLastRow := (SELF:CurrentCell:RowIndex == SELF:Rows:Count - 1) AS LOGIC
+                IF isLastRow
+                    DO CASE
+                    CASE e:KeyCode == System.Windows.Forms.Keys.Down
+                        SELF:_StartNewRow()
+                        RETURN TRUE
+                    CASE e:KeyCode == System.Windows.Forms.Keys.Tab .AND. !e:Shift
+                        IF SELF:CurrentCell:ColumnIndex == SELF:Columns:Count - 1
+                            SELF:_StartNewRow()
+                            RETURN TRUE
+                        ENDIF
+                    CASE e:KeyCode == System.Windows.Forms.Keys.Return
+                        SELF:_StartNewRow()
+                        RETURN TRUE
+                    END CASE
+                ENDIF
+            ENDIF
+            RETURN SUPER:ProcessDataGridViewKey( e )
+        END METHOD
+
+        PRIVATE METHOD _StartNewRow() AS VOID
+            IF SELF:_currentSource == NULL
+                RETURN
+            ENDIF
+            TRY
+                SELF:EndEdit()
+                // AppendRecord appends to the RDD directly (bypasses BindingSource.AddNew which
+                // sets addNewIsBeingAdded and causes DataGridView to skip the row insertion).
+                // ResetBindings(false) fires ListChanged(Reset), making DataGridView rebuild its
+                // row collection from RecCount (now N+1) without addNewIsBeingAdded interference.
+                IF ! SELF:_currentSource:AppendRecord()
+                    RETURN
+                ENDIF
+                SELF:_bindingSource:ResetBindings(FALSE)
+                SELF:_pendingNewRow      := TRUE
+                SELF:_pendingNewRowIndex := SELF:Rows:Count - 1
+                SELF:_pendingNewRowDirty := FALSE
+                IF SELF:Columns:Count > 0
+                    SELF:CurrentCell := SELF:Rows[SELF:_pendingNewRowIndex]:Cells[0]
+                ENDIF
+            CATCH ex AS Exception
+                System.Diagnostics.Debug.WriteLine( "_StartNewRow: " + ex:Message )
+            END TRY
+        END METHOD
+
+        PRIVATE METHOD _CommitNewRow() AS VOID
+            TRY
+                SELF:_bindingSource:EndEdit()
+            CATCH
+                NOP
+            END TRY
+            SELF:_pendingNewRow      := FALSE
+            SELF:_pendingNewRowDirty := FALSE
+        END METHOD
+
+        PRIVATE METHOD _DiscardNewRow() AS VOID
+            // Proper deletion would require DbDataSource.Count to exclude deleted records
+            // (so DataGridView rebuilds with N-1 rows). That change is deferred.
+            // For now: just reset pending state; the empty row stays in the grid/RDD.
+            // TODO: delete empty record and refresh when DbDataSource supports filtered Count.
+            SELF:_pendingNewRow      := FALSE
+            SELF:_pendingNewRowDirty := FALSE
+        END METHOD
 
     END CLASS
+
 END NAMESPACE // XSharp.VFP.UI

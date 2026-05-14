@@ -316,13 +316,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF SELF:_dynBackColorCB != NULL_OBJECT
 				TRY
 					e:CellStyle:BackColor := VFPTools.ColorFromVFP( (INT) Eval(SELF:_dynBackColorCB) )
-				CATCH
+                CATCH
+                    NOP
 				END TRY
 			ENDIF
 			IF SELF:_dynForeColorCB != NULL_OBJECT
 				TRY
 					e:CellStyle:ForeColor := VFPTools.ColorFromVFP( (INT) Eval(SELF:_dynForeColorCB) )
-				CATCH
+                CATCH
+                    NOP
 				END TRY
 			ENDIF
 

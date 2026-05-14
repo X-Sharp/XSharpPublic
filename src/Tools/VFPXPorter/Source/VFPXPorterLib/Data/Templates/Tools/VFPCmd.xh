@@ -56,8 +56,11 @@
 #command ERASE <FileName> ;
 => FErase( <FileName> );
 
-#command MODIFY WINDOW <WindowName> [TITLE <Title>] [FILL FILE <FillFile>] [ICON FILE <IconFile>] ;
-=> __XPORTERWARNIN__ <(udc)>
+#command MODIFY WINDOW SCREEN [TITLE <Title>] [FILL FILE <FillFile>] [ICON FILE <IconFile>] ;
+    => [ __SCREEN:Caption := <TITLE>] ;
+[; __SCREEN:Icon := <IconFile> ] ;
+[; __SCREEN:FillFile := <FillFile> ]
+
 
 #command CATCH WHEN <expr> ;
 => CATCH dummy AS Exception WHEN <expr> ;

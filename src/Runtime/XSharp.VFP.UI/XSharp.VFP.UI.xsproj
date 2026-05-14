@@ -206,6 +206,7 @@
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
     <Compile Include="VFPTools.prg" />
+    <Compile Include="VFPDbDataSource.prg" />
     <Compile Include="VfpUIProvider.prg" />
     <Compile Include="Win32UI.prg" />
     <Compile Include="InputMask\InputMaskHandler.prg" />

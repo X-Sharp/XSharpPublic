@@ -379,7 +379,29 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET
 				SUPER:KeyPreview := VALUE
 			END SET
-		END PROPERTY
+        END PROPERTY
+
+        PRIVATE _IconFilename AS STRING
+        NEW PROPERTY Icon AS STRING
+            GET
+                IF (_IconFilename == NULL)
+                    _IconFilename := String.Empty
+                ENDIF
+                RETURN _IconFilename
+            END GET
+            SET
+                IF !String.IsNullOrEmpty(VALUE)
+                    _IconFilename := VALUE
+                    IF File.Exists( _IconFilename )
+                        TRY
+                            SUPER:Icon := System.Drawing.Icon{_IconFilename}
+                        CATCH
+                            NOP
+                        END TRY
+                    ENDIF
+                ENDIF
+            END SET
+        END PROPERTY
 
 		// ── B-1: Activate / Deactivate ───────────────────────────────────────
 		PRIVATE _VFPActivate AS VFPOverride

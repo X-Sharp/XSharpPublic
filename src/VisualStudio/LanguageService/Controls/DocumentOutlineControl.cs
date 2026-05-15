@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
 using Microsoft.VisualStudio.Imaging;
+using System.Linq;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -105,12 +106,13 @@ namespace XSharp.LanguageService
             else
                 types.Sort((a, b) => a.Range.StartLine - b.Range.StartLine);
 
+            var localFuncProcs = _file.EntityList.Where(m => m.Kind.IsLocal());
 
             foreach (var type in types)
             {
 
                 var typeNode = CreateNode(type);
-                AddMemberNodes(typeNode, type);
+                AddMemberNodes(typeNode, type, localFuncProcs);
                 _treeView.Items.Add(typeNode);
                 typeNode.IsExpanded = true;
             }
@@ -126,7 +128,7 @@ namespace XSharp.LanguageService
             return new OutlineTreeNode(entity, label, entity.Kind.GetImageMoniker(entity.Visibility));
         }
 
-        private void AddMemberNodes(OutlineTreeNode parentNode, XSourceTypeSymbol type)
+        private void AddMemberNodes(OutlineTreeNode parentNode, XSourceTypeSymbol type, IEnumerable<XSourceEntity> localFuncProcs)
         {
             var members = GetFilteredMembers(type);
 
@@ -152,8 +154,22 @@ namespace XSharp.LanguageService
                 }
                 var node = CreateNode(member);
                 if (member is XSourceTypeSymbol nested)
-                    AddMemberNodes(node, nested);
+                {
+                    AddMemberNodes(node, nested, localFuncProcs);
+                }
                 parentNode.Items.Add(node);
+                if (localFuncProcs.Any())
+                {
+                    foreach (var local in localFuncProcs)
+                    {
+                        if (local.ParentName == member.FullName)
+                        {
+                            node.Items.Add(CreateNode(local));
+                            node.IsExpanded = true;
+                        }
+                    }
+                }
+
             }
         }
 
@@ -166,8 +182,7 @@ namespace XSharp.LanguageService
                     continue;
                 result.Add(m);
             }
-            foreach (XSourceTypeSymbol child in type.XChildren)
-                result.Add(child);
+
             return result;
         }
 

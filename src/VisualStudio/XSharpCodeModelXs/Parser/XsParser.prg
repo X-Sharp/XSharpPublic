@@ -797,6 +797,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.CONST
         CASE XSharpLexer.DIM
         CASE XSharpLexer.ARRAY
+        CASE XSharpLexer.FUNCTION    // local function declaration - must not be treated as LOCAL modifier
+        CASE XSharpLexer.PROCEDURE   // local procedure declaration - must not be treated as LOCAL modifier
             return TRUE
         END SWITCH
         RETURN FALSE

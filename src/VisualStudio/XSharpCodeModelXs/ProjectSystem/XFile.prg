@@ -94,10 +94,6 @@ NAMESPACE XSharpModel
                 temp := _entityList:Last()
                 if nLine > temp:Range:EndLine
                     result := temp
-                    do while result:Parent is XSourceEntity var source .and. source:Range:EndLine >result:Range:EndLine
-                        result := source
-                    enddo
-
                 endif
             endif
         endif
@@ -130,9 +126,6 @@ NAMESPACE XSharpModel
                 temp := _entityList:Last()
                 if nPos > temp:Interval:Stop
                     result := temp
-                    do while result:Parent is XSourceEntity var source .and. source:Interval:Stop >result:Interval:Stop
-                        result := source
-                    enddo
                 endif
             endif
         endif

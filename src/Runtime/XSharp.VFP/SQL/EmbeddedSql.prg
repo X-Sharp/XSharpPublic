@@ -129,16 +129,20 @@ STATIC CLASS FoxEmbeddedSQL
                 var aField := {col:Name, ((Char)col:FieldType):ToString(), col:Length, col:Decimals, col:Name, col:Flags}
                 AAdd(aStruct, aField)
             next
+
             VAR cTable := oTable:Name
+            VAR cAlias := Path.GetFileNameWithoutExtension(oTable:Name)
             if oTable:IsCursor
-                cTable := System.IO.Path.GetTempFileName()
+                cTable := Path.GetTempFileName()
+                cAlias := oTable:Name
             ENDIF
-            if RuntimeState.Workareas.FindAlias(oTable:Name) != 0
-                DbCloseArea(oTable:Name)
+            if RuntimeState.Workareas.FindAlias(cAlias) != 0
+                DbCloseArea(cAlias)
             endif
-            DbCreate(cTable, aStruct, "DBFVFP", TRUE, oTable:Name)
-            DbCloseArea(oTable:Name)
-            DbUseArea(TRUE, "DBFVFP", cTable, oTable:Name, FALSE, FALSE)
+            DbCreate(cTable, aStruct, "DBFVFP", TRUE, cAlias)
+            DbCloseArea(cAlias)
+            DbUseArea(TRUE, "DBFVFP", cTable, cAlias, FALSE, FALSE)
+
             FOR var nI := 1 to oTable:Columns:Count
                 var oCol := oTable:Columns[nI-1]
                 DbFieldInfo(DBS_CAPTION, nI, oCol:Caption)

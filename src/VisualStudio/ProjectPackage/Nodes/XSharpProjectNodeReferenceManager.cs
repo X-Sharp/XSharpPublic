@@ -170,7 +170,7 @@ namespace XSharp.Project
                         guid = refProject.ProjectIDGuid;
                 }
                 newReference.Identity = guid.ToString("B");
-                newReference.ReferenceSpecification= guid.ToString();
+                newReference.ReferenceSpecification = guid.ToString();
                 newReference.AlreadyReferenced = true;
                 context.AddReference(newReference);
             }

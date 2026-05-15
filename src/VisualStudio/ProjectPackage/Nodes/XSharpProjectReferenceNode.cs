@@ -50,6 +50,9 @@ namespace XSharp.Project
                         {
                             //this.IsUnloaded = false;
                             this.ReferencedProjectName = this.referencedProject.Caption;
+                            // Lazily resolve the project GUID (not stored in SDK project files)
+                            if (referencedProjectGuid == Guid.Empty)
+                                referencedProjectGuid = this.referencedProject.ProjectIDGuid;
                         }
                     }
                 }

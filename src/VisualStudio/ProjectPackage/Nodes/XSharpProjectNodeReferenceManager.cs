@@ -160,8 +160,17 @@ namespace XSharp.Project
             {
                 var newReference = context.CreateReference() as IVsProjectReference;
                 newReference.FullPath = reference.Url;
-                newReference.Identity = reference.ReferencedProjectGuid.ToString("B");
-                newReference.ReferenceSpecification= reference.ReferencedProjectGuid.ToString();
+                var guid = reference.ReferencedProjectGuid;
+                // For SDK-style projects, the GUID is not stored in the project file.
+                // Resolve it at runtime by looking up the referenced project by its path.
+                if (guid == Guid.Empty && !string.IsNullOrEmpty(reference.Url))
+                {
+                    var refProject = XSharpProjectNode.FindProject(reference.Url);
+                    if (refProject != null)
+                        guid = refProject.ProjectIDGuid;
+                }
+                newReference.Identity = guid.ToString("B");
+                newReference.ReferenceSpecification= guid.ToString();
                 newReference.AlreadyReferenced = true;
                 context.AddReference(newReference);
             }
@@ -320,13 +329,26 @@ namespace XSharp.Project
             var selectedReferences = context
                  .References
                  .OfType<IVsProjectReference>()
-                 .Select(asmRef => new Guid(asmRef.Identity));
+                 .Select(projRef => new Guid(projRef.Identity))
+                 .ToHashSet();
 
             var referenceContainer = projectNode.GetReferenceContainer();
             var references = referenceContainer
                  .EnumReferences()
                  .OfType<ProjectReferenceNode>()
-                 .Where(refNode => selectedReferences.Contains(refNode.ReferencedProjectGuid));
+                 .Where(refNode =>
+                 {
+                     var guid = refNode.ReferencedProjectGuid;
+                     // For SDK-style projects the GUID may not be stored in the project file;
+                     // fall back to looking it up by path.
+                     if (guid == Guid.Empty && !string.IsNullOrEmpty(refNode.Url))
+                     {
+                         var refProject = XSharpProjectNode.FindProject(refNode.Url);
+                         if (refProject != null)
+                             guid = refProject.ProjectIDGuid;
+                     }
+                     return selectedReferences.Contains(guid);
+                 });
 
             return references;
         }

@@ -49,6 +49,8 @@ namespace XSharp.Project
          : base(root, element)
         {
             CleanMetadata();
+            // referencedProjectGuid is not stored in SDK project files; resolve it at runtime
+            ResolveProjectGuid();
         }
         private string _projectName = null;
 
@@ -79,6 +81,8 @@ namespace XSharp.Project
             try
             {
                 base.BindReferenceData();
+                // Remove GUID/Name from the project file to keep SDK-style format clean,
+                // but referencedProjectGuid is still set in memory from base.BindReferenceData().
                 this.CleanMetadata();
             }
             finally
@@ -103,6 +107,21 @@ namespace XSharp.Project
                     this.ProjectMgr.SetProjectFileDirty(true);
                 }
 
+            }
+        }
+
+        /// <summary>
+        /// Resolves the referenced project GUID at runtime from the loaded projects.
+        /// SDK-style project files do not store the GUID/Name in ProjectReference items,
+        /// so we look it up from the in-memory project list.
+        /// </summary>
+        private void ResolveProjectGuid()
+        {
+            if (referencedProjectGuid == System.Guid.Empty && !string.IsNullOrEmpty(this.Url))
+            {
+                var refProject = XSharpProjectNode.FindProject(this.Url);
+                if (refProject != null)
+                    referencedProjectGuid = refProject.ProjectIDGuid;
             }
         }
     }

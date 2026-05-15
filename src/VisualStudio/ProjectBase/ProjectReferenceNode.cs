@@ -30,7 +30,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The name of the assembly this refernce represents
         /// </summary>
-        private Guid referencedProjectGuid;
+        protected Guid referencedProjectGuid;
 
         protected string referencedProjectName = String.Empty;
 

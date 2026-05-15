@@ -89,6 +89,34 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             END TRY
         RETURN
 
+        [Fact];
+        METHOD TestCreateTableWithPath() AS VOID
+            VAR cOldDir := Directory.GetCurrentDirectory()
+            VAR cTempPath := Path.Combine(Path.GetTempPath(), "CreateTableTest_" + Guid.NewGuid():ToString("N"))
+            VAR cSubDir := Path.Combine(cTempPath, "SubDir")
+            System.IO.Directory.CreateDirectory(cSubDir)
+
+            TRY
+                SET DEFAULT TO (cTempPath)
+                VAR cFile1 := Path.Combine(cSubDir, "TestTable1.dbf")
+                CREATE TABLE (cFile1) (Id INT, Name C(20))
+                Assert.True(File.Exists(cFile1))
+                Assert.True(Used("TestTable1"))
+
+                VAR cFile2 := Path.Combine(cSubDir, "TestTable2.dbf")
+                CREATE TABLE (cFile2) (Id INT, Value c(10))
+                Assert.True(File.Exists(cFile2))
+                Assert.True(Used("TestTable2"))
+                XSharp.CoreDb.CloseAll()
+            FINALLY
+                System.IO.Directory.SetCurrentDirectory(cOldDir)
+                TRY
+                    System.IO.Directory.Delete(cTempPath, TRUE)
+                CATCH
+                END TRY
+            END TRY
+        END METHOD
+
     END CLASS
 
 END NAMESPACE

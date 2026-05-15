@@ -566,6 +566,17 @@ FUNCTION Seek(uExpression, uWorkarea, uOrder) AS LOGIC CLIPPER
 FUNCTION TxnLevel( ) AS LONG
     RETURN __FoxTnxLevel
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/ismemofetched/*" />
+[FoxProFunction("ISMEMOFETCHED", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Partial, FoxCriticality.Medium)];
+FUNCTION IsMemoFetched( uField AS USUAL, uArea := NIL AS USUAL) AS USUAL
+    IF !XSharp.RT.Functions.Used()
+        RETURN FALSE
+    ENDIF
+    IF XSharp.RT.Functions.Bof() .or. XSharp.RT.Functions.Eof()
+        RETURN DBNull.Value
+    ENDIF
+    RETURN TRUE
+
 FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     local acStruct as ARRAY
     IF IsArray(aFields)

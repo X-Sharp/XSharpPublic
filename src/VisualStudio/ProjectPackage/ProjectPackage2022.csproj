@@ -74,6 +74,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -117,10 +118,16 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\CommandBuild.cs" />
     <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
+    <Compile Include="Commands\CommandPublish.cs" />
+    <Compile Include="Commands\CommandPack.cs" />
+    <Compile Include="Commands\PublishDialog.xaml.cs">
+      <DependentUpon>PublishDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
     <Compile Include="Commands\CommandViewInDisassembler.cs" />
@@ -506,6 +513,15 @@
     <EmbeddedResource Include="Commands\CreateWindowsForm.resx">
       <DependentUpon>CreateWindowsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <Page Include="..\VsThemeDictionary.xaml">
+      <Link>Commands\VsThemeDictionary.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Commands\PublishDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <EmbeddedResource Include="Resources.resx">
       <DependentUpon>Resources.cs</DependentUpon>
       <SubType>Designer</SubType>

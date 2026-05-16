@@ -118,6 +118,7 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\CommandBuild.cs" />
     <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
@@ -512,6 +513,11 @@
     <EmbeddedResource Include="Commands\CreateWindowsForm.resx">
       <DependentUpon>CreateWindowsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <Page Include="..\VsThemeDictionary.xaml">
+      <Link>Commands\VsThemeDictionary.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Commands\PublishDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

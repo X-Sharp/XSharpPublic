@@ -435,8 +435,7 @@
           <ButtonText>Convert to Windows Form</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidProjectPackage" id="idPublishProject" priority="0x0500" type="Button">
-        <Icon guid="ImageCatalogGuid" id="PublishToFolder" />
+      <Button guid="guidProjectPackage" id="idPublishProject" priority="0x0200" type="Button">
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
@@ -446,8 +445,7 @@
           <ToolTipText>Publish the project with dotnet publish</ToolTipText>
         </Strings>
       </Button>
-      <Button guid="guidProjectPackage" id="idPackProject" priority="0x0510" type="Button">
-        <Icon guid="ImageCatalogGuid" id="NuGet" />
+      <Button guid="guidProjectPackage" id="idPackProject" priority="0x0210" type="Button">
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
@@ -490,6 +488,13 @@
     <CommandPlacement guid="guidProjectPackage" id="idGenerateWinForm" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
     </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idPackProject" priority="0x0001">
+      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idPublishProject" priority="0x0002">
+      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
+    </CommandPlacement>
+
     <CommandPlacement guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
@@ -497,12 +502,6 @@
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
     <CommandPlacement guid="guidProjectPackage" id="idEditProjectFile" priority="0x0100">
-      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidProjectPackage" id="idPublishProject" priority="0x0110">
-      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidProjectPackage" id="idPackProject" priority="0x0120">
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
 

@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace XSharp.Project
 {
-    public partial class PublishDialog : DialogWindow
+    public partial class PublishDialog : Window
     {
         private readonly string _projectPath;
 
@@ -26,11 +26,11 @@ namespace XSharp.Project
         {
             try
             {
-                var prj = XSharpProjectNode.FindProject(_projectPath);
+                var prj = (XSharpSdkProjectNode) XSharpProjectNode.FindProject(_projectPath);
                 if (prj != null)
                 {
                     // Get target frameworks
-                    var targetFrameworks = prj.GetTargetFrameworks();
+                    var targetFrameworks = prj.TargetFrameworks;
                     if (targetFrameworks != null && targetFrameworks.Count > 0)
                     {
                         foreach (var framework in targetFrameworks)

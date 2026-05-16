@@ -1,55 +1,24 @@
 using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Shell;
+
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
+
 using Task = System.Threading.Tasks.Task;
+
 
 namespace XSharp.Project
 {
     [Command(PackageIds.idPackProject)]
-    internal sealed class CommandPack : BaseCommand<CommandPack>
+    internal sealed class CommandPack : CommandBuild<CommandPack>
     {
-        protected override void BeforeQueryStatus(EventArgs e)
-        {
-            base.BeforeQueryStatus(e);
-            ThreadHelper.JoinableTaskFactory.Run(CheckAvailabilityAsync);
-        }
+        protected override string CommandName => "Build.PackSelection";
 
-        private async Task CheckAvailabilityAsync()
+        protected override async Task DoCmdAsync()
         {
-            Command.Visible = await Commands.ProjectIsXSharpProjectAsync();
-            if (Command.Visible)
+            if (!await VerifySdkProjectAsync("Pack"))
             {
-                var project = await VS.Solutions.GetActiveProjectAsync();
-                var path = project.FullPath;
-                var prj = XSharpProjectNode.FindProject(path);
-                // Only show for SDK-style projects as they support dotnet pack
-                Command.Visible = prj != null && prj.IsSdkProject;
-            }
-        }
-
-        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            var project = await VS.Solutions.GetActiveProjectAsync();
-            if (project == null)
-            {
-                await VS.MessageBox.ShowErrorAsync("Pack", "No active project selected.");
                 return;
             }
-
-            var projectPath = project.FullPath;
-            var prj = XSharpProjectNode.FindProject(projectPath);
-
-            if (prj == null || !prj.IsSdkProject)
-            {
-                await VS.MessageBox.ShowErrorAsync("Pack", "Pack is only available for SDK-style projects.");
-                return;
-            }
-
             // Show confirmation dialog
             var result = await VS.MessageBox.ShowAsync(
                 "Create NuGet Package",
@@ -74,59 +43,11 @@ namespace XSharp.Project
                 // Build dotnet pack command
                 var arguments = $"pack \"{projectPath}\" -c Release";
 
-                var psi = new ProcessStartInfo
-                {
-                    FileName = "dotnet",
-                    Arguments = arguments,
-                    WorkingDirectory = Path.GetDirectoryName(projectPath),
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
+                var process = await CreateProcessAsync(arguments,
+                    $"Creating NuGet package for: {Path.GetFileName(projectPath)}");
 
-                var outputPane = await VS.Windows.CreateOutputWindowPaneAsync("X# Pack");
-                await outputPane.ActivateAsync();
-                await outputPane.ClearAsync();
-                await outputPane.WriteLineAsync($"Creating NuGet package for: {Path.GetFileName(projectPath)}");
-                await outputPane.WriteLineAsync($"Command: dotnet {arguments}");
-                await outputPane.WriteLineAsync("");
-
-                var process = new Process { StartInfo = psi };
 
                 string packagePath = null;
-
-                process.OutputDataReceived += async (s, ea) =>
-                {
-                    if (!string.IsNullOrEmpty(ea.Data))
-                    {
-                        await outputPane.WriteLineAsync(ea.Data);
-
-                        // Try to extract the package path from output
-                        if (ea.Data.Contains(".nupkg"))
-                        {
-                            var parts = ea.Data.Split(new[] { '\'' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (parts.Length >= 2)
-                            {
-                                packagePath = parts[1];
-                            }
-                        }
-                    }
-                };
-
-                process.ErrorDataReceived += async (s, ea) =>
-                {
-                    if (!string.IsNullOrEmpty(ea.Data))
-                    {
-                        await outputPane.WriteLineAsync($"ERROR: {ea.Data}");
-                    }
-                };
-
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-
-                await Task.Run(() => process.WaitForExit());
 
                 if (process.ExitCode == 0)
                 {

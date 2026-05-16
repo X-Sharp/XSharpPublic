@@ -435,6 +435,28 @@
           <ButtonText>Convert to Windows Form</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidProjectPackage" id="idPublishProject" priority="0x0500" type="Button">
+        <Icon guid="ImageCatalogGuid" id="PublishToFolder" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <ButtonText>Publish...</ButtonText>
+          <MenuText>Publish...</MenuText>
+          <ToolTipText>Publish the project with dotnet publish</ToolTipText>
+        </Strings>
+      </Button>
+      <Button guid="guidProjectPackage" id="idPackProject" priority="0x0510" type="Button">
+        <Icon guid="ImageCatalogGuid" id="NuGet" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <ButtonText>Pack (Create NuGet Package)</ButtonText>
+          <MenuText>Pack...</MenuText>
+          <ToolTipText>Create a NuGet package from the project</ToolTipText>
+        </Strings>
+      </Button>
     </Buttons>
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" />
@@ -475,6 +497,12 @@
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
     <CommandPlacement guid="guidProjectPackage" id="idEditProjectFile" priority="0x0100">
+      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idPublishProject" priority="0x0110">
+      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idPackProject" priority="0x0120">
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
 
@@ -560,6 +588,8 @@
       <IDSymbol name="idEditProjectFile" value="0x010F" />
       <IDSymbol name="idHelpOffLineChinese" value="0x0110" />
       <IDSymbol name="idGenerateWinForm" value="0x0120" />
+      <IDSymbol name="idPublishProject" value="0x0121" />
+      <IDSymbol name="idPackProject" value="0x0122" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />

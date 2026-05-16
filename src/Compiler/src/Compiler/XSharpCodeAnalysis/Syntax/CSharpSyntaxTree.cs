@@ -95,6 +95,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                     if (node is QueryClauseSyntax)
                         break;
+                    if (node is ConstructorInitializerSyntax)
+                        break;
                     node = node.Parent;
                 }
                 if (node == null)

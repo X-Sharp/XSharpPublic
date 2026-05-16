@@ -5547,7 +5547,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         returntype = NotInDialect(returntype, "Procedure with non VOID return type");
                     }
-                    else if (context.Data.HasClipperCallingConvention)
+                    else if (context.Data.HasClipperCallingConvention && !context.Data.MustBeVoid)
                     {
                         returntype = DefaultType();
                     }

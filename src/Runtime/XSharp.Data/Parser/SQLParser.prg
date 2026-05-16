@@ -256,7 +256,7 @@ PARTIAL CLASS SQLParser
             | FROM ARRAY ArrayName
 
         */
-        local id   as XToken
+
         local nCP  as XToken
 
         table := FoxCreateTableContext{}

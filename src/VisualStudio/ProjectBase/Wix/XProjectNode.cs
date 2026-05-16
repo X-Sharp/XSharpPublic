@@ -185,7 +185,7 @@ namespace Microsoft.VisualStudio.Project
 
         public string CleanURL(string url)
         {
-            return url.TrimEnd('\\'); 
+            return url.TrimEnd('\\');
         }
         public void RemoveURL(HierarchyNode node)
         {
@@ -349,7 +349,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="cmd">The command to query status for.</param>
         /// <param name="result">An out parameter specifying the QueryStatusResult of the command.</param>
         /// <returns>It returns true if succeeded, false otherwise.</returns>
-        internal bool QueryStatusOnProjectNode(Guid guidCmdGroup, uint cmd, ref QueryStatusResult result)
+        protected bool QueryStatusOnProjectNode(Guid guidCmdGroup, uint cmd, ref QueryStatusResult result)
         {
             if (guidCmdGroup == VsMenus.guidStandardCommandSet2K)
             {
@@ -531,7 +531,7 @@ namespace Microsoft.VisualStudio.Project
                 catch (Exception)
                 {
                     // If the save of the user file fails, we should not prevent the project from saving.
-                }   
+                }
             }
 
             return result;
@@ -674,7 +674,7 @@ namespace Microsoft.VisualStudio.Project
         {
             //Logger.Information("FileChangedOnDisk " + e.FileName);
             this.OnFileChanged(e.FileName);
-            
+
         }
         protected void ObserveItem(string url)
         {

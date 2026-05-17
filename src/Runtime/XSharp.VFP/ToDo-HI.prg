@@ -27,13 +27,6 @@ FUNCTION InputBox( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout ,cTi
     // RETURN ""
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/isexclusive/*" />
-[FoxProFunction("ISEXCLUSIVE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION IsExclusive( uArea, nType) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/istransactable/*" />
 [FoxProFunction("ISTRANSACTABLE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION IsTransactable( uArea ) AS LOGIC

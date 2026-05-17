@@ -373,13 +373,15 @@ namespace XSharp.MacroCompiler
             {
                 var conv = ovRes.Conversions[i];
                 var e = args.Args[i].Expr;
+                var parameter = parameters[i];
                 if (conv.Kind != ConversionKind.Identity)
-                    Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
+                    Convert(ref args.Args[i].Expr, FindType(parameter.ParameterType), conv);
                 if (conv is ConversionSymbolToConstant)
-                    Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
+                    Convert(ref args.Args[i].Expr, FindType(parameter.ParameterType), BindOptions.Default);
                 // only write back to real locals. Do not call IVarPut() or an AssignExpr for properties
                 // or fields, or write back to auto vars or alias expressions, as they will be re-evaluated on each access and the conversion will be applied again, which is not correct for ref arguments
-                if (e.Symbol is LocalSymbol || e is AutoVarExpr)
+                bool mustWrite = !parameter.IsIn && parameter.ParameterType.IsByRef;
+                if (mustWrite) 
                     HandleArgWriteBack(conv, e, ref writeBack);
             }
             if (ovRes.MissingArgs > 0)

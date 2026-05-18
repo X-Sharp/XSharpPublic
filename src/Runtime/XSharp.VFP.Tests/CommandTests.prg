@@ -117,6 +117,56 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             END TRY
         END METHOD
 
+        [Fact];
+        METHOD TestIsExclusiveAndIsReadOnly() AS VOID
+            VAR cOldDir := System.IO.Directory.GetCurrentDirectory()
+            VAR oDir := System.IO.Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), ;
+                "IsExclusiveTest_" + Guid.NewGuid():ToString("N")))
+            VAR cTempPath := oDir:FullName
+            VAR cFile := Path.Combine(cTempPath, "TestExcl.dbf")
+
+            TRY
+                SET DEFAULT TO (cTempPath)
+                CREATE TABLE TestExcl (Id INT)
+                XSharp.CoreDb.CloseAll()
+
+                // Shared -> ISEXCLUSIVE = FALSE
+                DbUseArea(TRUE, "DBFVFP", cFile, "TestExcl", TRUE, FALSE)
+                Assert.False(IsExclusive())
+                Assert.False(IsExclusive("TestExcl"))
+                Assert.False(IsExclusive(Select()))
+                XSharp.CoreDb.CloseAll()
+
+                // Exclusive -> ISEXCLUSIVE = TRUE
+                DbUseArea(TRUE, "DBFVFP", cFile, "TestExcl", FALSE, FALSE)
+                Assert.True(IsExclusive())
+                Assert.True(IsExclusive("TestExcl"))
+                Assert.True(IsExclusive(Select()))
+                XSharp.CoreDb.CloseAll()
+
+                // ReadOnly (NOUPDATE) -> ISREADONLY = TRUE
+                DbUseArea(TRUE, "DBFVFP", cFile, "TestExcl", FALSE, TRUE)
+                Assert.True(IsReadOnly())
+                Assert.True(IsReadOnly("TestExcl"))
+                Assert.True(IsReadOnly(Select()))
+                XSharp.CoreDb.CloseAll()
+
+                // Normal -> ISREADONLY = FALSE
+                DbUseArea(TRUE, "DBFVFP", cFile, "TestExcl", FALSE, FALSE)
+                Assert.False(IsReadOnly())
+                Assert.False(IsReadOnly("TestExcl"))
+                Assert.False(IsReadOnly(Select()))
+                XSharp.CoreDb.CloseAll()
+            FINALLY
+                XSharp.CoreDb.CloseAll()
+                SET DEFAULT TO (cOldDir)
+                System.IO.Directory.SetCurrentDirectory(cOldDir)
+                TRY
+                    System.IO.Directory.Delete(cTempPath, TRUE)
+                CATCH
+                END TRY
+            END TRY
+        END METHOD
     END CLASS
 
 END NAMESPACE

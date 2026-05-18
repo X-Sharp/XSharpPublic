@@ -102,6 +102,8 @@ namespace XSharp.LanguageService
             // When one of them is on the cursor location we mark them all
             foreach (var entity in entities)
             {
+                if (entity.SingleLine || entity.StartLine == entity.EndLine)
+                    continue;
                 foreach (var token in entity.BlockTokens)
                 {
                     if (matchesPosition(token, point))

@@ -8,16 +8,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
     /// Applies mask formatting, handles partial input, and extracts clean data
     /// </summary>
     PUBLIC CLASS InputMaskFormatter
-        
+
         PRIVATE _validator AS InputMaskValidator
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
         PUBLIC CONSTRUCTOR()
             SELF:_validator := InputMaskValidator{}
         END CONSTRUCTOR
-        
+
         /// <summary>
         /// Format a raw value with the mask
         /// Example: "5551234567" with mask "(999) 999-9999" → "(555) 123-4567"
@@ -26,31 +26,31 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF pattern == NIL .OR. !pattern:IsValid()
                 RETURN inputValue
             ENDIF
-            
+
             IF String.IsNullOrEmpty(inputValue)
                 RETURN pattern:PlaceholderDisplay
             ENDIF
-            
+
             VAR result := StringBuilder{}
             VAR inputIndex := 0
-            
+
             // Process each position in the mask
             FOR VAR maskIndex := 0 TO pattern:Positions:Count - 1
                 VAR maskPos := pattern:Positions[maskIndex]
-                
-                IF maskPos:Type == "literal"
-                    // Insert literal character from mask
+
+                IF maskPos:Type == "literal" .OR. maskPos:Type == "decimal"
+                    // Insert literal/decimal character from mask
                     result:Append(maskPos:Literal)
-                    
+
                 ELSEIF maskPos:Type == "modifier"
                     // Skip modifiers - they don't display
-                    CONTINUE
-                    
+                    LOOP
+
                 ELSE
                     // Data position - insert character from input if available
                     IF inputIndex < inputValue:Length
                         VAR ch := inputValue:Substring(inputIndex, 1)
-                        
+
                         // Validate and transform character
                         IF SELF:_validator:IsValidCharacter(pattern, maskIndex, ch)
                             VAR transformed := SELF:_validator:TransformCharacter(pattern, maskIndex, ch)
@@ -66,10 +66,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     ENDIF
                 ENDIF
             NEXT
-            
+
             RETURN result:ToString()
         END METHOD
-        
+
         /// <summary>
         /// Format with placeholders for empty positions
         /// Same as FormatValue but explicitly shows where data is needed
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             // FormatValue already shows placeholders
             RETURN SELF:FormatValue(pattern, inputValue)
         END METHOD
-        
+
         /// <summary>
         /// Extract clean data without mask formatting
         /// Example: "(555) 123-4567" with mask "(999) 999-9999" → "5551234567"
@@ -88,31 +88,31 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF pattern == NIL .OR. String.IsNullOrEmpty(maskedValue)
                 RETURN ""
             ENDIF
-            
+
             VAR result := StringBuilder{}
-            
+
             // Extract only data characters (skip literals, modifiers, placeholders)
             FOR VAR i := 0 TO maskedValue:Length - 1
                 IF i >= pattern:Positions:Count
-                    CONTINUE
+                    LOOP
                 ENDIF
-                
+
                 VAR maskPos := pattern:Positions[i]
-                
-                // Only extract data position characters
-                IF maskPos:Type != "literal" .AND. maskPos:Type != "modifier"
+
+                // Only extract data position characters (skip literals, decimals, modifiers)
+                IF maskPos:Type != "literal" .AND. maskPos:Type != "decimal" .AND. maskPos:Type != "modifier"
                     VAR ch := maskedValue[i]
-                    
+
                     // Skip placeholder characters
                     IF ch != Char.Parse("_") .AND. ch != Char.Parse(" ")
                         result:Append(ch)
                     ENDIF
                 ENDIF
             NEXT
-            
+
             RETURN result:ToString()
         END METHOD
-        
+
         /// <summary>
         /// Get just the placeholder template for the mask
         /// Example: "(999) 999-9999" → "(___) ___-____"
@@ -123,7 +123,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
             RETURN pattern:PlaceholderDisplay
         END METHOD
-        
+
         /// <summary>
         /// Apply mask at a specific position
         /// Used when inserting a single character
@@ -132,19 +132,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF pattern == NIL .OR. String.IsNullOrEmpty(inputChar)
                 RETURN inputChar
             ENDIF
-            
+
             IF position < 0 .OR. position >= pattern:Positions:Count
                 RETURN inputChar
             ENDIF
-            
+
             // Validate the character at this position
             IF SELF:_validator:IsValidCharacter(pattern, position, inputChar)
                 RETURN SELF:_validator:TransformCharacter(pattern, position, inputChar)
             ENDIF
-            
+
             RETURN ""
         END METHOD
-        
+
         /// <summary>
         /// Rebuild entire formatted value from current state
         /// Called after edits like delete, backspace, etc.
@@ -153,12 +153,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF pattern == NIL
                 RETURN currentText
             ENDIF
-            
+
             // Extract data and reformat
             VAR cleanData := SELF:ExtractDataValue(pattern, currentText)
             RETURN SELF:FormatValue(pattern, cleanData)
         END METHOD
-        
+
         /// <summary>
         /// Fill in all available data from input
         /// Validates each character and applies mask
@@ -167,15 +167,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF pattern == NIL
                 RETURN inputData
             ENDIF
-            
+
             IF String.IsNullOrEmpty(inputData)
                 RETURN pattern:PlaceholderDisplay
             ENDIF
-            
+
             // Just format the input data with the mask
             RETURN SELF:FormatValue(pattern, inputData)
         END METHOD
-        
+
         /// <summary>
         /// Calculate how many data characters can fit in the mask
         /// </summary>
@@ -185,7 +185,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
             RETURN pattern:DataLength
         END METHOD
-        
+
         /// <summary>
         /// Get total length of formatted output
         /// </summary>
@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
             RETURN pattern:TotalLength
         END METHOD
-        
+
     END CLASS
 
 END NAMESPACE

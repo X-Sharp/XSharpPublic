@@ -85,10 +85,64 @@ FUNCTION IdxCollate( uIndex, nIndex, uArea) AS STRING CLIPPER
 FUNCTION IsFlocked( uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbInfo(DBI_ISFLOCK) } , FALSE,__FUNCTION__,1)
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/isexclusive/*" />
+[FoxProFunction("ISEXCLUSIVE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION IsExclusive( uArea, nType) AS LOGIC CLIPPER
+    IF !IsNil(nType) .AND. (INT) nType == 2
+        RETURN FALSE
+    ENDIF
+
+    LOCAL nArea AS DWORD
+    IF IsNil(uArea)
+        nArea := RuntimeState.CurrentWorkarea
+    ELSEIF IsString(uArea)
+        nArea := RuntimeState.Workareas.FindAlias((STRING) uArea)
+    ELSEIF IsNumeric(uArea)
+        nArea := (DWORD) uArea
+    ELSE
+        RETURN FALSE
+    ENDIF
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+
+    VAR lResult := !(LOGIC) DbInfo(DBI_SHARED)
+    RuntimeState.CurrentWorkarea := nOldArea
+    RETURN lResult
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isreadonly/*" />
 [FoxProFunction("ISREADONLY", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IsReadOnly( uArea ) AS LOGIC CLIPPER
-    RETURN _DoInArea(uArea, { => (LOGIC) DbInfo(DBI_READONLY) } , FALSE,__FUNCTION__,1)
+    // nWorkArea = 0 means current DBF - nor supported yet
+    IF !IsNil(uArea) .AND. IsNumeric(uArea) .AND. (INT) uArea == 0
+        RETURN FALSE
+    ENDIF
+
+    LOCAL nArea AS DWORD
+    IF IsNil(uArea)
+        nArea := RuntimeState.CurrentWorkarea
+    ELSEIF IsString(uArea)
+        nArea := RuntimeState.Workareas.FindAlias((STRING) uArea)
+    ELSEIF IsNumeric(uArea)
+        nArea := (DWORD) uArea
+    ELSE
+        RETURN FALSE
+    ENDIF
+
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+
+    VAR lResult := (LOGIC) DbInfo(DBI_READONLY)
+    RuntimeState.CurrentWorkarea := nOldArea
+
+    RETURN lResult
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isrlocked/*" />
 [FoxProFunction("ISRLOCKED", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];

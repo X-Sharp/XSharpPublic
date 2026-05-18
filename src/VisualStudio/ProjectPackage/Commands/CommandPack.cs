@@ -5,17 +5,19 @@ using System.IO;
 
 using Task = System.Threading.Tasks.Task;
 
-
 namespace XSharp.Project
 {
     [Command(PackageIds.idPackProject)]
     internal sealed class CommandPack : CommandBuild<CommandPack>
     {
         protected override string CommandName => "Build.PackSelection";
+        protected override string CommandDescription => "Pack";
+        protected override Guid CommandGroup => new Guid("{568ABDF7-D522-474D-9EED-34B5E5095BA5}");
+        protected override int CommandID => 8193;
 
         protected override async Task DoCmdAsync()
         {
-            if (!await VerifySdkProjectAsync("Pack"))
+            if (!await VerifySdkProjectAsync())
             {
                 return;
             }
@@ -43,40 +45,26 @@ namespace XSharp.Project
                 // Build dotnet pack command
                 var arguments = $"pack \"{projectPath}\" -c Release";
 
-                var process = await CreateProcessAsync(arguments,
+                var result = await CreateProcessAsync(arguments,
                     $"Creating NuGet package for: {Path.GetFileName(projectPath)}");
 
-
-                string packagePath = null;
-
-                if (process.ExitCode == 0)
+                if (result == 0)
                 {
-                    await outputPane.WriteLineAsync("");
-                    await outputPane.WriteLineAsync("Pack succeeded.");
-                    await VS.StatusBar.ShowMessageAsync("NuGet package created successfully.");
-
+                    string packagePath = null;
                     var message = "NuGet package created successfully.";
                     if (!string.IsNullOrEmpty(packagePath))
                     {
                         message += $"\n\nPackage location:\n{packagePath}";
                     }
-
-                    await VS.MessageBox.ShowAsync("Pack",
+                    await VS.MessageBox.ShowAsync(CommandDescription,
                         message,
                         Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_INFO,
                         Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK);
                 }
-                else
-                {
-                    await outputPane.WriteLineAsync("");
-                    await outputPane.WriteLineAsync($"Pack failed with exit code {process.ExitCode}.");
-                    await VS.StatusBar.ShowMessageAsync("Pack failed.");
-                    await VS.MessageBox.ShowErrorAsync("Pack", "Pack failed. See Output window for details.");
-                }
             }
             catch (Exception ex)
             {
-                await VS.MessageBox.ShowErrorAsync("Pack Error", $"Failed to create NuGet package:\n{ex.Message}");
+                await VS.MessageBox.ShowErrorAsync(CommandDescription+" Error", $"Failed to create NuGet package:\n{ex.Message}");
             }
         }
     }

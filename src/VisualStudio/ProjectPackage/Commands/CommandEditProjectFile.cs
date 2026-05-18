@@ -1,5 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 
+using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
@@ -19,7 +20,7 @@ namespace XSharp.Project
     [Command(PackageIds.idEditProjectFile)]
     internal sealed class CommandEditProjectFile : BaseCommand<CommandEditProjectFile>
     {
-        static ConcurrentDictionary<string, string> tempProjectFiles; // key is the project file, value is the temp file
+        static ConcurrentDictionary<string, string> tempProjectFiles; // key is the project xmlFile, value is the temp xmlFile
         static string tempProjectDir;
         static volatile bool _eventsSubscribed = false;
         static CommandEditProjectFile()
@@ -53,14 +54,22 @@ namespace XSharp.Project
             var projectNode = XSharpProjectNode.FindProject(project.FullPath);
             if (projectNode != null && projectNode.QueryEditProjectFile(true))
             {
-                projectNode.BuildProject.Save();
-                byte[] projectData = File.ReadAllBytes(project.FullPath);
+                projectNode.ClearSdkProjectReferences();
+                projectNode.SetProjectFileDirty(false);
                 Directory.CreateDirectory(tempProjectDir);
+                var prjFile = project.FullPath;
                 var fileName = Path.GetFileNameWithoutExtension(project.FullPath) + ".xml";
-                var file = Path.Combine(tempProjectDir, fileName);
-                File.WriteAllBytes(file, projectData);
-                tempProjectFiles[project.FullPath] = file;
-                await VS.Documents.OpenAsync(file);
+                var xmlFile = Path.Combine(tempProjectDir, fileName);
+                projectNode.BuildProject.Xml.Save(xmlFile);
+                
+                projectNode.BuildProject.FullPath = prjFile;
+                tempProjectFiles[prjFile] = xmlFile;
+                await VS.Documents.OpenAsync(xmlFile);
+                var open = await VS.Documents.IsOpenAsync(xmlFile);
+                if (!open)
+                {
+                    await VS.Documents.OpenViaProjectAsync(xmlFile);
+                }
             }
 
         }

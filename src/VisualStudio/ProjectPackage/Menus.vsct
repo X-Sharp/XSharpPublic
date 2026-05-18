@@ -436,6 +436,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idPublishProject" priority="0x0200" type="Button">
+        <Icon guid="ImageCatalogGuid" id="PublishAllWebSites" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>

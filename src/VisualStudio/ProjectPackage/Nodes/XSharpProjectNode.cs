@@ -1451,6 +1451,8 @@ namespace XSharp.Project
         {
             var found = true;
             var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
+            if (container == null)
+                return false;
             foreach (var child in container.EnumReferences())
             {
                 if (child is XSharpSDKProjectReferenceNode sdkref)
@@ -2052,6 +2054,8 @@ namespace XSharp.Project
         {
             var nodes = new List<XSharpSDKProjectReferenceNode>();
             var container = this.GetReferenceContainer() as ReferenceContainerNode;
+            if (container == null)
+                return nodes;
             container.FindNodesOfType(nodes);
             foreach (var node in nodes)
             {

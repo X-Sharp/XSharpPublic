@@ -574,7 +574,11 @@ namespace Microsoft.VisualStudio.Project
                 foreach (var project in projects)
                 {
                     if (String.Equals(project.Name, this.referencedProjectName, StringComparison.OrdinalIgnoreCase))
+                    {
                         result = true;
+                        break;
+                    }
+                    
                 }
 
             });

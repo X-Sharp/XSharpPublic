@@ -35,11 +35,21 @@ namespace XSharp.Project
             var parent = (XSharpProjectNode)this.ProjectMgr;
             var refnode = XSharpProjectNode.FindProject(path);
             bool changed = false;
-            if ( parent.IsSdkProject)
+            if (parent.IsSdkProject)
             {
                 // already handled in the DependenciesContainer
+                name = System.IO.Path.GetFileNameWithoutExtension(path);
+                if (refnode != null)
+                {
+                    guid = refnode.ProjectIDGuid.ToString("B");
+                }
+                else
+                {
+                    guid = null;
+                    parent.HasIncompleteReferences = true;
+                }
             }
-            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name) )
+            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
             {
                 // No guid, so it is probably an old style project reference
                 // In that case we need to get the guid from the project file

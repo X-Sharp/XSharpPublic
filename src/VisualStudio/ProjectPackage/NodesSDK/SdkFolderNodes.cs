@@ -1,10 +1,18 @@
-﻿#if DEV17
+﻿extern alias codeanalysis;
+
+#if DEV17
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Project;
 
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+
+using System;
 using System.Diagnostics;
+
+using EnvDTE;
 
 namespace XSharp.Project
 {
@@ -14,6 +22,16 @@ namespace XSharp.Project
             base(root, folderName, null, true)
         {
 
+        }
+        public override int MenuCommandId
+        {
+            // Make sure we do not shop copy/cut/delete etc. commands on this node
+            get { return VsMenus.IDM_VS_CTXT_NOCOMMANDS; }
+        }
+
+        public override void Remove(bool removeFromStorage)
+        {
+            return;
         }
         protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.Reference;
         protected override bool SupportsIconMonikers => true;

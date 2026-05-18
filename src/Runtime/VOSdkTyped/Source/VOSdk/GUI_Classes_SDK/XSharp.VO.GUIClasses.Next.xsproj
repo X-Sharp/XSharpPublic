@@ -6,8 +6,7 @@
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Dialect>Vulcan</Dialect>
     <UseWindowsForms>true</UseWindowsForms>
-    <AssemblyName>XSharp.VORDDClasses</AssemblyName>
-    <Name>XSharp.VO.VORDDClasses</Name>
+    <Name>XSharp.VO.VOGUIClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <LB>False</LB>

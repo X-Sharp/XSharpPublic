@@ -1453,25 +1453,36 @@ namespace XSharp.Project
             var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
             foreach (var child in container.EnumReferences())
             {
-                if (child is XSharpProjectReferenceNode)
+                if (child is XSharpSDKProjectReferenceNode sdkref)
                 {
                     var element = child.ItemNode;
+
                     var path = element.Item.EvaluatedInclude;
                     path = System.IO.Path.GetFileName(path);
                     var refnode = FindProject(path);
+                    if (refnode == null)
+                    {
+                        continue;
+                    }
                     var guid = refnode.ProjectIDGuid;
                     if (guid != Guid.Empty)
                     {
-                        element.SetMetadata("Project", guid.ToString("B").ToUpperInvariant());
+                        element.SetMetadata(ProjectFileConstants.Project, guid.ToString("B").ToUpperInvariant());
+
                     }
                     else
                     {
                         found = false;
                     }
+                    if (found)
+                    {
+                        sdkref.SaveProperties();
+                    }
                 }
+
                 HasIncompleteReferences = !found;
-                this.BuildProject.Save();
             }
+            this.SetProjectFileDirty(false);
             return found;
         }
 
@@ -2037,11 +2048,29 @@ namespace XSharp.Project
             }
         }
 
-
+        internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
+        {
+            var nodes = new List<XSharpSDKProjectReferenceNode>();
+            var container = this.GetReferenceContainer() as ReferenceContainerNode;
+            container.FindNodesOfType(nodes);
+            foreach (var node in nodes)
+            {
+                node.RemoveProperties();
+            }
+            return nodes;
+        }
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
             this.UpdateProjectVersion();
-            return base.Save(fileToBeSaved, remember, formatIndex);
+            var clone = this.BuildProject.Xml.RawXml;
+            var nodes = ClearSdkProjectReferences();
+            var result = base.Save(fileToBeSaved, remember, formatIndex);
+            foreach (var node in nodes)
+            {
+                node.RestoreProperties();
+            }
+            this.SetProjectFileDirty(false);
+            return result;
         }
 
         internal class FileToMove

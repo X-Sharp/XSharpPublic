@@ -18,6 +18,7 @@ using XSharpModel;
 
 using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
+using System.Xml;
 
 namespace XSharp.Project
 {
@@ -282,6 +283,8 @@ namespace XSharp.Project
             {
                 newBuildProject.Save();
             }
+
+
         }
 
         private void SaveTargetFrameworks()

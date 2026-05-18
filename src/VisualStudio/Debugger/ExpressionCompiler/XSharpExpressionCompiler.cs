@@ -318,13 +318,18 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             if (compiler != null)
             {
-                var e = (IDkmClrExpressionCompilerCallback)compiler;
-                e.CompileDisplayAttribute(expression, moduleInstance, token, out error, out result);
+                try
+                {
+                    var e = (IDkmClrExpressionCompilerCallback)compiler;
+                    e.CompileDisplayAttribute(expression, moduleInstance, token, out error, out result);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Exception(ex, "Debugger:CompileDisplayAttribute");
+                }
             }
-            else
-            {
-                expression.CompileDisplayAttribute(moduleInstance, token, out error, out result);
-            }
+            expression.CompileDisplayAttribute(moduleInstance, token, out error, out result);
         }
         public void GetFrameName(DkmInspectionContext inspectionContext, DkmWorkList workList, DkmStackWalkFrame frame, DkmVariableInfoFlags argumentFlags, DkmCompletionRoutine<DkmGetFrameNameAsyncResult> completionRoutine)
         {

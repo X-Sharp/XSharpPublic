@@ -10,6 +10,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+#if XSHARP
+using LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
 {

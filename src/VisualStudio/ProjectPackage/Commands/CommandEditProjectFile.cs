@@ -54,7 +54,9 @@ namespace XSharp.Project
             var projectNode = XSharpProjectNode.FindProject(project.FullPath);
             if (projectNode != null && projectNode.QueryEditProjectFile(true))
             {
+#if DEV17
                 projectNode.ClearSdkProjectReferences();
+#endif
                 projectNode.SetProjectFileDirty(false);
                 Directory.CreateDirectory(tempProjectDir);
                 var prjFile = project.FullPath;

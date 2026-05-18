@@ -56,7 +56,9 @@ namespace XSharp.Project
             if (isInitialized)
                 return;
             ThreadHelper.ThrowIfNotOnUIThread();
+#if DEV17
             VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+#endif
             VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
             VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
 
@@ -69,28 +71,33 @@ namespace XSharp.Project
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
                 var sol = await VS.Solutions.GetCurrentSolutionAsync();
+#if DEV17
                 if (sol is Solution)
                 {
                     SolutionEvents_OnAfterOpenSolution(sol);
                 }
+#endif
             });
             isInitialized = true;
         }
 
 
-        #region Solution Events
-
+#region Solution Events
+#if DEV17
         private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
+
             foreach (var project in XSharpProjectNode.AllProjects)
             {
                 if (project.HasIncompleteReferences)
                 {
+
                     project.FixReferences();
                 }
             }
-        }
 
+    }
+#endif
         private void SolutionEvents_OnBeforeCloseSolution()
         {
             // close OUR documents that are opened in design mode.
@@ -126,8 +133,8 @@ namespace XSharp.Project
             RestoreStartupProject();
         }
 
-        #endregion
-        #region Project Events
+#endregion
+#region Project Events
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
             if (XSharpModel.XProject.IsXSharpProject(projectFileName))
@@ -222,10 +229,10 @@ namespace XSharp.Project
             return true;
 
         }
-        #endregion
+#endregion
 
 
-        #region Save / Restore Windows
+#region Save / Restore Windows
         private void RestoreStartupProject()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -394,8 +401,8 @@ namespace XSharp.Project
                 }
             });
         }
-        #endregion
-        #region Save/Restore Startup Project
+#endregion
+#region Save/Restore Startup Project
         private void SaveActiveStartupProject()
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -452,8 +459,8 @@ namespace XSharp.Project
             return null;
 
         }
-        #endregion
-        #region DocumentEvents
+#endregion
+#region DocumentEvents
         private void DocumentEvents_Closed(string document)
         {
             // Remove document from OrphanedFilesProject
@@ -470,7 +477,7 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
+#endregion
 
     }
 }

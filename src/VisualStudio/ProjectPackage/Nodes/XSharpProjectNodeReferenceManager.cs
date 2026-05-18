@@ -160,6 +160,7 @@ namespace XSharp.Project
             {
                 var newReference = context.CreateReference() as IVsProjectReference;
                 newReference.FullPath = reference.Url;
+#if DEV17
                 if (reference is XSharpSDKProjectReferenceNode sdkprj)
                 {
                     var props = sdkprj.ReferenceProperties;
@@ -171,6 +172,7 @@ namespace XSharp.Project
                     }
                 }
                 else
+#endif
                 {
                     newReference.Name = reference.Caption;
                     newReference.Identity = reference.ReferencedProjectGuid.ToString("B");
@@ -403,6 +405,6 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
+#endregion
     }
 }

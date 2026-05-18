@@ -734,7 +734,7 @@
       <config-value name="deepl">{&quot;destlang&quot;:&quot;ZH-HANS&quot;,&quot;writelang&quot;:&quot;EN-US&quot;,&quot;defapiglossary&quot;:&quot;&quot;,&quot;glossarycount&quot;:&quot;0&quot;}</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Gaia (3.0.0.3) Beta</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Gaia (3.0.0.4) RC1</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers>

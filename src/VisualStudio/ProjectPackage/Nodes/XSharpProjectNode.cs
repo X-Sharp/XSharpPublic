@@ -1447,6 +1447,7 @@ namespace XSharp.Project
 
         internal bool HasIncompleteReferences = false;
 
+#if DEV17
         internal bool FixReferences()
         {
             var found = true;
@@ -1487,7 +1488,7 @@ namespace XSharp.Project
             this.SetProjectFileDirty(false);
             return found;
         }
-
+#endif
 
         private object CreateServices(Type serviceType)
         {
@@ -1543,7 +1544,7 @@ namespace XSharp.Project
         {
             return new XSharpProjectNodeProperties(this);
         }
-        #endregion
+#endregion
 
 
         public XSharpModel.XProject ProjectModel
@@ -1912,7 +1913,7 @@ namespace XSharp.Project
 
 
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
 
         public string DisplayName => this.Caption;
 
@@ -1962,7 +1963,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
         internal void Unload()
         {
@@ -2049,7 +2050,7 @@ namespace XSharp.Project
                 }
             }
         }
-
+#if DEV17
         internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
         {
             var nodes = new List<XSharpSDKProjectReferenceNode>();
@@ -2063,11 +2064,15 @@ namespace XSharp.Project
             }
             return nodes;
         }
+#endif
+#if DEV17
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
             this.UpdateProjectVersion();
             var clone = this.BuildProject.Xml.RawXml;
+
             var nodes = ClearSdkProjectReferences();
+
             var result = base.Save(fileToBeSaved, remember, formatIndex);
             foreach (var node in nodes)
             {
@@ -2076,7 +2081,7 @@ namespace XSharp.Project
             this.SetProjectFileDirty(false);
             return result;
         }
-
+#endif
         internal class FileToMove
         {
             internal XSharpFileNode Node;
@@ -2132,7 +2137,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IProjectTypeHelper
+#region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -2179,8 +2184,8 @@ namespace XSharp.Project
         }
 
 
-        #endregion
-        #region IVsSingleFileGeneratorFactory
+#endregion
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -2235,9 +2240,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
-        #region IVsDesignTimeAssemblyResolution
+#region IVsDesignTimeAssemblyResolution
 
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", XSharpProjectFileConstants.AnyCPU);
 
@@ -2257,8 +2262,8 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
-        #region TableManager
+#endregion
+#region TableManager
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
 
@@ -2295,7 +2300,7 @@ namespace XSharp.Project
             _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);
         }
 
-        #endregion
+#endregion
 
 
         public void AddFileNode(string strFileName)
@@ -3069,7 +3074,7 @@ namespace XSharp.Project
 
 
 
-        #region IVsProject5
+#region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -3104,7 +3109,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        #endregion
+#endregion
 
     }
 

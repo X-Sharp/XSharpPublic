@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
 
             // NOTE: Since this is done within CompilationContext, it will not be cached.
             // CONSIDER: The values should be the same everywhere in the module, so they
-            // could be cached.  
+            // could be cached.
             // (Catch: what happens in a type context without a method def?)
             Compilation = GetCompilationWithExternAliases(compilation, methodDebugInfo.ExternAliasRecords);
 #if XSHARP
@@ -923,8 +923,8 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                     : oldAliases.Concat(ImmutableArray.Create(externAlias));
 
                 // NOTE: Dev12 didn't emit custom debug info about "global", so we don't have
-                // a good way to distinguish between a module aliased with both (e.g.) "X" and 
-                // "global" and a module aliased with only "X".  As in Dev12, we assume that 
+                // a good way to distinguish between a module aliased with both (e.g.) "X" and
+                // "global" and a module aliased with only "X".  As in Dev12, we assume that
                 // "global" is a valid alias to remain at least as permissive as source.
                 // NOTE: In the event that this introduces ambiguities between two assemblies
                 // (e.g. because one was "global" in source and the other was "X"), it should be
@@ -1126,7 +1126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
 
                             if (!SyntaxHelpers.TryParseDottedName(namespaceName, out _))
                             {
-                                // DevDiv #999086: Some previous version of VS apparently generated type aliases as "UA{alias} T{alias-qualified type name}". 
+                                // DevDiv #999086: Some previous version of VS apparently generated type aliases as "UA{alias} T{alias-qualified type name}".
                                 // Neither Roslyn nor Dev12 parses such imports.  However, Roslyn discards them, rather than interpreting them as "UA{alias}"
                                 // (which will rarely work and never be correct).
                                 Debug.WriteLine($"Import record '{importRecord}' has syntactically invalid target '{importRecord.TargetString}'");
@@ -1275,7 +1275,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
         }
 
         /// <summary>
-        /// Generate the set of locals to use for binding. 
+        /// Generate the set of locals to use for binding.
         /// </summary>
         private static ImmutableArray<LocalSymbol> GetLocalsForBinding(
             ImmutableArray<LocalSymbol> locals,
@@ -1442,7 +1442,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             displayClassTypes.Free();
 
             // This is a special handling for async MoveNext method.
-            // Parameters are not declared by it, and, therefore, display variables corresponding to them will be those declared outside.  
+            // Parameters are not declared by it, and, therefore, display variables corresponding to them will be those declared outside.
             bool parametersAreOutside = currentFrame.ParameterCount == 0 && !parameterNamesInOrder.IsEmpty;
 
             var displayClassVariablesBuilder = PooledDictionary<string, DisplayClassVariable>.GetInstance();

@@ -17,7 +17,11 @@ namespace XSharp.Project
         {
             InitializeComponent();
             _projectPath = projectPath;
-            PublishOptions = new PublishOptions();
+            PublishOptions = new PublishOptions(projectPath);
+            PublishOptions.Restore();
+
+            // Set DataContext for binding
+            this.DataContext = PublishOptions;
 
             LoadProjectSettings();
         }
@@ -35,28 +39,18 @@ namespace XSharp.Project
                     {
                         foreach (var framework in targetFrameworks)
                         {
-                            TargetFrameworkComboBox.Items.Add(new ComboBoxItem { Content = framework });
+                            TargetFrameworkComboBox.Items.Add(framework);
                         }
-                        if (TargetFrameworkComboBox.Items.Count > 0)
+                        if (TargetFrameworkComboBox.Items.Count > 0 && string.IsNullOrEmpty(PublishOptions.TargetFramework))
                         {
-                            ((ComboBoxItem)TargetFrameworkComboBox.Items[0]).IsSelected = true;
+                            TargetFrameworkComboBox.SelectedIndex = 0;
                         }
                     }
-
-                    // Set default output path
-                    var projectDir = Path.GetDirectoryName(_projectPath);
-                    var projectName = Path.GetFileNameWithoutExtension(_projectPath);
-                    OutputPathTextBox.Text = Path.Combine(projectDir, "bin", "publish", projectName);
                 }
             }
             catch
             {
-                // If we can't load project settings, use defaults
-                OutputPathTextBox.Text = Path.Combine(
-                    Path.GetDirectoryName(_projectPath),
-                    "bin",
-                    "publish",
-                    Path.GetFileNameWithoutExtension(_projectPath));
+                ;
             }
         }
 
@@ -77,33 +71,25 @@ namespace XSharp.Project
         private void Publish_Click(object sender, RoutedEventArgs e)
         {
             // Validate inputs
-            if (string.IsNullOrWhiteSpace(OutputPathTextBox.Text))
+            if (string.IsNullOrWhiteSpace(PublishOptions.OutputPath))
             {
                 MessageBox.Show("Please specify an output path.", "Validation Error",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (SelfContainedCheckBox.IsChecked == true && string.IsNullOrWhiteSpace(GetRuntimeValue()))
+            if (PublishOptions.SelfContained == true && string.IsNullOrWhiteSpace(PublishOptions.Runtime))
             {
                 MessageBox.Show("Self-Contained deployment requires a Target Runtime (RID) to be specified.",
                     "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Build publish options
-            PublishOptions = new PublishOptions
+            // If runtime is specified but SelfContained is not set, default to false
+            if (!PublishOptions.SelfContained.HasValue && !string.IsNullOrWhiteSpace(PublishOptions.Runtime))
             {
-                Configuration = ((ComboBoxItem)ConfigurationComboBox.SelectedItem)?.Content?.ToString() ?? "Release",
-                TargetFramework = GetTargetFrameworkValue(),
-                Runtime = GetRuntimeValue(),
-                OutputPath = OutputPathTextBox.Text,
-                SelfContained = SelfContainedCheckBox.IsChecked == true ? (bool?)true :
-                               !string.IsNullOrWhiteSpace(GetRuntimeValue()) ? (bool?)false : null,
-                SingleFile = SingleFileCheckBox.IsChecked == true,
-                ReadyToRun = ReadyToRunCheckBox.IsChecked == true,
-                Trimmed = TrimmedCheckBox.IsChecked == true
-            };
+                PublishOptions.SelfContained = false;
+            }
 
             DialogResult = true;
             Close();
@@ -113,24 +99,6 @@ namespace XSharp.Project
         {
             DialogResult = false;
             Close();
-        }
-
-        private string GetTargetFrameworkValue()
-        {
-            if (TargetFrameworkComboBox.SelectedItem is ComboBoxItem item)
-            {
-                return item.Content?.ToString();
-            }
-            return TargetFrameworkComboBox.Text;
-        }
-
-        private string GetRuntimeValue()
-        {
-            if (RuntimeComboBox.SelectedItem is ComboBoxItem item)
-            {
-                return item.Content?.ToString();
-            }
-            return RuntimeComboBox.Text;
         }
     }
 }

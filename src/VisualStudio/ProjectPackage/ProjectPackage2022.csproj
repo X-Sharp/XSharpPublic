@@ -187,9 +187,9 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
-    <Compile Include="NodesSDK\DependenciesContainer.cs" />
-    <Compile Include="NodesSDK\FolderNodes.cs" />
-    <Compile Include="NodesSDK\ReferenceNodes.cs" />
+    <Compile Include="NodesSDK\SdkDependenciesContainer.cs" />
+    <Compile Include="NodesSDK\SdkFolderNodes.cs" />
+    <Compile Include="NodesSDK\SdkReferenceNodes.cs" />
     <Compile Include="NodesSDK\SdkProjectNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />

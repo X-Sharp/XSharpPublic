@@ -158,23 +158,7 @@ CLASS VOMenuItem INHERIT SWF.ToolStripMenuItem
     END PROPERTY
 END CLASS
 
-/// <summary>Alias for VOMenu for backward compatibility.</summary>
-CLASS VOMainMenu INHERIT VOMenu
-    CONSTRUCTOR() STRICT
-        SUPER()
-END CLASS
-
-CLASS VOToolStrip INHERIT SWF.ToolStrip
-    CONSTRUCTOR() STRICT
-        SUPER()
-END CLASS
-
 CLASS VOSeparator INHERIT SWF.ToolStripSeparator
-    CONSTRUCTOR() STRICT
-        SUPER()
-END CLASS
-
-CLASS VOToolStripButton INHERIT SWF.ToolStripButton
     CONSTRUCTOR() STRICT
         SUPER()
 END CLASS

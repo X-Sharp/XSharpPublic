@@ -27,14 +27,14 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;NOASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
+    <DefineConstants>DEBUG;ASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
     <NoWarn>618;4014;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <DefineConstants>NOASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
+    <DefineConstants>ASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
     <Optimize>true</Optimize>
     <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>

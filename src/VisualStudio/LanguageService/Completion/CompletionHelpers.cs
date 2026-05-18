@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows.Media;
 
 using XSharp.Settings;
+using XSharp.Support;
 
 using XSharpModel;
 
@@ -752,7 +753,10 @@ namespace XSharp.LanguageService
         }
         internal static void WriteOutputMessage(string strMessage)
         {
-            XSharpCompletionSource.WriteOutputMessage(strMessage);
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
+            {
+                Logger.Information(strMessage);
+            }
         }
     }
     internal static class MemberExtensions

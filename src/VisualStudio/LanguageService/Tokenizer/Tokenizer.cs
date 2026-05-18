@@ -5,6 +5,7 @@
 //
 //------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using XSharpModel;
@@ -24,7 +25,13 @@ namespace XSharp.LanguageService
 
         public static bool StringEquals(string lhs, string rhs)
         {
+#if ASYNCCOMPLETION
+            // In async mode XSharpCompletionSource does not exist.
+            // XSharp is case-insensitive by default, matching XSharpLookup.StringEquals.
+            return string.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase);
+#else
             return XSharpCompletionSource.StringEquals(lhs, rhs);
+#endif
         }
 
         internal static IList<IToken> GetTokenListBeforeCaret(XSharpSearchLocation location, out CompletionState state)

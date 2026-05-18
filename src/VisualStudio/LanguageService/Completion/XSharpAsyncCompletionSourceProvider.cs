@@ -4,14 +4,17 @@
 // See License.txt in the project root for license information.
 //
 #if ASYNCCOMPLETION
-using Microsoft.VisualStudio.Language.Intellisense;
 using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Utilities;
-using XSharpModel;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text.Tagging;
+
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Utilities;
+
+using XSharp.Settings;
+
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -24,27 +27,24 @@ namespace XSharp.LanguageService
         internal SVsServiceProvider ServiceProvider = null;
 
         [Import]
-        internal IGlyphService GlyphService = null;
-
-        [Import]
-        IBufferTagAggregatorFactoryService aggregator = null;
+        internal IBufferTagAggregatorFactoryService Aggregator = null;
 
         IAsyncCompletionSource IAsyncCompletionSourceProvider.GetOrCreate(ITextView textView)
         {
-            if (XSettings.DisableCodeCompletion)
+            if (XEditorSettings.DisableCodeCompletion)
                 return null;
-            if (textView.Properties.TryGetProperty< XSharpAsyncCompletionSource>(typeof(XSharpAsyncCompletionSource), out var completionSource))
+            if (textView.Properties.TryGetProperty<XSharpAsyncCompletionSource>(
+                    typeof(XSharpAsyncCompletionSource), out var completionSource))
                 return completionSource;
             var file = textView.GetFile();
             if (file == null || file.XFileType != XFileType.SourceCode)
                 return null;
-            completionSource = new XSharpAsyncCompletionSource(this, textView, aggregator, file);
+            completionSource = new XSharpAsyncCompletionSource(this, textView, Aggregator, file);
             textView.Properties.AddProperty(typeof(XSharpAsyncCompletionSource), completionSource);
             return completionSource;
         }
     }
-
- }
+}
 
 #endif
 

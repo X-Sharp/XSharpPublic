@@ -256,7 +256,7 @@ namespace XSharp.LanguageService
                     if (symbol is IXMemberSymbol xmember)
                     {
                         if (xmember.Kind.HasParameters() &&
-                            tokenList.Count(t => t.Type == XSharpLexer.LPAREN) > 0)
+                            tokenList.Any(t => t.Type == XSharpLexer.LPAREN))
                         {
                             var typeName = xmember.TypeName;
                             if (xmember is XSourceMemberSymbol sourcemem)
@@ -374,19 +374,18 @@ namespace XSharp.LanguageService
                         sourceType.File.Project == member?.File.Project)
                     {
                         visibleAs = Modifiers.Internal;
-                        switch (memberName.ToLower())
+                        if (string.Equals(memberName, "self", StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(memberName, "this", StringComparison.OrdinalIgnoreCase))
                         {
-                            case "self":
-                            case "this":
-                                visibleAs = Modifiers.Private;
-                                break;
-                            case "super":
-                                visibleAs = Modifiers.Protected;
-                                break;
-                            default:
-                                if (member?.ParentName == type.FullName)
-                                    visibleAs = Modifiers.Private;
-                                break;
+                            visibleAs = Modifiers.Private;
+                        }
+                        else if (string.Equals(memberName, "super", StringComparison.OrdinalIgnoreCase))
+                        {
+                            visibleAs = Modifiers.Protected;
+                        }
+                        else if (member?.ParentName == type.FullName)
+                        {
+                            visibleAs = Modifiers.Private;
                         }
                     }
                     _helpers.BuildCompletionListMembers(location, compList, type,

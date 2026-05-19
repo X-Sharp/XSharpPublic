@@ -41,7 +41,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:Size         := Size{100, 75}
 			SELF:AcceptsTab   := FALSE    // controlled by AllowTabs
 
-		/// <summary>When <see cref="AllowTabs"/> is <c>.T.</c>, intercepts the Tab key and inserts a literal <c>CHR(9)</c> at the caret instead of moving focus; delegates all other keys to the base handler.</summary>
+		/// <summary>
+		/// When <see cref="AllowTabs"/> is <c>.T.</c>, intercepts the Tab key and inserts a literal <c>CHR(9)</c> at the caret instead of moving focus; delegates all other keys to the base handler.
+		/// </summary>
 		OVERRIDE PROTECTED METHOD OnKeyDown( e AS KeyEventArgs ) AS VOID
 			IF SELF:AllowTabs .AND. e:KeyCode == Keys.Tab
 				// Insert a tab character at the caret

@@ -1,4 +1,4 @@
-﻿// FormOverride.xh
+// FormOverride.xh
 // These properties capture a Method, through VFPOverride
 
 // Copyright (c) XSharp B.V.  All Rights Reserved.
@@ -8,9 +8,11 @@
 
 PRIVATE _VFPRefresh AS VFPOverride
 
+/// <summary>
+/// Name of the VFP method called when the form's <c>Refresh()</c> is invoked. Stored and called directly by the form's <c>Refresh</c> override.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
 [System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the form's <c>Refresh()</c> is invoked. Stored and called directly by the form's <c>Refresh</c> override.</summary>
 PROPERTY vfpRefresh AS STRING GET _VFPRefresh?:SendTo SET Set_Refresh( VFPOverride{SELF, value} )
 
 METHOD Set_Refresh( methodCall AS VFPOverride ) AS VOID

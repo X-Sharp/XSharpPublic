@@ -88,20 +88,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Mouse-down / mouse-up: swap to DownPicture ────────────────────────
-		/// <summary>Swaps the button image to <c>DownPicture</c> (if set) while the mouse button is held.</summary>
+		/// <summary>
+		/// Swaps the button image to <c>DownPicture</c> (if set) while the mouse button is held.
+		/// </summary>
 		PROTECTED METHOD OnMouseDown(e AS System.Windows.Forms.MouseEventArgs) AS VOID
 			SUPER:OnMouseDown(e)
 			IF !String.IsNullOrEmpty(SELF:DownPicture)
 				SELF:Image := VFPTools.ImageFromFile(SELF:DownPicture)
 			ENDIF
 
-		/// <summary>Restores the normal/disabled image via <see cref="ApplyGraphicalImages"/> after the mouse button is released.</summary>
+		/// <summary>
+		/// Restores the normal/disabled image via <see cref="ApplyGraphicalImages"/> after the mouse button is released.
+		/// </summary>
 		PROTECTED METHOD OnMouseUp(e AS System.Windows.Forms.MouseEventArgs) AS VOID
 			SUPER:OnMouseUp(e)
 			SELF:ApplyGraphicalImages()
 
 		// ── EnabledChanged: swap picture + apply DisabledBackColor/ForeColor ──
-		/// <summary>Applies the disabled/normal image and <c>DisabledBackColor</c>/<c>DisabledForeColor</c> when the enabled state changes.</summary>
+		/// <summary>
+		/// Applies the disabled/normal image and <c>DisabledBackColor</c>/<c>DisabledForeColor</c> when the enabled state changes.
+		/// </summary>
 		PROTECTED METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnEnabledChanged(e)
 			SELF:ApplyGraphicalImages()

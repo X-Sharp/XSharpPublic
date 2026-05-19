@@ -103,7 +103,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// <value></value>
 		PROPERTY DataBase AS STRING AUTO
 
-		/// <summary><c>.T.</c> when <see cref="DataBase"/> is empty, meaning the cursor points to a free table rather than a DBC-bound table.</summary>
+		/// <summary>
+		/// <c>.T.</c> when <see cref="DataBase"/> is empty, meaning the cursor points to a free table rather than a DBC-bound table.
+		/// </summary>
 		PROPERTY IsFreeTable AS LOGIC GET String.IsNullOrEmpty( SELF:DataBase )
 
 		/// <summary>
@@ -111,17 +113,23 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROPERTY BindingSource AS BindingSource AUTO
 
-		/// <summary>VFP BufferModeOverride stub — stored for source compatibility. Not implemented.</summary>
+		/// <summary>
+		/// VFP BufferModeOverride stub — stored for source compatibility. Not implemented.
+		/// </summary>
 		PROPERTY BufferModeOverride AS INT AUTO
 
-		/// <summary>The underlying RDD object obtained from <c>CoreDb.Info(DBI_RDD_OBJECT)</c> after <see cref="Open"/>. Used by <see cref="Sync"/>.</summary>
+		/// <summary>
+		/// The underlying RDD object obtained from <c>CoreDb.Info(DBI_RDD_OBJECT)</c> after <see cref="Open"/>. Used by <see cref="Sync"/>.
+		/// </summary>
 		PROTECTED PROPERTY _oRDD AS IRdd AUTO
 
 		CONSTRUCTOR(  )
 			SELF:BindingSource := BindingSource{}
 			RETURN
 
-		/// <summary>Opens the table or view in a new work area, attaches a <see cref="DbDataSource"/> to <see cref="BindingSource"/>, and applies <see cref="Order"/>, <see cref="Filter"/>, and <see cref="NoDataOnLoad"/>.</summary>
+		/// <summary>
+		/// Opens the table or view in a new work area, attaches a <see cref="DbDataSource"/> to <see cref="BindingSource"/>, and applies <see cref="Order"/>, <see cref="Filter"/>, and <see cref="NoDataOnLoad"/>.
+		/// </summary>
 		METHOD Open() AS VOID
 			// Free Table
 			IF SELF:IsFreeTable
@@ -194,7 +202,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ENDIF
 			ENDIF
 
-		/// <summary>Closes the work area opened by <see cref="Open"/>. For DBC cursors, only the work area is closed — the DBC itself remains open as it may be shared by other cursors.</summary>
+		/// <summary>
+		/// Closes the work area opened by <see cref="Open"/>. For DBC cursors, only the work area is closed — the DBC itself remains open as it may be shared by other cursors.
+		/// </summary>
 		METHOD Close() AS VOID
 			// Free Table
 			IF SELF:IsFreeTable
@@ -206,7 +216,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				DbCloseArea( SELF:Alias )
 			ENDIF
 
-		/// <summary>Moves the <see cref="BindingSource"/> position to match the current RDD record number (1-based → 0-based). Call this after any programmatic <c>DbGo*</c> / <c>DbSkip</c> to keep the grid in sync.</summary>
+		/// <summary>
+		/// Moves the <see cref="BindingSource"/> position to match the current RDD record number (1-based → 0-based). Call this after any programmatic <c>DbGo*</c> / <c>DbSkip</c> to keep the grid in sync.
+		/// </summary>
 		METHOD Sync() AS VOID
 			LOCAL posRdd AS DWORD
 			//LOCAL posSrc AS INT

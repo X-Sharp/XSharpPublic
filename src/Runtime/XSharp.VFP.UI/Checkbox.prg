@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROTECTED METHOD OnClick( e AS System.EventArgs ) AS VOID
 			IF _readOnly
-				// Suppress the state change — restore previous CheckState
+				// Suppress the state change â€” restore previous CheckState
 				SELF:Checked := !SELF:Checked
 				RETURN
 			ENDIF
@@ -82,7 +82,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		/// <summary>
 		/// Current check state as a VFP USUAL: 0=Unchecked, 1=Checked, 2=Indeterminate.<br/>
-		/// Also accepts <c>.T.</c> (→Checked) and <c>.F.</c> (→Unchecked) for compatibility with
+		/// Also accepts <c>.T.</c> (â†’Checked) and <c>.F.</c> (â†’Unchecked) for compatibility with
 		/// boolean ControlSource bindings. Fires <see cref="vfpProgrammaticChange"/> on set.
 		/// </summary>
 		PROPERTY Value AS USUAL
@@ -113,12 +113,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── ProgrammaticChange ───────────────────────────────────────────────
+		// â”€â”€ ProgrammaticChange â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when <see cref="Value"/> is set programmatically.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
-		/// <summary>Name of the VFP method called when <see cref="Value"/> is set programmatically.</summary>
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
 		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
@@ -126,7 +128,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:_VFPProgrammaticChange:Call()
 			ENDIF
 
-		// ── InteractiveChange ────────────────────────────────────────────────
+		// â”€â”€ InteractiveChange â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 		PROTECTED METHOD OnCheckedChanged( e AS System.EventArgs ) AS VOID
 			SUPER:OnCheckedChanged( e )

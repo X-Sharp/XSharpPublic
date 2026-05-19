@@ -1,4 +1,4 @@
-﻿// Column.prg
+// Column.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -59,13 +59,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Font applied to all data cells in the column via <c>DefaultCellStyle.Font</c>.</summary>
+		/// <summary>
+		/// Font applied to all data cells in the column via <c>DefaultCellStyle.Font</c>.
+		/// </summary>
 		PROPERTY Font AS System.Drawing.Font GET SELF:DefaultCellStyle:Font SET SELF:DefaultCellStyle:Font := VALUE
 
 		// ── BackColor / ForeColor ─────────────────────────────────────────────
 		// Map to DefaultCellStyle so the colour applies to all cells in this column.
 
-		/// <summary>Background colour for all data cells in this column, written to <c>DefaultCellStyle.BackColor</c>.</summary>
+		/// <summary>
+		/// Background colour for all data cells in this column, written to <c>DefaultCellStyle.BackColor</c>.
+		/// </summary>
 		PROPERTY BackColor AS System.Drawing.Color
 			GET
 				RETURN SELF:DefaultCellStyle:BackColor
@@ -75,7 +79,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Text (foreground) colour for all data cells in this column, written to <c>DefaultCellStyle.ForeColor</c>.</summary>
+		/// <summary>
+		/// Text (foreground) colour for all data cells in this column, written to <c>DefaultCellStyle.ForeColor</c>.
+		/// </summary>
 		PROPERTY ForeColor AS System.Drawing.Color
 			GET
 				RETURN SELF:DefaultCellStyle:ForeColor
@@ -391,7 +397,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				END TRY
 			ENDIF
 
-		/// <summary>VFP CurrentControl — name of the active embedded editing control. Stored for compatibility; WinForms manages the editing control internally via <c>DataGridView.EditingControl</c>.</summary>
+		/// <summary>
+		/// VFP CurrentControl — name of the active embedded editing control. Stored for compatibility; WinForms manages the editing control internally via <c>DataGridView.EditingControl</c>.
+		/// </summary>
 		PROPERTY CurrentControl AS STRING AUTO
 
 		/// <summary>
@@ -459,13 +467,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>When <c>.F.</c>, prevents the user from editing cells in this column. Inverse of <see cref="System.Windows.Forms.DataGridViewColumn.ReadOnly"/>.</summary>
+		/// <summary>
+		/// When <c>.F.</c>, prevents the user from editing cells in this column. Inverse of <see cref="System.Windows.Forms.DataGridViewColumn.ReadOnly"/>.
+		/// </summary>
 		PROPERTY Enabled AS LOGIC
 			GET ; RETURN !SELF:ReadOnly ; END GET
 			SET ; SELF:ReadOnly := !VALUE ; END SET
 		END PROPERTY
 
-		/// <summary>VFP MousePointer — no per-column cursor API exists in WinForms; stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP MousePointer — no per-column cursor API exists in WinForms; stored for source compatibility.
+		/// </summary>
 		PROPERTY MousePointer AS INT AUTO
 
 		/// <summary>
@@ -495,7 +507,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 // ── Tag ───────────────────────────────────────────────────────────────
-/// <summary>VFP Tag — arbitrary string value attached to the column. Shadows the base <c>Object</c>-typed <c>Tag</c> with a <c>STRING</c>-typed wrapper.</summary>
+/// <summary>
+/// VFP Tag — arbitrary string value attached to the column. Shadows the base <c>Object</c>-typed <c>Tag</c> with a <c>STRING</c>-typed wrapper.
+/// </summary>
 NEW PROPERTY Tag AS STRING
     GET
         LOCAL t := SUPER:Tag AS OBJECT
@@ -504,19 +518,29 @@ NEW PROPERTY Tag AS STRING
     SET ; SUPER:Tag := (OBJECT) VALUE ; END SET
 END PROPERTY
 
-/// <summary>When <c>.T.</c>, selecting a cell automatically selects all its text when the editing control appears. Implemented via the <c>EditingControlShowing</c> event.</summary>
+/// <summary>
+/// When <c>.T.</c>, selecting a cell automatically selects all its text when the editing control appears. Implemented via the <c>EditingControlShowing</c> event.
+/// </summary>
 PROPERTY SelectOnEntry AS LOGIC AUTO
 
 // ── FontOutline / FontShadow / DragMode ───────────────────────────────
-/// <summary>VFP FontOutline — no WinForms equivalent; stored for source compatibility.</summary>
+/// <summary>
+/// VFP FontOutline — no WinForms equivalent; stored for source compatibility.
+/// </summary>
 PROPERTY FontOutline AS LOGIC AUTO
-/// <summary>VFP FontShadow — no WinForms equivalent; stored for source compatibility.</summary>
+/// <summary>
+/// VFP FontShadow — no WinForms equivalent; stored for source compatibility.
+/// </summary>
 PROPERTY FontShadow  AS LOGIC AUTO
-/// <summary>VFP DragMode — no WinForms equivalent; stored for source compatibility.</summary>
+/// <summary>
+/// VFP DragMode — no WinForms equivalent; stored for source compatibility.
+/// </summary>
 PROPERTY DragMode    AS INT AUTO
 
 // ── Refresh ───────────────────────────────────────────────────────────
-/// <summary>Repaints this column by calling <see cref="System.Windows.Forms.DataGridView.InvalidateColumn"/>. Has no effect when the column is not attached to a grid.</summary>
+/// <summary>
+/// Repaints this column by calling <see cref="System.Windows.Forms.DataGridView.InvalidateColumn"/>. Has no effect when the column is not attached to a grid.
+/// </summary>
 METHOD Refresh() AS VOID STRICT
     IF SELF:DataGridView != NULL_OBJECT
         SELF:DataGridView:InvalidateColumn(SELF:Index)
@@ -550,113 +574,145 @@ PRIVATE _VFPDestroy    AS VFPOverride
 PRIVATE _VFPRefresh    AS VFPOverride
 PRIVATE _initFired     AS LOGIC
 
+/// <summary>
+/// Name of the VFP method called when the user left-clicks a data cell in this column.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the user left-clicks a data cell in this column.</summary>
 PROPERTY vfpClick AS STRING
     GET ; RETURN SELF:_VFPClick?:SendTo ; END GET
     SET ; SELF:_VFPClick := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when the user right-clicks a data cell in this column.
+///</summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the user right-clicks a data cell in this column.</summary>
 PROPERTY vfpRightClick AS STRING
     GET ; RETURN SELF:_VFPRightClick?:SendTo ; END GET
     SET ; SELF:_VFPRightClick := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when the user double-clicks a data cell in this column.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the user double-clicks a data cell in this column.</summary>
 PROPERTY vfpDblClick AS STRING
     GET ; RETURN SELF:_VFPDblClick?:SendTo ; END GET
     SET ; SELF:_VFPDblClick := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when a cell in this column receives focus (mapped to <c>DataGridView.CellEnter</c>).
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when a cell in this column receives focus (mapped to <c>DataGridView.CellEnter</c>).</summary>
 PROPERTY vfpGotFocus AS STRING
     GET ; RETURN SELF:_VFPGotFocus?:SendTo ; END GET
     SET ; SELF:_VFPGotFocus := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when a cell in this column loses focus (mapped to <c>DataGridView.CellLeave</c>).
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when a cell in this column loses focus (mapped to <c>DataGridView.CellLeave</c>).</summary>
 PROPERTY vfpLostFocus AS STRING
     GET ; RETURN SELF:_VFPLostFocus?:SendTo ; END GET
     SET ; SELF:_VFPLostFocus := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when a mouse button is pressed over a data cell or the column header.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when a mouse button is pressed over a data cell or the column header.</summary>
 PROPERTY vfpMouseDown AS STRING
     GET ; RETURN SELF:_VFPMouseDown?:SendTo ; END GET
     SET ; SELF:_VFPMouseDown := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when a mouse button is released over a data cell or the column header.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when a mouse button is released over a data cell or the column header.</summary>
 PROPERTY vfpMouseUp AS STRING
     GET ; RETURN SELF:_VFPMouseUp?:SendTo ; END GET
     SET ; SELF:_VFPMouseUp := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when the mouse pointer moves over a data cell in this column.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the mouse pointer moves over a data cell in this column.</summary>
 PROPERTY vfpMouseMove AS STRING
     GET ; RETURN SELF:_VFPMouseMove?:SendTo ; END GET
     SET ; SELF:_VFPMouseMove := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when the mouse pointer enters a data cell in this column.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the mouse pointer enters a data cell in this column.</summary>
 PROPERTY vfpMouseEnter AS STRING
     GET ; RETURN SELF:_VFPMouseEnter?:SendTo ; END GET
     SET ; SELF:_VFPMouseEnter := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when the mouse pointer leaves a data cell in this column.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the mouse pointer leaves a data cell in this column.</summary>
 PROPERTY vfpMouseLeave AS STRING
     GET ; RETURN SELF:_VFPMouseLeave?:SendTo ; END GET
     SET ; SELF:_VFPMouseLeave := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called during cell validation (mapped to <c>DataGridView.CellValidating</c>). Return <c>.F.</c> to cancel the move.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called during cell validation (mapped to <c>DataGridView.CellValidating</c>). Return <c>.F.</c> to cancel the move.</summary>
 PROPERTY vfpValid AS STRING
     GET ; RETURN SELF:_VFPValid?:SendTo ; END GET
     SET ; SELF:_VFPValid := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called before a cell enters edit mode (mapped to <c>DataGridView.CellBeginEdit</c>). Return <c>.F.</c> to prevent editing.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called before a cell enters edit mode (mapped to <c>DataGridView.CellBeginEdit</c>). Return <c>.F.</c> to prevent editing.</summary>
 PROPERTY vfpWhen AS STRING
     GET ; RETURN SELF:_VFPWhen?:SendTo ; END GET
     SET ; SELF:_VFPWhen := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when a key is pressed while a cell in this column is active (mapped to <c>DataGridView.KeyPress</c>).
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when a key is pressed while a cell in this column is active (mapped to <c>DataGridView.KeyPress</c>).</summary>
 PROPERTY vfpKeyPress AS STRING
     GET ; RETURN SELF:_VFPKeyPress?:SendTo ; END GET
     SET ; SELF:_VFPKeyPress := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called once when the column is first attached to a <see cref="System.Windows.Forms.DataGridView"/>.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called once when the column is first attached to a <see cref="System.Windows.Forms.DataGridView"/>.</summary>
 PROPERTY vfpInit AS STRING
     GET ; RETURN SELF:_VFPInit?:SendTo ; END GET
     SET ; SELF:_VFPInit := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called when the column is disposed.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called when the column is disposed.</summary>
 PROPERTY vfpDestroy AS STRING
     GET ; RETURN SELF:_VFPDestroy?:SendTo ; END GET
     SET ; SELF:_VFPDestroy := VFPOverride{NULL, VALUE} ; END SET
 END PROPERTY
 
+/// <summary>
+/// Name of the VFP method called to refresh the column's visual state.
+/// </summary>
 [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-/// <summary>Name of the VFP method called to refresh the column's visual state.</summary>
 PROPERTY vfpRefresh AS STRING
     GET ; RETURN SELF:_VFPRefresh?:SendTo ; END GET
     SET ; SELF:_VFPRefresh := VFPOverride{NULL, VALUE} ; END SET

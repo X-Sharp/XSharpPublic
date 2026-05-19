@@ -22,7 +22,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR()
 			RETURN
 
-		/// <summary>VFP StartMode stub — intended to reflect how the application was started (0=IDE, 1=runtime, etc.). Stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP StartMode stub — intended to reflect how the application was started (0=IDE, 1=runtime, etc.). Stored for source compatibility.
+		/// </summary>
 		PROPERTY StartMode AS INT AUTO
 
 	END CLASS

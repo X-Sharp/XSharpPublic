@@ -121,7 +121,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── BorderStyle ──────────────────────────────────────────────────────
-		/// <summary>VFP BorderStyle: 0=None, 1=FixedSingle. Wraps the base <c>PictureBox.BorderStyle</c> as a VFP-numeric property.</summary>
+		/// <summary>
+		/// VFP BorderStyle: 0=None, 1=FixedSingle. Wraps the base <c>PictureBox.BorderStyle</c> as a VFP-numeric property.
+		/// </summary>
 		NEW PROPERTY BorderStyle AS LONG
 			GET
 				IF SUPER:BorderStyle == System.Windows.Forms.BorderStyle.FixedSingle

@@ -1,4 +1,4 @@
-// VFPDbDataSource.prg
+﻿// VFPDbDataSource.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -37,13 +37,17 @@ CONSTRUCTOR(oRDD AS IRdd)
     SUPER(oRDD)
     RETURN
 
-/// <summary>Hides the base <c>AddNew()</c> to reset <c>_index</c> to -1 after <c>Append()</c>, preventing a stale relative skip on the next indexer access. Direct callers on this concrete type get the fix; <c>BindingSource</c> interface-vtable callers still hit the base.</summary>
+/// <summary>
+/// Hides the base <c>AddNew()</c> to reset <c>_index</c> to -1 after <c>Append()</c>, preventing a stale relative skip on the next indexer access. Direct callers on this concrete type get the fix; <c>BindingSource</c> interface-vtable callers still hit the base.
+/// </summary>
 METHOD AddNew() AS OBJECT STRICT
     LOCAL result := SUPER:AddNew() AS OBJECT
     SELF:_index := -1
     RETURN result
 
-/// <summary>Appends a blank record to the RDD and resets <c>_index</c>. Called by <c>Grid._StartNewRow()</c>, which then calls <c>BindingSource.ResetBindings(false)</c> to re-sync the <c>DataGridView</c> row count.</summary>
+/// <summary>
+/// Appends a blank record to the RDD and resets <c>_index</c>. Called by <c>Grid._StartNewRow()</c>, which then calls <c>BindingSource.ResetBindings(false)</c> to re-sync the <c>DataGridView</c> row count.
+/// </summary>
 INTERNAL METHOD AppendRecord() AS LOGIC
     IF SELF:_oRDD:Append(TRUE)
         SELF:_index := -1
@@ -51,7 +55,9 @@ INTERNAL METHOD AppendRecord() AS LOGIC
     ENDIF
     RETURN FALSE
 
-/// <summary>Factory method: retrieves the <see cref="XSharp.RDD.IRdd"/> object for the current work area and wraps it in a <see cref="VFPDbDataSource"/>. Returns <c>NULL</c> if no work area is open.</summary>
+/// <summary>
+/// Factory method: retrieves the <see cref="XSharp.RDD.IRdd"/> object for the current work area and wraps it in a <see cref="VFPDbDataSource"/>. Returns <c>NULL</c> if no work area is open.
+/// </summary>
 STATIC METHOD CreateForCurrentArea() AS VFPDbDataSource
     LOCAL oResult := NULL AS OBJECT
     IF CoreDb.Info(DBI_RDD_OBJECT, REF oResult)

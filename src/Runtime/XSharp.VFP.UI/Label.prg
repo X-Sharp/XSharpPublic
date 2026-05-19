@@ -27,7 +27,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	    #include "VFPProperties.xh"
 
-		/// <summary>Horizontal text alignment: 0=Left, 1=Right, 2=Center. Maps to <see cref="System.Windows.Forms.Label.TextAlign"/>.</summary>
+		/// <summary>
+		/// Horizontal text alignment: 0=Left, 1=Right, 2=Center. Maps to <see cref="System.Windows.Forms.Label.TextAlign"/>.
+		/// </summary>
 		PROPERTY Alignment AS INT
 			GET
 				RETURN VFPAlignmentConvert( SELF:TextAlign )
@@ -57,13 +59,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Clockwise rotation angle in degrees applied to the label text via GDI+ transform. 0 = no rotation (standard rendering path).</summary>
+		/// <summary>
+		/// Clockwise rotation angle in degrees applied to the label text via GDI+ transform. 0 = no rotation (standard rendering path).
+		/// </summary>
 		PROPERTY Rotation AS INT AUTO
 
-		/// <summary>Background colour applied when <c>Enabled</c> is set to <c>.F.</c>. Has no effect when the control is enabled.</summary>
+		/// <summary>
+		/// Background colour applied when <c>Enabled</c> is set to <c>.F.</c>. Has no effect when the control is enabled.
+		/// </summary>
 		PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
-		/// <summary>Foreground (text) colour applied when <c>Enabled</c> is set to <c>.F.</c>. Has no effect when the control is enabled.</summary>
+		/// <summary>
+		/// Foreground (text) colour applied when <c>Enabled</c> is set to <c>.F.</c>. Has no effect when the control is enabled.
+		/// </summary>
         PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
 		/// <summary>

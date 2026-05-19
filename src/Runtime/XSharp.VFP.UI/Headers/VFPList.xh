@@ -8,46 +8,76 @@
 #define VFP_LIST_XH
 
 // AddItem is declared with NEW in each concrete class (ComboBox, ListBox) — no stub here
-/// <summary>VFP AddListItem stub — use <c>AddItem</c> on the concrete class instead. No-op.</summary>
+/// <summary>
+/// VFP AddListItem stub — use <c>AddItem</c> on the concrete class instead. No-op.
+/// </summary>
 METHOD AddListItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
 	RETURN
 // Clear is declared with NEW in each concrete class (ComboBox, ListBox) — no stub here
-/// <summary>VFP BoundColumn stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP BoundColumn stub — stored for source compatibility.
+/// </summary>
 PROPERTY BoundColumn AS LONG AUTO
-/// <summary>VFP BoundTo stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP BoundTo stub — stored for source compatibility.
+/// </summary>
 PROPERTY BoundTo AS LOGIC AUTO
 // DisplayValue is declared with real implementation in ComboBox.prg / ListBox.prg
-/// <summary>VFP FirstElement stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP FirstElement stub — stored for source compatibility.
+/// </summary>
 PROPERTY FirstElement AS LONG AUTO
-/// <summary>VFP IndexToItemID stub — returns -1; item IDs are not supported.</summary>
+/// <summary>
+/// VFP IndexToItemID stub — returns -1; item IDs are not supported.
+/// </summary>
 METHOD IndexToItemID(nIndex as LONG) AS LONG
 RETURN -1
-/// <summary>Background colour for individual list items.</summary>
+/// <summary>
+/// Background colour for individual list items.
+/// </summary>
 PROPERTY ItemBackColor AS System.Drawing.Color AUTO
-/// <summary>VFP ItemData stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP ItemData stub — stored for source compatibility.
+/// </summary>
 PROPERTY ItemData AS LONG AUTO
-/// <summary>Foreground (text) colour for individual list items.</summary>
+/// <summary>
+/// Foreground (text) colour for individual list items.
+/// </summary>
 PROPERTY ItemForeColor AS System.Drawing.Color AUTO
 
-/// <summary>VFP ItemIDToIndex stub — returns -1; item IDs are not supported.</summary>
+/// <summary>
+/// VFP ItemIDToIndex stub — returns -1; item IDs are not supported.
+/// </summary>
 METHOD ItemIDToIndex(nItemId as LONG) AS LONG
 	RETURN -1
-/// <summary>VFP ItemTips stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP ItemTips stub — stored for source compatibility.
+/// </summary>
 PROPERTY ItemTips AS LOGIC AUTO
-/// <summary>VFP List stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP List stub — stored for source compatibility.
+/// </summary>
 PROPERTY List AS ARRAY AUTO
 // ListCount and ListIndex are declared with NEW in ComboBox/ListBox — no stub here
-/// <summary>VFP ListItemID stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP ListItemID stub — stored for source compatibility.
+/// </summary>
 PROPERTY ListItemID AS LONG AUTO
 // RemoveItem and Requery are declared with NEW in ComboBox/ListBox — no stub here
-/// <summary>VFP RemoveListItem stub — use <c>RemoveItem</c> on the concrete class instead. No-op.</summary>
+/// <summary>
+/// VFP RemoveListItem stub — use <c>RemoveItem</c> on the concrete class instead. No-op.
+/// </summary>
 METHOD RemoveListItem(nIndex AS LONG) AS VOID
 	RETURN
 // RowSource and RowSourceType are declared with NEW in ComboBox/ListBox — no stub here
 
-/// <summary>Background colour for the currently selected item.</summary>
+/// <summary>
+/// Background colour for the currently selected item.
+/// </summary>
 PROPERTY SelectedItemBackColor AS System.Drawing.Color AUTO
-/// <summary>Foreground (text) colour for the currently selected item.</summary>
+/// <summary>
+/// Foreground (text) colour for the currently selected item.
+/// </summary>
 PROPERTY SelectedItemForeColor AS System.Drawing.Color AUTO
 
 #endif

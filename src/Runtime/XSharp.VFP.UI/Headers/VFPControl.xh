@@ -1,55 +1,81 @@
 ﻿
 #ifndef VFP_CONTROL_XH
 #define VFP_CONTROL_XH
-/// <summary>VFP Drag stub — stored for source compatibility. Always returns <c>NIL</c>.</summary>
+/// <summary>
+/// VFP Drag stub — stored for source compatibility. Always returns <c>NIL</c>.
+/// </summary>
 METHOD Drag(nAction) AS USUAL CLIPPER
     RETURN NIL
 
-/// <summary>VFP DragIcon stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP DragIcon stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue("")];
 PROPERTY DragIcon AS STRING AUTO
 
-/// <summary>VFP DragMode stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP DragMode stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY DragMode AS LONG AUTO
 
-/// <summary>VFP HelpContextID stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP HelpContextID stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY HelpContextID AS LONG AUTO
 
-/// <summary>VFP MouseIcon stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP MouseIcon stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue("")];
 PROPERTY MouseIcon AS STRING AUTO
 
-/// <summary>VFP OLEDrag stub — stored for source compatibility. Always returns <c>NIL</c>.</summary>
+/// <summary>
+/// VFP OLEDrag stub — stored for source compatibility. Always returns <c>NIL</c>.
+/// </summary>
 METHOD OLEDrag(lDetectDrag) AS USUAL CLIPPER
     RETURN NIL
 
-/// <summary>VFP OLEDragMode stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP OLEDragMode stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDragMode AS LONG AUTO
 
-/// <summary>VFP OLEDragPicture stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP OLEDragPicture stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(NULL)];
 PROPERTY OLEDragPicture AS STRING AUTO
 
-/// <summary>VFP OLEDropEffects stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP OLEDropEffects stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropEffects AS LONG AUTO
 
-/// <summary>VFP OLEDropHasData stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP OLEDropHasData stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropHasData AS LONG AUTO
 
-/// <summary>VFP OLEDropMode stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP OLEDropMode stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropMode AS LONG AUTO
 
-/// <summary>VFP Themes stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP Themes stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(false)];
 PROPERTY Themes AS LOGIC AUTO
 
-/// <summary>VFP WhatsThisHelpID stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP WhatsThisHelpID stub — stored for source compatibility.
+/// </summary>
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY WhatsThisHelpID AS LONG AUTO
 

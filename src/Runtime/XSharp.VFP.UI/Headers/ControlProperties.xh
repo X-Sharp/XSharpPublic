@@ -27,11 +27,15 @@ PROPERTY ThisForm AS USUAL GET THIS.FindForm()
 PROPERTY _Parent AS OBJECT GET SELF:Parent
 
 
-/// <summary>Text displayed in the status bar when the control has focus. Stored for source compatibility.</summary>
+/// <summary>
+/// Text displayed in the status bar when the control has focus. Stored for source compatibility.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the StatusBar Text.")];
 [System.ComponentModel.DefaultValue("")];
 PROPERTY StatusBarText AS STRING AUTO
-/// <summary>Tooltip text shown when the mouse hovers over the control. Setting this delegates to the owning form's <c>SetToolTipText</c>.</summary>
+/// <summary>
+/// Tooltip text shown when the mouse hovers over the control. Setting this delegates to the owning form's <c>SetToolTipText</c>.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Specifies the text that appears as a ToolTip for a control.")];
 [System.ComponentModel.DefaultValue("")];
 PROPERTY ToolTipText AS STRING
@@ -65,29 +69,39 @@ METHOD ZOrder( uValue AS USUAL ) AS USUAL
 	RETURN zOrderValue
 END METHOD
 
-/// <summary>Moves keyboard focus to this control. Maps to <c>Control.Focus()</c>.</summary>
+/// <summary>
+/// Moves keyboard focus to this control. Maps to <c>Control.Focus()</c>.
+/// </summary>
 METHOD SetFocus() AS VOID STRICT
 	SELF:Focus()
 
-/// <summary>VFP ColorSource stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP ColorSource stub — stored for source compatibility.
+/// </summary>
 [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 [EditorBrowsable(EditorBrowsableState.Never)];
 [Bindable(false)];
 [Browsable(false)];
 PROPERTY ColorSource AS INT AUTO
-/// <summary>VFP SpecialEffect stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP SpecialEffect stub — stored for source compatibility.
+/// </summary>
 [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 [EditorBrowsable(EditorBrowsableState.Never)];
 [Bindable(false)];
 [Browsable(false)];
 PROPERTY SpecialEffect AS INT AUTO
 
-/// <summary>Caption/label text of the control. Maps to <see cref="System.Windows.Forms.Control.Text"/>.</summary>
+/// <summary>
+/// Caption/label text of the control. Maps to <see cref="System.Windows.Forms.Control.Text"/>.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Control")];
 [System.ComponentModel.DefaultValue("")];
 PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
 
-/// <summary>Z-order position of the control within its parent's <c>Controls</c> collection (0=front). Applied in <c>InitLayout</c>.</summary>
+/// <summary>
+/// Z-order position of the control within its parent's <c>Controls</c> collection (0=front). Applied in <c>InitLayout</c>.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the ZOrder of the Control")];
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY ZOrderSet AS INT
@@ -126,7 +140,9 @@ END METHOD
 #include "Anchor.xh"
 
 
-/// <summary>VFP AutoScaleMode stub — exists to ease code generation; has no runtime effect on controls.</summary>
+/// <summary>
+/// VFP AutoScaleMode stub — exists to ease code generation; has no runtime effect on controls.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description(".")];
 [System.ComponentModel.DefaultValue(System.Windows.Forms.AutoScaleMode.None)];
 PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO

@@ -1,9 +1,13 @@
 ﻿
 #ifndef VFP_GROUP_XH
 #define VFP_GROUP_XH
-/// <summary>Name of the VFP class used for member buttons/controls. Read by generated code to resolve the <c>ButtonFactory</c> delegate.</summary>
+/// <summary>
+/// Name of the VFP class used for member buttons/controls. Read by generated code to resolve the <c>ButtonFactory</c> delegate.
+/// </summary>
 PROPERTY MemberClass AS STRING AUTO
-/// <summary>Path to the class library (<c>.vcx</c>) that contains <see cref="MemberClass"/>. Stored for source compatibility.</summary>
+/// <summary>
+/// Path to the class library (<c>.vcx</c>) that contains <see cref="MemberClass"/>. Stored for source compatibility.
+/// </summary>
 PROPERTY MemberClassLibrary AS STRING AUTO
 
 

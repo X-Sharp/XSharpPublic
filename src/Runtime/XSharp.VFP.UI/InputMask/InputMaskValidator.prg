@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     IF maskPos:Required
                         RETURN Char.IsDigit(ch)
                     ELSE
-                        RETURN Char.IsDigit(ch) .OR. ch == ' ' .OR. ch == '+' .OR. ch == '-'
+                        RETURN Char.IsDigit(ch) .OR. ch == c' ' .OR. ch == c'+' .OR. ch == c'-'
                     ENDIF
 
                 // Letter required (a-z, A-Z)
@@ -45,16 +45,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
                 // Hexadecimal digit (0-9, A-F)
                 CASE "hex"
-                    RETURN Char.IsDigit(ch) .OR. (Char.ToUpper(ch) >= 'A' .AND. Char.ToUpper(ch) <= 'F')
+                    RETURN Char.IsDigit(ch) .OR. (Char.ToUpper(ch) >= c'A' .AND. Char.ToUpper(ch) <= c'F')
 
                 // Logical: Y picture accepts Y/N/J/T/F; L picture accepts T/F/J/Y/N
                 CASE "logical"
                     IF maskPos:Modifier == "Y"
                         VAR up := Char.ToUpper(ch)
-                        RETURN up == 'Y' .OR. up == 'N' .OR. up == 'J' .OR. up == 'T' .OR. up == 'F'
+                        RETURN up == c'Y' .OR. up == c'N' .OR. up == c'J' .OR. up == c'T' .OR. up == c'F'
                     ELSE
                         VAR up2 := Char.ToUpper(ch)
-                        RETURN up2 == 'T' .OR. up2 == 'F' .OR. up2 == 'J' .OR. up2 == 'Y' .OR. up2 == 'N'
+                        RETURN up2 == c'T' .OR. up2 == c'F' .OR. up2 == c'J' .OR. up2 == c'Y' .OR. up2 == c'N'
                     ENDIF
 
                 // Literals cannot be "typed" - they're auto-inserted
@@ -123,7 +123,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             // Logical Y: canonicalise input — J/T/Y → "Y", everything else → "N"
             IF maskPos:Type == "logical" .AND. maskPos:Modifier == "Y"
                 VAR upCh := Char.ToUpper(result[0])
-                result := IIF(upCh == 'Y' .OR. upCh == 'J' .OR. upCh == 'T', "Y", "N")
+                result := IIF(upCh == c'Y' .OR. upCh == c'J' .OR. upCh == c'T', 'Y', 'N')
             ENDIF
 
             RETURN result

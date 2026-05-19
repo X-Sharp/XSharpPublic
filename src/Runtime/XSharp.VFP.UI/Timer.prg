@@ -1,4 +1,4 @@
-﻿// Timer.prg
+// Timer.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -27,26 +27,36 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		#include "Headers/VFPObject.xh"
 
 		// ── Non-visual position/size stubs ───────────────────────────────────
-		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
+		/// <summary>
+		/// Non-visual stub — stored for source compatibility; has no effect on the timer.
+		/// </summary>
 		PROPERTY Height AS LONG AUTO
-		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
+		/// <summary>
+		/// Non-visual stub — stored for source compatibility; has no effect on the timer.
+		/// </summary>
 		PROPERTY Width  AS LONG AUTO
-		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
+		/// <summary>
+		/// Non-visual stub — stored for source compatibility; has no effect on the timer.
+		/// </summary>
 		PROPERTY Left   AS LONG AUTO
-		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
+		/// <summary>
+		/// Non-visual stub — stored for source compatibility; has no effect on the timer.
+		/// </summary>
 		PROPERTY Top    AS LONG AUTO
-		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
+		/// <summary>
+		/// Non-visual stub — stored for source compatibility; has no effect on the timer.
+		/// </summary>
 		PROPERTY Parent AS OBJECT AUTO
 
 		// ── vfpTimer event ───────────────────────────────────────────────────
 		PRIVATE _VFPTimer AS VFPOverride
-		[Category("VFP Events"), Description("Occurs at each timer interval.")];
-		[DefaultValue(NULL)];
 		/// <summary>
 		/// Name of the VFP method called on each timer tick.<br/>
 		/// Assigning this property wires the underlying <c>System.Windows.Forms.Timer.Tick</c> event
 		/// the first time (lazy wiring — avoids double-firing if reassigned later).
 		/// </summary>
+		[Category("VFP Events"), Description("Occurs at each timer interval.")];
+		[DefaultValue(NULL)];
 		PROPERTY vfpTimer AS STRING GET _VFPTimer?:SendTo SET Set_VFPTimer( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_VFPTimer( methodCall AS VFPOverride ) AS VOID
@@ -69,7 +79,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 			RETURN
 
-		/// <summary>Starts (<c>.T.</c>) or stops (<c>.F.</c>) the timer. Shadows the base property to allow the generated code to set it without type-cast issues.</summary>
+		/// <summary>
+		/// Starts (<c>.T.</c>) or stops (<c>.F.</c>) the timer. Shadows the base property to allow the generated code to set it without type-cast issues.
+		/// </summary>
 		PUBLIC NEW PROPERTY Enabled AS LOGIC
 			GET
 				RETURN SUPER:Enabled
@@ -104,7 +116,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Restarts the timer by toggling <c>Enabled</c> off then on, resetting the interval countdown.</summary>
+		/// <summary>
+		/// Restarts the timer by toggling <c>Enabled</c> off then on, resetting the interval countdown.
+		/// </summary>
 		METHOD Reset AS VOID Strict
 			SELF:Enabled := FALSE
 			SELF:Enabled := TRUE

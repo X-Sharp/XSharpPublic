@@ -13,7 +13,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	PARTIAL CLASS Form
 
-		/// <summary>Lazy-initialised map from VFP class name (upper-case) to fully-qualified <c>XSharp.VFP.UI.*</c> type name. Populated on first call to <see cref="SetAll"/>.</summary>
+		/// <summary>
+		/// Lazy-initialised map from VFP class name (upper-case) to fully-qualified <c>XSharp.VFP.UI.*</c> type name. Populated on first call to <see cref="SetAll"/>.
+		/// </summary>
 		PRIVATE _typeConvert AS Dictionary<STRING,STRING>
 
 		/// <summary>
@@ -56,7 +58,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 		END METHOD
 
-		/// <summary>Parses an embedded JSON literal (no external dependency) to populate <see cref="_typeConvert"/> with VFP-class-name → runtime-type-name mappings.</summary>
+		/// <summary>
+		/// Parses an embedded JSON literal (no external dependency) to populate <see cref="_typeConvert"/> with VFP-class-name → runtime-type-name mappings.
+		/// </summary>
 		PRIVATE METHOD InitSetAll() AS VOID
 			LOCAL typeConvert AS STRING
 			// Simply Copy/Paste the content of the TypeConvert.json file between TEXT / ENDTEXT

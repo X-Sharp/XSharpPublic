@@ -1,4 +1,4 @@
-﻿// ComboBox.prg
+// ComboBox.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -47,7 +47,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #include "ControlSource.xh"
 
-		/// <summary>Maximum number of items visible in the open drop-down list. Maps to <see cref="System.Windows.Forms.ComboBox.MaxDropDownItems"/>.</summary>
+		/// <summary>
+		/// Maximum number of items visible in the open drop-down list. Maps to <see cref="System.Windows.Forms.ComboBox.MaxDropDownItems"/>.
+		/// </summary>
 		PROPERTY DisplayCount AS LONG
 			GET
 				RETURN SELF:MaxDropDownItems
@@ -56,15 +58,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:MaxDropDownItems := (INT) VALUE
 			END SET
 		END PROPERTY
-		/// <summary>VFP InputMask — stored for source compatibility; ComboBox editing uses the raw text box.</summary>
+		/// <summary>
+		/// VFP InputMask — stored for source compatibility; ComboBox editing uses the raw text box.
+		/// </summary>
 		PROPERTY InputMask AS STRING AUTO
-		/// <summary>String displayed when the selected value is <c>NULL</c> — stored for source compatibility.</summary>
+		/// <summary>
+		/// String displayed when the selected value is <c>NULL</c> — stored for source compatibility.
+		/// </summary>
 		PROPERTY NullDisplay AS String AUTO
-		/// <summary>VFP OLEDropTextInsertion stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP OLEDropTextInsertion stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY OLEDropTextInsertion AS LONG AUTO
-		/// <summary>VFP Picture stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP Picture stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY Picture AS STRING AUTO
-		/// <summary>VFP PictureSelectionDisplay stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP PictureSelectionDisplay stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY PictureSelectionDisplay  AS LONG AUTO
 
 		/// <summary>
@@ -115,13 +127,21 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				END CASE
 			END SET
 		END PROPERTY
-		/// <summary>Number of selected characters in the combo's text box.</summary>
+		/// <summary>
+		/// Number of selected characters in the combo's text box.
+		/// </summary>
 		PROPERTY SelLength AS LONG GET SELF:SelectionLength SET SELF:SelectionLength := VALUE
-		/// <summary>Zero-based caret position in the combo's text box.</summary>
+		/// <summary>
+		/// Zero-based caret position in the combo's text box.
+		/// </summary>
 		PROPERTY SelStart  AS LONG GET SELF:SelectionStart  SET SELF:SelectionStart  := VALUE
-		/// <summary>Currently selected text in the combo's text box.</summary>
+		/// <summary>
+		/// Currently selected text in the combo's text box.
+		/// </summary>
 		PROPERTY SelText   AS STRING GET SELF:SelectedText  SET SELF:SelectedText    := VALUE
-		/// <summary>When <c>.T.</c>, all text in the combo is selected when the control receives focus.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, all text in the combo is selected when the control receives focus.
+		/// </summary>
 		PROPERTY SelectOnEntry AS LOGIC AUTO
 
 		// ── RowSource / RowSourceType ────────────────────────────────────────
@@ -146,7 +166,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Item source string. For <see cref="RowSourceType"/> 1, a comma-separated list of values loaded directly into <c>Items</c>.</summary>
+		/// <summary>
+		/// Item source string. For <see cref="RowSourceType"/> 1, a comma-separated list of values loaded directly into <c>Items</c>.
+		/// </summary>
 		PROPERTY RowSource AS STRING
 			GET
 				RETURN _rowSource
@@ -157,14 +179,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Supplies a .NET array as the item source for <see cref="RowSourceType"/>=5. If <c>RowSourceType</c> is already 5, the list is repopulated immediately.</summary>
+		/// <summary>
+		/// Supplies a .NET array as the item source for <see cref="RowSourceType"/>=5. If <c>RowSourceType</c> is already 5, the list is repopulated immediately.
+		/// </summary>
 		METHOD SetRowSourceArray( arr AS System.Array ) AS VOID
 			SELF:_rowSourceArray := arr
 			IF SELF:_rowSourceType == 5
 				SELF:ApplyRowSource()
 			ENDIF
 
-		/// <summary>Clears and repopulates <c>Items</c> from <see cref="RowSource"/> / <see cref="SetRowSourceArray"/> according to the current <see cref="RowSourceType"/>. Called automatically when either property changes.</summary>
+		/// <summary>
+		/// Clears and repopulates <c>Items</c> from <see cref="RowSource"/> / <see cref="SetRowSourceArray"/> according to the current <see cref="RowSourceType"/>. Called automatically when either property changes.
+		/// </summary>
 		PRIVATE METHOD ApplyRowSource() AS VOID
 			DO CASE
 			CASE _rowSourceType == 1 .AND. !String.IsNullOrEmpty(_rowSource)
@@ -188,10 +214,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END METHOD
 
 		// ── ListCount / ListIndex ────────────────────────────────────────────
-		/// <summary>Number of items in the combo's list.</summary>
+		/// <summary>
+		/// Number of items in the combo's list.
+		/// </summary>
 		PROPERTY ListCount AS LONG GET SELF:Items:Count
 
-		/// <summary>1-based index of the selected item, or 0 when nothing is selected. Maps to <c>SelectedIndex + 1</c>.</summary>
+		/// <summary>
+		/// 1-based index of the selected item, or 0 when nothing is selected. Maps to <c>SelectedIndex + 1</c>.
+		/// </summary>
 		PROPERTY ListIndex AS LONG
 			GET
 				RETURN SELF:SelectedIndex + 1  // VFP is 1-based
@@ -202,7 +232,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── AddItem / RemoveItem / Clear / Requery ───────────────────────────
-		/// <summary>Inserts <c>cItem</c> at the optional 1-based <c>nIndex</c> position, or appends it when <c>nIndex</c> is out of range.</summary>
+		/// <summary>
+		/// Inserts <c>cItem</c> at the optional 1-based <c>nIndex</c> position, or appends it when <c>nIndex</c> is out of range.
+		/// </summary>
 		METHOD AddItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
 			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count + 1
 				SELF:Items:Insert( nIndex - 1, cItem )
@@ -211,19 +243,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
-		/// <summary>Removes the item at the given 1-based <c>nIndex</c>. Silently ignored when out of range.</summary>
+		/// <summary>
+		/// Removes the item at the given 1-based <c>nIndex</c>. Silently ignored when out of range.
+		/// </summary>
 		METHOD RemoveItem( nIndex AS LONG ) AS VOID
 			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count
 				SELF:Items:RemoveAt( nIndex - 1 )
 			ENDIF
 		END METHOD
 
-		/// <summary>Removes all items from the list.</summary>
+		/// <summary>
+		/// Removes all items from the list.
+		/// </summary>
 		METHOD Clear() AS VOID CLIPPER
 			SELF:Items:Clear()
 		END METHOD
 
-		/// <summary>Re-runs <see cref="ApplyRowSource"/> to reload items from the current <see cref="RowSource"/> / array.</summary>
+		/// <summary>
+		/// Re-runs <see cref="ApplyRowSource"/> to reload items from the current <see cref="RowSource"/> / array.
+		/// </summary>
 		METHOD Requery() AS VOID STRICT
 			SELF:ApplyRowSource()
 		END METHOD
@@ -258,7 +296,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Display text of the currently selected item. Getter is identical to <see cref="Value"/>; setter delegates to <see cref="Value"/>. Implements <c>IVFPList.DisplayValue</c>.</summary>
+		/// <summary>
+		/// Display text of the currently selected item. Getter is identical to <see cref="Value"/>; setter delegates to <see cref="Value"/>. Implements <c>IVFPList.DisplayValue</c>.
+		/// </summary>
 		PROPERTY DisplayValue AS USUAL
 			GET
 				IF SELF:SelectedItem != NULL
@@ -271,7 +311,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Returns the display text of the item at the given 1-based index, or an empty string when out of range.</summary>
+		/// <summary>
+		/// Returns the display text of the item at the given 1-based index, or an empty string when out of range.
+		/// </summary>
 		METHOD ListItem(nIndex AS LONG) AS STRING
 			IF nIndex >= 1 .AND. nIndex <= SELF:Items:Count
 				RETURN SELF:Items[nIndex - 1]:ToString()
@@ -280,9 +322,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── ProgrammaticChange ───────────────────────────────────────────────
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when <see cref="Value"/> is set programmatically.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
-		/// <summary>Name of the VFP method called when <see cref="Value"/> is set programmatically.</summary>
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
 		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID
@@ -292,8 +336,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── DropDown event ───────────────────────────────────────────────────
 		PRIVATE _VFPDropDown AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the combo's drop-down list opens.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the combo's drop-down list opens.</summary>
 		PROPERTY vfpDropDown AS STRING GET _VFPDropDown?:SendTo SET Set_DropDown( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_DropDown( methodCall AS VFPOverride ) AS VOID

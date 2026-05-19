@@ -69,23 +69,33 @@ METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
 
 
 #ifndef VFP_CONTROLCOUNT_OVERRIDE
-/// <summary>Number of child controls or objects in this container.</summary>
+/// <summary>
+/// Number of child controls or objects in this container.
+/// </summary>
 PROPERTY ControlCount AS LONG AUTO
 #endif
 
-/// <summary>VFP NewObject stub — stored for source compatibility. Always returns <c>NIL</c>.</summary>
+/// <summary>
+/// VFP NewObject stub — stored for source compatibility. Always returns <c>NIL</c>.
+/// </summary>
 METHOD NewObject(cObjectName, cClassName , cModule , cInApplication, eParameter1, eParameter2) AS USUAL CLIPPER
     RETURN NIL
 
-/// <summary>VFP RemoveObject stub — stored for source compatibility. Always returns <c>.F.</c>.</summary>
+/// <summary>
+/// VFP RemoveObject stub — stored for source compatibility. Always returns <c>.F.</c>.
+/// </summary>
 METHOD RemoveObject(cObjectName AS STRING) AS LOGIC
     RETURN FALSE
 
-/// <summary>VFP Objects collection stub — stored for source compatibility.</summary>
+/// <summary>
+/// VFP Objects collection stub — stored for source compatibility.
+/// </summary>
 PROPERTY Objects AS Collection AUTO
 
     #ifndef NOSET
-/// <summary>VFP SetAll stub — stored for source compatibility. Always returns <c>NIL</c>.</summary>
+/// <summary>
+/// VFP SetAll stub — stored for source compatibility. Always returns <c>NIL</c>.
+/// </summary>
 METHOD SetAll AS USUAL CLIPPER
     RETURN NIL
     #endif

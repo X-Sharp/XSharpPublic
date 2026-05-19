@@ -1,4 +1,4 @@
-﻿// Form.prg
+// Form.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -37,21 +37,35 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #region VFP Form Properties to emulate
 
-		/// <summary>VFP ScaleMode stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP ScaleMode stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY ScaleMode AS INT AUTO
-		/// <summary>VFP DoCreate stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP DoCreate stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY DoCreate AS LOGIC AUTO
-		/// <summary>VFP AutoCenter stub — stored for source compatibility (centering is handled by WinForms <c>StartPosition</c>).</summary>
+		/// <summary>
+		/// VFP AutoCenter stub — stored for source compatibility (centering is handled by WinForms <c>StartPosition</c>).
+		/// </summary>
 		PROPERTY AutoCenter AS LOGIC AUTO
-		/// <summary>VFP Movable stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP Movable stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY Movable AS LOGIC AUTO
 
-		/// <summary>VFP WindowState: 0=Normal, 1=Minimized, 2=Maximized. Maps to <see cref="System.Windows.Forms.FormWindowState"/> (cast).</summary>
+		/// <summary>
+		/// VFP WindowState: 0=Normal, 1=Minimized, 2=Maximized. Maps to <see cref="System.Windows.Forms.FormWindowState"/> (cast).
+		/// </summary>
 		NEW PROPERTY WindowState AS INT GET (INT)SUPER:WindowState SET SUPER:WindowState := (System.Windows.Forms.FormWindowState)VALUE
 
-		/// <summary>VFP WindowType: 0=Modeless, 1=Modal. Used by <see cref="Show"/> to choose between <c>Show()</c> and <c>ShowDialog()</c>.</summary>
+		/// <summary>
+		/// VFP WindowType: 0=Modeless, 1=Modal. Used by <see cref="Show"/> to choose between <c>Show()</c> and <c>ShowDialog()</c>.
+		/// </summary>
 		PROPERTY WindowType AS INT AUTO
-		/// <summary>VFP ScrollBars stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP ScrollBars stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY ScrollBars AS INT AUTO
 			/// <summary>
 		/// VFP border style:<br/>
@@ -81,7 +95,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				END SWITCH
 			END SET
 		END PROPERTY
-		/// <summary>VFP ColorSource stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP ColorSource stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY ColorSource AS INT AUTO
 		/// <summary>
 		/// VFP ShowWindow: 0=MDI child of <c>_SCREEN</c> (default), 1=modal top-level, 2=top-level modeless.<br/>
@@ -93,33 +109,47 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET ; _showWindow := VALUE ; END SET
 		END PROPERTY
 
-		/// <summary>Returns the form itself as <c>OBJECT</c> to force late-bound code (matches VFP's <c>THISFORM</c> keyword).</summary>
+		/// <summary>
+		/// Returns the form itself as <c>OBJECT</c> to force late-bound code (matches VFP's <c>THISFORM</c> keyword).
+		/// </summary>
 		PROPERTY ThisForm AS OBJECT GET SELF
 
-		/// <summary>The <see cref="FormSet"/> that owns this form, when the form belongs to a form set. <c>NULL</c> for standalone forms.</summary>
+		/// <summary>
+		/// The <see cref="FormSet"/> that owns this form, when the form belongs to a form set. <c>NULL</c> for standalone forms.
+		/// </summary>
 		PROPERTY ThisFormSet AS FormSet AUTO
 
 
-		/// <summary>Title text of the form. Maps to <see cref="System.Windows.Forms.Form.Text"/>.</summary>
+		/// <summary>
+		/// Title text of the form. Maps to <see cref="System.Windows.Forms.Form.Text"/>.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Form (Title)")];
 		[System.ComponentModel.DefaultValue("")];
 		PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
 
-		/// <summary>When <c>.T.</c>, shows the maximize button. Maps to <see cref="System.Windows.Forms.Form.MaximizeBox"/>.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, shows the maximize button. Maps to <see cref="System.Windows.Forms.Form.MaximizeBox"/>.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MaximizeBox")];
 		[System.ComponentModel.DefaultValue(true)];
 		PROPERTY MaxButton AS LOGIC GET SELF:MaximizeBox SET SELF:MaximizeBox := VALUE
-		/// <summary>When <c>.T.</c>, shows the minimize button. Maps to <see cref="System.Windows.Forms.Form.MinimizeBox"/>.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, shows the minimize button. Maps to <see cref="System.Windows.Forms.Form.MinimizeBox"/>.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MinimizeBox")];
 		[System.ComponentModel.DefaultValue(true)];
 		PROPERTY MinButton AS LOGIC GET SELF:MinimizeBox SET SELF:MinimizeBox := VALUE
 
-		/// <summary>When <c>.T.</c>, the control box (close button and system menu) is visible. Maps to <see cref="System.Windows.Forms.Form.ControlBox"/>.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, the control box (close button and system menu) is visible. Maps to <see cref="System.Windows.Forms.Form.ControlBox"/>.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if ControlBox is visible")];
 		[System.ComponentModel.DefaultValue(true)];
 		PROPERTY Closable AS LOGIC GET SELF:ControlBox SET SELF:ControlBox := VALUE
 
-		/// <summary>VFP TitleBar: 0=no title bar (<c>FormBorderStyle.None</c>), 1=title bar (<c>Sizable</c>). Other values throw <c>NotSupportedException</c>.</summary>
+		/// <summary>
+		/// VFP TitleBar: 0=no title bar (<c>FormBorderStyle.None</c>), 1=title bar (<c>Sizable</c>). Other values throw <c>NotSupportedException</c>.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Set the FormBorderStyle")];
 		[System.ComponentModel.DefaultValue(1)];
 		PROPERTY TitleBar AS INT
@@ -134,12 +164,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END SET
 		END PROPERTY
 
-		/// <summary>When <c>.T.</c>, this form acts as its own MDI container. Used by <see cref="Show"/> to bypass MDI-child logic.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, this form acts as its own MDI container. Used by <see cref="Show"/> to bypass MDI-child logic.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if the Form is MDI")];
 		[System.ComponentModel.DefaultValue(false)];
 		PROPERTY MDIForm AS LOGIC AUTO := FALSE
 
-		/// <summary>When <c>.T.</c>, <see cref="DoBindings"/> wires child-control data bindings via the <see cref="DataEnvironment"/>.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, <see cref="DoBindings"/> wires child-control data bindings via the <see cref="DataEnvironment"/>.
+		/// </summary>
 		PROPERTY BindControls AS LOGIC AUTO
 
 		#include "Tooltips.xh"
@@ -148,19 +182,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #region Support of VFP DataBinding, DataEnvironment, Cursors
 
-		/// <summary>VFP DataSession stub — full session switching not yet implemented.</summary>
+		/// <summary>
+		/// VFP DataSession stub — full session switching not yet implemented.
+		/// </summary>
 		METHOD DataSession( setSession AS INT ) AS VOID
 		// TODO: full DataSession switching support
 		END METHOD
 
-		/// <summary>Native window handle as a 32-bit integer. VFP compatibility — maps to <c>Handle.ToInt32()</c>.</summary>
+		/// <summary>
+		/// Native window handle as a 32-bit integer. VFP compatibility — maps to <c>Handle.ToInt32()</c>.
+		/// </summary>
 		PROPERTY HWND AS INT GET SELF:Handle:ToInt32()
 
 #include "Anchor.xh"
 
 #include "ControlSource.xh"
 
-		/// <summary>The <see cref="XSharp.VFP.UI.DataEnvironment"/> that manages cursors (work areas) for this form. Set by generated code before <see cref="Load"/> fires.</summary>
+		/// <summary>
+		/// The <see cref="XSharp.VFP.UI.DataEnvironment"/> that manages cursors (work areas) for this form. Set by generated code before <see cref="Load"/> fires.
+		/// </summary>
 		PROPERTY DataEnvironment AS DataEnvironment AUTO
 
 		/// <summary>
@@ -222,7 +262,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				NEXT
 			ENDIF
 
-		/// <summary>Recursively collects <c>BindingDefinition</c> entries from all controls in <paramref name="controls"/> into <c>SELF:BindingDefinition</c>. Called by <see cref="DoBindings"/>.</summary>
+		/// <summary>
+		/// Recursively collects <c>BindingDefinition</c> entries from all controls in <paramref name="controls"/> into <c>SELF:BindingDefinition</c>. Called by <see cref="DoBindings"/>.
+		/// </summary>
 		METHOD PopulateBindings( controls AS System.Windows.Forms.Control.ControlCollection ) AS VOID
 			LOCAL bDef AS OBJECT
 			FOREACH VAR child IN controls
@@ -276,7 +318,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROTECTED _validQueryUnload AS LOGIC
 		INTERNAL _handledKeypress AS LOGIC
 
-		/// <summary>Programmatically closes the form. Sets the internal allow-close flag so <see cref="QueryUnload"/> does not cancel the close, then calls <c>Close()</c>.</summary>
+		/// <summary>
+		/// Programmatically closes the form. Sets the internal allow-close flag so <see cref="QueryUnload"/> does not cancel the close, then calls <c>Close()</c>.
+		/// </summary>
 		METHOD Release() AS USUAL CLIPPER
 			//
 			SELF:_validQueryUnload := TRUE
@@ -294,9 +338,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 		PRIVATE _VFPLoad AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form is first loaded. Fires before the form is visible.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Load method. Occurs just before an object is created.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form is first loaded. Fires before the form is visible.</summary>
 		PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET Set_Load( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_Load( methodCall AS VFPOverride ) AS VOID
@@ -310,16 +356,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE METHOD OnVFPLoadCall( sender AS OBJECT, e AS System.EventArgs) AS VOID
 			SELF:Load()
 
-		/// <summary>VFP Load virtual stub — calls the <see cref="vfpLoad"/> handler. Override in a subclass to add load logic.</summary>
+		/// <summary>
+		/// VFP Load virtual stub — calls the <see cref="vfpLoad"/> handler. Override in a subclass to add load logic.
+		/// </summary>
 		NEW METHOD Load() AS VOID
 			IF SELF:_VFPLoad != NULL
 				SELF:_VFPLoad:Call()
 			ENDIF
 
 		PRIVATE _VFPUnload AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form is fully closed (after <c>FormClosed</c>).
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form is unloaded.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form is fully closed (after <c>FormClosed</c>).</summary>
 		PROPERTY vfpUnload AS STRING GET _VFPUnload?:SendTo SET Set_Unload( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_Unload( methodCall AS VFPOverride ) AS VOID
@@ -329,16 +379,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE METHOD OnVFPUnloadCall( sender AS OBJECT, e AS System.Windows.Forms.FormClosedEventArgs ) AS VOID
 			SELF:Unload()
 
-		/// <summary>VFP Unload virtual stub — calls the <see cref="vfpUnload"/> handler. Override in a subclass to add cleanup logic.</summary>
+		/// <summary>
+		/// VFP Unload virtual stub — calls the <see cref="vfpUnload"/> handler. Override in a subclass to add cleanup logic.
+		/// </summary>
 		VIRTUAL METHOD Unload() AS VOID
 			IF SELF:_VFPUnload != NULL
 				SELF:_VFPUnload:Call()
 			ENDIF
 
 		PRIVATE _VFPQueryUnload AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called just before the form closes. Call <see cref="NODEFAULT"/> inside the handler to cancel the close.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the QueryUnload method. Occurs before a form is unloaded.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called just before the form closes. Call <see cref="NODEFAULT"/> inside the handler to cancel the close.</summary>
 		PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET Set_QueryUnload( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_QueryUnload( methodCall AS VFPOverride ) AS VOID
@@ -365,7 +419,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				e:Cancel := TRUE
 			ENDIF
 
-		/// <summary>VFP QueryUnload virtual stub — called from the <c>FormClosing</c> handler. Override in a subclass and call <see cref="NODEFAULT"/> to cancel the close.</summary>
+		/// <summary>
+		/// VFP QueryUnload virtual stub — called from the <c>FormClosing</c> handler. Override in a subclass and call <see cref="NODEFAULT"/> to cancel the close.
+		/// </summary>
 		VIRTUAL METHOD QueryUnload(nUnloadType AS INT) AS VOID
 			// Override in subclass; call NODEFAULT() to cancel the close
 			NOP
@@ -415,14 +471,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SWITCH
 		END METHOD
 
-		/// <summary>The control that currently has focus on the form. Returns <c>SUPER:ActiveControl</c> typed as <c>USUAL</c> for VFP late-binding compatibility.</summary>
+		/// <summary>
+		/// The control that currently has focus on the form. Returns <c>SUPER:ActiveControl</c> typed as <c>USUAL</c> for VFP late-binding compatibility.
+		/// </summary>
 		NEW PROPERTY ActiveControl AS USUAL
 			GET
 				RETURN SUPER:ActiveControl
 			END GET
 		END PROPERTY
 
-		/// <summary>When <c>.T.</c>, the form receives key events before the focused child control. Maps to <see cref="System.Windows.Forms.Form.KeyPreview"/>.</summary>
+		/// <summary>
+		/// When <c>.T.</c>, the form receives key events before the focused child control. Maps to <see cref="System.Windows.Forms.Form.KeyPreview"/>.
+		/// </summary>
 		NEW PROPERTY KeyPreview AS LOGIC
 			GET
 				RETURN SUPER:KeyPreview
@@ -460,12 +520,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── B-1: Activate / Deactivate ───────────────────────────────────────
 		PRIVATE _VFPActivate AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form is activated (receives focus from another window).
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form receives focus.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form is activated (receives focus from another window).</summary>
 		PROPERTY vfpActivate AS STRING GET _VFPActivate?:SendTo SET SELF:_VFPActivate := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP Activate virtual stub — calls the <see cref="vfpActivate"/> handler. Override in a subclass to add activation logic.</summary>
+		/// <summary>
+		/// VFP Activate virtual stub — calls the <see cref="vfpActivate"/> handler. Override in a subclass to add activation logic.
+		/// </summary>
 		NEW METHOD Activate() AS VOID
 			IF SELF:_VFPActivate != NULL
 				SELF:_VFPActivate:Call()
@@ -476,12 +540,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:Activate()
 
 		PRIVATE _VFPDeactivate AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form is deactivated (loses focus to another window).
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form loses focus.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form is deactivated (loses focus to another window).</summary>
 		PROPERTY vfpDeactivate AS STRING GET _VFPDeactivate?:SendTo SET SELF:_VFPDeactivate := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP Deactivate virtual stub — calls the <see cref="vfpDeactivate"/> handler.</summary>
+		/// <summary>
+		/// VFP Deactivate virtual stub — calls the <see cref="vfpDeactivate"/> handler.
+		/// </summary>
 		NEW METHOD Deactivate() AS VOID
 			IF SELF:_VFPDeactivate != NULL
 				SELF:_VFPDeactivate:Call()
@@ -493,12 +561,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── B-4: GotFocus / LostFocus ────────────────────────────────────────
 		PRIVATE _VFPGotFocus AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form receives keyboard focus.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form receives keyboard focus.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form receives keyboard focus.</summary>
 		PROPERTY vfpGotFocus AS STRING GET _VFPGotFocus?:SendTo SET SELF:_VFPGotFocus := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP GotFocus virtual stub — calls the <see cref="vfpGotFocus"/> handler.</summary>
+		/// <summary>
+		/// VFP GotFocus virtual stub — calls the <see cref="vfpGotFocus"/> handler.
+		/// </summary>
 		NEW METHOD GotFocus() AS VOID
 			IF SELF:_VFPGotFocus != NULL
 				SELF:_VFPGotFocus:Call()
@@ -509,12 +581,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:GotFocus()
 
 		PRIVATE _VFPLostFocus AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form loses keyboard focus.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form loses keyboard focus.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form loses keyboard focus.</summary>
 		PROPERTY vfpLostFocus AS STRING GET _VFPLostFocus?:SendTo SET SELF:_VFPLostFocus := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP LostFocus virtual stub — calls the <see cref="vfpLostFocus"/> handler.</summary>
+		/// <summary>
+		/// VFP LostFocus virtual stub — calls the <see cref="vfpLostFocus"/> handler.
+		/// </summary>
 		NEW METHOD LostFocus() AS VOID
 			IF SELF:_VFPLostFocus != NULL
 				SELF:_VFPLostFocus:Call()
@@ -526,12 +602,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── B-4: Click / DblClick ────────────────────────────────────────────
 		PRIVATE _VFPClick AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the user clicks the form background.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the user clicks the form.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the user clicks the form background.</summary>
 		PROPERTY vfpClick AS STRING GET _VFPClick?:SendTo SET SELF:_VFPClick := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP Click virtual stub — calls the <see cref="vfpClick"/> handler.</summary>
+		/// <summary>
+		/// VFP Click virtual stub — calls the <see cref="vfpClick"/> handler.
+		/// </summary>
 		NEW METHOD Click() AS VOID
 			IF SELF:_VFPClick != NULL
 				SELF:_VFPClick:Call()
@@ -542,12 +622,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:Click()
 
 		PRIVATE _VFPDblClick AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the user double-clicks the form background.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the user double-clicks the form.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the user double-clicks the form background.</summary>
 		PROPERTY vfpDblClick AS STRING GET _VFPDblClick?:SendTo SET SELF:_VFPDblClick := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP DblClick virtual stub — calls the <see cref="vfpDblClick"/> handler.</summary>
+		/// <summary>
+		/// VFP DblClick virtual stub — calls the <see cref="vfpDblClick"/> handler.
+		/// </summary>
 		METHOD DblClick() AS VOID
 			IF SELF:_VFPDblClick != NULL
 				SELF:_VFPDblClick:Call()
@@ -559,12 +643,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── B-4: KeyPress ────────────────────────────────────────────────────
 		PRIVATE _VFPKeyPress AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the user presses a key while the form has focus (requires <see cref="KeyPreview"/> = <c>.T.</c>).
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the user presses a key while the form has focus.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the user presses a key while the form has focus (requires <see cref="KeyPreview"/> = <c>.T.</c>).</summary>
 		PROPERTY vfpKeyPress AS STRING GET _VFPKeyPress?:SendTo SET SELF:_VFPKeyPress := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP KeyPress virtual stub — calls the <see cref="vfpKeyPress"/> handler with the key code and shift state.</summary>
+		/// <summary>
+		/// VFP KeyPress virtual stub — calls the <see cref="vfpKeyPress"/> handler with the key code and shift state.
+		/// </summary>
 		NEW METHOD KeyPress(nKeyCode AS INT, nShiftAltCtrl AS INT) AS VOID
 			IF SELF:_VFPKeyPress != NULL
 				SELF:_VFPKeyPress:Call()
@@ -576,12 +664,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── B-4: Resize ──────────────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form is resized.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form is resized.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form is resized.</summary>
 		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET SELF:_VFPResize := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP Resize virtual stub — calls the <see cref="vfpResize"/> handler.</summary>
+		/// <summary>
+		/// VFP Resize virtual stub — calls the <see cref="vfpResize"/> handler.
+		/// </summary>
 		NEW METHOD Resize() AS VOID
 			IF SELF:_VFPResize != NULL
 				SELF:_VFPResize:Call()
@@ -593,12 +685,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── B-4: Paint ───────────────────────────────────────────────────────
 		PRIVATE _VFPPaint AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the form is repainted.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.Description("Fires when the form is repainted.")];
 		[System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the form is repainted.</summary>
 		PROPERTY vfpPaint AS STRING GET _VFPPaint?:SendTo SET SELF:_VFPPaint := VFPOverride{SELF, VALUE}
 
-		/// <summary>VFP Paint virtual stub — calls the <see cref="vfpPaint"/> handler.</summary>
+		/// <summary>
+		/// VFP Paint virtual stub — calls the <see cref="vfpPaint"/> handler.
+		/// </summary>
 		NEW METHOD Paint() AS VOID
 			IF SELF:_VFPPaint != NULL
 				SELF:_VFPPaint:Call()

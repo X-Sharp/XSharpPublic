@@ -1,4 +1,4 @@
-﻿// TextBox.prg
+// TextBox.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -119,7 +119,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>The active <see cref="InputMaskHandler"/> instance; <c>NULL</c> when no <see cref="InputMask"/> is set.</summary>
+		/// <summary>
+		/// The active <see cref="InputMaskHandler"/> instance; <c>NULL</c> when no <see cref="InputMask"/> is set.
+		/// </summary>
 		INTERNAL PROPERTY _maskHandler AS InputMaskHandler AUTO
 
 
@@ -138,7 +140,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:Size        := Size{100,21}
 
 
-		/// <summary>Delegates to <see cref="InputMaskHandler.HandleKeyDown"/> when a mask is active; falls through to the base handler otherwise.</summary>
+		/// <summary>
+		/// Delegates to <see cref="InputMaskHandler.HandleKeyDown"/> when a mask is active; falls through to the base handler otherwise.
+		/// </summary>
 		OVERRIDE PROTECTED METHOD OnKeyDown( e AS KeyEventArgs ) AS VOID
 			IF SELF:_maskHandler == NULL
 				SUPER:OnKeyDown(e)
@@ -149,7 +153,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SUPER:OnKeyDown(e)
 			ENDIF
 
-		/// <summary>Fires the base <c>OnKeyUp</c> so VFP vfpKeyUp subscribers receive the event; mask state is updated in <see cref="OnTextChanged"/> instead.</summary>
+		/// <summary>
+		/// Fires the base <c>OnKeyUp</c> so VFP vfpKeyUp subscribers receive the event; mask state is updated in <see cref="OnTextChanged"/> instead.
+		/// </summary>
 		OVERRIDE PROTECTED METHOD OnKeyUp( e AS KeyEventArgs ) AS VOID
 			IF SELF:_maskHandler != NULL
 				// mask state updated in TextChanged; still call base so vfpKeyUp subscribers fire
@@ -187,7 +193,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
 
 
-		/// <summary>Fires <c>vfpInteractiveChange</c> when the change originated from the user (<c>Modified = .T.</c>), then forwards to the active <see cref="InputMaskHandler"/> for mask reformatting.</summary>
+		/// <summary>
+		/// Fires <c>vfpInteractiveChange</c> when the change originated from the user (<c>Modified = .T.</c>), then forwards to the active <see cref="InputMaskHandler"/> for mask reformatting.
+		/// </summary>
 		OVERRIDE PROTECTED METHOD OnTextChanged ( e AS EventArgs) AS VOID
 			// TRUE is changed by the user
 			IF SELF:Modified
@@ -226,10 +234,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		INTERNAL _uValue AS USUAL
 		PRIVATE _valueType AS STRING
 
-			[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-				[EditorBrowsable(EditorBrowsableState.Never)];
-				[Bindable(FALSE)];
-				[Browsable(FALSE)];
 		/// <summary>
 		/// The typed value of the control — may be Character, Numeric, Date or Logical.<br/>
 		/// Setting Value formats the value through the active InputMask (if any) and updates the display.
@@ -238,6 +242,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// Format flags Z (blank when zero) and L (leading zeros) are applied on set.
 		/// The clean value (mask literals stripped) is written back to this property on LostFocus.
 		/// </summary>
+			[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+				[EditorBrowsable(EditorBrowsableState.Never)];
+				[Bindable(FALSE)];
+				[Browsable(FALSE)];
 		PROPERTY Value AS USUAL
 			GET
 				IF IsNil(_uValue) .AND. !String.IsNullOrEmpty(SELF:NullDisplay)
@@ -270,7 +278,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 						VAR strVal := ((OBJECT)VALUE):ToString()
 						// L: pad numeric value with leading zeros up to MaxLength
 						IF SELF:_leadingZeros .AND. IsNumeric(VALUE) .AND. SELF:MaxLength > 0
-							strVal := strVal:PadLeft(SELF:MaxLength, '0')
+							strVal := strVal:PadLeft(SELF:MaxLength, c'0')
 						ENDIF
 						SELF:Text := strVal
 					ENDIF
@@ -279,11 +287,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// VFP SelStart — zero-based character index of the insertion point or the start of the selection. Maps to <see cref="System.Windows.Forms.TextBox.SelectionStart"/>.
+		/// </summary>
 				[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 			[EditorBrowsable(EditorBrowsableState.Never)];
 			[Bindable(FALSE)];
 			[Browsable(FALSE)];
-		/// <summary>VFP SelStart — zero-based character index of the insertion point or the start of the selection. Maps to <see cref="System.Windows.Forms.TextBox.SelectionStart"/>.</summary>
 		PROPERTY SelStart AS INT GET SELF:SelectionStart SET SELF:SelectionStart := VALUE
 
 		PRIVATE _style AS INT
@@ -310,7 +320,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── ProgrammaticChange ───────────────────────────────────────────────
 
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
-		/// <summary>Name of the VFP method called when <see cref="Value"/> is changed programmatically (not by the user). Fires via <see cref="VFPOverride"/>.</summary>
+		/// <summary>
+		/// Name of the VFP method called when <see cref="Value"/> is changed programmatically (not by the user). Fires via <see cref="VFPOverride"/>.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
@@ -409,7 +421,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER:OnLostFocus( e )
 		END METHOD
 
-		/// <summary>Builds a .NET <c>DateTime</c> format string from the VFP <c>DateFormat</c>, <c>DateMark</c>, and <c>Century</c> properties. Used by <see cref="OnValidating"/> to pass a locale-aware pattern to the mask handler.</summary>
+		/// <summary>
+		/// Builds a .NET <c>DateTime</c> format string from the VFP <c>DateFormat</c>, <c>DateMark</c>, and <c>Century</c> properties. Used by <see cref="OnValidating"/> to pass a locale-aware pattern to the mask handler.
+		/// </summary>
 		PRIVATE METHOD _VFPDateFormatPattern() AS STRING
 			VAR sep := IIF(String.IsNullOrEmpty(SELF:DateMark), "/", SELF:DateMark)
 			VAR yr  := IIF(SELF:Century == 1, "yyyy", "yy")
@@ -437,7 +451,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
 
-		/// <summary>Applies <see cref="DisabledBackColor"/> and <see cref="DisabledForeColor"/> when the control is disabled; resets to system colors when re-enabled.</summary>
+		/// <summary>
+		/// Applies <see cref="DisabledBackColor"/> and <see cref="DisabledForeColor"/> when the control is disabled; resets to system colors when re-enabled.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnEnabledChanged(e)
 			IF !SELF:Enabled
@@ -453,18 +469,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
+		/// <summary>
+		/// VFP SelLength — number of selected characters. Maps to <see cref="System.Windows.Forms.TextBox.SelectionLength"/>.
+		/// </summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(FALSE)];
 		[Browsable(FALSE)];
-		/// <summary>VFP SelLength — number of selected characters. Maps to <see cref="System.Windows.Forms.TextBox.SelectionLength"/>.</summary>
 		PROPERTY SelLength AS INT GET SELF:SelectionLength SET SELF:SelectionLength := VALUE
 
+		/// <summary>
+		/// VFP SelText — the currently selected text. Maps to <see cref="System.Windows.Forms.TextBox.SelectedText"/>.
+		/// </summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(FALSE)];
 		[Browsable(FALSE)];
-		/// <summary>VFP SelText — the currently selected text. Maps to <see cref="System.Windows.Forms.TextBox.SelectedText"/>.</summary>
 		PROPERTY SelText AS STRING GET SELF:SelectedText SET SELF:SelectedText := VALUE
 
 		#include "TextControlProperties.xh"
@@ -474,15 +494,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		#include "ControlSource.xh"
 
 		PRIVATE _controlSource AS STRING
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(FALSE)];
-		[Browsable(FALSE)];
 		/// <summary>
 		/// VFP ControlSource — <c>"alias.fieldname"</c> or <c>"fieldname"</c> string that binds this
 		/// control to a data field. Setting this property calls <c>SetBinding()</c> which registers
 		/// the control with the form's binding infrastructure (<c>DoBindings</c> / <c>PopulateBindings</c>).
 		/// </summary>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(FALSE)];
+		[Browsable(FALSE)];
 		PROPERTY ControlSource AS STRING
 			GET
 				RETURN SELF:_controlSource

@@ -1,4 +1,4 @@
-﻿// OptionGroup.prg
+// OptionGroup.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -30,20 +30,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "FontProperties.xh"
 
-		/// <summary>Number of child controls — returns <c>Controls.Count</c>. The setter is a no-op (ControlCount is read-only in VFP); it exists to satisfy the <c>IVFPOwner</c> interface.</summary>
+		/// <summary>
+		/// Number of child controls — returns <c>Controls.Count</c>. The setter is a no-op (ControlCount is read-only in VFP); it exists to satisfy the <c>IVFPOwner</c> interface.
+		/// </summary>
 		PROPERTY ControlCount AS INT
 			GET ; RETURN SELF:Controls:Count ; END GET
 			SET ; NOP ; END SET
 		END PROPERTY
 
-		/// <summary>Colour of the custom border drawn around the group in <c>OnPaint</c>. Set to <c>Color.Empty</c> to suppress the border.</summary>
+		/// <summary>
+		/// Colour of the custom border drawn around the group in <c>OnPaint</c>. Set to <c>Color.Empty</c> to suppress the border.
+		/// </summary>
 		PRIVATE _borderColor AS System.Drawing.Color
 		PROPERTY BorderColor AS System.Drawing.Color
 			GET ; RETURN _borderColor ; END GET
 			SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
 		END PROPERTY
 
-		/// <summary>VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (resets to <c>SystemColors.Control</c>).</summary>
+		/// <summary>
+		/// VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (resets to <c>SystemColors.Control</c>).
+		/// </summary>
 		PRIVATE _backStyle := 1 AS INT
 		PROPERTY BackStyle AS INT
 			GET ; RETURN _backStyle ; END GET
@@ -55,8 +61,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── Resize / Moved events ─────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the group control is resized.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the group control is resized.</summary>
 		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
 
 		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
@@ -64,8 +72,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
 
 		PRIVATE _VFPMoved AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when the group control is moved.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when the group control is moved.</summary>
 		PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
 
 		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
@@ -163,8 +173,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── ProgrammaticChange ────────────────────────────────────────────────
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when <see cref="Value"/> is set programmatically.
+		/// </summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
-		/// <summary>Name of the VFP method called when <see cref="Value"/> is set programmatically.</summary>
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET _VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
 		PRIVATE METHOD OnVFPProgrammaticChange(sender AS OBJECT, e AS System.EventArgs) AS VOID
@@ -180,7 +192,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:OnVFPInteractiveChange( SELF, e )
 			ENDIF
 
-		/// <summary>1-based indexed property — <c>Buttons[i]</c> returns the <see cref="OptionButton"/> at position <c>i</c>. Alias for <see cref="Button"/>.</summary>
+		/// <summary>
+		/// 1-based indexed property — <c>Buttons[i]</c> returns the <see cref="OptionButton"/> at position <c>i</c>. Alias for <see cref="Button"/>.
+		/// </summary>
 		PUBLIC PROPERTY Buttons[ i AS INT ] AS OptionButton
 			GET
 				RETURN SELF:buttons[ i - 1 ]
@@ -196,7 +210,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:Size := System.Drawing.Size{91, 67}
 			RETURN
 
-		/// <summary>Returns the <see cref="OptionButton"/> at the given 1-based index. Equivalent to <c>Buttons[i]</c>.</summary>
+		/// <summary>
+		/// Returns the <see cref="OptionButton"/> at the given 1-based index. Equivalent to <c>Buttons[i]</c>.
+		/// </summary>
 		PUBLIC METHOD Button( i AS INT ) AS OptionButton
 			RETURN SELF:buttons[ i - 1 ]
 

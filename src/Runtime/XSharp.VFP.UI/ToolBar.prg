@@ -1,4 +1,4 @@
-// ToolBar.prg
+﻿// ToolBar.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -24,35 +24,43 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS ToolBar INHERIT System.Windows.Forms.ToolStrip
 
 		// Note: VFPObject.xh and VFPProperties.xh are included via ToolBar.generated.prg
-		// (through VFPContainer.xh) — do not include them again here.
+		// (through VFPContainer.xh) â€” do not include them again here.
 		// ControlProperties.xh wires Move(), SetFocus(), standard VFP event chain.
 		#include "ControlProperties.xh"
 		#include "FontProperties.xh"
 
-		// ── Buttons backing list ──────────────────────────────────────────────
+		// â”€â”€ Buttons backing list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 		PRIVATE _buttons AS List<VFPToolStripButton>
 
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_buttons := List<VFPToolStripButton>{}
 
-		// ── Release ───────────────────────────────────────────────────────────
-		/// <summary>Hides the toolbar. VFP RELEASE equivalent for toolbars.</summary>
+		// â”€â”€ Release â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// Hides the toolbar. VFP RELEASE equivalent for toolbars.
+		/// </summary>
 		METHOD Release() AS USUAL CLIPPER
 			SELF:Visible := FALSE
 			RETURN NIL
 
-		// ── Show / Hide ───────────────────────────────────────────────────────
-		/// <summary>Makes the toolbar visible.</summary>
+		// â”€â”€ Show / Hide â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// Makes the toolbar visible.
+		/// </summary>
 		METHOD Show() AS VOID STRICT
 			SELF:Visible := TRUE
 
-		/// <summary>Hides the toolbar without releasing it.</summary>
+		/// <summary>
+		/// Hides the toolbar without releasing it.
+		/// </summary>
 		METHOD Hide() AS VOID STRICT
 			SELF:Visible := FALSE
 
-		// ── hWnd ──────────────────────────────────────────────────────────────
-		/// <summary>VFP hWnd — the native window handle as an integer. The setter is a no-op.</summary>
+		// â”€â”€ hWnd â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// VFP hWnd â€” the native window handle as an integer. The setter is a no-op.
+		/// </summary>
 		PROPERTY hWnd AS USUAL
 			GET
 				RETURN SELF:Handle:ToInt32()
@@ -62,8 +70,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── Movable ───────────────────────────────────────────────────────────
-		/// <summary>When <c>.T.</c>, shows the toolbar grip so the user can move it; when <c>.F.</c>, hides the grip. Maps to <see cref="System.Windows.Forms.ToolStrip.GripStyle"/>.</summary>
+		// â”€â”€ Movable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// When <c>.T.</c>, shows the toolbar grip so the user can move it; when <c>.F.</c>, hides the grip. Maps to <see cref="System.Windows.Forms.ToolStrip.GripStyle"/>.
+		/// </summary>
 		PROPERTY Movable AS USUAL
 			GET
 				RETURN SELF:GripStyle != ToolStripGripStyle.Hidden
@@ -73,16 +83,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── Sizable ───────────────────────────────────────────────────────────
-		/// <summary>VFP Sizable stub — stored for source compatibility. Not implemented.</summary>
+		// â”€â”€ Sizable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// VFP Sizable stub â€” stored for source compatibility. Not implemented.
+		/// </summary>
 		PROPERTY Sizable AS USUAL AUTO
 
-		// ── KeyPreview ────────────────────────────────────────────────────────
-		/// <summary>VFP KeyPreview stub — stored for source compatibility. Not implemented.</summary>
+		// â”€â”€ KeyPreview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// VFP KeyPreview stub â€” stored for source compatibility. Not implemented.
+		/// </summary>
 		PROPERTY KeyPreview AS LOGIC AUTO
 
-		// ── LockScreen ────────────────────────────────────────────────────────
-		/// <summary>When <c>.T.</c>, suspends layout updates (<c>SuspendLayout</c>) to batch changes; restoring to <c>.F.</c> resumes layout (<c>ResumeLayout(TRUE)</c>).</summary>
+		// â”€â”€ LockScreen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// When <c>.T.</c>, suspends layout updates (<c>SuspendLayout</c>) to batch changes; restoring to <c>.F.</c> resumes layout (<c>ResumeLayout(TRUE)</c>).
+		/// </summary>
 		PROPERTY LockScreen AS LOGIC
 			GET
 				RETURN SELF:_lockScreen
@@ -98,8 +114,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 		PRIVATE _lockScreen AS LOGIC
 
-		// ── DockPosition ──────────────────────────────────────────────────────
-		/// <summary>VFP dock position: 0=Top, 1=Left, 2=Right, 3=Bottom, 4=Float (undocked). Maps to <see cref="System.Windows.Forms.Control.Dock"/>; Float also shows the grip.</summary>
+		// â”€â”€ DockPosition â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// VFP dock position: 0=Top, 1=Left, 2=Right, 3=Bottom, 4=Float (undocked). Maps to <see cref="System.Windows.Forms.Control.Dock"/>; Float also shows the grip.
+		/// </summary>
 		PROPERTY DockPosition AS LONG
 			GET
 				SWITCH SELF:Dock
@@ -124,33 +142,37 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── Buttons collection ────────────────────────────────────────────────
-		/// <summary>1-based indexed access to the button items. Returns the <see cref="VFPToolStripButton"/> at VFP position <paramref name="i"/>.</summary>
+		// â”€â”€ Buttons collection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// 1-based indexed access to the button items. Returns the <see cref="VFPToolStripButton"/> at VFP position <paramref name="i"/>.
+		/// </summary>
 		PROPERTY Buttons[ i AS LONG ] AS VFPToolStripButton
 			GET
 				RETURN SELF:_buttons[ (INT) i - 1 ]
 			END GET
 		END PROPERTY
 
-		/// <summary>Number of <see cref="VFPToolStripButton"/> items currently in <see cref="Buttons"/>.</summary>
+		/// <summary>
+		/// Number of <see cref="VFPToolStripButton"/> items currently in <see cref="Buttons"/>.
+		/// </summary>
 		PROPERTY ButtonCount AS LONG
 			GET
 				RETURN (LONG) SELF:_buttons:Count
 			END GET
 		END PROPERTY
 
-		// ── AddObject override ────────────────────────────────────────────────
+		// â”€â”€ AddObject override â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 		/// <summary>
-		/// Creates a toolbar item at runtime. <c>"CommandButton"</c> → <see cref="VFPToolStripButton"/>;
-		/// <c>"Separator"</c> → <see cref="System.Windows.Forms.ToolStripSeparator"/>; other class names
-		/// → <c>CreateInstance</c> fallback. The new item is registered as a dynamic property under <paramref name="cName"/>.
+		/// Creates a toolbar item at runtime. <c>"CommandButton"</c> â†’ <see cref="VFPToolStripButton"/>;
+		/// <c>"Separator"</c> â†’ <see cref="System.Windows.Forms.ToolStripSeparator"/>; other class names
+		/// â†’ <c>CreateInstance</c> fallback. The new item is registered as a dynamic property under <paramref name="cName"/>.
 		/// </summary>
 		METHOD AddObject( cName, cClass, cOLEClass, aInit1, aInit2 ) AS USUAL CLIPPER
 			LOCAL sName  AS STRING
 			LOCAL sClass AS STRING
 			sName  := (STRING) cName
 			sClass := ((STRING) cClass):ToUpper()
-			// Button-like VFP classes → ToolStripButton
+			// Button-like VFP classes â†’ ToolStripButton
 			IF sClass == "COMMANDBUTTON" .OR. sClass == "XSHARP.VFP.UI.COMMANDBUTTON"
 				LOCAL btn AS VFPToolStripButton
 				btn := VFPToolStripButton{}
@@ -163,7 +185,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:AddProperty( sName, btn, PropertyVisibility.Public, "AddObject CommandButton" )
 				RETURN TRUE
 			ENDIF
-			// Separator → ToolStripSeparator
+			// Separator â†’ ToolStripSeparator
 			IF sClass == "SEPARATOR" .OR. sClass == "XSHARP.VFP.UI.SEPARATOR"
 				LOCAL sep AS ToolStripSeparator
 				sep := ToolStripSeparator{}
@@ -172,8 +194,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:AddProperty( sName, sep, PropertyVisibility.Public, "AddObject Separator" )
 				RETURN TRUE
 			ENDIF
-			// Generic fallback — delegate to VFPContainer.xh implementation
-			// (inherited via #include in ToolBar.generated.prg → VFPContainer.xh)
+			// Generic fallback â€” delegate to VFPContainer.xh implementation
+			// (inherited via #include in ToolBar.generated.prg â†’ VFPContainer.xh)
 			// We re-invoke via the base include by calling the method via SUPER chain;
 			// since VFPContainer.xh injects it directly into this partial class, we
 			// cannot call SUPER:AddObject.  Instead, duplicate the minimal logic here.
@@ -216,7 +238,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _downPicture     AS STRING
 		PRIVATE _disabledPicture AS STRING
 
-		/// <summary>Path to the normal button image. Loaded immediately unless the button is pressed or disabled.</summary>
+		/// <summary>
+		/// Path to the normal button image. Loaded immediately unless the button is pressed or disabled.
+		/// </summary>
 		PROPERTY Picture AS STRING
 			GET
 				RETURN SELF:_picture
@@ -229,7 +253,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Path to the image shown while the button is being clicked. Loaded transiently in <see cref="OnClick"/>.</summary>
+		/// <summary>
+		/// Path to the image shown while the button is being clicked. Loaded transiently in <see cref="OnClick"/>.
+		/// </summary>
 		PROPERTY DownPicture AS STRING
 			GET
 				RETURN SELF:_downPicture
@@ -239,7 +265,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Path to the image shown when the button is unavailable (disabled). Applied by <see cref="OnAvailableChanged"/>.</summary>
+		/// <summary>
+		/// Path to the image shown when the button is unavailable (disabled). Applied by <see cref="OnAvailableChanged"/>.
+		/// </summary>
 		PROPERTY DisabledPicture AS STRING
 			GET
 				RETURN SELF:_disabledPicture
@@ -249,7 +277,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Swaps to <see cref="DisabledPicture"/> when the button becomes unavailable; restores <see cref="Picture"/> when it becomes available again.</summary>
+		/// <summary>
+		/// Swaps to <see cref="DisabledPicture"/> when the button becomes unavailable; restores <see cref="Picture"/> when it becomes available again.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnAvailableChanged( e AS System.EventArgs ) AS VOID STRICT
 			SUPER:OnAvailableChanged( e )
 			IF !SELF:Available .AND. !String.IsNullOrEmpty(SELF:_disabledPicture)
@@ -258,7 +288,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:Image := VFPTools.ImageFromFile(SELF:_picture)
 			ENDIF
 
-		/// <summary>Temporarily shows <see cref="DownPicture"/> during the click, then restores <see cref="Picture"/> after the base handler fires.</summary>
+		/// <summary>
+		/// Temporarily shows <see cref="DownPicture"/> during the click, then restores <see cref="Picture"/> after the base handler fires.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnClick( e AS System.EventArgs ) AS VOID STRICT
 			IF !String.IsNullOrEmpty(SELF:_downPicture)
 				SELF:Image := VFPTools.ImageFromFile(SELF:_downPicture)

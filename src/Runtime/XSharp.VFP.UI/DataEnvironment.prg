@@ -26,28 +26,46 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS DataEnvironment
 
-		/// <summary>When <c>.T.</c> (default), all work areas opened by <see cref="Init"/> are closed automatically when the form closes.</summary>
+		/// <summary>
+		/// When <c>.T.</c> (default), all work areas opened by <see cref="Init"/> are closed automatically when the form closes.
+		/// </summary>
 		PROPERTY AutoCloseTables AS LOGIC AUTO
-		/// <summary>When <c>.T.</c> (default), <see cref="Init"/> opens all <see cref="Cursors"/> automatically before the form displays.</summary>
+		/// <summary>
+		/// When <c>.T.</c> (default), <see cref="Init"/> opens all <see cref="Cursors"/> automatically before the form displays.
+		/// </summary>
 		PROPERTY AutoOpenTables AS LOGIC AUTO
 
-		/// <summary>Bound data source; set to the first cursor's <c>BindingSource</c> when no <see cref="InitialSelectedAlias"/> is specified.</summary>
+		/// <summary>
+		/// Bound data source; set to the first cursor's <c>BindingSource</c> when no <see cref="InitialSelectedAlias"/> is specified.
+		/// </summary>
 		PROPERTY DataSource AS OBJECT AUTO
-		/// <summary>Programmatic name of the DataEnvironment object.</summary>
+		/// <summary>
+		/// Programmatic name of the DataEnvironment object.
+		/// </summary>
 		PROPERTY Name AS STRING AUTO
 
-		/// <summary>VFP Visible stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP Visible stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY Visible AS LOGIC AUTO
-		/// <summary>VFP TabStop stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP TabStop stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY TabStop AS LOGIC AUTO
 
-		/// <summary>Ordered list of <see cref="DbCursor"/> objects that this DataEnvironment opens and closes.</summary>
+		/// <summary>
+		/// Ordered list of <see cref="DbCursor"/> objects that this DataEnvironment opens and closes.
+		/// </summary>
 		PROPERTY Cursors AS List<DbCursor> AUTO
 
-		/// <summary>List of <see cref="Relation"/> objects applied (via <c>DbSetRelation</c>) after all cursors are open.</summary>
+		/// <summary>
+		/// List of <see cref="Relation"/> objects applied (via <c>DbSetRelation</c>) after all cursors are open.
+		/// </summary>
 		PROPERTY Relations AS List<Relation> AUTO
 
-		/// <summary>Returns the <see cref="DbCursor"/> whose <c>Alias</c> matches <paramref name="cursorName"/> (case-insensitive), or <c>NULL</c> if not found.</summary>
+		/// <summary>
+		/// Returns the <see cref="DbCursor"/> whose <c>Alias</c> matches <paramref name="cursorName"/> (case-insensitive), or <c>NULL</c> if not found.
+		/// </summary>
 		PROPERTY SELF[ cursorName AS STRING ] AS DbCursor
 			GET
 				FOREACH cursor AS DbCursor IN Cursors
@@ -127,7 +145,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				NEXT
 			ENDIF
 
-		/// <summary>Alias of the work area to select after <see cref="Init"/> opens all cursors. When empty, the first cursor's <c>BindingSource</c> is set as <see cref="DataSource"/>.</summary>
+		/// <summary>
+		/// Alias of the work area to select after <see cref="Init"/> opens all cursors. When empty, the first cursor's <c>BindingSource</c> is set as <see cref="DataSource"/>.
+		/// </summary>
 		PROPERTY InitialSelectedAlias AS STRING AUTO
 
 	END CLASS

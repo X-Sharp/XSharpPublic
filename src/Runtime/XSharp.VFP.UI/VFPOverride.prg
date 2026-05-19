@@ -27,10 +27,14 @@ CLASS VFPOverride
     PRIVATE _owner AS OBJECT
     PRIVATE _sendTo AS STRING
 
-    /// <summary><c>.T.</c> while a <see cref="Call()"/> dispatch is in progress; <c>.F.</c> otherwise.</summary>
+    /// <summary>
+    /// <c>.T.</c> while a <see cref="Call()"/> dispatch is in progress; <c>.F.</c> otherwise.
+    /// </summary>
     PROPERTY InCall AS LOGIC AUTO GET PRIVATE SET
 
-    /// <summary>The method name this instance will dispatch to.</summary>
+    /// <summary>
+    /// The method name this instance will dispatch to.
+    /// </summary>
     PROPERTY SendTo AS STRING GET _sendTo
 
     /// <summary>
@@ -47,7 +51,9 @@ CLASS VFPOverride
             ENDIF
         ENDIF
 
-    /// <summary>Dispatches the method with the supplied argument array. Walks up the parent chain if the method is not found on the owner.</summary>
+    /// <summary>
+    /// Dispatches the method with the supplied argument array. Walks up the parent chain if the method is not found on the owner.
+    /// </summary>
     METHOD Call( args AS USUAL[] ) AS USUAL
         //
         TRY
@@ -69,7 +75,9 @@ CLASS VFPOverride
         RETURN NULL
 
 
-    /// <summary>Dispatches the method with no arguments. Walks up the parent chain if the method is not found on the owner.</summary>
+    /// <summary>
+    /// Dispatches the method with no arguments. Walks up the parent chain if the method is not found on the owner.
+    /// </summary>
     METHOD Call( ) AS USUAL
         //
         TRY
@@ -90,7 +98,9 @@ CLASS VFPOverride
         END TRY
         RETURN NULL
 
-    /// <summary>Walks the <c>Controls.Parent</c> chain from the owner up to (but not including) the <c>Form</c>, invoking the method on the first ancestor that has it.</summary>
+    /// <summary>
+    /// Walks the <c>Controls.Parent</c> chain from the owner up to (but not including) the <c>Form</c>, invoking the method on the first ancestor that has it.
+    /// </summary>
     PRIVATE METHOD CallParent( args AS USUAL[] ) AS VOID
         LOCAL oForm AS OBJECT
         //

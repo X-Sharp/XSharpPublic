@@ -1,4 +1,4 @@
-﻿// Listbox.prg
+// Listbox.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -43,20 +43,32 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #include "ControlSource.xh"
 
-		/// <summary>When <c>.T.</c>, the vertical scroll bar hides automatically when all items fit. Maps to <c>ScrollAlwaysVisible</c> (inverted).</summary>
+		/// <summary>
+		/// When <c>.T.</c>, the vertical scroll bar hides automatically when all items fit. Maps to <c>ScrollAlwaysVisible</c> (inverted).
+		/// </summary>
 		PROPERTY AutoHideScrollBar AS LOGIC AUTO
-		/// <summary>VFP Style: 0=standard list, 1=checkbox list. Checkbox style has no direct WinForms <c>ListBox</c> equivalent — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP Style: 0=standard list, 1=checkbox list. Checkbox style has no direct WinForms <c>ListBox</c> equivalent — stored for source compatibility.
+		/// </summary>
 		PROPERTY Style AS LONG AUTO
-		/// <summary>VFP MoverBars — drag-to-reorder UI; no WinForms <c>ListBox</c> equivalent. Stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP MoverBars — drag-to-reorder UI; no WinForms <c>ListBox</c> equivalent. Stored for source compatibility.
+		/// </summary>
 		PROPERTY MoverBars AS LOGIC AUTO
-		/// <summary>Moves the item at 1-based <c>nFrom</c> to 1-based <c>nTo</c>. Not yet implemented — owner-draw reordering is required.</summary>
+		/// <summary>
+		/// Moves the item at 1-based <c>nFrom</c> to 1-based <c>nTo</c>. Not yet implemented — owner-draw reordering is required.
+		/// </summary>
 		METHOD MoveItem(nFrom AS LONG, nTo AS LONG) AS VOID
 			// NOT IMPLEMENTED — full implementation requires owner-draw item reordering
 			NOP
 		END METHOD
-		/// <summary>String displayed when the selected value is <c>NULL</c> — stored for source compatibility.</summary>
+		/// <summary>
+		/// String displayed when the selected value is <c>NULL</c> — stored for source compatibility.
+		/// </summary>
 		PROPERTY NullDisplay AS String AUTO
-		/// <summary>VFP Picture stub — stored for source compatibility.</summary>
+		/// <summary>
+		/// VFP Picture stub — stored for source compatibility.
+		/// </summary>
 		PROPERTY Picture AS STRING AUTO
 
 		/// <summary>
@@ -110,7 +122,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Item source string. For <see cref="RowSourceType"/> 1, a comma-separated list of values loaded directly into <c>Items</c>.</summary>
+		/// <summary>
+		/// Item source string. For <see cref="RowSourceType"/> 1, a comma-separated list of values loaded directly into <c>Items</c>.
+		/// </summary>
 		PROPERTY RowSource AS STRING
 			GET
 				RETURN _rowSource
@@ -121,14 +135,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Supplies a .NET array as the item source for <see cref="RowSourceType"/>=5. If <c>RowSourceType</c> is already 5, the list is repopulated immediately.</summary>
+		/// <summary>
+		/// Supplies a .NET array as the item source for <see cref="RowSourceType"/>=5. If <c>RowSourceType</c> is already 5, the list is repopulated immediately.
+		/// </summary>
 		METHOD SetRowSourceArray( arr AS System.Array ) AS VOID
 			SELF:_rowSourceArray := arr
 			IF SELF:_rowSourceType == 5
 				SELF:ApplyRowSource()
 			ENDIF
 
-		/// <summary>Populate Items from RowSource according to RowSourceType.</summary>
+		/// <summary>
+		/// Populate Items from RowSource according to RowSourceType.
+		/// </summary>
 		PRIVATE METHOD ApplyRowSource() AS VOID
 			DO CASE
 			CASE _rowSourceType == 1 .AND. !String.IsNullOrEmpty(_rowSource)
@@ -153,10 +171,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── ListCount / ListIndex ────────────────────────────────────────────
 
-		/// <summary>Number of items currently in the list. Read-only.</summary>
+		/// <summary>
+		/// Number of items currently in the list. Read-only.
+		/// </summary>
 		PROPERTY ListCount AS LONG GET SELF:Items:Count
 
-		/// <summary>1-based index of the selected item, or 0 when nothing is selected. Maps to <c>SelectedIndex + 1</c>.</summary>
+		/// <summary>
+		/// 1-based index of the selected item, or 0 when nothing is selected. Maps to <c>SelectedIndex + 1</c>.
+		/// </summary>
 		PROPERTY ListIndex AS LONG
 			GET
 				RETURN SELF:SelectedIndex + 1  // VFP is 1-based
@@ -168,7 +190,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── AddItem / RemoveItem / Clear / Requery ───────────────────────────
 
-		/// <summary>Inserts <c>cItem</c> at the optional 1-based <c>nIndex</c> position, or appends it when <c>nIndex</c> is out of range.</summary>
+		/// <summary>
+		/// Inserts <c>cItem</c> at the optional 1-based <c>nIndex</c> position, or appends it when <c>nIndex</c> is out of range.
+		/// </summary>
 		METHOD AddItem(cItem , nIndex , nColumn) AS VOID  CLIPPER
 			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count + 1
 				SELF:Items:Insert( nIndex - 1, cItem )
@@ -177,19 +201,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
-		/// <summary>Removes the item at the given 1-based <c>nIndex</c>. Silently ignored when out of range.</summary>
+		/// <summary>
+		/// Removes the item at the given 1-based <c>nIndex</c>. Silently ignored when out of range.
+		/// </summary>
 		METHOD RemoveItem( nIndex AS LONG ) AS VOID
 			IF nIndex > 0 .AND. nIndex <= SELF:Items:Count
 				SELF:Items:RemoveAt( nIndex - 1 )
 			ENDIF
 		END METHOD
 
-		/// <summary>Removes all items from the list.</summary>
+		/// <summary>
+		/// Removes all items from the list.
+		/// </summary>
 		METHOD Clear() AS VOID CLIPPER
 			SELF:Items:Clear()
 		END METHOD
 
-		/// <summary>Re-runs <see cref="ApplyRowSource"/> to reload items from the current <see cref="RowSource"/> / array.</summary>
+		/// <summary>
+		/// Re-runs <see cref="ApplyRowSource"/> to reload items from the current <see cref="RowSource"/> / array.
+		/// </summary>
 		METHOD Requery() AS VOID STRICT
 			SELF:ApplyRowSource()
 		END METHOD
@@ -224,7 +254,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── DisplayValue ─────────────────────────────────────────────────────
-		/// <summary>Display text of the currently selected item. Identical to <see cref="Value"/>; setter delegates to <see cref="Value"/>. Implements <c>IVFPList.DisplayValue</c>.</summary>
+		/// <summary>
+		/// Display text of the currently selected item. Identical to <see cref="Value"/>; setter delegates to <see cref="Value"/>. Implements <c>IVFPList.DisplayValue</c>.
+		/// </summary>
 		PROPERTY DisplayValue AS USUAL
 			GET
 				IF SELF:SelectedItem != NULL
@@ -238,7 +270,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── ListItem ─────────────────────────────────────────────────────────
-		/// <summary>Returns the display text of the item at the given 1-based index, or an empty string when out of range.</summary>
+		/// <summary>
+		/// Returns the display text of the item at the given 1-based index, or an empty string when out of range.
+		/// </summary>
 		METHOD ListItem(nIndex AS LONG) AS STRING
 			IF nIndex >= 1 .AND. nIndex <= SELF:Items:Count
 				RETURN SELF:Items[nIndex - 1]:ToString()
@@ -246,7 +280,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN ""
 
 		// ── Selected ─────────────────────────────────────────────────────────
-		/// <summary>Returns <c>.T.</c> if the item at the given 1-based index is selected, <c>.F.</c> otherwise. Out-of-range indices return <c>.F.</c>.</summary>
+		/// <summary>
+		/// Returns <c>.T.</c> if the item at the given 1-based index is selected, <c>.F.</c> otherwise. Out-of-range indices return <c>.F.</c>.
+		/// </summary>
 		METHOD Selected(nIndex AS LONG) AS LOGIC
 			IF nIndex >= 1 .AND. nIndex <= SELF:Items:Count
 				RETURN SELF:GetSelected(nIndex - 1)
@@ -255,9 +291,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── ProgrammaticChange ───────────────────────────────────────────────
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		/// <summary>
+		/// Name of the VFP method called when <see cref="Value"/> is set programmatically.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
-		/// <summary>Name of the VFP method called when <see cref="Value"/> is set programmatically.</summary>
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
 		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID

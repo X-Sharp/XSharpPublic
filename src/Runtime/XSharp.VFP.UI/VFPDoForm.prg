@@ -20,14 +20,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// optionally store it in a variable via <c>MemVarPut</c>, and finally call <c>Show()</c> on it.
 	/// </summary>
 	STATIC CLASS __VFPDoForm
-		/// <summary>Accumulated constructor arguments for the next <see cref="Create"/> call. Reset by <see cref="InitParam"/>.</summary>
+		/// <summary>
+		/// Accumulated constructor arguments for the next <see cref="Create"/> call. Reset by <see cref="InitParam"/>.
+		/// </summary>
 		STATIC formParam AS List<Usual>
 
-		/// <summary>Clears the constructor parameter list before a new <c>DO FORM</c> sequence.</summary>
+		/// <summary>
+		/// Clears the constructor parameter list before a new <c>DO FORM</c> sequence.
+		/// </summary>
 		STATIC METHOD InitParam() AS VOID
 			__VFPDoForm.formParam := List<Usual>{}
 
-		/// <summary>Appends a single constructor argument to the parameter list.</summary>
+		/// <summary>
+		/// Appends a single constructor argument to the parameter list.
+		/// </summary>
 		STATIC METHOD Param( p AS USUAL ) AS VOID
 			__VFPDoForm.formParam.Add( p )
 

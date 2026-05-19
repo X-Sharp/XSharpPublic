@@ -47,14 +47,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 
 
-        /// <summary>Colour of the custom border drawn in <c>OnPaint</c> when <c>BorderStyle=0</c> (None). Set to <c>Color.Empty</c> to suppress the border.</summary>
+        /// <summary>
+        /// Colour of the custom border drawn in <c>OnPaint</c> when <c>BorderStyle=0</c> (None). Set to <c>Color.Empty</c> to suppress the border.
+        /// </summary>
         PROPERTY BorderColor AS System.Drawing.Color
             GET ; RETURN _borderColor ; END GET
             SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
         END PROPERTY
         PRIVATE _borderColor AS System.Drawing.Color
 
-		/// <summary>VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (resets to <c>SystemColors.Control</c>).</summary>
+		/// <summary>
+		/// VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (resets to <c>SystemColors.Control</c>).
+		/// </summary>
 		PRIVATE _backStyle := 1 AS INT
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
 		PROPERTY BackStyle AS INT

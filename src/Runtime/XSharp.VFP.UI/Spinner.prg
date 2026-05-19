@@ -1,4 +1,4 @@
-﻿// Spinner.prg
+// Spinner.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -35,7 +35,9 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		#include "ControlSource.xh"
 
 		// ── SelStart / SelLength / SelText ───────────────────────────────────
-		/// <summary>Accessor for the internal <see cref="System.Windows.Forms.TextBox"/> embedded inside <see cref="System.Windows.Forms.NumericUpDown"/>. Used to implement <see cref="SelStart"/>, <see cref="SelLength"/>, and <see cref="SelText"/>.</summary>
+		/// <summary>
+		/// Accessor for the internal <see cref="System.Windows.Forms.TextBox"/> embedded inside <see cref="System.Windows.Forms.NumericUpDown"/>. Used to implement <see cref="SelStart"/>, <see cref="SelLength"/>, and <see cref="SelText"/>.
+		/// </summary>
 		PRIVATE PROPERTY _editBox AS System.Windows.Forms.TextBox
 			GET
 				IF SELF:Controls:Count > 0 .AND. SELF:Controls[0] IS System.Windows.Forms.TextBox VAR tb
@@ -45,11 +47,13 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END GET
 		END PROPERTY
 
+		/// <summary>
+		/// VFP SelStart — zero-based caret position within the spinner's internal text box.
+		/// </summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
         [Bindable(FALSE)];
         [Browsable(FALSE)];
-		/// <summary>VFP SelStart — zero-based caret position within the spinner's internal text box.</summary>
 		PROPERTY SelStart AS LONG
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -61,11 +65,13 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// VFP SelLength — number of selected characters in the spinner's internal text box.
+		/// </summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
         [Bindable(FALSE)];
         [Browsable(FALSE)];
-		/// <summary>VFP SelLength — number of selected characters in the spinner's internal text box.</summary>
 		PROPERTY SelLength AS LONG
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -77,11 +83,13 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// VFP SelText — the currently selected text in the spinner's internal text box.
+		/// </summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
         [Bindable(FALSE)];
         [Browsable(FALSE)];
-		/// <summary>VFP SelText — the currently selected text in the spinner's internal text box.</summary>
 		PROPERTY SelText AS STRING
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -103,9 +111,13 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			SET ; _readOnly := VALUE ; END SET
 		END PROPERTY
 
-		/// <summary>Upper bound for the spinner arrow buttons. Maps to <see cref="System.Windows.Forms.NumericUpDown.Maximum"/>.</summary>
+		/// <summary>
+		/// Upper bound for the spinner arrow buttons. Maps to <see cref="System.Windows.Forms.NumericUpDown.Maximum"/>.
+		/// </summary>
 		PROPERTY SpinnerHighValue AS FLOAT GET (FLOAT) SUPER:Maximum SET SUPER:Maximum := (System.Decimal) VALUE
-		/// <summary>Lower bound for the spinner arrow buttons. Maps to <see cref="System.Windows.Forms.NumericUpDown.Minimum"/>.</summary>
+		/// <summary>
+		/// Lower bound for the spinner arrow buttons. Maps to <see cref="System.Windows.Forms.NumericUpDown.Minimum"/>.
+		/// </summary>
 		PROPERTY SpinnerLowValue AS FLOAT GET (FLOAT) SUPER:Minimum SET SUPER:Minimum := (System.Decimal) VALUE
 
 		PRIVATE _keyboardHigh AS System.Decimal
@@ -160,7 +172,9 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Fires <c>vfpKeyPress</c> first, then suppresses all keystrokes when <see cref="ReadOnly"/> is <c>.T.</c> so the user cannot type directly (arrow buttons continue to work).</summary>
+		/// <summary>
+		/// Fires <c>vfpKeyPress</c> first, then suppresses all keystrokes when <see cref="ReadOnly"/> is <c>.T.</c> so the user cannot type directly (arrow buttons continue to work).
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
 			SELF:OnVFPKeyPress(SELF, e)
 			IF _readOnly
@@ -261,7 +275,9 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		/// <summary>Parses a VFP numeric mask string: counts digits after the decimal point to set <see cref="System.Windows.Forms.NumericUpDown.DecimalPlaces"/>, and enables <see cref="System.Windows.Forms.NumericUpDown.ThousandsSeparator"/> when a comma is present.</summary>
+		/// <summary>
+		/// Parses a VFP numeric mask string: counts digits after the decimal point to set <see cref="System.Windows.Forms.NumericUpDown.DecimalPlaces"/>, and enables <see cref="System.Windows.Forms.NumericUpDown.ThousandsSeparator"/> when a comma is present.
+		/// </summary>
 		PRIVATE METHOD _ApplyNumericMask(mask AS STRING) AS VOID
 			IF String.IsNullOrEmpty(mask)
 				RETURN
@@ -279,7 +295,9 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		PRIVATE _lastSpinnerValue  AS System.Decimal
 		PRIVATE _isProgrammatic    AS LOGIC
 
-		/// <summary>Detects the direction of change to dispatch <see cref="UpClick"/> or <see cref="DownClick"/>, then fires <c>vfpInteractiveChange</c> for user-initiated edits.</summary>
+		/// <summary>
+		/// Detects the direction of change to dispatch <see cref="UpClick"/> or <see cref="DownClick"/>, then fires <c>vfpInteractiveChange</c> for user-initiated edits.
+		/// </summary>
 		PROTECTED METHOD OnValueChanged( e AS System.EventArgs ) AS VOID
 			SUPER:OnValueChanged( e )
 			IF SUPER:Value > _lastSpinnerValue
@@ -295,7 +313,9 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		// ── vfpUpClick ───────────────────────────────────────────────────────
 		PRIVATE _VFPUpClick AS VFPOverride
-		/// <summary>Name of the VFP method called when the spinner's up arrow is clicked. Fired by <see cref="UpClick"/>.</summary>
+		/// <summary>
+		/// Name of the VFP method called when the spinner's up arrow is clicked. Fired by <see cref="UpClick"/>.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the user clicks the up arrow of a Spinner.")];
 		[DefaultValue(NULL)];
 		PROPERTY vfpUpClick AS STRING GET _VFPUpClick?:SendTo SET SELF:_VFPUpClick := VFPOverride{SELF, VALUE}
@@ -305,14 +325,18 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				SELF:_VFPUpClick:Call()
 			ENDIF
 
-		/// <summary>Fires the <c>vfpUpClick</c> event. Called automatically when the value increases via the up arrow.</summary>
+		/// <summary>
+		/// Fires the <c>vfpUpClick</c> event. Called automatically when the value increases via the up arrow.
+		/// </summary>
 		METHOD UpClick() AS VOID STRICT
 			SELF:OnVFPUpClick()
 		END METHOD
 
 		// ── vfpDownClick ─────────────────────────────────────────────────────
 		PRIVATE _VFPDownClick AS VFPOverride
-		/// <summary>Name of the VFP method called when the spinner's down arrow is clicked. Fired by <see cref="DownClick"/>.</summary>
+		/// <summary>
+		/// Name of the VFP method called when the spinner's down arrow is clicked. Fired by <see cref="DownClick"/>.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the user clicks the down arrow of a Spinner.")];
 		[DefaultValue(NULL)];
 		PROPERTY vfpDownClick AS STRING GET _VFPDownClick?:SendTo SET SELF:_VFPDownClick := VFPOverride{SELF, VALUE}
@@ -322,14 +346,18 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				SELF:_VFPDownClick:Call()
 			ENDIF
 
-		/// <summary>Fires the <c>vfpDownClick</c> event. Called automatically when the value decreases via the down arrow.</summary>
+		/// <summary>
+		/// Fires the <c>vfpDownClick</c> event. Called automatically when the value decreases via the down arrow.
+		/// </summary>
 		METHOD DownClick() AS VOID STRICT
 			SELF:OnVFPDownClick()
 		END METHOD
 
 		// ── vfpProgrammaticChange ────────────────────────────────────────────
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
-		/// <summary>Name of the VFP method called when <see cref="Value"/> is changed programmatically. Fired by the <see cref="Value"/> setter via <see cref="VFPOverride"/>.</summary>
+		/// <summary>
+		/// Name of the VFP method called when <see cref="Value"/> is changed programmatically. Fired by the <see cref="Value"/> setter via <see cref="VFPOverride"/>.
+		/// </summary>
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
@@ -341,7 +369,9 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
 
-		/// <summary>Applies <see cref="DisabledBackColor"/> and <see cref="DisabledForeColor"/> when the control is disabled; resets to system colors when re-enabled.</summary>
+		/// <summary>
+		/// Applies <see cref="DisabledBackColor"/> and <see cref="DisabledForeColor"/> when the control is disabled; resets to system colors when re-enabled.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnEnabledChanged(e)
 			IF !SELF:Enabled

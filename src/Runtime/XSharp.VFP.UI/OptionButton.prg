@@ -1,4 +1,4 @@
-// OptionButton.prg
+﻿// OptionButton.prg
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -34,7 +34,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "Headers/VFPButtonImage.xh"
 
-		/// <summary><c>.T.</c> when this button is selected, <c>.F.</c> otherwise. Maps directly to <see cref="System.Windows.Forms.RadioButton.Checked"/>.</summary>
+		/// <summary>
+		/// <c>.T.</c> when this button is selected, <c>.F.</c> otherwise. Maps directly to <see cref="System.Windows.Forms.RadioButton.Checked"/>.
+		/// </summary>
 		PROPERTY Value AS LOGIC
 			GET ; RETURN SELF:Checked ; END GET
 			SET ; SELF:Checked := VALUE ; END SET
@@ -46,7 +48,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:OnVFPKeyPress(SELF, e)
 			SUPER:OnKeyPress(e)
 
-		// ── InteractiveChange ────────────────────────────────────────────────
+		// â”€â”€ InteractiveChange â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 		PROTECTED METHOD OnCheckedChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnCheckedChanged(e)

@@ -190,7 +190,7 @@
   "Cursor": {
     "Alias": "Alias",
     "CursorSource": "??<@CursorSource@>??",
-    "Database": "DataBase",
+    "Database": "??<@DataBase@>??",
     "Exclusive": "Exclusive",
     "Filter": "Filter",
     "Order": "Order",

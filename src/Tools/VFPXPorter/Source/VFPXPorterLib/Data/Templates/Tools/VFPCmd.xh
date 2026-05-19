@@ -17,7 +17,7 @@
 => XSharp.VFP.UI.__VFPDoForm.InitParam();
 [;XSharp.VFP.UI.__VFPDoForm.Param( <p1> )] ;
 [;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
-;XSharp.VFP.UI.__VFPDoForm.Create( <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
+;XSharp.VFP.UI.__VFPDoForm.Create( <#(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
 
 #command READ EVENTS ;
 => __XPORTERWARNIN__ <(udc)>
@@ -96,9 +96,11 @@
 #command SET CLASS TO [<none>] [ADDITIVE];
 => __XPORTERWARNIN__ <(udc)>
 
-#command SET DATE TO [<none>];
+#command SET STATUS BAR [<none>];
 => __XPORTERWARNIN__ <(udc)>
 
+#command SET STATUS [<none>];
+=> __XPORTERWARNIN__ <(udc)>
 
 #command BEGIN TRANSACTION;
 => __XPORTERWARNIN__ <(udc)>

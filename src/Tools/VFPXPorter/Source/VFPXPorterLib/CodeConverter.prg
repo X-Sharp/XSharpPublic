@@ -66,6 +66,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			SELF:_lineContent:Clear()
 			//
+			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
@@ -87,6 +88,7 @@ BEGIN NAMESPACE VFPXPorterLib
 		PUBLIC METHOD ProcessProcedure( sourceCode AS STRING, procedureName AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
 			SELF:CheckForProcedureName(procedureName)
+			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
@@ -97,6 +99,7 @@ BEGIN NAMESPACE VFPXPorterLib
 		// logic that ProcessEvent uses. Caller sets Source on return.
 		PUBLIC METHOD ProcessMenuCode( sourceCode AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
+			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
@@ -143,6 +146,106 @@ BEGIN NAMESPACE VFPXPorterLib
 			NEXT
 			RETURN
 		END METHOD
+
+		// Converts  CMD &var[suffix] [rest]  →  CMD (var + e"\\suffix") [rest]
+		// so the expression-form #command rules in VFPCmd.xh can match at compile time.
+		// Handles: DO FORM, USE, and plain DO (not DO WHILE / DO CASE / DO EVENTS / DO WITH).
+		PRIVATE METHOD FixCommandMacroArgs() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				VAR converted := SELF:TryConvertMacroCommand(SELF:Source[i])
+				IF converted != NULL
+					SELF:Source[i] := converted
+				ENDIF
+			NEXT
+
+		// Returns the converted line if it matches CMD &var[suffix], or NULL if the line does not apply.
+		PRIVATE METHOD TryConvertMacroCommand(line AS STRING) AS STRING
+
+			// --- 1. Skip leading whitespace ---
+			VAR pos := 0
+			WHILE pos < line:Length .AND. Char.IsWhiteSpace(line[pos])
+				pos++
+			END WHILE
+			IF pos >= line:Length
+				RETURN NULL
+			ENDIF
+
+			// --- 2. Match command keyword ---
+			VAR tail   := line:Substring(pos)   // line from first non-space character
+			VAR cmdLen := 0
+			IF StartsWithKeyword(tail, "DO FORM")
+				cmdLen := 7
+			ELSEIF StartsWithKeyword(tail, "USE")
+				cmdLen := 3
+			ELSEIF StartsWithKeyword(tail, "DO")
+				// Plain DO — reject if followed by a keyword that starts a structured statement
+				VAR afterDo := tail:Substring(2):TrimStart()
+				IF StartsWithKeyword(afterDo, "FORM")   .OR. StartsWithKeyword(afterDo, "WHILE")  .OR. ;
+				   StartsWithKeyword(afterDo, "CASE")   .OR. StartsWithKeyword(afterDo, "EVENTS") .OR. ;
+				   StartsWithKeyword(afterDo, "WITH")
+					RETURN NULL
+				ENDIF
+				cmdLen := 2
+			ELSE
+				RETURN NULL
+			ENDIF
+
+			// --- 3. Skip whitespace between keyword and argument ---
+			pos += cmdLen
+			WHILE pos < line:Length .AND. Char.IsWhiteSpace(line[pos])
+				pos++
+			END WHILE
+
+			// --- 4. Must be followed by '&' (VFP macro operator) ---
+			IF pos >= line:Length .OR. line[pos] != '&'
+				RETURN NULL
+			ENDIF
+			VAR amperPos := pos
+			pos++   // skip '&'
+
+			// --- 5. Variable name: starts with letter or '_', then letters / digits / '_' ---
+			IF pos >= line:Length .OR. (!Char.IsLetter(line[pos]) .AND. line[pos] != '_')
+				RETURN NULL
+			ENDIF
+			VAR varStart := pos
+			WHILE pos < line:Length .AND. (Char.IsLetterOrDigit(line[pos]) .OR. line[pos] == '_')
+				pos++
+			END WHILE
+			VAR varname := line:Substring(varStart, pos - varStart)
+
+			// --- 6. Suffix: non-whitespace characters after the variable name (e.g. "\find", ".dbf") ---
+			VAR suffixStart := pos
+			WHILE pos < line:Length .AND. !Char.IsWhiteSpace(line[pos])
+				pos++
+			END WHILE
+			VAR suffix := line:Substring(suffixStart, pos - suffixStart)
+
+			// --- 7. Build replacement ---
+			VAR prefix := line:Substring(0, amperPos)   // indent + command + space (everything before '&')
+			VAR rest   := line:Substring(pos)            // remainder: " WITH ..." or ""
+			VAR q      := e"\""
+			IF String.IsNullOrEmpty(suffix)
+				RETURN prefix + "(" + varname + ")" + rest
+			ELSE
+				// Double backslashes so the e"..." string literal is correct in all X# dialects
+				VAR escaped := suffix:Replace("\", "\\")
+				RETURN prefix + "(" + varname + " + e" + q + escaped + q + ")" + rest
+			ENDIF
+
+		// Returns TRUE when 'text' starts with 'keyword' (case-insensitive) at a word boundary,
+		// i.e. the character after the keyword is not a letter, digit, or underscore.
+		PRIVATE STATIC METHOD StartsWithKeyword(text AS STRING, keyword AS STRING) AS LOGIC
+			IF text:Length < keyword:Length
+				RETURN FALSE
+			ENDIF
+			IF String.Compare(text, 0, keyword, 0, keyword:Length, StringComparison.OrdinalIgnoreCase) != 0
+				RETURN FALSE
+			ENDIF
+			IF text:Length == keyword:Length
+				RETURN TRUE   // exact match, nothing follows
+			ENDIF
+			VAR nextChar := text[keyword:Length]
+			RETURN !Char.IsLetterOrDigit(nextChar) .AND. nextChar != '_'
 
 		// We will enumerate the lines of source code
 		PRIVATE METHOD ChangeStatement( ) AS VOID

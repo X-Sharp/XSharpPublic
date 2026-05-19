@@ -13,11 +13,28 @@
 //        => <ProgramName1>( [<ParameterList>] )
 
 
+// DO program by macro: DO (expr) [WITH params]
+// expr is a path string; __VFPDo.Execute strips the path/ext and dispatches at runtime.
+#command DO (<DoExpr>) [WITH] [ <p1> ]   [, <pn> ] ;
+=> XSharp.VFP.UI.__VFPDo.InitParam() ;
+[;XSharp.VFP.UI.__VFPDo.Param( <p1> )] ;
+[;XSharp.VFP.UI.__VFPDo.Param( <pn> )] ;
+;XSharp.VFP.UI.__VFPDo.Execute( <DoExpr> )
+
+// Expression form: DO FORM (expr)  — used when the form name is a runtime expression
+// (e.g. after FixDoFormMacro converts  DO FORM &var\suffix  →  DO FORM (var + "\suffix"))
+#command DO FORM (<FormExpr>) [NAME <VarName> [LINKED]] [WITH] [ <(p1)> ]   [, <(pn)> ]  [TO <ToVarName>] [<noread:NOREAD>] [<noshow:NOSHOW>] ;
+=> XSharp.VFP.UI.__VFPDoForm.InitParam();
+[;XSharp.VFP.UI.__VFPDoForm.Param( <p1> )] ;
+[;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
+;XSharp.VFP.UI.__VFPDoForm.Create( <FormExpr>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
+
+// Literal form: DO FORM MyFormName
 #command DO FORM <FormName> [NAME <VarName> [LINKED]] [WITH] [ <(p1)> ]   [, <(pn)> ]  [TO <ToVarName>] [<noread:NOREAD>] [<noshow:NOSHOW>] ;
 => XSharp.VFP.UI.__VFPDoForm.InitParam();
 [;XSharp.VFP.UI.__VFPDoForm.Param( <p1> )] ;
 [;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
-;XSharp.VFP.UI.__VFPDoForm.Create( <#(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
+;XSharp.VFP.UI.__VFPDoForm.Create( <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
 
 #command READ EVENTS ;
 => __XPORTERWARNIN__ <(udc)>
@@ -140,6 +157,27 @@
 
 #command DELETE ALL;
 => __XPORTERWARNIN__ <(udc)>
+
+// Expression form: USE (expr) — used when the db path is a runtime expression
+// (e.g. after FixCommandMacroArgs converts  USE &var\name.dbf  →  USE (var + "\name.dbf"))
+#command USE (<dbExpr>)                        ;
+[VIA <rdd>]                       ;
+[ALIAS <a>]                       ;
+[<NEW: NEW>]                      ;
+[<AGAIN: AGAIN>]                  ;
+[IN <area>]						  ;
+[<ex: EXCLUSIVE>]                 ;
+[<sh: SHARED>]                    ;
+[<ro: READONLY,NOUPDATE>]         ;
+[INDEX <(index1)> [, <(indexn)>]] ;
+	;
+=> DbUseArea(                            ;
+<.new.>, <rdd>, <dbExpr>, <(a)>,        ;
+IF(<.sh.> .OR. <.ex.>, !<.ex.>, NIL),  ;
+<.ro.>  )     ;
+	;
+[; DbSetIndex( <(index1)> )];
+[; DbSetIndex( <(indexn)> )]
 
 #command USE <(db)>                            ;
 [VIA <rdd>]                       ;

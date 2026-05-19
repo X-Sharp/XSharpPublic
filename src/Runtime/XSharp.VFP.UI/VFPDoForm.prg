@@ -85,4 +85,43 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 	END CLASS
+
+	/// <summary>
+	/// Runtime helper for the VFP <c>DO &amp;macro [WITH …]</c> command.<br/>
+	/// Call <see cref="InitParam"/> to clear the parameter list, then zero or more <see cref="Param"/>
+	/// calls to push arguments, then <see cref="Execute"/> to dispatch.<br/>
+	/// <see cref="Execute"/> strips the path and extension from the path string to obtain the procedure
+	/// name, then calls it via <c>_CallClipFunc</c> with the accumulated parameters so the call is
+	/// resolved at runtime.
+	/// </summary>
+	STATIC CLASS __VFPDo
+		/// <summary>Accumulated arguments for the next <see cref="Execute"/> call. Reset by <see cref="InitParam"/>.</summary>
+		STATIC doParam AS List<Usual>
+
+		/// <summary>Clears the parameter list before a new <c>DO &amp;macro</c> sequence.</summary>
+		STATIC METHOD InitParam() AS VOID
+			__VFPDo.doParam := List<Usual>{}
+
+		/// <summary>Appends a single argument to the parameter list.</summary>
+		STATIC METHOD Param(p AS USUAL) AS VOID
+			__VFPDo.doParam:Add(p)
+
+		/// <summary>
+		/// Resolves <paramref name="cPath"/> to a procedure name (strips path and extension),
+		/// then calls it with the accumulated <see cref="doParam"/> list.
+		/// </summary>
+		STATIC METHOD Execute(cPath AS STRING) AS USUAL
+			TRY
+				VAR procName := Path.GetFileNameWithoutExtension(cPath)
+				VAR args := __VFPDo.doParam:ToArray()
+				IF args:Length == 0
+					RETURN Eval(MCompile(procName + "()"))
+				ELSE
+					RETURN _CallClipFunc(String2Symbol(procName), args)
+				ENDIF
+			CATCH ex AS Exception
+				THROW Exception{"Error in DO &macro", ex}
+			END TRY
+	END CLASS
+
 END NAMESPACE // XSharp.VFP.UI

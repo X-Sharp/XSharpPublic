@@ -1155,6 +1155,9 @@ CLASS XProject
         LOCAL projectIds as STRING
         local interfaces as STRING
         local baseTypeName as STRING
+        LOCAL nTypeId as INT64
+        LOCAL nProjectId as INT64
+        LOCAL nTypes := 0 as INT
         projectIds := ","+self:DependentProjectList+","
         interfaces := ""
         FOREACH var element in found
@@ -1163,6 +1166,9 @@ CLASS XProject
                 IF sTypeIds:Length > 0
                     sTypeIds += ", "
                 ENDIF
+                nTypes += 1
+                nTypeId := element:IdType
+                nProjectId := element:IdProject
                 sTypeIds += element:IdType:ToString()
                 if ! String.IsNullOrEmpty(element:XmlComments)
                     cXmlComment := element:XmlComments
@@ -1184,7 +1190,12 @@ CLASS XProject
         interfaces := interfaces:Replace("\n","")
         VAR aIF := interfaces.Split(<CHAR>{c','}, StringSplitOptions.RemoveEmptyEntries)
         //todo Collect interfaces from IMPLEMENTS clauses
-        VAR members  := XDatabase.GetMembers(sTypeIds):ToArray()
+        LOCAL members as IList<XDbResult>
+        IF nTypes == 1
+            members := XDatabase.GetMembers(nTypeId, nProjectId):ToArray()
+        ELSE
+            members  := XDatabase.GetMembers(sTypeIds):ToArray()
+        ENDIF
         VAR oType   := found[0]
         var project := XSolution.FindProjectByFileName(oType:Project)
         if project == null
@@ -1231,7 +1242,7 @@ CLASS XProject
                     dict[key]:Add(m)
                 NEXT
                 LOCAL i AS INT
-                FOR i := 0 TO members:Length-1
+                FOR i := 0 TO members:Count-1
                     LOCAL melement  := members[i] as XDbResult
                     var key := melement:Kind:ToString()+" "+melement:MemberName
                     if dict:ContainsKey(key)

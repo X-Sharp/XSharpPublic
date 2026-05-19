@@ -15,6 +15,7 @@ using XSharpModel;
 using XSharp.Settings;
 using XSharp.Support;
 using System.Windows.Controls;
+using System.Xml.XPath;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup
@@ -871,6 +872,20 @@ namespace XSharp.LanguageService
                     else if (tokenType == XSharpLexer.SUPER)
                     {
                         visibility = Modifiers.Protected;
+                        if (currentType != null)
+                        {
+                            var bt = currentType.BaseType;
+                            if (bt == null && currentType.BaseTypeName != null )
+                            {
+                                bt = location.FindType(currentType.BaseTypeName);
+                            }
+                            if (bt != null)
+                            {
+                                symbols.Push(bt);
+                                result.Add(bt);
+                                continue;
+                            }
+                        }
                     }
 
                 }

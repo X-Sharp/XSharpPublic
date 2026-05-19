@@ -51,7 +51,10 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:PrefixEvent := SELF:checkPrefixEventInForm:Checked
 			SELF:iniSettings:KeepFoxProEventName := SELF:checkKeepFoxProEventName:Checked
 			SELF:iniSettings:RessourcesFolder := SELF:ressourcesTextBox:Text
-			SELF:iniSettings:GenerateOnlyHandledEvent := SELF:checkGenerateOnlyHandledEvent:Checked
+            SELF:iniSettings:GenerateOnlyHandledEvent := SELF:checkGenerateOnlyHandledEvent:Checked
+
+            SELF:iniSettings:SeparateLibraryProjects := SELF:checkLibraryAsProject:Checked
+            SELF:iniSettings:PlaceSolutionInSameDirectory := SELF:checkSlnWithProject:Checked
 			//
 			VAR defFolders := ""
 			FOREACH lvi AS ListViewItem IN SELF:listFolders:Items
@@ -93,7 +96,10 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:checkSetEvent:Checked := SELF:iniSettings:RemoveSet
 			SELF:checkPrefixEventInForm:Checked := SELF:iniSettings:PrefixEvent
 			SELF:checkKeepFoxProEventName:Checked := SELF:iniSettings:KeepFoxProEventName
-			SELF:checkGenerateOnlyHandledEvent:Checked := SELF:iniSettings:GenerateOnlyHandledEvent
+            SELF:checkGenerateOnlyHandledEvent:Checked := SELF:iniSettings:GenerateOnlyHandledEvent
+
+            SELF:checkLibraryAsProject:Checked := SELF:iniSettings:SeparateLibraryProjects
+            SELF:checkSlnWithProject:Checked := SELF:iniSettings:PlaceSolutionInSameDirectory
 			// Fill Folders Name
 			// The order is : "Forms,Libs,Menus,Code,Databases,FreeTables,Others"
 			VAR defFolders := SELF:iniSettings:DefaultFolders

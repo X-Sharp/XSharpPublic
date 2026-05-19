@@ -13,11 +13,27 @@ BEGIN NAMESPACE VFPXPorter
 			INHERIT System.Windows.Forms.Form
 		PUBLIC xPorter AS VFPXPorterLib.XPorterProject
 
-		PROPERTY Settings AS XPorterSettings AUTO
+
+        PRIVATE _settings AS XPorterSettings
+        PROPERTY Settings AS XPorterSettings
+            GET
+                RETURN _settings
+            END GET
+
+            SET
+                _settings := VALUE
+                // Update UI with settings values
+                SELF:outputPathTextBox:Text := SELF:Settings:OutputPath
+			    SELF:pjxPathTextBox:Text := SELF:Settings:ItemsPath
+                SELF:AppendCheckBox:Checked := SELF:_settings:AppendToSolution
+                SELF:PlaceSolutionInSameDirectory:Checked := SELF:_settings:PlaceSolutionInSameDirectory
+            END SET
+        END PROPERTY
 
 		PUBLIC CONSTRUCTOR() STRICT //ExportWindow
             SELF:InitializeComponent()
             SELF:TypeComboBox:SelectedIndex := 0
+
 			RETURN
 
 		PRIVATE METHOD exportButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID

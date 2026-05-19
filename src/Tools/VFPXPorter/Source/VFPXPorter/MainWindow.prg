@@ -12,14 +12,17 @@ USING System.IO
 
 BEGIN NAMESPACE VFPXPorter
 		PUBLIC PARTIAL CLASS MainWindow	;
-		INHERIT System.Windows.Forms.Form
-		PRIVATE jsonSettings AS ExporterSettings
+            INHERIT System.Windows.Forms.Form
+
+        PRIVATE jsonSettings AS ExporterSettings
+        PRIVATE roamingPath AS STRING
+
 		PUBLIC CONSTRUCTOR()   STRICT//Form1
 			SELF:InitializeComponent()
 			//VAR storingPath := Path.GetDirectoryName( Application.ExecutablePath )
 			//
 			// !!! Settings of VFPXPorter.exe are stored in %userfolder%/AppData/Roaming/XSharp
-			VAR roamingPath := Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData )
+			roamingPath := Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData )
 			roamingPath := Path.Combine( roamingPath, "XSharp" )
 			IF !Directory.Exists(roamingPath)
 				Directory.CreateDirectory( roamingPath )
@@ -69,15 +72,14 @@ BEGIN NAMESPACE VFPXPorter
 			LOCAL oDlg AS SettingsDialog
 			//
 			oDlg := SettingsDialog{ SELF:jsonSettings }
-			oDlg:ShowDialog()
+            oDlg:ShowDialog()
+            // Reload settings after closing dialog
+            jsonSettings := ExporterSettings{ Path.Combine( roamingPath, "VFPXPorter.json" ) }
 			RETURN
 		PRIVATE METHOD projectToolStripMenuItem_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
 			LOCAL mdi := ExportProjectWindow{} AS ExportProjectWindow
 			mdi:Settings := SELF:Settings
 			mdi:MdiParent := SELF
-			mdi:outputPathTextBox:Text := SELF:Settings:OutputPath
-			mdi:pjxPathTextBox:Text := SELF:Settings:ItemsPath
-			mdi:Settings := SELF:Settings
 			mdi:Show()
 			RETURN
 		PRIVATE METHOD libraryToolStripMenuItem_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT

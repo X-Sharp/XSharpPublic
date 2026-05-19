@@ -148,6 +148,7 @@ CLASS XPorterSettings
 		SELF:Modifier := "PUBLIC"
 		SELF:ItemsType := XPorterSettings.DefaultFolders
         SELF:LibInSubFolder := TRUE
+        SELF:SeparateLibraryProjects := FALSE
         SELF:AddLibraryNamespace := TRUE
 		SELF:IgnoreErrors := TRUE
 		SELF:StoreInFolders := TRUE
@@ -158,6 +159,7 @@ CLASS XPorterSettings
         SELF:OutputType := ProjectType.WindowsExe // Exe by default
         SELF:AppendToSolution := FALSE // New Solution by default
         SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
+        SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
         SELF:SolutionName := ""
 		RETURN
 
@@ -251,6 +253,20 @@ CLASS XPorterSettings
 	/// Indicate if Lib Files are exported in the same folder as Project files (and Form), or in a SubFolder
 	/// </summary>
     PROPERTY LibInSubFolder AS LOGIC AUTO
+
+    /// <summary>
+    /// When TRUE, each VCX dependency is exported as its own .xsproj (ClassLibrary) with proper
+    /// ProjectReference entries for cross-library dependencies, instead of the single monolithic
+    /// ClassLibraries.xsproj. Requires LibInSubFolder to be TRUE for best results.
+    /// Default is FALSE to preserve existing behaviour.
+    /// </summary>
+    PROPERTY SeparateLibraryProjects AS LOGIC AUTO
+
+    	/// <summary>
+    /// Place the solution in the same folder as the generated project
+	/// </summary>
+	/// <value></value>
+	PROPERTY SaveSolutionWithProject AS LOGIC AUTO
 
     /// <summary>
 	/// Indicate if ClassLibrary namespace name must be added to the common Header : VFPXPorter.xh

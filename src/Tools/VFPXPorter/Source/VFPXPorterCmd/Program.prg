@@ -69,6 +69,11 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:LibInSubFolder := TRUE
 			ELSEIF String.Compare(arg, "-noLibInSubFolder", TRUE) == 0
 				settings:LibInSubFolder := FALSE
+			// ── SeparateLibraryProjects ───────────────────────────────────
+			ELSEIF String.Compare(arg, "-separateLibraryProjects", TRUE) == 0
+				settings:SeparateLibraryProjects := TRUE
+			ELSEIF String.Compare(arg, "-noSeparateLibraryProjects", TRUE) == 0
+				settings:SeparateLibraryProjects := FALSE
 			// ── AddLibraryNamespace ───────────────────────────────────────
 			ELSEIF String.Compare(arg, "-addLibraryNamespace", TRUE) == 0
 				settings:AddLibraryNamespace := TRUE

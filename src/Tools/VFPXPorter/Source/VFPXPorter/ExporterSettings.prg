@@ -81,6 +81,12 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY LibInSubFolder AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "LibInSubFolder", TRUE ) ;
             SET SELF:iniSettings:WriteValue( "Project", "LibInSubFolder", VALUE )
 
+    	PROPERTY PlaceSolutionInSameDirectory AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "PlaceSolutionInSameDirectory", FALSE ) ;
+            SET SELF:iniSettings:WriteValue( "Project", "PlaceSolutionInSameDirectory", VALUE )
+
+        PROPERTY SeparateLibraryProjects AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "SeparateLibraryProjects", TRUE ) ;
+            SET SELF:iniSettings:WriteValue( "Project", "SeparateLibraryProjects", VALUE )
+
         PROPERTY AddLibraryNamespace AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "AddLibraryNamespace", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "AddLibraryNamespace", VALUE )
 		PROPERTY IgnoreErrors AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "IgnoreErrors", TRUE ) ;
@@ -115,7 +121,10 @@ BEGIN NAMESPACE VFPXPorter
 			settings:StoreInFolders	:= SELF:StoreInFolders
 			settings:PrefixEvent	:= SELF:PrefixEvent
 			settings:KeepFoxProEventName := SELF:KeepFoxProEventName
-			settings:GenerateOnlyHandledEvent := SELF:GenerateOnlyHandledEvent
+            settings:GenerateOnlyHandledEvent := SELF:GenerateOnlyHandledEvent
+
+            settings:SeparateLibraryProjects := SELF:SeparateLibraryProjects
+            settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory
 			//
 			XPorterSettings.DataFolder := SELF:RessourcesFolder
 			//

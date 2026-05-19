@@ -578,7 +578,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 SELF:GeneratedFiles:Add( GeneratedFile{destFile})
                             ENDIF
                             // Export the informations in an Visual Studio xsproj file
-                            SELF:GenerateSolution( stdDef )
+                            SELF:GenerateSolution( stdDef, vfpxporterPath )
                         ENDIF
                     ENDIF
                 ENDIF
@@ -672,120 +672,194 @@ BEGIN NAMESPACE VFPXPorterLib
         END METHOD
 
         // Generate a MSBuild file
-        PRIVATE METHOD GenerateSolution( stdDef AS STRING ) AS VOID
+        PRIVATE METHOD GenerateSolution( stdDef AS STRING, vfpxporterPath AS STRING ) AS VOID
             LOCAL xsLibs := NULL AS VSProject
+            VAR vcxProjects := Dictionary<STRING, VSProject>{ StringComparer.OrdinalIgnoreCase }
 
-            // First, do we have any "Libraries" ?
-            IF SELF:GeneratedLibFiles:Count > 0
-                xsLibs := VSProject{ "ClassLibraries" }
-                xsLibs:IsLibrary := TRUE
-                SELF:AddStandardReferences( xsLibs )
-                //
-                FOREACH refFile AS Reference IN SELF:ReferenceLibFiles
-                    xsLibs:AddReference( refFile )
-                NEXT
-                //
-                FOREACH codeFile AS GeneratedFile IN SELF:GeneratedLibFiles
-                    //
-                    IF codeFile:Action != FileAction.Compile
-                        xsLibs:AddFile( GetRelativePath( SELF:outputPath,codeFile:FileName), codeFile:Action )
-                    ELSE
-                        IF String.IsNullOrEmpty( codeFile:DependsOn )
-                            xsLibs:AddFile( GetRelativePath( SELF:outputPath,codeFile:FileName), codeFile:Type )
-                        ELSE
-                            xsLibs:AddFile( GetRelativePath( SELF:outputPath,codeFile:FileName), codeFile:Type, GetRelativePath( SELF:outputPath,codeFile:DependsOn) )
-                        ENDIF
-                    ENDIF
-                NEXT
-                //
-                VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj")
-                // Save the MSBuild file for the Libraries
-                xsLibs:Save( libProjPath, stdDef )
-                // Per default the Solution is one level Up to the OutputPath, so we need to set the relative path to the Libs Project
-                LOCAL relativeLibPath AS STRING
-                IF SELF:Settings:PlaceSolutionInSameDirectory
-                    relativeLibPath := "ClassLibraries.xsproj"
-                ELSE
-                    relativeLibPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:outputPath ), "ClassLibraries.xsproj")
-                ENDIF
-                // Set for Solution
-                xsLibs:RelativePath := relativeLibPath
-            ENDIF
-
-            // Now the Main Project
-            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )     // The .pjx file
-            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj")  // the new xsproj file
-
-            // The imported Project : We will add "App" at the end of the ProjectName to avoid conflicts in the Name Property
-            VAR xsProj := VSProject{ projectName }
-            xsProj:ProjectType := SELF:Settings:OutputType
-
-            SELF:AddStandardReferences( xsProj )
-            //
-            FOREACH refFile AS Reference IN SELF:ReferenceFiles
-                xsProj:AddReference( refFile )
-            NEXT
-            //
-            FOREACH codeFile AS GeneratedFile IN SELF:GeneratedFiles
-                //
-                IF codeFile:Action != FileAction.Compile
-                    xsProj:AddFile( GetRelativePath( SELF:outputPath,codeFile:FileName), codeFile:Action )
-                ELSE
-                    IF String.IsNullOrEmpty( codeFile:DependsOn )
-                        xsProj:AddFile( GetRelativePath( SELF:outputPath,codeFile:FileName), codeFile:Type )
-                    ELSE
-                        xsProj:AddFile( GetRelativePath( SELF:outputPath,codeFile:FileName), codeFile:Type, GetRelativePath( SELF:outputPath,codeFile:DependsOn) )
-                    ENDIF
-                ENDIF
-            NEXT
-            //
-            IF xsLibs != NULL
-                xsProj:ProjectReferenceList:Add( xsLibs )
-            ENDIF
-            // Save the MSBuild file for the "main" Project
-            xsProj:Save( projectPath, stdDef )
-
-            // Now the Solution
-            VAR xsSolution := VSSolution{}
-
+            // Compute solution location upfront — needed for per-library RelativePath calculation
             LOCAL solutionBasePath AS STRING
             IF SELF:Settings:PlaceSolutionInSameDirectory
                 solutionBasePath := SELF:outputPath
             ELSE
-                solutionBasePath := Path.GetDirectoryName( SELF:outputPath )  // One level up to the OutputPath
+                solutionBasePath := Path.GetDirectoryName( SELF:outputPath )
             ENDIF
+
+            IF SELF:GeneratedLibFiles:Count > 0
+                IF SELF:Settings:SeparateLibraryProjects
+                    // ── Per-library projects (one .xsproj per VCX) ─────────────
+                    // Identify shared tool .prg files: in GeneratedLibFiles but not owned by any VCX bucket.
+                    // These mirror what ClassLibraries received in monolithic mode.
+                    VAR allVcxFiles := HashSet<STRING>{ StringComparer.OrdinalIgnoreCase }
+                    FOREACH VAR bucket IN _libFilesByVCX:Values
+                        FOREACH f AS GeneratedFile IN bucket
+                            allVcxFiles:Add( f:FileName )
+                        NEXT
+                    NEXT
+                    VAR toolLibFiles := SELF:GeneratedLibFiles:Where({ f => f:Action == FileAction.Compile .AND. !allVcxFiles:Contains( f:FileName ) }):ToList()
+
+                    VAR sortedVCXs := SELF:TopologicalSort( _vcxDependencies )
+                    FOREACH libPath AS STRING IN sortedVCXs
+                        IF !_libFilesByVCX:ContainsKey( libPath )
+                            LOOP  // no generated files for this VCX (export failed)
+                        ENDIF
+                        VAR libName := Path.GetFileNameWithoutExtension( libPath )
+                        VAR xsLib := VSProject{ libName }
+                        xsLib:IsLibrary := TRUE
+                        SELF:AddStandardReferences( xsLib )
+
+                        // Compute library output folder early — needed for all path rebasing below
+                        VAR libFolder := SELF:outputPath
+                        IF SELF:Settings:StoreInFolders
+                            libFolder := Path.Combine( libFolder, SELF:Settings:FolderNames["Libs"] )
+                        ENDIF
+                        IF SELF:Settings:LibInSubFolder
+                            libFolder := Path.Combine( libFolder, libName )
+                        ENDIF
+
+                        // Add local references rebased to this library's project folder
+                        FOREACH refFile AS Reference IN SELF:ReferenceLibFiles
+                            IF refFile:IsLocal
+                                VAR absRef := Path.GetFullPath( Path.Combine( SELF:outputPath, refFile:Include ) )
+                                xsLib:AddReference( Reference{ GetRelativePath( libFolder, absRef ), refFile:IsXSharp, TRUE } )
+                            ELSE
+                                xsLib:AddReference( refFile )
+                            ENDIF
+                        NEXT
+
+                        // Add this VCX's generated files (paths relative to the library's project folder)
+                        FOREACH codeFile AS GeneratedFile IN _libFilesByVCX[libPath]
+                            IF codeFile:Action != FileAction.Compile
+                                xsLib:AddFile( GetRelativePath( libFolder, codeFile:FileName ), codeFile:Action )
+                            ELSEIF String.IsNullOrEmpty( codeFile:DependsOn )
+                                xsLib:AddFile( GetRelativePath( libFolder, codeFile:FileName ), codeFile:Type )
+                            ELSE
+                                xsLib:AddFile( GetRelativePath( libFolder, codeFile:FileName ), codeFile:Type, GetRelativePath( libFolder, codeFile:DependsOn ) )
+                            ENDIF
+                        NEXT
+
+                        // Add shared tool .prg files (rebased to the library's project folder)
+                        FOREACH toolFile AS GeneratedFile IN toolLibFiles
+                            xsLib:AddFile( GetRelativePath( libFolder, toolFile:FileName ), toolFile:Type )
+                        NEXT
+
+                        // Wire ProjectReferences to direct deps (topo order guarantees they are already in vcxProjects)
+                        IF _vcxDependencies:ContainsKey( libPath )
+                            FOREACH depPath AS STRING IN _vcxDependencies[libPath]
+                                IF vcxProjects:ContainsKey( depPath )
+                                    xsLib:ProjectReferenceList:Add( vcxProjects[depPath] )
+                                ENDIF
+                            NEXT
+                        ENDIF
+
+                        // Compute per-library stdDef so VFPXPorter.xh resolves correctly from this subfolder
+                        LOCAL libStdDef AS STRING
+                        IF !String.IsNullOrEmpty( vfpxporterPath ) .AND. File.Exists( vfpxporterPath )
+                            libStdDef := "$(projectdir)" + GetRelativePath( libFolder, vfpxporterPath )
+                        ELSE
+                            libStdDef := stdDef
+                        ENDIF
+
+                        VAR libProjPath := Path.Combine( libFolder, libName + ".xsproj" )
+                        xsLib:Save( libProjPath, libStdDef )
+                        xsLib:RelativePath := GetRelativePath( solutionBasePath, libProjPath )
+                        vcxProjects:Add( libPath, xsLib )
+                    NEXT
+                ELSE
+                    // ── Monolithic ClassLibraries (existing behaviour) ───────────
+                    xsLibs := VSProject{ "ClassLibraries" }
+                    xsLibs:IsLibrary := TRUE
+                    SELF:AddStandardReferences( xsLibs )
+                    FOREACH refFile AS Reference IN SELF:ReferenceLibFiles
+                        xsLibs:AddReference( refFile )
+                    NEXT
+                    FOREACH codeFile AS GeneratedFile IN SELF:GeneratedLibFiles
+                        IF codeFile:Action != FileAction.Compile
+                            xsLibs:AddFile( GetRelativePath( SELF:outputPath, codeFile:FileName ), codeFile:Action )
+                        ELSE
+                            IF String.IsNullOrEmpty( codeFile:DependsOn )
+                                xsLibs:AddFile( GetRelativePath( SELF:outputPath, codeFile:FileName ), codeFile:Type )
+                            ELSE
+                                xsLibs:AddFile( GetRelativePath( SELF:outputPath, codeFile:FileName ), codeFile:Type, GetRelativePath( SELF:outputPath, codeFile:DependsOn ) )
+                            ENDIF
+                        ENDIF
+                    NEXT
+                    VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj" )
+                    xsLibs:Save( libProjPath, stdDef )
+                    IF SELF:Settings:PlaceSolutionInSameDirectory
+                        xsLibs:RelativePath := "ClassLibraries.xsproj"
+                    ELSE
+                        xsLibs:RelativePath := Path.Combine( Path.GetFileNameWithoutExtension( SELF:outputPath ), "ClassLibraries.xsproj" )
+                    ENDIF
+                ENDIF
+            ENDIF
+
+            // ── Main project ─────────────────────────────────────────────────
+            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )
+            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj" )
+            VAR xsProj := VSProject{ projectName }
+            xsProj:ProjectType := SELF:Settings:OutputType
+            SELF:AddStandardReferences( xsProj )
+            FOREACH refFile AS Reference IN SELF:ReferenceFiles
+                xsProj:AddReference( refFile )
+            NEXT
+            FOREACH codeFile AS GeneratedFile IN SELF:GeneratedFiles
+                IF codeFile:Action != FileAction.Compile
+                    xsProj:AddFile( GetRelativePath( SELF:outputPath, codeFile:FileName ), codeFile:Action )
+                ELSE
+                    IF String.IsNullOrEmpty( codeFile:DependsOn )
+                        xsProj:AddFile( GetRelativePath( SELF:outputPath, codeFile:FileName ), codeFile:Type )
+                    ELSE
+                        xsProj:AddFile( GetRelativePath( SELF:outputPath, codeFile:FileName ), codeFile:Type, GetRelativePath( SELF:outputPath, codeFile:DependsOn ) )
+                    ENDIF
+                ENDIF
+            NEXT
+            // Reference the monolithic lib project (legacy) or all per-library projects
+            IF xsLibs != NULL
+                xsProj:ProjectReferenceList:Add( xsLibs )
+            ENDIF
+            FOREACH prj AS VSProject IN vcxProjects:Values
+                xsProj:ProjectReferenceList:Add( prj )
+            NEXT
+            xsProj:Save( projectPath, stdDef )
+
+            // ── Solution ──────────────────────────────────────────────────────
+            VAR xsSolution := VSSolution{}
 
             LOCAL solutionName AS STRING
-            IF !String.IsNullOrWhiteSpace(SELF:Settings:SolutionName)
+            IF !String.IsNullOrWhiteSpace( SELF:Settings:SolutionName )
                 solutionName := SELF:Settings:SolutionName
             ELSE
-                solutionName := projectName//Path.GetFileName(solutionBasePath)
+                solutionName := projectName
             ENDIF
 
-            VAR solutionFile := Path.Combine(solutionBasePath, solutionName + ".sln")
+            VAR solutionFile := Path.Combine( solutionBasePath, solutionName + ".sln" )
 
-            // If user checked to Append to existing Solution, load it
             IF SELF:Settings:AppendToSolution .AND. File.Exists( solutionFile )
                 xsSolution:Load( solutionFile )
             ENDIF
 
-            VAR existing := xsSolution:Projects:Find({ p => String.Compare(p:Name, xsProj:Name, TRUE) == 0 })
+            VAR existing := xsSolution:Projects:Find({ p => String.Compare( p:Name, xsProj:Name, TRUE ) == 0 })
             IF existing != NULL
-                xsSolution:Projects:Remove(existing)
+                xsSolution:Projects:Remove( existing )
             ENDIF
 
             LOCAL relativeProjPath AS STRING
             IF SELF:Settings:PlaceSolutionInSameDirectory
                 relativeProjPath := projectName + ".xsproj"
             ELSE
-                relativeProjPath := Path.Combine(Path.GetFileNameWithoutExtension( SELF:outputPath ), projectName + ".xsproj")
+                relativeProjPath := Path.Combine( Path.GetFileNameWithoutExtension( SELF:outputPath ), projectName + ".xsproj" )
             ENDIF
             xsProj:RelativePath := relativeProjPath
             xsSolution:Projects:Add( xsProj )
 
-            IF xsLibs != NULL .AND. !xsSolution:Projects:Any({ p => String.Compare(p:Name, xsLibs:Name, TRUE) == 0 })
+            IF xsLibs != NULL .AND. !xsSolution:Projects:Any({ p => String.Compare( p:Name, xsLibs:Name, TRUE ) == 0 })
                 xsSolution:Projects:Add( xsLibs )
             ENDIF
+            FOREACH prj AS VSProject IN vcxProjects:Values
+                IF !xsSolution:Projects:Any({ p => String.Compare( p:Name, prj:Name, TRUE ) == 0 })
+                    xsSolution:Projects:Add( prj )
+                ENDIF
+            NEXT
 
             xsSolution:Save( solutionFile )
 

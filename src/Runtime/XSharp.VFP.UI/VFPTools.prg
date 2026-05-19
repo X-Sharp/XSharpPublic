@@ -12,14 +12,17 @@ USING System.Text
 BEGIN NAMESPACE XSharp.VFP.UI
 
 /// <summary>
-/// The VFPTools class.
+/// Static utility class with VFP-to-WinForms conversion helpers.<br/>
+/// Provides image loading (<see cref="ImageFromFile"/>), VFP stretch/alignment code mapping
+/// (<see cref="ImageStrechConvert"/>, <see cref="TextAlignmentConvert"/>), and bidirectional
+/// VFP COLORREF conversion (<see cref="ColorFromVFP(System.Int64)"/>, <see cref="ColorToVFP"/>).
 /// </summary>
 STATIC PUBLIC CLASS VFPTools
 
     /// <summary>
-    ///Read an Image file, and create a System.Drawing.Image object.
+    /// Loads an image from <paramref name="filename"/> and returns it as a <see cref="System.Drawing.Image"/>.<br/>
+    /// Returns <c>NULL</c> if the file does not exist. In Designer mode, also returns <c>NULL</c> to prevent crashes.
     /// </summary>
-    /// <returns></returns>
     STATIC METHOD ImageFromFile( filename AS STRING ) AS System.Drawing.Image
         // In Visual Studio ? So...In the Designer
         IF !System.IO.File.Exists( filename )
@@ -35,6 +38,7 @@ STATIC PUBLIC CLASS VFPTools
         //
         RETURN image
 
+    /// <summary>Converts a VFP Stretch code to <see cref="System.Windows.Forms.PictureBoxSizeMode"/>: 0=Normal, 1=AutoSize, 2=StretchImage.</summary>
     STATIC METHOD ImageStrechConvert( n AS INT ) AS System.Windows.Forms.PictureBoxSizeMode
         VAR convert := System.Windows.Forms.PictureBoxSizeMode.Normal
         SWITCH n
@@ -46,6 +50,7 @@ STATIC PUBLIC CLASS VFPTools
         RETURN convert
 
 
+    /// <summary>Converts a VFP alignment code to <see cref="System.Windows.Forms.HorizontalAlignment"/>: 0=Left, 1=Right, 2=Center, 3=Left (same as 0).</summary>
     STATIC METHOD TextAlignmentConvert( n AS INT ) AS System.Windows.Forms.HorizontalAlignment
         VAR convert := System.Windows.Forms.HorizontalAlignment.Left
         SWITCH n
@@ -62,8 +67,7 @@ STATIC PUBLIC CLASS VFPTools
 
 
 
-    // Convert a VFP COLORREF long (0x00BBGGRR) to a System.Drawing.Color.
-    // VFP stores color as R + G*256 + B*65536 (low byte = red).
+    /// <summary>Converts a VFP COLORREF long (<c>R + G×256 + B×65536</c>, low byte = red) to a <see cref="System.Drawing.Color"/>. Returns <c>Color.Empty</c> for 0.</summary>
     STATIC METHOD ColorFromVFP(nColor AS LONG) AS System.Drawing.Color
         IF nColor == 0
             RETURN System.Drawing.Color.Empty
@@ -73,10 +77,11 @@ STATIC PUBLIC CLASS VFPTools
         VAR b := (INT)((nColor >> 16) & 0xFF)
         RETURN System.Drawing.Color.FromArgb(r, g, b)
 
+    /// <summary>Creates a <see cref="System.Drawing.Color"/> directly from separate R, G, B component values.</summary>
     STATIC METHOD ColorFromVFP(r AS LONG, g AS LONG, b AS LONG) AS System.Drawing.Color
         RETURN System.Drawing.Color.FromArgb(r, g, b)
 
-    // Convert a System.Drawing.Color back to a VFP COLORREF long (R + G*256 + B*65536).
+    /// <summary>Converts a <see cref="System.Drawing.Color"/> back to a VFP COLORREF long (<c>R + G×256 + B×65536</c>). Returns 0 for <c>Color.Empty</c>.</summary>
     STATIC METHOD ColorToVFP(c AS System.Drawing.Color) AS LONG
         IF c == System.Drawing.Color.Empty
             RETURN 0

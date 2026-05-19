@@ -13,9 +13,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	PARTIAL CLASS Form
 
-		// Holds the convertion table between VFP and X#
+		/// <summary>Lazy-initialised map from VFP class name (upper-case) to fully-qualified <c>XSharp.VFP.UI.*</c> type name. Populated on first call to <see cref="SetAll"/>.</summary>
 		PRIVATE _typeConvert AS Dictionary<STRING,STRING>
 
+		/// <summary>
+		/// VFP <c>SetAll(cProperty, uValue [, cClass])</c> — sets <paramref name="cProperty"/> to <paramref name="uValue"/>
+		/// on every child control of this form. When <paramref name="cClass"/> is supplied, only controls whose
+		/// runtime type matches the VFP class name are affected. Uses <c>IVarPut</c>; silently ignores controls
+		/// that do not expose the property.
+		/// </summary>
 		METHOD SetAll( cProperty, uValue, cClass) AS VOID CLIPPER
 			IF !IsString( cProperty ) .OR. IsNil( uValue )
 				RETURN
@@ -50,6 +56,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 		END METHOD
 
+		/// <summary>Parses an embedded JSON literal (no external dependency) to populate <see cref="_typeConvert"/> with VFP-class-name → runtime-type-name mappings.</summary>
 		PRIVATE METHOD InitSetAll() AS VOID
 			LOCAL typeConvert AS STRING
 			// Simply Copy/Paste the content of the TypeConvert.json file between TEXT / ENDTEXT

@@ -22,24 +22,28 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
+/// <summary>
+/// <see cref="DbDataSource"/> subclass that fixes two bugs for VFP grid support.<br/>
+/// 1. <see cref="AddNew"/> resets <c>_index</c> to -1 after <c>Append()</c> so the next indexer read
+///    uses <c>GoTop+Skip</c> rather than a stale relative skip that overshoots EOF.<br/>
+/// 2. <see cref="AppendRecord"/> is a new method used by <c>Grid._StartNewRow()</c>: appends a record
+///    and resets <c>_index</c> so the caller can follow with <c>BindingSource.ResetBindings(false)</c>
+///    to force <c>DataGridView</c> to rebuild its row collection without triggering the
+///    <c>addNewIsBeingAdded</c> flag that <c>BindingSource.AddNew()</c> would set.
+/// </summary>
 CLASS VFPDbDataSource INHERIT DbDataSource
 
 CONSTRUCTOR(oRDD AS IRdd)
     SUPER(oRDD)
     RETURN
 
-// Hides base AddNew() (not virtual in DbDataSource) to reset _index after Append().
-// Direct callers on this concrete type get the fix; interface-vtable callers (BindingSource)
-// still hit the base — but Grid._StartNewRow() uses AppendRecord() instead, so this
-// path is only reached if external code calls AddNew() directly.
+/// <summary>Hides the base <c>AddNew()</c> to reset <c>_index</c> to -1 after <c>Append()</c>, preventing a stale relative skip on the next indexer access. Direct callers on this concrete type get the fix; <c>BindingSource</c> interface-vtable callers still hit the base.</summary>
 METHOD AddNew() AS OBJECT STRICT
     LOCAL result := SUPER:AddNew() AS OBJECT
     SELF:_index := -1
     RETURN result
 
-// AppendRecord: append to the RDD and reset _index.
-// Grid._StartNewRow() calls this, then calls BindingSource.ResetBindings(false) to
-// force DataGridView to re-sync its row count from RecCount (now N+1).
+/// <summary>Appends a blank record to the RDD and resets <c>_index</c>. Called by <c>Grid._StartNewRow()</c>, which then calls <c>BindingSource.ResetBindings(false)</c> to re-sync the <c>DataGridView</c> row count.</summary>
 INTERNAL METHOD AppendRecord() AS LOGIC
     IF SELF:_oRDD:Append(TRUE)
         SELF:_index := -1
@@ -47,7 +51,7 @@ INTERNAL METHOD AppendRecord() AS LOGIC
     ENDIF
     RETURN FALSE
 
-// Factory: creates a VFPDbDataSource for the current work area.
+/// <summary>Factory method: retrieves the <see cref="XSharp.RDD.IRdd"/> object for the current work area and wraps it in a <see cref="VFPDbDataSource"/>. Returns <c>NULL</c> if no work area is open.</summary>
 STATIC METHOD CreateForCurrentArea() AS VFPDbDataSource
     LOCAL oResult := NULL AS OBJECT
     IF CoreDb.Info(DBI_RDD_OBJECT, REF oResult)

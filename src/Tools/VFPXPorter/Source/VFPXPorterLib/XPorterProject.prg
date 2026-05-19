@@ -56,6 +56,14 @@ BEGIN NAMESPACE VFPXPorterLib
         PROPERTY GeneratedLibFiles AS List<GeneratedFile> AUTO
         PROPERTY ReferenceLibFiles AS List<Reference> AUTO
 
+        // Per-VCX dependency map: absolute VCX path → set of absolute VCX paths it directly depends on.
+        // Populated during ExportProject(); consumed by GenerateSolution() when SeparateLibraryProjects=TRUE.
+        PRIVATE _vcxDependencies AS Dictionary<STRING, HashSet<STRING>>
+
+        // Per-VCX generated files: absolute VCX path → files produced by exporting that VCX.
+        // Populated during ExportProject(); consumed by GenerateSolution() when SeparateLibraryProjects=TRUE.
+        PRIVATE _libFilesByVCX AS Dictionary<STRING, List<GeneratedFile>>
+
         PROPERTY ReferenceFiles AS List<Reference> AUTO
 
         PROTECTED StartBlockFile AS STRING
@@ -75,6 +83,8 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:GeneratedLibFiles := List<GeneratedFile>{}
             SELF:ReferenceFiles := List<Reference>{}
             SELF:ReferenceLibFiles := List<Reference>{}
+            SELF:_vcxDependencies := Dictionary<STRING, HashSet<STRING>>{ StringComparer.OrdinalIgnoreCase }
+            SELF:_libFilesByVCX   := Dictionary<STRING, List<GeneratedFile>>{ StringComparer.OrdinalIgnoreCase }
             //
 
         METHOD ClearResultText() AS VOID
@@ -270,6 +280,8 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF xPorter:Analyze(FALSE)
                         // Add all the new Custom Controls
                         newControls:AddRangeNewOnly<STRING,SCXVCXItem>( xPorter:DefiningControls )
+                        // Capture per-VCX dependency set for graph-based project generation
+                        _vcxDependencies:Add(libName, xPorter:DependsOn)
                     ENDIF
                 NEXT
 
@@ -331,6 +343,8 @@ BEGIN NAMESPACE VFPXPorterLib
                                 generatedNamespaces:Add( xPorter:NamespaceDefinition )
                             ENDIF
                             SELF:GeneratedLibFiles:AddRange( xPorter:GeneratedFiles )
+                            // Bucket files by VCX for per-library project generation
+                            _libFilesByVCX:Add(libName, xPorter:GeneratedFiles)
                         ELSE
                             XPorterLogger.Instance:Error("ExportProject: Failed to export library: " + libName)
                             XPorterLogger.Instance:Error("Details: " + xPorter:ResultText)

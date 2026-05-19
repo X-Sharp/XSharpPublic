@@ -69,6 +69,8 @@ BEGIN NAMESPACE VFPXPorterLib
                     SELF:DependsOn:AddRange(entity:DependsOn)
                     SELF:DefiningControls:AddRangeNewOnly<STRING,SCXVCXItem>( entity:DefiningControls )
                 NEXT
+                // Remove intra-library references (classes inheriting from siblings in this same VCX)
+                SELF:DependsOn:Remove(SELF:_fileName)
             ENDIF
             //
             RETURN success

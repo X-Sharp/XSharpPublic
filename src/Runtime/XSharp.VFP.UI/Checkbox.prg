@@ -16,7 +16,11 @@ USING System.Drawing
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible Checkbox class.
+	/// VFP-compatible check box control that wraps <see cref="System.Windows.Forms.CheckBox"/>.<br/>
+	/// Adds VFP-specific properties: <see cref="Centered"/> (centres the check mark),
+	/// <see cref="ReadOnly"/> (suppresses state changes without disabling),
+	/// <see cref="Value"/> (0/1/2 for Unchecked/Checked/Indeterminate, also accepts <c>.T.</c>/<c>.F.</c>),
+	/// and the <see cref="vfpProgrammaticChange"/> event fired on programmatic <c>Value</c> assignment.
 	/// </summary>
 	PARTIAL CLASS CheckBox INHERIT System.Windows.Forms.CheckBox
 
@@ -33,10 +37,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #include "Headers/VFPButtonImage.xh"
 
-		// ── Centered ─────────────────────────────────────────────────────────
-		// VFP Centered = .T. centres the check mark — maps to MiddleCenter.
-		// Centered = .F. restores the default MiddleLeft alignment.
-
+		/// <summary>
+		/// When <c>.T.</c>, centres the check mark horizontally within the control (<c>CheckAlign = MiddleCenter</c>).<br/>
+		/// When <c>.F.</c> (default), the check mark is left-aligned (<c>CheckAlign = MiddleLeft</c>).
+		/// </summary>
 		PRIVATE _centered AS LOGIC
 		PROPERTY Centered AS LOGIC
 			GET
@@ -52,9 +56,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── ReadOnly ─────────────────────────────────────────────────────────
-		// VFP ReadOnly = .T. prevents the user from changing the check state.
-
+		/// <summary>
+		/// When <c>.T.</c>, prevents the user from toggling the check state while keeping the control
+		/// visually enabled. Click events are suppressed by reverting the <c>Checked</c> state;
+		/// programmatic assignment via <see cref="Value"/> still works.
+		/// </summary>
 		PRIVATE _readOnly AS LOGIC
 		PROPERTY ReadOnly AS LOGIC
 			GET
@@ -74,10 +80,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER:OnClick( e )
 		END METHOD
 
-		// ── Value ────────────────────────────────────────────────────────────
-		// VFP Value: 0=Unchecked, 1=Checked, 2=Indeterminate.
-		// Also accepts .T./.F. for backwards compatibility.
-
+		/// <summary>
+		/// Current check state as a VFP USUAL: 0=Unchecked, 1=Checked, 2=Indeterminate.<br/>
+		/// Also accepts <c>.T.</c> (→Checked) and <c>.F.</c> (→Unchecked) for compatibility with
+		/// boolean ControlSource bindings. Fires <see cref="vfpProgrammaticChange"/> on set.
+		/// </summary>
 		PROPERTY Value AS USUAL
 			GET
 				RETURN (USUAL)(LONG) SELF:CheckState
@@ -111,6 +118,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
+		/// <summary>Name of the VFP method called when <see cref="Value"/> is set programmatically.</summary>
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
 		PRIVATE METHOD OnVFPProgrammaticChange() AS VOID

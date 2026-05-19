@@ -15,7 +15,11 @@ USING System.Drawing
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible Image class.
+	/// VFP-compatible image display control that wraps <see cref="System.Windows.Forms.PictureBox"/>.<br/>
+	/// Loads images from file paths via <see cref="Picture"/> (uses <see cref="VFPTools.ImageFromFile"/>),
+	/// maps VFP's <see cref="Stretch"/> values (0–3) to <c>PictureBoxSizeMode</c>,
+	/// supports arbitrary <see cref="RotateFlip"/> transforms (<c>System.Drawing.RotateFlipType</c> codes),
+	/// and exposes a VFP-numeric <see cref="BorderStyle"/> (0=None, 1=FixedSingle).
 	/// </summary>
 	PARTIAL CLASS Image INHERIT System.Windows.Forms.PictureBox
 
@@ -28,7 +32,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:SizeMode := System.Windows.Forms.PictureBoxSizeMode.Normal
 			RETURN
 
-		// Picture — loads image from file path using VFPTools.ImageFromFile
+		/// <summary>
+		/// File path of the image to display. Setting this property loads the image via
+		/// <see cref="VFPTools.ImageFromFile"/> and applies any pending <see cref="RotateFlip"/>
+		/// transform. Set to an empty string to clear the image.
+		/// </summary>
 		PRIVATE _picture AS STRING
 		PROPERTY Picture AS STRING
 			GET
@@ -50,11 +58,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// Stretch — maps VFP values to PictureBoxSizeMode:
-		//   0 = Clip (Normal)
-		//   1 = Isometric / proportional (Zoom)
-		//   2 = Stretch (StretchImage)
-		//   3 = AutoSize (control resizes to image)
+		/// <summary>
+		/// Controls how the image is sized within the control:<br/>
+		/// 0 = Clip — image shown at its natural size, clipped if larger than the control (<c>Normal</c>);<br/>
+		/// 1 = Isometric — image scaled proportionally to fit (<c>Zoom</c>);<br/>
+		/// 2 = Stretch — image scaled to fill the control exactly (<c>StretchImage</c>);<br/>
+		/// 3 = AutoSize — control resizes to match the image (<c>AutoSize</c>).
+		/// </summary>
 		PROPERTY Stretch AS LONG
 			GET
 				DO CASE
@@ -85,8 +95,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "ControlProperties.xh"
 
 		// ── RotateFlip ───────────────────────────────────────────────────────
-		// Stored and applied whenever Picture is loaded or RotateFlip is changed.
-
+		/// <summary>
+		/// Rotation/flip transform applied to the image, using <see cref="System.Drawing.RotateFlipType"/>
+		/// integer codes (0=none, 1=90°CW, 2=180°, 3=270°CW, 4=FlipX, …).<br/>
+		/// Changing this reloads the image from <see cref="Picture"/> to avoid stacking
+		/// transforms on an already-transformed bitmap.
+		/// </summary>
 		PRIVATE _rotateFlip AS LONG
 
 		PROPERTY RotateFlip AS LONG
@@ -107,8 +121,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── BorderStyle ──────────────────────────────────────────────────────
-		// VFP: 0=None, 1=FixedSingle
-
+		/// <summary>VFP BorderStyle: 0=None, 1=FixedSingle. Wraps the base <c>PictureBox.BorderStyle</c> as a VFP-numeric property.</summary>
 		NEW PROPERTY BorderStyle AS LONG
 			GET
 				IF SUPER:BorderStyle == System.Windows.Forms.BorderStyle.FixedSingle

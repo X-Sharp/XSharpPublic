@@ -13,25 +13,40 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible Timer class.
+	/// VFP-compatible non-visual timer that wraps <see cref="System.Windows.Forms.Timer"/>.<br/>
+	/// Key behavioural differences from the WinForms base:<br/>
+	/// • The timer starts automatically on the first <see cref="Interval"/> assignment (matching VFP's
+	///   default-enabled behaviour) unless <c>Interval</c> is set to 0, which stops it.<br/>
+	/// • <see cref="Reset"/> restarts the timer by toggling <c>Enabled</c>.<br/>
+	/// Non-visual stubs (<see cref="Height"/>, <see cref="Width"/>, <see cref="Left"/>,
+	/// <see cref="Top"/>, <see cref="Parent"/>) allow generated VFP position code to compile
+	/// without errors.
 	/// </summary>
 	PARTIAL CLASS Timer INHERIT System.Windows.Forms.Timer
 
 		#include "Headers/VFPObject.xh"
 
 		// ── Non-visual position/size stubs ───────────────────────────────────
-		// Timer has no visual representation; these prevent VFP code from erroring.
+		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
 		PROPERTY Height AS LONG AUTO
+		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
 		PROPERTY Width  AS LONG AUTO
+		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
 		PROPERTY Left   AS LONG AUTO
+		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
 		PROPERTY Top    AS LONG AUTO
+		/// <summary>Non-visual stub — stored for source compatibility; has no effect on the timer.</summary>
 		PROPERTY Parent AS OBJECT AUTO
 
 		// ── vfpTimer event ───────────────────────────────────────────────────
-		// VFP Timer event: fires at each Interval tick.
 		PRIVATE _VFPTimer AS VFPOverride
 		[Category("VFP Events"), Description("Occurs at each timer interval.")];
 		[DefaultValue(NULL)];
+		/// <summary>
+		/// Name of the VFP method called on each timer tick.<br/>
+		/// Assigning this property wires the underlying <c>System.Windows.Forms.Timer.Tick</c> event
+		/// the first time (lazy wiring — avoids double-firing if reassigned later).
+		/// </summary>
 		PROPERTY vfpTimer AS STRING GET _VFPTimer?:SendTo SET Set_VFPTimer( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_VFPTimer( methodCall AS VFPOverride ) AS VOID
@@ -54,6 +69,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 			RETURN
 
+		/// <summary>Starts (<c>.T.</c>) or stops (<c>.F.</c>) the timer. Shadows the base property to allow the generated code to set it without type-cast issues.</summary>
 		PUBLIC NEW PROPERTY Enabled AS LOGIC
 			GET
 				RETURN SUPER:Enabled
@@ -64,6 +80,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// Tick interval in milliseconds. Setting to 0 stops the timer (saves the previous
+		/// <c>Enabled</c> state). Setting a non-zero value after 0 restores <c>Enabled</c>
+		/// automatically on the first assignment, matching VFP's default-enabled behaviour.
+		/// </summary>
 		PUBLIC NEW PROPERTY Interval AS INT
 			GET
 				RETURN SUPER:Interval
@@ -83,6 +104,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>Restarts the timer by toggling <c>Enabled</c> off then on, resetting the interval countdown.</summary>
 		METHOD Reset AS VOID Strict
 			SELF:Enabled := FALSE
 			SELF:Enabled := TRUE

@@ -15,30 +15,34 @@ USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFP compatible CommandGroup class.
+	/// VFP-compatible command-button group that wraps <see cref="System.Windows.Forms.UserControl"/>.<br/>
+	/// Manages a dynamic collection of <see cref="CommandButton"/> controls via <see cref="ButtonCount"/>
+	/// (add/remove at runtime); supports a custom factory via <see cref="ButtonFactory"/> for migrated
+	/// code that uses a custom <c>MemberClass</c>.<br/>
+	/// <see cref="Value"/> holds the 1-based index of the last clicked button (0 initially). Fires
+	/// <c>vfpInteractiveChange</c> on button click and <see cref="vfpProgrammaticChange"/> when
+	/// <c>Value</c> is set in code. <see cref="BorderColor"/> paints a custom border in <c>OnPaint</c>;
+	/// <see cref="BackStyle"/> (0=Transparent, 1=Opaque) controls background rendering.
 	/// </summary>
 	PUBLIC PARTIAL CLASS CommandGroup ;
 	INHERIT System.Windows.Forms.UserControl IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
 		#include "ControlProperties.xh"
 
-		// ── ControlCount ──────────────────────────────────────────────────────
-		// VFP_CONTROLCOUNT_OVERRIDE suppresses the AUTO stub in VFPContainer.xh.
-		// Interface IVFPOwner requires a setter — it is a no-op (ControlCount is read-only in VFP).
+		/// <summary>Number of child controls — returns <c>Controls.Count</c>. The setter is a no-op; it exists to satisfy the <c>IVFPOwner</c> interface (ControlCount is read-only in VFP).</summary>
 		PROPERTY ControlCount AS INT
 			GET ; RETURN SELF:Controls:Count ; END GET
 			SET ; NOP ; END SET
 		END PROPERTY
 
-		// ── BorderColor ───────────────────────────────────────────────────────
+		/// <summary>Colour of the custom border drawn around the group in <c>OnPaint</c>. Set to <c>Color.Empty</c> to suppress the border.</summary>
 		PRIVATE _borderColor AS System.Drawing.Color
 		PROPERTY BorderColor AS System.Drawing.Color
 			GET ; RETURN _borderColor ; END GET
 			SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
 		END PROPERTY
 
-		// ── BackStyle ─────────────────────────────────────────────────────────
-		// VFP: 0=Transparent, 1=Opaque (default)
+		/// <summary>VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (resets to <c>SystemColors.Control</c>).</summary>
 		PRIVATE _backStyle := 1 AS INT
 		PROPERTY BackStyle AS INT
 			GET ; RETURN _backStyle ; END GET
@@ -51,6 +55,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── Resize / Moved events ─────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		/// <summary>Name of the VFP method called when the group control is resized.</summary>
 		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
 
 		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
@@ -59,6 +64,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE _VFPMoved AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		/// <summary>Name of the VFP method called when the group control is moved.</summary>
 		PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
 
 		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
@@ -76,10 +82,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE buttons AS List<CommandButton>
 
-		// Factory delegate — set by generated code when MemberClass is a custom type.
-		// When set, ButtonCount uses this to create buttons of the correct derived type.
+		/// <summary>
+		/// Optional factory delegate used to create <see cref="CommandButton"/> instances.<br/>
+		/// Set by generated code when the VFP form uses a custom <c>MemberClass</c> for the buttons.
+		/// When <c>NULL</c>, <see cref="ButtonCount"/> creates plain <see cref="CommandButton"/> objects.
+		/// </summary>
 		PUBLIC PROPERTY ButtonFactory AS Func<CommandButton> AUTO
 
+		/// <summary>
+		/// Number of <see cref="CommandButton"/> controls in the group.<br/>
+		/// Setting a smaller value removes and disposes excess buttons; setting a larger value
+		/// creates new ones (using <see cref="ButtonFactory"/> if set). The group control resizes
+		/// vertically to fit the new button count.
+		/// </summary>
 		PUBLIC PROPERTY ButtonCount AS INT
 			GET
 				RETURN SELF:buttons:Count
@@ -117,7 +132,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		END PROPERTY
 
-		// Returns the 1-based index of the last clicked button, or 0 if none.
+		/// <summary>
+		/// 1-based index of the last clicked <see cref="CommandButton"/>, or 0 before any button has been clicked.<br/>
+		/// Setting programmatically stores the value and fires <see cref="vfpProgrammaticChange"/>;
+		/// it does not visually activate a button (command buttons have no persistent checked state).
+		/// </summary>
 		PRIVATE _value AS INT
 		PUBLIC PROPERTY Value AS INT
 			GET
@@ -134,6 +153,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── ProgrammaticChange ────────────────────────────────────────────────
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+		/// <summary>Name of the VFP method called when <see cref="Value"/> is set programmatically.</summary>
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET _VFPProgrammaticChange := VFPOverride{SELF, VALUE}
 
 		PRIVATE METHOD OnVFPProgrammaticChange(sender AS OBJECT, e AS System.EventArgs) AS VOID
@@ -154,11 +174,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_value := (INT) btn:Tag
 			SELF:OnVFPInteractiveChange( SELF, e )
 
-		// 1-based access to individual buttons — matches VFP CommandGroup.Buttons[i]
+		/// <summary>Returns the <see cref="CommandButton"/> at the given 1-based index. Equivalent to <c>Buttons[i]</c>.</summary>
 		PUBLIC METHOD Button( i AS INT ) AS CommandButton
 			RETURN SELF:buttons[ i - 1 ]
 
-		// Buttons[i] — 1-based indexed property alias
+		/// <summary>1-based indexed property — <c>Buttons[i]</c> returns the <see cref="CommandButton"/> at position <c>i</c>. Alias for <see cref="Button"/>.</summary>
 		PUBLIC PROPERTY Buttons[ i AS INT ] AS CommandButton
 			GET
 				RETURN SELF:buttons[ i - 1 ]

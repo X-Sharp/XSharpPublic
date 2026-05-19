@@ -19,7 +19,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	// TODO Check IDynamicProperties -> XSharp.RT
 
 	/// <summary>
-	/// The VFP compatible Container class.
+	/// VFP-compatible generic container control that wraps <see cref="System.Windows.Forms.UserControl"/>.<br/>
+	/// Supports a transparent default background (<c>SupportsTransparentBackColor</c>), a custom
+	/// <see cref="BorderColor"/> painted in <c>OnPaint</c> when <c>BorderStyle=0</c>, and
+	/// <see cref="BackStyle"/> (0=Transparent, 1=Opaque).<br/>
+	/// <see cref="Refresh"/> repaints the container and recursively refreshes all child controls,
+	/// then fires <c>vfpRefresh</c> if set. <c>vfpKeyPress</c> is dispatched via the overridden
+	/// <c>OnKeyPress</c>.
 	/// </summary>
 	PARTIAL CLASS Container INHERIT System.Windows.Forms.UserControl
 
@@ -41,12 +47,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 
 
+        /// <summary>Colour of the custom border drawn in <c>OnPaint</c> when <c>BorderStyle=0</c> (None). Set to <c>Color.Empty</c> to suppress the border.</summary>
         PROPERTY BorderColor AS System.Drawing.Color
             GET ; RETURN _borderColor ; END GET
             SET ; _borderColor := VALUE ; SELF:Invalidate() ; END SET
         END PROPERTY
         PRIVATE _borderColor AS System.Drawing.Color
 
+		/// <summary>VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (resets to <c>SystemColors.Control</c>).</summary>
 		PRIVATE _backStyle := 1 AS INT
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
 		PROPERTY BackStyle AS INT
@@ -80,7 +88,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 pen:Dispose()
             ENDIF
 
-        // ── Refresh ───────────────────────────────────────────────────────────
+        /// <summary>
+        /// Repaints the container, fires <c>vfpRefresh</c> (if set), then recursively calls
+        /// <c>Refresh()</c> on all child <see cref="System.Windows.Forms.Control"/> instances.
+        /// </summary>
         OVERRIDE METHOD Refresh() AS VOID
             SUPER:Refresh()
             IF SELF:_VFPRefresh != NULL

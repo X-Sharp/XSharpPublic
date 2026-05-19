@@ -13,7 +13,12 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFP compatible Label class.
+	/// VFP-compatible static text control that wraps <see cref="System.Windows.Forms.Label"/>.<br/>
+	/// Adds VFP-specific properties: <see cref="Alignment"/> (0/1/2 → Left/Right/Center),
+	/// <see cref="Style"/> (0=opaque, 1=transparent background), <see cref="WordWrap"/>
+	/// (controls <c>AutoSize</c>), <see cref="Rotation"/> (arbitrary-angle text via GDI+),
+	/// and <see cref="DisabledBackColor"/> / <see cref="DisabledForeColor"/> applied when
+	/// <c>Enabled</c> is set to <c>.F.</c>.
 	/// </summary>
 	PARTIAL CLASS Label INHERIT System.Windows.Forms.Label
 
@@ -22,6 +27,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	    #include "VFPProperties.xh"
 
+		/// <summary>Horizontal text alignment: 0=Left, 1=Right, 2=Center. Maps to <see cref="System.Windows.Forms.Label.TextAlign"/>.</summary>
 		PROPERTY Alignment AS INT
 			GET
 				RETURN VFPAlignmentConvert( SELF:TextAlign )
@@ -31,8 +37,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// VFP Style: 0=Standard (opaque background), 1=Transparent.
-		// Mirrors BackStyle — setting Style also sets BackStyle.
+		/// <summary>
+		/// VFP Style: 0=Standard (opaque background), 1=Transparent.<br/>
+		/// Setting to 1 sets <c>BackColor</c> to <see cref="System.Drawing.Color.Transparent"/>;
+		/// setting to 0 resets it to the default system colour.
+		/// </summary>
 		PRIVATE _style AS INT
 		PROPERTY Style AS INT
 			GET
@@ -48,14 +57,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>Clockwise rotation angle in degrees applied to the label text via GDI+ transform. 0 = no rotation (standard rendering path).</summary>
 		PROPERTY Rotation AS INT AUTO
 
+		/// <summary>Background colour applied when <c>Enabled</c> is set to <c>.F.</c>. Has no effect when the control is enabled.</summary>
 		PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
+		/// <summary>Foreground (text) colour applied when <c>Enabled</c> is set to <c>.F.</c>. Has no effect when the control is enabled.</summary>
         PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
-		// WordWrap: .T. = fixed-size label, text wraps within bounds (AutoSize=.F.)
-		//           .F. = label auto-sizes to single line (AutoSize=.T.)
+		/// <summary>
+		/// When <c>.T.</c>, text wraps within the label's fixed bounds (<c>AutoSize = .F.</c>).<br/>
+		/// When <c>.F.</c> (default), the label auto-sizes to a single line (<c>AutoSize = .T.</c>).
+		/// </summary>
 		PROPERTY WordWrap AS LOGIC
 			GET
 				RETURN SELF:_wordWrap

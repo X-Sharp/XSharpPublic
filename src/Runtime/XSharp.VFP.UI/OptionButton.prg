@@ -13,7 +13,12 @@ USING System.Drawing
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFP compatible OptionButton class.
+	/// VFP-compatible radio button control that wraps <see cref="System.Windows.Forms.RadioButton"/>.<br/>
+	/// Exposes <see cref="Value"/> (<c>.T.</c>/<c>.F.</c> mapped to <c>Checked</c>),
+	/// fires <c>vfpInteractiveChange</c> on <c>CheckedChanged</c>, and dispatches
+	/// <c>vfpKeyPress</c> via the overridden <c>OnKeyPress</c> (WinForms <c>RadioButton</c>
+	/// does not raise <c>KeyPress</c> automatically). Typically hosted inside an
+	/// <see cref="OptionGroup"/> which manages mutual exclusion and the group <c>Value</c>.
 	/// </summary>
 	PARTIAL CLASS OptionButton INHERIT System.Windows.Forms.RadioButton
 		// Common properties that all VFP Objects support
@@ -29,8 +34,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "Headers/VFPButtonImage.xh"
 
-		// ── Value ────────────────────────────────────────────────────────────
-		// VFP OptionButton Value: .T. = selected, .F. = not selected.
+		/// <summary><c>.T.</c> when this button is selected, <c>.F.</c> otherwise. Maps directly to <see cref="System.Windows.Forms.RadioButton.Checked"/>.</summary>
 		PROPERTY Value AS LOGIC
 			GET ; RETURN SELF:Checked ; END GET
 			SET ; SELF:Checked := VALUE ; END SET

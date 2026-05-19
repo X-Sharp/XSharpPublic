@@ -101,8 +101,8 @@ namespace Microsoft.VisualStudio.Project
                     }
                     if (! this.IsImported)
                     {
-                    this.item.ItemType = value;
-                    this.itemProject.SetProjectFileDirty(true);
+                       this.item.ItemType = value;
+                       this.itemProject.SetProjectFileDirty(true);
                     }
                 }
             }
@@ -335,9 +335,11 @@ namespace Microsoft.VisualStudio.Project
                 virtualProperties[ProjectFileConstants.Include] = escapedPath;
                 return;
             }
-
-            item.Rename(escapedPath);
-            this.RefreshProperties();
+            if (! this.IsImported)
+            {
+                item.Rename(escapedPath);
+                this.RefreshProperties();
+            }
         }
 
 

@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#undef USEPROJECTVERSION
 using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
@@ -405,6 +404,7 @@ namespace XSharp.Project
             base.OnItemAdded(parent, child);
             if (child is XSharpFileNode xfile)
             {
+                this.ProjectModel.AddFile(child.Url);
                 xfile.SetSpecialPropertiesEx();
             }
         }
@@ -1967,6 +1967,7 @@ namespace XSharp.Project
 
         internal void Unload()
         {
+            this.BeforeSave();
             this.BuildProject.Save();
             this.UnloadProject();
         }
@@ -2012,6 +2013,7 @@ namespace XSharp.Project
             this.CreateIncludeFileFolder();
             if (ResetDependencies() && !this.IsSdkProject)
             {
+                this.BeforeSave();
                 this.BuildProject.Save();
             }
             RefreshIncludeFiles();
@@ -2051,13 +2053,17 @@ namespace XSharp.Project
             }
         }
 #if DEV17
-        internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
+        internal IList<XSharpSDKProjectReferenceNode> GetSdkProjectReferences()
         {
             var nodes = new List<XSharpSDKProjectReferenceNode>();
             var container = this.GetReferenceContainer() as ReferenceContainerNode;
-            if (container == null)
-                return nodes;
-            container.FindNodesOfType(nodes);
+            if (container != null)
+                container.FindNodesOfType(nodes);
+            return nodes;
+        }
+        internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
+        {
+            var nodes = GetSdkProjectReferences();
             foreach (var node in nodes)
             {
                 node.RemoveProperties();
@@ -2068,16 +2074,7 @@ namespace XSharp.Project
 #if DEV17
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
-            this.UpdateProjectVersion();
-            var clone = this.BuildProject.Xml.RawXml;
-
-            var nodes = ClearSdkProjectReferences();
-
             var result = base.Save(fileToBeSaved, remember, formatIndex);
-            foreach (var node in nodes)
-            {
-                node.RestoreProperties();
-            }
             this.SetProjectFileDirty(false);
             return result;
         }
@@ -2526,33 +2523,6 @@ namespace XSharp.Project
                 File.WriteAllText(Url, changedSource);
                 ok = false;
             }
-#if USEPROJECTVERSION
-            //we have added a projectversion property to makes checks easier in the future
-            if (ok)
-            {
-                var vers = this.BuildProject.Properties.Where(p => string.Compare(p.Name, ProjectVersion, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
-                if (vers != null)
-                {
-                    ok = vers.UnevaluatedValue == Constants.FileVersion;
-                    var version = vers.UnevaluatedValue.Split('.');
-                    if (version.Length == 4)
-                    {
-                        if (Int32.TryParse(version[0], out var ivers1))
-                        {
-                            ok = ivers1 >= 2;
-                        }
-                        if (ok && ivers1 == 2 && Int32.TryParse(version[1], out var ivers2))
-                        {
-                            ok = (ivers2 >= 6);
-                        }
-                        if (ok)
-                        {
-                            return VSConstants.S_OK;
-                        }
-                    }
-                }
-            }
-#endif
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
@@ -2689,23 +2659,12 @@ namespace XSharp.Project
             }
             return false;
         }
-
-        private void UpdateProjectVersion()
+        public override void BeforeSave()
         {
-#if USEPROJECTVERSION
-            var xml = BuildProject.Xml;
-            var groups = xml.PropertyGroups.ToList();
-            var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
-            if (grp != null)
-            {
-                addProperty(grp, ProjectVersion, Constants.FileVersion);
-            }
-#else
+            base.BeforeSave();
             this.RemoveProjectProperty(XSharpProjectVersion);
             this.RemoveProjectProperty(ProjectFileConstants.TargetPath);
-#endif
         }
-
         private void FixProjectFile(string filename, bool dialectVO)
         {
             bool changed = false;
@@ -2855,8 +2814,8 @@ namespace XSharp.Project
             {
                 if (this.QueryEditProjectFile(true))
                 {
-                    this.UpdateProjectVersion();
                     Utilities.DeleteFileSafe(filename);
+                    this.BeforeSave();
                     BuildProject.Xml.Save(filename);
                     BuildProject.ReevaluateIfNecessary();
                 }

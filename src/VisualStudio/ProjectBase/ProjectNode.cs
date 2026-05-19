@@ -3887,6 +3887,7 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void SaveMSBuildProjectFileAs(string newFileName)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            this.BeforeSave();
             Debug.Assert(!String.IsNullOrEmpty(newFileName), "Cannot save project file for an empty or null file name");
 
             this.buildProject.FullPath = newFileName;
@@ -5374,10 +5375,20 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
+        public virtual void BeforeSave()
+        {
+
+        }
+
+        public virtual void OnAfterRenameFile(FileNode node, string oldName, string newName)
+        {
+            ;
+        }
         public virtual int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
 
             ThreadHelper.ThrowIfNotOnUIThread();
+            this.BeforeSave();
             // The file name can be null. Then try to use the Url.
             string tempFileToBeSaved = fileToBeSaved;
             if (String.IsNullOrEmpty(tempFileToBeSaved) && !String.IsNullOrEmpty(this.Url))
@@ -6986,7 +6997,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Make sure the item is within the project folder hierarchy. If not, link it.
             string linkPath = item.GetMetadataValue(ProjectFileConstants.Link);
-            if (String.IsNullOrEmpty(linkPath))
+            if (string.IsNullOrEmpty(linkPath))
             {
                 string projectFolder = new Uri(this.ProjectFolder).LocalPath;
                 string itemPath = new Uri(Path.Combine(this.ProjectFolder, item.Xml.Include)).LocalPath;

@@ -13,19 +13,24 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFP compatible EditBox class.
+	/// VFP-compatible multi-line text editing control.<br/>
+	/// Inherits from <see cref="TextBox"/> (XSharp.VFP.UI) — all TextBox properties and Format codes
+	/// (including K, Z, F, T, L, A, !) are available automatically.<br/>
+	/// Adds VFP-specific multi-line behaviour: <see cref="AddLineFeeds"/> for CRLF normalisation,
+	/// <see cref="AllowTabs"/> for in-field tab insertion, and a VFP-style <see cref="ScrollBars"/> property.
 	/// </summary>
 	PARTIAL CLASS EditBox INHERIT TextBox
 
 		/// <summary>
-		/// When .T., inserts CHR(10) after each CHR(13) in the text whenever Value
-		/// is read — matching VFP behaviour where the Value property returns CRLF pairs.
+		/// When <c>.T.</c>, the <see cref="Value"/> getter normalises line endings to CRLF pairs
+		/// (CR+LF) before returning the text — matching VFP behaviour where <c>Value</c> always
+		/// returns CRLF-delimited content regardless of how the data arrived.
 		/// </summary>
 		PROPERTY AddLineFeeds AS LOGIC AUTO
 
 		/// <summary>
-		/// When .T., pressing Tab inserts a tab character instead of moving focus
-		/// to the next control.
+		/// When <c>.T.</c>, pressing Tab inserts a literal tab character (<c>CHR(9)</c>) at the
+		/// caret instead of moving focus to the next control in the tab order.
 		/// </summary>
 		PROPERTY AllowTabs AS LOGIC AUTO
 
@@ -51,10 +56,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			SUPER:OnKeyDown(e)
 
-		// ── AddLineFeeds — override Value getter to normalise line endings ─────
-		// VFP AddLineFeeds: Value returns text with CRLF (CR+LF) pairs.
-		// The underlying storage uses bare CR (WinForms multiline uses CRLF natively,
-		// but VFP ControlSource data often arrives with bare CRs).
+		/// <summary>
+		/// Overrides <see cref="TextBox.Value"/> to apply <see cref="AddLineFeeds"/> normalisation.<br/>
+		/// When <c>AddLineFeeds</c> is <c>.T.</c>, all bare CR characters in the raw value are
+		/// expanded to CRLF pairs before the value is returned, matching VFP's behaviour where
+		/// <c>Value</c> always yields CRLF-delimited memo content.
+		/// Setting the value delegates directly to the base <see cref="TextBox.Value"/> setter.
+		/// </summary>
 		NEW PROPERTY Value AS USUAL
 			GET
 				VAR raw := (USUAL) SUPER:Value
@@ -72,8 +80,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── ScrollBars — expose as settable VFP property ──────────────────────
-		// VFP: 0=None, 1=Horizontal, 2=Vertical, 3=Both
+		/// <summary>
+		/// VFP ScrollBars setting: 0=None, 1=Horizontal, 2=Vertical, 3=Both (default).<br/>
+		/// Maps to <see cref="System.Windows.Forms.TextBox.ScrollBars"/>. Values outside 0–3 are ignored.
+		/// </summary>
 		NEW PROPERTY ScrollBars AS LONG
 			GET
 				RETURN (LONG) SUPER:ScrollBars

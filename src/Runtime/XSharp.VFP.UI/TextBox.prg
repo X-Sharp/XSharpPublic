@@ -13,7 +13,10 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFP compatible TextBox class.
+	/// VFP-compatible single-line text entry control.<br/>
+	/// Extends the WinForms TextBox with VFP properties (Format, InputMask, Value, ControlSource,
+	/// Alignment, Style, CursorPos) and full InputMask-based keystroke validation via
+	/// <see cref="InputMaskHandler"/>.
 	/// </summary>
 	PARTIAL CLASS TextBox INHERIT System.Windows.Forms.TextBox
 
@@ -22,14 +25,28 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "VFPProperties.xh"
 
-		// Format: VFP @-clause picture string (e.g. "@K", "@!") — independent of InputMask
 		PRIVATE _format        AS STRING
 		PRIVATE _blankWhenZero AS LOGIC
 		PRIVATE _forceAlpha    AS LOGIC
-		PRIVATE _noTrailingPad AS LOGIC   // F: trim trailing spaces/zeros from stored value
-		PRIVATE _trimBlanks    AS LOGIC   // T: trim leading and trailing blanks from stored value
-		PRIVATE _leadingZeros  AS LOGIC   // L: pad numeric display with leading zeros
+		PRIVATE _noTrailingPad AS LOGIC
+		PRIVATE _trimBlanks    AS LOGIC
+		PRIVATE _leadingZeros  AS LOGIC
 
+		/// <summary>
+		/// VFP Format function codes that control display and entry behaviour (no leading @ required).<br/>
+		/// Supported codes for TextBox and Column:
+		/// <list type="table">
+		/// <item><term>!</term><description>Force uppercase display (maps to CharacterCasing.Upper).</description></item>
+		/// <item><term>A</term><description>Accept alphabetic characters only when no InputMask is active.</description></item>
+		/// <item><term>F</term><description>Trim trailing spaces from the stored value (Varchar fields).</description></item>
+		/// <item><term>K</term><description>Select all text when the control receives focus.</description></item>
+		/// <item><term>L</term><description>Pad numeric display with leading zeros up to MaxLength.</description></item>
+		/// <item><term>R</term><description>Strip mask literals from the stored value (default behaviour — no flag needed).</description></item>
+		/// <item><term>S&lt;n&gt;</term><description>Scroll width: sets MaxLength to n.</description></item>
+		/// <item><term>T</term><description>Trim leading and trailing blanks from the stored value.</description></item>
+		/// <item><term>Z</term><description>Display blank instead of zero for numeric values.</description></item>
+		/// </list>
+		/// </summary>
 		PROPERTY Format AS STRING
 			GET
 				RETURN _format
@@ -68,9 +85,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// InputMask: positional mask string (e.g. "999-99-9999")
-		// Wired to InputMaskHandler for key routing and display formatting.
 		PRIVATE _inputMask AS STRING
+
+		/// <summary>
+		/// VFP positional input mask (e.g. <c>"999-99-9999"</c>, <c>"AAAAAAAAAA"</c>).<br/>
+		/// Each character in the mask constrains the corresponding keystroke:
+		/// 9=digit, A=letter, X=any, N=alphanumeric, H=hex, L/Y=logical, U=upper letter, W=lower letter.
+		/// Literal characters (dashes, parentheses, spaces) are inserted automatically and skipped during entry.<br/>
+		/// Setting this property creates an <see cref="InputMaskHandler"/> that intercepts KeyPress,
+		/// KeyDown and TextChanged to enforce the mask at runtime.
+		/// </summary>
 		PROPERTY InputMask AS STRING
 			GET
 				IF SELF:_maskHandler != NULL .AND. SELF:_maskHandler:Pattern != NULL
@@ -170,8 +194,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			//
 			RETURN
 
-		// VFP Alignment: 0=Left, 1=Right, 2=Center
-		// WinForms HorizontalAlignment: Left=0, Center=1, Right=2  (different order for 1 and 2)
+		/// <summary>
+		/// VFP text alignment: 0=Left (default), 1=Right, 2=Center.<br/>
+		/// Maps to <see cref="System.Windows.Forms.TextBox.TextAlign"/> — note that WinForms uses a
+		/// different ordinal for Center (1) and Right (2), so the mapping is adjusted here.
+		/// </summary>
 		PROPERTY Alignment AS INT
 			GET
 				SWITCH SELF:TextAlign
@@ -189,8 +216,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// RvdH Value in VFP may have ANY type!
-		// Therefore store the value in its own slot
 		INTERNAL _uValue AS USUAL
 		PRIVATE _valueType AS STRING
 
@@ -198,6 +223,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				[EditorBrowsable(EditorBrowsableState.Never)];
 				[Bindable(FALSE)];
 				[Browsable(FALSE)];
+		/// <summary>
+		/// The typed value of the control — may be Character, Numeric, Date or Logical.<br/>
+		/// Setting Value formats the value through the active InputMask (if any) and updates the display.
+		/// Getting Value returns the last stored value; if NullDisplay is set and the field is empty,
+		/// returns NullDisplay instead.<br/>
+		/// Format flags Z (blank when zero) and L (leading zeros) are applied on set.
+		/// The clean value (mask literals stripped) is written back to this property on LostFocus.
+		/// </summary>
 		PROPERTY Value AS USUAL
 			GET
 				IF IsNil(_uValue) .AND. !String.IsNullOrEmpty(SELF:NullDisplay)
@@ -243,10 +276,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			[EditorBrowsable(EditorBrowsableState.Never)];
 			[Bindable(FALSE)];
 			[Browsable(FALSE)];
+		/// <summary>VFP SelStart — zero-based character index of the insertion point or the start of the selection. Maps to <see cref="System.Windows.Forms.TextBox.SelectionStart"/>.</summary>
 		PROPERTY SelStart AS INT GET SELF:SelectionStart SET SELF:SelectionStart := VALUE
 
-		// VFP Style: 0=Standard (editable), 1=Read-only display (like a label).
 		PRIVATE _style AS INT
+		/// <summary>
+		/// VFP Style: 0=Standard editable text box (default), 1=Read-only display (equivalent to a Label —
+		/// the user cannot edit the content). Maps to <see cref="System.Windows.Forms.TextBox.ReadOnly"/>.
+		/// </summary>
 		PROPERTY Style AS INT
 			GET
 				RETURN _style
@@ -257,6 +294,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// When <c>.T.</c>, selects all text when the control receives focus — equivalent to VFP Format code <c>K</c>.
+		/// Also set automatically when <see cref="Format"/> contains <c>"K"</c>.
+		/// </summary>
 		PROPERTY SelectOnEntry AS LOGIC AUTO
 
 		// ── ProgrammaticChange ───────────────────────────────────────────────
@@ -282,9 +323,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			RETURN
 
 		/// <summary>
-		/// Position of the Cursor in the edit zone of the TextBox. Value is One-Based
+		/// One-based character position of the insertion point. VFP equivalent of <c>CursorPos</c>.<br/>
+		/// Getting returns <c>SelectionStart + 1</c>; setting moves the caret and clears any selection.
 		/// </summary>
-		/// <value></value>
 				[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 			[EditorBrowsable(EditorBrowsableState.Never)];
 			[Bindable(FALSE)];
@@ -307,8 +348,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		END PROPERTY
 
-		// VFP order: date semantics → range → Valid (Validating event) → LostFocus.
-		// Run date/range checks here so they cancel focus transfer before vfpValid fires.
+		/// <summary>
+		/// Enforces VFP validation order: date semantics → range → vfpValid → LostFocus.<br/>
+		/// When an InputMask is active and the value type is Date, calls
+		/// <see cref="InputMaskHandler.CheckDateSemantics"/> first. Then calls
+		/// <see cref="InputMaskHandler.CheckRange"/> regardless of type.
+		/// Either failure sets <c>e.Cancel = TRUE</c>, keeping focus on the control and
+		/// preventing vfpValid from firing on an already-invalid value.
+		/// </summary>
 		OVERRIDE PROTECTED METHOD OnValidating( e AS System.ComponentModel.CancelEventArgs ) AS VOID
 			IF SELF:_maskHandler != NULL
 				LOCAL _dateFmt := SELF:_VFPDateFormatPattern() AS STRING
@@ -326,6 +373,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER:OnValidating( e )
 		END METHOD
 
+		/// <summary>
+		/// Writes the final typed value back to <see cref="Value"/> when the control loses focus.<br/>
+		/// With an active InputMask, calls <see cref="InputMaskHandler.GetDataValue"/> to strip
+		/// mask literals. Without a mask, applies Format flags F (TrimEnd) and T (Trim) before storing.
+		/// </summary>
 		OVERRIDE PROTECTED METHOD OnLostFocus( e AS EventArgs ) AS VOID
 			IF SELF:_maskHandler != NULL
 				// Extract clean data value from masked display
@@ -392,17 +444,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
-		// ── SelLength / SelText ───────────────────────────────────────────────
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(FALSE)];
 		[Browsable(FALSE)];
+		/// <summary>VFP SelLength — number of selected characters. Maps to <see cref="System.Windows.Forms.TextBox.SelectionLength"/>.</summary>
 		PROPERTY SelLength AS INT GET SELF:SelectionLength SET SELF:SelectionLength := VALUE
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(FALSE)];
 		[Browsable(FALSE)];
+		/// <summary>VFP SelText — the currently selected text. Maps to <see cref="System.Windows.Forms.TextBox.SelectedText"/>.</summary>
 		PROPERTY SelText AS STRING GET SELF:SelectedText SET SELF:SelectedText := VALUE
 
 		#include "TextControlProperties.xh"
@@ -411,15 +464,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "ControlSource.xh"
 
-		// ── ControlSource ─────────────────────────────────────────────────────
-		// VFP ControlSource: "alias.fieldname" or "fieldname" string that registers
-		// this control for data binding via Form.DoBindings / Form.PopulateBindings.
-		// Setting it calls SetBinding(SELF, VALUE) which populates BindingDefinition.
 		PRIVATE _controlSource AS STRING
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(FALSE)];
 		[Browsable(FALSE)];
+		/// <summary>
+		/// VFP ControlSource — <c>"alias.fieldname"</c> or <c>"fieldname"</c> string that binds this
+		/// control to a data field. Setting this property calls <c>SetBinding()</c> which registers
+		/// the control with the form's binding infrastructure (<c>DoBindings</c> / <c>PopulateBindings</c>).
+		/// </summary>
 		PROPERTY ControlSource AS STRING
 			GET
 				RETURN SELF:_controlSource

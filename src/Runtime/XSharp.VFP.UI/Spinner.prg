@@ -15,8 +15,13 @@ USING System.ComponentModel
 BEGIN NAMESPACE  XSharp.VFP.UI
 
 	/// <summary>
-    /// The VFP compatible Spinner class.
-    /// </summary>
+	/// VFP-compatible numeric spinner control.<br/>
+	/// Extends <see cref="System.Windows.Forms.NumericUpDown"/> with VFP properties:
+	/// Format/InputMask (DecimalPlaces + ThousandsSeparator), SpinnerHighValue/SpinnerLowValue
+	/// (arrow limits), KeyboardHighValue/KeyboardLowValue (typed-entry limits), Alignment,
+	/// SelectOnEntry, and the VFP events UpClick, DownClick, InteractiveChange, ProgrammaticChange.<br/>
+	/// Format codes K (select on entry) and Z (blank when zero) are supported.
+	/// </summary>
 	PARTIAL CLASS Spinner INHERIT System.Windows.Forms.NumericUpDown
 		// Common properties that all VFP Objects support
 		#include "Headers/VFPObject.xh"
@@ -44,6 +49,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		[EditorBrowsable(EditorBrowsableState.Never)];
         [Bindable(FALSE)];
         [Browsable(FALSE)];
+		/// <summary>VFP SelStart — zero-based caret position within the spinner's internal text box.</summary>
 		PROPERTY SelStart AS LONG
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -59,6 +65,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		[EditorBrowsable(EditorBrowsableState.Never)];
         [Bindable(FALSE)];
         [Browsable(FALSE)];
+		/// <summary>VFP SelLength — number of selected characters in the spinner's internal text box.</summary>
 		PROPERTY SelLength AS LONG
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -74,6 +81,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		[EditorBrowsable(EditorBrowsableState.Never)];
         [Bindable(FALSE)];
         [Browsable(FALSE)];
+		/// <summary>VFP SelText — the currently selected text in the spinner's internal text box.</summary>
 		PROPERTY SelText AS STRING
 			GET
 				LOCAL tb := _editBox AS System.Windows.Forms.TextBox
@@ -85,22 +93,29 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── ReadOnly ──────────────────────────────────────────────────────────
-		// Prevents keyboard input; arrow-button spin still works.
 		PRIVATE _readOnly AS LOGIC
+		/// <summary>
+		/// When <c>.T.</c>, prevents the user from typing a value directly.
+		/// The up/down arrow buttons continue to work normally.
+		/// </summary>
 		PROPERTY ReadOnly AS LOGIC
 			GET ; RETURN _readOnly ; END GET
 			SET ; _readOnly := VALUE ; END SET
 		END PROPERTY
 
+		/// <summary>Upper bound for the spinner arrow buttons. Maps to <see cref="System.Windows.Forms.NumericUpDown.Maximum"/>.</summary>
 		PROPERTY SpinnerHighValue AS FLOAT GET (FLOAT) SUPER:Maximum SET SUPER:Maximum := (System.Decimal) VALUE
+		/// <summary>Lower bound for the spinner arrow buttons. Maps to <see cref="System.Windows.Forms.NumericUpDown.Minimum"/>.</summary>
 		PROPERTY SpinnerLowValue AS FLOAT GET (FLOAT) SUPER:Minimum SET SUPER:Minimum := (System.Decimal) VALUE
 
-		// KeyboardHighValue / KeyboardLowValue are independent from the spinner arrow limits.
-		// They constrain what the user can type; enforced in OnValidating.
 		PRIVATE _keyboardHigh AS System.Decimal
 		PRIVATE _keyboardLow  AS System.Decimal
 
+		/// <summary>
+		/// Upper bound for values typed directly by the user — independent of <see cref="SpinnerHighValue"/>.<br/>
+		/// Enforced in <c>OnValidating</c>: if the typed value exceeds this limit it is clamped silently.
+		/// Defaults to <see cref="SpinnerHighValue"/> at construction time.
+		/// </summary>
 		PROPERTY KeyboardHighValue AS FLOAT
 			GET
 				RETURN (FLOAT) SELF:_keyboardHigh
@@ -110,6 +125,11 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// Lower bound for values typed directly by the user — independent of <see cref="SpinnerLowValue"/>.<br/>
+		/// Enforced in <c>OnValidating</c>: if the typed value falls below this limit it is clamped silently.
+		/// Defaults to <see cref="SpinnerLowValue"/> at construction time.
+		/// </summary>
 		PROPERTY KeyboardLowValue AS FLOAT
 			GET
 				RETURN (FLOAT) SELF:_keyboardLow
@@ -119,8 +139,10 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── Alignment ────────────────────────────────────────────────────────
-		// VFP: 0=Left (default), 1=Right, 2=Center — maps to NumericUpDown.TextAlign.
+		/// <summary>
+		/// VFP text alignment: 0=Left (default), 1=Right, 2=Center.
+		/// Maps to <see cref="System.Windows.Forms.NumericUpDown.TextAlign"/>.
+		/// </summary>
 		PROPERTY Alignment AS LONG
 			GET
 				SWITCH SELF:TextAlign
@@ -147,6 +169,10 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			ENDIF
 			SUPER:OnKeyPress(e)
 
+		/// <summary>
+		/// Clamps the typed value to [<see cref="KeyboardLowValue"/>, <see cref="KeyboardHighValue"/>]
+		/// when those limits differ from the arrow limits. No error is shown — the value is silently adjusted.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnValidating( e AS System.ComponentModel.CancelEventArgs ) AS VOID STRICT
 			SUPER:OnValidating( e )
 			// Clamp typed value to keyboard limits (if they differ from arrow limits)
@@ -156,10 +182,12 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				SUPER:Value := SELF:_keyboardLow
 			ENDIF
 
-		// ── Value wrapper ────────────────────────────────────────────────────
-		// VFP Value is USUAL; WinForms NumericUpDown.Value is Decimal.
-		// This wrapper accepts numeric values (INT, FLOAT, DECIMAL) and .T./.F.
-
+		/// <summary>
+		/// The current numeric value of the spinner as a VFP USUAL (returned as FLOAT).<br/>
+		/// Accepts INT, FLOAT, DECIMAL and LOGIC (.T.=1, .F.=0) on set; the value is silently
+		/// clamped to [<see cref="SpinnerLowValue"/>, <see cref="SpinnerHighValue"/>].
+		/// Fires <c>vfpProgrammaticChange</c> after each programmatic assignment.
+		/// </summary>
 		NEW PROPERTY Value AS USUAL
 			GET
 				RETURN (USUAL)(FLOAT) SUPER:Value
@@ -192,15 +220,20 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// ── Format / InputMask ──────────────────────────────────────────────
-		// Both drive NumericUpDown.DecimalPlaces and ThousandsSeparator.
-		// "9999.99"  → DecimalPlaces=2
-		// "9,999.99" → DecimalPlaces=2, ThousandsSeparator=TRUE
-
 		PRIVATE _format        AS STRING
 		PRIVATE _inputMask     AS STRING
 		PRIVATE _blankWhenZero AS LOGIC
 
+		/// <summary>
+		/// VFP Format function codes for the spinner (no leading @ required).<br/>
+		/// In addition to driving <see cref="System.Windows.Forms.NumericUpDown.DecimalPlaces"/> and
+		/// <see cref="System.Windows.Forms.NumericUpDown.ThousandsSeparator"/> (same as InputMask),
+		/// the following codes are honoured:
+		/// <list type="table">
+		/// <item><term>K</term><description>Select all text when the control receives focus.</description></item>
+		/// <item><term>Z</term><description>Display blank instead of zero when the control loses focus; restore on re-entry.</description></item>
+		/// </list>
+		/// </summary>
 		PROPERTY Format AS STRING
 			GET
 				RETURN _format
@@ -213,6 +246,11 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>
+		/// VFP positional numeric mask (e.g. <c>"9999.99"</c>, <c>"9,999.99"</c>).<br/>
+		/// The number of digits after the decimal point sets <see cref="System.Windows.Forms.NumericUpDown.DecimalPlaces"/>;
+		/// a comma in the mask enables <see cref="System.Windows.Forms.NumericUpDown.ThousandsSeparator"/>.
+		/// </summary>
 		PROPERTY InputMask AS STRING
 			GET
 				RETURN _inputMask
@@ -264,6 +302,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				SELF:_VFPUpClick:Call()
 			ENDIF
 
+		/// <summary>Fires the <c>vfpUpClick</c> event. Called automatically when the value increases via the up arrow.</summary>
 		METHOD UpClick() AS VOID STRICT
 			SELF:OnVFPUpClick()
 		END METHOD
@@ -279,6 +318,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				SELF:_VFPDownClick:Call()
 			ENDIF
 
+		/// <summary>Fires the <c>vfpDownClick</c> event. Called automatically when the value decreases via the down arrow.</summary>
 		METHOD DownClick() AS VOID STRICT
 			SELF:OnVFPDownClick()
 		END METHOD
@@ -313,6 +353,10 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		// ── SelectOnEntry / Z (blank when zero) ─────────────────────────────────
 
+		/// <summary>
+		/// Restores the numeric display if it was blanked by the Z format code, then
+		/// selects all text when <see cref="SelectOnEntry"/> is <c>.T.</c>.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnGotFocus(e AS System.EventArgs) AS VOID
 			SUPER:OnGotFocus(e)
 			// Z: restore numeric display when the field receives focus (was blanked on leave)
@@ -326,6 +370,10 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 				SELF:Select(0, SELF:Text:Length)
 			ENDIF
 
+		/// <summary>
+		/// When Format code Z is active and the current value is zero, blanks the
+		/// display text so the field appears empty. The underlying value remains 0.
+		/// </summary>
 		PROTECTED OVERRIDE METHOD OnLostFocus(e AS System.EventArgs) AS VOID
 			SUPER:OnLostFocus(e)
 			// Z: blank the display when value is zero and the field loses focus

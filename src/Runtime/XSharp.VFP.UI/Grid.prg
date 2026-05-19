@@ -16,60 +16,86 @@ USING XSharp.RT
 BEGIN NAMESPACE XSharp.VFP.UI
 
     /// <summary>
-    /// The VFP compatible Grid class.
+    /// VFP-compatible data grid that wraps <see cref="System.Windows.Forms.DataGridView"/>.<br/>
+    /// Provides full VFP Grid property coverage: data binding via <see cref="RecordSource"/>,
+    /// column management via <see cref="Column(int)"/> / <see cref="ColumnCount"/>,
+    /// display properties (<see cref="GridLines"/>, <see cref="GridLineColor"/>, <see cref="RowHeight"/>,
+    /// <see cref="HeaderHeight"/>, <see cref="HighlightStyle"/>, <see cref="AlternatingRowColor"/>,
+    /// <see cref="NullDisplay"/>, <see cref="Themes"/>), editing controls
+    /// (<see cref="AllowAddNew"/>, <see cref="AllowDelete"/>, <see cref="AllowUpdate"/>,
+    /// <see cref="AllowHeaderSizing"/>, <see cref="AllowRowSizing"/>, <see cref="AllowAutoColumnFit"/>),
+    /// and navigation (<see cref="ActiveRow"/>, <see cref="ActiveColumn"/>, <see cref="RowColChange"/>,
+    /// <see cref="DoScroll"/>).<br/>
+    /// VFP events: <see cref="vfpAfterRowColChange"/>, <see cref="vfpBeforeRowColChange"/>,
+    /// <see cref="vfpBeforeEditCell"/>, <see cref="vfpAfterEditCell"/>, <see cref="vfpColumnHeaderClick"/>,
+    /// <see cref="vfpScrolled"/>, <see cref="vfpResize"/>, <see cref="vfpMoved"/> — plus the standard
+    /// VFP control events (<c>vfpInit</c>, <c>vfpDestroy</c>, <c>vfpClick</c>, <c>vfpGotFocus</c>, etc.)
+    /// inherited from the shared <c>VFPContainer.xh</c> include.<br/>
+    /// New-row lifecycle (<see cref="AllowAddNew"/>) is managed entirely by this class — it never sets
+    /// <c>DataGridView.AllowUserToAddRows</c> — to avoid WinForms ghost-row crash chains.
     /// </summary>
     PARTIAL CLASS Grid INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
 
 
         // ── Selection colours ────────────────────────────────────────────────
-        // VFP HighlightBackColor/ForeColor → DataGridView selection cell style
+        /// <summary>Background colour of the selected cell(s), mapped to <c>DefaultCellStyle.SelectionBackColor</c>.</summary>
         PROPERTY HighlightBackColor AS System.Drawing.Color
             GET ; RETURN SELF:DefaultCellStyle:SelectionBackColor ; END GET
             SET ; SELF:DefaultCellStyle:SelectionBackColor := VALUE ; END SET
         END PROPERTY
 
+        /// <summary>Text colour of the selected cell(s), mapped to <c>DefaultCellStyle.SelectionForeColor</c>.</summary>
         PROPERTY HighlightForeColor AS System.Drawing.Color
             GET ; RETURN SELF:DefaultCellStyle:SelectionForeColor ; END GET
             SET ; SELF:DefaultCellStyle:SelectionForeColor := VALUE ; END SET
         END PROPERTY
 
         // ── Alternating row colour ───────────────────────────────────────────
+        /// <summary>Background colour for even-numbered (alternating) rows, mapped to <c>AlternatingRowsDefaultCellStyle.BackColor</c>.</summary>
         PROPERTY AlternatingRowColor AS System.Drawing.Color
             GET ; RETURN SELF:AlternatingRowsDefaultCellStyle:BackColor ; END GET
             SET ; SELF:AlternatingRowsDefaultCellStyle:BackColor := VALUE ; END SET
         END PROPERTY
 
         // ── Row / column editing permissions ────────────────────────────────
-        // AllowAddNew is decoupled from DataGridView.AllowUserToAddRows (always FALSE).
-        // We own the entire new-row lifecycle to avoid WinForms ghost-row crash chains.
+        /// <summary>
+        /// When <c>.T.</c>, the user can append new rows by pressing Down/Tab/Enter on the last row.<br/>
+        /// Decoupled from <c>DataGridView.AllowUserToAddRows</c> (kept permanently <c>FALSE</c>);
+        /// this class owns the entire new-row lifecycle via <c>_StartNewRow</c> / <c>_CommitNewRow</c>
+        /// / <c>_DiscardNewRow</c> to avoid WinForms ghost-row crash chains.
+        /// </summary>
         PROPERTY AllowAddNew AS LOGIC
             GET ; RETURN SELF:_allowAddNew ; END GET
             SET ; SELF:_allowAddNew := VALUE ; END SET
         END PROPERTY
 
+        /// <summary>When <c>.T.</c>, the user can delete rows. Maps to <see cref="System.Windows.Forms.DataGridView.AllowUserToDeleteRows"/>.</summary>
         PROPERTY AllowDelete AS LOGIC
             GET ; RETURN SELF:AllowUserToDeleteRows ; END GET
             SET ; SELF:AllowUserToDeleteRows := VALUE ; END SET
         END PROPERTY
 
+        /// <summary>When <c>.F.</c>, all cells are read-only. Maps to the inverse of <see cref="System.Windows.Forms.DataGridView.ReadOnly"/>.</summary>
         PROPERTY AllowUpdate AS LOGIC
             GET ; RETURN !SELF:ReadOnly ; END GET
             SET ; SELF:ReadOnly := !VALUE ; END SET
         END PROPERTY
 
         // ── RecordMark / DeleteMark ──────────────────────────────────────────
-        // VFP RecordMark: shows a row-selector arrow on the left of the current record.
-        // Maps to DataGridView.RowHeadersVisible (.T. = show, .F. = hide).
-        // Note: Grid constructor sets RowHeadersVisible := FALSE; setting RecordMark := .T.
-        // re-enables the row header panel.
+        /// <summary>
+        /// When <c>.T.</c>, shows the row-header panel with a current-record arrow on the left.<br/>
+        /// Maps to <see cref="System.Windows.Forms.DataGridView.RowHeadersVisible"/>. The constructor
+        /// sets this to <c>.F.</c>; assigning <c>.T.</c> re-enables the row header panel.
+        /// </summary>
         PROPERTY RecordMark AS LOGIC
             GET ; RETURN SELF:RowHeadersVisible ; END GET
             SET ; SELF:RowHeadersVisible := VALUE ; END SET
         END PROPERTY
 
-        // VFP DeleteMark: shows a delete-mark column. No direct WinForms equivalent — stored only.
+        /// <summary>VFP DeleteMark — no direct WinForms equivalent; stored for source compatibility.</summary>
         PROPERTY DeleteMark AS LOGIC AUTO
+        /// <summary>VFP Panel — no direct WinForms equivalent; stored for source compatibility.</summary>
         PROPERTY Panel AS INT AUTO
 
 
@@ -117,13 +143,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
             RETURN
 
+        /// <summary>
+        /// Returns the <see cref="Column"/> at the given 1-based index.<br/>
+        /// VFP grids address columns as <c>Grid.Column(1)</c> … <c>Grid.Column(n)</c>;
+        /// the underlying <c>DataGridView.Columns</c> collection is 0-based.
+        /// </summary>
         PUBLIC METHOD Column( i AS INT ) AS Column
-            // Looking for a Column
-            //			IF i > ColumnCount
-            //				// Asking for an non-existing Column ?
-            //				// Add Columns up to i
-            //				SELF:ColumnCount := i
-            //			ENDIF
             // Warning, i is one-based; but the columns collection is zero based
             RETURN (Column)SELF:Columns[ i-1 ]
 
@@ -142,7 +167,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
 
-        // Override ColumnCount
+        /// <summary>
+        /// Number of columns in the grid.<br/>
+        /// Getting returns <c>Columns.Count</c>. Setting adds or removes <see cref="Column"/> objects
+        /// to reach the requested count; throws <see cref="System.ArgumentOutOfRangeException"/> for
+        /// negative values or <see cref="System.InvalidOperationException"/> when the grid is data-bound.
+        /// </summary>
         PUBLIC NEW PROPERTY ColumnCount AS LONG
             GET
                 RETURN Columns:Count
@@ -195,7 +225,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROTECTED _nameOfTable		AS STRING
         PROTECTED _bindingSource	AS System.Windows.Forms.BindingSource
 
-            // This is the source of data to which the Grid control is bound
+            /// <summary>
+        /// Name of the VFP work area (alias) that provides data for the grid.<br/>
+        /// When set at runtime (not in design mode), <see cref="ApplyRecordSource"/> is called
+        /// immediately: it opens the alias, creates a <see cref="VFPDbDataSource"/> and a
+        /// <see cref="System.Windows.Forms.BindingSource"/>, binds them as the grid's <c>DataSource</c>,
+        /// and calls <c>CreateDataColumns</c> to set header text for bound columns.
+        /// </summary>
         PROPERTY RecordSource AS STRING
             SET
                 IF !String.IsNullOrEmpty( VALUE )
@@ -233,17 +269,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 NOP
             END TRY
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <value></value>
+        /// <summary>VFP RecordSourceType — how the RecordSource is interpreted (0=Table/Alias, 4=SQL). Stored; binding always uses the alias name directly via <see cref="VFPDbDataSource"/>.</summary>
         PROPERTY RecordSourceType AS LONG AUTO
 
-
-            // Todo
+        /// <summary>VFP SplitBar — split-view support; no WinForms equivalent. Stored for source compatibility.</summary>
         PROPERTY SplitBar AS LOGIC AUTO
 
-            //
+        /// <summary>
+        /// VFP Scrollbars setting: 0=None, 1=Horizontal, 2=Vertical, 3=Both.<br/>
+        /// Maps to <see cref="System.Windows.Forms.DataGridView.ScrollBars"/>.
+        /// </summary>
         PROPERTY VFPScrollbars AS LONG
             GET
                 LOCAL _set := 0 AS LONG
@@ -271,7 +306,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END SET
         END PROPERTY
 
-        // Todo
+        /// <summary>Default height in pixels for data rows, applied via <c>RowTemplate.Height</c>.</summary>
         PROPERTY RowHeight AS INT GET SELF:RowTemplate:Height SET SELF:RowTemplate:Height := VALUE
 
         PROTECTED METHOD CreateDataColumns() AS VOID
@@ -290,24 +325,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
         PRIVATE _VFPAfterRowColChange AS VFPOverride
+        /// <summary>Name of the VFP method called after the active row or column changes. Receives the new 1-based row index as <c>nLocation</c>. Wired to <c>DataGridView.CurrentCellChanged</c>.</summary>
         PROPERTY vfpAfterRowColChange AS STRING GET _VFPAfterRowColChange?:SendTo SET SELF:Set_AfterRowColChange( VFPOverride{SELF, VALUE} )
 
         METHOD Set_AfterRowColChange( methodCall AS VFPOverride ) AS VOID
             SELF:_VFPAfterRowColChange := methodCall
 
-        // Overrideable VFP event method — subclasses override this
+        /// <summary>Virtual VFP event method — override in a subclass to handle AfterRowColChange without a callback string. The base implementation calls <see cref="vfpAfterRowColChange"/>.</summary>
         VIRTUAL METHOD AfterRowColChange( nLocation AS LONG ) AS VOID
             IF SELF:_VFPAfterRowColChange != NULL
                 SELF:_VFPAfterRowColChange:Call( <USUAL>{nLocation} )
             ENDIF
 
         PRIVATE _VFPBeforeRowColChange AS VFPOverride
+        /// <summary>Name of the VFP method called before the active row or column changes. Receives the old 1-based row index as <c>nLocation</c>. Wired to <c>DataGridView.CellLeave</c> for correct pre-move timing.</summary>
         PROPERTY vfpBeforeRowColChange AS STRING GET _VFPBeforeRowColChange?:SendTo SET SELF:Set_BeforeRowColChange( VFPOverride{SELF, VALUE} )
 
         METHOD Set_BeforeRowColChange( methodCall AS VFPOverride ) AS VOID
             SELF:_VFPBeforeRowColChange := methodCall
 
-        // Overrideable VFP event method — subclasses override this
+        /// <summary>Virtual VFP event method — override in a subclass to handle BeforeRowColChange without a callback string. The base implementation calls <see cref="vfpBeforeRowColChange"/>.</summary>
         VIRTUAL METHOD BeforeRowColChange( nLocation AS LONG ) AS VOID
             IF SELF:_VFPBeforeRowColChange != NULL
                 SELF:_VFPBeforeRowColChange:Call( <USUAL>{nLocation} )
@@ -315,6 +352,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         // ── BeforeEditCell / AfterEditCell ────────────────────────────────────
         PRIVATE _VFPBeforeEditCell AS VFPOverride
+        /// <summary>Name of the VFP method called before a cell enters edit mode. Receives 1-based <c>nRow</c> and <c>nCol</c>. Wired to <c>DataGridView.CellBeginEdit</c>.</summary>
         PROPERTY vfpBeforeEditCell AS STRING GET _VFPBeforeEditCell?:SendTo SET SELF:Set_BeforeEditCell( VFPOverride{SELF, VALUE} )
 
         METHOD Set_BeforeEditCell( methodCall AS VFPOverride ) AS VOID
@@ -329,6 +367,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:BeforeEditCell( e:RowIndex + 1, e:ColumnIndex + 1 )
 
         PRIVATE _VFPAfterEditCell AS VFPOverride
+        /// <summary>Name of the VFP method called after a cell exits edit mode. Receives 1-based <c>nRow</c> and <c>nCol</c>. Wired to <c>DataGridView.CellEndEdit</c>.</summary>
         PROPERTY vfpAfterEditCell AS STRING GET _VFPAfterEditCell?:SendTo SET SELF:Set_AfterEditCell( VFPOverride{SELF, VALUE} )
 
         METHOD Set_AfterEditCell( methodCall AS VFPOverride ) AS VOID
@@ -344,6 +383,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         // ── OnColumnHeaderClick ───────────────────────────────────────────────
         PRIVATE _VFPColumnHeaderClick AS VFPOverride
+        /// <summary>Name of the VFP method called when the user clicks any column header. Receives the 1-based column index as <c>nCol</c>. Wired to <c>DataGridView.ColumnHeaderMouseClick</c>.</summary>
         PROPERTY vfpColumnHeaderClick AS STRING GET _VFPColumnHeaderClick?:SendTo SET SELF:Set_ColumnHeaderClick( VFPOverride{SELF, VALUE} )
 
         METHOD Set_ColumnHeaderClick( methodCall AS VFPOverride ) AS VOID
@@ -407,8 +447,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 SELF:_rowColChange := 0
             ENDIF
 
+        /// <summary>
+        /// After <see cref="AfterRowColChange"/> fires, indicates what changed: 0=nothing, 1=row,
+        /// 2=column, 3=both row and column. Reset to 0 on <c>SelectionChanged</c>.
+        /// </summary>
         PROPERTY RowColChange AS LONG GET SELF:_rowColChange
 
+        /// <summary>
+        /// Synchronises the binding-source position to the current RDD record number, then fires
+        /// <see cref="vfpRefresh"/> (if set), and finally calls <c>base.Refresh()</c> to repaint.
+        /// </summary>
         OVERRIDE METHOD Refresh() AS VOID
             TRY
                 IF SELF:_currentSource != NULL .AND. SELF:_bindingSource != NULL
@@ -424,6 +472,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             //
             SUPER:Refresh()
 
+        /// <summary>Selects the cell at the given 1-based row and column indices.</summary>
         METHOD ActivateCell( nRow AS INT, nCol AS INT ) AS VOID
             //
             IF ( nRow <= SELF:Rows:Count )
@@ -435,6 +484,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
         END METHOD
 
+        /// <summary>1-based row index of the currently active cell, or 0 when no cell is active.</summary>
         PROPERTY ActiveRow AS INT
             GET
                 LOCAL nRow := 0 AS INT
@@ -445,6 +495,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END GET
         END PROPERTY
 
+        /// <summary>1-based column index of the currently active cell, or 0 when no cell is active.</summary>
         PROPERTY ActiveColumn AS INT
             GET
                 LOCAL nCol := 0 AS INT
@@ -457,6 +508,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
         PRIVATE _gridLineWidth AS INT
+        /// <summary>Height (in pixels) of the divider line drawn below each row. Reads from the first row's <c>DividerHeight</c>; writing sets <c>DividerHeight</c> on all existing rows.</summary>
         PROPERTY GridLineWidth AS INT
             GET
                 // Let's say that the first row will give the info
@@ -479,21 +531,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
         // ── AllowHeaderSizing ─────────────────────────────────────────────────
-        // VFP: .T. = user can drag column header height. Maps to ColumnHeadersHeightSizeMode.
+        /// <summary>When <c>.T.</c>, the user can drag the column-header row height. Maps to <see cref="System.Windows.Forms.DataGridView.ColumnHeadersHeightSizeMode"/> (<c>EnableResizing</c> vs <c>DisableResizing</c>).</summary>
         PROPERTY AllowHeaderSizing AS LOGIC
             GET ; RETURN SELF:ColumnHeadersHeightSizeMode == DataGridViewColumnHeadersHeightSizeMode.EnableResizing ; END GET
             SET ; SELF:ColumnHeadersHeightSizeMode := IIF(VALUE, DataGridViewColumnHeadersHeightSizeMode.EnableResizing, DataGridViewColumnHeadersHeightSizeMode.DisableResizing) ; END SET
         END PROPERTY
 
         // ── AllowRowSizing ────────────────────────────────────────────────────
-        // VFP: .T. = user can drag row dividers to resize rows.
+        /// <summary>When <c>.T.</c>, the user can drag row dividers to resize individual rows. Maps to <see cref="System.Windows.Forms.DataGridView.AllowUserToResizeRows"/>.</summary>
         PROPERTY AllowRowSizing AS LOGIC
             GET ; RETURN SELF:AllowUserToResizeRows ; END GET
             SET ; SELF:AllowUserToResizeRows := VALUE ; END SET
         END PROPERTY
 
         // ── HighlightStyle ────────────────────────────────────────────────────
-        // VFP: 0=Standard full-row, 1=Cell-level box. Maps to DataGridView.SelectionMode.
+        /// <summary>
+        /// VFP selection style: 0=full-row highlight (default), 1=cell-level box.<br/>
+        /// Maps to <see cref="System.Windows.Forms.DataGridView.SelectionMode"/>
+        /// (<c>FullRowSelect</c> or <c>CellSelect</c>).
+        /// </summary>
         PROPERTY HighlightStyle AS LONG
             GET
                 SWITCH SELF:SelectionMode
@@ -510,20 +566,24 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
         // ── AllowAutoColumnFit ────────────────────────────────────────────────
-        // VFP: 0=None, 1=Auto-size all columns to content.
+        /// <summary>
+        /// 0=columns keep their defined widths; 1=columns auto-size to fit their content.<br/>
+        /// Maps to <see cref="System.Windows.Forms.DataGridView.AutoSizeColumnsMode"/>
+        /// (<c>None</c> or <c>AllCells</c>).
+        /// </summary>
         PROPERTY AllowAutoColumnFit AS LONG
             GET ; RETURN IIF(SELF:AutoSizeColumnsMode == DataGridViewAutoSizeColumnsMode.None, 0, 1) ; END GET
             SET ; SELF:AutoSizeColumnsMode := IIF(VALUE != 0, DataGridViewAutoSizeColumnsMode.AllCells, DataGridViewAutoSizeColumnsMode.None) ; END SET
         END PROPERTY
 
         // ── Themes ────────────────────────────────────────────────────────────
-        // VFP: .T. = use OS visual styles for column headers.
+        /// <summary>When <c>.T.</c>, column headers use OS visual styles (XP themes). Maps to <see cref="System.Windows.Forms.DataGridView.EnableHeadersVisualStyles"/>.</summary>
         PROPERTY Themes AS LOGIC
             GET ; RETURN SELF:EnableHeadersVisualStyles ; END GET
             SET ; SELF:EnableHeadersVisualStyles := VALUE ; END SET
         END PROPERTY
 
-        // C-13: Value = the current cell's value
+        /// <summary>The value of the currently active cell as a VFP USUAL, or <c>NIL</c> when no cell is active.</summary>
         PROPERTY Value AS USUAL
             GET
                 IF SELF:CurrentCell != NULL
@@ -533,7 +593,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END GET
         END PROPERTY
 
-        // C-14: ShowDeleted — controls whether deleted records are visible in the DataSource
+        /// <summary>
+        /// When <c>.T.</c>, deleted RDD records are included in the grid display.<br/>
+        /// Forwarded to <see cref="VFPDbDataSource.ShowDeleted"/> when the data source is active.
+        /// </summary>
         PRIVATE _showDeleted AS LOGIC
         PROPERTY ShowDeleted AS LOGIC
             GET
@@ -554,7 +617,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:OnVFPKeyPress(SELF, e)
 
         // ── GridLines ─────────────────────────────────────────────────────────
-        // VFP: 0=None, 1=Horizontal, 2=Vertical, 3=Both (default)
+        /// <summary>
+        /// VFP GridLines: 0=None, 1=Horizontal, 2=Vertical, 3=Both (default).<br/>
+        /// Maps to <see cref="System.Windows.Forms.DataGridView.CellBorderStyle"/>
+        /// (<c>None</c>, <c>SingleHorizontal</c>, <c>SingleVertical</c>, <c>Single</c>).
+        /// </summary>
         PROPERTY GridLines AS LONG
             GET
                 SWITCH SELF:CellBorderStyle
@@ -575,12 +642,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
         // ── GridLineColor ─────────────────────────────────────────────────────
+        /// <summary>Colour of the grid cell borders, mapped to <see cref="System.Windows.Forms.DataGridView.GridColor"/>.</summary>
         PROPERTY GridLineColor AS System.Drawing.Color
             GET ; RETURN SELF:GridColor ; END GET
             SET ; SELF:GridColor := VALUE ; END SET
         END PROPERTY
 
         // ── HeaderHeight ──────────────────────────────────────────────────────
+        /// <summary>
+        /// Height in pixels of the column-header row.<br/>
+        /// Setting this property also sets <see cref="System.Windows.Forms.DataGridView.ColumnHeadersHeightSizeMode"/>
+        /// to <c>DisableResizing</c> so the explicit height is preserved.
+        /// Values ≤ 0 are ignored.
+        /// </summary>
         PROPERTY HeaderHeight AS INT
             GET
                 RETURN SELF:ColumnHeadersHeight
@@ -594,7 +668,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         END PROPERTY
 
         // ── NullDisplay ───────────────────────────────────────────────────────
-        // VFP NullDisplay: string shown when cell value is NULL
+        /// <summary>String displayed in a cell when its value is <c>NULL</c>. Mapped to <c>DefaultCellStyle.NullValue</c>.</summary>
         PROPERTY NullDisplay AS STRING
             GET
                 RETURN (STRING) SELF:DefaultCellStyle:NullValue
@@ -607,6 +681,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         // ── Resize / Moved events ─────────────────────────────────────────────
         PRIVATE _VFPResize AS VFPOverride
         [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+        /// <summary>Name of the VFP method called when the grid control is resized.</summary>
         PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
 
         PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
@@ -617,6 +692,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PRIVATE _VFPMoved AS VFPOverride
         [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+        /// <summary>Name of the VFP method called when the grid control is moved.</summary>
         PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
 
         PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
@@ -626,9 +702,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
 
         // ── Scrolled event ────────────────────────────────────────────────────
-        // VFP nDirection: 1=up, 2=down, 3=left, 4=right, 5=pageup, 6=pagedown, 7=leftmost, 8=rightmost
         PRIVATE _VFPScrolled AS VFPOverride
         [System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
+        /// <summary>
+        /// Name of the VFP method called when the grid is scrolled. Receives a direction code as <c>nDirection</c>:
+        /// 1=up, 2=down, 3=left, 4=right, 5=page-up, 6=page-down, 7=leftmost, 8=rightmost.<br/>
+        /// Assigning this property wires the <c>DataGridView.Scroll</c> event automatically.
+        /// </summary>
         PROPERTY vfpScrolled AS STRING GET _VFPScrolled?:SendTo SET SELF:Set_Scrolled( VFPOverride{SELF, VALUE} )
 
         METHOD Set_Scrolled( methodCall AS VFPOverride ) AS VOID
@@ -664,14 +744,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
 
         // ── DeleteColumns ─────────────────────────────────────────────────────
-        // VFP: oGrid.DeleteColumns(nColumnIndex)  — 1-based
+        /// <summary>Removes the column at the given 1-based index. Silently ignored if <c>n</c> is out of range.</summary>
         METHOD DeleteColumns( n AS INT ) AS VOID
             IF n >= 1 .AND. n <= SELF:Columns:Count
                 SELF:Columns:RemoveAt( n - 1 )
             ENDIF
 
         // ── DoScroll ──────────────────────────────────────────────────────────
-        // VFP nDirection: 1=up, 2=down, 3=left, 4=right, 5=pageup, 6=pagedown, 7=leftmost, 8=rightmost
+        /// <summary>
+        /// Programmatically scrolls the grid. <c>nDirection</c> uses the same codes as <see cref="vfpScrolled"/>:
+        /// 1=up one row, 2=down one row, 3=left one column, 4=right one column,
+        /// 5=page up, 6=page down, 7=leftmost column, 8=rightmost column.
+        /// </summary>
         METHOD DoScroll( nDirection AS INT ) AS VOID
             SWITCH nDirection
             CASE 1 // up one row

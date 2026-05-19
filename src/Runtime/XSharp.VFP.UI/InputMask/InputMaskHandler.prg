@@ -14,6 +14,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PRIVATE _formatter AS InputMaskFormatter
         PRIVATE _isUpdatingMask AS LOGIC  // Prevent recursion when updating display
 
+        PUBLIC PROPERTY RangeMin     AS USUAL AUTO
+        PUBLIC PROPERTY RangeMax     AS USUAL AUTO
+        PUBLIC PROPERTY RangeMessage AS STRING AUTO
+
         /// <summary>
         /// The parsed InputMask pattern
         /// </summary>
@@ -374,6 +378,129 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 RETURN maskedValue
             ENDIF
             RETURN SELF:_formatter:ExtractDataValue(SELF:_pattern, maskedValue)
+        END METHOD
+
+        /// <summary>
+        /// Validate the current value against RangeMin / RangeMax.
+        /// dateFormatPattern is the .NET format string used for date-typed bounds (e.g. "MM/dd/yyyy").
+        /// Returns TRUE when no bounds are set, the field is empty, or the value is in range.
+        /// Shows a warning and returns FALSE when the value is out of range.
+        /// </summary>
+        PUBLIC METHOD CheckRange(textBox AS TextBox, dateFormatPattern AS STRING) AS LOGIC
+            IF IsNil(SELF:RangeMin) .AND. IsNil(SELF:RangeMax)
+                RETURN TRUE
+            ENDIF
+            VAR strVal := SELF:GetDataValue(textBox:Text):Trim()
+            IF String.IsNullOrEmpty(strVal)
+                RETURN TRUE  // empty field passes — required-field logic belongs in VALID
+            ENDIF
+            // ── Date range ───────────────────────────────────────────────────────
+            IF (!IsNil(SELF:RangeMin) .AND. IsDate(SELF:RangeMin)) .OR. ;
+               (!IsNil(SELF:RangeMax) .AND. IsDate(SELF:RangeMax))
+                RETURN SELF:CheckDateRange(strVal, dateFormatPattern)
+            ENDIF
+            // ── Numeric range ────────────────────────────────────────────────────
+            LOCAL d AS Decimal
+            IF !Decimal.TryParse(strVal, System.Globalization.NumberStyles.Any, ;
+                                 System.Globalization.CultureInfo.InvariantCulture, OUT d)
+                RETURN TRUE  // non-numeric — let VALID handle type errors
+            ENDIF
+            LOCAL ok AS LOGIC
+            ok := TRUE
+            IF !IsNil(SELF:RangeMin)
+                TRY
+                    ok := ok .AND. d >= (Decimal)(REAL8) SELF:RangeMin
+                CATCH
+                    NOP
+                END TRY
+            ENDIF
+            IF !IsNil(SELF:RangeMax)
+                TRY
+                    ok := ok .AND. d <= (Decimal)(REAL8) SELF:RangeMax
+                CATCH
+                    NOP
+                END TRY
+            ENDIF
+            IF !ok
+                LOCAL msg AS STRING
+                msg := IIF(!String.IsNullOrEmpty(SELF:RangeMessage), SELF:RangeMessage, ;
+                           "Value must be in range " + SELF:RangeMin:ToString() + " to " + SELF:RangeMax:ToString())
+                MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            ENDIF
+            RETURN ok
+        END METHOD
+
+        // Date-specific range check. Parses strVal using dateFormatPattern, with a
+        // 2-digit-year fallback and a lenient DateTime.TryParse last resort.
+        PRIVATE METHOD CheckDateRange(strVal AS STRING, dateFormatPattern AS STRING) AS LOGIC
+            LOCAL dt AS DateTime
+            LOCAL culture := System.Globalization.CultureInfo.InvariantCulture AS System.Globalization.CultureInfo
+            LOCAL styles  := System.Globalization.DateTimeStyles.None AS System.Globalization.DateTimeStyles
+            IF !DateTime.TryParseExact(strVal, dateFormatPattern, culture, styles, OUT dt)
+                VAR fmt2 := dateFormatPattern:Replace("yyyy", "yy")
+                IF !DateTime.TryParseExact(strVal, fmt2, culture, styles, OUT dt)
+                    IF !DateTime.TryParse(strVal, OUT dt)
+                        RETURN TRUE  // unparseable — let VALID handle it
+                    ENDIF
+                ENDIF
+            ENDIF
+            LOCAL ok AS LOGIC
+            ok := TRUE
+            IF !IsNil(SELF:RangeMin) .AND. IsDate(SELF:RangeMin)
+                TRY
+                    ok := ok .AND. dt >= (DateTime)(DATE) SELF:RangeMin
+                CATCH
+                    NOP
+                END TRY
+            ENDIF
+            IF !IsNil(SELF:RangeMax) .AND. IsDate(SELF:RangeMax)
+                TRY
+                    ok := ok .AND. dt <= (DateTime)(DATE) SELF:RangeMax
+                CATCH
+                    NOP
+                END TRY
+            ENDIF
+            IF !ok
+                LOCAL msg AS STRING
+                IF !String.IsNullOrEmpty(SELF:RangeMessage)
+                    msg := SELF:RangeMessage
+                ELSEIF !IsNil(SELF:RangeMin) .AND. IsDate(SELF:RangeMin) .AND. ;
+                       !IsNil(SELF:RangeMax) .AND. IsDate(SELF:RangeMax)
+                    msg := "Date must be in range " + DToC((DATE) SELF:RangeMin) + " to " + DToC((DATE) SELF:RangeMax)
+                ELSEIF !IsNil(SELF:RangeMin) .AND. IsDate(SELF:RangeMin)
+                    msg := "Date must be on or after " + DToC((DATE) SELF:RangeMin)
+                ELSE
+                    msg := "Date must be on or before " + DToC((DATE) SELF:RangeMax)
+                ENDIF
+                MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            ENDIF
+            RETURN ok
+        END METHOD
+
+        /// <summary>
+        /// Validate that the displayed text is a real calendar date.
+        /// dateFormatPattern is a .NET DateTime format string (e.g. "MM/dd/yyyy").
+        /// Returns TRUE when the field is empty, partially filled, or the date parses correctly.
+        /// Shows a warning and returns FALSE when the date is syntactically complete but invalid.
+        /// </summary>
+        PUBLIC METHOD CheckDateSemantics(textBox AS TextBox, dateFormatPattern AS STRING) AS LOGIC
+            VAR displayVal := textBox:Text:Trim()
+            IF String.IsNullOrEmpty(displayVal) .OR. displayVal:Contains("_")
+                RETURN TRUE
+            ENDIF
+            VAR culture := System.Globalization.CultureInfo.InvariantCulture
+            VAR styles  := System.Globalization.DateTimeStyles.None
+            LOCAL dt AS DateTime
+            IF DateTime.TryParseExact(displayVal, dateFormatPattern, culture, styles, OUT dt)
+                RETURN TRUE
+            ENDIF
+            // 2-digit year fallback
+            VAR fmt2 := dateFormatPattern:Replace("yyyy", "yy")
+            IF DateTime.TryParseExact(displayVal, fmt2, culture, styles, OUT dt)
+                RETURN TRUE
+            ENDIF
+            MessageBox.Show("** Invalid date **", "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            RETURN FALSE
         END METHOD
 
     END CLASS

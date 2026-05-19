@@ -23,7 +23,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		#include "VFPProperties.xh"
 
 		// Format: VFP @-clause picture string (e.g. "@K", "@!") — independent of InputMask
-		PRIVATE _format AS STRING
+		PRIVATE _format        AS STRING
+		PRIVATE _blankWhenZero AS LOGIC
+		PRIVATE _forceAlpha    AS LOGIC
+		PRIVATE _noTrailingPad AS LOGIC   // F: trim trailing spaces/zeros from stored value
+		PRIVATE _trimBlanks    AS LOGIC   // T: trim leading and trailing blanks from stored value
+		PRIVATE _leadingZeros  AS LOGIC   // L: pad numeric display with leading zeros
+
 		PROPERTY Format AS STRING
 			GET
 				RETURN _format
@@ -31,12 +37,33 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET
 				_format := Upper( VALUE )
 				IF !String.IsNullOrEmpty(_format)
-					SELF:CharacterCasing := IIF(_format:Contains("!"), CharacterCasing.Upper, CharacterCasing.Normal)
-					IF _format:Contains("K")
-						SELF:SelectOnEntry := TRUE
+					SELF:CharacterCasing   := IIF(_format:Contains("!"), CharacterCasing.Upper, CharacterCasing.Normal)
+					SELF:SelectOnEntry     := _format:Contains("K")
+					SELF:_blankWhenZero   := _format:Contains("Z")
+					SELF:_forceAlpha      := _format:Contains("A")
+					SELF:_noTrailingPad   := _format:Contains("F")
+					SELF:_trimBlanks      := _format:Contains("T")
+					SELF:_leadingZeros    := _format:Contains("L")
+					// S<n>: set MaxLength to the number following S
+					LOCAL sIdx := _format:IndexOf("S") AS INT
+					IF sIdx >= 0
+						LOCAL numStr := System.Text.StringBuilder{} AS System.Text.StringBuilder
+						LOCAL j := sIdx + 1 AS INT
+						DO WHILE j < _format:Length .AND. Char.IsDigit(_format[j])
+							numStr:Append(_format[j])
+							j++
+						END DO
+						IF numStr:Length > 0
+							SELF:MaxLength := Int32.Parse(numStr:ToString())
+						ENDIF
 					ENDIF
 				ELSE
-					SELF:CharacterCasing := CharacterCasing.Normal
+					SELF:CharacterCasing  := CharacterCasing.Normal
+					SELF:_blankWhenZero  := FALSE
+					SELF:_forceAlpha     := FALSE
+					SELF:_noTrailingPad  := FALSE
+					SELF:_trimBlanks     := FALSE
+					SELF:_leadingZeros   := FALSE
 				ENDIF
 			END SET
 		END PROPERTY
@@ -111,6 +138,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
             // TODO : Don't forget that if NODEFAULT has been called previously we should mark the Event as handled and return
             //
 			IF SELF:_maskHandler == NULL
+				// @A: letters only when no InputMask is active (InputMask handles its own filtering)
+				IF SELF:_forceAlpha .AND. !Char.IsControl(e:KeyChar) .AND. !Char.IsLetter(e:KeyChar)
+					e:Handled := TRUE
+					System.Media.SystemSounds.Beep:Play()
+					RETURN
+				ENDIF
                 SUPER:OnKeyPress(e)
             ELSE
 				IF !SELF:ReadOnly
@@ -182,13 +215,24 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					// Set uValue first, as setting Text will call TextChanged
 					_uValue := VALUE
 					_valueType := ValType(_uValue )
+					// @Z: show blank when the numeric value is zero
+					IF SELF:_blankWhenZero .AND. IsNumeric(VALUE) .AND. (REAL8)VALUE == 0
+						SELF:Text := ""
+						SELF:OnVFPProgrammaticChange()
+						RETURN
+					ENDIF
 					IF SELF:_maskHandler != NULL
 						// Format the value through the mask and display it
 						VAR strVal := ((OBJECT)VALUE):ToString()
 						SELF:Text := strVal
 						SELF:_maskHandler:HandleTextChanged(SELF)
 					ELSE
-						SELF:Text := ((OBJECT)VALUE):ToString()
+						VAR strVal := ((OBJECT)VALUE):ToString()
+						// L: pad numeric value with leading zeros up to MaxLength
+						IF SELF:_leadingZeros .AND. IsNumeric(VALUE) .AND. SELF:MaxLength > 0
+							strVal := strVal:PadLeft(SELF:MaxLength, '0')
+						ENDIF
+						SELF:Text := strVal
 					ENDIF
 					SELF:OnVFPProgrammaticChange()
 				ENDIF
@@ -263,6 +307,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		END PROPERTY
 
+		// VFP order: date semantics → range → Valid (Validating event) → LostFocus.
+		// Run date/range checks here so they cancel focus transfer before vfpValid fires.
+		OVERRIDE PROTECTED METHOD OnValidating( e AS System.ComponentModel.CancelEventArgs ) AS VOID
+			IF SELF:_maskHandler != NULL
+				LOCAL _dateFmt := SELF:_VFPDateFormatPattern() AS STRING
+				IF SELF:_valueType == "D"
+					IF !SELF:_maskHandler:CheckDateSemantics(SELF, _dateFmt)
+						e:Cancel := TRUE
+						RETURN
+					ENDIF
+				ENDIF
+				IF !SELF:_maskHandler:CheckRange(SELF, _dateFmt)
+					e:Cancel := TRUE
+					RETURN
+				ENDIF
+			ENDIF
+			SUPER:OnValidating( e )
+		END METHOD
+
 		OVERRIDE PROTECTED METHOD OnLostFocus( e AS EventArgs ) AS VOID
 			IF SELF:_maskHandler != NULL
 				// Extract clean data value from masked display
@@ -271,10 +334,44 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF !String.IsNullOrEmpty(SELF:NullDisplay) .AND. SELF:Text == SELF:NullDisplay
 					SELF:_uValue := NIL
 				ELSE
-					SELF:_uValue := SELF:Text
+					VAR stored := SELF:Text
+					// F: trim trailing spaces (Varchar — don't store padding)
+					IF SELF:_noTrailingPad
+						stored := stored:TrimEnd()
+					ENDIF
+					// T: trim leading and trailing blanks
+					IF SELF:_trimBlanks
+						stored := stored:Trim()
+					ENDIF
+					SELF:_uValue := stored
 				ENDIF
 			ENDIF
 			SUPER:OnLostFocus( e )
+		END METHOD
+
+		// Build a .NET DateTime format string from the VFP DateFormat/DateMark/Century properties.
+		PRIVATE METHOD _VFPDateFormatPattern() AS STRING
+			VAR sep := IIF(String.IsNullOrEmpty(SELF:DateMark), "/", SELF:DateMark)
+			VAR yr  := IIF(SELF:Century == 1, "yyyy", "yy")
+			SWITCH (INT) SELF:DateFormat
+				CASE 1  // ANSI: yy.mm.dd
+					RETURN yr + "." + "MM" + "." + "dd"
+				CASE 2  // British/French: dd/mm/yy
+				CASE 3
+				CASE 9  // DMY
+					RETURN "dd" + sep + "MM" + sep + yr
+				CASE 4  // German: dd.mm.yy
+					RETURN "dd.MM." + yr
+				CASE 5  // Italian: dd-mm-yy
+					RETURN "dd-MM-" + yr
+				CASE 6  // Japan: yy/mm/dd
+				CASE 10 // YMD
+					RETURN yr + sep + "MM" + sep + "dd"
+				CASE 7  // USA: mm-dd-yy
+					RETURN "MM-dd-" + yr
+				OTHERWISE // 0=American, 8=MDY: mm/dd/yy
+					RETURN "MM" + sep + "dd" + sep + yr
+			END SWITCH
 		END METHOD
 
 

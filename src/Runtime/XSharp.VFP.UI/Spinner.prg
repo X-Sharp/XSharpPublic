@@ -197,16 +197,19 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		// "9999.99"  → DecimalPlaces=2
 		// "9,999.99" → DecimalPlaces=2, ThousandsSeparator=TRUE
 
-		PRIVATE _format    AS STRING
-		PRIVATE _inputMask AS STRING
+		PRIVATE _format        AS STRING
+		PRIVATE _inputMask     AS STRING
+		PRIVATE _blankWhenZero AS LOGIC
 
 		PROPERTY Format AS STRING
 			GET
 				RETURN _format
 			END GET
 			SET
-				_format := VALUE
-				SELF:_ApplyNumericMask(VALUE)
+				_format := Upper(VALUE)
+				SELF:_ApplyNumericMask(_format)
+				SELF:SelectOnEntry   := !String.IsNullOrEmpty(_format) .AND. _format:Contains("K")
+				SELF:_blankWhenZero  := !String.IsNullOrEmpty(_format) .AND. _format:Contains("Z")
 			END SET
 		END PROPERTY
 
@@ -308,12 +311,29 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
-		// ── SelectOnEntry ────────────────────────────────────────────────────
+		// ── SelectOnEntry / Z (blank when zero) ─────────────────────────────────
 
 		PROTECTED OVERRIDE METHOD OnGotFocus(e AS System.EventArgs) AS VOID
 			SUPER:OnGotFocus(e)
+			// Z: restore numeric display when the field receives focus (was blanked on leave)
+			IF SELF:_blankWhenZero
+				LOCAL tb := SELF:_editBox AS System.Windows.Forms.TextBox
+				IF tb != NULL .AND. String.IsNullOrEmpty(tb:Text)
+					SELF:UpdateEditText()
+				ENDIF
+			ENDIF
 			IF SELF:SelectOnEntry
 				SELF:Select(0, SELF:Text:Length)
+			ENDIF
+
+		PROTECTED OVERRIDE METHOD OnLostFocus(e AS System.EventArgs) AS VOID
+			SUPER:OnLostFocus(e)
+			// Z: blank the display when value is zero and the field loses focus
+			IF SELF:_blankWhenZero .AND. SUPER:Value == 0
+				LOCAL tb := SELF:_editBox AS System.Windows.Forms.TextBox
+				IF tb != NULL
+					tb:Text := ""
+				ENDIF
 			ENDIF
 
 		CONSTRUCTOR()

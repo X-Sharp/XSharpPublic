@@ -13,10 +13,14 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible Shape class.
-	/// Draws a rectangle, square, ellipse, circle, or rounded rectangle.
-	/// VFP Style: 0=Rectangle, 1=Square, 2=Ellipse, 3=Circle,
-	///            4=Rounded Rectangle, 5=Rounded Square.
+	/// VFP-compatible shape control that wraps <see cref="System.Windows.Forms.UserControl"/> with fully custom owner-drawing.<br/>
+	/// <see cref="Style"/> selects the geometry: 0=Rectangle, 1=Square, 2=Ellipse, 3=Circle, 4=Rounded Rectangle, 5=Rounded Square.<br/>
+	/// Fill is controlled by <see cref="FillStyle"/> (0=Solid, 1=Transparent, 2–7=GDI+ hatch patterns)
+	/// and <see cref="FillColor"/>.<br/>
+	/// The border is controlled by <see cref="BorderColor"/>, <see cref="BORDERWIDTH"/>, and
+	/// <see cref="BorderStyle"/> (0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible, 6=InsideSolid).<br/>
+	/// For rounded styles (4/5), <see cref="CURVATURE"/> (0–99) controls the corner radius as a
+	/// percentage of the bounding-box width. The background is always transparent.
 	/// </summary>
 	PARTIAL CLASS Shape INHERIT System.Windows.Forms.UserControl
 
@@ -40,6 +44,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── BorderColor ───────────────────────────────────────────────────────
 		PRIVATE _borderColor AS System.Drawing.Color
+		/// <summary>Colour of the shape's border. Triggers a repaint on change.</summary>
 		PROPERTY BorderColor AS System.Drawing.Color
 			GET ; RETURN SELF:_borderColor
 			END GET
@@ -49,6 +54,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── BorderWidth ───────────────────────────────────────────────────────
 		PRIVATE _borderWidth AS LONG
+		/// <summary>Width of the shape's border in pixels. Accepts a VFP <c>USUAL</c> for source compatibility. Triggers a repaint on change.</summary>
 		PROPERTY BORDERWIDTH AS USUAL
 			GET ; RETURN SELF:_borderWidth
 			END GET
@@ -57,9 +63,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Curvature ─────────────────────────────────────────────────────────
-		// 0 = sharp corners, 99 = fully rounded (circle/ellipse).
-		// Used when Style = 4 or 5.
 		PRIVATE _curvature AS LONG
+		/// <summary>
+		/// Corner radius as a percentage of the bounding-box width (clamped 0–99).<br/>
+		/// 0=sharp corners; 99=fully rounded. Only used when <see cref="Style"/> is 4 (Rounded Rectangle) or 5 (Rounded Square).
+		/// </summary>
 		PROPERTY CURVATURE AS USUAL
 			GET ; RETURN SELF:_curvature
 			END GET
@@ -71,6 +79,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── FillColor ─────────────────────────────────────────────────────────
 		PRIVATE _fillColor AS System.Drawing.Color
+		/// <summary>Interior fill colour used when <see cref="FillStyle"/> is 0 (Solid) or 2–7 (hatch patterns). Triggers a repaint on change.</summary>
 		PROPERTY FillColor AS System.Drawing.Color
 			GET ; RETURN SELF:_fillColor
 			END GET
@@ -79,8 +88,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── FillStyle ─────────────────────────────────────────────────────────
-		// VFP: 0=Solid, 1=Transparent, 2-7=hatch patterns.
 		PRIVATE _fillStyle AS LONG
+		/// <summary>
+		/// VFP fill style: 0=Solid (<see cref="FillColor"/>); 1=Transparent (no fill, default);
+		/// 2–7=GDI+ hatch patterns (<c>HatchStyle</c> 0–5) drawn with <see cref="FillColor"/>.
+		/// Triggers a repaint on change.
+		/// </summary>
 		PROPERTY FillStyle AS USUAL
 			GET ; RETURN SELF:_fillStyle
 			END GET
@@ -89,8 +102,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── BorderStyle ──────────────────────────────────────────────────────
-		// VFP: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible, 6=InsideSolid
 		PRIVATE _borderStyle AS LONG
+		/// <summary>
+		/// VFP border line style: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot,
+		/// 5=Invisible (border suppressed), 6=InsideSolid (treated as Solid).<br/>
+		/// Maps to <see cref="System.Drawing.Drawing2D.DashStyle"/> on the border <c>Pen</c>.
+		/// </summary>
 		PROPERTY BorderStyle AS LONG
 			GET ; RETURN SELF:_borderStyle
 			END GET
@@ -99,8 +116,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Style ─────────────────────────────────────────────────────────────
-		// 0=Rectangle, 1=Square, 2=Ellipse, 3=Circle, 4=Rounded Rect, 5=Rounded Square
 		PRIVATE _style AS LONG
+		/// <summary>
+		/// Shape geometry: 0=Rectangle, 1=Square, 2=Ellipse, 3=Circle,
+		/// 4=Rounded Rectangle, 5=Rounded Square.<br/>
+		/// Square/Circle/Rounded Square constrain painting to a square bounding box.
+		/// Rounded styles use <see cref="CURVATURE"/> for the corner radius.
+		/// </summary>
 		PROPERTY Style AS LONG
 			GET ; RETURN SELF:_style
 			END GET
@@ -151,6 +173,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
+		/// <summary>Fills the shape geometry dictated by <see cref="Style"/> using the supplied <paramref name="brush"/>.</summary>
 		PRIVATE METHOD PaintShape( g AS Graphics, r AS Rectangle, brush AS Brush ) AS VOID
 			IF SELF:_style == 2 .OR. SELF:_style == 3
 				g:FillEllipse( brush, r )
@@ -162,6 +185,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
+		/// <summary>Strokes the shape outline dictated by <see cref="Style"/> using the supplied <paramref name="pen"/>.</summary>
 		PRIVATE METHOD StrokeShape( g AS Graphics, r AS Rectangle, pen AS Pen ) AS VOID
 			IF SELF:_style == 2 .OR. SELF:_style == 3
 				g:DrawEllipse( pen, r )
@@ -173,6 +197,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 		END METHOD
 
+		/// <summary>Fills a rounded-rectangle path; falls back to <c>FillRectangle</c> when <paramref name="radius"/> is zero.</summary>
 		PRIVATE METHOD FillRoundRect( g AS Graphics, brush AS Brush, r AS Rectangle, radius AS INT ) AS VOID
 			IF radius <= 0
 				g:FillRectangle(brush, r)
@@ -183,6 +208,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			path:Dispose()
 		END METHOD
 
+		/// <summary>Strokes a rounded-rectangle path; falls back to <c>DrawRectangle</c> when <paramref name="radius"/> is zero.</summary>
 		PRIVATE METHOD DrawRoundRect( g AS Graphics, pen AS Pen, r AS Rectangle, radius AS INT ) AS VOID
 			IF radius <= 0
 				g:DrawRectangle(pen, r)
@@ -193,6 +219,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			path:Dispose()
 		END METHOD
 
+		/// <summary>Builds a <see cref="System.Drawing.Drawing2D.GraphicsPath"/> for a rounded rectangle with the given corner <paramref name="radius"/>.</summary>
 		PRIVATE METHOD RoundRectPath( r AS Rectangle, radius AS INT ) AS GraphicsPath
 			VAR d    := radius * 2
 			VAR path := GraphicsPath{}

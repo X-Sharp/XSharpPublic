@@ -13,9 +13,12 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible Line class.
-	/// Draws a straight line inside a transparent UserControl.
-	/// VFP properties: BorderColor, BorderWidth, LineSlant ("/", "\"), Rotation.
+	/// VFP-compatible line control that wraps <see cref="System.Windows.Forms.UserControl"/> with fully custom owner-drawing.<br/>
+	/// Draws a single straight line across the transparent control surface.<br/>
+	/// <see cref="LineSlant"/> ("<c>\</c>"=top-left→bottom-right, "<c>/</c>"=bottom-left→top-right) selects the diagonal.<br/>
+	/// The line appearance is controlled by <see cref="BorderColor"/>, <see cref="BorderWidth"/>,
+	/// and <see cref="BorderStyle"/> (0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible).<br/>
+	/// The control background is always transparent.
 	/// </summary>
 	PARTIAL CLASS Line INHERIT System.Windows.Forms.UserControl
 
@@ -36,6 +39,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── BorderColor ───────────────────────────────────────────────────────
 		PRIVATE _borderColor AS System.Drawing.Color
+		/// <summary>Colour of the line. Triggers a repaint on change.</summary>
 		PROPERTY BorderColor AS System.Drawing.Color
 			GET
 				RETURN SELF:_borderColor
@@ -48,6 +52,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── BorderWidth ───────────────────────────────────────────────────────
 		PRIVATE _borderWidth AS LONG
+		/// <summary>Width of the line in pixels. Accepts a VFP <c>USUAL</c> for source compatibility. Triggers a repaint on change.</summary>
 		PROPERTY BorderWidth AS USUAL
 			GET
 				RETURN SELF:_borderWidth
@@ -59,8 +64,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── BorderStyle ──────────────────────────────────────────────────────
-		// VFP: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible, 6=InsideSolid
 		PRIVATE _borderStyle AS LONG
+		/// <summary>
+		/// VFP border line style: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible (line suppressed).<br/>
+		/// Maps to <see cref="System.Drawing.Drawing2D.DashStyle"/> on the drawing <c>Pen</c>.
+		/// </summary>
 		PROPERTY BorderStyle AS LONG
 			GET
 				RETURN SELF:_borderStyle
@@ -72,9 +80,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── LineSlant ─────────────────────────────────────────────────────────
-		// "\" = top-left to bottom-right (default)
-		// "/" = bottom-left to top-right
 		PRIVATE _lineSlant AS STRING
+		/// <summary>
+		/// Direction of the line: "<c>\</c>" (default) draws top-left to bottom-right;
+		/// "<c>/</c>" draws bottom-left to top-right. Triggers a repaint on change.
+		/// </summary>
 		PROPERTY LineSlant AS USUAL
 			GET
 				RETURN SELF:_lineSlant

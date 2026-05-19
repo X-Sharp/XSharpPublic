@@ -13,7 +13,15 @@ USING System.Drawing
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFP compatible CommandButton class.
+	/// VFP-compatible command button that wraps <see cref="System.Windows.Forms.Button"/>.<br/>
+	/// <see cref="Style"/> selects the rendering mode: 0=Standard WinForms button; 1=Graphical
+	/// (borderless flat, image-replaces-text, transparent background).<br/>
+	/// In graphical mode, <see cref="ApplyGraphicalImages"/> swaps the displayed image between
+	/// <c>Picture</c> (normal), <c>DownPicture</c> (mouse-down), and <c>DisabledPicture</c> (disabled).<br/>
+	/// <see cref="PicturePosition"/> (0–16) maps VFP image/text layout codes to WinForms
+	/// <c>TextImageRelation</c>, <c>ImageAlign</c>, and <c>TextAlign</c>.<br/>
+	/// <see cref="Cancel"/> wires the button as <c>Form.CancelButton</c> (Escape key);
+	/// <see cref="Default"/> wires it as <c>Form.AcceptButton</c> (Enter key).
 	/// </summary>
 	PARTIAL CLASS CommandButton INHERIT System.Windows.Forms.Button
 		PRIVATE _vfpStyle        AS INT
@@ -44,8 +52,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:ReWireFormButtons()
 
 		// ── Style ─────────────────────────────────────────────────────────────
-		// 0 = Standard (default WinForms button)
-		// 1 = Graphical: borderless flat button; image replaces text rendering
+		/// <summary>
+		/// VFP button style:<br/>
+		/// 0=Standard — default WinForms button with border and background;<br/>
+		/// 1=Graphical — borderless flat button; image replaces text rendering, background is transparent.
+		/// </summary>
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
 		PROPERTY Style AS INT
 			GET
@@ -77,17 +88,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Mouse-down / mouse-up: swap to DownPicture ────────────────────────
+		/// <summary>Swaps the button image to <c>DownPicture</c> (if set) while the mouse button is held.</summary>
 		PROTECTED METHOD OnMouseDown(e AS System.Windows.Forms.MouseEventArgs) AS VOID
 			SUPER:OnMouseDown(e)
 			IF !String.IsNullOrEmpty(SELF:DownPicture)
 				SELF:Image := VFPTools.ImageFromFile(SELF:DownPicture)
 			ENDIF
 
+		/// <summary>Restores the normal/disabled image via <see cref="ApplyGraphicalImages"/> after the mouse button is released.</summary>
 		PROTECTED METHOD OnMouseUp(e AS System.Windows.Forms.MouseEventArgs) AS VOID
 			SUPER:OnMouseUp(e)
 			SELF:ApplyGraphicalImages()
 
 		// ── EnabledChanged: swap picture + apply DisabledBackColor/ForeColor ──
+		/// <summary>Applies the disabled/normal image and <c>DisabledBackColor</c>/<c>DisabledForeColor</c> when the enabled state changes.</summary>
 		PROTECTED METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnEnabledChanged(e)
 			SELF:ApplyGraphicalImages()
@@ -104,8 +118,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 
 		// ── Helper: apply correct image for current state ─────────────────────
-		// Priority: DisabledPicture (when disabled) > DownPicture (on mouse-down,
-		// handled separately) > Picture (normal).
+		/// <summary>
+		/// Selects and loads the correct button image for the current state.<br/>
+		/// Priority: <c>DisabledPicture</c> (when disabled) &gt; <c>Picture</c> (normal) &gt; no image.
+		/// <c>DownPicture</c> is swapped in by <c>OnMouseDown</c> and restored here on mouse-up.
+		/// </summary>
 		PRIVATE METHOD ApplyGraphicalImages() AS VOID
 			IF !SELF:Enabled .AND. !String.IsNullOrEmpty(SELF:DisabledPicture)
 				SELF:Image := VFPTools.ImageFromFile(SELF:DisabledPicture)
@@ -116,8 +133,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 
 		// ── PicturePosition ───────────────────────────────────────────────────
-		// VFP: 0-2 image left, 3-5 image above, 6-8 image right, 9-11 image below,
-		//      12-15 corner overlay, 16 center/background.
+		/// <summary>
+		/// VFP image/text layout code mapped to WinForms <c>TextImageRelation</c>, <c>ImageAlign</c>, and <c>TextAlign</c>:<br/>
+		/// 0–2=image left of text (top/middle/bottom alignment);
+		/// 3–5=image above text; 6–8=image right of text; 9–11=image below text;
+		/// 12–15=corner overlay; 16=center/background overlay.
+		/// </summary>
 		PROPERTY PicturePosition AS LONG
 			GET
 				RETURN SELF:_picturePosition
@@ -147,8 +168,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── WordWrap ──────────────────────────────────────────────────────────
-		// .T. = text wraps at button boundary (AutoSize off, natural wrap).
-		// .F. = single line with AutoEllipsis when text overflows.
+		/// <summary>
+		/// When <c>.T.</c>, button text wraps at the control boundary (<c>AutoEllipsis</c> off, natural wrap).<br/>
+		/// When <c>.F.</c>, text is single-line and truncated with an ellipsis on overflow.
+		/// </summary>
 		PROPERTY WordWrap AS LOGIC
 			GET
 				RETURN !SELF:AutoEllipsis

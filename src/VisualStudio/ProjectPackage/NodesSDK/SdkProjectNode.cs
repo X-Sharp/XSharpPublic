@@ -19,6 +19,7 @@ using XSharpModel;
 using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using System.Xml;
+using System.IO;
 
 namespace XSharp.Project
 {
@@ -104,7 +105,6 @@ namespace XSharp.Project
                         this.BuildProject.RemoveItem(item);
                     }
                 }
-
             }
         }
         public override void OnItemDeleted()
@@ -113,20 +113,9 @@ namespace XSharp.Project
             this.BuildProject.ReevaluateIfNecessary();
         }
 
-        protected override void ProcessReferences()
+         protected override void ProcessReferences()
         {
             base.ProcessReferences();
-            //var container = this.GetReferenceContainer();
-            //if (container is XSharpReferenceContainerNode node)
-            //{
-            //    var list = new List<XSharpAssemblyReferenceNode>();
-            //    node.FindNodesOfType(list);
-            //    foreach (var reference in list)
-            //    {
-            //        if (reference.Parent.Caption != "Assemblies")
-            //            reference.Parent.RemoveChild(reference);
-            //    }
-            //}
             RefreshReferences();
         }
 
@@ -182,7 +171,6 @@ namespace XSharp.Project
             string frameworks = null;
             bool single = false;
             bool mustSwitch = false;
-            this.CreateUserBuildProject();
             _targetFrameworks.Clear();
             _subProjects.Clear();
             // First check for single TargetFramework
@@ -257,6 +245,7 @@ namespace XSharp.Project
                     ActiveSubProject = subProject;
                     return frameworks + ";" + oldframework;
                 }
+                this.BeforeSave();
                 this.BuildProject.Save();
                 SelectSubProject(ActiveSubProject);
             }
@@ -281,6 +270,7 @@ namespace XSharp.Project
             }
             if (newBuildProject.IsDirty)
             {
+                this.BeforeSave();
                 newBuildProject.Save();
             }
 
@@ -345,11 +335,15 @@ namespace XSharp.Project
             return dependenciesNode;
         }
 
-        public override int Close()
+        public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
-            this.SaveTargetFrameworks();
-            this.Clean();
-            return base.Close();
+            var nodes = GetSdkProjectReferences();
+            var result = base.Save(fileToBeSaved, remember, formatIndex);
+            foreach (var node in nodes)
+            {
+                node.RestoreProperties();
+            }
+            return result;
         }
 
         void Clean()
@@ -380,17 +374,15 @@ namespace XSharp.Project
                 this.RemoveProjectProperty(ProjectFileConstants.ProjectGuid);
             }
             if (this.BuildProject.IsDirty || dirty)
+            {
                 this.BuildProject.Save();
+            }
         }
-
-
-        // Do not store FolderNodes in SDK projects
-        public override int Save(string fileToBeSaved, int remember, uint formatIndex)
+        public override void BeforeSave()
         {
-            var dirty = this.IsProjectFileDirty;
+            base.BeforeSave();
+            this.SaveTargetFrameworks();
             this.Clean();
-            this.SetProjectFileDirty(dirty);
-            return base.Save(fileToBeSaved, remember, formatIndex);
         }
 
         private void AddPendingReferences(List<ProjectItemInstance> newReferences, SdkSubProjectInfo active)

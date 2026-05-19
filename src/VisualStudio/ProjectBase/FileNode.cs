@@ -593,7 +593,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 if (this.IsDependent)
                 {
-                    OnInvalidateItems(this.Parent);
+                        OnInvalidateItems(this.Parent);
                 }
 
 
@@ -1013,12 +1013,15 @@ namespace Microsoft.VisualStudio.Project
             // Assign existing msbuild item to the new childnode
             childAdded.ItemNode = this.ItemNode;
             childAdded.ItemNode.RefreshProperties();
-            childAdded.ItemNode.Item.ItemType = this.ItemNode.ItemName;
-            childAdded.ItemNode.Item.Xml.Include = newInclude;
-            if (!string.IsNullOrEmpty(dependentOf))
+            if (! childAdded.IsImported)
             {
-                bDependantItem = true;
-                childAdded.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, dependentOf);
+                childAdded.ItemNode.Item.ItemType = this.ItemNode.ItemName;
+                childAdded.ItemNode.Item.Xml.Include = newInclude;
+                if (!string.IsNullOrEmpty(dependentOf))
+                {
+                    bDependantItem = true;
+                    childAdded.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, dependentOf);
+                }
             }
 
             childAdded.ItemNode.RefreshProperties();
@@ -1279,7 +1282,7 @@ namespace Microsoft.VisualStudio.Project
 
                 newNodeOut = newNode;
             }
-
+            this.ProjectMgr.OnAfterRenameFile((FileNode) newNode, oldName, newName);
             return true;
         }
 

@@ -11,21 +11,33 @@ USING  System.Reflection
 
 BEGIN NAMESPACE XSharp.VFP.UI
 /// <summary>
-/// The VFPOverride class.
-/// At code generation it captures the Owner and the Late-bound method to be called.
-/// When the Call() is called, a late-bound called is done, using Send()
+/// Stores a VFP event handler as a late-bound method reference and dispatches it at runtime.<br/>
+/// Each VFP event property (e.g. <c>vfpClick</c>) creates a <c>VFPOverride</c> that captures the
+/// <paramref name="o">owner object</paramref> and the method name string at assignment time.
+/// When the underlying WinForms event fires, <see cref="Call()"/> or <see cref="Call(USUAL[])"/>
+/// uses <c>Send()</c> to invoke the method on the owner.<br/>
+/// If the method is not found directly on the owner, <see cref="CallParent"/> walks up the
+/// <c>Controls</c> parent chain until it reaches a <c>Form</c>, looking for the method there —
+/// this implements VFP's scope-resolution behaviour where event handlers can be defined on the
+/// enclosing form rather than on the control itself.<br/>
+/// <see cref="InCall"/> is set to <c>.T.</c> for the duration of the call, allowing re-entrancy guards.
+/// Trailing <c>"()"</c> is stripped from the method name to tolerate VFP-style notation.
 /// </summary>
 CLASS VFPOverride
     PRIVATE _owner AS OBJECT
     PRIVATE _sendTo AS STRING
 
+    /// <summary><c>.T.</c> while a <see cref="Call()"/> dispatch is in progress; <c>.F.</c> otherwise.</summary>
     PROPERTY InCall AS LOGIC AUTO GET PRIVATE SET
 
+    /// <summary>The method name this instance will dispatch to.</summary>
     PROPERTY SendTo AS STRING GET _sendTo
 
+    /// <summary>
+    /// Creates a new <c>VFPOverride</c> bound to <paramref name="o"/> and the method named <paramref name="s"/>.<br/>
+    /// A trailing <c>"()"</c> suffix on <paramref name="s"/> is removed automatically.
+    /// </summary>
     CONSTRUCTOR( o AS OBJECT, s AS STRING )
-        // Before calling the method we will check we are at Form Level
-        // But at creation-time, the Control may hasn't been Added to Controls...so no parent.
         _owner := o
         _sendTo := s
         SELF:InCall := FALSE
@@ -35,6 +47,7 @@ CLASS VFPOverride
             ENDIF
         ENDIF
 
+    /// <summary>Dispatches the method with the supplied argument array. Walks up the parent chain if the method is not found on the owner.</summary>
     METHOD Call( args AS USUAL[] ) AS USUAL
         //
         TRY
@@ -56,6 +69,7 @@ CLASS VFPOverride
         RETURN NULL
 
 
+    /// <summary>Dispatches the method with no arguments. Walks up the parent chain if the method is not found on the owner.</summary>
     METHOD Call( ) AS USUAL
         //
         TRY
@@ -76,6 +90,7 @@ CLASS VFPOverride
         END TRY
         RETURN NULL
 
+    /// <summary>Walks the <c>Controls.Parent</c> chain from the owner up to (but not including) the <c>Form</c>, invoking the method on the first ancestor that has it.</summary>
     PRIVATE METHOD CallParent( args AS USUAL[] ) AS VOID
         LOCAL oForm AS OBJECT
         //

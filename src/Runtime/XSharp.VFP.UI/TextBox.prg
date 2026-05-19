@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// The active InputMaskHandler; NULL when no InputMask is set
+		/// <summary>The active <see cref="InputMaskHandler"/> instance; <c>NULL</c> when no <see cref="InputMask"/> is set.</summary>
 		INTERNAL PROPERTY _maskHandler AS InputMaskHandler AUTO
 
 
@@ -138,6 +138,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:Size        := Size{100,21}
 
 
+		/// <summary>Delegates to <see cref="InputMaskHandler.HandleKeyDown"/> when a mask is active; falls through to the base handler otherwise.</summary>
 		OVERRIDE PROTECTED METHOD OnKeyDown( e AS KeyEventArgs ) AS VOID
 			IF SELF:_maskHandler == NULL
 				SUPER:OnKeyDown(e)
@@ -148,6 +149,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SUPER:OnKeyDown(e)
 			ENDIF
 
+		/// <summary>Fires the base <c>OnKeyUp</c> so VFP vfpKeyUp subscribers receive the event; mask state is updated in <see cref="OnTextChanged"/> instead.</summary>
 		OVERRIDE PROTECTED METHOD OnKeyUp( e AS KeyEventArgs ) AS VOID
 			IF SELF:_maskHandler != NULL
 				// mask state updated in TextChanged; still call base so vfpKeyUp subscribers fire
@@ -155,6 +157,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			SUPER:OnKeyUp(e)
 
+		/// <summary>
+		/// Fires the VFP <c>vfpKeyPress</c> event first, then enforces Format code <c>A</c> (letters only)
+		/// or delegates to <see cref="InputMaskHandler.HandleKeyPress"/> when a mask is active.
+		/// </summary>
         OVERRIDE PROTECTED METHOD OnKeyPress( e AS KeyPressEventArgs) AS VOID
             // Fire VFP KeyPress event once, before default processing
             SELF:OnVFPKeyPress( SELF, e )
@@ -181,6 +187,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
 
 
+		/// <summary>Fires <c>vfpInteractiveChange</c> when the change originated from the user (<c>Modified = .T.</c>), then forwards to the active <see cref="InputMaskHandler"/> for mask reformatting.</summary>
 		OVERRIDE PROTECTED METHOD OnTextChanged ( e AS EventArgs) AS VOID
 			// TRUE is changed by the user
 			IF SELF:Modified
@@ -303,6 +310,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── ProgrammaticChange ───────────────────────────────────────────────
 
 		PRIVATE _VFPProgrammaticChange AS VFPOverride
+		/// <summary>Name of the VFP method called when <see cref="Value"/> is changed programmatically (not by the user). Fires via <see cref="VFPOverride"/>.</summary>
 		[Category("VFP Events"), Description("Occurs when the value of a control is changed through code.")];
 		[DefaultValue(NULL)];
 		PROPERTY vfpProgrammaticChange AS STRING GET _VFPProgrammaticChange?:SendTo SET SELF:_VFPProgrammaticChange := VFPOverride{SELF, VALUE}
@@ -401,7 +409,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER:OnLostFocus( e )
 		END METHOD
 
-		// Build a .NET DateTime format string from the VFP DateFormat/DateMark/Century properties.
+		/// <summary>Builds a .NET <c>DateTime</c> format string from the VFP <c>DateFormat</c>, <c>DateMark</c>, and <c>Century</c> properties. Used by <see cref="OnValidating"/> to pass a locale-aware pattern to the mask handler.</summary>
 		PRIVATE METHOD _VFPDateFormatPattern() AS STRING
 			VAR sep := IIF(String.IsNullOrEmpty(SELF:DateMark), "/", SELF:DateMark)
 			VAR yr  := IIF(SELF:Century == 1, "yyyy", "yy")
@@ -429,6 +437,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── DisabledBackColor / DisabledForeColor ────────────────────────────
 
+		/// <summary>Applies <see cref="DisabledBackColor"/> and <see cref="DisabledForeColor"/> when the control is disabled; resets to system colors when re-enabled.</summary>
 		PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnEnabledChanged(e)
 			IF !SELF:Enabled

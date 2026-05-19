@@ -14,15 +14,18 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 /// <summary>
-/// The VFP compatible FormSet class.
+/// VFP-compatible container for a set of related forms.<br/>
+/// Holds a collection of <see cref="Form"/> objects exposed via <see cref="Forms"/> (reverse-insertion order,
+/// matching VFP generated code) and <see cref="Controls"/> (raw insertion order).<br/>
+/// <see cref="Show"/> displays all modeless forms non-blocking then blocks on each modal form in turn.
+/// <see cref="Hide"/> hides all forms without closing them.
+/// <see cref="Release"/> closes all forms and fires <see cref="vfpDestroy"/>.<br/>
+/// <see cref="ActiveForm"/> tracks whichever form most recently received focus via its <c>Activated</c> event.
+/// <see cref="SetAll"/> broadcasts a property assignment to all forms and their child controls.
 /// </summary>
 PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
-    /// <summary>
-    /// Same as the Forms property.
-    /// The order
-    /// </summary>
-    /// <value></value>
+    /// <summary>Raw insertion-order list of form objects. Used by generated code. Access individual forms via <see cref="Forms"/> (which returns them in the reverse order VFP expects).</summary>
     PROPERTY Controls AS List<OBJECT> AUTO
 
 
@@ -57,13 +60,13 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
     PROPERTY FormCount AS INT GET SELF:Forms:Count
 
     // -- ControlCount ------------------------------------------------------
-    // IVFPOwner requires ControlCount GET+SET. Returns number of forms.
-    // SET is a no-op — the count is derived from the Controls list.
+    /// <summary><c>IVFPOwner</c> requirement. Returns the number of forms in <see cref="Controls"/>. The setter is a no-op â€” the count is derived from the list.</summary>
     PROPERTY ControlCount AS LONG
         GET ; RETURN SELF:Controls:Count ; END GET
         SET ; NOP ; END SET
     END PROPERTY
 
+    /// <summary>The <see cref="Form"/> in this set that most recently received focus. Updated automatically by the <c>Activated</c> event handler wired to each form.</summary>
     PROPERTY ActiveForm AS Form AUTO
 
     /// <summary>
@@ -75,6 +78,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
 
 
     PRIVATE _visible AS LOGIC
+    /// <summary>Shows or hides all forms in the set. Setting <c>.T.</c> calls <c>Show()</c> / <c>ShowDialog()</c> on each form according to its <c>WindowType</c>; setting <c>.F.</c> hides all forms.</summary>
     PROPERTY Visible AS LOGIC
         GET
             RETURN SELF:_visible
@@ -118,6 +122,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
         SELF:_forms := NULL          // invalidate cache
         oForm:Activated -= System.EventHandler{ SELF, @_OnFormActivated() }
 
+    /// <summary>Handles the <c>Activated</c> event on any form in the set; updates <see cref="ActiveForm"/> to the focused form.</summary>
     PRIVATE METHOD _OnFormActivated(sender AS OBJECT, e AS System.EventArgs) AS VOID
         IF sender IS Form VAR frm
             SELF:ActiveForm := frm
@@ -133,7 +138,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
     /// <summary>
     /// Show all forms in the set. Respects each form's WindowType (modal/modeless).
     /// Modeless forms (WindowType=0) are shown non-blocking first; modal forms
-    /// (WindowType=1) call ShowDialog and block — matching VFP FormSet behaviour.
+    /// (WindowType=1) call ShowDialog and block ï¿½ matching VFP FormSet behaviour.
     /// </summary>
     METHOD Show() AS VOID STRICT
         // Pass 1: show all modeless forms without blocking
@@ -223,40 +228,48 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
     // -- Lifecycle Events ------------------------------------------------
 
     PRIVATE _VFPInit AS VFPOverride
+    /// <summary>Name of the VFP method called when the FormSet is first created. Fired in the constructor.</summary>
     [Category("VFP Events"), Description("Occurs when the FormSet is created.")];
     [DefaultValue(NULL)];
     PROPERTY vfpInit AS STRING GET _VFPInit?:SendTo SET SELF:_VFPInit := VFPOverride{SELF, VALUE}
 
+    /// <summary>Dispatches the <see cref="vfpInit"/> handler.</summary>
     PRIVATE METHOD OnVFPInit() AS VOID
         IF SELF:_VFPInit != NULL
             SELF:_VFPInit:Call()
         ENDIF
 
     PRIVATE _VFPDestroy AS VFPOverride
+    /// <summary>Name of the VFP method called when the FormSet is released. Fired by <see cref="Release"/>.</summary>
     [Category("VFP Events"), Description("Occurs when the FormSet is released.")];
     [DefaultValue(NULL)];
     PROPERTY vfpDestroy AS STRING GET _VFPDestroy?:SendTo SET SELF:_VFPDestroy := VFPOverride{SELF, VALUE}
 
+    /// <summary>Dispatches the <see cref="vfpDestroy"/> handler.</summary>
     PRIVATE METHOD OnVFPDestroy() AS VOID
         IF SELF:_VFPDestroy != NULL
             SELF:_VFPDestroy:Call()
         ENDIF
 
     PRIVATE _VFPActivate AS VFPOverride
+    /// <summary>Name of the VFP method called when the FormSet is shown. Fired by <see cref="Show"/>.</summary>
     [Category("VFP Events"), Description("Occurs when the FormSet is shown (activated).")];
     [DefaultValue(NULL)];
     PROPERTY vfpActivate AS STRING GET _VFPActivate?:SendTo SET SELF:_VFPActivate := VFPOverride{SELF, VALUE}
 
+    /// <summary>Dispatches the <see cref="vfpActivate"/> handler.</summary>
     PRIVATE METHOD OnVFPActivate() AS VOID
         IF SELF:_VFPActivate != NULL
             SELF:_VFPActivate:Call()
         ENDIF
 
     PRIVATE _VFPDeactivate AS VFPOverride
+    /// <summary>Name of the VFP method called when the FormSet is hidden. Fired by <see cref="Hide"/>.</summary>
     [Category("VFP Events"), Description("Occurs when the FormSet is hidden (deactivated).")];
     [DefaultValue(NULL)];
     PROPERTY vfpDeactivate AS STRING GET _VFPDeactivate?:SendTo SET SELF:_VFPDeactivate := VFPOverride{SELF, VALUE}
 
+    /// <summary>Dispatches the <see cref="vfpDeactivate"/> handler.</summary>
     PRIVATE METHOD OnVFPDeactivate() AS VOID
         IF SELF:_VFPDeactivate != NULL
             SELF:_VFPDeactivate:Call()

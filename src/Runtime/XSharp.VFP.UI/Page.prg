@@ -12,8 +12,11 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible Page class.
-	/// Maps to System.Windows.Forms.TabPage.
+	/// VFP-compatible tab page that wraps <see cref="System.Windows.Forms.TabPage"/>.<br/>
+	/// Hosted inside a <see cref="PageFrame"/>. Supports VFP properties: <see cref="PageOrder"/>
+	/// (1-based reordering), <see cref="Picture"/> (background image), <see cref="BackStyle"/>
+	/// (0=Transparent/1=Opaque), and events <see cref="vfpActivate"/> / <see cref="vfpDeactivate"/>
+	/// fired by the parent PageFrame when this page is selected or deselected.
 	/// </summary>
 	PARTIAL CLASS Page INHERIT System.Windows.Forms.TabPage
 
@@ -34,7 +37,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// but TabPage uses Text as the tab header — no override needed.
 
 		// ── PageOrder ─────────────────────────────────────────────────────────
-		// Returns/sets the 1-based position of this page within its parent PageFrame.
+		/// <summary>1-based position of this page within its parent <see cref="PageFrame"/>. Setting reorders the page by removing and re-inserting it at the target index.</summary>
 		PROPERTY PageOrder AS USUAL
 			GET
 				VAR parent := SELF:Parent ASTYPE System.Windows.Forms.TabControl
@@ -61,8 +64,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Picture ───────────────────────────────────────────────────────────
-		// VFP Picture sets a background image on the page.
 		PRIVATE _picture AS STRING
+		/// <summary>Path to a background image for the page. Setting loads the image via <c>VFPTools.ImageFromFile</c> and stretches it to fill the page; clearing restores no-image.</summary>
 		PROPERTY Picture AS STRING
 			GET
 				RETURN SELF:_picture
@@ -83,6 +86,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _VFPActivate   AS VFPOverride
 		PRIVATE _VFPDeactivate AS VFPOverride
 
+		/// <summary>Name of the VFP method called when this page becomes the active tab. Fired by <see cref="FireActivate"/> from the parent <see cref="PageFrame"/>.</summary>
 		[System.ComponentModel.Category("VFP Events")];
 		[System.ComponentModel.DefaultValue(NULL)];
 		PROPERTY vfpActivate AS STRING
@@ -94,6 +98,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>Name of the VFP method called when this page is deselected. Fired by <see cref="FireDeactivate"/> from the parent <see cref="PageFrame"/>.</summary>
 		[System.ComponentModel.Category("VFP Events")];
 		[System.ComponentModel.DefaultValue(NULL)];
 		PROPERTY vfpDeactivate AS STRING
@@ -105,11 +110,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>Dispatches the <see cref="vfpActivate"/> handler. Called by the parent <see cref="PageFrame"/> on <c>SelectedIndexChanged</c>.</summary>
 		METHOD FireActivate() AS VOID STRICT
 			IF SELF:_VFPActivate != NULL
 				SELF:_VFPActivate:Call()
 			ENDIF
 
+		/// <summary>Dispatches the <see cref="vfpDeactivate"/> handler. Called by the parent <see cref="PageFrame"/> on <c>SelectedIndexChanged</c>.</summary>
 		METHOD FireDeactivate() AS VOID STRICT
 			IF SELF:_VFPDeactivate != NULL
 				SELF:_VFPDeactivate:Call()
@@ -117,6 +124,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── BackStyle ─────────────────────────────────────────────────────────
 		PRIVATE _backStyle := 1 AS INT
+		/// <summary>VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (restores <c>SystemColors.Control</c>).</summary>
 		PROPERTY BackStyle AS INT
 			GET ; RETURN _backStyle ; END GET
 			SET
@@ -127,17 +135,21 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── Resize / Moved events ─────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
+		/// <summary>Name of the VFP method called when this page is resized.</summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
 		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
 
+		/// <summary>Fires the <c>vfpResize</c> handler when the page is resized.</summary>
 		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
 			SUPER:OnResize(e)
 			IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
 
 		PRIVATE _VFPMoved AS VFPOverride
+		/// <summary>Name of the VFP method called when this page is moved.</summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
 		PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
 
+		/// <summary>Fires the <c>vfpMoved</c> handler when the page is moved.</summary>
 		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
 			SUPER:OnMove(e)
 			IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF

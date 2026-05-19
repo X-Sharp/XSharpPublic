@@ -28,7 +28,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			SELF:_bars := List<Bar>{}
 
 		// ── BarCount ──────────────────────────────────────────────────────────
-		// Number of Bar items (separators are not counted).
+		/// <summary>Number of <see cref="Bar"/> items in this menu. Separator entries are not counted.</summary>
 		PROPERTY BarCount AS LONG
 			GET
 				RETURN (LONG) SELF:_bars:Count
@@ -36,7 +36,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 		END PROPERTY
 
 		// ── Bars[i] ───────────────────────────────────────────────────────────
-		// 1-based indexed access to Bar items (separators excluded).
+		/// <summary>1-based indexed access to <see cref="Bar"/> items (separators excluded).</summary>
 		PROPERTY Bars[ i AS LONG ] AS Bar
 			GET
 				RETURN SELF:_bars[ (INT) i - 1 ]
@@ -44,7 +44,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 		END PROPERTY
 
 		// ── AddBar ────────────────────────────────────────────────────────────
-		// cCaption "--" inserts a ToolStripSeparator; anything else creates a Bar.
+		/// <summary>Adds an item to the menu. When <paramref name="cCaption"/> is <c>"--"</c>, inserts a <see cref="System.Windows.Forms.ToolStripSeparator"/>; otherwise creates a <see cref="Bar"/> and registers it as a dynamic property under <paramref name="cName"/>.</summary>
 		METHOD AddBar( cName, cCaption ) AS USUAL CLIPPER
 			LOCAL sName    AS STRING
 			LOCAL sCaption AS STRING
@@ -67,9 +67,11 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			RETURN NIL
 
 		// ── Lifecycle stubs ───────────────────────────────────────────────────
+		/// <summary>VFP Init lifecycle stub — overridden by the subclass to run initialisation code.</summary>
 		VIRTUAL METHOD Init() AS USUAL CLIPPER
 			RETURN NIL
 
+		/// <summary>VFP Destroy lifecycle stub — overridden by the subclass to run cleanup code.</summary>
 		VIRTUAL METHOD Destroy() AS USUAL CLIPPER
 			RETURN NIL
 

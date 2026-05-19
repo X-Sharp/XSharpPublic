@@ -13,8 +13,13 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible ToolBar class.
-	/// Maps to System.Windows.Forms.ToolStrip.
+	/// VFP-compatible toolbar that wraps <see cref="System.Windows.Forms.ToolStrip"/>.<br/>
+	/// Maintains a 1-based <see cref="Buttons"/> collection of <see cref="VFPToolStripButton"/> items.
+	/// Supports VFP properties: <see cref="Movable"/> (grip visibility), <see cref="DockPosition"/>
+	/// (0=Top/1=Left/2=Right/3=Bottom/4=Float), <see cref="LockScreen"/> (suspend/resume layout),
+	/// <see cref="KeyPreview"/>, and <see cref="Sizable"/> (stub).<br/>
+	/// <see cref="AddObject"/> creates <see cref="VFPToolStripButton"/> or <see cref="System.Windows.Forms.ToolStripSeparator"/>
+	/// items for the standard VFP class names, and falls back to <c>CreateInstance</c> for others.
 	/// </summary>
 	PARTIAL CLASS ToolBar INHERIT System.Windows.Forms.ToolStrip
 
@@ -32,18 +37,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_buttons := List<VFPToolStripButton>{}
 
 		// ── Release ───────────────────────────────────────────────────────────
+		/// <summary>Hides the toolbar. VFP RELEASE equivalent for toolbars.</summary>
 		METHOD Release() AS USUAL CLIPPER
 			SELF:Visible := FALSE
 			RETURN NIL
 
 		// ── Show / Hide ───────────────────────────────────────────────────────
+		/// <summary>Makes the toolbar visible.</summary>
 		METHOD Show() AS VOID STRICT
 			SELF:Visible := TRUE
 
+		/// <summary>Hides the toolbar without releasing it.</summary>
 		METHOD Hide() AS VOID STRICT
 			SELF:Visible := FALSE
 
 		// ── hWnd ──────────────────────────────────────────────────────────────
+		/// <summary>VFP hWnd — the native window handle as an integer. The setter is a no-op.</summary>
 		PROPERTY hWnd AS USUAL
 			GET
 				RETURN SELF:Handle:ToInt32()
@@ -54,6 +63,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Movable ───────────────────────────────────────────────────────────
+		/// <summary>When <c>.T.</c>, shows the toolbar grip so the user can move it; when <c>.F.</c>, hides the grip. Maps to <see cref="System.Windows.Forms.ToolStrip.GripStyle"/>.</summary>
 		PROPERTY Movable AS USUAL
 			GET
 				RETURN SELF:GripStyle != ToolStripGripStyle.Hidden
@@ -64,12 +74,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Sizable ───────────────────────────────────────────────────────────
+		/// <summary>VFP Sizable stub — stored for source compatibility. Not implemented.</summary>
 		PROPERTY Sizable AS USUAL AUTO
 
 		// ── KeyPreview ────────────────────────────────────────────────────────
+		/// <summary>VFP KeyPreview stub — stored for source compatibility. Not implemented.</summary>
 		PROPERTY KeyPreview AS LOGIC AUTO
 
 		// ── LockScreen ────────────────────────────────────────────────────────
+		/// <summary>When <c>.T.</c>, suspends layout updates (<c>SuspendLayout</c>) to batch changes; restoring to <c>.F.</c> resumes layout (<c>ResumeLayout(TRUE)</c>).</summary>
 		PROPERTY LockScreen AS LOGIC
 			GET
 				RETURN SELF:_lockScreen
@@ -86,7 +99,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _lockScreen AS LOGIC
 
 		// ── DockPosition ──────────────────────────────────────────────────────
-		// VFP DockPosition: 0=Top, 1=Left, 2=Right, 3=Bottom, 4=Float (undocked)
+		/// <summary>VFP dock position: 0=Top, 1=Left, 2=Right, 3=Bottom, 4=Float (undocked). Maps to <see cref="System.Windows.Forms.Control.Dock"/>; Float also shows the grip.</summary>
 		PROPERTY DockPosition AS LONG
 			GET
 				SWITCH SELF:Dock
@@ -112,13 +125,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Buttons collection ────────────────────────────────────────────────
-		// 1-based indexed property: ToolBar.Buttons[i]
+		/// <summary>1-based indexed access to the button items. Returns the <see cref="VFPToolStripButton"/> at VFP position <paramref name="i"/>.</summary>
 		PROPERTY Buttons[ i AS LONG ] AS VFPToolStripButton
 			GET
 				RETURN SELF:_buttons[ (INT) i - 1 ]
 			END GET
 		END PROPERTY
 
+		/// <summary>Number of <see cref="VFPToolStripButton"/> items currently in <see cref="Buttons"/>.</summary>
 		PROPERTY ButtonCount AS LONG
 			GET
 				RETURN (LONG) SELF:_buttons:Count
@@ -126,9 +140,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── AddObject override ────────────────────────────────────────────────
-		// VFP: ToolBar.AddObject(cName, "CommandButton" [, caption])
-		// If cClass resolves to a button-style VFP class, create a ToolStripButton
-		// and add it to Items + _buttons.  Fall through to base for other classes.
+		/// <summary>
+		/// Creates a toolbar item at runtime. <c>"CommandButton"</c> → <see cref="VFPToolStripButton"/>;
+		/// <c>"Separator"</c> → <see cref="System.Windows.Forms.ToolStripSeparator"/>; other class names
+		/// → <c>CreateInstance</c> fallback. The new item is registered as a dynamic property under <paramref name="cName"/>.
+		/// </summary>
 		METHOD AddObject( cName, cClass, cOLEClass, aInit1, aInit2 ) AS USUAL CLIPPER
 			LOCAL sName  AS STRING
 			LOCAL sClass AS STRING
@@ -189,7 +205,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	END CLASS
 
 	/// <summary>
-	/// ToolStripButton extended with VFP Picture/DownPicture/DisabledPicture properties.
+	/// <see cref="System.Windows.Forms.ToolStripButton"/> extended with VFP image-swapping semantics.<br/>
+	/// <see cref="Picture"/> loads the normal image; <see cref="DownPicture"/> is shown during a click;
+	/// <see cref="DisabledPicture"/> is shown when the button is unavailable. Images are loaded on demand
+	/// via <c>VFPTools.ImageFromFile</c>.
 	/// </summary>
 	CLASS VFPToolStripButton INHERIT System.Windows.Forms.ToolStripButton
 
@@ -197,6 +216,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _downPicture     AS STRING
 		PRIVATE _disabledPicture AS STRING
 
+		/// <summary>Path to the normal button image. Loaded immediately unless the button is pressed or disabled.</summary>
 		PROPERTY Picture AS STRING
 			GET
 				RETURN SELF:_picture
@@ -209,6 +229,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>Path to the image shown while the button is being clicked. Loaded transiently in <see cref="OnClick"/>.</summary>
 		PROPERTY DownPicture AS STRING
 			GET
 				RETURN SELF:_downPicture
@@ -218,6 +239,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		/// <summary>Path to the image shown when the button is unavailable (disabled). Applied by <see cref="OnAvailableChanged"/>.</summary>
 		PROPERTY DisabledPicture AS STRING
 			GET
 				RETURN SELF:_disabledPicture
@@ -227,7 +249,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// Swap image when enabled state changes
+		/// <summary>Swaps to <see cref="DisabledPicture"/> when the button becomes unavailable; restores <see cref="Picture"/> when it becomes available again.</summary>
 		PROTECTED OVERRIDE METHOD OnAvailableChanged( e AS System.EventArgs ) AS VOID STRICT
 			SUPER:OnAvailableChanged( e )
 			IF !SELF:Available .AND. !String.IsNullOrEmpty(SELF:_disabledPicture)
@@ -236,7 +258,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:Image := VFPTools.ImageFromFile(SELF:_picture)
 			ENDIF
 
-		// Track pressed state to swap DownPicture
+		/// <summary>Temporarily shows <see cref="DownPicture"/> during the click, then restores <see cref="Picture"/> after the base handler fires.</summary>
 		PROTECTED OVERRIDE METHOD OnClick( e AS System.EventArgs ) AS VOID STRICT
 			IF !String.IsNullOrEmpty(SELF:_downPicture)
 				SELF:Image := VFPTools.ImageFromFile(SELF:_downPicture)

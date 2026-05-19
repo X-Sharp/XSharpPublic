@@ -13,9 +13,13 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFP compatible PageFrame class.
-	/// Maps to System.Windows.Forms.TabControl.
-	/// Each VFP Page maps to a TabPage.
+	/// VFP-compatible tab container that wraps <see cref="System.Windows.Forms.TabControl"/>.<br/>
+	/// Each VFP <c>Page</c> corresponds to a <see cref="System.Windows.Forms.TabPage"/> (typed as <see cref="Page"/>).
+	/// Supports VFP tab properties: <see cref="ActivePage"/> (1-based), <see cref="PageCount"/> (adds/removes tabs),
+	/// <see cref="Tabs"/> (show/hide tab strip), <see cref="TabOrientation"/> (0-3 = Top/Left/Bottom/Right),
+	/// <see cref="TabStyle"/> (0=Rounded/1=Straight), <see cref="TabStretch"/> (0=fill/1=fixed),
+	/// <see cref="PageHeight"/>, <see cref="PageWidth"/>.<br/>
+	/// Fires VFP <c>Activate</c> and <c>Deactivate</c> on each <see cref="Page"/> when the selection changes.
 	/// </summary>
 	PARTIAL CLASS PageFrame INHERIT System.Windows.Forms.TabControl
 
@@ -35,6 +39,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── SelectedIndexChanged → Activate/Deactivate ───────────────────────
 		PRIVATE _lastSelectedIndex AS INT
 
+		/// <summary>Fires <c>Deactivate</c> on the previously selected <see cref="Page"/> and <c>Activate</c> on the newly selected one, then updates <see cref="_lastSelectedIndex"/>.</summary>
 		PROTECTED OVERRIDE METHOD OnSelectedIndexChanged( e AS System.EventArgs ) AS VOID STRICT
 			// Deactivate the previously selected page
 			IF SELF:_lastSelectedIndex >= 0 .AND. SELF:_lastSelectedIndex < SELF:TabPages:Count
@@ -54,7 +59,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 
 		// ── ActivePage ───────────────────────────────────────────────────────
-		// VFP ActivePage is 1-based; WinForms SelectedIndex is 0-based.
+		/// <summary>VFP 1-based index of the currently selected tab. Maps to <see cref="System.Windows.Forms.TabControl.SelectedIndex"/> + 1. Ignored if out of range.</summary>
 		PROPERTY ActivePage AS LONG
 			GET
 				RETURN SELF:SelectedIndex + 1
@@ -67,6 +72,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── PageCount ────────────────────────────────────────────────────────
+		/// <summary>Number of pages (tabs). Setting a larger value adds new <see cref="Page"/> instances with default captions; setting a smaller value removes pages from the end.</summary>
 		PROPERTY PageCount AS LONG
 			GET
 				RETURN SELF:TabPages:Count
@@ -84,9 +90,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Pages ─────────────────────────────────────────────────────────────
-		// VFP: PageFrame.Pages(n) is 1-based; returns the nth Page object.
-		// We expose a VFPPageCollection wrapper that supports both indexed property
-		// access (Pages[n]) and direct call-syntax via the Item default property.
+		/// <summary>Returns a <see cref="VFPPageCollection"/> wrapper that exposes VFP-style 1-based access to the tab pages via <c>Pages(n)</c> or <c>Pages[n]</c>.</summary>
 		PROPERTY Pages AS VFPPageCollection
 			GET
 				RETURN VFPPageCollection{ SELF }
@@ -94,7 +98,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── Tabs ─────────────────────────────────────────────────────────────
-		// .T. = show tabs normally; .F. = hide tab strip entirely
+		/// <summary>When <c>.T.</c> (default), the tab strip is visible. When <c>.F.</c>, the strip is hidden by setting <c>SizeMode = Fixed</c> and <c>ItemSize.Height = 1</c>.</summary>
 		PROPERTY Tabs AS LOGIC
 			GET
 				RETURN SELF:_tabsVisible
@@ -114,7 +118,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _tabsVisible AS LOGIC
 
 		// ── TabOrientation ───────────────────────────────────────────────────
-		// VFP: 0=Top (default), 1=Left, 2=Bottom, 3=Right
+		/// <summary>Position of the tab strip: 0=Top (default), 1=Left, 2=Bottom, 3=Right. Maps to <see cref="System.Windows.Forms.TabControl.Alignment"/>.</summary>
 		PROPERTY TabOrientation AS LONG
 			GET
 				SWITCH SELF:Alignment
@@ -136,7 +140,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── TabStyle ─────────────────────────────────────────────────────────
-		// VFP: 0=Rounded (default), 1=Straight
+		/// <summary>Tab appearance: 0=Rounded/Normal (default), 1=Straight/Buttons. Maps to <see cref="System.Windows.Forms.TabControl.Appearance"/>.</summary>
 		PROPERTY TabStyle AS LONG
 			GET
 				RETURN IIF( SELF:Appearance == TabAppearance.Normal, 0, 1 )
@@ -147,8 +151,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── TabStretch ────────────────────────────────────────────────────────
-		// VFP: 0=stretch tabs to fill tab bar width (default), 1=don't stretch
-		// Maps to TabControl.SizeMode: Normal (stretch) vs Fixed (don't stretch).
+		/// <summary>Tab sizing: 0=stretch tabs to fill the tab bar width (default, <c>SizeMode.Normal</c>), 1=fixed width (<c>SizeMode.Fixed</c>).</summary>
 		PROPERTY TabStretch AS LONG
 			GET
 				RETURN IIF(SELF:SizeMode == TabSizeMode.Normal, 0, 1)
@@ -163,9 +166,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── PageHeight ────────────────────────────────────────────────────────
-		// VFP PageHeight is the pixel height of the content area of each tab page.
-		// In WinForms this is the TabControl height minus the tab-strip height.
-		// Setting it resizes the whole TabControl so the content area matches.
+		/// <summary>Pixel height of the page content area (tab strip excluded). Getting approximates <c>Height − ItemSize.Height − 4</c>; setting adjusts the total control height to match.</summary>
 		PROPERTY PageHeight AS LONG
 			GET
 				// Approximate: total height minus one row of tabs
@@ -179,6 +180,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		// ── PageWidth ─────────────────────────────────────────────────────────
+		/// <summary>Pixel width of the page content area. Maps directly to the control's <c>Width</c>.</summary>
 		PROPERTY PageWidth AS LONG
 			GET
 				RETURN SELF:Width
@@ -192,17 +194,21 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── Resize / Moved events ─────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
+		/// <summary>Name of the VFP method called when the page frame is resized.</summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
 		PROPERTY vfpResize AS STRING GET _VFPResize?:SendTo SET _VFPResize := VFPOverride{SELF, VALUE}
 
+		/// <summary>Fires the <c>vfpResize</c> handler when the control is resized.</summary>
 		PROTECTED OVERRIDE METHOD OnResize(e AS System.EventArgs) AS VOID
 			SUPER:OnResize(e)
 			IF SELF:_VFPResize != NULL ; SELF:_VFPResize:Call() ; ENDIF
 
 		PRIVATE _VFPMoved AS VFPOverride
+		/// <summary>Name of the VFP method called when the page frame is moved.</summary>
 		[System.ComponentModel.Category("VFP Events"), System.ComponentModel.DefaultValue("")];
 		PROPERTY vfpMoved AS STRING GET _VFPMoved?:SendTo SET _VFPMoved := VFPOverride{SELF, VALUE}
 
+		/// <summary>Fires the <c>vfpMoved</c> handler when the control is moved.</summary>
 		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
 			SUPER:OnMove(e)
 			IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
@@ -218,7 +224,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR( owner AS System.Windows.Forms.TabControl ) STRICT
 			SELF:_owner := owner
 
-		// Default indexed property — VFP calls Pages(n) with 1-based n
+		/// <summary>Returns the <see cref="Page"/> at VFP 1-based position <paramref name="n"/>. Returns <c>NULL_OBJECT</c> if out of range.</summary>
 		PROPERTY Item[ n AS INT ] AS Page
 			GET
 				IF n >= 1 .AND. n <= SELF:_owner:TabPages:Count
@@ -228,6 +234,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 		END PROPERTY
 
+		/// <summary>Number of pages in the owning <see cref="PageFrame"/>.</summary>
 		PROPERTY Count AS INT
 			GET
 				RETURN SELF:_owner:TabPages:Count

@@ -612,6 +612,65 @@ BEGIN NAMESPACE VFPXPorterLib
             xsprj:AddReference("XSharp.VFP",TRUE)
         END METHOD
 
+        // Returns VCX paths in dependency-first order (a library comes before every library that depends on it).
+        // Uses Kahn's BFS algorithm. Logs a warning and appends remaining nodes if a cycle is detected.
+        PRIVATE METHOD TopologicalSort(deps AS Dictionary<STRING, HashSet<STRING>>) AS List<STRING>
+            // Seed every node (both keys and their dependencies)
+            VAR inDegree := Dictionary<STRING, INT>{ StringComparer.OrdinalIgnoreCase }
+            VAR outEdges := Dictionary<STRING, List<STRING>>{ StringComparer.OrdinalIgnoreCase }
+            FOREACH VAR kv IN deps
+                IF !inDegree:ContainsKey(kv:Key)
+                    inDegree:Add(kv:Key, 0)
+                ENDIF
+                FOREACH dep AS STRING IN kv:Value
+                    IF !inDegree:ContainsKey(dep)
+                        inDegree:Add(dep, 0)
+                    ENDIF
+                NEXT
+            NEXT
+            // Set in-degree of each node = number of libraries it depends on;
+            // build outEdges so that processing dep decrements its dependents.
+            FOREACH VAR kv IN deps
+                inDegree[kv:Key] := kv:Value:Count
+                FOREACH dep AS STRING IN kv:Value
+                    IF !outEdges:ContainsKey(dep)
+                        outEdges:Add(dep, List<STRING>{})
+                    ENDIF
+                    outEdges[dep]:Add(kv:Key)
+                NEXT
+            NEXT
+            // BFS from all zero-in-degree nodes (libraries with no dependencies)
+            VAR queue := Queue<STRING>{}
+            FOREACH VAR kv IN inDegree
+                IF kv:Value == 0
+                    queue:Enqueue(kv:Key)
+                ENDIF
+            NEXT
+            VAR result := List<STRING>{}
+            DO WHILE queue:Count > 0
+                VAR node := queue:Dequeue()
+                result:Add(node)
+                IF outEdges:ContainsKey(node)
+                    FOREACH dependent AS STRING IN outEdges[node]
+                        inDegree[dependent] := inDegree[dependent] - 1
+                        IF inDegree[dependent] == 0
+                            queue:Enqueue(dependent)
+                        ENDIF
+                    NEXT
+                ENDIF
+            ENDDO
+            // If nodes remain, a cycle exists — append them with a warning
+            IF result:Count < inDegree:Count
+                XPorterLogger.Instance:Warning("TopologicalSort: circular dependency detected among VCX files; build order may be incorrect.")
+                FOREACH VAR kv IN inDegree
+                    IF !result:Contains(kv:Key)
+                        result:Add(kv:Key)
+                    ENDIF
+                NEXT
+            ENDIF
+            RETURN result
+        END METHOD
+
         // Generate a MSBuild file
         PRIVATE METHOD GenerateSolution( stdDef AS STRING ) AS VOID
             LOCAL xsLibs := NULL AS VSProject

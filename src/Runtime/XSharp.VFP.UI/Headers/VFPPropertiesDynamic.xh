@@ -10,12 +10,15 @@
 #ifndef VFP_PROPERTIESDYNAMIC_XH
 #define VFP_PROPERTIESDYNAMIC_XH
 
+    /// <summary>Adds a dynamic property named <paramref name="cPropertyName"/> with the given value, visibility, and description. Delegates to <c>_AddProperty</c>.</summary>
     METHOD AddProperty(cPropertyName AS STRING, uValue AS USUAL, nVisibility := PropertyVisibility.Public AS LONG, cDescription := "" AS STRING) AS LOGIC
         RETURN SELF:_AddProperty(cPropertyName, uValue, nVisibility, cDescription)
 
+    /// <summary>Removes the dynamic property named <paramref name="cPropertyName"/>. Delegates to <c>_RemoveProperty</c>.</summary>
     METHOD RemoveProperty(cPropertyName AS STRING) AS LOGIC
         RETURN SELF:_RemoveProperty(cPropertyName)
 
+    /// <summary>Returns <c>.T.</c> if the dynamic property named <paramref name="cPropertyName"/> exists on this object.</summary>
     METHOD HasProperty(cPropertyName AS STRING) AS LOGIC
          RETURN _Properties:HasProperty(cPropertyName)
 

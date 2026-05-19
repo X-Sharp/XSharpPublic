@@ -5,12 +5,14 @@
 // See License.txt in the project root for license information.
 
 
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-		[EditorBrowsable(EditorBrowsableState.Never)];
-		[Bindable(false)];
-		[Browsable(false)];
+/// <summary>Maps each child control to its VFP <c>ControlSource</c> expression (e.g. <c>"Customers.LastName"</c>). Populated by generated code; consumed by the form's <c>DoBindings</c>.</summary>
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+[EditorBrowsable(EditorBrowsableState.Never)];
+[Bindable(false)];
+[Browsable(false)];
 PROPERTY BindingDefinition AS System.Collections.Generic.Dictionary<System.Windows.Forms.Control,STRING> AUTO
 
+/// <summary>Registers a <c>ControlSource</c> binding for <paramref name="sender"/>. Initialises <see cref="BindingDefinition"/> on first call.</summary>
 METHOD SetBinding( sender AS System.Windows.Forms.Control, bindingInfo AS STRING ) AS VOID
 	//
 	IF SELF:BindingDefinition == NULL

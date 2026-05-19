@@ -2,21 +2,31 @@
 #include "VFPControl.xh"
 #ifndef VFP_ITEMS_XH
 #define VFP_ITEMS_XH
+/// <summary>Colour of the control's border.</summary>
 PROPERTY BorderColor AS System.Drawing.Color AUTO
 
+/// <summary>Background colour applied to the control when it is disabled.</summary>
 PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
+/// <summary>Foreground (text) colour applied to the control when it is disabled.</summary>
 PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
-
+/// <summary>VFP DisabledEditItemBackColor stub — stored for source compatibility.</summary>
 PROPERTY DisabledEditItemBackColor AS LONG AUTO
+/// <summary>VFP DisabledEditItemForeColor stub — stored for source compatibility.</summary>
 PROPERTY DisabledEditItemForeColor AS LONG AUTO
+/// <summary>VFP IncrementalSearch stub — stored for source compatibility.</summary>
 PROPERTY IncrementalSearch AS LOGIC AUTO
 // MultiSelect implemented in ListBox.prg; not applicable to ComboBox
+/// <summary>VFP NewIndex stub — index of the last item added by <c>AddItem</c>. Stored for source compatibility.</summary>
 PROPERTY NewIndex AS LONG AUTO GET
+/// <summary>VFP NewItemID stub — stored for source compatibility.</summary>
 PROPERTY NewItemID AS LONG AUTO
+/// <summary>VFP NumberOfElements stub — stored for source compatibility.</summary>
 PROPERTY NumberOfElements AS LONG AUTO
+/// <summary>Background colour for selected items in the list.</summary>
 PROPERTY SelectedBackColor AS System.Drawing.Color AUTO
+/// <summary>Foreground (text) colour for selected items in the list.</summary>
 PROPERTY SelectedForeColor AS System.Drawing.Color AUTO
 #endif
 

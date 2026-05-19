@@ -6,6 +6,12 @@
 // See License.txt in the project root for license information.
 
 PRIVATE _VFPMousePointer := 0 AS INT
+/// <summary>
+/// VFP mouse cursor shape:<br/>
+/// 0=Default, 1=Arrow, 2=Cross, 3=IBeam, 5=SizeAll, 6=SizeNESW, 7=SizeNS, 8=SizeNWSE,
+/// 9=SizeWE, 10=UpArrow, 11=Wait, 12=No, 15=Hand.<br/>
+/// Values 4, 13, 14, 16 fall back to Arrow. Maps to <see cref="System.Windows.Forms.Control.Cursor"/>.
+/// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the shape of the mouse cursor")];
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY MousePointer AS INT

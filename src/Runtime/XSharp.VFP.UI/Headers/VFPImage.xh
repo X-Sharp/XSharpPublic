@@ -1,20 +1,24 @@
 ﻿
 #ifndef VFP_IMAGE_XH
 #define VFP_IMAGE_XH
+/// <summary>Background colour applied when the control is disabled.</summary>
 PROPERTY DisabledBackColor AS System.Drawing.Color AUTO
 
+/// <summary>Foreground (text) colour applied when the control is disabled.</summary>
 PROPERTY DisabledForeColor AS System.Drawing.Color AUTO
 
+/// <summary>Path to the image displayed when the control is disabled. Loaded by <c>_ApplyPicture</c>.</summary>
 [System.ComponentModel.DefaultValue("")];
 PROPERTY DisabledPicture AS STRING AUTO
 
+/// <summary>Path to the image displayed when the control is in its pressed/checked state. Loaded by <c>_ApplyPicture</c>.</summary>
 [System.ComponentModel.DefaultValue("")];
-		PROPERTY DownPicture AS STRING AUTO
+PROPERTY DownPicture AS STRING AUTO
 
-
-        PRIVATE _picture AS STRING
-        [System.ComponentModel.DefaultValue("")];
-        PROPERTY Picture AS STRING
+PRIVATE _picture AS STRING
+/// <summary>Path to the image file displayed in the normal enabled state. Setting this loads the image immediately via <c>VFPTools.ImageFromFile</c>.</summary>
+[System.ComponentModel.DefaultValue("")];
+PROPERTY Picture AS STRING
             GET
                 IF SELF:_picture == NULL
                     SELF:_picture := ""
@@ -28,16 +32,18 @@ PROPERTY DisabledPicture AS STRING AUTO
 			END SET
         END PROPERTY
 
+/// <summary>VFP PictureMargin stub — stored for source compatibility.</summary>
 [System.ComponentModel.DefaultValue(0)];
-        PROPERTY PictureMargin AS LONG AUTO
+PROPERTY PictureMargin AS LONG AUTO
 
 #ifndef NO_PICTUREPOSITION
         [System.ComponentModel.DefaultValue(0)];
             PROPERTY PicturePosition AS LONG AUTO
 #endif
 
-        [System.ComponentModel.DefaultValue(0)];
-		PROPERTY PictureSpacing AS LONG AUTO
+/// <summary>VFP PictureSpacing stub — stored for source compatibility.</summary>
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY PictureSpacing AS LONG AUTO
 
 #endif
 

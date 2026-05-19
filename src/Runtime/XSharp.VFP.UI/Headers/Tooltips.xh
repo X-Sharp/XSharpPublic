@@ -4,9 +4,10 @@
 // See License.txt in the project root for license information.
 
 
+		/// <summary>When <c>.T.</c>, the form-level tooltip component is active and will display tooltip text for child controls.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Activate the ToolTip")];
 		[System.ComponentModel.DefaultValue(TRUE)];
-        PROPERTY ShowTips AS LOGIC
+		PROPERTY ShowTips AS LOGIC
 			GET
 				IF SELF:_vfpToolTip != NULL
 					RETURN SELF:_vfpToolTip:Active
@@ -22,6 +23,7 @@
 
 		PROTECTED _vfpToolTip AS System.Windows.Forms.ToolTip
 
+		/// <summary>Registers <paramref name="caption"/> as the tooltip text for <paramref name="sender"/> on the form-level tooltip component.</summary>
 		METHOD SetToolTipText( sender AS System.Windows.Forms.Control, caption AS STRING ) AS VOID
 			IF SELF:_vfpToolTip != NULL .AND. sender != NULL
 				SELF:_vfpToolTip:SetToolTip( sender, caption )

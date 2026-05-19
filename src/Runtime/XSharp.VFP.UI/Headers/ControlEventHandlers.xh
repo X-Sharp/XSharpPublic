@@ -12,9 +12,11 @@ PRIVATE _VFPMouseEnter AS VFPOverride
 
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the MouseEnter handling method. Occurs when a mouse cursor moves into a control")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the mouse cursor enters the control. Passes nButton, nShift, nXCoord, nYCoord.</summary>
 PROPERTY vfpMouseEnter AS STRING GET _VFPMouseEnter?:SendTo SET Set_MouseEnter( VFPOverride{SELF, VALUE} )
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the MouseLeave handling method. Occurs when a mouse cursor exits a control")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the mouse cursor leaves the control. Passes nButton, nShift, nXCoord, nYCoord.</summary>
 PROPERTY vfpMouseLeave AS STRING GET _VFPMouseLeave?:SendTo SET Set_MouseLeave( VFPOverride{SELF, VALUE} )
 
 
@@ -110,6 +112,7 @@ PRIVATE METHOD OnVFPMouseLeave(sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPValid AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Valid handling method. Occurs before a control loses the focus.")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called just before the control loses focus (<c>Validating</c>). Return <c>.F.</c> or 0 to cancel the focus change.</summary>
 PROPERTY vfpValid AS STRING GET _VFPValid?:SendTo SET Set_Valid( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Valid( methodCall AS VFPOverride ) AS VOID
@@ -142,6 +145,7 @@ END METHOD
 PRIVATE _VFPWhen AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the When handling method. Occurs before a control receives the focus.")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called just before the control receives focus (<c>Enter</c>). Return <c>.F.</c> to move focus to the next control.</summary>
 PROPERTY vfpWhen AS STRING GET _VFPWhen?:SendTo SET Set_When( VFPOverride{SELF, VALUE} )
 
 METHOD Set_When( methodCall AS VFPOverride ) AS VOID
@@ -154,6 +158,7 @@ METHOD Set_When( methodCall AS VFPOverride ) AS VOID
 PRIVATE _VFPGotFocus AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the GotFocus handling method. Occurs when an object receives the focus, either by user action or through code.")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the control receives focus. Fires after <see cref="vfpWhen"/> (if set) returns <c>.T.</c>.</summary>
 PROPERTY vfpGotFocus AS STRING GET _VFPGotFocus?:SendTo SET Set_GotFocus( VFPOverride{SELF, VALUE} )
 
 METHOD Set_GotFocus( methodCall AS VFPOverride ) AS VOID
@@ -197,6 +202,7 @@ PRIVATE METHOD OnVFPGotFocus( sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPLostFocus AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the LostFocus handling method. Occurs when an object loses the focus.")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the control loses focus (<c>Leave</c> event).</summary>
 PROPERTY vfpLostFocus AS STRING GET _VFPLostFocus?:SendTo SET Set_LostFocus( VFPOverride{SELF, VALUE} )
 
 METHOD Set_LostFocus( methodCall AS VFPOverride ) AS VOID
@@ -214,6 +220,7 @@ PRIVATE METHOD OnVFPLostFocus( sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPInteractiveChange AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the InteractiveChange handling method. Occurs when the user changes the value of a control using the keyboard or the mouse.")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the user changes the control's value via keyboard or mouse. Not fired for programmatic value changes.</summary>
 PROPERTY vfpInteractiveChange AS STRING GET _VFPInteractiveChange?:SendTo SET Set_InteractiveChange( VFPOverride{SELF, VALUE} )
 
 
@@ -233,6 +240,7 @@ PRIVATE METHOD OnVFPInteractiveChange( sender AS OBJECT, e AS System.EventArgs) 
 PRIVATE _VFPClick AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Click")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the user clicks the control.</summary>
 PROPERTY vfpClick AS STRING GET _VFPClick?:SendTo SET Set_Click( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Click( methodCall AS VFPOverride ) AS VOID
@@ -250,6 +258,7 @@ PRIVATE METHOD OnVFPClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPDblClick AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("DblClick")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the user double-clicks the control.</summary>
 PROPERTY vfpDblClick AS STRING GET _VFPDblClick?:SendTo SET Set_DblClick( VFPOverride{SELF, VALUE} )
 
 METHOD Set_DblClick( methodCall AS VFPOverride ) AS VOID
@@ -267,6 +276,7 @@ PRIVATE METHOD OnVFPDblClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPDestroy AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Destroy")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the control's native window handle is destroyed (<c>HandleDestroyed</c>).</summary>
 PROPERTY vfpDestroy AS STRING GET _VFPDestroy?:SendTo SET Set_Destroy( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Destroy( methodCall AS VFPOverride ) AS VOID
@@ -283,6 +293,7 @@ PRIVATE METHOD OnVFPDestroy( sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPMouseUp AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseUp")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when a mouse button is released over the control. Passes nButton, nShift, nXCoord, nYCoord. Also triggers <see cref="vfpRightCLick"/> or <see cref="vfpMiddleClick"/> when applicable.</summary>
 PROPERTY vfpMouseUp AS STRING GET _VFPMouseUp?:SendTo SET Set_MouseUp( VFPOverride{SELF, VALUE} )
 
 METHOD Set_MouseUp( methodCall AS VFPOverride ) AS VOID
@@ -332,6 +343,7 @@ PRIVATE METHOD OnVFPMouseUp(sender AS OBJECT, e AS System.Windows.Forms.MouseEve
 PRIVATE _VFPMouseDown AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseDown")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when a mouse button is pressed over the control. Passes nButton, nShift, nXCoord, nYCoord.</summary>
 PROPERTY vfpMouseDown AS STRING GET _VFPMouseDown?:SendTo SET Set_MouseDown( VFPOverride{SELF, VALUE} )
 
 METHOD Set_MouseDown( methodCall AS VFPOverride ) AS VOID
@@ -374,6 +386,7 @@ PRIVATE METHOD OnVFPMouseDown(sender AS OBJECT, e AS System.Windows.Forms.MouseE
 PRIVATE _VFPMouseMove AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseMove")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the mouse moves over the control. Passes nButton, nShift, nXCoord, nYCoord.</summary>
 PROPERTY vfpMouseMove AS STRING GET _VFPMouseMove?:SendTo SET Set_MouseMove( VFPOverride{SELF, VALUE} )
 
 METHOD Set_MouseMove( methodCall AS VFPOverride ) AS VOID
@@ -417,6 +430,7 @@ PRIVATE METHOD OnVFPMouseMove(sender AS OBJECT, e AS System.Windows.Forms.MouseE
 PRIVATE _VFPRightClick AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("RightClick")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the user releases the right mouse button over the control. Fired from the <see cref="vfpMouseUp"/> handler.</summary>
 PROPERTY vfpRightCLick AS STRING GET _VFPRightClick?:SendTo SET Set_RightClick( VFPOverride{SELF, VALUE} )
 
 METHOD Set_RightClick( methodCall AS VFPOverride ) AS VOID
@@ -433,6 +447,7 @@ PRIVATE METHOD OnVFPRightClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPMiddleClick AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MiddleClick")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the user releases the middle mouse button over the control. Fired from the <see cref="vfpMouseUp"/> handler.</summary>
 PROPERTY vfpMiddleClick AS STRING GET _VFPMiddleClick?:SendTo SET Set_MiddleClick( VFPOverride{SELF, VALUE} )
 
 METHOD Set_MiddleClick( methodCall AS VFPOverride ) AS VOID
@@ -448,6 +463,7 @@ PRIVATE METHOD OnVFPMiddleClick( sender AS OBJECT, e AS System.EventArgs) AS VOI
 PRIVATE _VFPMouseWheel AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseWheel")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the mouse wheel is rotated over the control. Passes nButton, nShift, nXCoord, nYCoord, nDelta.</summary>
 PROPERTY vfpMouseWheel AS STRING GET _VFPMouseWheel?:SendTo SET Set_MouseWheel( VFPOverride{SELF, VALUE} )
 
 METHOD Set_MouseWheel( methodCall AS VFPOverride ) AS VOID
@@ -476,6 +492,7 @@ PRIVATE METHOD OnVFPMouseWheel(sender AS OBJECT, e AS System.Windows.Forms.Mouse
 PRIVATE _VFPMessage AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Occurs when the mouse pointer moves over a control; used to display StatusBarText.")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the mouse enters the control; typically used to update status-bar text.</summary>
 PROPERTY vfpMessage AS STRING GET _VFPMessage?:SendTo SET Set_Message( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Message( methodCall AS VFPOverride ) AS VOID
@@ -493,6 +510,7 @@ PRIVATE METHOD OnVFPMessage(sender AS OBJECT, e AS System.EventArgs) AS VOID
 PRIVATE _VFPKeyPress AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyPress")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the user presses a character key while the control has focus. Called from the control's <c>OnKeyPress</c> override.</summary>
 PROPERTY vfpKeyPress AS STRING GET _VFPKeyPress?:SendTo SET Set_KeyPress( VFPOverride{SELF, VALUE} )
 
 METHOD Set_KeyPress( methodCall AS VFPOverride ) AS VOID
@@ -509,6 +527,7 @@ PRIVATE METHOD OnVFPKeyPress( sender AS OBJECT, e AS System.Windows.Forms.KeyPre
 PRIVATE _VFPKeyDown AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyDown")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when a key is pressed down. Passes nKeyCode, nShiftAltCtrl (bit 1=Shift, 2=Ctrl, 4=Alt).</summary>
 PROPERTY vfpKeyDown AS STRING GET _VFPKeyDown?:SendTo SET Set_KeyDown( VFPOverride{SELF, VALUE} )
 
 METHOD Set_KeyDown( methodCall AS VFPOverride ) AS VOID
@@ -530,6 +549,7 @@ PRIVATE METHOD OnVFPKeyDown( sender AS OBJECT, e AS System.Windows.Forms.KeyEven
 PRIVATE _VFPKeyUp AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyUp")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when a key is released. Passes nKeyCode, nShiftAltCtrl (bit 1=Shift, 2=Ctrl, 4=Alt).</summary>
 PROPERTY vfpKeyUp AS STRING GET _VFPKeyUp?:SendTo SET Set_KeyUp( VFPOverride{SELF, VALUE} )
 
 METHOD Set_KeyUp( methodCall AS VFPOverride ) AS VOID
@@ -551,6 +571,7 @@ PRIVATE METHOD OnVFPKeyUp( sender AS OBJECT, e AS System.Windows.Forms.KeyEventA
 PRIVATE _VFPRefresh AS VFPOverride
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
 [System.ComponentModel.DefaultValue(NULL)];
+/// <summary>Name of the VFP method called when the control's <c>Refresh()</c> is invoked. Stored and called by the owning container's <c>Refresh</c> override.</summary>
 PROPERTY vfpRefresh AS STRING GET _VFPRefresh?:SendTo SET Set_Refresh( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Refresh( methodCall AS VFPOverride ) AS VOID

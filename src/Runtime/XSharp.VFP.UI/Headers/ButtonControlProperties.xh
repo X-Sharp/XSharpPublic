@@ -10,7 +10,8 @@
 
 
 
-					PRIVATE _backStyle := 1 AS INT
+		PRIVATE _backStyle := 1 AS INT
+		/// <summary>VFP BackStyle: 0=Transparent (sets <c>FlatStyle.Flat</c> + transparent background), 1=Opaque/default.</summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(false)];
@@ -32,8 +33,9 @@
 
 
 
-	    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
-            [EditorBrowsable(EditorBrowsableState.Never)];
+		/// <summary>The button's displayed image. Wraps <c>SUPER:Image</c> and is hidden from the designer; images are managed via <c>Picture</c> / <c>DownPicture</c> / <c>DisabledPicture</c>.</summary>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Browsable(FALSE)];
 		NEW PROPERTY Image AS System.Drawing.Image
             GET

@@ -10,6 +10,7 @@ PRIVATE _VFPRefresh AS VFPOverride
 
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
 [System.ComponentModel.DefaultValue("")];
+/// <summary>Name of the VFP method called when the form's <c>Refresh()</c> is invoked. Stored and called directly by the form's <c>Refresh</c> override.</summary>
 PROPERTY vfpRefresh AS STRING GET _VFPRefresh?:SendTo SET Set_Refresh( VFPOverride{SELF, value} )
 
 METHOD Set_Refresh( methodCall AS VFPOverride ) AS VOID

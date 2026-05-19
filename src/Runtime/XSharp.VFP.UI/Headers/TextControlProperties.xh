@@ -9,6 +9,7 @@
 #include "ControlProperties.xh"
 
 		PRIVATE _backStyle := 1 AS INT
+		/// <summary>VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default. WinForms text controls do not fully support transparency.</summary>
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(false)];

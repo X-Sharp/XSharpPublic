@@ -5,8 +5,7 @@
 // See License.txt in the project root for license information.
 
 
-		// Todo
-
+		/// <summary>Applies a single font-style flag (<c>'B'</c>=Bold, <c>'I'</c>=Italic, <c>'U'</c>=Underline, <c>'X'</c>=Strikeout) while preserving all other flags on the current font.</summary>
 		private method _SetFont(chStyle as char, lValue as LOGIC) AS VOID
 			VAR ft := SELF:Font
 			IF ft != NULL
@@ -42,9 +41,10 @@
 				VAR newFont := System.Drawing.Font{ ft:Name, ft.Size, (System.Drawing.FontStyle)style, ft.Unit}
 				SELF:Font := newFont
 			ENDIF
+		/// <summary>When <c>.T.</c>, the control font is bold. Maps to <c>Font.Bold</c> via <c>_SetFont</c>.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is bold")];
 		[System.ComponentModel.DefaultValue(FALSE)];
-        PROPERTY FontBold AS LOGIC
+		PROPERTY FontBold AS LOGIC
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -58,9 +58,9 @@
 			END SET
 		END PROPERTY
 
-		// Todo
+		/// <summary>When <c>.T.</c>, the control font is italic. Maps to <c>Font.Italic</c> via <c>_SetFont</c>.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is italic")];
-        [System.ComponentModel.DefaultValue(FALSE)];
+		[System.ComponentModel.DefaultValue(FALSE)];
 		PROPERTY FontItalic AS LOGIC
 			GET
 				VAR ft := SELF:Font
@@ -75,10 +75,10 @@
 			END SET
 		END PROPERTY
 
-		// Todo
+		/// <summary>When <c>.T.</c>, the control font is underlined. Maps to <c>Font.Underline</c> via <c>_SetFont</c>.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is underline")];
-        [System.ComponentModel.DefaultValue(FALSE)];
-        PROPERTY FontUnderline AS LOGIC
+		[System.ComponentModel.DefaultValue(FALSE)];
+		PROPERTY FontUnderline AS LOGIC
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -92,10 +92,10 @@
 			END SET
 		END PROPERTY
 
-		// Todo
+		/// <summary>When <c>.T.</c>, the control font has strikethrough. Maps to <c>Font.Strikeout</c> via <c>_SetFont</c>.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is strikethru")];
 		[System.ComponentModel.DefaultValue(FALSE)];
-        PROPERTY FontStrikeThru AS LOGIC
+		PROPERTY FontStrikeThru AS LOGIC
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -109,10 +109,10 @@
 			END SET
 		END PROPERTY
 
-		// Todo
+		/// <summary>Font size in points. Replaces the current font with a new <c>Font</c> at the specified size.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Font size")];
 		[System.ComponentModel.DefaultValue(9)];
-        PROPERTY FontSize AS Single
+		PROPERTY FontSize AS Single
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -130,10 +130,10 @@
 			END SET
 		END PROPERTY
 
-		// Todo
+		/// <summary>Font family name. Replaces the current font with a new <c>Font</c> using the specified family.</summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Font Name")];
 		[System.ComponentModel.DefaultValue("Arial")];
-        PROPERTY FontName AS STRING
+		PROPERTY FontName AS STRING
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL

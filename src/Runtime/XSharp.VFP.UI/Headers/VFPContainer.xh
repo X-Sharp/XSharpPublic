@@ -12,6 +12,11 @@
 
 // METHOD AddObject(cName, cClass , cOLEClass , aInit1, aInit2 ) AS USUAL CLIPPER
 #ifndef NO_VFPCONTAINER_ADDOBJECT
+/// <summary>
+/// Creates an instance of <paramref name="cClass"/> (searched first in <c>XSharp.VFP.UI</c>, then bare),
+/// registers it as a dynamic property named <paramref name="cName"/>, and calls its <c>Init</c> method
+/// with any extra arguments. Returns <c>.T.</c> on success.
+/// </summary>
 METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
     LOCAL oObject AS USUAL
     //
@@ -64,18 +69,23 @@ METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
 
 
 #ifndef VFP_CONTROLCOUNT_OVERRIDE
+/// <summary>Number of child controls or objects in this container.</summary>
 PROPERTY ControlCount AS LONG AUTO
 #endif
 
+/// <summary>VFP NewObject stub — stored for source compatibility. Always returns <c>NIL</c>.</summary>
 METHOD NewObject(cObjectName, cClassName , cModule , cInApplication, eParameter1, eParameter2) AS USUAL CLIPPER
     RETURN NIL
 
+/// <summary>VFP RemoveObject stub — stored for source compatibility. Always returns <c>.F.</c>.</summary>
 METHOD RemoveObject(cObjectName AS STRING) AS LOGIC
     RETURN FALSE
 
+/// <summary>VFP Objects collection stub — stored for source compatibility.</summary>
 PROPERTY Objects AS Collection AUTO
 
     #ifndef NOSET
+/// <summary>VFP SetAll stub — stored for source compatibility. Always returns <c>NIL</c>.</summary>
 METHOD SetAll AS USUAL CLIPPER
     RETURN NIL
     #endif

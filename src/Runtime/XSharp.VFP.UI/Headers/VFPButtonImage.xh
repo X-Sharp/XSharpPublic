@@ -11,8 +11,8 @@
 #define VFP_BUTTON_IMAGE_XH
 
 // ── Style ─────────────────────────────────────────────────────────────────────
-// VFP Style: 0=standard, 1=graphical toggle (Appearance.Button).
 PRIVATE _style AS LONG
+/// <summary>VFP button/toggle style: 0=standard checkbox/radio appearance; 1=graphical toggle — renders as a push button (<c>Appearance.Button</c>).</summary>
 PROPERTY Style AS LONG
 	GET
 		RETURN _style
@@ -28,8 +28,8 @@ PROPERTY Style AS LONG
 END PROPERTY
 
 // ── Alignment ─────────────────────────────────────────────────────────────────
-// VFP: 0=button/dot on left (default), 1=button/dot on right.
 PRIVATE _alignment AS LONG
+/// <summary>VFP alignment: 0=check/dot on the left (default); 1=check/dot on the right. Maps to <c>CheckAlign</c>.</summary>
 PROPERTY Alignment AS LONG
 	GET
 		RETURN _alignment
@@ -45,7 +45,7 @@ PROPERTY Alignment AS LONG
 END PROPERTY
 
 // ── WordWrap ──────────────────────────────────────────────────────────────────
-// .T. = text wraps at control boundary; .F. = AutoEllipsis.
+/// <summary>When <c>.T.</c>, caption text wraps at the control boundary; when <c>.F.</c>, text is clipped with an ellipsis.</summary>
 PROPERTY WordWrap AS LOGIC
 	GET
 		RETURN !SELF:AutoEllipsis
@@ -57,9 +57,12 @@ PROPERTY WordWrap AS LOGIC
 END PROPERTY
 
 // ── PicturePosition ───────────────────────────────────────────────────────────
-// VFP: 0-2 image left, 3-5 image above, 6-8 image right, 9-11 image below,
-//      12-15 corner overlay, 16 center/background.
 PRIVATE _picturePosition AS LONG
+/// <summary>
+/// VFP image/text layout: 0–2=image left; 3–5=image above; 6–8=image right; 9–11=image below;
+/// 12–15=corner overlay; 16=center overlay.<br/>
+/// Maps to <c>TextImageRelation</c> and <c>ImageAlign</c>.
+/// </summary>
 PROPERTY PicturePosition AS LONG
 	GET
 		RETURN _picturePosition
@@ -89,7 +92,7 @@ PROPERTY PicturePosition AS LONG
 END PROPERTY
 
 // ── _ApplyPicture ─────────────────────────────────────────────────────────────
-// Priority: DisabledPicture (disabled) > DownPicture (checked) > Picture (normal).
+/// <summary>Selects and loads the correct image for the current state: <c>DisabledPicture</c> (disabled) &gt; <c>DownPicture</c> (checked) &gt; <c>Picture</c> (normal) &gt; no image.</summary>
 PRIVATE METHOD _ApplyPicture() AS VOID
 	IF !SELF:Enabled .AND. !String.IsNullOrEmpty(SELF:DisabledPicture)
 		SELF:Image := VFPTools.ImageFromFile(SELF:DisabledPicture)

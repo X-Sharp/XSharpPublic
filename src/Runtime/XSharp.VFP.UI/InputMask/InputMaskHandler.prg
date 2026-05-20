@@ -424,7 +424,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF !ok
                 LOCAL msg AS STRING
                 msg := IIF(!String.IsNullOrEmpty(SELF:RangeMessage), SELF:RangeMessage, ;
-                           "Value must be in range " + SELF:RangeMin:ToString() + " to " + SELF:RangeMax:ToString())
+                           "Value must be in range " + Str(SELF:RangeMin) + " to " + Str(SELF:RangeMax))
                 MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             ENDIF
             RETURN ok

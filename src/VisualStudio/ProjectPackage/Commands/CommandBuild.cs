@@ -1,11 +1,10 @@
 ﻿using Community.VisualStudio.Toolkit;
 
 using Microsoft.VisualStudio;
+using OLE=Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 using System;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -167,5 +166,40 @@ namespace XSharp.Project
         }
 
 
+    }
+    class BuildCommandFilter : OLE.IOleCommandTarget
+    {
+        static readonly Guid PackGuid = new Guid("{568ABDF7-D522-474D-9EED-34B5E5095BA5}");
+
+        public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds,
+            OLE.OLECMD[] prgCmds, IntPtr pCmdText)
+        {
+            var mustCheck = false;
+            var cmd = prgCmds[0].cmdID;
+            if (pguidCmdGroup == PackGuid && cmd == 8193 /*Pack*/)
+                mustCheck = true;
+            else if (pguidCmdGroup == VsMenus.guidStandardCommandSet2K)
+            {
+                if (cmd == 2005) // ECMD_PUBLISHSELECTION
+                    mustCheck = true;
+            }
+            if (mustCheck)
+            {
+                bool show = false;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    show = await Commands.ProjectIsXSharpSdkProjectAsync();
+                });
+                prgCmds[0].cmdf = show
+                    ? (uint)(OLE.OLECMDF.OLECMDF_SUPPORTED | OLE.OLECMDF.OLECMDF_ENABLED)
+                    : (uint)(OLE.OLECMDF.OLECMDF_SUPPORTED | OLE.OLECMDF.OLECMDF_INVISIBLE);
+                return VSConstants.S_OK;
+            }
+            return (int) OLE.Constants.OLECMDERR_E_NOTSUPPORTED;
+        }
+
+        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt,
+            IntPtr pvaIn, IntPtr pvaOut)
+            => (int)OLE.Constants.OLECMDERR_E_NOTSUPPORTED;
     }
 }

@@ -106,23 +106,26 @@ namespace XSharp.Project
         }
         protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
         {
-            try
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                base.ProjectFinishedHandler(sender, buildEvent);
-                if (mustRefresh)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                try
                 {
-                    errorlistManager.Refresh();
+                    base.ProjectFinishedHandler(sender, buildEvent);
+                    if (mustRefresh)
+                    {
+                        errorlistManager.Refresh();
+                    }
+                    if (this.ProjectNode is XSharpProjectNode xprj)
+                    {
+                        xprj.BuildEnded(mustRefresh);
+                    }
                 }
-                if (this.ProjectNode is XSharpProjectNode  xprj)
+                catch (Exception e)
                 {
-                    xprj.BuildEnded(mustRefresh);
+                    Logger.Exception(e, "ProjectFinishedHandler");
                 }
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, "ProjectFinishedHandler");
-            }
-
+            });
         }
 
         protected override void QueueTaskEvent(BuildEventArgs errorEvent)

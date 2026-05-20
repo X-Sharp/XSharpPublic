@@ -29,6 +29,13 @@ namespace XSharp.Project
             var project = await VS.Solutions.GetActiveProjectAsync();
             return project.IsXSharp();
         }
+        internal async static Task<bool> ProjectIsXSharpSdkProjectAsync()
+        {
+            var project = await VS.Solutions.GetActiveProjectAsync();
+            var xproject = XSharpProjectNode.FindProject(project.FullPath);
+            return xproject != null && xproject.IsSdkProject;
+        }
+
         internal static string GetXsPath(string subpath)
         {
             string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;

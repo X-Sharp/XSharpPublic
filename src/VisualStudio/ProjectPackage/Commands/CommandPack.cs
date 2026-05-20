@@ -12,8 +12,8 @@ namespace XSharp.Project
     {
         protected override string CommandName => "Build.PackSelection";
         protected override string CommandDescription => "Pack";
-        protected override Guid CommandGroup => new Guid("{568ABDF7-D522-474D-9EED-34B5E5095BA5}");
-        protected override int CommandID => 8193;
+        public static readonly Guid CommandGroup = new Guid("{568ABDF7-D522-474D-9EED-34B5E5095BA5}");
+        public const int CommandID = 8193;
 
         protected override async Task DoCmdAsync()
         {

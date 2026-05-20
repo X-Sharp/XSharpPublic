@@ -23,8 +23,9 @@ namespace XSharp.Project
     {
         protected override string CommandName => "Build.PublishSelection";
         protected override string CommandDescription => "Publish";
-        protected override int CommandID => (int) VSConstants.VSStd97CmdID.DeploySel;
-        protected override Guid CommandGroup => VsMenus.guidStandardCommandSet97;
+
+        public const int CommandID = (int)2005; // ECMD_PUBLISHSELECTION
+        public static readonly Guid CommandGroup = VsMenus.guidStandardCommandSet2K;
 
         protected override async Task DoCmdAsync()
         {

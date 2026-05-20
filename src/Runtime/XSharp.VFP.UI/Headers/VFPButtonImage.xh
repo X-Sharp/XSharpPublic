@@ -10,7 +10,6 @@
 #ifndef VFP_BUTTON_IMAGE_XH
 #define VFP_BUTTON_IMAGE_XH
 
-// â”€â”€ Style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 PRIVATE _style AS LONG
 /// <summary>
 /// VFP button/toggle style: 0=standard checkbox/radio appearance; 1=graphical toggle â€” renders as a push button (<c>Appearance.Button</c>).
@@ -29,7 +28,6 @@ PROPERTY Style AS LONG
 	END SET
 END PROPERTY
 
-// â”€â”€ Alignment â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 PRIVATE _alignment AS LONG
 /// <summary>
 /// VFP alignment: 0=check/dot on the left (default); 1=check/dot on the right. Maps to <c>CheckAlign</c>.
@@ -48,7 +46,6 @@ PROPERTY Alignment AS LONG
 	END SET
 END PROPERTY
 
-// â”€â”€ WordWrap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 /// <summary>
 /// When <c>.T.</c>, caption text wraps at the control boundary; when <c>.F.</c>, text is clipped with an ellipsis.
 /// </summary>
@@ -62,7 +59,6 @@ PROPERTY WordWrap AS LOGIC
 	END SET
 END PROPERTY
 
-// â”€â”€ PicturePosition â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 PRIVATE _picturePosition AS LONG
 /// <summary>
 /// VFP image/text layout: 0â€“2=image left; 3â€“5=image above; 6â€“8=image right; 9â€“11=image below;
@@ -97,7 +93,6 @@ PROPERTY PicturePosition AS LONG
 	END SET
 END PROPERTY
 
-// â”€â”€ _ApplyPicture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 /// <summary>
 /// Selects and loads the correct image for the current state: <c>DisabledPicture</c> (disabled) &gt; <c>DownPicture</c> (checked) &gt; <c>Picture</c> (normal) &gt; no image.
 /// </summary>
@@ -113,7 +108,6 @@ PRIVATE METHOD _ApplyPicture() AS VOID
 	ENDIF
 END METHOD
 
-// â”€â”€ OnEnabledChanged â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 PROTECTED OVERRIDE METHOD OnEnabledChanged(e AS System.EventArgs) AS VOID
 	SUPER:OnEnabledChanged(e)
 	IF !SELF:Enabled

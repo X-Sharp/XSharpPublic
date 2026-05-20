@@ -95,7 +95,31 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					CASE 5 ; SELF:FormBorderStyle := FormBorderStyle.SizableToolWindow
 				END SWITCH
 			END SET
-		END PROPERTY
+        END PROPERTY
+
+
+        PRIVATE _picture AS STRING
+        /// <summary>
+        /// Path to the image file displayed in the normal enabled state. Setting this loads the image immediately via <c>VFPTools.ImageFromFile</c>.
+        /// </summary>
+        [System.ComponentModel.DefaultValue("")];
+        PROPERTY Picture AS STRING
+            GET
+                IF SELF:_picture == NULL
+                    SELF:_picture := ""
+                ENDIF
+				RETURN SELF:_picture
+			END GET
+
+			SET
+                SELF:BackgroundImage := VFPTools.ImageFromFile( VALUE )
+                SELF: BackgroundImageLayout := ImageLayout.Stretch
+                SELF:_picture := value
+			END SET
+        END PROPERTY
+
+
+
 		/// <summary>
 		/// VFP ColorSource stub — stored for source compatibility.
 		/// </summary>

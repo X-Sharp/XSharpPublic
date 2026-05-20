@@ -96,7 +96,7 @@
 => __XPORTERWARNIN__ <(udc)>
 
 #command WAIT [WINDOWS] [<cMessageText>] [TO <VarName>] [WINDOW [AT <nRow>, <nColumn>]] [NOWAIT] [CLEAR | NOCLEAR] [TIMEOUT <nSeconds>];
-=> MessageBox( <cMessageText>, 0, "" [,<nseconds>] );
+=> MessageBox( <cMessageText>, 0, "" [,<nSeconds>] );
 [; __XPORTERWARNIN__ <VarName>]
 
 #command SET FIELDS <x:ON,OFF,&>;
@@ -154,7 +154,7 @@
 => __XPORTERWARNIN__ <(udc)>
 
 #command PRIVATE ARRAY <var>;
-=> PRIVATE <var>
+=> PRIVATE <VAR>
 
 #command PRIVATE ALL LIKE <something>;
 => __XPORTERWARNIN__ <(udc)>
@@ -214,76 +214,70 @@ IF(<.sh.> .OR. <.ex.>, !<.ex.>, NIL),  ;
 // --- Expression form (macro rewrite): REPORT FORM (expr) ---
 
 #command REPORT FORM (<ReportExpr>) ;
-    [ENVIRONMENT] [NOENVIRONMENT] ;
-    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
-    [RANGE <nStartPage> [, <nEndPage>]] ;
-    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
-    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
-    [NAME <ObjectName>] ;
-    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
-    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
-    TO PRINTER [PROMPT] [NOPAGEEJECT] [NODIALOG] ;
-=> __XPORTERWARNIN__ REPORT_FORM_PRINTER
+         [FOR  <*lExpression1*>]  [WHILE  <*lExpression2*>]  [<optimize: NOOPTIMIZE>] ;
+         [RANGE  <nStartPage>  [,  <nEndPage>]] ;
+         [HEADING  <*cHeadingText*>]  [<SUMMARY:SUMMARY>]  [<NORESET:NORESET>]  [<PLAIN:PLAIN>] ;
+         [<NOEJECT:NOEJECT>]  [<NOCONSOLE:NOCONSOLE>]  [<PDSETUP:PDSETUP>] ;
+         [NAME  <ObjectName>] ;
+         [OBJECT  <*oReportListener*>]  [TYPE  <nListenerType>] ;
+         [<PREVIEW:PREVIEW> [<NOWAIT:NOWAIT>]] [IN] [WINDOW <*InWindowName*>] [<SCREEN:SCREEN>];
+    TO PRINTER [<PROMPT:PROMPT>] [<NOPAGEEJECT:NOPAGEEJECT>] [<NODIALOG:NODIALOG>] ;
+=> __XPORTERWARNIN__ <(udc)>
 
 #command REPORT FORM (<ReportExpr>) ;
-    [ENVIRONMENT] [NOENVIRONMENT] ;
-    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
-    [RANGE <nStartPage> [, <nEndPage>]] ;
-    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
-    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
-    [NAME <ObjectName>] ;
-    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
-    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
-    TO [FILE] <FileName2> [ADDITIVE] [ASCII] [NODIALOG] ;
-=> __XPORTERWARNIN__ REPORT_FORM_FILE
+         [FOR  <*lExpression1*>]  [WHILE  <*lExpression2*>]  [<optimize: NOOPTIMIZE>] ;
+         [RANGE  <nStartPage>  [,  <nEndPage>]] ;
+         [HEADING  <*cHeadingText*>]  [<SUMMARY:SUMMARY>]  [<NORESET:NORESET>]  [<PLAIN:PLAIN>] ;
+         [<NOEJECT:NOEJECT>]  [<NOCONSOLE:NOCONSOLE>]  [<PDSETUP:PDSETUP>] ;
+         [NAME  <ObjectName>] ;
+         [OBJECT  <*oReportListener*>]  [TYPE  <nListenerType>] ;
+         [<PREVIEW:PREVIEW> [<NOWAIT:NOWAIT>]] [IN] [WINDOW <*InWindowName*>] [<SCREEN:SCREEN>];
+         TO [FILE] <FileName2> [<ADDITIVE:ADDITIVE>] [<ASCII:ASCII>] [<NODIALOG:NODIALOG>] ;
+=> __XPORTERWARNIN__ <(udc)>
 
 #command REPORT FORM (<ReportExpr>) ;
-    [ENVIRONMENT] [NOENVIRONMENT] ;
-    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
-    [RANGE <nStartPage> [, <nEndPage>]] ;
-    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
-    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
-    [NAME <ObjectName>] ;
-    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
-    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
-=> __XPORTERWARNIN__ REPORT_FORM
+         [FOR  <*lExpression1*>]  [WHILE  <*lExpression2*>]  [<optimize: NOOPTIMIZE>] ;
+         [RANGE  <nStartPage>  [,  <nEndPage>]] ;
+         [HEADING  <*cHeadingText*>]  [<SUMMARY:SUMMARY>]  [<NORESET:NORESET>]  [<PLAIN:PLAIN>] ;
+         [<NOEJECT:NOEJECT>]  [<NOCONSOLE:NOCONSOLE>]  [<PDSETUP:PDSETUP>] ;
+         [NAME  <ObjectName>] ;
+         [OBJECT  <*oReportListener*>]  [TYPE  <nListenerType>] ;
+         [<PREVIEW:PREVIEW> [<NOWAIT:NOWAIT>]] [IN] [WINDOW <*InWindowName*>] [<SCREEN:SCREEN>];
+=> __XPORTERWARNIN__ <(udc)>
 
 // --- Literal form: REPORT FORM MyReport ---
 
 #command REPORT FORM <ReportName> ;
-    [ENVIRONMENT] [NOENVIRONMENT] ;
-    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
-    [RANGE <nStartPage> [, <nEndPage>]] ;
-    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
-    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
-    [NAME <ObjectName>] ;
-    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
-    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
-    TO PRINTER [PROMPT] [NOPAGEEJECT] [NODIALOG] ;
-=> __XPORTERWARNIN__ REPORT_FORM_PRINTER
+         [FOR  <*lExpression1*>]  [WHILE  <*lExpression2*>]  [<optimize: NOOPTIMIZE>] ;
+         [RANGE  <nStartPage>  [,  <nEndPage>]] ;
+         [HEADING  <*cHeadingText*>]  [<SUMMARY:SUMMARY>]  [<NORESET:NORESET>]  [<PLAIN:PLAIN>] ;
+         [<NOEJECT:NOEJECT>]  [<NOCONSOLE:NOCONSOLE>]  [<PDSETUP:PDSETUP>] ;
+         [NAME  <ObjectName>] ;
+         [OBJECT  <*oReportListener*>]  [TYPE  <nListenerType>] ;
+         [<PREVIEW:PREVIEW> [<NOWAIT:NOWAIT>]] [IN] [WINDOW <*InWindowName*>] [<SCREEN:SCREEN>];
+    TO PRINTER [<PROMPT:PROMPT>] [<NOPAGEEJECT:NOPAGEEJECT>] [<NODIALOG:NODIALOG>] ;
+=> __XPORTERWARNIN__ <(udc)>
 
 #command REPORT FORM <ReportName> ;
-    [ENVIRONMENT] [NOENVIRONMENT] ;
-    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
-    [RANGE <nStartPage> [, <nEndPage>]] ;
-    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
-    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
-    [NAME <ObjectName>] ;
-    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
-    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
-    TO [FILE] <FileName2> [ADDITIVE] [ASCII] [NODIALOG] ;
-=> __XPORTERWARNIN__ REPORT_FORM_FILE
+         [FOR  <*lExpression1*>]  [WHILE  <*lExpression2*>]  [<optimize: NOOPTIMIZE>] ;
+         [RANGE  <nStartPage>  [,  <nEndPage>]] ;
+         [HEADING  <*cHeadingText*>]  [<SUMMARY:SUMMARY>]  [<NORESET:NORESET>]  [<PLAIN:PLAIN>] ;
+         [<NOEJECT:NOEJECT>]  [<NOCONSOLE:NOCONSOLE>]  [<PDSETUP:PDSETUP>] ;
+         [NAME  <ObjectName>] ;
+         [OBJECT  <*oReportListener*>]  [TYPE  <nListenerType>] ;
+         [<PREVIEW:PREVIEW> [<NOWAIT:NOWAIT>]] [IN] [WINDOW <*InWindowName*>] [<SCREEN:SCREEN>];
+         TO [FILE] <FileName2> [<ADDITIVE:ADDITIVE>] [<ASCII:ASCII>] [<NODIALOG:NODIALOG>] ;
+=> __XPORTERWARNIN__ <(udc)>
 
 #command REPORT FORM <ReportName> ;
-    [ENVIRONMENT] [NOENVIRONMENT] ;
-    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
-    [RANGE <nStartPage> [, <nEndPage>]] ;
-    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
-    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
-    [NAME <ObjectName>] ;
-    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
-    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
-=> __XPORTERWARNIN__ REPORT_FORM
+         [FOR  <*lExpression1*>]  [WHILE  <*lExpression2*>]  [<optimize: NOOPTIMIZE>] ;
+         [RANGE  <nStartPage>  [,  <nEndPage>]] ;
+         [HEADING  <*cHeadingText*>]  [<SUMMARY:SUMMARY>]  [<NORESET:NORESET>]  [<PLAIN:PLAIN>] ;
+         [<NOEJECT:NOEJECT>]  [<NOCONSOLE:NOCONSOLE>]  [<PDSETUP:PDSETUP>] ;
+         [NAME  <ObjectName>] ;
+         [OBJECT  <*oReportListener*>]  [TYPE  <nListenerType>] ;
+         [<PREVIEW:PREVIEW> [<NOWAIT:NOWAIT>]] [IN] [WINDOW <*InWindowName*>] [<SCREEN:SCREEN>];
+=> __XPORTERWARNIN__ <(udc)>
 
 
 #command COUNT														;

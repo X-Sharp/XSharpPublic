@@ -8,7 +8,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using System.Reflection.Metadata.Ecma335;
 
 namespace XSharp.Project
 {
@@ -16,7 +15,9 @@ namespace XSharp.Project
     {
         protected abstract string CommandName { get; }
         protected abstract string CommandDescription { get; }
-            protected CommandProgression DoCmd()
+        protected abstract int CommandID { get; }
+        protected abstract Guid CommandGroup { get; }
+        protected CommandProgression DoCmd()
         {
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
@@ -173,22 +174,15 @@ namespace XSharp.Project
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds,
             OLE.OLECMD[] prgCmds, IntPtr pCmdText)
         {
-            bool isXSharp = false;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-
-                isXSharp  = await Commands.ProjectIsXSharpProjectAsync();
-            });
-            if (!isXSharp)
-            {
-                return VSConstants.S_OK;
-            }
             var mustCheck = false;
             var cmd = prgCmds[0].cmdID;
-            if (pguidCmdGroup == CommandPack.CommandGroup && cmd == CommandPack.CommandID)
+            if (pguidCmdGroup == PackGuid && cmd == 8193 /*Pack*/)
                 mustCheck = true;
-            else if (pguidCmdGroup == CommandPublish.CommandGroup && cmd == CommandPublish.CommandID)
-                mustCheck = true;
+            else if (pguidCmdGroup == VsMenus.guidStandardCommandSet2K)
+            {
+                if (cmd == 2005) // ECMD_PUBLISHSELECTION
+                    mustCheck = true;
+            }
             if (mustCheck)
             {
                 bool show = false;

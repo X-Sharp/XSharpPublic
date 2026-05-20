@@ -15,5 +15,10 @@ USING System.Text
 
 [Obsolete("Return an empty Path")];
 FUNCTION Home( nLocation ) CLIPPER
-RETURN ""
+    RETURN ""
+END FUNCTION
 
+FUNCTION VFPSetDateFormat( x as STRING ) AS STRING
+
+
+END FUNCTION

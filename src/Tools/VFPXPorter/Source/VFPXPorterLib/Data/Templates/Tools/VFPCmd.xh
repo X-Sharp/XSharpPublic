@@ -6,6 +6,7 @@
 
 #ifndef VFPCMD_XH
 #define VFPCMD_XH
+
 #command __XPORTERWARNIN__ <any> => #warning <(any)> " This command is not (yet) supported"
 
 // We must check that we are not overring the DO CASE, DO WHILE, ...
@@ -119,6 +120,9 @@
 #command SET STATUS [<none>];
 => __XPORTERWARNIN__ <(udc)>
 
+#command  SET DATE [TO] <x>;
+=>  SetDateFormat(<x>)
+
 #command BEGIN TRANSACTION;
 => __XPORTERWARNIN__ <(udc)>
 
@@ -198,8 +202,89 @@ IF(<.sh.> .OR. <.ex.>, !<.ex.>, NIL),  ;
 [; DbSetIndex( <(index1)> )];
 [; DbSetIndex( <(indexn)> )]
 
-#command REPORT FORM <ReportName> [PREVIEW] [NOWAIT] ;
-=> __XPORTERWARNIN__ <(udc)>
+// REPORT FORM rules — split by TO destination so each form can be implemented independently.
+// Three destination variants: TO PRINTER, TO FILE, and no TO (screen / preview).
+// Each variant has two rules: one for a runtime expression report name (macro case),
+// one for a literal name. The expression form comes first so it takes priority.
+//
+// Macro case: REPORT FORM &var\suffix.frx ...
+//   CodeConverter.TryConvertMacroCommand() rewrites this to REPORT FORM (var + e"\\suffix.frx")
+//   before the preprocessor runs, so the (<ReportExpr>) rules below can match it.
+
+// --- Expression form (macro rewrite): REPORT FORM (expr) ---
+
+#command REPORT FORM (<ReportExpr>) ;
+    [ENVIRONMENT] [NOENVIRONMENT] ;
+    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
+    [RANGE <nStartPage> [, <nEndPage>]] ;
+    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
+    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
+    [NAME <ObjectName>] ;
+    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
+    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
+    TO PRINTER [PROMPT] [NOPAGEEJECT] [NODIALOG] ;
+=> __XPORTERWARNIN__ REPORT_FORM_PRINTER
+
+#command REPORT FORM (<ReportExpr>) ;
+    [ENVIRONMENT] [NOENVIRONMENT] ;
+    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
+    [RANGE <nStartPage> [, <nEndPage>]] ;
+    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
+    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
+    [NAME <ObjectName>] ;
+    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
+    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
+    TO [FILE] <FileName2> [ADDITIVE] [ASCII] [NODIALOG] ;
+=> __XPORTERWARNIN__ REPORT_FORM_FILE
+
+#command REPORT FORM (<ReportExpr>) ;
+    [ENVIRONMENT] [NOENVIRONMENT] ;
+    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
+    [RANGE <nStartPage> [, <nEndPage>]] ;
+    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
+    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
+    [NAME <ObjectName>] ;
+    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
+    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
+=> __XPORTERWARNIN__ REPORT_FORM
+
+// --- Literal form: REPORT FORM MyReport ---
+
+#command REPORT FORM <ReportName> ;
+    [ENVIRONMENT] [NOENVIRONMENT] ;
+    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
+    [RANGE <nStartPage> [, <nEndPage>]] ;
+    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
+    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
+    [NAME <ObjectName>] ;
+    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
+    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
+    TO PRINTER [PROMPT] [NOPAGEEJECT] [NODIALOG] ;
+=> __XPORTERWARNIN__ REPORT_FORM_PRINTER
+
+#command REPORT FORM <ReportName> ;
+    [ENVIRONMENT] [NOENVIRONMENT] ;
+    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
+    [RANGE <nStartPage> [, <nEndPage>]] ;
+    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
+    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
+    [NAME <ObjectName>] ;
+    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
+    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
+    TO [FILE] <FileName2> [ADDITIVE] [ASCII] [NODIALOG] ;
+=> __XPORTERWARNIN__ REPORT_FORM_FILE
+
+#command REPORT FORM <ReportName> ;
+    [ENVIRONMENT] [NOENVIRONMENT] ;
+    [FOR <*lExpression1*>] [WHILE <*lExpression2*>] [NOOPTIMIZE] ;
+    [RANGE <nStartPage> [, <nEndPage>]] ;
+    [HEADING <*cHeadingText*>] [SUMMARY] [NORESET] [PLAIN] ;
+    [NOEJECT] [NOCONSOLE] [PDSETUP] ;
+    [NAME <ObjectName>] ;
+    [OBJECT <*oReportListener*>] [TYPE <nListenerType>] ;
+    [PREVIEW [NOWAIT] [WINDOW <WindowName>]] ;
+=> __XPORTERWARNIN__ REPORT_FORM
+
 
 #command COUNT														;
 [NEXT <nnext>]                                                 ;

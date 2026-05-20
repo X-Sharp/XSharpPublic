@@ -175,6 +175,11 @@ BEGIN NAMESPACE VFPXPorterLib
 			VAR cmdLen := 0
 			IF StartsWithKeyword(tail, "DO FORM")
 				cmdLen := 7
+			ELSEIF StartsWithKeyword(tail, "REPORT FORM")
+				// REPORT FORM &var\suffix.frx — the macro+suffix is not parseable by the X# preprocessor
+				// as a single token, so we rewrite it to REPORT FORM (var + e"\\suffix.frx") here,
+				// which the expression-form #command rules in VFPCmd.xh can then match via (<ReportExpr>).
+				cmdLen := 11
 			ELSEIF StartsWithKeyword(tail, "USE")
 				cmdLen := 3
 			ELSEIF StartsWithKeyword(tail, "DO")

@@ -794,16 +794,13 @@ BEGIN NAMESPACE VFPXPorterLib
             // Do we have some inherited Controls ?
             LOCAL processingItem := NULL AS SCXVCXItem
             FOREACH VAR propInheritedCtrl IN propertiesFromInheritedControls
-                // So here, we have Tuple with a KeyValuePair which is Property/Value and the SCXVCXItem that is the inherited Control
-                // Create a copy of the Item
+                // Each tuple pairs a dotted property (e.g. "Text1.InputMask") with the SCXVCXItem of the child it belongs to.
                 VAR scxSubItem := SCXVCXItem{ propInheritedCtrl:Item2 }
                 IF processingItem != NULL
                     IF ( processingItem:Name != scxSubItem:Name )
-                        // Set of Rules
+                        // Flush the completed batch for the previous child
                         ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, processingItem:FullyQualifiedFoxClassName )
-                        // Apply Rules to Properties
                         processingItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
-                        // There should be only one Property in the Dict here...
                         FOREACH VAR prop IN processingItem:PropertiesDict
                             IF !prop:Key:StartsWith("_")
                                 formProp:Append("SELF:")
@@ -817,19 +814,27 @@ BEGIN NAMESPACE VFPXPorterLib
                         NEXT
                         processingItem := scxSubItem
                         processingItem:PropertiesDict:Clear()
+                        // Fall through to add the first property of the new child (shared with ELSE branch below)
                     ELSE
-                        // And set its Property
+                        // Same child — add the property and move on
                         VAR propItem := propInheritedCtrl:Item1
                         VAR propName := propItem:Key
                         VAR dotPos := propName:IndexOf('.')
                         propName := propName:Substring( dotPos+1 )
-                        //processingItem:PropertiesDict:Remove( propName )
                         processingItem:PropertiesDict:Add( propName, propItem:Value )
+                        LOOP  // skip the add-first-property block below
                     ENDIF
                 ELSE
                     processingItem := scxSubItem
                     processingItem:PropertiesDict:Clear()
                 ENDIF
+                // Add the first property of a newly started child batch.
+                // This runs when processingItem was just set (new child or very first child).
+                VAR firstPropItem := propInheritedCtrl:Item1
+                VAR firstPropName := firstPropItem:Key
+                VAR firstDotPos   := firstPropName:IndexOf('.')
+                firstPropName := firstPropName:Substring( firstDotPos+1 )
+                processingItem:PropertiesDict:Add( firstPropName, firstPropItem:Value )
             NEXT
             IF processingItem != NULL
                 // Set of Rules

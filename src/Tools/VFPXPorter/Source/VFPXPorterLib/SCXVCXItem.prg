@@ -313,9 +313,10 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 				ENDIF
 			NEXT
-			// Second pass: apply simple rename/removal rules to dotted child-property overrides.
-			// E.g. "BTN_EXIT.Caption" → "BTN_EXIT.Text" when the Caption→Text rule exists.
-			// Skips template (<@...@>), method-call (::/:), constructor, and positional (Column(1).X) keys.
+			// Second pass: apply PropRules to dotted child-property overrides (e.g. "Command1.Picture").
+			// Handles: simple rename/removal, ForceUsual (!), and self-referential single-token templates
+			// (quoting ??<@X@>??, function-call wrappers like VFPTools.ColorFromVFP(<@X@>), constructors).
+			// Skipped: method-call rules (::/: prefix), multi-token templates, positional (Column(1).X) keys.
 			VAR dotKeys := propList:Keys:Where({ k => k:IndexOf('.') > 0 }):ToList()
 			IF dotKeys:Count > 0
 				FOREACH VAR dotKey IN dotKeys
@@ -338,15 +339,50 @@ BEGIN NAMESPACE VFPXPorterLib
 						IF String.Compare(ruleKey, dotSuffix, TRUE) != 0
 							LOOP
 						ENDIF
-						// Skip complex rules: templates, method calls, constructors
-						IF convRule:Value:Contains("<@") .OR. convRule:Value:StartsWith(":") .OR. ;
-						   ( convRule:Value:EndsWith(")") .AND. convRule:Value:Contains("(") ) .OR. ;
-						   ( convRule:Value:EndsWith("}") .AND. convRule:Value:Contains("{") )
+						// Method-call rules (::/: prefix) can't be emitted correctly for dotted keys — skip.
+						IF convRule:Value:StartsWith(":")
+							EXIT
+						ENDIF
+						// Self-referential single-token template: the rule value contains exactly one
+						// <@X@> token and X matches the rule key. Examples:
+						//   "??<@Picture@>??"              → adds quotes
+						//   "VFPTools.ColorFromVFP(<@BorderColor@>)"  → function call wrapping value
+						//   "System.Drawing.Icon{??<@Icon@>??}"       → constructor + quoting
+						// These can all be resolved from the single dotted-property value.
+						VAR selfRefToken := "<@" + ruleKey + "@>"
+						VAR isSelfRef := convRule:Value:IndexOf(selfRefToken, StringComparison.InvariantCultureIgnoreCase) >= 0
+						IF isSelfRef
+							VAR checkRemaining := SELF:ReplaceCaseInsensitive(convRule:Value, selfRefToken, "")
+							isSelfRef := checkRemaining:IndexOf("<@") < 0
+						ENDIF
+						// Skip non-self-referential templates and unrecognised complex expressions
+						IF !isSelfRef .AND. ;
+						   ( convRule:Value:Contains("<@") .OR. ;
+						     ( convRule:Value:EndsWith(")") .AND. convRule:Value:Contains("(") ) .OR. ;
+						     ( convRule:Value:EndsWith("}") .AND. convRule:Value:Contains("{") ) )
 							EXIT
 						ENDIF
 						VAR dotVal := propList[dotKey]
 						propList:Remove(dotKey)
-						IF !String.IsNullOrEmpty(convRule:Value)
+						IF isSelfRef
+							// Substitute the value into the template
+							VAR templated := SELF:ReplaceCaseInsensitive(convRule:Value, selfRefToken, dotVal)
+							// Apply ??...?? quoting if present around any part of the result
+							VAR qOpen := templated:IndexOf("??")
+							VAR qClose := templated:LastIndexOf("??")
+							IF qOpen > -1 .AND. qOpen != qClose
+								VAR tPrefix  := templated:Substring(0, qOpen)
+								VAR tPostfix := templated:Substring(qClose + 2)
+								VAR tInner   := templated:Substring(qOpen + 2, qClose - (qOpen + 2))
+								IF tInner:IndexOf('"') == -1
+									tInner := e"\"" + tInner + e"\""
+								ENDIF
+								templated := tPrefix + tInner + tPostfix
+							ENDIF
+							IF !propList:ContainsKey(dotKey)
+								propList:Add(dotKey, templated)
+							ENDIF
+						ELSEIF !String.IsNullOrEmpty(convRule:Value)
 							// Simple rename — propagate !forceUsual marker if present in value
 							VAR ruleIsForce := convRule:Value:StartsWith("!")
 							VAR newSuffix := IIF(ruleIsForce, convRule:Value:Substring(1), convRule:Value)

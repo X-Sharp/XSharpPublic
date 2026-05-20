@@ -51,6 +51,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF form:Contains(".")
 					form := Path.GetFileNameWithoutExtension( form )
 				ENDIF
+				// Spaces in the original SCX filename become underscores in the generated class name
+				form := form:Replace(" ", "_")
 				// Call the Constructor with Params if any
 				// RvdH you cannot call CreateInstance with the parameters as an array
 				// this will send in a first parameter of type USUAL[]

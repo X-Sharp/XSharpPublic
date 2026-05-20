@@ -73,7 +73,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     // and we will use it as a Namespace
                     LOCAL nSpace := "" AS STRING
                     IF !String.IsNullOrEmpty( SELF:ClassLocation )
-                        nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ) + "."
+                        nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ):Replace(" ", "_") + "."
                     ELSE
                         // No ClassLocation and not converted: the bare VFP class name is returned.
                         // This will produce invalid output if the class was never mapped to a .NET type.
@@ -98,7 +98,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 // and we will use it as a Namespace
                 LOCAL nSpace := "" AS STRING
                 IF !String.IsNullOrEmpty( SELF:ClassLocation )
-                    nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ) + "."
+                    nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ):Replace(" ", "_") + "."
                 ENDIF
                 RETURN nSpace + SELF:FoxClassName
             END GET

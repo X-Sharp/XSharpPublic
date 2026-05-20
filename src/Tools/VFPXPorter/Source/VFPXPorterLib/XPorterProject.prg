@@ -702,7 +702,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         IF !_libFilesByVCX:ContainsKey( libPath )
                             LOOP  // no generated files for this VCX (export failed)
                         ENDIF
-                        VAR libName := Path.GetFileNameWithoutExtension( libPath )
+                        VAR libName := Path.GetFileNameWithoutExtension( libPath ):Replace(" ", "_")
                         VAR xsLib := VSProject{ libName }
                         xsLib:IsLibrary := TRUE
                         SELF:AddStandardReferences( xsLib )

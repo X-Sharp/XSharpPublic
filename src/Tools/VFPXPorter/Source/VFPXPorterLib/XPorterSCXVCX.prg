@@ -91,7 +91,7 @@ BEGIN NAMESPACE VFPXPorterLib
             //
             IF SELF:_file:IsLibrary
                 // Set the NameSpace for the Library
-                xPorter:NamespaceDefinition  := Path.GetFileNameWithoutExtension( SELF:_fileName )
+                xPorter:NamespaceDefinition  := Path.GetFileNameWithoutExtension( SELF:_fileName ):Replace(" ", "_")
                 SELF:NamespaceDefinition := xPorter:NamespaceDefinition
             ELSE
                 SELF:NamespaceDefinition := ""

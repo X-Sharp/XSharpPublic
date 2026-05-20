@@ -1048,7 +1048,7 @@ BEGIN NAMESPACE VFPXPorterLib
             IF SELF:IsLibrary
                 RETURN item:Name
             ENDIF
-            VAR scxName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath )
+            VAR scxName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_")
             IF item:IsForm .AND. !String.IsNullOrEmpty( item:Parent )
                 RETURN scxName + "_" + item:Name
             ENDIF
@@ -1062,12 +1062,12 @@ BEGIN NAMESPACE VFPXPorterLib
                 // For VCX items, PrefixClassFile optionally groups files under the VCX name.
                 // For SCX items the class name already embeds the SCX filename, so no extra prefix.
                 IF SELF:IsLibrary .AND. SELF:Settings:PrefixClassFile
-                    outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ) + "_" + className
+                    outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_") + "_" + className
                 ELSE
                     outFileName := className
                 ENDIF
             ELSE
-                outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath )
+                outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_")
             ENDIF
             RETURN Path.Combine(SELF:Settings:OutputPath, outFileName ) + ".prg"
         END METHOD

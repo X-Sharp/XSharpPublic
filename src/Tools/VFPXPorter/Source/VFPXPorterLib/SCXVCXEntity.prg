@@ -116,7 +116,7 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             // We are processing a Library File ? Only register top-level items as control definitions.
             IF SELF:_container:IsLibrary .AND. String.IsNullOrEmpty( item:Parent )
-                VAR nameSpace := Path.GetFileNameWithoutExtension( SELF:_container:FileName )
+                VAR nameSpace := Path.GetFileNameWithoutExtension( SELF:_container:FileName ):Replace(" ", "_")
                 VAR FQN := nameSpace + "." + item:OBJNAME
                 SELF:DefiningControls:Add( FQN, item )
             ENDIF

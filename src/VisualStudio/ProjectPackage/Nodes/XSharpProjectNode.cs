@@ -1823,8 +1823,8 @@ namespace XSharp.Project
         {
             get
             {
-                string tempPath = System.IO.Path.GetTempPath();
-                string file = Path.Combine(tempPath, "LastXSharpResponseFile.Rsp");
+                string file = Path.GetFileName(this.OutputFile);
+                file = Path.Combine(IntermediateOutputPath, Path.ChangeExtension(file,"rsp"));
                 return file;
             }
         }

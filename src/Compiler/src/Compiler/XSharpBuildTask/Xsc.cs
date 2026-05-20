@@ -575,7 +575,26 @@ namespace XSharp.Build
 
         protected override string GetResponseFileSwitch(string responseFilePath)
         {
+            // format the file
+            if (useCRLF)
+            {
+                var contents = System.IO.File.ReadAllText(responseFilePath);
+                contents = contents.Replace(" /", "\n/");
+                contents = contents.Replace("\r\n", "\n");
+                var lines = contents.Split('\n');
+                var sb = new StringBuilder();
+                foreach (var line in lines)
+                {
+                    var l = line.Trim();
+                    if (l.Length != 0)
+                        sb.AppendLine(l);
+                }
+                System.IO.File.WriteAllText(responseFilePath, sb.ToString());
+            }
             string newfile = Path.Combine(Path.GetTempPath(), "LastXSharpResponseFile.Rsp");
+            string ourfileCopy = OutputAssembly.ItemSpec;
+            ourfileCopy = System.IO.Path.ChangeExtension(ourfileCopy, "rsp");
+            Utilities.CopyFileSafe(responseFilePath, ourfileCopy);
             Utilities.CopyFileSafe(responseFilePath, newfile);
             return base.GetResponseFileSwitch(responseFilePath);
         }
@@ -928,6 +947,7 @@ namespace XSharp.Build
 
             // Append the sources.
             Sources = sources;
+            commandLine.AppendNewLine();
             commandLine.AppendFileNamesIfNotNull(Sources, useCRLF ? "\n " : " ");
             commandLine.AppendNewLine();
 

@@ -1,14 +1,14 @@
 ﻿using Community.VisualStudio.Toolkit;
 
 using Microsoft.VisualStudio;
+using OLE=Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 using System;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Reflection.Metadata.Ecma335;
 
 namespace XSharp.Project
 {
@@ -16,9 +16,7 @@ namespace XSharp.Project
     {
         protected abstract string CommandName { get; }
         protected abstract string CommandDescription { get; }
-        protected abstract int CommandID { get; }
-        protected abstract Guid CommandGroup { get; }
-        protected CommandProgression DoCmd()
+            protected CommandProgression DoCmd()
         {
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
@@ -167,5 +165,47 @@ namespace XSharp.Project
         }
 
 
+    }
+    class BuildCommandFilter : OLE.IOleCommandTarget
+    {
+        static readonly Guid PackGuid = new Guid("{568ABDF7-D522-474D-9EED-34B5E5095BA5}");
+
+        public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds,
+            OLE.OLECMD[] prgCmds, IntPtr pCmdText)
+        {
+            bool isXSharp = false;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+
+                isXSharp  = await Commands.ProjectIsXSharpProjectAsync();
+            });
+            if (!isXSharp)
+            {
+                return VSConstants.S_OK;
+            }
+            var mustCheck = false;
+            var cmd = prgCmds[0].cmdID;
+            if (pguidCmdGroup == CommandPack.CommandGroup && cmd == CommandPack.CommandID)
+                mustCheck = true;
+            else if (pguidCmdGroup == CommandPublish.CommandGroup && cmd == CommandPublish.CommandID)
+                mustCheck = true;
+            if (mustCheck)
+            {
+                bool show = false;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    show = await Commands.ProjectIsXSharpSdkProjectAsync();
+                });
+                prgCmds[0].cmdf = show
+                    ? (uint)(OLE.OLECMDF.OLECMDF_SUPPORTED | OLE.OLECMDF.OLECMDF_ENABLED)
+                    : (uint)(OLE.OLECMDF.OLECMDF_SUPPORTED | OLE.OLECMDF.OLECMDF_INVISIBLE);
+                return VSConstants.S_OK;
+            }
+            return (int) OLE.Constants.OLECMDERR_E_NOTSUPPORTED;
+        }
+
+        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt,
+            IntPtr pvaIn, IntPtr pvaOut)
+            => (int)OLE.Constants.OLECMDERR_E_NOTSUPPORTED;
     }
 }

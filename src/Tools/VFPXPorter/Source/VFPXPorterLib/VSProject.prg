@@ -190,7 +190,9 @@ CLASS VSProject
             FOREACH prj AS VSProject IN SELF:ProjectReferenceList
                 import := SELF:CreateElement( libs, "ProjectReference" )
                 configAttr := XmlDoc:CreateAttribute( "Include" )
-                configAttr:Value := prj:Name + ".xsproj"
+                // Compute relative path from this project's folder to the referenced project file,
+                // so references work correctly when projects live in different subfolders.
+                configAttr:Value := GetRelativePath( Path.GetDirectoryName(projectFileNameFullPath), prj:ProjectFileNameFullPath )
                 import:Attributes:Append( configAttr )
                 SELF:CreateElement(import, "Name", prj:Name)
                 SELF:CreateElement(import, "Project", prj:GUID)

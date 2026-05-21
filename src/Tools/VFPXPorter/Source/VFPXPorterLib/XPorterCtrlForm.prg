@@ -1180,6 +1180,8 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <returns></returns>
         PROTECTED METHOD GenerateDataEnvironment( dataEnvItem AS SCXVCXItem, setDataEnv AS StringBuilder, declareDataEnv AS StringBuilder  ) AS VOID
             LOCAL dataRules AS Dictionary<STRING,STRING>
+            // Collect unique DBC paths referenced by cursors (insertion-ordered via List)
+            VAR dbcPaths := List<STRING>{}
             //
             IF dataEnvItem != NULL
                 // For the DataEnvironment (one only!?)
@@ -1218,6 +1220,17 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append(cursorItem:ClassName)
                     setDataEnv:Append("{}")
                     setDataEnv:Append(Environment.NewLine)
+                    // Collect DBC path before ConvertProperties strips/transforms it
+                    LOCAL dbRaw AS STRING
+                    IF cursorItem:PropertiesDict:TryGetValue("Database", OUT dbRaw)
+                        dbRaw := dbRaw:Trim()
+                        IF dbRaw:Length >= 2 .AND. dbRaw[0] == '"' .AND. dbRaw[dbRaw:Length-1] == '"'
+                            dbRaw := dbRaw:Substring(1, dbRaw:Length-2)
+                        ENDIF
+                        IF !String.IsNullOrEmpty(dbRaw) .AND. !dbcPaths:Contains(dbRaw)
+                            dbcPaths:Add(dbRaw)
+                        ENDIF
+                    ENDIF
                     // Set of Rules
                     dataRules := SELF:BuildControlRules( SELF:_propertiesRules, cursorItem:FoxClassName )
                     // Apply Rules to Properties
@@ -1261,6 +1274,12 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append(":Relations:Add( ")
                     setDataEnv:Append(relItem:Name)
                     setDataEnv:Append(" )")
+                    setDataEnv:Append(Environment.NewLine)
+                NEXT
+                // Emit OPEN DATABASE for each DBC referenced by a cursor
+                FOREACH VAR dbcPath IN dbcPaths
+                    setDataEnv:Append("OPEN DATABASE ")
+                    setDataEnv:Append(e"\"" + dbcPath + e"\"")
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
                 // Now, init (if needed) all Cursors

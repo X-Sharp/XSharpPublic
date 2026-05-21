@@ -1231,11 +1231,40 @@ BEGIN NAMESPACE VFPXPorterLib
                             dbcPaths:Add(dbRaw)
                         ENDIF
                     ENDIF
+                    // For free table cursors (no Database), collect CursorSource filename for runtime path override
+                    LOCAL csFileName AS STRING
+                    IF String.IsNullOrEmpty(dbRaw)
+                        LOCAL csRaw AS STRING
+                        IF cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRaw)
+                            csRaw := csRaw:Trim()
+                            IF csRaw:Length >= 2 .AND. csRaw[0] == '"' .AND. csRaw[csRaw:Length-1] == '"'
+                                csRaw := csRaw:Substring(1, csRaw:Length-2)
+                            ENDIF
+                            IF !String.IsNullOrEmpty(csRaw)
+                                IF String.IsNullOrEmpty(Path.GetExtension(csRaw))
+                                    csRaw := Path.ChangeExtension(csRaw, ".dbf")
+                                ENDIF
+                                csFileName := Path.GetFileName(csRaw)
+                            ENDIF
+                        ENDIF
+                    ENDIF
                     // Set of Rules
                     dataRules := SELF:BuildControlRules( SELF:_propertiesRules, cursorItem:FoxClassName )
                     // Apply Rules to Properties
                     cursorItem:ConvertProperties( dataRules, SELF:_defaultValues )
                     setDataEnv:Append( cursorItem:ApplyPropertiesRules( TRUE ) )
+                    // Override CursorSource with a runtime-resolved path for free table cursors
+                    IF !String.IsNullOrEmpty(csFileName)
+                        setDataEnv:Append("SELF:")
+                        setDataEnv:Append(cursorItem:Name)
+                        setDataEnv:Append(":CursorSource := System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ")
+                        IF SELF:Settings:StoreInFolders
+                            VAR ftFolder := SELF:Settings:FolderNames["FreeTables"]
+                            setDataEnv:Append(e"\"" + ftFolder + e"\", ")
+                        ENDIF
+                        setDataEnv:Append(e"\"" + csFileName + e"\")")
+                        setDataEnv:Append(Environment.NewLine)
+                    ENDIF
                     setDataEnv:Append("SELF:")
                     setDataEnv:Append(dataEnvItem:Name)
                     setDataEnv:Append(":Cursors:Add( ")
@@ -1281,12 +1310,12 @@ BEGIN NAMESPACE VFPXPorterLib
                 // works regardless of the working directory when the app starts.
                 FOREACH VAR dbcPath IN dbcPaths
                     VAR dbcFileName := Path.GetFileName(dbcPath)
-                    setDataEnv:Append("OPEN DATABASE System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ")
+                    setDataEnv:Append("OPEN DATABASE (System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ")
                     IF SELF:Settings:StoreInFolders
                         VAR dbFolder := SELF:Settings:FolderNames["Databases"]
                         setDataEnv:Append(e"\"" + dbFolder + e"\", ")
                     ENDIF
-                    setDataEnv:Append(e"\"" + dbcFileName + e"\")")
+                    setDataEnv:Append(e"\"" + dbcFileName + e"\") )")
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
                 // Now, init (if needed) all Cursors

@@ -1276,10 +1276,17 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append(" )")
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
-                // Emit OPEN DATABASE for each DBC referenced by a cursor
+                // Emit OPEN DATABASE for each DBC referenced by a cursor.
+                // Path is built at runtime from AppDomain.CurrentDomain.BaseDirectory so it
+                // works regardless of the working directory when the app starts.
                 FOREACH VAR dbcPath IN dbcPaths
-                    setDataEnv:Append("OPEN DATABASE ")
-                    setDataEnv:Append(e"\"" + dbcPath + e"\"")
+                    VAR dbcFileName := Path.GetFileName(dbcPath)
+                    setDataEnv:Append("OPEN DATABASE System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ")
+                    IF SELF:Settings:StoreInFolders
+                        VAR dbFolder := SELF:Settings:FolderNames["Databases"]
+                        setDataEnv:Append(e"\"" + dbFolder + e"\", ")
+                    ENDIF
+                    setDataEnv:Append(e"\"" + dbcFileName + e"\")")
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
                 // Now, init (if needed) all Cursors

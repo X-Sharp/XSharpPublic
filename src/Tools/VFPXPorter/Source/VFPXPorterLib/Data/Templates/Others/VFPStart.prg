@@ -19,8 +19,11 @@ FUNCTION Start AS VOID
 
 	// The original Entry Point is here
     _Screen:StartFunction := "<@startcode@>"
+    _Screen:StartForm := "<@startform@>"
+    _Screen:StartMenu := "<@startmenu@>"
+
     Application.Run( _Screen )
-    
+
     RETURN
 
 

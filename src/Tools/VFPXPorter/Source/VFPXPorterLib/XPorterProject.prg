@@ -554,23 +554,31 @@ BEGIN NAMESPACE VFPXPorterLib
                                 code := StringBuilder{}
                                 code:Append( SELF:StartBlock )
                                 //
+                                VAR projectReplacements := Dictionary<STRING, STRING>{}
                                 LOCAL start AS StringBuilder
                                 start := StringBuilder{}
                                 // A prg with a Procedure ?
                                 IF SELF:Project:Main:Name:EndsWith(".prg")
                                     start:Append( Path.GetFileNameWithoutExtension( SELF:Project:Main:Name ) )
                                     start:Append( "()" )
+                                    projectReplacements["startcode"] := start:ToString()
+                                    projectReplacements["startform"] := ""
+                                    projectReplacements["startmenu"] := ""
                                 ELSE
-                                    // A Form ?
-                                    start:AppendLine( "Application.EnableVisualStyles()" )
-                                    start:AppendLine( "Application.SetCompatibleTextRenderingDefault( FALSE )" )
-                                    start:Append( "Application.Run( " )
+                                    // A Form ? A Menu ?
                                     start:Append( Path.GetFileNameWithoutExtension( SELF:Project:Main:Name ) )
-                                    start:AppendLine( "{} )" )
+                                    start:Append( "{}" )
+                                    projectReplacements["startcode"] := ""
+                                    IF SELF:Project:Main:Name:EndsWith(".mnx")
+                                        projectReplacements["startmenu"] := start:ToString()
+                                        projectReplacements["startform"] := ""
+                                    ELSE
+                                        projectReplacements["startmenu"] := ""
+                                        projectReplacements["startform"] := start:ToString()
+                                    ENDIF
                                 ENDIF
                                 //
-                                VAR projectReplacements := Dictionary<STRING, STRING>{}
-                                projectReplacements["startcode"] := start:ToString()
+
                                 VAR resultCode := TemplateHelper.ReplaceAndValidate(code:ToString(), "StartBlock", projectReplacements)
                                 dest:Write( resultCode )
                                 dest:Close()

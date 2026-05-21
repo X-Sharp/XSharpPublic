@@ -49,6 +49,24 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			RETURN NULL
 
+		// Returns a snapshot of all currently registered popup names.
+		STATIC METHOD GetAllNames() AS List<STRING>
+			IF _registry == NULL
+				RETURN List<STRING>{}
+			ENDIF
+			RETURN List<STRING>{ _registry:Keys }
+
+		// Releases every registered popup (used by RELEASE POPUPS with no list).
+		STATIC METHOD ReleaseAll() AS VOID
+			IF _registry == NULL
+				RETURN
+			ENDIF
+			LOCAL values AS List<Popup>
+			values := List<Popup>{ _registry:Values }
+			FOREACH VAR oPopup IN values
+				oPopup:Release()
+			NEXT
+
 		// ── BarCount ──────────────────────────────────────────────────────────
 		// Number of Bar items (separators are not counted).
 		PROPERTY BarCount AS LONG

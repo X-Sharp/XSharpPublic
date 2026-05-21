@@ -51,6 +51,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			RETURN NULL
 
+		// Releases every registered menu (used by RELEASE MENUS with no list).
+		STATIC METHOD ReleaseAll() AS VOID
+			IF _registry == NULL
+				RETURN
+			ENDIF
+			LOCAL values AS List<Menu>
+			values := List<Menu>{ _registry:Values }
+			FOREACH VAR oMenu IN values
+				oMenu:Release()
+			NEXT
+
 		// ── Skip ──────────────────────────────────────────────────────────────
 		PROPERTY Skip AS LOGIC
 			GET ; RETURN !SELF:Enabled ; END GET

@@ -20,11 +20,38 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 
+		PRIVATE STATIC _registry AS Dictionary<STRING, ContextMenu>
+
 		PRIVATE _bars AS List<Bar>
 
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_bars := List<Bar>{}
+
+		// ── Named registry ────────────────────────────────────────────────────
+		// ContextMenus register themselves by Name so DEFINE POPUP SHORTCUT
+		// and SET SKIP OF POPUP can locate them at runtime.
+		NEW PROPERTY Name AS STRING
+			GET ; RETURN SUPER:Name ; END GET
+			SET
+				IF !String.IsNullOrEmpty(SUPER:Name) .AND. _registry != NULL
+					_registry:Remove(SUPER:Name)
+				ENDIF
+				SUPER:Name := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					IF _registry == NULL
+						_registry := Dictionary<STRING, ContextMenu>{}
+					ENDIF
+					_registry[VALUE] := SELF
+				ENDIF
+			END SET
+		END PROPERTY
+
+		STATIC METHOD Find( cName AS STRING ) AS ContextMenu
+			IF _registry != NULL .AND. _registry:ContainsKey(cName)
+				RETURN _registry[cName]
+			ENDIF
+			RETURN NULL
 
 		// â”€â”€ BarCount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 		/// <summary>

@@ -17,9 +17,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Pad INHERIT System.Windows.Forms.ToolStripMenuItem
 
-		PRIVATE _caption  AS STRING
-		PRIVATE _popup    AS Popup
-		PRIVATE _vfpClick AS VFPOverride
+		PRIVATE _caption     AS STRING
+		PRIVATE _popup       AS Popup
+		PRIVATE _vfpClick    AS VFPOverride
+		PRIVATE _clickBlock  AS USUAL
 
 		CONSTRUCTOR() STRICT
 			SUPER()
@@ -86,6 +87,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ELSEIF SELF:Owner IS Menu VAR oMenu .AND. IsMethod( oMenu, sMethod )
 					Send( oMenu, sMethod )
 				ENDIF
+			ENDIF
+
+		// ── SetClickAction ────────────────────────────────────────────────────
+		// Stores a codeblock as the click handler. Used by VFPMenuSupport.xh
+		// UDCs when the ON SELECTION PAD command is arbitrary code.
+		METHOD SetClickAction( block AS USUAL ) AS VOID
+			SELF:Click += System.EventHandler{ SELF, @OnBlockClick() }
+			SELF:_clickBlock := block
+
+		PRIVATE METHOD OnBlockClick( sender AS OBJECT, e AS System.EventArgs ) AS VOID
+			IF SELF:_clickBlock != NIL
+				Eval( SELF:_clickBlock )
 			ENDIF
 
 		// ── Lifecycle stubs ───────────────────────────────────────────────────

@@ -189,6 +189,7 @@
     <Compile Include="Line.prg" />
     <Compile Include="Shape.prg" />
     <Compile Include="Menu.prg" />
+    <Compile Include="MenuCommands.prg" />
     <Compile Include="MenuFunctions.prg" />
     <Compile Include="MenuState.prg" />
     <Compile Include="Pad.prg" />
@@ -244,6 +245,7 @@
     <None Include="Headers\MousePointer.xh" />
     <None Include="Headers\TextControlProperties.xh" />
     <None Include="Headers\Tooltips.xh" />
+    <None Include="Headers\VFPMenuSupport.xh" />
     <None Include="Headers\VFPControl.xh" />
     <None Include="Headers\VFPGroup.xh" />
     <None Include="Headers\VFPImage.xh" />

@@ -18,8 +18,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Bar INHERIT System.Windows.Forms.ToolStripMenuItem
 
-		PRIVATE _caption  AS STRING
-		PRIVATE _vfpClick AS VFPOverride
+		PRIVATE _caption     AS STRING
+		PRIVATE _vfpClick    AS VFPOverride
+		PRIVATE _clickBlock  AS USUAL
 
 		CONSTRUCTOR() STRICT
 			SUPER()
@@ -135,6 +136,35 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:DropDown := VALUE
 			END SET
 		END PROPERTY
+
+		// ── SetClickAction ────────────────────────────────────────────────────
+		// Stores a codeblock as the click handler. Used by VFPMenuSupport.xh
+		// UDCs when the ON SELECTION command is arbitrary code rather than a
+		// plain DO <procName>.
+		METHOD SetClickAction( block AS USUAL ) AS VOID
+			SELF:Click += System.EventHandler{ SELF, @OnBlockClick() }
+			SELF:_clickBlock := block
+
+		PRIVATE METHOD OnBlockClick( sender AS OBJECT, e AS System.EventArgs ) AS VOID
+			// Populate MenuState the same way OnVFPClick does.
+			IF SELF:Owner IS Popup VAR oParentPopup
+				MenuState.LastBar   := oParentPopup:IndexOf( SELF )
+				MenuState.LastPopup := oParentPopup:Name
+				IF oParentPopup:OwnerItem IS Pad VAR oPadOwner
+					MenuState.LastPad := oPadOwner:Name
+					IF oPadOwner:Owner IS Menu VAR oMenuOwner
+						MenuState.LastMenu := oMenuOwner:Name
+					ENDIF
+				ENDIF
+			ELSEIF SELF:Owner IS ContextMenu VAR oCtx
+				MenuState.LastBar   := oCtx:IndexOf( SELF )
+				MenuState.LastPopup := oCtx:Name
+				MenuState.LastPad   := ""
+				MenuState.LastMenu  := ""
+			ENDIF
+			IF SELF:_clickBlock != NIL
+				Eval( SELF:_clickBlock )
+			ENDIF
 
 		// ── Lifecycle stubs ───────────────────────────────────────────────────
 		VIRTUAL METHOD Init() AS USUAL CLIPPER

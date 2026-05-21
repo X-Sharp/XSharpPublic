@@ -297,6 +297,11 @@ namespace XSharp.LanguageService
                            int dotPos = filterText.LastIndexOf('.');
                             if (dotPos > 0)
                                 filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
+                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            });
+
                             helpers.BuildCompletionListMembers(location, compList, type, Modifiers.Public, true, filterText);
                         }
                     }

@@ -483,7 +483,11 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            //
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            });
             FillMembers(location, compList, type, minVisibility, staticOnly, startWith);
             if (type is XSourceTypeSymbol sourceType)
             {
@@ -513,6 +517,11 @@ namespace XSharp.LanguageService
                     var nextVis = Modifiers.Protected;
                     if (minVisibility == Modifiers.Internal || minVisibility == Modifiers.Public)
                         nextVis = minVisibility;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    });
+
                     BuildCompletionListMembers(location, compList, parentType, nextVis, staticOnly, startWith);
                 }
                 foreach (var ifname in sourceType.Interfaces)

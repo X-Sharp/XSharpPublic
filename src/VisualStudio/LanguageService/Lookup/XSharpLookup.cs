@@ -868,6 +868,11 @@ namespace XSharp.LanguageService
                     if (tokenType == XSharpLexer.SELF)
                     {
                         visibility = Modifiers.Private;
+                        if (currentType != null)
+                        {
+                            symbols.Push(currentType);
+                            result.Add(currentType);
+                        }
                     }
                     else if (tokenType == XSharpLexer.SUPER)
                     {

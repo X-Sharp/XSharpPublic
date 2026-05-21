@@ -94,17 +94,41 @@ BEGIN NAMESPACE VFPXPorterLib
                 VAR parentStack := Stack<MNXItem>{}
                 //
                 FOREACH VAR itm IN tmpItems
-                    // The item is a TopBar ?
-                    IF ( itm:OBJTYPE == MenuObjType.Menu ) .OR. ( itm:OBJTYPE == MenuObjType.SdiMenu )
-                        parentItem := itm
-                        SELF:Items:Add( parentItem )
-                    ELSEIF ( parentItem != NULL )
+                    // Skip header/init record (OBJTYPE 1 or 5, OBJCODE 22)
+                    IF ( itm:OBJTYPE == MenuObjType.Menu .OR. itm:OBJTYPE == MenuObjType.SdiMenu ) .AND. ;
+                       itm:OBJCODE == MenuObjCode.Init
+                        // Nothing — header contains setup/cleanup, not displayed items
+                    // Skip the menu-bar descriptor (OBJTYPE=2 OBJCODE=1, e.g. _MSYSMENU)
+                    ELSEIF itm:OBJTYPE == MenuObjType.SubMenu .AND. itm:OBJCODE == MenuObjCode.SysMenu
+                        // Nothing — the pad items that follow will be added directly to Items
+                    ELSEIF parentItem == NULL
+                        // Top level: pad items in the menu bar and their popup descriptors
+                        IF ( itm:OBJTYPE == MenuObjType.Item )
+                            IF ( itm:OBJCODE == MenuObjCode.SubMenu ) .OR. ;
+                               ( itm:OBJCODE == MenuObjCode.Command ) .OR. ;
+                               ( itm:OBJCODE == MenuObjCode.Procedure ) .OR. ;
+                               ( itm:OBJCODE == MenuObjCode.SystemBar )
+                                currentItem := itm
+                                SELF:Items:Add( currentItem )
+                            ENDIF
+                        ELSEIF ( itm:OBJTYPE == MenuObjType.SubMenu ) .AND. ( itm:OBJCODE == MenuObjCode.Info )
+                            // Popup descriptor for the last pad
+                            IF !String.IsNullOrEmpty( itm:_Name ) .AND. String.IsNullOrEmpty( currentItem:_Name )
+                                currentItem:Name := itm:_Name
+                            ENDIF
+                            currentItem:SubItemsToAdd := itm:NUMITEMS
+                            IF itm:NUMITEMS > 0
+                                parentStack:Push( parentItem )   // pushes NULL — signals return to pad level
+                                parentItem := currentItem
+                            ENDIF
+                        ENDIF
+                    ELSE
+                        // Bar level: items inside a popup
                         IF ( itm:OBJTYPE == MenuObjType.Item )
                             IF ( itm:OBJCODE == MenuObjCode.SubMenu ) .OR. ;
                                     ( itm:OBJCODE == MenuObjCode.Command ) .OR. ;
                                     ( itm:OBJCODE == MenuObjCode.Procedure ) .OR. ;
                                     ( itm:OBJCODE == MenuObjCode.SystemBar )
-                                // We have a SubMenu Item
                                 currentItem := itm
                                 currentItem:ParentName := parentItem:Name
                                 parentItem:Childs:Add( currentItem )
@@ -116,11 +140,10 @@ BEGIN NAMESPACE VFPXPorterLib
                                 ENDIF
                             ENDIF
                         ELSEIF ( itm:OBJTYPE == MenuObjType.SubMenu ) .AND. ( itm:OBJCODE== MenuObjCode.Info )
-                            // Is the Name stored here ?
+                            // Popup descriptor for the last bar (sub-menu)
                             IF !String.IsNullOrEmpty( itm:_Name ) .AND. String.IsNullOrEmpty( currentItem:_Name )
                                 currentItem:Name := itm:_Name
                             ENDIF
-                            // How many SubItems ?
                             currentItem:SubItemsToAdd := itm:NUMITEMS
                             IF itm:NUMITEMS > 0
                                 parentStack:Push( parentItem )
@@ -291,6 +314,11 @@ BEGIN NAMESPACE VFPXPorterLib
                     initCode:AppendLine("oPopup := XSharp.VFP.UI.Popup{}")
                     SELF:AppendPopupInit( initCode, pad:Childs, "oPopup" )
                     initCode:AppendLine("oPad:Popup := oPopup")
+                ELSEIF !String.IsNullOrEmpty(pad:COMMAND) .OR. !String.IsNullOrEmpty(pad:PROCEDURE)
+                    // Pad with a direct action (no popup) — wire vfpClick
+                    initCode:Append(e"oPad:vfpClick := \"")
+                    initCode:Append(pad:Name)
+                    initCode:AppendLine(e"\"")
                 ENDIF
                 initCode:Append(Environment.NewLine)
             NEXT
@@ -359,6 +387,22 @@ BEGIN NAMESPACE VFPXPorterLib
                     RETURN ""
                 ENDIF
                 SELF:UpdateProgress()
+                // Emit a method for pads that carry a direct command (no popup)
+                IF pad:Childs:Count == 0
+                    VAR padHasCode := !String.IsNullOrEmpty(pad:COMMAND) .OR. !String.IsNullOrEmpty(pad:PROCEDURE)
+                    IF padHasCode
+                        eventCode:Append("METHOD ")
+                        eventCode:Append(pad:Name)
+                        eventCode:AppendLine("() AS USUAL STRICT")
+                        IF !String.IsNullOrEmpty(pad:PROCEDURE)
+                            eventCode:AppendLine(pad:PROCEDURE)
+                        ELSE
+                            eventCode:AppendLine(pad:COMMAND)
+                        ENDIF
+                        eventCode:AppendLine("    RETURN NIL")
+                        eventCode:Append(Environment.NewLine)
+                    ENDIF
+                ENDIF
                 SELF:AppendBarMethods(eventCode, pad:Childs)
             NEXT
             RETURN eventCode:ToString()

@@ -18,12 +18,44 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Menu INHERIT System.Windows.Forms.MenuStrip
 
+		PRIVATE STATIC _registry AS Dictionary<STRING, Menu>
+
 		PRIVATE _pads    AS List<Pad>
 		PRIVATE _theForm AS Form
 
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_pads := List<Pad>{}
+
+		// ── Named registry ────────────────────────────────────────────────────
+		// Menus register themselves by Name so MENU() and lookup functions work.
+		NEW PROPERTY Name AS STRING
+			GET ; RETURN SUPER:Name ; END GET
+			SET
+				IF !String.IsNullOrEmpty(SUPER:Name) .AND. _registry != NULL
+					_registry:Remove(SUPER:Name)
+				ENDIF
+				SUPER:Name := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					IF _registry == NULL
+						_registry := Dictionary<STRING, Menu>{}
+					ENDIF
+					_registry[VALUE] := SELF
+				ENDIF
+			END SET
+		END PROPERTY
+
+		STATIC METHOD Find( cName AS STRING ) AS Menu
+			IF _registry != NULL .AND. _registry:ContainsKey(cName)
+				RETURN _registry[cName]
+			ENDIF
+			RETURN NULL
+
+		// ── Skip ──────────────────────────────────────────────────────────────
+		PROPERTY Skip AS LOGIC
+			GET ; RETURN !SELF:Enabled ; END GET
+			SET ; SELF:Enabled := !VALUE ; END SET
+		END PROPERTY
 
 		// ── ThisForm ──────────────────────────────────────────────────────────
 		// Set automatically by Activate(). Lets menu handler code use SELF:ThisForm:

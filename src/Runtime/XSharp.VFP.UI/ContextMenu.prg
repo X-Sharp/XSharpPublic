@@ -20,7 +20,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 
-
 		PRIVATE _bars AS List<Bar>
 
 		CONSTRUCTOR() STRICT
@@ -72,7 +71,19 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			ENDIF
 			RETURN NIL
 
-		// â”€â”€ Lifecycle stubs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Skip ──────────────────────────────────────────────────────────────
+		PROPERTY Skip AS LOGIC
+			GET ; RETURN !SELF:Enabled ; END GET
+			SET ; SELF:Enabled := !VALUE ; END SET
+		END PROPERTY
+
+		// ── IndexOf ───────────────────────────────────────────────────────────
+		// Returns the 1-based Bar index of the given bar (0 = not found).
+		INTERNAL METHOD IndexOf( bar AS Bar ) AS INT
+			LOCAL idx := SELF:_bars:IndexOf(bar) AS INT
+			RETURN IIF( idx < 0, 0, idx + 1 )
+
+		// ── Lifecycle stubs ───────────────────────────────────────────────────
 		/// <summary>
 		/// VFP Init lifecycle stub â€” overridden by the subclass to run initialisation code.
 		/// </summary>

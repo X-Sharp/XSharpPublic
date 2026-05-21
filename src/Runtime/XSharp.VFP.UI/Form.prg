@@ -125,7 +125,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROPERTY ColorSource AS INT AUTO
 		/// <summary>
-		/// VFP ShowWindow: 0=MDI child of <c>_SCREEN</c> (default), 1=modal top-level, 2=top-level modeless.<br/>
+		/// VFP ShowWindow: 0=In Screen (MDI child of <c>_SCREEN</c>, default),
+		/// 1=In Top-Level Form (MDI child of the nearest <c>MDIForm=.T.</c> form),
+		/// 2=As Top-Level Form (standalone top-level window).<br/>
+		/// Modality is controlled separately by <see cref="WindowType"/> (1=modal), not by this property.<br/>
 		/// Consumed by <see cref="Show"/> to choose the appropriate WinForms presentation mode.
 		/// </summary>
 		PRIVATE _showWindow AS INT
@@ -190,11 +193,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		/// <summary>
-		/// When <c>.T.</c>, this form acts as its own MDI container. Used by <see cref="Show"/> to bypass MDI-child logic.
+		/// When <c>.T.</c>, this form is an MDI container — other forms with <c>ShowWindow=1</c> will live
+		/// inside it. Automatically sets <see cref="System.Windows.Forms.Form.IsMdiContainer"/>.
 		/// </summary>
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if the Form is MDI")];
 		[System.ComponentModel.DefaultValue(false)];
-		PROPERTY MDIForm AS LOGIC AUTO := FALSE
+		PRIVATE _mdiForm AS LOGIC
+		PROPERTY MDIForm AS LOGIC
+			GET ; RETURN _mdiForm ; END GET
+			SET
+				_mdiForm := VALUE
+				SELF:IsMdiContainer := VALUE
+			END SET
+		END PROPERTY
 
 		/// <summary>
 		/// When <c>.T.</c>, <see cref="DoBindings"/> wires child-control data bindings via the <see cref="DataEnvironment"/>.
@@ -467,12 +478,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		/// <summary>
 		/// Displays the form according to <see cref="ShowWindow"/> and <see cref="WindowType"/>:<br/>
-		/// 0=MDI child of <c>MainWindow.Current</c> (falls back to modeless if no MDI parent);<br/>
-		/// 1=modal top-level (<c>ShowDialog</c>); 2 or other=top-level modeless (<c>Show</c>).<br/>
-		/// When <see cref="MDIForm"/> is <c>.T.</c>, the form is always shown as its own MDI container.
+		/// 0 = MDI child of <c>MainWindow.Current</c>;<br/>
+		/// 1 = MDI child of the nearest open <c>MDIForm=.T.</c> form (falls back to <c>MainWindow</c>);<br/>
+		/// 2 = standalone top-level window.<br/>
+		/// Modality (<c>ShowDialog</c> vs <c>Show</c>) is driven by <see cref="WindowType"/>==1 in all cases.<br/>
+		/// When <see cref="MDIForm"/> is <c>.T.</c>, the form is its own MDI container and is shown as a normal top-level.
 		/// </summary>
 		NEW METHOD Show() AS VOID
-			// MDIForm = TRUE means this form IS its own MDI container — show normally.
+			// MDIForm = .T. means this form IS an MDI container — show as a normal top-level.
+			// IsMdiContainer was already set by the MDIForm setter.
 			IF SELF:MDIForm
 				SUPER:Show()
 				RETURN
@@ -480,7 +494,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			LOCAL screen AS MainWindow
 			screen := MainWindow.Current
 			SWITCH SELF:ShowWindow
-			CASE 0  // MDI child of _SCREEN
+			CASE 0  // In Screen — MDI child of _SCREEN
 				IF screen != NULL .AND. screen:IsMdiContainer .AND. SELF:MdiParent == NULL .AND. !SELF:IsMdiContainer
 					SELF:MdiParent := screen
 				ENDIF
@@ -489,10 +503,31 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ELSE
 					SUPER:Show()
 				ENDIF
-			CASE 1  // Modal top-level
-				SUPER:ShowDialog()
-			OTHERWISE  // 2 = top-level modeless (or any future value)
-				SUPER:Show()
+			CASE 1  // In Top-Level Form — MDI child of the nearest MDIForm=.T. form
+				IF SELF:MdiParent == NULL
+					// Find the nearest open VFP form that is an MDI container
+					FOREACH VAR frm IN System.Windows.Forms.Application.OpenForms
+						IF frm IS Form VAR vfpFrm .AND. vfpFrm:MDIForm
+							SELF:MdiParent := vfpFrm
+							EXIT
+						ENDIF
+					NEXT
+					// Fall back to MainWindow if no dedicated MDI container is open
+					IF SELF:MdiParent == NULL .AND. screen != NULL .AND. screen:IsMdiContainer
+						SELF:MdiParent := screen
+					ENDIF
+				ENDIF
+				IF SELF:WindowType == 1
+					SUPER:ShowDialog()
+				ELSE
+					SUPER:Show()
+				ENDIF
+			OTHERWISE  // 2 = As Top-Level Form (standalone) or any future value
+				IF SELF:WindowType == 1
+					SUPER:ShowDialog()
+				ELSE
+					SUPER:Show()
+				ENDIF
 			END SWITCH
 		END METHOD
 

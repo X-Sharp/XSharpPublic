@@ -189,6 +189,8 @@
     <Compile Include="Line.prg" />
     <Compile Include="Shape.prg" />
     <Compile Include="Menu.prg" />
+    <Compile Include="MenuFunctions.prg" />
+    <Compile Include="MenuState.prg" />
     <Compile Include="Pad.prg" />
     <Compile Include="Popup.prg" />
     <Compile Include="Separator.prg" />

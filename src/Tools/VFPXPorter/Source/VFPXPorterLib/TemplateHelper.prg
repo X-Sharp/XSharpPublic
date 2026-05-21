@@ -49,15 +49,15 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <throws>Exception if any required placeholder is missing</throws>
         PUBLIC STATIC METHOD ValidateTemplate(template AS STRING, templateName AS STRING, ;
             requiredPlaceholders AS IEnumerable<STRING>) AS VOID
-            
+
             IF String.IsNullOrEmpty(template)
                 XPorterLogger.Instance:Error("ValidateTemplate '" + templateName + "': Template is empty")
                 THROW Exception{"Template '" + templateName + "' is empty"}
             ENDIF
-            
+
             XPorterLogger.Instance:Verbose("ValidateTemplate '" + templateName + "': Validating " + ;
                 requiredPlaceholders:Count():ToString() + " required placeholders")
-            
+
             VAR missing := List<STRING>{}
             FOREACH VAR placeholder IN requiredPlaceholders
                 VAR marker := "<@" + placeholder + "@>"
@@ -65,13 +65,13 @@ BEGIN NAMESPACE VFPXPorterLib
                     missing:Add(placeholder)
                 ENDIF
             NEXT
-            
+
             IF missing:Count > 0
                 VAR missingText := String.Join(", ", missing:Select( { p => "<@" + p + "@>" } ):ToList())
                 XPorterLogger.Instance:Error("ValidateTemplate '" + templateName + "': Missing placeholders: " + missingText)
                 THROW Exception{"Template '" + templateName + "' is missing required placeholders: " + missingText}
             ENDIF
-            
+
             XPorterLogger.Instance:Verbose("ValidateTemplate '" + templateName + "': All required placeholders present")
 
         /// <summary>
@@ -85,18 +85,18 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <throws>Exception if validation fails</throws>
         PUBLIC STATIC METHOD ReplaceAndValidate(template AS STRING, templateName AS STRING, ;
             replacements AS Dictionary<STRING, STRING>) AS STRING
-            
+
             IF String.IsNullOrEmpty(template)
                 XPorterLogger.Instance:Verbose("ReplaceAndValidate '" + templateName + "': Template is empty, returning as-is")
                 RETURN template
             ENDIF
-            
+
             XPorterLogger.Instance:Information("ReplaceAndValidate '" + templateName + "': Starting replacement with " + ;
                 replacements:Count:ToString() + " placeholders")
-            
+
             // Extract all placeholders in the template
             VAR foundPlaceholders := TemplateHelper.ExtractPlaceholders(template)
-            
+
             // Check for unrequested placeholders (likely typos in template or code)
             VAR unrequested := HashSet<STRING>{}
             FOREACH VAR placeholder IN foundPlaceholders
@@ -104,7 +104,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     unrequested:Add(placeholder)
                 ENDIF
             NEXT
-            
+
             IF unrequested:Count > 0
                 VAR unrequestedText := String.Join(", ", unrequested:Select( {p => "<@" + p + "@>"}):ToList())
                 XPorterLogger.Instance:Error("ReplaceAndValidate '" + templateName + "': Unexpected placeholders: " + unrequestedText)
@@ -112,7 +112,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     unrequestedText + ;
                     ". This may indicate a typo in the template or missing replacement data."}
             ENDIF
-            
+
             // Perform replacements
             VAR result := template
             FOREACH VAR kvp IN replacements
@@ -120,7 +120,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 result := result:Replace(placeholder, kvp:Value)
                 XPorterLogger.Instance:Verbose("ReplaceAndValidate '" + templateName + "': Replaced <@" + kvp:Key + "@>")
             NEXT
-            
+
             // Final check: ensure no unreplaced placeholders remain
             IF result:Contains("<@")
                 VAR remaining := TemplateHelper.ExtractPlaceholders(result)
@@ -130,7 +130,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     remainingText + ;
                     ". This indicates a replacement value was null or empty, which should not occur."}
             ENDIF
-            
+
             XPorterLogger.Instance:Information("ReplaceAndValidate '" + templateName + "': Successfully completed")
             RETURN result
 

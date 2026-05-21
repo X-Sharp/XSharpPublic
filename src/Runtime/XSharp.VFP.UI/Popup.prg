@@ -17,11 +17,37 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Popup INHERIT System.Windows.Forms.ToolStripDropDownMenu
 
+		PRIVATE STATIC _registry AS Dictionary<STRING, Popup>
+
 		PRIVATE _bars AS List<Bar>
 
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_bars := List<Bar>{}
+
+		// ── Named registry ────────────────────────────────────────────────────
+		// Popups register themselves by Name so MRKBAR/PRMBAR can look them up.
+		NEW PROPERTY Name AS STRING
+			GET ; RETURN SUPER:Name ; END GET
+			SET
+				IF !String.IsNullOrEmpty(SUPER:Name) .AND. _registry != NULL
+					_registry:Remove(SUPER:Name)
+				ENDIF
+				SUPER:Name := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					IF _registry == NULL
+						_registry := Dictionary<STRING, Popup>{}
+					ENDIF
+					_registry[VALUE] := SELF
+				ENDIF
+			END SET
+		END PROPERTY
+
+		STATIC METHOD Find( cName AS STRING ) AS Popup
+			IF _registry != NULL .AND. _registry:ContainsKey(cName)
+				RETURN _registry[cName]
+			ENDIF
+			RETURN NULL
 
 		// ── BarCount ──────────────────────────────────────────────────────────
 		// Number of Bar items (separators are not counted).
@@ -60,6 +86,28 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:_bars:Add( oBar )
 				SELF:AddProperty( sName, oBar, PropertyVisibility.Public, "AddBar" )
 			ENDIF
+			RETURN NIL
+
+		// ── Skip ──────────────────────────────────────────────────────────────
+		// VFP SET SKIP OF POPUP .T. = disabled.
+		PROPERTY Skip AS LOGIC
+			GET ; RETURN !SELF:Enabled ; END GET
+			SET ; SELF:Enabled := !VALUE ; END SET
+		END PROPERTY
+
+		// ── IndexOf ───────────────────────────────────────────────────────────
+		// Returns the 1-based Bar index of the given bar (0 = not found).
+		// Used by Bar.OnVFPClick to populate MenuState.LastBar.
+		INTERNAL METHOD IndexOf( bar AS Bar ) AS INT
+			LOCAL idx := SELF:_bars:IndexOf(bar) AS INT
+			RETURN IIF( idx < 0, 0, idx + 1 )
+
+		// ── Release ───────────────────────────────────────────────────────────
+		METHOD Release() AS USUAL CLIPPER
+			IF !String.IsNullOrEmpty(SELF:Name) .AND. _registry != NULL
+				_registry:Remove(SELF:Name)
+			ENDIF
+			SELF:Dispose()
 			RETURN NIL
 
 		// ── Lifecycle stubs ───────────────────────────────────────────────────

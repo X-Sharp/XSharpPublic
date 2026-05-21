@@ -25,7 +25,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		STATIC PROPERTY Current AS MainWindow AUTO
 
-		PRIVATE _Forms AS List<Form>
+        PRIVATE _Forms AS List<Form>
+        PRIVATE mainStatusStrip AS System.Windows.Forms.StatusStrip
+        PRIVATE infoStripLabel AS System.Windows.Forms.ToolStripStatusLabel
 
 		// ── ActiveMenu ────────────────────────────────────────────────────────
 		/// <summary>
@@ -46,6 +48,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// <value></value>
         PROPERTY StartForm AS STRING AUTO
 
+        /// <summary>
+        /// The Menu that will be instantiated and shown when the MainWindow is first displayed.
+        /// </summary>
+        /// <value></value>
+        PROPERTY StartMenu AS STRING AUTO
+
 		/// <summary>
 		/// Always returns 2 (top-level modeless). Overriding this prevents <see cref="Form.Show"/> from trying to set <c>MdiParent</c> on the container itself. The setter is a no-op.
 		/// </summary>
@@ -59,7 +67,29 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			MainWindow.Current  := SELF
 			SELF:_Forms         := List<Form>{}
 			SELF:Size           := System.Drawing.Size{ 800, 600 }
-			SELF:IsMdiContainer := TRUE
+            SELF:IsMdiContainer := TRUE
+            SELF:StartPosition  := System.Windows.Forms.FormStartPosition.CenterScreen
+            //
+            SELF:mainStatusStrip := System.Windows.Forms.StatusStrip{}
+            SELF:infoStripLabel	:=	System.Windows.Forms.ToolStripStatusLabel{}
+            //
+            // mainStatusStrip
+            //
+            SELF:mainStatusStrip:ImageScalingSize := System.Drawing.Size{20, 20}
+            SELF:mainStatusStrip:Location := System.Drawing.Point{0, 587}
+            SELF:mainStatusStrip:Name := "mainStatusStrip"
+            SELF:mainStatusStrip:Size := System.Drawing.Size{1083, 22}
+            SELF:mainStatusStrip:TabIndex := 1
+            SELF:mainStatusStrip:Text := "status"
+            SELF:mainStatusStrip:Items:AddRange(<System.Windows.Forms.ToolStripItem>{ SELF:infoStripLabel })
+            //
+			//	infoStripLabel
+			//
+			SELF:infoStripLabel:Name	:=	"infoStripLabel"
+			SELF:infoStripLabel:Size	:=	System.Drawing.Size{0, 17}
+            //
+            SELF:Controls:Add(SELF:mainStatusStrip)
+            //
 			RETURN
 
 		// ── Forms collection ──────────────────────────────────────────────────
@@ -105,6 +135,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 // Reproduce the DO FORM UDC
                 XSharp.VFP.UI.__VFPDoForm.InitParam()
                 XSharp.VFP.UI.__VFPDoForm.Create( SELF:StartForm )
+            ELSEIF !String.IsNullOrEmpty(SELF:StartMenu)
+                // Instantiate the named menu class and attach it to _Screen
+                LOCAL oMenu AS Menu
+                oMenu := (Menu) CreateInstance( SELF:StartMenu )
+                IF oMenu != NULL
+                    oMenu:Activate( SELF )
+                ENDIF
             ENDIF
 
 	END CLASS

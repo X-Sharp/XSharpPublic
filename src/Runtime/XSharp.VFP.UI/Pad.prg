@@ -17,8 +17,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Pad INHERIT System.Windows.Forms.ToolStripMenuItem
 
-		PRIVATE _caption AS STRING
-		PRIVATE _popup   AS Popup
+		PRIVATE _caption  AS STRING
+		PRIVATE _popup    AS Popup
+		PRIVATE _vfpClick AS VFPOverride
 
 		CONSTRUCTOR() STRICT
 			SUPER()
@@ -50,6 +51,42 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:DropDown := VALUE
 			END SET
 		END PROPERTY
+
+		// ── Skip ──────────────────────────────────────────────────────────────
+		// VFP SET SKIP OF PAD .T. = disabled; maps to !Enabled.
+		PROPERTY Skip AS LOGIC
+			GET ; RETURN !SELF:Enabled ; END GET
+			SET ; SELF:Enabled := !VALUE ; END SET
+		END PROPERTY
+
+		// ── vfpClick — VFPOverride event ──────────────────────────────────────
+		// Used when the pad has a direct action (no Popup). Mirrors Bar.vfpClick.
+		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Fires when the user clicks this pad (only when no Popup is assigned)")];
+		[System.ComponentModel.DefaultValue(NULL)];
+		PROPERTY vfpClick AS STRING
+			GET
+				RETURN SELF:_vfpClick?:SendTo
+			END GET
+			SET
+				SELF:Set_Click( VFPOverride{SELF, VALUE} )
+			END SET
+		END PROPERTY
+
+		METHOD Set_Click( methodCall AS VFPOverride ) AS VOID
+			SELF:Click += System.EventHandler{ SELF, @OnVFPClick() }
+			SELF:_vfpClick := methodCall
+
+		PRIVATE METHOD OnVFPClick( sender AS OBJECT, e AS System.EventArgs ) AS VOID
+			IF SELF:_vfpClick != NULL
+				LOCAL sMethod AS STRING
+				sMethod := SELF:_vfpClick:SendTo
+				// Prefer the method on the Pad subclass itself; fall back to the owner Menu.
+				IF IsMethod( SELF, sMethod )
+					SELF:_vfpClick:Call()
+				ELSEIF SELF:Owner IS Menu VAR oMenu .AND. IsMethod( oMenu, sMethod )
+					Send( oMenu, sMethod )
+				ENDIF
+			ENDIF
 
 		// ── Lifecycle stubs ───────────────────────────────────────────────────
 		VIRTUAL METHOD Init() AS USUAL CLIPPER

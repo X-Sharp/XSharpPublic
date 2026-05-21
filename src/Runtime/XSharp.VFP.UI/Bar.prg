@@ -51,6 +51,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		// ── Skip ──────────────────────────────────────────────────────────────
+		// VFP SET SKIP OF BAR .T. = disabled; maps to !Enabled.
+		PROPERTY Skip AS LOGIC
+			GET ; RETURN !SELF:Enabled ; END GET
+			SET ; SELF:Enabled := !VALUE ; END SET
+		END PROPERTY
+
 		// ── vfpClick — VFPOverride event ──────────────────────────────────────
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Fires when the user clicks this menu item")];
 		[System.ComponentModel.DefaultValue(NULL)];
@@ -68,6 +75,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_vfpClick := methodCall
 
 		PRIVATE METHOD OnVFPClick( sender AS OBJECT, e AS System.EventArgs ) AS VOID
+			// Update global menu state so BAR(), PAD(), POPUP(), MENU() work in handlers
+			IF SELF:Owner IS Popup VAR oParentPopup
+				MenuState.LastBar   := oParentPopup:IndexOf( SELF )
+				MenuState.LastPopup := oParentPopup:Name
+				IF oParentPopup:OwnerItem IS Pad VAR oPadOwner
+					MenuState.LastPad := oPadOwner:Name
+					IF oPadOwner:Owner IS Menu VAR oMenuOwner
+						MenuState.LastMenu := oMenuOwner:Name
+					ENDIF
+				ENDIF
+			ELSEIF SELF:Owner IS ContextMenu VAR oCtx
+				MenuState.LastBar   := oCtx:IndexOf( SELF )
+				MenuState.LastPopup := oCtx:Name
+				MenuState.LastPad   := ""
+				MenuState.LastMenu  := ""
+			ENDIF
 			IF SELF:_vfpClick != NULL
 				LOCAL sMethod AS STRING
 				sMethod := SELF:_vfpClick:SendTo

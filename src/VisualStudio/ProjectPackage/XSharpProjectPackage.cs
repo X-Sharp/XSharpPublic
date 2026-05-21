@@ -216,15 +216,15 @@ namespace XSharp.Project
             // In your package's InitializeAsync / OnAfterPackageLoadedAsync:
             var registerTarget = await GetServiceAsync(typeof(SVsRegisterPriorityCommandTarget))
                 as IVsRegisterPriorityCommandTarget;
-
+#if DEV17
             uint cookie;
             if (registerTarget != null)
                 registerTarget.RegisterPriorityCommandTarget(0, new BuildCommandFilter(), out cookie);
-
+#endif
         }
 
 
-        #region SolutionEvents
+#region SolutionEvents
 
         private void SolutionEvents_OnAfterOpenSolution(Solution obj)
         {
@@ -254,7 +254,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
         public async Task<bool> GetOptionsAsync()
         {
             var options = ProjectSystemOptions.Load();
@@ -305,7 +305,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?

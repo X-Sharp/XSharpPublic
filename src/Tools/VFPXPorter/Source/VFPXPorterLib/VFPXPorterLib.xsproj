@@ -136,6 +136,7 @@
     <Compile Include="VFPXPorterReport.prg" />
     <Compile Include="ItemCode.prg" />
     <Compile Include="BaseItem.prg" />
+    <Compile Include="DbcFieldCache.prg" />
     <Compile Include="PJXItem.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>

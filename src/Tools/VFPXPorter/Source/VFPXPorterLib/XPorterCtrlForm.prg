@@ -595,6 +595,8 @@ BEGIN NAMESPACE VFPXPorterLib
 //                 dataEnvItem := SCXVCXItem{ orgDataEnvItem }
 //             ENDIF
 //             //
+            // Build DBC field property cache from the original (unmodified) DataEnvironment
+            VAR dbcCache := DbcFieldCache{Path.GetDirectoryName(SELF:Settings:ItemsPath), orgDataEnvItem}
             dest:Write( SELF:DesignerPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
                 dest.WriteLine("")
@@ -667,6 +669,8 @@ BEGIN NAMESPACE VFPXPorterLib
                  // Set of Rules
                  VAR memberFactoryDes := SELF:BuildMemberFactory( scxSubItem )
                  ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
+                 // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                 dbcCache:InjectMissingProperties(scxSubItem)
                  // Apply Rules to Properties
                  scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
                  IF !String.IsNullOrEmpty(memberFactoryDes)
@@ -695,6 +699,8 @@ BEGIN NAMESPACE VFPXPorterLib
                  instantiate:Append("{}")
                  instantiate:Append(Environment.NewLine)
                  ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxDescItem:FullyQualifiedFoxClassName )
+                 // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                 dbcCache:InjectMissingProperties(scxDescItem)
                  scxDescItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
                  initChilds:Append( scxDescItem:ApplyPropertiesRules( TRUE ) )
                  IF scxDescItem:XPortedCode != NULL
@@ -755,6 +761,8 @@ BEGIN NAMESPACE VFPXPorterLib
             ELSE
                 dataEnvItem := NULL
             ENDIF
+            // Build DBC field property cache from the original (unmodified) DataEnvironment
+            VAR dbcCache := DbcFieldCache{Path.GetDirectoryName(SELF:Settings:ItemsPath), orgDataEnvItem}
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}
             // Create the code for a DataEnvironment Object, with the attached Cursors
@@ -929,6 +937,8 @@ BEGIN NAMESPACE VFPXPorterLib
                 // Set of Rules
                 VAR memberFactorySF := SELF:BuildMemberFactory( scxSubItem )
                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
+                // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                dbcCache:InjectMissingProperties(scxSubItem)
                 // Apply Rules to Properties
                 scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
                 IF !String.IsNullOrEmpty(memberFactorySF)
@@ -977,6 +987,8 @@ BEGIN NAMESPACE VFPXPorterLib
                  instantiate:Append("{}")
                  instantiate:Append(Environment.NewLine)
                  ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxDescItem:FullyQualifiedFoxClassName )
+                 // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                 dbcCache:InjectMissingProperties(scxDescItem)
                  scxDescItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
                  initChilds:Append( scxDescItem:ApplyPropertiesRules( TRUE ) )
                  IF scxDescItem:XPortedCode != NULL

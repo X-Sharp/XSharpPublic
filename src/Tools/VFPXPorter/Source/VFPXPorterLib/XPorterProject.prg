@@ -15,6 +15,7 @@ USING System.ComponentModel
 USING Serilog
 USING Newtonsoft.Json
 USING System.Linq
+USING XSharp.RDD
 
 
 BEGIN NAMESPACE VFPXPorterLib
@@ -425,6 +426,8 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // Copy .dct (memo) and .dcx (index) companions
                                     SELF:CopyCompanion(orgFile, output, ".dct")
                                     SELF:CopyCompanion(orgFile, output, ".dcx")
+                                    // Copy tables owned by this DBC
+                                    SELF:CopyDbcOwnedTables(orgFile, output)
                                 ELSE
                                     XPorterLogger.Instance:Information( "Unknown file " + orgFile )
                                 ENDIF
@@ -618,6 +621,45 @@ BEGIN NAMESPACE VFPXPorterLib
                     XPorterLogger.Instance:Warning("CopyCompanion: failed to copy '" + companion + "': " + e:Message)
                 END TRY
             ENDIF
+
+        // Enumerate all tables owned by a DBC and copy each .dbf + companions to destFolder.
+        // Table paths in the DBC can be empty (same dir as DBC), relative, or absolute.
+        PRIVATE METHOD CopyDbcOwnedTables(dbcPath AS STRING, destFolder AS STRING) AS VOID
+            TRY
+                Dbc.Open(dbcPath, TRUE, TRUE, FALSE)
+                VAR oDb := Dbc.FindDatabase(dbcPath)
+                IF oDb == NULL
+                    RETURN
+                ENDIF
+                VAR dbcDir := Path.GetDirectoryName(dbcPath)
+                FOREACH VAR oTable IN oDb:Tables
+                    // Resolve the table's .dbf path
+                    VAR tablePath := oTable:Path
+                    LOCAL dbfPath AS STRING
+                    IF String.IsNullOrEmpty(tablePath)
+                        dbfPath := Path.Combine(dbcDir, oTable:ObjectName)
+                    ELSEIF Path.IsPathRooted(tablePath)
+                        dbfPath := tablePath
+                    ELSE
+                        dbfPath := Path.GetFullPath(Path.Combine(dbcDir, tablePath))
+                    ENDIF
+                    // Ensure .dbf extension
+                    IF String.IsNullOrEmpty(Path.GetExtension(dbfPath))
+                        dbfPath := Path.ChangeExtension(dbfPath, ".dbf")
+                    ENDIF
+                    IF File.Exists(dbfPath)
+                        VAR destDbf := Path.Combine(destFolder, Path.GetFileName(dbfPath))
+                        File.Copy(dbfPath, destDbf, TRUE)
+                        SELF:GeneratedFiles:Add(GeneratedFile{destDbf, FileAction.CopyAlways})
+                        SELF:CopyCompanion(dbfPath, destFolder, ".fpt")
+                        SELF:CopyCompanion(dbfPath, destFolder, ".cdx")
+                    ELSE
+                        XPorterLogger.Instance:Warning("CopyDbcOwnedTables: table not found: " + dbfPath)
+                    ENDIF
+                NEXT
+            CATCH e AS Exception
+                XPorterLogger.Instance:Warning("CopyDbcOwnedTables: cannot read '" + dbcPath + "': " + e:Message)
+            END TRY
 
         PRIVATE METHOD AddStandardReferences( xsprj AS VSProject ) AS VOID
             xsprj:AddReference( "mscorlib" )

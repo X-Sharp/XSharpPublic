@@ -420,10 +420,11 @@ BEGIN NAMESPACE VFPXPorterLib
                                 destFile := Path.GetFileName( dbc:Name )
                                 destFile := Path.Combine(output, destFile )
                                 IF File.Exists( orgFile )
-                                    // Now, copy
                                     File.Copy(orgFile, destFile, TRUE )
-                                    // and add to Project
                                     SELF:GeneratedFiles:Add( GeneratedFile{destFile, FileAction.CopyAlways })
+                                    // Copy .dct (memo) and .dcx (index) companions
+                                    SELF:CopyCompanion(orgFile, output, ".dct")
+                                    SELF:CopyCompanion(orgFile, output, ".dcx")
                                 ELSE
                                     XPorterLogger.Instance:Information( "Unknown file " + orgFile )
                                 ENDIF
@@ -442,10 +443,11 @@ BEGIN NAMESPACE VFPXPorterLib
                                 destFile := Path.GetFileName( dbf:Name )
                                 destFile := Path.Combine(output, destFile )
                                 IF File.Exists( orgFile )
-                                    // Now, copy
                                     File.Copy(orgFile, destFile, TRUE )
-                                    // and add to Project
                                     SELF:GeneratedFiles:Add( GeneratedFile{destFile, FileAction.CopyAlways })
+                                    // Copy .fpt (memo) and .cdx (index) companions
+                                    SELF:CopyCompanion(orgFile, output, ".fpt")
+                                    SELF:CopyCompanion(orgFile, output, ".cdx")
                                 ELSE
                                     XPorterLogger.Instance:Information( "Unknown file " + orgFile )
                                 ENDIF
@@ -602,6 +604,20 @@ BEGIN NAMESPACE VFPXPorterLib
 
             RETURN !exitExport
 
+
+        // Copy a companion file (same base name, different extension) to the destination folder.
+        // Silently skipped when the companion does not exist.
+        PRIVATE METHOD CopyCompanion(orgFile AS STRING, destFolder AS STRING, ext AS STRING) AS VOID
+            VAR companion := Path.ChangeExtension(orgFile, ext)
+            IF File.Exists(companion)
+                VAR destCompanion := Path.Combine(destFolder, Path.GetFileName(companion))
+                TRY
+                    File.Copy(companion, destCompanion, TRUE)
+                    SELF:GeneratedFiles:Add(GeneratedFile{destCompanion, FileAction.CopyAlways})
+                CATCH e AS Exception
+                    XPorterLogger.Instance:Warning("CopyCompanion: failed to copy '" + companion + "': " + e:Message)
+                END TRY
+            ENDIF
 
         PRIVATE METHOD AddStandardReferences( xsprj AS VSProject ) AS VOID
             xsprj:AddReference( "mscorlib" )

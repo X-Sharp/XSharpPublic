@@ -13,7 +13,8 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Tagging;
 using XSharp.Settings;
 using XSharp.Support;
-#if ! ASYNCCOMPLETION
+using Microsoft.VisualStudio.Shell;
+#if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
     partial class XSharpCompletionSource : ICompletionSource
@@ -297,6 +298,11 @@ namespace XSharp.LanguageService
                            int dotPos = filterText.LastIndexOf('.');
                             if (dotPos > 0)
                                 filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
+                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            });
+
                             helpers.BuildCompletionListMembers(location, compList, type, Modifiers.Public, true, filterText);
                         }
                     }

@@ -19,7 +19,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE STATIC _registry AS Dictionary<STRING, Popup>
 
-		PRIVATE _bars AS List<Bar>
+		PRIVATE _bars     AS List<Bar>
+		// Direct reference to the Menu that owns this popup. Set by Pad.Popup setter
+		// so FindDispatchTarget can reach the menu without relying on OwnerItem chain-walking.
+		INTERNAL PROPERTY OwnerMenu AS Menu AUTO
 
 		CONSTRUCTOR() STRICT
 			SUPER()

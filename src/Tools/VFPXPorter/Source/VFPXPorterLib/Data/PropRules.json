@@ -32,12 +32,13 @@
     "FontBold": "<@FontBold@>",
     "FontItalic": "<@FontItalic@>",
     "FontOutline": "",
-    "FontShadow": ""
+    "FontShadow": "",
+    "BackColor": "VFPTools.ColorFromVFP(<@BackColor@>)"
   },
 
   "CommandButton": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
-    "Caption": "Text",
+    "Caption": "Caption",
     "Style": "Style",
     "WordWrap": "WordWrap",
     "Cancel": "Cancel",
@@ -79,7 +80,7 @@
 
   "Label": {
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
-    "Caption": "Text",
+    "Caption": "Caption",
     "Alignment": "Alignment",
     "Style": "Style",
     "WordWrap": "WordWrap",
@@ -217,7 +218,7 @@
   },
 
   "CheckBox": {
-    "Caption": "Text",
+    "Caption": "Caption",
     "Value": "!Value",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Style": "Style",
@@ -233,7 +234,7 @@
   },
 
   "OptionButton": {
-    "Caption": "Text",
+    "Caption": "Caption",
     "Value": "!Value",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Style": "Style",
@@ -365,7 +366,7 @@
   },
 
   "Page": {
-    "Caption": "Text",
+    "Caption": "Caption",
     "PageOrder": "PageOrder",
     "BackStyle": "BackStyle",
     "Picture": "??<@Picture@>??",
@@ -426,7 +427,7 @@
   },
 
   "Common": {
-    "Caption": "Text",
+    "Caption": "Caption",
     "Comment": "",
     "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
@@ -443,6 +444,6 @@
     "DragIcon": "??<@DragIcon@>??",
     "MouseIcon": "??<@MouseIcon@>??",
     "FontName": "??<@FontName@>??",
-    "TextAlign": "VFPTools.AlignmentConvert(<@Alignment@>)"
+    "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)"
   }
 }

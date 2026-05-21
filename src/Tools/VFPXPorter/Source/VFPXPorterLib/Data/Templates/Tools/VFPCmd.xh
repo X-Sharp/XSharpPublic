@@ -37,8 +37,11 @@
 [;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
 ;XSharp.VFP.UI.__VFPDoForm.Create( <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
 
+#command QUIT ;
+=> System.Windows.Forms.Application.Exit()
+
 #command READ EVENTS ;
-=> __XPORTERWARNIN__ <(udc)>
+=> __VFPReadEvents()
 
 #command ON SHUTDOWN [<(something1)>] [<(somethingn)>];
 => __XPORTERWARNIN__ <(udc)>
@@ -148,7 +151,7 @@
 => __XPORTERWARNIN__ <(udc)>
 
 #command CLEAR EVENTS;
-=> __XPORTERWARNIN__ <(udc)>
+=> __VFPClearEvents()
 
 #command REPORT FORM <report> TO <destination>;
 => __XPORTERWARNIN__ <(udc)>

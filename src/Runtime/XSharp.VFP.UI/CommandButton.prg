@@ -240,6 +240,21 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		// ── VFP PROCEDURE Click dispatch ─────────────────────────────────────
+		// When a DEFINE CLASS subclass defines PROCEDURE Click, that method must
+		// be called on button click.  The SCX/VCX path uses vfpClick (set by
+		// VFPXPorter-generated Init code); the DEFINE CLASS path has no vfpClick,
+		// so we late-dispatch here when vfpClick is unset.
+		PROTECTED OVERRIDE METHOD OnClick(e AS System.EventArgs) AS VOID
+			SUPER:OnClick(e)
+			IF String.IsNullOrEmpty(SELF:vfpClick)
+				TRY
+					Send(SELF, "Click")
+				CATCH
+					NOP
+				END TRY
+			ENDIF
+
 		/// <summary>
 		/// Called by the Form after all controls are sited (e.g. from Form.Init),
 		/// so Cancel/Default wiring fires even when the button was added before the

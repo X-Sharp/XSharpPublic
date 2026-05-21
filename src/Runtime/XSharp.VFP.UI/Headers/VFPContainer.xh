@@ -19,50 +19,39 @@
 /// </summary>
 METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
     LOCAL oObject AS USUAL
-    //
     VAR parms := _ARGS()
     VAR success := TRUE
     IF PCount() >= 2
-        // At least a Object-Name and a Class-Name
         IF IsString( cName ) .AND. IsString( cClass )
-            // Don't forget to check the Parameters for Init()
-            // First, search for the type in XSharp.VFP.UI
-            cClass := "XSharp.VFP.UI." + cClass
+            // Case-insensitive lookup: tries XSharp.VFP.UI.<cClass> first, then bare name
             TRY
-                oObject := CreateInstance( cClass )
+                oObject := __VFPCreateInstance( (STRING)cClass )
             CATCH
                 NOP
             END TRY
-            // No !?
-            IF oObject == NULL
-                // Ok let's try with just the name
-                cClass := parms[2]
-                // No TRY .. CATCH, Throw an error if needed
-                oObject := CreateInstance( cClass )
-            ENDIF
             IF oObject != NULL
-                // Bingo !
-                // Create the Object
-                oObject := CreateInstance( cClass )
                 VAR uArgs := USUAL[]{parms:Length-2}
                 FOR VAR nArg := 1 TO uArgs:Length
                     uArgs[nArg] := parms[nArg+2]
                 NEXT
-                // Now add the oObject as a Property, with cName
-                SELF:AddProperty( cName, oObject, PropertyVisibility.Public, "AddObject " + cClass )
-                // TODO : Watchout of the cOLEClass !!
-                // Now, call Init() with the Parameters
+                SELF:AddProperty( cName, oObject, PropertyVisibility.Public, "AddObject " + (STRING)cClass )
+                // Make WinForms controls visible by adding to the Controls collection
+                // Guard on both SELF and oObject — non-visual containers (DataEnvironment etc.)
+                // do not inherit from System.Windows.Forms.Control and have no Controls collection.
+                IF oObject IS System.Windows.Forms.Control VAR oCtrl
+                    IF (OBJECT)SELF IS System.Windows.Forms.Control VAR oParent
+                        oParent:Controls:Add( oCtrl )
+                    ENDIF
+                ENDIF
                 TRY
                     Send( oObject, "Init", uArgs )
                 CATCH
                     success := FALSE
                 END TRY
-                // Should we throw an Error if success is False... It would means no "Init" at least...
-                // Ok, let's forget it...
             ENDIF
         ENDIF
     ENDIF
-   return success
+    RETURN success
 
 #endif // NO_VFPCONTAINER_ADDOBJECT
 

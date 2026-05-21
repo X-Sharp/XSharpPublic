@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 			SET
 				SELF:_caption := VALUE
-				SELF:Text := IIF( String.IsNullOrEmpty(VALUE), VALUE, VALUE:Replace("\<", "&") )
+				SELF:Text := IIF( String.IsNullOrEmpty(VALUE), VALUE, __VFPConvertCaption(VALUE) )
 			END SET
 		END PROPERTY
 
@@ -48,8 +48,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				RETURN SELF:_popup
 			END GET
 			SET
-				SELF:_popup  := VALUE
+				SELF:_popup   := VALUE
 				SELF:DropDown := VALUE
+				// Store a direct back-reference so Bar.FindDispatchTarget can reach the
+				// owning Menu without relying on the fragile OwnerItem chain.
+				IF VALUE != NULL .AND. SELF:Owner IS Menu VAR mnu
+					VALUE:OwnerMenu := mnu
+				ENDIF
 			END SET
 		END PROPERTY
 

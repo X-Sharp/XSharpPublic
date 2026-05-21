@@ -567,7 +567,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 ELSE
                                     // A Form ? A Menu ?
                                     start:Append( Path.GetFileNameWithoutExtension( SELF:Project:Main:Name ) )
-                                    start:Append( "{}" )
+                                    // start:Append( "{}" )
                                     projectReplacements["startcode"] := ""
                                     IF SELF:Project:Main:Name:EndsWith(".mnx")
                                         projectReplacements["startmenu"] := start:ToString()

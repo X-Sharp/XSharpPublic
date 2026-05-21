@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 			SET
 				SELF:_caption := VALUE
-				SELF:Text := IIF( String.IsNullOrEmpty(VALUE), VALUE, VALUE:Replace("\<", "&") )
+				SELF:Text := IIF( String.IsNullOrEmpty(VALUE), VALUE, __VFPConvertCaption(VALUE) )
 			END SET
 		END PROPERTY
 
@@ -109,14 +109,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 
 		// Locate the object that owns the action methods for this Bar.
-		// Two supported chains:
+		// Chains tried (first non-null wins):
 		//   ContextMenu: Bar.Owner → ContextMenu (direct)
-		//   Menu bar:    Bar.Owner → Popup → Popup.OwnerItem (Pad) → Pad.Owner → Menu
+		//   Menu bar, primary:   Bar.Owner → Popup → Popup.OwnerMenu (set by Pad.Popup setter)
+		//   Menu bar, fallback:  Bar.Owner → Popup → Popup.OwnerItem (Pad) → Pad.Owner → Menu
 		PRIVATE METHOD FindDispatchTarget() AS OBJECT
 			IF SELF:Owner IS ContextMenu VAR oCtx
 				RETURN oCtx
 			ENDIF
 			IF SELF:Owner IS Popup VAR oPopup
+				// Primary: direct reference set at init time (robust against MDI merging)
+				IF oPopup:OwnerMenu != NULL
+					RETURN oPopup:OwnerMenu
+				ENDIF
+				// Fallback: walk the WinForms OwnerItem chain
 				IF oPopup:OwnerItem IS Pad VAR oPad
 					IF oPad:Owner IS Menu VAR oMenu
 						RETURN oMenu

@@ -97,7 +97,7 @@ PROPERTY SpecialEffect AS INT AUTO
 /// </summary>
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Control")];
 [System.ComponentModel.DefaultValue("")];
-PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
+PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text := __VFPConvertCaption(VALUE)
 
 /// <summary>
 /// Z-order position of the control within its parent's <c>Controls</c> collection (0=front). Applied in <c>InitLayout</c>.

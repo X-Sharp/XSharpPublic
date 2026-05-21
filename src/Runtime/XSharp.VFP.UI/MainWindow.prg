@@ -136,13 +136,43 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 XSharp.VFP.UI.__VFPDoForm.InitParam()
                 XSharp.VFP.UI.__VFPDoForm.Create( SELF:StartForm )
             ELSEIF !String.IsNullOrEmpty(SELF:StartMenu)
-                // Instantiate the named menu class and attach it to _Screen
+                // Look for a user-defined Menu subclass before falling back to the
+                // runtime lookup, which would incorrectly resolve "menu" → XSharp.VFP.UI.Menu.
                 LOCAL oMenu AS Menu
-                oMenu := (Menu) CreateInstance( SELF:StartMenu )
+                VAR menuType := MainWindow.FindUserMenuType(SELF:StartMenu)
+                IF menuType != NULL
+                    oMenu := (Menu) System.Activator.CreateInstance(menuType)
+                ELSE
+                    oMenu := (Menu) __VFPCreateInstance(SELF:StartMenu)
+                ENDIF
                 IF oMenu != NULL
+                    Send(oMenu, "Init")
                     oMenu:Activate( SELF )
                 ENDIF
             ENDIF
+
+        // Searches all loaded assemblies except XSharp.VFP.UI for a class that inherits
+        // from Menu and whose short name matches className (case-insensitive).
+        // Returns NULL when no user-defined subclass is found.
+        PRIVATE STATIC METHOD FindUserMenuType(className AS STRING) AS System.Type
+            LOCAL thisAsm AS System.Reflection.Assembly
+            thisAsm := System.Reflection.Assembly.GetExecutingAssembly()
+            FOREACH VAR asm IN System.AppDomain.CurrentDomain:GetAssemblies()
+                IF asm == thisAsm
+                    LOOP
+                ENDIF
+                TRY
+                    FOREACH VAR t IN asm:GetExportedTypes()
+                        IF String.Equals(t:Name, className, StringComparison.OrdinalIgnoreCase) ;
+                           .AND. t:IsSubclassOf(TYPEOF(Menu))
+                            RETURN t
+                        ENDIF
+                    NEXT
+                CATCH
+                    NOP
+                END TRY
+            NEXT
+            RETURN NULL
 
 	END CLASS
 END NAMESPACE // XSharp.VFP.UI

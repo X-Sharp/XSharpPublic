@@ -247,18 +247,42 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             // Convert COMMAND (single-line inline VFP code)
             IF !String.IsNullOrEmpty(item:COMMAND)
-                SELF:_menuConverter:ProcessMenuCode(item:COMMAND)
+                SELF:_menuConverter:ProcessMenuCode(SELF:NormalizeVFPMenuCommand(item:COMMAND))
                 item:COMMAND := String.Join(Environment.NewLine, SELF:_menuConverter:Source:ToArray())
             ENDIF
             // Convert PROCEDURE (multi-line block — strip PROCEDURE/ENDPROC wrapper first)
             IF !String.IsNullOrEmpty(item:PROCEDURE)
-                SELF:_menuConverter:ProcessMenuCode(SELF:StripProcedureWrapper(item:PROCEDURE))
+                SELF:_menuConverter:ProcessMenuCode(SELF:NormalizeVFPMenuCommand(SELF:StripProcedureWrapper(item:PROCEDURE)))
                 item:PROCEDURE := String.Join(Environment.NewLine, SELF:_menuConverter:Source:ToArray())
             ENDIF
             // Recurse into nested sub-menu children
             FOREACH child AS MNXItem IN item:Childs
                 SELF:ConvertHandlerCode(child)
             NEXT
+
+        // Inserts a space between a VFP command keyword and an immediately-following string
+        // literal that has no separating whitespace — e.g.  do form"file"  →  DO FORM "file".
+        // VFP allows the omission but the X# preprocessor rules require the space.
+        PRIVATE METHOD NormalizeVFPMenuCommand( cmd AS STRING ) AS STRING
+            cmd := SELF:EnsureSpaceAfterKeyword(cmd, "DO FORM")
+            cmd := SELF:EnsureSpaceAfterKeyword(cmd, "USE")
+            RETURN cmd
+
+        PRIVATE METHOD EnsureSpaceAfterKeyword(line AS STRING, keyword AS STRING) AS STRING
+            VAR idx := line:IndexOf(keyword, StringComparison.OrdinalIgnoreCase)
+            IF idx < 0
+                RETURN line
+            ENDIF
+            // Ensure nothing alphanumeric precedes the keyword (avoid matching mid-word)
+            IF idx > 0 .AND. Char.IsLetterOrDigit(line[idx - 1])
+                RETURN line
+            ENDIF
+            VAR afterKw := idx + keyword:Length
+            // If the very next character is a quote, insert a space
+            IF afterKw < line:Length .AND. line[afterKw] == '"'
+                RETURN line:Substring(0, afterKw) + " " + line:Substring(afterKw)
+            ENDIF
+            RETURN line
 
         PRIVATE METHOD StripProcedureWrapper( code AS STRING ) AS STRING
             LOCAL lines AS List<STRING>
@@ -302,9 +326,9 @@ BEGIN NAMESPACE VFPXPorterLib
                 SELF:UpdateProgress()
                 //
                 // Emit AddPad for each top-level menu entry
-                initCode:Append('oPad := SELF:AddPad( "')
+                initCode:Append(e"oPad := SELF:AddPad( \"")
                 initCode:Append(pad:Name)
-                initCode:Append('", "')
+                initCode:Append(e"\", \"")
                 initCode:Append(pad:PROMPT)
                 initCode:Append('"')
                 initCode:Append(" )")

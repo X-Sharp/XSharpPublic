@@ -1,8 +1,8 @@
 <Solution>
-  <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
-  <Project Path="Tests/VFPXPorterTest/VFPXPorterTest.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
-  <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
-  <Project Path="Tools/VFPXPorter/Source/VFPXPorter/VFPXPorter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
-  <Project Path="Tools/VFPXPorter/Source/VFPXPorterCmd/VFPXPorterCmd.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
-  <Project Path="Tools/VFPXPorter/Source/VFPXPorterLib/VFPXPorterLib.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+  <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7e2cbef6-9945-42c4-a7df-f9b8e2e68d44" />
+  <Project Path="Tests/VFPXPorterTest/VFPXPorterTest.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="421a1a64-a17d-451e-b7e0-dbf3a173b65d" />
+  <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="b4f3862c-82bc-407f-8a84-5241f7321f9f" />
+  <Project Path="Tools/VFPXPorter/Source/VFPXPorter/VFPXPorter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="23bb62e9-a405-416a-b0a5-0e4e178b839f" />
+  <Project Path="Tools/VFPXPorter/Source/VFPXPorterCmd/VFPXPorterCmd.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="8ffa9199-e4a3-4ac4-9a97-9ba2ac8d13cd" />
+  <Project Path="Tools/VFPXPorter/Source/VFPXPorterLib/VFPXPorterLib.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="71f46150-aad7-4ed1-8e3f-263698800ba7" />
 </Solution>

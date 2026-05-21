@@ -495,7 +495,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			screen := MainWindow.Current
 			SWITCH SELF:ShowWindow
 			CASE 0  // In Screen — MDI child of _SCREEN
-				IF screen != NULL .AND. screen:IsMdiContainer .AND. SELF:MdiParent == NULL .AND. !SELF:IsMdiContainer
+				// Modal dialogs (WindowType=1) must be top-level; never assign MdiParent for them.
+				IF SELF:WindowType != 1 .AND. screen != NULL .AND. screen:IsMdiContainer .AND. SELF:MdiParent == NULL .AND. !SELF:IsMdiContainer
 					SELF:MdiParent := screen
 				ENDIF
 				IF SELF:WindowType == 1
@@ -504,7 +505,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					SUPER:Show()
 				ENDIF
 			CASE 1  // In Top-Level Form — MDI child of the nearest MDIForm=.T. form
-				IF SELF:MdiParent == NULL
+				// Modal dialogs (WindowType=1) must be top-level; never assign MdiParent for them.
+				IF SELF:WindowType != 1 .AND. SELF:MdiParent == NULL
 					// Find the nearest open VFP form that is an MDI container
 					FOREACH VAR frm IN System.Windows.Forms.Application.OpenForms
 						IF frm IS Form VAR vfpFrm .AND. vfpFrm:MDIForm

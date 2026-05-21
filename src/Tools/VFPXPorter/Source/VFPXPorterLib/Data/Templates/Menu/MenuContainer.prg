@@ -11,7 +11,7 @@ CLASS <@MenuName@> INHERIT XSharp.VFP.UI.Menu
 		LOCAL oPopup AS XSharp.VFP.UI.Popup
 
 		<@MenuInit@>
-		SELF:Activate( _Screen )
+		//SELF:Activate( _Screen )
 		RETURN SUPER:Init()
 
 	<@MenuCode@>

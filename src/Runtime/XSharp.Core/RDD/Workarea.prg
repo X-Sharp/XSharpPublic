@@ -526,6 +526,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
             LOCAL result AS LOGIC
+            info:Name := info:Name:Trim()
             result := SELF:FieldIndex(info:Name) == 0
             IF result
               IF SELF:_currentField < SELF:_Fields:Length
@@ -542,9 +543,12 @@ BEGIN NAMESPACE XSharp.RDD
 
                 // the alias could be an empty string !
                 SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
-                if info:Alias != NULL .and. ! String.Equals(info:Alias, info:Name, StringComparison.OrdinalIgnoreCase)
+                if info:Alias != NULL
+                    info:Alias := info:Alias:Trim()
+                    IF ! String.Equals(info:Alias, info:Name, StringComparison.OrdinalIgnoreCase)
                     // the alias could be an empty string !
-                    SELF:_fieldNames:Add(info:Alias:Trim(), SELF:_currentField)
+                        SELF:_fieldNames:Add(info:Alias, SELF:_currentField)
+                    ENDIF
                 endif
                 SELF:_currentField++
                 SELF:_RecordLength += (WORD)info:Length

@@ -14,7 +14,7 @@ USING File := System.IO.File
 USING XSharp.Settings
 
 
-#command CHECKIFOPEN [<result>] => IF !IsDbOpen ; Log("Database is not open") ; return [<result>] ; ENDIF
+#command CHECKIFOPEN [<result>] => IF !IsDbOpen ; LogDbClosed(); return [<result>] ; ENDIF
 
 
 NAMESPACE XSharpModel
@@ -27,8 +27,10 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.6 AS System.Double
-
+    PRIVATE CONST CurrentDbVersion := 3.7 AS System.Double
+STATIC METHOD LogDbClosed() AS VOID
+    Log("Database is not open")
+    RETURN
 STATIC METHOD InitializeMicrosoft() AS VOID
     Log(i"InitializeMicrosoft")
     SQLitePCL.Batteries.Init()

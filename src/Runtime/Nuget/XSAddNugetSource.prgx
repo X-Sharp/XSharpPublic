@@ -74,7 +74,7 @@ if packageSourceMapping == null
     packageSourceMapping := XElement{"packageSourceMapping"}
     configElement:Add(packageSourceMapping)
 endif
-VAR sourceElement := null
+local sourceElement := NULL as XElement
 foreach elt as XElement in packageSourceMapping:Elements()
     if elt:Attribute("key")?:Value == source
         sourceElement := elt

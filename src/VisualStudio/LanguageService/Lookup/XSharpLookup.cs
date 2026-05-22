@@ -14,8 +14,6 @@ using System.Text;
 using XSharpModel;
 using XSharp.Settings;
 using XSharp.Support;
-using System.Windows.Controls;
-using System.Xml.XPath;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup
@@ -857,42 +855,48 @@ namespace XSharp.LanguageService
                 var tokenType = currentToken.Type;
                 bool isType = XSharpLexer.IsType(tokenType);
                 var isPseudo = XSharpLexer.IsPseudoFunction(tokenType);
+                var findMethod = false;
                 var isId = tokenType == XSharpLexer.ID ||
                                   tokenType == XSharpLexer.SELF ||
                                   tokenType == XSharpLexer.SUPER ||
                                   tokenType == XSharpLexer.COLONCOLON ||
                                   isPseudo ||
                                   isType;
+                var qualifiedName = false;
                 if (isId)
                 {
-                    if (tokenType == XSharpLexer.SELF)
+                    qualifiedName = list.La1 == XSharpLexer.DOT;
+                    findMethod = list.La1 == XSharpLexer.LPAREN && !isType;        // DWORD( is a cast and not a method call
+                    if (tokenType == XSharpLexer.SELF || tokenType == XSharpLexer.SUPER)
                     {
-                        visibility = Modifiers.Private;
+                        visibility = tokenType == XSharpLexer.SUPER ? Modifiers.Protected : Modifiers.Private;
                         if (currentType != null)
                         {
-                            symbols.Push(currentType);
-                            result.Add(currentType);
+                            if (tokenType == XSharpLexer.SUPER)
+                            {
+                                var bt = currentType.BaseType;
+                                if (bt == null && currentType.BaseTypeName != null)
+                                {
+                                    bt = location.FindType(currentType.BaseTypeName);
+                                }
+                                if (bt != null)
+                                    currentType = bt;
+                            }
+                            if (findMethod)
+                            {
+                                var ctors = SearchConstructors(currentType, visibility);
+                                result.AddRange(ctors);
+                                if (ctors.Any())
+                                    symbols.Push(ctors.First());
+                            }
+                            else
+                            {
+                                symbols.Push(currentType);
+                                result.Add(currentType);
+                            }
+                            continue;
                         }
                     }
-                    else if (tokenType == XSharpLexer.SUPER)
-                    {
-                        visibility = Modifiers.Protected;
-                        if (currentType != null)
-                        {
-                            var bt = currentType.BaseType;
-                            if (bt == null && currentType.BaseTypeName != null )
-                            {
-                                bt = location.FindType(currentType.BaseTypeName);
-                            }
-                            if (bt != null)
-                            {
-                                symbols.Push(bt);
-                                result.Add(bt);
-                                continue;
-                            }
-                        }
-                    }
-
                 }
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
                 {
@@ -906,8 +910,6 @@ namespace XSharp.LanguageService
                             break;
                     }
                 }
-                var qualifiedName = false;
-                var findMethod = false;
                 var canbeMethod = true;
                 var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
                 if (!state.HasFlag(CompletionState.Inherit))
@@ -922,8 +924,6 @@ namespace XSharp.LanguageService
 
                 if (isId)
                 {
-                    qualifiedName = list.La1 == XSharpLexer.DOT;
-                    findMethod = list.La1 == XSharpLexer.LPAREN && !isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
                     if (isPseudo)
                     {

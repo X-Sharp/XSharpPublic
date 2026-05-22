@@ -4,6 +4,7 @@ USING System.ComponentModel
 USING System.Data
 USING System.Drawing
 USING System.Text
+USING System.IO
 USING System.Windows.Forms
 
 USING XSharp.VFP.UI

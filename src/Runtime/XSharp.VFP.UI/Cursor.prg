@@ -161,26 +161,34 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF String.IsNullOrEmpty( SELF:Alias )
 					SELF:Alias := SELF:CursorSource
 				ENDIF
+				// Resolve to absolute path so DbcManager.FindDatabase() can match the key
+				// stored by ExtendDbName() when the DBC was first opened.
+				VAR dbAbsPath := System.IO.Path.GetFullPath( SELF:DataBase )
+				VAR dbAbsDir  := System.IO.Path.GetDirectoryName( dbAbsPath )
 				// Open the DBC — silently ignored if already open
-				DbcManager.Open( SELF:DataBase, TRUE, SELF:ReadOnly, FALSE )
+				DbcManager.Open( dbAbsPath, TRUE, SELF:ReadOnly, FALSE )
 				// Resolve full .dbf path via the DBC metadata, fall back to DBC directory
 				LOCAL cFullPath AS STRING
 				LOCAL oDb AS DbcDatabase
-				oDb := DbcManager.FindDatabase( SELF:DataBase )
+				oDb := DbcManager.FindDatabase( dbAbsPath )
 				IF oDb != NULL
 					LOCAL oTable AS DbcTable
 					oTable := oDb:FindTable( SELF:CursorSource )
 					IF oTable != NULL .AND. !String.IsNullOrEmpty( oTable:Path )
-						cFullPath := oTable:Path
+						// oTable:Path holds the real filename from the DBC PROPERTY blob —
+						// it may differ from CursorSource (e.g. spaces vs underscores).
+						// Use it directly if absolute and valid; otherwise resolve its
+						// filename against the DBC directory.
+						IF System.IO.Path.IsPathRooted( oTable:Path ) .AND. System.IO.File.Exists( oTable:Path )
+							cFullPath := oTable:Path
+						ELSE
+							cFullPath := System.IO.Path.Combine( dbAbsDir, System.IO.Path.GetFileName( oTable:Path ) )
+						ENDIF
 					ELSE
-						cFullPath := System.IO.Path.Combine( ;
-							System.IO.Path.GetDirectoryName( SELF:DataBase ), ;
-							SELF:CursorSource + ".dbf" )
+						cFullPath := System.IO.Path.Combine( dbAbsDir, SELF:CursorSource + ".dbf" )
 					ENDIF
 				ELSE
-					cFullPath := System.IO.Path.Combine( ;
-						System.IO.Path.GetDirectoryName( SELF:DataBase ), ;
-						SELF:CursorSource + ".dbf" )
+					cFullPath := System.IO.Path.Combine( dbAbsDir, SELF:CursorSource + ".dbf" )
 				ENDIF
 				// Open the table in its own work area
 				DbUseArea( TRUE, "DBFVFP", cFullPath, SELF:Alias, !SELF:Exclusive, SELF:ReadOnly )

@@ -1253,16 +1253,34 @@ BEGIN NAMESPACE VFPXPorterLib
                     // Apply Rules to Properties
                     cursorItem:ConvertProperties( dataRules, SELF:_defaultValues )
                     setDataEnv:Append( cursorItem:ApplyPropertiesRules( TRUE ) )
-                    // Override CursorSource with a runtime-resolved path for free table cursors
+                    // Override CursorSource with a relative path for free table cursors
                     IF !String.IsNullOrEmpty(csFileName)
                         setDataEnv:Append("SELF:")
                         setDataEnv:Append(cursorItem:Name)
-                        setDataEnv:Append(":CursorSource := System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ")
                         IF SELF:Settings:StoreInFolders
                             VAR ftFolder := SELF:Settings:FolderNames["FreeTables"]
-                            setDataEnv:Append(e"\"" + ftFolder + e"\", ")
+                            setDataEnv:Append(e":CursorSource := Path.Combine(\"" + ftFolder + e"\", \"" + csFileName + e"\")")
+                        ELSE
+                            setDataEnv:Append(e":CursorSource := \"" + csFileName + e"\"")
                         ENDIF
-                        setDataEnv:Append(e"\"" + csFileName + e"\")")
+                        setDataEnv:Append(Environment.NewLine)
+                    ENDIF
+                    // Override Database with a relative path for DBC-bound cursors.
+                    // DbCursor.Open() passes this to DbcManager.Open() which resolves
+                    // it relative to the working directory (respects SET DEFAULT).
+                    IF !String.IsNullOrEmpty(dbRaw)
+                        VAR dbcFileForRuntime := Path.GetFileName(dbRaw)
+                        IF String.IsNullOrEmpty(Path.GetExtension(dbcFileForRuntime))
+                            dbcFileForRuntime := Path.ChangeExtension(dbcFileForRuntime, ".dbc")
+                        ENDIF
+                        setDataEnv:Append("SELF:")
+                        setDataEnv:Append(cursorItem:Name)
+                        IF SELF:Settings:StoreInFolders
+                            VAR dbFolder := SELF:Settings:FolderNames["Databases"]
+                            setDataEnv:Append(e":Database := Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileForRuntime + e"\")")
+                        ELSE
+                            setDataEnv:Append(e":Database := \"" + dbcFileForRuntime + e"\"")
+                        ENDIF
                         setDataEnv:Append(Environment.NewLine)
                     ENDIF
                     setDataEnv:Append("SELF:")
@@ -1306,16 +1324,18 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
                 // Emit OPEN DATABASE for each DBC referenced by a cursor.
-                // Path is built at runtime from AppDomain.CurrentDomain.BaseDirectory so it
-                // works regardless of the working directory when the app starts.
+                // Relative path — resolved from the working directory (respects SET DEFAULT).
                 FOREACH VAR dbcPath IN dbcPaths
                     VAR dbcFileName := Path.GetFileName(dbcPath)
-                    setDataEnv:Append("OPEN DATABASE (System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ")
+                    IF String.IsNullOrEmpty(Path.GetExtension(dbcFileName))
+                        dbcFileName := Path.ChangeExtension(dbcFileName, ".dbc")
+                    ENDIF
                     IF SELF:Settings:StoreInFolders
                         VAR dbFolder := SELF:Settings:FolderNames["Databases"]
-                        setDataEnv:Append(e"\"" + dbFolder + e"\", ")
+                        setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileName + e"\"))")
+                    ELSE
+                        setDataEnv:Append(e"OPEN DATABASE \"" + dbcFileName + e"\"")
                     ENDIF
-                    setDataEnv:Append(e"\"" + dbcFileName + e"\") )")
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
                 // Now, init (if needed) all Cursors

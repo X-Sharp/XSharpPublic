@@ -212,3 +212,68 @@ FUNCTION Target( nRelationshipNumber , uArea ) AS STRING CLIPPER
 [FoxProFunction("UNIQUE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Unique(uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbOrderInfo(DBOI_UNIQUE , NIL, NIL) } , FALSE,__FUNCTION__,1)
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
+[FoxProFunction("INDEXSEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
+    @@Default(@lMovePointer, FALSE)
+
+    LOCAL nArea AS DWORD
+    IF IsNil(uArea)
+        nArea := RuntimeState.CurrentWorkarea
+    ELSEIF IsString(uArea)
+        nArea := RuntimeState.Workareas.FindAlias((STRING) uArea)
+    ELSEIF IsNumeric(uArea)
+        nArea := (DWORD) uArea
+    ELSE
+        RETURN FALSE
+    ENDIF
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    VAR lResult := FALSE
+    RuntimeState.CurrentWorkarea := nOldArea
+    TRY
+        VAR cOldOrder := ""
+        VAR cOldBag := ""
+        VAR lChangeOrder := FALSE
+
+        IF !IsNil(uIndex)
+            cOldOrder := OrdName()
+            cOldBag := ""
+            OrdSetFocus(uIndex)
+            lChangeOrder := TRUE
+        ENDIF
+
+        LOCAL nOldRecno := 0 AS DWORD
+        VAR lWasBof := FALSE
+
+        IF !lMovePointer
+            nOldRecno := RecNo()
+            lWasBof := Bof()
+        ENDIF
+
+        lResult := DbSeek(eExpression)
+
+        IF !lMovePointer
+            IF lWasBof
+                DbGoTop()
+                IF RecCount() > 0
+                    DbSkip(-1)
+                ENDIF
+            ELSE
+                DbGoto(nOldRecno)
+            ENDIF
+        ENDIF
+
+        IF lChangeOrder
+            OrdSetFocus(cOldOrder, cOldBag)
+        ENDIF
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY
+
+    RETURN lResult
+

@@ -167,6 +167,60 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 END TRY
             END TRY
         END METHOD
+
+        [Fact];
+        METHOD TestIndexSeek() AS VOID
+            VAR cOldDir := System.IO.Directory.GetCurrentDirectory()
+            VAR oDir := System.IO.Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), ;
+                "IndexSeekTest_" + Guid.NewGuid():ToString("N")))
+            VAR cTempPath := oDir:FullName
+            TRY
+                SET DEFAULT TO (cTempPath)
+                CREATE TABLE SeekTest (Id INT, Name C(10))
+                INSERT INTO SeekTest VALUES(1, "Alpha")
+                INSERT INTO SeekTest VALUES(2, "Beta")
+                INSERT INTO SeekTest VALUES(3, "Gamma")
+                INDEX ON Name TAG NameIdx
+                // Found -> pointer must not move.
+                GO TOP
+                VAR nRec := RecNo()
+                Assert.True(IndexSeek("Beta"))
+                Assert.Equal((INT)nRec, (INT) RecNo())
+
+                // Not found -> pointer must not move
+                nRec := RecNo()
+                Assert.False(IndexSeek("Zeta"))
+                Assert.Equal((INT)nRec, (INT) RecNo())
+
+                // Found -> pointer must move
+                GO TOP
+                Assert.True(IndexSeek("Beta", .T.))
+                Assert.Equal("Beta", ALLTRIM(SeekTest.Name))
+
+                // Not found with lMovePointer = .T.
+                Assert.False(IndexSeek("Zeta", .T.))
+
+                // With alias string -> pointer must not move
+                GO TOP
+                nRec := RecNo()
+                Assert.True(IndexSeek("Gamma", .F., "SeekTest"))
+                Assert.Equal((INT)nRec, (INT) RecNo())
+
+                // With workarea number -> pointer must not move
+                GO TOP
+                nRec := RecNo()
+                Assert.True(IndexSeek("Alpha", .F., Select()))
+                Assert.Equal((INT)nRec, (INT) RecNo())
+
+                // Non-existent area -> must return false
+                Assert.False(IndexSeek("Alpha", .F., "NonExistent"))
+            FINALLY
+                XSharp.CoreDb.CloseAll()
+                SET DEFAULT TO (cOldDir)
+                System.IO.Directory.SetCurrentDirectory(cOldDir)
+                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+            END TRY
+        END METHOD
     END CLASS
 
 END NAMESPACE

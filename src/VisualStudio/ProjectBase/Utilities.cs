@@ -854,7 +854,9 @@ namespace Microsoft.VisualStudio.Project
                     {
                         // VS 2019 seems to cache the project files.
                         // if we have changed the project file then it may have to try to load the file more than once.
-                        buildProject = buildEngine.LoadProject(fullProjectPath);
+                        //buildProject = buildEngine.LoadProject(fullProjectPath);
+                        var projectRootElement = Build.Construction.ProjectRootElement.Open(fullProjectPath, buildEngine, preserveFormatting: true);
+                        buildProject = new MSBuild.Project(projectRootElement, null, null, buildEngine);
                         done = true;
                     }
                     catch (Exception e)

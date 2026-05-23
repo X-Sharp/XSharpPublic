@@ -137,8 +137,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:RowTemplate:Height := 24
             // We will manage the process
             SELF:AutoGenerateColumns := FALSE
-            // Remove the "selection" column in front of each Row
-            SELF:RowHeadersVisible := FALSE
+            // VFP RecordMark defaults to .T. — show a narrow row-header column with the current-record arrow
+            SELF:RowHeadersVisible := TRUE
+            SELF:RowHeadersWidth := 20
+            SELF:RowHeadersWidthSizeMode := DataGridViewRowHeadersWidthSizeMode.DisableResizing
             // Per Default, in VFP you cannot add new rows to the grid
             SELF:AllowAddNew := FALSE
             // AllowUserToAddRows is always FALSE — we manage new rows ourselves
@@ -355,13 +357,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 VAR nFields := FCount()
                 FOR VAR i := 1 UPTO nFields
                     VAR cName := FieldName( i )
+                    VAR cType := (STRING) DbFieldInfo( DBS_TYPE, i )
                     VAR nLen  := (INT) DbFieldInfo( DBS_LEN, i )
                     VAR oCol := Column{}
                     oCol:DataPropertyName := cName
                     oCol:HeaderText := cName
                     oCol:Name := cName
-                    // Size column to field width: 7 px/char, clamped to [40, 250]
-                    oCol:Width := Math.Max( 40, Math.Min( 250, nLen * 7 ) )
+                    oCol:Width := _ColumnWidth( cType, nLen )
                     SELF:Columns:Add( oCol )
                 NEXT
             CATCH
@@ -369,6 +371,22 @@ BEGIN NAMESPACE XSharp.VFP.UI
             FINALLY
                 DbSelectArea( nOld )
             END TRY
+
+        // Returns a pixel width appropriate for the VFP field type + declared length.
+        // DBS_LEN is a binary storage size for I/B/T/Y/D/L/M, not a display width.
+        PRIVATE STATIC METHOD _ColumnWidth( cType AS STRING, nLen AS INT ) AS INT
+            SWITCH cType:ToUpper()
+            CASE "L"   ; RETURN 40            // Logical: .T./.F.
+            CASE "D"   ; RETURN 90            // Date: MM/DD/YYYY
+            CASE "T"   ; RETURN 140           // DateTime
+            CASE "I"   ; RETURN 65            // Integer (4-byte binary storage)
+            CASE "B"   ; RETURN 80            // Double  (8-byte binary storage)
+            CASE "Y"   ; RETURN 90            // Currency(8-byte binary storage)
+            CASE "M"   ; RETURN 100           // Memo
+            CASE "G"   ; RETURN 60            // General/OLE
+            CASE "N"   ; RETURN Math.Max( 50, Math.Min( 150, nLen * 9 ) )   // Numeric
+            OTHERWISE  ; RETURN Math.Max( 50, Math.Min( 250, nLen * 7 ) )   // Character and others
+            END SWITCH
 
 
         PRIVATE _VFPAfterRowColChange AS VFPOverride

@@ -47,9 +47,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROPERTY DoCreate AS LOGIC AUTO
 		/// <summary>
-		/// VFP AutoCenter stub — stored for source compatibility (centering is handled by WinForms <c>StartPosition</c>).
+		/// When <c>.T.</c>, the form is centered on the screen when shown.<br/>
+		/// Maps to <see cref="System.Windows.Forms.Form.StartPosition"/>: <c>.T.</c> → <c>CenterScreen</c>, <c>.F.</c> → <c>Manual</c> (respects exported Top/Left).
 		/// </summary>
-		PROPERTY AutoCenter AS LOGIC AUTO
+		PROPERTY AutoCenter AS LOGIC
+			GET ; RETURN SELF:StartPosition == System.Windows.Forms.FormStartPosition.CenterScreen ; END GET
+			SET ; SELF:StartPosition := IIF(VALUE, System.Windows.Forms.FormStartPosition.CenterScreen, System.Windows.Forms.FormStartPosition.Manual) ; END SET
+		END PROPERTY
 		/// <summary>
 		/// VFP Movable stub — stored for source compatibility.
 		/// </summary>
@@ -376,6 +380,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			// Default Values
             SELF:BindControls := TRUE
             SELF:Size := System.Drawing.Size{375, 250}
+            // Use Manual start position so that Top/Left exported from the SCX are respected.
+            // AutoCenter := .T. overrides this to CenterScreen.
+            SELF:StartPosition := System.Windows.Forms.FormStartPosition.Manual
 
 
 		PRIVATE _VFPLoad AS VFPOverride

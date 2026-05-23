@@ -355,10 +355,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 VAR nFields := FCount()
                 FOR VAR i := 1 UPTO nFields
                     VAR cName := FieldName( i )
+                    VAR nLen  := (INT) DbFieldInfo( DBS_LEN, i )
                     VAR oCol := Column{}
                     oCol:DataPropertyName := cName
                     oCol:HeaderText := cName
                     oCol:Name := cName
+                    // Size column to field width: 7 px/char, clamped to [40, 250]
+                    oCol:Width := Math.Max( 40, Math.Min( 250, nLen * 7 ) )
                     SELF:Columns:Add( oCol )
                 NEXT
             CATCH

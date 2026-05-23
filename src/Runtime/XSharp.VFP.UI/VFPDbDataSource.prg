@@ -55,6 +55,15 @@ INTERNAL METHOD AppendRecord() AS LOGIC
     ENDIF
     RETURN FALSE
 
+/// <summary>Returns the current RDD record number — used by <c>Grid.Refresh()</c> to save position before repaint.</summary>
+INTERNAL METHOD SavePosition() AS DWORD
+    RETURN SELF:_oRDD:RecNo
+
+/// <summary>Restores the RDD to a previously saved record number and resets the internal index so the next access uses absolute navigation.</summary>
+INTERNAL METHOD RestorePosition(nRecno AS DWORD) AS VOID
+    SELF:_oRDD:GoTo(nRecno)
+    SELF:_index := -1
+
 /// <summary>
 /// Factory method: retrieves the <see cref="XSharp.RDD.IRdd"/> object for the current work area and wraps it in a <see cref="VFPDbDataSource"/>. Returns <c>NULL</c> if no work area is open.
 /// </summary>

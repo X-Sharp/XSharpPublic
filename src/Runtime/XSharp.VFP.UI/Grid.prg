@@ -516,11 +516,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         /// <summary>
         /// Synchronises the binding-source position to the current RDD record number, then fires
-        /// <see cref="vfpRefresh"/> (if set), and finally calls <c>base.Refresh()</c> to repaint.
+        /// <see cref="vfpRefresh"/> (if set), and finally calls <c>base.Refresh()</c> to repaint.<br/>
+        /// The RDD record pointer is saved before the repaint (DataGridView rows access the RDD
+        /// sequentially, leaving it at the last painted row) and restored afterwards.
         /// </summary>
         OVERRIDE METHOD Refresh() AS VOID
+            LOCAL lHasSource  AS LOGIC
+            LOCAL nSavedRecno AS DWORD
+            lHasSource := SELF:_currentSource != NULL .AND. SELF:_bindingSource != NULL
+            IF lHasSource
+                nSavedRecno := SELF:_currentSource:SavePosition()
+            ENDIF
             TRY
-                IF SELF:_currentSource != NULL .AND. SELF:_bindingSource != NULL
+                IF lHasSource
                     SELF:_bindingSource:Position := (INT) SELF:_currentSource:RecNo
                 ENDIF
             CATCH
@@ -532,6 +540,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
             //
             SUPER:Refresh()
+            //
+            IF lHasSource
+                SELF:_currentSource:RestorePosition(nSavedRecno)
+            ENDIF
 
         /// <summary>
         /// Selects the cell at the given 1-based row and column indices.

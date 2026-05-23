@@ -92,16 +92,7 @@ FUNCTION IsExclusive( uArea, nType) AS LOGIC CLIPPER
         RETURN FALSE
     ENDIF
 
-    LOCAL nArea AS DWORD
-    IF IsNil(uArea)
-        nArea := RuntimeState.CurrentWorkarea
-    ELSEIF IsString(uArea)
-        nArea := RuntimeState.Workareas.FindAlias((STRING) uArea)
-    ELSEIF IsNumeric(uArea)
-        nArea := (DWORD) uArea
-    ELSE
-        RETURN FALSE
-    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
     IF nArea == 0
         RETURN FALSE
     ENDIF
@@ -121,16 +112,7 @@ FUNCTION IsReadOnly( uArea ) AS LOGIC CLIPPER
         RETURN FALSE
     ENDIF
 
-    LOCAL nArea AS DWORD
-    IF IsNil(uArea)
-        nArea := RuntimeState.CurrentWorkarea
-    ELSEIF IsString(uArea)
-        nArea := RuntimeState.Workareas.FindAlias((STRING) uArea)
-    ELSEIF IsNumeric(uArea)
-        nArea := (DWORD) uArea
-    ELSE
-        RETURN FALSE
-    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
 
     IF nArea == 0
         RETURN FALSE
@@ -218,16 +200,7 @@ FUNCTION Unique(uArea ) AS LOGIC CLIPPER
 FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
     @@Default(@lMovePointer, FALSE)
 
-    LOCAL nArea AS DWORD
-    IF IsNil(uArea)
-        nArea := RuntimeState.CurrentWorkarea
-    ELSEIF IsString(uArea)
-        nArea := RuntimeState.Workareas.FindAlias((STRING) uArea)
-    ELSEIF IsNumeric(uArea)
-        nArea := (DWORD) uArea
-    ELSE
-        RETURN FALSE
-    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
     IF nArea == 0
         RETURN FALSE
     ENDIF
@@ -277,3 +250,18 @@ FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
 
     RETURN lResult
 
+/// Returns the workarea number for a uArea parameter
+/// NIL = current
+/// STRING = alias
+/// NUMERIC = number
+/// Returns 0 if not found / invalid
+INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
+    IF IsNil(uArea)
+        RETURN RuntimeState.CurrentWorkarea
+    ELSEIF IsString(uArea)
+        RETURN RuntimeState.Workareas.FindAlias((STRING) uArea)
+    ELSEIF IsNumeric(uArea)
+        RETURN (DWORD) uArea
+    ENDIF
+
+    RETURN 0

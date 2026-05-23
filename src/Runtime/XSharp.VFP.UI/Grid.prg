@@ -122,6 +122,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PRIVATE _pendingNewRow        AS LOGIC
         PRIVATE _pendingNewRowIndex   AS INT
         PRIVATE _pendingNewRowDirty   AS LOGIC
+        PRIVATE _autoColumns          AS LOGIC
 
         #include "Headers/VFPContainer.xh"
         #include "Headers/VFPPropertiesDynamic.xh"
@@ -193,14 +194,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
             END GET
             SET
-                //
                 IF VALUE < 0
-                    THROW ArgumentOutOfRangeException{"ColumnCount" }
+                    // VFP ColumnCount = -1 means auto-generate from record source
+                    SELF:_autoColumns := TRUE
+                    RETURN
                 ENDIF
+                SELF:_autoColumns := FALSE
                 IF DataSource != NULL
                     THROW InvalidOperationException{"Cannot Set ColumnCount On DataBound VFPGrid"}
                 ENDIF
-                //
                 SELF:_SetColumnCount( VALUE )
             END SET
         END PROPERTY
@@ -330,8 +332,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY RowHeight AS INT GET SELF:RowTemplate:Height SET SELF:RowTemplate:Height := VALUE
 
         PROTECTED METHOD CreateDataColumns() AS VOID
-            // Set HeaderText for columns that have DataPropertyName bound via ControlSource.
-            // Never auto-generate columns — VFP grids always have explicit column definitions.
+            // When no columns were defined in the SCX (VFP auto-column mode), generate one per field.
+            IF SELF:ColumnCount == 0 .AND. SELF:_currentSource != NULL
+                SELF:_AutoGenerateColumns()
+            ENDIF
+            // Set HeaderText for explicitly-defined columns bound via ControlSource.
             LOCAL f AS INT
             FOR f := 1 UPTO SELF:ColumnCount
                 LOCAL oCol AS Column
@@ -342,6 +347,25 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     ENDIF
                 ENDIF
             NEXT
+
+        PRIVATE METHOD _AutoGenerateColumns() AS VOID
+            VAR nOld := DbGetSelect()
+            TRY
+                DbSelectArea( SELF:_nameOfTable )
+                VAR nFields := FCount()
+                FOR VAR i := 1 UPTO nFields
+                    VAR cName := FieldName( i )
+                    VAR oCol := Column{}
+                    oCol:DataPropertyName := cName
+                    oCol:HeaderText := cName
+                    oCol:Name := cName
+                    SELF:Columns:Add( oCol )
+                NEXT
+            CATCH
+                NOP
+            FINALLY
+                DbSelectArea( nOld )
+            END TRY
 
 
         PRIVATE _VFPAfterRowColChange AS VFPOverride

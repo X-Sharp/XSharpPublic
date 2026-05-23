@@ -290,9 +290,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 						sender.DataBindings.Add( Binding{ propName, ds , fieldName } )
 					ENDIF
 				NEXT
-				// Apply Grid RecordSources now that tables are open
+				// Apply Grid RecordSources now that tables are open.
+				// VFP grids with no explicit RecordSource (auto-column mode) implicitly use the
+				// first cursor in the DataEnvironment — replicate that behaviour here.
 				FOREACH VAR ctrl IN SELF:Controls
 					IF ctrl IS Grid VAR grid
+						IF String.IsNullOrEmpty(grid:RecordSource) .AND. SELF:DataEnvironment:Cursors:Count > 0
+							grid:RecordSource := SELF:DataEnvironment:Cursors[0]:Alias
+						ENDIF
 						grid:ApplyRecordSource()
 					ENDIF
 				NEXT

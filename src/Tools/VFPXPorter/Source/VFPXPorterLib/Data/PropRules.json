@@ -444,6 +444,5 @@
     "DragIcon": "??<@DragIcon@>??",
     "MouseIcon": "??<@MouseIcon@>??",
     "FontName": "??<@FontName@>??",
-    "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)"
   }
 }

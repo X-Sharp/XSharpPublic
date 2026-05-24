@@ -866,7 +866,30 @@ BEGIN NAMESPACE VFPXPorterLib
              // Build replacements for FormStartType
              VAR singleFileStartReplacements := Dictionary<STRING, STRING>{}
              singleFileStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
-             singleFileStartReplacements["superName"] := oneItem:ClassName
+             // superName is the PARENT class (what this VCX class inherits FROM), not the class
+             // being defined.  oneItem.ClassName is the user-defined name (e.g. "ccheckbox");
+             // the actual parent is oneItem.BaseClassName (e.g. "checkbox").
+             // If it maps to a standard VFP control we fully-qualify it with XSharp.VFP.UI so
+             // the compiler doesn't accidentally resolve to System.Windows.Forms.CheckBox etc.
+             LOCAL vcxSuperName AS STRING
+             VAR vcxBaseKey := oneItem:BaseClassName
+             IF SELF:_typeList:ContainsKey(vcxBaseKey)
+                 // Standard VFP control — use the converted .NET name, fully qualified.
+                 LOCAL vcxBaseData AS STRING[]
+                 vcxBaseData := SELF:_typeList[vcxBaseKey]
+                 vcxSuperName := vcxBaseData[1]
+                 IF !String.IsNullOrEmpty(XPorterSettings.SuppportLib)
+                     vcxSuperName := XPorterSettings.SuppportLib + "." + vcxSuperName
+                 ENDIF
+             ELSEIF !String.IsNullOrEmpty(oneItem:ClassLocation)
+                 // User-defined parent class from another VCX — namespace = VCX filename.
+                 VAR vcxNs := System.IO.Path.GetFileNameWithoutExtension(oneItem:ClassLocation):Replace(" ", "_")
+                 vcxSuperName := vcxNs + "." + vcxBaseKey
+             ELSE
+                 // Fallback: use BaseClassName as-is (may produce a warning at compile time).
+                 vcxSuperName := vcxBaseKey
+             ENDIF
+             singleFileStartReplacements["superName"] := vcxSuperName
              // Declaration of Childrens (Sub-Controls)
              VAR declaration := StringBuilder{}
              FOREACH VAR subItem IN oneItem:Childs

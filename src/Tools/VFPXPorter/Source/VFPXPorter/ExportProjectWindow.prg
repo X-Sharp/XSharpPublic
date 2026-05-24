@@ -79,10 +79,8 @@ BEGIN NAMESPACE VFPXPorter
 			IF ( ofd:ShowDialog() == DialogResult.OK )
                 SELF:pjxPathTextBox:Text := ofd:FileName
 
-                IF String.IsNullOrWhiteSpace(SELF:SolutionName:Text)
-                    // Auto-Complete: if solution name is empty, we set it to the PJX folder
-                    SELF:SolutionName:Text := Path.GetFileNameWithoutExtension(ofd:FileName)
-                ENDIF
+                // Auto-Complete: if solution name is empty, we set it to the PJX folder
+                SELF:SolutionName:Text := Path.GetFileNameWithoutExtension(ofd:FileName)
                 // Per Default, we use the OutputDir from Settings, combined with the name of the VFP Project
                 SELF:outputPathTextBox:Text := Path.Combine(Settings:OutputPath, Path.GetFileNameWithoutExtension(ofd:FileName))
 			ENDIF

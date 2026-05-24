@@ -221,6 +221,73 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
             END TRY
         END METHOD
+
+        [Fact];
+        METHOD TestGetFldStateAndSetFldState() AS VOID
+            VAR cOldDir := System.IO.Directory.GetCurrentDirectory()
+            VAR oDir := System.IO.Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), ;
+                "FldStateTest_" + Guid.NewGuid():ToString("N")))
+            VAR cTempPath := oDir:FullName
+
+            TRY
+                SET DEFAULT TO (cTempPath)
+
+                // 3-field table  (field count differs from other tests -> fresh state array)
+                CREATE TABLE FldTest (Id INT, Name C(10), Active L)
+                INSERT INTO FldTest VALUES (1, "Alice", .T.)
+                GO TOP
+
+                // Default state: 1 for everything (no buffering active yet)
+                Assert.Equal(1, (INT) GetFldState(0))           // deletion flag
+                Assert.Equal(1, (INT) GetFldState(1))           // field 1 by number
+                Assert.Equal(1, (INT) GetFldState("NAME"))      // field by name
+                Assert.Equal("1111", (STRING) GetFldState(-1))  // all: deletion + 3 fields
+
+                // SETFLDSTATE roundtrip: mark field 1 as modified (2)
+                Assert.True(SetFldState(1, 2))
+                Assert.Equal(2, (INT) GetFldState(1))
+                Assert.Equal("1211", (STRING) GetFldState(-1))
+
+                // SETFLDSTATE by name
+                Assert.True(SetFldState("ACTIVE", 2))
+                Assert.Equal(2, (INT) GetFldState("ACTIVE"))
+                Assert.Equal(2, (INT) GetFldState(3))           // same field by number
+
+                // Deletion field (0)
+                Assert.True(SetFldState(0, 2))
+                Assert.Equal(2, (INT) GetFldState(0))
+                Assert.Equal("2212", (STRING) GetFldState(-1))  // deletion=2, Id=2, Name=1, Active=2
+
+                // Reset a field back to 1
+                Assert.True(SetFldState(1, 1))
+                Assert.Equal(1, (INT) GetFldState(1))
+
+                // Alias and workarea number overloads
+                Assert.True(SetFldState(2, 2))
+                Assert.Equal(2, (INT) GetFldState(2, "FldTest"))
+                Assert.Equal(2, (INT) GetFldState(2, Select()))
+
+                // Invalid state value -> FALSE
+                Assert.False(SetFldState(1, 5))
+                Assert.False(SetFldState(1, 0))
+
+                // EOF -> .NULL.  (verify as non-NIL, non-numeric — exact NULL type per runtime)
+                GO BOTTOM
+                SKIP
+                Assert.True(Eof())
+                VAR vNull := GetFldState(1)
+                Assert.True((OBJECT) vNull IS System.DBNull)
+
+                // Non-existent alias -> NIL
+                Assert.True(GetFldState(1, "NoSuchAlias") == NIL)
+
+            FINALLY
+                XSharp.CoreDb.CloseAll()
+                SET DEFAULT TO (cOldDir)
+                System.IO.Directory.SetCurrentDirectory(cOldDir)
+                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+            END TRY
+        END METHOD
     END CLASS
 
 END NAMESPACE

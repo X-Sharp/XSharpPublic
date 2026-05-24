@@ -26,13 +26,6 @@ FUNCTION GetCursorAdapter( cAlias )
     // RETURN NULL
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getfldstate/*" />
-[FoxProFunction("GETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION GetFldState( uField , uArea) AS USUAL
-    THROW NotImplementedException{}
-   // RETURN NIL
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getnextmodified/*" />
 [FoxProFunction("GETNEXTMODIFIED", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION GetNextModified( nRecordNumber , uArea , lNoFire)

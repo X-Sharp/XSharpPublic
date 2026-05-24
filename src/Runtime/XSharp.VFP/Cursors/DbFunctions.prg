@@ -195,6 +195,94 @@ FUNCTION Target( nRelationshipNumber , uArea ) AS STRING CLIPPER
 FUNCTION Unique(uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbOrderInfo(DBOI_UNIQUE , NIL, NIL) } , FALSE,__FUNCTION__,1)
 
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getfldstate/*" />
+[FoxProFunction("GETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION GetFldState(uField, uArea) AS USUAL CLIPPER
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
+    IF nArea == 0
+        RETURN NIL
+    ENDIF
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+    TRY
+        IF !Used()
+            RETURN NIL
+        ENDIF
+        IF Eof()
+            RETURN DBNull.Value
+        ENDIF
+        LOCAL nCount := (int)FCount() AS INT
+        IF IsString(uField)
+            LOCAL nFld := _FieldNumFromName((STRING) uField) AS INT
+            IF nFld == 0
+                RETURN NIL
+            ENDIF
+            RETURN (INT) _FldStateStore.GetState(nArea, nFld)
+        ELSEIF IsNumeric(uField)
+            LOCAL nFldNum := (INT) uField AS INT
+            DO CASE
+            CASE nFldNum == -1
+                VAR sb := System.Text.StringBuilder{}
+                sb:Append(_FldStateStore.GetState(nArea, 0):ToString())
+                FOR VAR j := 1 TO nCount
+                    sb:Append(_FldStateStore.GetState(nArea, j):ToString())
+                NEXT
+                RETURN sb:ToString()
+            CASE nFldNum == 0
+                RETURN (INT) _FldStateStore.GetState(nArea, 0)
+            CASE nFldNum >= 1 .AND. nFldNum <= nCount
+                RETURN (INT) _FldStateStore.GetState(nArea, nFldNum)
+            ENDCASE
+        ENDIF
+        RETURN NIL
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />
+[FoxProFunction("SETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION SetFldState(uField, nFieldState, uArea) AS LOGIC CLIPPER
+    IF IsNil(nFieldState)
+        RETURN FALSE
+    ENDIF
+    LOCAL nState := (INT) nFieldState AS INT
+    IF nState < 1 .OR. nState > 4
+        RETURN FALSE
+    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+    TRY
+        IF !Used()
+            RETURN FALSE
+        ENDIF
+        LOCAL nCount := (int)FCount() AS INT
+        IF IsString(uField)
+            LOCAL nFld := _FieldNumFromName((STRING) uField) AS INT
+            IF nFld == 0
+                RETURN FALSE
+            ENDIF
+            _FldStateStore.SetState(nArea, nFld, (BYTE) nState)
+            RETURN TRUE
+        ELSEIF IsNumeric(uField)
+            LOCAL nFldNum := (INT) uField AS INT
+            IF nFldNum == 0
+                _FldStateStore.SetState(nArea, 0, (BYTE) nState)
+                RETURN TRUE
+            ELSEIF nFldNum >= 1 .AND. nFldNum <= nCount
+                _FldStateStore.SetState(nArea, nFldNum, (BYTE) nState)
+                RETURN TRUE
+            ENDIF
+        ENDIF
+        RETURN FALSE
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
 [FoxProFunction("INDEXSEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
@@ -264,4 +352,42 @@ INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
         RETURN (DWORD) uArea
     ENDIF
 
+    RETURN 0
+
+// Inner Dictionary: key = field number (0=deletion, 1..N=fields), value = state 1-4
+// Outer Dictionary: key = work area number
+// Default state = 1 (unmodified). No entry means unmodified.
+INTERNAL STATIC CLASS _FldStateStore
+    INTERNAL STATIC _store := Dictionary<DWORD, Dictionary<INT,BYTE>>{} AS Dictionary<DWORD, Dictionary<INT,BYTE>>
+
+    INTERNAL STATIC METHOD GetState(nArea AS DWORD, nField AS INT) AS BYTE
+        LOCAL fields AS Dictionary<INT,BYTE>
+        IF _store:TryGetValue(nArea, REF fields)
+            LOCAL b AS BYTE
+            IF fields:TryGetValue(nField, REF b)
+                RETURN b
+            ENDIF
+        ENDIF
+        RETURN 1
+
+    INTERNAL STATIC METHOD SetState(nArea AS DWORD, nField AS INT, nState AS BYTE) AS VOID
+        LOCAL fields AS Dictionary<INT,BYTE>
+        IF !_store:TryGetValue(nArea, REF fields)
+            fields := Dictionary<INT,BYTE>{}
+            _store[nArea] := fields
+        ENDIF
+        fields[nField] := nState
+
+    INTERNAL STATIC METHOD Reset(nArea AS DWORD) AS VOID
+        _store:Remove(nArea)
+END CLASS
+
+INTERNAL FUNCTION _FieldNumFromName(cName AS STRING) AS INT
+    VAR n := FCount()
+
+    FOR VAR i := 1 TO n
+        IF String.Compare((STRING) DbFieldInfo(DBS_NAME, i), cName, TRUE) == 0
+            RETURN i
+        ENDIF
+    NEXT
     RETURN 0

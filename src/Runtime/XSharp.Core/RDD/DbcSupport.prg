@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharp.RDD.Support
@@ -310,7 +311,24 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.FindTable/*" />
         PUBLIC METHOD FindTable(cTable as STRING) AS DbcTable
-            RETURN SELF:FindObject(SELF:_tables, cTable)
+            // Primary lookup by OBJECTNAME (logical alias)
+            IF _tables:TryGetValue(cTable, OUT VAR oTable)
+                oTable:GetData()
+                RETURN oTable
+            ENDIF
+            // Fallback: match by physical filename from the Path property.
+            // Handles cases where the logical name (OBJECTNAME) differs from the filename,
+            // e.g. "tblstorage_area" (OBJECTNAME) vs "tblstorage area.dbf" (real file).
+            FOREACH VAR t IN _tables:Values
+                VAR path := t:Path
+                IF ! String.IsNullOrEmpty(path)
+                    IF String.Compare(System.IO.Path.GetFileNameWithoutExtension(path), cTable, TRUE) == 0
+                        t:GetData()
+                        RETURN t
+                    ENDIF
+                ENDIF
+            NEXT
+            RETURN NULL
 
         /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.FindView/*" />
         PUBLIC METHOD FindView(cView as STRING) AS DbcView

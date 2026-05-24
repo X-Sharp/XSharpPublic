@@ -58,6 +58,9 @@ Copyright (C) XSharp BV. All rights reserved.
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true' and '$(Configuration)' == 'Debug'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
   <Import Condition="'$(UsingMicrosoftNETSdk)' == 'true'" Project="XSharp.SDK.Props"  />
   <!-- These groups are needed because otherwise the Project Context Menu does not always display Build/Rebuild/Clean -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"/>

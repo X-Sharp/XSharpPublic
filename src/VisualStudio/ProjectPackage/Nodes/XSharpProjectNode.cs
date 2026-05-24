@@ -3047,6 +3047,8 @@ namespace XSharp.Project
         public const string Managed = nameof(Managed);
         public const string PackageReferences = nameof(PackageReferences);
         public const string Publish = nameof(Publish);
+        public const string EditAndContinue = nameof(EditAndContinue);
+        public const string HotReload = nameof(HotReload);
         public const string UserSourceItems = nameof(UserSourceItems);
         public const string WindowsXAML = nameof(WindowsXAML);
         public const string WindowsXaml = nameof(WindowsXaml);
@@ -3086,6 +3088,8 @@ namespace XSharp.Project
                 //case CSharp:
                 case DeclaredSourceItems:
                 case DotNet:
+                case EditAndContinue:
+                case HotReload:
                 case Managed:
                 //case PackageReferences:
                 case Publish:

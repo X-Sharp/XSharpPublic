@@ -98,9 +98,11 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF ( itm:OBJTYPE == MenuObjType.Menu .OR. itm:OBJTYPE == MenuObjType.SdiMenu ) .AND. ;
                        itm:OBJCODE == MenuObjCode.Init
                         // Nothing — header contains setup/cleanup, not displayed items
+                        NOP
                     // Skip the menu-bar descriptor (OBJTYPE=2 OBJCODE=1, e.g. _MSYSMENU)
                     ELSEIF itm:OBJTYPE == MenuObjType.SubMenu .AND. itm:OBJCODE == MenuObjCode.SysMenu
                         // Nothing — the pad items that follow will be added directly to Items
+                        NOP
                     ELSEIF parentItem == NULL
                         // Top level: pad items in the menu bar and their popup descriptors
                         IF ( itm:OBJTYPE == MenuObjType.Item )

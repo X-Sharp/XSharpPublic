@@ -52,18 +52,18 @@ BEGIN NAMESPACE VFPXPorterLib
 		/// </summary>
 		/// <param name="cdeBlock"></param>
 		PUBLIC METHOD ProcessEvent( cdeBlock AS EventCode ) AS VOID
-			LOCAL Name AS STRING
-			//
-			Name := ""
+			// LOCAL Name AS STRING
+			// //
+			// Name := ""
 			SELF:Source := cdeBlock:Source
-			IF cdeBlock:Owner != NULL
-				Name := cdeBlock:Owner:Name
-				IF cdeBlock:Owner:Owner != NULL
-					IF cdeBlock:Owner:Owner:IsInLibrary
-						Name := ""
-					ENDIF
-				ENDIF
-			ENDIF
+			// IF cdeBlock:Owner != NULL
+				// Name := cdeBlock:Owner:Name
+				// IF cdeBlock:Owner:Owner != NULL
+					// IF cdeBlock:Owner:Owner:IsInLibrary
+						// Name := ""
+					// ENDIF
+				// ENDIF
+			// ENDIF
 			SELF:_lineContent:Clear()
 			//
 			SELF:FixCommandMacroArgs()

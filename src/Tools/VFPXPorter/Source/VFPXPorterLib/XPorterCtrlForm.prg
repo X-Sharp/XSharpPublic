@@ -691,7 +691,7 @@ BEGIN NAMESPACE VFPXPorterLib
              // Also instantiate and init descendants of non-grid containers
              FOREACH VAR pair IN designerDescendants
                  VAR scxDescItem := pair:Item1
-                 VAR descContainer := pair:Item2
+                 // VAR descContainer := pair:Item2
                  instantiate:Append("SELF:")
                  instantiate:Append(scxDescItem:Name)
                  instantiate:Append(" := ")
@@ -1232,7 +1232,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         ENDIF
                     ENDIF
                     // For free table cursors (no Database), collect CursorSource filename for runtime path override
-                    LOCAL csFileName AS STRING
+                    LOCAL csFileName := "" AS STRING
                     IF String.IsNullOrEmpty(dbRaw)
                         LOCAL csRaw AS STRING
                         IF cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRaw)

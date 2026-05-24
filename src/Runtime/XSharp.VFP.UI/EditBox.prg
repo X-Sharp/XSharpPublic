@@ -34,8 +34,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROPERTY AllowTabs AS LOGIC AUTO
 
-		CONSTRUCTOR( )
+		CONSTRUCTOR()
 			SUPER()
+			SELF:_InitEditBox()
+
+		/// <summary>
+		/// Forwards VFP-style construction arguments to the base class so that <c>vfpInit</c>
+		/// receives them when the handle is created, then applies EditBox-specific defaults.
+		/// </summary>
+		CONSTRUCTOR(args PARAMS USUAL[])
+			SUPER(args)
+			SELF:_InitEditBox()
+
+		PRIVATE METHOD _InitEditBox() AS VOID
 			SELF:Multiline    := TRUE
 			SELF:ScrollBars   := 3           // 3 = Both (VFP convention)
 			SELF:Size         := Size{100, 75}

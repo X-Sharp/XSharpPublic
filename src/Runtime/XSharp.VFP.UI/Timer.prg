@@ -48,6 +48,37 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROPERTY Parent AS OBJECT AUTO
 
+		// ── Non-Control property stubs ────────────────────────────────────────
+		// System.Windows.Forms.Timer inherits Component (not Control), so the standard
+		// WinForms Control properties used by generated designer code must be stubbed.
+
+		/// <summary>VFP AutoScaleMode stub — stored for source compatibility.</summary>
+		PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
+
+		/// <summary>
+		/// The name of the timer instance. Stored for source compatibility;
+		/// System.Windows.Forms.Timer does not expose a Name property.
+		/// </summary>
+		PROPERTY Name AS STRING AUTO
+
+		/// <summary>
+		/// Position of the timer. Backed by <see cref="Left"/> and <see cref="Top"/>;
+		/// stored for source compatibility since Timer is a non-visual component.
+		/// </summary>
+		PROPERTY Location AS System.Drawing.Point
+			GET ; RETURN System.Drawing.Point{(INT)SELF:Left, (INT)SELF:Top} ; END GET
+			SET ; SELF:Left := VALUE:X ; SELF:Top := VALUE:Y ; END SET
+		END PROPERTY
+
+		/// <summary>
+		/// Size of the timer. Backed by <see cref="Width"/> and <see cref="Height"/>;
+		/// stored for source compatibility since Timer is a non-visual component.
+		/// </summary>
+		PROPERTY Size AS System.Drawing.Size
+			GET ; RETURN System.Drawing.Size{(INT)SELF:Width, (INT)SELF:Height} ; END GET
+			SET ; SELF:Width := VALUE:Width ; SELF:Height := VALUE:Height ; END SET
+		END PROPERTY
+
 		// ── vfpTimer event ───────────────────────────────────────────────────
 		PRIVATE _VFPTimer AS VFPOverride
 		/// <summary>
@@ -76,7 +107,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			// In VFP, Timer is enabled per default
 			// So, on first Interval set, we enable the Timer
 			SELF:firstSet := TRUE
+			RETURN
 
+		/// <summary>
+		/// Forwards VFP-style construction arguments; args are accepted for source compatibility
+		/// but are not passed to the base (System.Windows.Forms.Timer has no params constructor).
+		/// </summary>
+		CONSTRUCTOR(args PARAMS USUAL[])
+			SELF:firstSet := TRUE
 			RETURN
 
 		/// <summary>

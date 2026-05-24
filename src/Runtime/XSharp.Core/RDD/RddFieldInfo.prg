@@ -116,7 +116,7 @@ CLASS RddFieldInfo
     end property
     /// <include file="XSharp.Core.Docs.xml" path="doc/RddFieldInfo.ctor/*" />
     CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
-        Name 		:= sName
+        Name 		:= sName:Trim()
         Length 		:= nLength
         Decimals 	:= nDecimals
         Flags       := DBFFieldFlags.None

@@ -26,20 +26,18 @@ if packageSources == null
 endif
 // Search "XSharp Offline Packages" and Add if missing
 GetSetPackageSource( packageSources, xsharpOffLine, sourceUrl )
-// Get the SourceMapping to "XSharp Offline Packages" ?
-GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
-// Is Nuget.org already in the list of package sources, if so add the SourceMapping to Nuget.org
-IF SearchPackageSource(packageSources, "nuget.org")
-    GetSetSourceMapping( configElement, "nuget.org", "*" )
+// Handle source mappings based on whether mappings already exist
+VAR existingMappings := configElement:Element("packageSourceMapping")
+IF existingMappings != null
+    // Mappings exist: only update or add "XSharp.*" -> XSharp Offline Packages
+    GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
 ELSE
-    VAR sourceList := GetPackageSourceList(packageSources)
-    // No Nuget,and more than XSharp Offline Packages
-    // You might filter/choose your sources.
-    IF sourceList:Count == 1
-        // Only XSharp Offline Packages, add Nuget.org as well
+    // No mappings: create "*" -> nuget.org and "XSharp.*" -> XSharp Offline Packages
+    IF !SearchPackageSource(packageSources, "nuget.org")
         GetSetPackageSource( packageSources, "nuget.org", "https://api.nuget.org/v3/index.json" )
-        GetSetSourceMapping( configElement, "nuget.org", "*" )
     ENDIF
+    GetSetSourceMapping( configElement, "nuget.org", "*" )
+    GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
 ENDIF
 
 doc:Save(nugetConfigPath)
@@ -76,16 +74,29 @@ if packageSourceMapping == null
     packageSourceMapping := XElement{"packageSourceMapping"}
     configElement:Add(packageSourceMapping)
 endif
-VAR found := false
-foreach elt as XElement in packageSourceMapping:Elements() 
+local sourceElement := NULL as XElement
+foreach elt as XElement in packageSourceMapping:Elements()
     if elt:Attribute("key")?:Value == source
-        found := true
+        sourceElement := elt
         exit
     endif
 next
-if !found
+if sourceElement == null
+    // Source not found: add new packageSource element with the pattern
     VAR packageSource := XElement{"packageSource", XAttribute{"key", source}, XElement{"package", XAttribute{"pattern", pattern}}}
     packageSourceMapping:Add(packageSource)
+else
+    // Source found: ensure the pattern is present
+    VAR patternFound := false
+    foreach pkg as XElement in sourceElement:Elements("package")
+        if pkg:Attribute("pattern")?:Value == pattern
+            patternFound := true
+            exit
+        endif
+    next
+    if !patternFound
+        sourceElement:Add(XElement{"package", XAttribute{"pattern", pattern}})
+    endif
 endif
 
 

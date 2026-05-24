@@ -13,13 +13,6 @@ FUNCTION InDbc( cDatabaseObjectName, cType ) AS LOGIC
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
-[FoxProFunction("INDEXSEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/inputbox/*" />
 [FoxProFunction("INPUTBOX", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION InputBox( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout ,cTimeoutValue,cCancelValue) AS STRING

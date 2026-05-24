@@ -76,6 +76,10 @@
     <Compile Include="Interop\IComWrapperFixed.cs" />
     <Compile Include="Interop\WrapperPolicy.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
+    <Compile Include="RoslynIntegration\IXSharpEditorDebugPipeline.cs" />
+    <Compile Include="RoslynIntegration\XSharpEditorDebugPipelineCoordinator.cs" />
+    <Compile Include="RoslynIntegration\XSharpLegacyEditorDebugPipeline.cs" />
+    <Compile Include="RoslynIntegration\XSharpRoslynWorkspaceEditorDebugPipeline.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />
     <Compile Include="MatchingTokens\IdentifierMatching.cs" />
     <Compile Include="MatchingTokens\KeywordMatching.cs" />

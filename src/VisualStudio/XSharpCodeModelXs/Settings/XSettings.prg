@@ -48,6 +48,8 @@ STATIC CLASS XSettings
     PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
     PUBLIC STATIC PROPERTY Version AS Version AUTO := Version{}
     PUBLIC STATIC PROPERTY UseMicrosoftSQLite AS LOGIC AUTO := false
+    PUBLIC STATIC PROPERTY UseRoslynEditorDebugPipeline AS LOGIC AUTO := FALSE
+    PUBLIC STATIC PROPERTY RoslynEditorDebugPipelineInitialized AS LOGIC AUTO := FALSE
 
     PUBLIC STATIC PROPERTY IsVs15 AS LOGIC => Version:Major == 15
     PUBLIC STATIC PROPERTY IsVs16 AS LOGIC => Version:Major == 16
@@ -206,5 +208,4 @@ CLASS DummyLogger IMPLEMENTS XSharpModel.ILogger
         RETURN
 #endregion
 END CLASS
-
 

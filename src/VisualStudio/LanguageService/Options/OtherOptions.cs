@@ -23,6 +23,7 @@ namespace XSharp.LanguageService
         public bool EnableParameterInfo { get; set; }
         public bool EnableRegions { get; set; }
         public bool EnableCodeCompletion { get; set; }
+        public bool UseRoslynEditorDebugPipeline { get; set; }
 
         #endregion
         public OtherOptions()
@@ -37,6 +38,7 @@ namespace XSharp.LanguageService
             EnableParameterInfo = true;
             EnableCodeCompletion = true;
             EnableRegions = true;
+            UseRoslynEditorDebugPipeline = false;
             ShowDividers = true;
             ShowSingleLineDividers = true;
             FormEditorMakeBackupFiles = true;
@@ -56,6 +58,7 @@ namespace XSharp.LanguageService
             XEditorSettings.DisableParameterInfo = !EnableParameterInfo;
             XEditorSettings.DisableQuickInfo = !EnableQuickInfo;
             XEditorSettings.DisableRegions = !EnableRegions;
+            XSettings.UseRoslynEditorDebugPipeline = UseRoslynEditorDebugPipeline;
 
         }
 

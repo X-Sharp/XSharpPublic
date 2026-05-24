@@ -17,6 +17,7 @@ using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
+using XSharp.LanguageService.RoslynIntegration;
 using XSharp.Settings;
 namespace XSharp.Project
 {
@@ -126,6 +127,7 @@ namespace XSharp.Project
         public int OnBeforeDebugLaunch(uint grfLaunch)
         {
             XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
+            XSharpEditorDebugPipelineCoordinator.OnBeforeDebugLaunch(_project?.Url);
             // Store all project options, so there are cached when the debugger runs.
             foreach (var prj in XSharpProjectNode.AllProjects)
             {

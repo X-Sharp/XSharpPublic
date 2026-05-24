@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Threading;
 using XSharp.LanguageService.OptionsPages;
+using XSharp.LanguageService.RoslynIntegration;
 using XSharpModel;
 using XSharp.Settings;
 using XSharp.Support;
@@ -301,6 +302,7 @@ namespace XSharp.LanguageService
                 int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
             }
             GetIntellisenseSettings(true);
+            await XSharpEditorDebugPipelineCoordinator.InitializeAsync(this, cancellationToken);
             Commands.AbstractCommand.InitializeCommands();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
@@ -328,6 +330,7 @@ namespace XSharp.LanguageService
                     });
                     _oleComponentManager = null;
                 }
+                XSharpEditorDebugPipelineCoordinator.Terminate();
 
             }
             finally

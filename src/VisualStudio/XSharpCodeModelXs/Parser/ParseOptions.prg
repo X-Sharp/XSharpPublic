@@ -49,6 +49,7 @@ NAMESPACE XSharpModel
     STATIC PROPERTY DefaultIncludeDir as STRING GET XSharpSpecificCompilationOptions.DefaultIncludeDir
     PROPERTY IncludePaths as IList<String> GET _options:IncludePaths
     PROPERTY SupportsMemvars AS LOGIC GET _options:SupportsMemvars
+    PROPERTY SupportsUndeclaredMemVars AS LOGIC GET _options:SupportsUndeclaredMemVars
     PROPERTY XSharpRuntime AS LOGIC GET _options:XSharpRuntime
     PROPERTY VOUntypedAllowed AS LOGIC GET _options:VOUntypedAllowed
     PROPERTY ImplicitNamespace AS LOGIC GET _options:ImplicitNamespace
@@ -56,6 +57,15 @@ NAMESPACE XSharpModel
     PROPERTY Dialect as XDialect GET (XDialect) (LONG) _options:Dialect
     PROPERTY DefaultNamespace AS STRING GET _options:DefaultNamespace
     PROPERTY CaseSensitive AS LOGIC GET _options:CaseSensitive
+    PROPERTY ArrayZero AS LOGIC GET _options:ArrayZero
+    PROPERTY LateBinding AS LOGIC GET _options:lb
+    PROPERTY Vo4 AS LOGIC GET _options:vo4
+    PROPERTY Vo6 AS LOGIC GET _options:vo6
+    PROPERTY Vo7 AS LOGIC GET _options:vo7
+    PROPERTY Vo10 AS LOGIC GET _options:vo10
+    PROPERTY Vo12 AS LOGIC GET _options:vo12
+    PROPERTY Vo13 AS LOGIC GET _options:vo13
+    PROPERTY Vo14 AS LOGIC GET _options:vo14
     PROPERTY AllowDotForInstanceMembers AS LOGIC GET _options:AllowDotForInstanceMembers
     PROPERTY EnforceSelf AS LOGIC GET _options:EnforceSelf
 END CLASS

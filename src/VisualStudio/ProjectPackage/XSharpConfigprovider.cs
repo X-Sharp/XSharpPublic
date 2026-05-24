@@ -132,6 +132,7 @@ namespace XSharp.Project
             foreach (var prj in XSharpProjectNode.AllProjects)
             {
                 prj.GetParseOptions();
+                XSharpEditorDebugPipelineCoordinator.OnProjectParseOptionsChanged(prj?.Url, prj?.ParseOptions);
             }
             return VSConstants.S_OK;
         }
@@ -141,19 +142,40 @@ namespace XSharp.Project
             var project = this.ProjectMgr as XSharpProjectNode;
             if (project == null)
                 return;
-            XDebuggerSettings.Dialect = (int) project.Dialect;
-            XDebuggerSettings.ArrayZero = project.GetLogicProjectProperty(XSharpProjectFileConstants.AZ);
-            XDebuggerSettings.Vo4 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo4);
-            XDebuggerSettings.Vo6 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo6);
-            XDebuggerSettings.Vo7 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo7);
-            XDebuggerSettings.Vo10 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo10);
-            XDebuggerSettings.Vo12 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo12);
-            XDebuggerSettings.Vo13 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo13);
-            XDebuggerSettings.Vo14 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo14);
-            XDebuggerSettings.MemVars = project.GetLogicProjectProperty(XSharpProjectFileConstants.MemVar);
-            XDebuggerSettings.UndeclaredMemvars = project.GetLogicProjectProperty(XSharpProjectFileConstants.Undeclared);
-            XDebuggerSettings.LateBinding = project.GetLogicProjectProperty(XSharpProjectFileConstants.LB);
-            XDebuggerSettings.CaseSensitive = project.GetLogicProjectProperty(XSharpProjectFileConstants.CS);
+            var parseOptions = project.ParseOptions;
+            if (XSettings.UseRoslynEditorDebugPipeline && parseOptions != null)
+            {
+                XDebuggerSettings.Dialect = (int)parseOptions.Dialect;
+                XDebuggerSettings.ArrayZero = parseOptions.ArrayZero;
+                XDebuggerSettings.Vo4 = parseOptions.Vo4;
+                XDebuggerSettings.Vo6 = parseOptions.Vo6;
+                XDebuggerSettings.Vo7 = parseOptions.Vo7;
+                XDebuggerSettings.Vo10 = parseOptions.Vo10;
+                XDebuggerSettings.Vo12 = parseOptions.Vo12;
+                XDebuggerSettings.Vo13 = parseOptions.Vo13;
+                XDebuggerSettings.Vo14 = parseOptions.Vo14;
+                XDebuggerSettings.MemVars = parseOptions.SupportsMemvars;
+                XDebuggerSettings.UndeclaredMemvars = parseOptions.SupportsUndeclaredMemVars;
+                XDebuggerSettings.LateBinding = parseOptions.LateBinding;
+                XDebuggerSettings.CaseSensitive = parseOptions.CaseSensitive;
+                XSharpEditorDebugPipelineCoordinator.OnProjectParseOptionsChanged(project.Url, parseOptions);
+            }
+            else
+            {
+                XDebuggerSettings.Dialect = (int) project.Dialect;
+                XDebuggerSettings.ArrayZero = project.GetLogicProjectProperty(XSharpProjectFileConstants.AZ);
+                XDebuggerSettings.Vo4 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo4);
+                XDebuggerSettings.Vo6 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo6);
+                XDebuggerSettings.Vo7 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo7);
+                XDebuggerSettings.Vo10 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo10);
+                XDebuggerSettings.Vo12 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo12);
+                XDebuggerSettings.Vo13 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo13);
+                XDebuggerSettings.Vo14 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo14);
+                XDebuggerSettings.MemVars = project.GetLogicProjectProperty(XSharpProjectFileConstants.MemVar);
+                XDebuggerSettings.UndeclaredMemvars = project.GetLogicProjectProperty(XSharpProjectFileConstants.Undeclared);
+                XDebuggerSettings.LateBinding = project.GetLogicProjectProperty(XSharpProjectFileConstants.LB);
+                XDebuggerSettings.CaseSensitive = project.GetLogicProjectProperty(XSharpProjectFileConstants.CS);
+            }
             XDebuggerSettings.DebuggingXSharpExe = true;
 
         }

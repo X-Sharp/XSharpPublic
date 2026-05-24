@@ -7,6 +7,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using XSharpModel;
 
 namespace XSharp.LanguageService.RoslynIntegration
 {
@@ -14,6 +15,7 @@ namespace XSharp.LanguageService.RoslynIntegration
     {
         Task InitializeAsync(AsyncPackage package, CancellationToken cancellationToken);
         void OnBeforeDebugLaunch(string projectFileName);
+        void OnProjectParseOptionsChanged(string projectFileName, XParseOptions parseOptions);
         void Terminate();
     }
 }

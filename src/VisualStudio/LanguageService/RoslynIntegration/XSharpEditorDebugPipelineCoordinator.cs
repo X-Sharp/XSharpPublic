@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using XSharp.Settings;
+using XSharpModel;
 
 namespace XSharp.LanguageService.RoslynIntegration
 {
@@ -53,6 +54,11 @@ namespace XSharp.LanguageService.RoslynIntegration
         public static void OnBeforeDebugLaunch(string projectFileName)
         {
             _pipeline?.OnBeforeDebugLaunch(projectFileName);
+        }
+
+        public static void OnProjectParseOptionsChanged(string projectFileName, XParseOptions parseOptions)
+        {
+            _pipeline?.OnProjectParseOptionsChanged(projectFileName, parseOptions);
         }
 
         public static void Terminate()

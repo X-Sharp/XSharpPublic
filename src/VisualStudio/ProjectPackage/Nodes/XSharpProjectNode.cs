@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using XSharp.LanguageService.RoslynIntegration;
 
 using stdole;
 
@@ -2329,6 +2330,7 @@ namespace XSharp.Project
             this.ClearOptions();
             this.CachedConfig = this.CurrentConfig;
             this.CachedOptions = this.ParseOptions;
+            XSharpEditorDebugPipelineCoordinator.OnProjectParseOptionsChanged(this.Url, this.CachedOptions);
 
         }
 

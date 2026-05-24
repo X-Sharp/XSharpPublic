@@ -342,6 +342,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// then calls <c>SUPER:Refresh()</c> to repaint the form and all children.
 		/// </summary>
 		OVERRIDE METHOD Refresh() AS VOID
+			// FIRST: snapshot RDD positions for all bound grids, before anything can move the
+			// pointer.  Cursor.Sync() sets BindingSource.Position = RecNo-1, which clamps at EOF
+			// (RecNo=RecCount+1 gets clamped to RecCount-1) and then accesses DbDataSource[i],
+			// which calls GoTo() and silently clears EOF/BOF.  Saving before Sync() preserves
+			// the real EOF/BOF flags; the final _ForEachGrid(FALSE) restores them after all
+			// painting and post-paint BindingSource activity.
+			SELF:_ForEachGrid(SELF:Controls, TRUE)
 			// Refresh the BindingSource of the Current Workarea/Cursor
 			// Should we refresh all attached Cursors ??
 			IF SELF:DataEnvironment != NULL .AND. SELF:DataEnvironment:DataSource != NULL
@@ -359,6 +366,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			// The Windows Form Refresh redraw itself and any child controls.
 			SUPER:Refresh()
+			// Restore RDD positions after all painting and post-paint BindingSource access.
+			SELF:_ForEachGrid(SELF:Controls, FALSE)
+
+		/// <summary>
+		/// Iterates all <see cref="Grid"/> controls in the control tree (recursively) and
+		/// calls either <c>SaveRDDPosition</c> (lSave=.T.) or <c>RestoreRDDPosition</c> (lSave=.F.).
+		/// </summary>
+		PRIVATE METHOD _ForEachGrid(controls AS System.Windows.Forms.Control.ControlCollection, lSave AS LOGIC) AS VOID
+			FOREACH ctrl AS System.Windows.Forms.Control IN controls
+				IF ctrl IS Grid VAR g
+					IF lSave
+						g:SaveRDDPosition()
+					ELSE
+						g:RestoreRDDPosition()
+					ENDIF
+				ENDIF
+				IF ctrl:Controls:Count > 0
+					SELF:_ForEachGrid(ctrl:Controls, lSave)
+				ENDIF
+			NEXT
 
 		PROTECTED _validQueryUnload AS LOGIC
 		INTERNAL _handledKeypress AS LOGIC

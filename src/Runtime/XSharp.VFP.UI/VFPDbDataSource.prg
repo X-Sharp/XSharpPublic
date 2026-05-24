@@ -59,10 +59,37 @@ INTERNAL METHOD AppendRecord() AS LOGIC
 INTERNAL METHOD SavePosition() AS DWORD
     RETURN SELF:_oRDD:RecNo
 
+/// <summary>Current RDD BOF flag — saved by <c>Grid.Refresh()</c> alongside <see cref="SavePosition"/>.</summary>
+INTERNAL PROPERTY BoF AS LOGIC GET SELF:_oRDD:BoF
+
+/// <summary>
+/// Restores the RDD to a previously saved position, including EOF/BOF state.<br/>
+/// <list type="bullet">
+/// <item>EOF: <c>GoBottom()</c> + <c>Skip(1)</c> — lands past the last record with <c>EoF = .T.</c></item>
+/// <item>BOF: <c>GoTop()</c> + <c>Skip(-1)</c> — lands before the first record with <c>BoF = .T.</c></item>
+/// <item>Normal: <c>GoTo(nRecno)</c> — positions on that physical record.</item>
+/// </list>
+/// A plain <c>GoTo</c> always clears both flags, so EOF/BOF must be replayed explicitly.
+/// </summary>
+INTERNAL METHOD RestorePosition(nRecno AS DWORD, lEof AS LOGIC, lBof AS LOGIC) AS VOID
+    IF lEof
+        SELF:_oRDD:GoBottom()
+        SELF:_oRDD:Skip(1)
+        // Clear the row cache: a stale entry for the last row would cause the next
+        // indexer access ([i]) to call GoTo(lastRecNo), silently clearing EOF.
+        SELF:_records:Clear()
+    ELSEIF lBof
+        SELF:_oRDD:GoTop()
+        SELF:_oRDD:Skip(-1)
+        SELF:_records:Clear()
+    ELSE
+        SELF:_oRDD:GoTo(nRecno)
+    ENDIF
+    SELF:_index := -1
+
 /// <summary>Restores the RDD to a previously saved record number and resets the internal index so the next access uses absolute navigation.</summary>
 INTERNAL METHOD RestorePosition(nRecno AS DWORD) AS VOID
-    SELF:_oRDD:GoTo(nRecno)
-    SELF:_index := -1
+    SELF:RestorePosition(nRecno, FALSE, FALSE)
 
 /// <summary>
 /// Factory method: retrieves the <see cref="XSharp.RDD.IRdd"/> object for the current work area and wraps it in a <see cref="VFPDbDataSource"/>. Returns <c>NULL</c> if no work area is open.

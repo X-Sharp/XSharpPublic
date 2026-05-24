@@ -123,6 +123,15 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PRIVATE _pendingNewRowIndex   AS INT
         PRIVATE _pendingNewRowDirty   AS LOGIC
         PRIVATE _autoColumns          AS LOGIC
+        // Row index (0-based) of the row that shows the RecordMark ▶ arrow; -1 = none.
+        PRIVATE _recordMarkRow        AS INT
+        // Re-entrancy guard: TRUE while WndProc is already inside a WM_PAINT call.
+        PRIVATE _inWmPaint            AS LOGIC
+        // Position snapshot taken by Form.Refresh() before painting; restored afterwards.
+        PRIVATE _formSaveRecno        AS DWORD
+        PRIVATE _formSaveEof          AS LOGIC
+        PRIVATE _formSaveBof          AS LOGIC
+        PRIVATE _formHasSave          AS LOGIC
 
         #include "Headers/VFPContainer.xh"
         #include "Headers/VFPPropertiesDynamic.xh"
@@ -135,10 +144,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SUPER()
             // Force a minimum value to the Row Template
             SELF:RowTemplate:Height := 24
-            // We will manage the process
+            // We will manage the process through ColumnCount
             SELF:AutoGenerateColumns := FALSE
             // VFP RecordMark defaults to .T. — show a narrow row-header column with the current-record arrow
-            SELF:RowHeadersVisible := TRUE
+            SELF:RecordMark := TRUE
             SELF:RowHeadersWidth := 20
             SELF:RowHeadersWidthSizeMode := DataGridViewRowHeadersWidthSizeMode.DisableResizing
             // Per Default, in VFP you cannot add new rows to the grid
@@ -147,6 +156,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:AllowUserToAddRows := FALSE
             // TODO : Not sure about this one, but I guess that by default you cannot delete rows in a VFP Grid
             SELF:AllowUserToDeleteRows := FALSE
+            // Per default, AutoColumns
+            SELF:ColumnCount := -1
+            // No RecordMark row yet — set after data binds
+            SELF:_recordMarkRow := -1
 
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
@@ -192,8 +205,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// </summary>
         PUBLIC NEW PROPERTY ColumnCount AS LONG
             GET
+                IF SELF:_autoColumns
+                    RETURN -1
+                ENDIF
                 RETURN Columns:Count
-
             END GET
             SET
                 IF VALUE < 0
@@ -281,6 +296,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
                         SELF:_bindingSource:DataSource := SELF:_currentSource
                         SELF:DataSource := SELF:_bindingSource
                         SELF:CreateDataColumns()
+                        // After binding, row 0 is the current record.
+                        SELF:_recordMarkRow := 0
                     ENDIF
                 ENDIF
             CATCH
@@ -335,7 +352,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROTECTED METHOD CreateDataColumns() AS VOID
             // When no columns were defined in the SCX (VFP auto-column mode), generate one per field.
-            IF SELF:ColumnCount == 0 .AND. SELF:_currentSource != NULL
+            IF SELF:ColumnCount < 0 .AND. SELF:_currentSource != NULL
                 SELF:_AutoGenerateColumns()
             ENDIF
             // Set HeaderText for explicitly-defined columns bound via ControlSource.
@@ -505,6 +522,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 IF SELF:_oldColIndex != SELF:CurrentCell:ColumnIndex
                     SELF:_rowColChange += 2 // == 2 Col only; == 3 Both
                 ENDIF
+                // Move the RecordMark ▶ to the new current row and repaint the headers.
+                LOCAL nNewRow := SELF:CurrentCell:RowIndex AS INT
+                IF nNewRow != SELF:_recordMarkRow
+                    LOCAL nOld := SELF:_recordMarkRow AS INT
+                    SELF:_recordMarkRow := nNewRow
+                    IF nOld >= 0 .AND. nOld < SELF:Rows:Count
+                        SELF:InvalidateRow(nOld)
+                    ENDIF
+                    SELF:InvalidateRow(nNewRow)
+                ENDIF
                 // AfterRowColChange receives the NEW location (1-based row index).
                 SELF:AfterRowColChange( SELF:CurrentCell:RowIndex + 1 )
             ENDIF
@@ -539,29 +566,118 @@ BEGIN NAMESPACE XSharp.VFP.UI
         /// sequentially, leaving it at the last painted row) and restored afterwards.
         /// </summary>
         OVERRIDE METHOD Refresh() AS VOID
-            LOCAL lHasSource  AS LOGIC
-            LOCAL nSavedRecno AS DWORD
-            lHasSource := SELF:_currentSource != NULL .AND. SELF:_bindingSource != NULL
-            IF lHasSource
-                nSavedRecno := SELF:_currentSource:SavePosition()
-            ENDIF
-            TRY
-                IF lHasSource
-                    SELF:_bindingSource:Position := (INT) SELF:_currentSource:RecNo
+            // Update the RecordMark ▶ position from the current RDD state.
+            // Save/restore of the RDD pointer is handled in WndProc (WM_PAINT), which fires
+            // for every repaint regardless of whether Refresh() or a form-level cascade caused it.
+            IF SELF:_currentSource != NULL
+                LOCAL nPos := (INT) SELF:_currentSource:RecNo - 1 AS INT
+                IF nPos < 0
+                    nPos := 0
+                ELSEIF SELF:Rows:Count > 0 .AND. nPos >= SELF:Rows:Count
+                    // EOF: RecNo = RecCount+1 (out of bounds) — keep arrow at last real row.
+                    nPos := SELF:Rows:Count - 1
                 ENDIF
-            CATCH
-                NOP
-            END TRY
-            //
+                SELF:_recordMarkRow := nPos
+            ENDIF
             IF SELF:_VFPRefresh != NULL .AND. !SELF:_vfpRefresh:InCall
                 SELF:_VFPRefresh:Call()
             ENDIF
-            //
             SUPER:Refresh()
-            //
-            IF lHasSource
-                SELF:_currentSource:RestorePosition(nSavedRecno)
+
+        /// <summary>
+        /// Intercepts every <c>WM_PAINT</c> (0x000F) message to save and restore the RDD record
+        /// pointer around the DataGridView repaint.<br/>
+        /// <c>DataGridView</c> accesses rows sequentially through <see cref="VFPDbDataSource"/>
+        /// during painting, leaving the RDD at the last visible row. This override restores it to
+        /// whatever record was current before the paint, regardless of whether the repaint was
+        /// triggered by a direct <see cref="Refresh"/> call or by a parent-form WM_PAINT cascade
+        /// (which bypasses the <c>Refresh()</c> virtual method entirely).
+        /// </summary>
+        PROTECTED OVERRIDE METHOD WndProc(m REF System.Windows.Forms.Message) AS VOID
+            IF m:Msg == 0x000F .AND. !SELF:_inWmPaint .AND. SELF:_currentSource != NULL
+                LOCAL nSavedRecno := SELF:_currentSource:SavePosition() AS DWORD
+                LOCAL lSavedEof   := SELF:_currentSource:EoF           AS LOGIC
+                LOCAL lSavedBof   := SELF:_currentSource:BoF           AS LOGIC
+                SELF:_inWmPaint := TRUE
+                TRY
+                    SUPER:WndProc(REF m)
+                FINALLY
+                    SELF:_inWmPaint := FALSE
+                    SELF:_currentSource:RestorePosition(nSavedRecno, lSavedEof, lSavedBof)
+                END TRY
+                RETURN
             ENDIF
+            SUPER:WndProc(REF m)
+
+        /// <summary>
+        /// Called by <see cref="Form.Refresh"/> before painting begins. Snapshots the current RDD
+        /// position so <see cref="RestoreRDDPosition"/> can undo any navigation the BindingSource
+        /// performs after the paint (cache-hit accesses via <c>DbDataSource[Position]</c> that
+        /// bypass <see cref="WndProc"/>'s own save/restore).
+        /// </summary>
+        INTERNAL METHOD SaveRDDPosition() AS VOID
+            IF SELF:_currentSource != NULL
+                SELF:_formSaveRecno := SELF:_currentSource:SavePosition()
+                SELF:_formSaveEof   := SELF:_currentSource:EoF
+                SELF:_formSaveBof   := SELF:_currentSource:BoF
+                SELF:_formHasSave   := TRUE
+                // Update the RecordMark ▶ row NOW, before the repaint (and before Cursor.Sync)
+                // moves the RDD pointer.  At EOF RecNo = RecCount+1, which is out of bounds for
+                // the DataGridView; clamp it to the last real row so the arrow stays visible.
+                LOCAL nPos := (INT) SELF:_formSaveRecno - 1 AS INT
+                IF nPos < 0
+                    nPos := 0
+                ELSEIF SELF:Rows:Count > 0 .AND. nPos >= SELF:Rows:Count
+                    nPos := SELF:Rows:Count - 1
+                ENDIF
+                SELF:_recordMarkRow := nPos
+            ENDIF
+
+        /// <summary>
+        /// Called by <see cref="Form.Refresh"/> after <c>SUPER:Refresh()</c> completes (after
+        /// all painting AND any post-paint BindingSource data access). Restores the RDD to the
+        /// state captured by <see cref="SaveRDDPosition"/>.
+        /// </summary>
+        INTERNAL METHOD RestoreRDDPosition() AS VOID
+            IF SELF:_formHasSave .AND. SELF:_currentSource != NULL
+                SELF:_currentSource:RestorePosition(SELF:_formSaveRecno, SELF:_formSaveEof, SELF:_formSaveBof)
+                SELF:_formHasSave := FALSE
+            ENDIF
+
+        /// <summary>
+        /// Draws the VFP RecordMark ▶ glyph in the row-header area of the current-record row.<br/>
+        /// The DataGridView's built-in current-row indicator is not relied upon because it is
+        /// suppressed at narrow header widths and by certain visual-style themes.
+        /// <see cref="_recordMarkRow"/> (0-based) is updated by <see cref="Refresh"/> (external
+        /// navigation) and by <see cref="VFPCurrentCellChanged"/> (in-grid navigation).
+        /// </summary>
+        PROTECTED OVERRIDE METHOD OnRowPostPaint(e AS System.Windows.Forms.DataGridViewRowPostPaintEventArgs) AS VOID
+            SUPER:OnRowPostPaint(e)
+            // Only paint when RecordMark is on and this is the marked row.
+            IF !SELF:RecordMark .OR. SELF:_recordMarkRow < 0 .OR. e:RowIndex != SELF:_recordMarkRow
+                RETURN
+            ENDIF
+            // Draw a solid right-pointing triangle centred in the row-header column.
+            LOCAL g  := e:Graphics                        AS System.Drawing.Graphics
+            LOCAL rh := SELF:RowHeadersWidth              AS INT
+            LOCAL rht := e:RowBounds:Top                  AS INT
+            LOCAL rhh := e:RowBounds:Height               AS INT
+            // Triangle dimensions: scale with row height, but cap to fit the header column.
+            LOCAL arrowH := Math.Min(rhh / 2, rh - 6)    AS INT
+            IF arrowH < 4 ; arrowH := 4 ; ENDIF
+            LOCAL arrowW := arrowH                        AS INT
+            LOCAL x := (rh - arrowW) / 2                 AS INT
+            LOCAL y := rht + (rhh - arrowH) / 2          AS INT
+            VAR pts := <System.Drawing.Point>{ ;
+                System.Drawing.Point{x,          y}, ;
+                System.Drawing.Point{x,          y + arrowH}, ;
+                System.Drawing.Point{x + arrowW, y + arrowH / 2} }
+            //
+            BEGIN USING VAR brush := System.Drawing.SolidBrush{ System.Drawing.SystemColors.ControlText }
+                g:SmoothingMode := System.Drawing.Drawing2D.SmoothingMode.AntiAlias
+                g:FillPolygon(brush, pts)
+                g:SmoothingMode := System.Drawing.Drawing2D.SmoothingMode.Default
+            END USING
 
         /// <summary>
         /// Selects the cell at the given 1-based row and column indices.

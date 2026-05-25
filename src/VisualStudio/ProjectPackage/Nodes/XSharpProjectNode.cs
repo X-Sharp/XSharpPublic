@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using VSLangProj;
 
 using XSharp.Settings;
+using XSharp.VisualStudio.Project;
 
 using XSharpModel;
 
@@ -1802,6 +1803,20 @@ namespace XSharp.Project
             return false;
         }
 
+        void RemoveEmptyProperty(ProjectInstance projectInstance,string propertyName)
+        {
+            var prop = projectInstance.GetProperty(propertyName);
+            var tmp = prop?.EvaluatedValue;
+            if (!string.IsNullOrEmpty(tmp))
+            {
+                tmp = tmp.Replace('\r', ' ').Trim();
+                tmp = tmp.Replace('\n', ' ').Trim();
+                if (string.IsNullOrEmpty(tmp))
+                    projectInstance.RemoveProperty(propertyName);
+            }
+
+        }
+
         protected override BuildSubmission DoMSBuildSubmission(BuildKind buildKind, string target, ref ProjectInstance projectInstance, MSBuildCoda uiThreadCallback)
         {
             bool designTime = BuildKind.Sync == buildKind;
@@ -1809,7 +1824,9 @@ namespace XSharp.Project
             {
                 projectInstance = BuildProject.CreateProjectInstance();
             }
-            projectInstance.SetProperty("ProvideCommandLineArgs", "true");
+            RemoveEmptyProperty(projectInstance, XSharpProjectFileConstants.PreBuildEvent);
+            RemoveEmptyProperty(projectInstance, XSharpProjectFileConstants.PostBuildEvent);
+			projectInstance.SetProperty("ProvideCommandLineArgs", "true");
             if (designTime)
             {
                 projectInstance.SetProperty("SkipCompilerExecution", "true");

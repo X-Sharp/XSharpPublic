@@ -815,10 +815,7 @@ namespace XSharp.Build
 
                     finalDefineConstants.Append(singleIdentifier);
                 }
-                else if (singleIdentifier.Length > 0)
-                {
-                    log.LogWarningWithCodeFromResources("Csc_InvalidParameterWarning", "/define:", singleIdentifier);
-                }
+             
             }
 
             if (finalDefineConstants.Length > 0)

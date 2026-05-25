@@ -214,25 +214,25 @@ FUNCTION GetFldState(uField, uArea) AS USUAL CLIPPER
         ENDIF
         LOCAL nCount := (int)FCount() AS INT
         IF IsString(uField)
-            LOCAL nFld := _FieldNumFromName((STRING) uField) AS INT
+            VAR nFld := CoreDb.CWA(__FUNCTION__):FieldIndex((STRING) uField)
             IF nFld == 0
                 RETURN NIL
             ENDIF
-            RETURN (INT) _FldStateStore.GetState(nArea, nFld)
+            RETURN (INT) _GetFldStateFromCargo(nArea, nFld)
         ELSEIF IsNumeric(uField)
             LOCAL nFldNum := (INT) uField AS INT
             DO CASE
             CASE nFldNum == -1
                 VAR sb := System.Text.StringBuilder{}
-                sb:Append(_FldStateStore.GetState(nArea, 0):ToString())
+                sb:Append(_GetFldStateFromCargo(nArea, 0):ToString())
                 FOR VAR j := 1 TO nCount
-                    sb:Append(_FldStateStore.GetState(nArea, j):ToString())
+                    sb:Append(_GetFldStateFromCargo(nArea, j):ToString())
                 NEXT
                 RETURN sb:ToString()
             CASE nFldNum == 0
-                RETURN (INT) _FldStateStore.GetState(nArea, 0)
+                RETURN (INT) _GetFldStateFromCargo(nArea, 0)
             CASE nFldNum >= 1 .AND. nFldNum <= nCount
-                RETURN (INT) _FldStateStore.GetState(nArea, nFldNum)
+                RETURN (INT) _GetFldStateFromCargo(nArea, nFldNum)
             ENDCASE
         ENDIF
         RETURN NIL
@@ -262,19 +262,19 @@ FUNCTION SetFldState(uField, nFieldState, uArea) AS LOGIC CLIPPER
         ENDIF
         LOCAL nCount := (int)FCount() AS INT
         IF IsString(uField)
-            LOCAL nFld := _FieldNumFromName((STRING) uField) AS INT
+            VAR nFld := CoreDb.CWA(__FUNCTION__):FieldIndex((STRING) uField)
             IF nFld == 0
                 RETURN FALSE
             ENDIF
-            _FldStateStore.SetState(nArea, nFld, (BYTE) nState)
+            _SetFldStateInCargo(nArea, nFld, (BYTE) nState)
             RETURN TRUE
         ELSEIF IsNumeric(uField)
             LOCAL nFldNum := (INT) uField AS INT
             IF nFldNum == 0
-                _FldStateStore.SetState(nArea, 0, (BYTE) nState)
+                _SetFldStateInCargo(nArea, 0, (BYTE) nState)
                 RETURN TRUE
             ELSEIF nFldNum >= 1 .AND. nFldNum <= nCount
-                _FldStateStore.SetState(nArea, nFldNum, (BYTE) nState)
+                _SetFldStateInCargo(nArea, nFldNum, (BYTE) nState)
                 RETURN TRUE
             ENDIF
         ENDIF
@@ -354,40 +354,24 @@ INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
 
     RETURN 0
 
-// Inner Dictionary: key = field number (0=deletion, 1..N=fields), value = state 1-4
-// Outer Dictionary: key = work area number
-// Default state = 1 (unmodified). No entry means unmodified.
-INTERNAL STATIC CLASS _FldStateStore
-    INTERNAL STATIC _store := Dictionary<DWORD, Dictionary<INT,BYTE>>{} AS Dictionary<DWORD, Dictionary<INT,BYTE>>
-
-    INTERNAL STATIC METHOD GetState(nArea AS DWORD, nField AS INT) AS BYTE
-        LOCAL fields AS Dictionary<INT,BYTE>
-        IF _store:TryGetValue(nArea, REF fields)
-            LOCAL b AS BYTE
-            IF fields:TryGetValue(nField, REF b)
-                RETURN b
-            ENDIF
+INTERNAL FUNCTION _GetFldStateFromCargo(nArea AS DWORD, nField AS INT) AS BYTE
+    LOCAL cargo AS Dictionary<INT,BYTE>
+    LOCAL oCargo := RuntimeState.Workareas:GetCargo(nArea) AS OBJECT
+    IF oCargo IS Dictionary<INT,BYTE> VAR dict
+        LOCAL b AS BYTE
+        IF dict:TryGetValue(nField, REF b)
+            RETURN b
         ENDIF
-        RETURN 1
+    ENDIF
+    RETURN 1
 
-    INTERNAL STATIC METHOD SetState(nArea AS DWORD, nField AS INT, nState AS BYTE) AS VOID
-        LOCAL fields AS Dictionary<INT,BYTE>
-        IF !_store:TryGetValue(nArea, REF fields)
-            fields := Dictionary<INT,BYTE>{}
-            _store[nArea] := fields
-        ENDIF
-        fields[nField] := nState
-
-    INTERNAL STATIC METHOD Reset(nArea AS DWORD) AS VOID
-        _store:Remove(nArea)
-END CLASS
-
-INTERNAL FUNCTION _FieldNumFromName(cName AS STRING) AS INT
-    VAR n := FCount()
-
-    FOR VAR i := 1 TO n
-        IF String.Compare((STRING) DbFieldInfo(DBS_NAME, i), cName, TRUE) == 0
-            RETURN i
-        ENDIF
-    NEXT
-    RETURN 0
+INTERNAL FUNCTION _SetFldStateInCargo(nArea AS DWORD, nField AS INT, nState AS BYTE) AS VOID
+    LOCAL oCargo := RuntimeState.Workareas:GetCargo(nArea) AS OBJECT
+    LOCAL dict AS Dictionary<INT,BYTE>
+    IF oCargo IS Dictionary<INT,BYTE> VAR existing
+        dict := existing
+    ELSE
+        dict := Dictionary<INT,BYTE>{}
+        RuntimeState.Workareas:SetCargo(nArea, dict)
+    ENDIF
+    dict[nField] := nState

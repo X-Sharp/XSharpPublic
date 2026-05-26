@@ -21,6 +21,7 @@ namespace XSharp.Support
     {
         static bool log2debugger = false;
         static bool log2file = false;
+        static object gate = new object ();
 
         static Logger()
         {
@@ -28,21 +29,25 @@ namespace XSharp.Support
             XSettings.Logger = new LoggerImpl();
         }
 
+
         public static bool Initialize()
         {
-            if (!active)
+            lock (gate)
             {
-                int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
-                int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
+                if (!active)
+                {
+                    int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
+                    int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
 
-                XSettings.EnableFileLogging = FileLogging != 0;
-                XSettings.EnableDebugLogging = DebugLogging != 0;
-                bool start = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
-                if (start)
-                    Logger.Start();
-                else
-                    Logger.Stop();
-                return start;
+                    XSettings.EnableFileLogging = FileLogging != 0;
+                    XSettings.EnableDebugLogging = DebugLogging != 0;
+                    bool start = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
+                    if (start)
+                        Logger.Start();
+                    else
+                        Logger.Stop();
+                    return start;
+                }
             }
             return active;
         }

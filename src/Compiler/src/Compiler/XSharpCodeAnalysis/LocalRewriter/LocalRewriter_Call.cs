@@ -58,43 +58,46 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expression is BoundCall bc && bc.Method.HasFoxArrayParameter(out var attr))
             {
                 // get the attribute and retrieve the parameter index
-                var oIndex = attr.ConstructorArguments.First().Value;
-                if (oIndex is not null)
+                if (attr.ConstructorArguments.Count() > 0)
                 {
-                    var index = (int)oIndex;
-                    var args = bc.Arguments;
-
-                    if (index > 0 && index <= args.Length)
+                    var oIndex = attr.ConstructorArguments.First().Value;
+                    if (oIndex is not null)
                     {
-                        var arg = args[index - 1]; // index is 1 based
+                        var index = (int)oIndex;
+                        var args = bc.Arguments;
 
-                        BoundExpression argToCheck = arg;
-                        while (argToCheck is BoundConversion bconv)
+                        if (index > 0 && index <= args.Length)
                         {
-                            argToCheck = bconv.Operand;
-                        }
+                            var arg = args[index - 1]; // index is 1 based
 
-                        if (argToCheck is BoundCall bc2)
-                        {
-                            var method2 = bc2.Method;
-                            if (method2.Name == ReservedNames.VarGet)
+                            BoundExpression argToCheck = arg;
+                            while (argToCheck is BoundConversion bconv)
                             {
-                                var margs = bc2.Arguments;
-                                var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
-                                var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
-                                if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
+                                argToCheck = bconv.Operand;
+                            }
+
+                            if (argToCheck is BoundCall bc2)
+                            {
+                                var method2 = bc2.Method;
+                                if (method2.Name == ReservedNames.VarGet)
                                 {
-                                    var newCall = _factory.StaticCall(symMethod, margs);
-
-                                    BoundExpression finalArg = newCall;
-                                    if (arg is BoundConversion originalConv)
+                                    var margs = bc2.Arguments;
+                                    var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
+                                    var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
+                                    if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
                                     {
-                                        finalArg = MakeConversionNode(newCall, originalConv.Type, originalConv.Checked);
-                                    }
+                                        var newCall = _factory.StaticCall(symMethod, margs);
 
-                                    var newArgs = args.ToBuilder();
-                                    newArgs[index - 1] = finalArg;
-                                    newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                                        BoundExpression finalArg = newCall;
+                                        if (arg is BoundConversion originalConv)
+                                        {
+                                            finalArg = MakeConversionNode(newCall, originalConv.Type, originalConv.Checked);
+                                        }
+
+                                        var newArgs = args.ToBuilder();
+                                        newArgs[index - 1] = finalArg;
+                                        newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                                    }
                                 }
                             }
                         }

@@ -207,10 +207,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // clear 9020 errors for assigment expressions where left and right are of the same type
                 // but only for this location
-                var errorsWithOut9020 = diagnostics.DiagnosticBag.AsEnumerable().Where(
-                    d => d.Code != (int)ErrorCode.WRN_ConversionMayLeadToLossOfData || d.Location != node.Location);
+                List<Diagnostic> diagnosticsList = new();
+                foreach (Diagnostic diag in diagnostics.DiagnosticBag.AsEnumerable())
+                {
+                    if (diag.Code != (int)ErrorCode.WRN_ConversionMayLeadToLossOfData)
+                        diagnosticsList.Add(diag);
+                    else
+                    {
+                        if (diag.Location != node.Location)
+                        {
+                            diagnosticsList.Add(diag);
+                        }
+                        else
+                        {
+                            // remove the 9020 for this location
+                        }
+                    }
+                }
                 diagnostics.DiagnosticBag.Clear();
-                diagnostics.DiagnosticBag.AddRange(errorsWithOut9020);
+                diagnostics.DiagnosticBag.AddRange(diagnosticsList);
             }
             if (!finalConversion.HasErrors)
             {

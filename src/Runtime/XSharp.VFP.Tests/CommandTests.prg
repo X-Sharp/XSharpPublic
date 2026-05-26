@@ -288,6 +288,66 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
             END TRY
         END METHOD
+
+        [Fact];
+        METHOD TestCursorSetPropAndCursorGetProp() AS VOID
+            VAR cOldDir := System.IO.Directory.GetCurrentDirectory()
+            VAR oDir := System.IO.Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), ;
+                "CursorPropTest_" + Guid.NewGuid():ToString("N")))
+            VAR cTempPath := oDir:FullName
+
+            TRY
+                SET DEFAULT TO (cTempPath)
+                CREATE TABLE TmpX (Id INT, Name C(20), Active L)
+                INSERT INTO TmpX VALUES (1, "Alice", .T.)
+                GO TOP
+
+                // Default buffering is 1 (off)
+                Assert.Equal(1, (INT) CursorGetProp("Buffering"))
+                Assert.Equal(3, (INT) CursorGetProp("SourceType"))
+
+                // Set buffering to optimistic table (5)
+                Assert.True(CursorSetProp("Buffering", 5))
+                Assert.Equal(5, (INT) CursorGetProp("Buffering"))
+
+                // Set buffering to pessimistic row (2) -- by alias
+                Assert.True(CursorSetProp("Buffering", 2, "TmpX"))
+                Assert.Equal(2, (INT) CursorGetProp("Buffering"))
+
+                // Set buffering -- by workarea number
+                Assert.True(CursorSetProp("Buffering", 3, Select()))
+                Assert.Equal(3, (INT) CursorGetProp("Buffering"))
+
+                // Invalid buffering value -> FALSE
+                Assert.False(CursorSetProp("Buffering", 0))
+                Assert.False(CursorSetProp("Buffering", 6))
+                Assert.False(CursorSetProp("Buffering", "abc"))
+
+                // Invalid alias -> FALSE for SET, NIL for GET
+                Assert.False(CursorSetProp("Buffering", 2, "NoSuchAlias"))
+                Assert.False(CursorGetProp("Buffering", "NoSuchAlias"))
+
+                // Read-only properties
+                VAR cSrc := CursorGetProp("SourceName")
+                Assert.True(IsString(cSrc))
+                Assert.True(((STRING) cSrc):Contains(".DBF"))
+                Assert.Equal("", (STRING) CursorGetProp("Database"))
+                Assert.Equal("", (STRING) CursorGetProp("SQL"))
+                Assert.Equal(0, (INT) CursorGetProp("ConnectHandle"))
+
+                // Cargo cleared on close
+                Assert.True(CursorSetProp("Buffering", 5))
+                XSharp.CoreDb.CloseAll()
+                DbUseArea(TRUE, "DBFVFP", Path.Combine(cTempPath, "TmpX.dbf"), "TmpX", FALSE, FALSE)
+                Assert.Equal(1, (INT) CursorGetProp("Buffering"))
+
+            FINALLY
+                XSharp.CoreDb.CloseAll()
+                SET DEFAULT TO (cOldDir)
+                System.IO.Directory.SetCurrentDirectory(cOldDir)
+                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+            END TRY
+        END METHOD
     END CLASS
 
 END NAMESPACE

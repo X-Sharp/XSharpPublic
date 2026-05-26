@@ -7,6 +7,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING XSharp.RDD
 
 INTERNAL FUNCTION _DoInArea<T>(uArea as Usual, action as @@Func<T>, defaultValue as T, cFunction as STRING, nArg as DWORD) as T
     IF IsNil(uArea)
@@ -354,24 +355,223 @@ INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
 
     RETURN 0
 
+INTERNAL CLASS _WorkareaCargo
+    export fldState AS Dictionary<INT, BYTE>
+    EXPORT cursorProps AS Dictionary<STRING, OBJECT>
+
+    CONSTRUCTOR()
+        fldState := Dictionary<INT, BYTE>{}
+        cursorProps := Dictionary<STRING, OBJECT>{System.StringComparer.OrdinalIgnoreCase}
+    END CONSTRUCTOR
+END CLASS
+
+INTERNAL FUNCTION _GetWorkareaCargo(nArea AS DWORD) AS _WorkareaCargo
+    VAR oCargo := RuntimeState.Workareas:GetCargo(nArea)
+    IF oCargo IS _WorkareaCargo VAR cargo
+        RETURN cargo
+    ENDIF
+    VAR newCargo := _WorkareaCargo{}
+    RuntimeState.Workareas:SetCargo(nArea, newCargo)
+    RETURN newCargo
+
 INTERNAL FUNCTION _GetFldStateFromCargo(nArea AS DWORD, nField AS INT) AS BYTE
-    LOCAL cargo AS Dictionary<INT,BYTE>
-    LOCAL oCargo := RuntimeState.Workareas:GetCargo(nArea) AS OBJECT
-    IF oCargo IS Dictionary<INT,BYTE> VAR dict
-        LOCAL b AS BYTE
-        IF dict:TryGetValue(nField, REF b)
-            RETURN b
-        ENDIF
+    VAR cargo := _GetWorkareaCargo(nArea)
+    LOCAL b as BYTE
+    if cargo:fldState:TryGetValue(nField, REF b)
+        return b
     ENDIF
     RETURN 1
 
 INTERNAL FUNCTION _SetFldStateInCargo(nArea AS DWORD, nField AS INT, nState AS BYTE) AS VOID
-    LOCAL oCargo := RuntimeState.Workareas:GetCargo(nArea) AS OBJECT
-    LOCAL dict AS Dictionary<INT,BYTE>
-    IF oCargo IS Dictionary<INT,BYTE> VAR existing
-        dict := existing
-    ELSE
-        dict := Dictionary<INT,BYTE>{}
-        RuntimeState.Workareas:SetCargo(nArea, dict)
+    VAR cargo := _GetWorkareaCargo(nArea)
+    cargo:fldState[nField] := nState
+
+INTERNAL STATIC CLASS _CursorPropDefaults
+    INTERNAL STATIC _defaults AS Dictionary<STRING, OBJECT>
+
+    STATIC CONSTRUCTOR
+        _defaults := Dictionary<STRING, OBJECT>{}
+        _defaults:Add("Buffering", 1)
+        _defaults:Add("AutoIncError", FALSE)
+        _defaults:Add("FetchMemo", FALSE)
+        _defaults:Add("FetchSize", 100)
+        _defaults:Add("MapBinary", FALSE)
+        _defaults:Add("MapVarchar", FALSE)
+        _defaults:Add("MaxRecords", -1)
+        _defaults:Add("Refresh", -2)
+        _defaults:Add("CompareMemo", TRUE)
+        _defaults:Add("FetchAsNeeded", FALSE)
+        _defaults:Add("Prepared", FALSE)
+        _defaults:Add("SendUpdates", FALSE)
+        _defaults:Add("UpdateType", 1)
+        _defaults:Add("WhereType", 3)
+        _defaults:Add("UseMemoSize", 255)
+        _defaults:Add("BatchUpdateCount", 1)
+    END CONSTRUCTOR
+
+    INTERNAL STATIC METHOD GetDefault(cProperty AS STRING) AS OBJECT
+        LOCAL result AS OBJECT
+        IF _defaults:TryGetValue(cProperty, REF result)
+            return result
+        ENDIF
+        RETURN NIL
+    END METHOD
+
+    INTERNAL STATIC METHOD SetDefault(cProperty AS STRING, oValue AS OBJECT) AS VOID
+        _defaults[cProperty] := oValue
+    END METHOD
+END CLASS
+
+INTERNAL FUNCTION _GetCursorProp(nArea AS DWORD, cProperty AS STRING) AS OBJECT
+    VAR cargo := _GetWorkareaCargo(nArea)
+    LOCAL result AS OBJECT
+    if cargo:cursorProps:TryGetValue(cProperty, REF result)
+        RETURN result
     ENDIF
-    dict[nField] := nState
+
+    RETURN _CursorPropDefaults.GetDefault(cProperty)
+
+INTERNAL FUNCTION _SetCursorProp(nArea AS DWORD, cProperty AS STRING, oValue AS OBJECT) AS VOID
+    LOCAL cargo AS _WorkareaCargo
+    cargo := _GetWorkareaCargo(nArea)
+    cargo:cursorProps[cProperty] := oValue
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/cursorsetprop/*" />
+[FoxProFunction("CURSORSETPROP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION CursorSetProp(cProperty, eExpression, uArea) AS LOGIC CLIPPER
+    IF !IsString(cProperty)
+        RETURN FALSE
+    ENDIF
+    LOCAL cProp := (STRING) cProperty AS STRING
+    LOCAL nProp := GetCursorProperty(cProp) AS LONG
+    LOCAL lSessionDefault := IsNumeric(uArea) .AND. (INT) uArea == 0 AS LOGIC
+    IF lSessionDefault
+        IF nProp == (LONG) CursorProperty.Buffering
+            IF IsNumeric(eExpression)
+                LOCAL nVal := (INT) eExpression AS INT
+                IF nVal < 1 .OR. nVal > 5
+                    RETURN FALSE
+                ENDIF
+            ELSE
+                RETURN FALSE
+            ENDIF
+        ENDIF
+        _CursorPropDefaults.SetDefault(cProp, eExpression)
+        RETURN TRUE
+    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+    TRY
+        IF !Used()
+            RETURN FALSE
+        ENDIF
+        IF nProp == (LONG) CursorProperty.Buffering
+            IF !IsNumeric(eExpression)
+                RETURN FALSE
+            ENDIF
+            LOCAL nBuff := (INT) eExpression AS INT
+            IF nBuff < 1 .OR. nBuff > 5
+                RETURN FALSE
+            ENDIF
+            _SetCursorProp(nArea, "Buffering", nBuff)
+            RETURN TRUE
+        ENDIF
+        IF nProp == (LONG) CursorProperty.AutoIncError
+            IF !IsLogic(eExpression)
+                RETURN FALSE
+            ENDIF
+            _SetCursorProp(nArea, "AutoIncError", eExpression)
+            RETURN TRUE
+        ENDIF
+        IF nProp == (LONG) CursorProperty.Refresh
+            IF !IsNumeric(eExpression)
+                RETURN FALSE
+            ENDIF
+            _SetCursorProp(nArea, "Refresh", eExpression)
+            RETURN TRUE
+        ENDIF
+        _SetCursorProp(nArea, cProp, eExpression)
+        RETURN TRUE
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/cursorgetprop/*" />
+[FoxProFunction("CURSORGETPROP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION CursorGetProp(cProperty, uArea) AS USUAL CLIPPER
+    IF !IsString(cProperty)
+        RETURN NIL
+    ENDIF
+    LOCAL cProp := (STRING) cProperty AS STRING
+    LOCAL nProp := GetCursorProperty(cProp) AS LONG
+    LOCAL lSessionDefault := IsNumeric(uArea) .AND. (INT) uArea == 0 AS LOGIC
+    IF lSessionDefault
+        RETURN _CursorPropDefaults.GetDefault(cProp)
+    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+    TRY
+        IF !Used()
+            RETURN FALSE
+        ENDIF
+        IF nProp == (LONG) CursorProperty.SourceType
+            RETURN 3
+        ENDIF
+        IF nProp == (LONG) CursorProperty.SourceName
+            RETURN DbInfo(DBI_FULLPATH)
+        ENDIF
+        IF nProp == (LONG) CursorProperty.Database
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.SQL
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.ConnectHandle
+            RETURN 0
+        ENDIF
+        IF nProp == (LONG) CursorProperty.ConnectName
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.Tables
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.KeyFieldList
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.UpdatableFieldList
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.UpdateNameList
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.ParameterList
+            RETURN ""
+        ENDIF
+        IF nProp == (LONG) CursorProperty.RecordsFetched
+            RETURN -1
+        ENDIF
+        IF nProp == (LONG) CursorProperty.FetchIsComplete
+            RETURN TRUE
+        ENDIF
+        IF nProp == (LONG) CursorProperty.ADOBookmark
+            RETURN NIL
+        ENDIF
+        IF nProp == (LONG) CursorProperty.ADOCodePage
+            RETURN 0
+        ENDIF
+        IF nProp == (LONG) CursorProperty.ADORecordset
+            RETURN NIL
+        ENDIF
+        RETURN _GetCursorProp(nArea, cProp)
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY

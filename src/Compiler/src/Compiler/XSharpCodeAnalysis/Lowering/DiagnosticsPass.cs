@@ -29,7 +29,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-
         public override BoundNode VisitTypeExpression(BoundTypeExpression node)
         {
             if (!node.Type.IsFunctionsClass())
@@ -67,13 +66,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Error(ErrorCode.WRN_ConversionFromNilNotSupported, rightNode, leftType);
                 }
             }
-
         }
         private BoundAssignmentOperator XsVisitAssignmentOperator(BoundAssignmentOperator node)
         {
             WarnForNilAssignment(node.Right, node.Left.Type);
             return node;
         }
+
 
         private void GenerateWarning(TypeSymbol sourceType, TypeSymbol targetType, BoundNode node)
         {
@@ -187,21 +186,49 @@ namespace Microsoft.CodeAnalysis.CSharp
                     XsCheckMemberAccess(node, node.ReceiverOpt, amc, null, node.Method);
                 }
             }
-            if (node.Method.ParameterRefKinds != null && node.Syntax.XNode is XSharpParser.ICallContext icc)
+            // check for NIL argument to non USUAL or OBJECT parameter
+            if (node.Syntax.XNode is XSharpParser.ICallContext icc && ! node.Method.HasClipperCallingConvention())
             {
                 var args = icc.Arguments;
-                if (args != null)
+                if (args != null && !node.Method.HasParamsParameter())
                 {
-                    var refkinds = node.Method.ParameterRefKinds;
-                    for (var i = 0; i < node.Method.ParameterCount; i++)
+                    var types = node.Method.ParameterTypesWithAnnotations;
+                    for (var i = 0; i < node.Method.ParameterCount && i < args._Args.Count; i++)
                     {
-                        if (refkinds[i] == RefKind.Out && args._Args.Count > i)
+                        bool check = false;
+                        var arg = args._Args[i];
+                        if (arg is XSharpParser.NamedArgumentContext nc)
                         {
-                            var arg = args._Args[i];
-                            if (arg.RefOut?.Type != XSharpLexer.OUT && node.Arguments.Length > i)
+                            check = nc.Expr != null && nc.Expr.Start.Type == XSharpLexer.NIL && nc.Expr.Stop.Type == XSharpLexer.NIL;
+                        }
+                        else
+                        {
+                            check = arg.Start.Type == XSharpLexer.NIL && arg.Stop.Type == XSharpLexer.NIL;
+                        }
+
+                        if (check)
+                        {
+                            var paramType = types[i].Type;
+                            if (!paramType.IsUsualType() && !paramType.IsObjectType())
                             {
                                 var argnode = node.Arguments[i];
-                                Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);
+                                Error(ErrorCode.WRN_ConversionFromNilNotSupported, argnode, paramType);
+                            }
+                        }
+                    }
+                    if (node.Method.ParameterRefKinds != null)
+                    {
+                        var refkinds = node.Method.ParameterRefKinds;
+                        for (var i = 0; i < node.Method.ParameterCount; i++)
+                        {
+                            if (refkinds[i] == RefKind.Out && args._Args.Count > i)
+                            {
+                                var arg = args._Args[i];
+                                if (arg.RefOut?.Type != XSharpLexer.OUT && node.Arguments.Length > i)
+                                {
+                                    var argnode = node.Arguments[i];
+                                    Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);
+                                }
                             }
                         }
                     }

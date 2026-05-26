@@ -20,13 +20,6 @@ FUNCTION Scheme( nSchemeNumber , nColorPairNumber) AS STRING
     // RETURN ""
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />
-[FoxProFunction("SETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION SetFldState( uField, nFieldState , uArea) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/setresultset/*" />
 [FoxProFunction("SETRESULTSET", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION SetResultSet( uArea ) AS LONG

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-05-25T14:12:46.966Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-05-26T20:07:08.853Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -36,6 +36,8 @@
       <li styleclass="List1">Changed the UDC for the RECALL command, because FoxPro temporarily switches of the SetDeleted() setting during the command (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1838" target="_blank">#1838</link>)</li>
       <li styleclass="List1">Prevented an assertion error when compiling in debug mode for functions with the NeedsAccessToLocal attribute and a VOID return type (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1870" target="_blank">#1870</link>)</li>
       <li styleclass="List1">Fixed a &quot;Type Expected&quot; compiler error in the VO dialect when declaring a CLIPPER method with no arguments and no explicit return type (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1907" target="_blank">#1907</link>)</li>
+      <li styleclass="List1">Passing a literal NIL as argument for a type parameter now generates a compiler warning (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>)</li>
+      <li styleclass="List1">Fixed an issue where certain errors were not shown causing a compilation to fail with &quot;error XS7038: Failed to emit module&quot; (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1951" target="_blank">#1951</link>)</li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <para styleclass="Heading3">New Features</para>
@@ -54,9 +56,7 @@
       <li styleclass="List1">For SDK projects File Foo.xh is now by default depending on Foo.prg when they both appear in the same folder</li>
       <li styleclass="List1">Fixed an error reported by Stefan Hirsch, was caused by automatically adding an OSPlatformAttribute to the output assemblies</li>
       <li styleclass="List1">Fixed a NuGet error about listing “win-x86” as runtime identifier for Old style projects with package references (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1801" target="_blank">#1801</link>)</li>
-    </list>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1"></li>
+      <li styleclass="List1">Fixed an issue during build where an empty &lt;PrebuildEvent&gt; that contains a CRLF could cause a build to fail.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Normal">The signature for several functions and methods in the XSharp Runtime has been changed. <br/>We have used the new IN keyword for many that use parameters defined AS USUAL. </para>
@@ -66,7 +66,7 @@
     <para styleclass="Normal">X# 3 comes with runtime DLLs for both .net 46 and .net 8. Not all VOSDK Dlls have been ported to .Net 8 because they contain code that does not work in an AnyCPU environment.</para>
     <para styleclass="Normal">The NuGet packages for the runtime contain XML documentation for English and Chinese.</para>
     <para styleclass="Heading3">New Features</para>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">We are now including .Net 8 versions of most of our runtime DLLs.</li>
       <li styleclass="List1">The Runtime is now delivered in both DLL format as well as Nuget Packages. See the separate topic about the Runtime in this help file for a description of these packages and DLLs</li>
       <li styleclass="List1">The record number in RDD operations is now a DWORD and no longer a LONG. The maximum record number in a DBF file is now 2^32 - 1 </li>
@@ -75,7 +75,7 @@
       <li styleclass="List1">Added the Transform @N format function</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Fixed potential issues with Null_date returned from OpenADS for the Last Update date in a DBF</li>
       <li styleclass="List1">Fixed an issue in the Macrocompiler for .Net 8</li>
       <li styleclass="List1">Fixed an issue with Memo functions</li>
@@ -91,12 +91,12 @@
       <li styleclass="List1">Fixed a memo-related state issue (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1869" target="_blank">#1869</link>)</li>
     </list>
     <para styleclass="Heading3">XPP Dialect</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">XPP Dialect: Added NLS_ defines and initial implementation for the SetLocale() function</li>
       <li styleclass="List1">XPP Dialect: Fixed a late binding issue (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1836" target="_blank">#1836</link>)</li>
     </list>
     <para styleclass="Heading3">New features the FoxPro dialect.</para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">The XSharp.VFP assembly now contains function definitions for all functions from VFP, even the ones that exist in XSharp.Core and XSharp.RT. These functions will delegate the work to the implementation in the other assemblies.</li>
       <li styleclass="List1">Added an implementation of the AUsed() function (VFP)</li>
       <li styleclass="List1">The implementation of several UI related functions, such as MessageBox(), have been moved from XSharp.VFP to XSharp.VFP.UI.<br/>These functions will now output to the console window when XSharp.VFP.UI cannot be found.</li>
@@ -140,7 +140,7 @@
     <para styleclass="Normal">We are no longer supporting Visual Studio 2017.</para>
     <para styleclass="Normal">We are still supporting Visual Studio 2019 but not all of the new features will be implemented for this version of VS.</para>
     <para styleclass="Heading3">New Features</para>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">We are now supporting SDK style projects. To do so many changes were made all over the Visual Studio support code</li>
       <li styleclass="List1">The language service now respects the new commands, such as GLOBAL USING, NAMESPACE, RECORD etc.</li>
       <li styleclass="List1">Added support for the VS Document Outline Window</li>
@@ -150,7 +150,7 @@
       <li styleclass="List1">Added Publish and Pack commands to the Build menu for SDK-style X# projects; a dialog allows configuring the target OS, self-contained deployment, and single-file output (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1939" target="_blank">#1939</link>)</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">The Output window in Visual Studio was not always showing progress. This has been fixed</li>
       <li styleclass="List1">The assemblies that are automatically added for SDK projects now show more properties inside the property windows.</li>
       <li styleclass="List1">Improved load speed for SDK projects..</li>
@@ -175,30 +175,31 @@
       <li styleclass="List1">Fixed an issue with Project References for SDK projects where these references were not shown in the Project Dependencies page of the Solution Properties window ((<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1929" target="_blank">#1929)</link></li>
       <li styleclass="List1">Fixed local functions not appearing correctly in the Navigation Bar and Document Outline window &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1932" target="_blank">#1932</link>)</li>
       <li styleclass="List1">Fixed the navigation bar not displaying all entities in files with nested classes, and not following the cursor when it moves past the last declared entity (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1934" target="_blank">#1934</link>)</li>
+      <li styleclass="List1">Fixed an issue where Goto Definition would fail when a project folder contains another project and the option &quot;Show All Files&quot; was enabled, showing that other project as &quot;Non member Item&quot;.</li>
     </list>
     <para styleclass="Heading2">Debugger</para>
     <para styleclass="Heading3">New Features</para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">The workarea window now also shows index information and the table structure</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Fixed an issue where the debugger was not correctly displaying Symbol values inside Usuals (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1804" target="_blank">#1804</link>)</li>
       <li styleclass="List1">Fixed an issue in the debugger where USUAL values were not shown properly formatted (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1809" target="_blank">#1809</link>)</li>
       <li styleclass="List1">Fixed an issue in the debugger where breakpoint conditions and watch expressions were not working (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1810" target="_blank">#1810</link>)</li>
     </list>
     <para styleclass="Heading2">VOSDK</para>
     <para styleclass="Heading3">New Features</para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Methods named FIELDGET and FIELDPUT (in uppercase) are now named FieldGet and FieldPut to be compatible with the case of other methods.</li>
     </list>
     <para styleclass="Heading2">Typed VOSDK</para>
     <para styleclass="Heading3">New Features</para>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">The menu and toolbar class now internally use the MenuStrip and ToolStrip classes from Windows Forms because the classes that were used before are no longer supported in newer versions of .Net.</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">The Typed AnyCPU GUI Classes no longer use the MainMenu and ToolBar classes, but the MenuStrip and ToolStrip classes. </li>
     </list>
   </body>

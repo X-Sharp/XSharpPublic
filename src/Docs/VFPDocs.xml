@@ -7416,7 +7416,11 @@
         <summary>
             Assigns a field modification or deletion state value to a field or record in a table or cursor.
         </summary>
-        <param name="nFieldstate">
+      <param name="uField">
+        Specifies the name or the number of the field for which the modification or deletion status is assigned. The field number nFieldNumber corresponds to the position of the field in the table or cursor structure. DISPLAY STRUCTURE or FIELD( ) can be used to determine a field's number.
+        To set the deletion status for the record, include 0 as the field number
+      </param>
+        <param name="nFieldState">
             Specifies a value for the field modification or deletion status.<br/>
             The table in the remarks section lists the field modification or deletion state value and the corresponding modification or deletion status:
         </param>

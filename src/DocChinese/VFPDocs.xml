@@ -7473,7 +7473,12 @@
         <summary>
             为表或游标中的字段或记录分配字段修改或删除状态值。
         </summary>
-        <param name="nFieldstate">
+      <param name="uField">
+        指定要返回修改状态的字段名称或字段编号。 字段编号 nFieldNumber 对应于表或游标结构中字段的位置。 可以使用
+        Display Structure 或 Field() 来确定字段的编号。
+        还可以为 nFieldNumber 包含 0，以确定自表或游标打开以来当前记录的删除状态是否已更改。
+      </param>
+        <param name="nFieldState">
             指定字段修改或删除状态的值。<br/>
             备注部分的表列出了字段修改或删除状态值及其对应的修改或删除状态：
         </param>

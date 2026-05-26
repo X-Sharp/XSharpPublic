@@ -62,8 +62,9 @@ namespace XSharp.Project
         {
             XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
             if (project != null)
+            {
                 project.AddURL(this.Url, this);
-            project.ProjectModel.AddProjectReference(this.Url);
+            }
         }
 
         /// <summary>

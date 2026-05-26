@@ -26,7 +26,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 using VSLangProj;
 
@@ -1510,6 +1512,15 @@ namespace XSharp.Project
         {
             var result = base.InvokeMsBuild(target, out projectInstance);
             LastBuildResult = projectInstance;
+            // Find Items from NuGet packages
+            foreach (var item in projectInstance.Items)
+            {
+                if (item.ItemType.ToLower() == "_referencesfromnugetpackages")
+                {
+                    var file = item.EvaluatedInclude;
+                    this.ProjectModel.AddAssemblyReference(file);
+                }
+            }
             return result;
         }
 
@@ -1681,25 +1692,31 @@ namespace XSharp.Project
             // XSharpFolderNode
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
-            if (XProject.IsXSharpProject(url))
+
+            if (node is ReferenceNode)
             {
-                this.ProjectModel.AddProjectReference(url);
-            }
-            else if (IsOtherProjectFile(url))
-            {
-                this.ProjectModel.AddStrangerProjectReference(url);
-            }
-            else
-            {
-                if (node is XSharpFileNode xNode && !xNode.IsNonMemberItem)
+                if (XProject.IsXSharpProject(url))
                 {
-                    if (File.Exists(url))
+                    this.ProjectModel.AddProjectReference(url);
+                }
+                else if (IsOtherProjectFile(url))
+                {
+                    this.ProjectModel.AddStrangerProjectReference(url);
+                }
+                else
+                {
+                    // this must be an assembly reference or com reference
+                }
+            }
+            else if (node is XSharpFileNode filenode)
+            {
+                if (File.Exists(url) && !filenode.IsNonMemberItem)
+                {
+
+                    this.ProjectModel.AddFile(url, filenode.FileType);
+                    if (IsXamlFile(url))
                     {
-                        this.ProjectModel.AddFile(url, xNode.FileType);
-                        if (IsXamlFile(url))
-                        {
-                            base.ObserveItem(url);
-                        }
+                        base.ObserveItem(url);
                     }
                 }
             }

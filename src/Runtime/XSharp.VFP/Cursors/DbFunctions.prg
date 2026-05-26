@@ -195,6 +195,94 @@ FUNCTION Target( nRelationshipNumber , uArea ) AS STRING CLIPPER
 FUNCTION Unique(uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbOrderInfo(DBOI_UNIQUE , NIL, NIL) } , FALSE,__FUNCTION__,1)
 
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getfldstate/*" />
+[FoxProFunction("GETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION GetFldState(uField, uArea) AS USUAL CLIPPER
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
+    IF nArea == 0
+        RETURN NIL
+    ENDIF
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+    TRY
+        IF !Used()
+            RETURN NIL
+        ENDIF
+        IF Eof()
+            RETURN DBNull.Value
+        ENDIF
+        LOCAL nCount := (int)FCount() AS INT
+        IF IsString(uField)
+            VAR nFld := CoreDb.CWA(__FUNCTION__):FieldIndex((STRING) uField)
+            IF nFld == 0
+                RETURN NIL
+            ENDIF
+            RETURN (INT) _GetFldStateFromCargo(nArea, nFld)
+        ELSEIF IsNumeric(uField)
+            LOCAL nFldNum := (INT) uField AS INT
+            DO CASE
+            CASE nFldNum == -1
+                VAR sb := System.Text.StringBuilder{}
+                sb:Append(_GetFldStateFromCargo(nArea, 0):ToString())
+                FOR VAR j := 1 TO nCount
+                    sb:Append(_GetFldStateFromCargo(nArea, j):ToString())
+                NEXT
+                RETURN sb:ToString()
+            CASE nFldNum == 0
+                RETURN (INT) _GetFldStateFromCargo(nArea, 0)
+            CASE nFldNum >= 1 .AND. nFldNum <= nCount
+                RETURN (INT) _GetFldStateFromCargo(nArea, nFldNum)
+            ENDCASE
+        ENDIF
+        RETURN NIL
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />
+[FoxProFunction("SETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION SetFldState(uField, nFieldState, uArea) AS LOGIC CLIPPER
+    IF IsNil(nFieldState)
+        RETURN FALSE
+    ENDIF
+    LOCAL nState := (INT) nFieldState AS INT
+    IF nState < 1 .OR. nState > 4
+        RETURN FALSE
+    ENDIF
+    LOCAL nArea := _AreaFromParam(uArea) AS DWORD
+    IF nArea == 0
+        RETURN FALSE
+    ENDIF
+    VAR nOldArea := RuntimeState.CurrentWorkarea
+    RuntimeState.CurrentWorkarea := nArea
+    TRY
+        IF !Used()
+            RETURN FALSE
+        ENDIF
+        LOCAL nCount := (int)FCount() AS INT
+        IF IsString(uField)
+            VAR nFld := CoreDb.CWA(__FUNCTION__):FieldIndex((STRING) uField)
+            IF nFld == 0
+                RETURN FALSE
+            ENDIF
+            _SetFldStateInCargo(nArea, nFld, (BYTE) nState)
+            RETURN TRUE
+        ELSEIF IsNumeric(uField)
+            LOCAL nFldNum := (INT) uField AS INT
+            IF nFldNum == 0
+                _SetFldStateInCargo(nArea, 0, (BYTE) nState)
+                RETURN TRUE
+            ELSEIF nFldNum >= 1 .AND. nFldNum <= nCount
+                _SetFldStateInCargo(nArea, nFldNum, (BYTE) nState)
+                RETURN TRUE
+            ENDIF
+        ENDIF
+        RETURN FALSE
+    FINALLY
+        RuntimeState.CurrentWorkarea := nOldArea
+    END TRY
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
 [FoxProFunction("INDEXSEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
@@ -265,3 +353,25 @@ INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
     ENDIF
 
     RETURN 0
+
+INTERNAL FUNCTION _GetFldStateFromCargo(nArea AS DWORD, nField AS INT) AS BYTE
+    LOCAL cargo AS Dictionary<INT,BYTE>
+    LOCAL oCargo := RuntimeState.Workareas:GetCargo(nArea) AS OBJECT
+    IF oCargo IS Dictionary<INT,BYTE> VAR dict
+        LOCAL b AS BYTE
+        IF dict:TryGetValue(nField, REF b)
+            RETURN b
+        ENDIF
+    ENDIF
+    RETURN 1
+
+INTERNAL FUNCTION _SetFldStateInCargo(nArea AS DWORD, nField AS INT, nState AS BYTE) AS VOID
+    LOCAL oCargo := RuntimeState.Workareas:GetCargo(nArea) AS OBJECT
+    LOCAL dict AS Dictionary<INT,BYTE>
+    IF oCargo IS Dictionary<INT,BYTE> VAR existing
+        dict := existing
+    ELSE
+        dict := Dictionary<INT,BYTE>{}
+        RuntimeState.Workareas:SetCargo(nArea, dict)
+    ENDIF
+    dict[nField] := nState

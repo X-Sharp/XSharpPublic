@@ -564,11 +564,9 @@
 
 // CLOSE DATABASES [ALL] and CLOSE TABLES [ALL]
 // Implemented in XSharp.VFP\Database\DatabaseCommands.prg
-// Precedence: ALL variants defined last = tried first by the preprocessor.
-#command CLOSE DATABASES     => __VFPCloseDatabases( .F. )
-#command CLOSE DATABASES ALL => __VFPCloseDatabases( .T. )
-#command CLOSE TABLES        => __VFPCloseTables( .F. )
-#command CLOSE TABLES ALL    => __VFPCloseTables( .T. )
+
+#command CLOSE DATABASES [<all:ALL>]    => __VFPCloseDatabases( <.all.> )
+#command CLOSE TABLES [<all:ALL>    	=> __VFPCloseTables( <.all.> )
 
 // connection commands
 #command CREATE CONNECTION <(conn)> ;

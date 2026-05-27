@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-05-26T20:09:30.346Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-05-27T17:16:57.733Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -87,13 +87,16 @@
       <li styleclass="List1">修复了宏编译器中某些方法调用的问题 <text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">(</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1860" target="_blank">#1860</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
       <li styleclass="List1">修复了一个与备忘录相关的状态问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1869" target="_blank">#1869</link>)</li>
     </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:12pt; color:#000000;">
+      <li styleclass="List1">修复 Dbc.FindTable 以支持别名和/或文件名<text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">(</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1949" target="_blank">#1949</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
+    </list>
     <para styleclass="Heading3">XPP 方言</para>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">XPP 方言：添加了 NLS_ 定义以及 SetLocale() 函数的初始实现</li>
       <li styleclass="List1">XPP 方言：修复了一个晚绑定问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1836" target="_blank">#1836</link>)</li>
     </list>
     <para styleclass="Heading3">FoxPro 方言的新功能。</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">XSharp.VFP 程序集现在包含 VFP 中所有函数的定义，甚至包括那些存在于 XSharp.Core 和 XSharp.RT 中的函数。这些函数将把工作委托给其他程序集中的实现。</li>
       <li styleclass="List1">添加了 AUsed() 函数（VFP）的实现</li>
       <li styleclass="List1">若干 UI 相关函数（如 MessageBox()）的实现已从 XSharp.VFP 移至 XSharp.VFP.UI。当无法找到 XSharp.VFP.UI 时，<br/>这些函数现在将输出到控制台窗口。</li>
@@ -132,12 +135,16 @@
       <li styleclass="List1">实现了 ISMEMOFETCHED(); 对于本地 DBF 数据，备注字段始终被视为已提取 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1931" target="_blank">#1931</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
       <li styleclass="List1">修复了表名包含路径时的 CREATE TABLE 问题；别名现在由文件名（不包含目录部分）衍生而来 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1938" target="_blank">#1938</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
     </list>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="List1"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">实现 GETFLDSTATE 和 SETFLDSTATE </text>(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1952" target="_blank">#1952</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
+      <li styleclass="List1"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">实现 CURSORSETPROP() 和 CURSORGETPROP() 函数（部分功能）</text>(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1954" target="_blank">#1954</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
+    </list>
     <para styleclass="Heading2"> Visual Studio 集成</para>
     <para styleclass="Normal">现已全面支持 Visual Studio 2026</para>
     <para styleclass="Normal">我们不再支持 Visual Studio 2017。</para>
     <para styleclass="Normal">我们仍支持 Visual Studio 2019，但并非所有新功能都会在此版本的 VS 中实现。</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们现已支持 SDK 风格的项目。为此，我们在 Visual Studio 支持代码的各个部分进行了大量修改</li>
       <li styleclass="List1">语言服务现已支持新命令，例如 GLOBAL USING、NAMESPACE、RECORD 等。</li>
       <li styleclass="List1">新增对 VS 文档大纲窗口的支持</li>
@@ -147,7 +154,7 @@
       <li styleclass="List1">在 SDK 风格的 X# 项目的“构建”菜单中添加了“发布”和“打包”命令；通过对话框可配置目标操作系统、自包含部署以及单文件输出 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1939" target="_blank">#1939</link>)</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Visual Studio 的“输出”窗口有时无法显示进度。此问题已修复</li>
       <li styleclass="List1">针对 SDK 项目自动添加的程序集，现在在属性窗口中显示更多属性。</li>
       <li styleclass="List1">提高了 SDK 项目的加载速度。</li>
@@ -176,27 +183,27 @@
     </list>
     <para styleclass="Heading2">调试器</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">工作区窗口现在还会显示索引信息和表结构</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了调试器无法正确显示 Usuals 中的符号值的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1804" target="_blank">#1804</link>)</li>
       <li styleclass="List1">修复了调试器中 USUAL 值格式显示不正确的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1809" target="_blank">#1809</link>)</li>
       <li styleclass="List1">修复了调试器中断点条件和监视表达式无法正常工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1810" target="_blank">#1810</link>)</li>
     </list>
     <para styleclass="Heading2">VOSDK</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">名为 FIELDGET 和 FIELDPUT（大写）的方法现已更名为 FieldGet 和 FieldPut，以与其他方法的大小写保持一致。</li>
     </list>
     <para styleclass="Heading2">类型化 VOSDK</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">菜单和工具栏类现在在内部使用 Windows Forms 中的 MenuStrip 和 ToolStrip 类，因为以前使用的类在较新版本的 .Net 中已不再受支持。</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Typed AnyCPU GUI 类不再使用 MainMenu 和 ToolBar 类，而是使用 MenuStrip 和 ToolStrip 类。 </li>
     </list>
   </body>

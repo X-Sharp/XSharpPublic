@@ -43,6 +43,27 @@ INTERFACE XSharp.RDD.IRawData
     PROPERTY ReturnRawData AS LOGIC GET SET
 END INTERFACE
 
+/// <summary>
+/// Implemented by RDD drivers that support VFP DBC backlinks.
+/// Used by <c>DbcManager.AddTable</c> to inspect and update the 262-byte
+/// backlink slot without requiring a compile-time reference to XSharp.Rdd.
+/// </summary>
+INTERFACE XSharp.RDD.IVfpLinked
+    /// <summary>Gets or sets the fully-qualified path to the DBC this table is linked to,
+    /// or an empty string when the table is free.</summary>
+    PROPERTY DbcName AS STRING GET SET
+
+    /// <summary>Byte offset in the DBF file where the 262-byte backlink begins.</summary>
+    PROPERTY DbcPosition AS INT GET
+
+    /// <summary>
+    /// Writes <paramref name="cPath"/> into the 262-byte backlink area of the DBF header.
+    /// Pass an empty string to zero the slot (convert to free table).
+    /// </summary>
+    METHOD WriteBacklink(cPath AS STRING) AS VOID
+
+END INTERFACE
+
 /// <include file="XSharp.Core.Docs.xml" path="doc/IBlobData/*" />
 INTERFACE XSharp.RDD.IBlobData
     /// <include file="XSharp.Core.Docs.xml" path="doc/IBlobData.Pointer/*" />

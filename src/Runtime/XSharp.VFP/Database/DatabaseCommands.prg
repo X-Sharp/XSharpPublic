@@ -112,3 +112,49 @@ FUNCTION __VFPCloseTables( lAll AS LOGIC ) AS VOID
 
     // VFP always selects work area 1 after CLOSE TABLES [ALL].
     DbSelectArea( 1 )
+
+/// <summary>
+/// Runtime implementation of VFP <c>ADD TABLE TableName [NAME LongTableName]</c>.
+/// </summary>
+/// <remarks>
+/// Links an existing free .DBF file to the currently active database (DBC).
+/// The DBC must have been opened and set active via <c>OPEN DATABASE</c> /
+/// <c>SET DATABASE TO</c> before calling this function.
+/// </remarks>
+/// <param name="cFileName">
+/// Physical path to the .DBF file.  The <c>.DBF</c> extension is added when omitted.
+/// The file must exist and must be a free table (empty backlink slot).
+/// </param>
+/// <param name="cLongName">
+/// Logical name stored in the DBC OBJECTNAME field (up to 128 chars).
+/// When empty, the filename without extension is used.
+/// </param>
+/// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+FUNCTION __VFPAddTable( cFileName AS STRING, cLongName AS STRING ) AS LOGIC
+    RETURN DbcManager.AddTable( cFileName, cLongName )
+
+/// <summary>
+/// Runtime implementation of VFP <c>REMOVE TABLE TableName [DELETE] [RECYCLE]</c>.
+/// </summary>
+/// <param name="cName">Logical name of the table in the active DBC.</param>
+/// <param name="lDelete">
+/// <c>.T.</c> to delete the .DBF file (and companions) from disk after unlinking.
+/// </param>
+/// <param name="lRecycle">
+/// <c>.T.</c> to move the file to the Recycle Bin instead of deleting.
+/// (Currently behaves the same as <paramref name="lDelete"/>.)
+/// </param>
+/// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+FUNCTION __VFPRemoveTable( cName AS STRING, lDelete AS LOGIC, lRecycle AS LOGIC ) AS LOGIC
+    RETURN DbcManager.RemoveTable( cName, lDelete, lRecycle )
+
+/// <summary>
+/// Runtime implementation of VFP <c>RENAME TABLE OldName TO NewName</c>.
+/// Changes the logical name of the table inside the DBC.
+/// The physical .DBF file is not renamed.
+/// </summary>
+/// <param name="cOldName">Current logical name of the table.</param>
+/// <param name="cNewName">New logical name to assign.</param>
+/// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+FUNCTION __VFPRenameTable( cOldName AS STRING, cNewName AS STRING ) AS LOGIC
+    RETURN DbcManager.RenameTable( cOldName, cNewName )

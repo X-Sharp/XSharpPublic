@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         STATIC PRIVATE _databases               AS List<DbcDatabase>
         STATIC PRIVATE PROPERTY DbcDataSession  AS DataSession AUTO
-        STATIC INTERNAL PROPERTY ActiveDatabase  AS DbcDatabase AUTO
+        STATIC PUBLIC PROPERTY ActiveDatabase  AS DbcDatabase AUTO GET PRIVATE SET
 
         STATIC PROPERTY Databases AS IList<DbcDatabase>  GET _databases
 

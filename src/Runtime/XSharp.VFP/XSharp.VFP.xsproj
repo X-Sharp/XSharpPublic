@@ -60,6 +60,7 @@
     <Compile Include="LanguageCoreWrappers.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Database\DbFunctions.prg" />
+    <Compile Include="Database\DatabaseCommands.prg" />
     <Compile Include="DebugFunctions.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />

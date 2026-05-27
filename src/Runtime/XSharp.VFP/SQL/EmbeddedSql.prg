@@ -10,6 +10,7 @@ using XSharp.RDD
 using XSharp.RDD.Support
 using System.IO
 using System.Linq
+using System.Collections.Generic
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
@@ -125,9 +126,15 @@ STATIC CLASS FoxEmbeddedSQL
         if oTable != NULL
             local aStruct as ARRAY
             aStruct := {}
+            // Build long-name list for DBC registration alongside the struct array
+            VAR aLongNames := List<STRING>{}
             foreach col as FoxColumnContext in oTable:Columns
-                var aField := {col:Name, ((Char)col:FieldType):ToString(), col:Length, col:Decimals, col:Name, col:Flags}
+                // Position 5 = DBS_ALIAS: prefer the long field name from the SQL parser;
+                // fall back to the (possibly truncated) physical name when no alias set.
+                VAR cFieldAlias := IIF(String.IsNullOrEmpty(col:Alias), col:Name, col:Alias)
+                var aField := {col:Name, ((Char)col:FieldType):ToString(), col:Length, col:Decimals, cFieldAlias, col:Flags}
                 AAdd(aStruct, aField)
+                aLongNames:Add(cFieldAlias)
             next
 
             VAR cTable := oTable:Name
@@ -141,6 +148,18 @@ STATIC CLASS FoxEmbeddedSQL
             endif
             DbCreate(cTable, aStruct, "DBFVFP", TRUE, cAlias)
             DbCloseArea(cAlias)
+
+            // Register the newly created table in the active DBC when it is a persistent
+            // (non-cursor, non-FREE) table and a database is currently active.
+            IF !oTable:IsCursor .AND. !oTable:Free
+                VAR oActiveDbc := XSharp.RDD.DbcManager.ActiveDatabase
+                IF oActiveDbc != NULL_OBJECT
+                    VAR cTableLong := IIF(String.IsNullOrEmpty(oTable:LongName), ;
+                        Path.GetFileNameWithoutExtension(cTable), oTable:LongName)
+                    XSharp.RDD.DbcManager.AddTable(cTable, cTableLong, aLongNames)
+                ENDIF
+            ENDIF
+
             DbUseArea(TRUE, "DBFVFP", cTable, cAlias, FALSE, FALSE)
 
             FOR var nI := 1 to oTable:Columns:Count

@@ -122,6 +122,8 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>
         /// Implements VFP <c>ADD TABLE TableName [NAME LongTableName]</c>.
         /// Links an existing free .DBF file to the currently active database.
+        /// Reads physical field names from the DBF, then delegates to the
+        /// overload that accepts a pre-built field-name list.
         /// </summary>
         /// <param name="cFileName">
         /// Physical path to the .DBF file (extension optional).  The file must exist and
@@ -134,6 +136,55 @@ BEGIN NAMESPACE XSharp.RDD
         /// <returns><c>.T.</c> on success; <c>.F.</c> on failure (error stored in
         /// <c>RuntimeState.LastRddError</c>).</returns>
         STATIC METHOD AddTable(cFileName AS STRING, cLongName AS STRING) AS LOGIC
+            // Resolve extension + full path before reading field names
+            IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cFileName))
+                cFileName := System.IO.Path.ChangeExtension(cFileName, ".DBF")
+            ENDIF
+            cFileName := System.IO.Path.GetFullPath(cFileName)
+            IF ! System.IO.File.Exists(cFileName)
+                Fail(Error{"ADD TABLE: file not found: " + cFileName})
+                RETURN FALSE
+            ENDIF
+
+            // Open the DBF briefly to read physical field names, then close it.
+            // The full overload below will open it again for the actual DBC work.
+            LOCAL aFieldNames := List<STRING>{} AS List<STRING>
+            IF CoreDb.UseArea(TRUE, "DBFVFP", cFileName, "_RDTBL_", FALSE, FALSE)
+                LOCAL oRddTmp := NULL AS OBJECT
+                IF CoreDb.Info(DBI_RDD_OBJECT, REF oRddTmp) .AND. oRddTmp IS IRdd VAR oRdd
+                    FOR LOCAL nFld := 1 TO oRdd:FieldCount
+                        aFieldNames:Add(oRdd:FieldName(nFld))
+                    NEXT
+                ENDIF
+                CoreDb.CloseArea()
+            ENDIF
+
+            RETURN AddTable(cFileName, cLongName, aFieldNames)
+
+        /// <summary>
+        /// Implements VFP <c>ADD TABLE</c> / <c>CREATE TABLE</c> DBC registration,
+        /// accepting a pre-built list of long field names supplied by the caller.
+        /// </summary>
+        /// <remarks>
+        /// This overload is used by <c>CREATE TABLE</c> so that the long field names
+        /// from the SQL parser (which may exceed 10 characters) are stored in the DBC
+        /// without re-opening the newly created .DBF.
+        /// </remarks>
+        /// <param name="cFileName">
+        /// Physical path to the .DBF file (extension optional).  The file must exist and
+        /// must be a free table (empty backlink).
+        /// </param>
+        /// <param name="cLongName">
+        /// Logical (long) table name stored in the DBC OBJECTNAME field.
+        /// When empty, the filename without extension is used.
+        /// </param>
+        /// <param name="aLongFieldNames">
+        /// Long field names in physical column order.  For <c>ADD TABLE</c> these are the
+        /// physical DBF names (≤ 10 chars); for <c>CREATE TABLE</c> they are the parser's
+        /// long names (may exceed 10 chars).
+        /// </param>
+        /// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+        STATIC METHOD AddTable(cFileName AS STRING, cLongName AS STRING, aLongFieldNames AS List<STRING>) AS LOGIC
             // ── Validate pre-conditions ────────────────────────────────────────
             LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
             IF oActiveDbc == NULL_OBJECT
@@ -154,7 +205,7 @@ BEGIN NAMESPACE XSharp.RDD
                 cLongName := System.IO.Path.GetFileNameWithoutExtension(cFileName)
             ENDIF
 
-            // ── Open the DBF in a temporary work area in the user data session ──
+            // ── Open the DBF in a temporary work area ─────────────────────────
             // IVfpLinked (implemented by DBFVFP) gives us typed access to
             // DbcName, DbcPosition, and WriteBacklink without a compile-time
             // reference to XSharp.Rdd.
@@ -168,7 +219,6 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             nArea := RuntimeState.Workareas:CurrentWorkarea:Area
 
-            // Retrieve the RDD object via IVfpLinked
             LOCAL oRddVal := NULL AS OBJECT
             IF CoreDb.Info(DBI_RDD_OBJECT, REF oRddVal) .AND. oRddVal IS IVfpLinked VAR vfp
                 oVfp := vfp
@@ -186,20 +236,36 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN FALSE
             ENDIF
 
-            // ── Collect field names via IRdd (physical DBF names).
-            //    These become the DBC OBJECTNAME values for Field records.
-            LOCAL aFieldNames := List<STRING>{} AS List<STRING>
-            IF oVfp IS IRdd VAR oRdd
-                LOCAL nFldCount := oRdd:FieldCount AS LONG
-                FOR LOCAL nFld := 1 TO nFldCount
-                    aFieldNames:Add(oRdd:FieldName(nFld))
-                NEXT
+            // ── Register Table + Field records in the DBC, then write the backlink
+            lOk := _RegisterTableInDbc(oActiveDbc, cLongName, aLongFieldNames)
+
+            IF lOk
+                // Back in the user session with area = the DBF.
+                CoreDb.Select(nArea, OUT NULL)
+                LOCAL cRelative AS STRING
+                cRelative := _MakeRelativePath(cFileName, oActiveDbc:FileName)
+                oVfp:WriteBacklink(cRelative)
+                // Flush via IRdd — WriteBacklink wrote directly to the stream;
+                // this ensures any pending record buffer is also committed.
+                IF oVfp IS IRdd VAR oRddFlush
+                    oRddFlush:Flush()
+                ENDIF
+                // Reload the DBC in-memory cache so the new table is immediately visible
+                oActiveDbc:Reload()
             ENDIF
 
-            // ── Register Table + Field records in the DBC ──────────────────────
-            // DoForDatabase switches to DbcDataSession; on return we are back in
-            // the user session with the DBF area still selected.
-            lOk := DbcManager.DoForDatabase({ =>
+            CoreDb.Select(nArea, OUT NULL)
+            CoreDb.CloseArea()
+            RETURN lOk
+
+        /// <summary>
+        /// Core DBC registration logic: appends a Table record and one Field record per
+        /// entry in <paramref name="aFieldNames"/> to the open DBC work area and commits.
+        /// Called from both <c>AddTable</c> overloads so the write logic is not duplicated.
+        /// </summary>
+        PRIVATE STATIC METHOD _RegisterTableInDbc(oActiveDbc AS DbcDatabase, ;
+                cLongName AS STRING, aFieldNames AS List<STRING>) AS LOGIC
+            RETURN DbcManager.DoForDatabase({ =>
                 LOCAL nOld AS DWORD
                 CoreDb.Select(oActiveDbc:Area, OUT nOld)
 
@@ -229,27 +295,6 @@ BEGIN NAMESPACE XSharp.RDD
                 CoreDb.Select(nOld, OUT NULL)
                 RETURN TRUE
                 })
-
-            IF lOk
-                // ── Write the backlink into the DBF header ─────────────────────
-                // Back in the user session with area = the DBF.
-                CoreDb.Select(nArea, OUT NULL)
-                LOCAL cRelative AS STRING
-                cRelative := _MakeRelativePath(cFileName, oActiveDbc:FileName)
-                oVfp:WriteBacklink(cRelative)
-                // Flush via IRdd — WriteBacklink wrote directly to the stream;
-                // this ensures any pending record buffer is also committed.
-                IF oVfp IS IRdd VAR oRddFlush
-                    oRddFlush:Flush()
-                ENDIF
-                // Reload the DBC in-memory cache so the new table is immediately visible
-                oActiveDbc:Reload()
-            ENDIF
-
-            // Always close the temporary work area
-            CoreDb.Select(nArea, OUT NULL)
-            CoreDb.CloseArea()
-            RETURN lOk
 
         /// <summary>
         /// Compute a relative path from <paramref name="cFromFile"/> to <paramref name="cToFile"/>.

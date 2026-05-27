@@ -63,7 +63,7 @@ namespace XSharp.LanguageService
             m_documentation = doc;
             m_parameters = parameters;
             //m_subjectBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
-            if (content.IndexOf("SELF",StringComparison.OrdinalIgnoreCase) >= 0)
+            if (content.IndexOf("SELF",StringComparison.OrdinalIgnoreCase) > 0)
             {
                 var pos = content.IndexOf("(");
                 var pos2 = content.IndexOf(",",pos);

@@ -141,7 +141,6 @@ namespace XSharp.LanguageService
                 int tokenType = XSharpLexer.UNRECOGNIZED;
 
                 var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General).FirstOrDefault();
-                var isInstance = true;
                 var memberName = "";
                 if (symbol is XSourceUndeclaredVariableSymbol)
                 {
@@ -151,12 +150,23 @@ namespace XSharp.LanguageService
                 {
                     if (symbol is IXTypeSymbol xtype )
                     {
-                        isInstance = false;
+                        var prj = location.Project;
+                        if (typedChar == ':')
+                        {
+                            state = CompletionState.InstanceMembers;
+                        }
+                        else if (typedChar == '.')
+                        {
+                            state = CompletionState.StaticMembers;
+                            if (prj != null && prj.ParseOptions.AllowDotForInstanceMembers)
+                            {
+                                state |= CompletionState.InstanceMembers;
+                            }
+                        }
                         type = xtype;
                     }
                     else if (symbol.Kind == Kind.Namespace)
                     {
-                        isInstance = false;
                         if (! state.HasFlag(CompletionState.Namespaces))
                         {
                             state = CompletionState.Namespaces | CompletionState.Types;
@@ -164,7 +174,6 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        isInstance = true;
                         if (showInstanceMembers)
                         {
                             state |= CompletionState.InstanceMembers;
@@ -319,7 +328,7 @@ namespace XSharp.LanguageService
                             filterText = "";
                     }
                 }
-                if (showInstanceMembers && isInstance)
+                if (showInstanceMembers)
                 {
                     // Member call
                     if (type != null)

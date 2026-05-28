@@ -566,7 +566,7 @@
 // Implemented in XSharp.VFP\Database\DatabaseCommands.prg
 
 #command CLOSE DATABASES [<all:ALL>]    => __VFPCloseDatabases( <.all.> )
-#command CLOSE TABLES [<all:ALL>    	=> __VFPCloseTables( <.all.> )
+#command CLOSE TABLES [<all:ALL>]    	=> __VFPCloseTables( <.all.> )
 
 // ADD TABLE TableName [NAME LongTableName]
 // Links an existing free .DBF to the currently active database.

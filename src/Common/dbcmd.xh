@@ -432,29 +432,31 @@
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command SUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                          ;
+#command SUM  <x1> [, <xn>]                                             ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
+         [<REST:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
+         [all]                                                          ;
+         TO  <v1> [, <vN>]                                              ;
                                                                         ;
-      => <v1> := [ <vn> := ] 0                                          ;
+      => <v1> := [ <vN> := ] 0                                          ;
        ; DbEval(                                                        ;
-               {|| <v1> += <x1> [, <vn> += <xn> ]},                     ;
+               {|| <v1> += <x1> [, <vN> += <xn> ]},                     ;
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command AVERAGE [<x1> [, <xn>]  TO  <v1> [, <vn>]]                     ;
+#command AVERAGE [<x1> [, <xn>]                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
+         [all]                                                          ;
+         TO  <v1> [, <vN>]]                                             ;
                                                                         ;
       => M->__Avg := <v1> := [ <vn> := ] 0                              ;
                                                                         ;

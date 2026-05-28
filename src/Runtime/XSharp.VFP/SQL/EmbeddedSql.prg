@@ -173,7 +173,7 @@ STATIC CLASS FoxEmbeddedSQL
 
             // Use the resolved absolute path and shared mode so the open succeeds
             // even when an exclusively-locked DBC is active in DbcDataSession.
-            LOCAL lDbOpen := DbUseArea(TRUE, "DBFVFP", cFullPath, cAlias, TRUE, FALSE) AS LOGIC
+            DbUseArea(TRUE, "DBFVFP", cFullPath, cAlias, TRUE, FALSE)
             FOR var nI := 1 to oTable:Columns:Count
                 var oCol := oTable:Columns[nI-1]
                 DbFieldInfo(DBS_CAPTION, nI, oCol:Caption)

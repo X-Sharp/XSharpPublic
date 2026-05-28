@@ -489,6 +489,9 @@
 #command SET MEMOBLOCKSIZE TO                => RDDInfo(_SET_MEMOBLOCKSIZE, 512)
 #command SET OPTIMIZE <x:ON,OFF,&>           => RDDInfo(_SET_OPTIMIZE, <(x)>)
 
+#command COPY MEMO <field> TO <(file)> <add:ADDITIVE> [AS <nCP>]  ;
+        => DbCopyMemo( <"field">, <(file)>, <ADD>[, <nCP>] )
+
 
 #endif // DBCMD_XH
 

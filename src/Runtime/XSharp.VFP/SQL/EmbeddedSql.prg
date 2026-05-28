@@ -147,6 +147,17 @@ STATIC CLASS FoxEmbeddedSQL
                 DbCloseArea(cAlias)
             endif
             DbCreate(cTable, aStruct, "DBFVFP", TRUE, cAlias)
+            // Compute the full absolute path from the SQL-parsed name and SET DEFAULT.
+            // We cannot rely on FPathName() here because subsequent internal opens
+            // (AddTable, Reload) shift the current work area before DbUseArea is called.
+            LOCAL cFullPath := cTable AS STRING
+            IF !Path.IsPathRooted(cFullPath)
+                LOCAL getDefault := SetDefault() AS STRING
+                cFullPath := Path.Combine(getDefault , cFullPath)
+            ENDIF
+            IF String.IsNullOrEmpty(Path.GetExtension(cFullPath))
+                cFullPath := cFullPath + ".DBF"
+            ENDIF
             DbCloseArea(cAlias)
 
             // Register the newly created table in the active DBC when it is a persistent
@@ -155,13 +166,14 @@ STATIC CLASS FoxEmbeddedSQL
                 VAR oActiveDbc := XSharp.RDD.DbcManager.ActiveDatabase
                 IF oActiveDbc != NULL_OBJECT
                     VAR cTableLong := IIF(String.IsNullOrEmpty(oTable:LongName), ;
-                        Path.GetFileNameWithoutExtension(cTable), oTable:LongName)
-                    XSharp.RDD.DbcManager.AddTable(cTable, cTableLong, aLongNames)
+                        Path.GetFileNameWithoutExtension(cFullPath), oTable:LongName)
+                    XSharp.RDD.DbcManager.AddTable(cFullPath, cTableLong, aLongNames)
                 ENDIF
             ENDIF
 
-            DbUseArea(TRUE, "DBFVFP", cTable, cAlias, FALSE, FALSE)
-
+            // Use the resolved absolute path and shared mode so the open succeeds
+            // even when an exclusively-locked DBC is active in DbcDataSession.
+            LOCAL lDbOpen := DbUseArea(TRUE, "DBFVFP", cFullPath, cAlias, TRUE, FALSE) AS LOGIC
             FOR var nI := 1 to oTable:Columns:Count
                 var oCol := oTable:Columns[nI-1]
                 DbFieldInfo(DBS_CAPTION, nI, oCol:Caption)

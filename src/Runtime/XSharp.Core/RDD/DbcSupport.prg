@@ -1020,11 +1020,13 @@ BEGIN NAMESPACE XSharp.RDD
                         IF iValue != SELF:ObjectID
                             EXIT
                         ENDIF
-                        var oChild := SELF:ReadChild()
-                        IF oChild != NULL_OBJECT
-                            oChild:Read()
-                            oChild:Parent := SELF
-                            aChildren:Add(oChild)
+                        IF ! CoreDb.Deleted()
+                            var oChild := SELF:ReadChild()
+                            IF oChild != NULL_OBJECT
+                                oChild:Read()
+                                oChild:Parent := SELF
+                                aChildren:Add(oChild)
+                            ENDIF
                         ENDIF
                         CoreDb.Skip(1)
                     ENDDO

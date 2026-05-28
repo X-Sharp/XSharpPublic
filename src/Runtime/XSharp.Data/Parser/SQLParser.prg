@@ -275,7 +275,12 @@ PARTIAL CLASS SQLParser
         ENDIF
         table:Name := tableName
         if lTable .and. SELF:Expect("NAME")
-            table:LongName := SELF:ConsumeAndGet():Text
+            LOCAL cLongName := SELF:ConsumeAndGet():Text AS STRING
+            IF (cLongName:StartsWith('"') .AND. cLongName:EndsWith('"')) .OR. ;
+               (cLongName:StartsWith("'") .AND. cLongName:EndsWith("'"))
+                cLongName := cLongName:Substring(1, cLongName:Length - 2)
+            ENDIF
+            table:LongName := cLongName
         ENDIF
         IF lTable .and. SELF:Expect("FREE")
             table:Free := TRUE

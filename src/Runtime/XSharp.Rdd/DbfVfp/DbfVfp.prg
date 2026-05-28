@@ -276,8 +276,14 @@ CLASS DBFVFP INHERIT DBFCDX IMPLEMENTS IVfpLinked
             VAR cPath := System.IO.Path.GetDirectoryName(SELF:FileName)
             cDbcFile := System.IO.Path.Combine(cPath, cDbcFile)
         ENDIF
-        Dbc.Open(cDbcFile, TRUE, TRUE, FALSE)
+        // Check if the DBC is already open in DbcManager before trying to open the file.
+        // Opening it again would conflict with an exclusively-locked DBC in DbcDataSession
+        // (the structural .DCX is opened with FileShare.None and can't be reopened).
         VAR oDb := Dbc.FindDatabase(cDbcFile)
+        IF oDb == NULL
+            Dbc.Open(cDbcFile, TRUE, TRUE, FALSE)
+            oDb := Dbc.FindDatabase(cDbcFile)
+        ENDIF
         IF oDb != NULL
             var base := System.IO.Path.GetFileNameWithoutExtension(SELF:FileName)
             var oTable := oDb:FindTable(System.IO.Path.GetFileName(base))
@@ -304,6 +310,10 @@ CLASS DBFVFP INHERIT DBFCDX IMPLEMENTS IVfpLinked
                 ENDIF
             ENDIF
         ENDIF
+        // Clear any error set during DBC lookup (failed Dbc.Open or LoadChildren).
+        // We must not let it bleed into the OpenProductionIndex error-check in
+        // DBFVFP.Open / DBFCDX.Open — reading long field names is best-effort.
+        RuntimeState.LastRddError := NULL
 
 
     /// <inheritdoc />

@@ -2540,7 +2540,15 @@ namespace XSharp.MacroCompiler.Preprocessor
                 var rule = _transRules.FindMatchingRule(temp, out var matchInfo);
                 if (rule != null)
                 {
+                    var prevTemp = temp;
                     temp = doReplace(temp, rule, matchInfo);
+                    if (isResultUnchanged(prevTemp, temp))
+                    {
+                        // the replacement did not change the tokens, so stop to prevent an endless loop
+                        result.AddRange(temp);
+                        temp.Clear();
+                        break;
+                    }
                     if (usedRules.HasRecursion(rule, temp))
                     {
                         // duplicate, so exit now
@@ -2606,7 +2614,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
                     break;
                 }
+                var prevResult = result;
                 result = doReplace(result, rule, matchInfo);
+                if (isResultUnchanged(prevResult, result))
+                {
+                    // the replacement did not change the tokens, so stop to prevent an endless loop
+                    break;
+                }
                 if (usedRules.HasRecursion(rule, result))
                 {
                     // duplicate so exit now
@@ -2715,6 +2729,20 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
 #endif
             return result;
+        }
+
+        private static bool isResultUnchanged(IList<XSharpToken> input, IList<XSharpToken> output)
+        {
+            if (input.Count != output.Count)
+                return false;
+            for (int i = 0; i < input.Count; i++)
+            {
+                if (!string.Equals(input[i].Text, output[i].Text, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

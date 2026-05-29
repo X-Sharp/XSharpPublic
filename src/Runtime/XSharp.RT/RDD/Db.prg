@@ -1255,3 +1255,36 @@ FUNCTION DbAutoLockArea(area AS STRING) AS USUAL STRICT
 FUNCTION DbAutoUnLockArea(area AS STRING) AS USUAL STRICT
     (area)->(DbAutoUnLock())
     RETURN NIL
+
+// REPLACE ... IN: switch to the target work area, evaluate, restore.
+FUNCTION __VfpReplaceIn(uArea AS USUAL, cbAction AS USUAL, cbFor AS USUAL, ;
+        cbWhile AS USUAL, nNext AS USUAL, nRec AS USUAL,                    ;
+        lRest AS LOGIC, lNoOpt AS LOGIC) AS LOGIC
+    LOCAL nOld := VoDbGetSelect() AS DWORD
+    IF IsString(uArea)
+        DbSelectArea((STRING) uArea)
+    ELSEIF IsNumeric(uArea)
+        DbSelectArea((DWORD)(LONG) uArea)
+    ENDIF
+    LOCAL lOk := DbEval(cbAction, cbFor, cbWhile, nNext, nRec, lRest, lNoOpt) AS LOGIC
+    DbSelectArea(nOld)
+    RETURN lOk
+
+// REPLACE ... ADDITIVE: for memo fields, append instead of overwrite.
+FUNCTION __FieldSetAdd(cField AS STRING, uValue AS USUAL, lAdditive AS LOGIC) AS USUAL
+    LOCAL nPos := FieldPos(cField) AS DWORD
+    IF nPos == 0
+        RETURN NIL
+    ENDIF
+    IF lAdditive
+        // ADDITIVE is meaningful only for memo fields (type 'M').
+        // For any other field type the flag is silently ignored per VFP spec.
+        LOCAL cType := (STRING) DbFieldInfo(DBS_TYPE, nPos) AS STRING
+        IF cType == "M"
+            LOCAL uCurrent := FieldGet(nPos) AS USUAL
+            IF IsString(uCurrent) .AND. IsString(uValue)
+                RETURN FieldPut(nPos, (STRING) uCurrent + (STRING) uValue)
+            ENDIF
+        ENDIF
+    ENDIF
+    RETURN __FieldSet(cField, uValue)

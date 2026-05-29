@@ -432,29 +432,31 @@
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command SUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                          ;
+#command SUM  <x1> [, <xn>]                                             ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
+         [<REST:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
+         [all]                                                          ;
+         TO  <v1> [, <vN>]                                              ;
                                                                         ;
-      => <v1> := [ <vn> := ] 0                                          ;
+      => <v1> := [ <vN> := ] 0                                          ;
        ; DbEval(                                                        ;
-               {|| <v1> += <x1> [, <vn> += <xn> ]},                     ;
+               {|| <v1> += <x1> [, <vN> += <xn> ]},                     ;
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command AVERAGE [<x1> [, <xn>]  TO  <v1> [, <vn>]]                     ;
+#command AVERAGE [<x1> [, <xn>]                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
+         [all]                                                          ;
+         TO  <v1> [, <vN>]]                                             ;
                                                                         ;
       => M->__Avg := <v1> := [ <vn> := ] 0                              ;
                                                                         ;
@@ -487,6 +489,34 @@
 #command SET MEMOBLOCKSIZE TO                => RDDInfo(_SET_MEMOBLOCKSIZE, 512)
 #command SET OPTIMIZE <x:ON,OFF,&>           => RDDInfo(_SET_OPTIMIZE, <(x)>)
 
+#command COPY MEMO <field> TO <(file)> <add:ADDITIVE> [AS <nCP>]  ;
+        => DbCopyMemo( <"field">, <(file)>, <ADD>[, <nCP>] )
+
+// REPLACE ... [ADDITIVE] — without IN clause
+#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
+                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] [<noopt:NOOPTIMIZE>] [all]                           ;
+        => DbEval(                                                             ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
+                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             )
+
+// REPLACE ... [ADDITIVE] IN workarea — defined LAST, tried FIRST
+#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
+                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] IN <(wa)> [<noopt:NOOPTIMIZE>] [all]                ;
+        => __VfpReplaceIn( <(wa)>,                                            ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
+                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             )
 
 #endif // DBCMD_XH
 

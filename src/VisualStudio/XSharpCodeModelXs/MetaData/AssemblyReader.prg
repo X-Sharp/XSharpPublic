@@ -47,24 +47,24 @@ INTERNAL CLASS AssemblyReader
          NEXT
          FOREACH VAR att IN reader:CustomAttributes
             VAR type := att:AttributeType
-    		SWITCH type:ToString()
+            SWITCH type:ToString()
             CASE KnownTypes.XSharpClassLibrary
                if att:ConstructorArguments:Count >= 2
                   var arg1 := att:ConstructorArguments[0]:Value:ToString()
                   var arg2 := att:ConstructorArguments[1]:Value:ToString()
-			      assembly:GlobalClassName := arg1
-				  IF ! String.IsNullOrEmpty(arg2)
-					  assembly:ImplicitNamespaces:AddUnique(arg2)
+                  assembly:GlobalClassName := arg1
+                  IF ! String.IsNullOrEmpty(arg2)
+                      assembly:ImplicitNamespaces:AddUnique(arg2)
                   ENDIF
                   assembly:IsXSharp := TRUE
                ENDIF
-			CASE KnownTypes.XSharpImplicitNS
-			    IF att:ConstructorArguments:Count >= 1
+            CASE KnownTypes.XSharpImplicitNS
+                IF att:ConstructorArguments:Count >= 1
                     VAR ns := att:ConstructorArguments[0]:Value:ToString()
-				    assembly:ImplicitNamespaces:AddUnique(ns)
+                    assembly:ImplicitNamespaces:AddUnique(ns)
                     assembly:IsXSharp := TRUE
-			    ENDIF
-   			END SWITCH
+                ENDIF
+            END SWITCH
          NEXT
          foreach var md in _extensionMethods
             assembly:ExtensionMethods:Add( XPEMethodSymbol{md, assembly })
@@ -151,8 +151,10 @@ INTERNAL CLASS AssemblyReader
    PRIVATE CLASS AssemblyResolver IMPLEMENTS IAssemblyResolver, IDisposable
       PRIVATE INITONLY _directories := HashSet<string>{StringComparer.OrdinalIgnoreCase} AS HashSet<string>
 
-      PUBLIC METHOD AddSearchDirectory(directory AS string ) AS void
-         SELF:_directories:Add(directory)
+    PUBLIC METHOD AddSearchDirectory(directory AS string ) AS void
+        if ! self:_directories:Contains(directory)
+            SELF:_directories:Add(directory)
+        endif
 
       PUBLIC METHOD Resolve(name AS AssemblyNameReference ) AS AssemblyDefinition
          RETURN SELF:Resolve(name, ReaderParameters{})
@@ -164,7 +166,19 @@ INTERNAL CLASS AssemblyReader
          IF assembly != null
             RETURN assembly
          ENDIF
-         THROW AssemblyResolutionException{name}
+         // Try to use System.Reflection to find the assembly in the GAC or in the already loaded assemblies
+            TRY
+                var refasm := System.Reflection.Assembly.ReflectionOnlyLoad(name:ToString())
+                if (refasm != null)
+                    var loc := refasm:Location
+                    if File.Exists(loc)
+                        return SELF:GetAssembly(loc, parameters)
+                    endif
+                endif
+            CATCH
+                NOP
+        END TRY
+        THROW AssemblyResolutionException{name}
 
       PUBLIC METHOD Dispose() AS void
          // Does nothing but is required

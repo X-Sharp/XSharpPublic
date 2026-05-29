@@ -988,4 +988,37 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
     RETURN (lRetCode)
 
 
-
+  /// <summary>
+  /// Runtime implementation of VFP <c>COPY MEMO FieldName TO FileName [ADDITIVE] [AS nCodePage]</c>.
+  /// Copies the contents of the specified memo field in the current record to a text file.
+  /// </summary>
+  FUNCTION DbCopyMemo(cField AS STRING, cFile AS STRING, lAdditive AS LOGIC, nCodePage AS LONG) AS LOGIC
+      LOCAL nPos := FieldPos(cField) AS DWORD
+      IF nPos == 0
+          RETURN FALSE
+      ENDIF
+      LOCAL uContent := FieldGet(nPos) AS USUAL
+      IF !IsString(uContent)
+          RETURN FALSE
+      ENDIF
+      LOCAL cContent := (STRING) uContent AS STRING
+      LOCAL oEnc AS System.Text.Encoding
+      IF nCodePage == 0
+          oEnc := RuntimeState.WinEncoding
+      ELSE
+          TRY
+              oEnc := System.Text.Encoding.GetEncoding(nCodePage)
+          CATCH
+              oEnc := RuntimeState.WinEncoding
+          END TRY
+      ENDIF
+      TRY
+          BEGIN USING VAR oWriter := System.IO.StreamWriter{ cFile, lAdditive, oEnc }
+                oWriter:Write(cContent)
+          END USING
+      CATCH e AS Exception
+          RuntimeState.LastRddError := e
+          RETURN FALSE
+    END TRY
+    RETURN TRUE
+END FUNCTION

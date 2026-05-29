@@ -27,7 +27,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.7 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.8 AS System.Double
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -255,6 +255,7 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
                 " DROP VIEW IF EXISTS ProjectTypes ;"+;
                 " DROP VIEW IF EXISTS TypeMembers ;"+;
                 " DROP TABLE IF EXISTS Assemblies ;"+;
+                " DROP TABLE IF EXISTS AssembliesPerProject ;"+;
                 " DROP TABLE IF EXISTS CommentTasks ;"+;
                 " DROP TABLE IF EXISTS Db_Version ;"+;
                 " DROP TABLE IF EXISTS ExtensionMethods ;"+;
@@ -383,6 +384,20 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
             cmd:ExecuteNonQuery()
 
 #endregion
+#region Table AssembliesPerProject
+            stmt    := "CREATE TABLE AssembliesPerProject ("
+            stmt    += " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, idProject integer NOT NULL, "
+            stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+            stmt    += " FOREIGN KEY (idProject)  REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX AssembliesPerProject_Pk   ON AssembliesPerProject (Id);"
+            stmt    += "CREATE INDEX AssembliesPerProject_Assembly    ON AssembliesPerProject (idAssembly);"
+            stmt    += "CREATE INDEX AssembliesPerProject_Project     ON AssembliesPerProject (idProject);"
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()
+
+#endregion
+
 #region Table ReferencedTypes
             stmt    := "CREATE TABLE ReferencedTypes ("
             stmt    += " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
@@ -829,6 +844,55 @@ STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
         END TRY
     END LOCK
     CommitWhenNeeded()
+
+    STATIC METHOD SaveProjectAssemblyReferences(oProject as XProject, Assemblies as List<XAssembly>) AS VOID
+        CHECKIFOPEN
+        IF oProject == NULL .or. oProject:Id <= 0
+            Log("Invalid project for saving assembly references")
+            RETURN
+        endif
+        Log(i"Update Assembly References for Project {oProject:Name}")
+        BEGIN LOCK oConn
+            TRY
+                USING VAR cmd := CreateCommand("", oConn)
+                var current := List<Int64>{}
+                cmd:CommandText := "select idAssembly from AssembliesPerProject where idProject = "+oProject:Id:ToString()
+                USING VAR rdr := cmd:ExecuteReader()
+                DO WHILE rdr:Read()
+                    VAR id := rdr:GetInt64(0)
+                    current:Add(id)
+                ENDDO
+                rdr:Close()
+                var sIds := ""
+                var first := TRUE
+                cmd:CommandText := "insert into AssembliesPerProject(idAssembly, idProject) values ($idAssembly, $idProject)"
+                cmd:Parameters:AddWithValue("$idProject",oProject:Id)
+                cmd:Parameters:AddWithValue("$idAssembly",0)
+                FOREACH var asm in Assemblies
+                    IF ! first
+                        sIds += ","
+                    ELSE
+                        first := false
+                    ENDIF
+                    sIds += asm:Id:ToString()
+                    if (! current:Contains(asm:Id))
+                        cmd:Parameters["$idAssembly"].Value := asm:Id
+                        cmd:ExecuteNonQuery()
+                    endif
+                NEXT
+                cmd:CommandText := "delete from AssembliesPerProject where idProject = "+oProject:Id:ToString() + " and idAssembly not in ("+sIds+")"
+                cmd:ExecuteNonQuery()
+                // Remove non referenced assemblies and their types and globals
+                cmd:CommandText := "delete from Assemblies where id not in (select IdAssembly from AssembliesPerProject)"
+                cmd:ExecuteNonQuery()
+            CATCH e as Exception
+                Log("Error updating project assembly references for "+oProject:Name)
+                XSettings.Exception(e)
+            END TRY
+
+        END LOCK
+        CommitWhenNeeded()
+
 #endregion
 
 #region CRUD files
@@ -1518,6 +1582,8 @@ PRIVATE STATIC METHOD _FindFunctionWorker(sName AS STRING, sProjectIds AS STRING
         END TRY
     END LOCK
     RETURN result
+
+
 
 STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
     // search class members in the Types list

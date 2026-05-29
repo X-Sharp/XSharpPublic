@@ -562,6 +562,32 @@
 #command CREATE DATABASE <(db)>                                         => XSharp.RDD.Dbc.Create( <(db)>)
 #command DELETE DATABASE <(db)> [<del:DELETETABLES>] [<rec:RECYCLE>]    => XSharp.RDD.Dbc.Delete( <(db)>, <.del.>, <.rec.>)
 
+// CLOSE DATABASES [ALL] and CLOSE TABLES [ALL]
+// Implemented in XSharp.VFP\Database\DatabaseCommands.prg
+
+#command CLOSE DATABASES [<all:ALL>]    => __VFPCloseDatabases( <.all.> )
+#command CLOSE TABLES [<all:ALL>]    	=> __VFPCloseTables( <.all.> )
+
+// ADD TABLE TableName [NAME LongTableName]
+// Links an existing free .DBF to the currently active database.
+// Implemented in XSharp.VFP\Database\DatabaseCommands.prg
+// The NAME variant is defined last (tried first) to correctly consume the NAME clause.
+#command ADD TABLE <(file)>                  => __VFPAddTable( <(file)>, "")
+#command ADD TABLE <(file)> NAME <(name)>    => __VFPAddTable( <(file)>, <(name)>)
+
+// REMOVE TABLE TableName [DELETE] [RECYCLE]
+// Unlinks a table from the active database; optionally deletes the .DBF file.
+// Implemented in XSharp.VFP\Database\DatabaseCommands.prg
+// Precedence: most-specific forms defined last = tried first.
+#command REMOVE TABLE <(name)>                   => __VFPRemoveTable( <(name)>, .F., .F.)
+#command REMOVE TABLE <(name)> DELETE            => __VFPRemoveTable( <(name)>, .T., .F.)
+#command REMOVE TABLE <(name)> RECYCLE           => __VFPRemoveTable( <(name)>, .F., .T.)
+
+// RENAME TABLE OldName TO NewName
+// Changes the logical name in the DBC; does not rename the physical .DBF.
+// Implemented in XSharp.VFP\Database\DatabaseCommands.prg
+#command RENAME TABLE <(old)> TO <(new)>     => __VFPRenameTable( <(old)>, <(new)>)
+
 // connection commands
 #command CREATE CONNECTION <(conn)> ;
     [DATASOURCE <(Dsn)>]    ;

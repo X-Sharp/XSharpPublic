@@ -175,7 +175,7 @@ PRIVATE STATIC METHOD WalkSource() AS VOID
             IF _projects:Count == 0 .OR. ! _projects:TryDequeue( OUT project)
                 EXIT
             ENDIF
-            IF !project:Loaded
+            IF !project:IsLoaded
                 LOOP
             ENDIF
 
@@ -274,7 +274,7 @@ PRIVATE STATIC METHOD walkOneFile(fileName AS STRING) AS VOID
     IF MustAbort .or. project == NULL
         RETURN
     ENDIF
-    IF project:Loaded .AND. XSolution.IsOpen
+    IF project:IsLoaded .AND. XSolution.IsOpen
         IF ModelWalker.IsSuspended
             RETURN
         ENDIF

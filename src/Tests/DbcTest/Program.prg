@@ -1,29 +1,19 @@
-﻿Using System
-Using System.Collections.Generic
-Using System.Linq
-Using System.Text
+USING System
+USING System.IO
 
-Function Start() As Void Strict
-   LOCAL u AS USUAL
-PRIVATE p
-try
-u := Today()
-p := Today()
+FUNCTION Start() AS VOID STRICT
+    LOCAL cDataPath AS STRING
+    cDataPath := Path.Combine(DataPath(), "DbcTest")
+    IF !System.IO.Directory.Exists(cDataPath)
+        System.IO.Directory.CreateDirectory(cDataPath)
+    ENDIF
+    TestRunner.RunAll(cDataPath)
+    ? "Press any key..."
+    Console.ReadKey()
 
-? GoMonth(u,1) // error XS0121
-? GoMonth(p,1) // error XS0121
-    ? Quarter(u, 1)
-    ? Week(u,1)
-    ? Week(u,2)
-    ? Week(u,3)
-    ? Dmy(u)
-    ? Mdy(u)
-    u := "abc"
-    //? Mdy(u)
-    //? Week(u,3)
-    //? GoMonth(u,1) // error XS0121
-    ? Quarter(u, 1)
-catch e as exception
-    ? e:ToString()
-end try
-    wait
+
+    // Returns the path of the test data folder (same folder as the exe)
+FUNCTION DataPath() AS STRING
+    RETURN System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly():Location)
+END FUNCTION
+

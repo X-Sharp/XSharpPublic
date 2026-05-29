@@ -201,7 +201,7 @@ CLASS XProject
         SELF:_cachedAllNamespaces   := NULL
         SELF:_cachedUsingStatics   := NULL
 
-        SELF:Loaded := TRUE
+        SELF:IsLoaded := TRUE
         SELF:FileWalkCompleted := FALSE
         XSolution.Add(SELF)
         var cFile := XSolution.BuiltInFunctions
@@ -288,21 +288,27 @@ CLASS XProject
         ENDIF
 
     METHOD RemoveAssemblyReference(FileName AS STRING) AS VOID
+        LOCAL removed := FALSE AS LOGIC
         IF ! String.IsNullOrEmpty(FileName)
             SELF:_clearTypeCache()
             BEGIN LOCK _unprocessedAssemblyReferences
                 IF _unprocessedAssemblyReferences:Contains(FileName)
                     SELF:LogReferenceMessage("RemoveAssemblyReference() "+FileName)
                     _unprocessedAssemblyReferences.Remove(FileName)
+                    removed := TRUE
                 ENDIF
             END LOCK
             FOREACH VAR asm IN SELF:_AssemblyReferences:ToArray()
                 IF String.Equals(asm:FileName, FileName, System.StringComparison.OrdinalIgnoreCase)
                     SELF:LogReferenceMessage("RemoveAssemblyReference() "+FileName)
                     SELF:_AssemblyReferences:Remove(asm)
+                    removed := TRUE
                     EXIT
                 ENDIF
             NEXT
+            IF removed
+                SELF:SaveAssemblyReferencesToDatabase()
+            endif
         ENDIF
 
     PRIVATE METHOD LoadReference(cDLL AS STRING) AS VOID
@@ -332,11 +338,18 @@ CLASS XProject
                     ENDIF
                 NEXT
                 SELF:_clearTypeCache()
+                SELF:SaveAssemblyReferencesToDatabase()
             ENDIF
+
+
             XSolution.SetStatusBarText("")
         ENDIF
         RETURN
-
+    PRIVATE METHOD SaveAssemblyReferencesToDatabase() as VOID
+        if _unprocessedAssemblyReferences:Count == 0
+            // Save Assembly-Project References to the Database
+            XDatabase.SaveProjectAssemblyReferences(SELF, SELF:AssemblyReferences)
+        endif
     PROPERTY RefCheckTimeOut as LOGIC
         GET
             var now := DateTime.Now
@@ -1445,7 +1458,7 @@ CLASS XProject
 #endregion
 
     METHOD UnLoad() AS VOID
-        SELF:Loaded := FALSE
+        SELF:IsLoaded := FALSE
         SELF:LogReferenceMessage("UnLoad() "+SELF:FileName)
         FOREACH VAR asm IN SELF:_AssemblyReferences:ToArray()
             asm:RemoveProject(SELF)
@@ -1492,7 +1505,7 @@ CLASS XProject
 
     PRIVATE PROPERTY hasUnprocessedReferences AS LOGIC
         GET
-            IF SELF:Loaded
+            IF SELF:IsLoaded
                 RETURN SELF:_unprocessedAssemblyReferences:Count + ;
                     SELF:_unprocessedProjectReferences:Count + ;
                     SELF:_unprocessedStrangerProjectReferences:Count > 0
@@ -1501,7 +1514,7 @@ CLASS XProject
         END GET
     END PROPERTY
 
-    PROPERTY Loaded AS LOGIC AUTO
+    PROPERTY IsLoaded AS LOGIC AUTO
 
     METHOD Rename(newName AS STRING) AS VOID
         VAR oldName := _name

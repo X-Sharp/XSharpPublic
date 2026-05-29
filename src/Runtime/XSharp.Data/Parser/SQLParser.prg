@@ -275,7 +275,12 @@ PARTIAL CLASS SQLParser
         ENDIF
         table:Name := tableName
         if lTable .and. SELF:Expect("NAME")
-            table:LongName := SELF:ConsumeAndGet():Text
+            LOCAL cLongName := SELF:ConsumeAndGet():Text AS STRING
+            IF (cLongName:StartsWith('"') .AND. cLongName:EndsWith('"')) .OR. ;
+               (cLongName:StartsWith("'") .AND. cLongName:EndsWith("'"))
+                cLongName := cLongName:Substring(1, cLongName:Length - 2)
+            ENDIF
+            table:LongName := cLongName
         ENDIF
         IF lTable .and. SELF:Expect("FREE")
             table:Free := TRUE
@@ -394,8 +399,15 @@ PARTIAL CLASS SQLParser
             SELF:SetError("Expected Column Name", SELF:Lt1 )
             RETURN FALSE
         ENDIF
-        sqlField:Name    := name:Text
+        // Preserve the full identifier as the long name (DBC OBJECTNAME / alias).
+        // The physical DBF field name is limited to 10 characters by the VFP spec.
+        sqlField:Alias   := name:Text
         sqlField:Caption := name:Text
+        IF name:Text:Length > 10
+            sqlField:Name := name:Text:Substring(0, 10)
+        ELSE
+            sqlField:Name := name:Text
+        ENDIF
         IF !SELF:ExpectAndGet(XTokenType.ID, out oType)
             SELF:SetError("Expected Column Type", SELF:Lt1 )
             RETURN FALSE

@@ -29,7 +29,11 @@ namespace XSharp.Project
         protected override async Task InitializeCompletedAsync()
         {
             await base.InitializeCompletedAsync();
-            await VS.Commands.InterceptAsync(CommandName, () => DoCmd());
+            var cmd = await VS.Commands.FindCommandAsync(CommandName);
+            if (cmd != null)
+            {
+                await VS.Commands.InterceptAsync(CommandName, () => DoCmd());
+            }
         }
         protected string projectPath;
         protected async Task<bool> VerifySdkProjectAsync()

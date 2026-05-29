@@ -15,7 +15,7 @@ USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
 /// <include file="XSharp.RDD.Docs.xml" path="doc/DBFVFP/*" />
 [DebuggerDisplay("DBFVFP ({Alias,nq})")];
-CLASS DBFVFP INHERIT DBFCDX
+CLASS DBFVFP INHERIT DBFCDX IMPLEMENTS IVfpLinked
     PRIVATE CONST VFP_BACKLINKSIZE := 262 AS LONG
     PRIVATE oDbcTable       as DbcTable
     PROTECT _NullColumn     AS DbfNullColumn            // Column definition for _NullFlags, used in DBFVFP driver
@@ -26,8 +26,8 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN
     OVERRIDE PROPERTY NullColumn as DbfNullColumn => SELF:_NullColumn
     OVERRIDE PROPERTY Driver         AS STRING GET nameof(DBFVFP)
-    INTERNAL PROPERTY DbcName        AS STRING AUTO
-    INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
+    PUBLIC PROPERTY DbcName          AS STRING AUTO
+    PUBLIC PROPERTY DbcPosition      AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
     INTERNAL PROPERTY DeleteOnClose  AS LOGIC AUTO
 
     OVERRIDE METHOD Close() AS LOGIC
@@ -230,6 +230,45 @@ CLASS DBFVFP INHERIT DBFCDX
         ENDIF
         RETURN
 
+    /// <summary>
+    /// Writes the 262-byte DBC backlink slot in the DBF header with <paramref name="cPath"/>.
+    /// Pass an empty string to zero-out the backlink (free-table mode).
+    /// Implements <see cref="IVfpLinked.WriteBacklink"/>.
+    /// </summary>
+    PUBLIC METHOD WriteBacklink(cPath AS STRING) AS VOID
+        LOCAL nPos   := SELF:DbcPosition AS LONG
+        LOCAL buffer := BYTE[]{VFP_BACKLINKSIZE} AS BYTE[]
+        IF ! String.IsNullOrEmpty(cPath)
+            LOCAL bName := System.Text.Encoding.Default:GetBytes(cPath) AS BYTE[]
+            System.Array.Copy(bName, buffer, Math.Min(bName:Length, VFP_BACKLINKSIZE - 1))
+        ENDIF
+        _oStream:SafeWriteAt(nPos, buffer, buffer:Length)
+        // Update the in-memory DBC path so subsequent reads are consistent
+        IF String.IsNullOrEmpty(cPath)
+            SELF:DbcName := ""
+        ELSE
+            SELF:DbcName := System.IO.Path.GetFullPath( ;
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(SELF:_FileName), cPath))
+        ENDIF
+        RETURN
+
+    /// <summary>
+    /// Returns a relative path from <paramref name="cFromFile"/> to <paramref name="cToFile"/>
+    /// when both files share the same directory; otherwise returns the absolute path of
+    /// <paramref name="cToFile"/>.
+    /// </summary>
+    PUBLIC STATIC METHOD MakeRelativePath(cFromFile AS STRING, cToFile AS STRING) AS STRING
+        LOCAL fromDir := System.IO.Path.GetDirectoryName( ;
+                            System.IO.Path.GetFullPath(cFromFile)) AS STRING
+        LOCAL toFull  := System.IO.Path.GetFullPath(cToFile) AS STRING
+        LOCAL toDir   := System.IO.Path.GetDirectoryName(toFull) AS STRING
+        IF String.Compare(fromDir, toDir, StringComparison.OrdinalIgnoreCase) == 0
+            // Same directory — store just the filename (VFP default behaviour)
+            RETURN System.IO.Path.GetFileName(toFull)
+        ENDIF
+        // Different directories — store full absolute path
+        RETURN toFull
+
     PROTECTED METHOD _ReadDbcFieldNames() AS VOID
         local cDbcFile as STRING
         cDbcFile := SELF:DbcName
@@ -237,8 +276,14 @@ CLASS DBFVFP INHERIT DBFCDX
             VAR cPath := System.IO.Path.GetDirectoryName(SELF:FileName)
             cDbcFile := System.IO.Path.Combine(cPath, cDbcFile)
         ENDIF
-        Dbc.Open(cDbcFile, TRUE, TRUE, FALSE)
+        // Check if the DBC is already open in DbcManager before trying to open the file.
+        // Opening it again would conflict with an exclusively-locked DBC in DbcDataSession
+        // (the structural .DCX is opened with FileShare.None and can't be reopened).
         VAR oDb := Dbc.FindDatabase(cDbcFile)
+        IF oDb == NULL
+            Dbc.Open(cDbcFile, TRUE, TRUE, FALSE)
+            oDb := Dbc.FindDatabase(cDbcFile)
+        ENDIF
         IF oDb != NULL
             var base := System.IO.Path.GetFileNameWithoutExtension(SELF:FileName)
             var oTable := oDb:FindTable(System.IO.Path.GetFileName(base))
@@ -265,6 +310,10 @@ CLASS DBFVFP INHERIT DBFCDX
                 ENDIF
             ENDIF
         ENDIF
+        // Clear any error set during DBC lookup (failed Dbc.Open or LoadChildren).
+        // We must not let it bleed into the OpenProductionIndex error-check in
+        // DBFVFP.Open / DBFCDX.Open — reading long field names is best-effort.
+        RuntimeState.LastRddError := NULL
 
 
     /// <inheritdoc />

@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         STATIC PRIVATE _databases               AS List<DbcDatabase>
         STATIC PRIVATE PROPERTY DbcDataSession  AS DataSession AUTO
-        STATIC INTERNAL PROPERTY ActiveDatabase  AS DbcDatabase AUTO
+        STATIC PUBLIC PROPERTY ActiveDatabase  AS DbcDatabase AUTO GET PRIVATE SET
 
         STATIC PROPERTY Databases AS IList<DbcDatabase>  GET _databases
 
@@ -116,6 +116,353 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN lOk
                         })
                 END LOCK
+            ENDIF
+            RETURN lOk
+
+        /// <summary>
+        /// Implements VFP <c>ADD TABLE TableName [NAME LongTableName]</c>.
+        /// Links an existing free .DBF file to the currently active database.
+        /// Reads physical field names from the DBF, then delegates to the
+        /// overload that accepts a pre-built field-name list.
+        /// </summary>
+        /// <param name="cFileName">
+        /// Physical path to the .DBF file (extension optional).  The file must exist and
+        /// must be a free table (empty backlink).
+        /// </param>
+        /// <param name="cLongName">
+        /// Optional logical name stored in the DBC OBJECTNAME field.
+        /// When empty or <c>NULL</c>, the filename without extension is used.
+        /// </param>
+        /// <returns><c>.T.</c> on success; <c>.F.</c> on failure (error stored in
+        /// <c>RuntimeState.LastRddError</c>).</returns>
+        STATIC METHOD AddTable(cFileName AS STRING, cLongName AS STRING) AS LOGIC
+            // Resolve extension + full path before reading field names
+            IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cFileName))
+                cFileName := System.IO.Path.ChangeExtension(cFileName, ".DBF")
+            ENDIF
+            cFileName := System.IO.Path.GetFullPath(cFileName)
+            IF ! System.IO.File.Exists(cFileName)
+                Fail(Error{"ADD TABLE: file not found: " + cFileName})
+                RETURN FALSE
+            ENDIF
+
+            // Open the DBF briefly to read physical field names, then close it.
+            // The full overload below will open it again for the actual DBC work.
+            LOCAL aFieldNames := List<STRING>{} AS List<STRING>
+            IF CoreDb.UseArea(TRUE, "DBFVFP", cFileName, "_RDTBL_", FALSE, FALSE)
+                LOCAL oRddTmp := NULL AS OBJECT
+                IF CoreDb.Info(DBI_RDD_OBJECT, REF oRddTmp) .AND. oRddTmp IS IRdd VAR oRdd
+                    FOR LOCAL nFld := 1 TO oRdd:FieldCount
+                        aFieldNames:Add(oRdd:FieldName(nFld))
+                    NEXT
+                ENDIF
+                CoreDb.CloseArea()
+            ENDIF
+
+            RETURN AddTable(cFileName, cLongName, aFieldNames)
+
+        /// <summary>
+        /// Implements VFP <c>ADD TABLE</c> / <c>CREATE TABLE</c> DBC registration,
+        /// accepting a pre-built list of long field names supplied by the caller.
+        /// </summary>
+        /// <remarks>
+        /// This overload is used by <c>CREATE TABLE</c> so that the long field names
+        /// from the SQL parser (which may exceed 10 characters) are stored in the DBC
+        /// without re-opening the newly created .DBF.
+        /// </remarks>
+        /// <param name="cFileName">
+        /// Physical path to the .DBF file (extension optional).  The file must exist and
+        /// must be a free table (empty backlink).
+        /// </param>
+        /// <param name="cLongName">
+        /// Logical (long) table name stored in the DBC OBJECTNAME field.
+        /// When empty, the filename without extension is used.
+        /// </param>
+        /// <param name="aLongFieldNames">
+        /// Long field names in physical column order.  For <c>ADD TABLE</c> these are the
+        /// physical DBF names (≤ 10 chars); for <c>CREATE TABLE</c> they are the parser's
+        /// long names (may exceed 10 chars).
+        /// </param>
+        /// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+        STATIC METHOD AddTable(cFileName AS STRING, cLongName AS STRING, aLongFieldNames AS List<STRING>) AS LOGIC
+            // ── Validate pre-conditions ────────────────────────────────────────
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"ADD TABLE: no active database (use SET DATABASE TO first)"})
+                RETURN FALSE
+            ENDIF
+            // Resolve file extension
+            IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cFileName))
+                cFileName := System.IO.Path.ChangeExtension(cFileName, ".DBF")
+            ENDIF
+            cFileName := System.IO.Path.GetFullPath(cFileName)
+            IF ! System.IO.File.Exists(cFileName)
+                Fail(Error{"ADD TABLE: file not found: " + cFileName})
+                RETURN FALSE
+            ENDIF
+            // Determine the logical (long) name for the DBC OBJECTNAME field
+            IF String.IsNullOrEmpty(cLongName)
+                cLongName := System.IO.Path.GetFileNameWithoutExtension(cFileName)
+            ENDIF
+
+            // ── Open the DBF in a temporary work area ─────────────────────────
+            // IVfpLinked (implemented by DBFVFP) gives us typed access to
+            // DbcName, DbcPosition, and WriteBacklink without a compile-time
+            // reference to XSharp.Rdd.
+            LOCAL lOk    := FALSE  AS LOGIC
+            LOCAL oVfp   := NULL   AS IVfpLinked
+            LOCAL nArea  := 0      AS DWORD
+
+            IF ! CoreDb.UseArea(TRUE, "DBFVFP", cFileName, "_ADDTBL_", FALSE, FALSE)
+                Fail(Error{"ADD TABLE: cannot open " + cFileName})
+                RETURN FALSE
+            ENDIF
+            nArea := RuntimeState.Workareas:CurrentWorkarea:Area
+
+            LOCAL oRddVal := NULL AS OBJECT
+            IF CoreDb.Info(DBI_RDD_OBJECT, REF oRddVal) .AND. oRddVal IS IVfpLinked VAR vfp
+                oVfp := vfp
+            ENDIF
+            IF oVfp == NULL
+                CoreDb.CloseArea()
+                Fail(Error{"ADD TABLE: driver does not implement IVfpLinked for " + cFileName})
+                RETURN FALSE
+            ENDIF
+
+            // ── Verify the table is a free table (empty backlink) ──────────────
+            IF ! String.IsNullOrEmpty(oVfp:DbcName)
+                CoreDb.CloseArea()
+                Fail(Error{"ADD TABLE: " + cFileName + " is already linked to a database"})
+                RETURN FALSE
+            ENDIF
+
+            // ── Register Table + Field records in the DBC, then write the backlink
+            lOk := _RegisterTableInDbc(oActiveDbc, cLongName, aLongFieldNames)
+
+            IF lOk
+                // Back in the user session with area = the DBF.
+                CoreDb.Select(nArea, OUT NULL)
+                LOCAL cRelative AS STRING
+                cRelative := _MakeRelativePath(cFileName, oActiveDbc:FileName)
+                oVfp:WriteBacklink(cRelative)
+                // Flush via IRdd — WriteBacklink wrote directly to the stream;
+                // this ensures any pending record buffer is also committed.
+                IF oVfp IS IRdd VAR oRddFlush
+                    oRddFlush:Flush()
+                ENDIF
+                // Reload the DBC in-memory cache so the new table is immediately visible
+                oActiveDbc:Reload()
+            ENDIF
+
+            CoreDb.Select(nArea, OUT NULL)
+            CoreDb.CloseArea()
+            RETURN lOk
+
+        /// <summary>
+        /// Core DBC registration logic: appends a Table record and one Field record per
+        /// entry in <paramref name="aFieldNames"/> to the open DBC work area and commits.
+        /// Called from both <c>AddTable</c> overloads so the write logic is not duplicated.
+        /// </summary>
+        PRIVATE STATIC METHOD _RegisterTableInDbc(oActiveDbc AS DbcDatabase, ;
+                cLongName AS STRING, aFieldNames AS List<STRING>) AS LOGIC
+            RETURN DbcManager.DoForDatabase({ =>
+                LOCAL nOld AS DWORD
+                CoreDb.Select(oActiveDbc:Area, OUT nOld)
+
+                // Determine the next free OBJECTID from the last record.
+                // A valid DBC always has at least the built-in Database records.
+                CoreDb.GoBottom()
+                LOCAL nNextId AS INT
+                IF CoreDb.Eof()
+                    nNextId := 1
+                ELSE
+                    LOCAL oIdVal := NULL AS OBJECT
+                    CoreDb.FieldGet(DbcObject.POS_OBJECTID, REF oIdVal)
+                    nNextId := ((INT) oIdVal) + 1
+                ENDIF
+                LOCAL nTableId := nNextId AS INT
+
+                // ── Table record ───────────────────────────────────────────────
+                _writeRecord(<OBJECT>{ nTableId, 1, DbcObject.NAME_TABLE, cLongName })
+
+                // ── Field records — one per column in DBF position order ────────
+                FOREACH VAR cFldName IN aFieldNames
+                    nNextId += 1
+                    _writeRecord(<OBJECT>{ nNextId, nTableId, DbcObject.NAME_FIELD, cFldName })
+                NEXT
+
+                CoreDb.Commit()
+                CoreDb.Select(nOld, OUT NULL)
+                RETURN TRUE
+                })
+
+        /// <summary>
+        /// Compute a relative path from <paramref name="cFromFile"/> to <paramref name="cToFile"/>.
+        /// Returns just the filename when both files share the same directory;
+        /// otherwise returns the absolute path of <paramref name="cToFile"/>.
+        /// </summary>
+        PRIVATE STATIC METHOD _MakeRelativePath(cFromFile AS STRING, cToFile AS STRING) AS STRING
+            LOCAL fromDir := System.IO.Path.GetDirectoryName( ;
+                                System.IO.Path.GetFullPath(cFromFile)) AS STRING
+            LOCAL toFull  := System.IO.Path.GetFullPath(cToFile)       AS STRING
+            LOCAL toDir   := System.IO.Path.GetDirectoryName(toFull)   AS STRING
+            IF String.Compare(fromDir, toDir, StringComparison.OrdinalIgnoreCase) == 0
+                RETURN System.IO.Path.GetFileName(toFull)
+            ENDIF
+            RETURN toFull
+
+        /// <summary>
+        /// Implements VFP <c>REMOVE TABLE TableName [DELETE] [RECYCLE]</c>.
+        /// Unlinks an existing table from the active database.
+        /// </summary>
+        /// <param name="cName">
+        /// Logical name (OBJECTNAME in the DBC) of the table to remove.
+        /// </param>
+        /// <param name="lDelete">
+        /// When <c>.T.</c>, delete the .DBF file (and companion .FPT/.CDX) from disk.
+        /// </param>
+        /// <param name="lRecycle">
+        /// When <c>.T.</c>, move the file to the Recycle Bin instead of deleting.
+        /// <note>Currently treated the same as <paramref name="lDelete"/> (shell API not yet implemented).</note>
+        /// </param>
+        /// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+        STATIC METHOD RemoveTable(cName AS STRING, lDelete AS LOGIC, lRecycle AS LOGIC) AS LOGIC
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"REMOVE TABLE: no active database (use SET DATABASE TO first)"})
+                RETURN FALSE
+            ENDIF
+
+            // Locate the table in the in-memory cache to get its ObjectID
+            LOCAL oTable := oActiveDbc:FindTable(cName) AS DbcTable
+            IF oTable == NULL_OBJECT
+                Fail(Error{"REMOVE TABLE: table '" + cName + "' not found in active database"})
+                RETURN FALSE
+            ENDIF
+            LOCAL nTableId := (INT) oTable:ObjectID AS INT
+
+            // Determine physical .DBF path (needed for backlink zeroing and optional deletion)
+            LOCAL cDbfPath := oTable:Path AS STRING
+            IF String.IsNullOrEmpty(cDbfPath)
+                // Path not stored in DBC — fall back to: same directory as DBC, same name as table
+                cDbfPath := System.IO.Path.Combine( ;
+                    System.IO.Path.GetDirectoryName(oActiveDbc:FileName), ;
+                    cName + ".DBF")
+            ENDIF
+            cDbfPath := System.IO.Path.GetFullPath(cDbfPath)
+
+            // ── Remove Table + all child records from the DBC ──────────────────
+            LOCAL lOk := DbcManager.DoForDatabase({ =>
+                LOCAL nOld AS DWORD
+                CoreDb.Select(oActiveDbc:Area, OUT nOld)
+                CoreDb.GoTop()
+                DO WHILE ! CoreDb.Eof()
+                    LOCAL oId     := NULL AS OBJECT
+                    LOCAL oParent := NULL AS OBJECT
+                    CoreDb.FieldGet(DbcObject.POS_OBJECTID,   REF oId)
+                    CoreDb.FieldGet(DbcObject.POS_PARENTID,   REF oParent)
+                    IF (INT) oId == nTableId .OR. (INT) oParent == nTableId
+                        CoreDb.Delete()
+                    ENDIF
+                    CoreDb.Skip(1)
+                ENDDO
+                CoreDb.Commit()
+                CoreDb.Select(nOld, OUT NULL)
+                RETURN TRUE
+                }) AS LOGIC
+
+            IF lOk
+                // ── Zero the backlink in the DBF header ────────────────────────
+                IF System.IO.File.Exists(cDbfPath)
+                    IF CoreDb.UseArea(TRUE, "DBFVFP", cDbfPath, "_REMTBL_", FALSE, FALSE)
+                        LOCAL nArea := RuntimeState.Workareas:CurrentWorkarea:Area AS DWORD
+                        LOCAL oRddVal := NULL AS OBJECT
+                        IF CoreDb.Info(DBI_RDD_OBJECT, REF oRddVal) .AND. oRddVal IS IVfpLinked VAR vfp
+                            vfp:WriteBacklink("")           // zero = free table again
+                            IF vfp IS IRdd VAR rdd
+                                rdd:Flush()
+                            ENDIF
+                        ENDIF
+                        CoreDb.Select(nArea, OUT NULL)
+                        CoreDb.CloseArea()
+                    ENDIF
+
+                    // ── Optionally delete / recycle the .DBF and companions ────
+                    // TODO: RECYCLE should use Shell32 SHFileOperation to move to the
+                    //       Recycle Bin.  Until then it is treated the same as DELETE.
+                    IF lDelete .OR. lRecycle
+                        LOCAL cBase := System.IO.Path.Combine( ;
+                            System.IO.Path.GetDirectoryName(cDbfPath), ;
+                            System.IO.Path.GetFileNameWithoutExtension(cDbfPath)) AS STRING
+                        TRY
+                            System.IO.File.Delete(cDbfPath)
+                            LOCAL cMemo := cBase + ".FPT" AS STRING
+                            IF System.IO.File.Exists(cMemo)
+                                System.IO.File.Delete(cMemo)
+                            ENDIF
+                            LOCAL cIdx := cBase + ".CDX" AS STRING
+                            IF System.IO.File.Exists(cIdx)
+                                System.IO.File.Delete(cIdx)
+                            ENDIF
+                        CATCH e AS Exception
+                            Fail(e)
+                            lOk := FALSE
+                        END TRY
+                    ENDIF
+                ENDIF
+
+                // Reload the DBC in-memory cache
+                oActiveDbc:Reload()
+            ENDIF
+            RETURN lOk
+
+        /// <summary>
+        /// Implements VFP <c>RENAME TABLE OldName TO NewName</c>.
+        /// Changes the logical name (OBJECTNAME) of a table entry inside the DBC.
+        /// The physical .DBF file is not renamed.
+        /// </summary>
+        /// <param name="cOldName">Current logical name of the table in the DBC.</param>
+        /// <param name="cNewName">New logical name to assign.</param>
+        /// <returns><c>.T.</c> on success; <c>.F.</c> otherwise.</returns>
+        STATIC METHOD RenameTable(cOldName AS STRING, cNewName AS STRING) AS LOGIC
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"RENAME TABLE: no active database (use SET DATABASE TO first)"})
+                RETURN FALSE
+            ENDIF
+
+            LOCAL oTable := oActiveDbc:FindTable(cOldName) AS DbcTable
+            IF oTable == NULL_OBJECT
+                Fail(Error{"RENAME TABLE: table '" + cOldName + "' not found in active database"})
+                RETURN FALSE
+            ENDIF
+            LOCAL nTableId := (INT) oTable:ObjectID AS INT
+
+            // Find the Table record in the DBC by ObjectID and update OBJECTNAME
+            LOCAL lOk := DbcManager.DoForDatabase({ =>
+                LOCAL nOld AS DWORD
+                CoreDb.Select(oActiveDbc:Area, OUT nOld)
+                CoreDb.GoTop()
+                LOCAL lFound := FALSE AS LOGIC
+                DO WHILE ! CoreDb.Eof()
+                    LOCAL oId := NULL AS OBJECT
+                    CoreDb.FieldGet(DbcObject.POS_OBJECTID, REF oId)
+                    IF (INT) oId == nTableId
+                        CoreDb.FieldPut(DbcObject.POS_OBJECTNAME, (OBJECT) cNewName)
+                        lFound := TRUE
+                        EXIT
+                    ENDIF
+                    CoreDb.Skip(1)
+                ENDDO
+                IF lFound
+                    CoreDb.Commit()
+                ENDIF
+                CoreDb.Select(nOld, OUT NULL)
+                RETURN lFound
+                }) AS LOGIC
+
+            IF lOk
+                oActiveDbc:Reload()
             ENDIF
             RETURN lOk
 
@@ -355,6 +702,17 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             NEXT
 
+        /// <summary>
+        /// Clears the in-memory table/view/connection caches and re-reads all
+        /// children from the DBC work area.  Call this after structural changes
+        /// such as <c>ADD TABLE</c> or <c>REMOVE TABLE</c>.
+        /// </summary>
+        INTERNAL METHOD Reload() AS VOID
+            _tables:Clear()
+            _views:Clear()
+            _connections:Clear()
+            _other:Clear()
+            SELF:GetData()
 
         /// <include file="XSharp.Core.Docs.xml" path="doc/DbcDatabase.GetProp/*" />
         PUBLIC METHOD GetProp(cName as STRING, cType as STRING, cProp as STRING) AS OBJECT
@@ -662,11 +1020,13 @@ BEGIN NAMESPACE XSharp.RDD
                         IF iValue != SELF:ObjectID
                             EXIT
                         ENDIF
-                        var oChild := SELF:ReadChild()
-                        IF oChild != NULL_OBJECT
-                            oChild:Read()
-                            oChild:Parent := SELF
-                            aChildren:Add(oChild)
+                        IF ! CoreDb.Deleted()
+                            var oChild := SELF:ReadChild()
+                            IF oChild != NULL_OBJECT
+                                oChild:Read()
+                                oChild:Parent := SELF
+                                aChildren:Add(oChild)
+                            ENDIF
                         ENDIF
                         CoreDb.Skip(1)
                     ENDDO

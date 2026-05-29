@@ -354,6 +354,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
                 result := SUPER:_GetString(buffer, len)
+                result := result:TrimEnd()
             ELSE
                 result := SUPER:_GetString(buffer, len)
                 IF String.IsNullOrEmpty(result)

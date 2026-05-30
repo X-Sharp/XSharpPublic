@@ -2626,6 +2626,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         // the replacement did not change the tokens, so stop to prevent an endless loop
                         result.AddRange(temp);
+                        var errdata = new ParseErrorData(temp[0], ErrorCode.ERR_PreProcessorError, "Recursive Preprocessor command");
+                        _parseErrors.Add(errdata);
                         temp.Clear();
                         break;
                     }
@@ -2699,6 +2701,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (isResultUnchanged(prevResult, result))
                 {
                     // the replacement did not change the tokens, so stop to prevent an endless loop
+                    var errdata = new ParseErrorData(result[0], ErrorCode.ERR_PreProcessorError, "Recursive Preprocessor command");
+                    _parseErrors.Add(errdata);
                     break;
                 }
                 if (usedRules.HasRecursion(rule, result))
@@ -2813,6 +2817,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static bool isResultUnchanged(IList<XSharpToken> input, IList<XSharpToken> output)
         {
+            input = input.Where(t => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
+            output = output.Where(t => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
             if (input.Count != output.Count)
                 return false;
             for (int i = 0; i < input.Count; i++)

@@ -348,6 +348,18 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
             END TRY
         END METHOD
+
+        [Fact];
+        METHOD LabelCommandAbsorbed() AS VOID
+            // LABEL FORM should compile and run without error (silent no-op)
+            LABEL FORM "nonexistent.lbx"
+            LABEL FORM "nonexistent.lbx" FOR .T.
+            LABEL FORM "nonexistent.lbx" TO FILE "output.txt"
+            LABEL FORM "nonexistent.lbx" TO PRINTER
+            LABEL FORM "nonexistent.lbx" PREVIEW NOWAIT
+            // If we get here without exception, the command is properly absorbed
+            Assert.True(.T.)
+        END METHOD
     END CLASS
 
 END NAMESPACE

@@ -12,4 +12,5 @@ jobs:
     steps:
       - uses: igorjs/gh-actions-clean-workflow@v7
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           runs_older_than: 90

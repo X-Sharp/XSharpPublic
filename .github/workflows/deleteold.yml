@@ -2,12 +2,17 @@ name: Clean Workflow Logs
 on:
   workflow_dispatch:
   schedule:
-     - cron: '0 1 * * *' # every night at 2 am UTC
+    - cron: '0 1 * * *' # every night at 2 am UTC
+
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   clean-logs:
     runs-on: ubuntu-latest
     steps:
       - uses: igorjs/gh-actions-clean-workflow@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           days_old: 90

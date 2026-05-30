@@ -10,4 +10,4 @@ jobs:
       - uses: igorjs/gh-actions-clean-workflow@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          days_old: 90
+          runs_older_than: 90

@@ -22,18 +22,20 @@ namespace XSharp.Support
         static bool log2debugger = false;
         static bool log2file = false;
         static object gate = new object ();
-
-        static Logger()
-        {
-            XSettings.ShellLink = new XSharpShellLink();
-            XSettings.Logger = new LoggerImpl();
-        }
-
+        static bool initialized = false;
 
         public static bool Initialize()
         {
             lock (gate)
             {
+                // Initialize XSettings.ShellLink and Logger only once, before accessing Logger methods
+                if (!initialized)
+                {
+                    XSettings.Logger = new LoggerImpl();
+                    XSettings.ShellLink = new XSharpShellLink();
+                    initialized = true;
+                }
+
                 if (!active)
                 {
                     int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);

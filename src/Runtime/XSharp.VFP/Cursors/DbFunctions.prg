@@ -377,7 +377,7 @@ INTERNAL FUNCTION _GetWorkareaCargo(nArea AS DWORD) AS _WorkareaCargo
 INTERNAL FUNCTION _GetFldStateFromCargo(nArea AS DWORD, nField AS INT) AS BYTE
     VAR cargo := _GetWorkareaCargo(nArea)
     LOCAL b as BYTE
-    if cargo:fldState:TryGetValue(nField, REF b)
+    if cargo:fldState:TryGetValue(nField, OUT b)
         return b
     ENDIF
     RETURN 1
@@ -411,7 +411,7 @@ INTERNAL STATIC CLASS _CursorPropDefaults
 
     INTERNAL STATIC METHOD GetDefault(prop AS CursorProperty) AS OBJECT
         LOCAL result AS OBJECT
-        IF _defaults:TryGetValue(prop, REF result)
+        IF _defaults:TryGetValue(prop, OUT result)
             return result
         ENDIF
         RETURN NIL
@@ -425,7 +425,7 @@ END CLASS
 INTERNAL FUNCTION _GetCursorProp(nArea AS DWORD, prop AS CursorProperty) AS OBJECT
     VAR cargo := _GetWorkareaCargo(nArea)
     LOCAL result AS OBJECT
-    if cargo:cursorProps:TryGetValue(prop, REF result)
+    if cargo:cursorProps:TryGetValue(prop, OUT result)
         RETURN result
     ENDIF
 

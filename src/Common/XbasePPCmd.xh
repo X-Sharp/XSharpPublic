@@ -20,15 +20,20 @@
 #xcommand REQUEST  <id1> [,<idn> ]   =>
 #xcommand ANNOUNCE <id1> [,<idn> ]   =>
 
-#xcommand ENDSEQUENCE  [<*any*>]  => ENDSEQUENCE
+#xcommand ENDSEQUENCE  [<*any*>]  => END SEQUENCE
 // Do not map next token to END CLASS
 // Otherwise simple classes may be picked up by the normal class rule.
 // ENDCLASS is then the only distinguishing factor
 #xcommand ENDCLASS <*any*>        => ENDCLASS
 #xcommand ENDFOR [<*any*>]        => ENDFOR
 
+// Map BREAK() function to _Break()
+#xtranslate BREAK ([<*any*>] )	  => _Break([<any>])
+
 // Override COMMIT for Xbase++ compatibility
 #command COMMIT                 => DbCommitAll()
+
+
 
 #endif
 

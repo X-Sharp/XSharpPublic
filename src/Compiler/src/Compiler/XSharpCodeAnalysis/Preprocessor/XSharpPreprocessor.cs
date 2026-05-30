@@ -2620,7 +2620,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var rule = _transRules.FindMatchingRule(temp, out var matchInfo);
                 if (rule != null)
                 {
+                    var prevTemp = temp;
                     temp = doReplace(temp, rule, matchInfo);
+                    if (isResultUnchanged(prevTemp, temp))
+                    {
+                        // the replacement did not change the tokens, so stop to prevent an endless loop
+                        result.AddRange(temp);
+                        var errdata = new ParseErrorData(temp[0], ErrorCode.ERR_PreProcessorError, "Recursive Preprocessor command");
+                        _parseErrors.Add(errdata);
+                        temp.Clear();
+                        break;
+                    }
                     if (usedRules.HasRecursion(rule, temp))
                     {
                         // duplicate, so exit now
@@ -2686,7 +2696,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
                     break;
                 }
+                var prevResult = result;
                 result = doReplace(result, rule, matchInfo);
+                if (isResultUnchanged(prevResult, result))
+                {
+                    // the replacement did not change the tokens, so stop to prevent an endless loop
+                    var errdata = new ParseErrorData(result[0], ErrorCode.ERR_PreProcessorError, "Recursive Preprocessor command");
+                    _parseErrors.Add(errdata);
+                    break;
+                }
                 if (usedRules.HasRecursion(rule, result))
                 {
                     // duplicate so exit now
@@ -2795,6 +2813,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             return result;
+        }
+
+        private static bool isResultUnchanged(IList<XSharpToken> input, IList<XSharpToken> output)
+        {
+            input = input.Where(t => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
+            output = output.Where(t => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
+            if (input.Count != output.Count)
+                return false;
+            for (int i = 0; i < input.Count; i++)
+            {
+                if (!string.Equals(input[i].Text, output[i].Text, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

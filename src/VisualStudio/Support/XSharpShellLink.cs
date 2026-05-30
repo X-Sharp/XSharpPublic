@@ -38,7 +38,8 @@ namespace XSharp.Support
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                Logger.Information("Initialize XSharpShellLink");
+                // Logger may not be fully initialized yet, so guard against null
+                Logger?.Information("Initialize XSharpShellLink");
 
 
 
@@ -90,7 +91,7 @@ namespace XSharp.Support
                 //VS.Events.DocumentEvents.AfterDocumentWindowHide += DocumentEvents_AfterDocumentWindowHide;
 
 
-                Logger.Information("Initialized XSharpShellLink");
+                Logger?.Information("Initialized XSharpShellLink");
             });
 
 
@@ -382,6 +383,7 @@ namespace XSharp.Support
             if (! _projects.ContainsKey(project.FullPath))
             {
                 _projects.TryAdd(project.FullPath, project);
+
             }
         }
 

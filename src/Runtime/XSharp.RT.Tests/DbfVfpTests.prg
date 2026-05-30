@@ -179,5 +179,35 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( alias2->DbCloseArea() )
 			Assert.True( alias3->DbCloseArea() )
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBFVFP_VARCHAR_fields() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1796
+
+			LOCAL cFileName AS STRING
+			cFileName := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFVFP")
+
+			DbCreate(cFileName, {{"VARCHAR","V",10,0}})
+			DbUseArea(TRUE, ,cFileName)
+			DbAppend(); FieldPut(1, "ABC")
+			DbAppend(); FieldPut(1, "TEST567890")
+			DbAppend(); FieldPut(1, "123")
+
+			DbGoTop()
+			Assert.Equal("ABC", (string)FieldGet(1))
+			DbSkip()
+			Assert.Equal("TEST567890", (string)FieldGet(1))
+			DbSkip()
+			Assert.Equal("123", (string)FieldGet(1))
+			DbCloseArea()
+
+			DbUseArea(TRUE, ,cFileName)
+			Assert.Equal("ABC", (string)FieldGet(1))
+			DbSkip()
+			Assert.Equal("TEST567890", (string)FieldGet(1))
+			DbSkip()
+			Assert.Equal("123", (string)FieldGet(1))
+			DbCloseArea()
 	END CLASS
 END NAMESPACE

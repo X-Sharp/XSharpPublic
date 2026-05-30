@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-05-26T20:07:08.853Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-05-27T17:15:36.820Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -89,6 +89,7 @@
       <li styleclass="List1">Fixed an issue where assigning to a hidden field or property was incorrectly allowed. Added NoIVarGetSelf() and NoIVarPutSelf() methods (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1491" target="_blank">#1491</link>)</li>
       <li styleclass="List1">Fixed a macro compiler issue with certain method calls<text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;"> (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1860" target="_blank">#1860</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
       <li styleclass="List1">Fixed a memo-related state issue (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1869" target="_blank">#1869</link>)</li>
+      <li styleclass="List1">Fix Dbc.FindTable &#160;to support Alias and/or FileName <text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;"> (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1949" target="_blank">#1949</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
     </list>
     <para styleclass="Heading3">XPP Dialect</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -134,6 +135,8 @@
       <li styleclass="List1">Implemented TXNLEVEL() which returns the current transaction nesting level (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1927" target="_blank">#1927</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
       <li styleclass="List1">Implemented ISMEMOFETCHED(); for local DBF data, memo fields are always considered fetched (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1931" target="_blank">#1931</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
       <li styleclass="List1">Fixed CREATE TABLE when the table name includes a path; the alias is now derived from the file name without the directory part (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1938" target="_blank">#1938</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
+      <li styleclass="List1"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Implementation of GETFLDSTATE and SETFLDSTATE </text>(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1952" target="_blank">#1952</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
+      <li styleclass="List1"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Implements (partial) functions CURSORSETPROP() AND CURSORGETPROP() </text>(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1954" target="_blank">#1954</link><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">)</text></li>
     </list>
     <para styleclass="Heading2"> Visual Studio Integration</para>
     <para styleclass="Normal">We are now fully supporting Visual Studio 2026</para>

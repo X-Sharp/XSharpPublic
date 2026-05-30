@@ -343,6 +343,30 @@ PARTIAL CLASS SQLParser
                 table:ArrayName := SELF:ConsumeAndGet():Text
             ENDIF
         ENDIF
+        // Deduplicate physical DBF field names that collide after 10-char truncation.
+        // VFP strategy: keep the first occurrence as-is, rename subsequent collisions
+        // by shortening the base and appending a numeric suffix (e.g. CustomerA0, CustomerA1).
+        LOCAL usedNames AS HashSet<STRING>
+        usedNames := HashSet<STRING>{StringComparer.OrdinalIgnoreCase}
+        foreach var col in table:Columns
+            IF ! usedNames:Add(col:Name)
+                // Name already taken — find a unique suffixed alternative
+                LOCAL suffix AS INT
+                LOCAL candidate AS STRING
+                suffix := 0
+                DO WHILE TRUE
+                    LOCAL sfxStr AS STRING
+                    sfxStr := suffix:ToString()
+                    candidate := col:Name:Substring(0, 10 - sfxStr:Length) + sfxStr
+                    IF ! usedNames:Contains(candidate)
+                        EXIT
+                    ENDIF
+                    suffix += 1
+                ENDDO
+                col:Name := candidate
+                usedNames:Add(candidate)
+            ENDIF
+        next
         foreach var column in table:Columns
             column:Table := table
         next

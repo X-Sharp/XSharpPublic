@@ -47,6 +47,7 @@ STATIC CLASS TestSuite_DbcCreateTable
         Safe("CREATE TABLE NAME stores long table name in DBC",        {|| TestCreateTableWithName()})
         Safe("CREATE TABLE with quoted full path",                     {|| TestCreateTableQuotedPath()})
         Safe("CREATE TABLE with PRIVATE variable path",               {|| TestCreateTablePrivatePath()})
+        Safe("CREATE TABLE deduplicates colliding truncated names",   {|| TestCreateTableDuplicateTruncatedNames()})
 
         RETURN _nFail == 0
     END METHOD
@@ -196,6 +197,38 @@ STATIC CLASS TestSuite_DbcCreateTable
             RETURN AssertTrue(File(cTbl + ".DBF"), ".DBF must exist when created via PRIVATE variable path")
         FINALLY
             CloseTable(cTbl)
+            TestHelper.CleanupTable(cTbl)
+        END TRY
+    END METHOD
+
+    // CustomerAddressLine and CustomerAddressCity share the same first 10 chars ("CustomerAd").
+    // Without the dedup fix both physical DBF field names would be "CustomerAd", producing an
+    // invalid DBF.  With the fix the second field gets the suffix "0" → "CustomerA0".
+    PRIVATE STATIC METHOD TestCreateTableDuplicateTruncatedNames() AS LOGIC
+        LOCAL cDb  := DbPath("crt_dedup")  AS STRING
+        LOCAL cTbl := DbPath("crt_dedup_t") AS STRING
+        TestHelper.CleanupDb(cDb)
+        TestHelper.CleanupTable(cTbl)
+        TRY
+            TestHelper.OpenActiveDb(cDb)
+            CREATE TABLE crt_dedup_t (CustomerAddressLine C(50), CustomerAddressCity C(50))
+            LOCAL oDb    := Dbc.GetCurrent() AS DbcDatabase
+            LOCAL oTable := oDb:FindTable("crt_dedup_t") AS DbcTable
+            IF !AssertTrue(oTable != NULL_OBJECT, "Table must be registered in DBC") ; RETURN FALSE ; ENDIF
+            // Physical names must be distinct
+            LOCAL cField1 := FieldName(1):ToUpper() AS STRING
+            LOCAL cField2 := FieldName(2):ToUpper() AS STRING
+            IF !AssertTrue(cField1 != cField2, "Physical DBF field names must be unique after truncation deduplication") ; RETURN FALSE ; ENDIF
+            // First field keeps plain 10-char truncation; second gets suffix "0"
+            IF !AssertEqual(cField1, "CUSTOMERAD", "First field physical name") ; RETURN FALSE ; ENDIF
+            IF !AssertEqual(cField2, "CUSTOMERA0", "Second field physical name after dedup suffix") ; RETURN FALSE ; ENDIF
+            // DBC must preserve the full long names
+            IF !AssertEqual(oTable:Fields[0]:ObjectName, "CustomerAddressLine", "DBC long name for field 1") ; RETURN FALSE ; ENDIF
+            RETURN AssertEqual(oTable:Fields[1]:ObjectName, "CustomerAddressCity", "DBC long name for field 2")
+        FINALLY
+            CloseTable(cTbl)
+            CLOSE DATABASES ALL
+            TestHelper.CleanupDb(cDb)
             TestHelper.CleanupTable(cTbl)
         END TRY
     END METHOD

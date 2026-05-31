@@ -138,5 +138,10 @@
     "ContextMenu",
     "false",
     "false"
+  ],
+  "reportlistener": [
+    "ReportListener",
+    "false",
+    "false"
   ]
 }

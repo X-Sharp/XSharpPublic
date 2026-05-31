@@ -106,7 +106,11 @@ BEGIN NAMESPACE VFPXPorterLib
                 //
                 xPorter:ProcessAttachedCode( entity )
                 xPorter:CustomControls := SELF:CustomControls
-                IF entity:Item:IsForm .OR. entity:Item:IsContainer
+                IF entity:Item:IsReportListener
+                    // non-UI class: single file, no WinForms templates
+                    xPorter:InitElementsReportListener()
+                    lOk := xPorter:ExportAsSingleFile( entity )
+                ELSEIF entity:Item:IsForm .OR. entity:Item:IsContainer
                     // file.prg & file.designer.prg
                     lOk := xPorter:ExportAsWindowAndDesigner( entity )
                 ELSE

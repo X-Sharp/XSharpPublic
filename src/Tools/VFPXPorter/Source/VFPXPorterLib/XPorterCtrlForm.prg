@@ -420,8 +420,10 @@ BEGIN NAMESPACE VFPXPorterLib
             // Where do we write
             LOCAL dest AS StreamWriter
             dest := StreamWriter{ fileName }
-            // First Export the Window
-            SELF:InitElementsSingleForm( entity:Item:IsContainer )
+            // First Export the Window — skip template init for ReportListener (already set by caller)
+            IF !entity:Item:IsReportListener
+                SELF:InitElementsSingleForm( entity:Item:IsContainer )
+            ENDIF
             TRY
                 lOk := TRUE
                 SELF:ExportSingleFile( dest, entity:Item, entity:DataEnvironment )
@@ -1758,6 +1760,15 @@ BEGIN NAMESPACE VFPXPorterLib
             FormStartTypeFile		:= XPorterSettings.FormStartTypeFile
             FormEndTypeFile			:= XPorterSettings.FormEndTypeFile
             FormInitTypeFile		:= XPorterSettings.FormInitTypeFile
+
+        /// <summary>
+        /// Point the decoration elements to ReportListener file (no WinForms dependencies)
+        /// </summary>
+        METHOD InitElementsReportListener() AS VOID
+            FormPrefixFile    := XPorterSettings.ReportListenerPrefixFile
+            FormStartTypeFile := XPorterSettings.ReportListenerStartTypeFile
+            FormEndTypeFile   := XPorterSettings.ReportListenerEndTypeFile
+            FormInitTypeFile  := XPorterSettings.ReportListenerInitTypeFile
 
         /// <summary>
         /// Point the decoration elements to single Form file

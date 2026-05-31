@@ -112,6 +112,12 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY SingleNoContainerFormEndTypeFile			AS STRING GET XPorterSettings.SingleFolder + "\\endtypeNotContainer.prg"
 	PUBLIC STATIC PROPERTY SingleNoContainerFormInitTypeFile		AS STRING GET XPorterSettings.SingleFolder + "\\inittypeNotContainer.prg"
 
+	PUBLIC STATIC PROPERTY ReportListenerFolder			AS STRING GET XPorterSettings.TemplateFolder + "\\ReportListener"
+	PUBLIC STATIC PROPERTY ReportListenerPrefixFile		AS STRING GET XPorterSettings.ReportListenerFolder + "\\prefix.prg"
+	PUBLIC STATIC PROPERTY ReportListenerStartTypeFile	AS STRING GET XPorterSettings.ReportListenerFolder + "\\StartType.prg"
+	PUBLIC STATIC PROPERTY ReportListenerEndTypeFile	AS STRING GET XPorterSettings.ReportListenerFolder + "\\EndType.prg"
+	PUBLIC STATIC PROPERTY ReportListenerInitTypeFile	AS STRING GET XPorterSettings.ReportListenerFolder + "\\InitType.prg"
+
     #endregion
 
     /// <summary>

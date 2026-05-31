@@ -35,6 +35,9 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY IsFormSet AS LOGIC GET ( String.Compare( SELF:Item:BaseClassName, "formset", TRUE ) == 0 )
 
+        PROPERTY IsReportListener AS LOGIC GET ( String.Compare( SELF:Item:BaseClassName, "reportlistener", TRUE ) == 0 .OR. ;
+                                                  String.Compare( SELF:Item:ClassName,     "reportlistener", TRUE ) == 0 )
+
         /// <summary>
         /// The list of Files that this Entity are depending on
         /// </summary>

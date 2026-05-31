@@ -237,3 +237,8 @@ ENDFUNC
 FUNCTION IsPen() AS LOGIC
     RETURN FALSE
 ENDFUNC
+
+/// <exclude/>
+FUNCTION __VfpUnsupported(cCommand AS STRING) AS VOID
+    // Silently absorb all unsupported VFP commands
+    RETURN

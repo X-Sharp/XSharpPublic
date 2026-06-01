@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using Community.VisualStudio.Toolkit;
+using CVT=Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
@@ -59,13 +60,11 @@ namespace XSharp.Project
         {
             lock (nodes)
             {
-                var file = System.IO.Path.GetFileName(url);
+                if (!Path.IsPathRooted(url))
+                    return null;
                 foreach (var proj in nodes)
                 {
-                    if (string.Compare(proj.FileName, url, true) == 0)
-                        return proj;
-                    var pFile = System.IO.Path.GetFileName(proj.FileName);
-                    if (string.Compare(pFile, url, true) == 0)
+                    if (string.Compare(proj.Url, url, true) == 0)
                         return proj;
                 }
             }
@@ -1448,20 +1447,41 @@ namespace XSharp.Project
             {
                 if (child is XSharpSDKProjectReferenceNode sdkref)
                 {
+
                     var element = child.ItemNode;
 
                     var path = element.Item.EvaluatedInclude;
-                    path = System.IO.Path.GetFileName(path);
-                    var refnode = FindProject(path);
+                    var completePath = Path.Combine(this.ProjectFolder, path);
+                    completePath = Path.GetFullPath(completePath);
+                    var refnode = FindProject(completePath);
+                    Guid refnodeGuid = Guid.Empty;
                     if (refnode == null)
                     {
+                        // this must be a foreign project reference
+                        var project = (CVT.Project)XSettings.ShellLink.FindProject(completePath);
+                        if (project != null)
+                        {
+                            project.GetItemInfo(out IVsHierarchy hier, out uint itemId, out IVsHierarchyItem item);
+                            if (hier != null)
+                            {
+                                hier.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out refnodeGuid);
+                                element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
+                                sdkref.ChangeBuildDependency(refnodeGuid);
+                                hier.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectName, out object oname);
+                                if (oname != null)
+                                {
+                                    element.SetMetadata(ProjectFileConstants.Name, oname.ToString());
+                                }
+                                sdkref.ChangeBuildDependency(refnodeGuid);
+                            }
+                        }
                         continue;
                     }
-                    var guid = refnode.ProjectIDGuid;
-                    if (guid != Guid.Empty)
+                    refnodeGuid = refnode.ProjectIDGuid;
+                    if (refnodeGuid != Guid.Empty)
                     {
-                        element.SetMetadata(ProjectFileConstants.Project, guid.ToString("B").ToUpperInvariant());
-
+                        element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
+                        sdkref.ChangeBuildDependency(refnodeGuid);
                     }
                     else
                     {

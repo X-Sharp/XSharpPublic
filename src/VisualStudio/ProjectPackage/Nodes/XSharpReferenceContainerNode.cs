@@ -33,6 +33,8 @@ namespace XSharp.Project
             var name = element.GetMetadata(ProjectFileConstants.Name);
             var path = element.Item.EvaluatedInclude;
             var parent = (XSharpProjectNode)this.ProjectMgr;
+            path = Path.Combine(parent.ProjectFolder, path);
+            path = Path.GetFullPath(path);
             var refnode = XSharpProjectNode.FindProject(path);
             bool changed = false;
             if (parent.IsSdkProject)

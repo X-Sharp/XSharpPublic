@@ -208,13 +208,10 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
         {
             // NOTE: This may run on a background thread!
+            // Do not call the method to write to the output window or error list here
             MessageImportance importance = buildEvent.Succeeded ? MessageImportance.Low : MessageImportance.High;
             QueueOutputText(importance, Environment.NewLine);
             QueueOutputEvent(importance, buildEvent);
-
-            // flush output and error queues
-            ReportQueuedOutput();
-            ReportQueuedTasks();
         }
 
         /// <summary>
@@ -232,8 +229,8 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
         {
             // NOTE: This may run on a background thread!
+            // Do not call the method to write to the output window or error list here
             QueueOutputEvent(buildEvent.Succeeded ? MessageImportance.Low : MessageImportance.High, buildEvent);
-            ReportQueuedOutput();
         }
 
         /// <summary>
@@ -362,13 +359,6 @@ namespace Microsoft.VisualStudio.Project
             {
                 // Enqueue the output text
                 this.outputQueue.Enqueue(new OutputQueueEntry(text, OutputWindowPane));
-                // We want to interactively report the output. But we dont want to dispatch
-                // more than one at a time, otherwise we might overflow the main thread's
-                // message queue. So, we only report the output if the queue was empty.
-                if (this.outputQueue.Count >= 1 && ThreadHelper.CheckAccess())
-                {
-                    ReportQueuedOutput();
-                }
             }
         }
 
@@ -384,14 +374,12 @@ namespace Microsoft.VisualStudio.Project
             this.currentIndent--;
         }
 
-        private void ReportQueuedOutput()
+        protected internal virtual void WriteBuildResults()
         {
-            // NOTE: This may run on a background thread!
-            FlushBuildOutput();
+            ReportQueuedOutput();
+            ReportQueuedTasks();
         }
-
-
-        internal void FlushBuildOutput()
+        protected internal virtual void ReportQueuedOutput()
         {
             OutputQueueEntry output;
             if (!outputQueue.IsEmpty)
@@ -400,11 +388,10 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (output.Pane is IVsOutputWindowPaneNoPump nopump)
                     {
-                        ThreadHelper.JoinableTaskFactory.Run(async delegate
-                        {
-                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                            nopump.OutputStringNoPump(output.Message);
-                        });
+                        // OutputStringNoPump is thread-safe and designed to be called from background threads
+                        // Do NOT marshal to the UI thread as this can cause deadlocks when called from
+                        // MSBuild logging threads while the UI thread is blocked on submission.Execute()
+                        nopump.OutputStringNoPump(output.Message);
                     }
                     else
                     {

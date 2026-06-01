@@ -99,7 +99,7 @@ namespace XSharp.Project
 
         private XSharpSDKRefProps _props;
 
-        internal XSharpSDKRefProps ReferenceProperties => _props;
+        protected XSharpSDKRefProps ReferenceProperties => _props;
         protected override string ReferencedProjectName
         {
             get

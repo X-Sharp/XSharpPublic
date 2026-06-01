@@ -3671,7 +3671,6 @@ namespace Microsoft.VisualStudio.Project
                         {
                             ThreadUtilities.runSafe(() =>
                             {
-                                this.FlushBuildLoggerContent();
                                 EndBuild(sub, designTime);
                                 uiThreadCallback((sub.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed, projectInstanceCopy);
                             });
@@ -4517,10 +4516,10 @@ namespace Microsoft.VisualStudio.Project
         /// This method is called as part of the callback method passed to the buildsubmission during async build
         /// so that results can be printed the the build is finished.
         /// </summary>
-        protected virtual void FlushBuildLoggerContent()
+        protected internal virtual void WriteBuildResults()
         {
             var logger = (IDEBuildLogger)BuildLogger;
-            logger.FlushBuildOutput();
+            logger.WriteBuildResults();
         }
         #endregion
 

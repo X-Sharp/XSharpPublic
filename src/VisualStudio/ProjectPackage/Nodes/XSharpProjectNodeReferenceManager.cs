@@ -16,6 +16,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
+using XSharp.Settings;
+using CVT =Community.VisualStudio.Toolkit;
+using Community.VisualStudio.Toolkit;
 #pragma warning disable VSTHRD010
 namespace XSharp.Project
 {
@@ -160,23 +163,25 @@ namespace XSharp.Project
             {
                 var newReference = context.CreateReference() as IVsProjectReference;
                 newReference.FullPath = reference.Url;
-#if DEV17
-                if (reference is XSharpSDKProjectReferenceNode sdkprj)
+                Guid projectGuid = reference.ReferencedProjectGuid;
+                string name = reference.Caption;
+                // Try to get the Project GUID from the Solution inside VS to make
+                // sure that SDK project references use the correct Guid
+                var project = (CVT.Project) XSettings.ShellLink.FindProject(reference.Url);
+                if (project != null)
                 {
-                    var props = sdkprj.ReferenceProperties;
-                    newReference.Name = props.Name;
-                    newReference.Identity = props.Guid;
-                    if (!string.IsNullOrEmpty(props.ReferenceSpecification))
+                    project.GetItemInfo(out IVsHierarchy hier, out uint itemId, out IVsHierarchyItem item);
+                    if (hier != null)
                     {
-                        newReference.ReferenceSpecification = props.ReferenceSpecification;
+                        hier.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out projectGuid);
+                        hier.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectName, out object oname);
+                        if (oname != null)
+                            name = oname.ToString();
                     }
                 }
-                else
-#endif
-                {
-                    newReference.Name = reference.Caption;
-                    newReference.Identity = reference.ReferencedProjectGuid.ToString("B");
-                }
+                newReference.Name = name;
+                newReference.Identity = projectGuid.ToString("B");
+                newReference.ReferenceSpecification = $"{projectGuid:b}|{name}" ;
                 //newReference.ReferenceSpecification= reference.ReferencedProjectGuid.ToString();
                 newReference.AlreadyReferenced = true;
                 context.AddReference(newReference);

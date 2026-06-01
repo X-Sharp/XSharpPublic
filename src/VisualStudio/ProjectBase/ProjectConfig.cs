@@ -1464,6 +1464,7 @@ namespace Microsoft.VisualStudio.Project
                 // but MsBuild can actually resolve it.
                 // Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
                 ThreadHelper.ThrowIfNotOnUIThread();
+                config.ProjectMgr.WriteBuildResults();
                 if (shouldRepaintReferences && result.IsSuccessful)
                 {
                     this.RefreshReferences();

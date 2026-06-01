@@ -40,6 +40,11 @@ namespace XSharp.Project
             base.Initialize(eventSource);
         }
 
+        protected override void WriteBuildResults()
+        {
+            base.WriteBuildResults();
+            errorlistManager.Refresh();
+        }
 
         internal void Clear()
         {

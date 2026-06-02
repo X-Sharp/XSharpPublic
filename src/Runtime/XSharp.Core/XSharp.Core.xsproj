@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.Targets" />
+  <Import Project="..\Runtime.props" />
   <PropertyGroup>
     <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
     <RootNamespace>XSharp</RootNamespace>
@@ -11,7 +11,6 @@
     <OutputName>XSharp.Core</OutputName>
     <AZ>true</AZ>
     <CS>true</CS>
-    <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -26,15 +25,6 @@
     <DebugType>Pdbonly</DebugType>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Collations\" />
-    <Folder Include="Functions" />
-    <Folder Include="Language" />
-    <Folder Include="State" />
-    <Folder Include="RDD" />
-    <Folder Include="Types" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
@@ -145,7 +135,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-  <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PostBuildEvent>xcopy $(TargetPath) $(SharedDir) /y</PostBuildEvent>
     <RunPostBuildEvent>Always</RunPostBuildEvent>

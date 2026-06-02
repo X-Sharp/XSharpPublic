@@ -97,9 +97,9 @@
     <File Path="Runtime/README.md" />
     <File Path="Runtime/Runtime.Common.Targets" />
     <File Path="Runtime/Runtime.Sdk.Targets" />
-    <File Path="Runtime/Runtime.Targets" />
+    <File Path="Runtime/Runtime.props" />
     <File Path="Runtime/VOSDK/Source/SharedSource/SDKAssemblyinfo.prg" />
-    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Props" />
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/VFPSDK/">
@@ -107,7 +107,7 @@
   </Folder>
   <Folder Name="/VOSDK-Typed/">
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Common.Targets" />
-    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Targets" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Props" />
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDKDocs.Targets" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj" Id="0ee10ced-b863-4b5e-8ac2-443b2cc6eb7a" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.xsproj" />
@@ -117,7 +117,7 @@
   </Folder>
   <Folder Name="/VOSDK/">
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Common.Targets" />
-    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Props" />
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDKDocs.Targets" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.xsproj" Id="d0a5da23-00b5-41fd-8564-96246b1e222f" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" Id="0bce49e2-3597-4e32-aa3c-c465130c05c8" />

@@ -56,13 +56,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\README.md = Common\README.md
 		Runtime\Runtime.Common.Targets = Runtime\Runtime.Common.Targets
 		Runtime\Runtime.Sdk.Targets = Runtime\Runtime.Sdk.Targets
-		Runtime\Runtime.Targets = Runtime\Runtime.Targets
+		Runtime\Runtime.props = Runtime\Runtime.props
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
 		Common\set.xh = Common\set.xh
 		Common\version.Targets = Common\version.Targets
 		Common\version.xh = Common\version.xh
 		Common\VFPProperties.xh = Common\VFPProperties.xh
-		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Props = Runtime\VOSDK\Source\VOSDK\VOSDK.Props
 		Common\XbasePPCmd.xh = Common\XbasePPCmd.xh
 		Common\XmlCommon.Targets = Common\XmlCommon.Targets
 		Runtime\XmlDoc.Targets = Runtime\XmlDoc.Targets
@@ -73,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK", "VOSDK", "{FABD1B90-611A-48D5-9D69-BC148E103030}"
 	ProjectSection(SolutionItems) = preProject
-		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Props = Runtime\VOSDK\Source\VOSDK\VOSDK.Props
 		Runtime\VOSDK\Source\VOSDK\VOSDKDocs.Targets = Runtime\VOSDK\Source\VOSDK\VOSDKDocs.Targets
 	EndProjectSection
 EndProject
@@ -111,7 +111,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Data", "Runtime\XSha
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK-Typed", "VOSDK-Typed", "{D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}"
 	ProjectSection(SolutionItems) = preProject
-		Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Targets = Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Targets
+		Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Props = Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Props
 		Runtime\VOSdkTyped\Source\VOSdk\VOSDKDocs.Targets = Runtime\VOSdkTyped\Source\VOSdk\VOSDKDocs.Targets
 	EndProjectSection
 EndProject

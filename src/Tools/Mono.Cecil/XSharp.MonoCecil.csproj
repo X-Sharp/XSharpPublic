@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <Import Project="..\Tools.Props" />
+
 	<PropertyGroup>
+    <LangVersion>latest</LangVersion>
 		<TargetFrameworks>net40</TargetFrameworks>
-    <ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
-    <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
-    <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
-    <OutputPath>$(BinariesDir)$(MsBuildProjectName)\$(Configuration)</OutputPath>
-  </PropertyGroup> 
+  </PropertyGroup>
 	<ItemGroup>
 		<Compile Include="ProjectInfo.cs" />
 		<Compile Include="Mono\*.cs" />
@@ -27,6 +26,7 @@
 		<ItemGroup>
 			<MonoCecilFiles Include="$(OutputPath)\*.*" />
 		</ItemGroup>
+    <Message Text="Copying Mono.Cecil files to $(VsExternalDir)" Importance="high" />
 		<Copy SourceFiles="@(MonoCecilFiles)" DestinationFolder="$(VsExternalDir)" />
 	</Target>
 

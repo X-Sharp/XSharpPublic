@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.Targets" />
+  <Import Project="..\Runtime.props" />
   <PropertyGroup>
     <ProjectGuid>7e2cbef6-9945-42c4-a7df-f9b8e2e68d44</ProjectGuid>
     <RootNamespace>XSharp.VFP.UI</RootNamespace>
@@ -43,7 +43,7 @@
     <NoWarn>$(NoWarn);$(DisabledWarnings);108,114</NoWarn>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
-    <IncludePaths>$(ProjectDir)..\XSharp.VFP%3b$(ProjectDir)\Headers</IncludePaths>
+    <IncludePaths>$(IncludePaths);$(ProjectDir)..\XSharp.VFP;$(ProjectDir)\Headers</IncludePaths>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -259,5 +259,5 @@
     <WarningsAsErrors />
     <DefineConstants>TRACE;RUNTIME;DYNAMIC_PROPERTIES</DefineConstants>
   </PropertyGroup>
-  <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Props" />
 </Project>

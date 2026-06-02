@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\VOSDK.SDK.Targets" />
-  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <Import Project="..\VOSDK.SDK.Props" />
+  <!-- Please note that most important settings are read from VOSDK.Props -->
   <PropertyGroup>
     <Description>XSharp Typed VO System Classes</Description>
     <AssemblyName>XSharp.VOSystemClasses</AssemblyName>
@@ -22,5 +22,5 @@
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.prg" />
   </ItemGroup>
-  <Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Props" />
 </Project>

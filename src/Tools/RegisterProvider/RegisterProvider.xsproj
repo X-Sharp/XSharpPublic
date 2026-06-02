@@ -29,7 +29,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
     <NoWarn />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>

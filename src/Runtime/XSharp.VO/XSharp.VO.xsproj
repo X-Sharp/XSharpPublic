@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.Targets" />
+  <Import Project="..\Runtime.props" />
   <PropertyGroup>
     <ProjectGuid>06099C3D-1697-4EB1-9F53-8A9A50B9EACD</ProjectGuid>
     <RootNamespace>XSharp.VO</RootNamespace>
@@ -87,7 +87,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-  <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />

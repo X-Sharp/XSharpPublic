@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.Sdk.Targets" />
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>

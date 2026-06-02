@@ -9,6 +9,7 @@ using System.Windows.Forms
 USING System.Reflection
 USING System.Linq
 USING VOSDK := XSharp.VO.SDK
+NAMESPACE XSharp.VO.SDK
 /// <include file="Gui.xml" path="doc/Menu/*" />
 CLASS Menu INHERIT VObject
     PROTECT oWindow			as Window

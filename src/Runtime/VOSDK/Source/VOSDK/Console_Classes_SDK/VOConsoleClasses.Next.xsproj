@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\VOSDK.SDK.Targets" />
+  <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
     <AssemblyName>VOConsoleClasses</AssemblyName>
     <VO15>false</VO15>

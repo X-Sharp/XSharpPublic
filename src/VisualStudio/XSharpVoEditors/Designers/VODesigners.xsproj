@@ -55,7 +55,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <CommandLineOption />
     <PPO>false</PPO>
@@ -70,7 +69,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <CommandLineOption />
     <PPO>false</PPO>

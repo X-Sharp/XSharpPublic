@@ -1,0 +1,34 @@
+<!--
+***********************************************************************************************
+Shared.Props
+
+This file sets some common properties for all projects in the src folder, unless
+overridden by a project file or by Directory.props in a folder below src.
+The properties are used to control where the output files are placed, and where the source files are located.
+
+Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+See License.txt in the project root for license information.
+***********************************************************************************************
+
+ -->
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <SrcDir>$(MSBuildThisFileDirectory)</SrcDir>
+    <SolutionDir>$(SrcDir)</SolutionDir>
+    <ArtifactsDir>$([System.IO.Path]::GetFullPath('$(SrcDir)..\Artifacts\'))</ArtifactsDir>
+    <BinariesDir>$(ArtifactsDir)</BinariesDir>
+    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <RuntimeDir>$(SrcDir)Runtime\</RuntimeDir>
+    <SharedDir>$(BinariesDir)Shared\$(Configuration)\</SharedDir>
+    <CommonDir>$(SrcDir)Common\</CommonDir>
+    <CommonInclude>$(SrcDir)Common\</CommonInclude>
+    <IncludePaths>$(IncludePaths);$(CommonInclude)</IncludePaths>
+    <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)\</VsExternalDir>
+    <RTOutputPath Condition="'$(RTOutputPath)' == ''" >$(ArtifactsDir)$(Configuration)\net46\</RTOutputPath>
+    <AssemblyOriginatorKeyFile>$(CommonDir)XSharp.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+</Project>
+

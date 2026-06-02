@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\VOSDK.SDK.Targets" />
+  <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
     <AssemblyName>VORDDClasses</AssemblyName>
     <VO6>false</VO6>

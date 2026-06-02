@@ -9,8 +9,9 @@
 
 USING System.Runtime.InteropServices
 USING VOSDK := XSharp.VO.SDK
+USING XSharp.VO.SDK
 /// <exclude />
-FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
+FUNCTION __SetAppObject(oNewApp AS XSharp.VO.SDK.App) AS XSharp.VO.SDK.App STRICT
 
 	BEGIN LOCK WC.CSApp
 		oApp := oNewApp
@@ -677,7 +678,7 @@ FUNCTION Enable3dControls() AS LOGIC
 
 	RETURN TRUE
 
-FUNCTION GetAppObject() AS App STRICT
+FUNCTION GetAppObject() AS XSharp.VO.SDK.App STRICT
 	LOCAL oRet AS App
 
 	BEGIN LOCK WC.CSApp

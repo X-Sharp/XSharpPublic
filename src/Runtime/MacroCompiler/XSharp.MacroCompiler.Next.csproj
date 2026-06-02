@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.Sdk.Targets" />
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <ProjectGuid>{EB3F3142-07F7-48CA-B38D-F611C45A9511}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -29,5 +29,5 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Props" />
 </Project>

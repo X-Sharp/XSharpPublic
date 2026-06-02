@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Specific targets for SDK type projects-->
 <Project>
-  <Import Project="VOSDK.Common.Targets" />
-  <Import Project="Version.Targets" />
+  <Import Project="Runtime.Common.props" />
+  <Import Project="$(CommonInclude)Version.props" />
   <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <Configurations>Debug;Release;Documentation;DocChinese</Configurations>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <cs>True</cs>
     <NS>true</NS>
-    <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
+    <GenerateSupportedOSPlatformAttribute>true</GenerateSupportedOSPlatformAttribute>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
@@ -21,3 +21,4 @@
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
 </Project>
+

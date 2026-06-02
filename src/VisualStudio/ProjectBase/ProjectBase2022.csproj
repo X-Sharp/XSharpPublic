@@ -91,6 +91,7 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="LocalizableProperties.cs" />
     <Compile Include="Misc\ThreadUtilities.cs" />
+    <Compile Include="ProjectInfo.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Url.cs" />
     <Compile Include="VisualStudio.Project.cs" />

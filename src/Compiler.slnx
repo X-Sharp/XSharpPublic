@@ -18,17 +18,17 @@
     </Project>
   </Folder>
   <Folder Name="/Roslyn/" />
-  <Folder Name="/Roslyn/Core/" Id="441f585b-4a2a-0f26-4883-a6cdb0b5009d">
+  <Folder Name="/Roslyn/Core/" >
     <Project Path="Roslyn/src/Compilers/Core/AnalyzerDriver/AnalyzerDriver.shproj" />
     <Project Path="Roslyn/src/Compilers/Server/VBCSCompiler/VBCSCompilerCommandLine.shproj" />
     <Project Path="Roslyn/src/Dependencies/Collections/Microsoft.CodeAnalysis.Collections.shproj" />
     <Project Path="Roslyn/src/Dependencies/PooledObjects/Microsoft.CodeAnalysis.PooledObjects.shproj" />
   </Folder>
-  <Folder Name="/Roslyn/CSharp/" Id="6558fc84-8d43-b2c3-faff-990604592679">
+  <Folder Name="/Roslyn/CSharp/" >
     <Project Path="Roslyn/src/Compilers/CSharp/csc/CscCommandLine.shproj" />
     <Project Path="Roslyn/src/Compilers/CSharp/CSharpAnalyzerDriver/CSharpAnalyzerDriver.shproj" />
   </Folder>
-  <Folder Name="/Roslyn/Tools/" Id="927886e5-8481-2654-9a6e-b65d0cba1fd6">
+  <Folder Name="/Roslyn/Tools/" >
     <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/BoundTreeGenerator/CompilersBoundTreeGenerator.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
@@ -75,12 +75,12 @@
     </Project>
   </Folder>
   <Folder Name="/XSharp/" />
-  <Folder Name="/XSharp/Build/" Id="2dca04a6-e0f9-d770-ac74-3f1fd3f9552f">
+  <Folder Name="/XSharp/Build/" >
     <Project Path="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" >
 	<BuildType Solution="Public|*" Project="Debug" />
 	</Project>
   </Folder>
-  <Folder Name="/XSharp/Compiler/" Id="e0df48e9-298a-2769-7ee0-b8e75888becc">
+  <Folder Name="/XSharp/Compiler/" >
     <Project Path="Compiler/src/Compiler/xsc/xsc.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
@@ -112,7 +112,7 @@
 	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
   </Folder>
-  <Folder Name="/XSharp/NuGet/" Id="be2843ab-9320-73b9-bbe3-73b6005d785f">
+  <Folder Name="/XSharp/NuGet/" >
     <Project Path="Compiler/src/NuGet/XSharp.Compiler.Tools/XSharp.Compiler.Tools.csproj">
       <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" />
@@ -125,7 +125,7 @@
 	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
   </Folder>
-  <Folder Name="/XSharp/Scripting/" Id="ca6f962b-cb36-c82f-ba67-10ab26d274be">
+  <Folder Name="/XSharp/Scripting/" >
     <Project Path="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />

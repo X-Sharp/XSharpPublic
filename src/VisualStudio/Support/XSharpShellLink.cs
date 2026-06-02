@@ -487,7 +487,7 @@ namespace XSharp.Support
 
         public ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 
-        public object FindProject(string sUrl)
+        public object FindVsProject(string sUrl)
         {
             if (_projects.ContainsKey(sUrl))
                 return _projects[sUrl];

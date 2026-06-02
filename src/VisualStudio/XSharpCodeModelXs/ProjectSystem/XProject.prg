@@ -580,7 +580,7 @@ CLASS XProject
             ENDIF
 
             SELF:RemoveProjectOutput(Url)
-            var prj := XSettings.ShellLink.FindProject(Url)
+            var prj := XSettings.ShellLink.FindVsProject(Url)
             IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
                 SELF:_StrangerProjects:Remove(prj)
                 RETURN TRUE
@@ -625,7 +625,7 @@ CLASS XProject
         SELF:LogReferenceMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
         existing := List<STRING>{}
         FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences:ToArray()
-            VAR p := XSettings.ShellLink.FindProject(sProject)
+            VAR p := XSettings.ShellLink.FindVsProject(sProject)
             IF (p != NULL)
                 SELF:_StrangerProjects:Add(p)
                 OutputFile := SELF:GetStrangerOutputDLL(sProject, p)

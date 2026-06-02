@@ -163,26 +163,24 @@ namespace XSharp.Project
             {
                 var newReference = context.CreateReference() as IVsProjectReference;
                 newReference.FullPath = reference.Url;
+                newReference.Name = reference.Caption;
                 Guid projectGuid = reference.ReferencedProjectGuid;
-                string name = reference.Caption;
-                // Try to get the Project GUID from the Solution inside VS to make
-                // sure that SDK project references use the correct Guid
-                var project = (CVT.Project) XSettings.ShellLink.FindProject(reference.Url);
-                if (project != null)
+                var projectInfo = ProjectInfo.GetProjectInfo(reference.Url, reference.ReferencedProjectGuid);
+                if (projectInfo == null)
                 {
-                    project.GetItemInfo(out IVsHierarchy hier, out uint itemId, out IVsHierarchyItem item);
-                    if (hier != null)
+                	// Try to get the Project GUID from the Solution inside VS to make
+                	// sure that SDK project references use the correct Guid
+                    if (projectNode.GetProjectGuid(reference.Url, out projectGuid))
                     {
-                        hier.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out projectGuid);
-                        hier.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectName, out object oname);
-                        if (oname != null)
-                            name = oname.ToString();
+                        projectInfo = new ProjectInfo(projectGuid, reference.Url);
                     }
                 }
-                newReference.Name = name;
+                else
+                {
+                    projectGuid = projectInfo.Id;
+                }
                 newReference.Identity = projectGuid.ToString("B");
-                newReference.ReferenceSpecification = $"{projectGuid:b}|{name}" ;
-                //newReference.ReferenceSpecification= reference.ReferencedProjectGuid.ToString();
+                newReference.ReferenceSpecification = $"{projectGuid:b}|{newReference.Name}" ;
                 newReference.AlreadyReferenced = true;
                 context.AddReference(newReference);
             }

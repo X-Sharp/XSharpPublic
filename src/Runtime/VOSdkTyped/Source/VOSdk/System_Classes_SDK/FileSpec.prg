@@ -988,11 +988,11 @@ ASSIGN Path(cPath  AS STRING)
         aFullPath := ArrayNew(4)
         // check for ROOT directory or add a backslash if trailing backslash is omitted
         IF cPath:EndsWith("\")
-            __SplitPath(NIL, cPath, aFullPath)
+            __SplitPath(NULL, cPath, aFullPath)
 
 
         ELSE
-            __SplitPath(NIL, cPath + "\", aFullPath)
+            __SplitPath(NULL, cPath + "\", aFullPath)
 
 
         ENDIF
@@ -1104,7 +1104,7 @@ METHOD Rename(oFSTarget AS STRING, lName := FALSE AS LOGIC) AS LOGIC
 
 
     // clean up the source path because FileSpec allows NULL information
-    __SplitPath(NIL, cSourcePath, aFullPath)
+    __SplitPath(NULL, cSourcePath, aFullPath)
     IF SubStr2(aFullPath[ 2 ], SLen(aFullPath[ 2 ])) == "\"
         cSourcePath := aFullPath[ 1 ] + aFullPath[ 2 ] + aFullPath[ 3 ] + aFullPath[ 4 ]
         cTargetPath := aFullPath[ 1 ] + aFullPath[ 2 ]

@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.Sdk.Targets" />
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <RootNamespace>XSharp.VFP</RootNamespace>
     <AssemblyName>XSharp.VFP</AssemblyName>
@@ -31,5 +31,5 @@
     <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj" />
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
-  <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Props" />
 </Project>

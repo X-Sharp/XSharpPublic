@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.Sdk.Targets" />
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <RootNamespace>XSharp.Data</RootNamespace>
     <AssemblyName>XSharp.Data</AssemblyName>
@@ -38,5 +38,5 @@
       <Version>4.9.0</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Props" />
 </Project>

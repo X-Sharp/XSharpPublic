@@ -92,7 +92,7 @@
     <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj"  />
   </Folder>
   <Folder Name="/RuntimeNet46/VOSDK-Typed/">
-    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Targets" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Props" />
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDKDocs.Targets" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj"  />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.xsproj" />
@@ -101,7 +101,7 @@
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.xsproj" />
   </Folder>
   <Folder Name="/RuntimeNet46/VOSDK/">
-    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Props" />
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDKDocs.Targets" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.xsproj" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" />
@@ -228,9 +228,9 @@
     <File Path="Runtime/README.md" />
     <File Path="Runtime/Runtime.Common.Targets" />
     <File Path="Runtime/Runtime.Sdk.Targets" />
-    <File Path="Runtime/Runtime.Targets" />
+    <File Path="Runtime/Runtime.props" />
     <File Path="Runtime/VOSDK/Source/SharedSource/SDKAssemblyinfo.prg" />
-    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Props" />
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/Tools/">

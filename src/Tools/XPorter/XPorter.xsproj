@@ -49,7 +49,6 @@
     <DefineConstants>NDEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <UseSharedCompilation>false</UseSharedCompilation>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>

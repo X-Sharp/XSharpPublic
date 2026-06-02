@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Targets" />
-  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <Import Project="..\VOSDK.Props" />
+  <!-- Please note that most important settings are read from VOSDK.Props -->
   <PropertyGroup>
     <ProjectGuid>0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A</ProjectGuid>
     <AssemblyName>XSharp.VOConsoleClasses</AssemblyName>
@@ -54,7 +54,7 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
-  <Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />

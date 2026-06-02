@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Targets" />
-  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <Import Project="..\VOSDK.Props" />
+  <!-- Please note that most important settings are read from VOSDK.Props -->
   <PropertyGroup>
     <Dialect>Vulcan</Dialect>
     <ProjectGuid>{cd26f249-2d4b-138b-e78a-565442ddf136}</ProjectGuid>
@@ -130,7 +130,7 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />

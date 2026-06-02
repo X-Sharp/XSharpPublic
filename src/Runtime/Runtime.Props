@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Specific targets for Framework type projects-->
 <Project>
-  <Import Project="VOSDK.Common.Targets" />
+  <Import Project="Runtime.Common.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" >
@@ -14,9 +14,11 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- Adjusted for X# 3: output to Net46 folder-->
-    <OutputPath>$(OutputPath)\net46\</OutputPath>
-  </PropertyGroup>  
+   <OutputPath>$(BaseOutputPath)\$(Configuration)\net46\</OutputPath>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
-  </PropertyGroup>  
+  </PropertyGroup>
 </Project>
+
+

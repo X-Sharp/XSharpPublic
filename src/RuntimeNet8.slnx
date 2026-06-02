@@ -46,9 +46,9 @@
     <File Path="Runtime/README.md" />
     <File Path="Runtime/Runtime.Common.Targets" />
     <File Path="Runtime/Runtime.Sdk.Targets" />
-    <File Path="Runtime/Runtime.Targets" />
+    <File Path="Runtime/Runtime.props" />
     <File Path="Runtime/VOSDK/Source/SharedSource/SDKAssemblyinfo.prg" />
-    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Props" />
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/VOSDK/">

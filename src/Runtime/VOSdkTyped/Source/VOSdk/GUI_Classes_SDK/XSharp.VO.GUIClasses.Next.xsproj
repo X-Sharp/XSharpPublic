@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\VOSDK.SDK.Targets" />
-  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <Import Project="..\VOSDK.SDK.Props" />
+  <!-- Please note that most important settings are read from VOSDK.Props -->
   <PropertyGroup>
     <Description>XSharp Typed VO GUI Classes</Description>
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
@@ -9,7 +9,9 @@
     <Name>XSharp.VO.VOGUIClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-    <LB>False</LB>
+    <LB>false</LB>
+    <NS>true</NS>
+    <Ins>true</Ins>
     <unsafe>true</unsafe>
     <CS>false</CS>
     <vo15>true</vo15>
@@ -17,12 +19,19 @@
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <EnforceSelf>True</EnforceSelf>
-    <EnforceOverride>False</EnforceOverride>
+    <EnforceSelf>true</EnforceSelf>
+    <EnforceOverride>false</EnforceOverride>
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
     <Vo5>False</Vo5>
     <NoWarn>168;165</NoWarn>
+    <AZ>false</AZ>
+    <MemVar>false</MemVar>
+    <OVF>false</OVF>
+    <Undeclared>false</Undeclared>
+    <AllowOldStyleAssignments>false</AllowOldStyleAssignments>
+    <ModernSyntax>false</ModernSyntax>
+    <StandardDefs />
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.prg" />
@@ -33,5 +42,5 @@
     <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.Next.xsproj" />
     <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.Next.xsproj" />
   </ItemGroup>
-  <Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Props" />
 </Project>

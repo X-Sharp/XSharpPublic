@@ -200,7 +200,7 @@ GLOBAL gEnableDispatch := FALSE AS LOGIC
 GLOBAL glCAPaintInit := FALSE AS LOGIC
 GLOBAL gsymBrowserDef := #DataBrowser AS SYMBOL
 //GLOBAL gsymBrowserDef := #DataListView AS SYMBOL
-global oApp as App
+global oApp as XSharp.VO.SDK.App
 
 /// <include file="Gui.xml" path="doc/ApplicationExec/*" />
 FUNCTION ApplicationExec(kExecType)

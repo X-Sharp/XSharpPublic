@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <Import Project="..\Shared.props" />
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp</RootNamespace>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <Nostandarddefs>true</Nostandarddefs>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <Prefer32Bit>False</Prefer32Bit>
+    <CommandLineOption />
+    <ns>true</ns>
+    <ins>true</ins>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnforceOverRide>true</EnforceOverRide>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RuntimeIdentifier Condition="'$(UsingMicrosoftNETSdk)' != 'true'">win</RuntimeIdentifier>
+    <VulcanCompatibleResources>True</VulcanCompatibleResources>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
+    <NoWarn>$(DisabledWarnings);$(NoWarn);67,165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573,419</NoWarn>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;RUNTIME</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
+  </PropertyGroup>
+ </Project>
+

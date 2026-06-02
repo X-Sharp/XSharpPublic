@@ -52,7 +52,6 @@ See License.txt in the project root for license information.
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
     <GeneratedCompilerPath Condition="$(COnfiguration)!='Public'">$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
 	<GeneratedCompilerPath Condition="$(COnfiguration)=='Public'">$(BinariesDir)csc\Debug\net472\</GeneratedCompilerPath>
-    <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>
     <Configurations>Debug;Release</Configurations>
@@ -69,7 +68,7 @@ See License.txt in the project root for license information.
   <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
     <Message Importance="high" Text="Signing output assembly $(TargetPath)" />
     <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
-	
+
   </Target>
 
 </Project>

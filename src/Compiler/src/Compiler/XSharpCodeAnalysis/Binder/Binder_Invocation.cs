@@ -180,7 +180,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                     string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
-                    if (result is BoundCall bc)
+                    if (result is BoundCall bc && bc.Method != null)
                     {
                         // Remove errors about passing property by reference for Clipper Calling Convention
                         if (bc.Method.HasClipperCallingConvention())

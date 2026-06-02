@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-05-27T17:15:36.820Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-06-02T14:38:29.139Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -38,6 +38,7 @@
       <li styleclass="List1">Fixed a &quot;Type Expected&quot; compiler error in the VO dialect when declaring a CLIPPER method with no arguments and no explicit return type (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1907" target="_blank">#1907</link>)</li>
       <li styleclass="List1">Passing a literal NIL as argument for a type parameter now generates a compiler warning (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>)</li>
       <li styleclass="List1">Fixed an issue where certain errors were not shown causing a compilation to fail with &quot;error XS7038: Failed to emit module&quot; (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1951" target="_blank">#1951</link>)</li>
+      <li styleclass="List1">Fixed an internal compiler error &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1966" target="_blank">#1966</link>)</li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <para styleclass="Heading3">New Features</para>
@@ -89,12 +90,15 @@
       <li styleclass="List1">Fixed an issue where assigning to a hidden field or property was incorrectly allowed. Added NoIVarGetSelf() and NoIVarPutSelf() methods (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1491" target="_blank">#1491</link>)</li>
       <li styleclass="List1">Fixed a macro compiler issue with certain method calls<text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;"> (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1860" target="_blank">#1860</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
       <li styleclass="List1">Fixed a memo-related state issue (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1869" target="_blank">#1869</link>)</li>
-      <li styleclass="List1">Fix Dbc.FindTable &#160;to support Alias and/or FileName <text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;"> (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1949" target="_blank">#1949</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
+      <li styleclass="List1">Fix Dbc.FindTable &#160;to support Alias and/or FileName (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1949" target="_blank">#1949</link><text styleclass="" style="font-family:Aptos; font-size:12pt; color:#000000;">)</text></li>
+      <li styleclass="List1">Improved the speed of the Directory Function (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1958" target="_blank">#1958</link>)</li>
     </list>
     <para styleclass="Heading3">XPP Dialect</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">XPP Dialect: Added NLS_ defines and initial implementation for the SetLocale() function</li>
-      <li styleclass="List1">XPP Dialect: Fixed a late binding issue (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1836" target="_blank">#1836</link>)</li>
+      <li styleclass="List1">Added NLS_ defines and initial implementation for the SetLocale() function</li>
+      <li styleclass="List1">Fixed a late binding issue (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1836" target="_blank">#1836</link>)</li>
+      <li styleclass="List1">Fixed an error in a UDC</li>
+      <li styleclass="List1">Added support for the Break() function &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1961" target="_blank">#1961</link>)</li>
     </list>
     <para styleclass="Heading3">New features the FoxPro dialect.</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -176,9 +180,11 @@
       <li styleclass="List1">Fixed incorrect conditional compilation block highlighting: the language service now uses the correct preprocessor defines from the active project configuration (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1923" target="_blank">#1923</link>)</li>
       <li styleclass="List1">Fixed an issue with Project References for SDK projects where these references were not shown in the &quot;Add Reference&quot; dialog (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1928" target="_blank">#1928)</link></li>
       <li styleclass="List1">Fixed an issue with Project References for SDK projects where these references were not shown in the Project Dependencies page of the Solution Properties window ((<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1929" target="_blank">#1929)</link></li>
+      <li styleclass="List1">Fixed an issue where errors were not shown in the VS Error list and/or output window after a build (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1930" target="_blank">#1930</link>)</li>
       <li styleclass="List1">Fixed local functions not appearing correctly in the Navigation Bar and Document Outline window &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1932" target="_blank">#1932</link>)</li>
       <li styleclass="List1">Fixed the navigation bar not displaying all entities in files with nested classes, and not following the cursor when it moves past the last declared entity (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1934" target="_blank">#1934</link>)</li>
       <li styleclass="List1">Fixed an issue where Goto Definition would fail when a project folder contains another project and the option &quot;Show All Files&quot; was enabled, showing that other project as &quot;Non member Item&quot;.</li>
+      <li styleclass="List1">Sometimes reading type information from Assemblyreferences was failing. This has been fixed. &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1956" target="_blank">#1956</link>)</li>
     </list>
     <para styleclass="Heading2">Debugger</para>
     <para styleclass="Heading3">New Features</para>

@@ -676,14 +676,33 @@ namespace XSharp.LanguageService
                         continue;
                     }
                     string prototype = member.ComboPrototype;
+                    if (member.Kind == Kind.Delegate)
+                    {
+                        if (member.Name.ToLower() == "invoke")
+                        {
+                            prototype = prototype.Replace("Invoke", member.Parent.Name);
+                        }
+                        else
+                            continue;
+                    }
                     bool addPrefix = false;
                     if (_settings.CurrentTypeOnly)
                     {
                         addPrefix = false;
+                        if (prototype.StartsWith(currentType.Name + "."))
+                        {
+                            prototype = prototype.Substring(currentType.Name.Length + 1);
+                        }
+                        if (prototype.StartsWith(currentType.FullName + "."))
+                        {
+                            prototype = prototype.Substring(currentType.FullName.Length + 1);
+                        }
                     }
                     else
                     {
-                        if (member.Parent is XSourceEntity && member.Parent.Name != XLiterals.GlobalName && member.Kind.IsClassMember(_file.Project.Dialect))
+                        if (member.Parent is XSourceEntity &&
+                            member.Parent.Name != XLiterals.GlobalName &&
+                            member.Kind.IsClassMember(_file.Project.Dialect))
                         {
                             addPrefix = true;
                         }

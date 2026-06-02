@@ -3,6 +3,8 @@
     <BuildType Name="DocChinese" />
     <BuildType Name="DocSpanish" />
     <BuildType Name="Documentation" />
+	<ProjectType Name="XSharp" TypeId="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Extension=".xsproj" />
+
   </Configurations>
   <Folder Name="/DocChinese/">
     <File Path="DocChinese/Ads.xml" />
@@ -21,24 +23,6 @@
     <File Path="DocChinese/VoFunctionDocs.xml" />
     <File Path="DocChinese/VOSDK.Xml" />
     <File Path="DocChinese/XPPComments.Xml" />
-  </Folder>
-  <Folder Name="/DocSpanish/">
-    <File Path="DocSpanish/Ads.xml" />
-    <File Path="DocSpanish/Console.Xml" />
-    <File Path="DocSpanish/CoreComments.Xml" />
-    <File Path="DocSpanish/Gui.xml" />
-    <File Path="DocSpanish/Harbour.xml" />
-    <File Path="DocSpanish/Internet.xml" />
-    <File Path="DocSpanish/Rdd.xml" />
-    <File Path="DocSpanish/Report.Xml" />
-    <File Path="DocSpanish/RTComments.Xml" />
-    <File Path="DocSpanish/Sql.Xml" />
-    <File Path="DocSpanish/System.Xml" />
-    <File Path="DocSpanish/VFPDocs.xml" />
-    <File Path="DocSpanish/VfpRuntimeDocs.xml" />
-    <File Path="DocSpanish/VoFunctionDocs.xml" />
-    <File Path="DocSpanish/VOSDK.Xml" />
-    <File Path="DocSpanish/XPPComments.Xml" />
   </Folder>
   <Folder Name="/Docs/">
     <File Path="Docs/Console.Xml" />
@@ -62,6 +46,24 @@
     <File Path="Runtime/Docs/RuntimeSpecsV2.docx" />
     <File Path="Runtime/RuntimeFunctionsAndClasses.xlsx" />
     <File Path="VFPClasses.xml" />
+  </Folder>
+  <Folder Name="/DocSpanish/">
+    <File Path="DocSpanish/Ads.xml" />
+    <File Path="DocSpanish/Console.Xml" />
+    <File Path="DocSpanish/CoreComments.Xml" />
+    <File Path="DocSpanish/Gui.xml" />
+    <File Path="DocSpanish/Harbour.xml" />
+    <File Path="DocSpanish/Internet.xml" />
+    <File Path="DocSpanish/Rdd.xml" />
+    <File Path="DocSpanish/Report.Xml" />
+    <File Path="DocSpanish/RTComments.Xml" />
+    <File Path="DocSpanish/Sql.Xml" />
+    <File Path="DocSpanish/System.Xml" />
+    <File Path="DocSpanish/VFPDocs.xml" />
+    <File Path="DocSpanish/VfpRuntimeDocs.xml" />
+    <File Path="DocSpanish/VoFunctionDocs.xml" />
+    <File Path="DocSpanish/VOSDK.Xml" />
+    <File Path="DocSpanish/XPPComments.Xml" />
   </Folder>
   <Folder Name="/Macrocompiler/">
     <Project Path="Runtime/MacroCompiler/MacroCompiler.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511" />
@@ -101,40 +103,40 @@
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/VFPSDK/">
-    <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="7e2cbef6-9945-42c4-a7df-f9b8e2e68d44" />
+    <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Id="7e2cbef6-9945-42c4-a7df-f9b8e2e68d44" />
   </Folder>
   <Folder Name="/VOSDK-Typed/">
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Common.Targets" />
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Targets" />
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDKDocs.Targets" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="0ee10ced-b863-4b5e-8ac2-443b2cc6eb7a" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="051d166b-3886-43fb-a3c6-6c6846ea6df1" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="223be288-7390-48c2-8c3d-6742287962dc" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="91816960-eb2d-4e4a-ae67-4edc5bd38940" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj" Id="0ee10ced-b863-4b5e-8ac2-443b2cc6eb7a" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.xsproj" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.xsproj" Id="223be288-7390-48c2-8c3d-6742287962dc" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.xsproj" Id="91816960-eb2d-4e4a-ae67-4edc5bd38940" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.xsproj" Id="5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea" />
   </Folder>
   <Folder Name="/VOSDK/">
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Common.Targets" />
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDKDocs.Targets" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d0a5da23-00b5-41fd-8564-96246b1e222f" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="0bce49e2-3597-4e32-aa3c-c465130c05c8" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Internet_SDK/VOInternetClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="a62ef59e-7473-4c55-bed8-63ca0d896995" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="d7079298-1712-4b03-ad76-4ec53bfe8356" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Report_Classes_SDK/VOReportClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="65d766d9-e113-4372-960b-01732b65d27d" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/SQL_Classes_SDK/VOSQLClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="86da1b42-fbf9-432b-a2d2-67a4f357f019" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ac2aebff-69ff-405d-b7d9-6e5cb1db914c" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Win32_API_Library_SDK/VOWin32APILibrary.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="6c93866f-1894-4e82-9aca-55927cae914a" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.xsproj" Id="d0a5da23-00b5-41fd-8564-96246b1e222f" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" Id="0bce49e2-3597-4e32-aa3c-c465130c05c8" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Internet_SDK/VOInternetClasses.xsproj" Id="a62ef59e-7473-4c55-bed8-63ca0d896995" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.xsproj" Id="d7079298-1712-4b03-ad76-4ec53bfe8356" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Report_Classes_SDK/VOReportClasses.xsproj" Id="65d766d9-e113-4372-960b-01732b65d27d" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/SQL_Classes_SDK/VOSQLClasses.xsproj" Id="86da1b42-fbf9-432b-a2d2-67a4f357f019" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.xsproj" Id="ac2aebff-69ff-405d-b7d9-6e5cb1db914c" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Win32_API_Library_SDK/VOWin32APILibrary.xsproj" Id="6c93866f-1894-4e82-9aca-55927cae914a" />
   </Folder>
   <Folder Name="/XsRuntime/">
-    <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="535dff14-efb7-43f5-a4e1-71c1c4280040" />
-    <Project Path="Runtime/XSharp.Data/XSharp.Data.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="db9ad987-ebd9-4f0c-8604-608a9028585c" />
-    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="eaee04e4-d7f6-46ac-b65a-e1b416b8d635" />
-    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="e83c6c8c-773f-4b01-a597-3d38398a9362" />
-    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="770e6ebb-804f-415a-a9ca-e5b0383105f0" />
-    <Project Path="Runtime/XSharp.RT/XSharp.RT.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ef8d2bf2-e81a-479a-ba4f-294c4c348b66" />
-    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="3a771f0e-9400-4a19-8663-c71567ebfa29" />
-    <Project Path="Runtime/XSharp.VO/XSharp.VO.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="06099c3d-1697-4eb1-9f53-8a9a50b9eacd" />
-    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c5d7be20-038e-4b42-a90a-b13bab83d8e5" />
+    <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Id="535dff14-efb7-43f5-a4e1-71c1c4280040" />
+    <Project Path="Runtime/XSharp.Data/XSharp.Data.xsproj" Id="db9ad987-ebd9-4f0c-8604-608a9028585c" />
+    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.xsproj" Id="eaee04e4-d7f6-46ac-b65a-e1b416b8d635" />
+    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.xsproj" Id="e83c6c8c-773f-4b01-a597-3d38398a9362" />
+    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.xsproj" Id="770e6ebb-804f-415a-a9ca-e5b0383105f0" />
+    <Project Path="Runtime/XSharp.RT/XSharp.RT.xsproj" Id="ef8d2bf2-e81a-479a-ba4f-294c4c348b66" />
+    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.xsproj" Id="3a771f0e-9400-4a19-8663-c71567ebfa29" />
+    <Project Path="Runtime/XSharp.VO/XSharp.VO.xsproj" Id="06099c3d-1697-4eb1-9f53-8a9a50b9eacd" />
+    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.xsproj" Id="c5d7be20-038e-4b42-a90a-b13bab83d8e5" />
   </Folder>
 </Solution>

@@ -1455,33 +1455,28 @@ namespace XSharp.Project
                     completePath = Path.GetFullPath(completePath);
                     var refnode = FindProject(completePath);
                     Guid refnodeGuid = Guid.Empty;
+                    string refnodeName = child.Caption;
                     if (refnode == null)
                     {
                         // this must be a foreign project reference
-                        var project = (CVT.Project)XSettings.ShellLink.FindProject(completePath);
-                        if (project != null)
+                        var projectInfo = ProjectInfo.GetProjectInfo(completePath);
+                        if (projectInfo == null)
                         {
-                            project.GetItemInfo(out IVsHierarchy hier, out uint itemId, out IVsHierarchyItem item);
-                            if (hier != null)
+                            if (this.GetProjectGuid(completePath, out refnodeGuid))
                             {
-                                hier.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out refnodeGuid);
+                                projectInfo = new ProjectInfo(refnodeGuid, completePath);
                                 element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
-                                sdkref.ChangeBuildDependency(refnodeGuid);
-                                hier.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectName, out object oname);
-                                if (oname != null)
-                                {
-                                    element.SetMetadata(ProjectFileConstants.Name, oname.ToString());
-                                }
-                                sdkref.ChangeBuildDependency(refnodeGuid);
                             }
                         }
-                        continue;
+                        else
+                        {
+                            refnodeGuid = projectInfo.Id;
+                        }
                     }
-                    refnodeGuid = refnode.ProjectIDGuid;
                     if (refnodeGuid != Guid.Empty)
                     {
                         element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
-                        sdkref.ChangeBuildDependency(refnodeGuid);
+                        element.SetMetadata(ProjectFileConstants.Name, refnodeName);
                     }
                     else
                     {
@@ -1499,6 +1494,22 @@ namespace XSharp.Project
             return found;
         }
 #endif
+
+        internal bool GetProjectGuid(string url, out  Guid guid)
+        {
+            guid = Guid.Empty;
+            var project = (CVT.Project)XSettings.ShellLink.FindVsProject(url);
+            if (project != null)
+            {
+                project.GetItemInfo(out IVsHierarchy hier, out uint itemId, out IVsHierarchyItem item);
+                if (hier != null)
+                {
+                    hier.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out guid);
+                    return true;
+                }
+            }
+            return false;
+        }
 
         private object CreateServices(Type serviceType)
         {

@@ -725,15 +725,6 @@ namespace Microsoft.VisualStudio.Project
         }
         #endregion
 
-        public void ChangeBuildDependency(Guid newGuid)
-        {
-            var oldDep = this.buildDependency;
-            var newDep = new BuildDependency(this.ProjectMgr, newGuid);
-            this.ProjectMgr.RemoveBuildDependency(oldDep);
-            this.ProjectMgr.AddBuildDependency(newDep);
-            this.buildDependency = newDep;
-        }
-
     }
 
 }

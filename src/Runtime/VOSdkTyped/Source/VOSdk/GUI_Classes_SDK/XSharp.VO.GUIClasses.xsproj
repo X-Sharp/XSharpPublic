@@ -5,7 +5,7 @@
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
     <Dialect>Vulcan</Dialect>
-    <ProjectGuid>051D166B-3886-43FB-A3C6-6C6846EA6DF1</ProjectGuid>
+    <ProjectGuid>{cd26f249-2d4b-138b-e78a-565442ddf136}</ProjectGuid>
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharp.VO.GUIClasses</OutputName>

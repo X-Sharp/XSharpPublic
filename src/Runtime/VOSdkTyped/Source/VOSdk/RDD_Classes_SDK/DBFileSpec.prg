@@ -822,7 +822,7 @@ ASSIGN FileName( cFileName AS STRING)
 
         cFileName := Upper( cFileName )
         aFullPath := ArrayNew( 4 )
-        __SplitPath( NIL, cFileName, aFullPath )
+        __SplitPath( NULL, cFileName, aFullPath )
         cGetDefault := GetDefault()
 
 
@@ -907,7 +907,7 @@ ASSIGN FullPath( cFullPath AS STRING)
 
         cFullPath := Upper( cFullPath )
         aFullPath := ArrayNew( 4 )
-        __SplitPath( NIL, cFullPath, aFullPath )
+        __SplitPath( NULL, cFullPath, aFullPath )
 
 
         SELF:cFSDrive := aFullPath[1]

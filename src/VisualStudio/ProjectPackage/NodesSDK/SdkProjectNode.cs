@@ -113,7 +113,7 @@ namespace XSharp.Project
             this.BuildProject.ReevaluateIfNecessary();
         }
 
-         protected override void ProcessReferences()
+        protected override void ProcessReferences()
         {
             base.ProcessReferences();
             RefreshReferences();
@@ -497,6 +497,12 @@ namespace XSharp.Project
 
                     }
                 }
+            }
+            var referenceNodes = new List<XSharpSDKProjectReferenceNode>();
+            this.FindNodesOfType(referenceNodes);
+            foreach (var node in referenceNodes)
+            {
+                node.RemoveProperties();
             }
             if (this.GetProjectProperty(ProjectFileConstants.ProjectGuid) != null)
             {

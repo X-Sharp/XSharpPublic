@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using XSharpModel;
 using XSharp.Settings;
 using XSharp.Support;
+using Microsoft.VisualStudio.Text.Editor;
 namespace XSharp.LanguageService
 {
     internal class XSharpQuickInfoSource : IAsyncQuickInfoSource
@@ -47,15 +48,15 @@ namespace XSharp.LanguageService
 
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken)
         {
+            await Task.FromResult(0);
             if (XDebuggerSettings.DebuggerIsRunning || XEditorSettings.DisableQuickInfo)
             {
-                await session.DismissAsync();
                 return null;
             }
+
             var triggerPoint = session.GetTriggerPoint(_textBuffer.CurrentSnapshot);
             if (triggerPoint == null)
             {
-                await session.DismissAsync();
                 return null;
             }
             try
@@ -79,7 +80,6 @@ namespace XSharp.LanguageService
                 }
                 if (abort)
                 {
-                    await session.DismissAsync();
                     return null;
                 }
                 if (cancellationToken.IsCancellationRequested)
@@ -183,7 +183,6 @@ namespace XSharp.LanguageService
             {
                 ModelWalker.Resume();
             }
-            await session.DismissAsync();
             return null;
         }
 
@@ -212,20 +211,43 @@ namespace XSharp.LanguageService
 
         [Export(typeof(IAsyncQuickInfoSourceProvider))]
         [Name("XSharp QuickInfo Source")]
-        [Order]
+        [Order(Before = "Default Quick Info Presenter")]
+        [TextViewRole(PredefinedTextViewRoles.Document)]
+        [TextViewRole(PredefinedTextViewRoles.Analyzable)]
         [ContentType(XSharpConstants.LanguageName)]
         internal class XSharpQuickInfoSourceProvider : IAsyncQuickInfoSourceProvider
         {
 
             public IAsyncQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
             {
+
+                // VS 2022 17.8+ requires strict content type validation
+                if (textBuffer?.ContentType == null)
+                {
+                    return null;
+                }
+
+                // Check if content type is XSharp or derives from it
+                bool isXSharpContent = textBuffer.ContentType.IsOfType(XSharpConstants.LanguageName);
+
+                if (!isXSharpContent)
+                {
+                    return null;
+                }
+
+
                 var file = textBuffer.GetFile();
                 if (file == null || file.XFileType != XFileType.SourceCode)
+                {
                     return null;
-                return new XSharpQuickInfoSource(textBuffer);
+                }
+
+                // Use GetOrCreateSingletonProperty to ensure only one instance per buffer
+                var source = textBuffer.Properties.GetOrCreateSingletonProperty(
+                    () => new XSharpQuickInfoSource(textBuffer));
+
+                return source;
             }
-
-
         }
         internal class QuickInfoBase
         {

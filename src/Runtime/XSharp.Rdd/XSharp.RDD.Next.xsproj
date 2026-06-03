@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <RootNamespace>XSharp</RootNamespace>
-    <AssemblyName>XSharp.RDD</AssemblyName>
+    <RootNamespace>XSharp.RDD</RootNamespace>
+    <AssemblyName>XSharp.Rdd</AssemblyName>
     <Dialect>Core</Dialect>
     <AZ>true</AZ>
+    <CS>true</CS>
     <INS>true</INS>
     <NamedArgs>True</NamedArgs>
     <Unsafe>True</Unsafe>
-    <allowdot>true</allowdot>
+    <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>

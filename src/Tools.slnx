@@ -1,0 +1,49 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Public" />
+    <BuildType Name="Release" />
+    <ProjectType Name="XSharp" TypeId="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Extension=".xsproj" />
+  </Configurations>
+  <Folder Name="/SHFB/">
+    <File Path="Tools/SHFB/SHFB.Targets" />
+    <Project Path="Tools/SHFB/XSharpPlugin/XSharpPlugin.csproj" Id="9e903f77-f7c7-4440-8508-7a30a4fa43fd" />
+    <Project Path="Tools/SHFB/XSharpSyntax/XSharpSyntax.csproj" Id="8e45c5bd-c5f7-4c00-8fb2-ec84413626d0" />
+    <Project Path="Tools/SHFB/XSharpVs/XSharpVs.csproj" Id="770cc19a-4bf3-4755-a293-39e9b20739d7" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Common/BuildNumber.h" />
+    <File Path="Common/commonAssemblyInfo.prg" />
+    <File Path="Common/Constants.cs" />
+    <File Path="Common/constants.prg" />
+    <File Path="Common/version.xh" />
+    <File Path="Tools/SHFB/readme.txt" />
+    <File Path="VisualStudio/README.md" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="Tools/DeployMsBuildSupport/DeployMsBuildSupport.xsproj" Id="f6dea3ea-186c-4868-859a-c2ebbee0d981" />
+    <Project Path="Tools/RegisterProvider/RegisterProvider.xsproj" Id="5190e508-e052-41d5-8824-ea472241489a" />
+    <Project Path="Tools/SetupCheck/VsVersionCheck.csproj" Id="b9aa5dd9-28d1-445d-8fdd-6195dc479bcc" />
+    <Project Path="Tools/UDCTester/UDCTester.xsproj" Id="f9579349-9b33-44a3-a615-d091ab45dbb8" />
+    <Project Path="Tools/XPorter/XPorter.xsproj" Id="8a49a47c-ade7-416c-8b28-cd3b401cbc25" />
+    <Project Path="XMLExtractor/XMLExtractor.xsproj" Id="018fa616-afc8-4aee-85c7-8bb0421f10a7" />
+  </Folder>
+  <Folder Name="/VFP/">
+    <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Id="7e2cbef6-9945-42c4-a7df-f9b8e2e68d44" />
+    <Project Path="Tests/VFPXPorterTest/VFPXPorterTest.xsproj" Id="421a1a64-a17d-451e-b7e0-dbf3a173b65d" />
+    <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Id="b4f3862c-82bc-407f-8a84-5241f7321f9f" />
+    <Project Path="Tools/VFPXPorter/Source/VFPXPorter/VFPXPorter.xsproj" Id="23bb62e9-a405-416a-b0a5-0e4e178b839f" />
+    <Project Path="Tools/VFPXPorter/Source/VFPXPorterCmd/VFPXPorterCmd.xsproj" Id="8ffa9199-e4a3-4ac4-9a97-9ba2ac8d13cd" />
+    <Project Path="Tools/VFPXPorter/Source/VFPXPorterLib/VFPXPorterLib.xsproj" Id="71f46150-aad7-4ed1-8e3f-263698800ba7" />
+  </Folder>
+  <Folder Name="/VFP/Comments/">
+    <File Path="Tools/VFPXPorter/DocumentationAndRules.md" />
+    <File Path="Tools/VFPXPorter/ExportAdvices.md" />
+    <File Path="Tools/VFPXPorter/README.md" />
+    <File Path="Tools/VFPXPorter/Todo.md" />
+  </Folder>
+  <Folder Name="/VOXporter/">
+    <Project Path="Tools/VOXporter/Fab_VO_Entities.xsproj" Id="73c0dca6-bfe5-40cb-9240-3db1c37f5b34" />
+    <Project Path="Tools/VOXporter/VOXPorter.xsproj" Id="939b111b-6ebd-490f-a7f4-ce923d758a3b" />
+  </Folder>
+</Solution>

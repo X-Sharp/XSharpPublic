@@ -123,7 +123,12 @@ BEGIN NAMESPACE XSharpModel
         IF ! Directory.Exists(folder)
             Directory.CreateDirectory(folder)
         ENDIF
-        folder    := Path.Combine(folder, Path.GetFileNameWithoutExtension(_fileName))
+        VAR extension := Path.GetExtension(_fileName)
+        if extension:ToLower():EndsWith("slnx")
+            folder    := Path.Combine(folder, Path.GetFileName(_fileName))
+        else
+            folder    := Path.Combine(folder, Path.GetFileNameWithoutExtension(_fileName))
+        endif
         IF ! Directory.Exists(folder)
             Directory.CreateDirectory(folder)
         ENDIF
@@ -131,7 +136,7 @@ BEGIN NAMESPACE XSharpModel
         _sqldb    := Path.Combine(folder, "X#Model.xsdb")
         XDatabase.CreateOrOpenDatabase(_sqldb)
 	END METHOD
-		
+
     STATIC METHOD AfterOpen() AS VOID
         VAR dbprojectList := XDatabase.GetProjectFileNames()
         FOREACH var project in _projects:Values

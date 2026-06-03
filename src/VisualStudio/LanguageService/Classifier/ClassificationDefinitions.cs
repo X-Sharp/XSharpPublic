@@ -10,6 +10,7 @@ using XSharpModel;
 
 namespace XSharp.LanguageService
 {
+
     internal static class ClassificationTypes
     {
 
@@ -25,6 +26,6 @@ namespace XSharp.LanguageService
         [Name(ColorizerConstants.XSharpTextEndTextFormat)]
         internal static ClassificationTypeDefinition XSharpTextEndTextFormat = null;
 
-       
+
     }
 }

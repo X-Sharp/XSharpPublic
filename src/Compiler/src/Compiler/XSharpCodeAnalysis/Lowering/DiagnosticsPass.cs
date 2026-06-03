@@ -187,10 +187,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             // check for NIL argument to non USUAL or OBJECT parameter
-            if (node.Syntax.XNode is XSharpParser.ICallContext icc && ! node.Method.HasClipperCallingConvention())
+            // Skip generated nodes. This includes also conversion nodes generated
+            // by the compiler. These nodes do not match the parameters from the ICallContext
+            if (node.Syntax.XNode is XSharpParser.ICallContext icc
+                && !node.WasCompilerGenerated
+                && !node.Method.HasClipperCallingConvention()
+                && !node.Method.HasParamsParameter())
             {
                 var args = icc.Arguments;
-                if (args != null && !node.Method.HasParamsParameter())
+                if (args != null)
                 {
                     var types = node.Method.ParameterTypesWithAnnotations;
                     for (var i = 0; i < node.Method.ParameterCount && i < args._Args.Count; i++)

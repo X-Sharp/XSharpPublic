@@ -84,6 +84,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var args = ImmutableArray.Create(defaultExpr);
                     var mcall = new BoundCall(syntax, null, ThreeState.False, implicitop, args, default, default, false, false, false, default, default, default, parameterType);
+                    mcall.WasCompilerGenerated = true;
                     return mcall;
                 }
             }
@@ -180,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                     string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
-                    if (result is BoundCall bc && bc.Method != null)
+                    if (result is BoundCall bc)
                     {
                         // Remove errors about passing property by reference for Clipper Calling Convention
                         if (bc.Method.HasClipperCallingConvention())

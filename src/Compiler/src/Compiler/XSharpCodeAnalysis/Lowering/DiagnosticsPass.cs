@@ -190,28 +190,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Skip generated nodes. This includes also conversion nodes generated
             // by the compiler. These nodes do not match the parameters from the ICallContext
             if (node.Syntax.XNode is XSharpParser.ICallContext icc
-                && !node.WasCompilerGenerated
                 && !node.Method.HasClipperCallingConvention()
                 && !node.Method.HasParamsParameter())
             {
-                var args = icc.Arguments;
+                var args = node.Arguments;
                 if (args != null)
                 {
                     var types = node.Method.ParameterTypesWithAnnotations;
-                    for (var i = 0; i < node.Method.ParameterCount && i < args._Args.Count; i++)
+                    for (var i = 0; i < node.Method.ParameterCount && i < args.Length; i++)
                     {
-                        bool check = false;
-                        var arg = args._Args[i];
-                        if (arg is XSharpParser.NamedArgumentContext nc)
-                        {
-                            check = nc.Expr != null && nc.Expr.Start.Type == XSharpLexer.NIL && nc.Expr.Stop.Type == XSharpLexer.NIL;
-                        }
-                        else
-                        {
-                            check = arg.Start.Type == XSharpLexer.NIL && arg.Stop.Type == XSharpLexer.NIL;
-                        }
-
-                        if (check)
+                        var arg = args[i];
+                        if (arg.Syntax.XIsNil)
                         {
                             var paramType = types[i].Type;
                             if (!paramType.IsUsualType() && !paramType.IsObjectType())
@@ -226,10 +215,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var refkinds = node.Method.ParameterRefKinds;
                         for (var i = 0; i < node.Method.ParameterCount; i++)
                         {
-                            if (refkinds[i] == RefKind.Out && args._Args.Count > i)
+                            if (refkinds[i] == RefKind.Out && args.Length > i)
                             {
-                                var arg = args._Args[i];
-                                if (arg.RefOut?.Type != XSharpLexer.OUT && node.Arguments.Length > i)
+                                var arg = args[i];
+                                var argSyntax = arg.Syntax.XNode as XSharpParser.NamedArgumentContext;
+                                if (argSyntax != null &&
+                                    argSyntax.RefOut?.Type != XSharpLexer.OUT
+                                    && node.Arguments.Length > i)
                                 {
                                     var argnode = node.Arguments[i];
                                     Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);

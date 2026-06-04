@@ -7,13 +7,11 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Text;
-using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Concurrent;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
 using MCA = Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -67,6 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal abstract partial class CSharpSyntaxNode
     {
         public IXParseTree XNode { get; internal set; }
+        internal XSharpParserRuleContext XRuleContext => XNode as XSharpParserRuleContext;
         private XNodeFlags xflags = XNodeFlags.None;
         /// <summary>
         /// Return TRUE when a symbol can be a vostruct
@@ -238,8 +237,9 @@ namespace Microsoft.CodeAnalysis
 {
     public abstract partial class SyntaxNode
     {
-        internal CSharp.CSharpSyntaxNode CsNode => (CSharp.CSharpSyntaxNode)this;
+        internal CSharpSyntaxNode CsNode => (CSharpSyntaxNode)this;
         internal IXParseTree XNode => CsNode.CsGreen.XNode ?? CsNode.Parent?.XNode;
+        internal XSharpParserRuleContext XRuleContext => XNode as XSharpParserRuleContext;
         internal bool XCanBeVoStruct => CsNode.CsGreen.XCanBeVoStruct;
 
         internal bool XGenerated
@@ -259,9 +259,9 @@ namespace Microsoft.CodeAnalysis
         {
             get
             {
-                if (XNode is XSharpParserRuleContext node)
+                if (XRuleContext is not null)
                 {
-                    return node.ContainsCast;
+                    return XRuleContext.ContainsCast;
                 }
                 return false;
             }
@@ -270,14 +270,10 @@ namespace Microsoft.CodeAnalysis
         {
             get
             {
-                var n = XNode;
-                if (n != null)
-                {
-                    if (n is XSharpParser.NamedArgumentContext nac)
-                        return nac.IsMissing;
-                    if (n is XSharpParser.UnnamedArgumentContext uac)
-                        return uac.IsMissing;
-                }
+                if (XRuleContext is XSharpParser.NamedArgumentContext nac)
+                    return nac.IsMissing;
+                if (XRuleContext is XSharpParser.UnnamedArgumentContext uac)
+                    return uac.IsMissing;
                 return false;
             }
         }
@@ -285,8 +281,11 @@ namespace Microsoft.CodeAnalysis
         {
             get
             {
-                var n = XNode;
-                return n is XSharpParserRuleContext prc && prc.Start?.Type == XSharpLexer.NIL;
+                // childcount is needed because we do not want to
+                // return true for a binary expression such as NIL != 10
+                return XRuleContext != null
+                    && XRuleContext.ChildCount == 1
+                    && XRuleContext.Start?.Type == XSharpLexer.NIL;
             }
 
         }
@@ -294,22 +293,16 @@ namespace Microsoft.CodeAnalysis
         {
             get
             {
-                var n = XNode;
-                if (n != null)
-                {
-                    return n.IsRealCodeBlock();
-                }
-                return false;
+                return XRuleContext is not null && XRuleContext.IsRealCodeBlock();
             }
         }
         internal string XCodeBlockSource
         {
             get
             {
-                var n = XNode;
-                if (n != null)
+                if (XRuleContext is not null)
                 {
-                    return n.CodeBlockSource();
+                    return XRuleContext.CodeBlockSource();
                 }
                 return null;
             }

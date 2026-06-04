@@ -153,7 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             // Parameters checks have been done in the calling code
-            // The following conversion Rules are for all dialects 
+            // The following conversion Rules are for all dialects
             var srcType = source.SpecialType;
             var dstType = destination.SpecialType;
             var syntax = sourceExpression.Syntax;
@@ -304,10 +304,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return Conversion.Special;
                 }
-                // Usual -> OBJECT. Get the object out of the Usual 
+                // Usual -> OBJECT. Get the object out of the Usual
                 // Our special call will call in UnBoxXSharpType will
                 // convert the Unbox operation to a call to __Usual.ToObject()
-                // This method will return the Contents of the usual as an object 
+                // This method will return the Contents of the usual as an object
                 // and not the usual itself as an object
                 else if (dstType == SpecialType.System_Object)
                 {
@@ -358,13 +358,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (vo7)
             {
-                // Convert Any Ptr -> Any Ptr 
+                // Convert Any Ptr -> Any Ptr
                 if (source.IsPointerType() && destination.IsPointerType())
                 {
                     return Conversion.Identity;
                 }
             }
-            // Convert Integral type -> Ptr Type 
+            // Convert Integral type -> Ptr Type
             if (source.IsIntegralType() && destination.IsPointerType() && Compilation.Options.Dialect.AllowPointerMagic())
             {
                 if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() <= 4)
@@ -484,7 +484,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool voConvert = false;
             if (syntax != null)
             {
-                var xNode = sourceExpression.Syntax.XNode;
+                var xNode = sourceExpression.Syntax.XRuleContext;
                 if (xNode is XP.PrimaryExpressionContext pex)
                     xNode = pex.Expr;
                 while (xNode != null)
@@ -500,7 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (voConvert)
                         break;
                     // typeCast = (type) expr
-                    xNode = xNode.Parent as IXParseTree;
+                    xNode = xNode.XParent;
                     if (xNode is XP.StatementContext)
                         break;
                 }
@@ -549,7 +549,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
 
-                // Allow cast -> PTR when 
+                // Allow cast -> PTR when
                 // source is integral and source size matches the Integral size
                 // source is Ptr, IntPtr, UintPtr
                 // source is PSZ

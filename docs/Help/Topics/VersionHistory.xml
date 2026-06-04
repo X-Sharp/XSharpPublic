@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-06-02T14:38:29.139Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-06-04T11:06:11.301Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -36,7 +36,7 @@
       <li styleclass="List1">Changed the UDC for the RECALL command, because FoxPro temporarily switches of the SetDeleted() setting during the command (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1838" target="_blank">#1838</link>)</li>
       <li styleclass="List1">Prevented an assertion error when compiling in debug mode for functions with the NeedsAccessToLocal attribute and a VOID return type (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1870" target="_blank">#1870</link>)</li>
       <li styleclass="List1">Fixed a &quot;Type Expected&quot; compiler error in the VO dialect when declaring a CLIPPER method with no arguments and no explicit return type (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1907" target="_blank">#1907</link>)</li>
-      <li styleclass="List1">Passing a literal NIL as argument for a type parameter now generates a compiler warning (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>)</li>
+      <li styleclass="List1">Passing a literal NIL as argument for a type parameter now generates a compiler warning (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1967" target="_blank">#1967</link>)</li>
       <li styleclass="List1">Fixed an issue where certain errors were not shown causing a compilation to fail with &quot;error XS7038: Failed to emit module&quot; (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1951" target="_blank">#1951</link>)</li>
       <li styleclass="List1">Fixed an internal compiler error &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1966" target="_blank">#1966</link>)</li>
     </list>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-06-02T14:18:10.100Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-06-04T11:06:45.527Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -33,7 +33,7 @@
       <li styleclass="List1">修改了 RECALL 命令的 UDC，因为 FoxPro 在执行该命令期间会暂时关闭 SetDeleted() 设置 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1838" target="_blank">#1838</link>)</li>
       <li styleclass="List1">在调试模式下编译具有 NeedsAccessToLocal 属性且返回类型为 VOID 的函数时，已防止出现断言错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1870" target="_blank">#1870</link>)</li>
       <li styleclass="List1">修复了在 VO 方言中声明无参数且无显式返回类型的 CLIPPER 方法时出现的“Type Expected”编译器错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1907" target="_blank">#1907</link>)</li>
-      <li styleclass="List1">将字面量 NIL 作为类型参数的参数传递时，现在会生成编译器警告（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>）</li>
+      <li styleclass="List1">将字面量 NIL 作为类型参数的参数传递时，现在会生成编译器警告（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1967" target="_blank">#1967</link>）</li>
       <li styleclass="List1">修复了某些错误未显示导致编译失败并报错“error XS7038: Failed to emit module”的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1951" target="_blank">#1951</link>)</li>
       <li styleclass="List1">修复了一个内部编译器错误“ (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1966" target="_blank">#1966</link>)</li>
     </list>

@@ -15,9 +15,7 @@ using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Atn;
-using Microsoft.CodeAnalysis;
 using System.Diagnostics;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 
 
@@ -1683,7 +1681,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 #endif
-        internal static bool IsRealCodeBlock([NotNull] this IXParseTree context)
+        internal static bool IsRealCodeBlock([NotNull] this XSharpParserRuleContext context)
         {
 
             if (context is XSharpParser.ArrayElementContext aelc)
@@ -1699,8 +1697,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return false;
                 }
             }
-            if (context is XSharpParser.CodeblockCodeContext)
-                return ((IXParseTree)context.Parent).IsRealCodeBlock();
+            if (context is XSharpParser.CodeblockCodeContext cbcc)
+                return cbcc.XParent.IsRealCodeBlock();
             if (context is XSharpParser.CodeblockContext cbc)
             {
                 if (cbc.lambda != null)
@@ -1711,7 +1709,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return false;
         }
-        internal static string CodeBlockSource([NotNull] this IXParseTree context)
+        internal static string CodeBlockSource([NotNull] this XSharpParserRuleContext context)
         {
 
             if (context is XSharpParser.ArrayElementContext aelc)
@@ -1728,7 +1726,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
             if (context is XSharpParser.CodeblockCodeContext)
-                return ((IXParseTree)context.Parent).CodeBlockSource();
+                return context.XParent.CodeBlockSource();
             if (context is XSharpParser.CodeblockContext cbc)
             {
                 if (cbc.lambda != null)

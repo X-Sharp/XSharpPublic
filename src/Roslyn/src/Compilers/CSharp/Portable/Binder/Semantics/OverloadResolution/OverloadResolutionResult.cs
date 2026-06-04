@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// Summarizes the results of an overload resolution analysis, as described in section 7.5 of
     /// the language specification. Describes whether overload resolution succeeded, and which
     /// method was selected if overload resolution succeeded, as well as detailed information about
-    /// each method that was considered. 
+    /// each method that was considered.
     /// </summary>
     internal class OverloadResolutionResult<TMember> where TMember : Symbol
     {
@@ -179,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// gradually disqualifies them.  Therefore, our strategy will be to perform our checks in the
         /// reverse order - the farther a candidate got through the process without being flagged, the
         /// "better" it was.
-        /// 
+        ///
         /// Note that "final validation" is performed after overload resolution,
         /// so final validation errors are not seen here. Final validation errors include
         /// violations of constraints on method type parameters, static/instance mismatches,
@@ -234,12 +234,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // There are two ways that otherwise-applicable candidates can be ruled out by overload resolution:
             //   a) there is another applicable candidate that is strictly better, or
             //   b) there is another applicable candidate from a more derived type.
-            // There can't be exactly one such candidate, since that would the existence of some better 
+            // There can't be exactly one such candidate, since that would the existence of some better
             // applicable candidate, which would have either won or been detected above.  It is possible,
             // however, that there are multiple candidates that are worse than each other in a cycle.
             // This might sound like a paradox, but it is in fact possible. Because there are
             // intransitivities in convertibility (where A-->B, B-->C and C-->A but none of the
-            // opposite conversions are legal) there are also intransitivities in betterness. 
+            // opposite conversions are legal) there are also intransitivities in betterness.
             // (Obviously, there can't be a LessDerived cycle, since we break type hierarchy cycles during
             // symbol table construction.)
 
@@ -317,7 +317,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             AssertNone(MemberResolutionKind.BadArgumentConversion);
 
             // Otherwise, if there is any such method where type inference succeeded but inferred
-            // a parameter type that violates its own constraints then the first such method is 
+            // a parameter type that violates its own constraints then the first such method is
             // the best bad method.
 
             if (HadConstructedParameterFailedConstraintCheck(binder.Conversions, binder.Compilation, diagnostics, location))
@@ -489,7 +489,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     switch (firstSupported.Result.Kind)
                     {
-                        // Otherwise, if there is any such method that has a named argument and a positional 
+                        // Otherwise, if there is any such method that has a named argument and a positional
                         // argument for the same parameter then the first such method is the best bad method.
                         case MemberResolutionKind.NameUsedForPositional:
                             ReportNameUsedForPositional(firstSupported, diagnostics, arguments, symbols);
@@ -502,7 +502,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return;
 
                         // Otherwise, if there is any such method that has a required parameter
-                        // but no argument was supplied for it then the first such method is 
+                        // but no argument was supplied for it then the first such method is
                         // the best bad method.
                         case MemberResolutionKind.RequiredParameterMissing:
                             if ((binder.Flags & BinderFlags.CollectionExpressionConversionValidation) != 0)
@@ -552,7 +552,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else if (firstUnsupported.IsNotNull)
             {
-                // Otherwise, if there is any such method that cannot be used because it is                
+                // Otherwise, if there is any such method that cannot be used because it is
                 // unsupported by the language then the first such method is the best bad method.
                 // This is the first kind of problem overload resolution checks for, so it should
                 // be the last MemberResolutionKind we check for.  Candidates with this kind
@@ -885,7 +885,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // passed that was valid for *some* method in the candidate set. Given that
             // fact, we seek the *best* method in the candidate set to report the error
             // on. If we have a method that has a valid number of arguments, but the
-            // call was inapplicable because a required parameter does not have a 
+            // call was inapplicable because a required parameter does not have a
             // corresponding argument then that's a candidate for the "best" overload.
             //
             // For example, you might have M(int x, int y, int z = 3) and a call
@@ -1018,7 +1018,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Every required parameter has a corresponding argument. Type inference succeeds and infers
             // that T is string. Each argument is convertible to the corresponding formal parameter type.
             // What makes this a not-applicable candidate is not that the constraint on T is violated, but
-            // rather that the constraint on *Nullable<T>* is violated; Nullable<string> is not a legal 
+            // rather that the constraint on *Nullable<T>* is violated; Nullable<string> is not a legal
             // type, and so this is not an applicable candidate.
             //
             // In language versions before the feature 'ImprovedOverloadCandidates' was added to the language,
@@ -1028,27 +1028,27 @@ namespace Microsoft.CodeAnalysis.CSharp
             // occurs during candidate selection.
             //
             // Note that this failure need not involve type inference; Q<string>(null, null) would also be
-            // illegal for the same reason. 
-            // 
+            // illegal for the same reason.
+            //
             // The question then arises as to what error to report here. The native compiler reports that
-            // the constraint is violated on the method, even though the fact that precipitates the 
+            // the constraint is violated on the method, even though the fact that precipitates the
             // failure of overload resolution to classify this as an applicable candidate is the constraint
             // violation on Nullable<T>. Most of the time this is actually a pretty sensible error message;
             // if you say Q<string>(...) then it seems reasonable to give an error that says that string is
             // bad for Q, not that it is bad for its formal parameters under construction. Since the compiler
-            // will not allow Q<T> to be declared without a constraint that ensures that Nullable<T>'s 
-            // constraints are met, typically a failure to provide a type argument that works for the 
+            // will not allow Q<T> to be declared without a constraint that ensures that Nullable<T>'s
+            // constraints are met, typically a failure to provide a type argument that works for the
             // formal parameter type will also be a failure for the method type parameter.
             //
             // However, there could be error recovery scenarios. Suppose instead we had said
             //
-            // void Q<T>(T t1, Nullable<T> t2) 
+            // void Q<T>(T t1, Nullable<T> t2)
             //
             // with no constraint on T. We will give an error at declaration time, but if later we
             // are asked to provide an analysis of Q<string>("", null), the right thing to do is NOT
-            // to say "constraint is violated on T in Q<T>" because there is no constraint to be 
+            // to say "constraint is violated on T in Q<T>" because there is no constraint to be
             // violated here. The error is (1) that the constraint is violated on Nullable<T> and
-            // (2) that there is a constraint missing on Q<T>. 
+            // (2) that there is a constraint missing on Q<T>.
             //
             // Another error-recovery scenario in which the method's constraint is not violated:
             //
@@ -1087,7 +1087,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // We are in the unusual position that a constraint has been violated on a formal parameter type
-            // without being violated on the method. Report that the constraint is violated on the 
+            // without being violated on the method. Report that the constraint is violated on the
             // formal parameter type.
 
             TypeSymbol formalParameterType = method.GetParameterType(result.Result.BadParameter);
@@ -1196,7 +1196,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression argument = arguments.Argument(arg);
             if (argument.HasAnyErrors)
             {
-                // If the argument had an error reported then do not report further errors for 
+                // If the argument had an error reported then do not report further errors for
                 // overload resolution failure.
                 return;
             }
@@ -1233,7 +1233,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // For ref and ref-readonly extension methods, we omit the "ref" modifier on receiver arguments.
                     // Setting the correct RefKind for finding the correct diagnostics message.
-                    // For other ref kinds, keeping it as it is to find mismatch errors. 
+                    // For other ref kinds, keeping it as it is to find mismatch errors.
                     refArg = refParameter;
                 }
             }
@@ -1463,7 +1463,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemberResolutionResult<TMember> worseResult1;
             MemberResolutionResult<TMember> worseResult2;
 
-            // UNDONE: It is unfortunate that we simply choose the first two methods as the 
+            // UNDONE: It is unfortunate that we simply choose the first two methods as the
             // UNDONE: two to say that are ambiguous; they might not actually be ambiguous
             // UNDONE: with each other. We might consider building a better heuristic here.
 

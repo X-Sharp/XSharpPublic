@@ -22,9 +22,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 
         }
-#if !VSPARSER
+        public XSharpParserRuleContext XParent => (XSharpParserRuleContext)Parent;
 
-        public XSharpParserRuleContext XParent => (XSharpParserRuleContext) Parent;
+#if !VSPARSER
 
         public SyntaxTriviaList ParseTrivia(String comments)
         {

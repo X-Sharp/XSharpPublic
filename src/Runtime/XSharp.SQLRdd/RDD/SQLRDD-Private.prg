@@ -39,9 +39,9 @@ partial class SQLRDD
     private _emptyValues    as object[]
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
-    private _updatedRows    as List<DataRow>
+    private _updatedRowIds  as List<int>
     private _orderBagList   as List<SqlDbOrderBag>
-    private _rowNumber         as long
+    private _rowNumber      as long
 
     /// <summary>
     /// 0 based Column Number for the column that has the deleted flag
@@ -127,7 +127,7 @@ partial class SQLRDD
         SELF:_currentPageNo    := 1
         SELF:_firstPageNo      := 1
         self:_trimValues       := true // trim String Valuess
-        SELF:_updatedRows      := List<DataRow>{}
+        SELF:_updatedRowIds    := List<int>{}
         SELF:_keyColumns       := List<RddFieldInfo>{}
         SELF:_updatableColumns := List<RddFieldInfo>{}
         SELF:_orderBagList     := List<SqlDbOrderBag>{}
@@ -136,7 +136,8 @@ partial class SQLRDD
     end constructor
 
     destructor()
-        Command:Close()
+        Command:Dispose()
+        _connection:Dispose()
     end destructor
 
     internal method _ClearTable() AS VOID
@@ -365,7 +366,7 @@ partial class SQLRDD
             _command:AddParameter(name, row[c])
             ++iCounter
         next
-        if ! lColumnChanged
+        if !lColumnChanged .and. !self:_oTd:UpdateAllColumns
             // no columns changed, so we do not update this row
             return TRUE
         endif
@@ -410,6 +411,7 @@ partial class SQLRDD
     end method
 
     private method _ExecuteDeleteStatement(row as DataRow) as logic
+        // TODO: check config if logic or physical delete
         _command:ClearParameters()
         var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
@@ -580,7 +582,10 @@ partial class SQLRDD
                 SELF:RowNumber := SELF:DataTable:Rows:Count + 1
 
                 foreach row as DataRow in newTable:Rows
-                    SELF:DataTable:Rows:Add(row:ItemArray)
+                    var newRow := SELF:DataTable:NewRow()
+                    newRow:ItemArray := row:ItemArray
+                    SELF:DataTable:Rows:Add(newRow)
+                    newRow:AcceptChanges()
                 next
             else
                 SELF:RowNumber := newTable:Rows:Count
@@ -590,6 +595,7 @@ partial class SQLRDD
                     var newRow := SELF:DataTable:NewRow()
                     newRow:ItemArray := row:ItemArray
                     SELF:DataTable:Rows:InsertAt(newRow, 0)
+                    newRow:AcceptChanges()
                 next
             endif
             if lForward .and. newTable:Rows:Count < _oTd:PageSize
@@ -601,7 +607,6 @@ partial class SQLRDD
         return result
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
-
         if SELF:DataTable:Rows:Count < 1
             // Brute walk
             SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)

@@ -173,6 +173,7 @@ partial class SQLRDD inherit Workarea
         self:_updatableColumns := List<RddFieldInfo>{}
         self:_keyColumns       := List<RddFieldInfo>{}
         self:_numHiddenColumns := 0
+        var colNo := 0
         foreach var oCol in _oTd:Columns
             var oField := oCol:ColumnInfo
             if ! String.Equals(oField:ColumnName, oField:Name, StringComparison.OrdinalIgnoreCase)
@@ -180,13 +181,13 @@ partial class SQLRDD inherit Workarea
             endif
 
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
-                self:_recnoColumNo   := oField:Ordinal
+                self:_recnoColumNo := colNo
                 oField:Flags |= DBFFieldFlags.AutoIncrement
                 oField:Flags |= DBFFieldFlags.System
                 self:_numHiddenColumns += 1
                 lhasRecnoColumn := true
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
-                self:_deletedColumnNo := oField:Ordinal
+                self:_deletedColumnNo := colNo
                 self:_deletedColumnIsLogic := oField:FieldType == DbFieldType.Logic
                 oField:Flags |= DBFFieldFlags.System
                 self:_numHiddenColumns += 1
@@ -208,6 +209,7 @@ partial class SQLRDD inherit Workarea
                     self:_updatableColumns:Add(oField)
                 endif
             ENDIF
+            colNo++
         next
 
         if !lhasRecnoColumn .and. self:_tableMode = TableMode.Table
@@ -240,6 +242,7 @@ partial class SQLRDD inherit Workarea
             SELF:_hasEOF := TRUE
         endif
         _command:CommandText := cQuery
+        self:_ForceOpen()
         return true
     end method
 
@@ -258,7 +261,6 @@ partial class SQLRDD inherit Workarea
             var key := (dword) self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
-            _updatedRows:Add(row)
             if _emptyValues == null
                 self:_GetEmptyValues()
             endif
@@ -270,10 +272,10 @@ partial class SQLRDD inherit Workarea
                     row[c] := SELF:_HandleNullDate(values[c:Ordinal],c)
                 endif
             next
-            // if self:_recnoColumNo > -1
-                // self:_recordKeyCache:Add(key, (DWORD) SELF:RowCount-1)
-            // endif
-            SELF:_rowNumber := SELF:DataTable:Rows:Count
+            self:_ExecuteInsertStatement(row)
+            row:AcceptChanges()
+            _updatedRowIds:Add((int)row[self:_recnoColumNo])
+            SELF:RowNumber := SELF:DataTable:Rows:Count
             self:_serverReccount += 1
             SELF:_SetBOF(FALSE)
             SELF:_SetEOF(FALSE)
@@ -289,8 +291,11 @@ partial class SQLRDD inherit Workarea
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
     override method GetValue(nFldPos as int) as object
+        if self:CurrentRow == null
+            return null
+        endif
+
         // nFldPos is 1 based, the RDD compiles with /az+
-        SELF:_ForceOpen()
         if nFldPos > 0 .and. nFldPos <= self:RealFieldCount
             var col := self:_GetColumn(nFldPos)
             nFldPos -= 1
@@ -363,8 +368,8 @@ partial class SQLRDD inherit Workarea
             var col := self:_GetColumn(nFldPos)
             if SELF:_updatableColumns:Contains(col)
                 var row := SELF:CurrentRow
-                if !_updatedRows:Contains(row)
-                    _updatedRows:Add(row)
+                if !_updatedRowIds:Contains((int)row[self:_recnoColumNo])
+                    _updatedRowIds:Add((int)row[self:_recnoColumNo])
                 endif
 
                 row[nFldPos-1] := SELF:_HandleNullDate(oValue,self:DataTable:Columns[nFldPos-1])
@@ -380,6 +385,7 @@ partial class SQLRDD inherit Workarea
     /// <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method GoCold() as logic
+        local row as DataRow
         var current := SELF:CurrentRow
         if current == null
             return false
@@ -398,8 +404,14 @@ partial class SQLRDD inherit Workarea
                 return false
             endif
 
-            foreach var row in _updatedRows
+            foreach var rowId in _updatedRowIds
                 try
+                    foreach tableRow as DataRow in self:DataTable:Rows
+                        if (int)tableRow[self:_recnoColumNo] = rowId
+                            row := tableRow
+                        endif
+                    next
+
                     // Check row lock
                     dbLockInfo:RecId := row[_oTd:RecnoColumn]
                     SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
@@ -460,12 +472,12 @@ partial class SQLRDD inherit Workarea
             else
                 self:DataTable:RejectChanges()
             endif
-            _updatedRows:Clear()
-            // TODO: thomas optimize. Change reccount when adding or deleting a row above instead of reloading data from DB with _GetRecCount
+            _updatedRowIds:Clear()
             self:_GetRecCount()
         endif
         return lOk
     end method
+
     override method GoHot() as logic
         return true
     end method
@@ -502,9 +514,7 @@ partial class SQLRDD inherit Workarea
                 row[_deletedColumnNo] := 1
             endif
         endif
-        // Must position the DBF on the right row for the deletion
-        super:GoTo((DWORD) SELF:RowNumber)
-        return super:Delete()
+        return true
     end method
 
     /// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
@@ -673,16 +683,18 @@ partial class SQLRDD inherit Workarea
             RETURN SELF:_GotoRow((LONG) nRec)
         ENDIF
         // Check to see if we have the record in the current buffer
-        var nCount := SELF:DataTable:Rows:Count
-        FOR VAR nRow := 1 to nCount
-            SELF:RowNumber := nRow +1
-            IF SELF:RecNo == nRec
+        var rowIndex := 1
+        foreach oRow as DataRow in SELF:DataTable:Rows
+            if (int)oRow[self:_recnoColumNo] = nRec
+                SELF:RowNumber := rowIndex
                 SELF:_SetEOF(FALSE)
                 SELF:_SetBOF(FALSE)
                 SELF:_Found := TRUE
-                RETURN TRUE
+                return true
             endif
-        NEXT
+            rowIndex++
+        next
+
         SELF:_GotoRecord(nRec)
         SELF:_CheckEofBof()
         RETURN TRUE
@@ -700,7 +712,7 @@ partial class SQLRDD inherit Workarea
                 return (DWORD) SELF:RowNumber
             endif
             var row := SELF:CurrentRow
-            if  ! SELF:EoF .and. row != null
+            if  ! SELF:_EoF .and. row != null
                 var obj := row[self:_recnoColumNo]
                 return Convert.ToUInt32(obj)
             endif
@@ -825,6 +837,10 @@ partial class SQLRDD inherit Workarea
         RETURN SUPER:SetFilter(info)
     end method
 
+    public override method Flush() as logic
+        RETURN SELF:GoCold()
+    end method
+
     #region Lock / Unlock
 
     public override method Lock(lockInfo ref DbLockInfo) as logic
@@ -916,6 +932,11 @@ partial class SQLRDD inherit Workarea
         catch
             return false
         end try
+
+        // In ADS this happens in here: ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
+        if (self:Deleted)
+            self:_ExecuteDeleteStatement(CurrentRow)
+        endif
 
         return true
     end method

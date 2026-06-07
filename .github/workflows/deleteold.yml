@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "Fetching workflow runs older than 90 days..."
 
-          CUTOFF_DATE=$(date -u -d '90 days ago' '+%Y-%m-%dT%H:%M:%SZ')
+          CUTOFF_DATE=$(date -u -d '60 days ago' '+%Y-%m-%dT%H:%M:%SZ')
 
           # Get all workflow runs older than 90 days and delete them
           PAGE=1

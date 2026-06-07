@@ -1000,6 +1000,19 @@ namespace XSharp.Project
             return result;
         }
 
+        protected internal override FileNode RenameFileNode(string oldFileName, string newFileName, string linkPath, uint newParentId)
+        {
+            // Ensure the old URL is removed before the base method adds the new node
+            // This prevents stale entries in the URLNodes dictionary that could cause
+            // the old entry to appear in the Solution Explorer
+            if (ProjectMgr is XSharpProjectNode project)
+            {
+                project.RemoveURL(this.Url);
+            }
+            
+            return base.RenameFileNode(oldFileName, newFileName, linkPath, newParentId);
+        }
+
         #endregion
 
         #region Private implementation

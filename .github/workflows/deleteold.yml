@@ -17,11 +17,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
-          echo "Fetching workflow runs older than 30 days..."
+          echo "Fetching workflow runs older than 10 days..."
 
-          CUTOFF_DATE=$(date -u -d '30 days ago' '+%Y-%m-%dT%H:%M:%SZ')
+          CUTOFF_DATE=$(date -u -d '10 days ago' '+%Y-%m-%dT%H:%M:%SZ')
 
-          # Get all workflow runs older than 90 days and delete them
+          # Get all workflow runs older than 10 days and delete them
           PAGE=1
           DELETED=0
           while true; do

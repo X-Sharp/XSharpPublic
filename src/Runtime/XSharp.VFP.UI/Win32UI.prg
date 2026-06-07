@@ -49,6 +49,39 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PRIVATE CONST WM_COMMAND  := 273U AS DWORD
 
+        [StructLayout(LayoutKind.Sequential, CharSet := CharSet.Auto)];
+        PUBLIC STRUCT TEXTMETRIC
+            PUBLIC tmHeight AS INT
+            PUBLIC tmAscent AS INT
+            PUBLIC tmDescent AS INT
+            PUBLIC tmInternalLeading AS INT
+            PUBLIC tmExternalLeading AS INT
+            PUBLIC tmAveCharWidth AS INT
+            PUBLIC tmMaxCharWidth AS INT
+            PUBLIC tmWeight AS INT
+            PUBLIC tmOverhang AS INT
+            PUBLIC tmDigitizedAspectX AS INT
+            PUBLIC tmDigitizedAspectY AS INT
+            PUBLIC tmFirstChar AS CHAR
+            PUBLIC tmLastChar AS CHAR
+            PUBLIC tmDefaultChar AS CHAR
+            PUBLIC tmBreakChar AS CHAR
+            PUBLIC tmItalic AS BYTE
+            PUBLIC tmUnderlined AS BYTE
+            PUBLIC tmStruckOut AS BYTE
+            PUBLIC tmPitchAndFamily AS BYTE
+            PUBLIC tmCharSet AS BYTE
+        END STRUCT
+
+        [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
+        STATIC EXTERN METHOD GetTextMetrics(hDC AS IntPtr, lpMetrics OUT TEXTMETRIC) AS LOGIC
+
+        [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
+        STATIC EXTERN METHOD SelectObject(hDC AS IntPtr, hObject as IntPtr) as IntPtr
+
+        [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
+        STATIC EXTERN METHOD DeleteObject(hObject AS IntPtr) AS Logic
+
 		PUBLIC STATIC METHOD FindMessageBox(caption AS STRING ) AS IntPtr
 			RETURN VfpWin32UI.FindWindow("#32770", caption)
 		END METHOD

@@ -12,7 +12,28 @@ jobs:
   clean-logs:
     runs-on: ubuntu-latest
     steps:
-      - uses: igorjs/gh-actions-clean-workflow@v7
-        with:
-          token: ${{ github.token }}
-          days_old: 90
+      - name: Delete old workflow runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Fetching workflow runs older than 90 days..."
+
+          CUTOFF_DATE=$(date -u -d '90 days ago' '+%Y-%m-%dT%H:%M:%SZ')
+
+          # Get all workflow runs older than 90 days and delete them
+          PAGE=1
+          DELETED=0
+          while true; do
+            RUNS=$(gh api "repos/${REPO}/actions/runs?per_page=100&page=${PAGE}&created=<${CUTOFF_DATE}" --jq '.workflow_runs[].id')
+            if [ -z "$RUNS" ]; then
+              break
+            fi
+            for RUN_ID in $RUNS; do
+              echo "Deleting run $RUN_ID"
+              gh api -X DELETE "repos/${REPO}/actions/runs/${RUN_ID}" && DELETED=$((DELETED + 1)) || echo "Failed to delete run $RUN_ID"
+            done
+            PAGE=$((PAGE + 1))
+          done
+
+          echo "Done. Deleted $DELETED workflow run(s)."

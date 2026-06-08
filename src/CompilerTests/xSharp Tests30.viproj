@@ -141817,10 +141817,6 @@ File = %AppPath%\Prg\Start.prg
 FileGUID = 76EE3E9E-4D4F-4FA5-A3D7-B978BFFBA5FB
 FileType = Code
 CopyToBin = 0
-File = %AppPath%\Prg\test.prg
-FileGUID = 287B921C-6CCB-4884-B59A-112E448DC240
-FileType = Code
-CopyToBin = 0
 [R931 - Global Using References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -141899,128 +141895,6 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R931 - Global Using
-
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R932 *************
-Application = R932
-IDEVersion = 1.06
-GalleryName = 
-GalleryPage = 
-GalleryDefaultName = 
-Target = 0
-Platform = AnyCPU
-Language = XSharp
-Runtime = CLR4
-NetVersion = 
-Dialect = Core
-Folder = %ProjectPath%\Applications\R932\
-PrgSubFolder = \Prg
-ResourcesSubFolder = \Resources
-Description = Standard MDI Sample using the X# runtime
-NameSpace = 
-Assembly = R932
-Extension = 
-ApplicationIcon = 
-OutputFolder = 
-Frameworks = 1
-GUID = 5C4FDBAF-13FC-4DD9-A261-A894862F52E8
-IncludeInProjectBuild = 1
-IncludeInProjectSearch = 1
-IncludeInProjectExport = 1
-EmitAssemblyProperties = 0
-EmitNetVersion = 0
-IncludePath = 
-StdDefsFile = 
-AppToRun = 
-SignAssembly = 0
-KeyFile = 
-
-[ExportOptions]
-ExportResources = 0
-ExportImages = 0
-[R932 FileGroups]
-[R932 Files]
-File = %AppPath%\Prg\Start.prg
-FileGUID = 6A2E98DD-2549-4FC9-9E07-136035A0E63A
-FileType = Code
-CopyToBin = 0
-[R932 References]
-ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[R932 Resources]
-[R932 Native Resources]
-[R932 License files]
-[R932 General Options]
-Switches=
-IgnoreWarnings=
-ZeroArrays=0
-CaseSensitive=0
-ImplicitNamespace=0
-VO1=0
-VO2=0
-VO3=0
-VO4=0
-VO5=0
-VO6=0
-VO7=0
-VO8=0
-VO9=0
-VO10=0
-VO11=0
-VO12=0
-VO13=0
-VO14=0
-VO15=0
-VO16=0
-VO17=0
-FOX1=0
-FOX2=0
-XPP1=0
-LateBound=0
-Unsafe=0
-Undeclared=0
-EnforceSelf=0
-EnforceOverride=0
-UseNativeVersion=0
-MemVar=0
-IgnoreStdDefs=0
-Ovf=0
-FOvf=0
-ModernSyntax=0
-NamedArgs=0
-InitLocals=0
-AllowOldStyleAssignments=0
-AllowDotOption=0
-ResponseOnly=0
-[R932 Configurations]
-AppConfig = Debug,11111111-1111-1111-1111-111111111111
-  Switches=
-  SwitchesCF=
-  CommandLine=
-  CommandLineCF=
-  Debug=1
-  DebugInit=1
-  DefineDebug=1
-  DefineTrace=0
-  SyntaxOnly=0
-  WarningsErrors=0
-  ForceConsole=0
-  ForceX86=0
-  Optimize=0
-AppConfig = Release,22222222-2222-2222-2222-222222222222
-  Switches=
-  SwitchesCF=
-  CommandLine=
-  CommandLineCF=
-  Debug=0
-  DebugInit=0
-  DefineDebug=0
-  DefineTrace=0
-  SyntaxOnly=0
-  WarningsErrors=0
-  ForceConsole=0
-  ForceX86=0
-  Optimize=0
-ENDApplication = R932
 
 ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C938 - Latebound assign of iVars *************
@@ -146018,9 +145892,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C968 - Problems with XBase++ code [#1960, #1960]
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R933 *************
-Application = R933
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R933 - Assign Var with Clipper Calling convention and Var is not used *************
+Application = R933 - Assign Var with Clipper Calling convention and Var is not used
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -146056,20 +145930,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R933 FileGroups]
-[R933 Files]
+[R933 - Assign Var with Clipper Calling convention and Var is not used FileGroups]
+[R933 - Assign Var with Clipper Calling convention and Var is not used Files]
 File = %AppPath%\Prg\Start.prg
 FileGUID = 9ACDE361-9A40-4DF9-9D9F-E611C199FF12
 FileType = Code
 CopyToBin = 0
-[R933 References]
+[R933 - Assign Var with Clipper Calling convention and Var is not used References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-[R933 Resources]
-[R933 Native Resources]
-[R933 License files]
-[R933 General Options]
+[R933 - Assign Var with Clipper Calling convention and Var is not used Resources]
+[R933 - Assign Var with Clipper Calling convention and Var is not used Native Resources]
+[R933 - Assign Var with Clipper Calling convention and Var is not used License files]
+[R933 - Assign Var with Clipper Calling convention and Var is not used General Options]
 Switches=
 IgnoreWarnings=
 ZeroArrays=0
@@ -146111,7 +145985,7 @@ InitLocals=0
 AllowOldStyleAssignments=0
 AllowDotOption=0
 ResponseOnly=0
-[R933 Configurations]
+[R933 - Assign Var with Clipper Calling convention and Var is not used Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -146140,7 +146014,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R933
+ENDApplication = R933 - Assign Var with Clipper Calling convention and Var is not used
 [EndApplications]
 
 [Configurations]

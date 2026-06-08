@@ -212,6 +212,36 @@
 // This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
 #command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
 
+#command COPY MEMO <field> TO <(file)> <add:ADDITIVE> [AS <nCP>]  ;
+        => DbCopyMemo( <"field">, <(file)>, <ADD>[, <nCP>] )
+
+// REPLACE ... [ADDITIVE] — without IN clause
+#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
+                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] [<noopt:NOOPTIMIZE>] [all]                           ;
+        => DbEval(                                                             ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
+                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             )
+
+// REPLACE ... [ADDITIVE] IN workarea — defined LAST, tried FIRST
+#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
+                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] IN <(a)> [<noopt:NOOPTIMIZE>] [all]                ;
+        => (<(a)>)->(DbEval(                                              ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
+                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             ))
+
+
 #command DELETE                                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;

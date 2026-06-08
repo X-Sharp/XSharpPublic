@@ -53,7 +53,15 @@ FUNCTION Occurs(uSearch AS STRING, cTarget AS STRING) AS DWORD
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtran/*" />
 [FoxProFunction("STRTRAN", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION StrTran(uTarget, uSearch, uReplace, uStart, uCount) AS STRING CLIPPER
-    RETURN XSharp.RT.Functions.StrTran(uTarget, uSearch, uReplace, uStart, uCount)
+    switch PCount()
+    case 3
+        RETURN XSharp.RT.Functions.StrTran(uTarget, uSearch, uReplace)
+    case 4
+        RETURN XSharp.RT.Functions.StrTran(uTarget, uSearch, uReplace, uStart)
+    case 5
+        RETURN XSharp.RT.Functions.StrTran(uTarget, uSearch, uReplace, uStart, uCount)
+    end switch
+    RETURN XSharp.RT.Functions.StrTran(uTarget, uSearch, uReplace)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/val/*" />
 [FoxProFunction("VAL", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];

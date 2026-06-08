@@ -42,6 +42,7 @@ namespace Microsoft.VisualStudio.Project
         public override int OnBeforeCloseProject(IVsHierarchy hierarchy, int removed)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            Logger.Information($"OnBeforeCloseProject: Project {hierarchy} is being closed. Is it being removed from the solution? {(removed != 0 ? "Yes" : "No")}");
 
             if (removed != 0)
             {
@@ -71,9 +72,10 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(realHierarchy);
+            Logger.Information($"OnAfterLoadProject:Project {realHierarchy} is being loaded. Updating {projectReferences.Count} project references that point to it.");
 
             // Refersh the project reference node. That should trigger the drawing of the normal project reference icon.
-            foreach(ProjectReferenceNode projectReference in projectReferences)
+            foreach (ProjectReferenceNode projectReference in projectReferences)
             {
                 projectReference.CanRemoveReference = true;
 
@@ -96,6 +98,8 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                 List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(hierarchy);
+
+                Logger.Information($"OnAfterRenameProject:  Project {hierarchy} is being renamed. Updating {projectReferences.Count} project references that point to it.");
 
                 // Collect data that is needed to initialize the new project reference node.
                 string projectRef;
@@ -127,6 +131,7 @@ namespace Microsoft.VisualStudio.Project
                     selectorData.bstrTitle = projectName;
                     selectorData.bstrFile = projectPath;
                     selectorData.bstrProjRef = projectRef;
+                    Logger.Information($"OnAfterRenameProject: Adding reference to project {hierarchy} in project {projectMgr}. Project ref is {projectRef}, path is {projectPath} and name is {projectName}");
                     refContainer.AddReferenceFromSelectorData(selectorData);
                 }
             }
@@ -146,14 +151,16 @@ namespace Microsoft.VisualStudio.Project
 
             List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(realHierarchy);
 
+            Logger.Information($"OnBeforeUnloadProject: Project {realHierarchy} is being unloaded. Updating {projectReferences.Count} project references that point to it.");
             // Refresh the project reference node. That should trigger the drawing of the dangling project reference icon.
-            foreach(ProjectReferenceNode projectReference in projectReferences)
+            foreach (ProjectReferenceNode projectReference in projectReferences)
             {
                 projectReference.IsNodeValid = true;
                 projectReference.OnInvalidateItems(projectReference.Parent);
                 projectReference.CanRemoveReference = false;
                 projectReference.IsNodeValid = false;
                 //projectReference.IsUnloaded = true;
+                Logger.Information($"OnBeforeUnloadProject: Project {realHierarchy} is being unloaded. Dropping cache on project reference {projectReference} in project {projectReference.ProjectMgr}.");
                 projectReference.DropReferencedProjectCache();
             }
 

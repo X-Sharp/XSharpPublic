@@ -1311,26 +1311,32 @@ namespace XSharp.Project
                 }
             }
         }
-        public override int AddProjectReference()
+        public virtual Guid[] GetReferencePages()
         {
-            ThreadHelper.ThrowIfNotOnUIThread("AddProjectReference");
+            return new[] {
+                          VSConstants.AssemblyReferenceProvider_Guid,
+                          VSConstants.ProjectReferenceProvider_Guid,
+                          VSConstants.ComReferenceProvider_Guid,
+                          VSConstants.FileReferenceProvider_Guid,
+                    };
+        }
+
+        public virtual int AddReference(Guid guidPage)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread("AddReference");
             var referenceManager = this.GetService(typeof(SVsReferenceManager)) as IVsReferenceManager;
             if (referenceManager != null)
             {
                 string title = $"Reference Manager - {this.Caption}";
-                var contextGuids = new[] {
-                          VSConstants.AssemblyReferenceProvider_Guid,
-                          VSConstants.ProjectReferenceProvider_Guid,
-                          //VSConstants.SharedProjectReferenceProvider_Guid,
-                          VSConstants.ComReferenceProvider_Guid,
-                          VSConstants.FileReferenceProvider_Guid,
-                    };
+                var contextGuids = GetReferencePages();
+                // VSConstants.SharedProjectReferenceProvider_Guid,
+
                 referenceManager.ShowReferenceManager(
                       VsReferenceManager,
                       title,
                       "VS.AddReference",
-                      contextGuids.First(),
-                      fForceShowDefaultProvider: false
+                      guidPage,
+                      fForceShowDefaultProvider: true
                       );
                 return VSConstants.S_OK;
             }
@@ -1338,8 +1344,32 @@ namespace XSharp.Project
             {
                 return VSConstants.E_NOINTERFACE;
             }
+
         }
-        IVsReferenceManagerUser VsReferenceManager => new ProjectNodeReferenceManager(this);
+
+        public virtual int AddAssemblyReference()
+        {
+            return AddReference(VSConstants.AssemblyReferenceProvider_Guid);
+        }
+
+        public override int AddProjectReference()
+        {
+            return AddReference(VSConstants.ProjectReferenceProvider_Guid);
+        }
+        public virtual int AddCOMReference()
+        {
+            return AddReference(VSConstants.ComReferenceProvider_Guid);
+        }
+        public virtual int AddFileReference()
+        {
+            return AddReference(VSConstants.FileReferenceProvider_Guid);
+        }
+        //public virtual int AddSharedReference()
+        //{
+        //    return AddReference(4);
+        //}
+
+        protected virtual IVsReferenceManagerUser VsReferenceManager => new ProjectNodeReferenceManager(this);
 
         internal void LoadPackageReferences()
         {

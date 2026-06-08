@@ -18,6 +18,7 @@ using Microsoft.Build.Execution;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Project;
 
 using System;
 using System.CodeDom.Compiler;
@@ -1482,6 +1483,7 @@ namespace Microsoft.VisualStudio.Project
             switch (id)
             {
                 case __VSHPROPID.VSHPROPID_ShowProjInSolutionPage:
+                    Logger.Information(String.Format(CultureInfo.CurrentCulture, "Setting ShowProjInSolutionPage to {0} for project {1}", value, this.Caption));
                     this.ShowProjectInSolutionPage = (bool)value;
                     return VSConstants.S_OK;
             }
@@ -1645,6 +1647,7 @@ namespace Microsoft.VisualStudio.Project
                     return this.ProjectType;
 
                 case __VSHPROPID.VSHPROPID_ShowProjInSolutionPage:
+                    Logger.Information(String.Format(CultureInfo.CurrentCulture, "Getting ShowProjInSolutionPage for project {0}: {1}", this.Caption, this.ShowProjectInSolutionPage));
                     return this.ShowProjectInSolutionPage;
 
                 case __VSHPROPID.VSHPROPID_ExpandByDefault:
@@ -6689,6 +6692,7 @@ namespace Microsoft.VisualStudio.Project
                 var list = new List<IVsBuildDependency>();
                 var nodes = new List<ProjectReferenceNode>();
                 FindNodesOfType(nodes);
+                Logger.Information($"Creating BuildDependencies for project {this.Caption}, found {nodes.Count} nodes");
                 foreach (var node in nodes)
                 {
                     var url = node.Url;
@@ -6698,6 +6702,7 @@ namespace Microsoft.VisualStudio.Project
                         projectInfo = new ProjectInfo(node.ReferencedProjectGuid, url);
                     }
                     var dependency = new BuildDependency(this, projectInfo.Id);
+                    Logger.Information($"Adding BuildDependency for project {this.Caption} on {url} with id {projectInfo.Id}");
                     list.Add(dependency);
                 }
                 return list.ToArray();

@@ -774,7 +774,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (expr.Kind != BoundKind.BadExpression)
                         {
                             newDiag.Clear();
-                            foreach (var error in diagnostics.DiagnosticBag.AsEnumerable())
+                            foreach (var error in diagnostics.DiagnosticBag?.AsEnumerable())
                             {
                                 bool suppress = false;
                                 var loc = error.Location;

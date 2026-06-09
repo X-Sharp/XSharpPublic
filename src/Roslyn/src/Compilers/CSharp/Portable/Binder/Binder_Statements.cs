@@ -3929,8 +3929,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (baseType.SpecialType == SpecialType.System_Object)
                 {
 #if XSHARP
-                    //Rvdh HACK: to make sure that the ObjectConstructorInitializer is called for Codeblock types
-                    if (!compilation.Options.HasRuntime || constructor.ContainingType.Name.Contains("<>"))
+                    bool generate = true;
+                    if (containingType.IsRecord || constructor.ContainingType.Name.Contains("<>"))
+                    {
+                        generate = true;
+                    }
+                    else
+                    {
+                        generate = !compilation.Options.HasRuntime;
+                    }
+
+                    if (generate)
 #endif
                     return GenerateBaseParameterlessConstructorInitializer(constructor, diagnostics);
                 }

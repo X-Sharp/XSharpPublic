@@ -122,6 +122,18 @@
 #command SET COLOR SET                                          <*any*> => __UNSUPPORTED__ <(udc)>
 #command SET DATASESSION                                        <*any*> => __UNSUPPORTED__ <(udc)>
 
+// Remaining VFP SET commands — Silent Absorption
+#command SET <x:APLABOUT, ATTRIBUTES, BLINK, BORDER>             <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:BRSTATUS, CATALOG, CLEAR, DBTRAP>                 <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:DESIGN, ENCRYPTION, HELPFILTER, HISTORY>          <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:IBLOCK, INSTRUCT, LDCHECK>                        <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:MACDESKTOP, MACHELP, MARK OF, MARK TO>            <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:MBLOCK, MENU, MOUSE, PAUSE>                       <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:PRECISION, PRINTER TO, RELATION OFF, REPROCESS>   <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:SCOREBOARD, SHADOWS, SKIP OF, SQL>                <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:STATUS BAR, STICKY, TITLE, TOPIC ID>              <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:TRAP, WINDOW OF MEMO, XCMDFILE>                   <*any*> => __UNSUPPORTED__ <(udc)>
+
 #endif
 
 // EOF

@@ -726,8 +726,6 @@
 // ON KEY LABEL (most specific = tried first)
 #command ON KEY LABEL <*any*> => __VfpUnsupported( <"udc"> )
 
-// CLEAR / RELEASE variants — Silent Absorption
-
 // CLEAR variants not already handled (ALL, MEMORY, SCREEN, EVENTS, RESOURCES are elsewhere)
 #command CLEAR <cmd:CLASS, CLASSLIB, DLLs, FIELDS, GETS, MACROS, MENUS, POPUPS, PROGRAM, PROMPT, READ, TYPEAHEAD, WINDOWS> <*any*> ;
          => __VfpUnsupported( <"udc"> )
@@ -735,6 +733,30 @@
 // RELEASE UI variants (variable RELEASE is handled in memvar.xh)
 #command RELEASE <cmd:BAR, CLASSLIB, LIBRARY, MENUS, MODULE, PAD, POPUPS, PROCEDURE, WINDOWS> <*any*> ;
          => __VfpUnsupported( <"udc"> )
+
+// DISPLAY variants
+#command DISPLAY [<cmd:CONNECTIONS, DATABASE, DLLS, FILES, HISTORY, MEMORY>] <*any*> ;
+         => __VfpUnsupported( <"udc"> )
+
+#command DISPLAY <cmd:OBJECTS, PROCEDURES, STATUS, STRUCTURE, TABLES, VIEWS> <*any*> ;
+         => __VfpUnsupported( <"udc"> )
+
+// DISPLAY USERS / LIST USERS
+#command DISPLAY USERS <*any*> => __VfpUnsupported( <"udc"> )
+
+// LIST variants
+#command LIST [<cmd:CONNECTIONS, DATABASE, DLLS, FILES, HISTORY, MEMORY>] <*any*> ;
+         => __VfpUnsupported( <"udc"> )
+
+#command LIST <cmd:OBJECTS, PROCEDURES, STATUS, STRUCTURE, TABLES, VIEWS> <*any*> ;
+         => __VfpUnsupported( <"udc"> )
+
+// LIST USERS
+#command LIST USERS <*any*> => __VfpUnsupported( <"udc"> )
+
+// Plain DISPLAY and LIST (no sub-command)
+#command DISPLAY <*any*> => __VfpUnsupported( <"udc"> )
+#command LIST <*any*> => __VfpUnsupported( <"udc"> )
 
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;

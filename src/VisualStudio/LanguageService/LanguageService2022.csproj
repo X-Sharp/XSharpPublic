@@ -75,6 +75,15 @@
     <Compile Include="Interop\ComHandle.cs" />
     <Compile Include="Interop\IComWrapperFixed.cs" />
     <Compile Include="Interop\WrapperPolicy.cs" />
+    <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="Library\Library.cs" />
+    <Compile Include="Library\LibraryNode.cs" />
+    <Compile Include="Library\MultiValueDictionary.cs" />
+    <Compile Include="Library\TextLineEventListener.cs" />
+    <Compile Include="Library\XSharpLibraryManager.cs" />
+    <Compile Include="Library\XSharpLibraryNode.cs" />
+    <Compile Include="Library\XSharpLibraryProject.cs" />
+    <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />
     <Compile Include="MatchingTokens\IdentifierMatching.cs" />

@@ -15,7 +15,17 @@ FUNCTION Evaluate(cString AS STRING) AS USUAL
 /// <include file="VfpDocs.xml" path="Runtimefunctions/execscript/*" />
 [FoxProFunction("EXECSCRIPT", FoxFunctionCategory.General, FoxEngine.Macro, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION ExecScript(cExpression, eParameter1, eParameter2, eParameterN) AS USUAL CLIPPER
-    RETURN XSharp.RT.Functions.ExecScript(cExpression, eParameter1, eParameter2, eParameterN)
+    switch PCount()
+    case 1
+        RETURN XSharp.RT.Functions.ExecScript(cExpression)
+    case 2
+        RETURN XSharp.RT.Functions.ExecScript(cExpression, eParameter1)
+    case 3
+        RETURN XSharp.RT.Functions.ExecScript(cExpression, eParameter1, eParameter2)
+    case 4
+        RETURN XSharp.RT.Functions.ExecScript(cExpression, eParameter1, eParameter2, eParameterN)
+    end switch
+    RETURN XSharp.RT.Functions.ExecScript(cExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/type/*" />
 [NeedsAccessToLocals(FALSE)];

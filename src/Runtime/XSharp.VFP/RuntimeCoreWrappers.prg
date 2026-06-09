@@ -322,5 +322,8 @@ FUNCTION OemToAnsi(cOemString AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/set/*" />
 [FoxProFunction("SET", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Set(cSETCommand AS USUAL, newValue AS USUAL) AS USUAL
-    RETURN XSharp.RT.Functions.Set(cSETCommand, newValue)
+FUNCTION Set(cSETCommand, newValue) AS USUAL CLIPPER
+    IF PCount() > 1
+        RETURN XSharp.RT.Functions.Set(cSETCommand, newValue)
+    ENDIF
+    RETURN XSharp.RT.Functions.Set(cSETCommand)

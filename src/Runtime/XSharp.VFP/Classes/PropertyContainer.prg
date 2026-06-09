@@ -150,10 +150,10 @@ class XSharp.VFP.PropertyContainer IMPLEMENTS IEnumerable<NameValuePair>
     virtual method NoIvarPut(cName as string, uValue as usual) as void
         if _Properties:TryGetValue( cName, out var desc)
             if desc:PropInfo is PropertyInfo var oProp
-                oProp:SetValue(_Owner, uValue)
+                oProp:SetValue(_Owner, OOPHelpers.ValueConvert(uValue, oProp:PropertyType))
                 return
             elseif desc:PropInfo is FieldInfo var oFld
-                oFld:SetValue(_Owner, uValue)
+                oFld:SetValue(_Owner, OOPHelpers.ValueConvert(uValue, oFld:FieldType))
                 return
             elseif self:_Values:ContainsKey(cName)
                 self:_Values[cName] := uValue

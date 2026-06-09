@@ -1354,7 +1354,7 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
             if oFile:CommentTasks:Any()
                 WriteCommentTasks(oFile)
             endif
-            if oFile:FullPath != XSolution.BuiltInFunctions
+            if !oFile:IsBuiltInFunctions
                 // Update Includefile IDs and write to disk
                 UpdateIncludeFiles(oFile)
             endif

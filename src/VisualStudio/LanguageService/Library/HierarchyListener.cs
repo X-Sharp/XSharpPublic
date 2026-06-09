@@ -1,3 +1,4 @@
+#if LIBRARYMANAGER
 /*****************************************************************************
  *
  * Copyright(c) Microsoft Corporation.
@@ -5,7 +6,7 @@
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
 * copy of the license can be found in the License.html file at the root of this distribution.If
 * you cannot locate the Apache License, Version 2.0, please send an email to
-* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound 
+* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound
  * by the terms of the Apache License, Version 2.0.
  *
  * You must not remove this notice, or any other, from this software.
@@ -246,7 +247,7 @@ namespace XSharp.LanguageService
             string extension = System.IO.Path.GetExtension(canonicalName);
             return (0 == string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase));
         }
-		
+
         private string getItemName(uint itemId)
         {
             Guid typeGuid = Guid.Empty;
@@ -304,7 +305,7 @@ namespace XSharp.LanguageService
                     onItemAdded(hierarchy, args);
                 }
 
-                // NOTE: At the moment we skip the nested hierarchies, so here  we look for the 
+                // NOTE: At the moment we skip the nested hierarchies, so here  we look for the
                 // children of this node.
                 // Before looking at the children we have to make sure that the enumeration has not
                 // side effects to avoid unexpected behavior.
@@ -373,3 +374,4 @@ namespace XSharp.LanguageService
         }
     }
 }
+#endif

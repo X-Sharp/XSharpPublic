@@ -726,6 +726,16 @@
 // ON KEY LABEL (most specific = tried first)
 #command ON KEY LABEL <*any*> => __VfpUnsupported( <"udc"> )
 
+// CLEAR / RELEASE variants — Silent Absorption
+
+// CLEAR variants not already handled (ALL, MEMORY, SCREEN, EVENTS, RESOURCES are elsewhere)
+#command CLEAR <cmd:CLASS, CLASSLIB, DLLs, FIELDS, GETS, MACROS, MENUS, POPUPS, PROGRAM, PROMPT, READ, TYPEAHEAD, WINDOWS> <*any*> ;
+         => __VfpUnsupported( <"udc"> )
+
+// RELEASE UI variants (variable RELEASE is handled in memvar.xh)
+#command RELEASE <cmd:BAR, CLASSLIB, LIBRARY, MENUS, MODULE, PAD, POPUPS, PROCEDURE, WINDOWS> <*any*> ;
+         => __VfpUnsupported( <"udc"> )
+
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )

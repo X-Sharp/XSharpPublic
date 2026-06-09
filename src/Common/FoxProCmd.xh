@@ -671,6 +671,46 @@
 #command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
             => __VfpUnsupported( <"udc"> )
 
+// @... command (all variants: SAY, GET, BOX, CLEAR, EDIT, FILL, MENU, PROMPT, SCROLL, TO, CLASS)
+#command @ <*any*> => __VfpUnsupported( <"udc"> )
+
+// ACTIVATE - menus, popups, screens, user-defined windows
+#command ACTIVATE <cmd:MENU, POPUP, SCREEN, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// DEACTIVATE
+#command DEACTIVATE <cmd:MENU, POPUP, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// DEFINE - UI elements (excludes DEFINE CLASS)
+#command DEFINE <cmd:BAR, BOX, MENU, PAD, POPUP, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// HIDE
+#command HIDE <cmd:MENU, POPUP, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// MOVE
+#command MOVE <cmd:POPUP, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// POP
+#command POP <cmd:MENU, POPUP> <*any*> => __VfpUnsupported( <"udc"> )
+
+// SHOW
+#command SHOW <cmd:GET, GETS, MENU, OBJECT, POPUP, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// SIZE
+#command SIZE <cmd:POPUP, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+
+// Individual UI/browser commands
+#command BROWSE <*any*> => __VfpUnsupported( <"udc"> )
+#command CHANGE <*any*> => __VfpUnsupported( <"udc"> )
+#command EDIT <*any*> => __VfpUnsupported( <"udc"> )
+#command KEYBOARD <*any*> => __VfpUnsupported( <"udc"> )
+#command MOUSE <*any*> => __VfpUnsupported( <"udc"> )
+#command ZOOM WINDOW <*any*> => __VfpUnsupported( <"udc"> )
+#command READ MENU <*any*> => __VfpUnsupported( <"udc"> )
+
+// MENU
+#command MENU <*any*> => __VfpUnsupported( <"udc"> )
+#command MENU TO <*any*> => __VfpUnsupported( <"udc"> )
+
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )

@@ -141817,6 +141817,10 @@ File = %AppPath%\Prg\Start.prg
 FileGUID = 76EE3E9E-4D4F-4FA5-A3D7-B978BFFBA5FB
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Prg\test.prg
+FileGUID = 2C68FD3D-54AA-4DC5-B576-F9A97BDBA6DD
+FileType = Code
+CopyToBin = 0
 [R931 - Global Using References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0

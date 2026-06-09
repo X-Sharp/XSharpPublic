@@ -758,6 +758,43 @@
 #command DISPLAY <*any*> => __VfpUnsupported( <"udc"> )
 #command LIST <*any*> => __VfpUnsupported( <"udc"> )
 
+// Database misc
+#command APPEND <cmd:GENERAL, MEMO, PROCEDURES> <*any*> => __VfpUnsupported( <"udc"> )
+#command BLANK <*any*> => __VfpUnsupported( <"udc"> )
+#command CALCULATE <*any*> => __VfpUnsupported( <"udc"> )
+#command CLOSE <cmd:DEBUGGER, FORMAT, MEMO, PRINTER, PROCEDURE> <*any*> => __VfpUnsupported( <"udc"> )
+#command COPY <cmd:INDEXES, PROCEDURES, TAG> <*any*> => __VfpUnsupported( <"udc"> )
+#command DELETE <cmd:TRIGGER, VIEW> <*any*> => __VfpUnsupported( <"udc"> )
+#command FLUSH <*any*> => __VfpUnsupported( <"udc"> )
+#command FREE TABLE <*any*> => __VfpUnsupported( <"udc"> )
+#command PACK DATABASE <*any*> => __VfpUnsupported( <"udc"> )
+#command REMOVE CLASS <*any*> => __VfpUnsupported( <"udc"> )
+#command RENAME <cmd:CLASS, CONNECTION, VIEW> <*any*> => __VfpUnsupported( <"udc"> )
+#command REPLACE FROM ARRAY <*any*> => __VfpUnsupported( <"udc"> )
+#command VALIDATE DATABASE <*any*> => __VfpUnsupported( <"udc"> )
+
+// System / legacy
+#command CALL <*any*> => __VfpUnsupported( <"udc"> )
+#command DOEVENTS <*any*> => __VfpUnsupported( <"udc"> )
+#command EXPORT <*any*> => __VfpUnsupported( <"udc"> )
+#command GETEXPR <*any*> => __VfpUnsupported( <"udc"> )
+#command HELP <*any*> => __VfpUnsupported( <"udc"> )
+#command IMPORT <*any*> => __VfpUnsupported( <"udc"> )
+#command INPUT <*any*> => __VfpUnsupported( <"udc"> )
+#command LOAD <*any*> => __VfpUnsupported( <"udc"> )
+#command LOGOUT <*any*> => __VfpUnsupported( <"udc"> )
+#command PLAY MACRO <*any*> => __VfpUnsupported( <"udc"> )
+#command POP KEY <*any*> => __VfpUnsupported( <"udc"> )
+#command PUSH KEY <*any*> => __VfpUnsupported( <"udc"> )
+#command REGIONAL <*any*> => __VfpUnsupported( <"udc"> )
+#command RESET <*any*> => __VfpUnsupported( <"udc"> )
+#command RESTORE <cmd:MACROS, SCREEN, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+#command RUNSCRIPT <*any*> => __VfpUnsupported( <"udc"> )
+#command SAVE <cmd:MACROS, SCREEN, WINDOW> <*any*> => __VfpUnsupported( <"udc"> )
+#command SCROLL <*any*> => __VfpUnsupported( <"udc"> )
+#command SUSPEND <*any*> => __VfpUnsupported( <"udc"> )
+#command TYPE <*any*> => __VfpUnsupported( <"udc"> )
+
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )

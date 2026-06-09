@@ -1,3 +1,4 @@
+#if LIBRARYMANAGER
 /* ****************************************************************************
  *
  * Copyright (c) Microsoft Corporation.
@@ -113,7 +114,7 @@ namespace XSharp.LanguageService
             updateTreeThread.Start();
         }
 
- 
+
         #region IDisposable Members
         public void Dispose()
         {
@@ -213,7 +214,7 @@ namespace XSharp.LanguageService
 
             //this._defaultNameSpace = prjNode.DefaultNameSpace;
             //Define Callback
-            var model = XSolution.FindProject(prjNode.Name);
+            var model = XSolution.FindProject(prjNode.Name,"");
             if (model != null)
             {
                 model.FileWalkComplete += OnFileWalkComplete;
@@ -329,6 +330,8 @@ namespace XSharp.LanguageService
         private void ProcessTask(LibraryTask task, XFile xfile, bool forceRefresh)
         {
             // If the file already exist
+            if (xfile.IsBuiltInFunctions)
+                return;
             XSharpModuleId found = FindFileByFileName(task.FileName);
             if (found != null)
             {
@@ -408,7 +411,7 @@ namespace XSharp.LanguageService
                             tasks.Remove(task.FileName);
                         if (requests.Count == 0)
                         {
-                            forceRefresh = true; 
+                            forceRefresh = true;
                         }
                     }
                     if (0 == requests.Count)
@@ -538,7 +541,7 @@ namespace XSharp.LanguageService
                 }
 
                 // Retrieve Classes from the file
-                var types = XSharpModel.XDatabase.GetTypesInFile(file.Id.ToString());
+                var types = XSharpModel.XDatabase.GetTypesInFile(file);
                 if (types == null)
                     return;
                 var model = file.Project;
@@ -572,7 +575,7 @@ namespace XSharp.LanguageService
                 AddNode(moduleId, newNode);
 
                 // Finally, any Function/Procedure ??
-                var funcs = XSharpModel.XDatabase.GetFunctions(file.Id.ToString());
+                var funcs = XSharpModel.XDatabase.GetFunctions(file.Id,file.Project.Id);
                 IList<XSourceMemberSymbol> elts;
                 if (funcs != null)
                 {
@@ -634,7 +637,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// We come here : After a Project load (xFile == NULL), or after a File Save (xFile == the Saved file)
         /// </summary>
-        private void OnFileWalkComplete(XFile xfile)
+        internal void OnFileWalkComplete(XFile xfile)
         {
             if (XSolution.IsClosing || xfile == null || !xfile.HasCode || xfile.Virtual)
             {
@@ -668,7 +671,7 @@ namespace XSharp.LanguageService
             return;
         }
 
-        private void OnProjectWalkComplete(XProject xsProject)
+        internal void OnProjectWalkComplete(XProject xsProject)
         {
             if (xsProject != null)
             {
@@ -791,7 +794,7 @@ namespace XSharp.LanguageService
                     return;
                 }
                 XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName);
-                Logger.Information("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
+                XSettings.Logger.Information("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
                 // Ok, now remove ALL nodes for that key
                 lock (files)
                 {
@@ -822,3 +825,4 @@ namespace XSharp.LanguageService
         }
     }
 }
+#endif

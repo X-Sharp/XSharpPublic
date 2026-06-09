@@ -16,7 +16,6 @@ NAMESPACE XSharpModel
         CLASS XFile
 #region Fields
     PROPERTY Id             AS INT64          AUTO      GET INTERNAL SET
-    PROPERTY IsHidden       AS LOGIC          AUTO      GET INTERNAL SET
     PRIVATE _globalType 	AS XSourceTypeSymbol
     PRIVATE _type			AS XFileType
     PRIVATE _typeList		AS XDictionary<STRING, XSourceTypeSymbol>
@@ -32,7 +31,6 @@ NAMESPACE XSharpModel
     CONSTRUCTOR(fullPath AS STRING, project AS XProject)
         SUPER()
         //
-        SELF:IsHidden := String.Compare(fullPath, XSolution.BuiltInFunctions, true) == 0
         SELF:FullPath := fullPath
         SELF:LastChanged := System.DateTime.MinValue
         SELF:_type := GetFileType(fullPath)
@@ -47,7 +45,7 @@ NAMESPACE XSharpModel
             SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
         ENDIF
 
-
+    PROPERTY IsBuiltInFunctions AS LOGIC GET String.Compare(SELF:FullPath, XSolution.BuiltInFunctions, true) == 0
     PROPERTY CommentTasks AS IList<XCommentTask> AUTO
     PROPERTY EntityList   AS IList<XSourceEntity>
         GET

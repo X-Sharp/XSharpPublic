@@ -26,49 +26,32 @@ namespace XSharp.Support
 
         public static bool Initialize()
         {
-            // Flags set inside the lock; all JoinableTaskFactory.Run work happens outside it.
-            // Holding a lock while calling JoinableTaskFactory.Run risks a deadlock: the background
-            // thread blocks waiting for the UI thread, but the UI thread may be waiting to acquire
-            // the same lock. XSharpShellLink's constructor and Logger.Start/Stop all call
-            // JoinableTaskFactory.Run, so they must be invoked after the lock is released.
-            bool needsShellLink = false;
-            bool shouldStart = false;
-            bool alreadyActive;
-
             lock (gate)
             {
-                // Initialize XSettings.Logger only once — LoggerImpl has no JTF calls.
-                // XSharpShellLink must be constructed outside the lock (its ctor calls JoinableTaskFactory.Run).
+                // Initialize XSettings.ShellLink and Logger only once, before accessing Logger methods
                 if (!initialized)
                 {
                     XSettings.Logger = new LoggerImpl();
+                    XSettings.ShellLink = new XSharpShellLink();
                     initialized = true;
-                    needsShellLink = true;
                 }
 
-                alreadyActive = active;
                 if (!active)
                 {
-                    int fileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
-                    int debugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
-                    XSettings.EnableFileLogging = fileLogging != 0;
-                    XSettings.EnableDebugLogging = debugLogging != 0;
-                    shouldStart = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
+                    int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
+                    int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
+
+                    XSettings.EnableFileLogging = FileLogging != 0;
+                    XSettings.EnableDebugLogging = DebugLogging != 0;
+                    bool start = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
+                    if (start)
+                        Logger.Start();
+                    else
+                        Logger.Stop();
+                    return start;
                 }
             }
-
-            // All JoinableTaskFactory.Run calls must happen outside the lock.
-            if (needsShellLink)
-                XSettings.ShellLink = new XSharpShellLink();
-
-            if (alreadyActive)
-                return active;
-
-            if (shouldStart)
-                Logger.Start();
-            else
-                Logger.Stop();
-            return shouldStart;
+            return active;
         }
 
 

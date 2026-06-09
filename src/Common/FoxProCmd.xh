@@ -659,8 +659,8 @@
 
 #command LABEL <*any*> => __VfpUnsupported("LABEL")
 
-#command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
-         => #error This command is not supported: <(udc)>
+#command CREATE <cmd:CLASS, CLASSLIB, COLOR, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
+         => __VfpUnsupported( <"udc"> )
 
 // supported CREATE commands in FoxProSql.xh
 // CREATE CURSOR
@@ -669,7 +669,7 @@
 // CREATE [SQL] VIEW
 
 #command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
-            => #error This command is not supported: <(udc)>
+            => __VfpUnsupported( <"udc"> )
 
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;

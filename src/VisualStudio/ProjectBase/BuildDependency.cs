@@ -10,15 +10,13 @@
  * ***************************************************************************/
 
 using System;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Debugger.Clr;
+
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+
 using CVT = Community.VisualStudio.Toolkit;
 
 using XSharp.Settings;
-
-using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -123,7 +121,7 @@ namespace Microsoft.VisualStudio.Project
             }
             if (result == null)
             {
-                Logger.Debug($"BuildDependency: GetHierarchy for project reference {this.referencedProjectGuid} returned null");
+                Logger.Error($"BuildDependency: GetHierarchy for project reference {this.referencedProjectGuid} returned null");
             }
             else
             {

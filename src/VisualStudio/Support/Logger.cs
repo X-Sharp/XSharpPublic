@@ -272,6 +272,13 @@ namespace XSharp.Support
                 Log.Information(formatMessage(message));
             }
         }
+        public static void Error(string message)
+        {
+            if (active)
+            {
+                Log.Error(formatMessage(message));
+            }
+        }
 
 
         public static void Exception(Exception e, string message)
@@ -311,6 +318,11 @@ namespace XSharp.Support
             Logger.DoubleLine();
         }
 
+        public void Error(string sMsg)
+        {
+            Logger.Error(sMsg);
+        }
+
         public void Exception(Exception e, string sMsg)
         {
             Logger.Debug(sMsg);
@@ -335,5 +347,6 @@ namespace XSharp.Support
         {
             Logger.Stop();
         }
+
     }
 }

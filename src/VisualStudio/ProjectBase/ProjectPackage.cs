@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Community.VisualStudio.Toolkit;
+using XSharp.Settings;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -26,15 +27,19 @@ namespace Microsoft.VisualStudio.Project
     {
         internal static void Exception(Exception e, string msg)
         {
-            XSharp.Settings.XSettings.Logger.Exception(e, msg);
+            XSettings.Logger.Exception(e, msg);
         }
         internal static void Information(string msg)
         {
-            XSharp.Settings.XSettings.Logger.Information(msg);
+            XSettings.Logger.Information(msg);
         }
         internal static void Debug(string msg)
         {
-            XSharp.Settings.XSettings.Logger.Debug(msg);
+            XSettings.Logger.Debug(msg);
+        }
+        internal static void Error(string msg)
+        {
+            XSettings.Logger.Error(msg);
         }
     }
     /// <summary>

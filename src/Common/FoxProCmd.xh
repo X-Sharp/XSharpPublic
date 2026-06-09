@@ -711,6 +711,21 @@
 #command MENU <*any*> => __VfpUnsupported( <"udc"> )
 #command MENU TO <*any*> => __VfpUnsupported( <"udc"> )
 
+// Generic ON commands
+#command ON <cmd:APLABOUT, BAR, ESCAPE, KEY, MACHELP, PAD, PAGE, READERROR> <*any*> => __VfpUnsupported( <"udc"> )
+
+// ON EXIT variants (more specific, defined later = tried first)
+#command ON EXIT <cmd:BAR, MENU, PAD, POPUP> <*any*> => __VfpUnsupported( <"udc"> )
+
+// ON SELECTION variants
+#command ON SELECTION <cmd:BAR, MENU, PAD, POPUP> <*any*> => __VfpUnsupported( <"udc"> )
+
+// ON KEY = (must precede generic ON KEY in match order)
+#command ON KEY = <*any*> => __VfpUnsupported( <"udc"> )
+
+// ON KEY LABEL (most specific = tried first)
+#command ON KEY LABEL <*any*> => __VfpUnsupported( <"udc"> )
+
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )

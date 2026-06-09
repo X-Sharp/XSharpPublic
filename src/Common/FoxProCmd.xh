@@ -795,6 +795,11 @@
 #command SUSPEND <*any*> => __VfpUnsupported( <"udc"> )
 #command TYPE <*any*> => __VfpUnsupported( <"udc"> )
 
+#command EJECT <*any*> => __VfpUnsupported( <"udc"> )
+#command EJECT PAGE <*any*> => __VfpUnsupported( <"udc"> )
+#command PRINTJOB <*any*> => __VfpUnsupported( <"udc"> )
+#command ENDPRINTJOB <*any*> => __VfpUnsupported( <"udc"> )
+
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )

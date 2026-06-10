@@ -143024,7 +143024,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C946 - Cannot use the arr[ind1][ind2] syntax to access array members in VFP dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C947 - Problem with text containing semicolon inside TEXT TO statement *************
 Application = C947 - Problem with text containing semicolon inside TEXT TO statement
 IDEVersion = 1.06

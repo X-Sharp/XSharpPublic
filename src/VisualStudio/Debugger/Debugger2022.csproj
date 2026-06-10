@@ -24,7 +24,6 @@
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
-    <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

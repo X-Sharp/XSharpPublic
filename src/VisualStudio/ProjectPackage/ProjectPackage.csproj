@@ -53,7 +53,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>VSTHRD010;VSSDK006;1762;NU1605;NU1903</NoWarn>
-    <DeployExtension>True</DeployExtension>
+    <DeployExtension Condition="'$(VisualStudioVersion)' == '16.0'">True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

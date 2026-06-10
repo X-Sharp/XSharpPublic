@@ -253,6 +253,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 lGotKey := TRUE
                             ENDIF
                         CATCH
+                            NOP
                         END TRY
                         IF !lGotKey
                             VAR cPad := ""

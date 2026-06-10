@@ -426,7 +426,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             LOCAL nResult AS LONG
 
             VAR cName := "Microsoft Sans Serif"
-            LOCAL nSize := 8.25 as Single
+            LOCAL nSize := (Real4) 8.25 as Single
             VAR eStyle := FontStyle.Regular
 
             IF IsString(cFontName) .AND. !String.IsNullOrEmpty(cFontName)
@@ -447,7 +447,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             TRY
                 oFont := Font{cName, nSize, eStyle, GraphicsUnit.Point}
             CATCH
-                oFont := Font{"Microsoft Sans Serif", 8.25, FontStyle.Regular, GraphicsUnit.Point}
+                oFont := Font{"Microsoft Sans Serif", (Real4) 8.25, FontStyle.Regular, GraphicsUnit.Point}
             END TRY
 
             nResult := 0

@@ -9,7 +9,6 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <TargetFrameworkProfile />
     <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C695}</ProjectGuid>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>

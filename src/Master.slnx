@@ -237,6 +237,10 @@
     <File Path="Compiler/src/Compiler/CompilerCommon.props" />
     <File Path="Compiler/src/Compiler/XSharpCodeAnalysis/Antlr.props" />
     <File Path="Compiler/src/Compiler/XSharpCodeAnalysis/Extra.Targets" />
+<File Path="VisualStudio/Common.props" />
+    <File Path="VisualStudio/Common2019.props" />
+    <File Path="VisualStudio/Common2022.props" />
+    <File Path="VisualStudio/README.md" />    
   </Folder>
   <Folder Name="/Tools/">
     <Project Path="Tools/DeployMsBuildSupport/DeployMsBuildSupport.xsproj" Id="f6dea3ea-186c-4868-859a-c2ebbee0d981">
@@ -279,6 +283,33 @@
   <Folder Name="/Tools/VOXporter/">
     <Project Path="Tools/VOXporter/Fab_VO_Entities.xsproj" Id="73c0dca6-bfe5-40cb-9240-3db1c37f5b34" />
     <Project Path="Tools/VOXporter/VOXPorter.xsproj" Id="939b111b-6ebd-490f-a7f4-ce923d758a3b" />
- 
+
+  </Folder>
+  <Folder Name="/VisualStudio/" />
+  <Folder Name="/VisualStudio/Common/">
+    <Project Path="VisualStudio/CodeDomProvider/CodeDomProvider.csproj" Id="7b7d9574-66a7-4719-aa48-c2386d7bf153" />
+    <Project Path="VisualStudio/CodeGenerator/CodeGenerator.xsproj" Id="b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc" />
+    <Project Path="VisualStudio/Debugger.Support/Debugger.Support.csproj" Id="bbd309aa-a928-461e-b91c-7c12b1145a06" />
+    <Project Path="VisualStudio/VODesigners_tester/VODesigners_tester.xsproj" Id="63d22c03-1d1a-4746-8e24-7bb1248696ee" />
+    <Project Path="VisualStudio/XSharpCodeModelXs/CodeModel.xsproj" Id="eed6843b-b727-4f08-aa32-ca0f48fdde3f" />
+    <Project Path="VisualStudio/XSharpVoEditors/VoEditors.xsproj" Id="7619db88-6286-4ef1-8273-2a08cc8ac70e" />
+  </Folder>
+  <Folder Name="/VisualStudio/Vs2022/">
+    <Project Path="VisualStudio/AppDesigner/AppDesigner2022.csproj" Id="4484939e-dda8-4033-8b1c-e8f60a2bafe1" />
+    <Project Path="VisualStudio/Debugger.UI/Debugger.UI2022.csproj" Id="960714e8-ff93-4a42-b9ba-610b0f2014db" />
+    <Project Path="VisualStudio/Debugger/Debugger2022.csproj" Id="16272550-75e6-4b9d-91e3-653bd141c756" />
+    <Project Path="VisualStudio/LanguageService/LanguageService2022.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7396" />
+    <Project Path="VisualStudio/ProjectBase/ProjectBase2022.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c696" />
+    <Project Path="VisualStudio/ProjectPackage/ProjectPackage2022.csproj" Id="f4adebdb-cd20-4532-b4e3-fe7424f5369d" />
+    <Project Path="VisualStudio/Support/Support2022.csproj" Id="fb387be5-a620-46ea-a7a6-1ccb9177f7c1" />
+  </Folder>
+  <Folder Name="/VisualStudio/Vs2019/">
+    <Project Path="VisualStudio/AppDesigner/AppDesigner.csproj" Id="4484939e-dda8-4033-8b1c-e8f60a2bafe0" />
+    <Project Path="VisualStudio/Debugger.UI/Debugger.UI.csproj" Id="8070a9bf-b528-4b4d-a1ca-5af47c326e85" />
+    <Project Path="VisualStudio/Debugger/Debugger.csproj" Id="16272550-75e6-4b9d-91e3-653bd141c755" />
+    <Project Path="VisualStudio/LanguageService/LanguageService.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7395" />
+    <Project Path="VisualStudio/ProjectBase/ProjectBase.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c695" />
+    <Project Path="VisualStudio/ProjectPackage/ProjectPackage.csproj" Id="f4adebdb-cd20-4532-b4e3-fe7424f5369c" />
+    <Project Path="VisualStudio/Support/Support.csproj" Id="494eb703-143e-4440-ac3b-c8aa1aa3dd21" />
   </Folder>
 </Solution>

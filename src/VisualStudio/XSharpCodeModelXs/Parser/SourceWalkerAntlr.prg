@@ -81,6 +81,10 @@ METHOD ProcessFoxSource(foxSrcCtx as XP.FoxsourceContext) AS VOID
 METHOD ProcessSource(srcCtx as XP.SourceContext) AS VOID
 
     RETURN
+
+METHOD ProcessGlobalEntity(globalCtx as XP.IGlobalEntityContext) AS VOID
+    RETURN
+
 END CLASS
 
 
@@ -95,6 +99,9 @@ OVERRIDE METHOD EnterEveryRule(ctx AS ParserRuleContext) AS VOID
     SWITCH ctx
     CASE nsCtx AS XP.Namespace_Context
         SELF:Walker:ProcessNamespace(nsCtx)
+    CASE globalCtx as XP.IGlobalEntityContext
+        SELF:Walker:ProcessGlobalEntity(globalCtx)
+
     CASE typeCtx as XP.ITypeContext
         SELF:Walker:ProcessType(typeCtx)
     CASE memberCtx as XP.IMemberContext

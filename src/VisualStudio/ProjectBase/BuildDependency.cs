@@ -106,9 +106,12 @@ namespace Microsoft.VisualStudio.Project
                 else
                 {
                     var project = (CVT.Project)XSettings.ShellLink.FindVsProject(projectInfo.Url);
-                    project.GetItemInfo(out result, out _, out _);
-                    projectInfo.Hierarchy = result;
-                    Logger.Information($"Read hierarchy for project {projectInfo.Url} from CVT");
+                    if (project != null)
+                    {
+                        project.GetItemInfo(out result, out _, out _);
+                        projectInfo.Hierarchy = result;
+                        Logger.Information($"Read hierarchy for project {projectInfo.Url} from CVT");
+                    }
                 }
             }
             if (result == null)

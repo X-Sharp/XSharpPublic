@@ -1,174 +1,166 @@
-﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#if NOTUSED
-
-// Note rewrite this using the [Export(typeof(ITaggerProvider))] and [TagType(typeof(IErrorTag))]
-// See Roslyn src\EditorFeatures\Core\Implementation\Diagnostics\DiagnosticsSquiggleTaggerProvider.cs 
-// Roslyn has an IDiagnosticService, which this tagger provider listens to.
-
-
-
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.Text.Formatting;
-using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
+using System.Linq;
 using Microsoft.VisualStudio.Text;
-using XSharpModel;
-using XSharpColorizer;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Utilities;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
-
     [Export(typeof(ITaggerProvider))]
-
+    [TagType(typeof(IErrorTag))]
     [ContentType(XSharpConstants.LanguageName)]
-    [TextViewRole(PredefinedTextViewRoles.Document)]
-    internal sealed class XSharpErrorColorizerFactory : IWpfTextViewCreationListener
+    internal sealed class XSharpErrorTaggerProvider : ITaggerProvider
     {
-        [Export(typeof(AdornmentLayerDefinition))]
-        [Name("XSharpErrorColorizer")]
-        [Order(After = PredefinedAdornmentLayers.Selection, Before = PredefinedAdornmentLayers.Text)]
-        public AdornmentLayerDefinition editorAdornmentLayer = null;
+        [Import]
+        private ITextDocumentFactoryService factory = null;
 
-        public void TextViewCreated(IWpfTextView textView)
+        public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
-            new XSharpErrorColorizer(textView);
+            if (!factory.IsXSharpDocument(buffer))
+            {
+                return null;
+            }
+
+            return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(
+                () => new XSharpErrorTagger(buffer) as ITagger<T>);
         }
     }
 
-    public class XSharpErrorColorizer
+    internal sealed class XSharpErrorTagger : ITagger<IErrorTag>
     {
-        IAdornmentLayer layer;
-        IWpfTextView view;
-        XFile file;
+        private readonly ITextBuffer _buffer;
+        private readonly IErrorTag _errorTag;
+        private XFile _file;
+        private XSharpClassifier _classifier;
 
-        public XSharpErrorColorizer(IWpfTextView view)
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
+        public XSharpErrorTagger(ITextBuffer buffer)
         {
-            this.view = view;
-            file = this.view.TextBuffer.GetFile();
-            if (file == null)
+            _buffer = buffer;
+            _file = buffer.GetFile();
+            _errorTag = new ErrorTag(PredefinedErrorTypeNames.SyntaxError);
+            _buffer.Changed += BufferChanged;
+
+            _classifier = buffer.GetClassifier();
+            if (_classifier != null)
             {
-                // Uhh !??, Something went wrong
-                return;
-            }
-            //
-            layer = view.GetAdornmentLayer("XSharpErrorColorizer");
-            // Disable the Adornment painting
-            this.view.LayoutChanged += OnLayoutChanged;
-            //this.view.TextBuffer.ChangedLowPriority += TextBuffer_ChangedLowPriority;
-            this.view.Closed += View_Closed;
-        }
-
-        private void View_Closed(object sender, EventArgs e)
-        {
-            this.view.LayoutChanged -= OnLayoutChanged;
-            //this.view.TextBuffer.ChangedLowPriority -= TextBuffer_ChangedLowPriority;
-            this.view.Closed -= View_Closed;
-        }
-
-        private void TextBuffer_ChangedLowPriority(object sender, TextContentChangedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        private void OnLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
-        {
-            layer.RemoveAllAdornments();
-            // Retrieve the current list of Intellisense Error for the file
-            if (file?.Project?.ProjectNode == null)
-                return;
-            List<IXErrorPosition> errors = file.Project.ProjectNode.GetIntellisenseErrorPos(file.FullPath);
-            if ((errors == null) || (errors.Count == 0))
-            {
-                return;
-            }
-            //
-            foreach( var line in view.TextViewLines)
-            {
-                var fullSpan = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start, line.End));
-                var snapLine = fullSpan.Start.GetContainingLine();
-                int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
-                IXErrorPosition error = errors.Find(t => t.Line == lineNumber);
-                if (error != null)
-                    this.CreateVisuals(line, error.Column, error.Length);
-            }
-
-        }
-
-        private void CreateVisuals(ITextViewLine line, int errorColumn, int Length)
-        {
-            IWpfTextViewLineCollection textViewLines = view.TextViewLines;
-            int tabSize = this.view.Options.GetTabSize();
-            var fullSpan = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start, line.End));
-            var snapLine = fullSpan.Start.GetContainingLine();
-            string text = snapLine.GetText();
-            int lineNumber = fullSpan.Start.GetContainingLine().LineNumber;
-            int offset = this.GetLineOffsetFromColumn(text, errorColumn-1, tabSize);
-            // If Error does span on several lines, the length might be negative as we are using Column to calculate length
-            if (Length < 1)
-                Length = 1;
-            //
-            var iMax = line.End.Position;
-            var iEnd = line.Start.Position + offset + Length ;
-            if (iEnd > iMax)
-                iEnd = iMax;
-            var start = line.Start + offset;
-            var end = line.Start + (iEnd - line.Start.Position);
-                
-            var span = new SnapshotSpan(line.Snapshot, Span.FromBounds(start, end));
-            //
-            Geometry g = textViewLines.GetMarkerGeometry(span);
-            if (g != null)
-            {
-                var border = new Border
-                {
-                    Width = g.Bounds.Width,
-                    Height = g.Bounds.Height / 8,
-                    BorderBrush = Brushes.Red,
-                    BorderThickness = new Thickness(0.8, 0, 0.8, 0.8),
-                };
-                Canvas.SetLeft(border, g.Bounds.Left);
-                Canvas.SetTop(border, g.Bounds.Bottom - g.Bounds.Height / 8);
-                //
-                layer.AddAdornment( span, null, border);
+                _classifier.ClassificationChanged += ClassifierChanged;
             }
         }
 
-        // Code extract from StringExtensions.cs, in namespace Microsoft.CodeAnalysis.Shared.Extensions, from Roslyn code
-        private int GetLineOffsetFromColumn(string line, int column, int tabSize)
+        private void BufferChanged(object sender, TextContentChangedEventArgs e)
         {
-            var currentColumn = 0;
-
-            for (int i = 0; i < line.Length; i++)
+            if (_classifier == null)
             {
-                if (currentColumn >= column)
+                _classifier = _buffer.GetClassifier();
+                if (_classifier != null)
                 {
-                    return i;
-                }
-
-                if (line[i] == '\t')
-                {
-                    currentColumn += tabSize - (currentColumn % tabSize);
-                }
-                else
-                {
-                    currentColumn++;
+                    _classifier.ClassificationChanged += ClassifierChanged;
                 }
             }
 
-            // We're asking for a column past the end of the line, so just go to the end.
-            return line.Length;
+            RaiseTagsChanged(_buffer.CurrentSnapshot);
+        }
+
+        private void ClassifierChanged(object sender, ClassificationChangedEventArgs e)
+        {
+            RaiseTagsChanged(_buffer.CurrentSnapshot);
+        }
+
+        private void RaiseTagsChanged(ITextSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                return;
+            }
+
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(snapshot, 0, snapshot.Length)));
+        }
+
+        public IEnumerable<ITagSpan<IErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+        {
+            if (spans.Count == 0)
+            {
+                yield break;
+            }
+
+            _file = _file ?? _buffer.GetFile();
+            if (_file?.Project?.ProjectNode == null)
+            {
+                yield break;
+            }
+
+            List<IXErrorPosition> errors = _file.Project.ProjectNode.GetIntellisenseErrorPos(_file.FullPath);
+            if (errors == null || errors.Count == 0)
+            {
+                yield break;
+            }
+
+            var snapshot = spans[0].Snapshot;
+            foreach (var error in errors)
+            {
+                if (!TryCreateErrorSpan(snapshot, error, out var errorSpan))
+                {
+                    continue;
+                }
+
+                if (spans.Any(requestedSpan => requestedSpan.IntersectsWith(errorSpan)))
+                {
+                    yield return new TagSpan<IErrorTag>(errorSpan, _errorTag);
+                }
+            }
+        }
+
+        private static bool TryCreateErrorSpan(ITextSnapshot snapshot, IXErrorPosition error, out SnapshotSpan span)
+        {
+            span = default;
+            if (snapshot == null || error == null || snapshot.LineCount == 0)
+            {
+                return false;
+            }
+
+            int lineNumber = Math.Max((int)error.Line - 1, 0);
+            if (lineNumber >= snapshot.LineCount)
+            {
+                return false;
+            }
+
+            var line = snapshot.GetLineFromLineNumber(lineNumber);
+            if (line.Length == 0)
+            {
+                return false;
+            }
+
+            int start = line.Start.Position + Math.Max((int)error.Column - 1, 0);
+            if (start >= line.End.Position)
+            {
+                start = line.End.Position - 1;
+            }
+
+            int length = Math.Max((int)error.Length, 1);
+            int end = Math.Min(start + length, line.End.Position);
+            if (end <= start)
+            {
+                end = Math.Min(start + 1, line.End.Position);
+                if (end <= start)
+                {
+                    return false;
+                }
+            }
+
+            span = new SnapshotSpan(snapshot, Span.FromBounds(start, end));
+            return true;
         }
     }
 }
-#endif

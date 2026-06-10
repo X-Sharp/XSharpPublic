@@ -26,32 +26,45 @@ namespace XSharp.Support
 
         public static bool Initialize()
         {
+            // Flags set inside the lock; all JoinableTaskFactory.Run work happens outside it.
+            // Holding a lock while calling JoinableTaskFactory.Run risks a deadlock: the background
+            // thread blocks waiting for the UI thread, but the UI thread may be waiting to acquire
+            // the same lock. XSharpShellLink's constructor and Logger.Start/Stop all call
+            // JoinableTaskFactory.Run, so they must be invoked after the lock is released.
+            bool needsShellLink = false;
+            bool shouldStart = false;
+            bool alreadyActive;
+
             lock (gate)
             {
                 // Initialize XSettings.ShellLink and Logger only once, before accessing Logger methods
                 if (!initialized)
                 {
                     XSettings.Logger = new LoggerImpl();
-                    XSettings.ShellLink = new XSharpShellLink();
                     initialized = true;
+                    needsShellLink = true;
                 }
 
+                alreadyActive = active;
                 if (!active)
                 {
-                    int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
-                    int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
+                    int fileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
+                    int debugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
 
-                    XSettings.EnableFileLogging = FileLogging != 0;
-                    XSettings.EnableDebugLogging = DebugLogging != 0;
-                    bool start = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
-                    if (start)
+                    XSettings.EnableFileLogging = fileLogging != 0;
+                    XSettings.EnableDebugLogging = debugLogging != 0;
+                    shouldStart = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
+                }
+            }
+            if (needsShellLink)
+                XSettings.ShellLink = new XSharpShellLink();
+            if (alreadyActive)
+                return active;
+            if (shouldStart)
                         Logger.Start();
                     else
                         Logger.Stop();
-                    return start;
-                }
-            }
-            return active;
+            return shouldStart;
         }
 
 

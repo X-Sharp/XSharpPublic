@@ -1,4 +1,6 @@
-﻿#if DEV17
+﻿extern alias codeanalysis;
+
+#if DEV17
 using Community.VisualStudio.Toolkit;
 
 using Microsoft.VisualStudio;
@@ -12,14 +14,23 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 
 using XSharpModel;
 
 using MSBuild = Microsoft.Build.Evaluation;
+
 using Microsoft.Build.Execution;
+
 using System.Xml;
 using System.IO;
+
+using EnvDTE80;
+
+using VSLangProj80;
+
 
 namespace XSharp.Project
 {
@@ -53,6 +64,8 @@ namespace XSharp.Project
             }
 
         }
+
+        protected override IVsReferenceManagerUser VsReferenceManager => new SdkProjectNodeReferenceManager(this);
 
         private List<SdkSubProjectInfo> _subProjects = new List<SdkSubProjectInfo>();
         internal List<SdkSubProjectInfo> SubProjects => _subProjects;
@@ -383,7 +396,7 @@ namespace XSharp.Project
                                 allReferenceAssemblies.AddUnique(file);
                             if (item.GetMetadataValue("NugetSourceType")?.ToLower() == "package")
                             {
-                                Logger.Information($"Item: Package{item.ItemType} {file}");
+                                Logger.Information($"Build:  Item: Package{item.ItemType} {file}");
                                 continue;
                             }
                             if (item.HasMetadata("FrameworkReferenceName"))
@@ -398,7 +411,7 @@ namespace XSharp.Project
                             continue;
                     }
 
-                    Logger.Information($"Item: {item.ItemType} {item.EvaluatedInclude}");
+                    Logger.Information($"Build:  Item: {item.ItemType} {item.EvaluatedInclude}");
                 }
                 if (commandLineArguments.Count > 0)
                 {
@@ -415,6 +428,104 @@ namespace XSharp.Project
 
             }
         }
+
+
+        public override Guid[] GetReferencePages()
+        {
+            if (IsNetCoreApp)
+            {
+                return new[] {
+                          VSConstants.ProjectReferenceProvider_Guid,
+                          VSConstants.FileReferenceProvider_Guid,
+                    };
+            }
+            return base.GetReferencePages();
+        }
+
+
+        protected Guid VsStd16 = new Guid("8F380902-6040-4097-9837-D3F40E66F908");
+        protected const uint idAddAssemblyReference = (uint) VSConstants.VSStd16CmdID.AddAssemblyReference;
+        protected const uint idAddCOMReference = (uint)VSConstants.VSStd16CmdID.AddComReference;
+        protected const uint idAddProjectReference = (uint)VSConstants.VSStd16CmdID.AddProjectReference;
+        protected const uint idAddSharedProjectReference = (uint)VSConstants.VSStd16CmdID.AddSharedProjectReference;
+        protected const uint idAddSDKReference = (uint)VSConstants.VSStd16CmdID.AddSdkReference;
+
+
+        protected override QueryStatusResult QueryStatusCommandFromOleCommandTarget(Guid cmdGroup, uint cmd, out bool handled)
+        {
+            handled = false;
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet2K)
+            {
+                switch ((VsCommands2K)cmd)
+                {
+                    case VsCommands2K.ADDREFERENCE:
+                        handled = true;
+                        return QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                }
+            }
+            return base.QueryStatusCommandFromOleCommandTarget (cmdGroup, cmd, out handled);
+        }
+        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        {
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet2K)
+            {
+
+                switch ((VsCommands2K)cmd)
+                {
+                    case VsCommands2K.ADDREFERENCE:
+                        result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                        return VSConstants.S_OK;
+                }
+            }
+            else if (cmdGroup == VsStd16)
+            {
+                switch (cmd)
+                {
+                    case idAddProjectReference:
+                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                        return VSConstants.S_OK;
+
+                    case idAddAssemblyReference:
+                    case idAddCOMReference:
+                        if (this.IsNetCoreApp)
+                        {
+                            result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                        }
+                        else
+                        {
+                            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                        }
+                        return VSConstants.S_OK;
+
+                    case idAddSharedProjectReference:
+                    case idAddSDKReference:
+                        result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                        return VSConstants.S_OK;
+                }
+            }
+            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+        }
+
+        protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        {
+            if (cmdGroup == VsStd16)
+            {
+                switch (cmd)
+                {
+                    case idAddProjectReference:
+                        return this.AddProjectReference();
+
+                    case idAddAssemblyReference when  !this.IsNetCoreApp:
+                        return this.AddAssemblyReference();
+
+                    case idAddCOMReference when !this.IsNetCoreApp:
+                        return this.AddCOMReference();
+
+                }
+            }
+            return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
+        }
+
 
         protected override List<string> RefreshReferences()
         {
@@ -489,7 +600,7 @@ namespace XSharp.Project
                     try
                     {
                     this.BuildProject.RemoveItem(node.ItemNode.Item);
-                    Logger.Information($"Removed folder node {node.Caption} from project {this.Caption}");
+                    Logger.Information($"Clean: Removed folder node {node.Caption} from project {this.Caption}");
                     dirty = true;
                     }
                     catch
@@ -506,7 +617,7 @@ namespace XSharp.Project
             }
             if (this.GetProjectProperty(ProjectFileConstants.ProjectGuid) != null)
             {
-                Logger.Information($"Removed project Guid from project{this.Caption}");
+                Logger.Information($"Clean: Removed project Guid from project{this.Caption}");
                 this.RemoveProjectProperty(ProjectFileConstants.ProjectGuid);
             }
             if (this.BuildProject.IsDirty || dirty)

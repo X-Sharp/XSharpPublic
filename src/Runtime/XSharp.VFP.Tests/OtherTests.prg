@@ -123,6 +123,57 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         END METHOD
 
         [Fact];
+        METHOD TestFontMetricDoesNotThrow() AS VOID
+            LOCAL nResult AS LONG
+            nResult := FONTMETRIC(1)
+            Assert.True(nResult >= 0)
+
+            nResult := FONTMETRIC(1, "Arial", 12)
+            Assert.True(nResult >= 0)
+
+            nResult := FONTMETRIC(1, "Arial", 12, "B")
+            Assert.True(nResult >= 0)
+
+            nResult := FONTMETRIC(1, "Arial", 12, "BI")
+            Assert.True(nResult >= 0)
+        END METHOD
+
+        [Fact];
+        METHOD TestFontMetricAllAttributes() AS VOID
+            LOCAL nResult AS LONG
+            FOR VAR nAttr := 1 TO 20
+                nResult := FONTMETRIC(nAttr, "Arial", 12)
+                Assert.True(nResult >= 0)
+            NEXT
+        END METHOD
+
+        [Fact];
+        METHOD TestFontMetricInvalidAttribute() AS VOID
+            LOCAL nResult AS LONG
+            nResult := FONTMETRIC(0)
+            Assert.Equal(0, nResult)
+
+            nResult := FONTMETRIC(99)
+            Assert.Equal(0, nResult)
+        END METHOD
+
+        [Fact];
+        METHOD TestFontMetricStyleCodes() AS VOID
+            LOCAL nResult AS LONG
+            nResult := FONTMETRIC(1, "Arial", 12, "N")
+            Assert.True(nResult >= 0)
+
+            nResult := FONTMETRIC(1, "Arial", 12, "O")
+            Assert.True(nResult >= 0)
+
+            nResult := FONTMETRIC(1, "Arial", 12, "U")
+            Assert.True(nResult >= 0)
+
+            nResult := FONTMETRIC(1, "Arial", 12, "-")
+            Assert.True(nResult >= 0)
+        END METHOD
+
+        [Fact];
         METHOD SetDeviceToFileTest() AS VOID
             VAR cFile := Path.Combine(Environment.CurrentDirectory, Guid.NewGuid():ToString() + ".txt")
             VAR cTestContent := "May the Force be with you, X#"

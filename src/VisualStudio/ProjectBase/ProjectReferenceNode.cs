@@ -677,6 +677,7 @@ namespace Microsoft.VisualStudio.Project
             int circular;
             Marshal.ThrowExceptionForHR(solutionBuildManager.CalculateProjectDependencies());
             Marshal.ThrowExceptionForHR(solutionBuildManager.QueryProjectDependency(referencedHierarchy, this.ProjectMgr, out circular));
+            Logger.Information($"IsReferenceInCycle: QueryProjectDependency for project reference {projectGuid} returned circular={circular}");
 
             return circular != 0;
         }

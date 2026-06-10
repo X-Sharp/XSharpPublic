@@ -202,7 +202,7 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) != 0, "Use rename as this won't work");
             if (IsImported)
             {
-                Logger.Debug($"Try to set attribute {attributeName} to value {attributeValue} for Imported item");
+                Logger.Error($"Try to set attribute {attributeName} to value {attributeValue} for Imported item");
                 return;
             }
             if(this.IsVirtual)

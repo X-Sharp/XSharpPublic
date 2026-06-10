@@ -43,11 +43,7 @@ namespace XSharp.Support
 
 
 
-#if LIBRARYMANAGER
 
-                VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
-                VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
-#endif
                 VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
@@ -96,39 +92,7 @@ namespace XSharp.Support
 
 
         }
-#if LIBRARYMANAGER
-        private void SolutionEvents_OnBeforeUnloadProject(Project project)
-        {
 
-            IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
-            if (libraryManager != null)
-            {
-                project.GetItemInfo(out var hier, out var id, out var parent);
-                libraryManager.UnregisterHierarchy(hier);
-            }
-
-        }
-
-        private void SolutionEvents_OnAfterLoadProject(Project project)
-        {
-
-            if (!IsXSharpProject(project.FullPath))
-                return;
-            var framework = "";
-            IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
-            if (libraryManager != null)
-            {
-                project.GetItemInfo(out var hier, out var id, out var parent);
-                var prj = XSolution.FindProject(project.FullPath, framework);
-                if (prj != null)
-                {
-                    libraryManager.RegisterHierarchy(hier, prj, prj.ProjectNode);
-                }
-
-            }
-
-        }
-#endif
         private List<Project> GetProjects(SolutionItem parent)
         {
             var result = new List<Project>();

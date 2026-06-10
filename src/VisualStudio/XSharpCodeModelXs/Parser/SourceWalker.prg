@@ -3,20 +3,19 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System.IO
+#undef USEANTLR
+#ifndef USEANTLR
+#pragma warnings disable 414 // field _source not used
+#endif
 USING System.Text
-USING System.Threading.Tasks
 USING LanguageService.SyntaxTree
-USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
-USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
-USING STATIC XSharp.Parser.VsParser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
 USING XSharp.Settings
 
 NAMESPACE XSharpModel
-CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
+PARTIAL CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 #region fields
     PRIVATE _errors     AS IList<XError>
     PRIVATE _file       AS XFile
@@ -98,14 +97,6 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
             next
         endif
 
-    METHOD AntlrParse(cSource AS STRING, stream OUT ITokenStream) AS XSharpParserRuleContext
-        stream := NULL
-        // WriteOutputMessage("-->> AntlrParse() "+SELF:SourcePath+" Start "+DateTime.Now.ToString())
-        // XSharp.Parser.VsParser.Parse(cSource, SELF:SourcePath,SELF:ParseOptions,SELF,OUT stream, OUT VAR tree, OUT VAR includeFiles)
-        // AddIncludes(includeFiles)
-         // WriteOutputMessage("<<-- AntlrParse() "+SELF:SourcePath+" End "+DateTime.Now.ToString())
-        RETURN NULL // tree
-
     METHOD ParseLocals(source AS STRING, xmember AS XSourceMemberSymbol) AS List<XSourceVariableSymbol>
         // This is JUST the source of the method. The locations in the variables need to be adjusted
 
@@ -166,16 +157,25 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         ENDIF
         WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
         TRY
+#ifdef USEANTLR
             var tree := SELF:AntlrParse(_source, out var stream)
-            VAR parser := XsParser{_file, SELF:ParseOptions:Dialect}
-            parser:SaveToDisk := SELF:SaveToDisk
-            WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" ManualParse Start")
-            parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
-            WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" ManualParse End")
-            SELF:_entities := parser:EntityList
-            SELF:_blocks   := parser:BlockList
-            SELF:_locals   := parser:Locals
+            if self:_errors:Count > 0
 
+                self:_errors:Clear()
+#endif
+                VAR parser := XsParser{_file, SELF:ParseOptions:Dialect}
+                parser:SaveToDisk := SELF:SaveToDisk
+                WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" ManualParse Start")
+                parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
+                WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" ManualParse End")
+                SELF:_entities := parser:EntityList
+                SELF:_blocks   := parser:BlockList
+                SELF:_locals   := parser:Locals
+#ifdef USEANTLR
+            else
+                SELF:ConvertParseTree(tree)
+            endif
+#endif
         CATCH e AS Exception
             WriteOutputMessage(SELF:SourcePath)
             XSettings.Exception(e)

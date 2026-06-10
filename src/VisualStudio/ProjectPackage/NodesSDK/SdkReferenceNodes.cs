@@ -10,6 +10,34 @@ using System.Threading.Tasks;
 
 namespace XSharp.Project
 {
+
+    internal class SdkProjectNodeReferenceManager : ProjectNodeReferenceManager
+    {
+        XSharpSdkProjectNode project;
+        internal SdkProjectNodeReferenceManager(XSharpProjectNode projectNode) : base(projectNode)
+        {
+            project = projectNode as XSharpSdkProjectNode;
+        }
+
+        protected override IVsReferenceProviderContext CreateAssemblyReferenceProviderContext(IVsReferenceManager mgr)
+        {
+            if (project.IsNetCoreApp)
+            {
+                return null;
+            }
+            return base.CreateAssemblyReferenceProviderContext(mgr);
+        }
+        protected override IVsReferenceProviderContext CreateCOMReferenceProviderContext(IVsReferenceManager mgr)
+        {
+            if (project.IsNetCoreApp)
+            {
+                return null;
+            }
+            return base.CreateCOMReferenceProviderContext(mgr);
+        }
+
+    }
+
     class XSharpSDKAssemblyReferenceNode : XSharpAssemblyReferenceNode
     {
         public XSharpSDKAssemblyReferenceNode(ProjectNode root, string assemblyPath)

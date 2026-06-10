@@ -98,9 +98,13 @@ BEGIN NAMESPACE XSharp.RDD
                     sValue := oValue:ToString():TrimEnd()
                 CASE DbFieldType.Date
                     if oValue IS IDate var oDate
-                        VAR oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+                        LOCAL oDt AS DateTime
+                        if oDate:IsEmpty
+                            oDt := DateTime.MinValue
+                        else
+                            oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+                        endif
                         sValue := DtToS(oDt)
-
                     elseif oValue is DateTime var oDt
                         sValue := DtToS(oDt)
                     else

@@ -758,6 +758,40 @@ namespace XSharp.MacroCompiler.Preprocessor
                 default:
                     if (_textProps != null && line.Count > 0)
                     {
+                        // check for LINE_CONT token followed by a WS token
+                        // and the text ENDTEXT
+                        // if that was found then split the line and send the line with ENDTEXT to ProcessLine again
+                        int endTextToken = -1;
+                        IList<XSharpToken> nextLine = null;
+                        for (int i = line.Count - 1; i > 0 ; i--)
+                        {
+                            if (line[i].Type == XSharpLexer.LINE_CONT)
+                            {
+                                // check tokens after i
+                                for (int j = i; j < line.Count && endTextToken == -1; j++)
+                                {
+                                    if (line[j].Type == XSharpLexer.ID)
+                                    {
+                                        if (string.Compare(line[j].Text, "ENDTEXT", true) == 0)
+                                        {
+                                            endTextToken = j;
+                                            line[j].Type = XSharpLexer.PP_ENDTEXT;
+                                            line[j].Channel = Channel.Default;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (endTextToken != -1)
+                        {
+                            nextLine = new List<XSharpToken>();
+                            for (int j = endTextToken; j < line.Count; j++)
+                            {
+                                nextLine.Add(line[j]);
+                            }
+                            line = line.Take(endTextToken-1).ToList();
+                        }
                         var sb = new StringBuilder();
                         foreach (var token in line)
                         {
@@ -776,6 +810,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                         else
                         {
                             line = doTextLine(line, write2ppo);
+                        }
+                        if (nextLine != null)
+                        {
+                            line.Add(new XSharpToken(XSharpLexer.EOS, "\r\n"));
+                            line.AddRange(doEndTextDirective(nextLine, write2ppo));
                         }
                     }
                     else
@@ -2057,7 +2096,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             Error(originalTokens[0], ErrorCode.ERR_PragmaNotSupported);
         }
-#if DONOTINCLUDEINMACROCOMPILER
+#if !MACROCOMPILER
             Debug.Assert(originalTokens.Count > 0);
             var tokens = stripWs(originalTokens);
             XSharpToken errortoken = originalTokens[0];

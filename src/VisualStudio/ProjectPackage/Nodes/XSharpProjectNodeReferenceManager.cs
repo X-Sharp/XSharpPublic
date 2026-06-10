@@ -66,6 +66,7 @@ namespace XSharp.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var mgr = projectNode.GetService(typeof(SVsReferenceManager)) as IVsReferenceManager;
+            Logger.Information($"GetProviderContexts: Getting provider contexts for project {projectNode.Caption}");
             return this.GetProviderContexts(mgr).ToArray();
         }
 
@@ -76,11 +77,13 @@ namespace XSharp.Project
             var ctxt = CreateAssemblyReferenceProviderContext(mgr);
             if (ctxt != null)
             {
+                Logger.Information($"GetProviderContexts: Adding AssemblyReferenceProviderContext for project {projectNode.Caption}");
                 yield return ctxt;
             }
             ctxt = CreateProjectReferenceProviderContext(mgr);
             if (ctxt != null)
             {
+                Logger.Information($"GetProviderContexts: Adding ProjectReferenceProviderContext for project {projectNode.Caption}");
                 yield return ctxt;
             }
 
@@ -93,19 +96,21 @@ namespace XSharp.Project
             ctxt = CreateCOMReferenceProviderContext(mgr);
             if (ctxt != null)
             {
+                Logger.Information($"GetProviderContexts: Adding COMReferenceProviderContext for project {projectNode.Caption}");
                 yield return ctxt;
             }
 
             ctxt = CreateFileReferenceProviderContext(mgr);
             if (ctxt != null)
             {
+                Logger.Information($"GetProviderContexts: Adding FileReferenceProviderContext for project {projectNode.Caption}");
                 yield return ctxt;
             }
 
             //CreatePlatformReferenceProviderContext(referenceManager),
 
         }
-        private IVsReferenceProviderContext CreateAssemblyReferenceProviderContext(IVsReferenceManager mgr)
+        protected virtual IVsReferenceProviderContext CreateAssemblyReferenceProviderContext(IVsReferenceManager mgr)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var context = mgr.CreateProviderContext(VSConstants.AssemblyReferenceProvider_Guid) as IVsAssemblyReferenceProviderContext;
@@ -115,18 +120,20 @@ namespace XSharp.Project
             var references = referenceContainer
                  .EnumReferences()
                  .OfType<AssemblyReferenceNode>();
+            Logger.Information($"CreateAssemblyReferenceProviderContext: for project {projectNode.Caption} with {references.Count()} references");
             foreach (var reference in references)
             {
                 var newReference = context.CreateReference() as IVsAssemblyReference;
                 newReference.FullPath = reference.Url ?? reference.AssemblyName.ToString();
                 newReference.Name = reference.AssemblyName.Name;
+                Logger.Information($"CreateAssemblyReferenceProviderContext: Adding assembly reference: {newReference.Name} ({newReference.FullPath})");
                 context.AddReference(newReference);
             }
 
             return context;
         }
 
-        private IVsReferenceProviderContext CreateCOMReferenceProviderContext(IVsReferenceManager mgr)
+        protected virtual IVsReferenceProviderContext CreateCOMReferenceProviderContext(IVsReferenceManager mgr)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var context = mgr.CreateProviderContext(VSConstants.ComReferenceProvider_Guid) as IVsComReferenceProviderContext;
@@ -135,6 +142,7 @@ namespace XSharp.Project
             var references = referenceContainer
                  .EnumReferences()
                  .OfType<ComReferenceNode>();
+            Logger.Information($"CreateCOMReferenceProviderContext: for project {projectNode.Caption} with {references.Count()} references");
             foreach (var reference in references)
             {
                 var newReference = context.CreateReference() as IVsComReference;
@@ -142,6 +150,7 @@ namespace XSharp.Project
                 newReference.MinorVersion = (ushort)reference.MinorVersionNumber;
                 newReference.Guid = reference.TypeGuid;
                 newReference.FullPath = reference.Url;
+                Logger.Information($"CreateCOMReferenceProviderContext: Adding COM reference: {newReference.Name} ({newReference.FullPath}), version {newReference.MajorVersion}.{newReference.MinorVersion}, guid {newReference.Guid}");
                 context.AddReference(newReference);
             }
 
@@ -149,7 +158,7 @@ namespace XSharp.Project
         }
 
 
-        private IVsReferenceProviderContext CreateProjectReferenceProviderContext(IVsReferenceManager mgr)
+        protected virtual IVsReferenceProviderContext CreateProjectReferenceProviderContext(IVsReferenceManager mgr)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var context = mgr.CreateProviderContext(VSConstants.ProjectReferenceProvider_Guid) as IVsProjectReferenceProviderContext;
@@ -159,6 +168,7 @@ namespace XSharp.Project
             var references = referenceContainer
                  .EnumReferences()
                  .OfType<ProjectReferenceNode>();
+            Logger.Information($"CreateProjectReferenceProviderContext: for project {projectNode.Caption} with {references.Count()} references");
             foreach (var reference in references)
             {
                 var newReference = context.CreateReference() as IVsProjectReference;
@@ -168,26 +178,30 @@ namespace XSharp.Project
                 var projectInfo = ProjectInfo.GetProjectInfo(reference.Url, reference.ReferencedProjectGuid);
                 if (projectInfo == null)
                 {
-                	// Try to get the Project GUID from the Solution inside VS to make
-                	// sure that SDK project references use the correct Guid
+                    Logger.Information($"CreateProjectReferenceProviderContext: ProjectInfo not found for {reference.Url} with guid {reference.ReferencedProjectGuid}, trying to get it from the solution");
+                    // Try to get the Project GUID from the Solution inside VS to make
+                    // sure that SDK project references use the correct Guid
                     if (projectNode.GetProjectGuid(reference.Url, out projectGuid))
                     {
                         projectInfo = new ProjectInfo(projectGuid, reference.Url);
+                        Logger.Information($"CreateProjectReferenceProviderContext: creating new ProjectInfo for {reference.Url} with guid {projectGuid} from the solution");
                     }
                 }
                 else
                 {
+                    Logger.Information($"CreateProjectReferenceProviderContext: ProjectInfo found for {reference.Url} with guid {projectInfo.Id}");
                     projectGuid = projectInfo.Id;
                 }
                 newReference.Identity = projectGuid.ToString("B");
-                newReference.ReferenceSpecification = $"{projectGuid:b}|{newReference.Name}" ;
+                newReference.ReferenceSpecification = $"{newReference.Identity}|{newReference.Name}" ;
+                Logger.Information($"CreateProjectReferenceProviderContext: Adding project reference: {newReference.Name} ({newReference.FullPath}), guid {newReference.Identity}, {newReference.ReferenceSpecification}");
                 newReference.AlreadyReferenced = true;
                 context.AddReference(newReference);
             }
 
             return context;
         }
-        private IVsReferenceProviderContext CreateFileReferenceProviderContext(IVsReferenceManager mgr)
+        protected virtual IVsReferenceProviderContext CreateFileReferenceProviderContext(IVsReferenceManager mgr)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var context = mgr.CreateProviderContext(VSConstants.FileReferenceProvider_Guid) as IVsFileReferenceProviderContext;
@@ -197,11 +211,14 @@ namespace XSharp.Project
             var references = referenceContainer
                 .EnumReferences()
                 .Where(n => !(n is AssemblyReferenceNode) && !(n is ProjectReferenceNode));
+            Logger.Information($"CreateFileReferenceProviderContext: for project {projectNode.Caption} with {references.Count()} references");
+
             foreach (var reference in references)
             {
                 var newReference = (IVsFileReference)context.CreateReference();
                 newReference.FullPath = reference.Url;
                 newReference.AlreadyReferenced = true;
+                Logger.Information($"CreateFileReferenceProviderContext: Adding file reference: {newReference.FullPath}");
                 context.AddReference(newReference);
             }
             return context;

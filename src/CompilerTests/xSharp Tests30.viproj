@@ -125426,7 +125426,7 @@ Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
 NetVersion = 
-Dialect = Core
+Dialect = VO
 Folder = %ProjectPath%\Applications\Tester\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
@@ -125465,6 +125465,8 @@ CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
@@ -125508,7 +125510,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDotOption=0
+AllowDotOption=1
 ResponseOnly=0
 [Tester Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -141818,7 +141820,7 @@ FileGUID = 76EE3E9E-4D4F-4FA5-A3D7-B978BFFBA5FB
 FileType = Code
 CopyToBin = 0
 File = %AppPath%\Prg\test.prg
-FileGUID = 287B921C-6CCB-4884-B59A-112E448DC240
+FileGUID = 2C68FD3D-54AA-4DC5-B576-F9A97BDBA6DD
 FileType = Code
 CopyToBin = 0
 [R931 - Global Using References]
@@ -141899,128 +141901,6 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R931 - Global Using
-
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R932 *************
-Application = R932
-IDEVersion = 1.06
-GalleryName = 
-GalleryPage = 
-GalleryDefaultName = 
-Target = 0
-Platform = AnyCPU
-Language = XSharp
-Runtime = CLR4
-NetVersion = 
-Dialect = Core
-Folder = %ProjectPath%\Applications\R932\
-PrgSubFolder = \Prg
-ResourcesSubFolder = \Resources
-Description = Standard MDI Sample using the X# runtime
-NameSpace = 
-Assembly = R932
-Extension = 
-ApplicationIcon = 
-OutputFolder = 
-Frameworks = 1
-GUID = 5C4FDBAF-13FC-4DD9-A261-A894862F52E8
-IncludeInProjectBuild = 1
-IncludeInProjectSearch = 1
-IncludeInProjectExport = 1
-EmitAssemblyProperties = 0
-EmitNetVersion = 0
-IncludePath = 
-StdDefsFile = 
-AppToRun = 
-SignAssembly = 0
-KeyFile = 
-
-[ExportOptions]
-ExportResources = 0
-ExportImages = 0
-[R932 FileGroups]
-[R932 Files]
-File = %AppPath%\Prg\Start.prg
-FileGUID = 6A2E98DD-2549-4FC9-9E07-136035A0E63A
-FileType = Code
-CopyToBin = 0
-[R932 References]
-ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[R932 Resources]
-[R932 Native Resources]
-[R932 License files]
-[R932 General Options]
-Switches=
-IgnoreWarnings=
-ZeroArrays=0
-CaseSensitive=0
-ImplicitNamespace=0
-VO1=0
-VO2=0
-VO3=0
-VO4=0
-VO5=0
-VO6=0
-VO7=0
-VO8=0
-VO9=0
-VO10=0
-VO11=0
-VO12=0
-VO13=0
-VO14=0
-VO15=0
-VO16=0
-VO17=0
-FOX1=0
-FOX2=0
-XPP1=0
-LateBound=0
-Unsafe=0
-Undeclared=0
-EnforceSelf=0
-EnforceOverride=0
-UseNativeVersion=0
-MemVar=0
-IgnoreStdDefs=0
-Ovf=0
-FOvf=0
-ModernSyntax=0
-NamedArgs=0
-InitLocals=0
-AllowOldStyleAssignments=0
-AllowDotOption=0
-ResponseOnly=0
-[R932 Configurations]
-AppConfig = Debug,11111111-1111-1111-1111-111111111111
-  Switches=
-  SwitchesCF=
-  CommandLine=
-  CommandLineCF=
-  Debug=1
-  DebugInit=1
-  DefineDebug=1
-  DefineTrace=0
-  SyntaxOnly=0
-  WarningsErrors=0
-  ForceConsole=0
-  ForceX86=0
-  Optimize=0
-AppConfig = Release,22222222-2222-2222-2222-222222222222
-  Switches=
-  SwitchesCF=
-  CommandLine=
-  CommandLineCF=
-  Debug=0
-  DebugInit=0
-  DefineDebug=0
-  DefineTrace=0
-  SyntaxOnly=0
-  WarningsErrors=0
-  ForceConsole=0
-  ForceX86=0
-  Optimize=0
-ENDApplication = R932
 
 ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C938 - Latebound assign of iVars *************
@@ -143144,7 +143024,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C946 - Cannot use the arr[ind1][ind2] syntax to access array members in VFP dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C947 - Problem with text containing semicolon inside TEXT TO statement *************
 Application = C947 - Problem with text containing semicolon inside TEXT TO statement
 IDEVersion = 1.06
@@ -146017,6 +145897,377 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C968 - Problems with XBase++ code [#1960, #1960]
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R933 - Assign Var with Clipper Calling convention and Var is not used *************
+Application = R933 - Assign Var with Clipper Calling convention and Var is not used
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 1
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = VO
+Folder = %ProjectPath%\Applications\R933\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Standard MDI Sample using the X# runtime
+NameSpace = 
+Assembly = R933
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 4BBC386D-73B2-4893-8515-57064C4F83FF
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R933 - Assign Var with Clipper Calling convention and Var is not used FileGroups]
+[R933 - Assign Var with Clipper Calling convention and Var is not used Files]
+File = %AppPath%\Prg\Start.prg
+FileGUID = 9ACDE361-9A40-4DF9-9D9F-E611C199FF12
+FileType = Code
+CopyToBin = 0
+[R933 - Assign Var with Clipper Calling convention and Var is not used References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+[R933 - Assign Var with Clipper Calling convention and Var is not used Resources]
+[R933 - Assign Var with Clipper Calling convention and Var is not used Native Resources]
+[R933 - Assign Var with Clipper Calling convention and Var is not used License files]
+[R933 - Assign Var with Clipper Calling convention and Var is not used General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=1
+VO1=1
+VO2=1
+VO3=1
+VO4=1
+VO5=1
+VO6=1
+VO7=1
+VO8=1
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=1
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[R933 - Assign Var with Clipper Calling convention and Var is not used Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R933 - Assign Var with Clipper Calling convention and Var is not used
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R932 - RECORD Class VO DIalect *************
+Application = R932 - RECORD Class VO DIalect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = VO
+Folder = %ProjectPath%\Applications\R932\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Standard MDI Sample using the X# runtime
+NameSpace = 
+Assembly = R932
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 0E624CCA-DF3C-4FED-AC9B-69FECF7D89BE
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R932 - RECORD Class VO DIalect FileGroups]
+[R932 - RECORD Class VO DIalect Files]
+File = %AppPath%\Prg\R932.prg
+FileGUID = 8866804B-644A-400D-B70E-AA468FEB9A4F
+FileType = Code
+CopyToBin = 0
+[R932 - RECORD Class VO DIalect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+[R932 - RECORD Class VO DIalect Resources]
+[R932 - RECORD Class VO DIalect Native Resources]
+[R932 - RECORD Class VO DIalect License files]
+[R932 - RECORD Class VO DIalect General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[R932 - RECORD Class VO DIalect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R932 - RECORD Class VO DIalect
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R934 - ENDTEXT after Line Continue character *************
+Application = R934 - ENDTEXT after Line Continue character
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = Core
+Folder = %ProjectPath%\Applications\R934\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R934
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 12516140-6191-478F-8F12-50F6F3A4E12A
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R934 - ENDTEXT after Line Continue character FileGroups]
+[R934 - ENDTEXT after Line Continue character Files]
+File = %AppPath%\Prg\R934.prg
+FileGUID = E3E7C45D-CB35-4EE7-8B03-197BB21A2143
+FileType = Code
+CopyToBin = 0
+[R934 - ENDTEXT after Line Continue character References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[R934 - ENDTEXT after Line Continue character Resources]
+[R934 - ENDTEXT after Line Continue character Native Resources]
+[R934 - ENDTEXT after Line Continue character License files]
+[R934 - ENDTEXT after Line Continue character General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[R934 - ENDTEXT after Line Continue character Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R934 - ENDTEXT after Line Continue character
 [EndApplications]
 
 [Configurations]

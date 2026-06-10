@@ -50,3 +50,13 @@ END FUNCTION
 FUNCTION SysMetric( nScreenElement AS LONG) AS LONG
     RETURN VfpUIService.Provider:SysMetric(nScreenElement)
 END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/fontmetric/*" />
+[FoxProFunction("FONTMETRIC", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG CLIPPER
+    LOCAL nAttr := 0 AS LONG
+    IF IsNumeric(nAttribute)
+        nAttr := (LONG)nAttribute    
+    ENDIF
+
+    RETURN VfpUIService.Provider:FontMetric(nAttr, cFontName, nFontSize, cFontStyle)

@@ -3,16 +3,20 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
 
 using System;
-using Microsoft.VisualStudio;
+
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+
+using CVT = Community.VisualStudio.Toolkit;
+
+using XSharp.Settings;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -90,8 +94,43 @@ namespace Microsoft.VisualStudio.Project
             {
                 return hierarchy;
             }
-
-            return VsShellUtilities.GetHierarchy(this.projectMgr.Site, this.referencedProjectGuid);
+            IVsHierarchy result = null;
+            var projectInfo = ProjectInfo.GetProjectInfo(this.referencedProjectGuid);
+            if (projectInfo != null)
+            {
+                if (projectInfo.Hierarchy != null)
+                {
+                    Logger.Information($"Retrieve hierarchy for project reference {this.referencedProjectGuid} from cache");
+                    result = projectInfo.Hierarchy;
+                }
+                else
+                {
+                    var project = (CVT.Project)XSettings.ShellLink.FindVsProject(projectInfo.Url);
+                    if (project != null)
+                    {
+                        project.GetItemInfo(out result, out _, out _);
+                        projectInfo.Hierarchy = result;
+                        Logger.Information($"Read hierarchy for project {projectInfo.Url} from CVT");
+                    }
+                }
+            }
+            if (result == null)
+            {
+                result = VsShellUtilities.GetHierarchy(this.projectMgr.Site, this.referencedProjectGuid);
+                if (result != null && projectInfo != null)
+                {
+                    projectInfo.Hierarchy = result;
+                }
+            }
+            if (result == null)
+            {
+                Logger.Error($"BuildDependency: GetHierarchy for project reference {this.referencedProjectGuid} returned null");
+            }
+            else
+            {
+                Logger.Information($"BuildDependency: GetHierarchy for project reference {this.referencedProjectGuid} returned {result}");
+            }
+            return result;
 
         }
 

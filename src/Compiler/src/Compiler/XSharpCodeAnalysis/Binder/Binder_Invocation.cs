@@ -186,7 +186,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Remove errors about passing property by reference for Clipper Calling Convention
                         if (bc.Method.HasClipperCallingConvention())
                         {
-                            if (diagnostics.DiagnosticBag.HasAnyErrors())
+                            // when inferring a implicit variable (VAR, LOCAL IMPLIED) then we
+                            // have a diagnostics object without a DiagnosticBag, so we need to check for that as well
+                            if (diagnostics.DiagnosticBag?.HasAnyErrors() is true)
                             {
                                 var errors = diagnostics.DiagnosticBag.AsEnumerable().Where(d => d.Code != (int)ErrorCode.ERR_RefProperty);
                                 diagnostics.Clear();
@@ -285,10 +287,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 }
             }
-            var count = diagnostics.DiagnosticBag.Count;
+            var count = diagnostics.DiagnosticBag?.Count ?? 0;
             var expression = BindExpression(node.Expression, diagnostics);
             // A function call Test() should not throw an error when the function exists and no variable name 'Test' has been defined.
-            if (diagnostics.DiagnosticBag.Count != count)
+            if ((diagnostics.DiagnosticBag?.Count ?? 0) != count)
             {
                 var tmp = DiagnosticBag.GetInstance();
                 tmp.AddRange(diagnostics.DiagnosticBag.AsEnumerable().Where(d => d.Code != (int)ErrorCode.WRN_UndeclaredVariable));

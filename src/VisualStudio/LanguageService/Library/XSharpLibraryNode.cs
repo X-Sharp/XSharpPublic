@@ -1,3 +1,4 @@
+#if LIBRARYMANAGER
 /*****************************************************************************
  *
  * Copyright(c) Microsoft Corporation.
@@ -5,7 +6,7 @@
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
 * copy of the license can be found in the License.html file at the root of this distribution.If
 * you cannot locate the Apache License, Version 2.0, please send an email to
-* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound 
+* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound
  * by the terms of the Apache License, Version 2.0.
  *
  * You must not remove this notice, or any other, from this software.
@@ -139,7 +140,7 @@ namespace XSharp.LanguageService
         const string RETURNS = "\nReturns:\n";
         const string REMARKS = "\nRemarks:\n";
         internal string FullPath { get; } = "";
-		
+
         internal XSharpLibraryNode(string namePrefix, LibraryNodeType nType, string path)
             : base(namePrefix)
         {
@@ -191,7 +192,7 @@ namespace XSharp.LanguageService
                 this.editorInfo = new SourcePosition()
                 {
                     FileName = entity.File.FullPath,
-                    Line = entity.Range.StartLine + 1,
+                    Line = entity.Range.StartLine,
                     Column = entity.Range.StartColumn,
                 };
             }
@@ -446,7 +447,7 @@ namespace XSharp.LanguageService
                 case Kind.Enum:
                     return _LIBCAT_CLASSTYPE.LCCT_ENUM;
                 // LCCT_MODULE
-                // LCCT_INTRINSIC 
+                // LCCT_INTRINSIC
                 case Kind.Delegate:
                     return _LIBCAT_CLASSTYPE.LCCT_DELEGATE;
                 // LCCT_EXCEPTION
@@ -526,7 +527,7 @@ namespace XSharp.LanguageService
             {
                 // Need to retrieve the Project, then the File...
                 var file = XSolution.FindFile(editorInfo.FileName);
-                XSettings.OpenDocument(file.FullPath, editorInfo.Line, editorInfo.Column, true);
+                XSettings.ShellLink.OpenDocument(file.FullPath, editorInfo.Line, editorInfo.Column, true);
             }
         }
 
@@ -546,7 +547,7 @@ namespace XSharp.LanguageService
             if (this.editorInfo != null)
             {
                 pbstrFilename = this.editorInfo.FileName;
-                pulLineNum = (uint)this.editorInfo.Line - 1;
+                pulLineNum = (uint)this.editorInfo.Line;
             }
         }
 
@@ -556,11 +557,11 @@ namespace XSharp.LanguageService
             switch (tto)
             {
                 case VSTREETEXTOPTIONS.TTO_PREFIX2:
-                    //  
+                    //
                     descText = nameSpace;
                     break;
                 case VSTREETEXTOPTIONS.TTO_PREFIX:
-                    //   
+                    //
                     descText = className;
                     break;
 
@@ -675,7 +676,7 @@ namespace XSharp.LanguageService
                 {
                     description.Add(Item(access + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
-                // 
+                //
                 if (member.Kind != Kind.Field)
                 {
                     VSOBDESCRIPTIONSECTION descName = VSOBDESCRIPTIONSECTION.OBDS_MISC;
@@ -769,7 +770,7 @@ namespace XSharp.LanguageService
                         description.Add(Item(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
                         description.Add(Item(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     }
-                    
+
                 }
                 if (!string.IsNullOrEmpty(returns))
                 {
@@ -841,3 +842,4 @@ namespace XSharp.LanguageService
 
 }
 
+#endif

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System;
 using System.Collections.Concurrent;
 
+using Microsoft.VisualStudio.Shell.Interop;
+
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
@@ -15,6 +17,7 @@ namespace Microsoft.VisualStudio.Project
     {
         public string Url { get; private set; }
         public Guid Id { get; private set; }
+        public IVsHierarchy Hierarchy { get; set; } = null;
 #if DEBUG
         public string Name => System.IO.Path.GetFileNameWithoutExtension(Url);
 
@@ -26,15 +29,17 @@ namespace Microsoft.VisualStudio.Project
 
         static ProjectInfo()
         {
-        _projectsByUrl = new ConcurrentDictionary<string, ProjectInfo>(StringComparer.OrdinalIgnoreCase);
-        _projectsById = new ConcurrentDictionary<Guid, ProjectInfo>();
+            _projectsByUrl = new ConcurrentDictionary<string, ProjectInfo>(StringComparer.OrdinalIgnoreCase);
+            _projectsById = new ConcurrentDictionary<Guid, ProjectInfo>();
         }
 
         public ProjectInfo(Guid id, string url)
         {
             Debug.Assert(id != Guid.Empty, "ProjectInfo should have a valid Guid");
+            Logger.Information($"Creating new ProjectInfo for {url} with guid {id}");
             this.Id = id;
             this.Url = url;
+            this.Hierarchy = null;
             _projectsByUrl[url] = this;
             _projectsById[id] = this;
         }
@@ -68,6 +73,7 @@ namespace Microsoft.VisualStudio.Project
         {
             if (projectInfo != null)
             {
+                Logger.Information($"Removing projectInfo for {projectInfo.Url} with guid {projectInfo.Id}");
                 _projectsByUrl.TryRemove(projectInfo.Url, out _);
                 if (projectInfo.Id != Guid.Empty)
                     _projectsById.TryRemove(projectInfo.Id, out _);

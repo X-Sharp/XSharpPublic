@@ -205,6 +205,14 @@ CLASS DummyLogger IMPLEMENTS XSharpModel.ILogger
     METHOD Exception (e as Exception, sMsg as STRING) AS VOID
         RETURN
 #endregion
+
+    #region Implement ILogger
+
+    PUBLIC METHOD Error(sMsg As STRING) As VOID
+        RETURN
+
+
+    #endregion
 END CLASS
 
 

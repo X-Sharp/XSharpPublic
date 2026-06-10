@@ -78,7 +78,7 @@ namespace XSharp.LanguageService
                         IsExternalSymbol = true;
                         break;
                     case XSourceSymbol source:
-                        if (source.File.FullPath.EndsWith(XSolution.BuiltInFunctions_prg))
+                        if (source.File.IsBuiltInFunctions)
                         {
                             sig = source.Name;
                         }

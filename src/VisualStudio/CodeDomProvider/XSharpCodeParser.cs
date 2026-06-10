@@ -103,14 +103,14 @@ namespace XSharp.CodeDom
                 {
                     foreach (var error in reporter.Errors)
                     {
-                        XSettings.Logger.Debug($"Parser error: Line {error.Span.Line} column {error.Span.Column}, Code {error.ErrorCode}, {error.Message} ");
+                        XSettings.Logger.Error($"Parser error: Line {error.Span.Line} column {error.Span.Column}, Code {error.ErrorCode}, {error.Message} ");
                     }
                 }
                 if (reporter.Warnings.Count > 0)
                 {
                     foreach (var error in reporter.Warnings)
                     {
-                        XSettings.Logger.Debug($"Parser warning: Line {error.Span.Line} column {error.Span.Column}, Code {error.ErrorCode}, {error.Message} ");
+                        XSettings.Logger.Error($"Parser warning: Line {error.Span.Line} column {error.Span.Column}, Code {error.ErrorCode}, {error.Message} ");
                     }
                 }
 
@@ -138,7 +138,7 @@ namespace XSharp.CodeDom
                 {
                     // save a copy of the member list to the CCU
                     // Sort them first
-                    ccu.Members = Helpers.SortMembers(firstType.Members); 
+                    ccu.Members = Helpers.SortMembers(firstType.Members);
                 }
                 // save file name & original source
                 ccu.FileName = this.FileName;
@@ -152,6 +152,6 @@ namespace XSharp.CodeDom
             //
             return ccu;
         }
-       
+
     }
 }

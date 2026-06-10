@@ -41,6 +41,7 @@ INTERFACE ILogger
     METHOD SingleLine() AS VOID STRICT
     METHOD DoubleLine() AS VOID STRICT
     METHOD Exception (e as Exception, sMsg as STRING) AS VOID
+    METHOD Error(sMsg as STRING) AS VOID
 
     PROPERTY Active as LOGIC GET
 END INTERFACE

@@ -1,5 +1,4 @@
-﻿#undef LIBRARYMANAGER
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -276,6 +275,9 @@ namespace XSharp.LanguageService
                                         true);
 #endif
 #if LIBRARYMANAGER
+
+            VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
+            VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
             if (!XSettings.DisableClassViewObjectView)
             {
                 ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
@@ -304,9 +306,54 @@ namespace XSharp.LanguageService
             Commands.AbstractCommand.InitializeCommands();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
+
+#if LIBRARYMANAGER
+            // Register already loaded projects
+            var projects = await VS.Solutions.GetAllProjectsAsync();
+            foreach (var project in projects)
+            {
+                if (!XProject.IsXSharpProject(project.FullPath))
+                    continue;
+                SolutionEvents_OnAfterLoadProject(project);
+            }
+#endif
         }
 
+#if LIBRARYMANAGER
+        private void SolutionEvents_OnBeforeUnloadProject(Project project)
+        {
 
+            IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
+            if (libraryManager != null)
+            {
+                project.GetItemInfo(out var hier, out var id, out var parent);
+                libraryManager.UnregisterHierarchy(hier);
+            }
+
+        }
+
+        private void SolutionEvents_OnAfterLoadProject(Project project)
+        {
+
+            if (!XProject.IsXSharpProject(project.FullPath))
+                return;
+            var framework = "";
+            IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
+            if (libraryManager != null)
+            {
+                project.GetItemInfo(out var hier, out var id, out var parent);
+                var prj = XSolution.FindProject(project.FullPath, framework);
+                if (prj != null)
+                {
+                    libraryManager.RegisterHierarchy(hier, prj, prj.ProjectNode);
+                }
+                var XProject = XSolution.FindProject(project.FullPath, framework);
+                if (XProject != null && libraryManager is XSharpLibraryManager xlib)
+                    xlib.OnProjectWalkComplete(XProject);
+            }
+
+        }
+#endif
         protected override void Dispose(bool disposing)
         {
             Logger.Stop();

@@ -8,9 +8,10 @@
     <AssemblyName>XSharp.ProjectBase2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <TargetFrameworkProfile />
     <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C696}</ProjectGuid>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <DeployExtension>False</DeployExtension>
+
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

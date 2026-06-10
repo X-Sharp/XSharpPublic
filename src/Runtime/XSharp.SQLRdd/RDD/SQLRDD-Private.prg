@@ -39,7 +39,7 @@ partial class SQLRDD
     private _emptyValues    as object[]
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
-    private _updatedRowIds  as List<int>
+    private _updatedRecNos  as List<int>
     private _orderBagList   as List<SqlDbOrderBag>
     private _rowNumber      as long
 
@@ -127,7 +127,7 @@ partial class SQLRDD
         SELF:_currentPageNo    := 1
         SELF:_firstPageNo      := 1
         self:_trimValues       := true // trim String Valuess
-        SELF:_updatedRowIds    := List<int>{}
+        SELF:_updatedRecNos    := List<int>{}
         SELF:_keyColumns       := List<RddFieldInfo>{}
         SELF:_updatableColumns := List<RddFieldInfo>{}
         SELF:_orderBagList     := List<SqlDbOrderBag>{}
@@ -607,26 +607,33 @@ partial class SQLRDD
         return result
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
-        if SELF:DataTable:Rows:Count < 1
-            // Brute walk
-            SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
-            var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
-            var iResult := Convert.ToInt64(result)
-            // shouldn't this be ToUInt32?
 
-            // determine correct page
-            SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
-            SELF:_ClearTable()
-            SELF:DataTable := SELF:_ReadTable("")
-        end if
+        // if record to go to is already in loaded page
+        if self:_GotoRecordInPage(nRec)
+            return true
+        endif
 
-        // locate the row in the page
-        SELF:RowNumber := 1
-        DO WHILE SELF:RowNumber <= SELF:DataTable:Rows:Count
-            IF SELF:RecNo == nRec
+        // Brute walk
+        SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
+        var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+        var iResult := Convert.ToInt64(result)
+
+        // determine correct page
+        SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
+        SELF:_ClearTable()
+        SELF:DataTable := SELF:_ReadTable("")
+
+        RETURN self:_GotoRecordInPage(nRec)
+
+    PRIVATE METHOD _GotoRecordInPage(nRec as DWORD) AS LOGIC
+        LOCAL nRowNumber AS INT
+        nRowNumber := 1
+        DO WHILE nRowNumber <= SELF:DataTable:Rows:Count
+            IF nRec == Convert.ToInt32(SELF:DataTable:Rows[nRowNumber-1][self:_recnoColumNo])
+                SELF:RowNumber := nRowNumber
                 RETURN TRUE
             ENDIF
-            SELF:RowNumber+= 1
+            nRowNumber += 1
         ENDDO
         RETURN FALSE
 
@@ -653,6 +660,71 @@ partial class SQLRDD
         ENDIF
         SELF:_CheckEofBof()
         RETURN TRUE
+
+    PRIVATE METHOD _UpdateRow(nRecNo AS INT) AS LOGIC
+        local row as DataRow
+        local lOk := TRUE as logic
+        try
+            foreach tableRow as DataRow in self:DataTable:Rows
+                if (int)tableRow[self:_recnoColumNo] = nRecNo
+                    row := tableRow
+                endif
+            next
+
+            // Check row lock
+            var dbLockInfo := DbLockInfo{}
+            dbLockInfo:RecId := row[_oTd:RecnoColumn]
+            var myLock := false
+            var otherLock := false
+            SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+            if otherLock
+                return false
+            endif
+
+            if !myLock
+                SELF:Lock(ref dbLockInfo)
+            endif
+
+            lOk := true
+            if super:Deleted
+                local wasNew := false as logic
+                // Append from may add deleted rows
+                if row:RowState.HasFlag(DataRowState.Added)
+                    lOk := SELF:_ExecuteInsertStatement(row)
+                    row:AcceptChanges()
+                    wasNew  := true
+                endif
+                if self:_deletedColumnNo > -1
+                    if !wasNew
+                        // already written with _deletedColumnNo with the correct value
+                        lOk := SELF:_ExecuteUpdateStatement(row)
+                        if lOk
+                            row:AcceptChanges()
+                        endif
+                    endif
+                else
+                    lOk := SELF:_ExecuteDeleteStatement(row)
+                    // we do not clear the fields, but leave the row unchanged.
+                    // the DBF has the deleted flag. This emulates what DBF files do
+
+                    row:AcceptChanges()
+                endif
+
+            else
+                if row:RowState.HasFlag(DataRowState.Added)
+                    lOk := SELF:_ExecuteInsertStatement(row)
+                    row:AcceptChanges()
+                elseif row:RowState.HasFlag(DataRowState.Modified)
+                    lOk := SELF:_ExecuteUpdateStatement(row)
+                    row:AcceptChanges()
+                endif
+            endif
+        catch e as Exception
+            lOk := false
+            self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:GoCold", e:Message )
+        end try
+
+        RETURN lOk
 
     PRIVATE METHOD LockRecNo(lockInfo ref DbLockInfo) AS INT
         var lockRecNo := 0

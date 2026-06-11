@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
     CLASS SimpleObj
         PROPERTY Name AS STRING AUTO
         PROPERTY Age AS INT AUTO
-        EXPORT Salary AS DECIMAL
+        PUBLIC Salary AS DECIMAL
     END CLASS
 
     CLASS NestedObj
@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         PROPERTY Name AS STRING AUTO
         PROPERTY Age AS INT AUTO
         PROPERTY Extra AS STRING AUTO
-        EXPORT Salary AS DECIMAL
+        PUBLIC Salary AS DECIMAL
     END CLASS
 
     CLASS WithIndexerObj

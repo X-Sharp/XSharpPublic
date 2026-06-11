@@ -419,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     result.FileWidePublics = treeTransform.GlobalEntities.FileWidePublics;
                     result.HasPCall = treeTransform.GlobalEntities.HasPCall;
-                    result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
+                    result.HasPartialType = treeTransform.GlobalEntities.HasPartialType;
                     if (_options.HasRuntime)
                     {
                         result.LiteralSymbols = ((XSharpTreeTransformationRT)treeTransform).LiteralSymbols;

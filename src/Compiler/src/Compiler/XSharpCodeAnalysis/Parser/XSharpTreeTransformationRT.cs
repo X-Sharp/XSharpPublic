@@ -42,6 +42,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return new XSharpTreeTransformationRT(parser, _options, _pool, _syntaxFactory, _fileName);
         }
+
+        protected override void MergeParseResults(XSharpTreeTransformationCore subparser)
+        {
+            base.MergeParseResults(subparser);
+            if (subparser is XSharpTreeTransformationRT rt)
+            {
+                if (rt.LiteralSymbols.Count > 0)
+                {
+                    foreach (var sym in rt.LiteralSymbols)
+                    {
+                        if (!this.LiteralSymbols.ContainsKey(sym.Key))
+                        {
+                            this.LiteralSymbols.Add(sym.Key, sym.Value);
+                        }
+                    }
+                }
+                if (rt.LiteralPSZs.Count > 0)
+                {
+                    foreach (var psz in rt.LiteralPSZs)
+                    {
+                        if (!this.LiteralPSZs.ContainsKey(psz.Key))
+                        {
+                            this.LiteralPSZs.Add(psz.Key, psz.Value);
+                        }
+                    }
+                }
+                if (rt.GlobalEntities.HasPCall)
+                {
+                    this.GlobalEntities.HasPCall = true;
+                }
+            }
+        }
         public XSharpTreeTransformationRT(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
             ContextAwareSyntax syntaxFactory, string fileName) :
             base(parser, options, pool, syntaxFactory, fileName)

@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public List<PragmaOption> PragmaOptions;
 
             public bool HasPCall;
-            public bool NeedsProcessing;
+            public bool HasPartialType;
 
             internal SyntaxEntities(SyntaxListPool pool)
             {
@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 FileScopedNamespace = null;
                 _pool = pool;
                 HasPCall = false;
-                NeedsProcessing = false;
+                HasPartialType = false;
                 LastIsStatic = false;
                 LastMember = null;
                 PragmaWarnings = null;
@@ -1852,7 +1852,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         result = GeneratePartialProperyMethod(AssMet, false, bStatic);
                     }
-                    GlobalEntities.NeedsProcessing = true;
+                    GlobalEntities.HasPartialType = true;
                     return result;
                 }
             }
@@ -3042,7 +3042,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Parents);
@@ -3089,7 +3089,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
 
             var members = GetMembers(context, context._Members);
@@ -3205,7 +3205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Implements);
@@ -4498,7 +4498,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var vop = ce.VoProperties.Values.First();
                         var prop = GenerateVoProperty(vop, cls);
                         mem = prop;
-                        GlobalEntities.NeedsProcessing = true;
+                        GlobalEntities.HasPartialType = true;
                         m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem);
                         cls.Put(m);
                     }
@@ -10591,6 +10591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     transform.Entities.Push(this.CurrentEntity);
                     walker.Walk(transform, tree);
                     walker.Walk(new XSharpClearSequences(), tree);
+                    this.MergeParseResults(transform);
 
                 }
                 catch (Exception e)
@@ -10605,6 +10606,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return new XSharpTreeTransformationCore(parser, _options, _pool, _syntaxFactory, _fileName);
         }
 
+        protected virtual void MergeParseResults(XSharpTreeTransformationCore subparser)
+        {
+            if (subparser.ParseErrors.Count > 0)
+            {
+                this.ParseErrors.AddRange(subparser.ParseErrors);
+            }
+        }
         #endregion
 
     }

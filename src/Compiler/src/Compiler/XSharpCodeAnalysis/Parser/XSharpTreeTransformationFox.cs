@@ -964,7 +964,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(m);
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
         }
 

@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
-                if (compilationunit.NeedsProcessing)
+                if (compilationunit.HasPartialType)
                 {
                     foreach (var member in compilationunit.Members)
                     {

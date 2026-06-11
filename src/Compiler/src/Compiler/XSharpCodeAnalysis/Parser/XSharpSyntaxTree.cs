@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XGenerated = 1 << 3,
         XVoIsDim = 1 << 4,
         XDocComments = 1 << 5,
-        XNeedsProcessing = 1 << 6,
+        XHasPartialType = 1 << 6,
         XIsChr = 1 << 7,
         XDefaultTree = 1 << 8,
         XIsString2Psz = 1 << 9,
@@ -199,10 +199,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal set => xflags = xflags.SetFlag(XNodeFlags.XPCall, value);
         }
 
-        public bool NeedsProcessing
+        public bool HasPartialType
         {
-            get => xflags.HasFlag(XNodeFlags.XNeedsProcessing);
-            internal set => xflags = xflags = xflags.SetFlag(XNodeFlags.XNeedsProcessing, value);
+            get => xflags.HasFlag(XNodeFlags.XHasPartialType);
+            internal set => xflags = xflags = xflags.SetFlag(XNodeFlags.XHasPartialType, value);
         }
 
         public bool HasDocComments
@@ -360,7 +360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public ITokenStream XTokens => internalUnit.XTokens;
         public ITokenStream XPPTokens => internalUnit.XPPTokens;
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
-        public bool NeedsProcessing => internalUnit.NeedsProcessing;
+        public bool HasPartialType => internalUnit.HasPartialType;
         public bool HasDocComments => internalUnit.HasDocComments;
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
         internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax>> LiteralPSZs => internalUnit.LiteralPSZs;

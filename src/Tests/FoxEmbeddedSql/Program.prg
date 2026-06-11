@@ -1233,8 +1233,10 @@ FUNCTION TestMultiTableOptimizer() AS VOID STRICT
 
     // Test 3: OR of independent single-table conditions
     Title("Test 3: OR of independent single-table conditions")
+    // Explanation: Cross join creates 15 rows. TableA.ID=1 matches 5 rows, TableB.SKU=105 matches 3 rows, overlap is 1 row
+    // Total matching = 5 + 3 - 1 (overlap) = 7 unique rows
     SELECT * FROM TableA, TableB WHERE TableA.ID = 1 .OR. TableB.SKU = 105
-    VerifyTable(2, "Test 3 failed", FALSE)
+    VerifyTable(7, "Test 3 failed", FALSE)
 
     // Test 4: Multiple AND conditions across tables
     Title("Test 4: Multiple independent single-table conditions")

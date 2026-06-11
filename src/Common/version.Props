@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <AssemblyVersion>3.0</AssemblyVersion>
-    <FileVersion>3.0.0.5</FileVersion>
+    <FileVersion>3.0.0.6</FileVersion>
     <Company>XSharp BV</Company>
     <Product>XSharp</Product>
     <Copyright>Copyright (c) XSharp BV 2015-2026.</Copyright>
-    <InformationalVersion>XSharp XSharp Gaia (Γαῖα) RC 2</InformationalVersion>
+    <InformationalVersion>XSharp XSharp Gaia (Γαῖα) RC 3</InformationalVersion>
   </PropertyGroup>
 </Project>
 

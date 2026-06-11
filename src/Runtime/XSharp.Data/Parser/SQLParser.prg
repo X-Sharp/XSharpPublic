@@ -716,10 +716,10 @@ PARTIAL CLASS SQLParser
         // Parse table list - support both comma-separated tables and explicit JOIN syntax
         LOCAL firstTableProcessed := FALSE AS LOGIC
         LOCAL hasCommaSeparatedTables := FALSE AS LOGIC
-        
+
         // First, check if we have comma-separated tables (traditional SQL syntax)
-        VAR firstTableName := SELF:ParseTableName()
-        
+        VAR nameFound := SELF:ParseTableName(OUT VAR firstTableName)
+
         // Check for optional alias (AS alias or just alias)
         LOCAL firstAliasName := NULL AS STRING
         IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
@@ -731,13 +731,13 @@ PARTIAL CLASS SQLParser
         stmt:TableList:Add(firstTableName)
         stmt:TableAliases[firstAliasName ?? firstTableName] := firstTableName
         firstTableProcessed := TRUE
-        
+
         // Check if we have comma-separated tables
         IF SELF:Expect(XTokenType.COMMA)
             hasCommaSeparatedTables := TRUE
             // Continue processing comma-separated tables
             DO WHILE TRUE
-                VAR tableName := SELF:ParseTableName()
+                VAR found := SELF:ParseTableName(OUT VAR tableName)
 
                 // Check for optional alias (AS alias or just alias)
                 LOCAL aliasName := NULL AS STRING
@@ -763,9 +763,9 @@ PARTIAL CLASS SQLParser
                         SELF:SetError("Expected JOIN after CROSS")
                         RETURN FALSE
                     ENDIF
-                    
+
                     // For CROSS JOIN, we just add the next table without any join condition
-                    VAR crossTableName := SELF:ParseTableName()
+                    VAR found := SELF:ParseTableName(OUT VAR crossTableName)
 
                     // Check for optional alias (AS alias or just alias)
                     LOCAL crossAliasName := NULL AS STRING
@@ -780,7 +780,7 @@ PARTIAL CLASS SQLParser
                 // Check for regular JOIN (INNER, LEFT, RIGHT, etc.) - though not implemented yet
                 ELSEIF SELF:Expect(XTokenType.JOIN)
                     // For now, treat all JOINs similar to CROSS JOIN (cartesian product)
-                    VAR joinTableName := SELF:ParseTableName()
+                    VAR found := SELF:ParseTableName(OUT VAR joinTableName)
 
                     // Check for optional alias (AS alias or just alias)
                     LOCAL joinAliasName := NULL AS STRING
@@ -792,7 +792,7 @@ PARTIAL CLASS SQLParser
 
                     stmt:TableList:Add(joinTableName)
                     stmt:TableAliases[joinAliasName ?? joinTableName] := joinTableName
-                    
+
                     // Check for ON clause (optional for now, since we implement as cartesian product)
                     IF SELF:Expect(XTokenType.ON)
                         // Skip the join condition for now - we'll implement full JOIN later
@@ -875,7 +875,8 @@ PARTIAL CLASS SQLParser
 
         // Parse table name
         IF SELF:Matches(XTokenType.ID)
-            stmt:TableName := SELF:ParseTableName()
+            VAR found := SELF:ParseTableName(OUT VAR name)
+            stmt:TableName := name
         ELSE
             SELF:SetError("Expected table name after INTO")
             RETURN FALSE

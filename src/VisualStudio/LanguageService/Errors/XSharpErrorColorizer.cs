@@ -1,3 +1,4 @@
+#if NOTUSED
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -101,7 +102,7 @@ namespace XSharp.LanguageService
                 yield break;
             }
 
-            List<IXErrorPosition> errors = _file.Project.ProjectNode.GetIntellisenseErrorPos(_file.FullPath);
+            List<IXErrorPosition> errors = _file.Project.ProjectNode.GetIntellisenseErrors(_file.FullPath);
             if (errors == null || errors.Count == 0)
             {
                 yield break;
@@ -164,3 +165,4 @@ namespace XSharp.LanguageService
         }
     }
 }
+#endif

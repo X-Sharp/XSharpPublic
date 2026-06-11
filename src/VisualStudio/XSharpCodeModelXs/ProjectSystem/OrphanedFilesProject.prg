@@ -34,9 +34,12 @@ CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
 
     METHOD AddFileNode(strFileName AS STRING) AS VOID
         RETURN
-
-        //      METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
-        //         RETURN
+    METHOD ClearIntellisenseErrors(filename as string) as void
+        RETURN
+    METHOD GetIntellisenseErrors(filename as string) as List<IXErrorPosition>
+        RETURN List<IXErrorPosition>{}
+    METHOD AddIntellisenseError(error as XError) AS VOID
+        RETURN
 
     METHOD DeleteFileNode(strFileName AS STRING) AS VOID
         RETURN

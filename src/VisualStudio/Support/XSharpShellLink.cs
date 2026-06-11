@@ -211,6 +211,8 @@ namespace XSharp.Support
 
         public bool IsDocumentOpen(string file)
         {
+            if (string.IsNullOrEmpty(file))
+                return false;
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 return await VS.Documents.IsOpenAsync(file);

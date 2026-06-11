@@ -1970,6 +1970,23 @@ namespace XSharp.Project
 
         #region IXSharpProject Interface
 
+        public void AddIntellisenseError(XError error)
+        {
+            if (_errorListManager != null)
+            {
+                _errorListManager.AddIntellisenseError(error);
+            }
+        }
+
+        public List<IXErrorPosition> GetIntellisenseErrors(string fileName)
+        {
+            if (_errorListManager != null)
+            {
+                return _errorListManager.GetIntellisenseErrors(fileName);
+            }
+            return new List<IXErrorPosition>();
+        }
+
         public string DisplayName => this.Caption;
 
 

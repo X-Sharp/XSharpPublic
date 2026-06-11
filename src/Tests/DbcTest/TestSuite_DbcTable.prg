@@ -8,7 +8,7 @@
 USING System
 USING System.IO
 USING XSharp.RDD
-#include "E:\XSharp\dev\XSharp\src\Common\FoxProCmd.xh"
+//#include "E:\XSharp\dev\XSharp\src\Common\FoxProCmd.xh"
 
 STATIC CLASS TestSuite_DbcTable
 

@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Import Condition="$(Configuration.Contains('Doc'))" Project="$(Commondir)XmlCommon.Targets" />
+  <Import Condition="$(Configuration.Contains('Doc'))" Project="$(Commondir)XmlCommon.Props" />
 </Project>

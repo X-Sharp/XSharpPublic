@@ -2,6 +2,7 @@
 <Project>
 <Import Project="..\..\..\..\Shared.Props" />
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <OutputType>Library</OutputType>
     <RootNamespace>VO</RootNamespace>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>

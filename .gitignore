@@ -250,3 +250,4 @@ XSharp/src/Setup/Preprocessed.iss
 /src/Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.dll
 /Artifact/SqlRddHelp
 /src/Runtime/Nuget/*.nuspec
+/docs/whatsnew.pdf

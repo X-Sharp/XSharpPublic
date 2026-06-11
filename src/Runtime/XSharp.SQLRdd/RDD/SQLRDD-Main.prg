@@ -41,7 +41,7 @@ partial class SQLRDD inherit Workarea
     public property RowCount    as INT => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
 
     /// <summary>The current rownumber in the buffer (DataTable).</summary>
-    public property RowNumber   as INT GET _rowNumber INTERNAL SET _rowNumber := value
+    public property RowNumber   as INT GET _rowNumber private SET _rowNumber := value
 
     /// <summary>The current row in the buffer (DataTable).
     /// When the server is at EOF then the phantomrow is returned.</summary>
@@ -274,7 +274,7 @@ partial class SQLRDD inherit Workarea
             next
             self:_ExecuteInsertStatement(row)
             row:AcceptChanges()
-            _updatedRowIds:Add((int)row[self:_recnoColumNo])
+            _updatedRecNos:Add((int)row[self:_recnoColumNo])
             SELF:RowNumber := SELF:DataTable:Rows:Count
             self:_serverReccount += 1
             SELF:_SetBOF(FALSE)
@@ -368,8 +368,8 @@ partial class SQLRDD inherit Workarea
             var col := self:_GetColumn(nFldPos)
             if SELF:_updatableColumns:Contains(col)
                 var row := SELF:CurrentRow
-                if !_updatedRowIds:Contains((int)row[self:_recnoColumNo])
-                    _updatedRowIds:Add((int)row[self:_recnoColumNo])
+                if !_updatedRecNos:Contains((int)row[self:_recnoColumNo])
+                    _updatedRecNos:Add((int)row[self:_recnoColumNo])
                 endif
 
                 row[nFldPos-1] := SELF:_HandleNullDate(oValue,self:DataTable:Columns[nFldPos-1])
@@ -385,7 +385,6 @@ partial class SQLRDD inherit Workarea
     /// <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method GoCold() as logic
-        local row as DataRow
         var current := SELF:CurrentRow
         if current == null
             return false
@@ -404,64 +403,8 @@ partial class SQLRDD inherit Workarea
                 return false
             endif
 
-            foreach var rowId in _updatedRowIds
-                try
-                    foreach tableRow as DataRow in self:DataTable:Rows
-                        if (int)tableRow[self:_recnoColumNo] = rowId
-                            row := tableRow
-                        endif
-                    next
-
-                    // Check row lock
-                    dbLockInfo:RecId := row[_oTd:RecnoColumn]
-                    SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
-                    if otherLock
-                        lOk := false
-                        loop
-                    endif
-
-                    if !myLock
-                        SELF:Lock(ref dbLockInfo)
-                    endif
-
-                    lOk := true
-                    if super:Deleted
-                        local wasNew := false as logic
-                        // Append from may add deleted rows
-                        if row:RowState.HasFlag(DataRowState.Added)
-                            lOk := SELF:_ExecuteInsertStatement(row)
-                            row:AcceptChanges()
-                            wasNew  := true
-                        endif
-                        if self:_deletedColumnNo > -1
-                            if !wasNew
-                                // already written with _deletedColumnNo with the correct value
-                                lOk := SELF:_ExecuteUpdateStatement(row)
-                                if lOk
-                                    row:AcceptChanges()
-                                endif
-                            endif
-                        else
-                            lOk := SELF:_ExecuteDeleteStatement(row)
-                            // we do not clear the fields, but leave the row unchanged.
-                            // the DBF has the deleted flag. This emulates what DBF files do
-
-                            row:AcceptChanges()
-                        endif
-
-                    else
-                        if row:RowState.HasFlag(DataRowState.Added)
-                            lOk := SELF:_ExecuteInsertStatement(row)
-                            row:AcceptChanges()
-                        elseif row:RowState.HasFlag(DataRowState.Modified)
-                            lOk := SELF:_ExecuteUpdateStatement(row)
-                            row:AcceptChanges()
-                        endif
-                    endif
-                catch e as Exception
-                    lOk := false
-                    self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:GoCold", e:Message )
-                end try
+            foreach var rowId in _updatedRecNos
+                lOk := self:_UpdateRow(rowId)
                 if !lOk
                     exit
                 endif
@@ -472,7 +415,7 @@ partial class SQLRDD inherit Workarea
             else
                 self:DataTable:RejectChanges()
             endif
-            _updatedRowIds:Clear()
+            _updatedRecNos:Clear()
             self:_GetRecCount()
         endif
         return lOk
@@ -653,7 +596,7 @@ partial class SQLRDD inherit Workarea
 	    LOCAL result AS LOGIC
 		TRY
             VAR nRec := Convert.ToUInt32( oRec )
-            if nRec != RowNumber
+            if oRec != self:CurrentRow[self:_recnoColumNo]
                 result := SELF:GoTo( (DWORD) nRec )
             endif
 		CATCH ex AS Exception
@@ -780,7 +723,6 @@ partial class SQLRDD inherit Workarea
                     end try
                 endif
             else
-                self:_rowNumber := self:RowNumber
                 return super:Deleted
             endif
         end get
@@ -934,8 +876,14 @@ partial class SQLRDD inherit Workarea
         end try
 
         // In ADS this happens in here: ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
-        if (self:Deleted)
+        if self:Deleted
             self:_ExecuteDeleteStatement(CurrentRow)
+        endif
+        if self:_updatedRecNos.Count > 0
+            foreach var nRecNo in self:_updatedRecNos
+                self:_UpdateRow(nRecNo)
+            next
+            self:_updatedRecNos:Clear()
         endif
 
         return true

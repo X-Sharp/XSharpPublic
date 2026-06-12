@@ -245,33 +245,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     return FALSE
                 elseif strKey:Length == 0
                     if SELF:RDD Is DBFVFP
-                        VAR lGotKey := FALSE
-                        TRY
-                            SELF:_oRdd:GoTo(1)
-                            oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                            IF oKey IS STRING VAR strKey2 .AND. strKey2:Length > 0
-                                lGotKey := TRUE
-                            ENDIF
-                        CATCH
-                            NOP
-                        END TRY
-                        IF !lGotKey
-                            VAR cPad := ""
-                            FOREACH VAR fld IN fields
-                                VAR fldInfo := SELF:_oRdd:_Fields[fld-1]
-                                cPad += String{' ', fldInfo:Length}
-                            NEXT
-                            IF cPad:Length > 0
-                                oKey := cPad
-                            ELSE
-                                var sMessage := __ErrString(VOErrors.INDEX_EXPRESSION_ZEROLENGTH,SELF:_KeyExpr)
-                                SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX, "DBFCDX.EvaluateExpressions",sMessage ,FALSE)
-                                RETURN FALSE
-                            ENDIF
-                        ENDIF
+                        foreach var fld in fields
+                            var fldInfo := SELF:_oRdd:_Fields[fld-1]
+                            strKey += String{' ', fldInfo:Length}
+                        next
+                        oKey := strKey
                     else
-                        var sMessage := __ErrString(VOErrors.INDEX_EXPRESSION_ZEROLENGTH, SELF:_KeyExpr)
-                        SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFCDX.EvaluateExpressions", sMessage, FALSE)
+                        var sMessage := __ErrString(VOErrors.INDEX_EXPRESSION_ZEROLENGTH,SELF:_KeyExpr)
+                        SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX, "DBFCDX.EvaluateExpressions",sMessage ,FALSE)
                         return FALSE
                     endif
                 endif

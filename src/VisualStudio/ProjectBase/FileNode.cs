@@ -589,12 +589,12 @@ namespace Microsoft.VisualStudio.Project
                 if (!RenameDocument(oldName, newName))
                 {
                     this.ItemNode.Rename(oldrelPath);
-                    this.ItemNode.RefreshProperties();
                 }
                 if (this.IsDependent)
                 {
                         OnInvalidateItems(this.Parent);
                 }
+                this.ItemNode.RefreshProperties();
 
 
             }
@@ -1013,10 +1013,10 @@ namespace Microsoft.VisualStudio.Project
             // Assign existing msbuild item to the new childnode
             childAdded.ItemNode = this.ItemNode;
             childAdded.ItemNode.RefreshProperties();
-            if (! childAdded.IsImported)
+            if (! this.IsImported)
             {
                 childAdded.ItemNode.Item.ItemType = this.ItemNode.ItemName;
-                childAdded.ItemNode.Item.Xml.Include = newInclude;
+                childAdded.ItemNode.Rename(newInclude);
                 if (!string.IsNullOrEmpty(dependentOf))
                 {
                     bDependantItem = true;
@@ -1282,7 +1282,7 @@ namespace Microsoft.VisualStudio.Project
 
                 newNodeOut = newNode;
             }
-            this.ProjectMgr.OnAfterRenameFile((FileNode) newNode, oldName, newName);
+
             return true;
         }
 

@@ -4,8 +4,8 @@
   <PropertyGroup>
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
-    <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' == '15.0'">15.0</MinimumVisualStudioVersion>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}</ProjectGuid>
     <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
@@ -37,7 +37,6 @@
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Zip7>c:\Program Files\7-Zip\7z.exe</Zip7>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -881,7 +880,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"c:\Program Files\7-Zip\7z.exe" d $(TargetDir)$(TargetName).vsix *.pdb &gt;nul</PostBuildEvent>
+    <PostBuildEvent>echo Removing PDB files from VSIX
+"$(projectdir)\..\7z.exe" d $(Targetdir)$(TargetName).vsix *.pdb  &gt;nul</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

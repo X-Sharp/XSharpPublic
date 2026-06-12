@@ -4,8 +4,8 @@
   <PropertyGroup>
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
-    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
@@ -186,7 +186,9 @@
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
-    <Compile Include="OptionsPages\BaseOptionsPage.cs" />
+    <Compile Include="OptionsPages\BaseOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
@@ -814,7 +816,7 @@
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
@@ -834,7 +836,8 @@
 	</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"c:\Program Files\7-Zip\7z.exe" d $(Targetdir)$(TargetName).vsix *.pdb &gt;nul</PostBuildEvent>
+    <PostBuildEvent>echo Removing PDB files from VSIX 
+"$(projectdir)\..\7z.exe" d -r $(Targetdir)$(TargetName).vsix *.pdb  *.xml</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

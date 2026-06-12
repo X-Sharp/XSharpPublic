@@ -47,6 +47,8 @@ begin namespace XSharp.VFP.Tests
                 Assert.True(RecNo() > 0)
             finally
                 XSharp.CoreDb.CloseAll()
+                FErase("TrimTest.DBF")
+                FErase("TrimTest.CDX")
                 SET DEFAULT TO (cOldDir)
                 System.IO.Directory.SetCurrentDirectory(cOldDir)
                 try

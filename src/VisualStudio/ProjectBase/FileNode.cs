@@ -31,51 +31,6 @@ using Microsoft.Build.Utilities;
 
 namespace Microsoft.VisualStudio.Project
 {
-    internal class Transactional
-    {
-        /// Run 'stepWithEffect' followed by continuation 'k', but if the continuation later fails with
-        /// an exception, undo the original effect by running 'compensatingEffect'.
-        /// Note: if 'compensatingEffect' throws, it masks the original exception.
-        /// Note: This is a monadic bind where the first two arguments comprise M<A>.
-        public static B Try<A, B>(Func<A> stepWithEffect, Action<A> compensatingEffect, Func<A, B> k)
-        {
-            var stepCompleted = false;
-            var allOk = false;
-            A a = default(A);
-            try
-            {
-                a = stepWithEffect();
-                stepCompleted = true;
-                var r = k(a);
-                allOk = true;
-                return r;
-            }
-            finally
-            {
-                if (!allOk && stepCompleted)
-                {
-                    compensatingEffect(a);
-                }
-            }
-        }
-        // if A == void, this is the overload
-        public static B Try<B>(Action stepWithEffect, Action compensatingEffect, Func<B> k)
-        {
-            return Try(
-                () => { stepWithEffect(); return 0; },
-                (int dummy) => { compensatingEffect(); },
-                (int dummy) => { return k(); });
-        }
-        // if A & B are both void, this is the overload
-        public static void Try(Action stepWithEffect, Action compensatingEffect, Action k)
-        {
-            Try(
-                () => { stepWithEffect(); return 0; },
-                (int dummy) => { compensatingEffect(); },
-                (int dummy) => { k(); return 0; });
-        }
-    }
-
     [CLSCompliant(false)]
     [ComVisible(true)]
     public class FileNode : HierarchyNode
@@ -1201,10 +1156,11 @@ namespace Microsoft.VisualStudio.Project
                 // Suspend ms build since during a rename operation no msbuild re-evaluation should be performed until we have finished.
                 // Scenario that could fail if we do not suspend.
                 // We have a project system relying on MPF that triggers a Compile target build (re-evaluates itself) whenever the project changes. (example: a file is added, property changed.)
-                // 1. User renames a file in  the above project sytem relying on MPF
-                // 2. Our rename funstionality implemented in this method removes and readds the file and as a post step copies all msbuild entries from the removed file to the added file.
+                // 1. User renames a file in  the above project system relying on MPF
+                // 2. Our rename functionality implemented in this method removes the file from the project system, renames it on disk,
+                //    and then adds it back. This ensures project-system and on-disk changes are cleanly separated.
                 // 3. The project system mentioned will trigger an msbuild re-evaluate with the new item, because it was listening to OnItemAdded.
-                //    The problem is that the item at the "add" time is only partly added to the project, since the msbuild part has not yet been copied over as mentioned in part 2 of the last step of the rename process.
+                //    The problem is that the item at the "add" time is only partly added to the project, since the msbuild part has not yet been copied over.
                 //    The result is that the project re-evaluates itself wrongly.
                 VSRENAMEFILEFLAGS renameflag = VSRENAMEFILEFLAGS.VSRENAMEFILEFLAGS_AlreadyOnDisk;
                 this.ProjectMgr.SuspendMSBuild();
@@ -1221,56 +1177,138 @@ namespace Microsoft.VisualStudio.Project
                 {
                     return false;
                 }
+
+                string oldFileName = Path.GetFileName(oldName);
+                string newFileName = Path.GetFileName(newName);
+                // Only do a case only change if the casing of the filename is all that changed.
+                // If the casing of anything in the middle of the path changed (for example, the folder
+                // this file is in has been renamed), we need to go through the full rename process and
+                // recreate the node so that the new directory name saves in the project file correctly.
+                bool caseOnlyChange = NativeMethods.IsSamePath(oldName, newName) && !String.Equals(oldFileName, newFileName);
                 // Allow the user to "fix" the project by renaming the item in the hierarchy
                 // to the real name of the file on disk.
                 bool shouldRenameInStorage = IsFileOnDisk(oldName) || !IsFileOnDisk(newName);
-                Transactional.Try(
-                    // Action
-                    () => { if (shouldRenameInStorage) RenameInStorage(oldName, newName); },
-                    // Compensation
-                    () => { if (shouldRenameInStorage) RenameInStorage(newName, oldName); },
-                    // Continuation
-                    () =>
-                    {
-                        string oldFileName = Path.GetFileName(oldName);
-                        string newFileName = Path.GetFileName(newName);
-                        string oldCaption = this.Caption;
-                        Transactional.Try(
-                            // Action
-                            () => DocumentManager.UpdateCaption(this.ProjectMgr.Site, newFileName, docData),
-                            // Compensation
-                            () => DocumentManager.UpdateCaption(this.ProjectMgr.Site, newFileName, docData),
-                            // Continuation
-                            () =>
-                            {
-                                // Only do a case only change if the casing of the filename
-                                // is all that changed.
-                                // If the casing of anything in the middle of the path
-                                // changed (for example, the folder this file is in has
-                                // been renamed), we need to go through the full rename
-                                // process and recreate the node so that the new directory
-                                // name saves in the project file correctly.
-                                bool caseOnlyChange = NativeMethods.IsSamePath(oldName, newName) && !String.Equals(oldFileName, newFileName);
-                                if (!caseOnlyChange)
-                                {
-                                    // Check out the project file if necessary.
-                                    if (!this.ProjectMgr.QueryEditProjectFile(false))
-                                    {
-                                        throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
-                                    }
 
-                                    string linkPath = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
-                                    newNode = this.RenameFileNode(oldName, newName, linkPath, this.Parent.ID);
-                                }
-                                else
-                                {
-                                    this.RenameCaseOnlyChange(newFileName);
-                                    newNode = this;
-                                }
-                                this.ProjectMgr.ResumeMSBuild(this.ProjectMgr.ReEvaluateProjectFileTargetName);
-                                this.ProjectMgr.Tracker.OnItemRenamed(oldName, newName, renameflag);
-                            });
-                    });
+                if (!caseOnlyChange)
+                {
+                    // Check out the project file if necessary.
+                    if (!this.ProjectMgr.QueryEditProjectFile(false))
+                    {
+                        throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+                    }
+
+                    // Save state needed after the node is removed from the hierarchy.
+                    string linkPath = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
+                    uint parentId = this.Parent.ID;
+
+                    // Step 1: Remove the file from the project system only (no disk operation).
+                    // After RemoveChild this node is in a zombie state; do not call virtual methods on it.
+                    this.OnItemDeleted();
+                    this.Parent.RemoveChild(this);
+
+                    bool diskRenamed = false;
+                    try
+                    {
+                        // Step 2: Rename the physical file on disk.
+                        if (shouldRenameInStorage)
+                        {
+                            File.Move(oldName, newName);
+                            diskRenamed = true;
+                        }
+
+                        // Step 3: Add the renamed file back to the project.
+                        string[] file = new string[] { newName };
+                        VSADDRESULT[] result = new VSADDRESULT[] { VSADDRESULT.ADDRESULT_Failure };
+                        Guid emptyGuid = Guid.Empty;
+                        // Pass false to bTrackChanges to prevent an ItemAdded event from being sent to the
+                        // SCC provider; we will send a Rename event later via Tracker.OnItemRenamed.
+                        VSADDITEMOPERATION op = string.IsNullOrEmpty(linkPath)
+                            ? VSADDITEMOPERATION.VSADDITEMOP_OPENFILE
+                            : VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE;
+                        ErrorHandler.ThrowOnFailure(this.ProjectMgr.AddItemWithSpecific(
+                            parentId, op, null, 0, file, IntPtr.Zero, 0,
+                            ref emptyGuid, null, ref emptyGuid, result, false));
+
+                        FileNode childAdded = this.ProjectMgr.FindChild(newName) as FileNode;
+                        Debug.Assert(childAdded != null, "Could not find the renamed item in the hierarchy");
+                        // Update the itemid to the newly added node.
+                        this.ID = childAdded.ID;
+
+                        // Remove the item created by the add operation. We need to do this otherwise we
+                        // will have two items. We want to reuse the existing build item so that file
+                        // properties saved in the project file are not lost.
+                        string newInclude = childAdded.ItemNode.Item.EvaluatedInclude;
+                        string dependentOf = childAdded.ItemNode.GetMetadata(ProjectFileConstants.DependentUpon);
+                        bool bDependantItem = !string.IsNullOrEmpty(dependentOf);
+                        childAdded.ItemNode.RemoveFromProjectFile();
+
+                        // Assign the existing MSBuild item to the new child node and update its path.
+                        childAdded.ItemNode = this.ItemNode;
+                        childAdded.ItemNode.RefreshProperties();
+                        if (!childAdded.IsImported)
+                        {
+                            childAdded.ItemNode.Item.ItemType = this.ItemNode.ItemName;
+                            childAdded.ItemNode.Item.Xml.Include = newInclude;
+                            if (bDependantItem)
+                                childAdded.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, dependentOf);
+                        }
+                        childAdded.ItemNode.RefreshProperties();
+
+                        // Update the document caption.
+                        DocumentManager.UpdateCaption(this.ProjectMgr.Site, newFileName, docData);
+
+                        // Update the new document in the RDT.
+                        DocumentManager.RenameDocument(this.ProjectMgr.Site, oldName, newName, childAdded.ID);
+
+                        // Select the new node in the hierarchy.
+                        if (!bDependantItem)
+                        {
+                            IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
+                            if (uiWindow != null)
+                            {
+                                ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem));
+                            }
+                        }
+
+                        // Update child nodes (e.g. dependent files).
+                        childAdded.FirstChild = this.FirstChild;
+                        SetNewParentOnChildNodes(childAdded);
+                        RenameChildNodes(childAdded);
+
+                        newNode = childAdded;
+                    }
+                    catch
+                    {
+                        // Recovery: reverse the disk rename if it already succeeded.
+                        if (diskRenamed)
+                        {
+                            try { File.Move(newName, oldName); } catch { /* ignore secondary failure */ }
+                        }
+                        // Recovery: add the old file back to the project system.
+                        try
+                        {
+                            string[] rollbackFile = new string[] { oldName };
+                            VSADDRESULT[] rollbackResult = new VSADDRESULT[] { VSADDRESULT.ADDRESULT_Failure };
+                            Guid rollbackGuid = Guid.Empty;
+                            VSADDITEMOPERATION rollbackOp = string.IsNullOrEmpty(linkPath)
+                                ? VSADDITEMOPERATION.VSADDITEMOP_OPENFILE
+                                : VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE;
+                            this.ProjectMgr.AddItemWithSpecific(
+                                parentId, rollbackOp, null, 0, rollbackFile, IntPtr.Zero, 0,
+                                ref rollbackGuid, null, ref rollbackGuid, rollbackResult, false);
+                        }
+                        catch { /* ignore secondary failure */ }
+                        throw;
+                    }
+                }
+                else
+                {
+                    this.RenameCaseOnlyChange(newFileName);
+                    newNode = this;
+                }
+
+                this.ProjectMgr.ResumeMSBuild(this.ProjectMgr.ReEvaluateProjectFileTargetName);
+                this.ProjectMgr.Tracker.OnItemRenamed(oldName, newName, renameflag);
             }
             finally
             {
@@ -1278,7 +1316,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     Marshal.Release(docData);
                 }
-                sfc.Resume(); // can throw, e.g. when RenameFileNode failed, but file was renamed on disk and now editor cannot find file
+                sfc.Resume(); // can throw, e.g. when rename failed but file was renamed on disk and now editor cannot find file
 
                 newNodeOut = newNode;
             }

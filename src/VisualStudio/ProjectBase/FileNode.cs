@@ -1282,7 +1282,7 @@ namespace Microsoft.VisualStudio.Project
                         // Recovery: reverse the disk rename if it already succeeded.
                         if (diskRenamed)
                         {
-                            try { File.Move(newName, oldName); } catch { /* ignore secondary failure */ }
+                            try { File.Move(newName, oldName); } catch (Exception ex) { Logger.Exception(ex, "RenameDocument: reverse disk rename"); }
                         }
                         // Recovery: add the old file back to the project system.
                         try
@@ -1297,7 +1297,7 @@ namespace Microsoft.VisualStudio.Project
                                 parentId, rollbackOp, null, 0, rollbackFile, IntPtr.Zero, 0,
                                 ref rollbackGuid, null, ref rollbackGuid, rollbackResult, false);
                         }
-                        catch { /* ignore secondary failure */ }
+                        catch (Exception ex) { Logger.Exception(ex, "RenameDocument: restore old item"); }
                         throw;
                     }
                 }

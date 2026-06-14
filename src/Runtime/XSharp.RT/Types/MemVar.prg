@@ -518,9 +518,13 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         IF oMemVar != NULL
             RETURN oMemVar:Value
         ENDIF
-        VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(cName),1, <OBJECT>{cName})
+        // VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(cName),1, <OBJECT>{cName})
+        // THROW err
+        VAR err := Error{EG_NOVAR, nameof(cName), ErrString(EG_NOVAR) + ": " + cName}
+        err:FuncSym := "MemVarGet"
+        err:ArgNum := 1
+        err:Args := <OBJECT>{cName}
         THROW err
-
     /// <inheritdoc cref="M:XSharp.MemVar._Put(System.String,XSharp.__Usual)"/>
     STATIC PUBLIC Put AS Putter
     /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar._Put/*" />

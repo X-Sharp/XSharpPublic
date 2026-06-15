@@ -299,5 +299,9 @@ TO <xvar>														;
 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
 )
 
+#command COPY MEMO <MemoField> TO <FileName>                         ;
+         [<ADD: ADDITIVE>] [AS <_nCodePage>]                        ;
+    => __XPORTERWARNIN__ <(udc)>
+
 #endif
 

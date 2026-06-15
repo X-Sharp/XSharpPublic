@@ -192,6 +192,7 @@
     <Compile Include="MenuCommands.prg" />
     <Compile Include="MenuFunctions.prg" />
     <Compile Include="MenuState.prg" />
+    <Compile Include="KeyLabelManager.prg" />
     <Compile Include="Pad.prg" />
     <Compile Include="Popup.prg" />
     <Compile Include="Separator.prg" />

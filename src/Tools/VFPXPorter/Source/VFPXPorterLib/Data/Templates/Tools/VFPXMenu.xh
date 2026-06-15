@@ -337,5 +337,33 @@
     => __XPORTERWARNIN__ SET SYSMENU TO
 
 
+// ── ON KEY LABEL ─────────────────────────────────────────────────────────────
+// Four rules in ascending order of precedence (last = highest priority):
+//   1. No command         — clears the handler (NIL).
+//   2. Arbitrary code     — wrapped in a codeblock.
+//   3. KEYBOARD <expr>    — injects keystrokes via __VFPKeyboard().
+//   4. DO procName        — calls the named procedure directly.
+//   5. DO (expr)          — macro rewrite: dispatches via __VFPDo.Execute().
+
+#command ON KEY LABEL <KeyLabel>                                      ;
+    => __VFPOnKeyLabel( <(KeyLabel)>, NIL )
+
+#command ON KEY LABEL <KeyLabel>                                      ;
+         <*cmd*>                                                     ;
+    => __VFPOnKeyLabel( <(KeyLabel)>, {|| <cmd> } )
+
+#command ON KEY LABEL <KeyLabel>                                      ;
+         KEYBOARD <*kbdExpr*>                                        ;
+    => __VFPOnKeyLabel( <(KeyLabel)>, {|| __VFPKeyboard(<kbdExpr>) } )
+
+#command ON KEY LABEL <KeyLabel>                                      ;
+         DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
+    => __VFPOnKeyLabel( <(KeyLabel)>, {|| <ProcName>() } )
+
+#command ON KEY LABEL <KeyLabel>                                      ;
+         DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
+    => __VFPOnKeyLabel( <(KeyLabel)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+
 #endif
 // EOF VFPXMenu.xh

@@ -175,6 +175,11 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // Now, we must set the type to parent:Name + "_" + item:Name
                                     itm:IsContainer := TRUE
                                     itm:AddToControls := TRUE
+                                    // Reset FoxClassName and ClassLocation so the ClassName setter
+                                    // treats this as a first assignment (_isConverted stays FALSE).
+                                    // This prevents FullyQualifiedName from prepending XSharp.VFP.UI.
+                                    itm:FoxClassName := ""
+                                    itm:ClassLocation := ""
                                     itm:ClassName := parent:Name + "_" + itm:Name
                                     itm:BaseClassName := parent:Name + "_" + itm:Name
                                 ENDIF

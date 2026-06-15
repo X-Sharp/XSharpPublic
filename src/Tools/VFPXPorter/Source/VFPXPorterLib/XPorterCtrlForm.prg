@@ -1561,6 +1561,11 @@ BEGIN NAMESPACE VFPXPorterLib
                 IF String.Compare( child:BaseClassName, "grid", TRUE ) == 0
                     LOOP
                 ENDIF
+                // Sub-forms inside a FormSet are exported as independent entities;
+                // their controls must not be pulled into the FormSet class.
+                IF String.Compare( child:BaseClassName, "form", TRUE ) == 0
+                    LOOP
+                ENDIF
                 IF child:Childs:Count > 0
                     FOREACH VAR grandSubItem IN child:Childs
                         result:Add( Tuple.Create( (SCXVCXItem)grandSubItem, child ) )

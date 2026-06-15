@@ -79,9 +79,9 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF !String.IsNullOrEmpty( SELF:ClassLocation )
                         nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ):Replace(" ", "_") + "."
                     ELSE
-                        // No ClassLocation and not converted: the bare VFP class name is returned.
-                        // This will produce invalid output if the class was never mapped to a .NET type.
-                        XPorterLogger.Instance:Warning( "FullyQualifiedName: item '" + SELF:Name + "' has no ClassLocation and was not converted (ClassName='" + SELF:ClassName + "')" )
+                        // No ClassLocation and not converted: bare class name is returned.
+                        // This is expected for FormSet sub-form stubs (ClassName = "FormSet_FormName").
+                        XPorterLogger.Instance:Verbose( "FullyQualifiedName: item '" + SELF:Name + "' has no ClassLocation and was not converted (ClassName='" + SELF:ClassName + "')" )
                     ENDIF
                     fqn := nSpace + SELF:ClassName
                 ENDIF

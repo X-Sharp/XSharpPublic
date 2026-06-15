@@ -416,6 +416,91 @@ BEGIN NAMESPACE XSharp.VFP.UI
             RETURN sb:ToString()
         END METHOD
         #endregion
+
+        METHOD FontMetric(nAttribute AS LONG, cFontName AS USUAL, nFontSize AS USUAL, cFontStyle AS USUAL) AS LONG
+            LOCAL oFont AS Font
+            LOCAL hDC AS IntPtr
+            LOCAL hFont AS IntPtr
+            LOCAL hOldFont AS IntPtr
+            LOCAL tm AS VfpWin32UI.TEXTMETRIC
+            LOCAL nResult AS LONG
+
+            VAR cName := "Microsoft Sans Serif"
+            LOCAL nSize := (Real4) 8.25 as Single
+            VAR eStyle := FontStyle.Regular
+
+            IF IsString(cFontName) .AND. !String.IsNullOrEmpty(cFontName)
+                cName := (STRING)cFontName
+            ENDIF
+            IF IsNumeric(cFontName) .AND. (int)nFontSize > 0
+                nSize := (Single)(INT)nFontSize
+            ENDIF
+
+            IF IsString(cFontStyle)
+                VAR sStyle := ((STRING)cFontStyle):ToUpper()
+                IF sStyle:Contains("B") ; eStyle |= FontStyle.Bold ; ENDIF
+                IF sStyle:Contains("I") ; eStyle |= FontStyle.Italic ; ENDIF
+                IF sStyle:Contains("U") ; eStyle |= FontStyle.Underline ; ENDIF
+                IF sStyle:Contains("-") ; eStyle |= FontStyle.Strikeout ; ENDIF
+            ENDIF
+
+            TRY
+                oFont := Font{cName, nSize, eStyle, GraphicsUnit.Point}
+            CATCH
+                oFont := Font{"Microsoft Sans Serif", (Real4) 8.25, FontStyle.Regular, GraphicsUnit.Point}
+            END TRY
+
+            nResult := 0
+            hDC := IntPtr.Zero
+            hFont := IntPtr.Zero
+            hOldFont := IntPtr.Zero
+
+            TRY
+                hDC := VfpWin32UI.GetDC(IntPtr.Zero)
+                hFont := oFont:ToHfont()
+                hOldFont := VfpWin32UI.SelectObject(hDC, hFont)
+
+                IF VfpWin32UI.GetTextMetrics(hDC, OUT tm)
+                    SWITCH nAttribute
+                    CASE 1;  nResult := tm:tmHeight
+                    CASE 2;  nResult := tm:tmAscent
+                    CASE 3;  nResult := tm:tmDescent
+                    CASE 4;  nResult := tm:tmInternalLeading
+                    CASE 5;  nResult := tm:tmExternalLeading
+                    CASE 6;  nResult := tm:tmAveCharWidth
+                    CASE 7;  nResult := tm:tmMaxCharWidth
+                    CASE 8;  nResult := tm:tmWeight
+                    CASE 9;  nResult := IIF(tm:tmItalic != 0, 1, 0)
+                    CASE 10; nResult := IIF(tm:tmUnderlined != 0, 1, 0)
+                    CASE 11; nResult := IIF(tm:tmStruckOut != 0, 1, 0)
+                    CASE 12; nResult := (INT)tm:tmFirstChar
+                    CASE 13; nResult := (INT)tm:tmLastChar
+                    CASE 14; nResult := (INT)tm:tmDefaultChar
+                    CASE 15; nResult := (INT)tm:tmBreakChar
+                    CASE 16; nResult := (INT)tm:tmPitchAndFamily
+                    CASE 17; nResult := (INT)tm:tmCharSet
+                    CASE 18; nResult := tm:tmOverhang
+                    CASE 19; nResult := tm:tmDigitizedAspectX
+                    CASE 20; nResult := tm:tmDigitizedAspectY
+                    END SWITCH
+                ENDIF
+            FINALLY
+                IF hOldFont != IntPtr.Zero
+                    VfpWin32UI.SelectObject(hDC, hOldFont)
+                ENDIF
+                IF hFont != IntPtr.Zero
+                    VfpWin32UI.DeleteObject(hFont)
+                ENDIF
+                IF hDC != IntPtr.Zero
+                    VfpWin32UI.ReleaseDC(IntPtr.Zero, hDC)
+                ENDIF
+                IF oFont != NULL
+                    oFont:Dispose()
+                ENDIF
+            END TRY
+
+            return nResult
+        END METHOD
     END CLASS
 
 END NAMESPACE

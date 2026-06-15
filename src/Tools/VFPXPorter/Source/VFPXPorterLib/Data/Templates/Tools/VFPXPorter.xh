@@ -1,5 +1,7 @@
-﻿// VFPXPorter.xh
+﻿Yes both// VFPXPorter.xh
 
 
-#include "VFPCmd.XH"
+#include "VFPCmd.xh"
+
+#include "VFPMenu.xh"
 

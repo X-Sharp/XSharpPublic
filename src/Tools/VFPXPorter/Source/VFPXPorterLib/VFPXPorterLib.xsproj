@@ -100,6 +100,7 @@
     <Compile Include="Tools\BufferedSink.prg" />
     <Compile Include="Tools\XPorterLogger.prg" />
     <Compile Include="XPorterSettings.prg" />
+    <None Include="Data\Templates\Tools\VFPXMenu.xh" />
     <None Include="Data\Templates\Tools\VFPXPorter.xh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -156,6 +157,7 @@
     <Folder Include="Data\Templates\Form" />
     <Folder Include="Data\Templates\Menu" />
     <Folder Include="Data\Templates\Others" />
+    <Folder Include="Data\Templates\ReportListener\" />
     <Folder Include="Data\Templates\SingleFile" />
     <Folder Include="Data\Templates\Tools" />
     <Folder Include="Tools" />

@@ -153,6 +153,9 @@ BEGIN NAMESPACE VFPXPorterLib
 		PRIVATE METHOD FixCommandMacroArgs() AS VOID
 			FOR VAR i := 0 TO SELF:Source:Count - 1
 				VAR converted := SELF:TryConvertMacroCommand(SELF:Source[i])
+				IF converted == NULL
+					converted := SELF:TryConvertOnSelectionMacro(SELF:Source[i])
+				ENDIF
 				IF converted != NULL
 					SELF:Source[i] := converted
 				ENDIF
@@ -235,6 +238,68 @@ BEGIN NAMESPACE VFPXPorterLib
 				// Double backslashes so the e"..." string literal is correct in all X# dialects
 				VAR escaped := suffix:Replace("\", "\\")
 				RETURN prefix + "(" + varname + " + e" + q + escaped + q + ")" + rest
+			ENDIF
+
+		// Rewrites  ON SELECTION BAR/PAD/POPUP ... DO &var[suffix] [rest]
+		//       →   ON SELECTION BAR/PAD/POPUP ... DO (var + e"\\suffix") [rest]
+		// so the DO (<ExprName>) rules in VFPXMenu.xh can match at compile time.
+		// Returns the rewritten line, or NULL if the line does not match.
+		PRIVATE METHOD TryConvertOnSelectionMacro(line AS STRING) AS STRING
+			// Fast check: line must start with ON (after optional whitespace)
+			VAR trimmed := line:TrimStart()
+			IF !StartsWithKeyword(trimmed, "ON SELECTION")
+				RETURN NULL
+			ENDIF
+			VAR upper := line:ToUpperInvariant()
+			// Scan for the pattern: whitespace + "DO" + whitespace + '&'
+			VAR ampAt := -1
+			VAR i     := 0
+			WHILE i < upper:Length - 3
+				IF Char.IsWhiteSpace(upper[i])          .AND. ;
+				   upper[i+1] == 'D'                    .AND. ;
+				   upper[i+2] == 'O'                    .AND. ;
+				   Char.IsWhiteSpace(upper[i+3])
+					// Found " DO " — look for '&' after any additional whitespace
+					VAR j := i + 4
+					WHILE j < upper:Length .AND. Char.IsWhiteSpace(upper[j])
+						j++
+					END WHILE
+					IF j < upper:Length .AND. line[j] == '&'
+						ampAt := j
+						EXIT
+					ENDIF
+				ENDIF
+				i++
+			END WHILE
+			IF ampAt < 0
+				RETURN NULL
+			ENDIF
+			// Extract variable name after '&'
+			VAR varStart := ampAt + 1
+			IF varStart >= line:Length .OR. ;
+			   (!Char.IsLetter(line[varStart]) .AND. line[varStart] != '_')
+				RETURN NULL
+			ENDIF
+			VAR p := varStart
+			WHILE p < line:Length .AND. (Char.IsLetterOrDigit(line[p]) .OR. line[p] == '_')
+				p++
+			END WHILE
+			VAR varname := line:Substring(varStart, p - varStart)
+			// Extract suffix: non-whitespace characters following the variable name
+			VAR suffixStart := p
+			WHILE p < line:Length .AND. !Char.IsWhiteSpace(line[p])
+				p++
+			END WHILE
+			VAR suffix := line:Substring(suffixStart, p - suffixStart)
+			// Rebuild: everything before '&' + (var [+ e"\\suffix"]) + rest
+			VAR beforeAmp := line:Substring(0, ampAt)
+			VAR rest      := line:Substring(p)
+			VAR q         := e"\""
+			IF String.IsNullOrEmpty(suffix)
+				RETURN beforeAmp + "(" + varname + ")" + rest
+			ELSE
+				VAR escaped := suffix:Replace("\", "\\")
+				RETURN beforeAmp + "(" + varname + " + e" + q + escaped + q + ")" + rest
 			ENDIF
 
 		// Returns TRUE when 'text' starts with 'keyword' (case-insensitive) at a word boundary,

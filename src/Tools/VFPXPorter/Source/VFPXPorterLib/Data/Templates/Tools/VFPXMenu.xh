@@ -1,0 +1,341 @@
+///////////////////////////////////////////////////////////////////////////
+// VFPXMenu.xh
+//
+// UDC rules for VFP procedural menu commands.
+// Maps DEFINE MENU / PAD / POPUP / BAR, ON PAD / BAR, ON SELECTION,
+// ACTIVATE / DEACTIVATE, HIDE / SHOW, RELEASE and SET SYSMENU
+// to the helper functions in XSharp.VFP.UI (MenuCommands.prg).
+//
+// USAGE
+// -----
+// #include "VFPXMenu.xh"  in every .prg that contains VFP menu commands.
+// The file is self-contained; VFPCmd.xh / VFPXPorter.xh are not required.
+//
+// RUNTIME HELPERS (XSharp.VFP.UI / MenuCommands.prg)
+// ---------------------------------------------------
+//   __VFPDefineMenu       __VFPDefinePad        __VFPDefinePopup
+//   __VFPDefineContextMenu __VFPDefineBar
+//   __VFPOnPad            __VFPOnBar
+//   __VFPOnSelectionPad   __VFPOnSelectionPadCmd
+//   __VFPOnSelectionBar   __VFPOnSelectionBarCmd
+//   __VFPOnSelectionPopup __VFPOnSelectionPopupCmd
+//   __VFPActivateMenu     __VFPActivatePopup
+//   __VFPDeactivateMenu   __VFPDeactivatePopup
+//   __VFPHideMenu         __VFPShowMenu
+//   __VFPHidePopup        __VFPShowPopup
+//   __VFPReleaseMenus     __VFPReleasePopups
+//   __VFPSetSkipOfMenu    __VFPSetSkipOfPad
+//   __VFPSetSkipOfPopup   __VFPSetSkipOfBar
+//   __VFPSetSysMenu
+///////////////////////////////////////////////////////////////////////////
+
+#ifndef VFPXMENU_XH
+#define VFPXMENU_XH
+
+// Local alias for unsupported-command warnings (mirrors VFPCmd.xh).
+#ifndef __XPORTERWARNIN__
+#command __XPORTERWARNIN__ <any> => #warning <(any)> " This command is not (yet) supported"
+#endif
+
+
+// ── DEFINE MENU ──────────────────────────────────────────────────────────────
+// All optional clauses (BAR AT LINE, IN WINDOW, FONT, STYLE, KEY, MARK,
+// MESSAGE, NOMARGIN, COLOR) are absorbed; only the name reaches the runtime.
+
+#command DEFINE MENU <MenuName> [<*_opts*>]                          ;
+    => __VFPDefineMenu( <(MenuName)> )
+
+
+// ── DEFINE PAD ───────────────────────────────────────────────────────────────
+// Rule without PROMPT (lower precedence — defined first): caption is "".
+// Rule with    PROMPT (higher precedence — defined last ): caption is passed.
+// Unsupported clauses (AT, BEFORE/AFTER, FONT, STYLE, KEY, MARK, MESSAGE,
+// SKIP FOR, COLOR) are absorbed by [<*_opts*>].
+
+#command DEFINE PAD <PadName> OF <MenuName> [<*_opts*>]             ;
+    => __VFPDefinePad( <(PadName)>, <(MenuName)>, "" )
+
+#command DEFINE PAD <PadName> OF <MenuName>                          ;
+         PROMPT <cPrompt> [<*_opts*>]                                ;
+    => __VFPDefinePad( <(PadName)>, <(MenuName)>, <cPrompt> )
+
+
+// ── DEFINE POPUP ─────────────────────────────────────────────────────────────
+// Plain popup (lower precedence — defined first).
+// SHORTCUT popup (higher precedence — defined last): creates a ContextMenu.
+// Unsupported clauses (FROM/TO, FONT, STYLE, FOOTER, KEY, MARK, MARGIN,
+// MOVER, MULTISELECT, RELATIVE, SCROLL, SHADOW, TITLE, MESSAGE, COLOR)
+// are absorbed by [<*_opts*>].
+
+#command DEFINE POPUP <PopupName> [<*_opts*>]                        ;
+    => __VFPDefinePopup( <(PopupName)> )
+
+#command DEFINE POPUP <PopupName> SHORTCUT [<*_opts*>]               ;
+    => __VFPDefineContextMenu( <(PopupName)> )
+
+
+// ── DEFINE BAR ───────────────────────────────────────────────────────────────
+// Rule without PROMPT (lower precedence — defined first): caption is "".
+// Rule with    PROMPT (higher precedence — defined last ): caption is passed.
+// A PROMPT of '\-' is converted to a separator by the runtime.
+// Unsupported clauses (FONT, STYLE, KEY, MARK, MESSAGE, PICTURE, SKIP FOR,
+// COLOR) are absorbed by [<*_opts*>].
+
+#command DEFINE BAR <nBar> OF <PopupName> [<*_opts*>]               ;
+    => __VFPDefineBar( <nBar>, <(PopupName)>, "" )
+
+#command DEFINE BAR <nBar> OF <PopupName>                            ;
+         PROMPT <cPrompt> [<*_opts*>]                                ;
+    => __VFPDefineBar( <nBar>, <(PopupName)>, <cPrompt> )
+
+
+// ── ON PAD ───────────────────────────────────────────────────────────────────
+// Without ACTIVATE POPUP: clears the popup link (empty string = detach).
+// With    ACTIVATE POPUP: links the named popup to the pad.
+
+#command ON PAD <PadName> OF <MenuName>                              ;
+    => __VFPOnPad( <(PadName)>, <(MenuName)>, "" )
+
+#command ON PAD <PadName> OF <MenuName>                              ;
+         ACTIVATE POPUP <PopupName>                                  ;
+    => __VFPOnPad( <(PadName)>, <(MenuName)>, <(PopupName)> )
+
+
+// ── ON BAR ───────────────────────────────────────────────────────────────────
+
+#command ON BAR <nBar> OF <PopupName>                                ;
+    => __VFPOnBar( <nBar>, <(PopupName)>, "" )
+
+#command ON BAR <nBar> OF <PopupName>                                ;
+         ACTIVATE POPUP <SubPopupName>                               ;
+    => __VFPOnBar( <nBar>, <(PopupName)>, <(SubPopupName)> )
+
+
+// ── ON SELECTION PAD ─────────────────────────────────────────────────────────
+// Four rules in ascending order of precedence (last = highest priority):
+//   1. No action          — clears the handler (passes "").
+//   2. Arbitrary code     — wrapped in a codeblock.
+//   3. DO procName        — passes proc name as a string; IN/WITH are absorbed.
+//   4. DO (expr)          — macro rewrite: calls __VFPDo.Execute at runtime.
+
+#command ON SELECTION PAD <PadName> OF <MenuName>                    ;
+    => __VFPOnSelectionPad( <(PadName)>, <(MenuName)>, "" )
+
+#command ON SELECTION PAD <PadName> OF <MenuName>                    ;
+         <*cmd*>                                                     ;
+    => __VFPOnSelectionPadCmd( <(PadName)>, <(MenuName)>, {|| <cmd> } )
+
+#command ON SELECTION PAD <PadName> OF <MenuName>                    ;
+         DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
+    => __VFPOnSelectionPad( <(PadName)>, <(MenuName)>, <(ProcName)> )
+
+#command ON SELECTION PAD <PadName> OF <MenuName>                    ;
+         DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
+    => __VFPOnSelectionPadCmd( <(PadName)>, <(MenuName)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+
+// ── ON SELECTION BAR ─────────────────────────────────────────────────────────
+
+#command ON SELECTION BAR <nBar> OF <PopupName>                      ;
+    => __VFPOnSelectionBar( <nBar>, <(PopupName)>, "" )
+
+#command ON SELECTION BAR <nBar> OF <PopupName>                      ;
+         <*cmd*>                                                     ;
+    => __VFPOnSelectionBarCmd( <nBar>, <(PopupName)>, {|| <cmd> } )
+
+#command ON SELECTION BAR <nBar> OF <PopupName>                      ;
+         DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
+    => __VFPOnSelectionBar( <nBar>, <(PopupName)>, <(ProcName)> )
+
+#command ON SELECTION BAR <nBar> OF <PopupName>                      ;
+         DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
+    => __VFPOnSelectionBarCmd( <nBar>, <(PopupName)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+
+// ── ON SELECTION POPUP ───────────────────────────────────────────────────────
+// ALL variant: applies to every registered popup ("*" signals this to runtime).
+// Named variant: applies to the named popup only.
+
+#command ON SELECTION POPUP ALL                                       ;
+    => __VFPOnSelectionPopup( "*", "" )
+
+#command ON SELECTION POPUP ALL                                       ;
+         <*cmd*>                                                     ;
+    => __VFPOnSelectionPopupCmd( "*", {|| <cmd> } )
+
+#command ON SELECTION POPUP ALL                                       ;
+         DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
+    => __VFPOnSelectionPopup( "*", <(ProcName)> )
+
+#command ON SELECTION POPUP ALL                                       ;
+         DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
+    => __VFPOnSelectionPopupCmd( "*", {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+#command ON SELECTION POPUP <PopupName>                              ;
+    => __VFPOnSelectionPopup( <(PopupName)>, "" )
+
+#command ON SELECTION POPUP <PopupName>                              ;
+         <*cmd*>                                                     ;
+    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| <cmd> } )
+
+#command ON SELECTION POPUP <PopupName>                              ;
+         DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
+    => __VFPOnSelectionPopup( <(PopupName)>, <(ProcName)> )
+
+#command ON SELECTION POPUP <PopupName>                              ;
+         DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
+    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+
+// ── ACTIVATE MENU ────────────────────────────────────────────────────────────
+// NOWAIT and PAD clauses are absorbed (no WinForms equivalent).
+
+#command ACTIVATE MENU <MenuName> [NOWAIT] [PAD <_PadName>]         ;
+    => __VFPActivateMenu( <(MenuName)> )
+
+
+// ── ACTIVATE POPUP ───────────────────────────────────────────────────────────
+// Without AT: shows at current mouse position (nRow = nCol = 0).
+// With    AT: passes screen coordinates to the runtime.
+// BAR, NOWAIT, REST are absorbed.
+
+#command ACTIVATE POPUP <PopupName>                                  ;
+         [BAR <_nBar>] [NOWAIT] [REST]                              ;
+    => __VFPActivatePopup( <(PopupName)>, 0, 0 )
+
+#command ACTIVATE POPUP <PopupName>                                  ;
+         AT <nRow>, <nCol>                                           ;
+         [BAR <_nBar>] [NOWAIT] [REST]                              ;
+    => __VFPActivatePopup( <(PopupName)>, <nRow>, <nCol> )
+
+
+// ── DEACTIVATE MENU ──────────────────────────────────────────────────────────
+// Without name: deactivates whatever menu is currently active.
+
+#command DEACTIVATE MENU                                             ;
+    => __VFPDeactivateMenu( "" )
+
+#command DEACTIVATE MENU <MenuName>                                  ;
+    => __VFPDeactivateMenu( <(MenuName)> )
+
+
+// ── DEACTIVATE POPUP ─────────────────────────────────────────────────────────
+
+#command DEACTIVATE POPUP                                            ;
+    => __VFPDeactivatePopup( "" )
+
+#command DEACTIVATE POPUP <PopupName>                               ;
+    => __VFPDeactivatePopup( <(PopupName)> )
+
+
+// ── HIDE / SHOW MENU ─────────────────────────────────────────────────────────
+
+#command HIDE MENU ALL                                               ;
+    => __VFPReleaseMenus( NULL, FALSE )
+
+#command HIDE MENU <MenuName>                                        ;
+    => __VFPHideMenu( <(MenuName)> )
+
+#command SHOW MENU ALL [SAVE]                                        ;
+    => __XPORTERWARNIN__ SHOW MENU ALL
+
+#command SHOW MENU <MenuName> [PAD <_PadName>] [SAVE]              ;
+    => __VFPShowMenu( <(MenuName)> )
+
+
+// ── HIDE / SHOW POPUP ────────────────────────────────────────────────────────
+
+#command HIDE POPUP ALL                                              ;
+    => __XPORTERWARNIN__ HIDE POPUP ALL
+
+#command HIDE POPUP                                                  ;
+    => __VFPHidePopup( "" )
+
+#command HIDE POPUP <PopupName>                                      ;
+    => __VFPHidePopup( <(PopupName)> )
+
+#command SHOW POPUP ALL [SAVE]                                       ;
+    => __XPORTERWARNIN__ SHOW POPUP ALL
+
+#command SHOW POPUP <PopupName> [SAVE]                               ;
+    => __VFPShowPopup( <(PopupName)> )
+
+
+// ── RELEASE MENU(S) ──────────────────────────────────────────────────────────
+// Both singular (RELEASE MENU) and plural (RELEASE MENUS) forms are handled.
+// EXTENDED is accepted but has no effect at the WinForms level.
+// Single-name form wraps the name in a one-element array.
+
+#command RELEASE MENUS ALL [<ext: EXTENDED>]                        ;
+    => __VFPReleaseMenus( NULL, <.ext.> )
+
+#command RELEASE MENU ALL [<ext: EXTENDED>]                         ;
+    => __VFPReleaseMenus( NULL, <.ext.> )
+
+#command RELEASE MENUS <MenuName> [<ext: EXTENDED>]                 ;
+    => __VFPReleaseMenus( { <(MenuName)> }, <.ext.> )
+
+#command RELEASE MENU <MenuName> [<ext: EXTENDED>]                  ;
+    => __VFPReleaseMenus( { <(MenuName)> }, <.ext.> )
+
+
+// ── RELEASE POPUP(S) ─────────────────────────────────────────────────────────
+
+#command RELEASE POPUPS ALL [<ext: EXTENDED>]                       ;
+    => __VFPReleasePopups( NULL, <.ext.> )
+
+#command RELEASE POPUP ALL [<ext: EXTENDED>]                        ;
+    => __VFPReleasePopups( NULL, <.ext.> )
+
+#command RELEASE POPUPS <PopupName> [<ext: EXTENDED>]               ;
+    => __VFPReleasePopups( { <(PopupName)> }, <.ext.> )
+
+#command RELEASE POPUP <PopupName> [<ext: EXTENDED>]                ;
+    => __VFPReleasePopups( { <(PopupName)> }, <.ext.> )
+
+
+// ── SET SKIP OF ──────────────────────────────────────────────────────────────
+
+#command SET SKIP OF MENU <MenuName> TO <lExpr>                     ;
+    => __VFPSetSkipOfMenu( <(MenuName)>, <lExpr> )
+
+#command SET SKIP OF PAD <PadName> OF <MenuName> TO <lExpr>        ;
+    => __VFPSetSkipOfPad( <(PadName)>, <(MenuName)>, <lExpr> )
+
+#command SET SKIP OF POPUP <PopupName> TO <lExpr>                   ;
+    => __VFPSetSkipOfPopup( <(PopupName)>, <lExpr> )
+
+#command SET SKIP OF BAR <nBar> OF <PopupName> TO <lExpr>          ;
+    => __VFPSetSkipOfBar( <nBar>, <(PopupName)>, <lExpr> )
+
+
+// ── SET SYSMENU ──────────────────────────────────────────────────────────────
+// SAVE / NOSAVE: no WinForms equivalent — emit a compiler warning.
+// TO DEFAULT / TO AUTOMATIC / ON: restore / show the system menu.
+// OFF: hide the system menu.
+// TO <list>: not supported — emit a compiler warning.
+
+#command SET SYSMENU SAVE                                            ;
+    => __XPORTERWARNIN__ SET SYSMENU SAVE
+
+#command SET SYSMENU NOSAVE                                          ;
+    => __XPORTERWARNIN__ SET SYSMENU NOSAVE
+
+#command SET SYSMENU ON                                              ;
+    => __VFPSetSysMenu( TRUE )
+
+#command SET SYSMENU OFF                                             ;
+    => __VFPSetSysMenu( FALSE )
+
+#command SET SYSMENU TO DEFAULT                                      ;
+    => __VFPSetSysMenu( TRUE )
+
+#command SET SYSMENU TO AUTOMATIC                                    ;
+    => __VFPSetSysMenu( TRUE )
+
+#command SET SYSMENU TO [<*_opts*>]                                  ;
+    => __XPORTERWARNIN__ SET SYSMENU TO
+
+
+#endif
+// EOF VFPXMenu.xh

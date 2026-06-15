@@ -112,11 +112,12 @@
 
 
 // ── ON SELECTION PAD ─────────────────────────────────────────────────────────
-// Four rules in ascending order of precedence (last = highest priority):
+// Five rules in ascending order of precedence (last = highest priority):
 //   1. No action          — clears the handler (passes "").
 //   2. Arbitrary code     — wrapped in a codeblock.
 //   3. DO procName        — passes proc name as a string; IN/WITH are absorbed.
 //   4. DO (expr)          — macro rewrite: calls __VFPDo.Execute at runtime.
+//   5. DO FORM (expr)     — macro rewrite: calls __VFPDoForm.Create at runtime.
 
 #command ON SELECTION PAD <PadName> OF <MenuName>                    ;
     => __VFPOnSelectionPad( <(PadName)>, <(MenuName)>, "" )
@@ -132,6 +133,10 @@
 #command ON SELECTION PAD <PadName> OF <MenuName>                    ;
          DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
     => __VFPOnSelectionPadCmd( <(PadName)>, <(MenuName)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+#command ON SELECTION PAD <PadName> OF <MenuName>                    ;
+         DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
+    => __VFPOnSelectionPadCmd( <(PadName)>, <(MenuName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
 
 
 // ── ON SELECTION BAR ─────────────────────────────────────────────────────────
@@ -150,6 +155,10 @@
 #command ON SELECTION BAR <nBar> OF <PopupName>                      ;
          DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
     => __VFPOnSelectionBarCmd( <nBar>, <(PopupName)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+#command ON SELECTION BAR <nBar> OF <PopupName>                      ;
+         DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
+    => __VFPOnSelectionBarCmd( <nBar>, <(PopupName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
 
 
 // ── ON SELECTION POPUP ───────────────────────────────────────────────────────
@@ -171,6 +180,10 @@
          DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
     => __VFPOnSelectionPopupCmd( "*", {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
 
+#command ON SELECTION POPUP ALL                                       ;
+         DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
+    => __VFPOnSelectionPopupCmd( "*", {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
+
 #command ON SELECTION POPUP <PopupName>                              ;
     => __VFPOnSelectionPopup( <(PopupName)>, "" )
 
@@ -185,6 +198,10 @@
 #command ON SELECTION POPUP <PopupName>                              ;
          DO (<ExprName>) [IN <_InFile>] [WITH <*_Params*>]          ;
     => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| XSharp.VFP.UI.__VFPDo.Execute(<ExprName>) } )
+
+#command ON SELECTION POPUP <PopupName>                              ;
+         DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
+    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
 
 
 // ── ACTIVATE MENU ────────────────────────────────────────────────────────────

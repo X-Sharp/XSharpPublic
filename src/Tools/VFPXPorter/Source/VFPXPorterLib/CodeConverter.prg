@@ -259,11 +259,18 @@ BEGIN NAMESPACE VFPXPorterLib
 				   upper[i+1] == 'D'                    .AND. ;
 				   upper[i+2] == 'O'                    .AND. ;
 				   Char.IsWhiteSpace(upper[i+3])
-					// Found " DO " — look for '&' after any additional whitespace
+					// Found " DO " — also skip optional "FORM " keyword, then look for '&'
 					VAR j := i + 4
 					WHILE j < upper:Length .AND. Char.IsWhiteSpace(upper[j])
 						j++
 					END WHILE
+					// Handle "DO FORM &var" as well as "DO &var"
+					IF j + 4 < upper:Length .AND. StartsWithKeyword(upper:Substring(j), "FORM")
+						j += 4
+						WHILE j < upper:Length .AND. Char.IsWhiteSpace(upper[j])
+							j++
+						END WHILE
+					ENDIF
 					IF j < upper:Length .AND. line[j] == '&'
 						ampAt := j
 						EXIT

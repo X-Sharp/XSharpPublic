@@ -100,7 +100,9 @@
     <Compile Include="Tools\BufferedSink.prg" />
     <Compile Include="Tools\XPorterLogger.prg" />
     <Compile Include="XPorterSettings.prg" />
-    <None Include="Data\Templates\Tools\VFPXMenu.xh" />
+    <None Include="Data\Templates\Tools\VFPXMenu.xh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\Templates\Tools\VFPXPorter.xh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

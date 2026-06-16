@@ -59,6 +59,12 @@ BEGIN NAMESPACE VFPXPorterLib
         PROPERTY IsFormSet AS LOGIC GET ( String.Compare( SELF:BaseClassName, "formset", TRUE ) == 0 )
 
         [XmlIgnore];
+        PROPERTY IsPageFrame AS LOGIC GET ( String.Compare( SELF:BaseClassName, "pageframe", TRUE ) == 0 )
+
+        [XmlIgnore];
+        PROPERTY IsPage AS LOGIC GET ( String.Compare( SELF:BaseClassName, "page", TRUE ) == 0 )
+
+        [XmlIgnore];
         PROPERTY IsReportListener AS LOGIC GET ( String.Compare( SELF:BaseClassName, "reportlistener", TRUE ) == 0 .OR. ;
                                                   String.Compare( SELF:ClassName,     "reportlistener", TRUE ) == 0 )
 

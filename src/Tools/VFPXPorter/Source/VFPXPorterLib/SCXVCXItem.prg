@@ -21,6 +21,8 @@ BEGIN NAMESPACE VFPXPorterLib
 
 		PROPERTY AddToControls AS LOGIC AUTO
 
+		PROPERTY PageFrameSubclassName AS STRING AUTO
+
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
@@ -41,6 +43,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:IsContainer := oneItem:IsContainer
 				SELF:IsTopLevel := oneItem:IsTopLevel
 				SELF:AddToControls := oneItem:AddToControls
+				SELF:PageFrameSubclassName := oneItem:PageFrameSubclassName
 				// Copy the User Defined Items
 				FOREACH VAR userDef IN oneItem:UserDefItems
 					SELF:UserDefItems:Add( UserDefinition{ userDef } )

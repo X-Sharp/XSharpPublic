@@ -145,6 +145,9 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
         SELF:OnVFPInit()
         RETURN
 
+#include "InitCall.xh"
+
+
     /// <summary>
     /// Show all forms in the set. Respects each form's WindowType (modal/modeless).
     /// Modeless forms (WindowType=0) are shown non-blocking first; modal forms
@@ -236,22 +239,6 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
         RETURN NIL
 
     // -- Lifecycle Events ------------------------------------------------
-
-    PRIVATE _VFPInit AS VFPOverride
-    /// <summary>
-    /// Name of the VFP method called when the FormSet is first created. Fired in the constructor.
-    /// </summary>
-    [Category("VFP Events"), Description("Occurs when the FormSet is created.")];
-    [DefaultValue(NULL)];
-    PROPERTY vfpInit AS STRING GET _VFPInit?:SendTo SET SELF:_VFPInit := VFPOverride{SELF, VALUE}
-
-    /// <summary>
-    /// Dispatches the <see cref="vfpInit"/> handler.
-    /// </summary>
-    PRIVATE METHOD OnVFPInit() AS VOID
-        IF SELF:_VFPInit != NULL
-            SELF:_VFPInit:Call()
-        ENDIF
 
     PRIVATE _VFPDestroy AS VFPOverride
     /// <summary>

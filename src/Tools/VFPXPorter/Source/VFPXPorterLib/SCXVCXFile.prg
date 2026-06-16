@@ -172,7 +172,9 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // Now the Item is just a Type&Object that is inside the FormSet
                                     // Add a Property to the "link" the Form to the FormSet
                                     itm:PropertiesDict:Add("ThisFormSet", "SELF")
-                                    // Now, we must set the type to parent:Name + "_" + item:Name
+                                    // Use the SCX filename (not the VFP object name) as the prefix so the
+                                    // stub type matches what GetFormClassName() produces for the clone entity.
+                                    VAR scxPrefix := System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName):Replace(" ", "_")
                                     itm:IsContainer := TRUE
                                     itm:AddToControls := TRUE
                                     // Reset FoxClassName and ClassLocation so the ClassName setter
@@ -180,8 +182,8 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // This prevents FullyQualifiedName from prepending XSharp.VFP.UI.
                                     itm:FoxClassName := ""
                                     itm:ClassLocation := ""
-                                    itm:ClassName := parent:Name + "_" + itm:Name
-                                    itm:BaseClassName := parent:Name + "_" + itm:Name
+                                    itm:ClassName := scxPrefix + "_" + itm:Name
+                                    itm:BaseClassName := scxPrefix + "_" + itm:Name
                                 ENDIF
                             ENDIF
                         ENDIF

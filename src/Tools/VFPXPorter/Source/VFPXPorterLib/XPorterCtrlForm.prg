@@ -1556,14 +1556,14 @@ BEGIN NAMESPACE VFPXPorterLib
         // Grid sub-controls (column headers, edit controls) are excluded — they are virtual.
         PRIVATE METHOD CollectContainerDescendants( item AS SCXVCXItem ) AS List<Tuple<SCXVCXItem,SCXVCXItem>>
             VAR result := List<Tuple<SCXVCXItem,SCXVCXItem>>{}
+            // FormSet direct children are sub-form stubs exported as independent entities.
+            // Their controls must not be pulled into the FormSet class — return empty.
+            IF item:IsFormSet
+                RETURN result
+            ENDIF
             FOREACH VAR subItem IN item:Childs
                 VAR child := (SCXVCXItem) subItem
                 IF String.Compare( child:BaseClassName, "grid", TRUE ) == 0
-                    LOOP
-                ENDIF
-                // Sub-forms inside a FormSet are exported as independent entities;
-                // their controls must not be pulled into the FormSet class.
-                IF String.Compare( child:BaseClassName, "form", TRUE ) == 0
                     LOOP
                 ENDIF
                 IF child:Childs:Count > 0

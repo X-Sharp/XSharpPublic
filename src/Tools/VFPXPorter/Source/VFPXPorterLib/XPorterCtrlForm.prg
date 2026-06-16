@@ -630,10 +630,13 @@ BEGIN NAMESPACE VFPXPorterLib
                  scxSubItem:ConvertClassName( SELF:_typeList )
                  declaration:Append( SELF:Settings:Modifier )
                  declaration:Append(" ")
-                 declaration:Append(subItem:Name)
+                 declaration:Append(scxSubItem:Name)
                  declaration:Append(" AS ")
-                 // NameSpace addition ??
-                 declaration:Append(subItem:FullyQualifiedName)
+                 IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                     declaration:Append(scxSubItem:PageFrameSubclassName)
+                 ELSE
+                     declaration:Append(scxSubItem:FullyQualifiedName)
+                 ENDIF
                  declaration:Append(Environment.NewLine)
              NEXT
              // Also declare descendants of non-grid containers (e.g., controls inside PageFrame pages)
@@ -655,6 +658,7 @@ BEGIN NAMESPACE VFPXPorterLib
              VAR controlStack := Stack<STRING>{}
              VAR instantiate := StringBuilder{}
              VAR initChilds := StringBuilder{}
+             VAR pageFrameInits := StringBuilder{}
              code := StringBuilder{ SELF:DesignerInitType }
              FOREACH VAR subItem IN oneItem:Childs
                  LOCAL scxSubItem AS SCXVCXItem
@@ -664,7 +668,11 @@ BEGIN NAMESPACE VFPXPorterLib
                  instantiate:Append("SELF:")
                  instantiate:Append(scxSubItem:Name)
                  instantiate:Append(" := ")
-                 instantiate:Append(scxSubItem:FullyQualifiedName)
+                 IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                     instantiate:Append(scxSubItem:PageFrameSubclassName)
+                 ELSE
+                     instantiate:Append(scxSubItem:FullyQualifiedName)
+                 ENDIF
                  instantiate:Append("{}")
                  instantiate:Append(Environment.NewLine)
 
@@ -683,6 +691,24 @@ BEGIN NAMESPACE VFPXPorterLib
                  IF scxSubItem:XPortedCode != NULL
                      initChilds:Append( scxSubItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
                  ENDIF
+                 // For PageFrames: emit TabPages:Add for each synthesized Page stub
+                 // and generate the typed PageFrame subclass file for compile-time page access
+                 IF scxSubItem:IsPageFrame
+                     IF !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                         SELF:GenerateTypedPageFrameClass(scxSubItem)
+                     ENDIF
+                     FOREACH VAR pageBase IN scxSubItem:Childs
+                         VAR pageStub := (SCXVCXItem) pageBase
+                         IF pageStub:IsPage
+                             pageFrameInits:Append("SELF:")
+                             pageFrameInits:Append(scxSubItem:Name)
+                             pageFrameInits:Append(":TabPages:Add(")
+                             pageFrameInits:Append(pageStub:FullyQualifiedName)
+                             pageFrameInits:Append("{})")
+                             pageFrameInits:Append(Environment.NewLine)
+                         ENDIF
+                     NEXT
+                 ENDIF
                  initChilds:Append("//")
                  initChilds:Append(Environment.NewLine)
 
@@ -690,10 +716,9 @@ BEGIN NAMESPACE VFPXPorterLib
                      controlStack:Push(scxSubItem:Name)
                  ENDIF
              NEXT
-             // Also instantiate and init descendants of non-grid containers
+             // Also instantiate and init descendants of non-grid, non-pageframe containers
              FOREACH VAR pair IN designerDescendants
                  VAR scxDescItem := pair:Item1
-                 // VAR descContainer := pair:Item2
                  instantiate:Append("SELF:")
                  instantiate:Append(scxDescItem:Name)
                  instantiate:Append(" := ")
@@ -711,17 +736,23 @@ BEGIN NAMESPACE VFPXPorterLib
                  initChilds:Append("//")
                  initChilds:Append(Environment.NewLine)
              NEXT
-             // Controls must be added in reverse order
+             // PageFrame pages are added before Controls:Add
              VAR addCtrl := StringBuilder{}
+             addCtrl:Append(pageFrameInits:ToString())
+             // Controls must be added in reverse order
              WHILE controlStack:Count > 0
                  addCtrl:Append("SELF:Controls:Add(SELF:")
                  addCtrl:Append(controlStack:Pop())
                  addCtrl:Append(")")
                  addCtrl:Append(Environment.NewLine)
              ENDDO
-             // Add page-level descendants to their virtual containers
+             // Descendants of non-pageframe containers add to their parent container
              FOREACH VAR pair IN designerDescendants
-                 addCtrl:Append( SELF:GetPageAddStatement( pair:Item1, pair:Item2 ) )
+                 addCtrl:Append("SELF:")
+                 addCtrl:Append(pair:Item2:Name)
+                 addCtrl:Append(":Controls:Add(SELF:")
+                 addCtrl:Append(pair:Item1:Name)
+                 addCtrl:Append(")")
                  addCtrl:Append(Environment.NewLine)
              NEXT
              // Build replacements for DesignerInitType
@@ -902,7 +933,11 @@ BEGIN NAMESPACE VFPXPorterLib
                  declaration:Append(" ")
                  declaration:Append(scxSubItem:Name)
                  declaration:Append(" AS ")
-                 declaration:Append(scxSubItem:FullyQualifiedName)
+                 IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                     declaration:Append(scxSubItem:PageFrameSubclassName)
+                 ELSE
+                     declaration:Append(scxSubItem:FullyQualifiedName)
+                 ENDIF
                  declaration:Append(Environment.NewLine)
              NEXT
              // Also declare descendants of non-grid containers (e.g., controls inside PageFrame pages)
@@ -955,7 +990,11 @@ BEGIN NAMESPACE VFPXPorterLib
                 instantiate:Append("SELF:")
                 instantiate:Append(scxSubItem:Name)
                 instantiate:Append(" := ")
-                instantiate:Append(scxSubItem:FullyQualifiedName)
+                IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                    instantiate:Append(scxSubItem:PageFrameSubclassName)
+                ELSE
+                    instantiate:Append(scxSubItem:FullyQualifiedName)
+                ENDIF
                 instantiate:Append("{}")
                 instantiate:Append(Environment.NewLine)
 
@@ -981,6 +1020,24 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
                 initChilds:Append("//")
                 initChilds:Append(Environment.NewLine)
+                // For PageFrames: emit TabPages:Add for each synthesized Page stub
+                // and generate the typed PageFrame subclass file for compile-time page access
+                IF scxSubItem:IsPageFrame
+                    IF !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                        SELF:GenerateTypedPageFrameClass(scxSubItem)
+                    ENDIF
+                    FOREACH VAR pageBase IN scxSubItem:Childs
+                        VAR pageStub := (SCXVCXItem) pageBase
+                        IF pageStub:IsPage
+                            addCtrl:Append("SELF:")
+                            addCtrl:Append(scxSubItem:Name)
+                            addCtrl:Append(":TabPages:Add(")
+                            addCtrl:Append(pageStub:FullyQualifiedName)
+                            addCtrl:Append("{})")
+                            addCtrl:Append(Environment.NewLine)
+                        ENDIF
+                    NEXT
+                ENDIF
                 // In order to Add Controls to Forms, or Forms to Formset
                 IF scxSubItem:AddToControls .OR. oneItem:IsFormSet
                     controlStack:Push(scxSubItem:Name)
@@ -998,7 +1055,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
                 //
              NEXT
-             // Also process descendants of non-grid containers (e.g., controls in PageFrame pages)
+             // Also process descendants of non-grid, non-pageframe containers
              FOREACH VAR pair IN descendants
                  VAR scxDescItem := pair:Item1
                  VAR container := pair:Item2
@@ -1022,7 +1079,11 @@ BEGIN NAMESPACE VFPXPorterLib
                  ENDIF
                  initChilds:Append("//")
                  initChilds:Append(Environment.NewLine)
-                 addCtrl:Append( SELF:GetPageAddStatement( scxDescItem, container ) )
+                 addCtrl:Append("SELF:")
+                 addCtrl:Append(container:Name)
+                 addCtrl:Append(":Controls:Add(SELF:")
+                 addCtrl:Append(scxDescItem:Name)
+                 addCtrl:Append(")")
                  addCtrl:Append(Environment.NewLine)
                  IF String.Compare( scxDescItem:BaseClassName, "grid", TRUE ) == 0
                      Grids:Add( scxDescItem )
@@ -1089,7 +1150,52 @@ BEGIN NAMESPACE VFPXPorterLib
             IF item:IsForm .AND. !String.IsNullOrEmpty( item:Parent )
                 RETURN scxName + "_" + item:Name
             ENDIF
+            IF item:IsPage .AND. !String.IsNullOrEmpty( item:Parent )
+                // Parent = PageFrame.FullName, e.g. "Formset.Form1.Pageframe1"
+                // Drop the top-level FormSet segment so the name stays compact.
+                VAR pfPath := item:Parent
+                VAR firstDot := pfPath:IndexOf('.')
+                VAR suffix := IIF(firstDot >= 0, pfPath:Substring(firstDot + 1):Replace(".", "_"), pfPath)
+                RETURN scxName + "_" + suffix + "_" + item:Name
+            ENDIF
             RETURN scxName
+        END METHOD
+
+        /// <summary>
+        /// Writes a typed PageFrame subclass that exposes named, typed Page properties.
+        /// This lets the compiler resolve pageframe1.page1 with the correct concrete type.
+        /// </summary>
+        PRIVATE METHOD GenerateTypedPageFrameClass( pageFrame AS SCXVCXItem ) AS VOID
+            VAR subclassName := pageFrame:PageFrameSubclassName
+            VAR outFile := Path.Combine(SELF:Settings:OutputPath, subclassName + ".prg")
+            BEGIN USING VAR writer := StreamWriter{ outFile }
+                writer:WriteLine( SELF:FormPrefix )
+                IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
+                    writer:WriteLine( "" )
+                    writer:WriteLine( "BEGIN NAMESPACE " + SELF:NamespaceDefinition )
+                ENDIF
+                writer:WriteLine( "" )
+                writer:WriteLine( "PUBLIC CLASS " + subclassName + " INHERIT " + XPorterSettings.SuppportLib + ".PageFrame" )
+                writer:WriteLine( "" )
+                LOCAL pageIdx := 0 AS INT
+                FOREACH VAR pageBase IN pageFrame:Childs
+                    VAR stub := (SCXVCXItem) pageBase
+                    IF stub:IsPage
+                        VAR pageClassName := stub:ClassName  // already the generated class name
+                        writer:WriteLine( "    PUBLIC PROPERTY " + stub:Name + " AS " + pageClassName )
+                        writer:WriteLine( "        GET ; RETURN (" + pageClassName + ") SELF:TabPages[" + pageIdx:ToString() + "] ; END GET" )
+                        writer:WriteLine( "    END PROPERTY" )
+                        writer:WriteLine( "" )
+                        pageIdx++
+                    ENDIF
+                NEXT
+                writer:WriteLine( "END CLASS" )
+                IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
+                    writer:WriteLine( "" )
+                    writer:WriteLine( "END NAMESPACE" )
+                ENDIF
+            END USING
+            SELF:GeneratedFiles:Add( GeneratedFile{ outFile, "Form" } )
         END METHOD
 
         PROTECTED METHOD GetOutputFilename( item AS BaseItem ) AS STRING
@@ -1551,13 +1657,11 @@ BEGIN NAMESPACE VFPXPorterLib
             RETURN propName  // unknown — pass through
         END METHOD
 
-        // Collect all non-virtual descendants of non-grid containers within item.
+        // Collect all non-virtual descendants of non-grid, non-pageframe containers within item.
         // Returns pairs of (descendant, real-parent-container).
-        // Grid sub-controls (column headers, edit controls) are excluded — they are virtual.
+        // Grid and PageFrame sub-controls are excluded — they are handled by their own classes.
         PRIVATE METHOD CollectContainerDescendants( item AS SCXVCXItem ) AS List<Tuple<SCXVCXItem,SCXVCXItem>>
             VAR result := List<Tuple<SCXVCXItem,SCXVCXItem>>{}
-            // FormSet direct children are sub-form stubs exported as independent entities.
-            // Their controls must not be pulled into the FormSet class — return empty.
             IF item:IsFormSet
                 RETURN result
             ENDIF
@@ -1566,9 +1670,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 IF String.Compare( child:BaseClassName, "grid", TRUE ) == 0
                     LOOP
                 ENDIF
+                IF child:IsPageFrame
+                    LOOP
+                ENDIF
                 IF child:Childs:Count > 0
                     FOREACH VAR grandSubItem IN child:Childs
-                        result:Add( Tuple.Create( (SCXVCXItem)grandSubItem, child ) )
+                        VAR grand := (SCXVCXItem) grandSubItem
+                        result:Add( Tuple.Create( grand, child ) )
                     NEXT
                 ENDIF
             NEXT

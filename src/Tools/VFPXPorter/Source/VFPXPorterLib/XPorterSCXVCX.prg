@@ -110,7 +110,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     // non-UI class: single file, no WinForms templates
                     xPorter:InitElementsReportListener()
                     lOk := xPorter:ExportAsSingleFile( entity )
-                ELSEIF entity:Item:IsForm .OR. entity:Item:IsContainer
+                ELSEIF entity:Item:IsForm .OR. entity:Item:IsContainer .OR. entity:Item:IsPage
                     // file.prg & file.designer.prg
                     lOk := xPorter:ExportAsWindowAndDesigner( entity )
                 ELSE

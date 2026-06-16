@@ -143,6 +143,13 @@ BEGIN NAMESPACE VFPXPorterLib
                             SELF:SynthesizeGridColumns( itm )
                         ENDIF
                     NEXT
+                    // Synthesize Page classes for every PageFrame so each page's controls live
+                    // in their own class rather than being duplicated at the Form level.
+                    FOREACH VAR itm IN tmpitems
+                        IF String.Compare( itm:BaseClassName, "pageframe", TRUE ) == 0
+                            SELF:SynthesizePageFramePages( itm )
+                        ENDIF
+                    NEXT
                     // Now, we should only have "top" level Items
                     FOREACH VAR itm IN tmpitems
                         // The item has a Parent ?
@@ -291,6 +298,134 @@ BEGIN NAMESPACE VFPXPorterLib
             FOREACH VAR item IN leftover
                 grid:Childs:Add( item )
             NEXT
+        END METHOD
+
+        /// <summary>
+        /// For a PageFrame item, creates synthetic SCXVCXItem objects (one per page) and
+        /// re-parents page children from the PageFrame to the correct synthetic page based on
+        /// the Page segment in their original Parent path. Page sub-properties (Page1.Caption etc.)
+        /// are moved from the PageFrame's PropertiesDict into each synthetic page's PropertiesDict.
+        /// Each synthetic page clone is added to _Items as a top-level entity; the PageFrame
+        /// retains stub page items (ClassName = generated X# class name) so the Form designer
+        /// can emit TabPages:Add statements.
+        /// </summary>
+        PRIVATE METHOD SynthesizePageFramePages( pageFrame AS SCXVCXItem ) AS VOID
+            // Snapshot the real children before we modify the list
+            VAR originalChilds := List<BaseItem>{ pageFrame:Childs }
+            // Discover page indices from children's Parent strings
+            VAR pageIndices := SortedSet<INT>{}
+            FOREACH VAR baseChild IN originalChilds
+                VAR child := (SCXVCXItem) baseChild
+                LOCAL pIdx AS INT
+                IF SELF:TryExtractPageIndex( child:Parent, pageFrame:FullName, OUT pIdx )
+                    pageIndices:Add( pIdx )
+                ENDIF
+            NEXT
+            // Also discover from PropertiesDict keys like "Page1.Caption"
+            FOREACH VAR kv IN pageFrame:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 4 .AND. kv:Key:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(4, dotPos - 4), OUT n )
+                        pageIndices:Add( n )
+                    ENDIF
+                ENDIF
+            NEXT
+            IF pageIndices:Count == 0
+                RETURN
+            ENDIF
+            // Compute the X# class name prefix for pages:
+            // scxName + "_" + all-but-first-segment-of-PageFrame.FullName
+            VAR scxName := Path.GetFileNameWithoutExtension(pageFrame:FileName):Replace(" ", "_")
+            VAR pfFullName := pageFrame:FullName   // e.g. "Formset.Form1.Pageframe1"
+            VAR firstDot := pfFullName:IndexOf('.')
+            VAR pathSuffix := IIF(firstDot >= 0, pfFullName:Substring(firstDot + 1):Replace(".", "_"), pfFullName)
+            // pathSuffix = "Form1_Pageframe1" (FormSet) or "Pageframe1" (simple Form)
+            // Store the typed subclass name on the PageFrame item itself
+            pageFrame:PageFrameSubclassName := scxName + "_" + pathSuffix
+            // Create one synthetic page clone per index (holds controls, becomes its own class)
+            VAR synthPages := Dictionary<INT, SCXVCXItem>{}
+            FOREACH VAR idx IN pageIndices
+                VAR clone := SCXVCXItem{}
+                clone:Name          := "Page" + idx:ToString()
+                clone:BaseClassName := "page"
+                clone:ClassName     := "page"
+                clone:Parent        := pageFrame:FullName
+                clone:FileName      := pageFrame:FileName
+                clone:IsTopLevel    := TRUE
+                synthPages:Add( idx, clone )
+            NEXT
+            // Move PageN.* properties from PageFrame's PropertiesDict into each clone
+            VAR toRemove := List<STRING>{}
+            FOREACH VAR kv IN pageFrame:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 4 .AND. kv:Key:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(4, dotPos - 4), OUT n ) .AND. synthPages:ContainsKey(n)
+                        VAR propName := kv:Key:Substring(dotPos + 1)
+                        IF !synthPages[n]:PropertiesDict:ContainsKey(propName)
+                            synthPages[n]:PropertiesDict:Add( propName, kv:Value )
+                        ENDIF
+                        toRemove:Add( kv:Key )
+                    ENDIF
+                ENDIF
+            NEXT
+            FOREACH VAR key IN toRemove
+                pageFrame:PropertiesDict:Remove(key)
+            NEXT
+            // Distribute original children to their synthetic page clone
+            VAR leftover := List<BaseItem>{}
+            FOREACH VAR baseChild IN originalChilds
+                VAR child := (SCXVCXItem) baseChild
+                LOCAL pIdx AS INT
+                IF SELF:TryExtractPageIndex( child:Parent, pageFrame:FullName, OUT pIdx ) .AND. synthPages:ContainsKey(pIdx)
+                    synthPages[pIdx]:Childs:Add( child )
+                ELSE
+                    leftover:Add( child )
+                ENDIF
+            NEXT
+            // Replace PageFrame.Childs with one stub per page (ClassName = generated class name)
+            // plus any leftover children that didn't match a page
+            pageFrame:Childs := List<BaseItem>{}
+            FOREACH VAR idx IN pageIndices
+                VAR pageName := "Page" + idx:ToString()
+                VAR pageClassName := scxName + "_" + pathSuffix + "_" + pageName
+                VAR stub := SCXVCXItem{}
+                stub:Name          := pageName
+                stub:BaseClassName := "page"
+                stub:ClassName     := pageClassName
+                stub:Parent        := pageFrame:FullName
+                stub:FileName      := pageFrame:FileName
+                pageFrame:Childs:Add( stub )
+            NEXT
+            FOREACH VAR item IN leftover
+                pageFrame:Childs:Add( item )
+            NEXT
+            // PageCount is no longer needed — pages are added via TabPages:Add in the designer
+            pageFrame:PropertiesDict:Remove("PageCount")
+            // Register page clones as top-level entities (each will be exported as its own class)
+            FOREACH VAR idx IN pageIndices
+                SELF:_Items:Add( synthPages[idx] )
+            NEXT
+        END METHOD
+
+        // Returns TRUE and sets pageIndex when parentPath contains PageFrame.FullName + ".Page<n>"
+        PRIVATE METHOD TryExtractPageIndex( parentPath AS STRING, pageFrameFullName AS STRING, pageIndex OUT INT ) AS LOGIC
+            pageIndex := 0
+            IF String.IsNullOrEmpty(parentPath)
+                RETURN FALSE
+            ENDIF
+            VAR prefix := pageFrameFullName + "."
+            IF !parentPath:StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                RETURN FALSE
+            ENDIF
+            VAR remainder := parentPath:Substring(prefix:Length)
+            VAR dotPos := remainder:IndexOf('.')
+            VAR pageSegment := IIF(dotPos >= 0, remainder:Substring(0, dotPos), remainder)
+            IF pageSegment:Length > 4 .AND. pageSegment:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                RETURN Int32.TryParse( pageSegment:Substring(4), OUT pageIndex )
+            ENDIF
+            RETURN FALSE
         END METHOD
 
         // Returns TRUE and sets colIndex when parentPath ends in ".Column<n>" or is "Column<n>".

@@ -695,7 +695,9 @@ BEGIN NAMESPACE VFPXPorterLib
 						LOCAL evtHandler AS STRING
 						//
 						IF settings:KeepFoxProEventName
-							evtHandler := vfpEventName
+							// Include sub-control block prefix so each sub-control gets a unique handler name
+							// e.g. "Option2.Click" → evtHandler "Option2.Click" → after EnforceEventHandlerName → "Option2_Click"
+							evtHandler := IIF(!String.IsNullOrEmpty(blockName), blockName + vfpEventName, vfpEventName)
 						ELSE
 							evtHandler := cdeBlock:EventName
 							IF settings:RemoveSet .AND. evtHandler:StartsWith( "Set_", TRUE, System.Globalization.CultureInfo.InvariantCulture )
@@ -726,10 +728,12 @@ BEGIN NAMESPACE VFPXPorterLib
 					IF !formEvent .OR. settings:PrefixEvent
 						cdeBlock:EventHandler := cdeBlock:Owner:Name + "_"
 					ENDIF
-					IF pos == -1
-						cdeBlock:EventHandler += cdeBlock:EventName
+					VAR blockPrefixedName := IIF(!String.IsNullOrEmpty(blockName), blockName + cdeBlock:EventName, cdeBlock:EventName)
+					VAR parenPos := blockPrefixedName:IndexOf("(")
+					IF parenPos == -1
+						cdeBlock:EventHandler += blockPrefixedName
 					ELSE
-						cdeBlock:EventHandler += cdeBlock:EventName:Substring(0,pos)
+						cdeBlock:EventHandler += blockPrefixedName:Substring(0, parenPos)
 					ENDIF
 					// Check that we don't have a "." (dot) in the Name
 					SELF:EnforceEventHandlerName( cdeBlock )

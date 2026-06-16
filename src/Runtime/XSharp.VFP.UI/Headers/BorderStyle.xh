@@ -1,0 +1,15 @@
+// BorderStyle.xh
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+/// <summary>
+/// VFP BorderStyle: 0=None, 1=Fixed Single.<br/>
+/// Shadows the WinForms <c>BorderStyle</c> enum property and maps the VFP integer to
+/// <see cref="System.Windows.Forms.BorderStyle.None"/> or <see cref="System.Windows.Forms.BorderStyle.FixedSingle"/>.
+/// </summary>
+NEW PROPERTY BorderStyle AS LONG
+	GET ; RETURN IIF(SUPER:BorderStyle == System.Windows.Forms.BorderStyle.None, 0, 1) ; END GET
+	SET ; SUPER:BorderStyle := IIF(VALUE == 0, System.Windows.Forms.BorderStyle.None, System.Windows.Forms.BorderStyle.FixedSingle) ; END SET
+END PROPERTY

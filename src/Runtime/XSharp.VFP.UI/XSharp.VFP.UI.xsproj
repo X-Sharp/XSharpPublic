@@ -243,6 +243,7 @@
     <None Include="Headers\FontProperties.xh" />
     <None Include="Headers\FormOverride.xh" />
     <None Include="Headers\InitCall.xh" />
+    <None Include="Headers\BorderStyle.xh" />
     <None Include="Headers\MousePointer.xh" />
     <None Include="Headers\TextControlProperties.xh" />
     <None Include="Headers\Tooltips.xh" />

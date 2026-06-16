@@ -98,5 +98,11 @@ STATIC PUBLIC CLASS VFPTools
         ENDIF
         RETURN (LONG)c:R + (LONG)c:G * 256 + (LONG)c:B * 65536
 
+    /// <summary>
+    /// Converts a VFP logical RightToLeft value to the WinForms <see cref="System.Windows.Forms.RightToLeft"/> enum.
+    /// </summary>
+    STATIC METHOD RightToLeftFromVFP(lValue AS LOGIC) AS System.Windows.Forms.RightToLeft
+        RETURN IIF(lValue, System.Windows.Forms.RightToLeft.Yes, System.Windows.Forms.RightToLeft.No)
+
 END CLASS
 END NAMESPACE // XSharp.VFP.UI

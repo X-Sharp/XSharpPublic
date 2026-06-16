@@ -136,6 +136,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		#include "TextControlProperties.xh"
 
+		#include "BorderStyle.xh"
+
 		#include "FontProperties.xh"
 
 	END CLASS

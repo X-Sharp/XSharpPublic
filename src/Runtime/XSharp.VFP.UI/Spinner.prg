@@ -32,6 +32,8 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 
 		#include "ControlProperties.xh"
 
+		#include "BorderStyle.xh"
+
 		#include "ControlSource.xh"
 
 		// ── SelStart / SelLength / SelText ───────────────────────────────────

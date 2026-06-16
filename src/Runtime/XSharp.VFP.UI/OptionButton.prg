@@ -42,6 +42,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET ; SELF:Checked := VALUE ; END SET
 		END PROPERTY
 
+		/// <summary>
+		/// VFP Alignment: 0=Standard (button on left, text on right), 1=Right-justified (button on right, text on left).
+		/// Maps to <see cref="System.Windows.Forms.RadioButton.CheckAlign"/>.
+		/// </summary>
+		PROPERTY Alignment AS INT
+			GET ; RETURN IIF(SELF:CheckAlign == System.Drawing.ContentAlignment.MiddleRight, 1, 0) ; END GET
+			SET
+				SELF:CheckAlign := IIF(VALUE == 1, System.Drawing.ContentAlignment.MiddleRight, System.Drawing.ContentAlignment.MiddleLeft)
+			END SET
+		END PROPERTY
+
 		// WinForms RadioButton does not raise KeyPress automatically.
 		// Override so vfpKeyPress subscribers fire correctly.
 		PROTECTED OVERRIDE METHOD OnKeyPress(e AS System.Windows.Forms.KeyPressEventArgs) AS VOID

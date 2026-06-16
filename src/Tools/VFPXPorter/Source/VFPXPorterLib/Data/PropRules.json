@@ -11,7 +11,7 @@
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "AutoScaleMode": "System.Windows.Forms.AutoScaleMode.None",
     "Picture": "??<@Picture@>??",
-    "Icon": "System.Drawing.Icon{??<@Icon@>??}",
+    "Icon": "??<@Icon@>??",
     "ShowInTaskBar": "ShowInTaskbar",
     "ShowWindow": "ShowWindow",
     "ScaleMode": "",
@@ -61,6 +61,7 @@
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Alignment": "Alignment",
+    "BorderStyle": "BorderStyle",
     "Value": "!Value",
     "Style": "Style",
     "FontOutline": "",
@@ -72,6 +73,7 @@
     "Value": "!Value",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Alignment": "Alignment",
+    "BorderStyle": "BorderStyle",
     "Style": "Style",
     "ReadOnly": "ReadOnly",
     "FontOutline": "",
@@ -82,6 +84,7 @@
     "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
     "Caption": "Caption",
     "Alignment": "Alignment",
+    "BorderStyle": "BorderStyle",
     "Style": "Style",
     "WordWrap": "WordWrap",
     "FontName": "??<@FontName@>??",
@@ -112,6 +115,7 @@
     "KeyboardHighValue": "KeyboardHighValue",
     "KeyboardLowValue": "KeyboardLowValue",
     "Alignment": "Alignment",
+    "BorderStyle": "BorderStyle",
     "Format": "Format",
     "InputMask": "InputMask",
     "ReadOnly": "ReadOnly",
@@ -443,6 +447,9 @@
     "OLEDragPicture": "??<@OLEDragPicture@>??",
     "DragIcon": "??<@DragIcon@>??",
     "MouseIcon": "??<@MouseIcon@>??",
-    "FontName": "??<@FontName@>??"
+    "FontName": "??<@FontName@>??",
+    "DisabledForeColor": "VFPTools.ColorFromVFP(<@DisabledForeColor@>)",
+    "DisabledBackColor": "VFPTools.ColorFromVFP(<@DisabledBackColor@>)",
+    "RightToLeft": "VFPTools.RightToLeftFromVFP(<@RightToLeft@>)"
   }
 }

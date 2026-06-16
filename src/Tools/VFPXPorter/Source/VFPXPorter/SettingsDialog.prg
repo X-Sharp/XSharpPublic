@@ -38,8 +38,8 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:IgnoreErrors := SELF:checkIgnoreExportError:Checked
 			SELF:iniSettings:StoreInFolders := SELF:checkStoreInFolders:Checked
 			SELF:iniSettings:EmptyFolder := SELF:checkEmptyFolder:Checked
-			SELF:iniSettings:ConvertHandlers := SELF:checkConvertHandlers:Checked
-			SELF:iniSettings:ConvertUserDef := SELF:checkConvertUserDef:Checked
+			// SELF:iniSettings:ConvertHandlers := SELF:checkConvertHandlers:Checked
+			// SELF:iniSettings:ConvertUserDef := SELF:checkConvertUserDef:Checked
 			SELF:iniSettings:ConvertThisObject := SELF:checkConvertThisObject:Checked
 			SELF:iniSettings:ConvertStatement := SELF:checkStatement:Checked
 			SELF:iniSettings:ConvertStatementOnlyIfLast := SELF:checkStatementLast:Checked
@@ -84,8 +84,8 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:checkIgnoreExportError:Checked := SELF:iniSettings:IgnoreErrors
 			SELF:checkStoreInFolders:Checked := SELF:iniSettings:StoreInFolders
 			SELF:checkEmptyFolder:Checked := SELF:iniSettings:EmptyFolder
-			SELF:checkConvertHandlers:Checked := SELF:iniSettings:ConvertHandlers
-			SELF:checkConvertUserDef:Checked := SELF:iniSettings:ConvertUserDef
+			// SELF:checkConvertHandlers:Checked := SELF:iniSettings:ConvertHandlers
+			// SELF:checkConvertUserDef:Checked := SELF:iniSettings:ConvertUserDef
 			SELF:checkConvertThisObject:Checked := SELF:iniSettings:ConvertThisObject
 			SELF:checkStatement:Checked := SELF:iniSettings:ConvertStatement
 			SELF:checkStatementLast:Checked := SELF:iniSettings:ConvertStatementOnlyIfLast
@@ -146,20 +146,20 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:itemsButton:Text := "<<"
 			RETURN
 		PRIVATE METHOD checkConvertHandlers_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-			IF SELF:checkConvertHandlers:Checked
-				SELF:checkConvertThisObject.Checked := false
-			ENDIf
+			// IF SELF:checkConvertHandlers:Checked
+				// SELF:checkConvertThisObject.Checked := false
+			// ENDIf
 			RETURN
 		PRIVATE METHOD checkConvertThisObject_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-			if SELF:checkConvertThisObject.Checked
-				SELF:checkConvertHandlers:Checked := false
-				self:checkConvertUserDef:Checked := false
-			ENDIf
+			// if SELF:checkConvertThisObject.Checked
+				// SELF:checkConvertHandlers:Checked := false
+				// self:checkConvertUserDef:Checked := false
+			// ENDIf
 			RETURN
 		PRIVATE METHOD checkConvertUserDef_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-			IF SELF:checkConvertUserDef:Checked
-				SELF:checkConvertThisObject.Checked := false
-			ENDIf
+			// IF SELF:checkConvertUserDef:Checked
+				// SELF:checkConvertThisObject.Checked := false
+			// ENDIf
 			RETURN
 		PRIVATE METHOD editButton_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			VAR statementsFile := Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), XPorterSettings.StatementsFile )

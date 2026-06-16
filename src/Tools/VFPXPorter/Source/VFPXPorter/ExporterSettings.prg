@@ -44,10 +44,10 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY Items AS STRING GET SELF:iniSettings:ReadValue( "Folders", "Items" ) ;
 			SET SELF:iniSettings:WriteValue( "Folders", "Items", VALUE )
 
-		PROPERTY ConvertHandlers AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertHandlers", FALSE ) ;
-			SET SELF:iniSettings:WriteValue( "Items", "ConvertHandlers", VALUE )
-		PROPERTY ConvertUserDef AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertUserDef", FALSE ) ;
-			SET SELF:iniSettings:WriteValue( "Items", "ConvertUserDef", VALUE )
+		// PROPERTY ConvertHandlers AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertHandlers", FALSE ) ;
+			// SET SELF:iniSettings:WriteValue( "Items", "ConvertHandlers", VALUE )
+		// PROPERTY ConvertUserDef AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertUserDef", FALSE ) ;
+			// SET SELF:iniSettings:WriteValue( "Items", "ConvertUserDef", VALUE )
 		PROPERTY ConvertThisObject AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertThisObject", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Items", "ConvertThisObject", VALUE )
 		PROPERTY ConvertStatement AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertStatement", TRUE ) ;

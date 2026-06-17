@@ -1278,10 +1278,24 @@ BEGIN NAMESPACE VFPXPorterLib
                     //					thisObjectDecl:Append(Environment.NewLine)
                     // Get the first line of SourceCode
                     LOCAL line AS STRING
+                    // Now, we will put line 0, so after we continue at line 1
+                    VAR start := 1
                     IF cdeBlock:Source:Count > 0
                         line := cdeBlock:Source[0]
                         IF line:TrimStart():ToUpper():StartsWith("LPARAMETERS") .OR. line:TrimStart():ToUpper():StartsWith("PARAMETERS")
                             handlers:AppendLine( line )
+                            IF line:EndsWith(";") // Continued line ?
+                                VAR i := 1
+                                WHILE i < cdeBlock:Source:Count
+                                    line := cdeBlock:Source[i]
+                                    handlers:AppendLine( line )
+                                    IF !line:EndsWith(";")
+                                        start := i+1 // Skip the lines we have already put
+                                        EXIT
+                                    ENDIF
+                                    i++
+                                END
+                            ENDIF
                             handlers:AppendLine( thisObjectDecl:ToString() )
                         ELSE
                             handlers:AppendLine( thisObjectDecl:ToString() )
@@ -1289,7 +1303,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         ENDIF
                     ENDIF
                     //
-                    FOR VAR i:= 1 TO cdeBlock:Source:Count-1
+                    FOR VAR i:= start TO cdeBlock:Source:Count-1
                         line := cdeBlock:Source[i]
                         IF ( i == cdeBlock:Source:Count-1 )
                             IF ( line == "ENDPROC" )

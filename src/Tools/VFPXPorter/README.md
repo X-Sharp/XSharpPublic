@@ -1,4 +1,4 @@
-# FabVFPXPorter
+# VFPXPorter
 ## VFP XPorter
 The goal is to ease the move of your VFP Application in .NET, using a language you already know.
 1. Minimum changes to your code during export

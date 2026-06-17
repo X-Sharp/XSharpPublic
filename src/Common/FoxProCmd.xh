@@ -162,6 +162,56 @@
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
 
+#xcommand WAIT <msg> [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => __VfpWait(<msg>, <.win.>, -1, -1, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT <msg> <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => __VfpWait(<msg>, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT <msg> [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => __VfpWait(<msg>, <.win.>, -1, -1, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT <msg> <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => __VfpWait(<msg>, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT <msg> TO <v> [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => <V> := __VfpWait(<msg>, <.win.>, -1, -1, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT <msg> TO <v> <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => <V> := __VfpWait(<msg>, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT <msg> TO <v> [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => <V> := __VfpWait(<msg>, <.win.>, -1, -1, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT <msg> TO <v> <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => <V> := __VfpWait(<msg>, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => __VfpWait(NULL, <.win.>, -1, -1, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => __VfpWait(NULL, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => __VfpWait(NULL, <.win.>, -1, -1, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => __VfpWait(NULL, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT TO <v> [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => <V> := __VfpWait(NULL, <.win.>, -1, -1, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT TO <v> <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] ;
+    => <V> := __VfpWait(NULL, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, -1)
+
+#xcommand WAIT TO <v> [<win:WINDOW>] [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => <V> := __VfpWait(NULL, <.win.>, -1, -1, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT TO <v> <win:WINDOW> AT <nRow>, <nCol> [<now:NOWAIT>] [<nclr:NOCLEAR>] TIMEOUT <secs> ;
+    => <V> := __VfpWait(NULL, .T., <nRow>, <nCol>, <.now.>, <.nclr.>, <secs>)
+
+#xcommand WAIT CLEAR => __VfpWaitClear()
+
 // Commands with IN clause, commands without are defined in DBCMD.XH
 
 #command REINDEX           IN <(a)>          => (<(a)>) -> (OrdListRebuild())

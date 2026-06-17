@@ -163,3 +163,60 @@ FUNCTION __VfpDir(cCommand AS STRING) AS VOID
         NOP
     ENDIF
 RETURN
+
+FUNCTION __VfpWait(uMsg AS USUAL, lWindow AS LOGIC, nRow AS INT, nCol AS INT, ;
+    lNoWait AS LOGIC, lNoClear AS LOGIC, nTimeout AS REAL8) AS STRING
+    LOCAL cMsg AS STRING
+
+    IF !Environment.UserInteractive
+        RETURN ""
+    ENDIF
+    IF uMsg == NULL
+        cMsg := IIF(lWindow, "", "Press any key to continue...")
+    ELSE
+        cMsg := AsString(uMsg)
+    ENDIF
+
+    IF Win32.GetConsoleWindow() != IntPtr.Zero
+        IF !String.IsNullOrEmpty(cMsg)
+            Console.WriteLine()
+            Console.Write(cMsg)
+        ENDIF
+        IF lNoWait
+            RETURN ""
+        ENDIF
+        RETURN __VfpWaitForKey(nTimeout)
+    ENDIF
+
+    IF lNoWait
+        RETURN ""
+    ENDIF
+    LOCAL nMsTimeout AS LONG
+    nMsTimeout := IIF(nTimeout > 0, (LONG)(nTimeout * 1000), 0)
+    VfpUIService.Provider:ShowMessageBox(cMsg, 0, "Wait", nMsTimeout)
+    RETURN ""
+
+function __VfpWaitForKey(nTimeout as real8) as string
+    local info as ConsoleKeyInfo
+
+    try
+        if nTimeout <= 0
+            info := Console.ReadKey(TRUE)
+            return info:KeyChar:ToString()
+        endif
+
+        var nEndTicks := Environment.TickCount + (int)(nTimeout * 1000)
+        do while Environment.TickCount < nEndTicks
+            if Console.KeyAvailable
+                info := Console.ReadKey(TRUE)
+                return info:KeyChar:ToString()
+            endif
+            System.Threading.Thread.Sleep(50)
+        enddo
+        return ""
+    catch as System.InvalidOperationException
+        return ""
+    end try
+
+function __VfpWaitClear() as void
+    return

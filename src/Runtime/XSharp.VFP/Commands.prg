@@ -164,14 +164,16 @@ FUNCTION __VfpDir(cCommand AS STRING) AS VOID
     ENDIF
 RETURN
 
-FUNCTION __VfpWait(uMsg AS USUAL, lWindow AS LOGIC, nRow AS INT, nCol AS INT, ;
-    lNoWait AS LOGIC, lNoClear AS LOGIC, nTimeout AS REAL8) AS STRING
+FUNCTION __VfpWait(uMsg AS USUAL, lWindow AS LOGIC, uRow AS USUAL, uCol AS USUAL, ;
+    lNoWait AS LOGIC, lNoClear AS LOGIC, uTimeout AS USUAL) AS STRING
+
     LOCAL cMsg AS STRING
 
     IF !Environment.UserInteractive
         RETURN ""
     ENDIF
-    IF uMsg == NULL
+
+    IF IsNil(uMsg)
         cMsg := IIF(lWindow, "", "Press any key to continue...")
     ELSE
         cMsg := AsString(uMsg)
@@ -185,38 +187,40 @@ FUNCTION __VfpWait(uMsg AS USUAL, lWindow AS LOGIC, nRow AS INT, nCol AS INT, ;
         IF lNoWait
             RETURN ""
         ENDIF
-        RETURN __VfpWaitForKey(nTimeout)
+        RETURN __VfpWaitForKey(uTimeout)
     ENDIF
 
     IF lNoWait
         RETURN ""
     ENDIF
     LOCAL nMsTimeout AS LONG
-    nMsTimeout := IIF(nTimeout > 0, (LONG)(nTimeout * 1000), 0)
+    nMsTimeout := IIF(IsNil(uTimeout), 0, (LONG)((REAL8) uTimeout * 1000))
     VfpUIService.Provider:ShowMessageBox(cMsg, 0, "Wait", nMsTimeout)
     RETURN ""
 
-function __VfpWaitForKey(nTimeout as real8) as string
-    local info as ConsoleKeyInfo
+FUNCTION __VfpWaitForKey(uTimeout AS USUAL) AS STRING
+    LOCAL info AS ConsoleKeyInfo
 
-    try
-        if nTimeout <= 0
+    TRY
+        IF IsNil(uTimeout)
             info := Console.ReadKey(TRUE)
-            return info:KeyChar:ToString()
-        endif
+            Console.WriteLine()
+            RETURN info:KeyChar:ToString()
+        ENDIF
 
-        var nEndTicks := Environment.TickCount + (int)(nTimeout * 1000)
-        do while Environment.TickCount < nEndTicks
-            if Console.KeyAvailable
+        VAR nEndTicks := Environment.TickCount + (INT)((REAL8) uTimeout * 1000)
+        DO WHILE Environment.TickCount < nEndTicks
+            IF Console.KeyAvailable
                 info := Console.ReadKey(TRUE)
-                return info:KeyChar:ToString()
-            endif
+                Console.WriteLine()
+                RETURN info:KeyChar:ToString()
+            ENDIF
             System.Threading.Thread.Sleep(50)
-        enddo
-        return ""
-    catch as System.InvalidOperationException
-        return ""
-    end try
+        ENDDO
+        RETURN ""
+    CATCH AS System.InvalidOperationException
+        RETURN ""
+    END TRY
 
 function __VfpWaitClear() as void
     return

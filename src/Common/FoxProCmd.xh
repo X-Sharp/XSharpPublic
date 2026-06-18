@@ -162,6 +162,21 @@
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
 
+// WAIT
+#xcommand WAIT <msg> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT <msg> TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT CLEAR => __VfpWaitClear()
+
 // Commands with IN clause, commands without are defined in DBCMD.XH
 
 #command REINDEX           IN <(a)>          => (<(a)>) -> (OrdListRebuild())

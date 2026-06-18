@@ -138,22 +138,43 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
             SELF:ActiveForm := frm
         ENDIF
 
+    // -- Constructors ---------------------------------------------------
     CONSTRUCTOR()
         // The XPorter is the same for FormSet and Form with controls, so the generated code will use Controls
         SELF:Controls := List<OBJECT>{ }
         SELF:_visible := FALSE
-        SELF:OnVFPInit()
         RETURN
 
-#include "InitCall.xh"
+    PRIVATE _initParamsList := USUAL[]{0} AS USUAL[]
 
+    CONSTRUCTOR( args PARAMS USUAL[] )
+	    // Init is Called at LoadTime
+	    SELF:_initParamsList := args
+        SELF()
+
+    PRIVATE _VFPInit AS VFPOverride
+    /// <summary>
+    /// Name of the VFP method called when the FormSet is shown for the first time. The method receives the constructor argument list.
+    /// </summary>
+    [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Init handling method. Occurs when an object is created.")];
+    [System.ComponentModel.DefaultValue(NULL)];
+    PROPERTY vfpInit AS STRING GET _VFPInit?:SendTo SET Set_Init( VFPOverride{SELF, value} )
+
+    METHOD Set_Init( methodCall AS VFPOverride ) AS VOID
+        SELF:_VFPInit := methodCall
 
     /// <summary>
     /// Show all forms in the set. Respects each form's WindowType (modal/modeless).
     /// Modeless forms (WindowType=0) are shown non-blocking first; modal forms
     /// (WindowType=1) call ShowDialog and block ï¿½ matching VFP FormSet behaviour.
     /// </summary>
+    PRIVATE _initCalled AS LOGIC
+
     METHOD Show() AS VOID STRICT
+        IF !_initCalled .AND. SELF:_VFPInit != NULL
+            _initCalled := TRUE
+            SELF:_VFPInit:Call( SELF:_initParamsList )
+        ENDIF
         // Pass 1: show all modeless forms without blocking
         FOREACH frm AS Form IN SELF:Forms
             IF frm:MDIForm .OR. frm:WindowType == 0

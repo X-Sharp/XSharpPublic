@@ -38,17 +38,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "Headers/VFPButtonImage.xh"
 
 		/// <summary>
-		/// VFP Alignment: 0=Standard (check on left, text on right), 1=Right-justified (check on right, text on left).
-		/// Maps to <see cref="System.Windows.Forms.CheckBox.CheckAlign"/>.
-		/// </summary>
-		NEW PROPERTY Alignment AS INT
-			GET ; RETURN IIF(SELF:CheckAlign == System.Drawing.ContentAlignment.MiddleRight, 1, 0) ; END GET
-			SET
-				SELF:CheckAlign := IIF(VALUE == 1, System.Drawing.ContentAlignment.MiddleRight, System.Drawing.ContentAlignment.MiddleLeft)
-			END SET
-		END PROPERTY
-
-		/// <summary>
 		/// When <c>.T.</c>, centres the check mark horizontally within the control (<c>CheckAlign = MiddleCenter</c>).<br/>
 		/// When <c>.F.</c> (default), the check mark is left-aligned (<c>CheckAlign = MiddleLeft</c>).
 		/// </summary>

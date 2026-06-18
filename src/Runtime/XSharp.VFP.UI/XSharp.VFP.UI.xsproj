@@ -247,6 +247,7 @@
     <None Include="Headers\MousePointer.xh" />
     <None Include="Headers\TextControlProperties.xh" />
     <None Include="Headers\Tooltips.xh" />
+    <None Include="Headers\VFPButtonImage.xh" />
     <None Include="Headers\VFPMenuSupport.xh" />
     <None Include="Headers\VFPControl.xh" />
     <None Include="Headers\VFPGroup.xh" />

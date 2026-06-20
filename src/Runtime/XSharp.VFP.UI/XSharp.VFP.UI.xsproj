@@ -117,6 +117,7 @@
     <Compile Include="Generated\XMLAdapter.generated.prg" />
     <Compile Include="Generated\XMLField.generated.prg" />
     <Compile Include="Generated\XMLTable.generated.prg" />
+    <Compile Include="InputBoxForm.prg" />
     <Compile Include="MaskProvider.prg" />
     <Compile Include="Application.prg" />
     <Compile Include="Checkbox.prg" />

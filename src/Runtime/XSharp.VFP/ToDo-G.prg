@@ -40,13 +40,6 @@ FUNCTION GetObject( uType , cClassName) AS OBJECT
     // RETURN NULL_OBJECT
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getprinter/*" />
-[FoxProFunction("GETPRINTER", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION GetPrinter( ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getresultset/*" />
 [FoxProFunction("GETRESULTSET", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION GetResultSet( ) AS LONG

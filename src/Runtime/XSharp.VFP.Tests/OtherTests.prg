@@ -236,9 +236,60 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                     File.Delete(cTempFile)
                 ENDIF
             END TRY
+        END METHOD
 
+        [Fact];
+        METHOD GetPrinterHeadlessReturnsEmpty() AS VOID
+            VAR oPrev := VfpUIService.Provider
+            TRY
+                VfpUIService.Provider := HeadlessUIProvider{}
+                Assert.Equal("", GetPrinter())
+            FINALLY
+                VfpUIService.Provider := oPrev
+            END TRY
+        END METHOD
 
+        [Fact];
+        METHOD PutFileHeadlessReturnsEmpty() AS VOID
+            VAR oPrev := VfpUIService.Provider
+            TRY
+                VfpUIService.Provider := HeadlessUIProvider{}
+                Assert.Equal("", PutFile("Save as:", "test.txt", "TXT"))
+            FINALLY
+                VfpUIService.Provider := oPrev
+            END TRY
+        END METHOD
 
+        [Fact];
+        METHOD LocFileExistingFileReturnsPath() AS VOID
+            VAR cTemp := System.IO.Path.GetTempFileName()
+            TRY
+                Assert.Equal(cTemp, LocFile(cTemp))
+            FINALLY
+                System.IO.File.Delete(cTemp)
+            END TRY
+        END METHOD
+
+        [Fact];
+        METHOD LocFileNotFoundHeadlessThrows() AS VOID
+            VAR oPrev := VfpUIService.Provider
+            TRY
+                VfpUIService.Provider := HeadlessUIProvider{}
+                Assert.Throws<XSharp.Error>({ => LocFile("C:\\nonexistent_xyz_12345.zzz") })
+            FINALLY
+                VfpUIService.Provider := oPrev
+            END TRY
+        END METHOD
+
+        [Fact];
+        METHOD InputBoxHeadlessReturnsCancelValue() AS VOID
+            VAR oPrev := VfpUIService.Provider
+            TRY
+                VfpUIService.Provider := HeadlessUIProvider{}
+                Assert.Equal("CANCELLED", InputBox("Prompt", "Title", "default", 0, "TIMEOUT", "CANCELLED"))
+            FINALLY
+                VfpUIService.Provider := oPrev
+            END TRY
         END METHOD
 	END CLASS
 

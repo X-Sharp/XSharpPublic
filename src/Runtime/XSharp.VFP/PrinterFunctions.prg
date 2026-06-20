@@ -53,3 +53,8 @@ FUNCTION PCol() AS LONG
 [FoxProFunction("PROW", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION PRow() AS LONG
     RETURN __FoxPrinterCol
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getprinter/*" />
+[FoxProFunction("GETPRINTER", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION GetPrinter() AS STRING
+    RETURN VfpUIService.Provider:GetPrinter()

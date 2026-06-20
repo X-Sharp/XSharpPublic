@@ -275,6 +275,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
             RETURN {}
         END METHOD
 
+        PUBLIC METHOD GetPrinter() AS STRING
+            RETURN VfpWin32UI.ShowPrintSetup(IntPtr.Zero)
+        END METHOD
+
         METHOD LoadPicture(cFileName AS STRING) AS OBJECT
             LOCAL oImage AS OBJECT
 
@@ -351,6 +355,32 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
             RETURN ""
         END METHOD
+
+        PUBLIC METHOD PutFile(cCustomText AS STRING, cFileName AS STRING, cFileExtensions AS STRING) AS STRING
+            VAR oDlg := SaveFileDialog{}
+
+            IF !String.IsNullOrEmpty(cCustomText)
+                oDlg:Title := cCustomText
+            ENDIF
+
+            IF !String.IsNullOrEmpty(cFileName)
+                oDlg:FileName := cFileName
+            ENDIF
+
+            oDlg:Filter := SELF:ParsePutFileFilter(cFileExtensions)
+
+            VAR cDefExt := SELF:FirstExtension(cFileExtensions)
+            IF !String.IsNullOrEmpty(cDefExt)
+                oDlg:DefaultExt   := cDefExt
+                oDlg:AddExtension := TRUE
+            ENDIF
+
+            IF oDlg:ShowDialog() == DialogResult.OK
+                RETURN oDlg:FileName
+            ENDIF
+
+            RETURN ""
+        END METHOD
         #endregion
 
         #region Private Helper: Filter Parser
@@ -414,6 +444,44 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
 
             RETURN sb:ToString()
+        END METHOD
+
+        // Filter syntax of PUTFILE (just extensions, no descriptions):
+        //   ""        -> all files
+        //   "PRG"     -> just .prg
+        //   ";"       -> file with no extension
+        //   wilcards (*, ?) are allowed
+        PRIVATE METHOD ParsePutFileFilter(cExt AS STRING) AS STRING
+            IF String.IsNullOrEmpty(cExt)
+                RETURN "All Files (*.*)|*.*"
+            ENDIF
+
+            VAR aExts := cExt:Split(<CHAR>{c';', c'|'})
+            VAR cPatterns := ""
+            FOREACH cRaw AS STRING IN aExts
+                VAR cE  := cRaw:Trim()
+                VAR cPat := IIF(cE:Length == 0, "*.", "*." + cE)
+                cPatterns += IIF(cPatterns:Length > 0, ";", "") + cPat
+            NEXT
+
+            IF cPatterns:Length == 0
+                RETURN "All Files (*.*)|*.*"
+            ENDIF
+            RETURN "Files (" + cPatterns + ")|" + cPatterns
+        END METHOD
+
+        PRIVATE METHOD FirstExtension(cExt AS STRING) AS STRING
+            IF String.IsNullOrEmpty(cExt)
+                RETURN ""
+            ENDIF
+            VAR aExts := cExt:Split(<CHAR>{c';', c'|'})
+            FOREACH cRaw AS STRING IN aExts
+                VAR cE := cRaw:Trim()
+                IF cE:Length > 0 .AND. cE:IndexOfAny(<CHAR>{c'*', c'?'}) < 0
+                    RETURN cE
+                ENDIF
+            NEXT
+            RETURN ""
         END METHOD
         #endregion
 
@@ -500,6 +568,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END TRY
 
             return nResult
+        END METHOD
+
+        PUBLIC METHOD InputBox(cInputPrompt AS STRING, cDialogCaption AS STRING, cDefaultValue AS STRING, ;
+                               nTimeout AS LONG, cTimeoutValue AS STRING, cCancelValue AS STRING) AS STRING
+            BEGIN USING VAR oForm := InputBoxForm{cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, cCancelValue}
+                oForm:ShowDialog()
+                RETURN oForm:GetResult()
+            END USING
         END METHOD
     END CLASS
 

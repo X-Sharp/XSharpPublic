@@ -636,7 +636,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			//
 			LOCAL converter AS CodeConverter
-			converter := CodeConverter{settings:KeepOriginal, settings:ConvertThisObject, settings:ConvertStatement, settings:ConvertStatementOnlyIfLast }
+			converter := CodeConverter{settings:KeepOriginal, settings:ConvertThisObject, settings:ConvertStatement, settings:ConvertStatementOnlyIfLast, settings:ExpandWithEndWith }
 			converter:Statements := sttmnts
 			converter:VFPElements := vfpElt
 			converter:ColorProperties := colorProps

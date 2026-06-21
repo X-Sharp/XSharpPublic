@@ -22,6 +22,7 @@ BEGIN NAMESPACE VFPXPorterLib
 		PRIVATE _convertThisObject AS LOGIC
 		PRIVATE _convertStatement AS LOGIC
 		PRIVATE _convertStatementOnlyIfLast AS LOGIC
+		PRIVATE _expandWithEndWith AS LOGIC
 		PRIVATE _lineContent AS SortedDictionary<INT,STRING>
 
 
@@ -32,11 +33,12 @@ BEGIN NAMESPACE VFPXPorterLib
 		PROPERTY ColorProperties AS List<STRING> AUTO
 
 
-		CONSTRUCTOR( ko AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC )
+		CONSTRUCTOR( ko AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC, expandWith := TRUE AS LOGIC )
 			SELF:_keepOriginal := ko
 			SELF:_convertThisObject := cvtThisObject
 			SELF:_convertStatement := cvtStatement
 			SELF:_convertStatementOnlyIfLast := cvtOnlyIfLast
+			SELF:_expandWithEndWith := expandWith
 			// We will store the line Number where we need to add comments
 			// These are sorted in Reverse Order ( Greatest -> Lowest )
 			SELF:_lineContent := SortedDictionary<INT,STRING>{ ReverseInt{} }
@@ -66,6 +68,9 @@ BEGIN NAMESPACE VFPXPorterLib
 			// ENDIF
 			SELF:_lineContent:Clear()
 			//
+			IF SELF:_expandWithEndWith
+				SELF:ExpandWithEndWith()
+			ENDIF
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -88,6 +93,9 @@ BEGIN NAMESPACE VFPXPorterLib
 		PUBLIC METHOD ProcessProcedure( sourceCode AS STRING, procedureName AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
 			SELF:CheckForProcedureName(procedureName)
+			IF SELF:_expandWithEndWith
+				SELF:ExpandWithEndWith()
+			ENDIF
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -99,6 +107,9 @@ BEGIN NAMESPACE VFPXPorterLib
 		// logic that ProcessEvent uses. Caller sets Source on return.
 		PUBLIC METHOD ProcessMenuCode( sourceCode AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
+			IF SELF:_expandWithEndWith
+				SELF:ExpandWithEndWith()
+			ENDIF
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -109,6 +120,46 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 
 
+
+		// Expands WITH...ENDWITH blocks: replaces leading-dot member references with the
+		// fully qualified object path from the WITH expression. Handles nested WITH blocks
+		// by maintaining a stack of object prefixes. The WITH/ENDWITH lines themselves are
+		// commented out but preserved for readability.
+		PRIVATE METHOD ExpandWithEndWith() AS VOID
+			VAR withStack := Stack<STRING>{}
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				VAR line := SELF:Source[i]
+				VAR trimmed := line:TrimStart()
+				VAR indent := line:Substring(0, line:Length - trimmed:Length)
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. trimmed:StartsWith("//")
+					LOOP
+				ENDIF
+				VAR upper := trimmed:ToUpperInvariant()
+				IF StartsWithKeyword(upper, "WITH")
+					IF upper:Length > 4
+						VAR originalExpr := trimmed:Substring(4):TrimStart()
+						VAR resolvedExpr := originalExpr
+						IF resolvedExpr:StartsWith(".") .AND. withStack:Count > 0
+							resolvedExpr := withStack:Peek() + resolvedExpr
+						ENDIF
+						withStack:Push(resolvedExpr)
+						SELF:Source[i] := indent + "// WITH " + originalExpr
+					ENDIF
+					LOOP
+				ENDIF
+				IF upper == "ENDWITH" .OR. StartsWithKeyword(upper, "ENDWITH") .OR. ;
+				   upper == "END WITH" .OR. StartsWithKeyword(upper, "END WITH")
+					IF withStack:Count > 0
+						SELF:Source[i] := indent + "// " + trimmed
+						withStack:Pop()
+					ENDIF
+					LOOP
+				ENDIF
+				IF withStack:Count > 0 .AND. trimmed:StartsWith(".")
+					VAR prefix := withStack:Peek()
+					SELF:Source[i] := indent + prefix + trimmed
+				ENDIF
+			NEXT
 
 			// We will enumerate the lines of source code
 			// and change the "perspective" : FoxPro handler is from the Control perspective; .NET are from the Form perspective

@@ -166,6 +166,7 @@ CLASS XPorterSettings
         SELF:AppendToSolution := FALSE // New Solution by default
         SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
         SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
+        SELF:ExpandWithEndWith := TRUE
         SELF:SolutionName := ""
 		RETURN
 
@@ -320,6 +321,12 @@ CLASS XPorterSettings
 	/// <value></value>
 	PROPERTY GenerateOnlyHandledEvent AS LOGIC AUTO
 
+	/// <summary>
+	/// Expand WITH...ENDWITH blocks by replacing dotted member references with fully qualified
+	/// object paths. Works around X# compiler issues with nested WITH blocks.
+	/// The original WITH/ENDWITH lines are kept as comments.
+	/// </summary>
+	PROPERTY ExpandWithEndWith AS LOGIC AUTO
 
 END CLASS
 END NAMESPACE // VFPXPorterLib

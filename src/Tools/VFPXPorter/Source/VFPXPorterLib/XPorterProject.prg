@@ -395,7 +395,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                     LOCAL colorProps AS List<STRING>
                                     colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
                                     // Now, copy
-                                    VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast }
+                                    VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast, SELF:Settings:ExpandWithEndWith }
                                     converter:Statements := sttmnts
                                     converter:ColorProperties := colorProps
                                     converter:ProcessProcedure( File.ReadAllText(orgFile), Path.GetFileNameWithoutExtension( orgFile ) )

@@ -242,7 +242,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 NEXT
                 LOCAL colorProps AS List<STRING>
                 colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
-                SELF:_menuConverter := CodeConverter{ FALSE, TRUE, TRUE, FALSE }
+                SELF:_menuConverter := CodeConverter{ FALSE, TRUE, TRUE, FALSE, SELF:Settings:ExpandWithEndWith }
                 SELF:_menuConverter:Statements := sttmnts
                 SELF:_menuConverter:VFPElements := menuElts
                 SELF:_menuConverter:ColorProperties := colorProps

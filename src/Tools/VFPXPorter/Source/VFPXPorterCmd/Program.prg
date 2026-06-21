@@ -129,6 +129,11 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:RemoveSet := TRUE
 			ELSEIF String.Compare(arg, "-noRemoveSet", TRUE) == 0
 				settings:RemoveSet := FALSE
+			// ── ExpandWithEndWith ─────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-expandWithEndWith", TRUE) == 0
+				settings:ExpandWithEndWith := TRUE
+			ELSEIF String.Compare(arg, "-noExpandWithEndWith", TRUE) == 0
+				settings:ExpandWithEndWith := FALSE
 			ELSE
 				Console.ForegroundColor := ConsoleColor.Yellow
 				Console.WriteLine("Warning: unknown argument '" + arg + "'")

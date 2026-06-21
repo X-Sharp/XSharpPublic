@@ -38,6 +38,7 @@ FUNCTION Usage AS VOID
 	Console.WriteLine("  -keepFoxProEventName / -no...   Keep FoxPro event name in handlers.       [true]")
 	Console.WriteLine("  -generateOnlyHandledEvent / -no... Only emit events in EventRules.json.  [false]")
 	Console.WriteLine("  -removeSet           / -no...   Remove Set_ prefix from event handlers.   [true]")
+	Console.WriteLine("  -expandWithEndWith   / -no...   Expand WITH...ENDWITH (nested WITH fix).  [true]")
 	Console.WriteLine("  -nameUDF             / -no...   Use XPorter-built name for UDF methods.   [false]")
 	Console.WriteLine("  -modifier:""<mod>""               Field modifier: PUBLIC (default) | PROTECTED | PRIVATE.")
 	Console.WriteLine()

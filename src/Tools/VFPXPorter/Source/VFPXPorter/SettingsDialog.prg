@@ -52,6 +52,7 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:KeepFoxProEventName := SELF:checkKeepFoxProEventName:Checked
 			SELF:iniSettings:RessourcesFolder := SELF:ressourcesTextBox:Text
             SELF:iniSettings:GenerateOnlyHandledEvent := SELF:checkGenerateOnlyHandledEvent:Checked
+            SELF:iniSettings:ExpandWithEndWith := SELF:checkExpandWithEndWith:Checked
 
             SELF:iniSettings:SeparateLibraryProjects := SELF:checkLibraryAsProject:Checked
             SELF:iniSettings:PlaceSolutionInSameDirectory := SELF:checkSlnWithProject:Checked
@@ -97,6 +98,7 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:checkPrefixEventInForm:Checked := SELF:iniSettings:PrefixEvent
 			SELF:checkKeepFoxProEventName:Checked := SELF:iniSettings:KeepFoxProEventName
             SELF:checkGenerateOnlyHandledEvent:Checked := SELF:iniSettings:GenerateOnlyHandledEvent
+            SELF:checkExpandWithEndWith:Checked := SELF:iniSettings:ExpandWithEndWith
 
             SELF:checkLibraryAsProject:Checked := SELF:iniSettings:SeparateLibraryProjects
             SELF:checkSlnWithProject:Checked := SELF:iniSettings:PlaceSolutionInSameDirectory

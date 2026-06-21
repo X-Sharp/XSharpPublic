@@ -166,7 +166,7 @@ CLASS XPorterSettings
         SELF:AppendToSolution := FALSE // New Solution by default
         SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
         SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
-        SELF:ExpandWithEndWith := TRUE
+        SELF:ExpandWithEndWith := FALSE
         SELF:SolutionName := ""
 		RETURN
 

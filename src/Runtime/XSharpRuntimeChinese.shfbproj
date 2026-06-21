@@ -69,7 +69,7 @@
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>3.0.0.6</HelpFileVersion>
+    <HelpFileVersion>3.0.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>

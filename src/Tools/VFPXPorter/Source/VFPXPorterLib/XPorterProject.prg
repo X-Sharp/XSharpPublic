@@ -57,8 +57,6 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY CurrentFileName AS STRING AUTO GET PRIVATE SET
 
-        PROPERTY SolutionPath AS STRING AUTO
-
 
         CONSTRUCTOR( filePath AS STRING, destPath AS STRING )
             //
@@ -515,7 +513,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 File.WriteAllText( vfpxporterPath, headerText )
                             ENDIF
                             // And Don't forget the Starting block
-                            IF SELF:Project:Main != NULL .AND. SELF:Settings:OutputType == ProjectType.WindowsExe
+                            IF SELF:Project:Main != NULL
                                 // The File to be created
                                 LOCAL destFile AS STRING
                                 destFile := Path.GetFileName( SELF:StartBlockFile )
@@ -585,8 +583,8 @@ BEGIN NAMESPACE VFPXPorterLib
 
         // Generate a MSBuild file
         PRIVATE METHOD GenerateSolution( stdDef AS STRING ) AS VOID
+            LOCAL destFile AS STRING
             LOCAL xsLibs := NULL AS VSProject
-
             // First, do we have any "Libraries" ?
             IF SELF:GeneratedLibFiles:Count > 0
                 xsLibs := VSProject{ "ClassLibraries" }
@@ -610,19 +608,17 @@ BEGIN NAMESPACE VFPXPorterLib
                     ENDIF
                 NEXT
                 //
-                VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj")
+                destFile := Path.Combine( SELF:outputPath, "ClassLibraries" )
+                destFile := Path.ChangeExtension( destFile, "xsproj")
                 // Save the MSBuild file for the Libraries
-                xsLibs:Save( libProjPath, stdDef )
+                xsLibs:Save( destFile, stdDef )
             ENDIF
-
             // Now the Main Project
-            VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )
-            VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj")
-
+            destFile := Path.GetFileName( SELF:pjxFilePath )
+            destFile := Path.Combine( SELF:outputPath, destFile )
+            destFile := Path.ChangeExtension( destFile, "xsproj")
             // The imported Project : We will add "App" at the end of the ProjectName to avoid conflicts in the Name Property
-            VAR xsProj := VSProject{ projectName }
-            xsProj:ProjectType := SELF:Settings:OutputType
-
+            VAR xsProj := VSProject{ Path.GetFileNameWithoutExtension( SELF:pjxFilePath )}
             SELF:AddStandardReferences( xsProj )
             //
             FOREACH refFile AS Reference IN SELF:ReferenceFiles
@@ -646,53 +642,18 @@ BEGIN NAMESPACE VFPXPorterLib
                 xsProj:ProjectReferenceList:Add( xsLibs )
             ENDIF
             // Save the MSBuild file for the "main" Project
-            xsProj:Save( projectPath, stdDef )
-
-            LOCAL relativeProjPath AS STRING
-            IF SELF:Settings:PlaceSolutionInSameDirectory
-                relativeProjPath := projectName + ".xsproj"
-            ELSE
-                relativeProjPath := Path.Combine(projectName, projectName + ".xsproj")
-            ENDIF
-
+            xsProj:Save( destFile, stdDef )
             // Now the Solution
             VAR xsSolution := VSSolution{}
-
-            LOCAL solutionBasePath AS STRING
-            IF String.IsNullOrWhiteSpace(SELF:SolutionPath)
-                solutionBasePath := String.Empty
-            ELSE
-                solutionBasePath := SELF:SolutionPath:TrimEnd(Path.DirectorySeparatorChar)
-            ENDIF
-
-            LOCAL solutionName AS STRING
-            IF !String.IsNullOrWhiteSpace(SELF:Settings:SolutionName)
-                solutionName := SELF:Settings:SolutionName
-            ELSE
-                solutionName := Path.GetFileName(solutionBasePath)
-            ENDIF
-
-            VAR solutionFile := Path.Combine(solutionBasePath, solutionName + ".sln")
-
-            // If user checked to Append to existing Solution, load it
-            IF SELF:Settings:AppendToSolution .AND. File.Exists( solutionFile )
-                xsSolution:Load( solutionFile )
-            ENDIF
-
-            VAR existing := xsSolution:Projects:Find({ p => String.Compare(p:Name, xsProj:Name, TRUE) == 0 })
-            IF existing != NULL
-                xsSolution:Projects:Remove(existing)
-            ENDIF
-            
-            xsProj:RelativePath := relativeProjPath
             xsSolution:Projects:Add( xsProj )
-
-            IF xsLibs != NULL .AND. !xsSolution:Projects:Any({ p => String.Compare(p:Name, xsLibs:Name, TRUE) == 0 })
+            IF xsLibs != NULL
                 xsSolution:Projects:Add( xsLibs )
             ENDIF
-
-            xsSolution:Save( solutionFile )
-
+            destFile := Path.GetFileName( SELF:pjxFilePath )
+            destFile := Path.Combine( SELF:outputPath, destFile )
+            destFile := Path.ChangeExtension( destFile, "sln")
+            xsSolution:Save( destFile )
+            //
             RETURN
 
             // Backup the PJX Items : Create an XML File with Items info, and export the associated Code

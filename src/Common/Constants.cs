@@ -18,8 +18,8 @@ namespace XSharp
 #else
         internal const string Version = FileVersion;
 #endif
-        internal const string FileVersion = "3.0.0.6";
-        internal const string ProductVersion = "XSharp Gaia  (\u0393\u03B1\u1FD6\u03B1) 3.0 RC3";
+        internal const string FileVersion = "3.0.1.0";
+        internal const string ProductVersion = "XSharp Gaia  (\u0393\u03B1\u1FD6\u03B1) 3.0 Release";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2026";
 

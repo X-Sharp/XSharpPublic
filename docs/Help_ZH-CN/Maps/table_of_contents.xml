@@ -1481,9 +1481,6 @@
           <topicref type="topic" id="449647588802199" build="ALL" modified="2024-06-29T00:59:57.953Z" icon="0" href="command_VAR">
             <caption translate="true">VAR 语句</caption>
           </topicref>
-          <topicref type="topic" id="460032363897568" build="ALL" modified="2026-06-10T13:10:35.016Z" icon="0" href="Tuples">
-            <caption translate="true">TUPLE type and expression</caption>
-          </topicref>
         </topicref>
       </topicref>
       <topicref type="topic" id="423890338204503" build="ALL" modified="2024-06-30T00:59:05.890Z" icon="0" href="Expressions">

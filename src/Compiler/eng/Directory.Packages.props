@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!-- Versions used by several individual references below -->
     <RoslynDiagnosticsNugetPackageVersion>3.11.0-beta1.24081.1</RoslynDiagnosticsNugetPackageVersion>
-    <MicrosoftCodeAnalysisNetAnalyzersVersion>8.0.0-preview.23468.1</MicrosoftCodeAnalysisNetAnalyzersVersion>
+    <MicrosoftCodeAnalysisNetAnalyzersVersion>9.0.0</MicrosoftCodeAnalysisNetAnalyzersVersion>
     <MicrosoftCodeAnalysisTestingVersion>1.1.2-beta1.24121.1</MicrosoftCodeAnalysisTestingVersion>
     <MicrosoftVisualStudioExtensibilityTestingVersion>0.1.187-beta</MicrosoftVisualStudioExtensibilityTestingVersion>
     <_BasicReferenceAssembliesVersion>1.7.2</_BasicReferenceAssembliesVersion>
@@ -192,7 +192,6 @@
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net40" Version="1.0.3" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net20" Version="1.0.3" />
     <PackageVersion Include="System.Buffers" Version="4.5.1" />
-    <PackageVersion Include="System.CommandLine" Version="$(SystemCommandLineVersion)" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="$(SystemConfigurationConfigurationManagerVersion)" />
     <PackageVersion Include="System.Composition" Version="$(SystemCompositionVersion)" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="$(SystemComponentModelCompositionVersion)" />

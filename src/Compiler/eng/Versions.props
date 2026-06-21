@@ -13,8 +13,8 @@ See License.txt in the project root for license information.
   <PropertyGroup>
     <MajorVersion>3</MajorVersion>
     <MinorVersion>0</MinorVersion>
-    <PatchVersion>0</PatchVersion>
-    <PreReleaseVersionLabel>6</PreReleaseVersionLabel>
+    <PatchVersion>1</PatchVersion>
+    <PreReleaseVersionLabel>0</PreReleaseVersionLabel>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <!--
       By default the assembly version in official builds is "$(MajorVersion).$(MinorVersion).0.0".
@@ -26,7 +26,6 @@ See License.txt in the project root for license information.
     Versions managed by Arcade (see Versions.Details.xml)
   -->
   <PropertyGroup>
-    <SystemCommandLineVersion>2.0.0-beta4.24209.3</SystemCommandLineVersion>
     <SystemCompositionVersion>8.0.0</SystemCompositionVersion>
     <SystemConfigurationConfigurationManagerVersion>8.0.0</SystemConfigurationConfigurationManagerVersion>
     <SystemDiagnosticsEventLogVersion>8.0.0</SystemDiagnosticsEventLogVersion>
@@ -45,9 +44,9 @@ See License.txt in the project root for license information.
     <SystemThreadingTasksDataflowVersion>8.0.0</SystemThreadingTasksDataflowVersion>
     <SystemWindowsExtensionsVersion>8.0.0</SystemWindowsExtensionsVersion>
     <MicrosoftBclAsyncInterfacesVersion>8.0.0</MicrosoftBclAsyncInterfacesVersion>
-    <MicrosoftCodeAnalysisAnalyzersVersion>3.3.4</MicrosoftCodeAnalysisAnalyzersVersion>
-    <MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>3.3.0</MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>
-    <MicrosoftCodeAnalysisNetAnalyzersVersion>8.0.0-preview.23468.1</MicrosoftCodeAnalysisNetAnalyzersVersion>
+    <MicrosoftCodeAnalysisAnalyzersVersion>3.11.0</MicrosoftCodeAnalysisAnalyzersVersion>
+    <MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>3.3.11</MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>
+    <MicrosoftCodeAnalysisNetAnalyzersVersion>9.0.0</MicrosoftCodeAnalysisNetAnalyzersVersion>
     <MicrosoftDiaSymReaderVersion>2.0.0</MicrosoftDiaSymReaderVersion>
     <MicrosoftExtensionsConfigurationVersion>8.0.0</MicrosoftExtensionsConfigurationVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>8.0.0</MicrosoftExtensionsDependencyInjectionVersion>
@@ -58,7 +57,6 @@ See License.txt in the project root for license information.
     <MicrosoftExtensionsOptionsVersion>8.0.0</MicrosoftExtensionsOptionsVersion>
     <MicrosoftExtensionsPrimitivesVersion>8.0.0</MicrosoftExtensionsPrimitivesVersion>
     <MicrosoftNetCompilersToolsetVersion>4.11.0-2.24270.4</MicrosoftNetCompilersToolsetVersion>
-    <MicrosoftVSSDKBuildToolsVersion>17.9.3137-preview3</MicrosoftVSSDKBuildToolsVersion>
     <vswhereVersion>2.4.1</vswhereVersion>
     <!--
       MicrosoftDevDivOptimizationDataPowerShellVersion and NewtonsoftJsonVersion are used in eng/InternalTools.props. The file is an extensibility port from eng/common/internal/Tools.csproj (managed by Arcade)

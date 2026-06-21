@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-06-11T12:02:30.924Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-06-15T14:16:34.591Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -23,7 +23,7 @@
       <li styleclass="List1">GLOBAL USING</li>
       <li styleclass="List1">We have added file wide <link displaytype="text" defaultstyle="true" type="topiclink" href="Namespaces2">Namespaces</link> support</li>
       <li styleclass="List1">We have added support for the RECORD modifier for classes and structures</li>
-      <li styleclass="List1">We have added a new __XSHARP3__ define which is always true, so you can conditional compile differences between XSharp 3 and a previous version</li>
+      <li styleclass="List1">We have added a new __XSHARP3__ define which is always true, so you can conditionally &#160;compile differences between XSharp 3 and a previous version</li>
       <li styleclass="List1">We have added code to check for the new [FoxArrayResultAttribute] that marks VFP functions which may create an array as a result (such as AMembers(), APrinters() and AUsed()). When the function is called with an undeclared variable then a new private variable is created for the result. (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1903" target="_blank">#1903</link>)</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
@@ -42,6 +42,7 @@
       <li styleclass="List1">Passing a literal NIL as argument for a type parameter now generates a compiler warning (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1946" target="_blank">#1946</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1967" target="_blank">#1967</link>)</li>
       <li styleclass="List1">Fixed an issue where certain errors were not shown causing a compilation to fail with &quot;error XS7038: Failed to emit module&quot; (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1951" target="_blank">#1951</link>)</li>
       <li styleclass="List1">Fixed an internal compiler error &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1966" target="_blank">#1966</link>)</li>
+      <li styleclass="List1">Ensure Init() methods in subclasses are called (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1988" target="_blank">#1988</link>)</li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <para styleclass="Heading3">New Features</para>
@@ -49,7 +50,7 @@
       <li styleclass="List1">The Build system now supports the new SDK style projects</li>
       <li styleclass="List1">We have added a task to generate source code for GLOBAL USING values declared in the project files. </li>
       <li styleclass="List1">The XAML files in the Rules subfolder of the MsBuild folder are no longer used and have been deleted. Also the references to these files in the .props and .targets files have been removed</li>
-      <li styleclass="List1">The builds system no longer automarically picks up the include folder from your Vulcan installation</li>
+      <li styleclass="List1">The builds system no longer automatically picks up the include folder from your Vulcan installation</li>
       <li styleclass="List1">There are many changes in the .props and .targets files to support SDK style projects and .Net 10. One of these changes automatically sets dependency relations between files, such as between VOBinary files and the module that they belong to.</li>
       <li styleclass="List1">The response file for the last build is now written to the intermediate output folder of the project with the name &lt;OutputFileName&gt;.rsp. A copy of this file is also written to the temp folder under the name LastXSharpResponseFile.Rsp </li>
     </list>

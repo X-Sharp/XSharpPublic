@@ -16,13 +16,20 @@ namespace XSharp.Project
     {
         protected abstract string CommandName { get; }
         protected abstract string CommandDescription { get; }
-            protected CommandProgression DoCmd()
+        protected CommandProgression DoCmd()
         {
+            bool ourProject = false;
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                await DoCmdAsync();
+                ourProject = await Commands.ProjectIsXSharpProjectAsync();
+                if (ourProject)
+                    await DoCmdAsync();
+
+
             });
-            return CommandProgression.Stop;
+            if (ourProject)
+                return CommandProgression.Stop;
+            return CommandProgression.Continue;
         }
 
 
@@ -46,6 +53,11 @@ namespace XSharp.Project
                 return false;
             }
             projectPath = project.FullPath;
+            var ourProject = await Commands.ProjectIsXSharpProjectAsync();
+            if (!ourProject)
+            {
+                return false;
+            }
             var prj = XSharpProjectNode.FindProject(projectPath);
             if (prj == null || !prj.IsSdkProject)
             {

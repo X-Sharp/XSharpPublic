@@ -19,11 +19,13 @@
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
+    <NoWarn>;NU1903</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

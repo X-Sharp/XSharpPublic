@@ -35,6 +35,7 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
     <CreateVsixContainer>False</CreateVsixContainer>
+    <NoWarn>;NU1903</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

@@ -30,7 +30,7 @@
     <DefineConstants>DEBUG;NOASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
-    <NoWarn>618;4014;NU1603</NoWarn>
+    <NoWarn>618;4014;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,7 +38,7 @@
     <Optimize>true</Optimize>
     <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>
-    <NoWarn>618;4014;NU1603</NoWarn>
+    <NoWarn>618;4014;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>

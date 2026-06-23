@@ -11,7 +11,6 @@
     <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C696}</ProjectGuid>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DeployExtension>False</DeployExtension>
-
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,14 +19,14 @@
     <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1762;VSSDK006;NU1603;NU1903</NoWarn>
+    <NoWarn>1762;VSSDK006;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>XSHARP;TRACE;DEV17</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>VSTHRD010;VSSDK006;1762;NU1603</NoWarn>
+    <NoWarn>VSTHRD010;VSSDK006;1762;NU1903</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

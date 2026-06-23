@@ -26,7 +26,7 @@
     <Optimize>true</Optimize>
     <DefineConstants>XSHARP;TRACE</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>VSTHRD010;VSSDK006;1762;NU1603</NoWarn>
+    <NoWarn>VSTHRD010;VSSDK006;1762;NU1903</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

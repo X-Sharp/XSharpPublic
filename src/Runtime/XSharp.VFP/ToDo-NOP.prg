@@ -36,10 +36,3 @@ FUNCTION PrtInfo( nPrinterSetting , cPrinterName ) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/putfile/*" />
-[FoxProFunction("PUTFILE", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION PutFile( cCustomText , cFileName, cFileExtensions) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-

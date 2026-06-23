@@ -18,11 +18,14 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD GetColor(nDefaultColorNumber AS USUAL) AS INT
         METHOD GetFont(cFontName AS USUAL, nFontSize AS USUAL, cFontStyle AS USUAL, nFontCharSet AS USUAL) AS STRING
         METHOD GetPrinters(nValue AS INT) AS ARRAY
+        METHOD GetPrinter() AS STRING
         METHOD GetDir(cDirectory AS STRING, cText AS STRING, cCaption AS STRING, nFlags AS LONG, lRootOnly AS LOGIC) AS STRING
         METHOD GetFile(cFileExtensions AS STRING, cText AS STRING, cOpenButtonCaption AS STRING, nButtonType AS LONG, cTitleBarCaption AS STRING) AS STRING
         METHOD GetPict(cFileExtensions AS STRING, cFileNameCaption AS STRING, cOpenButtonCaption AS STRING) AS STRING
+        METHOD PutFile(cCustomText AS STRING, cFileName AS STRING, cFileExtensions AS STRING) AS STRING
         METHOD LoadPicture(cFileName AS STRING) AS OBJECT
         METHOD FontMetric(nAttribute AS LONG, cFontName AS USUAL, nFontSize AS USUAL, cFontStyle AS USUAL) AS LONG
+        METHOD InputBox(cInputPrompt AS STRING, cDialogCaption AS STRING, cDefaultValue AS STRING, nTimeout AS LONG, cTimeoutValue AS STRING, cCancelValue AS STRING) AS STRING
     END INTERFACE
 
     PUBLIC STATIC CLASS VfpUIService
@@ -139,6 +142,10 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN {}
         END METHOD
 
+        PUBLIC METHOD GetPrinter() AS STRING
+            RETURN ""
+        END METHOD
+
         METHOD GetDir(cDirectory AS STRING, cText AS STRING, cCaption AS STRING, nFlags AS LONG, lRootOnly AS LOGIC) AS STRING
             RETURN ""
         END METHOD
@@ -151,6 +158,10 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN ""
         END METHOD
 
+        METHOD PutFile(cCustomText AS STRING, cFileName AS STRING, cFileExtensions AS STRING) AS STRING
+            RETURN ""
+        END METHOD
+
         METHOD LoadPicture(cFileName AS STRING) AS OBJECT
             Console.WriteLine("LOADPICTURE: Attempted to load: " + cFileName)
             RETURN NULL_OBJECT
@@ -160,6 +171,9 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN 0
         END METHOD
 
+        METHOD InputBox(cInputPrompt AS STRING, cDialogCaption AS STRING, cDefaultValue AS STRING, nTimeout AS LONG, cTimeoutValue AS STRING, cCancelValue AS STRING) AS STRING
+            RETURN cCancelValue
+        END METHOD
     END CLASS
 
 END NAMESPACE

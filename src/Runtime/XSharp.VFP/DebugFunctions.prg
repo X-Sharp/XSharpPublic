@@ -101,14 +101,11 @@ FUNCTION AStackInfo (ArrayName AS USUAL) AS DWORD
         ELSE
             cModule := oMethod:Name
         ENDIF
+
         aFoxArray.__SetElement(cModule, nBase + 2)    // Col 3: Module/Object
-
         aFoxArray.__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 3)  // Col 4: Source file
-
         aFoxArray.__SetElement(oFrame:GetFileLineNumber(), nBase + 4)      // Col 5: Line
-
         aFoxArray.__SetElement("", nBase + 5)          // Col 6: Source content (n/a)
-
         nIdx += 1
     NEXT
 

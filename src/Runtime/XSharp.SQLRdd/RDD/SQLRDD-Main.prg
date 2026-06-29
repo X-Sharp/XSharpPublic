@@ -148,7 +148,7 @@ partial class SQLRDD inherit Workarea
                 throw Exception{}
             endif
             if !self:_oTd:HasRecnoColumn
-                throw Exception{"RecnoColumn is required"}
+                throw Exception{"RecnoColumn is required for table " + info:FileName}
             endif
         endif
         local aUpdatableColumns := null as HashSet<string>
@@ -430,12 +430,12 @@ partial class SQLRDD inherit Workarea
     override method Close() as logic
         local lOk as logic
         lOk := SELF:GoCold()
+        self:UnLock(0)
         // This method deletes the temporary file after the file is closed
         foreach var bag in self:OrderBagList
             bag:Close()
         next
-        self:UnLock(0)
-        _connection:UnregisterRdd(self)
+        _connection?:UnregisterRdd(self)
 
         lOk := super:Close()
         return lOk
@@ -843,6 +843,10 @@ partial class SQLRDD inherit Workarea
     end method
 
     public override method UnLock(oRecId as object) as logic
+        if Connection?:Provider is null .or. !self:Connection:IsOpen
+            return false
+        endif
+
         try
             var sb := StringBuilder{}
             var sbWhere := StringBuilder{}
@@ -865,7 +869,7 @@ partial class SQLRDD inherit Workarea
             cmd:AddParameter(self:Provider:ParameterPrefix+"p1", Environment.MachineName ?? String.Empty)
             cmd:AddParameter(self:Provider:ParameterPrefix+"p2", Environment.UserName ?? String.Empty)
             cmd:AddParameter(self:Provider:ParameterPrefix+"p3", self:Connection:ConnectionId:ToString())
-            cmd:AddParameter(self:Provider:ParameterPrefix+"p4", _oTd:RealName ?? String.Empty)
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p4", _oTd?:RealName ?? super:Alias ?? String.Empty)
             cmd:AddParameter(self:Provider:ParameterPrefix+"p5", (int)super:Area)
             if oRecId != null .and. oRecId is int .and. ((int)oRecId) > 0
                 cmd:AddParameter(self:Provider:ParameterPrefix+"p6", (int)oRecId)

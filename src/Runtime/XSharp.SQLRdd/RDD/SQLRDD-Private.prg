@@ -59,7 +59,7 @@ partial class SQLRDD
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
-    internal property Provider       as ISqlDbProvider get _connection:Provider
+    internal property Provider       as ISqlDbProvider get _connection?:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
     internal property CurrentPage    as int => _currentPageNo

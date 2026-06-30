@@ -698,21 +698,8 @@
 
 #command CLEAR <*any*> => __VfpUnsupported("CLEAR")
 
-#xtranslate RELEASE BAR              => __VfpUnsupported("RELEASE BAR")
-#xtranslate RELEASE BAR <*any*>      => __VfpUnsupported("RELEASE BAR")
-#xtranslate RELEASE CLASSLIB         => __VfpUnsupported("RELEASE CLASSLIB")
-#xtranslate RELEASE CLASSLIB <*any*> => __VfpUnsupported("RELEASE CLASSLIB")
-#xtranslate RELEASE LIBRARY          => __VfpUnsupported("RELEASE LIBRARY")
-#xtranslate RELEASE LIBRARY <*any*>  => __VfpUnsupported("RELEASE LIBRARY")
-#xtranslate RELEASE MENUS            => __VfpUnsupported("RELEASE MENUS")
-#xtranslate RELEASE MODULE           => __VfpUnsupported("RELEASE MODULE")
-#xtranslate RELEASE MODULE <*any*>   => __VfpUnsupported("RELEASE MODULE")
-#xtranslate RELEASE PAD              => __VfpUnsupported("RELEASE PAD")
-#xtranslate RELEASE PAD <*any*>      => __VfpUnsupported("RELEASE PAD")
-#xtranslate RELEASE POPUPS           => __VfpUnsupported("RELEASE POPUPS")
-#xtranslate RELEASE PROCEDURE        => __VfpUnsupported("RELEASE PROCEDURE")
-#xtranslate RELEASE PROCEDURE <*any*> => __VfpUnsupported("RELEASE PROCEDURE")
-#xtranslate RELEASE WINDOWS          => __VfpUnsupported("RELEASE WINDOWS")
+#xtranslate RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MENUS,MODULE,PAD,POPUPS,PROCEDURE,WINDOWS> => __VfpUnsupported("RELEASE " + <(cmd)>)
+#xtranslate RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,PAD,PROCEDURE> <*any*> => __VfpUnsupported("RELEASE " + <(cmd)>)
 
 #endif
 

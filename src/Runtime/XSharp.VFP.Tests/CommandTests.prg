@@ -360,6 +360,39 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             // If we get here without exception, the command is properly absorbed
             Assert.True(.T.)
         END METHOD
+
+        [Fact, Trait("Category", "Commands")];
+        METHOD ClearVariantsCompile AS VOID
+            CLEAR
+            CLEAR CLASS xyz
+            CLEAR CLASSLIB
+            CLEAR DLLS
+            CLEAR FIELDS
+            CLEAR GETS
+            CLEAR MACROS
+            CLEAR MENUS
+            CLEAR POPUPS
+            CLEAR PROGRAM
+            CLEAR PROMPT
+            CLEAR READ
+            CLEAR TYPEAHEAD
+            CLEAR WINDOWS
+            Assert.True(TRUE)
+        END METHOD
+
+        [Fact, Trait("Category", "Commands")];
+        METHOD ReleaseVariantsCompile AS VOID
+            RELEASE BAR xyz
+            RELEASE CLASSLIB xyz
+            RELEASE LIBRARY xyz
+            RELEASE MENUS
+            RELEASE MODULE xyz
+            RELEASE PAD xyz
+            RELEASE POPUPS
+            RELEASE PROCEDURE xyz
+            RELEASE WINDOWS
+            Assert.True(TRUE)
+        END METHOD
     END CLASS
 
 END NAMESPACE

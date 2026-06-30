@@ -158,7 +158,7 @@
 
 #command DIR <*any*>       => __VfpDir( <"any"> )
 #command DIRECTORY <*any*> => __VfpDir( <"any"> )
-
+#command CLEAR => __VfpUnsupported("CLEAR")
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
 
@@ -675,7 +675,7 @@
 #command LABEL <*any*> => __VfpUnsupported("LABEL")
 
 #command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
-         => #error This command is not supported: <(udc)>
+         => __VfpUnsupported("CREATE " + <(cmd)>)
 
 // supported CREATE commands in FoxProSql.xh
 // CREATE CURSOR
@@ -684,7 +684,7 @@
 // CREATE [SQL] VIEW
 
 #command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
-            => #error This command is not supported: <(udc)>
+            => __VfpUnsupported("MODIFY " + <(cmd)>)
 
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
@@ -695,6 +695,25 @@
 #translate VARTYPE(<v>,<1>)  => __VfpVarType( {|| <v> }, <1> )
 
 #include "FoxProSql.xh"
+
+#command CLEAR <*any*> => __VfpUnsupported("CLEAR")
+
+#xtranslate RELEASE BAR              => __VfpUnsupported("RELEASE BAR")
+#xtranslate RELEASE BAR <*any*>      => __VfpUnsupported("RELEASE BAR")
+#xtranslate RELEASE CLASSLIB         => __VfpUnsupported("RELEASE CLASSLIB")
+#xtranslate RELEASE CLASSLIB <*any*> => __VfpUnsupported("RELEASE CLASSLIB")
+#xtranslate RELEASE LIBRARY          => __VfpUnsupported("RELEASE LIBRARY")
+#xtranslate RELEASE LIBRARY <*any*>  => __VfpUnsupported("RELEASE LIBRARY")
+#xtranslate RELEASE MENUS            => __VfpUnsupported("RELEASE MENUS")
+#xtranslate RELEASE MODULE           => __VfpUnsupported("RELEASE MODULE")
+#xtranslate RELEASE MODULE <*any*>   => __VfpUnsupported("RELEASE MODULE")
+#xtranslate RELEASE PAD              => __VfpUnsupported("RELEASE PAD")
+#xtranslate RELEASE PAD <*any*>      => __VfpUnsupported("RELEASE PAD")
+#xtranslate RELEASE POPUPS           => __VfpUnsupported("RELEASE POPUPS")
+#xtranslate RELEASE PROCEDURE        => __VfpUnsupported("RELEASE PROCEDURE")
+#xtranslate RELEASE PROCEDURE <*any*> => __VfpUnsupported("RELEASE PROCEDURE")
+#xtranslate RELEASE WINDOWS          => __VfpUnsupported("RELEASE WINDOWS")
+
 #endif
 
 // EOF

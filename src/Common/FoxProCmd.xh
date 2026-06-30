@@ -158,7 +158,7 @@
 
 #command DIR <*any*>       => __VfpDir( <"any"> )
 #command DIRECTORY <*any*> => __VfpDir( <"any"> )
-#command CLEAR => __VfpUnsupported("CLEAR")
+#command CLEAR => __VfpUnsupported(<"udc">)
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
 
@@ -672,10 +672,10 @@
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
 
-#command LABEL <*any*> => __VfpUnsupported("LABEL")
+#command LABEL <*any*> => __VfpUnsupported(<"udc">)
 
 #command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
-         => __VfpUnsupported("CREATE " + <(cmd)>)
+         => __VfpUnsupported(<"udc">)
 
 // supported CREATE commands in FoxProSql.xh
 // CREATE CURSOR
@@ -684,7 +684,7 @@
 // CREATE [SQL] VIEW
 
 #command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
-            => __VfpUnsupported("MODIFY " + <(cmd)>)
+            => __VfpUnsupported(<"udc">)
 
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
@@ -696,10 +696,10 @@
 
 #include "FoxProSql.xh"
 
-#command CLEAR <*any*> => __VfpUnsupported("CLEAR")
+#command CLEAR <*any*> => __VfpUnsupported(<"udc">)
 
-#xtranslate RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MENUS,MODULE,PAD,POPUPS,PROCEDURE,WINDOWS> => __VfpUnsupported("RELEASE " + <(cmd)>)
-#xtranslate RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,PAD,PROCEDURE> <*any*> => __VfpUnsupported("RELEASE " + <(cmd)>)
+#xtranslate RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MENUS,MODULE,PAD,POPUPS,PROCEDURE,WINDOWS> => __VfpUnsupported(<"udc">)
+#xtranslate RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,PAD,PROCEDURE> <*any*> => __VfpUnsupported(<"udc">)
 
 #endif
 

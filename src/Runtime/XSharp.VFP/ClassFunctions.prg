@@ -5,6 +5,8 @@
 //
 
 USING System.Reflection
+USING XSharp.RDD
+USING XSharp.Internal
 USING System.Collections.Generic
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/addproperty/*" />
@@ -103,3 +105,81 @@ INTERNAL FUNCTION CompObjHelper(oExpression1 AS OBJECT, oExpression2 AS OBJECT, 
 
     RETURN TRUE
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/aclass/*" />
+[FoxArrayInputParameter(1)];
+[FoxProFunction("ACLASS", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION AClass(ArrayName AS USUAL, oExpression AS USUAL) AS DWORD
+    LOCAL oType AS Type
+    LOCAL aFoxArray AS __FoxArray
+
+    IF ArrayName IS __FoxArray VAR aFox
+        aFoxArray := aFox
+    ELSE
+        VAR cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
+
+    IF IsObject(oExpression)
+        oType = ((OBJECT)oExpression):GetType()
+    ELSEIF IsString(oExpression)
+        VAR cName := (STRING)oExpression
+        oType := Type.GetType(cName, FALSE, TRUE)
+        IF oType == NULL
+            RETURN 0
+        ENDIF
+    ELSE
+        RETURN 0
+    ENDIF
+
+    VAR classList := List<STRING>{}
+
+    DO WHILE oType != NULL
+        classList:Add(oType:Name:ToUpper())
+        oType := oType:BaseType
+    ENDDO
+
+    VAR nRows := (DWORD)classList:Count
+    IF nRows == 0
+        return 0
+    endif
+
+    aFoxArray:Resize((INT)nRows)
+    FOR VAR i := 0 TO (INT)nRows - 1
+        aFoxArray[1+i] := classList[i]
+    NEXT
+
+    RETURN nRows
+END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/asessions/*" />
+[FoxArrayInputParameter(1)];
+[FoxProFunction("ASESSIONS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.DataSession, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION ASessions (ArrayName AS USUAL) AS DWORD
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray VAR aFox
+        aFoxArray := aFox
+    ELSE
+        VAR cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
+
+    VAR _ := RuntimeState.Workareas
+    VAR sessions := XSharp.RDD.DataSession.Sessions
+    VAR nRows := (DWORD)sessions:Length
+
+    IF nRows == 0
+        RETURN 0
+    ENDIF
+
+    aFoxArray:ReDim(nRows, 2)
+
+    LOCAL nIdx := 0 AS DWORD
+    FOREACH VAR oSession IN sessions
+        VAR nBase := (INT)(nIdx * 2)
+        aFoxArray.__SetElement(oSession:Id,   nBase)
+        aFoxArray.__SetElement(oSession:Name, nBase + 1)
+        nIdx += 1
+    NEXT
+
+    RETURN nRows
+END FUNCTION

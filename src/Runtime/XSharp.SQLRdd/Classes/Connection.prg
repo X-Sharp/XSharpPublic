@@ -105,6 +105,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     internal const DefaultConnection := "DEFAULT" as string
     internal static Connections      as List<SqlDbConnection>
     static internal property DefaultCached  as logic auto
+    private static oExistingTables := List<string>{} as List<string>
+
     static constructor()
         Connections     := List<SqlDbConnection>{}
         DefaultCached   := true
@@ -273,10 +275,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         KeepOpen        := DefaultCached
         if @@Callback != null
             self:CallBack += @@Callback
-            SELF:MetadataProvider := SqlMetadataProviderCallBack{SELF}
-        ELSE
-            SELF:MetadataProvider := SqlMetadataProviderIni{SELF}
-        endif
+         endif
         Connections:Add(self)
         _datasourceProperties := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         _commands := List<SqlDbCommand>{}
@@ -284,9 +283,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         self:ForceOpen()
         SELF:_FillMetadataCollections()
         SELF:_FillDataSourceProperties()
-        SELF:_CheckConnectionTable()
         SELF:_CreateLockTable()
-        SELF:_Login()
         SELF:InitializeLockTimer()
         // Todo: Check for # of open users and close the connection when no users are left and then throw an exception
         return
@@ -303,9 +300,11 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         if self:RDDs:Count > 0
             return false
         endif
-        self:_Logout()
         // Logout the workstation from the Open Connections table
-        _command:Dispose()
+        if _command != null
+            _command:Dispose()
+        endif
+
         foreach var cmd in SELF:_commands:ToArray()
             if cmd:Connection == self
                 cmd:Dispose()
@@ -480,7 +479,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>DbDataReader or NULL when an exception occurred</returns>
     method ExecuteReader(cCommand as string, cTable := __FUNCTION__ as STRING) as DbDataReader
-       local result := null as DbDataReader
+        local result := null as DbDataReader
         try
              _command:CommandText := cCommand
             result := _command:ExecuteReader(cTable)
@@ -627,6 +626,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <returns>TRUE when the table exists. </returns>
     method DoesTableExist(cTableName as string) as logic
         try
+            if oExistingTables:Contains(cTableName)
+                return true
+            endif
             if !SELF:HasCollection(TABLECOLLECTION)
                 return false
             endif
@@ -634,12 +636,16 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 local aTableRestrictions := string[]{4} as string[]
                 aTableRestrictions[2] := cTableName
                 var dt := self:DbConnection:GetSchema(TABLECOLLECTION, aTableRestrictions)
-                return dt:Rows:Count > 0
+                if dt:Rows:Count > 0
+                    oExistingTables:Add(cTableName)
+                    return true
+                endif
             else
                 var dt := self:DbConnection:GetSchema(TABLECOLLECTION)
                 foreach row as DataRow in dt:Rows
                     var tbl := row["TABLE_NAME"]:ToString()
                     if String.Compare(tbl, cTableName, true) == 0
+                        oExistingTables:Add(cTableName)
                         return true
                     endif
                 next
@@ -737,58 +743,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
    end method
 #endregion
 
-
-
-    private method _CheckConnectionTable() as void
-        if SELF:DoesTableExist(CONNECTIONSTABLE)
-            return
-        endif
-        var sb := StringBuilder{}
-        sb:Append(SELF:Provider:CreateTableStatement)
-        using var cmd := SqlDbCommand{"ConnectionTable", self, false}
-
-        sb:Replace(SqlDbProvider.TableNameMacro,CONNECTIONSTABLE)
-        sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "station varchar(50), username varchar(50), lastlogin varchar(10), refcount int")
-        cmd:CommandText := sb:ToString()
-        cmd:ExecuteNonQuery("License")
-
-
-    private method _Login() as void
-        SELF:_LoginWorker(true)
-    private method _Logout() as void
-        SELF:_LoginWorker(false)
-    private method _LoginWorker(lIn as LOGIC) as void
-        var user    := Environment.UserName
-        var station := Environment.MachineName
-        var dDate   := DateTime.Now
-        var today   := dDate:Year:ToString()+"-"+dDate:Month:ToString("0#")+"-"+dDate:Day:ToString("0#")
-        SELF:BeginTrans()
-        // clear old logins
-        using var cmd := SqlDbCommand{"Licenses", self, false}
-        cmd:CommandText := "Delete from "+CONNECTIONSTABLE+" where lastlogin < @p3"
-        cmd:ClearParameters()
-        cmd:AddParameter("@p1",user)
-        cmd:AddParameter("@p2",station)
-        cmd:AddParameter("@p3",today)
-        cmd:ExecuteNonQuery("License")
-        var sWhere := "where username = @p1 and station = @p2 and lastlogin = @p3"
-        if lIn
-            cmd:CommandText := "select count(*) from "+CONNECTIONSTABLE+" "+sWhere
-            var result := Convert.ToInt64(cmd:ExecuteScalar())
-            if result == 0
-                cmd:CommandText := "Insert into "+CONNECTIONSTABLE+"(username, station, lastlogin, refcount) values(@p1, @p2, @p3, 0)"
-                cmd:ExecuteNonQuery("Login")
-            endif
-            cmd:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount + 1 "+sWhere
-            cmd:ExecuteNonQuery("Login")
-        else
-            cmd:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount - 1 "+sWhere
-            cmd:ExecuteNonQuery("Logout")
-            cmd:CommandText := "delete from "+CONNECTIONSTABLE+" "+sWhere+" and refcount <= 0"
-            cmd:ExecuteNonQuery("Logout")
-
-        endif
-        SELF:CommitTrans()
         #region Implement IDisposable
     /// <inheritdoc/>
     public override method Dispose() as void
@@ -798,7 +752,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
     #endregion
 
-    INTERNAL CONST CONNECTIONSTABLE := "xs_connections" as string
     INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_COMPAREMEMO := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_DELETEDCOLUMN := "" AS STRING
@@ -913,6 +866,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
         // Refresh my Locks
         using var cmdRefresh := SqlDbCommand{"RefreshLockTable", SELF, false}
+        if !cmdRefresh:Connection:IsOpen
+            cmdRefresh:Connection:ForceOpen()
+        endif
         var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
         updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
         updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
@@ -923,6 +879,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
         // Clear all old locks
         using var cmdClear := SqlDbCommand{"ClearLockTable", SELF, false}
+        if !cmdClear:Connection:IsOpen
+            cmdClear:Connection:ForceOpen()
+        endif
         cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
         cmdClear:Parameters := List<SqlDbParameter>{}
         cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-120)})

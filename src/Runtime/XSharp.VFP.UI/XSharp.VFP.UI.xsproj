@@ -162,6 +162,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Spinner.prg" />
+    <Compile Include="VFPCreateObject.prg" />
     <Compile Include="VFPDoForm.prg" />
     <Compile Include="VFPDummy.prg" />
     <Compile Include="EditBox.prg" />

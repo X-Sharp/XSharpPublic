@@ -42,6 +42,20 @@
 [;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
 ;XSharp.VFP.UI.__VFPDoForm.Create( VFPX_CLASS_PREFIX + <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
 
+// CreateObject(className [, param1, ...]) — unlike DO FORM, the class name here can also be
+// a COM ProgID (CreateObject("Excel.Application")) or any other external/.NET type, so we
+// can't unconditionally prefix at compile time. __VFPCreateObject.Create() tries the prefixed
+// name first and falls back to the original name if that doesn't resolve to a known type —
+// works the same whether className is a literal or a runtime expression/variable.
+// The <(name)> / <(p1)> / <(pn)> markers (not the plain <p1>/<pn> list markers, which don't
+// work inside explicit parens) mirror the FoxPro dialect's own
+// INSERT INTO ... VALUES (<(v1)> [, <(vn)>]) rule — same "name/value list inside parens" shape.
+// NEWOBJECT()/ADDOBJECT() are not covered yet — NEWOBJECT has no working implementation in
+// the runtime to hook into, and ADDOBJECT is a method call (not a function), which needs a
+// different pattern.
+#xtranslate CreateObject( <(name)> [, <(p1)> [, <(pn)> ]] ) ;
+    => XSharp.VFP.UI.__VFPCreateObject.Create( VFPX_CLASS_PREFIX, <name> [, <p1>] [, <pn>] )
+
 #command QUIT ;
 => System.Windows.Forms.Application.Exit()
 

@@ -56,6 +56,7 @@ BEGIN NAMESPACE VFPXPorter
 
             SELF:iniSettings:SeparateLibraryProjects := SELF:checkLibraryAsProject:Checked
             SELF:iniSettings:PlaceSolutionInSameDirectory := SELF:checkSlnWithProject:Checked
+            SELF:iniSettings:ClassNamePrefix := SELF:classNamePrefixTextBox:Text
 			//
 			VAR defFolders := ""
 			FOREACH lvi AS ListViewItem IN SELF:listFolders:Items
@@ -102,6 +103,7 @@ BEGIN NAMESPACE VFPXPorter
 
             SELF:checkLibraryAsProject:Checked := SELF:iniSettings:SeparateLibraryProjects
             SELF:checkSlnWithProject:Checked := SELF:iniSettings:PlaceSolutionInSameDirectory
+            SELF:classNamePrefixTextBox:Text := SELF:iniSettings:ClassNamePrefix
 			// Fill Folders Name
 			// The order is : "Forms,Libs,Menus,Code,Databases,FreeTables,Others"
 			VAR defFolders := SELF:iniSettings:DefaultFolders

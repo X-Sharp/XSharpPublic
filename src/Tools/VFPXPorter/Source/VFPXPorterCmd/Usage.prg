@@ -41,6 +41,7 @@ FUNCTION Usage AS VOID
 	Console.WriteLine("  -expandWithEndWith   / -no...   Expand WITH...ENDWITH (nested WITH fix).  [true]")
 	Console.WriteLine("  -nameUDF             / -no...   Use XPorter-built name for UDF methods.   [false]")
 	Console.WriteLine("  -modifier:""<mod>""               Field modifier: PUBLIC (default) | PROTECTED | PRIVATE.")
+	Console.WriteLine("  -classNamePrefix:""<prefix>""     Prefix added to every exported class name (default: empty).")
 	Console.WriteLine()
 	Console.WriteLine("Examples:")
 	Console.WriteLine(e"  VFPXPorterCmd -p:\"C:\\MyApp\\myapp.pjx\" -o:\"C:\\Output\"")

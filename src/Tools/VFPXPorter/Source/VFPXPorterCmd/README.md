@@ -61,6 +61,7 @@ All boolean flags accept a `-no` prefix to invert them (e.g. `-noStoreInFolders`
 | `-removeSet` | on | Remove the `Set_` prefix from event handler names. |
 | `-nameUDF` | off | Use the XPorter-built name for user-defined methods. |
 | `-modifier:<mod>` | `PUBLIC` | Access modifier for generated fields: `PUBLIC`, `PROTECTED`, or `PRIVATE`. |
+| `-classNamePrefix:<prefix>` | *(empty)* | Prefix added to every exported class name, to avoid collisions between VFP class names and cursor aliases (e.g. `Vfp_Customers`). |
 
 Exit codes: `0` = success, `1` = error.
 

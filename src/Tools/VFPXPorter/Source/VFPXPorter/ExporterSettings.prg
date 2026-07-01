@@ -99,6 +99,9 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY ExpandWithEndWith AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ExpandWithEndWith", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Items", "ExpandWithEndWith", VALUE )
 
+		PROPERTY ClassNamePrefix AS STRING GET SELF:iniSettings:ReadValue( "Items", "ClassNamePrefix", "" ) ;
+			SET SELF:iniSettings:WriteValue( "Items", "ClassNamePrefix", VALUE )
+
 		PROPERTY RessourcesFolder AS STRING GET SELF:iniSettings:ReadValue( "Folders", "Ressources", Path.Combine(Path.GetDirectoryName( Application.ExecutablePath ),XPorterSettings.DataFolder) ) ;
 			SET SELF:iniSettings:WriteValue( "Folders", "Ressources", VALUE )
 
@@ -129,6 +132,7 @@ BEGIN NAMESPACE VFPXPorter
             settings:SeparateLibraryProjects := SELF:SeparateLibraryProjects
             settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory
             settings:ExpandWithEndWith := SELF:ExpandWithEndWith
+            settings:ClassNamePrefix := SELF:ClassNamePrefix
 			//
 			XPorterSettings.DataFolder := SELF:RessourcesFolder
 			//

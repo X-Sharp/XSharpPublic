@@ -168,6 +168,7 @@ CLASS XPorterSettings
         SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
         SELF:ExpandWithEndWith := FALSE
         SELF:SolutionName := ""
+        SELF:ClassNamePrefix := ""
 		RETURN
 
 	/// <summary>
@@ -327,6 +328,14 @@ CLASS XPorterSettings
 	/// The original WITH/ENDWITH lines are kept as comments.
 	/// </summary>
 	PROPERTY ExpandWithEndWith AS LOGIC AUTO
+
+	/// <summary>
+	/// Prefix prepended to every exported class name (form, library, FormSet sub-form, Page, ...)
+	/// to avoid collisions between VFP class names and cursor aliases sharing the same name
+	/// (e.g. a class and a work area both named "Customers"). Default is empty (no prefix,
+	/// backward-compatible).
+	/// </summary>
+	PROPERTY ClassNamePrefix AS STRING AUTO
 
 END CLASS
 END NAMESPACE // VFPXPorterLib

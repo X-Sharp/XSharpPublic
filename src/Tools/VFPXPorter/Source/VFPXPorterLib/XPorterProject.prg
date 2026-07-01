@@ -544,6 +544,12 @@ BEGIN NAMESPACE VFPXPorterLib
                                     headerText += Environment.NewLine + comment + "USING " + definition
                                 NEXT
                                 headerText += Environment.NewLine
+                                // Class name prefix, available to UDCs (DO FORM, CreateObject, ...) as a
+                                // compile-time constant. Emitted even when empty ("") so the UDCs always
+                                // have a value to concatenate — no runtime cost, no mutable global state.
+                                headerText += Environment.NewLine + "// VFPXPorter - Class Name Prefix"
+                                headerText += Environment.NewLine + e"#define VFPX_CLASS_PREFIX \"" + XPorterSettings.ClassNamePrefix + e"\""
+                                headerText += Environment.NewLine
                                 File.WriteAllText( vfpxporterPath, headerText )
                             ENDIF
                             // And Don't forget the Starting block

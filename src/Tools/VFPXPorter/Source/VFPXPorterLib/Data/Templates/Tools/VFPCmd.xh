@@ -22,20 +22,25 @@
 [;XSharp.VFP.UI.__VFPDo.Param( <pn> )] ;
 ;XSharp.VFP.UI.__VFPDo.Execute( <DoExpr> )
 
+// Both DO FORM rules below prepend VFPX_CLASS_PREFIX (a compile-time constant defined in
+// the project's VFPXPorter.xh, empty by default) to the form name, so DO FORM resolves to
+// the actual exported class name whether that name comes from the ClassNamePrefix setting
+// or not. This works uniformly for a literal name and for a runtime expression/macro value.
+
 // Expression form: DO FORM (expr)  — used when the form name is a runtime expression
 // (e.g. after FixDoFormMacro converts  DO FORM &var\suffix  →  DO FORM (var + "\suffix"))
 #command DO FORM (<FormExpr>) [NAME <VarName> [LINKED]] [WITH] [ <(p1)> ]   [, <(pn)> ]  [TO <ToVarName>] [<noread:NOREAD>] [<noshow:NOSHOW>] ;
 => XSharp.VFP.UI.__VFPDoForm.InitParam();
 [;XSharp.VFP.UI.__VFPDoForm.Param( <p1> )] ;
 [;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
-;XSharp.VFP.UI.__VFPDoForm.Create( <FormExpr>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
+;XSharp.VFP.UI.__VFPDoForm.Create( VFPX_CLASS_PREFIX + (<FormExpr>), [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
 
 // Literal form: DO FORM MyFormName
 #command DO FORM <FormName> [NAME <VarName> [LINKED]] [WITH] [ <(p1)> ]   [, <(pn)> ]  [TO <ToVarName>] [<noread:NOREAD>] [<noshow:NOSHOW>] ;
 => XSharp.VFP.UI.__VFPDoForm.InitParam();
 [;XSharp.VFP.UI.__VFPDoForm.Param( <p1> )] ;
 [;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
-;XSharp.VFP.UI.__VFPDoForm.Create( <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
+;XSharp.VFP.UI.__VFPDoForm.Create( VFPX_CLASS_PREFIX + <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
 
 #command QUIT ;
 => System.Windows.Forms.Application.Exit()

@@ -94,8 +94,8 @@ BEGIN NAMESPACE VFPXPorterLib
                         // No ClassLocation and not converted: bare class name is returned as-is, NOT
                         // prefixed here. This covers FormSet sub-form stubs and Page stubs, whose
                         // ClassName is assigned directly in SCXVCXFile.prg (bypassing GetFormClassName)
-                        // to already match the prefixed name of the real exported entity — see Step 5
-                        // in 11_CLASS_PREFIX_PLAN.md. Prefixing again here would double the prefix.
+                        // to already match the prefixed name of the real exported entity. Prefixing
+                        // again here would double the prefix.
                         XPorterLogger.Instance:Verbose( "FullyQualifiedName: item '" + SELF:Name + "' has no ClassLocation and was not converted (ClassName='" + SELF:ClassName + "')" )
                     ENDIF
                     fqn := nSpace + classNamePart

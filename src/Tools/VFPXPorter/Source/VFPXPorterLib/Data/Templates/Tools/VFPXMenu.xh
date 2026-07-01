@@ -117,7 +117,9 @@
 //   2. Arbitrary code     — wrapped in a codeblock.
 //   3. DO procName        — passes proc name as a string; IN/WITH are absorbed.
 //   4. DO (expr)          — macro rewrite: calls __VFPDo.Execute at runtime.
-//   5. DO FORM (expr)     — macro rewrite: calls __VFPDoForm.Create at runtime.
+//   5. DO FORM (expr)     — macro rewrite: calls __VFPDoForm.Create at runtime, with
+//                           VFPX_CLASS_PREFIX prepended (see VFPCmd.xh) so the form
+//                           name resolves to the actual exported class name.
 
 #command ON SELECTION PAD <PadName> OF <MenuName>                    ;
     => __VFPOnSelectionPad( <(PadName)>, <(MenuName)>, "" )
@@ -136,7 +138,7 @@
 
 #command ON SELECTION PAD <PadName> OF <MenuName>                    ;
          DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
-    => __VFPOnSelectionPadCmd( <(PadName)>, <(MenuName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
+    => __VFPOnSelectionPadCmd( <(PadName)>, <(MenuName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(VFPX_CLASS_PREFIX + (<ExprName>)) } )
 
 
 // ── ON SELECTION BAR ─────────────────────────────────────────────────────────
@@ -158,7 +160,7 @@
 
 #command ON SELECTION BAR <nBar> OF <PopupName>                      ;
          DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
-    => __VFPOnSelectionBarCmd( <nBar>, <(PopupName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
+    => __VFPOnSelectionBarCmd( <nBar>, <(PopupName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(VFPX_CLASS_PREFIX + (<ExprName>)) } )
 
 
 // ── ON SELECTION POPUP ───────────────────────────────────────────────────────
@@ -182,7 +184,7 @@
 
 #command ON SELECTION POPUP ALL                                       ;
          DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
-    => __VFPOnSelectionPopupCmd( "*", {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
+    => __VFPOnSelectionPopupCmd( "*", {|| XSharp.VFP.UI.__VFPDoForm.Create(VFPX_CLASS_PREFIX + (<ExprName>)) } )
 
 #command ON SELECTION POPUP <PopupName>                              ;
     => __VFPOnSelectionPopup( <(PopupName)>, "" )
@@ -201,7 +203,7 @@
 
 #command ON SELECTION POPUP <PopupName>                              ;
          DO FORM (<ExprName>) [WITH <*_Params*>]                    ;
-    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(<ExprName>) } )
+    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| XSharp.VFP.UI.__VFPDoForm.Create(VFPX_CLASS_PREFIX + (<ExprName>)) } )
 
 
 // ── ACTIVATE MENU ────────────────────────────────────────────────────────────

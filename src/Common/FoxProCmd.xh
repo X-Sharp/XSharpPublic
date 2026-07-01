@@ -698,7 +698,7 @@
 
 #command CLEAR <*any*> => __VfpUnsupported(<"udc">)
 
-#command RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,PAD,PROCEDURE> [<*any*>] => __VfpUnsupported(<"udc">)
+#command RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,MENUS,PAD,POPUPS,PROCEDURE,WINDOWS> [<*any*>] => __VfpUnsupported(<"udc">)
 
 #endif
 

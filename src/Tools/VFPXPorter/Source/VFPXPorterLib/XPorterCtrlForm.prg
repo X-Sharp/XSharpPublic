@@ -1143,10 +1143,11 @@ BEGIN NAMESPACE VFPXPorterLib
         /// - SCX, FormSet sub-form: use scxName_formOBJNAME to make each sub-form unique.
         /// </summary>
         PRIVATE METHOD GetFormClassName( item AS SCXVCXItem ) AS STRING
+            VAR prefix := XPorterSettings.ClassNamePrefix
             IF SELF:IsLibrary
-                RETURN item:Name
+                RETURN prefix + item:Name
             ENDIF
-            VAR scxName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_")
+            VAR scxName := prefix + Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_")
             IF item:IsForm .AND. !String.IsNullOrEmpty( item:Parent )
                 RETURN scxName + "_" + item:Name
             ENDIF

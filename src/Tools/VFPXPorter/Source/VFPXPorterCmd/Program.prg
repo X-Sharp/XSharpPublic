@@ -48,7 +48,7 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 			ELSEIF arg:StartsWith("-modifier:", StringComparison.InvariantCultureIgnoreCase)
 				settings:Modifier := StripQuotes(arg:Substring(10)):ToUpperInvariant()
 			ELSEIF arg:StartsWith("-classNamePrefix:", StringComparison.InvariantCultureIgnoreCase)
-				settings:ClassNamePrefix := StripQuotes(arg:Substring(17))
+				XPorterSettings.ClassNamePrefix := StripQuotes(arg:Substring(17))
 			ELSEIF String.Compare(arg, "-b", TRUE) == 0
 				doBackup := TRUE
 			// ── KeepOriginal ──────────────────────────────────────────────

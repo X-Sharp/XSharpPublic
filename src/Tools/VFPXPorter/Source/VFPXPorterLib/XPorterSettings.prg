@@ -168,7 +168,6 @@ CLASS XPorterSettings
         SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
         SELF:ExpandWithEndWith := FALSE
         SELF:SolutionName := ""
-        SELF:ClassNamePrefix := ""
 		RETURN
 
 	/// <summary>
@@ -329,13 +328,25 @@ CLASS XPorterSettings
 	/// </summary>
 	PROPERTY ExpandWithEndWith AS LOGIC AUTO
 
+	PRIVATE STATIC _ClassNamePrefix := String.Empty AS STRING
 	/// <summary>
 	/// Prefix prepended to every exported class name (form, library, FormSet sub-form, Page, ...)
 	/// to avoid collisions between VFP class names and cursor aliases sharing the same name
 	/// (e.g. a class and a work area both named "Customers"). Default is empty (no prefix,
 	/// backward-compatible).
+	/// Static (like <see cref="SuppportLib"/> and <see cref="DataFolder"/>) because classes
+	/// such as <c>BaseItem</c> and <c>SCXVCXFile</c> need to read it and hold no
+	/// <see cref="XPorterSettings"/> instance reference. Access class-qualified
+	/// (<c>XPorterSettings.ClassNamePrefix</c>), not through an instance.
 	/// </summary>
-	PROPERTY ClassNamePrefix AS STRING AUTO
+	PUBLIC STATIC PROPERTY ClassNamePrefix AS STRING
+		GET
+			RETURN _ClassNamePrefix
+		END GET
+		SET
+			_ClassNamePrefix := VALUE
+		END SET
+	END PROPERTY
 
 END CLASS
 END NAMESPACE // VFPXPorterLib

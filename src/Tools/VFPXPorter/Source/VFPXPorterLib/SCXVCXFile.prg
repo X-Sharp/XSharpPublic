@@ -181,7 +181,10 @@ BEGIN NAMESPACE VFPXPorterLib
                                     itm:PropertiesDict:Add("ThisFormSet", "SELF")
                                     // Use the SCX filename (not the VFP object name) as the prefix so the
                                     // stub type matches what GetFormClassName() produces for the clone entity.
-                                    VAR scxPrefix := System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName):Replace(" ", "_")
+                                    // ClassNamePrefix is included too — must match GetFormClassName()'s
+                                    // "prefix + scxName" exactly, since this stub's ClassName is read
+                                    // back verbatim by BaseItem.FullyQualifiedName (bare-ClassName branch).
+                                    VAR scxPrefix := XPorterSettings.ClassNamePrefix + System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName):Replace(" ", "_")
                                     itm:IsContainer := TRUE
                                     itm:AddToControls := TRUE
                                     // Reset FoxClassName and ClassLocation so the ClassName setter
@@ -336,7 +339,10 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             // Compute the X# class name prefix for pages:
             // scxName + "_" + all-but-first-segment-of-PageFrame.FullName
-            VAR scxName := Path.GetFileNameWithoutExtension(pageFrame:FileName):Replace(" ", "_")
+            // ClassNamePrefix is included too — must match GetFormClassName()'s IsPage branch
+            // exactly, since these stubs' ClassName is read back verbatim by
+            // BaseItem.FullyQualifiedName (bare-ClassName branch).
+            VAR scxName := XPorterSettings.ClassNamePrefix + Path.GetFileNameWithoutExtension(pageFrame:FileName):Replace(" ", "_")
             VAR pfFullName := pageFrame:FullName   // e.g. "Formset.Form1.Pageframe1"
             VAR firstDot := pfFullName:IndexOf('.')
             VAR pathSuffix := IIF(firstDot >= 0, pfFullName:Substring(firstDot + 1):Replace(".", "_"), pfFullName)

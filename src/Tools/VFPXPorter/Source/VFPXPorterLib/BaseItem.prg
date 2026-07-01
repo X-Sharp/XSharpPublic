@@ -82,14 +82,23 @@ BEGIN NAMESPACE VFPXPorterLib
                     // Ok, we must check the ClassLocation, if not empty, that is a ClassLibrary file
                     // and we will use it as a Namespace
                     LOCAL nSpace := "" AS STRING
+                    LOCAL classNamePart := SELF:ClassName AS STRING
                     IF !String.IsNullOrEmpty( SELF:ClassLocation )
                         nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ):Replace(" ", "_") + "."
+                        // This references a class declared elsewhere (a VCX, same or different from
+                        // the current output), which GetFormClassName() exports with the prefix applied
+                        // (prefix + item:Name for library items) — match that here so the reference
+                        // resolves to the actual generated type name.
+                        classNamePart := XPorterSettings.ClassNamePrefix + classNamePart
                     ELSE
-                        // No ClassLocation and not converted: bare class name is returned.
-                        // This is expected for FormSet sub-form stubs (ClassName = "FormSet_FormName").
+                        // No ClassLocation and not converted: bare class name is returned as-is, NOT
+                        // prefixed here. This covers FormSet sub-form stubs and Page stubs, whose
+                        // ClassName is assigned directly in SCXVCXFile.prg (bypassing GetFormClassName)
+                        // to already match the prefixed name of the real exported entity — see Step 5
+                        // in 11_CLASS_PREFIX_PLAN.md. Prefixing again here would double the prefix.
                         XPorterLogger.Instance:Verbose( "FullyQualifiedName: item '" + SELF:Name + "' has no ClassLocation and was not converted (ClassName='" + SELF:ClassName + "')" )
                     ENDIF
-                    fqn := nSpace + SELF:ClassName
+                    fqn := nSpace + classNamePart
                 ENDIF
                 //
                 RETURN fqn

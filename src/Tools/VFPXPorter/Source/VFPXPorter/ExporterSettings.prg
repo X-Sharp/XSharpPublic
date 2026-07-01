@@ -132,7 +132,7 @@ BEGIN NAMESPACE VFPXPorter
             settings:SeparateLibraryProjects := SELF:SeparateLibraryProjects
             settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory
             settings:ExpandWithEndWith := SELF:ExpandWithEndWith
-            settings:ClassNamePrefix := SELF:ClassNamePrefix
+            XPorterSettings.ClassNamePrefix := SELF:ClassNamePrefix
 			//
 			XPorterSettings.DataFolder := SELF:RessourcesFolder
 			//

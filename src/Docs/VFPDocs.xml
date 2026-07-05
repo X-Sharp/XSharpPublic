@@ -6282,39 +6282,10 @@
             Specifies the class or object from which the new class or object is created.
         </param>
         <param name="cModule">
-            Specifies a .vcx file or X# program (.prg, .fxp, .mpr, .app, .exe, and so on) containing the class or object specified with cClassName.
-            The default is a .vcx file. If you specify a program file, you must include an extension.
-            <note name="Note">
-                A class library can have an alias. To specify a class or object from a class library with an alias,
-                include the class library alias followed by a period and the object name.<br/>
-                When possible, specify the compiled program name (.fxp) when a class is stored in a program file (.prg).
-                This ensures that the class is loaded from the proper class definition file.
-            </note>
-            If cModule is omitted, or is the empty string or the null value, X# searches for the class or object in the following order:
-            <list type="bullet">
-                <item>X# base classes.</item>
-                <item>Classes in the current program.</item>
-                <item>Class libraries opened with Set CLASSLIB.</item>
-                <item>Classes in procedure files opened with Set PROCEDURE.</item>
-                <item>Classes in the X# program execution chain.</item>
-                <item>The OLE registry if Set OLEOBJECT is ON.</item>
-            </list>
+          This parameter is not used in X#. It is included for compatibility with Visual FoxPro.
         </param>
         <param name="cInApplication">
-            Specifies the X# application (.exe or .app) containing the .vcx file you specify with cModule.
-            You must include an extension for the application. CInApplication is ignored if cModule is omitted,
-            or if cInApplication is the empty string or the null value.<br/>
-            If you want to use the cInApplication parameter, you must specify the name of .vcx file for cModule.
-            You cannot pass the name of a .prg file or compiled program (.fxp).
-        </param>
-        <param name="0">
-            Specifies that the class or object is instantiated without executing any of the event or method code in the class or object.
-            This feature is not supported in runtime applications.<br/>
-            All child classes or objects of the parent class are also instantiated. The event or method code in the child class or object isn't executed.<br/>
-            This option is provides the ability to view the structure of a class or object (with the AMembers( ) Function,
-            for example) without opening the class or object in the Class or Form Designer.<br/>
-            Note that code in the class or object should never be executed - code execution is not supported and can make X# unstable.
-            You should never explicitly call an event or method, or set properties. Setting properties can call Access and Assign methods.
+            This parameter is not used in X#. It is included for compatibility with Visual FoxPro.
         </param>
         <param name="eParameter1">
             Specifies optional parameters that are passed to the Init event procedure for the class or object.

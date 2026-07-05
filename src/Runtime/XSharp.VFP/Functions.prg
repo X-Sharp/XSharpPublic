@@ -15,19 +15,17 @@ FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/newobject/*" />
 [FoxProFunction("NEWOBJECT", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
-FUNCTION NewObject(cClassName, _args) AS OBJECT CLIPPER
+FUNCTION NewObject(cClassName, cModule, cInApplication, eParameter1, eParameter2) AS OBJECT CLIPPER
     VAR nCount := PCount()
 
     IF nCount >= 2
-        VAR uModule := _GetFParam(2)
-        IF IsString(uModule) .AND. !Empty(uModule)
+        IF IsString(cModule) .AND. !Empty(cModule)
             THROW NotImplementedException{"NEWOBJECT with cModule (.vcx/.app) is not supported"}
         ENDIF
     ENDIF
 
     IF nCount >= 3
-        VAR uApp := _GetFParam(3)
-        IF IsString(uApp) .AND. !Empty(uApp)
+        IF IsString(cInApplication) .AND. !Empty(cInApplication)
             THROW NotImplementedException{"NEWOBJECT with cInApplication (.vcx/.app) is not supported"}
         ENDIF
     ENDIF

@@ -8,13 +8,6 @@
 #pragma options("vo15", on)
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/newobject/*" />
-[FoxProFunction("NEWOBJECT", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION NewObject( cClassName ,_args) AS OBJECT
-    THROW NotImplementedException{}
-    // RETURN NULL_OBJECT
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/oldval/*" />
 [FoxProFunction("OLDVAL", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION OldVal( cExpression , uArea ) AS USUAL

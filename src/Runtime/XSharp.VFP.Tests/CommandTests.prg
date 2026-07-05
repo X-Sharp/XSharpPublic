@@ -393,6 +393,24 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             RELEASE WINDOWS
             Assert.True(TRUE)
         END METHOD
+
+        [Fact, Trait("Category", "NewObject")];
+        METHOD NewObjectBasicTest AS VOID
+            VAR o := NEWOBJECT("Custom")
+            Assert.NotNull(o)
+            Assert.True(o IS Custom)
+        END METHOD
+
+        [Fact, Trait("Category", "NewObject")];
+        METHOD NewObjectWithEmptyModuleTest AS VOID
+            VAR o := NEWOBJECT("Custom", "")
+            Assert.NotNull(o)
+        END METHOD
+
+        [Fact, Trait("Category", "NewObject")];
+        METHOD NewObjectWithModuleThrows AS VOID
+            Assert.Throws<NotImplementedException>({ => NEWOBJECT("Custom", "algo.vcx") })
+        END METHOD
     END CLASS
 
 END NAMESPACE

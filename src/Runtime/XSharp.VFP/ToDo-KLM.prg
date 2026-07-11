@@ -5,19 +5,6 @@
 
 
 #pragma options("vo15", on)
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/keymatch/*" />
-[FoxProFunction("KEYMATCH", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/lookup/*" />
-[FoxProFunction("LOOKUP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION Lookup( ReturnField, eSearchExpression, SearchedField , cTagName) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/maketransactable/*" />

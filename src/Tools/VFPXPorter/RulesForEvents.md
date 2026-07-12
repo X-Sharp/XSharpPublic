@@ -253,6 +253,27 @@ is marked as unhandled in the output.
 
 ---
 
+## Callable PEM Methods (runtime, not an EventRules concern)
+
+Separately from how `EventRules.json` wires handlers in generated designer code,
+`XSharp.VFP.UI`'s `Headers/ControlEventHandlers.xh` also exposes every VFP base
+event as a **callable method** on the control itself (e.g. `thisObject.InteractiveChange()`,
+`thisObject.Click()`). This matters because VFP source code frequently calls these
+PEMs directly — most commonly `InteractiveChange()` inside `Init`, to sync UI state
+right after setting `Value` programmatically (setting `Value` does not fire
+`InteractiveChange`, matching VFP). CodeConverter passes such calls through verbatim
+(it does not rewrite arbitrary method calls), so the runtime must provide a same-named
+method for the call to compile at all — independent of whatever `EventRules.json`
+event-wiring rule exists for that event.
+
+Several of these names collide with real WinForms `Control` events (`Click`,
+`MouseEnter/Leave/Up/Down/Move/Wheel`, `KeyPress/Down/Up`, `GotFocus`, `LostFocus`) —
+those are hidden with X#'s `NEW METHOD` and internal `+=` subscriptions had to switch
+from `SELF:Event` to `SUPER:Event` to keep reaching the real event. See
+`Headers/ControlEventHandlers.xh` for the full implementation.
+
+---
+
 ## Quick Reference Card
 
 | `NetTarget` suffix | Pattern | Designer output | Method prototype |

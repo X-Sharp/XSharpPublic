@@ -20,7 +20,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// The border is controlled by <see cref="BorderColor"/>, <see cref="BORDERWIDTH"/>, and
 	/// <see cref="BorderStyle"/> (0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible, 6=InsideSolid).<br/>
 	/// For rounded styles (4/5), <see cref="CURVATURE"/> (0â€“99) controls the corner radius as a
-	/// percentage of the bounding-box width. The background is always transparent.
+	/// percentage of the bounding-box width. The background follows <see cref="BackStyle"/>
+	/// (0=Transparent, 1=Opaque/default) and <c>BackColor</c>, independently of <see cref="FillStyle"/>.
 	/// </summary>
 	PARTIAL CLASS Shape INHERIT System.Windows.Forms.UserControl
 
@@ -34,6 +35,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			             | ControlStyles.AllPaintingInWmPaint ;
 			             | ControlStyles.UserPaint, TRUE )
 			SELF:BackColor     := Color.Transparent
+			SELF:_backStyle    := 1   // 1 = Opaque (VFP default)
 			SELF:_borderColor  := Color.Black
 			SELF:_borderWidth  := 1
 			SELF:_curvature    := 0
@@ -42,7 +44,26 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_style        := 0   // Rectangle
 			SELF:Size          := Size{100, 60}
 
-		// â”€â”€ BorderColor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// -- BackStyle -----------------------------------------------------------
+		PRIVATE _backStyle AS INT
+		/// <summary>
+		/// VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default.<br/>
+		/// Note: switching from 0 back to 1 does not restore a previously set opaque colour;
+		/// re-assign <c>BackColor</c> if needed. Triggers a repaint on change.
+		/// </summary>
+		PROPERTY BackStyle AS INT
+			GET ; RETURN SELF:_backStyle
+			END GET
+			SET
+				SELF:_backStyle := VALUE
+				IF ( VALUE == 0 )
+					SELF:BackColor := Color.Transparent
+				ENDIF
+				SELF:Invalidate()
+			END SET
+		END PROPERTY
+
+		// -- BorderColor ---------------------------------------------------------
 		PRIVATE _borderColor AS System.Drawing.Color
 		/// <summary>
 		/// Colour of the shape's border. Triggers a repaint on change.

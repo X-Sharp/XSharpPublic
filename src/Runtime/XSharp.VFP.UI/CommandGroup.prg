@@ -132,7 +132,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 						btn:Text := "Command" + i:ToString()
 						btn:UseVisualStyleBackColor := TRUE
 						btn:Tag := i
-						btn:Click += OnButtonClick
+						// Click is hidden by CommandButton's callable-PEM method (see ControlEventHandlers.xh) —
+						// subscribe via the base Control type to reach the real .NET event.
+						((System.Windows.Forms.Control)btn):Click += OnButtonClick
 						SELF:buttons:Add( btn )
 						SELF:gBox:Controls:Add( btn )
 					NEXT

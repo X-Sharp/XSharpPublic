@@ -4,7 +4,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 PARTIAL CLASS Shape IMPLEMENTS IVFPControl
 #include "VFPObject.xh"
 #include "VFPControl.xh"
-// BorderColor, BorderWidth, Curvature, FillColor, FillStyle, Style — implemented in Shape.prg
+// BackStyle, BorderColor, BorderWidth, Curvature, FillColor, FillStyle, Style — implemented in Shape.prg
 PROPERTY DrawMode    AS LONG  AUTO
 PROPERTY PolyPoints  AS USUAL AUTO
 PROPERTY Rotation    AS USUAL AUTO

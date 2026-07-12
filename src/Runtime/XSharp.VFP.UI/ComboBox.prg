@@ -266,14 +266,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:ApplyRowSource()
 		END METHOD
 
+        PRIVATE _isProgrammatic   AS LOGIC
 		/// <summary>
 		/// The current value as a VFP USUAL — the selected item's display text, or the typed text
 		/// when no item is selected.<br/>
 		/// Setting selects the matching item by text; if not found, sets the raw text.
 		/// Fires <see cref="vfpProgrammaticChange"/> on assignment.
 		/// </summary>
-		PRIVATE _isProgrammatic   AS LOGIC
-
 		PROPERTY Value AS USUAL
 			GET
 				IF SELF:SelectedItem != NULL

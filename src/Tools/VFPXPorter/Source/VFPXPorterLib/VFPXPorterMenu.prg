@@ -186,15 +186,15 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECT METHOD ExportSingleFile() AS VOID
             LOCAL dest AS StreamWriter
             // The File to be created
+            VAR menuClassName := XPorterSettings.ClassNamePrefix + Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath)
             LOCAL destFile AS STRING
-            destFile := Path.GetFileName( SELF:Settings:ItemsPath )
-            destFile := Path.Combine(SELF:Settings:OutputPath, destFile )
+            destFile := Path.Combine(SELF:Settings:OutputPath, menuClassName )
             destFile := Path.ChangeExtension( destFile, ".prg")
             dest := StreamWriter{ destFile }
             SELF:GeneratedFiles:Add( GeneratedFile{destFile})
             // Build replacements dictionary for Menu template
             VAR menuReplacements := Dictionary<STRING, STRING>{}
-            menuReplacements["MenuName"] := Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath)
+            menuReplacements["MenuName"] := menuClassName
             //
             LOCAL initMenu AS STRING
             initMenu := SELF:ProcessInits( SELF:Items )

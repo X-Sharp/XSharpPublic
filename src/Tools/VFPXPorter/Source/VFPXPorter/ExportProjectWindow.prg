@@ -43,7 +43,7 @@ BEGIN NAMESPACE VFPXPorter
             SELF:Settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory:Checked
 			//
 			SELF:infoStripLabel:Text := ""
-			IF !SELF:CheckFileAndFolder()
+			IF !SELF:CheckFileAndFolder( false )
 				RETURN
 			ENDIF
 			// Analyze First
@@ -97,7 +97,7 @@ BEGIN NAMESPACE VFPXPorter
 			ENDIF
             RETURN
 
-		PRIVATE METHOD CheckFileAndFolder() AS LOGIC
+		PRIVATE METHOD CheckFileAndFolder( analysis AS LOGIC ) AS LOGIC
 			//
 			SELF:infoStripLabel:Text := ""
             SELF:infoStripError:Text := ""
@@ -112,43 +112,43 @@ BEGIN NAMESPACE VFPXPorter
 				SELF:infoStripLabel:Text := "Error : Input Project doesn't exist."
 				RETURN FALSE
             ENDIF
-
             //
-			// Warning, we may NOT be able to create the Directory
-			TRY
-                IF Directory.Exists(baseOutputPath)
-                    // If Append: do not delete the folder. We might delete the solution.
-                    // or sibling project folders. We just delete if not Append.
-                    IF !SELF:Settings:AppendToSolution
-                        SELF:EraseFolder(baseOutputPath, FALSE )
-                    ELSE
-                        // If Append: we just delete sub-folders of the current project
-                        // to ensure a clean export of the current project.
-                        VAR codeDir := Path.Combine(baseOutputPath, "Code")
-                        IF Directory.Exists(codeDir)
-                            SELF:EraseFolder(codeDir, TRUE)
-                        ENDIF
-                        var xsharpDir := Path.Combine(baseOutputPath, "XSharp")
-                        IF Directory.Exists(xsharpDir)
-                            SELF:EraseFolder(xsharpDir, TRUE)
-                        ENDIF
-                    ENDIF
-                ELSE
-				    Directory.CreateDirectory(baseOutputPath)
-				ENDIF
-			CATCH e AS Exception
-				//
-                SELF:resultText:Text := "Warning during folder cleanup: " + e:Message
-                IF !SELF:Settings:IgnoreErrors
-				    THROW e
-				ENDIF
-            END TRY
-            //
-
 			IF !Directory.Exists(baseOutputPath)
 				SELF:infoStripLabel:ForeColor := Color.Red
 				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
 				RETURN FALSE
+            ENDIF
+            //
+            IF !analysis
+			    // Warning, we may NOT be able to create the Directory
+			    TRY
+                    IF SELF:Settings:EmptyFolder
+                        // If Append: do not delete the folder. We might delete the solution.
+                        // or sibling project folders. We just delete if not Append.
+                        IF !SELF:Settings:AppendToSolution
+                            SELF:EraseFolder(baseOutputPath, FALSE )
+                        ELSE
+                            // If Append: we just delete sub-folders of the current project
+                            // to ensure a clean export of the current project.
+                            VAR codeDir := Path.Combine(baseOutputPath, "Code")
+                            IF Directory.Exists(codeDir)
+                                SELF:EraseFolder(codeDir, TRUE)
+                            ENDIF
+                            var xsharpDir := Path.Combine(baseOutputPath, "XSharp")
+                            IF Directory.Exists(xsharpDir)
+                                SELF:EraseFolder(xsharpDir, TRUE)
+                            ENDIF
+                        ENDIF
+                    ELSE
+				        Directory.CreateDirectory(baseOutputPath)
+				    ENDIF
+			    CATCH e AS Exception
+				    //
+                    SELF:resultText:Text += "Warning during folder cleanup: " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+				        THROW e
+				    ENDIF
+                END TRY
             ENDIF
 			//
             SELF:xPorter := XPorterProject{ pjxFilePath, baseOutputPath }
@@ -161,7 +161,7 @@ BEGIN NAMESPACE VFPXPorter
 
 			RETURN TRUE
 		PRIVATE METHOD analysisButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
-			IF !SELF:CheckFileAndFolder()
+			IF !SELF:CheckFileAndFolder( TRUE )
 				RETURN
 			ENDIF
 			//
@@ -223,15 +223,31 @@ BEGIN NAMESPACE VFPXPorter
 			RETURN
 
 		private method EraseFolder( folderPath AS STRING, eraseTop AS LOGIC ) AS VOID
-			foreach cFile AS String in Directory.GetFiles(folderPath)
-				System.IO.File.Delete( cFile )
+            FOREACH cFile AS String in Directory.GetFiles(folderPath)
+                TRY
+                    System.IO.File.Delete( cFile )
+                CATCH e AS Exception
+                    //
+                    SELF:resultText:Text += "Delete " + cFile + " : " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+				        THROW e
+				    ENDIF
+                END TRY
 			NEXT
 
-			foreach subfolder AS String in Directory.GetDirectories(folderPath)
+			FOREACH subfolder AS String in Directory.GetDirectories(folderPath)
 				SELF:EraseFolder(subfolder, TRUE)
 			NEXT
-			IF eraseTop
-				Directory.Delete( folderPath )
+            IF eraseTop
+                TRY
+                    Directory.Delete( folderPath )
+                CATCH e AS Exception
+                    //
+                    SELF:resultText:Text += "Delete " + folderPath + " : " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+                        THROW e
+                    ENDIF
+                 END TRY
 			ENDIF
 			RETURN
 

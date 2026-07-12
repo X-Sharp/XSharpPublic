@@ -581,11 +581,11 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // start:Append( "{}" )
                                     projectReplacements["startcode"] := ""
                                     IF SELF:Project:Main:Name:EndsWith(".mnx")
-                                        projectReplacements["startmenu"] := start:ToString()
+                                        projectReplacements["startmenu"] := XPorterSettings.ClassNamePrefix + start:ToString()
                                         projectReplacements["startform"] := ""
                                     ELSE
                                         projectReplacements["startmenu"] := ""
-                                        projectReplacements["startform"] := start:ToString()
+                                        projectReplacements["startform"] := XPorterSettings.ClassNamePrefix + start:ToString()
                                     ENDIF
                                 ENDIF
                                 //

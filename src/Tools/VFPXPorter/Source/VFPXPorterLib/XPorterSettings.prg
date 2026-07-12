@@ -251,7 +251,7 @@ CLASS XPorterSettings
 	PROPERTY StoreInFolders AS LOGIC AUTO
 
 	/// <summary>
-	/// Empty the destinaiton Folder before exporting
+	/// Empty the destination Folder before exporting
 	/// </summary>
 	/// <value></value>
 	PROPERTY EmptyFolder AS LOGIC AUTO

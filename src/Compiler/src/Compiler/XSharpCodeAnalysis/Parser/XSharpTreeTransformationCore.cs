@@ -3094,6 +3094,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
+            var primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3106,7 +3107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: null, // TODO nvk
+                        parameterList: primeParam, // TODO nvk
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3122,7 +3123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                    keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                    identifier: context.Id.Get<SyntaxToken>(),
                    typeParameterList: getTypeParameters(context.TypeParameters),
-                   parameterList: null, // TODO nvk
+                   parameterList: primeParam, // TODO nvk
                    baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                    constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                    openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3209,6 +3210,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Implements);
+            var primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3221,7 +3223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: null, // TODO nvk
+                        parameterList: primeParam, // TODO nvk
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3237,7 +3239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                     identifier: context.Id.Get<SyntaxToken>(),
                     typeParameterList: getTypeParameters(context.TypeParameters),
-                    parameterList: null, // TODO nvk
+                    parameterList: primeParam, // TODO nvk
                     baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                     constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                     openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -5138,8 +5140,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var paramCtx in context._Params)
             {
                 var paramNode = paramCtx.Get<ParameterSyntax>();
+                bool isClipper = CurrentMember?.Data.HasClipperCallingConvention ?? false;
+                bool isProperty = CurrentMember?.Data.IsProperty ?? false;
                 if (paramCtx.Type == null && paramCtx.Ellipsis == null &&
-                    !CurrentMember.Data.HasClipperCallingConvention && !CurrentMember.Data.IsProperty)
+                    !isClipper && !isProperty)
                 {
                     var parType = "USUAL";
                     var dt = _getNextParameterDataType(paramCtx);

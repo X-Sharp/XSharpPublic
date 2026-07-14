@@ -7629,8 +7629,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected virtual XP.WithBlockContext FindWithBlock(XSharpParserRuleContext context)
         {
-            var parent = context.Parent;
-            while (parent != null && !(parent is XP.IEntityContext))
+            var parent = context.Parent.Parent;
+            while (parent is not null && parent is not XP.IEntityContext)
             {
                 if (parent is XP.WithBlockContext wbc)
                 {

@@ -552,7 +552,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Constructor"));
                 }
             }
-            if (context.isInInterface())
+            if (context.isInInterface() && context.Modifiers?.STATIC().Length == 0)
             {
                 _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }

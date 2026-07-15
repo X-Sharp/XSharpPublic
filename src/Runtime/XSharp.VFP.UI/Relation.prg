@@ -13,6 +13,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// </summary>
 	PARTIAL CLASS Relation
 		/// <summary>
+		/// The Name of the Relation.
+		/// </summary>
+		PROPERTY Name AS STRING AUTO
+
+		/// <summary>
 		/// The alias of the parent cursor that owns this relation.
 		/// </summary>
 		PROPERTY ParentAlias AS STRING AUTO

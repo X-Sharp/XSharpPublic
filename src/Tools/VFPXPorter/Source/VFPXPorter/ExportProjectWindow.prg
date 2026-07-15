@@ -228,7 +228,7 @@ BEGIN NAMESPACE VFPXPorter
                     System.IO.File.Delete( cFile )
                 CATCH e AS Exception
                     //
-                    SELF:resultText:Text += "Delete " + cFile + " : " + e:Message + Environment.NewLine
+                    SELF:resultText:Text += "Delete Error " + cFile + " : " + e:Message + Environment.NewLine
                     IF !SELF:Settings:IgnoreErrors
 				        THROW e
 				    ENDIF
@@ -243,7 +243,7 @@ BEGIN NAMESPACE VFPXPorter
                     Directory.Delete( folderPath )
                 CATCH e AS Exception
                     //
-                    SELF:resultText:Text += "Delete " + folderPath + " : " + e:Message + Environment.NewLine
+                    SELF:resultText:Text += "Delete Error " + folderPath + " : " + e:Message + Environment.NewLine
                     IF !SELF:Settings:IgnoreErrors
                         THROW e
                     ENDIF

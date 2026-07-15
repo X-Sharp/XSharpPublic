@@ -3094,7 +3094,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
-            var primeParam = getParameters(context.ParamList);
+            ParameterListSyntax primeParam = null;
+            if (context.ParamList != null) primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3210,7 +3211,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Implements);
-            var primeParam = getParameters(context.ParamList);
+            ParameterListSyntax primeParam = null;
+            if (context.ParamList != null) primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)

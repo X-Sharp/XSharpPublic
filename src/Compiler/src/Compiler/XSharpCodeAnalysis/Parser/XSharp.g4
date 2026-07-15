@@ -252,7 +252,6 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
 class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (C=CLASS | R=RECORD | R=RECORD C=CLASS) (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
-                      (ParamList=parameterList)?
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
@@ -290,7 +289,6 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (R=RECORD)? S=STRUCTURE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
-                      (ParamList=parameterList)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*

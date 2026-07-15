@@ -1707,7 +1707,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classdecl.Keyword,
                         classdecl.Identifier,
                         classdecl.TypeParameterList,
-                        classdecl.ParameterList,
+                        null, // TODO nvk
                         classdecl.BaseList,
                         classdecl.ConstraintClauses,
                         classdecl.OpenBraceToken,

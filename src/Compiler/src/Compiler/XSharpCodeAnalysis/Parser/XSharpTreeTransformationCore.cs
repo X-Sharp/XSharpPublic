@@ -3107,7 +3107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: primeParam, // TODO nvk
+                        parameterList: primeParam,
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3123,7 +3123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                    keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                    identifier: context.Id.Get<SyntaxToken>(),
                    typeParameterList: getTypeParameters(context.TypeParameters),
-                   parameterList: primeParam, // TODO nvk
+                   parameterList: primeParam,
                    baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                    constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                    openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3223,7 +3223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: primeParam, // TODO nvk
+                        parameterList: primeParam,
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3239,7 +3239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                     identifier: context.Id.Get<SyntaxToken>(),
                     typeParameterList: getTypeParameters(context.TypeParameters),
-                    parameterList: primeParam, // TODO nvk
+                    parameterList: primeParam,
                     baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                     constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                     openBraceToken: SyntaxFactory.OpenBraceToken,

@@ -141,7 +141,7 @@
       <Version>17.0.551</Version>
     </PackageReference>
     <PackageReference Include="MessagePack">
-      <Version>2.5.192</Version>
+      <Version>2.5.302</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IO.Redist">
       <Version>6.1.0</Version>

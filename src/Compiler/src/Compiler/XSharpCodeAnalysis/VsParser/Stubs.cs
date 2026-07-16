@@ -28,6 +28,7 @@ namespace Microsoft.CodeAnalysis.Text
     {
         public int Line;
         public int Column;
+        public int Length;
         public string FileName;
     }
 

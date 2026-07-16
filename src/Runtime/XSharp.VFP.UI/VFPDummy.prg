@@ -10,5 +10,5 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-PARTIAL CLASS OleBoundControl
+CLASS OleBoundControl
 END CLASS

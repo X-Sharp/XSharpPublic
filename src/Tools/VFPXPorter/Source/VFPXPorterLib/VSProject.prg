@@ -28,9 +28,41 @@ CLASS VSProject
 
     PROPERTY Name AS STRING AUTO
 
-    PROPERTY IsLibrary AS LOGIC AUTO
+    PROPERTY IsLibrary AS LOGIC
+        GET
+            RETURN SELF:ProjectType == ProjectType.ClassLibrary
+        END GET
+        SET
+            IF value
+                SELF:ProjectType := ProjectType.ClassLibrary
+            ELSE
+                SELF:ProjectType := ProjectType.WindowsExe
+            ENDIF
+        END SET
+    END PROPERTY
+
+    /// <summary>
+    /// Gets or sets the type of Visual Studio project to generate.
+    /// </summary>
+    /// <remarks>
+    /// This value controls how the project is emitted in the generated
+    /// solution and project files. Typical values include
+    /// <see cref="ProjectType.ClassLibrary" /> and
+    /// <see cref="ProjectType.WindowsExe" />.
+    /// </remarks>
+    PROPERTY ProjectType AS ProjectType AUTO
 
     PROPERTY GUID AS STRING AUTO
+
+    /// <summary>
+    /// Gets or sets the path to the project file relative to the solution directory.
+    /// </summary>
+    /// <remarks>
+    /// This value is used when generating the solution so that project entries
+    /// reference the project file using a stable relative path.
+    /// </remarks>
+    PROPERTY RelativePath AS STRING AUTO
+    PROPERTY ProjectFileNameFullPath AS STRING AUTO
 
     PROPERTY FrameworkVersion AS STRING AUTO
     PROPERTY XmlDoc as XmlDocument AUTO
@@ -45,6 +77,7 @@ CLASS VSProject
         SELF:GUID := System.Guid.NewGuid().ToString("B"):ToUpper()
         SELF:ProjectReferenceList := List<VSProject>{}
         SELF:IsLibrary := FALSE
+        SELF:ProjectType := ProjectType.WindowsExe
         // TODO : set the Framework version as a Setting ??
         SELF:FrameworkVersion := "4.7.2"
         RETURN
@@ -96,6 +129,11 @@ CLASS VSProject
     PUBLIC METHOD AddReference( refer AS Reference ) AS VOID
         SELF:ReferenceList:Add( refer )
 
+    /// <summary>
+    /// Save the XML document to the given path, using the project name and the standard definitions
+    /// </summary>
+    /// <param name="projectFileNameFullPath">The full path to the project file.</param>
+    /// <param name="stdDef">The standard definitions to use.</param>
     PUBLIC METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
         XmlDoc := XmlDocument{}
         //
@@ -152,7 +190,9 @@ CLASS VSProject
             FOREACH prj AS VSProject IN SELF:ProjectReferenceList
                 import := SELF:CreateElement( libs, "ProjectReference" )
                 configAttr := XmlDoc:CreateAttribute( "Include" )
-                configAttr:Value := prj:Name + ".xsproj"
+                // Compute relative path from this project's folder to the referenced project file,
+                // so references work correctly when projects live in different subfolders.
+                configAttr:Value := GetRelativePath( Path.GetDirectoryName(projectFileNameFullPath), prj:ProjectFileNameFullPath )
                 import:Attributes:Append( configAttr )
                 SELF:CreateElement(import, "Name", prj:Name)
                 SELF:CreateElement(import, "Project", prj:GUID)
@@ -161,6 +201,7 @@ CLASS VSProject
             NEXT
         ENDIF
         //
+        SELF:ProjectFileNameFullPath := projectFileNameFullPath
         SELF:XmlDoc:Save( projectFileNameFullPath )
         RETURN
 
@@ -212,10 +253,35 @@ CLASS VSProject
         //parent:AppendChild( dummy )
         SELF:CreateElement(parent, "Name", name + "App")
         SELF:CreateElement(parent, "ProjectGuid", SELF:GUID)
-        SELF:CreateElement(parent, "OutputType", IIF(SELF:IsLibrary, "Library", "WinExe"))
+        // Mapping MSBuild project types
+        LOCAL outputTypeStr AS STRING
+        SWITCH SELF:ProjectType
+        CASE ProjectType.ClassLibrary
+            outputTypeStr := "Library"
+
+        CASE ProjectType.Console
+            outputTypeStr := "Exe"
+
+        OTHERWISE
+            outputTypeStr := "WinExe"
+        END SWITCH
+        SELF:CreateElement(parent, "OutputType", outputTypeStr)
+
         SELF:CreateElement(parent, "AppDesignerFolder","Properties")
         SELF:CreateElement(parent, "RootNamespace", name)
-        SELF:CreateElement(parent, "AssemblyName", IIF(SELF:IsLibrary, name + "Lib", name + "App"))
+
+        // Assembly name according to type
+        LOCAL assemblyName AS STRING
+        SWITCH SELF:ProjectType
+        CASE ProjectType.ClassLibrary
+            assemblyName := Name + "Lib"
+        CASE ProjectType.Console
+            assemblyName := Name + "Console"
+        OTHERWISE
+            assemblyName := Name + "App"
+        END SWITCH
+        SELF:CreateElement(parent, "AssemblyName", assemblyName)
+
         SELF:CreateElement(parent, "TargetFrameworkVersion", SELF:FrameworkVersion)
         SELF:CreateElement(parent, "NoLogo", "true")
         SELF:CreateElement(parent, "GenerateFullPaths", "true")

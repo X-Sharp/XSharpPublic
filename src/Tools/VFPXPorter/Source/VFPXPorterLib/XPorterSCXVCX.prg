@@ -49,8 +49,8 @@ BEGIN NAMESPACE VFPXPorterLib
         METHOD Analyze( doBackup := FALSE AS LOGIC ) AS LOGIC
             //
             IF SELF:_fileName == NULL  .OR. !File.Exists(SELF:_fileName)
-                XPorterLogger.Instance:Error( "Unknown File : " )
-                XPorterLogger.Instance:Error( IIF(SELF:_fileName==NULL, "NULL", SELF:_fileName) )
+                VAR fileName := IIF(SELF:_fileName==NULL, "NULL", SELF:_fileName)
+                XPorterLogger.Instance:Error("Analyze: Unknown or missing file: " + fileName)
                 RETURN FALSE
             ENDIF
             //
@@ -69,6 +69,8 @@ BEGIN NAMESPACE VFPXPorterLib
                     SELF:DependsOn:AddRange(entity:DependsOn)
                     SELF:DefiningControls:AddRangeNewOnly<STRING,SCXVCXItem>( entity:DefiningControls )
                 NEXT
+                // Remove intra-library references (classes inheriting from siblings in this same VCX)
+                SELF:DependsOn:Remove(SELF:_fileName)
             ENDIF
             //
             RETURN success
@@ -89,7 +91,7 @@ BEGIN NAMESPACE VFPXPorterLib
             //
             IF SELF:_file:IsLibrary
                 // Set the NameSpace for the Library
-                xPorter:NamespaceDefinition  := Path.GetFileNameWithoutExtension( SELF:_fileName )
+                xPorter:NamespaceDefinition  := Path.GetFileNameWithoutExtension( SELF:_fileName ):Replace(" ", "_")
                 SELF:NamespaceDefinition := xPorter:NamespaceDefinition
             ELSE
                 SELF:NamespaceDefinition := ""
@@ -104,7 +106,11 @@ BEGIN NAMESPACE VFPXPorterLib
                 //
                 xPorter:ProcessAttachedCode( entity )
                 xPorter:CustomControls := SELF:CustomControls
-                IF entity:Item:IsForm .OR. entity:Item:IsContainer
+                IF entity:Item:IsReportListener
+                    // non-UI class: single file, no WinForms templates
+                    xPorter:InitElementsReportListener()
+                    lOk := xPorter:ExportAsSingleFile( entity )
+                ELSEIF entity:Item:IsForm .OR. entity:Item:IsContainer .OR. entity:Item:IsPage
                     // file.prg & file.designer.prg
                     lOk := xPorter:ExportAsWindowAndDesigner( entity )
                 ELSE
@@ -124,22 +130,16 @@ BEGIN NAMESPACE VFPXPorterLib
         PROTECTED METHOD CountItems( entities AS List<SCXVCXEntity> ) AS INT
             LOCAL total := 0 AS INT
             FOREACH VAR entity IN entities
-                //
                 total++
-                FOREACH VAR subItem IN entity:Item:Childs
-                    total += SELF:CountItems( subItem:Childs )
-                NEXT
+                total += SELF:CountItems( entity:Item:Childs )
             NEXT
             RETURN total
 
         PROTECTED METHOD CountItems( itemList AS List<BaseItem> ) AS INT
             LOCAL total := 0 AS INT
             FOREACH VAR item IN itemList
-                //
                 total++
-                FOREACH VAR subItem IN item:Childs
-                    total += SELF:CountItems( subItem:Childs )
-                NEXT
+                total += SELF:CountItems( item:Childs )
             NEXT
             RETURN total
 

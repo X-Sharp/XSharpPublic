@@ -85,6 +85,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AutoCloseMessageBox.prg" />
+    <Compile Include="Generated\Bar.generated.prg" />
+    <Compile Include="Generated\ContextMenu.generated.prg" />
     <Compile Include="Generated\CheckBox.generated.prg" />
     <Compile Include="Generated\_Interfaces.prg" />
     <Compile Include="Generated\Column.generated.prg" />
@@ -98,12 +100,15 @@
     <Compile Include="Generated\FormSet.generated.prg" />
     <Compile Include="Generated\Image.generated.prg" />
     <Compile Include="Generated\Label.generated.prg" />
+    <Compile Include="Generated\Menu.generated.prg" />
     <Compile Include="Generated\Line.generated.prg" />
     <Compile Include="Generated\ListBox.generated.prg" />
     <Compile Include="Generated\OLEControl.generated.prg" />
     <Compile Include="Generated\OptionButton.generated.prg" />
     <Compile Include="Generated\OptionGroup.generated.prg" />
+    <Compile Include="Generated\Pad.generated.prg" />
     <Compile Include="Generated\Page.generated.prg" />
+    <Compile Include="Generated\Popup.generated.prg" />
     <Compile Include="Generated\PageFrame.generated.prg" />
     <Compile Include="Generated\ProjectHook.generated.prg" />
     <Compile Include="Generated\Relation.generated.prg" />
@@ -118,6 +123,8 @@
     <Compile Include="Generated\XMLField.generated.prg" />
     <Compile Include="Generated\XMLTable.generated.prg" />
     <Compile Include="InputBoxForm.prg" />
+    <Compile Include="Bar.prg" />
+    <Compile Include="ContextMenu.prg" />
     <Compile Include="MaskProvider.prg" />
     <Compile Include="Application.prg" />
     <Compile Include="Checkbox.prg" />
@@ -155,7 +162,21 @@
     </Compile>
     <Compile Include="Tools.prg" />
     <Compile Include="CommandButton.prg" />
+    <Compile Include="PageFrame.prg" />
+    <Compile Include="Page.prg" />
+    <Compile Include="Line.prg" />
+    <Compile Include="Shape.prg" />
+    <Compile Include="Menu.prg" />
+    <Compile Include="MenuCommands.prg" />
+    <Compile Include="MenuFunctions.prg" />
+    <Compile Include="MenuState.prg" />
+    <Compile Include="KeyLabelManager.prg" />
+    <Compile Include="Pad.prg" />
+    <Compile Include="Popup.prg" />
+    <Compile Include="Separator.prg" />
+    <Compile Include="ToolBar.prg" />
     <Compile Include="Cursor.prg" />
+    <Compile Include="Relation.prg" />
     <Compile Include="DataEnvironment.prg" />
     <Compile Include="Form.prg">
       <SubType>Form</SubType>
@@ -167,8 +188,15 @@
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
     <Compile Include="VFPTools.prg" />
+    <Compile Include="VFPDbDataSource.prg" />
     <Compile Include="VfpUIProvider.prg" />
     <Compile Include="Win32UI.prg" />
+    <Compile Include="InputMask\InputMaskHandler.prg" />
+    <Compile Include="InputMask\InputMaskFormatter.prg" />
+    <Compile Include="InputMask\InputMaskValidator.prg" />
+    <Compile Include="InputMask\InputMaskPattern.prg" />
+    <Compile Include="InputMask\MaskPosition.prg" />
+    <Compile Include="Generated\EditBox.generated.prg" />
     <Compile Include="_OtherClasses.prg" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +223,7 @@
     <None Include="Headers\FontProperties.xh" />
     <None Include="Headers\FormOverride.xh" />
     <None Include="Headers\InitCall.xh" />
+    <None Include="Headers\BorderStyle.xh" />
     <None Include="Headers\MousePointer.xh" />
     <None Include="Headers\TextControlProperties.xh" />
     <None Include="Headers\Tooltips.xh" />
@@ -202,7 +231,8 @@
     <None Include="Generated\VFPList.xh" />
     <None Include="Generated\VFPControl.xh" />
     <None Include="Generated\VFPObject.xh" />
-    <None Include="Headers\VFPObject.xh" />
+    <None Include="Headers\VFPButtonImage.xh" />
+    <None Include="Headers\VFPMenuSupport.xh" />
     <None Include="Headers\VFPPropertiesDynamic.xh" />
     <None Include="Properties\XSharp.bmp" />
   </ItemGroup>

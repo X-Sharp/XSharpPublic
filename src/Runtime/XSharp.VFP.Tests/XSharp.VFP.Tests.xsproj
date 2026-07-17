@@ -101,6 +101,7 @@
     <Compile Include="IndexOnTrimTests.prg" />
     <Compile Include="IntrospectionTests.prg" />
     <Compile Include="KeyMatchLookupTests.prg" />
+    <Compile Include="ReplaceScopeTests.prg" />
     <Compile Include="SQLStatementTests.prg" />
     <Compile Include="StrConvTests.prg" />
     <Compile Include="TypeTests.prg" />

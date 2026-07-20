@@ -1,0 +1,128 @@
+﻿// ContextMenu.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+USING System
+USING System.Collections.Generic
+USING System.Windows.Forms
+
+BEGIN NAMESPACE XSharp.VFP.UI
+
+	/// <summary>
+	/// VFP-compatible ContextMenu class. Represents a right-click (shortcut) menu
+	/// attached to a control. Maps to System.Windows.Forms.ContextMenuStrip.
+	/// Assign to a control via ctrl.ContextMenuStrip := oContextMenu.
+	/// Add items via AddBar(). A caption of "--" inserts a separator.
+	/// Action methods live on a subclass â€” vfpClick dispatch finds them via
+	/// Bar.Owner (which is this ContextMenu instance directly).
+	/// </summary>
+PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
+
+		PRIVATE STATIC _registry AS Dictionary<STRING, ContextMenu>
+
+		PRIVATE _bars AS List<Bar>
+
+		CONSTRUCTOR() STRICT
+			SUPER()
+			SELF:_bars := List<Bar>{}
+
+		// ── Named registry ────────────────────────────────────────────────────
+		// ContextMenus register themselves by Name so DEFINE POPUP SHORTCUT
+		// and SET SKIP OF POPUP can locate them at runtime.
+		NEW PROPERTY Name AS STRING
+			GET ; RETURN SUPER:Name ; END GET
+			SET
+				IF !String.IsNullOrEmpty(SUPER:Name) .AND. _registry != NULL
+					_registry:Remove(SUPER:Name)
+				ENDIF
+				SUPER:Name := VALUE
+				IF !String.IsNullOrEmpty(VALUE)
+					IF _registry == NULL
+						_registry := Dictionary<STRING, ContextMenu>{}
+					ENDIF
+					_registry[VALUE] := SELF
+				ENDIF
+			END SET
+		END PROPERTY
+
+		STATIC METHOD Find( cName AS STRING ) AS ContextMenu
+			IF _registry != NULL .AND. _registry:ContainsKey(cName)
+				RETURN _registry[cName]
+			ENDIF
+			RETURN NULL
+
+		// â”€â”€ BarCount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// Number of <see cref="Bar"/> items in this menu. Separator entries are not counted.
+		/// </summary>
+		PROPERTY BarCount AS LONG
+			GET
+				RETURN (LONG) SELF:_bars:Count
+			END GET
+		END PROPERTY
+
+		// â”€â”€ Bars[i] â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// 1-based indexed access to <see cref="Bar"/> items (separators excluded).
+		/// </summary>
+		PROPERTY Bars[ i AS LONG ] AS Bar
+			GET
+				RETURN SELF:_bars[ (INT) i - 1 ]
+			END GET
+		END PROPERTY
+
+		// â”€â”€ AddBar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		/// <summary>
+		/// Adds an item to the menu. When <paramref name="cCaption"/> is <c>"--"</c>, inserts a <see cref="System.Windows.Forms.ToolStripSeparator"/>; otherwise creates a <see cref="Bar"/> and registers it as a dynamic property under <paramref name="cName"/>.
+		/// </summary>
+		METHOD AddBar( cName, cCaption ) AS USUAL CLIPPER
+			LOCAL sName    AS STRING
+			LOCAL sCaption AS STRING
+			sName    := (STRING) cName
+			sCaption := (STRING) cCaption
+			IF sCaption == "--"
+				LOCAL sep AS ToolStripSeparator
+				sep      := ToolStripSeparator{}
+				sep:Name := sName
+				SELF:Items:Add( sep )
+			ELSE
+				LOCAL oBar AS Bar
+				oBar         := Bar{}
+				oBar:Name    := sName
+				oBar:Caption := sCaption
+				SELF:Items:Add( oBar )
+				SELF:_bars:Add( oBar )
+				SELF:AddProperty( sName, oBar, PropertyVisibility.Public, "AddBar" )
+			ENDIF
+			RETURN NIL
+
+		// ── Skip ──────────────────────────────────────────────────────────────
+		PROPERTY Skip AS LOGIC
+			GET ; RETURN !SELF:Enabled ; END GET
+			SET ; SELF:Enabled := !VALUE ; END SET
+		END PROPERTY
+
+		// ── IndexOf ───────────────────────────────────────────────────────────
+		// Returns the 1-based Bar index of the given bar (0 = not found).
+		INTERNAL METHOD IndexOf( bar AS Bar ) AS INT
+			LOCAL idx := SELF:_bars:IndexOf(bar) AS INT
+			RETURN IIF( idx < 0, 0, idx + 1 )
+
+		// ── Lifecycle stubs ───────────────────────────────────────────────────
+		/// <summary>
+		/// VFP Init lifecycle stub â€” overridden by the subclass to run initialisation code.
+		/// </summary>
+		VIRTUAL METHOD Init() AS USUAL CLIPPER
+			RETURN NIL
+
+		/// <summary>
+		/// VFP Destroy lifecycle stub â€” overridden by the subclass to run cleanup code.
+		/// </summary>
+		VIRTUAL METHOD Destroy() AS USUAL CLIPPER
+			RETURN NIL
+
+	END CLASS
+
+END NAMESPACE

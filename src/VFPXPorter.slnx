@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/So, let's go/">
+    <File Path="Tools/VFPXPorter/DocForTemplates.md" />
+    <File Path="Tools/VFPXPorter/DocumentationAndRules.md" />
+    <File Path="Tools/VFPXPorter/ExportAdvices.md" />
+    <File Path="Tools/VFPXPorter/README.md" />
+    <File Path="Tools/VFPXPorter/RulesForEvents.md" />
+    <File Path="Tools/VFPXPorter/RulesForProperties.md" />
+    <File Path="Tools/VFPXPorter/Todo.md" />
+  </Folder>
+  <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+  <Project Path="Tests/VFPXPorterTest/VFPXPorterTest.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+  <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+  <Project Path="Tools/VFPXPorter/Source/VFPXPorter/VFPXPorter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+  <Project Path="Tools/VFPXPorter/Source/VFPXPorterCmd/VFPXPorterCmd.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+  <Project Path="Tools/VFPXPorter/Source/VFPXPorterLib/VFPXPorterLib.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" />
+</Solution>

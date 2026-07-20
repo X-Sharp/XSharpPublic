@@ -1,0 +1,91 @@
+﻿
+
+#ifndef VFP_CONTAINER_XH
+#define VFP_CONTAINER_XH
+
+
+#include "VFPObject.xh"
+// In order to support it, we also need to have VFPProperties.xh
+#include "VFPProperties.xh"
+// VFPPropertiesDynamic.xh removed — VFPProperties.xh already declares AddProperty/RemoveProperty/HasProperty
+
+
+// METHOD AddObject(cName, cClass , cOLEClass , aInit1, aInit2 ) AS USUAL CLIPPER
+#ifndef NO_VFPCONTAINER_ADDOBJECT
+/// <summary>
+/// Creates an instance of <paramref name="cClass"/> (searched first in <c>XSharp.VFP.UI</c>, then bare),
+/// registers it as a dynamic property named <paramref name="cName"/>, and calls its <c>Init</c> method
+/// with any extra arguments. Returns <c>.T.</c> on success.
+/// </summary>
+METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
+    LOCAL oObject AS USUAL
+    VAR parms := _ARGS()
+    VAR success := TRUE
+    IF PCount() >= 2
+        IF IsString( cName ) .AND. IsString( cClass )
+            // Case-insensitive lookup: tries XSharp.VFP.UI.<cClass> first, then bare name
+            TRY
+                oObject := __VFPCreateInstance( (STRING)cClass )
+            CATCH
+                NOP
+            END TRY
+            IF oObject != NULL
+                VAR uArgs := USUAL[]{parms:Length-2}
+                FOR VAR nArg := 1 TO uArgs:Length
+                    uArgs[nArg] := parms[nArg+2]
+                NEXT
+                SELF:AddProperty( cName, oObject, PropertyVisibility.Public, "AddObject " + (STRING)cClass )
+                // Make WinForms controls visible by adding to the Controls collection
+                // Guard on both SELF and oObject — non-visual containers (DataEnvironment etc.)
+                // do not inherit from System.Windows.Forms.Control and have no Controls collection.
+                IF oObject IS System.Windows.Forms.Control VAR oCtrl
+                    IF (OBJECT)SELF IS System.Windows.Forms.Control VAR oParent
+                        oParent:Controls:Add( oCtrl )
+                    ENDIF
+                ENDIF
+                TRY
+                    Send( oObject, "Init", uArgs )
+                CATCH
+                    success := FALSE
+                END TRY
+            ENDIF
+        ENDIF
+    ENDIF
+    RETURN success
+
+#endif // NO_VFPCONTAINER_ADDOBJECT
+
+
+
+#ifndef VFP_CONTROLCOUNT_OVERRIDE
+/// <summary>
+/// Number of child controls or objects in this container.
+/// </summary>
+PROPERTY ControlCount AS LONG AUTO
+#endif
+
+/// <summary>
+/// VFP NewObject stub — stored for source compatibility. Always returns <c>NIL</c>.
+/// </summary>
+METHOD NewObject(cObjectName, cClassName , cModule , cInApplication, eParameter1, eParameter2) AS USUAL CLIPPER
+    RETURN NIL
+
+/// <summary>
+/// VFP RemoveObject stub — stored for source compatibility. Always returns <c>.F.</c>.
+/// </summary>
+METHOD RemoveObject(cObjectName AS STRING) AS LOGIC
+    RETURN FALSE
+
+/// <summary>
+/// VFP Objects collection stub — stored for source compatibility.
+/// </summary>
+PROPERTY Objects AS Collection AUTO
+
+    #ifndef NOSET
+/// <summary>
+/// VFP SetAll stub — stored for source compatibility. Always returns <c>NIL</c>.
+/// </summary>
+METHOD SetAll AS USUAL CLIPPER
+    RETURN NIL
+    #endif
+    #endif

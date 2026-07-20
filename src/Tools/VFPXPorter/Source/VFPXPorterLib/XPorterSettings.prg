@@ -12,6 +12,27 @@ USING System.Text
 BEGIN NAMESPACE VFPXPorterLib
 
 /// <summary>
+/// Specifies the type of project to generate for the exported code.
+/// Use <see cref="ProjectType.WindowsExe" /> for a Windows GUI executable,
+/// <see cref="ProjectType.ClassLibrary" /> for a reusable class library (DLL),
+/// or <see cref="ProjectType.Console" /> for a console application.
+/// </summary>
+ENUM ProjectType
+    /// <summary>
+    /// Windows GUI executable project (Win32/desktop application without a console window).
+    /// </summary>
+    MEMBER WindowsExe := 0
+    /// <summary>
+    /// Class library project that produces a reusable DLL.
+    /// </summary>
+    MEMBER ClassLibrary := 1
+    /// <summary>
+    /// Console application project that runs in a command-line window.
+    /// </summary>
+    MEMBER Console := 2
+END ENUM
+
+/// <summary>
 /// The XPorterSettings class.
 /// </summary>
 CLASS XPorterSettings
@@ -28,7 +49,19 @@ CLASS XPorterSettings
 	END PROPERTY
 
 #region Various Folders definitions
-    PUBLIC STATIC DataFolder := ".\Data"	AS STRING
+    PRIVATE STATIC _DataFolder := String.Empty AS STRING
+    PUBLIC STATIC PROPERTY DataFolder AS STRING
+        GET
+            IF _DataFolder == String.Empty
+                RETURN System.IO.Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Data" )
+            ELSE
+                RETURN _DataFolder
+            ENDIF
+        END GET
+        SET
+            _DataFolder := VALUE
+        END SET
+	END PROPERTY
 
     /// <summary>
     /// Namespace of the library that contains VFP-support controls/classes/tools
@@ -48,7 +81,13 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY ConvertTableFile		AS STRING GET XPorterSettings.DataFolder + "\\TypeConvert.json"
 	PUBLIC STATIC PROPERTY StatementsFile		AS STRING GET XPorterSettings.DataFolder + "\\Statements.json"
 	PUBLIC STATIC PROPERTY VFPElementsFile		AS STRING GET XPorterSettings.DataFolder + "\\VFP2WinForms.json"
+	PUBLIC STATIC PROPERTY ColorPropertiesFile	AS STRING GET XPorterSettings.DataFolder + "\\ColorProperties.json"
 
+    /// <summary>
+    /// The name of the file used as the main entry point of the generated project, containing the Main method that initializes and runs the application.
+    /// VFPStart.prg per default.
+    /// </summary>
+    /// <value></value>
 	PUBLIC STATIC PROPERTY StartFile				AS STRING GET XPorterSettings.OthersFolder + "\\VFPStart.prg"
 
 	PUBLIC STATIC PROPERTY MenuContainerFile		AS STRING GET XPorterSettings.MenuFolder + "\\MenuContainer.prg"
@@ -73,30 +112,62 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY SingleNoContainerFormEndTypeFile			AS STRING GET XPorterSettings.SingleFolder + "\\endtypeNotContainer.prg"
 	PUBLIC STATIC PROPERTY SingleNoContainerFormInitTypeFile		AS STRING GET XPorterSettings.SingleFolder + "\\inittypeNotContainer.prg"
 
-#endregion
+	PUBLIC STATIC PROPERTY ReportListenerFolder			AS STRING GET XPorterSettings.TemplateFolder + "\\ReportListener"
+	PUBLIC STATIC PROPERTY ReportListenerPrefixFile		AS STRING GET XPorterSettings.ReportListenerFolder + "\\prefix.prg"
+	PUBLIC STATIC PROPERTY ReportListenerStartTypeFile	AS STRING GET XPorterSettings.ReportListenerFolder + "\\StartType.prg"
+	PUBLIC STATIC PROPERTY ReportListenerEndTypeFile	AS STRING GET XPorterSettings.ReportListenerFolder + "\\EndType.prg"
+	PUBLIC STATIC PROPERTY ReportListenerInitTypeFile	AS STRING GET XPorterSettings.ReportListenerFolder + "\\InitType.prg"
+
+    #endregion
+
+    /// <summary>
+    /// Gets or sets the type of .NET project to be generated (for example Windows executable, class library, or console application).
+    /// </summary>
+    PROPERTY OutputType AS ProjectType AUTO
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the generated project should be appended to an existing solution instead of creating a new one.
+    /// </summary>
+    PROPERTY AppendToSolution AS LOGIC AUTO
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the solution file should be placed in the same directory as the generated project.
+    /// </summary>
+    PROPERTY PlaceSolutionInSameDirectory AS LOGIC AUTO
+
+    /// <summary>
+    /// Gets or sets the name of the generated solution when creating or updating a solution.
+    /// </summary>
+    PROPERTY SolutionName AS STRING AUTO
 
 	CONSTRUCTOR()
 
 		SELF:OutputPath := ""
 		SELF:ItemsPath := ""
-		SELF:ConvertHandlers := FALSE
-		SELF:ConvertUserDef := FALSE
 		SELF:ConvertThisObject := TRUE
 		SELF:ConvertStatement := TRUE
-		SELF:ConvertStatementOnlyIfLast := FALSE
+		SELF:ConvertStatementOnlyIfLast := TRUE
 		SELF:KeepOriginal := TRUE
 		SELF:NameUDF := FALSE
 		SELF:RemoveSet := TRUE
-		SELF:PrefixClassFile := TRUE
+		SELF:PrefixClassFile := FALSE
 		SELF:Modifier := "PUBLIC"
 		SELF:ItemsType := XPorterSettings.DefaultFolders
         SELF:LibInSubFolder := TRUE
+        SELF:SeparateLibraryProjects := FALSE
         SELF:AddLibraryNamespace := TRUE
 		SELF:IgnoreErrors := TRUE
-		SELF:StoreInFolders := FALSE
+		SELF:StoreInFolders := TRUE
 		SELF:EmptyFolder := TRUE
-		SELF:PrefixEvent := FALSE
-		SELF:KeepFoxProEventName := TRUE
+		SELF:PrefixEvent := TRUE
+        SELF:KeepFoxProEventName := TRUE
+        SELF:GenerateOnlyHandledEvent := TRUE
+        SELF:OutputType := ProjectType.WindowsExe // Exe by default
+        SELF:AppendToSolution := FALSE // New Solution by default
+        SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
+        SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
+        SELF:ExpandWithEndWith := FALSE
+        SELF:SolutionName := ""
 		RETURN
 
 	/// <summary>
@@ -180,7 +251,7 @@ CLASS XPorterSettings
 	PROPERTY StoreInFolders AS LOGIC AUTO
 
 	/// <summary>
-	/// Empty the destinaiton Folder before exporting
+	/// Empty the destination Folder before exporting
 	/// </summary>
 	/// <value></value>
 	PROPERTY EmptyFolder AS LOGIC AUTO
@@ -189,6 +260,20 @@ CLASS XPorterSettings
 	/// Indicate if Lib Files are exported in the same folder as Project files (and Form), or in a SubFolder
 	/// </summary>
     PROPERTY LibInSubFolder AS LOGIC AUTO
+
+    /// <summary>
+    /// When TRUE, each VCX dependency is exported as its own .xsproj (ClassLibrary) with proper
+    /// ProjectReference entries for cross-library dependencies, instead of the single monolithic
+    /// ClassLibraries.xsproj. Requires LibInSubFolder to be TRUE for best results.
+    /// Default is FALSE to preserve existing behaviour.
+    /// </summary>
+    PROPERTY SeparateLibraryProjects AS LOGIC AUTO
+
+    	/// <summary>
+    /// Place the solution in the same folder as the generated project
+	/// </summary>
+	/// <value></value>
+	PROPERTY SaveSolutionWithProject AS LOGIC AUTO
 
     /// <summary>
 	/// Indicate if ClassLibrary namespace name must be added to the common Header : VFPXPorter.xh
@@ -202,11 +287,6 @@ CLASS XPorterSettings
 	PROPERTY IgnoreErrors AS LOGIC AUTO
 
 	/// <summary>
-	/// Apply CodeConverter to Event Handlers
-	/// </summary>
-	PROPERTY ConvertHandlers AS LOGIC AUTO
-
-	/// <summary>
 	/// Convert Statement to Method Call
 	/// </summary>
 	/// <value></value>
@@ -217,11 +297,6 @@ CLASS XPorterSettings
 	/// </summary>
 	/// <value></value>
 	PROPERTY ConvertStatementOnlyIfLast AS LOGIC AUTO
-
-	/// <summary>
-	/// Apply CodeConverter to User-Def Methods
-	/// </summary>
-	PROPERTY ConvertUserDef AS LOGIC AUTO
 
 	/// <summary>
 	/// Apply ThisObject CodeConverter to all Methods
@@ -246,6 +321,32 @@ CLASS XPorterSettings
 	/// <value></value>
 	PROPERTY GenerateOnlyHandledEvent AS LOGIC AUTO
 
+	/// <summary>
+	/// Expand WITH...ENDWITH blocks by replacing dotted member references with fully qualified
+	/// object paths. Works around X# compiler issues with nested WITH blocks.
+	/// The original WITH/ENDWITH lines are kept as comments.
+	/// </summary>
+	PROPERTY ExpandWithEndWith AS LOGIC AUTO
+
+	PRIVATE STATIC _ClassNamePrefix := String.Empty AS STRING
+	/// <summary>
+	/// Prefix prepended to every exported class name (form, library, FormSet sub-form, Page, ...)
+	/// to avoid collisions between VFP class names and cursor aliases sharing the same name
+	/// (e.g. a class and a work area both named "Customers"). Default is empty (no prefix,
+	/// backward-compatible).
+	/// Static (like <see cref="SuppportLib"/> and <see cref="DataFolder"/>) because classes
+	/// such as <c>BaseItem</c> and <c>SCXVCXFile</c> need to read it and hold no
+	/// <see cref="XPorterSettings"/> instance reference. Access class-qualified
+	/// (<c>XPorterSettings.ClassNamePrefix</c>), not through an instance.
+	/// </summary>
+	PUBLIC STATIC PROPERTY ClassNamePrefix AS STRING
+		GET
+			RETURN _ClassNamePrefix
+		END GET
+		SET
+			_ClassNamePrefix := VALUE
+		END SET
+	END PROPERTY
 
 END CLASS
 END NAMESPACE // VFPXPorterLib

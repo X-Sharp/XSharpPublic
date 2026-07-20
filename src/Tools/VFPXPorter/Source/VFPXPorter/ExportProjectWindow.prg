@@ -13,24 +13,46 @@ BEGIN NAMESPACE VFPXPorter
 			INHERIT System.Windows.Forms.Form
 		PUBLIC xPorter AS VFPXPorterLib.XPorterProject
 
-		PROPERTY Settings AS XPorterSettings AUTO
+
+        PRIVATE _settings AS XPorterSettings
+        PROPERTY Settings AS XPorterSettings
+            GET
+                RETURN _settings
+            END GET
+
+            SET
+                _settings := VALUE
+                // Update UI with settings values
+                SELF:outputPathTextBox:Text := SELF:Settings:OutputPath
+			    SELF:pjxPathTextBox:Text := SELF:Settings:ItemsPath
+                SELF:AppendCheckBox:Checked := SELF:_settings:AppendToSolution
+                SELF:PlaceSolutionInSameDirectory:Checked := SELF:_settings:PlaceSolutionInSameDirectory
+            END SET
+        END PROPERTY
 
 		PUBLIC CONSTRUCTOR() STRICT //ExportWindow
-			SELF:InitializeComponent()
+            SELF:InitializeComponent()
+            SELF:TypeComboBox:SelectedIndex := 0
+
 			RETURN
 
 		PRIVATE METHOD exportButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID
+            SELF:Settings:OutputType := (ProjectType)SELF:TypeComboBox:SelectedIndex
+            SELF:Settings:AppendToSolution := SELF:AppendCheckBox:Checked
+            SELF:Settings:SolutionName := SELF:SolutionName:Text
+            SELF:Settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory:Checked
 			//
 			SELF:infoStripLabel:Text := ""
-			IF !SELF:CheckFileAndFolder()
+			IF !SELF:CheckFileAndFolder( false )
 				RETURN
 			ENDIF
 			// Analyze First
 			IF !SELF:xPorter:ProcessPJX()
 				MessageBox.Show( "Error during analyzing operation.", "Analyzing Project", MessageBoxButtons.OK, MessageBoxIcon.Error )
 				RETURN
-			ENDIF
-			//
+            ENDIF
+
+    		//
 			// DoBackup, ProcessFirst
 			SELF:Processing( TRUE )
 			SELF:backgroundExport:RunWorkerAsync()
@@ -55,7 +77,12 @@ BEGIN NAMESPACE VFPXPorter
 			ofd:DefaultExt := "PJX"
 			ofd:Filter := "Pjx files (*.pjx)|*.pjx|All files (*.*)|*.*"
 			IF ( ofd:ShowDialog() == DialogResult.OK )
-				SELF:pjxPathTextBox:Text := ofd:FileName
+                SELF:pjxPathTextBox:Text := ofd:FileName
+
+                // Auto-Complete: if solution name is empty, we set it to the PJX folder
+                SELF:SolutionName:Text := Path.GetFileNameWithoutExtension(ofd:FileName)
+                // Per Default, we use the OutputDir from Settings, combined with the name of the VFP Project
+                SELF:outputPathTextBox:Text := Path.Combine(Settings:OutputPath, Path.GetFileNameWithoutExtension(ofd:FileName))
 			ENDIF
 			RETURN
 		PRIVATE METHOD outputButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
@@ -68,47 +95,73 @@ BEGIN NAMESPACE VFPXPorter
 			IF ( fbd:ShowDialog() == DialogResult.OK )
 				SELF:outputPathTextBox:Text := fbd:SelectedPath
 			ENDIF
-			RETURN
-		PRIVATE METHOD CheckFileAndFolder() AS LOGIC
+            RETURN
+
+		PRIVATE METHOD CheckFileAndFolder( analysis AS LOGIC ) AS LOGIC
 			//
 			SELF:infoStripLabel:Text := ""
-			SELF:infoStripError:Text := ""
-			SELF:infoStripLabel:ForeColor := Color.Black
+            SELF:infoStripError:Text := ""
+            SELF:infoStripLabel:ForeColor := Color.Black
+
 			VAR pjxFilePath := SELF:pjxPathTextBox:Text
-			VAR outputPath := SELF:outputPathTextBox:Text
+            VAR baseOutputPath := SELF:outputPathTextBox:Text
+
 			//
-			IF !File.Exists( pjxFilePath)
+			IF !File.Exists(pjxFilePath)
 				SELF:infoStripLabel:ForeColor := Color.Red
 				SELF:infoStripLabel:Text := "Error : Input Project doesn't exist."
 				RETURN FALSE
-			ENDIF
-			IF !Directory.Exists( outputPath )
+            ENDIF
+            //
+			IF !Directory.Exists(baseOutputPath)
 				SELF:infoStripLabel:ForeColor := Color.Red
 				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
 				RETURN FALSE
-			ENDIF
-			// Get the PJX File name, and use it as a SubFolder
-			LOCAL destFile AS STRING
-			destFile := Path.GetFileNameWithoutExtension( pjxFilePath )
-			outputPath := Path.Combine( outputPath, destFile )
-			// Warning, we may NOT be able to create the Directory
-			TRY
-				IF Directory.Exists( outputPath )
-					SELF:EraseFolder( outputPath, FALSE )
-				ENDIF
-				Directory.CreateDirectory( outputPath )
-			CATCH e AS Exception
-				//
-				SELF:resultText:Text := "Cannot delete Folder : " + e.Message
-				IF !SELF:Settings:IgnoreErrors
-					THROW e
-				ENDIF
-			END TRY
+            ENDIF
+            //
+            IF !analysis
+			    // Warning, we may NOT be able to create the Directory
+			    TRY
+                    IF SELF:Settings:EmptyFolder
+                        // If Append: do not delete the folder. We might delete the solution.
+                        // or sibling project folders. We just delete if not Append.
+                        IF !SELF:Settings:AppendToSolution
+                            SELF:EraseFolder(baseOutputPath, FALSE )
+                        ELSE
+                            // If Append: we just delete sub-folders of the current project
+                            // to ensure a clean export of the current project.
+                            VAR codeDir := Path.Combine(baseOutputPath, "Code")
+                            IF Directory.Exists(codeDir)
+                                SELF:EraseFolder(codeDir, TRUE)
+                            ENDIF
+                            var xsharpDir := Path.Combine(baseOutputPath, "XSharp")
+                            IF Directory.Exists(xsharpDir)
+                                SELF:EraseFolder(xsharpDir, TRUE)
+                            ENDIF
+                        ENDIF
+                    ELSE
+				        Directory.CreateDirectory(baseOutputPath)
+				    ENDIF
+			    CATCH e AS Exception
+				    //
+                    SELF:resultText:Text += "Warning during folder cleanup: " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+				        THROW e
+				    ENDIF
+                END TRY
+            ENDIF
 			//
-			SELF:xPorter := XPorterProject{ pjxFilePath, outputPath }
+            SELF:xPorter := XPorterProject{ pjxFilePath, baseOutputPath }
+            // If the solution is in the same directory as the project, we use the same path for both.
+            // IF !SELF:Settings:PlaceSolutionInSameDirectory
+                // SELF:xPorter:SolutionPath := Path.GetDirectoryName(baseOutputPath)
+            // ELSE
+                // SELF:xPorter:SolutionPath := baseOutputPath
+            // ENDIF
+
 			RETURN TRUE
 		PRIVATE METHOD analysisButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
-			IF !SELF:CheckFileAndFolder()
+			IF !SELF:CheckFileAndFolder( TRUE )
 				RETURN
 			ENDIF
 			//
@@ -170,15 +223,31 @@ BEGIN NAMESPACE VFPXPorter
 			RETURN
 
 		private method EraseFolder( folderPath AS STRING, eraseTop AS LOGIC ) AS VOID
-			foreach cFile AS String in Directory.GetFiles(folderPath)
-				System.IO.File.Delete( cFile )
+            FOREACH cFile AS String in Directory.GetFiles(folderPath)
+                TRY
+                    System.IO.File.Delete( cFile )
+                CATCH e AS Exception
+                    //
+                    SELF:resultText:Text += "Delete Error " + cFile + " : " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+				        THROW e
+				    ENDIF
+                END TRY
 			NEXT
 
-			foreach subfolder AS String in Directory.GetDirectories(folderPath)
+			FOREACH subfolder AS String in Directory.GetDirectories(folderPath)
 				SELF:EraseFolder(subfolder, TRUE)
 			NEXT
-			IF eraseTop
-				Directory.Delete( folderPath )
+            IF eraseTop
+                TRY
+                    Directory.Delete( folderPath )
+                CATCH e AS Exception
+                    //
+                    SELF:resultText:Text += "Delete Error " + folderPath + " : " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+                        THROW e
+                    ENDIF
+                 END TRY
 			ENDIF
 			RETURN
 

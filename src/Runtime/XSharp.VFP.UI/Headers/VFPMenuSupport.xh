@@ -1,0 +1,196 @@
+///////////////////////////////////////////////////////////////////////////
+// VFPMenuSupport.xh
+//
+// XSharp UDC support for VFP procedural menu commands.
+// Maps DEFINE MENU/PAD/POPUP/BAR, ON PAD/BAR/SELECTION PAD/BAR/POPUP,
+// ACTIVATE/DEACTIVATE/HIDE/SHOW/RELEASE MENU/POPUP, and SET SKIP OF
+// to XSharp.VFP.UI runtime helper functions.
+//
+// Usage: #include "VFPMenuSupport.xh"  in your .prg file.
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+#ifndef VFPMENUSUPPORT_XH
+#define VFPMENUSUPPORT_XH
+
+// ── DEFINE MENU ──────────────────────────────────────────────────────────────
+// DEFINE MENU <name> [BAR] [AT LINE <nRow>] [IN WINDOW <w> | IN SCREEN] [...]
+// Position/window clauses are accepted and silently ignored.
+#command DEFINE MENU <menuName> [BAR] [AT LINE <nRow>] ;
+    [IN [WINDOW] <winName>] [IN SCREEN] <*rest*> ;
+    => __VFPDefineMenu(#<menuName>)
+
+#command DEFINE MENU <menuName> [BAR] <*rest*> ;
+    => __VFPDefineMenu(#<menuName>)
+
+// ── DEFINE PAD ───────────────────────────────────────────────────────────────
+// DEFINE PAD <padName> OF <menuName> PROMPT <caption>
+//   [SKIP FOR <expr>] [SKIP] [AT <r>,<c>] [MESSAGE <msg>] [...]
+#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> ;
+    [SKIP FOR <lSkipExpr>] <*rest*> ;
+    => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>) ;
+    [; __VFPSetSkipOfPad(#<padName>, #<menuName>, <lSkipExpr>)]
+
+#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> [SKIP] <*rest*> ;
+    => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>)
+
+// ── DEFINE POPUP ─────────────────────────────────────────────────────────────
+// DEFINE POPUP <name> [SHORTCUT] [...]
+// SHORTCUT maps to a ContextMenu (right-click); standard maps to Popup.
+#command DEFINE POPUP <popupName> <sc:SHORTCUT> <*rest*> ;
+    => __VFPDefineContextMenu(#<popupName>)
+
+#command DEFINE POPUP <popupName> <*rest*> ;
+    => __VFPDefinePopup(#<popupName>)
+
+// ── DEFINE BAR ───────────────────────────────────────────────────────────────
+// DEFINE BAR <n> OF <popupName> PROMPT <caption>
+//   [SKIP FOR <expr>] [SKIP] [MESSAGE <msg>] [PICTURE <img>] [...]
+// Bar number is stored as the bar's Name for later lookup by ON SELECTION BAR.
+// A PROMPT of "\-" inserts a separator.
+#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> ;
+    [SKIP FOR <lSkipExpr>] <*rest*> ;
+    => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>) ;
+    [; __VFPSetSkipOfBar(<nBar>, #<popupName>, <lSkipExpr>)]
+
+#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> [SKIP] <*rest*> ;
+    => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>)
+
+// ── ON PAD ───────────────────────────────────────────────────────────────────
+// ON PAD <padName> OF <menuName> ACTIVATE POPUP <popupName>  — attach dropdown
+// ON PAD <padName> OF <menuName>                             — detach dropdown
+#command ON PAD <padName> OF <menuName> ACTIVATE POPUP <popupName> ;
+    => __VFPOnPad(#<padName>, #<menuName>, #<popupName>)
+
+#command ON PAD <padName> OF <menuName> ;
+    => __VFPOnPad(#<padName>, #<menuName>, "")
+
+// ── ON BAR ───────────────────────────────────────────────────────────────────
+// ON BAR <n> OF <popupName> ACTIVATE POPUP <subPopupName>  — cascading submenu
+// ON BAR <n> OF <popupName>                                — remove submenu
+#command ON BAR <nBar> OF <popupName> ACTIVATE POPUP <subPopupName> ;
+    => __VFPOnBar(<nBar>, #<popupName>, #<subPopupName>)
+
+#command ON BAR <nBar> OF <popupName> ;
+    => __VFPOnBar(<nBar>, #<popupName>, "")
+
+// ── ON SELECTION PAD ─────────────────────────────────────────────────────────
+// DO <procName> form — stores the procedure name as a string-based vfpClick.
+// General <*cmd*> form — wraps arbitrary code in a codeblock via SetClickAction.
+// The DO form must appear first so it takes priority over the general form.
+#command ON SELECTION PAD <padName> OF <menuName> DO <procName> ;
+    => __VFPOnSelectionPad(#<padName>, #<menuName>, #<procName>)
+
+#command ON SELECTION PAD <padName> OF <menuName> <*cmd*> ;
+    => __VFPOnSelectionPadCmd(#<padName>, #<menuName>, {|| <cmd>})
+
+// ── ON SELECTION BAR ─────────────────────────────────────────────────────────
+#command ON SELECTION BAR <nBar> OF <popupName> DO <procName> ;
+    => __VFPOnSelectionBar(<nBar>, #<popupName>, #<procName>)
+
+#command ON SELECTION BAR <nBar> OF <popupName> <*cmd*> ;
+    => __VFPOnSelectionBarCmd(<nBar>, #<popupName>, {|| <cmd>})
+
+// ── ON SELECTION POPUP ───────────────────────────────────────────────────────
+// Fires for every bar in the named popup (or ALL popups).
+#command ON SELECTION POPUP ALL DO <procName> ;
+    => __VFPOnSelectionPopup("*", #<procName>)
+
+#command ON SELECTION POPUP ALL <*cmd*> ;
+    => __VFPOnSelectionPopupCmd("*", {|| <cmd>})
+
+#command ON SELECTION POPUP <popupName> DO <procName> ;
+    => __VFPOnSelectionPopup(#<popupName>, #<procName>)
+
+#command ON SELECTION POPUP <popupName> <*cmd*> ;
+    => __VFPOnSelectionPopupCmd(#<popupName>, {|| <cmd>})
+
+// ── ACTIVATE MENU ────────────────────────────────────────────────────────────
+// Attaches the named menu to _Screen (MainWindow).
+#command ACTIVATE MENU <menuName> ;
+    => __VFPActivateMenu(#<menuName>)
+
+// ── ACTIVATE POPUP ───────────────────────────────────────────────────────────
+// AT <row>,<col> positions the popup; omit for default position.
+// BAR, NOWAIT, REST clauses are accepted and silently ignored.
+#command ACTIVATE POPUP <popupName> AT <nRow>, <nCol> <*rest*> ;
+    => __VFPActivatePopup(#<popupName>, <nRow>, <nCol>)
+
+#command ACTIVATE POPUP <popupName> <*rest*> ;
+    => __VFPActivatePopup(#<popupName>, 0, 0)
+
+// ── DEACTIVATE MENU ──────────────────────────────────────────────────────────
+#command DEACTIVATE MENU <menuName> ;
+    => __VFPDeactivateMenu(#<menuName>)
+
+// ── DEACTIVATE POPUP ─────────────────────────────────────────────────────────
+#command DEACTIVATE POPUP <popupName> ;
+    => __VFPDeactivatePopup(#<popupName>)
+
+#command DEACTIVATE POPUP ;
+    => __VFPDeactivatePopup("")
+
+// ── HIDE MENU / SHOW MENU ────────────────────────────────────────────────────
+#command HIDE MENU <menuName> ;
+    => __VFPHideMenu(#<menuName>)
+
+#command SHOW MENU <menuName> ;
+    => __VFPShowMenu(#<menuName>)
+
+// ── HIDE POPUP / SHOW POPUP ──────────────────────────────────────────────────
+#command HIDE POPUP <popupName> ;
+    => __VFPHidePopup(#<popupName>)
+
+#command HIDE POPUP ;
+    => __VFPHidePopup("")
+
+#command SHOW POPUP <popupName> ;
+    => __VFPShowPopup(#<popupName>)
+
+#command SHOW POPUP ;
+    => __VFPShowPopup("")
+
+// ── RELEASE MENUS ────────────────────────────────────────────────────────────
+// RELEASE MENUS <name1> [, <name2> ...] [EXTENDED]
+// RELEASE MENUS                         (release all)
+#command RELEASE MENUS <menuList,...> [<ext:EXTENDED>] ;
+    => __VFPReleaseMenus( { <(menuList)> }, <.ext.> )
+
+#command RELEASE MENUS [<ext:EXTENDED>] ;
+    => __VFPReleaseMenus( NULL, <.ext.> )
+
+// ── RELEASE POPUPS ───────────────────────────────────────────────────────────
+#command RELEASE POPUPS <popupList,...> [<ext:EXTENDED>] ;
+    => __VFPReleasePopups( { <(popupList)> }, <.ext.> )
+
+#command RELEASE POPUPS [<ext:EXTENDED>] ;
+    => __VFPReleasePopups( NULL, <.ext.> )
+
+// ── SET SKIP OF ──────────────────────────────────────────────────────────────
+// .T. = disabled (dimmed); .F. = enabled.
+#command SET SKIP OF MENU <menuName> <lExpr> ;
+    => __VFPSetSkipOfMenu(#<menuName>, <lExpr>)
+
+#command SET SKIP OF PAD <padName> OF <menuName> <lExpr> ;
+    => __VFPSetSkipOfPad(#<padName>, #<menuName>, <lExpr>)
+
+#command SET SKIP OF POPUP <popupName> <lExpr> ;
+    => __VFPSetSkipOfPopup(#<popupName>, <lExpr>)
+
+#command SET SKIP OF BAR <nBar> OF <popupName> <lExpr> ;
+    => __VFPSetSkipOfBar(<nBar>, #<popupName>, <lExpr>)
+
+// ── SET SYSMENU ──────────────────────────────────────────────────────────────
+// Controls the visibility of the application menu bar on _Screen.
+#command SET SYSMENU OFF      => __VFPSetSysMenu(FALSE)
+#command SET SYSMENU ON       => __VFPSetSysMenu(TRUE)
+#command SET SYSMENU AUTOMATIC => __VFPSetSysMenu(TRUE)
+#command SET SYSMENU TO DEFAULT =>
+#command SET SYSMENU TO [<*any*>] =>
+#command SET SYSMENU SAVE   =>
+#command SET SYSMENU NOSAVE =>
+
+#endif
+// EOF VFPMenuSupport.xh

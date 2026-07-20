@@ -44,10 +44,10 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY Items AS STRING GET SELF:iniSettings:ReadValue( "Folders", "Items" ) ;
 			SET SELF:iniSettings:WriteValue( "Folders", "Items", VALUE )
 
-		PROPERTY ConvertHandlers AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertHandlers", FALSE ) ;
-			SET SELF:iniSettings:WriteValue( "Items", "ConvertHandlers", VALUE )
-		PROPERTY ConvertUserDef AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertUserDef", FALSE ) ;
-			SET SELF:iniSettings:WriteValue( "Items", "ConvertUserDef", VALUE )
+		// PROPERTY ConvertHandlers AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertHandlers", FALSE ) ;
+			// SET SELF:iniSettings:WriteValue( "Items", "ConvertHandlers", VALUE )
+		// PROPERTY ConvertUserDef AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertUserDef", FALSE ) ;
+			// SET SELF:iniSettings:WriteValue( "Items", "ConvertUserDef", VALUE )
 		PROPERTY ConvertThisObject AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertThisObject", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Items", "ConvertThisObject", VALUE )
 		PROPERTY ConvertStatement AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ConvertStatement", TRUE ) ;
@@ -81,6 +81,12 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY LibInSubFolder AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "LibInSubFolder", TRUE ) ;
             SET SELF:iniSettings:WriteValue( "Project", "LibInSubFolder", VALUE )
 
+    	PROPERTY PlaceSolutionInSameDirectory AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "PlaceSolutionInSameDirectory", FALSE ) ;
+            SET SELF:iniSettings:WriteValue( "Project", "PlaceSolutionInSameDirectory", VALUE )
+
+        PROPERTY SeparateLibraryProjects AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "SeparateLibraryProjects", TRUE ) ;
+            SET SELF:iniSettings:WriteValue( "Project", "SeparateLibraryProjects", VALUE )
+
         PROPERTY AddLibraryNamespace AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "AddLibraryNamespace", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "AddLibraryNamespace", VALUE )
 		PROPERTY IgnoreErrors AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "IgnoreErrors", TRUE ) ;
@@ -90,6 +96,12 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY EmptyFolder AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "EmptyFolder", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "EmptyFolder", VALUE )
 
+		PROPERTY ExpandWithEndWith AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ExpandWithEndWith", TRUE ) ;
+			SET SELF:iniSettings:WriteValue( "Items", "ExpandWithEndWith", VALUE )
+
+		PROPERTY ClassNamePrefix AS STRING GET SELF:iniSettings:ReadValue( "Items", "ClassNamePrefix", "" ) ;
+			SET SELF:iniSettings:WriteValue( "Items", "ClassNamePrefix", VALUE )
+
 		PROPERTY RessourcesFolder AS STRING GET SELF:iniSettings:ReadValue( "Folders", "Ressources", Path.Combine(Path.GetDirectoryName( Application.ExecutablePath ),XPorterSettings.DataFolder) ) ;
 			SET SELF:iniSettings:WriteValue( "Folders", "Ressources", VALUE )
 
@@ -97,11 +109,8 @@ BEGIN NAMESPACE VFPXPorter
 			LOCAL settings AS XPorterSettings
 			//
 			settings := XPorterSettings{}
-			settings:ConvertHandlers := SELF:ConvertHandlers
-			settings:ConvertStatement := SELF:ConvertStatement
 			settings:ConvertStatementOnlyIfLast := SELF:ConvertStatementOnlyIfLast
 			settings:ConvertThisObject := SELF:ConvertThisObject
-			settings:ConvertUserDef	:= SELF:ConvertUserDef
 			settings:EmptyFolder	:= SELF:EmptyFolder
 			settings:IgnoreErrors	:= SELF:IgnoreErrors
 			settings:ItemsPath		:= SELF:Items
@@ -117,7 +126,12 @@ BEGIN NAMESPACE VFPXPorter
 			settings:StoreInFolders	:= SELF:StoreInFolders
 			settings:PrefixEvent	:= SELF:PrefixEvent
 			settings:KeepFoxProEventName := SELF:KeepFoxProEventName
-			settings:GenerateOnlyHandledEvent := SELF:GenerateOnlyHandledEvent
+            settings:GenerateOnlyHandledEvent := SELF:GenerateOnlyHandledEvent
+
+            settings:SeparateLibraryProjects := SELF:SeparateLibraryProjects
+            settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory
+            settings:ExpandWithEndWith := SELF:ExpandWithEndWith
+            XPorterSettings.ClassNamePrefix := SELF:ClassNamePrefix
 			//
 			XPorterSettings.DataFolder := SELF:RessourcesFolder
 			//

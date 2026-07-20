@@ -83,6 +83,7 @@
     <Compile Include="IXPorterWorker.prg" />
     <Compile Include="SCXVCXEntity.prg" />
     <Compile Include="SCXVCXFile.prg" />
+    <Compile Include="TemplateHelper.prg" />
     <Compile Include="XPorterCtrlForm.prg" />
     <Compile Include="XPorterSCXVCX.prg" />
     <Compile Include="XPorterTools.prg" />
@@ -96,6 +97,9 @@
     <Compile Include="Tools\BufferedSink.prg" />
     <Compile Include="Tools\XPorterLogger.prg" />
     <Compile Include="XPorterSettings.prg" />
+    <None Include="Data\Templates\Tools\VFPXMenu.xh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\Templates\Tools\VFPXPorter.xh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -132,6 +136,7 @@
     <Compile Include="VFPXPorterReport.prg" />
     <Compile Include="ItemCode.prg" />
     <Compile Include="BaseItem.prg" />
+    <Compile Include="DbcFieldCache.prg" />
     <Compile Include="PJXItem.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -151,6 +156,7 @@
     <Folder Include="Data\Templates\Form" />
     <Folder Include="Data\Templates\Menu" />
     <Folder Include="Data\Templates\Others" />
+    <Folder Include="Data\Templates\ReportListener\" />
     <Folder Include="Data\Templates\SingleFile" />
     <Folder Include="Data\Templates\Tools" />
     <Folder Include="Tools" />
@@ -212,6 +218,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Data\TypeConvert.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Templates\ReportListener\prefix.prg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Templates\ReportListener\StartType.prg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Templates\ReportListener\InitType.prg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Templates\ReportListener\EndType.prg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -10,5 +10,3 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-CLASS OleBoundControl
-END CLASS

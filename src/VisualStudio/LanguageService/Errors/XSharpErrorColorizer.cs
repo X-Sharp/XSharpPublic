@@ -1,4 +1,4 @@
-#if NOTUSED
+#if !NOTUSED
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.

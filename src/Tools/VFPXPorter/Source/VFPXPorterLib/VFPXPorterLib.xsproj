@@ -169,6 +169,9 @@
     <None Include="Data\PropRules.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Data\ColorProperties.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\Templates\Designer\EndType.prg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

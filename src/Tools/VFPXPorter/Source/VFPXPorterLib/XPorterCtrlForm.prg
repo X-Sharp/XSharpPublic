@@ -486,6 +486,23 @@ BEGIN NAMESPACE VFPXPorterLib
                 NEXT
 
             ENDIF
+            // If this Form is a member of a FormSet, shadow the inherited ThisFormSet
+            // property (typed as the generic runtime FormSet base) with one typed either
+            // as OBJECT (late-bound, default) or as the real generated FormSet class
+            // (when Settings:TypedThisFormSet is set), so ThisFormSet-based code compiles.
+            IF !String.IsNullOrEmpty( oneItem:FormSetClassName )
+                IF SELF:Settings:TypedThisFormSet
+                    declaration:Append( "PUBLIC NEW PROPERTY ThisFormSet AS " + oneItem:FormSetClassName + Environment.NewLine )
+                    declaration:Append( "    GET ; RETURN (" + oneItem:FormSetClassName + ") SUPER:ThisFormSet ; END GET" + Environment.NewLine )
+                    declaration:Append( "    SET ; SUPER:ThisFormSet := VALUE ; END SET" + Environment.NewLine )
+                    declaration:Append( "END PROPERTY" + Environment.NewLine )
+                ELSE
+                    declaration:Append( "PUBLIC NEW PROPERTY ThisFormSet AS OBJECT" + Environment.NewLine )
+                    declaration:Append( "    GET ; RETURN SUPER:ThisFormSet ; END GET" + Environment.NewLine )
+                    declaration:Append( "    SET ; SUPER:ThisFormSet := (FormSet) VALUE ; END SET" + Environment.NewLine )
+                    declaration:Append( "END PROPERTY" + Environment.NewLine )
+                ENDIF
+            ENDIF
             //FOREACH VAR prop IN item:Properties
             //	formProp += "SELF:" + prop:Key + " := " + prop:Value + Environment.NewLine
             //NEXT

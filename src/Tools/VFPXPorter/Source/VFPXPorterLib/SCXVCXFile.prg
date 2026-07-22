@@ -166,6 +166,11 @@ BEGIN NAMESPACE VFPXPorterLib
                                     SELF:HasFormSet := TRUE
                                     // Now, set the item as TopLevel(Container) (It should be a Form, should we check ??)
                                     itm:IsTopLevel := TRUE
+                                    // Record the owning FormSet's generated class name, so the Form
+                                    // export can shadow ThisFormSet with a properly typed override.
+                                    // Use the SCX filename (not the VFP object name) as the prefix, same
+                                    // as GetFormClassName() computes for the FormSet's own class name.
+                                    itm:FormSetClassName := XPorterSettings.ClassNamePrefix + System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName):Replace(" ", "_")
                                     // Add a clone of the Item to the list of TopLevel Items
                                     // So it will generate a Form for it
                                     SELF:_Items:Add( SCXVCXItem{ itm } )
@@ -184,7 +189,8 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // ClassNamePrefix is included too — must match GetFormClassName()'s
                                     // "prefix + scxName" exactly, since this stub's ClassName is read
                                     // back verbatim by BaseItem.FullyQualifiedName (bare-ClassName branch).
-                                    VAR scxPrefix := XPorterSettings.ClassNamePrefix + System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName):Replace(" ", "_")
+                                    // (Same value already computed above into FormSetClassName.)
+                                    VAR scxPrefix := itm:FormSetClassName
                                     itm:IsContainer := TRUE
                                     itm:AddToControls := TRUE
                                     // Reset FoxClassName and ClassLocation so the ClassName setter

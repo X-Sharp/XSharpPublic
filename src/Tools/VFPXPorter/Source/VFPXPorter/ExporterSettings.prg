@@ -89,6 +89,9 @@ BEGIN NAMESPACE VFPXPorter
 
         PROPERTY AddLibraryNamespace AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "AddLibraryNamespace", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "AddLibraryNamespace", VALUE )
+
+		PROPERTY TypedThisFormSet AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "TypedThisFormSet", FALSE ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "TypedThisFormSet", VALUE )
 		PROPERTY IgnoreErrors AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "IgnoreErrors", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "IgnoreErrors", VALUE )
 		PROPERTY StoreInFolders AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "StoreInFolders", TRUE ) ;
@@ -118,6 +121,7 @@ BEGIN NAMESPACE VFPXPorter
 			settings:KeepOriginal	:= SELF:KeepOriginal
             settings:LibInSubFolder	:= SELF:LibInSubFolder
             settings:AddLibraryNamespace := SELF:AddLibraryNamespace
+            settings:TypedThisFormSet := SELF:TypedThisFormSet
 			settings:Modifier		:= SELF:Modifier
 			settings:NameUDF		:= SELF:NameUDF
 			settings:OutputPath		:= SELF:Output

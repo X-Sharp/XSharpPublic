@@ -275,6 +275,15 @@ CLASS XPorterSettings
 	PROPERTY AddLibraryNamespace AS LOGIC AUTO
 
 	/// <summary>
+	/// When a Form is a member of a FormSet, VFPXPorter always shadows the inherited
+	/// ThisFormSet property with a NEW override so ThisFormSet-based code can compile.
+	/// By default (FALSE) that override is typed as OBJECT (late-bound, like ThisForm).
+	/// When TRUE, the override is instead typed with the FormSet's real generated class
+	/// name, giving compile-time checking on ThisFormSet member access.
+	/// </summary>
+	PROPERTY TypedThisFormSet AS LOGIC AUTO
+
+	/// <summary>
 	/// Keep trying to export
 	/// </summary>
 	/// <value></value>

@@ -81,6 +81,11 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:AddLibraryNamespace := TRUE
 			ELSEIF String.Compare(arg, "-noAddLibraryNamespace", TRUE) == 0
 				settings:AddLibraryNamespace := FALSE
+			// ── TypedThisFormSet ──────────────────────────────────────────
+			ELSEIF String.Compare(arg, "-typedThisFormSet", TRUE) == 0
+				settings:TypedThisFormSet := TRUE
+			ELSEIF String.Compare(arg, "-noTypedThisFormSet", TRUE) == 0
+				settings:TypedThisFormSet := FALSE
 			// ── IgnoreErrors ──────────────────────────────────────────────
 			ELSEIF String.Compare(arg, "-ignoreErrors", TRUE) == 0
 				settings:IgnoreErrors := TRUE

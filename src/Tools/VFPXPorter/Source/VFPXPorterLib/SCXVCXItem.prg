@@ -24,6 +24,12 @@ BEGIN NAMESPACE VFPXPorterLib
 		PROPERTY PageFrameSubclassName AS STRING AUTO
 
 		/// <summary>
+		/// When this item is a Form that is a member of a FormSet, the generated
+		/// class name of that owning FormSet (empty otherwise).
+		/// </summary>
+		PROPERTY FormSetClassName AS STRING AUTO
+
+		/// <summary>
 		/// Default Constructor
 		/// </summary>
 		CONSTRUCTOR()
@@ -44,6 +50,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:IsTopLevel := oneItem:IsTopLevel
 				SELF:AddToControls := oneItem:AddToControls
 				SELF:PageFrameSubclassName := oneItem:PageFrameSubclassName
+				SELF:FormSetClassName := oneItem:FormSetClassName
 				// Copy the User Defined Items
 				FOREACH VAR userDef IN oneItem:UserDefItems
 					SELF:UserDefItems:Add( UserDefinition{ userDef } )

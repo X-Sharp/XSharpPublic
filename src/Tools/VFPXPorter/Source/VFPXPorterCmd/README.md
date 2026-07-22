@@ -111,6 +111,10 @@ Everything above, for each form and class library in the project, plus:
 | `VFPXPorter.xh` | Header file with support-library imports |
 | Menu files *(if any)* | X# menu classes |
 
+The CLI always writes the `.xsproj` and the `.sln` directly into the `-o` folder
+(the GUI's "place solution and project in the same directory" split is not yet
+exposed here — see *Planned / Not yet implemented*).
+
 ---
 
 ## Deployment requirements
@@ -161,3 +165,6 @@ Data\
 - **Report (FRX) export** — conversion of VFP reports to a .NET reporting format.
 - **Config file** — load settings from a JSON file per project instead of
   specifying them on every command line.
+- **Solution/project folder split** — the GUI's "place solution and project in the
+  same directory" option (main/solution folder vs. a project subfolder named after
+  the project) has no CLI equivalent yet; `-o` is always used for both.

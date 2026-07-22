@@ -41,6 +41,7 @@ BEGIN NAMESPACE VFPXPorter
             SELF:Settings:AppendToSolution := SELF:AppendCheckBox:Checked
             SELF:Settings:SolutionName := SELF:SolutionName:Text
             SELF:Settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory:Checked
+            SELF:resultText:Text := ""
 			//
 			SELF:infoStripLabel:Text := ""
 			IF !SELF:CheckFileAndFolder( false )
@@ -81,7 +82,8 @@ BEGIN NAMESPACE VFPXPorter
 
                 // Auto-Complete: if solution name is empty, we set it to the PJX folder
                 SELF:SolutionName:Text := Path.GetFileNameWithoutExtension(ofd:FileName)
-                // Per Default, we use the OutputDir from Settings, combined with the name of the VFP Project
+                // outputPathTextBox is the "main" folder (where the solution goes) : per default,
+                // we use the OutputDir from Settings, combined with the name of the VFP Project.
                 SELF:outputPathTextBox:Text := Path.Combine(Settings:OutputPath, Path.GetFileNameWithoutExtension(ofd:FileName))
 			ENDIF
 			RETURN
@@ -104,7 +106,8 @@ BEGIN NAMESPACE VFPXPorter
             SELF:infoStripLabel:ForeColor := Color.Black
 
 			VAR pjxFilePath := SELF:pjxPathTextBox:Text
-            VAR baseOutputPath := SELF:outputPathTextBox:Text
+            // outputPathTextBox is the "main" folder : this is where the .sln goes.
+            VAR mainFolder := SELF:outputPathTextBox:Text
 
 			//
 			IF !File.Exists(pjxFilePath)
@@ -113,16 +116,36 @@ BEGIN NAMESPACE VFPXPorter
 				RETURN FALSE
             ENDIF
             //
-			IF !Directory.Exists(baseOutputPath)
+            IF String.IsNullOrEmpty(mainFolder)
+				SELF:infoStripLabel:ForeColor := Color.Red
+				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
+				RETURN FALSE
+            ENDIF
+            IF analysis .AND. !Directory.Exists(mainFolder)
 				SELF:infoStripLabel:ForeColor := Color.Red
 				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
 				RETURN FALSE
             ENDIF
             //
+            VAR projectName := SELF:SolutionName:Text
+            IF String.IsNullOrWhiteSpace(projectName)
+                projectName := Path.GetFileNameWithoutExtension(pjxFilePath)
+            ENDIF
+
+            // Unless the solution and project share the same directory, the project's own
+            // files are exported one level below the main folder, in a subfolder named
+            // after the project.
+            LOCAL baseOutputPath AS STRING
+            IF SELF:Settings:PlaceSolutionInSameDirectory
+                baseOutputPath := mainFolder
+            ELSE
+                baseOutputPath := Path.Combine( mainFolder, projectName )
+            ENDIF
+
             IF !analysis
 			    // Warning, we may NOT be able to create the Directory
 			    TRY
-                    IF SELF:Settings:EmptyFolder
+                    IF SELF:Settings:EmptyFolder .AND. Directory.Exists(baseOutputPath)
                         // If Append: do not delete the folder. We might delete the solution.
                         // or sibling project folders. We just delete if not Append.
                         IF !SELF:Settings:AppendToSolution
@@ -139,9 +162,11 @@ BEGIN NAMESPACE VFPXPorter
                                 SELF:EraseFolder(xsharpDir, TRUE)
                             ENDIF
                         ENDIF
-                    ELSE
-				        Directory.CreateDirectory(baseOutputPath)
-				    ENDIF
+                    ENDIF
+                    // Ensure the full folder structure exists (main/solution folder,
+                    // and the project's own subfolder if it is a distinct level).
+                    Directory.CreateDirectory(mainFolder)
+                    Directory.CreateDirectory(baseOutputPath)
 			    CATCH e AS Exception
 				    //
                     SELF:resultText:Text += "Warning during folder cleanup: " + e:Message + Environment.NewLine
@@ -152,12 +177,7 @@ BEGIN NAMESPACE VFPXPorter
             ENDIF
 			//
             SELF:xPorter := XPorterProject{ pjxFilePath, baseOutputPath }
-            // If the solution is in the same directory as the project, we use the same path for both.
-            // IF !SELF:Settings:PlaceSolutionInSameDirectory
-                // SELF:xPorter:SolutionPath := Path.GetDirectoryName(baseOutputPath)
-            // ELSE
-                // SELF:xPorter:SolutionPath := baseOutputPath
-            // ENDIF
+            SELF:xPorter:SolutionPath := mainFolder
 
 			RETURN TRUE
 		PRIVATE METHOD analysisButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
@@ -172,9 +192,12 @@ BEGIN NAMESPACE VFPXPorter
 		PRIVATE METHOD openButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
 			VAR pjxFilePath := SELF:pjxPathTextBox:Text
 			VAR outputPath := SELF:outputPathTextBox:Text
-			// Get the SCX File name, and use it as a SubFolder
+			// Get the Project name, and use it as a SubFolder
 			LOCAL destFile AS STRING
-			destFile := Path.GetFileNameWithoutExtension( pjxFilePath )
+			destFile := SELF:SolutionName:Text
+			IF String.IsNullOrWhiteSpace(destFile)
+				destFile := Path.GetFileNameWithoutExtension( pjxFilePath )
+			ENDIF
 			outputPath := Path.Combine( outputPath, destFile )
 			IF !Directory.Exists( outputPath )
 				outputPath := SELF:outputPathTextBox:Text

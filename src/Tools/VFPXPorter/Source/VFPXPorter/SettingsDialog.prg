@@ -9,8 +9,8 @@ USING System.IO
 USING VFPXPorterLib
 
 BEGIN NAMESPACE VFPXPorter
-	PUBLIC PARTIAL CLASS SettingsDialog	;
-		INHERIT System.Windows.Forms.Form
+	PUBLIC PARTIAL CLASS SettingsDialog ;
+        INHERIT System.Windows.Forms.Form
 		PRIVATE iniSettings AS ExporterSettings
 
 		PUBLIC CONSTRUCTOR( ini AS ExporterSettings ) STRICT //SettingsDialog
@@ -199,6 +199,9 @@ BEGIN NAMESPACE VFPXPorter
 PRIVATE METHOD checkKeepFoxProEventName_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			RETURN
 		END METHOD
+        PRIVATE METHOD label3_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
+            RETURN
+        END METHOD 
 
-	END CLASS
+	END CLASS 
 END NAMESPACE

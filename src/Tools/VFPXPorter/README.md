@@ -28,6 +28,25 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
     - No real export by now (Maybe export to ReportPro ??)
 
 
+#### Export folder layout (GUI)
+When you pick a `.pjx` file, the **Output** field is auto-filled as
+`<OutputDir from Settings>\<ProjectName>` — this combined path is the *main* folder, and
+it is always where the generated `.sln` is written.
+- If **"Place solution and project in the same directory"** is checked, the project's own
+  files (`.xsproj`, source, `Forms`/`Libs`/... subfolders) are written directly into that
+  same main folder, alongside the `.sln`.
+- If unchecked (default), the project's own files go one level further down, in a
+  subfolder named after the project/solution name.
+
+Example: output dir `C:\Temp`, project/solution name `Test` →
+- Main folder (and `.sln` location): `C:\Temp\Test`
+- Checked: project files in `C:\Temp\Test\Test.xsproj`
+- Unchecked: project files in `C:\Temp\Test\Test\Test.xsproj`
+
+Both the main folder and (when applicable) the project subfolder are created automatically
+if they don't already exist. This layout is currently GUI-only; see
+**Source\VFPXPorterCmd\README.md** for the CLI's simpler single-folder behavior.
+
 We will also have to take care of Menu definition.
 
 What about Reports ? We may/will have to consider another tool; or introduce here

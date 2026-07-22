@@ -269,12 +269,6 @@ CLASS XPorterSettings
     /// </summary>
     PROPERTY SeparateLibraryProjects AS LOGIC AUTO
 
-    	/// <summary>
-    /// Place the solution in the same folder as the generated project
-	/// </summary>
-	/// <value></value>
-	PROPERTY SaveSolutionWithProject AS LOGIC AUTO
-
     /// <summary>
 	/// Indicate if ClassLibrary namespace name must be added to the common Header : VFPXPorter.xh
 	/// </summary>

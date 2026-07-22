@@ -1744,7 +1744,9 @@ BEGIN NAMESPACE VFPXPorterLib
             // Map VFP class name to X# type via TypeConvert, fall back to as-is
             VAR typeName := memberClass
             IF SELF:_typeList != NULL .AND. SELF:_typeList:ContainsKey(memberClass)
-                typeName := SELF:_typeList[memberClass][0]  // take the first mapped type if multiple
+                 LOCAL vcxBaseData AS STRING[]
+                 vcxBaseData := SELF:_typeList[memberClass]
+                 typeName := vcxBaseData[1]                 // take the first mapped type if multiple
             ENDIF
             RETURN "SELF:" + item:Name + ":ButtonFactory := { => " + typeName + "{} }" + Environment.NewLine
         END METHOD

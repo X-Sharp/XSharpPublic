@@ -37,6 +37,12 @@ BEGIN NAMESPACE VFPXPorterLib
         /// </summary>
         PRIVATE outputPath AS STRING
 
+        /// <summary>
+        /// Folder where the .sln (and, when PlaceSolutionInSameDirectory is FALSE, the
+        /// per-project subfolders) are written. Defaults to outputPath when not set.
+        /// </summary>
+        PROPERTY SolutionPath AS STRING AUTO
+
         PROPERTY Project AS VFPProject AUTO
 
         /// <summary>
@@ -750,11 +756,12 @@ BEGIN NAMESPACE VFPXPorterLib
 
             // Compute solution location upfront — needed for per-library RelativePath calculation
             LOCAL solutionBasePath AS STRING
-            IF SELF:Settings:PlaceSolutionInSameDirectory
-                solutionBasePath := SELF:outputPath
+            IF !String.IsNullOrEmpty( SELF:SolutionPath )
+                solutionBasePath := SELF:SolutionPath
             ELSE
-                solutionBasePath := Path.GetDirectoryName( SELF:outputPath )
+                solutionBasePath := SELF:outputPath
             ENDIF
+            Directory.CreateDirectory( solutionBasePath )
 
             IF SELF:GeneratedLibFiles:Count > 0
                 IF SELF:Settings:SeparateLibraryProjects
@@ -857,11 +864,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     NEXT
                     VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj" )
                     xsLibs:Save( libProjPath, stdDef )
-                    IF SELF:Settings:PlaceSolutionInSameDirectory
-                        xsLibs:RelativePath := "ClassLibraries.xsproj"
-                    ELSE
-                        xsLibs:RelativePath := Path.Combine( Path.GetFileNameWithoutExtension( SELF:outputPath ), "ClassLibraries.xsproj" )
-                    ENDIF
+                    xsLibs:RelativePath := GetRelativePath( solutionBasePath, libProjPath )
                 ENDIF
             ENDIF
 
@@ -915,13 +918,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 xsSolution:Projects:Remove( existing )
             ENDIF
 
-            LOCAL relativeProjPath AS STRING
-            IF SELF:Settings:PlaceSolutionInSameDirectory
-                relativeProjPath := projectName + ".xsproj"
-            ELSE
-                relativeProjPath := Path.Combine( Path.GetFileNameWithoutExtension( SELF:outputPath ), projectName + ".xsproj" )
-            ENDIF
-            xsProj:RelativePath := relativeProjPath
+            xsProj:RelativePath := GetRelativePath( solutionBasePath, projectPath )
             xsSolution:Projects:Add( xsProj )
 
             IF xsLibs != NULL .AND. !xsSolution:Projects:Any({ p => String.Compare( p:Name, xsLibs:Name, TRUE ) == 0 })

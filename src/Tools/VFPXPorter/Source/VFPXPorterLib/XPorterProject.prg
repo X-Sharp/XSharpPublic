@@ -400,10 +400,13 @@ BEGIN NAMESPACE VFPXPorterLib
                                     sttmnts := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.StatementsFile) )
                                     LOCAL colorProps AS List<STRING>
                                     colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
+                                    LOCAL aliasTypeCollisions AS List<STRING>
+                                    aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
                                     // Now, copy
                                     VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast, SELF:Settings:ExpandWithEndWith }
                                     converter:Statements := sttmnts
                                     converter:ColorProperties := colorProps
+                                    converter:AliasTypeCollisions := aliasTypeCollisions
                                     converter:ProcessProcedure( File.ReadAllText(orgFile), Path.GetFileNameWithoutExtension( orgFile ) )
                                     File.WriteAllText( destFile, converter:ToString() )
                                     //File.Copy(orgFile, destFile, TRUE )

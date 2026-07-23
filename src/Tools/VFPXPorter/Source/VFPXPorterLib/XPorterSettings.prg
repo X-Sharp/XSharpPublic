@@ -83,6 +83,13 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY VFPElementsFile		AS STRING GET XPorterSettings.DataFolder + "\\VFP2WinForms.json"
 	PUBLIC STATIC PROPERTY ColorPropertiesFile	AS STRING GET XPorterSettings.DataFolder + "\\ColorProperties.json"
 
+	/// <summary>
+	/// List of cursor/alias names that collide with a resolvable .NET/X# type (e.g. "Currency"),
+	/// so `alias.field` would bind to the type instead of the DBF field. For these names the
+	/// converter emits `alias->field` instead of `alias.field` to force alias-field resolution.
+	/// </summary>
+	PUBLIC STATIC PROPERTY AliasTypeCollisionsFile AS STRING GET XPorterSettings.DataFolder + "\\AliasTypeCollisions.json"
+
     /// <summary>
     /// The name of the file used as the main entry point of the generated project, containing the Main method that initializes and runs the application.
     /// VFPStart.prg per default.

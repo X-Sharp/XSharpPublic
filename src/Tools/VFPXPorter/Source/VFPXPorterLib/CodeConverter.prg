@@ -32,6 +32,13 @@ BEGIN NAMESPACE VFPXPorterLib
 
 		PROPERTY ColorProperties AS List<STRING> AUTO
 
+		/// <summary>
+		/// Cursor/alias names that collide with a resolvable .NET/X# type (e.g. "Currency").
+		/// A leading "Name." is rewritten to "Name->" so the field is resolved as a DBF alias
+		/// field instead of a static member of the colliding type. See AliasTypeCollisions.json.
+		/// </summary>
+		PROPERTY AliasTypeCollisions AS List<STRING> AUTO
+
 
 		CONSTRUCTOR( ko AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC, expandWith := TRUE AS LOGIC )
 			SELF:_keepOriginal := ko
@@ -45,6 +52,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			SELF:Statements := List<String>{}
 			SELF:VFPElements := Dictionary<STRING,STRING>{}
 			SELF:ColorProperties := List<STRING>{}
+			SELF:AliasTypeCollisions := List<STRING>{}
 
 			// The lines of source code that will handle that Code
 		PROPERTY Source AS List<STRING> AUTO
@@ -76,6 +84,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
+			SELF:ChangeAliasTypeCollisions()
 			IF SELF:_convertThisObject
 				IF cdeBlock:Owner != NULL
 					SELF:ChangeThisObject( cdeBlock:Owner:FoxClassName )
@@ -101,6 +110,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
+			SELF:ChangeAliasTypeCollisions()
 
 		// Converts a block of menu handler code: applies statement→method-call conversions
 		// and VFPElements substitutions (THISFORM./THISFORMSET.) without the form-perspective
@@ -115,6 +125,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
+			SELF:ChangeAliasTypeCollisions()
 			IF SELF:_convertThisObject
 				SELF:ChangeThisObject()
 			ENDIF
@@ -713,6 +724,23 @@ BEGIN NAMESPACE VFPXPorterLib
 				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
 				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
 			NEXT
+
+		// Rewrites "Name." to "Name->" for every alias in AliasTypeCollisions (AliasTypeCollisions.json).
+		// These are cursor/alias names known to collide with a resolvable .NET/X# type (e.g. "Currency"),
+		// which would otherwise make the compiler bind "Name.field" as a static member access instead of
+		// a DBF alias field access. "->" is unambiguous and never resolves as a type/namespace path.
+		PRIVATE METHOD ChangeAliasTypeCollisions() AS VOID
+			IF SELF:AliasTypeCollisions == NULL .OR. SELF:AliasTypeCollisions:Count == 0
+				RETURN
+			ENDIF
+			FOR VAR i := 0 TO SELF:Source:Count-1
+				LOCAL line := SELF:Source[i] AS STRING
+				FOREACH VAR aliasName IN SELF:AliasTypeCollisions
+					line := SELF:SearchAndReplace( i, line, aliasName+".", aliasName+"->", NULL, FALSE, FALSE )
+				NEXT
+				SELF:Source[i] := line
+			NEXT
+			RETURN
 
 		METHOD ToString() AS STRING
 			VAR code := StringBuilder{ }

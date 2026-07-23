@@ -15,17 +15,17 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
 	/// VFP-compatible shape control that wraps <see cref="System.Windows.Forms.UserControl"/> with fully custom owner-drawing.<br/>
 	/// <see cref="Style"/> selects the geometry: 0=Rectangle, 1=Square, 2=Ellipse, 3=Circle, 4=Rounded Rectangle, 5=Rounded Square.<br/>
-	/// Fill is controlled by <see cref="FillStyle"/> (0=Solid, 1=Transparent, 2â€“7=GDI+ hatch patterns)
+	/// Fill is controlled by <see cref="FillStyle"/> (0=Solid, 1=Transparent, 2–7=GDI+ hatch patterns)
 	/// and <see cref="FillColor"/>.<br/>
 	/// The border is controlled by <see cref="BorderColor"/>, <see cref="BORDERWIDTH"/>, and
 	/// <see cref="BorderStyle"/> (0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible, 6=InsideSolid).<br/>
-	/// For rounded styles (4/5), <see cref="CURVATURE"/> (0â€“99) controls the corner radius as a
+	/// For rounded styles (4/5), <see cref="CURVATURE"/> (0–99) controls the corner radius as a
 	/// percentage of the bounding-box width. The background follows <see cref="BackStyle"/>
 	/// (0=Transparent, 1=Opaque/default) and <c>BackColor</c>, independently of <see cref="FillStyle"/>.
 	/// </summary>
 	PARTIAL CLASS Shape INHERIT System.Windows.Forms.UserControl
 
-		// Note: VFPObject.xh is included by Shape.generated.prg â€” do not include again here.
+		// Note: VFPObject.xh is included by Shape.generated.prg — do not include again here.
 
 		#include "ControlProperties.xh"
 
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ BorderWidth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BorderWidth ───────────────────────────────────────────────────────
 		PRIVATE _borderWidth AS LONG
 		/// <summary>
 		/// Width of the shape's border in pixels. Accepts a VFP <c>USUAL</c> for source compatibility. Triggers a repaint on change.
@@ -87,10 +87,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Curvature â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Curvature ─────────────────────────────────────────────────────────
 		PRIVATE _curvature AS LONG
 		/// <summary>
-		/// Corner radius as a percentage of the bounding-box width (clamped 0â€“99).<br/>
+		/// Corner radius as a percentage of the bounding-box width (clamped 0–99).<br/>
 		/// 0=sharp corners; 99=fully rounded. Only used when <see cref="Style"/> is 4 (Rounded Rectangle) or 5 (Rounded Square).
 		/// </summary>
 		PROPERTY CURVATURE AS USUAL
@@ -102,10 +102,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ FillColor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── FillColor ─────────────────────────────────────────────────────────
 		PRIVATE _fillColor AS System.Drawing.Color
 		/// <summary>
-		/// Interior fill colour used when <see cref="FillStyle"/> is 0 (Solid) or 2â€“7 (hatch patterns). Triggers a repaint on change.
+		/// Interior fill colour used when <see cref="FillStyle"/> is 0 (Solid) or 2–7 (hatch patterns). Triggers a repaint on change.
 		/// </summary>
 		PROPERTY FillColor AS System.Drawing.Color
 			GET ; RETURN SELF:_fillColor
@@ -114,11 +114,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ FillStyle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── FillStyle ─────────────────────────────────────────────────────────
 		PRIVATE _fillStyle AS LONG
 		/// <summary>
 		/// VFP fill style: 0=Solid (<see cref="FillColor"/>); 1=Transparent (no fill, default);
-		/// 2â€“7=GDI+ hatch patterns (<c>HatchStyle</c> 0â€“5) drawn with <see cref="FillColor"/>.
+		/// 2–7=GDI+ hatch patterns (<c>HatchStyle</c> 0–5) drawn with <see cref="FillColor"/>.
 		/// Triggers a repaint on change.
 		/// </summary>
 		PROPERTY FillStyle AS USUAL
@@ -128,7 +128,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ BorderStyle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BorderStyle ──────────────────────────────────────────────────────
 		PRIVATE _borderStyle AS LONG
 		/// <summary>
 		/// VFP border line style: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot,
@@ -142,7 +142,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Style ─────────────────────────────────────────────────────────────
 		PRIVATE _style AS LONG
 		/// <summary>
 		/// Shape geometry: 0=Rectangle, 1=Square, 2=Ellipse, 3=Circle,
@@ -157,7 +157,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ OnPaint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── OnPaint ───────────────────────────────────────────────────────────
 		OVERRIDE PROTECTED METHOD OnPaint( e AS PaintEventArgs ) AS VOID
 			SUPER:OnPaint(e)
 			VAR g     := e:Graphics

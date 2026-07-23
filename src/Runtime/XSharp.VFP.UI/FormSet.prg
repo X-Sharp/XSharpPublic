@@ -63,7 +63,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
 
     // -- ControlCount ------------------------------------------------------
     /// <summary>
-    /// <c>IVFPOwner</c> requirement. Returns the number of forms in <see cref="Controls"/>. The setter is a no-op â€” the count is derived from the list.
+    /// <c>IVFPOwner</c> requirement. Returns the number of forms in <see cref="Controls"/>. The setter is a no-op — the count is derived from the list.
     /// </summary>
     PROPERTY ControlCount AS LONG
         GET ; RETURN SELF:Controls:Count ; END GET
@@ -166,7 +166,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
     /// <summary>
     /// Show all forms in the set. Respects each form's WindowType (modal/modeless).
     /// Modeless forms (WindowType=0) are shown non-blocking first; modal forms
-    /// (WindowType=1) call ShowDialog and block ï¿½ matching VFP FormSet behaviour.
+    /// (WindowType=1) call ShowDialog and block — matching VFP FormSet behaviour.
     /// </summary>
     PRIVATE _initCalled AS LOGIC
 

@@ -15,14 +15,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
 	/// VFP-compatible line control that wraps <see cref="System.Windows.Forms.UserControl"/> with fully custom owner-drawing.<br/>
 	/// Draws a single straight line across the transparent control surface.<br/>
-	/// <see cref="LineSlant"/> ("<c>\</c>"=top-leftâ†’bottom-right, "<c>/</c>"=bottom-leftâ†’top-right) selects the diagonal.<br/>
+	/// <see cref="LineSlant"/> ("<c>\</c>"=top-left→bottom-right, "<c>/</c>"=bottom-left→top-right) selects the diagonal.<br/>
 	/// The line appearance is controlled by <see cref="BorderColor"/>, <see cref="BorderWidth"/>,
 	/// and <see cref="BorderStyle"/> (0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible).<br/>
 	/// The control background is always transparent.
 	/// </summary>
 	PARTIAL CLASS Line INHERIT System.Windows.Forms.UserControl
 
-		// Note: VFPObject.xh is included by Line.generated.prg â€” do not include again here.
+		// Note: VFPObject.xh is included by Line.generated.prg — do not include again here.
 
 		#include "ControlProperties.xh"
 
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_lineSlant   := "\"
 			SELF:Size         := Size{100, 2}
 
-		// â”€â”€ BorderColor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BorderColor ───────────────────────────────────────────────────────
 		PRIVATE _borderColor AS System.Drawing.Color
 		/// <summary>
 		/// Colour of the line. Triggers a repaint on change.
@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ BorderWidth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BorderWidth ───────────────────────────────────────────────────────
 		PRIVATE _borderWidth AS LONG
 		/// <summary>
 		/// Width of the line in pixels. Accepts a VFP <c>USUAL</c> for source compatibility. Triggers a repaint on change.
@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ BorderStyle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BorderStyle ──────────────────────────────────────────────────────
 		PRIVATE _borderStyle AS LONG
 		/// <summary>
 		/// VFP border line style: 0=Solid, 1=Dash, 2=Dot, 3=DashDot, 4=DashDotDot, 5=Invisible (line suppressed).<br/>
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ LineSlant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── LineSlant ─────────────────────────────────────────────────────────
 		PRIVATE _lineSlant AS STRING
 		/// <summary>
 		/// Direction of the line: "<c>\</c>" (default) draws top-left to bottom-right;
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ OnPaint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── OnPaint ───────────────────────────────────────────────────────────
 		OVERRIDE PROTECTED METHOD OnPaint( e AS PaintEventArgs ) AS VOID
 			SUPER:OnPaint(e)
 			VAR g     := e:Graphics
@@ -118,7 +118,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				IF SELF:_lineSlant == "/"
 					g:DrawLine( pen, 0, h, w, 0 )
 				ELSE
-					// Default: "\" â€” top-left to bottom-right
+					// Default: "\" — top-left to bottom-right
 					g:DrawLine( pen, 0, 0, w, h )
 				ENDIF
 			ENDIF

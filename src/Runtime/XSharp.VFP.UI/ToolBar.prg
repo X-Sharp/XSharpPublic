@@ -24,19 +24,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS ToolBar INHERIT System.Windows.Forms.ToolStrip
 
 		// Note: VFPObject.xh and VFPProperties.xh are included via ToolBar.generated.prg
-		// (through VFPContainer.xh) â€” do not include them again here.
+		// (through VFPContainer.xh) — do not include them again here.
 		// ControlProperties.xh wires Move(), SetFocus(), standard VFP event chain.
 		#include "ControlProperties.xh"
 		#include "FontProperties.xh"
 
-		// â”€â”€ Buttons backing list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Buttons backing list ──────────────────────────────────────────────
 		PRIVATE _buttons AS List<VFPToolStripButton>
 
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_buttons := List<VFPToolStripButton>{}
 
-		// â”€â”€ Release â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Release ───────────────────────────────────────────────────────────
 		/// <summary>
 		/// Hides the toolbar. VFP RELEASE equivalent for toolbars.
 		/// </summary>
@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:Visible := FALSE
 			RETURN NIL
 
-		// â”€â”€ Show / Hide â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Show / Hide ───────────────────────────────────────────────────────
 		/// <summary>
 		/// Makes the toolbar visible.
 		/// </summary>
@@ -57,9 +57,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		METHOD Hide() AS VOID STRICT
 			SELF:Visible := FALSE
 
-		// â”€â”€ hWnd â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── hWnd ──────────────────────────────────────────────────────────────
 		/// <summary>
-		/// VFP hWnd â€” the native window handle as an integer. The setter is a no-op.
+		/// VFP hWnd — the native window handle as an integer. The setter is a no-op.
 		/// </summary>
 		PROPERTY hWnd AS USUAL
 			GET
@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Movable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Movable ───────────────────────────────────────────────────────────
 		/// <summary>
 		/// When <c>.T.</c>, shows the toolbar grip so the user can move it; when <c>.F.</c>, hides the grip. Maps to <see cref="System.Windows.Forms.ToolStrip.GripStyle"/>.
 		/// </summary>
@@ -83,19 +83,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Sizable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Sizable ───────────────────────────────────────────────────────────
 		/// <summary>
-		/// VFP Sizable stub â€” stored for source compatibility. Not implemented.
+		/// VFP Sizable stub — stored for source compatibility. Not implemented.
 		/// </summary>
 		PROPERTY Sizable AS USUAL AUTO
 
-		// â”€â”€ KeyPreview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── KeyPreview ────────────────────────────────────────────────────────
 		/// <summary>
-		/// VFP KeyPreview stub â€” stored for source compatibility. Not implemented.
+		/// VFP KeyPreview stub — stored for source compatibility. Not implemented.
 		/// </summary>
 		PROPERTY KeyPreview AS LOGIC AUTO
 
-		// â”€â”€ LockScreen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── LockScreen ────────────────────────────────────────────────────────
 		/// <summary>
 		/// When <c>.T.</c>, suspends layout updates (<c>SuspendLayout</c>) to batch changes; restoring to <c>.F.</c> resumes layout (<c>ResumeLayout(TRUE)</c>).
 		/// </summary>
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 		PRIVATE _lockScreen AS LOGIC
 
-		// â”€â”€ DockPosition â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── DockPosition ──────────────────────────────────────────────────────
 		/// <summary>
 		/// VFP dock position: 0=Top, 1=Left, 2=Right, 3=Bottom, 4=Float (undocked). Maps to <see cref="System.Windows.Forms.Control.Dock"/>; Float also shows the grip.
 		/// </summary>
@@ -142,7 +142,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Buttons collection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Buttons collection ────────────────────────────────────────────────
 		/// <summary>
 		/// 1-based indexed access to the button items. Returns the <see cref="VFPToolStripButton"/> at VFP position <paramref name="i"/>.
 		/// </summary>
@@ -161,18 +161,18 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 		END PROPERTY
 
-		// â”€â”€ AddObject override â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── AddObject override ────────────────────────────────────────────────
 		/// <summary>
-		/// Creates a toolbar item at runtime. <c>"CommandButton"</c> â†’ <see cref="VFPToolStripButton"/>;
-		/// <c>"Separator"</c> â†’ <see cref="System.Windows.Forms.ToolStripSeparator"/>; other class names
-		/// â†’ <c>CreateInstance</c> fallback. The new item is registered as a dynamic property under <paramref name="cName"/>.
+		/// Creates a toolbar item at runtime. <c>"CommandButton"</c> → <see cref="VFPToolStripButton"/>;
+		/// <c>"Separator"</c> → <see cref="System.Windows.Forms.ToolStripSeparator"/>; other class names
+		/// → <c>CreateInstance</c> fallback. The new item is registered as a dynamic property under <paramref name="cName"/>.
 		/// </summary>
 		METHOD AddObject( cName, cClass, cOLEClass, aInit1, aInit2 ) AS USUAL CLIPPER
 			LOCAL sName  AS STRING
 			LOCAL sClass AS STRING
 			sName  := (STRING) cName
 			sClass := ((STRING) cClass):ToUpper()
-			// Button-like VFP classes â†’ ToolStripButton
+			// Button-like VFP classes → ToolStripButton
 			IF sClass == "COMMANDBUTTON" .OR. sClass == "XSHARP.VFP.UI.COMMANDBUTTON"
 				LOCAL btn AS VFPToolStripButton
 				btn := VFPToolStripButton{}
@@ -185,7 +185,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:AddProperty( sName, btn, PropertyVisibility.Public, "AddObject CommandButton" )
 				RETURN TRUE
 			ENDIF
-			// Separator â†’ ToolStripSeparator
+			// Separator → ToolStripSeparator
 			IF sClass == "SEPARATOR" .OR. sClass == "XSHARP.VFP.UI.SEPARATOR"
 				LOCAL sep AS ToolStripSeparator
 				sep := ToolStripSeparator{}
@@ -194,8 +194,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:AddProperty( sName, sep, PropertyVisibility.Public, "AddObject Separator" )
 				RETURN TRUE
 			ENDIF
-			// Generic fallback â€” delegate to VFPContainer.xh implementation
-			// (inherited via #include in ToolBar.generated.prg â†’ VFPContainer.xh)
+			// Generic fallback — delegate to VFPContainer.xh implementation
+			// (inherited via #include in ToolBar.generated.prg → VFPContainer.xh)
 			// We re-invoke via the base include by calling the method via SUPER chain;
 			// since VFPContainer.xh injects it directly into this partial class, we
 			// cannot call SUPER:AddObject.  Instead, duplicate the minimal logic here.

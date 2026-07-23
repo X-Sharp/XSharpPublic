@@ -20,8 +20,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
 	/// VFP-compatible generic container control that wraps <see cref="System.Windows.Forms.UserControl"/>.<br/>
-	/// Supports a transparent default background (<c>SupportsTransparentBackColor</c>), a custom
-	/// <see cref="BorderColor"/> painted in <c>OnPaint</c> when <c>BorderStyle=0</c>, and
+	/// Supports a transparent default background (<c>SupportsTransparentBackColor</c>), a VFP-numeric
+	/// <c>BorderStyle</c> (see <c>BorderStyle.xh</c>) with a custom <see cref="BorderColor"/> painted in
+	/// <c>OnPaint</c> when <c>BorderStyle=0</c> (WinForms draws its own border natively when =1), and
 	/// <see cref="BackStyle"/> (0=Transparent, 1=Opaque).<br/>
 	/// <see cref="Refresh"/> repaints the container and recursively refreshes all child controls,
 	/// then fires <c>vfpRefresh</c> if set. <c>vfpKeyPress</c> is dispatched via the overridden
@@ -33,6 +34,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
          #include "VFPProperties.xh"
 		 #include "ControlProperties.xh"
 		 #include "FontProperties.xh"
+		 #include "BorderStyle.xh"
 
 		 #include "Tooltips.xh"
 

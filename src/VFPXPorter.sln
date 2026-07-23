@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "So, let's go", "So, let's g
 		Tools\VFPXPorter\README.md = Tools\VFPXPorter\README.md
 		Tools\VFPXPorter\RulesForEvents.md = Tools\VFPXPorter\RulesForEvents.md
 		Tools\VFPXPorter\RulesForProperties.md = Tools\VFPXPorter\RulesForProperties.md
+		Tools\VFPXPorter\SettingsReference.md = Tools\VFPXPorter\SettingsReference.md
 		Tools\VFPXPorter\Todo.md = Tools\VFPXPorter\Todo.md
 	EndProjectSection
 EndProject

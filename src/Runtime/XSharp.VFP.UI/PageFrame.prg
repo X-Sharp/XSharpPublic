@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS PageFrame INHERIT System.Windows.Forms.TabControl
 
 		// Note: VFPObject.xh and VFPProperties.xh are provided by PageFrame.generated.prg
-		// (via VFPContainer.xh) â€” do not include them again here.
+		// (via VFPContainer.xh) — do not include them again here.
 
 		#include "ControlProperties.xh"
 
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_lastSelectedIndex := -1
 			SELF:_tabsVisible := TRUE
 
-		// â”€â”€ SelectedIndexChanged â†’ Activate/Deactivate â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── SelectedIndexChanged → Activate/Deactivate ───────────────────────
 		PRIVATE _lastSelectedIndex AS INT
 
 		/// <summary>
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ENDIF
 			ENDIF
 
-		// â”€â”€ ActivePage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── ActivePage ───────────────────────────────────────────────────────
 		/// <summary>
 		/// VFP 1-based index of the currently selected tab. Maps to <see cref="System.Windows.Forms.TabControl.SelectedIndex"/> + 1. Ignored if out of range.
 		/// </summary>
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ PageCount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── PageCount ────────────────────────────────────────────────────────
 		/// <summary>
 		/// Number of pages (tabs). Setting a larger value adds new <see cref="Page"/> instances with default captions; setting a smaller value removes pages from the end.
 		/// </summary>
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Pages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Pages ─────────────────────────────────────────────────────────────
 		/// <summary>
 		/// Returns a <see cref="VFPPageCollection"/> wrapper that exposes VFP-style 1-based access to the tab pages via <c>Pages(n)</c> or <c>Pages[n]</c>.
 		/// </summary>
@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 		END PROPERTY
 
-		// â”€â”€ Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Tabs ─────────────────────────────────────────────────────────────
 		/// <summary>
 		/// When <c>.T.</c> (default), the tab strip is visible. When <c>.F.</c>, the strip is hidden by setting <c>SizeMode = Fixed</c> and <c>ItemSize.Height = 1</c>.
 		/// </summary>
@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 		PRIVATE _tabsVisible AS LOGIC
 
-		// â”€â”€ TabOrientation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── TabOrientation ───────────────────────────────────────────────────
 		/// <summary>
 		/// Position of the tab strip: 0=Top (default), 1=Left, 2=Bottom, 3=Right. Maps to <see cref="System.Windows.Forms.TabControl.Alignment"/>.
 		/// </summary>
@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ TabStyle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── TabStyle ─────────────────────────────────────────────────────────
 		/// <summary>
 		/// Tab appearance: 0=Rounded/Normal (default), 1=Straight/Buttons. Maps to <see cref="System.Windows.Forms.TabControl.Appearance"/>.
 		/// </summary>
@@ -164,7 +164,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ TabStretch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── TabStretch ────────────────────────────────────────────────────────
 		/// <summary>
 		/// Tab sizing: 0=stretch tabs to fill the tab bar width (default, <c>SizeMode.Normal</c>), 1=fixed width (<c>SizeMode.Fixed</c>).
 		/// </summary>
@@ -181,9 +181,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ PageHeight â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── PageHeight ────────────────────────────────────────────────────────
 		/// <summary>
-		/// Pixel height of the page content area (tab strip excluded). Getting approximates <c>Height âˆ’ ItemSize.Height âˆ’ 4</c>; setting adjusts the total control height to match.
+		/// Pixel height of the page content area (tab strip excluded). Getting approximates <c>Height − ItemSize.Height − 4</c>; setting adjusts the total control height to match.
 		/// </summary>
 		PROPERTY PageHeight AS LONG
 			GET
@@ -197,7 +197,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ PageWidth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── PageWidth ─────────────────────────────────────────────────────────
 		/// <summary>
 		/// Pixel width of the page content area. Maps directly to the control's <c>Width</c>.
 		/// </summary>
@@ -212,7 +212,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Resize / Moved events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Resize / Moved events ─────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
 		/// <summary>
 		/// Name of the VFP method called when the page frame is resized.

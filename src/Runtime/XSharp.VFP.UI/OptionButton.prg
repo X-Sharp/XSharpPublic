@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:OnVFPKeyPress(SELF, e)
 			SUPER:OnKeyPress(e)
 
-		// â”€â”€ InteractiveChange â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── InteractiveChange ────────────────────────────────────────────────
 
 		PROTECTED METHOD OnCheckedChanged(e AS System.EventArgs) AS VOID
 			SUPER:OnCheckedChanged(e)

@@ -57,6 +57,9 @@ Don't forget to have a deep look at the **ExportAdvices.md** document, as some m
 
 If you want to change the way the Application is doing some transporting, don't forget to have a look at **DocumentationAndRules.md**
 
+For a tab-by-tab explanation of every setting in the Exporter Settings dialog and its actual
+impact on the export process, see **SettingsReference.md**.
+
 
 #### Todo
 (Ideas dropped here just to not forget)

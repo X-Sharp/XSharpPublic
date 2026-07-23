@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Page INHERIT System.Windows.Forms.TabPage
 
 		// Note: VFPObject.xh and VFPProperties.xh are included by Page.generated.prg
-		// (via VFPControl.xh + VFPContainer.xh) â€” do not include again here.
+		// (via VFPControl.xh + VFPContainer.xh) — do not include again here.
 
 		#include "ControlProperties.xh"
 
@@ -31,12 +31,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER()
 			SELF:Size := Size{290, 170}
 
-		// â”€â”€ Caption â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Caption ───────────────────────────────────────────────────────────
 		// VFP Caption is the tab label text; maps to TabPage.Text.
 		// ControlProperties.xh already maps Caption -> Text via the base include,
-		// but TabPage uses Text as the tab header â€” no override needed.
+		// but TabPage uses Text as the tab header — no override needed.
 
-		// â”€â”€ PageOrder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── PageOrder ─────────────────────────────────────────────────────────
 		/// <summary>
 		/// 1-based position of this page within its parent <see cref="PageFrame"/>. Setting reorders the page by removing and re-inserting it at the target index.
 		/// </summary>
@@ -65,7 +65,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Picture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Picture ───────────────────────────────────────────────────────────
 		PRIVATE _picture AS STRING
 		/// <summary>
 		/// Path to a background image for the page. Setting loads the image via <c>VFPTools.ImageFromFile</c> and stretches it to fill the page; clearing restores no-image.
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Activate / Deactivate events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Activate / Deactivate events ──────────────────────────────────────
 		// Fired by the parent PageFrame when this page is selected/deselected.
 		PRIVATE _VFPActivate   AS VFPOverride
 		PRIVATE _VFPDeactivate AS VFPOverride
@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SELF:_VFPDeactivate:Call()
 			ENDIF
 
-		// â”€â”€ BackStyle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BackStyle ─────────────────────────────────────────────────────────
 		PRIVATE _backStyle := 1 AS INT
 		/// <summary>
 		/// VFP BackStyle: 0=Transparent (sets <c>BackColor</c> to <c>Transparent</c>), 1=Opaque/default (restores <c>SystemColors.Control</c>).
@@ -147,7 +147,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
-		// â”€â”€ Resize / Moved events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Resize / Moved events ─────────────────────────────────────────────
 		PRIVATE _VFPResize AS VFPOverride
 		/// <summary>
 		/// Name of the VFP method called when this page is resized.

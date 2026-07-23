@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// attached to a control. Maps to System.Windows.Forms.ContextMenuStrip.
 	/// Assign to a control via ctrl.ContextMenuStrip := oContextMenu.
 	/// Add items via AddBar(). A caption of "--" inserts a separator.
-	/// Action methods live on a subclass â€” vfpClick dispatch finds them via
+	/// Action methods live on a subclass — vfpClick dispatch finds them via
 	/// Bar.Owner (which is this ContextMenu instance directly).
 	/// </summary>
 PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
@@ -28,7 +28,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			SUPER()
 			SELF:_bars := List<Bar>{}
 
-		// ── Named registry ────────────────────────────────────────────────────
+		// -- Named registry ----------------------------------------------------
 		// ContextMenus register themselves by Name so DEFINE POPUP SHORTCUT
 		// and SET SKIP OF POPUP can locate them at runtime.
 		NEW PROPERTY Name AS STRING
@@ -53,7 +53,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			ENDIF
 			RETURN NULL
 
-		// â”€â”€ BarCount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── BarCount ──────────────────────────────────────────────────────────
 		/// <summary>
 		/// Number of <see cref="Bar"/> items in this menu. Separator entries are not counted.
 		/// </summary>
@@ -63,7 +63,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			END GET
 		END PROPERTY
 
-		// â”€â”€ Bars[i] â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── Bars[i] ───────────────────────────────────────────────────────────
 		/// <summary>
 		/// 1-based indexed access to <see cref="Bar"/> items (separators excluded).
 		/// </summary>
@@ -73,7 +73,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			END GET
 		END PROPERTY
 
-		// â”€â”€ AddBar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+		// ── AddBar ────────────────────────────────────────────────────────────
 		/// <summary>
 		/// Adds an item to the menu. When <paramref name="cCaption"/> is <c>"--"</c>, inserts a <see cref="System.Windows.Forms.ToolStripSeparator"/>; otherwise creates a <see cref="Bar"/> and registers it as a dynamic property under <paramref name="cName"/>.
 		/// </summary>
@@ -98,27 +98,27 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 			ENDIF
 			RETURN NIL
 
-		// ── Skip ──────────────────────────────────────────────────────────────
+		// -- Skip --------------------------------------------------------------
 		PROPERTY Skip AS LOGIC
 			GET ; RETURN !SELF:Enabled ; END GET
 			SET ; SELF:Enabled := !VALUE ; END SET
 		END PROPERTY
 
-		// ── IndexOf ───────────────────────────────────────────────────────────
+		// -- IndexOf -----------------------------------------------------------
 		// Returns the 1-based Bar index of the given bar (0 = not found).
 		INTERNAL METHOD IndexOf( bar AS Bar ) AS INT
 			LOCAL idx := SELF:_bars:IndexOf(bar) AS INT
 			RETURN IIF( idx < 0, 0, idx + 1 )
 
-		// ── Lifecycle stubs ───────────────────────────────────────────────────
+		// -- Lifecycle stubs ---------------------------------------------------
 		/// <summary>
-		/// VFP Init lifecycle stub â€” overridden by the subclass to run initialisation code.
+		/// VFP Init lifecycle stub — overridden by the subclass to run initialisation code.
 		/// </summary>
 		VIRTUAL METHOD Init() AS USUAL CLIPPER
 			RETURN NIL
 
 		/// <summary>
-		/// VFP Destroy lifecycle stub â€” overridden by the subclass to run cleanup code.
+		/// VFP Destroy lifecycle stub — overridden by the subclass to run cleanup code.
 		/// </summary>
 		VIRTUAL METHOD Destroy() AS USUAL CLIPPER
 			RETURN NIL

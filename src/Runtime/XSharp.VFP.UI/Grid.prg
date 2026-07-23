@@ -423,6 +423,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 SELF:_VFPAfterRowColChange:Call( <USUAL>{nLocation} )
             ENDIF
 
+        VIRTUAL METHOD AfterRowColChange( ) AS VOID
+            LOCAL nLocation := 0 AS LONG
+            AfterRowColChange( nLocation )
+
         PRIVATE _VFPBeforeRowColChange AS VFPOverride
         /// <summary>
         /// Name of the VFP method called before the active row or column changes. Receives the old 1-based row index as <c>nLocation</c>. Wired to <c>DataGridView.CellLeave</c> for correct pre-move timing.
@@ -440,6 +444,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 SELF:_VFPBeforeRowColChange:Call( <USUAL>{nLocation} )
             ENDIF
 
+        VIRTUAL METHOD BeforeRowColChange( ) AS VOID
+            LOCAL nLocation := 0 AS LONG
+            BeforeRowColChange( nLocation )
+
         // ── BeforeEditCell / AfterEditCell ────────────────────────────────────
         PRIVATE _VFPBeforeEditCell AS VFPOverride
         /// <summary>
@@ -454,6 +462,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF SELF:_VFPBeforeEditCell != NULL
                 SELF:_VFPBeforeEditCell:Call( <USUAL>{nRow, nCol} )
             ENDIF
+
+        VIRTUAL METHOD BeforeEditCell( ) AS VOID
+            LOCAL nRow := 0 AS LONG
+            LOCAL nCol := 0 AS LONG
+            BeforeEditCell( nRow, nCol )
 
         METHOD VFPCellBeginEdit( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellCancelEventArgs ) AS VOID
             SELF:BeforeEditCell( e:RowIndex + 1, e:ColumnIndex + 1 )
@@ -471,6 +484,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF SELF:_VFPAfterEditCell != NULL
                 SELF:_VFPAfterEditCell:Call( <USUAL>{nRow, nCol} )
             ENDIF
+
+        VIRTUAL METHOD AfterEditCell( ) AS VOID
+            LOCAL nRow := 0 AS LONG
+            LOCAL nCol := 0 AS LONG
+            AfterEditCell( nRow, nCol )
 
         METHOD VFPCellEndEdit( sender AS OBJECT, e AS System.Windows.Forms.DataGridViewCellEventArgs ) AS VOID
             SELF:AfterEditCell( e:RowIndex + 1, e:ColumnIndex + 1 )

@@ -147265,7 +147265,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = RuntimeTestsNetCore
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 70E3DAB7-5F3E-45A2-B617-437A91064B55
 ; ************** APPLICATION D004 - Static constructor on interfaces *************
 Application = D004 - Static constructor on interfaces
 IDEVersion = 1.06
@@ -147283,7 +147283,7 @@ PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
 Description = Just a simple x# application
 NameSpace = 
-Assembly = D004-Static constructor on interfaces
+Assembly = D004
 Extension = 
 ApplicationIcon = 
 OutputFolder = 
@@ -147390,7 +147390,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = D004 - Static constructor on interfaces
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION D005 - Primary and clipper constructor *************
 Application = D005 - Primary and clipper constructor
 IDEVersion = 1.06
@@ -147515,7 +147515,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = D005 - Primary and clipper constructor
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION D006 - Primary constructor and no parameter  type *************
 Application = D006 - Primary constructor and no parameter  type
 IDEVersion = 1.06

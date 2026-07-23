@@ -9,7 +9,7 @@ FUNCTION Start() AS INT
 	aTests := List<STRING>{};
 	{;
 ;
-     "D001",  "D003" ;
+     "D001",  "D003",  "D004" ;
 ;
 	 }
 

@@ -131,6 +131,7 @@ Data\
   Statements.json
   VFP2WinForms.json
   ColorProperties.json
+  AliasTypeCollisions.json
   Templates\
     Designer\   (prefix.prg, starttype.prg, inittype.prg, endtype.prg)
     Form\       (prefix.prg, starttype.prg, inittype.prg, endtype.prg)

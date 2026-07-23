@@ -33,7 +33,7 @@
     "FontItalic": "<@FontItalic@>",
     "FontOutline": "",
     "FontShadow": "",
-    "BackColor": "VFPTools.ColorFromVFP((int)<@BackColor@>)"
+    "BackColor": "VFPTools.ColorFromVFP(<@BackColor@>)"
   },
 
   "CommandButton": {
@@ -101,7 +101,7 @@
     "Picture": "??<@Picture@>??",
     "Stretch": "Stretch",
     "BorderStyle": "BorderStyle",
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "BackStyle": "",
     "FontOutline": "",
     "FontShadow": ""
@@ -135,7 +135,7 @@
     "ButtonCount": "ButtonCount",
     "Value": "!Value",
     "BackStyle": "BackStyle",
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "MemberClass": "",
     "MemberClassLibrary": "",
     "FontName": "??<@FontName@>??",
@@ -150,10 +150,10 @@
 
   "Shape": {
     "Style": "Style",
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "BorderWidth": "BorderWidth",
     "BorderStyle": "BorderStyle",
-    "FillColor": "VFPTools.ColorFromVFP((int)<@FillColor@>)",
+    "FillColor": "VFPTools.ColorFromVFP(<@FillColor@>)",
     "FillStyle": "FillStyle",
     "Curvature": "Curvature",
     "BackStyle": "BackStyle",
@@ -162,7 +162,7 @@
   },
 
   "Line": {
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "BorderWidth": "BorderWidth",
     "BorderStyle": "BorderStyle",
     "LineSlant": "LineSlant",
@@ -173,7 +173,7 @@
   "Container": {
     "BackStyle": "BackStyle",
     "BorderStyle": "BorderStyle",
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "Picture": "??<@Picture@>??",
     "FontName": "??<@FontName@>??",
     "FontSize": "<@FontSize@>",
@@ -259,7 +259,7 @@
     "ButtonCount": "ButtonCount",
     "Value": "!Value",
     "BackStyle": "BackStyle",
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "MemberClass": "",
     "MemberClassLibrary": "",
     "FontOutline": "",
@@ -292,11 +292,11 @@
     "^Column99": "Column(99)",
     "Scrollbars": "VFPScrollbars",
     "FrozenColumnCount": "::FreezeColumns(<@FrozenColumnCount@>)",
-    "AlternatingRowColor": "VFPTools.ColorFromVFP((int)<@AlternatingRowColor@>)",
-    "HighlightBackColor": "VFPTools.ColorFromVFP((int)<@HighlightBackColor@>)",
-    "HighlightForeColor": "VFPTools.ColorFromVFP((int)<@HighlightForeColor@>)",
+    "AlternatingRowColor": "VFPTools.ColorFromVFP(<@AlternatingRowColor@>)",
+    "HighlightBackColor": "VFPTools.ColorFromVFP(<@HighlightBackColor@>)",
+    "HighlightForeColor": "VFPTools.ColorFromVFP(<@HighlightForeColor@>)",
     "GridLines": "GridLines",
-    "GridLineColor": "VFPTools.ColorFromVFP((int)<@GridLineColor@>)",
+    "GridLineColor": "VFPTools.ColorFromVFP(<@GridLineColor@>)",
     "GridLineWidth": "GridLineWidth",
     "RowHeight": "RowHeight",
     "HeaderHeight": "HeaderHeight",
@@ -359,7 +359,7 @@
     "Tabs": "Tabs",
     "Caption": "",
     "^Page99": "Pages(99)",
-    "BorderColor": "VFPTools.ColorFromVFP((int)<@BorderColor@>)",
+    "BorderColor": "VFPTools.ColorFromVFP(<@BorderColor@>)",
     "FontName": "??<@FontName@>??",
     "FontSize": "<@FontSize@>",
     "FontBold": "<@FontBold@>",
@@ -440,8 +440,8 @@
     "Left": "",
     "Width": "",
     "Height": "",
-    "ForeColor": "VFPTools.ColorFromVFP((int)<@ForeColor@>)",
-    "BackColor": "VFPTools.ColorFromVFP((int)<@BackColor@>)",
+    "ForeColor": "VFPTools.ColorFromVFP(<@ForeColor@>)",
+    "BackColor": "VFPTools.ColorFromVFP(<@BackColor@>)",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
     "Picture": "??<@Picture@>??",
@@ -449,8 +449,8 @@
     "DragIcon": "??<@DragIcon@>??",
     "MouseIcon": "??<@MouseIcon@>??",
     "FontName": "??<@FontName@>??",
-    "DisabledForeColor": "VFPTools.ColorFromVFP((int)<@DisabledForeColor@>)",
-    "DisabledBackColor": "VFPTools.ColorFromVFP((int)<@DisabledBackColor@>)",
+    "DisabledForeColor": "VFPTools.ColorFromVFP(<@DisabledForeColor@>)",
+    "DisabledBackColor": "VFPTools.ColorFromVFP(<@DisabledBackColor@>)",
     "RightToLeft": "VFPTools.RightToLeftFromVFP(<@RightToLeft@>)"
   }
 }

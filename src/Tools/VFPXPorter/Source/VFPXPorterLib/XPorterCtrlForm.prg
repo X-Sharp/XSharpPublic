@@ -1612,7 +1612,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         columnSettings:Append(" := ")
                         IF ( String.Compare(kv:Key, "ForeColor", TRUE) == 0 .OR. ;
                              String.Compare(kv:Key, "BackColor", TRUE) == 0 )
-                            columnSettings:Append("VFPTools.ColorFromVFP(")
+                            columnSettings:Append("VFPTools.ColorFromVFP((int)")
                             columnSettings:Append(kv:Value)
                             columnSettings:AppendLine(")")
                         ELSE
@@ -1640,7 +1640,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                     IF !String.IsNullOrEmpty(val) .AND. val != "Nil"
                                         columnSettings:Append(hdrPrefix)
                                         columnSettings:Append(colorKey)
-                                        columnSettings:Append(" := VFPTools.ColorFromVFP(")
+                                        columnSettings:Append(" := VFPTools.ColorFromVFP((int)")
                                         columnSettings:Append(val)
                                         columnSettings:AppendLine(")")
                                     ENDIF

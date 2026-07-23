@@ -711,7 +711,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				ENDIF
 				// rebuild: prefix + VFPTools.ColorFromVFP(rhs) + comment
 				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
-				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP(" + rhs + ")" + comment
+				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
 			NEXT
 
 		METHOD ToString() AS STRING

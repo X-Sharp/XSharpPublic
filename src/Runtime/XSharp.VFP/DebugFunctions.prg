@@ -49,7 +49,7 @@ FUNCTION Program( nLevel, lShowSignature) AS USUAL CLIPPER
     return ""
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lineno/*" />
-[FoxProFunction("LINENO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
+[FoxProFunction("LINENO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION LineNo(nPos := 0 AS USUAL) AS LONG
     VAR nLevel := 1
     LOCAL oFrame := NULL AS StackFrame

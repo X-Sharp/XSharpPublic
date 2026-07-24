@@ -73,6 +73,8 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY ReferenceFiles AS List<Reference> AUTO
 
+        PROPERTY SaveAsXIDE AS LOGIC AUTO
+
         PROTECTED StartBlockFile AS STRING
         PROPERTY StartBlock AS STRING GET File.ReadAllText( StartBlockFile )
 
@@ -92,6 +94,7 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:ReferenceLibFiles := List<Reference>{}
             SELF:_vcxDependencies := Dictionary<STRING, HashSet<STRING>>{ StringComparer.OrdinalIgnoreCase }
             SELF:_libFilesByVCX   := Dictionary<STRING, List<GeneratedFile>>{ StringComparer.OrdinalIgnoreCase }
+            SELF:SaveAsXIDE := FALSE
             //
 
         METHOD ClearResultText() AS VOID
@@ -934,6 +937,10 @@ BEGIN NAMESPACE VFPXPorterLib
             NEXT
 
             xsSolution:Save( solutionFile )
+
+            IF SELF:SaveAsXIDE
+                XideProject.Save( xsSolution, solutionFile )
+            ENDIF
 
             RETURN
 

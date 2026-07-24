@@ -84,6 +84,7 @@
     <Compile Include="SCXVCXEntity.prg" />
     <Compile Include="SCXVCXFile.prg" />
     <Compile Include="TemplateHelper.prg" />
+    <Compile Include="XIDEProject.prg" />
     <Compile Include="XPorterCtrlForm.prg" />
     <Compile Include="XPorterSCXVCX.prg" />
     <Compile Include="XPorterTools.prg" />

@@ -106,16 +106,16 @@ BEGIN NAMESPACE VFPXPorter
 			mdi:Show()
 			RETURN
 		PRIVATE METHOD reportToolStripMenuItem_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
-			LOCAL mdi := ExportItemWindow{} AS ExportItemWindow
-			mdi:Settings := SELF:Settings
-			mdi:xPorter := VFPXPorterReport{ SELF:Settings }
-			mdi:extension := "frx"
-			mdi:MdiParent := SELF
-			mdi:Text := "Export Report"
-			mdi:outputPathTextBox:Text := mdi:Settings:OutputPath
-			mdi:scxPathTextBox:Text := mdi:Settings:ItemsPath
-			mdi:Show()
-			RETURN
+			// LOCAL mdi := ExportItemWindow{} AS ExportItemWindow
+			// mdi:Settings := SELF:Settings
+			// mdi:xPorter := VFPXPorterReport{ SELF:Settings }
+			// mdi:extension := "frx"
+			// mdi:MdiParent := SELF
+			// mdi:Text := "Export Report"
+			// mdi:outputPathTextBox:Text := mdi:Settings:OutputPath
+			// mdi:scxPathTextBox:Text := mdi:Settings:ItemsPath
+			// mdi:Show()
+			// RETURN
 PRIVATE METHOD MainWindow_Load(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			IF SELF:jsonSettings:Warning
 				VAR warn := WarningDialog{}

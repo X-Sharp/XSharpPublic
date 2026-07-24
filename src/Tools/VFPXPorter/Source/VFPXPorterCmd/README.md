@@ -39,7 +39,8 @@ All boolean flags accept a `-no` prefix to invert them (e.g. `-noStoreInFolders`
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `-storeInFolders` | **on** | Organize output into Forms / Libs / Menus / Code subfolders. |
+| `-keepFolderStructure` | **on** | Preserve the original VFP project folder structure. When off, falls back to `-storeInFolders`. |
+| `-storeInFolders` | **on** | Organize output into Forms / Libs / Menus / Code subfolders (only used when `-noKeepFolderStructure` is set). |
 | `-emptyFolder` | on | Empty the output folder before exporting. |
 | `-libInSubFolder` | on | Place library files in a subfolder of the output. |
 | `-addLibraryNamespace` | on | Add the library namespace to `VFPXPorter.xh`. |

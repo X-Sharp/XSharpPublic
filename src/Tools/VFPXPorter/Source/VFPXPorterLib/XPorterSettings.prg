@@ -165,6 +165,7 @@ CLASS XPorterSettings
         SELF:AddLibraryNamespace := TRUE
 		SELF:IgnoreErrors := TRUE
 		SELF:StoreInFolders := TRUE
+        SELF:KeepFolderStructure := TRUE
 		SELF:EmptyFolder := TRUE
 		SELF:PrefixEvent := TRUE
         SELF:KeepFoxProEventName := TRUE
@@ -256,6 +257,15 @@ CLASS XPorterSettings
 	/// </summary>
 	/// <value></value>
 	PROPERTY StoreInFolders AS LOGIC AUTO
+
+	/// <summary>
+	/// Master switch: when TRUE (default), the original VFP project folder structure
+	/// (subfolder of each item, relative to the project's HomeDir) is preserved on export,
+	/// and StoreInFolders/LibInSubFolder/FolderNames are ignored.
+	/// When FALSE, StoreInFolders selects between "dispatch by type" and "single folder".
+	/// </summary>
+	/// <value></value>
+	PROPERTY KeepFolderStructure AS LOGIC AUTO
 
 	/// <summary>
 	/// Empty the destination Folder before exporting

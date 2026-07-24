@@ -1398,6 +1398,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     ENDIF
                     // For free table cursors (no Database), collect CursorSource filename for runtime path override
                     LOCAL csFileName := "" AS STRING
+                    LOCAL csRelDir := "" AS STRING
                     IF String.IsNullOrEmpty(dbRaw)
                         LOCAL csRaw AS STRING
                         IF cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRaw)
@@ -1410,6 +1411,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                     csRaw := Path.ChangeExtension(csRaw, ".dbf")
                                 ENDIF
                                 csFileName := Path.GetFileName(csRaw)
+                                csRelDir := Path.GetDirectoryName(csRaw)
                             ENDIF
                         ENDIF
                     ENDIF
@@ -1422,7 +1424,13 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF !String.IsNullOrEmpty(csFileName)
                         setDataEnv:Append("SELF:")
                         setDataEnv:Append(cursorItem:Name)
-                        IF SELF:Settings:StoreInFolders
+                        IF SELF:Settings:KeepFolderStructure
+                            IF !String.IsNullOrEmpty(csRelDir)
+                                setDataEnv:Append(e":CursorSource := Path.Combine(\"" + csRelDir + e"\", \"" + csFileName + e"\")")
+                            ELSE
+                                setDataEnv:Append(e":CursorSource := \"" + csFileName + e"\"")
+                            ENDIF
+                        ELSEIF SELF:Settings:StoreInFolders
                             VAR ftFolder := SELF:Settings:FolderNames["FreeTables"]
                             setDataEnv:Append(e":CursorSource := Path.Combine(\"" + ftFolder + e"\", \"" + csFileName + e"\")")
                         ELSE
@@ -1440,7 +1448,14 @@ BEGIN NAMESPACE VFPXPorterLib
                         ENDIF
                         setDataEnv:Append("SELF:")
                         setDataEnv:Append(cursorItem:Name)
-                        IF SELF:Settings:StoreInFolders
+                        IF SELF:Settings:KeepFolderStructure
+                            VAR dbRelDir := Path.GetDirectoryName(dbRaw)
+                            IF !String.IsNullOrEmpty(dbRelDir)
+                                setDataEnv:Append(e":Database := Path.Combine(\"" + dbRelDir + e"\", \"" + dbcFileForRuntime + e"\")")
+                            ELSE
+                                setDataEnv:Append(e":Database := \"" + dbcFileForRuntime + e"\"")
+                            ENDIF
+                        ELSEIF SELF:Settings:StoreInFolders
                             VAR dbFolder := SELF:Settings:FolderNames["Databases"]
                             setDataEnv:Append(e":Database := Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileForRuntime + e"\")")
                         ELSE
@@ -1495,7 +1510,14 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF String.IsNullOrEmpty(Path.GetExtension(dbcFileName))
                         dbcFileName := Path.ChangeExtension(dbcFileName, ".dbc")
                     ENDIF
-                    IF SELF:Settings:StoreInFolders
+                    IF SELF:Settings:KeepFolderStructure
+                        VAR dbRelDir := Path.GetDirectoryName(dbcPath)
+                        IF !String.IsNullOrEmpty(dbRelDir)
+                            setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbRelDir + e"\", \"" + dbcFileName + e"\"))")
+                        ELSE
+                            setDataEnv:Append(e"OPEN DATABASE \"" + dbcFileName + e"\"")
+                        ENDIF
+                    ELSEIF SELF:Settings:StoreInFolders
                         VAR dbFolder := SELF:Settings:FolderNames["Databases"]
                         setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileName + e"\"))")
                     ELSE

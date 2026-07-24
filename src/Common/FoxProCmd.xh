@@ -710,12 +710,12 @@
 #command RD <(dir)>    => _cmdDirRemove (<(dir)>)
 #command RMDIR <(dir)> => _cmdDirRemove (<(dir)>)
 
-// CAST AS Expression
-// types in the order of the FoxPro docs!
-
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>)                   => __FoxCast(<expression>,<(type)>, -1, -1)
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
+// CAST AS Expression  -->  CAST( eExpr AS cType [(nWidth[,nPrec])] [NULL | NOT NULL] )
+// cType: single-letter code, full type name, or a parenthesized expression that yields the type
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> ( <width> , <dec> ) [NOT] [NULL] )  => __FoxCast( <expression>, <(type)>, <width>, <dec> )
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> ( <width> ) [NOT] [NULL] )         => __FoxCast( <expression>, <(type)>, <width>, -1 )
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> [NOT] [NULL] )                       => __FoxCast( <expression>, <(type)>, -1, -1 )
+#translate CAST ( <expression> AS ( <typeExpr> ) [NOT] [NULL] )                                                                                                                                                              => __FoxCast( <expression>, <typeExpr>, -1, -1 )
 
 #command LABEL <*any*> => __VfpUnsupported(<"udc">)
 

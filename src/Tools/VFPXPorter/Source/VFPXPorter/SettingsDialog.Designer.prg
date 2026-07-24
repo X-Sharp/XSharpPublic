@@ -23,6 +23,7 @@ BEGIN NAMESPACE VFPXPorter
         PRIVATE checkLibraryAsSubFolder AS System.Windows.Forms.CheckBox
         PRIVATE checkIgnoreExportError AS System.Windows.Forms.CheckBox
         PRIVATE checkStoreInFolders AS System.Windows.Forms.CheckBox
+        PRIVATE checkKeepFolderStructure AS System.Windows.Forms.CheckBox
         PRIVATE itemsButton AS System.Windows.Forms.Button
         PRIVATE columnHeader1 AS System.Windows.Forms.ColumnHeader
         PRIVATE columnHeader2 AS System.Windows.Forms.ColumnHeader
@@ -106,6 +107,7 @@ BEGIN NAMESPACE VFPXPorter
             SELF:checkLibraryAsSubFolder := System.Windows.Forms.CheckBox{}
             SELF:checkIgnoreExportError := System.Windows.Forms.CheckBox{}
             SELF:checkStoreInFolders := System.Windows.Forms.CheckBox{}
+            SELF:checkKeepFolderStructure := System.Windows.Forms.CheckBox{}
             SELF:itemsButton := System.Windows.Forms.Button{}
             SELF:listFolders := System.Windows.Forms.ListView{}
             SELF:columnHeader1 := System.Windows.Forms.ColumnHeader{}
@@ -381,46 +383,59 @@ BEGIN NAMESPACE VFPXPorter
             SELF:label1:Size := System.Drawing.Size{155, 16}
             SELF:label1:TabIndex := 14
             SELF:label1:Text := "Default VFP Items Folder"
-            // 
+            //
             // checkLibraryAsSubFolder
-            // 
+            //
             SELF:checkLibraryAsSubFolder:AutoSize := true
             SELF:checkLibraryAsSubFolder:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkLibraryAsSubFolder:Location := System.Drawing.Point{15, 69}
+            SELF:checkLibraryAsSubFolder:Location := System.Drawing.Point{15, 96}
             SELF:checkLibraryAsSubFolder:Name := "checkLibraryAsSubFolder"
             SELF:checkLibraryAsSubFolder:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkLibraryAsSubFolder:Size := System.Drawing.Size{241, 20}
             SELF:checkLibraryAsSubFolder:TabIndex := 3
             SELF:checkLibraryAsSubFolder:Text := "Each ClassLibrary is in a SubFolder"
             SELF:checkLibraryAsSubFolder:UseVisualStyleBackColor := true
-            // 
+            //
+            // checkKeepFolderStructure
+            //
+            SELF:checkKeepFolderStructure:AutoSize := true
+            SELF:checkKeepFolderStructure:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
+            SELF:checkKeepFolderStructure:Location := System.Drawing.Point{15, 15}
+            SELF:checkKeepFolderStructure:Name := "checkKeepFolderStructure"
+            SELF:checkKeepFolderStructure:RightToLeft := System.Windows.Forms.RightToLeft.Yes
+            SELF:checkKeepFolderStructure:Size := System.Drawing.Size{300, 20}
+            SELF:checkKeepFolderStructure:TabIndex := 9
+            SELF:checkKeepFolderStructure:Text := "Keep the original VFP Project Folder Structure"
+            SELF:checkKeepFolderStructure:UseVisualStyleBackColor := true
+            SELF:checkKeepFolderStructure:Click += System.EventHandler{ SELF, @checkKeepFolderStructure_Click() }
+            //
             // checkIgnoreExportError
-            // 
+            //
             SELF:checkIgnoreExportError:AutoSize := true
             SELF:checkIgnoreExportError:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkIgnoreExportError:Location := System.Drawing.Point{15, 15}
+            SELF:checkIgnoreExportError:Location := System.Drawing.Point{15, 42}
             SELF:checkIgnoreExportError:Name := "checkIgnoreExportError"
             SELF:checkIgnoreExportError:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkIgnoreExportError:Size := System.Drawing.Size{146, 20}
             SELF:checkIgnoreExportError:TabIndex := 0
             SELF:checkIgnoreExportError:Text := "Ignore export Errors"
             SELF:checkIgnoreExportError:UseVisualStyleBackColor := true
-            // 
+            //
             // checkStoreInFolders
-            // 
+            //
             SELF:checkStoreInFolders:AutoSize := true
             SELF:checkStoreInFolders:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkStoreInFolders:Location := System.Drawing.Point{15, 42}
+            SELF:checkStoreInFolders:Location := System.Drawing.Point{15, 69}
             SELF:checkStoreInFolders:Name := "checkStoreInFolders"
             SELF:checkStoreInFolders:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkStoreInFolders:Size := System.Drawing.Size{240, 20}
             SELF:checkStoreInFolders:TabIndex := 1
             SELF:checkStoreInFolders:Text := "Store Items in Folders by Items type"
             SELF:checkStoreInFolders:UseVisualStyleBackColor := true
-            // 
+            //
             // itemsButton
-            // 
-            SELF:itemsButton:Location := System.Drawing.Point{346, 40}
+            //
+            SELF:itemsButton:Location := System.Drawing.Point{346, 67}
             SELF:itemsButton:Margin := System.Windows.Forms.Padding{3, 2, 3, 2}
             SELF:itemsButton:Name := "itemsButton"
             SELF:itemsButton:Size := System.Drawing.Size{44, 23}
@@ -471,7 +486,7 @@ BEGIN NAMESPACE VFPXPorter
             // 
             SELF:checkEmptyFolder:AutoSize := true
             SELF:checkEmptyFolder:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkEmptyFolder:Location := System.Drawing.Point{15, 149}
+            SELF:checkEmptyFolder:Location := System.Drawing.Point{15, 176}
             SELF:checkEmptyFolder:Name := "checkEmptyFolder"
             SELF:checkEmptyFolder:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkEmptyFolder:Size := System.Drawing.Size{294, 20}
@@ -581,6 +596,7 @@ BEGIN NAMESPACE VFPXPorter
             SELF:tabProject:Controls:Add(SELF:itemsButton)
             SELF:tabProject:Controls:Add(SELF:checkLibraryAsSubFolder)
             SELF:tabProject:Controls:Add(SELF:checkStoreInFolders)
+            SELF:tabProject:Controls:Add(SELF:checkKeepFolderStructure)
             SELF:tabProject:Location := System.Drawing.Point{4, 25}
             SELF:tabProject:Name := "tabProject"
             SELF:tabProject:Padding := System.Windows.Forms.Padding{3}
@@ -593,7 +609,7 @@ BEGIN NAMESPACE VFPXPorter
             // 
             SELF:checkSlnWithProject:AutoSize := true
             SELF:checkSlnWithProject:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkSlnWithProject:Location := System.Drawing.Point{15, 123}
+            SELF:checkSlnWithProject:Location := System.Drawing.Point{15, 150}
             SELF:checkSlnWithProject:Name := "checkSlnWithProject"
             SELF:checkSlnWithProject:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkSlnWithProject:Size := System.Drawing.Size{309, 20}
@@ -605,7 +621,7 @@ BEGIN NAMESPACE VFPXPorter
             // 
             SELF:checkLibraryAsProject:AutoSize := true
             SELF:checkLibraryAsProject:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkLibraryAsProject:Location := System.Drawing.Point{15, 97}
+            SELF:checkLibraryAsProject:Location := System.Drawing.Point{15, 124}
             SELF:checkLibraryAsProject:Name := "checkLibraryAsProject"
             SELF:checkLibraryAsProject:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkLibraryAsProject:Size := System.Drawing.Size{228, 20}
@@ -617,7 +633,7 @@ BEGIN NAMESPACE VFPXPorter
             // 
             SELF:checkAddLibraryNamespace:AutoSize := true
             SELF:checkAddLibraryNamespace:CheckAlign := System.Drawing.ContentAlignment.MiddleRight
-            SELF:checkAddLibraryNamespace:Location := System.Drawing.Point{15, 175}
+            SELF:checkAddLibraryNamespace:Location := System.Drawing.Point{15, 202}
             SELF:checkAddLibraryNamespace:Name := "checkAddLibraryNamespace"
             SELF:checkAddLibraryNamespace:RightToLeft := System.Windows.Forms.RightToLeft.Yes
             SELF:checkAddLibraryNamespace:Size := System.Drawing.Size{398, 20}

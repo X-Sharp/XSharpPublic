@@ -61,6 +61,11 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:StoreInFolders := TRUE
 			ELSEIF String.Compare(arg, "-noStoreInFolders", TRUE) == 0
 				settings:StoreInFolders := FALSE
+			// ── KeepFolderStructure ───────────────────────────────────────
+			ELSEIF String.Compare(arg, "-keepFolderStructure", TRUE) == 0
+				settings:KeepFolderStructure := TRUE
+			ELSEIF String.Compare(arg, "-noKeepFolderStructure", TRUE) == 0
+				settings:KeepFolderStructure := FALSE
 			// ── EmptyFolder ───────────────────────────────────────────────
 			ELSEIF String.Compare(arg, "-emptyFolder", TRUE) == 0
 				settings:EmptyFolder := TRUE

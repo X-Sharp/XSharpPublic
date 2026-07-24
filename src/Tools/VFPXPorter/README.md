@@ -25,7 +25,7 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
 6. Export Menu definitions
     - Menu Event are exported in Menu code (Needs to be tested, I'm looking for samples here)
 7. First Report reading and Backup
-    - No real export by now (Maybe export to ReportPro ??)
+    - No export, Reports will be handled by XSharp in the future (or another tool)
 
 
 #### Export folder layout (GUI)
@@ -49,7 +49,7 @@ if they don't already exist. This layout is currently GUI-only; see
 
 We will also have to take care of Menu definition.
 
-What about Reports ? We may/will have to consider another tool; or introduce here
+What about Reports ? XSharp will handle them in the future, so we will just backup the Report definition for now.
 
 During 1. step, the Form definition is exported in ~~JSON~~ XML format and source code file (.PRG) is created
 

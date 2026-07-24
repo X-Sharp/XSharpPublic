@@ -72,6 +72,25 @@ Should be corrected as
 These can be corrected at export time, if you check the "Convert Statement to Call" in settings.  
 The handled statements are in the *Statements.json* file
 
+#### Cursor/Alias name colliding with a .NET/X# type
+
+If a Cursor or Workarea Alias in your VFP app happens to share its name with a resolvable
+.NET/X# type — e.g. a cursor called `Currency` — code like:
+~~~~
+    ? Currency.theField
+~~~~
+will fail to compile, because X# binds `Currency.theField` as a static member access on the
+`Currency` type instead of a DBF field access, and the type has no such member.
+
+Add the colliding name to *AliasTypeCollisions.json* and re-export: every occurrence of
+`Currency.` in converted code will be rewritten to `Currency->`, the unambiguous alias-field
+operator, which never resolves as a type/namespace path:
+~~~~
+    ? Currency->theField
+~~~~
+This is the same kind of collision the `ClassNamePrefix` setting solves for class names vs.
+cursor aliases — here the fix is per-name and lives in the JSON file instead.
+
 #### Form Properties casing
 In order to modify a Form with the **Windows Form Designer** in Visual Studio, the Properties must respect the WinForm casing.
 So, you may have to add some properties to the PropRules.json in order to automatically convert them.  

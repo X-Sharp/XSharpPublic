@@ -636,7 +636,7 @@ BEGIN NAMESPACE VFPXPorterLib
 		/// Value : An array : The .NET EventName, and the PostFix of the EventHandler Prototype (Usually the Params et Return type)
 		/// </param>
 		/// </summary>
-		METHOD ConvertEvents( eventRules AS Dictionary<STRING,STRING[]>, sttmnts AS List<String>, vfpElt AS Dictionary<STRING,STRING>, colorProps AS List<STRING>, settings AS XPorterSettings ) AS VOID
+		METHOD ConvertEvents( eventRules AS Dictionary<STRING,STRING[]>, sttmnts AS List<String>, vfpElt AS Dictionary<STRING,STRING>, colorProps AS List<STRING>, settings AS XPorterSettings, aliasTypeCollisions AS List<STRING> ) AS VOID
 			//
 			IF ( SELF:XPortedCode == NULL )
 				RETURN
@@ -647,6 +647,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			converter:Statements := sttmnts
 			converter:VFPElements := vfpElt
 			converter:ColorProperties := colorProps
+			converter:AliasTypeCollisions := aliasTypeCollisions
 			FOREACH cdeBlock AS EventCode IN SELF:XPortedCode:Events
 				// The Event belongs to a FORM
 				VAR formEvent := (String.Compare(cdeBlock:Owner:Owner:BaseClassName,"form",TRUE)==0)

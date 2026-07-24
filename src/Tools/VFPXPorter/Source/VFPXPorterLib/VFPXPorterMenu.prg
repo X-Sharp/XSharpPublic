@@ -242,10 +242,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 NEXT
                 LOCAL colorProps AS List<STRING>
                 colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
+                LOCAL aliasTypeCollisions AS List<STRING>
+                aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
                 SELF:_menuConverter := CodeConverter{ FALSE, TRUE, TRUE, FALSE, SELF:Settings:ExpandWithEndWith }
                 SELF:_menuConverter:Statements := sttmnts
                 SELF:_menuConverter:VFPElements := menuElts
                 SELF:_menuConverter:ColorProperties := colorProps
+                SELF:_menuConverter:AliasTypeCollisions := aliasTypeCollisions
             ENDIF
             // Convert COMMAND (single-line inline VFP code)
             IF !String.IsNullOrEmpty(item:COMMAND)

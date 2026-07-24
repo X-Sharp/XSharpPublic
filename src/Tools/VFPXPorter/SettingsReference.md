@@ -19,7 +19,7 @@ settings file in Explorer.
 |---|---|---|---|
 | Default VFP Items Folder | `Items` → `ItemsPath` | *(empty)* | Default source folder browsed to when picking the VFP project (`.pjx`) or items to export. Doesn't affect the export itself, just the dialog's starting folder. |
 | Default Output Folder | `Output` → `OutputPath` | *(empty)* | Default destination folder proposed for generated output. See **"Export folder layout"** in `README.md` for how the final output path is built from this plus the project/solution name and *Place solution and project in the same directory* (Project tab). |
-| Default XPorter ressources Folder | `RessourcesFolder` → `XPorterSettings.DataFolder` (static) | `<exe folder>\Data` | Folder containing the exporter's own data files: `PropRules.json`, `EventRules.json`, `Statements.json`, `TypeConvert.json`, `ColorProperties.json`, and the `Templates\` tree (`Form`, `Designer`, `Menu`, `SingleFile`, `Others`, `ReportListener`). Changing this repoints the entire rule/template set used to drive conversion — only change it if you maintain a customized copy of these files. |
+| Default XPorter ressources Folder | `RessourcesFolder` → `XPorterSettings.DataFolder` (static) | `<exe folder>\Data` | Folder containing the exporter's own data files: `PropRules.json`, `EventRules.json`, `Statements.json`, `TypeConvert.json`, `ColorProperties.json`, `AliasTypeCollisions.json`, and the `Templates\` tree (`Form`, `Designer`, `Menu`, `SingleFile`, `Others`, `ReportListener`). Changing this repoints the entire rule/template set used to drive conversion — only change it if you maintain a customized copy of these files. |
 
 ---
 
@@ -74,3 +74,10 @@ settings file in Explorer.
 - Several checkboxes only take effect through interaction with the JSON rule files in the
   ressources folder (`EventRules.json`, `Statements.json`) — toggling the checkbox changes
   *how* those rules are applied, not the rules themselves.
+- `AliasTypeCollisions.json` is a flat list of cursor/alias names known to collide with a
+  resolvable .NET/X# type (e.g. `Currency`, which collides with a Currency type), so an
+  expression like `Currency.theField` would otherwise bind to that type's member instead of
+  the DBF field. For every name in the list, `CodeConverter` rewrites `Name.` to `Name->` in
+  generated code (`ChangeAliasTypeCollisions()`), which is unambiguous alias-field syntax in
+  X#. Always applied — not gated by a checkbox. Add a cursor/alias name to this file if it
+  turns out to collide with some other type.

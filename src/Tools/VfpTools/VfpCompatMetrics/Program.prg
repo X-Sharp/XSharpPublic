@@ -464,7 +464,9 @@ BEGIN NAMESPACE VfpCompatMetrics
                 Console.WriteLine("Extracting runtime metadata...")
                 VAR metadataList := MetadataExtractor.Extract(asm)
 
-                Console.Clear()
+                IF !Console.IsOutputRedirected
+                    Console.Clear()
+                ENDIF
 
                 if isInventoryMode
                     ReportPrinter.PrintInventory(metadataList)

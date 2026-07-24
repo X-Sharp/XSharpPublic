@@ -415,7 +415,8 @@
       "Name": "CAST",
       "Category": "General",
       "Engine": "LanguageCore",
-      "Criticality": "High"
+      "Criticality": "High",
+      "IsIntrinsic": true
     },
     {
       "Name": "CURVAL",
@@ -1387,7 +1388,8 @@
       "Name": "DODEFAULT",
       "Category": "ClassAndObject",
       "Engine": "LanguageCore",
-      "Criticality": "High"
+      "Criticality": "High",
+      "IsIntrinsic": true
     },
     {
       "Name": "DRIVETYPE",

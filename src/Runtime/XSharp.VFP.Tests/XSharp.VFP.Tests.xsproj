@@ -97,6 +97,7 @@
     <Compile Include="CommandTests.prg" />
     <Compile Include="CompObjTests.prg" />
     <Compile Include="CopyToTests.prg" />
+    <Compile Include="CursorToXmlTests.prg" />
     <Compile Include="FileVersionTests.prg" />
     <Compile Include="FinancialTests.prg" />
     <Compile Include="IndexOnTrimTests.prg" />

@@ -1434,6 +1434,13 @@
       "Criticality": "High"
     },
     {
+      "Name": "FATTRIB",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium",
+      "IsExtension": true
+    },    
+    {
       "Name": "FCHSIZE",
       "Category": "FileAndIO",
       "Engine": "RuntimeCore",
@@ -1535,6 +1542,13 @@
       "Engine": "WorkArea",
       "Criticality": "High"
     },
+    {
+      "Name": "FNAME",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium",
+      "IsExtension": true
+    },    
     {
       "Name": "FONTMETRIC",
       "Category": "UIAndWindow",

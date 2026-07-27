@@ -84,7 +84,8 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
-			SELF:ChangeAliasTypeCollisions()
+			// Suspended: side effects on generated code, kept for reference (2026-07-27)
+			// SELF:ChangeAliasTypeCollisions()
 			IF SELF:_convertThisObject
 				IF cdeBlock:Owner != NULL
 					SELF:ChangeThisObject( cdeBlock:Owner:FoxClassName )
@@ -110,7 +111,8 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
-			SELF:ChangeAliasTypeCollisions()
+			// Suspended: side effects on generated code, kept for reference (2026-07-27)
+			// SELF:ChangeAliasTypeCollisions()
 
 		// Converts a block of menu handler code: applies statement→method-call conversions
 		// and VFPElements substitutions (THISFORM./THISFORMSET.) without the form-perspective
@@ -125,7 +127,8 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ChangeStatement()
 			ENDIF
 			SELF:ChangeColorProperties()
-			SELF:ChangeAliasTypeCollisions()
+			// Suspended: side effects on generated code, kept for reference (2026-07-27)
+			// SELF:ChangeAliasTypeCollisions()
 			IF SELF:_convertThisObject
 				SELF:ChangeThisObject()
 			ENDIF

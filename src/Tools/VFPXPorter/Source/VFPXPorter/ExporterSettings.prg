@@ -96,6 +96,8 @@ BEGIN NAMESPACE VFPXPorter
 			SET SELF:iniSettings:WriteValue( "Project", "IgnoreErrors", VALUE )
 		PROPERTY StoreInFolders AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "StoreInFolders", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "StoreInFolders", VALUE )
+		PROPERTY KeepFolderStructure AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "KeepFolderStructure", TRUE ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "KeepFolderStructure", VALUE )
 		PROPERTY EmptyFolder AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "EmptyFolder", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "EmptyFolder", VALUE )
 
@@ -128,6 +130,7 @@ BEGIN NAMESPACE VFPXPorter
 			settings:PrefixClassFile:= SELF:PrefixClassFile
 			settings:RemoveSet		:= SELF:RemoveSet
 			settings:StoreInFolders	:= SELF:StoreInFolders
+			settings:KeepFolderStructure := SELF:KeepFolderStructure
 			settings:PrefixEvent	:= SELF:PrefixEvent
 			settings:KeepFoxProEventName := SELF:KeepFoxProEventName
             settings:GenerateOnlyHandledEvent := SELF:GenerateOnlyHandledEvent

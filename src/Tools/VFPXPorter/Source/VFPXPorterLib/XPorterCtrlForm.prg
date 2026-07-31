@@ -212,8 +212,9 @@ BEGIN NAMESPACE VFPXPorterLib
             vfpElts := JsonConvert.DeserializeObject<Dictionary<STRING,STRING>>( SELF:VFPElements )
             LOCAL colorProps AS List<STRING>
             colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
+            // Suspended along with ChangeAliasTypeCollisions() itself, kept for reference (2026-07-27)
             LOCAL aliasTypeCollisions AS List<STRING>
-            aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
+            // aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
             //
             LOCAL items AS List<BaseItem>
             items := List<BaseItem>{}
@@ -456,8 +457,9 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}
+            VAR cursorAliases := List<STRING>{}
             // Create the code for a DataEnvironment Object, with the attached Cursors
-            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv )
+            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv, cursorAliases )
             //
             dest:Write( SELF:FormPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
@@ -514,6 +516,8 @@ BEGIN NAMESPACE VFPXPorterLib
             formStartReplacements["superName"] := oneItem:FullyQualifiedName
             formStartReplacements["dataenvironment"] := declareDataEnv:ToString()
             formStartReplacements["childsDeclaration"] := declaration:ToString()
+            // Experimental CURSOR hint (still commented out — the CURSOR keyword is not yet implemented in the compiler)
+            formStartReplacements["cursorAliases"] := IIF( cursorAliases:Count > 0, "// CURSOR " + String.Join(", ", cursorAliases), "" )
             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormStartType, "FormStartType", formStartReplacements)}
 //             ELSE
 //                 code:Replace( "<@formName@>", SELF:FormNameOverride )
@@ -817,8 +821,9 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR dbcCache := DbcFieldCache{Path.GetDirectoryName(SELF:Settings:ItemsPath), orgDataEnvItem}
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}
+            VAR cursorAliases := List<STRING>{}
             // Create the code for a DataEnvironment Object, with the attached Cursors
-            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv )
+            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv, cursorAliases )
             //
             dest:Write( SELF:FormPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
@@ -983,6 +988,8 @@ BEGIN NAMESPACE VFPXPorterLib
              ENDIF
              singleFileStartReplacements["dataenvironment"] := declareDataEnv:ToString()
              singleFileStartReplacements["childsDeclaration"] := declaration:ToString()
+             // Experimental CURSOR hint (still commented out — the CURSOR keyword is not yet implemented in the compiler)
+             singleFileStartReplacements["cursorAliases"] := IIF( cursorAliases:Count > 0, "// CURSOR " + String.Join(", ", cursorAliases), "" )
              code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormStartType, "FormStartType", singleFileStartReplacements)}
              dest:Write( code:ToString() )
             // Now, Instantiation of these Childrens
@@ -1343,7 +1350,7 @@ BEGIN NAMESPACE VFPXPorterLib
         /// </summary>
         /// <param name="dataEnvItem"></param>
         /// <returns></returns>
-        PROTECTED METHOD GenerateDataEnvironment( dataEnvItem AS SCXVCXItem, setDataEnv AS StringBuilder, declareDataEnv AS StringBuilder  ) AS VOID
+        PROTECTED METHOD GenerateDataEnvironment( dataEnvItem AS SCXVCXItem, setDataEnv AS StringBuilder, declareDataEnv AS StringBuilder, cursorAliases AS List<STRING>  ) AS VOID
             LOCAL dataRules AS Dictionary<STRING,STRING>
             // Collect unique DBC paths referenced by cursors (insertion-ordered via List)
             VAR dbcPaths := List<STRING>{}
@@ -1396,8 +1403,39 @@ BEGIN NAMESPACE VFPXPorterLib
                             dbcPaths:Add(dbRaw)
                         ENDIF
                     ENDIF
+                    // Also read CursorSource raw (unquoted) up-front — used both for the runtime
+                    // path override below (free tables only) and as the Alias fallback, since VFP
+                    // defaults a Cursor's Alias to its CursorSource base name when Alias is empty.
+                    LOCAL csRawForAlias AS STRING
+                    cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRawForAlias)
+                    IF !String.IsNullOrEmpty(csRawForAlias)
+                        csRawForAlias := csRawForAlias:Trim()
+                        IF csRawForAlias:Length >= 2 .AND. csRawForAlias[0] == '"' .AND. csRawForAlias[csRawForAlias:Length-1] == '"'
+                            csRawForAlias := csRawForAlias:Substring(1, csRawForAlias:Length-2)
+                        ENDIF
+                    ENDIF
+                    // Collect the Cursor's Alias before ConvertProperties, for the (still experimental,
+                    // hence emitted as a comment) CURSOR hint line above the CLASS definition
+                    LOCAL aliasRaw AS STRING
+                    IF cursorItem:PropertiesDict:TryGetValue("Alias", OUT aliasRaw)
+                        aliasRaw := aliasRaw:Trim()
+                        IF aliasRaw:Length >= 2 .AND. aliasRaw[0] == '"' .AND. aliasRaw[aliasRaw:Length-1] == '"'
+                            aliasRaw := aliasRaw:Substring(1, aliasRaw:Length-2)
+                        ENDIF
+                    ENDIF
+                    IF String.IsNullOrEmpty(aliasRaw)
+                        IF !String.IsNullOrEmpty(csRawForAlias)
+                            aliasRaw := Path.GetFileNameWithoutExtension(csRawForAlias)
+                        ELSE
+                            aliasRaw := cursorItem:Name
+                        ENDIF
+                    ENDIF
+                    IF !String.IsNullOrEmpty(aliasRaw) .AND. !cursorAliases:Contains(aliasRaw)
+                        cursorAliases:Add(aliasRaw)
+                    ENDIF
                     // For free table cursors (no Database), collect CursorSource filename for runtime path override
                     LOCAL csFileName := "" AS STRING
+                    LOCAL csRelDir := "" AS STRING
                     IF String.IsNullOrEmpty(dbRaw)
                         LOCAL csRaw AS STRING
                         IF cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRaw)
@@ -1410,6 +1448,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                     csRaw := Path.ChangeExtension(csRaw, ".dbf")
                                 ENDIF
                                 csFileName := Path.GetFileName(csRaw)
+                                csRelDir := Path.GetDirectoryName(csRaw)
                             ENDIF
                         ENDIF
                     ENDIF
@@ -1422,7 +1461,13 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF !String.IsNullOrEmpty(csFileName)
                         setDataEnv:Append("SELF:")
                         setDataEnv:Append(cursorItem:Name)
-                        IF SELF:Settings:StoreInFolders
+                        IF SELF:Settings:KeepFolderStructure
+                            IF !String.IsNullOrEmpty(csRelDir)
+                                setDataEnv:Append(e":CursorSource := Path.Combine(\"" + csRelDir + e"\", \"" + csFileName + e"\")")
+                            ELSE
+                                setDataEnv:Append(e":CursorSource := \"" + csFileName + e"\"")
+                            ENDIF
+                        ELSEIF SELF:Settings:StoreInFolders
                             VAR ftFolder := SELF:Settings:FolderNames["FreeTables"]
                             setDataEnv:Append(e":CursorSource := Path.Combine(\"" + ftFolder + e"\", \"" + csFileName + e"\")")
                         ELSE
@@ -1440,7 +1485,14 @@ BEGIN NAMESPACE VFPXPorterLib
                         ENDIF
                         setDataEnv:Append("SELF:")
                         setDataEnv:Append(cursorItem:Name)
-                        IF SELF:Settings:StoreInFolders
+                        IF SELF:Settings:KeepFolderStructure
+                            VAR dbRelDir := Path.GetDirectoryName(dbRaw)
+                            IF !String.IsNullOrEmpty(dbRelDir)
+                                setDataEnv:Append(e":Database := Path.Combine(\"" + dbRelDir + e"\", \"" + dbcFileForRuntime + e"\")")
+                            ELSE
+                                setDataEnv:Append(e":Database := \"" + dbcFileForRuntime + e"\"")
+                            ENDIF
+                        ELSEIF SELF:Settings:StoreInFolders
                             VAR dbFolder := SELF:Settings:FolderNames["Databases"]
                             setDataEnv:Append(e":Database := Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileForRuntime + e"\")")
                         ELSE
@@ -1495,7 +1547,14 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF String.IsNullOrEmpty(Path.GetExtension(dbcFileName))
                         dbcFileName := Path.ChangeExtension(dbcFileName, ".dbc")
                     ENDIF
-                    IF SELF:Settings:StoreInFolders
+                    IF SELF:Settings:KeepFolderStructure
+                        VAR dbRelDir := Path.GetDirectoryName(dbcPath)
+                        IF !String.IsNullOrEmpty(dbRelDir)
+                            setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbRelDir + e"\", \"" + dbcFileName + e"\"))")
+                        ELSE
+                            setDataEnv:Append(e"OPEN DATABASE \"" + dbcFileName + e"\"")
+                        ENDIF
+                    ELSEIF SELF:Settings:StoreInFolders
                         VAR dbFolder := SELF:Settings:FolderNames["Databases"]
                         setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileName + e"\"))")
                     ELSE

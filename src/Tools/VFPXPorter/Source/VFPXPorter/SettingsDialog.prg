@@ -38,6 +38,7 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:TypedThisFormSet := SELF:checkTypedThisFormSet:Checked
 			SELF:iniSettings:IgnoreErrors := SELF:checkIgnoreExportError:Checked
 			SELF:iniSettings:StoreInFolders := SELF:checkStoreInFolders:Checked
+			SELF:iniSettings:KeepFolderStructure := SELF:checkKeepFolderStructure:Checked
 			SELF:iniSettings:EmptyFolder := SELF:checkEmptyFolder:Checked
 			// SELF:iniSettings:ConvertHandlers := SELF:checkConvertHandlers:Checked
 			// SELF:iniSettings:ConvertUserDef := SELF:checkConvertUserDef:Checked
@@ -87,6 +88,8 @@ BEGIN NAMESPACE VFPXPorter
 			//SELF:checkItemAsFile:Checked := SELF:iniSettings:ReadValue( "Items", "SeparateFile", FALSE )
 			SELF:checkIgnoreExportError:Checked := SELF:iniSettings:IgnoreErrors
 			SELF:checkStoreInFolders:Checked := SELF:iniSettings:StoreInFolders
+			SELF:checkKeepFolderStructure:Checked := SELF:iniSettings:KeepFolderStructure
+			SELF:UpdateFolderStructureControlsState()
 			SELF:checkEmptyFolder:Checked := SELF:iniSettings:EmptyFolder
 			// SELF:checkConvertHandlers:Checked := SELF:iniSettings:ConvertHandlers
 			// SELF:checkConvertUserDef:Checked := SELF:iniSettings:ConvertUserDef
@@ -201,6 +204,22 @@ BEGIN NAMESPACE VFPXPorter
 PRIVATE METHOD checkKeepFoxProEventName_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			RETURN
 		END METHOD
+		PRIVATE METHOD checkKeepFolderStructure_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
+			SELF:UpdateFolderStructureControlsState()
+			RETURN
+		END METHOD
+		// StoreInFolders/LibInSubFolder/the folder-name editor are only meaningful when
+		// the original VFP folder structure is NOT being preserved.
+		PRIVATE METHOD UpdateFolderStructureControlsState() AS VOID
+			VAR enableSubOptions := !SELF:checkKeepFolderStructure:Checked
+			SELF:checkStoreInFolders:Enabled := enableSubOptions
+			SELF:checkLibraryAsSubFolder:Enabled := enableSubOptions
+			SELF:itemsButton:Enabled := enableSubOptions
+			IF !enableSubOptions
+				SELF:listFolders:Visible := FALSE
+				SELF:itemsButton:Text := ">>"
+			ENDIF
+			RETURN
         PRIVATE METHOD label3_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
             RETURN
         END METHOD 

@@ -73,6 +73,8 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY ReferenceFiles AS List<Reference> AUTO
 
+        PROPERTY SaveAsXIDE AS LOGIC AUTO
+
         PROTECTED StartBlockFile AS STRING
         PROPERTY StartBlock AS STRING GET File.ReadAllText( StartBlockFile )
 
@@ -92,6 +94,7 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:ReferenceLibFiles := List<Reference>{}
             SELF:_vcxDependencies := Dictionary<STRING, HashSet<STRING>>{ StringComparer.OrdinalIgnoreCase }
             SELF:_libFilesByVCX   := Dictionary<STRING, List<GeneratedFile>>{ StringComparer.OrdinalIgnoreCase }
+            SELF:SaveAsXIDE := FALSE
             //
 
         METHOD ClearResultText() AS VOID
@@ -274,14 +277,8 @@ BEGIN NAMESPACE VFPXPorterLib
                     //
                     VAR xPorter := XPorterSCXVCX{}
                     xPorter:Worker := asyncWorker
-                    VAR output := SELF:outputPath
-                    IF SELF:Settings:StoreInFolders
-                        output := Path.Combine( output, SELF:Settings:FolderNames["Libs"])
-                    ENDIF
-                    IF ( SELF:Settings:LibInSubFolder )
-                        output := Path.Combine( output, Path.GetFileNameWithoutExtension(libName ) )
-                        Directory.CreateDirectory( output )
-                    ENDIF
+                    VAR output := SELF:ComputeLibOutputFolder( libName )
+                    Directory.CreateDirectory( output )
                     xPorter:Initialize( libName, output, SELF:Settings )
                     SELF:CurrentFileName := xPorter:FileName
                     IF xPorter:Analyze(FALSE)
@@ -297,10 +294,8 @@ BEGIN NAMESPACE VFPXPorterLib
                     //
                     VAR xPorter := XPorterSCXVCX{ }
                     xPorter:Worker := asyncWorker
-                    VAR output := SELF:outputPath
-                    IF SELF:Settings:StoreInFolders
-                        output := Path.Combine( output, SELF:Settings:FolderNames["Forms"])
-                    ENDIF
+                    VAR output := SELF:ComputeItemOutputFolder( form:Name, "Forms" )
+                    Directory.CreateDirectory( output )
                     xPorter:Initialize( Path.Combine( SELF:Project:HomeDir, form:Name), output, SELF:Settings )
                     SELF:CurrentFileName := xPorter:FileName
                     XPorterLogger.Instance:Information( "Export Form " + Path.Combine( SELF:Project:HomeDir, form:Name))
@@ -327,14 +322,8 @@ BEGIN NAMESPACE VFPXPorterLib
                         //
                         VAR xPorter := XPorterSCXVCX{ }
                         xPorter:Worker := asyncWorker
-                        VAR output := SELF:outputPath
-                        IF SELF:Settings:StoreInFolders
-                            output := Path.Combine( output, SELF:Settings:FolderNames["Libs"])
-                        ENDIF
-                        IF ( SELF:Settings:LibInSubFolder )
-                            output := Path.Combine( output, Path.GetFileNameWithoutExtension(libName ) )
-                            Directory.CreateDirectory( output )
-                        ENDIF
+                        VAR output := SELF:ComputeLibOutputFolder( libName )
+                        Directory.CreateDirectory( output )
                         xPorter:Initialize( libName, output, SELF:Settings )
                         SELF:CurrentFileName := xPorter:FileName
                         XPorterLogger.Instance:Information( "Export Lib " + libName )
@@ -363,10 +352,8 @@ BEGIN NAMESPACE VFPXPorterLib
                             //
                             VAR xPorter := VFPXPorterMenu{ }
                             xPorter:Worker := asyncWorker
-                            VAR output := SELF:Settings:OutputPath
-                            IF SELF:Settings:StoreInFolders
-                                output := Path.Combine( output, SELF:Settings:FolderNames["Menus"])
-                            ENDIF
+                            VAR output := SELF:ComputeItemOutputFolder( menu:Name, "Menus" )
+                            Directory.CreateDirectory( output )
                             xPorter:Initialize( Path.Combine( SELF:Project:HomeDir, menu:Name), output, SELF:Settings )
                             SELF:CurrentFileName := xPorter:FileName
                             XPorterLogger.Instance:Information( "Export Menu " + Path.Combine( SELF:Project:HomeDir, menu:Name))
@@ -384,12 +371,9 @@ BEGIN NAMESPACE VFPXPorterLib
                             // Export Prgs
                             FOREACH prg AS ProjectItem IN SELF:Project:Programs
                                 //
-                                VAR output := SELF:outputPath
+                                VAR output := SELF:ComputeItemOutputFolder( prg:Name, "Code" )
+                                Directory.CreateDirectory(output)
                                 LOCAL orgFile AS STRING
-                                IF SELF:Settings:StoreInFolders
-                                    output := Path.Combine( output, SELF:Settings:FolderNames["Code"])
-                                    Directory.CreateDirectory(output)
-                                ENDIF
                                 orgFile := Path.Combine( SELF:Project:HomeDir, prg:Name)
                                 LOCAL destFile AS STRING
                                 destFile := Path.GetFileName( prg:Name )
@@ -400,13 +384,14 @@ BEGIN NAMESPACE VFPXPorterLib
                                     sttmnts := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.StatementsFile) )
                                     LOCAL colorProps AS List<STRING>
                                     colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
-                                    LOCAL aliasTypeCollisions AS List<STRING>
-                                    aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
+                                    // Suspended along with ChangeAliasTypeCollisions() itself, kept for reference (2026-07-27)
+                                    // LOCAL aliasTypeCollisions AS List<STRING>
+                                    // aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
                                     // Now, copy
                                     VAR converter := CodeConverter{ SELF:Settings:KeepOriginal, FALSE, SELF:Settings:ConvertStatement, SELF:Settings:ConvertStatementOnlyIfLast, SELF:Settings:ExpandWithEndWith }
                                     converter:Statements := sttmnts
                                     converter:ColorProperties := colorProps
-                                    converter:AliasTypeCollisions := aliasTypeCollisions
+                                    // converter:AliasTypeCollisions := aliasTypeCollisions
                                     converter:ProcessProcedure( File.ReadAllText(orgFile), Path.GetFileNameWithoutExtension( orgFile ) )
                                     File.WriteAllText( destFile, converter:ToString() )
                                     //File.Copy(orgFile, destFile, TRUE )
@@ -419,11 +404,8 @@ BEGIN NAMESPACE VFPXPorterLib
                             // Export Databases
                             FOREACH dbc AS ProjectItem IN SELF:Project:Databases
                                 //
-                                VAR output := SELF:outputPath
-                                IF SELF:Settings:StoreInFolders
-                                    output := Path.Combine( output, SELF:Settings:FolderNames["Databases"])
-                                    Directory.CreateDirectory(output)
-                                ENDIF
+                                VAR output := SELF:ComputeItemOutputFolder( dbc:Name, "Databases" )
+                                Directory.CreateDirectory(output)
                                 LOCAL orgFile AS STRING
                                 orgFile := Path.Combine( SELF:Project:HomeDir, dbc:Name)
                                 LOCAL destFile AS STRING
@@ -444,11 +426,8 @@ BEGIN NAMESPACE VFPXPorterLib
                             // Free Tables
                             FOREACH dbf AS ProjectItem IN SELF:Project:FreeTables
                                 //
-                                VAR output := SELF:outputPath
-                                IF SELF:Settings:StoreInFolders
-                                    output := Path.Combine( output, SELF:Settings:FolderNames["FreeTables"])
-                                    Directory.CreateDirectory(output)
-                                ENDIF
+                                VAR output := SELF:ComputeItemOutputFolder( dbf:Name, "FreeTables" )
+                                Directory.CreateDirectory(output)
                                 LOCAL orgFile AS STRING
                                 orgFile := Path.Combine( SELF:Project:HomeDir, dbf:Name)
                                 LOCAL destFile AS STRING
@@ -467,11 +446,8 @@ BEGIN NAMESPACE VFPXPorterLib
                             // Others
                             FOREACH other AS ProjectItem IN SELF:Project:Others
                                 //
-                                VAR output := SELF:outputPath
-                                IF SELF:Settings:StoreInFolders
-                                    output := Path.Combine( output, SELF:Settings:FolderNames["Others"])
-                                    Directory.CreateDirectory(output)
-                                ENDIF
+                                VAR output := SELF:ComputeItemOutputFolder( other:Name, "Others" )
+                                Directory.CreateDirectory(output)
                                 LOCAL orgFile AS STRING
                                 orgFile := Path.Combine( SELF:Project:HomeDir, other:Name)
                                 LOCAL destFile AS STRING
@@ -622,6 +598,64 @@ BEGIN NAMESPACE VFPXPorterLib
 
             RETURN !exitExport
 
+
+        // Compute the destination folder for a project item, given its path relative to the
+        // project's HomeDir (ProjectItem.Name) and the FolderNames key used in "dispatch by type" mode.
+        // When Settings:KeepFolderStructure is TRUE, the item's original subfolder (relative to
+        // HomeDir) is preserved and StoreInFolders/FolderNames are ignored.
+        PRIVATE METHOD ComputeItemOutputFolder(itemRelativeName AS STRING, folderKey AS STRING) AS STRING
+            LOCAL output AS STRING
+            output := SELF:outputPath
+            IF SELF:Settings:KeepFolderStructure
+                VAR relDir := Path.GetDirectoryName(itemRelativeName)
+                IF !String.IsNullOrEmpty(relDir)
+                    output := Path.Combine(output, relDir)
+                ENDIF
+            ELSEIF SELF:Settings:StoreInFolders
+                output := Path.Combine(output, SELF:Settings:FolderNames[folderKey])
+            ENDIF
+            RETURN output
+
+        // Same as ComputeItemOutputFolder, but for class libraries, whose path (libFullPath) is
+        // an absolute path rather than one relative to HomeDir. Under KeepFolderStructure, each
+        // library ALWAYS gets its own subfolder named after the library file — several VCXs commonly
+        // share one physical folder (e.g. a project-wide "LIBS" folder), and without a per-library
+        // subfolder, same-named classes defined in different libraries would overwrite each other.
+        // If the library lives outside the project's HomeDir tree entirely (an "external" dependency,
+        // e.g. classes pulled in from a different VFP project altogether), its original relative path
+        // would contain "..\" segments that could make the export escape the output folder — such
+        // libraries are redirected to a flat "Libs\<LibName>" folder instead of mirroring their
+        // (unrelated) original location.
+        PRIVATE METHOD ComputeLibOutputFolder(libFullPath AS STRING) AS STRING
+            LOCAL output AS STRING
+            output := SELF:outputPath
+            IF SELF:Settings:KeepFolderStructure
+                LOCAL relPath := "" AS STRING
+                LOCAL isExternal := FALSE AS LOGIC
+                TRY
+                    relPath := GetRelativePath(SELF:Project:HomeDir, libFullPath)
+                    isExternal := relPath:StartsWith("..")
+                CATCH
+                    isExternal := TRUE
+                END TRY
+                IF isExternal
+                    output := Path.Combine(output, "Libs")
+                ELSE
+                    VAR relDir := Path.GetDirectoryName(relPath)
+                    IF !String.IsNullOrEmpty(relDir)
+                        output := Path.Combine(output, relDir)
+                    ENDIF
+                ENDIF
+                output := Path.Combine(output, Path.GetFileNameWithoutExtension(libFullPath))
+            ELSE
+                IF SELF:Settings:StoreInFolders
+                    output := Path.Combine(output, SELF:Settings:FolderNames["Libs"])
+                ENDIF
+                IF SELF:Settings:LibInSubFolder
+                    output := Path.Combine(output, Path.GetFileNameWithoutExtension(libFullPath))
+                ENDIF
+            ENDIF
+            RETURN output
 
         // Copy a companion file (same base name, different extension) to the destination folder.
         // Silently skipped when the companion does not exist.
@@ -790,13 +824,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         SELF:AddStandardReferences( xsLib )
 
                         // Compute library output folder early — needed for all path rebasing below
-                        VAR libFolder := SELF:outputPath
-                        IF SELF:Settings:StoreInFolders
-                            libFolder := Path.Combine( libFolder, SELF:Settings:FolderNames["Libs"] )
-                        ENDIF
-                        IF SELF:Settings:LibInSubFolder
-                            libFolder := Path.Combine( libFolder, libName )
-                        ENDIF
+                        VAR libFolder := SELF:ComputeLibOutputFolder( libPath )
 
                         // Add local references rebased to this library's project folder
                         FOREACH refFile AS Reference IN SELF:ReferenceLibFiles
@@ -934,6 +962,10 @@ BEGIN NAMESPACE VFPXPorterLib
             NEXT
 
             xsSolution:Save( solutionFile )
+
+            IF SELF:SaveAsXIDE
+                XideProject.Save( xsSolution, solutionFile )
+            ENDIF
 
             RETURN
 

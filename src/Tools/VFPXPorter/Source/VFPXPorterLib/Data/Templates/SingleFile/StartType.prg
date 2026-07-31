@@ -1,5 +1,6 @@
 ﻿// Templates/SingleFile/StartType.prg
 
+<@cursorAliases@>
 PUBLIC PARTIAL CLASS <@formName@> ;
         INHERIT <@superName@>
 

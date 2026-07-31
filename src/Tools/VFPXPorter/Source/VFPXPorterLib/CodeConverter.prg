@@ -737,41 +737,80 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
 			NEXT
 
+		// Returns the index of the last physical line of the (possibly ";"-continued)
+		// logical statement starting at startIndex.
+		PRIVATE METHOD FindLogicalStatementEnd( startIndex AS INT ) AS INT
+			LOCAL i := startIndex AS INT
+			DO WHILE i < SELF:Source:Count .AND. SELF:Source[i]:TrimEnd():EndsWith(";")
+				i++
+			ENDDO
+			RETURN Math.Min( i, SELF:Source:Count - 1 )
+
+		// Comments out every physical line from startIndex to endIndex (inclusive),
+		// preserving each line's own indentation.
+		PRIVATE METHOD CommentLines( startIndex AS INT, endIndex AS INT ) AS VOID
+			LOCAL i AS INT
+			FOR i := startIndex TO endIndex
+				LOCAL line := SELF:Source[i] AS STRING
+				LOCAL trimmed := line:TrimStart() AS STRING
+				LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
+				SELF:Source[i] := indent + "// " + trimmed
+			NEXT
+
 		// Comments out EXTERNAL declarations (EXTERNAL PROCEDURE/FUNCTION/ARRAY/CLASS ...).
 		// These only hint the VFP Project Manager about an otherwise-undefined reference so it
 		// won't flag it; they have no meaning in a compiled build and EXTERNAL is not a known
-		// X# keyword, so left as-is they raise a compiler error.
+		// X# keyword, so left as-is they raise a compiler error. Handles ";" line continuation
+		// by commenting every physical line of the statement, not just the first.
 		PRIVATE METHOD CommentExternalDeclarations() AS VOID
-			FOR VAR i := 0 TO SELF:Source:Count - 1
-				LOCAL line := SELF:Source[i] AS STRING
-				LOCAL trimmed := line:TrimStart() AS STRING
+			LOCAL i := 0 AS INT
+			DO WHILE i < SELF:Source:Count
+				LOCAL trimmed := SELF:Source[i]:TrimStart() AS STRING
 				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					i++
 					LOOP
 				ENDIF
 				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "EXTERNAL")
-					LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
-					SELF:Source[i] := indent + "// " + trimmed
+					LOCAL endIndex := SELF:FindLogicalStatementEnd(i) AS INT
+					SELF:CommentLines(i, endIndex)
+					i := endIndex + 1
+				ELSE
+					i++
 				ENDIF
-			NEXT
+			ENDDO
 
 		// Comments out DLL-import DECLARE statements (DECLARE [cType] FuncName IN LibName ...).
 		// These register an external DLL entry point; X# has no equivalent statement, so left
 		// as-is they raise a compiler error. NOTE: DECLARE is also a VFP synonym for DIMENSION
 		// when declaring an array (e.g. "DECLARE MyArray(10)") — that form must be left alone,
-		// so only lines with a standalone "IN" keyword (the DLL form's required clause) are
-		// commented out.
+		// so only statements with a standalone "IN" keyword (the DLL form's required clause,
+		// which may itself be on a ";"-continued line) are commented out.
 		PRIVATE METHOD CommentDeclareStatements() AS VOID
-			FOR VAR i := 0 TO SELF:Source:Count - 1
-				LOCAL line := SELF:Source[i] AS STRING
-				LOCAL trimmed := line:TrimStart() AS STRING
+			LOCAL i := 0 AS INT
+			DO WHILE i < SELF:Source:Count
+				LOCAL trimmed := SELF:Source[i]:TrimStart() AS STRING
 				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					i++
 					LOOP
 				ENDIF
-				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "DECLARE") .AND. SELF:ContainsKeyword(trimmed, "IN")
-					LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
-					SELF:Source[i] := indent + "// " + trimmed
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "DECLARE")
+					LOCAL endIndex := SELF:FindLogicalStatementEnd(i) AS INT
+					LOCAL hasIn := FALSE AS LOGIC
+					LOCAL j AS INT
+					FOR j := i TO endIndex
+						IF SELF:ContainsKeyword(SELF:Source[j], "IN")
+							hasIn := TRUE
+							EXIT
+						ENDIF
+					NEXT
+					IF hasIn
+						SELF:CommentLines(i, endIndex)
+					ENDIF
+					i := endIndex + 1
+				ELSE
+					i++
 				ENDIF
-			NEXT
+			ENDDO
 
 		// Returns TRUE if keyword occurs as a standalone word (not part of a longer identifier)
 		// outside string literals and && comments.

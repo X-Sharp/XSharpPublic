@@ -240,6 +240,11 @@ namespace XSharp.Build
             get { return _store.GetOrDefault(nameof(FOX2), false); }
         }
 
+        public bool FOX3
+        {
+            set { _store[nameof(FOX3)] = value; }
+            get { return _store.GetOrDefault(nameof(FOX3), false); }
+        }
         public string CompilerPath
         {
             set { _store[nameof(CompilerPath)] = value; }
@@ -815,7 +820,7 @@ namespace XSharp.Build
 
                     finalDefineConstants.Append(singleIdentifier);
                 }
-             
+
             }
 
             if (finalDefineConstants.Length > 0)
@@ -892,6 +897,7 @@ namespace XSharp.Build
             {
                 commandline.AppendPlusOrMinusSwitchAlways("/fox1", _store, nameof(FOX1));
                 commandline.AppendPlusOrMinusSwitchAlways("/fox2", _store, nameof(FOX2));
+                commandline.AppendPlusOrMinusSwitchAlways("/fox3", _store, nameof(FOX3));
             }
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)

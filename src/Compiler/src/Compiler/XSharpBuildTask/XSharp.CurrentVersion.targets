@@ -316,6 +316,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             EnforceSelf="$(EnforceSelf)"
             FOX1="$(FOX1)"
             FOX2="$(FOX2)"
+            FOX3="$(FOX3)"
             IncludePaths="$(IncludePaths)"
             InitLocals="$(InitLocals)"
             INS="$(INS)"

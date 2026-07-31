@@ -328,4 +328,7 @@ TO <xvar>														;
     => System.Diagnostics.Debug.WriteLine( <cMessageText> )
 
 #command DIME <*something*>  ;
-=> DIMENSION <something>
+    => DIMENSION <something>
+
+#command MOUSE <*something*>  ;
+    => __XPORTERWARNIN__ <(udc)>

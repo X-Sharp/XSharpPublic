@@ -80,6 +80,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ExpandWithEndWith()
 			ENDIF
 			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -108,6 +109,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ExpandWithEndWith()
 			ENDIF
 			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -125,6 +127,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:ExpandWithEndWith()
 			ENDIF
 			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -729,6 +732,23 @@ BEGIN NAMESPACE VFPXPorterLib
 				// rebuild: prefix + VFPTools.ColorFromVFP(rhs) + comment
 				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
 				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
+			NEXT
+
+		// Comments out EXTERNAL declarations (EXTERNAL PROCEDURE/FUNCTION/ARRAY/CLASS ...).
+		// These only hint the VFP Project Manager about an otherwise-undefined reference so it
+		// won't flag it; they have no meaning in a compiled build and EXTERNAL is not a known
+		// X# keyword, so left as-is they raise a compiler error.
+		PRIVATE METHOD CommentExternalDeclarations() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				LOCAL line := SELF:Source[i] AS STRING
+				LOCAL trimmed := line:TrimStart() AS STRING
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					LOOP
+				ENDIF
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "EXTERNAL")
+					LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
+					SELF:Source[i] := indent + "// " + trimmed
+				ENDIF
 			NEXT
 
 		// Normalizes the legacy Xbase comparison-operator synonyms "=<" and "=>" (meaning

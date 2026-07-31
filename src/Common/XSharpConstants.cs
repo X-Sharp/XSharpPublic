@@ -135,6 +135,7 @@ namespace XSharp
         internal const string EnforceOverride = nameof(EnforceOverride);
         internal const string Fox1 = nameof(Fox1);
         internal const string Fox2 = nameof(Fox2);
+        internal const string Fox3 = nameof(Fox3);
         internal const string GetTargetPath = nameof(GetTargetPath);
         internal const string ImplicitUsings = nameof(ImplicitUsings);
         internal const string IncludePaths = nameof(IncludePaths);

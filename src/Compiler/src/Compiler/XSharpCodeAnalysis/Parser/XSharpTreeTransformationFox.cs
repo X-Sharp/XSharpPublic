@@ -132,7 +132,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterAccessMember([NotNull] AccessMemberContext context)
         {
-            if (context.Expr != null && context.Op.Type == XP.DOT && _options.HasOption(CompilerOption.Fox3, context, PragmaOptions))  // do not assume an area when no Expr (inside WITH Block)
+            // do not assume an area when no Expr (inside WITH Block)
+            if (context.Expr != null && context.Op.Type == XP.DOT
+                && (context.AreaName == "M" ||
+                    _options.HasOption(CompilerOption.Fox3, context, PragmaOptions)))
             {
                 context.foxFlags |= XP.FoxFlags.MemberAccess;
                 if (context.Parent is not AccessMemberContext && CurrentMember != null)

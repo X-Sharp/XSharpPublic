@@ -315,16 +315,16 @@
 
 // ── SET SKIP OF ──────────────────────────────────────────────────────────────
 
-#command SET SKIP OF MENU <MenuName> TO <lExpr>                     ;
+#command SET SKIP OF MENU <MenuName> <lExpr>                        ;
     => __VFPSetSkipOfMenu( <(MenuName)>, <lExpr> )
 
-#command SET SKIP OF PAD <PadName> OF <MenuName> TO <lExpr>        ;
+#command SET SKIP OF PAD <PadName> OF <MenuName> <lExpr>           ;
     => __VFPSetSkipOfPad( <(PadName)>, <(MenuName)>, <lExpr> )
 
-#command SET SKIP OF POPUP <PopupName> TO <lExpr>                   ;
+#command SET SKIP OF POPUP <PopupName> <lExpr>                      ;
     => __VFPSetSkipOfPopup( <(PopupName)>, <lExpr> )
 
-#command SET SKIP OF BAR <nBar> OF <PopupName> TO <lExpr>          ;
+#command SET SKIP OF BAR <nBar> OF <PopupName> <lExpr>              ;
     => __VFPSetSkipOfBar( <nBar>, <(PopupName)>, <lExpr> )
 
 

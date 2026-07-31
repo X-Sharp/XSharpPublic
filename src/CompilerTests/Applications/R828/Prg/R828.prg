@@ -1,13 +1,15 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/911
 #translate FOR EACH => FOREACH
 #translate ENDFOR => NEXT
+
 FUNCTION Start( ) AS VOID
 LOCAL aList
-LOCAL M.iterator
+
+LOCAL m.iterator
 LOCAL i AS INT
 aList := {41,42,43}
 
-FOREACH M.iterator  IN aList
+FOREACH m.iterator  IN aList
     ++ i
     SWITCH i
     CASE 1

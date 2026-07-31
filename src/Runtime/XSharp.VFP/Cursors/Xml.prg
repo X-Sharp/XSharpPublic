@@ -36,7 +36,7 @@ FUNCTION CursorToXML (uArea, cOutput, nOutputFormat, nFlags, nRecords, cSchemaNa
     cTarget := (string) cOutput
     nFlagsInt := (long) iif(IsNumeric(nFlags), nFlags, 0)
     nRecs := (long) iif(IsNumeric(nRecords), nRecords, 0)
-    cSchema := (string) iif(IsString(cSchema), cSchemaName, "")
+    cSchema := (string) iif(IsString(cSchemaName), cSchemaName, "")
     cNs := (string) iif(IsString(cNameSpace), cNameSpace, "")
 
     // nOutputformat 1 = ELEMENTS (default), 2 = ATTRIBUTES, 3 = RAW.

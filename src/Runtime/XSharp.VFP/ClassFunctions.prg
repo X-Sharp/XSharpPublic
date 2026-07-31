@@ -163,7 +163,6 @@ FUNCTION ASessions (ArrayName AS USUAL) AS DWORD
         THROW ArgumentException{cMessage}
     ENDIF
 
-    VAR _ := RuntimeState.Workareas
     VAR sessions := XSharp.RDD.DataSession.Sessions
     VAR nRows := (DWORD)sessions:Length
 

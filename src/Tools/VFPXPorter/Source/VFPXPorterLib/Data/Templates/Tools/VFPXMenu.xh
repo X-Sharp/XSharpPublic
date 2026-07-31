@@ -228,6 +228,13 @@
     => __VFPActivatePopup( <(PopupName)>, <nRow>, <nCol> )
 
 
+// ── MOVE POPUP ───────────────────────────────────────────────────────────────
+// Only the TO <row>,<col> form is supported; BY/CENTER/RELATIVE are not.
+
+#command MOVE POPUP <PopupName> TO <nRow>, <nCol>                   ;
+    => __VFPMovePopup( <(PopupName)>, <nRow>, <nCol> )
+
+
 // ── DEACTIVATE MENU ──────────────────────────────────────────────────────────
 // Without name: deactivates whatever menu is currently active.
 
@@ -306,11 +313,11 @@
 #command RELEASE POPUP ALL [<ext: EXTENDED>]                        ;
     => __VFPReleasePopups( NULL, <.ext.> )
 
-#command RELEASE POPUPS <PopupName> [<ext: EXTENDED>]               ;
-    => __VFPReleasePopups( { <(PopupName)> }, <.ext.> )
+#command RELEASE POPUPS <p1> [, <pn>] [<ext: EXTENDED>]              ;
+    => __VFPReleasePopups( { <(p1)> [, <(pn)>] }, <.ext.> )
 
-#command RELEASE POPUP <PopupName> [<ext: EXTENDED>]                ;
-    => __VFPReleasePopups( { <(PopupName)> }, <.ext.> )
+#command RELEASE POPUP <p1> [, <pn>] [<ext: EXTENDED>]               ;
+    => __VFPReleasePopups( { <(p1)> [, <(pn)>] }, <.ext.> )
 
 
 // ── SET SKIP OF ──────────────────────────────────────────────────────────────

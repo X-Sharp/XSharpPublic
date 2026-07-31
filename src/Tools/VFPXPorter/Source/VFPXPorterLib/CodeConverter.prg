@@ -81,6 +81,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			SELF:NormalizeLegacyOperators()
 			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -110,6 +111,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			SELF:NormalizeLegacyOperators()
 			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -128,6 +130,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			SELF:NormalizeLegacyOperators()
 			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -750,6 +753,64 @@ BEGIN NAMESPACE VFPXPorterLib
 					SELF:Source[i] := indent + "// " + trimmed
 				ENDIF
 			NEXT
+
+		// Comments out DLL-import DECLARE statements (DECLARE [cType] FuncName IN LibName ...).
+		// These register an external DLL entry point; X# has no equivalent statement, so left
+		// as-is they raise a compiler error. NOTE: DECLARE is also a VFP synonym for DIMENSION
+		// when declaring an array (e.g. "DECLARE MyArray(10)") — that form must be left alone,
+		// so only lines with a standalone "IN" keyword (the DLL form's required clause) are
+		// commented out.
+		PRIVATE METHOD CommentDeclareStatements() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				LOCAL line := SELF:Source[i] AS STRING
+				LOCAL trimmed := line:TrimStart() AS STRING
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					LOOP
+				ENDIF
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "DECLARE") .AND. SELF:ContainsKeyword(trimmed, "IN")
+					LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
+					SELF:Source[i] := indent + "// " + trimmed
+				ENDIF
+			NEXT
+
+		// Returns TRUE if keyword occurs as a standalone word (not part of a longer identifier)
+		// outside string literals and && comments.
+		PRIVATE METHOD ContainsKeyword( line AS STRING, keyword AS STRING ) AS LOGIC
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL upperLine := line:ToUpperInvariant() AS STRING
+			LOCAL upperKeyword := keyword:ToUpperInvariant() AS STRING
+			LOCAL i := 0 AS INT
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar != (CHAR)0
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++
+					LOOP
+				ENDIF
+				IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+					quoteChar := IIF( c == '[', ']', c )
+					i++
+					LOOP
+				ENDIF
+				IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+					RETURN FALSE
+				ENDIF
+				IF i + upperKeyword:Length <= upperLine:Length .AND. ;
+				   upperLine:Substring(i, upperKeyword:Length) == upperKeyword
+					LOCAL beforeOk := (i == 0) .OR. ;
+						!( Char.IsLetterOrDigit(line[i-1]) .OR. line[i-1] == '_' ) AS LOGIC
+					LOCAL afterPos := i + upperKeyword:Length AS INT
+					LOCAL afterOk := (afterPos >= line:Length) .OR. ;
+						!( Char.IsLetterOrDigit(line[afterPos]) .OR. line[afterPos] == '_' ) AS LOGIC
+					IF beforeOk .AND. afterOk
+						RETURN TRUE
+					ENDIF
+				ENDIF
+				i++
+			ENDDO
+			RETURN FALSE
 
 		// Normalizes the legacy Xbase comparison-operator synonyms "=<" and "=>" (meaning
 		// "<=" and ">=" respectively) to their unambiguous canonical form. Left as-is, a

@@ -194,6 +194,10 @@
     => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| <cmd> } )
 
 #command ON SELECTION POPUP <PopupName>                              ;
+         DEACTIVATE POPUP <PopupName2>                                ;
+    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| __VFPDeactivatePopup(<(PopupName2)>) } )
+
+#command ON SELECTION POPUP <PopupName>                              ;
          DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
     => __VFPOnSelectionPopup( <(PopupName)>, <(ProcName)> )
 

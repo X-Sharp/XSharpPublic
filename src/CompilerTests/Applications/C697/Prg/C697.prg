@@ -1,5 +1,6 @@
 // 697. Cannot pass PUBLIC/PRIVATE by reference
 #pragma warnings (9093, off) // undeclared, cursor
+#pragma options("fox3", enable)
 FUNCTION Start() AS VOID
 	PRIVATE pr
 	PUBLIC pu
@@ -29,7 +30,7 @@ FUNCTION Start() AS VOID
 	testproc2(@pr,@TEST->NAME)
 	xAssert(pr == 42)
 	xAssert(test->Name = "Chris")
-	DbCLoseArea()
+	DbCloseArea()
 
 RETURN
 

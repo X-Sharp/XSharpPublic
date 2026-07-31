@@ -111,6 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 switch (amc.Op.Type)
                 {
                     case XSharpLexer.COLONCOLON:
+                    case XSharpLexer.DOTCOLON:
                         if (_compilation.Options.Dialect != XSharpDialect.XPP &&
                             _compilation.Options.Dialect != XSharpDialect.FoxPro &&
                             symbol.IsStatic)

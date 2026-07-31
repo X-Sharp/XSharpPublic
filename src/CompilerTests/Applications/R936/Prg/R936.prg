@@ -17,18 +17,18 @@ FUNCTION Start as VOID
     xAssert(m.Foo.Bar == 456)
     ? ". ",Foo.Bar
     xAssert(Foo.Bar == 123)
-    ? "::",Foo::Bar
-    xAssert(Foo::Bar == 222)
+    ? ".:",Foo.:Bar
+    xAssert(Foo.:Bar == 222)
 
     Foo.Bar = 333
-    Foo::Bar := 444
+    Foo.:Bar := 444
     m.Foo.Bar = 555
     ? "->",Foo->Bar
     xAssert(Foo->Bar == 333)
     ? ". ",Foo.Bar
     xAssert(Foo.Bar == 333)
-    ? "::",Foo::Bar
-    xAssert(Foo::Bar == 444)
+    ? ".:",Foo.:Bar
+    xAssert(Foo.:Bar == 444)
     ? "m ",m->Foo.Bar
     xAssert(m->Foo.Bar == 555)
     ? "m ",m.Foo.Bar

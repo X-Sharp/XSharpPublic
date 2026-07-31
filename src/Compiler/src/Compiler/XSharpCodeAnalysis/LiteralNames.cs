@@ -166,6 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string RTCompilerOptionVO14 = "CompilerOptionVO14";
         internal const string RTCompilerOptionFOvf = "CompilerOptionFOvf";
         internal const string RTCompilerOptionFox2 = "CompilerOptionFox2";
+        internal const string RTCompilerOptionFox3 = "CompilerOptionFox3";
         internal const string RTCompilerOptionOvf = "CompilerOptionOvf";
         internal const string AddObject = "AddObject";
         internal const string GetProperty = "_GetProperty";

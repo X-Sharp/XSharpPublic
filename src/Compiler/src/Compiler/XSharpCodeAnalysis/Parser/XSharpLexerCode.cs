@@ -2615,6 +2615,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XPP1__", MACRO},
                     { "__FOX1__", MACRO},
                     { "__FOX2__", MACRO},
+                    { "__FOX3__", MACRO},
 
                     {"NOT", FOX_NOT},
                 };

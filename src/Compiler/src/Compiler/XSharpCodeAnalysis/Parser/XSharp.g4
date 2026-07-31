@@ -697,7 +697,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // validExpressionStmt check  for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
-	                ;
+                  ;
 
 blockTokens          : Token=(SCOPE|CHECKED|UNCHECKED|UNSAFE)
                      ;
@@ -876,11 +876,11 @@ localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
+expression          : Expr=expression Op=(DOT|COLON|COLONCOLON) Name=simpleName          #accessMember           // member access.
                     | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
-                    | Left=expression Op=(DOT|COLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
+                    | Left=expression Op=(DOT|COLON|COLONCOLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
                     // Latebound member access with a ampersand and a name or an expression that evaluates to a string
-                    | Left=expression Op=(DOT|COLON) AMP
+                    | Left=expression Op=(DOT|COLON|COLONCOLON) AMP
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH

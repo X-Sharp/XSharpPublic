@@ -115,6 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Xpp1 { get; internal set; } = false;
         //public bool Fox1 { get; internal set; } = false;
         public bool Fox2 { get; internal set; } = false;
+        public bool Fox3 { get; internal set; } = false;
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
         public bool XSharpVOIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpVFPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVFP);
@@ -159,6 +160,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case CompilerOption.Fox2:
                     Fox2 = value;
+                    break;
+                case CompilerOption.Fox3:
+                    Fox3 = value;
                     break;
                 case CompilerOption.ImplicitNamespace:
                     ImplicitNameSpace = value;
@@ -437,6 +441,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         EnforceOverride = 1L << 31,
         AllowOldStyleAssignments = 1L << 32,
         ModernSyntax = 1L << 33,
+        Fox3 = 1L << 34,
         All = -1,       // used for Push/Pop
     }
 
@@ -469,6 +474,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo17: // CompatibleBeginSequence:
                 //case CompilerOption.Fox1:
                 case CompilerOption.Fox2:
+                case CompilerOption.Fox3:
                 case CompilerOption.MemVars:
                 case CompilerOption.UndeclaredMemVars:
                 case CompilerOption.Xpp1:
@@ -511,7 +517,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //case CompilerOption.Fox1:
                 //    return "All Classes inherit from unknown";
                 case CompilerOption.Fox2:
-                    return "Compatible Array Handling";
+                    return "FoxPro Compatible Array Handling";
+                case CompilerOption.Fox3:
+                    return "FoxPro Compatible Ambiguous Dot Handling";
                 case CompilerOption.ImplicitNamespace:
                     return "Enable Implicit Namespace lookups";
                 case CompilerOption.InitLocals:
@@ -590,6 +598,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Fox1;
                 case "fox2":
                     return CompilerOption.Fox2;
+                case "fox3":
+                    return CompilerOption.Fox3;
                 case "initlocals":
                     return CompilerOption.InitLocals;
                 case "ins":

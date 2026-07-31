@@ -18,6 +18,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
     using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
@@ -764,6 +765,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Expression Statement
 
+
+
+
         protected override StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
         {
             var statements = _pool.Allocate<StatementSyntax>();
@@ -971,7 +975,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
             {
                 MemVarFieldInfo fieldInfo = findMemVar(Name);
-                if (fieldInfo != null)
+                var staticCall = context.Parent.Parent is XP.AccessMemberContext amc && amc.Op.Type == XP.COLONCOLON;
+                if (fieldInfo != null && !staticCall)
                 {
                     // for code that looks like this we do not want to change the expression
                     // Foo(1,2)

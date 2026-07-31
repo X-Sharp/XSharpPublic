@@ -111,7 +111,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 switch (amc.Op.Type)
                 {
                     case XSharpLexer.COLONCOLON:
-                        if (_compilation.Options.Dialect != XSharpDialect.XPP && symbol.IsStatic)
+                        if (_compilation.Options.Dialect != XSharpDialect.XPP &&
+                            _compilation.Options.Dialect != XSharpDialect.FoxPro &&
+                            symbol.IsStatic)
                         {
                             // XPP allows static and instance, other dialects only instance
                             if (string.Compare(symbol.Name, amc.Name.GetText(), true) == 0)

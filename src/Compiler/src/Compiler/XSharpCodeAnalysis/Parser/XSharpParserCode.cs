@@ -1455,6 +1455,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             ClipperParameter,
             MacroMemvar,
             Local,
+            Unknown
         }
         public bool IsMemvar => _fieldType == MemvarType.Memvar;
         public bool IsField => _fieldType == MemvarType.Field;
@@ -1494,39 +1495,40 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 
         private FieldFlags _flags;
-        static FieldFlags setFlag(FieldFlags oldFlag, FieldFlags newFlag, bool set)
+        private FieldFlags SetFlag(FieldFlags newFlag, bool set)
         {
             if (set)
-                oldFlag |= newFlag;
+                _flags |= newFlag;
             else
-                oldFlag &= ~newFlag;
-            return oldFlag;
+                _flags &= ~newFlag;
+            return _flags;
         }
         public bool IsFileWidePublic
         {
             get { return _flags.HasFlag(FieldFlags.IsFileWidePublic); }
-            set { _flags = setFlag(_flags, FieldFlags.IsFileWidePublic, value); }
+            set { SetFlag(FieldFlags.IsFileWidePublic, value); }
         }
         public bool IsParameter
         {
             get { return _flags.HasFlag(FieldFlags.IsParameter); }
-            set { _flags = setFlag(_flags, FieldFlags.IsParameter, value); }
+            set { SetFlag(FieldFlags.IsParameter, value); }
         }
         public bool IsWritten
         {
             get { return _flags.HasFlag(FieldFlags.IsWritten); }
-            set { _flags = setFlag(_flags, FieldFlags.IsWritten, value); }
+            set { SetFlag(FieldFlags.IsWritten, value); }
         }
         public bool IsCreated
         {
             get { return _flags.HasFlag(FieldFlags.IsCreated); }
-            set { _flags = setFlag(_flags, FieldFlags.IsCreated, value); }
+            set { SetFlag(FieldFlags.IsCreated, value); }
         }
         public bool IsPublic
         {
             get { return _flags.HasFlag(FieldFlags.IsPublic); }
-            set { _flags = setFlag(_flags, FieldFlags.IsPublic, value); }
+            set { SetFlag(FieldFlags.IsPublic, value); }
         }
+
         public XSharpParserRuleContext Context { get; private set; }
         internal MemVarFieldInfo(string name, string alias, XSharpParserRuleContext context, bool filewidepublic = false)
         {
@@ -1556,6 +1558,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case "_FIELD":
                         Alias = XSharpSpecialNames.FieldPrefix;
                         _fieldType = MemvarType.Field;
+                        break;
+                    case "_UNKNOWN":
+                        _fieldType = MemvarType.Unknown;
                         break;
                     default:
                         switch (alias)

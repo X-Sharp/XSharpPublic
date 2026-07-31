@@ -7657,7 +7657,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Op.Type == XP.COLONCOLON)
+            if (context.Op.Type == XP.COLONCOLON && context.Expr == null)
             {
                 context.Put(MakeSimpleMemberAccess(
                     GenerateSelf(),
@@ -7697,7 +7697,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // When AllowDotForInstanceMembers
-                if (context.Op.Type == XP.COLON || _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
+                if (context.Op.Type == XP.COLONCOLON ||
+                        context.Op.Type == XP.COLON || _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
                 {
                     context.Put(MakeSimpleMemberAccess(context.Expr.Get<ExpressionSyntax>(), context.Name.Get<SimpleNameSyntax>()));
                 }
@@ -9621,7 +9622,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(litExpr.WithAdditionalDiagnostics(diag));
                 }
             }
-            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__ are translated by the preprocessor to TRUE const
+            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__, __FOX3__  are translated by the preprocessor to TRUE const
             // determine real value now
             var text = context.Token.Text;
             if (context.Token.Type == XP.TRUE_CONST && text.Length > 4 && text.StartsWith("__") && text.EndsWith("__"))

@@ -79,6 +79,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_expandWithEndWith
 				SELF:ExpandWithEndWith()
 			ENDIF
+			SELF:NormalizeLegacyOperators()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -106,6 +107,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_expandWithEndWith
 				SELF:ExpandWithEndWith()
 			ENDIF
+			SELF:NormalizeLegacyOperators()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -122,6 +124,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_expandWithEndWith
 				SELF:ExpandWithEndWith()
 			ENDIF
+			SELF:NormalizeLegacyOperators()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -727,6 +730,58 @@ BEGIN NAMESPACE VFPXPorterLib
 				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
 				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
 			NEXT
+
+		// Normalizes the legacy Xbase comparison-operator synonyms "=<" and "=>" (meaning
+		// "<=" and ">=" respectively) to their unambiguous canonical form. Left as-is, a
+		// literal "=>" surviving into generated X# source can be mis-lexed as the lambda-arrow
+		// token (or as a #command/#translate result-pattern separator), breaking compilation.
+		PRIVATE METHOD NormalizeLegacyOperators() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				SELF:Source[i] := SELF:NormalizeLegacyOperatorsInLine( SELF:Source[i] )
+			NEXT
+
+		// Scans a single line outside string literals and && comments, swapping every
+		// standalone "=<" / "=>" pair for "<=" / ">=".
+		PRIVATE METHOD NormalizeLegacyOperatorsInLine( line AS STRING ) AS STRING
+			LOCAL trimmed := line:TrimStart() AS STRING
+			IF String.IsNullOrEmpty(trimmed) .OR. trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&")
+				RETURN line
+			ENDIF
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL sb := StringBuilder{ line:Length } AS StringBuilder
+			LOCAL i := 0 AS INT
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar != (CHAR)0
+					sb:Append(c)
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++
+					LOOP
+				ENDIF
+				IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+					quoteChar := IIF( c == '[', ']', c )
+					sb:Append(c)
+					i++
+					LOOP
+				ENDIF
+				// Rest of line is a && comment: copy verbatim and stop scanning.
+				IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+					sb:Append( line:Substring(i) )
+					EXIT
+				ENDIF
+				// "=<" / "=>" -> "<=" / ">="
+				IF c == '=' .AND. i+1 < line:Length .AND. ( line[i+1] == '<' .OR. line[i+1] == '>' )
+					sb:Append( line[i+1] )
+					sb:Append( '=' )
+					i += 2
+					LOOP
+				ENDIF
+				sb:Append(c)
+				i++
+			ENDDO
+			RETURN sb:ToString()
 
 		// Rewrites "Name." to "Name->" for every alias in AliasTypeCollisions (AliasTypeCollisions.json).
 		// These are cursor/alias names known to collide with a resolvable .NET/X# type (e.g. "Currency"),

@@ -324,3 +324,8 @@ TO <xvar>														;
 
 #endif
 
+#command DEBUGOUT <*cMessageText*>  ;
+    => System.Diagnostics.Debug.WriteLine( <cMessageText> )
+
+#command DIME <*something*>  ;
+=> DIMENSION <something>

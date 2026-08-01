@@ -144771,7 +144771,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C959 - Calling a suitable overload for a parameter of type USUAL #836
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C960 - Incompatibility with Object.ToString() #1286 *************
 Application = C960 - Incompatibility with Object.ToString() #1286
 IDEVersion = 1.06
@@ -144897,7 +144897,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C960 - Incompatibility with Object.ToString() #1286
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C961 - Late bound call uses a STRICT parent method instead of NEW CLIPPER in the child class [#1286] *************
 Application = C961 - Late bound call uses a STRICT parent method instead of NEW CLIPPER in the child class [#1286]
 IDEVersion = 1.06
@@ -145526,7 +145526,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C965 - COPY TO ARRAY command issues [#1857]
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C966 - Bogus Type Expected compiler error with CLIPPER method with no args/return type #1907 *************
 Application = C966 - Bogus Type Expected compiler error with CLIPPER method with no args/return type #1907
 IDEVersion = 1.06
@@ -145651,7 +145651,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C966 - Bogus Type Expected compiler error with CLIPPER method with no args/return type #1907
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C967 - No compiler error when using NIL and CLIPPER calling convention in the Core dialect #1907 *************
 Application = C967 - No compiler error when using NIL and CLIPPER calling convention in the Core dialect #1907
 IDEVersion = 1.06
@@ -145774,7 +145774,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C967 - No compiler error when using NIL and CLIPPER calling convention in the Core dialect #1907
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C968 - Problems with XBase++ code [#1960, #1960] *************
 Application = C968 - Problems with XBase++ code [#1960, #1960]
 IDEVersion = 1.06
@@ -146396,7 +146396,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R935 - Chain constructor to call Init() for FoxClasses
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C969 - Nested WITH statements produce a bogus compiler error #1991 *************
 Application = C969 - Nested WITH statements produce a bogus compiler error #1991
 IDEVersion = 1.06

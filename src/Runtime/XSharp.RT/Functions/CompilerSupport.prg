@@ -103,7 +103,7 @@ FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGI
             return IVarGet(value, fldName)
         endif
     endif
-    local type := FindClass(wa) as System.Type
+    local type := OOPHelpers.FindClass(wa,false) as System.Type
     if type != null
         var prop := type:GetProperty(fldName)
         if prop != null
@@ -184,16 +184,16 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
             return IVarPut(value, fldName, uValue)
         endif
     endif
-    local type := FindClass(wa) as System.Type
+    local type := OOPHelpers.FindClass(wa,false) as System.Type
     if type != null
         var prop := type:GetProperty(fldName)
         if prop != null
-            prop:SetValue(null, uValue)
+            prop:SetValue(null, OOPHelpers.ValueConvert(uValue, prop:PropertyType))
             RETURN uValue
         endif
         var fld := type:GetField(fldName)
         if fld != null
-            fld:SetValue(null, uValue)
+            fld:SetValue(null, OOPHelpers.ValueConvert(uValue, fld:FieldType))
             RETURN uValue
         endif
         var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})

@@ -1,4 +1,4 @@
-// 970. C970 - Problems with the /fox3 option
+// 970. Problems with the /fox3 option - static vars
 // https://github.com/X-Sharp/XSharpPublic/issues/2025
 
 #pragma options("fox3", enable)

@@ -61,6 +61,71 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
+        private BoundExpression HandleSelf(BoundExpression expr, XSharpParser.AccessMemberContext amc, NamedTypeSymbol rtType)
+        {
+            var entity = amc.CurrentEntity;
+            bool pushSelf = false;
+            switch (entity)
+            {
+                case XSharpParser.MethodContext mc:
+                    pushSelf = mc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.ConstructorContext cc:
+                    pushSelf = cc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.PropertyContext pc:
+                    pushSelf = pc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.Event_Context ec:
+                    pushSelf = ec.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.Operator_Context oc:
+                    pushSelf = oc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.DestructorContext dc:
+                    pushSelf = true;
+                    break;
+                case XSharpParser.FoxmethodContext fmc:
+                    pushSelf = fmc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.FoxclassvarsContext fcvc:
+                    pushSelf = fcvc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.FoxfieldContext ffc:
+                    pushSelf = ffc.Modifiers?._STATIC == null;
+                    break;
+                case XSharpParser.XppinlineMethodContext ximc:
+                    pushSelf = ximc.Modifiers?._STATIC == null && ximc.Modifiers?._CLASS == null;
+                    break;
+                case XSharpParser.XppclassvarsContext xcvc:
+                    pushSelf = xcvc.Modifiers?._STATIC == null && xcvc.Modifiers?._CLASS == null;
+                    break;
+            }
+            if (!pushSelf)
+            {
+                return expr;
+            }
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var usual = _compilation.UsualType();
+            var thisRef = _factory.This();
+            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+            var tempSym = _factory.SynthesizedLocal(usual);
+            locals.Add(tempSym);
+            var tempLocal = _factory.Local(tempSym);
+            var value = MakeConversionNode(thisRef, usual, false);
+            value.WasCompilerGenerated = true;
+            var localname = _factory.Literal("SELF");
+            var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+            mcall.WasCompilerGenerated = true;
+            exprs.Add(VisitExpression(mcall));
+            var assign = _factory.AssignmentExpression(tempLocal, expr);
+            exprs.Add(assign);
+            var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+            exprs.Add(clear);
+            var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(), tempLocal);
+            return seq;
+
+        }
 
         public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, BoundDynamicMemberAccess node)
         {
@@ -82,6 +147,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (loweredReceiver is BoundLocal loc)
                 {
                     expr = HandleLocalSymbol(expr, loc, rtType);
+                }
+                else if (node.Syntax.XNode is XSharpParser.AccessMemberContext amc)
+                {
+                    expr = HandleSelf(expr, amc, rtType);
                 }
                 return expr;
             }
@@ -138,6 +207,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (loweredReceiver is BoundLocal loc)
                 {
                     expr = HandleLocalSymbol(expr, loc, rtType);
+                }
+                else if (node.Syntax.XNode is XSharpParser.AccessMemberContext amc)
+                {
+                    expr = HandleSelf(expr, amc, rtType);
                 }
                 return expr;
             }

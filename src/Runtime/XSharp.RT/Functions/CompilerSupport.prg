@@ -98,6 +98,10 @@ FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGI
     IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
         return IVarGet(uLocal, fldName)
     ENDIF
+    IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
+        local uVar := IVarGet(uLocal, wa) AS USUAL
+        return IVarGet(uVar, fldName)
+    ENDIF
     if (lAllowUndeclared)
         if XSharp.MemVar.TryGet(wa, out var value)
             return IVarGet(value, fldName)
@@ -178,6 +182,10 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
     ENDIF
     IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
         return IVarPut(uLocal, fldName, uValue)
+    ENDIF
+    IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
+        local uVar := IVarGet(uLocal, wa) AS USUAL
+        return IVarPut(uVar, fldName, uValue)
     ENDIF
     if (lAllowUndeclared)
         if XSharp.MemVar.TryGet(wa, out var value)

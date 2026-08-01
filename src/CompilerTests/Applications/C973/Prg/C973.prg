@@ -3,6 +3,8 @@
 
 #pragma options("fox3", enable)
 #pragma options("allowdot", enable)
+#pragma options("memvar", enable)
+#pragma options("undeclared", enable)
 CLASS TestClass
 	EXPORT TestField := "abc" AS USUAL
 	EXPORT TestFieldTyped := "abc" AS STRING

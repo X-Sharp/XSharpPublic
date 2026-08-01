@@ -1244,6 +1244,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal bool HasMPrefix => foxFlags.HasFlag(FoxFlags.MPrefix);
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
+
+            internal IEntityContext CurrentEntity
+            {
+                get
+                {
+                    var p = this.Parent;
+                    while (p != null)
+                    {
+                        if (p is IEntityContext entity)
+                        {
+                            return entity;
+                        }
+                        p = p.Parent;
+                    }
+                    return null;
+                }
+            }
         }
         #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set
 
@@ -1457,7 +1474,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Local,
             Unknown
         }
-        public bool IsMemvar => _fieldType == MemvarType.Memvar;
         public bool IsField => _fieldType == MemvarType.Field;
         public bool IsClipperParameter => _fieldType == MemvarType.ClipperParameter;
         public bool IsMacroMemvar => _fieldType == MemvarType.MacroMemvar;

@@ -144771,7 +144771,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C959 - Calling a suitable overload for a parameter of type USUAL #836
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C960 - Incompatibility with Object.ToString() #1286 *************
 Application = C960 - Incompatibility with Object.ToString() #1286
 IDEVersion = 1.06
@@ -144897,7 +144897,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C960 - Incompatibility with Object.ToString() #1286
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C961 - Late bound call uses a STRICT parent method instead of NEW CLIPPER in the child class [#1286] *************
 Application = C961 - Late bound call uses a STRICT parent method instead of NEW CLIPPER in the child class [#1286]
 IDEVersion = 1.06
@@ -145526,7 +145526,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C965 - COPY TO ARRAY command issues [#1857]
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C966 - Bogus Type Expected compiler error with CLIPPER method with no args/return type #1907 *************
 Application = C966 - Bogus Type Expected compiler error with CLIPPER method with no args/return type #1907
 IDEVersion = 1.06
@@ -145651,7 +145651,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C966 - Bogus Type Expected compiler error with CLIPPER method with no args/return type #1907
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C967 - No compiler error when using NIL and CLIPPER calling convention in the Core dialect #1907 *************
 Application = C967 - No compiler error when using NIL and CLIPPER calling convention in the Core dialect #1907
 IDEVersion = 1.06
@@ -145774,7 +145774,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C967 - No compiler error when using NIL and CLIPPER calling convention in the Core dialect #1907
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C968 - Problems with XBase++ code [#1960, #1960] *************
 Application = C968 - Problems with XBase++ code [#1960, #1960]
 IDEVersion = 1.06
@@ -146396,7 +146396,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R935 - Chain constructor to call Init() for FoxClasses
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C969 - Nested WITH statements produce a bogus compiler error #1991 *************
 Application = C969 - Nested WITH statements produce a bogus compiler error #1991
 IDEVersion = 1.06
@@ -147763,6 +147763,510 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R936 - FoxPro DOT
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C970 - Problems with the /fox3 option - static vars *************
+Application = C970 - Problems with the /fox3 option - static vars
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C970\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C970
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = EFF83769-D95E-47FD-9121-C39703F0C3CA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C970 - Problems with the /fox3 option - static vars FileGroups]
+[C970 - Problems with the /fox3 option - static vars Files]
+File = %AppPath%\Prg\C970.prg
+FileGUID = 973D633E-5CFE-4562-9351-317222CD4666
+FileType = Code
+CopyToBin = 0
+[C970 - Problems with the /fox3 option - static vars References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,3.0.0.0
+[C970 - Problems with the /fox3 option - static vars Resources]
+[C970 - Problems with the /fox3 option - static vars Native Resources]
+[C970 - Problems with the /fox3 option - static vars License files]
+[C970 - Problems with the /fox3 option - static vars General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=1
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=1
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[C970 - Problems with the /fox3 option - static vars Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C970 - Problems with the /fox3 option - static vars
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C971 - Macro compiler does not support the dbfname.fieldname expression *************
+Application = C971 - Macro compiler does not support the dbfname.fieldname expression
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C971\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C971
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 5DFF2D08-C1AD-4D6B-BC5A-4124974AD376
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C971 - Macro compiler does not support the dbfname.fieldname expression FileGroups]
+[C971 - Macro compiler does not support the dbfname.fieldname expression Files]
+File = %AppPath%\Prg\C971.prg
+FileGUID = 91D9685A-4160-42BC-BD1D-7FE2B37F379E
+FileType = Code
+CopyToBin = 0
+[C971 - Macro compiler does not support the dbfname.fieldname expression References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,3.0.0.0
+[C971 - Macro compiler does not support the dbfname.fieldname expression Resources]
+[C971 - Macro compiler does not support the dbfname.fieldname expression Native Resources]
+[C971 - Macro compiler does not support the dbfname.fieldname expression License files]
+[C971 - Macro compiler does not support the dbfname.fieldname expression General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=1
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[C971 - Macro compiler does not support the dbfname.fieldname expression Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C971 - Macro compiler does not support the dbfname.fieldname expression
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C972 - Compiler problem with incorrect default parameters in the VO dialect *************
+Application = C972 - Compiler problem with incorrect default parameters in the VO dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = VO
+Folder = %ProjectPath%\Applications\C972\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C972
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3A2223AD-6EA8-4447-A892-4A232042BB1E
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C972 - Compiler problem with incorrect default parameters in the VO dialect FileGroups]
+[C972 - Compiler problem with incorrect default parameters in the VO dialect Files]
+File = %AppPath%\Prg\C972.prg
+FileGUID = 7952E730-60D5-40A6-AF2F-74DC9063B5A4
+FileType = Code
+CopyToBin = 0
+[C972 - Compiler problem with incorrect default parameters in the VO dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,3.0.0.0
+[C972 - Compiler problem with incorrect default parameters in the VO dialect Resources]
+[C972 - Compiler problem with incorrect default parameters in the VO dialect Native Resources]
+[C972 - Compiler problem with incorrect default parameters in the VO dialect License files]
+[C972 - Compiler problem with incorrect default parameters in the VO dialect General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[C972 - Compiler problem with incorrect default parameters in the VO dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C972 - Compiler problem with incorrect default parameters in the VO dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C973 - Problems with the /fox3 option - instance vars *************
+Application = C973 - Problems with the /fox3 option - instance vars
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+NetVersion = 
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C973\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C973
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8254100C-E22D-4B5E-AAEE-39134E5BEBDE
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+EmitAssemblyProperties = 0
+EmitNetVersion = 0
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C973 - Problems with the /fox3 option - instance vars FileGroups]
+[C973 - Problems with the /fox3 option - instance vars Files]
+File = %AppPath%\Prg\C973.prg
+FileGUID = 3BC744D8-1E8D-4AA4-8588-25C42C95DFED
+FileType = Code
+CopyToBin = 0
+[C973 - Problems with the /fox3 option - instance vars References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,3.0.0.0
+[C973 - Problems with the /fox3 option - instance vars Resources]
+[C973 - Problems with the /fox3 option - instance vars Native Resources]
+[C973 - Problems with the /fox3 option - instance vars License files]
+[C973 - Problems with the /fox3 option - instance vars General Options]
+Switches=
+IgnoreWarnings=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO15=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=0
+ResponseOnly=0
+[C973 - Problems with the /fox3 option - instance vars Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C973 - Problems with the /fox3 option - instance vars
 [EndApplications]
 
 [Configurations]

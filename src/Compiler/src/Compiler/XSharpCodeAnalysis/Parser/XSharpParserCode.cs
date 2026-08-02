@@ -1245,22 +1245,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
 
-            internal IEntityContext CurrentEntity
-            {
-                get
-                {
-                    var p = this.Parent;
-                    while (p != null)
-                    {
-                        if (p is IEntityContext entity)
-                        {
-                            return entity;
-                        }
-                        p = p.Parent;
-                    }
-                    return null;
-                }
-            }
         }
         #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set
 

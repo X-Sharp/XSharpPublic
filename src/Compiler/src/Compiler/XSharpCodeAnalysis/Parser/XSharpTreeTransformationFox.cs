@@ -134,6 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // do not assume an area when no Expr (inside WITH Block)
             if (context.Expr != null && context.Op.Type == XP.DOT
+                && context.Parent is not MethodCallContext
                 && (context.AreaName == "M" ||
                     _options.HasOption(CompilerOption.Fox3, context, PragmaOptions)))
             {

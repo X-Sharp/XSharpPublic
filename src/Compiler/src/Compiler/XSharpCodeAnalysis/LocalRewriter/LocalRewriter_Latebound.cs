@@ -63,45 +63,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression HandleSelf(BoundExpression expr, XSharpParser.AccessMemberContext amc, NamedTypeSymbol rtType)
         {
-            var entity = amc.CurrentEntity;
-            bool pushSelf = false;
-            switch (entity)
-            {
-                case XSharpParser.MethodContext mc:
-                    pushSelf = mc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.ConstructorContext cc:
-                    pushSelf = cc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.PropertyContext pc:
-                    pushSelf = pc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.Event_Context ec:
-                    pushSelf = ec.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.Operator_Context oc:
-                    pushSelf = oc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.DestructorContext dc:
-                    pushSelf = true;
-                    break;
-                case XSharpParser.FoxmethodContext fmc:
-                    pushSelf = fmc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.FoxclassvarsContext fcvc:
-                    pushSelf = fcvc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.FoxfieldContext ffc:
-                    pushSelf = ffc.Modifiers?._STATIC == null;
-                    break;
-                case XSharpParser.XppinlineMethodContext ximc:
-                    pushSelf = ximc.Modifiers?._STATIC == null && ximc.Modifiers?._CLASS == null;
-                    break;
-                case XSharpParser.XppclassvarsContext xcvc:
-                    pushSelf = xcvc.Modifiers?._STATIC == null && xcvc.Modifiers?._CLASS == null;
-                    break;
-            }
-            if (!pushSelf)
+            var function = _factory.CurrentFunction;
+            if (function == null || function.IsStatic)
             {
                 return expr;
             }

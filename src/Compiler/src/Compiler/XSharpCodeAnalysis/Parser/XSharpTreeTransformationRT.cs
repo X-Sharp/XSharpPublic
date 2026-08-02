@@ -975,8 +975,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
             {
                 MemVarFieldInfo fieldInfo = findMemVar(Name);
-                var staticCall = context.Parent.Parent is XP.AccessMemberContext amc && amc.Op.Type == XP.DOTCOLON;
-                if (fieldInfo != null && !staticCall)
+                var amc = context.Parent.Parent as XP.AccessMemberContext;
+                var staticCall = amc?.Op.Type == XP.DOTCOLON;
+                var methodCall = amc?.Parent is MethodCallContext;
+                if (fieldInfo != null && !staticCall && !methodCall)
                 {
                     // for code that looks like this we do not want to change the expression
                     // Foo(1,2)

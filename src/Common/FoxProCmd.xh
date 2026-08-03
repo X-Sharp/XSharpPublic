@@ -227,8 +227,11 @@
 // This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
 #command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
 
-#command COPY MEMO <field> TO <(file)> <add:ADDITIVE> [AS <nCP>]  ;
-        => DbCopyMemo( <"field">, <(file)>, <ADD>[, <nCP>] )
+#command COPY MEMO <field> TO <(file)> [<add:ADDITIVE>]           ;
+        => DbCopyMemo( <"field">, <(file)>, <.add.>, 0 )
+
+#command COPY MEMO <field> TO <(file)> [<add:ADDITIVE>] AS <nCP>  ;
+        => DbCopyMemo( <"field">, <(file)>, <.add.>, <nCP> )
 
 // Scoped REPLACE — without IN clause
 // Note: no nested optional ADDITIVE inside the repeated clause: the preprocessor

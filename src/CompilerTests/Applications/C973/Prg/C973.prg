@@ -8,6 +8,14 @@
 CLASS TestClass
 	EXPORT TestField := "abc" AS USUAL
 	EXPORT TestFieldTyped := "abc" AS STRING
+	
+	METHOD TestUntypedMethod( n ) CLIPPER
+		IF IsNil( n )
+			RETURN 1000
+		END IF
+	RETURN n + 1
+	METHOD TestMethod( n AS INT ) AS INT
+	RETURN n + 1
 
 	PROPERTY TestProp AS USUAL GET "abc"
 	PROPERTY TestPropTyped AS strin GET "abc"
@@ -27,10 +35,18 @@ FUNCTION Start() AS VOID
 	t := TestClass{}
 	? t.TestField // XSharp.Error: Variable does not exist: T
 	? t.TestProp // XSharp.Error: Variable does not exist: T
+	? t.TestMethod( 1 ) + 10  // XSharp.Error: Variable does not exist: T
+	? t.TestUntypedMethod( 1,2,3 ) + 10
+	? t.TestUntypedMethod( 1 ) + 10
+	? t.TestUntypedMethod(  ) + 10
 
 	LOCAL u AS USUAL
 	u := TestClass{}
 	? u.TestField // XSharp.Error: Variable does not exist: U
 	? u.TestProp // XSharp.Error: Variable does not exist: U
+	? u.TestMethod( 1 ) + 10
+	? u.TestUntypedMethod( 1,2,3 )
+	? u.TestUntypedMethod( 1 )
+	? u.TestUntypedMethod( )
 RETURN
 

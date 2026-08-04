@@ -292,12 +292,34 @@ FUNCTION __VFPActivatePopup( cName AS STRING, nRow AS INT, nCol AS INT ) AS VOID
     ENDIF
     LOCAL pt AS System.Drawing.Point
     IF nRow == 0 .AND. nCol == 0
-        pt := System.Windows.Forms.Control.MousePosition
+        IF oPopup:HasPendingPosition
+            pt := System.Drawing.Point{ oPopup:PendingCol, oPopup:PendingRow }
+        ELSE
+            pt := System.Windows.Forms.Control.MousePosition
+        ENDIF
     ELSE
         // VFP AT clause uses screen row/col in characters; approximate with mouse pos.
         pt := System.Drawing.Point{ nCol, nRow }
     ENDIF
     oPopup:Show( pt )
+
+/// <summary>
+/// Implements MOVE POPUP &lt;name&gt; TO &lt;nRow&gt;, &lt;nCol&gt;.
+/// Records the position for the next bare ACTIVATE POPUP (no AT clause); if the
+/// popup is already visible, repositions it immediately.
+/// </summary>
+FUNCTION __VFPMovePopup( cName AS STRING, nRow AS INT, nCol AS INT ) AS VOID
+    LOCAL oPopup AS Popup
+    oPopup := Popup.Find( cName )
+    IF oPopup == NULL_OBJECT
+        RETURN
+    ENDIF
+    oPopup:HasPendingPosition := TRUE
+    oPopup:PendingRow := nRow
+    oPopup:PendingCol := nCol
+    IF oPopup:Visible
+        oPopup:Show( System.Drawing.Point{ nCol, nRow } )
+    ENDIF
 
 /// <summary>Implements DEACTIVATE MENU &lt;name&gt;. Detaches the menu from its host form.</summary>
 FUNCTION __VFPDeactivateMenu( cName AS STRING ) AS VOID

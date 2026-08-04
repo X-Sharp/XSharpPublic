@@ -79,6 +79,9 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_expandWithEndWith
 				SELF:ExpandWithEndWith()
 			ENDIF
+			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -106,6 +109,9 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_expandWithEndWith
 				SELF:ExpandWithEndWith()
 			ENDIF
+			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -122,6 +128,9 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF SELF:_expandWithEndWith
 				SELF:ExpandWithEndWith()
 			ENDIF
+			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
 			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
@@ -169,11 +178,79 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 					LOOP
 				ENDIF
-				IF withStack:Count > 0 .AND. trimmed:StartsWith(".")
-					VAR prefix := withStack:Peek()
-					SELF:Source[i] := indent + prefix + trimmed
+				IF withStack:Count > 0
+					SELF:Source[i] := SELF:RewriteWithShorthand( line, withStack:Peek() )
 				ENDIF
 			NEXT
+
+			// Rewrites every standalone leading-dot member reference in line (e.g. ".oTool"
+			// inside "IF !ISNULL(.oTool)") to prefix + ".oTool", not just ones at the very
+			// start of the line. String literals and && comments are left untouched, and
+			// decimal literals (".5"), chained member access ("obj.Member"), and VFP logical
+			// literals/operators (.T. .F. .AND. .OR. .NOT. .NULL.) are recognized and skipped.
+			PRIVATE METHOD RewriteWithShorthand( line AS STRING, prefix AS STRING ) AS STRING
+				LOCAL quoteChar := (CHAR)0 AS CHAR
+				LOCAL sb := StringBuilder{ line:Length } AS StringBuilder
+				LOCAL i := 0 AS INT
+				DO WHILE i < line:Length
+					LOCAL c := line[i] AS CHAR
+					IF quoteChar != (CHAR)0
+						sb:Append(c)
+						IF c == quoteChar
+							quoteChar := (CHAR)0
+						ENDIF
+						i++
+						LOOP
+					ENDIF
+					IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+						quoteChar := IIF( c == '[', ']', c )
+						sb:Append(c)
+						i++
+						LOOP
+					ENDIF
+					// Rest of line is a && comment: copy verbatim and stop scanning.
+					IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+						sb:Append( line:Substring(i) )
+						EXIT
+					ENDIF
+					IF c == '.' .AND. SELF:IsWithShorthandDot( line, i )
+						sb:Append( prefix )
+					ENDIF
+					sb:Append(c)
+					i++
+				ENDDO
+				RETURN sb:ToString()
+
+			// Returns TRUE if the '.' at position pos in line begins a VFP WITH-shorthand
+			// member reference (e.g. ".Property"), rather than a decimal literal (".5"),
+			// a chained member access ("obj.Member"), or a logical literal/operator
+			// (".T." / ".F." / ".AND." / ".OR." / ".NOT." / ".NULL.").
+			PRIVATE METHOD IsWithShorthandDot( line AS STRING, pos AS INT ) AS LOGIC
+				// Must not be a continuation of an identifier or a closing grouping token.
+				IF pos > 0
+					LOCAL prevC := line[pos-1] AS CHAR
+					IF Char.IsLetterOrDigit(prevC) .OR. prevC == '_' .OR. prevC == ')' .OR. prevC == ']'
+						RETURN FALSE
+					ENDIF
+				ENDIF
+				// Must be followed by an identifier-start character (a digit here means a
+				// decimal literal like ".5", not a member reference).
+				IF pos+1 >= line:Length .OR. !( Char.IsLetter(line[pos+1]) .OR. line[pos+1] == '_' )
+					RETURN FALSE
+				ENDIF
+				LOCAL j := pos + 1 AS INT
+				DO WHILE j < line:Length .AND. ( Char.IsLetterOrDigit(line[j]) .OR. line[j] == '_' )
+					j++
+				ENDDO
+				IF j < line:Length .AND. line[j] == '.'
+					LOCAL rawToken := line:Substring(pos+1, j-pos-1) AS STRING
+					LOCAL upperToken := rawToken:ToUpperInvariant() AS STRING
+					IF upperToken == "T" .OR. upperToken == "F" .OR. upperToken == "AND" .OR. ;
+					   upperToken == "OR" .OR. upperToken == "NOT" .OR. upperToken == "NULL"
+						RETURN FALSE
+					ENDIF
+				ENDIF
+				RETURN TRUE
 
 			// We will enumerate the lines of source code
 			// and change the "perspective" : FoxPro handler is from the Control perspective; .NET are from the Form perspective
@@ -727,6 +804,172 @@ BEGIN NAMESPACE VFPXPorterLib
 				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
 				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
 			NEXT
+
+		// Returns the index of the last physical line of the (possibly ";"-continued)
+		// logical statement starting at startIndex.
+		PRIVATE METHOD FindLogicalStatementEnd( startIndex AS INT ) AS INT
+			LOCAL i := startIndex AS INT
+			DO WHILE i < SELF:Source:Count .AND. SELF:Source[i]:TrimEnd():EndsWith(";")
+				i++
+			ENDDO
+			RETURN Math.Min( i, SELF:Source:Count - 1 )
+
+		// Comments out every physical line from startIndex to endIndex (inclusive),
+		// preserving each line's own indentation.
+		PRIVATE METHOD CommentLines( startIndex AS INT, endIndex AS INT ) AS VOID
+			LOCAL i AS INT
+			FOR i := startIndex TO endIndex
+				LOCAL line := SELF:Source[i] AS STRING
+				LOCAL trimmed := line:TrimStart() AS STRING
+				LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
+				SELF:Source[i] := indent + "// " + trimmed
+			NEXT
+
+		// Comments out EXTERNAL declarations (EXTERNAL PROCEDURE/FUNCTION/ARRAY/CLASS ...).
+		// These only hint the VFP Project Manager about an otherwise-undefined reference so it
+		// won't flag it; they have no meaning in a compiled build and EXTERNAL is not a known
+		// X# keyword, so left as-is they raise a compiler error. Handles ";" line continuation
+		// by commenting every physical line of the statement, not just the first.
+		PRIVATE METHOD CommentExternalDeclarations() AS VOID
+			LOCAL i := 0 AS INT
+			DO WHILE i < SELF:Source:Count
+				LOCAL trimmed := SELF:Source[i]:TrimStart() AS STRING
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					i++
+					LOOP
+				ENDIF
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "EXTERNAL")
+					LOCAL endIndex := SELF:FindLogicalStatementEnd(i) AS INT
+					SELF:CommentLines(i, endIndex)
+					i := endIndex + 1
+				ELSE
+					i++
+				ENDIF
+			ENDDO
+
+		// Comments out DLL-import DECLARE statements (DECLARE [cType] FuncName IN LibName ...).
+		// These register an external DLL entry point; X# has no equivalent statement, so left
+		// as-is they raise a compiler error. NOTE: DECLARE is also a VFP synonym for DIMENSION
+		// when declaring an array (e.g. "DECLARE MyArray(10)") — that form must be left alone,
+		// so only statements with a standalone "IN" keyword (the DLL form's required clause,
+		// which may itself be on a ";"-continued line) are commented out.
+		PRIVATE METHOD CommentDeclareStatements() AS VOID
+			LOCAL i := 0 AS INT
+			DO WHILE i < SELF:Source:Count
+				LOCAL trimmed := SELF:Source[i]:TrimStart() AS STRING
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					i++
+					LOOP
+				ENDIF
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "DECLARE")
+					LOCAL endIndex := SELF:FindLogicalStatementEnd(i) AS INT
+					LOCAL hasIn := FALSE AS LOGIC
+					LOCAL j AS INT
+					FOR j := i TO endIndex
+						IF SELF:ContainsKeyword(SELF:Source[j], "IN")
+							hasIn := TRUE
+							EXIT
+						ENDIF
+					NEXT
+					IF hasIn
+						SELF:CommentLines(i, endIndex)
+					ENDIF
+					i := endIndex + 1
+				ELSE
+					i++
+				ENDIF
+			ENDDO
+
+		// Returns TRUE if keyword occurs as a standalone word (not part of a longer identifier)
+		// outside string literals and && comments.
+		PRIVATE METHOD ContainsKeyword( line AS STRING, keyword AS STRING ) AS LOGIC
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL upperLine := line:ToUpperInvariant() AS STRING
+			LOCAL upperKeyword := keyword:ToUpperInvariant() AS STRING
+			LOCAL i := 0 AS INT
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar != (CHAR)0
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++
+					LOOP
+				ENDIF
+				IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+					quoteChar := IIF( c == '[', ']', c )
+					i++
+					LOOP
+				ENDIF
+				IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+					RETURN FALSE
+				ENDIF
+				IF i + upperKeyword:Length <= upperLine:Length .AND. ;
+				   upperLine:Substring(i, upperKeyword:Length) == upperKeyword
+					LOCAL beforeOk := (i == 0) .OR. ;
+						!( Char.IsLetterOrDigit(line[i-1]) .OR. line[i-1] == '_' ) AS LOGIC
+					LOCAL afterPos := i + upperKeyword:Length AS INT
+					LOCAL afterOk := (afterPos >= line:Length) .OR. ;
+						!( Char.IsLetterOrDigit(line[afterPos]) .OR. line[afterPos] == '_' ) AS LOGIC
+					IF beforeOk .AND. afterOk
+						RETURN TRUE
+					ENDIF
+				ENDIF
+				i++
+			ENDDO
+			RETURN FALSE
+
+		// Normalizes the legacy Xbase comparison-operator synonyms "=<" and "=>" (meaning
+		// "<=" and ">=" respectively) to their unambiguous canonical form. Left as-is, a
+		// literal "=>" surviving into generated X# source can be mis-lexed as the lambda-arrow
+		// token (or as a #command/#translate result-pattern separator), breaking compilation.
+		PRIVATE METHOD NormalizeLegacyOperators() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				SELF:Source[i] := SELF:NormalizeLegacyOperatorsInLine( SELF:Source[i] )
+			NEXT
+
+		// Scans a single line outside string literals and && comments, swapping every
+		// standalone "=<" / "=>" pair for "<=" / ">=".
+		PRIVATE METHOD NormalizeLegacyOperatorsInLine( line AS STRING ) AS STRING
+			LOCAL trimmed := line:TrimStart() AS STRING
+			IF String.IsNullOrEmpty(trimmed) .OR. trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&")
+				RETURN line
+			ENDIF
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL sb := StringBuilder{ line:Length } AS StringBuilder
+			LOCAL i := 0 AS INT
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar != (CHAR)0
+					sb:Append(c)
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++
+					LOOP
+				ENDIF
+				IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+					quoteChar := IIF( c == '[', ']', c )
+					sb:Append(c)
+					i++
+					LOOP
+				ENDIF
+				// Rest of line is a && comment: copy verbatim and stop scanning.
+				IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+					sb:Append( line:Substring(i) )
+					EXIT
+				ENDIF
+				// "=<" / "=>" -> "<=" / ">="
+				IF c == '=' .AND. i+1 < line:Length .AND. ( line[i+1] == '<' .OR. line[i+1] == '>' )
+					sb:Append( line[i+1] )
+					sb:Append( '=' )
+					i += 2
+					LOOP
+				ENDIF
+				sb:Append(c)
+				i++
+			ENDDO
+			RETURN sb:ToString()
 
 		// Rewrites "Name." to "Name->" for every alias in AliasTypeCollisions (AliasTypeCollisions.json).
 		// These are cursor/alias names known to collide with a resolvable .NET/X# type (e.g. "Currency"),

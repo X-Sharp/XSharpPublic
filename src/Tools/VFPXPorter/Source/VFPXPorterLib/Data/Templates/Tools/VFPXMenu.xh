@@ -194,6 +194,10 @@
     => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| <cmd> } )
 
 #command ON SELECTION POPUP <PopupName>                              ;
+         DEACTIVATE POPUP <PopupName2>                                ;
+    => __VFPOnSelectionPopupCmd( <(PopupName)>, {|| __VFPDeactivatePopup(<(PopupName2)>) } )
+
+#command ON SELECTION POPUP <PopupName>                              ;
          DO <ProcName> [IN <_InFile>] [WITH <*_Params*>]            ;
     => __VFPOnSelectionPopup( <(PopupName)>, <(ProcName)> )
 
@@ -226,6 +230,13 @@
          AT <nRow>, <nCol>                                           ;
          [BAR <_nBar>] [NOWAIT] [REST]                              ;
     => __VFPActivatePopup( <(PopupName)>, <nRow>, <nCol> )
+
+
+// ── MOVE POPUP ───────────────────────────────────────────────────────────────
+// Only the TO <row>,<col> form is supported; BY/CENTER/RELATIVE are not.
+
+#command MOVE POPUP <PopupName> TO <nRow>, <nCol>                   ;
+    => __VFPMovePopup( <(PopupName)>, <nRow>, <nCol> )
 
 
 // ── DEACTIVATE MENU ──────────────────────────────────────────────────────────
@@ -306,25 +317,25 @@
 #command RELEASE POPUP ALL [<ext: EXTENDED>]                        ;
     => __VFPReleasePopups( NULL, <.ext.> )
 
-#command RELEASE POPUPS <PopupName> [<ext: EXTENDED>]               ;
-    => __VFPReleasePopups( { <(PopupName)> }, <.ext.> )
+#command RELEASE POPUPS <p1> [, <pn>] [<ext: EXTENDED>]              ;
+    => __VFPReleasePopups( { <(p1)> [, <(pn)>] }, <.ext.> )
 
-#command RELEASE POPUP <PopupName> [<ext: EXTENDED>]                ;
-    => __VFPReleasePopups( { <(PopupName)> }, <.ext.> )
+#command RELEASE POPUP <p1> [, <pn>] [<ext: EXTENDED>]               ;
+    => __VFPReleasePopups( { <(p1)> [, <(pn)>] }, <.ext.> )
 
 
 // ── SET SKIP OF ──────────────────────────────────────────────────────────────
 
-#command SET SKIP OF MENU <MenuName> TO <lExpr>                     ;
+#command SET SKIP OF MENU <MenuName> <lExpr>                        ;
     => __VFPSetSkipOfMenu( <(MenuName)>, <lExpr> )
 
-#command SET SKIP OF PAD <PadName> OF <MenuName> TO <lExpr>        ;
+#command SET SKIP OF PAD <PadName> OF <MenuName> <lExpr>           ;
     => __VFPSetSkipOfPad( <(PadName)>, <(MenuName)>, <lExpr> )
 
-#command SET SKIP OF POPUP <PopupName> TO <lExpr>                   ;
+#command SET SKIP OF POPUP <PopupName> <lExpr>                      ;
     => __VFPSetSkipOfPopup( <(PopupName)>, <lExpr> )
 
-#command SET SKIP OF BAR <nBar> OF <PopupName> TO <lExpr>          ;
+#command SET SKIP OF BAR <nBar> OF <PopupName> <lExpr>              ;
     => __VFPSetSkipOfBar( <nBar>, <(PopupName)>, <lExpr> )
 
 

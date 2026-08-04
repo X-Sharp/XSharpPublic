@@ -109,6 +109,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 			RETURN NIL
 
+		// ── MOVE POPUP pending position ──────────────────────────────────────────
+		// Set by __VFPMovePopup; consumed by __VFPActivatePopup when ACTIVATE POPUP
+		// is issued without an AT clause (nRow = nCol = 0), mirroring VFP's behavior
+		// where MOVE POPUP sets the position used by a later bare ACTIVATE POPUP.
+		INTERNAL PROPERTY HasPendingPosition AS LOGIC AUTO
+		INTERNAL PROPERTY PendingRow AS INT AUTO
+		INTERNAL PROPERTY PendingCol AS INT AUTO
+
 		// ── Skip ──────────────────────────────────────────────────────────────
 		// VFP SET SKIP OF POPUP .T. = disabled.
 		PROPERTY Skip AS LOGIC

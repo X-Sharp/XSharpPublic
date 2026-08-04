@@ -26,6 +26,42 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings := FabIniFileAsJSON{ SELF:fileName }
 			RETURN
 
+		/// <summary>
+		/// Builds a memory-only instance, seeded from an existing <see cref="XPorterSettings"/>
+		/// snapshot. Nothing is read from or written to disk : any change made through this
+		/// instance (e.g. via SettingsDialog) is scoped to the caller and lost once discarded.
+		/// </summary>
+		CONSTRUCTOR( source AS XPorterSettings )
+			SELF:fileName := ""
+			SELF:iniSettings := FabIniFileAsJSON{}
+			SELF:Output := source:OutputPath
+			SELF:Items := source:ItemsPath
+			SELF:ItemsType := source:ItemsType
+			SELF:ConvertThisObject := source:ConvertThisObject
+			SELF:ConvertStatement := source:ConvertStatement
+			SELF:ConvertStatementOnlyIfLast := source:ConvertStatementOnlyIfLast
+			SELF:KeepOriginal := source:KeepOriginal
+			SELF:NameUDF := source:NameUDF
+			SELF:RemoveSet := source:RemoveSet
+			SELF:PrefixEvent := source:PrefixEvent
+			SELF:KeepFoxProEventName := source:KeepFoxProEventName
+			SELF:GenerateOnlyHandledEvent := source:GenerateOnlyHandledEvent
+			SELF:PrefixClassFile := source:PrefixClassFile
+			SELF:Modifier := source:Modifier
+			SELF:LibInSubFolder := source:LibInSubFolder
+			SELF:PlaceSolutionInSameDirectory := source:PlaceSolutionInSameDirectory
+			SELF:SeparateLibraryProjects := source:SeparateLibraryProjects
+			SELF:AddLibraryNamespace := source:AddLibraryNamespace
+			SELF:TypedThisFormSet := source:TypedThisFormSet
+			SELF:IgnoreErrors := source:IgnoreErrors
+			SELF:StoreInFolders := source:StoreInFolders
+			SELF:KeepFolderStructure := source:KeepFolderStructure
+			SELF:EmptyFolder := source:EmptyFolder
+			SELF:ExpandWithEndWith := source:ExpandWithEndWith
+			SELF:ClassNamePrefix := XPorterSettings.ClassNamePrefix
+			SELF:RessourcesFolder := XPorterSettings.DataFolder
+			RETURN
+
 		PROPERTY FullPath AS STRING GET SELF:fileName
 
 		METHOD Reset() AS VOID

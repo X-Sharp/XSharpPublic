@@ -9,8 +9,8 @@ USING System.IO
 USING Newtonsoft.Json
 USING VFPXPorterLib
 BEGIN NAMESPACE VFPXPorter
-	PUBLIC PARTIAL CLASS ExportProjectWindow	;
-			INHERIT System.Windows.Forms.Form
+	PUBLIC PARTIAL CLASS ExportProjectWindow ;
+        INHERIT System.Windows.Forms.Form
 		PUBLIC xPorter AS VFPXPorterLib.XPorterProject
 
 
@@ -27,8 +27,15 @@ BEGIN NAMESPACE VFPXPorter
 			    SELF:pjxPathTextBox:Text := SELF:Settings:ItemsPath
                 SELF:AppendCheckBox:Checked := SELF:_settings:AppendToSolution
                 SELF:PlaceSolutionInSameDirectory:Checked := SELF:_settings:PlaceSolutionInSameDirectory
+                SELF:infoStripLabel:ForeColor := Color.Black
+                IF !String.IsNullOrEmpty( XPorterSettings.ClassNamePrefix )
+                    SELF:infoStripLabel:Text := "ClassName Prefix: " + XPorterSettings.ClassNamePrefix
+                ELSE
+                    SELF:infoStripLabel:Text := ""
+                ENDIF
             END SET
         END PROPERTY
+
 
 		PUBLIC CONSTRUCTOR() STRICT //ExportWindow
             SELF:InitializeComponent()
@@ -61,7 +68,8 @@ BEGIN NAMESPACE VFPXPorter
 
 		METHOD Processing( state AS LOGIC ) AS VOID
 			SELF:exportButton:Enabled := !state
-			SELF:cancelBtn:Visible := state
+            SELF:cancelBtn:Visible := state
+            SELF:settingsBtn:Visible := !state
 
 
 
@@ -273,6 +281,20 @@ BEGIN NAMESPACE VFPXPorter
                  END TRY
 			ENDIF
 			RETURN
+        PRIVATE METHOD settingsBtn_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
+			LOCAL oDlg AS SettingsDialog
+			LOCAL sessionSettings AS ExporterSettings
+			//
+			// Memory-only settings, seeded from this window's current values : edits made
+			// here apply only to this window and are never persisted to the settings file.
+			sessionSettings := ExporterSettings{ SELF:Settings }
+            oDlg := SettingsDialog{ sessionSettings }
+            oDlg:Text := "Exporter SessionSettings"
+			IF oDlg:ShowDialog() == DialogResult.OK
+				SELF:Settings := sessionSettings:ToXPorterSettings()
+			ENDIF
+            RETURN
+        END METHOD
 
 	END CLASS
 END NAMESPACE

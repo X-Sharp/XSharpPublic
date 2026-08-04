@@ -219,10 +219,7 @@ PRIVATE METHOD checkKeepFoxProEventName_CheckedChanged(sender AS System.Object, 
 				SELF:listFolders:Visible := FALSE
 				SELF:itemsButton:Text := ">>"
 			ENDIF
-			RETURN
-        PRIVATE METHOD label3_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
             RETURN
-        END METHOD 
 
-	END CLASS 
+	END CLASS
 END NAMESPACE

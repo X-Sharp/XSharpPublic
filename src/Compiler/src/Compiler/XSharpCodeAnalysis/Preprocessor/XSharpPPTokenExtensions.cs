@@ -316,6 +316,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:
                 case XSharpLexer.COLONCOLON:
+                case XSharpLexer.DOTCOLON:
                     return true;
             }
             return false;

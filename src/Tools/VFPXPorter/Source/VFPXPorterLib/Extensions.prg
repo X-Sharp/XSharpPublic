@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Linq
+USING VFPXPorterLib
 
 // Read all Lines of Source Code
 FUNCTION ReadSource( source AS STRING ) AS List<STRING>
@@ -41,8 +42,9 @@ FUNCTION ReadSource( source AS STRING ) AS List<STRING>
 				ENDIF
 			ENDIF
 		UNTIL pos == 0
-    CATCH
-        nop
+    CATCH e AS Exception
+        XPorterLogger.Instance:Verbose("ReadSource: Error reading source, returning lines read so far")
+        XPorterLogger.Instance:Verbose("Exception: " + e:Message)
 	END TRY
 	//
 	RETURN lines

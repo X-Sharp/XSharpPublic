@@ -7,6 +7,7 @@
 
 USING System
 USING System.Collections.Generic
+USING System.Linq
 USING System.Text
 USING System.IO
 USING System.Xml.Serialization
@@ -46,7 +47,6 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:_isLibrary := ( String.Compare( System.IO.Path.GetExtension( SELF:_fileName ), ".vcx", TRUE ) == 0 )
             //
             SELF:Entities := List<SCXVCXEntity>{}
-            SELF:_Items := List<SCXVCXItem>{}
             SELF:HasFormSet := FALSE
             RETURN
 
@@ -62,7 +62,11 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR tmpitems := List<SCXVCXItem>{}
             TRY
                 // Open the SCX (DBF) File
-                DbUseArea(TRUE, "DBFVFP", SELF:_fileName, SELF:_fileName,FALSE,TRUE )
+                VAR alias := System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName)
+                IF !DbUseArea(TRUE, "DBFVFP", SELF:_fileName, alias, FALSE, TRUE )
+                    XPorterLogger.Instance:Error("LoadFile: DbUseArea failed to open: " + SELF:_fileName)
+                    RETURN FALSE
+                ENDIF
                 SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()
@@ -113,26 +117,37 @@ BEGIN NAMESPACE VFPXPorterLib
                                 // Tell that Parent, he has a child
                                 parent:Childs:Add( itm )
                             ELSE
-                                VAR parentName := itm:Parent:ToLower()
-                                // Ok, or the parent doesn't exist, or it "might" be a Grid....
-                                IF parentName:Contains( ".grid" )
-                                    // This is certainly a Header, or a TextBox, inside a Column
-                                    // ok, extract the Grid name
-                                    VAR gridName := String.Empty
-                                    VAR startG := parentName:IndexOf( ".grid" )
-                                    VAR endG := parentName:IndexOf( ".", startG+5 ) // +5 == ".grid":Length
-                                    IF ( endG > -1 )
-                                        gridName := parentName:Substring( startG+1, endG - startG -1 )
+                                // No direct parent record found — the parent path contains a virtual
+                                // container (Grid Column, PageFrame Page, etc.) that has no SCX record.
+                                // Walk backwards through the path until a real ancestor is found.
+                                VAR parentPath := itm:Parent
+                                DO WHILE !String.IsNullOrEmpty( parentPath )
+                                    VAR ancestor := tmpitems:Find( { it => String.Compare(it:FullName, parentPath, TRUE) == 0 })
+                                    IF ancestor != NULL
+                                        ancestor:Childs:Add( itm )
+                                        EXIT
                                     ENDIF
-                                    // Do it again
-                                    parent := tmpitems:Find( { it => String.Compare(it:Name, gridName, TRUE) == 0 })
-                                    // Yes !
-                                    IF ( parent != NULL )
-                                        // Tell that Parent, he has a child
-                                        parent:Childs:Add( itm )
+                                    VAR lastDot := parentPath:LastIndexOf('.')
+                                    IF lastDot < 0
+                                        EXIT
                                     ENDIF
-                                ENDIF
+                                    parentPath := parentPath:Substring(0, lastDot)
+                                ENDDO
                             ENDIF
+                        ENDIF
+                    NEXT
+                    // Synthesize virtual Column items for every Grid so that column children
+                    // are attached to typed synthetic items rather than dumped flat on the Grid.
+                    FOREACH VAR itm IN tmpitems
+                        IF String.Compare( itm:BaseClassName, "grid", TRUE ) == 0
+                            SELF:SynthesizeGridColumns( itm )
+                        ENDIF
+                    NEXT
+                    // Synthesize Page classes for every PageFrame so each page's controls live
+                    // in their own class rather than being duplicated at the Form level.
+                    FOREACH VAR itm IN tmpitems
+                        IF String.Compare( itm:BaseClassName, "pageframe", TRUE ) == 0
+                            SELF:SynthesizePageFramePages( itm )
                         ENDIF
                     NEXT
                     // Now, we should only have "top" level Items
@@ -151,6 +166,11 @@ BEGIN NAMESPACE VFPXPorterLib
                                     SELF:HasFormSet := TRUE
                                     // Now, set the item as TopLevel(Container) (It should be a Form, should we check ??)
                                     itm:IsTopLevel := TRUE
+                                    // Record the owning FormSet's generated class name, so the Form
+                                    // export can shadow ThisFormSet with a properly typed override.
+                                    // Use the SCX filename (not the VFP object name) as the prefix, same
+                                    // as GetFormClassName() computes for the FormSet's own class name.
+                                    itm:FormSetClassName := XPorterSettings.ClassNamePrefix + System.IO.Path.GetFileNameWithoutExtension(SELF:_fileName):Replace(" ", "_")
                                     // Add a clone of the Item to the list of TopLevel Items
                                     // So it will generate a Form for it
                                     SELF:_Items:Add( SCXVCXItem{ itm } )
@@ -164,11 +184,22 @@ BEGIN NAMESPACE VFPXPorterLib
                                     // Now the Item is just a Type&Object that is inside the FormSet
                                     // Add a Property to the "link" the Form to the FormSet
                                     itm:PropertiesDict:Add("ThisFormSet", "SELF")
-                                    // Now, we must set the type to parent:Name + "_" + item:Name
+                                    // Use the SCX filename (not the VFP object name) as the prefix so the
+                                    // stub type matches what GetFormClassName() produces for the clone entity.
+                                    // ClassNamePrefix is included too — must match GetFormClassName()'s
+                                    // "prefix + scxName" exactly, since this stub's ClassName is read
+                                    // back verbatim by BaseItem.FullyQualifiedName (bare-ClassName branch).
+                                    // (Same value already computed above into FormSetClassName.)
+                                    VAR scxPrefix := itm:FormSetClassName
                                     itm:IsContainer := TRUE
                                     itm:AddToControls := TRUE
-                                    itm:ClassName := parent:Name + "_" + itm:Name
-                                    itm:BaseClassName := parent:Name + "_" + itm:Name
+                                    // Reset FoxClassName and ClassLocation so the ClassName setter
+                                    // treats this as a first assignment (_isConverted stays FALSE).
+                                    // This prevents FullyQualifiedName from prepending XSharp.VFP.UI.
+                                    itm:FoxClassName := ""
+                                    itm:ClassLocation := ""
+                                    itm:ClassName := scxPrefix + "_" + itm:Name
+                                    itm:BaseClassName := scxPrefix + "_" + itm:Name
                                 ENDIF
                             ENDIF
                         ENDIF
@@ -178,10 +209,19 @@ BEGIN NAMESPACE VFPXPorterLib
                     XPorterLogger.Instance:Information( "High Level Items : "+ _Items:Count:ToString() )
                     //
                     VAR ent := SCXVCXEntity{ SELF }
+                    LOCAL dataEnvItem AS SCXVCXItem
+                    dataEnvItem := NULL
                     FOREACH VAR itm IN SELF:_Items
                         IF ( String.Compare( itm:BaseClassName, "dataenvironment", TRUE ) == 0 )
-                            ent:DataEnvironment := itm
+                            dataEnvItem := itm
                         ELSE
+                            // Assign DataEnvironment to every form entity (simple SCX and all
+                            // FormSet sub-forms). The FormSet wrapper (baseclass "formset") is
+                            // intentionally excluded — it has no WinForms presence.
+                            IF dataEnvItem != NULL .AND. ;
+                               String.Compare( itm:BaseClassName, "form", TRUE ) == 0
+                                ent:DataEnvironment := dataEnvItem
+                            ENDIF
                             ent:Item := itm
                             ent:Analyze()
                             SELF:Entities:Add( ent )
@@ -198,14 +238,229 @@ BEGIN NAMESPACE VFPXPorterLib
             RETURN success
 
 
+        /// <summary>
+        /// For a Grid item, creates synthetic SCXVCXItem objects (one per column) and
+        /// re-parents column children from the Grid to the correct synthetic column.
+        /// Column sub-properties (Column1.Width, Column2.ControlSource…) are moved
+        /// from the Grid's PropertiesDict into each synthetic column's PropertiesDict.
+        /// </summary>
+        PRIVATE METHOD SynthesizeGridColumns( grid AS SCXVCXItem ) AS VOID
+            // Step 1: collect all column indices referenced by dotted keys in PropertiesDict
+            VAR colIndices := SortedSet<INT>{}
+            FOREACH VAR kv IN grid:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 6 .AND. kv:Key:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(6, dotPos - 6), OUT n )
+                        colIndices:Add( n )
+                    ENDIF
+                ENDIF
+            NEXT
+            IF colIndices:Count == 0
+                RETURN
+            ENDIF
+            // Step 2: create one synthetic SCXVCXItem per column index
+            VAR synthCols := Dictionary<INT, SCXVCXItem>{}
+            FOREACH VAR idx IN colIndices
+                VAR col := SCXVCXItem{}
+                col:Name         := "Column" + idx:ToString()
+                col:BaseClassName := "column"
+                col:ClassName    := "column"
+                col:Parent       := grid:FullName
+                col:FileName     := grid:FileName
+                synthCols:Add( idx, col )
+            NEXT
+            // Step 3: move Column\d+.* properties from grid to the matching synthetic column
+            VAR toRemove := List<STRING>{}
+            FOREACH VAR kv IN grid:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 6 .AND. kv:Key:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(6, dotPos - 6), OUT n ) .AND. synthCols:ContainsKey(n)
+                        VAR propName := kv:Key:Substring(dotPos + 1)
+                        IF !synthCols[n]:PropertiesDict:ContainsKey(propName)
+                            synthCols[n]:PropertiesDict:Add( propName, kv:Value )
+                        ENDIF
+                        toRemove:Add( kv:Key )
+                    ENDIF
+                ENDIF
+            NEXT
+            FOREACH VAR key IN toRemove
+                grid:PropertiesDict:Remove(key)
+            NEXT
+            // Step 4: re-parent column sub-controls from Grid to their synthetic column
+            VAR leftover := List<BaseItem>{}
+            FOREACH VAR baseChild IN grid:Childs
+                VAR child := (SCXVCXItem) baseChild
+                LOCAL colIdx AS INT
+                IF SELF:TryExtractColumnIndex( child:Parent, OUT colIdx ) .AND. synthCols:ContainsKey(colIdx)
+                    synthCols[colIdx]:Childs:Add( child )
+                ELSE
+                    leftover:Add( child )
+                ENDIF
+            NEXT
+            // Step 5: replace Grid.Childs with synthetic columns (sorted) + any leftovers
+            grid:Childs := List<BaseItem>{}
+            FOREACH VAR idx IN colIndices
+                grid:Childs:Add( synthCols[idx] )
+            NEXT
+            FOREACH VAR item IN leftover
+                grid:Childs:Add( item )
+            NEXT
+        END METHOD
+
+        /// <summary>
+        /// For a PageFrame item, creates synthetic SCXVCXItem objects (one per page) and
+        /// re-parents page children from the PageFrame to the correct synthetic page based on
+        /// the Page segment in their original Parent path. Page sub-properties (Page1.Caption etc.)
+        /// are moved from the PageFrame's PropertiesDict into each synthetic page's PropertiesDict.
+        /// Each synthetic page clone is added to _Items as a top-level entity; the PageFrame
+        /// retains stub page items (ClassName = generated X# class name) so the Form designer
+        /// can emit TabPages:Add statements.
+        /// </summary>
+        PRIVATE METHOD SynthesizePageFramePages( pageFrame AS SCXVCXItem ) AS VOID
+            // Snapshot the real children before we modify the list
+            VAR originalChilds := List<BaseItem>{ pageFrame:Childs }
+            // Discover page indices from children's Parent strings
+            VAR pageIndices := SortedSet<INT>{}
+            FOREACH VAR baseChild IN originalChilds
+                VAR child := (SCXVCXItem) baseChild
+                LOCAL pIdx AS INT
+                IF SELF:TryExtractPageIndex( child:Parent, pageFrame:FullName, OUT pIdx )
+                    pageIndices:Add( pIdx )
+                ENDIF
+            NEXT
+            // Also discover from PropertiesDict keys like "Page1.Caption"
+            FOREACH VAR kv IN pageFrame:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 4 .AND. kv:Key:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(4, dotPos - 4), OUT n )
+                        pageIndices:Add( n )
+                    ENDIF
+                ENDIF
+            NEXT
+            IF pageIndices:Count == 0
+                RETURN
+            ENDIF
+            // Compute the X# class name prefix for pages:
+            // scxName + "_" + all-but-first-segment-of-PageFrame.FullName
+            // ClassNamePrefix is included too — must match GetFormClassName()'s IsPage branch
+            // exactly, since these stubs' ClassName is read back verbatim by
+            // BaseItem.FullyQualifiedName (bare-ClassName branch).
+            VAR scxName := XPorterSettings.ClassNamePrefix + Path.GetFileNameWithoutExtension(pageFrame:FileName):Replace(" ", "_")
+            VAR pfFullName := pageFrame:FullName   // e.g. "Formset.Form1.Pageframe1"
+            VAR firstDot := pfFullName:IndexOf('.')
+            VAR pathSuffix := IIF(firstDot >= 0, pfFullName:Substring(firstDot + 1):Replace(".", "_"), pfFullName)
+            // pathSuffix = "Form1_Pageframe1" (FormSet) or "Pageframe1" (simple Form)
+            // Store the typed subclass name on the PageFrame item itself
+            pageFrame:PageFrameSubclassName := scxName + "_" + pathSuffix
+            // Create one synthetic page clone per index (holds controls, becomes its own class)
+            VAR synthPages := Dictionary<INT, SCXVCXItem>{}
+            FOREACH VAR idx IN pageIndices
+                VAR clone := SCXVCXItem{}
+                clone:Name          := "Page" + idx:ToString()
+                clone:BaseClassName := "page"
+                clone:ClassName     := "page"
+                clone:Parent        := pageFrame:FullName
+                clone:FileName      := pageFrame:FileName
+                clone:IsTopLevel    := TRUE
+                synthPages:Add( idx, clone )
+            NEXT
+            // Move PageN.* properties from PageFrame's PropertiesDict into each clone
+            VAR toRemove := List<STRING>{}
+            FOREACH VAR kv IN pageFrame:PropertiesDict
+                VAR dotPos := kv:Key:IndexOf('.')
+                IF dotPos > 4 .AND. kv:Key:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                    LOCAL n AS INT
+                    IF Int32.TryParse( kv:Key:Substring(4, dotPos - 4), OUT n ) .AND. synthPages:ContainsKey(n)
+                        VAR propName := kv:Key:Substring(dotPos + 1)
+                        IF !synthPages[n]:PropertiesDict:ContainsKey(propName)
+                            synthPages[n]:PropertiesDict:Add( propName, kv:Value )
+                        ENDIF
+                        toRemove:Add( kv:Key )
+                    ENDIF
+                ENDIF
+            NEXT
+            FOREACH VAR key IN toRemove
+                pageFrame:PropertiesDict:Remove(key)
+            NEXT
+            // Distribute original children to their synthetic page clone
+            VAR leftover := List<BaseItem>{}
+            FOREACH VAR baseChild IN originalChilds
+                VAR child := (SCXVCXItem) baseChild
+                LOCAL pIdx AS INT
+                IF SELF:TryExtractPageIndex( child:Parent, pageFrame:FullName, OUT pIdx ) .AND. synthPages:ContainsKey(pIdx)
+                    synthPages[pIdx]:Childs:Add( child )
+                ELSE
+                    leftover:Add( child )
+                ENDIF
+            NEXT
+            // Replace PageFrame.Childs with one stub per page (ClassName = generated class name)
+            // plus any leftover children that didn't match a page
+            pageFrame:Childs := List<BaseItem>{}
+            FOREACH VAR idx IN pageIndices
+                VAR pageName := "Page" + idx:ToString()
+                VAR pageClassName := scxName + "_" + pathSuffix + "_" + pageName
+                VAR stub := SCXVCXItem{}
+                stub:Name          := pageName
+                stub:BaseClassName := "page"
+                stub:ClassName     := pageClassName
+                stub:Parent        := pageFrame:FullName
+                stub:FileName      := pageFrame:FileName
+                pageFrame:Childs:Add( stub )
+            NEXT
+            FOREACH VAR item IN leftover
+                pageFrame:Childs:Add( item )
+            NEXT
+            // PageCount is no longer needed — pages are added via TabPages:Add in the designer
+            pageFrame:PropertiesDict:Remove("PageCount")
+            // Register page clones as top-level entities (each will be exported as its own class)
+            FOREACH VAR idx IN pageIndices
+                SELF:_Items:Add( synthPages[idx] )
+            NEXT
+        END METHOD
+
+        // Returns TRUE and sets pageIndex when parentPath contains PageFrame.FullName + ".Page<n>"
+        PRIVATE METHOD TryExtractPageIndex( parentPath AS STRING, pageFrameFullName AS STRING, pageIndex OUT INT ) AS LOGIC
+            pageIndex := 0
+            IF String.IsNullOrEmpty(parentPath)
+                RETURN FALSE
+            ENDIF
+            VAR prefix := pageFrameFullName + "."
+            IF !parentPath:StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                RETURN FALSE
+            ENDIF
+            VAR remainder := parentPath:Substring(prefix:Length)
+            VAR dotPos := remainder:IndexOf('.')
+            VAR pageSegment := IIF(dotPos >= 0, remainder:Substring(0, dotPos), remainder)
+            IF pageSegment:Length > 4 .AND. pageSegment:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                RETURN Int32.TryParse( pageSegment:Substring(4), OUT pageIndex )
+            ENDIF
+            RETURN FALSE
+        END METHOD
+
+        // Returns TRUE and sets colIndex when parentPath ends in ".Column<n>" or is "Column<n>".
+        PRIVATE METHOD TryExtractColumnIndex( parentPath AS STRING, colIndex OUT INT ) AS LOGIC
+            colIndex := 0
+            IF String.IsNullOrEmpty(parentPath)
+                RETURN FALSE
+            ENDIF
+            VAR lastDot := parentPath:LastIndexOf('.')
+            VAR lastSeg := IIF( lastDot >= 0, parentPath:Substring(lastDot + 1), parentPath )
+            IF lastSeg:Length > 6 .AND. lastSeg:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                RETURN Int32.TryParse( lastSeg:Substring(6), OUT colIndex )
+            ENDIF
+            RETURN FALSE
+        END METHOD
+
         PROTECTED METHOD IgnoreItemType( typeOfItem AS STRING ) AS LOGIC
             //
             IF String.IsNullOrEmpty( typeOfItem )
                 RETURN TRUE
             ENDIF
             //
-            LOCAL pos := Array.IndexOf( SCXVCXFile.ignoreTypeList, typeOfItem ) AS INT
-            RETURN (pos >=0 )
+            RETURN SCXVCXFile.ignoreTypeList:Any( { s => String.Compare( s, typeOfItem, TRUE ) == 0 } )
 
         /// <summary>
         /// Backup the SCX Items : Create an XML File with Items info, and export the associated Code

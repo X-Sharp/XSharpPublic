@@ -13,6 +13,40 @@ FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/newobject/*" />
+[FoxProFunction("NEWOBJECT", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
+FUNCTION NewObject(cClassName, cModule, cInApplication, eParameter1, eParameter2) AS OBJECT CLIPPER
+    VAR nCount := PCount()
+
+    IF nCount >= 2
+        IF IsString(cModule) .AND. !Empty(cModule)
+            THROW NotImplementedException{"NEWOBJECT with cModule (.vcx/.app) is not supported"}
+        ENDIF
+    ENDIF
+
+    IF nCount >= 3
+        IF IsString(cInApplication) .AND. !Empty(cInApplication)
+            THROW NotImplementedException{"NEWOBJECT with cInApplication (.vcx/.app) is not supported"}
+        ENDIF
+    ENDIF
+
+    // Init params start after cClassName, skipping cModule/cInApp if present
+    VAR nInitStart := IIF(nCount >= 3, 4, IIF(nCount >= 2, 3, 2))
+    VAR nInitCount := nCount - nInitStart + 1
+
+    IF nInitCount <= 0
+        RETURN CreateInstance(cClassName)
+    ENDIF
+
+    VAR uArgs := USUAL[]{nInitCount + 1}
+    uArgs[0] := cClassName
+    FOR VAR i := 1 TO nInitCount
+        uArgs[i] := _GetFParam(nInitStart + i - 1)
+    NEXT
+
+    RETURN CreateInstance(uArgs)
+END FUNCTION
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/createobjectex/*" />
 [FoxProFunction("CREATEOBJECTEX", FoxFunctionCategory.ClassAndObject, FoxEngine.Interop, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPER

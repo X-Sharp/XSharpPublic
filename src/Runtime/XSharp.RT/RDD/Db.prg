@@ -82,32 +82,38 @@ FUNCTION Select(uWorkArea) AS USUAL CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
-FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
-    LOCAL nSelect := 0 AS DWORD
-    uWorkArea := AllTrim(uWorkArea)
-    IF SLen(uWorkArea) = 1
-        nSelect := Val(uWorkArea)
-		VAR nAsc := Asc( Upper(uWorkArea) )
-		IF nAsc > 64 .AND. nAsc < 75
-			nSelect := nAsc - 64
+FUNCTION _SelectString(sWorkArea AS STRING) AS DWORD
+    LOCAL nSelect := 0 AS INT
+    sWorkArea := AllTrim(sWorkArea)
+    IF SLen(sWorkArea) = 1
+        // this could be a single letter area or A=1, B=2 etc until J=10
+        // First to check if we have an area with this alias
+        nSelect := VoDb.SymSelect(sWorkArea)
+        IF nSelect == 0
+            // If not, then we check if it is a single letter area
+            nSelect := Val(sWorkArea)
+		    VAR nAsc := (INT) Asc( Upper(sWorkArea) )
+		    IF nAsc > 64 .AND. nAsc < 75
+                nSelect := nAsc - 64
+            ENDIF
         ENDIF
     ELSE
     	//  ------ added KHR : FoxPro allowes SELECT 10 which becomes DbSelectArea("10")
        // see https://github.com/X-Sharp/XSharpPublic/issues/236
-        LOCAL nTemp := Val( uWorkArea ) AS LONG
-   	    IF nTemp:ToString() == uWorkArea
-   	        nSelect := (DWORD) nTemp
+        LOCAL nTemp := Val( sWorkArea ) AS LONG
+   	    IF nTemp:ToString() == sWorkArea
+   	        nSelect := nTemp
     	ENDIF
 
         // -------------------
     ENDIF
 
-    IF nSelect > 0 .OR. "0" == uWorkArea
-        nSelect := VoDb.SetSelect((INT) nSelect)
+    IF nSelect > 0 .OR. "0" == sWorkArea
+        nSelect := (INT) VoDb.SetSelect( nSelect)
     ELSE
-        nSelect := (DWORD) VoDb.SymSelect(uWorkArea)
+        nSelect := VoDb.SymSelect(sWorkArea)
     ENDIF
-    RETURN nSelect
+    RETURN (DWORD) nSelect
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
@@ -121,9 +127,9 @@ FUNCTION _Select(uWorkArea) AS USUAL CLIPPER
     xType := UsualType(uWorkArea)
     SWITCH xType
     CASE SYMBOL
-        nSelect := (DWORD) VoDb.SymSelect((SYMBOL) uWorkArea)
+        nSelect := (DWORD) VoDb.SymSelect((Symbol) uWorkArea)
     CASE STRING
-        nSelect := _SelectString(uWorkArea)
+        nSelect := _SelectString((STRING) uWorkArea)
     CASE LONG
     CASE FLOAT
         nSelect := VoDb.SetSelect(uWorkArea)

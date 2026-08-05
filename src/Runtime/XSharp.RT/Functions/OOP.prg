@@ -109,12 +109,17 @@ internal static class OOPHelpers
             end if
             aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
         end if
+        local ns as string[]
+        ns := <string>{"","System.","XSharp.", "XSharp.Internal."}
 
         foreach asm as Assembly in aAssemblies
-            ret := asm:GetType( cName, false, true )
-            if ret != null
-                exit
-            endif
+            FOREACH var n in ns
+                var cFullName := n + cName
+                ret := asm:GetType( cFullName, false, true )
+                if ret != null
+                    exit
+                endif
+            NEXT
             // The class could be prefixed with a Namespace.
             // If there is a class library attribute and we prefixed all classes with a namespace then
             // this is visible in the ClassLibraryAttribute

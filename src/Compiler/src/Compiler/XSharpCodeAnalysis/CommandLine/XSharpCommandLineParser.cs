@@ -421,6 +421,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox2 = positive;
                     encode = true;
                     break;
+                case "fox3":       // Ambiguos DOT operator
+                    options.Fox3 = positive;
+                    encode = true;
+                    break;
                 case "unsafe":
                     options.AllowUnsafe = positive;
                     handled = false;    // there is also an 'unsafe' option in Roslyn
@@ -623,6 +627,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (options.Fox2)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 is only valid for the FoxPro dialect");
+                    }
+                    if (options.Fox3)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox3 is only valid for the FoxPro dialect");
                     }
                 }
             }

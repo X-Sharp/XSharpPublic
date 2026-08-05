@@ -47,7 +47,7 @@
   <ItemGroup>
     <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
   </ItemGroup>
- 
+
   <Target Name="CoreCompile"
           Inputs="$(MSBuildAllProjects);
                   @(Compile);
@@ -192,6 +192,7 @@
             EnforceSelf="$(EnforceSelf)"
             FOX1="$(FOX1)"
             FOX2="$(FOX2)"
+            FOX3="$(FOX3)"
             IncludePaths="$(IncludePaths)"
             InitLocals="$(InitLocals)"
             INS="$(INS)"

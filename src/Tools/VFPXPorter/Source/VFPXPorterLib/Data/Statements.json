@@ -3,6 +3,7 @@
   ".Release",
   ".Click",
   ".SetFocus",
+  ".Hide",
   "NODEFAULT",
   "DODEFAULT"
 ]

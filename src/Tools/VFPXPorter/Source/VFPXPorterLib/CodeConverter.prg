@@ -1,7 +1,7 @@
 ﻿// CodeConverter.prg
 // Created by    : fabri
 // Creation Date : 1/11/2021 2:06:32 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -11,136 +11,247 @@ USING System.Text
 USING System.IO
 
 BEGIN NAMESPACE VFPXPorterLib
-	
+
 	/// <summary>
 	/// The CodeConverter class.
 	/// Provide several methods to convert some VFP code to XSharp
 	/// </summary>
 	CLASS CodeConverter
-		
+
 		PRIVATE _keepOriginal AS LOGIC
-		PRIVATE _convertThisParent AS LOGIC
 		PRIVATE _convertThisObject AS LOGIC
 		PRIVATE _convertStatement AS LOGIC
 		PRIVATE _convertStatementOnlyIfLast AS LOGIC
+		PRIVATE _expandWithEndWith AS LOGIC
 		PRIVATE _lineContent AS SortedDictionary<INT,STRING>
-			
+
+
 		PROPERTY Statements AS List<STRING> AUTO
-			
+
 		PROPERTY VFPElements AS Dictionary<STRING,STRING> AUTO
-			
-			
-		CONSTRUCTOR( ko AS LOGIC, cvtThisParent AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC )
+
+		PROPERTY ColorProperties AS List<STRING> AUTO
+
+		/// <summary>
+		/// Cursor/alias names that collide with a resolvable .NET/X# type (e.g. "Currency").
+		/// A leading "Name." is rewritten to "Name->" so the field is resolved as a DBF alias
+		/// field instead of a static member of the colliding type. See AliasTypeCollisions.json.
+		/// </summary>
+		PROPERTY AliasTypeCollisions AS List<STRING> AUTO
+
+
+		CONSTRUCTOR( ko AS LOGIC, cvtThisObject AS LOGIC, cvtStatement AS LOGIC, cvtOnlyIfLast AS LOGIC, expandWith := TRUE AS LOGIC )
 			SELF:_keepOriginal := ko
-			SELF:_convertThisParent := cvtThisParent
 			SELF:_convertThisObject := cvtThisObject
 			SELF:_convertStatement := cvtStatement
 			SELF:_convertStatementOnlyIfLast := cvtOnlyIfLast
+			SELF:_expandWithEndWith := expandWith
 			// We will store the line Number where we need to add comments
 			// These are sorted in Reverse Order ( Greatest -> Lowest )
 			SELF:_lineContent := SortedDictionary<INT,STRING>{ ReverseInt{} }
 			SELF:Statements := List<String>{}
 			SELF:VFPElements := Dictionary<STRING,STRING>{}
-			
+			SELF:ColorProperties := List<STRING>{}
+			SELF:AliasTypeCollisions := List<STRING>{}
+
 			// The lines of source code that will handle that Code
 		PROPERTY Source AS List<STRING> AUTO
-		
+
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="cdeBlock"></param>
 		PUBLIC METHOD ProcessEvent( cdeBlock AS EventCode ) AS VOID
-			LOCAL Name AS STRING
-			//
-			Name := ""
+			// LOCAL Name AS STRING
+			// //
+			// Name := ""
 			SELF:Source := cdeBlock:Source
-			IF cdeBlock:Owner != NULL
-				Name := cdeBlock:Owner:Name
-				IF cdeBlock:Owner:Owner != NULL
-					IF cdeBlock:Owner:Owner:IsInLibrary
-						Name := ""
-					ENDIF
-				ENDIF
-			ENDIF
+			// IF cdeBlock:Owner != NULL
+				// Name := cdeBlock:Owner:Name
+				// IF cdeBlock:Owner:Owner != NULL
+					// IF cdeBlock:Owner:Owner:IsInLibrary
+						// Name := ""
+					// ENDIF
+				// ENDIF
+			// ENDIF
 			SELF:_lineContent:Clear()
 			//
+			IF SELF:_expandWithEndWith
+				SELF:ExpandWithEndWith()
+			ENDIF
+			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
+			SELF:FixCommandMacroArgs()
 			IF SELF:_convertStatement
 				SELF:ChangeStatement()
 			ENDIF
-			// Convert ThisObject has priority over ThisParent
+			SELF:ChangeColorProperties()
+			// Suspended: side effects on generated code, kept for reference (2026-07-27)
+			// SELF:ChangeAliasTypeCollisions()
 			IF SELF:_convertThisObject
 				IF cdeBlock:Owner != NULL
 					SELF:ChangeThisObject( cdeBlock:Owner:FoxClassName )
 				ENDIF
-			ELSE
-				IF SELF:_convertThisParent
-					IF cdeBlock:Owner != NULL
-						SELF:ChangeThisAndParent( cdeBlock:Owner:FoxClassName, Name )
-					ENDIF
-				ENDIF
 			ENDIF
 			// Now, add the original line as Comment, just before the changed one
-			IF SELF:_keepOriginal .AND. _lineContent:Count > 0 
+			IF SELF:_keepOriginal .AND. _lineContent:Count > 0
 				FOREACH VAR lineInfo IN _lineContent
 					SELF:Source:Insert( lineInfo:Key, "** VFPXPorter -=>" + lineInfo:Value)
 				NEXT
 			ENDIF
 			//
 			cdeBlock:Source := SELF:Source
-			
+
 		PUBLIC METHOD ProcessProcedure( sourceCode AS STRING, procedureName AS STRING ) AS VOID
 			SELF:Source := ReadSource(sourceCode)
 			SELF:CheckForProcedureName(procedureName)
-			//
-			
-			// We will enumerate the lines of source code
-			// and change the "perspective" : FoxPro handler is from the Control perspective; .NET are from the Form perspective
-			// -> change this.Parent to this.
-			// -> this. to this.<theNameOfTheControl> if needed
-			// -> ThisForm has to be Property on the new Form Class that points to SELF
-			// WARNING !! This will be done for EventHandlers that are referring to OwnerControl instead of Form
-			// Try to avoid using it, better to support these through NEW PROPERTY etc
-		PRIVATE METHOD ChangeThisAndParent( FoxClassName := "" AS STRING, Name := "" AS STRING ) AS VOID
-			LOCAL line AS STRING
-			LOCAL startLine := 0 AS INT
-			LOCAL toBeContinued := FALSE AS LOGIC
-			// First, process Parent Call
-			FOR VAR i := 0 TO SELF:Source:Count-1
-				line := SELF:Source[i]
-				// TODO : Try to do this only once...will be three times faster...
-				IF SELF:_keepOriginal
-					IF line:TrimEnd():EndsWith(";")
-						toBeContinued := TRUE
-					ELSE
-						IF toBeContinued
-							toBeContinued := FALSE
-						ELSE
-							startLine := i
-						ENDIF
-					ENDIF
-				ENDIF  
-				// Change this.Parent to an impossible element, $$XSHARP$$
-				line := SELF:SearchAndReplace( startLine, line, "this.parent.", "$$XSHARP$$.", null )
-				// Now, Change this to $$XSHARP$$.<NameOfTheControl>
-				IF (String.Compare( FoxClassName,"form",TRUE)!=0) .AND. !String.IsNullOrEmpty( Name )
-					line := SELF:SearchAndReplace( startLine, line, "thisform.", "$$XSHARP$$.", Name+".")
-				ELSE
-					line := SELF:SearchAndReplace( startLine, line, "thisform.", "$$XSHARP$$.", null )
+			IF SELF:_expandWithEndWith
+				SELF:ExpandWithEndWith()
+			ENDIF
+			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
+			SELF:FixCommandMacroArgs()
+			IF SELF:_convertStatement
+				SELF:ChangeStatement()
+			ENDIF
+			SELF:ChangeColorProperties()
+			// Suspended: side effects on generated code, kept for reference (2026-07-27)
+			// SELF:ChangeAliasTypeCollisions()
+
+		// Converts a block of menu handler code: applies statement→method-call conversions
+		// and VFPElements substitutions (THISFORM./THISFORMSET.) without the form-perspective
+		// logic that ProcessEvent uses. Caller sets Source on return.
+		PUBLIC METHOD ProcessMenuCode( sourceCode AS STRING ) AS VOID
+			SELF:Source := ReadSource(sourceCode)
+			IF SELF:_expandWithEndWith
+				SELF:ExpandWithEndWith()
+			ENDIF
+			SELF:NormalizeLegacyOperators()
+			SELF:CommentExternalDeclarations()
+			SELF:CommentDeclareStatements()
+			SELF:FixCommandMacroArgs()
+			IF SELF:_convertStatement
+				SELF:ChangeStatement()
+			ENDIF
+			SELF:ChangeColorProperties()
+			// Suspended: side effects on generated code, kept for reference (2026-07-27)
+			// SELF:ChangeAliasTypeCollisions()
+			IF SELF:_convertThisObject
+				SELF:ChangeThisObject()
+			ENDIF
+
+
+
+		// Expands WITH...ENDWITH blocks: replaces leading-dot member references with the
+		// fully qualified object path from the WITH expression. Handles nested WITH blocks
+		// by maintaining a stack of object prefixes. The WITH/ENDWITH lines themselves are
+		// commented out but preserved for readability.
+		PRIVATE METHOD ExpandWithEndWith() AS VOID
+			VAR withStack := Stack<STRING>{}
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				VAR line := SELF:Source[i]
+				VAR trimmed := line:TrimStart()
+				VAR indent := line:Substring(0, line:Length - trimmed:Length)
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. trimmed:StartsWith("//")
+					LOOP
 				ENDIF
-				//
-				SELF:Source[i] := line
+				VAR upper := trimmed:ToUpperInvariant()
+				IF StartsWithKeyword(upper, "WITH")
+					IF upper:Length > 4
+						VAR originalExpr := trimmed:Substring(4):TrimStart()
+						VAR resolvedExpr := originalExpr
+						IF resolvedExpr:StartsWith(".") .AND. withStack:Count > 0
+							resolvedExpr := withStack:Peek() + resolvedExpr
+						ENDIF
+						withStack:Push(resolvedExpr)
+						SELF:Source[i] := indent + "// WITH " + originalExpr
+					ENDIF
+					LOOP
+				ENDIF
+				IF upper == "ENDWITH" .OR. StartsWithKeyword(upper, "ENDWITH") .OR. ;
+				   upper == "END WITH" .OR. StartsWithKeyword(upper, "END WITH")
+					IF withStack:Count > 0
+						SELF:Source[i] := indent + "// " + trimmed
+						withStack:Pop()
+					ENDIF
+					LOOP
+				ENDIF
+				IF withStack:Count > 0
+					SELF:Source[i] := SELF:RewriteWithShorthand( line, withStack:Peek() )
+				ENDIF
 			NEXT
-			// Ok, now ... Brute-Force ;)
-			FOR VAR i := 0 TO SELF:Source:Count-1
-				line := SELF:Source[i]
-				//
-				line := line:Replace( "$$XSHARP$$.", "THIS." )
-				//
-				SELF:Source[i] := line
-			NEXT			
-			RETURN
-			
-			
+
+			// Rewrites every standalone leading-dot member reference in line (e.g. ".oTool"
+			// inside "IF !ISNULL(.oTool)") to prefix + ".oTool", not just ones at the very
+			// start of the line. String literals and && comments are left untouched, and
+			// decimal literals (".5"), chained member access ("obj.Member"), and VFP logical
+			// literals/operators (.T. .F. .AND. .OR. .NOT. .NULL.) are recognized and skipped.
+			PRIVATE METHOD RewriteWithShorthand( line AS STRING, prefix AS STRING ) AS STRING
+				LOCAL quoteChar := (CHAR)0 AS CHAR
+				LOCAL sb := StringBuilder{ line:Length } AS StringBuilder
+				LOCAL i := 0 AS INT
+				DO WHILE i < line:Length
+					LOCAL c := line[i] AS CHAR
+					IF quoteChar != (CHAR)0
+						sb:Append(c)
+						IF c == quoteChar
+							quoteChar := (CHAR)0
+						ENDIF
+						i++
+						LOOP
+					ENDIF
+					IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+						quoteChar := IIF( c == '[', ']', c )
+						sb:Append(c)
+						i++
+						LOOP
+					ENDIF
+					// Rest of line is a && comment: copy verbatim and stop scanning.
+					IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+						sb:Append( line:Substring(i) )
+						EXIT
+					ENDIF
+					IF c == '.' .AND. SELF:IsWithShorthandDot( line, i )
+						sb:Append( prefix )
+					ENDIF
+					sb:Append(c)
+					i++
+				ENDDO
+				RETURN sb:ToString()
+
+			// Returns TRUE if the '.' at position pos in line begins a VFP WITH-shorthand
+			// member reference (e.g. ".Property"), rather than a decimal literal (".5"),
+			// a chained member access ("obj.Member"), or a logical literal/operator
+			// (".T." / ".F." / ".AND." / ".OR." / ".NOT." / ".NULL.").
+			PRIVATE METHOD IsWithShorthandDot( line AS STRING, pos AS INT ) AS LOGIC
+				// Must not be a continuation of an identifier or a closing grouping token.
+				IF pos > 0
+					LOCAL prevC := line[pos-1] AS CHAR
+					IF Char.IsLetterOrDigit(prevC) .OR. prevC == '_' .OR. prevC == ')' .OR. prevC == ']'
+						RETURN FALSE
+					ENDIF
+				ENDIF
+				// Must be followed by an identifier-start character (a digit here means a
+				// decimal literal like ".5", not a member reference).
+				IF pos+1 >= line:Length .OR. !( Char.IsLetter(line[pos+1]) .OR. line[pos+1] == '_' )
+					RETURN FALSE
+				ENDIF
+				LOCAL j := pos + 1 AS INT
+				DO WHILE j < line:Length .AND. ( Char.IsLetterOrDigit(line[j]) .OR. line[j] == '_' )
+					j++
+				ENDDO
+				IF j < line:Length .AND. line[j] == '.'
+					LOCAL rawToken := line:Substring(pos+1, j-pos-1) AS STRING
+					LOCAL upperToken := rawToken:ToUpperInvariant() AS STRING
+					IF upperToken == "T" .OR. upperToken == "F" .OR. upperToken == "AND" .OR. ;
+					   upperToken == "OR" .OR. upperToken == "NOT" .OR. upperToken == "NULL"
+						RETURN FALSE
+					ENDIF
+				ENDIF
+				RETURN TRUE
+
 			// We will enumerate the lines of source code
 			// and change the "perspective" : FoxPro handler is from the Control perspective; .NET are from the Form perspective
 			// -> change this. to thisObject.
@@ -163,7 +274,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							startLine := i
 						ENDIF
 					ENDIF
-				ENDIF  
+				ENDIF
 				// Change this. to thisObject.
 				//line := SELF:SearchAndReplace( startLine, line, "this.", "thisObject.", null )
 				// Change Parent. to _Parent.
@@ -177,14 +288,191 @@ BEGIN NAMESPACE VFPXPorterLib
 			NEXT
 			RETURN
 		END METHOD
-		
+
+		// Converts  CMD &var[suffix] [rest]  →  CMD (var + e"\\suffix") [rest]
+		// so the expression-form #command rules in VFPCmd.xh can match at compile time.
+		// Handles: DO FORM, USE, and plain DO (not DO WHILE / DO CASE / DO EVENTS / DO WITH).
+		PRIVATE METHOD FixCommandMacroArgs() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				VAR converted := SELF:TryConvertMacroCommand(SELF:Source[i])
+				IF converted == NULL
+					converted := SELF:TryConvertOnSelectionMacro(SELF:Source[i])
+				ENDIF
+				IF converted != NULL
+					SELF:Source[i] := converted
+				ENDIF
+			NEXT
+
+		// Returns the converted line if it matches CMD &var[suffix], or NULL if the line does not apply.
+		PRIVATE METHOD TryConvertMacroCommand(line AS STRING) AS STRING
+
+			// --- 1. Skip leading whitespace ---
+			VAR pos := 0
+			WHILE pos < line:Length .AND. Char.IsWhiteSpace(line[pos])
+				pos++
+			END WHILE
+			IF pos >= line:Length
+				RETURN NULL
+			ENDIF
+
+			// --- 2. Match command keyword ---
+			VAR tail   := line:Substring(pos)   // line from first non-space character
+			VAR cmdLen := 0
+			IF StartsWithKeyword(tail, "DO FORM")
+				cmdLen := 7
+			ELSEIF StartsWithKeyword(tail, "REPORT FORM")
+				// REPORT FORM &var\suffix.frx — the macro+suffix is not parseable by the X# preprocessor
+				// as a single token, so we rewrite it to REPORT FORM (var + e"\\suffix.frx") here,
+				// which the expression-form #command rules in VFPCmd.xh can then match via (<ReportExpr>).
+				cmdLen := 11
+			ELSEIF StartsWithKeyword(tail, "USE")
+				cmdLen := 3
+			ELSEIF StartsWithKeyword(tail, "DO")
+				// Plain DO — reject if followed by a keyword that starts a structured statement
+				VAR afterDo := tail:Substring(2):TrimStart()
+				IF StartsWithKeyword(afterDo, "FORM")   .OR. StartsWithKeyword(afterDo, "WHILE")  .OR. ;
+				   StartsWithKeyword(afterDo, "CASE")   .OR. StartsWithKeyword(afterDo, "EVENTS") .OR. ;
+				   StartsWithKeyword(afterDo, "WITH")
+					RETURN NULL
+				ENDIF
+				cmdLen := 2
+			ELSE
+				RETURN NULL
+			ENDIF
+
+			// --- 3. Skip whitespace between keyword and argument ---
+			pos += cmdLen
+			WHILE pos < line:Length .AND. Char.IsWhiteSpace(line[pos])
+				pos++
+			END WHILE
+
+			// --- 4. Must be followed by '&' (VFP macro operator) ---
+			IF pos >= line:Length .OR. line[pos] != '&'
+				RETURN NULL
+			ENDIF
+			VAR amperPos := pos
+			pos++   // skip '&'
+
+			// --- 5. Variable name: starts with letter or '_', then letters / digits / '_' ---
+			IF pos >= line:Length .OR. (!Char.IsLetter(line[pos]) .AND. line[pos] != '_')
+				RETURN NULL
+			ENDIF
+			VAR varStart := pos
+			WHILE pos < line:Length .AND. (Char.IsLetterOrDigit(line[pos]) .OR. line[pos] == '_')
+				pos++
+			END WHILE
+			VAR varname := line:Substring(varStart, pos - varStart)
+
+			// --- 6. Suffix: non-whitespace characters after the variable name (e.g. "\find", ".dbf") ---
+			VAR suffixStart := pos
+			WHILE pos < line:Length .AND. !Char.IsWhiteSpace(line[pos])
+				pos++
+			END WHILE
+			VAR suffix := line:Substring(suffixStart, pos - suffixStart)
+
+			// --- 7. Build replacement ---
+			VAR prefix := line:Substring(0, amperPos)   // indent + command + space (everything before '&')
+			VAR rest   := line:Substring(pos)            // remainder: " WITH ..." or ""
+			VAR q      := e"\""
+			IF String.IsNullOrEmpty(suffix)
+				RETURN prefix + "(" + varname + ")" + rest
+			ELSE
+				// Double backslashes so the e"..." string literal is correct in all X# dialects
+				VAR escaped := suffix:Replace("\", "\\")
+				RETURN prefix + "(" + varname + " + e" + q + escaped + q + ")" + rest
+			ENDIF
+
+		// Rewrites  ON SELECTION BAR/PAD/POPUP ... DO &var[suffix] [rest]
+		//       →   ON SELECTION BAR/PAD/POPUP ... DO (var + e"\\suffix") [rest]
+		// so the DO (<ExprName>) rules in VFPXMenu.xh can match at compile time.
+		// Returns the rewritten line, or NULL if the line does not match.
+		PRIVATE METHOD TryConvertOnSelectionMacro(line AS STRING) AS STRING
+			// Fast check: line must start with ON (after optional whitespace)
+			VAR trimmed := line:TrimStart()
+			IF !StartsWithKeyword(trimmed, "ON SELECTION")
+				RETURN NULL
+			ENDIF
+			VAR upper := line:ToUpperInvariant()
+			// Scan for the pattern: whitespace + "DO" + whitespace + '&'
+			VAR ampAt := -1
+			VAR i     := 0
+			WHILE i < upper:Length - 3
+				IF Char.IsWhiteSpace(upper[i])          .AND. ;
+				   upper[i+1] == 'D'                    .AND. ;
+				   upper[i+2] == 'O'                    .AND. ;
+				   Char.IsWhiteSpace(upper[i+3])
+					// Found " DO " — also skip optional "FORM " keyword, then look for '&'
+					VAR j := i + 4
+					WHILE j < upper:Length .AND. Char.IsWhiteSpace(upper[j])
+						j++
+					END WHILE
+					// Handle "DO FORM &var" as well as "DO &var"
+					IF j + 4 < upper:Length .AND. StartsWithKeyword(upper:Substring(j), "FORM")
+						j += 4
+						WHILE j < upper:Length .AND. Char.IsWhiteSpace(upper[j])
+							j++
+						END WHILE
+					ENDIF
+					IF j < upper:Length .AND. line[j] == '&'
+						ampAt := j
+						EXIT
+					ENDIF
+				ENDIF
+				i++
+			END WHILE
+			IF ampAt < 0
+				RETURN NULL
+			ENDIF
+			// Extract variable name after '&'
+			VAR varStart := ampAt + 1
+			IF varStart >= line:Length .OR. ;
+			   (!Char.IsLetter(line[varStart]) .AND. line[varStart] != '_')
+				RETURN NULL
+			ENDIF
+			VAR p := varStart
+			WHILE p < line:Length .AND. (Char.IsLetterOrDigit(line[p]) .OR. line[p] == '_')
+				p++
+			END WHILE
+			VAR varname := line:Substring(varStart, p - varStart)
+			// Extract suffix: non-whitespace characters following the variable name
+			VAR suffixStart := p
+			WHILE p < line:Length .AND. !Char.IsWhiteSpace(line[p])
+				p++
+			END WHILE
+			VAR suffix := line:Substring(suffixStart, p - suffixStart)
+			// Rebuild: everything before '&' + (var [+ e"\\suffix"]) + rest
+			VAR beforeAmp := line:Substring(0, ampAt)
+			VAR rest      := line:Substring(p)
+			VAR q         := e"\""
+			IF String.IsNullOrEmpty(suffix)
+				RETURN beforeAmp + "(" + varname + ")" + rest
+			ELSE
+				VAR escaped := suffix:Replace("\", "\\")
+				RETURN beforeAmp + "(" + varname + " + e" + q + escaped + q + ")" + rest
+			ENDIF
+
+		// Returns TRUE when 'text' starts with 'keyword' (case-insensitive) at a word boundary,
+		// i.e. the character after the keyword is not a letter, digit, or underscore.
+		PRIVATE STATIC METHOD StartsWithKeyword(text AS STRING, keyword AS STRING) AS LOGIC
+			IF text:Length < keyword:Length
+				RETURN FALSE
+			ENDIF
+			IF String.Compare(text, 0, keyword, 0, keyword:Length, StringComparison.OrdinalIgnoreCase) != 0
+				RETURN FALSE
+			ENDIF
+			IF text:Length == keyword:Length
+				RETURN TRUE   // exact match, nothing follows
+			ENDIF
+			VAR nextChar := text[keyword:Length]
+			RETURN !Char.IsLetterOrDigit(nextChar) .AND. nextChar != '_'
+
 		// We will enumerate the lines of source code
 		PRIVATE METHOD ChangeStatement( ) AS VOID
 			LOCAL line AS STRING
 			LOCAL startLine := 0 AS INT
 			LOCAL toBeContinued := FALSE AS LOGIC
 			// First, process Parent Call
-			
+
 			FOR VAR i := 0 TO SELF:Source:Count-1
 				line := SELF:Source[i]
 				// TODO : Try to do this only once...will be three times faster...
@@ -198,7 +486,7 @@ BEGIN NAMESPACE VFPXPorterLib
 							startLine := i
 						ENDIF
 					ENDIF
-				ENDIF  
+				ENDIF
 				// Change Statement to Statement
 				FOREACH VAR statement IN SELF:Statements
 					line := SELF:SearchAndReplace( startLine, line, statement, statement+"()", null, true, SELF:_convertStatementOnlyIfLast )
@@ -206,10 +494,10 @@ BEGIN NAMESPACE VFPXPorterLib
 				//
 				SELF:Source[i] := line
 			NEXT
-			
+
 			RETURN
 		END METHOD
-		
+
 		/// <summary>
 		/// Search for a String and replace it by something else.
 		/// Take care we don't have a letter or an underscore before the searched string
@@ -229,7 +517,11 @@ BEGIN NAMESPACE VFPXPorterLib
 			LOCAL c AS Char
 			LOCAL amp := false AS LOGIC
 			LOCAL inSearch AS INT
-			LOCAL ignore := false AS LOGIC
+			// quoteChar tracks the delimiter of the current open string literal (\0 = not in string).
+			// VFP supports three string delimiters: "...", '...' and [...] (closes with ]).
+			// Using a single matching-delimiter approach prevents apostrophes inside "it's" from
+			// prematurely closing the string, which the old toggle-on-any-quote logic got wrong.
+			LOCAL quoteChar := (CHAR)0 AS CHAR
 			// Check for line starting with * or &&
 			VAR tmp := line:TrimStart()
 			IF tmp:StartsWith("*") .OR. tmp:StartsWith("&&")
@@ -249,16 +541,19 @@ BEGIN NAMESPACE VFPXPorterLib
 					ENDIF
 					// Get one char
 					c := line[ pos ]
-					// Simple Quote, Double Quotes ?? 34/39
-					IF c:CompareTo('"')==0 .OR. (int)c==39 // '"' .OR. "'"
-						if !ignore
-							ignore := true
-						else
-							ignore := false
-						endif
+					// String literal detection: track opening delimiter and only close on its match.
+					// '[' opens a bracket string that closes with ']'.
+					IF c:CompareTo('"')==0 .OR. (INT)c==39 .OR. c:CompareTo('[')==0 .OR. c:CompareTo(']')==0
+						IF quoteChar == (CHAR)0
+							IF c:CompareTo(']') != 0  // ']' alone cannot open a string
+								quoteChar := IIF( c:CompareTo('[')==0, ']', c )
+							ENDIF
+						ELSEIF c == quoteChar
+							quoteChar := (CHAR)0
+						ENDIF
 					ENDIF
-					IF ignore
-						loop
+					IF quoteChar != (CHAR)0
+						LOOP
 					ENDIF
 					// Start of Comment ?
 					IF ( c:CompareTo('&')==0 )
@@ -320,13 +615,16 @@ BEGIN NAMESPACE VFPXPorterLib
 						inSearch := 0
 					ENDIF
 				ENDDO
-			CATCH
+			CATCH e AS Exception
+				XPorterLogger.Instance:Warning("SearchAndReplace: Failed to convert line, using original")
+				XPorterLogger.Instance:Verbose("Original line: " + org)
+				XPorterLogger.Instance:Verbose("Exception: " + e:Message)
 				line := org
 			END TRY
 			//
 			RETURN line
-			
-			
+
+
 		PRIVATE METHOD CheckForProcedureName(procedureName AS STRING) AS VOID
 			LOCAL isComment := FALSE AS LOGIC
 			LOCAL needPrototype := TRUE AS LOGIC
@@ -342,7 +640,7 @@ BEGIN NAMESPACE VFPXPorterLib
 						isComment := TRUE
 					ENDIF
 					LOOP
-				ELSEIF currentLine:StartsWith("#")		
+				ELSEIF currentLine:StartsWith("#")
 					LOOP
 				ENDIF
 				IF isComment
@@ -350,8 +648,8 @@ BEGIN NAMESPACE VFPXPorterLib
 						isComment := TRUE
 					ELSE
 						isComment := FALSE
-					ENDIF					
-					LOOP				
+					ENDIF
+					LOOP
 				ENDIF
 				IF currentLine:StartsWith("PROCEDURE ") .OR. currentLine:StartsWith("FUNCTION ")
 					needPrototype := FALSE
@@ -365,7 +663,331 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:Source:Insert( 0, "** VFPXPorter -=> Add procedure name." )
 				SELF:Source:Insert( 0, "PROCEDURE " + procedureName )
 			ENDIF
-			
+
+		// Returns the index of the first && comment that is not inside a string literal,
+		// starting search at startPos. Returns -1 if none found.
+		PRIVATE METHOD FindComment( line AS STRING, startPos AS INT ) AS INT
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL i AS INT
+			i := startPos
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar == (CHAR)0
+					IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+						quoteChar := IIF( c == '[', ']', c )
+					ELSEIF c == '&' .AND. i + 1 < line:Length .AND. line[i+1] == '&'
+						RETURN i
+					ENDIF
+				ELSEIF c == quoteChar
+					quoteChar := (CHAR)0
+				ENDIF
+				i++
+			ENDDO
+			RETURN -1
+
+		// Scans the line for a pattern: .<colorPropName><spaces>=<not=> outside strings/comments.
+		// Returns the index of the first character of the RHS expression (after the =), or -1.
+		// Also returns the index of the dot via dotPos.
+		PRIVATE METHOD FindColorAssignment( line AS STRING, dotPos REF INT ) AS INT
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL amp := FALSE AS LOGIC
+			LOCAL i AS INT
+			i := 0
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				// track string literals
+				IF quoteChar == (CHAR)0
+					IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+						quoteChar := IIF( c == '[', ']', c )
+						i++ ; LOOP
+					ENDIF
+				ELSE
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++ ; LOOP
+				ENDIF
+				// track comments
+				IF c == '&'
+					IF amp
+						RETURN -1   // rest of line is comment
+					ENDIF
+					amp := TRUE
+                    i++ ; LOOP
+				ELSE
+					amp := FALSE
+				ENDIF
+				// look for dot
+				IF c != '.'
+					i++ ; LOOP
+				ENDIF
+				// found a dot — check if followed by a known color property
+				LOCAL propStart := i + 1 AS INT
+				LOCAL matched := "" AS STRING
+				FOREACH prop AS STRING IN SELF:ColorProperties
+					LOCAL propEnd := propStart + prop:Length AS INT
+					IF propEnd <= line:Length
+						LOCAL candidate := line:Substring( propStart, prop:Length ):ToLower() AS STRING
+						IF candidate == prop:ToLower()
+							// make sure it's not part of a longer identifier
+							IF propEnd < line:Length
+								LOCAL nextClr := line[propEnd] AS CHAR
+								IF Char.IsLetterOrDigit(nextClr) .OR. nextClr == '_'
+									LOOP
+								ENDIF
+							ENDIF
+							matched := prop
+							EXIT
+						ENDIF
+					ENDIF
+				NEXT
+				IF String.IsNullOrEmpty(matched)
+					i++ ; LOOP
+				ENDIF
+				// found the property — skip spaces, expect = but not ==
+				LOCAL eqIdx := propStart + matched:Length AS INT
+				DO WHILE eqIdx < line:Length .AND. line[eqIdx] == ' '
+					eqIdx++
+				ENDDO
+				IF eqIdx >= line:Length .OR. line[eqIdx] != '='
+					i++ ; LOOP
+				ENDIF
+				IF eqIdx + 1 < line:Length .AND. line[eqIdx+1] == '='
+					i++ ; LOOP   // == comparison, not assignment
+				ENDIF
+				// also skip if RHS already starts with VFPTools.ColorFromVFP
+				LOCAL rhsStart := eqIdx + 1 AS INT
+				DO WHILE rhsStart < line:Length .AND. line[rhsStart] == ' '
+					rhsStart++
+				ENDDO
+				IF rhsStart < line:Length
+					LOCAL remaining := line:Substring(rhsStart) AS STRING
+					IF remaining:ToLower():StartsWith("VFPTools.ColorFromVFP(")
+						RETURN -1
+					ENDIF
+				ENDIF
+				dotPos := i
+				RETURN rhsStart
+			ENDDO
+			RETURN -1
+
+		// Converts assignments to color properties in the current Source lines:
+		//   obj.BackColor = expr  →  obj.BackColor = VFPTools.ColorFromVFP(expr)
+		PRIVATE METHOD ChangeColorProperties() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				LOCAL line := SELF:Source[i] AS STRING
+				// skip empty lines and full-line comments
+				LOCAL trimmed := line:TrimStart() AS STRING
+				IF String.IsNullOrEmpty(trimmed) .OR. trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&")
+					LOOP
+				ENDIF
+				LOCAL dotPos := 0 AS INT
+				LOCAL rhsStart := SELF:FindColorAssignment(line, REF dotPos) AS INT
+				IF rhsStart < 0
+					LOOP
+				ENDIF
+				// separate RHS expression from trailing comment
+				LOCAL commentIdx := SELF:FindComment(line, rhsStart) AS INT
+				LOCAL rhs AS STRING
+				LOCAL comment AS STRING
+				IF commentIdx >= 0
+					rhs     := line:Substring(rhsStart, commentIdx - rhsStart):TrimEnd()
+					comment := " " + line:Substring(commentIdx)
+				ELSE
+					rhs     := line:Substring(rhsStart):TrimEnd()
+					comment := String.Empty
+				ENDIF
+				IF String.IsNullOrWhiteSpace(rhs)
+					LOOP
+				ENDIF
+				// rebuild: prefix + VFPTools.ColorFromVFP(rhs) + comment
+				LOCAL prefix := line:Substring(0, rhsStart) AS STRING
+				SELF:Source[i] := prefix + "VFPTools.ColorFromVFP((int)" + rhs + ")" + comment
+			NEXT
+
+		// Returns the index of the last physical line of the (possibly ";"-continued)
+		// logical statement starting at startIndex.
+		PRIVATE METHOD FindLogicalStatementEnd( startIndex AS INT ) AS INT
+			LOCAL i := startIndex AS INT
+			DO WHILE i < SELF:Source:Count .AND. SELF:Source[i]:TrimEnd():EndsWith(";")
+				i++
+			ENDDO
+			RETURN Math.Min( i, SELF:Source:Count - 1 )
+
+		// Comments out every physical line from startIndex to endIndex (inclusive),
+		// preserving each line's own indentation.
+		PRIVATE METHOD CommentLines( startIndex AS INT, endIndex AS INT ) AS VOID
+			LOCAL i AS INT
+			FOR i := startIndex TO endIndex
+				LOCAL line := SELF:Source[i] AS STRING
+				LOCAL trimmed := line:TrimStart() AS STRING
+				LOCAL indent := line:Substring(0, line:Length - trimmed:Length) AS STRING
+				SELF:Source[i] := indent + "// " + trimmed
+			NEXT
+
+		// Comments out EXTERNAL declarations (EXTERNAL PROCEDURE/FUNCTION/ARRAY/CLASS ...).
+		// These only hint the VFP Project Manager about an otherwise-undefined reference so it
+		// won't flag it; they have no meaning in a compiled build and EXTERNAL is not a known
+		// X# keyword, so left as-is they raise a compiler error. Handles ";" line continuation
+		// by commenting every physical line of the statement, not just the first.
+		PRIVATE METHOD CommentExternalDeclarations() AS VOID
+			LOCAL i := 0 AS INT
+			DO WHILE i < SELF:Source:Count
+				LOCAL trimmed := SELF:Source[i]:TrimStart() AS STRING
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					i++
+					LOOP
+				ENDIF
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "EXTERNAL")
+					LOCAL endIndex := SELF:FindLogicalStatementEnd(i) AS INT
+					SELF:CommentLines(i, endIndex)
+					i := endIndex + 1
+				ELSE
+					i++
+				ENDIF
+			ENDDO
+
+		// Comments out DLL-import DECLARE statements (DECLARE [cType] FuncName IN LibName ...).
+		// These register an external DLL entry point; X# has no equivalent statement, so left
+		// as-is they raise a compiler error. NOTE: DECLARE is also a VFP synonym for DIMENSION
+		// when declaring an array (e.g. "DECLARE MyArray(10)") — that form must be left alone,
+		// so only statements with a standalone "IN" keyword (the DLL form's required clause,
+		// which may itself be on a ";"-continued line) are commented out.
+		PRIVATE METHOD CommentDeclareStatements() AS VOID
+			LOCAL i := 0 AS INT
+			DO WHILE i < SELF:Source:Count
+				LOCAL trimmed := SELF:Source[i]:TrimStart() AS STRING
+				IF trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&") .OR. String.IsNullOrEmpty(trimmed)
+					i++
+					LOOP
+				ENDIF
+				IF StartsWithKeyword(trimmed:ToUpperInvariant(), "DECLARE")
+					LOCAL endIndex := SELF:FindLogicalStatementEnd(i) AS INT
+					LOCAL hasIn := FALSE AS LOGIC
+					LOCAL j AS INT
+					FOR j := i TO endIndex
+						IF SELF:ContainsKeyword(SELF:Source[j], "IN")
+							hasIn := TRUE
+							EXIT
+						ENDIF
+					NEXT
+					IF hasIn
+						SELF:CommentLines(i, endIndex)
+					ENDIF
+					i := endIndex + 1
+				ELSE
+					i++
+				ENDIF
+			ENDDO
+
+		// Returns TRUE if keyword occurs as a standalone word (not part of a longer identifier)
+		// outside string literals and && comments.
+		PRIVATE METHOD ContainsKeyword( line AS STRING, keyword AS STRING ) AS LOGIC
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL upperLine := line:ToUpperInvariant() AS STRING
+			LOCAL upperKeyword := keyword:ToUpperInvariant() AS STRING
+			LOCAL i := 0 AS INT
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar != (CHAR)0
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++
+					LOOP
+				ENDIF
+				IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+					quoteChar := IIF( c == '[', ']', c )
+					i++
+					LOOP
+				ENDIF
+				IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+					RETURN FALSE
+				ENDIF
+				IF i + upperKeyword:Length <= upperLine:Length .AND. ;
+				   upperLine:Substring(i, upperKeyword:Length) == upperKeyword
+					LOCAL beforeOk := (i == 0) .OR. ;
+						!( Char.IsLetterOrDigit(line[i-1]) .OR. line[i-1] == '_' ) AS LOGIC
+					LOCAL afterPos := i + upperKeyword:Length AS INT
+					LOCAL afterOk := (afterPos >= line:Length) .OR. ;
+						!( Char.IsLetterOrDigit(line[afterPos]) .OR. line[afterPos] == '_' ) AS LOGIC
+					IF beforeOk .AND. afterOk
+						RETURN TRUE
+					ENDIF
+				ENDIF
+				i++
+			ENDDO
+			RETURN FALSE
+
+		// Normalizes the legacy Xbase comparison-operator synonyms "=<" and "=>" (meaning
+		// "<=" and ">=" respectively) to their unambiguous canonical form. Left as-is, a
+		// literal "=>" surviving into generated X# source can be mis-lexed as the lambda-arrow
+		// token (or as a #command/#translate result-pattern separator), breaking compilation.
+		PRIVATE METHOD NormalizeLegacyOperators() AS VOID
+			FOR VAR i := 0 TO SELF:Source:Count - 1
+				SELF:Source[i] := SELF:NormalizeLegacyOperatorsInLine( SELF:Source[i] )
+			NEXT
+
+		// Scans a single line outside string literals and && comments, swapping every
+		// standalone "=<" / "=>" pair for "<=" / ">=".
+		PRIVATE METHOD NormalizeLegacyOperatorsInLine( line AS STRING ) AS STRING
+			LOCAL trimmed := line:TrimStart() AS STRING
+			IF String.IsNullOrEmpty(trimmed) .OR. trimmed:StartsWith("*") .OR. trimmed:StartsWith("&&")
+				RETURN line
+			ENDIF
+			LOCAL quoteChar := (CHAR)0 AS CHAR
+			LOCAL sb := StringBuilder{ line:Length } AS StringBuilder
+			LOCAL i := 0 AS INT
+			DO WHILE i < line:Length
+				LOCAL c := line[i] AS CHAR
+				IF quoteChar != (CHAR)0
+					sb:Append(c)
+					IF c == quoteChar
+						quoteChar := (CHAR)0
+					ENDIF
+					i++
+					LOOP
+				ENDIF
+				IF c == '"' .OR. (INT)c == 39 .OR. c == '['
+					quoteChar := IIF( c == '[', ']', c )
+					sb:Append(c)
+					i++
+					LOOP
+				ENDIF
+				// Rest of line is a && comment: copy verbatim and stop scanning.
+				IF c == '&' .AND. i+1 < line:Length .AND. line[i+1] == '&'
+					sb:Append( line:Substring(i) )
+					EXIT
+				ENDIF
+				// "=<" / "=>" -> "<=" / ">="
+				IF c == '=' .AND. i+1 < line:Length .AND. ( line[i+1] == '<' .OR. line[i+1] == '>' )
+					sb:Append( line[i+1] )
+					sb:Append( '=' )
+					i += 2
+					LOOP
+				ENDIF
+				sb:Append(c)
+				i++
+			ENDDO
+			RETURN sb:ToString()
+
+		// Rewrites "Name." to "Name->" for every alias in AliasTypeCollisions (AliasTypeCollisions.json).
+		// These are cursor/alias names known to collide with a resolvable .NET/X# type (e.g. "Currency"),
+		// which would otherwise make the compiler bind "Name.field" as a static member access instead of
+		// a DBF alias field access. "->" is unambiguous and never resolves as a type/namespace path.
+		PRIVATE METHOD ChangeAliasTypeCollisions() AS VOID
+			IF SELF:AliasTypeCollisions == NULL .OR. SELF:AliasTypeCollisions:Count == 0
+				RETURN
+			ENDIF
+			FOR VAR i := 0 TO SELF:Source:Count-1
+				LOCAL line := SELF:Source[i] AS STRING
+				FOREACH VAR aliasName IN SELF:AliasTypeCollisions
+					line := SELF:SearchAndReplace( i, line, aliasName+".", aliasName+"->", NULL, FALSE, FALSE )
+				NEXT
+				SELF:Source[i] := line
+			NEXT
+			RETURN
+
 		METHOD ToString() AS STRING
 			VAR code := StringBuilder{ }
 			//code:AppendLine( SELF:Definition )
@@ -373,12 +995,12 @@ BEGIN NAMESPACE VFPXPorterLib
 				code:AppendLine( line )
 			NEXT
 			RETURN code:ToString()
-			
-			
+
+
 	END CLASS
-	
+
 	CLASS ReverseInt IMPLEMENTS IComparer<INT>
-		
+
 		PUBLIC METHOD Compare( x AS INT, y AS INT ) AS INT
 			IF ( x > y )
 				RETURN -1
@@ -389,6 +1011,6 @@ BEGIN NAMESPACE VFPXPorterLib
 			ENDIF
 			RETURN 0
 	END CLASS
-	
-	
+
+
 END NAMESPACE // VFPXPorterLib

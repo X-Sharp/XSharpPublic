@@ -9,28 +9,58 @@ USING System.IO
 USING Newtonsoft.Json
 USING VFPXPorterLib
 BEGIN NAMESPACE VFPXPorter
-	PUBLIC PARTIAL CLASS ExportProjectWindow	;
-			INHERIT System.Windows.Forms.Form
+	PUBLIC PARTIAL CLASS ExportProjectWindow ;
+        INHERIT System.Windows.Forms.Form
 		PUBLIC xPorter AS VFPXPorterLib.XPorterProject
 
-		PROPERTY Settings AS XPorterSettings AUTO
+
+        PRIVATE _settings AS XPorterSettings
+        PROPERTY Settings AS XPorterSettings
+            GET
+                RETURN _settings
+            END GET
+
+            SET
+                _settings := VALUE
+                // Update UI with settings values
+                SELF:outputPathTextBox:Text := SELF:Settings:OutputPath
+			    SELF:pjxPathTextBox:Text := SELF:Settings:ItemsPath
+                SELF:AppendCheckBox:Checked := SELF:_settings:AppendToSolution
+                SELF:PlaceSolutionInSameDirectory:Checked := SELF:_settings:PlaceSolutionInSameDirectory
+                SELF:infoStripLabel:ForeColor := Color.Black
+                IF !String.IsNullOrEmpty( XPorterSettings.ClassNamePrefix )
+                    SELF:infoStripLabel:Text := "ClassName Prefix: " + XPorterSettings.ClassNamePrefix
+                ELSE
+                    SELF:infoStripLabel:Text := ""
+                ENDIF
+            END SET
+        END PROPERTY
+
 
 		PUBLIC CONSTRUCTOR() STRICT //ExportWindow
-			SELF:InitializeComponent()
+            SELF:InitializeComponent()
+            SELF:TypeComboBox:SelectedIndex := 0
+
 			RETURN
 
 		PRIVATE METHOD exportButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID
+            SELF:Settings:OutputType := (ProjectType)SELF:TypeComboBox:SelectedIndex
+            SELF:Settings:AppendToSolution := SELF:AppendCheckBox:Checked
+            SELF:Settings:SolutionName := SELF:SolutionName:Text
+            SELF:Settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory:Checked
+            SELF:resultText:Text := ""
 			//
 			SELF:infoStripLabel:Text := ""
-			IF !SELF:CheckFileAndFolder()
+			IF !SELF:CheckFileAndFolder( false )
 				RETURN
 			ENDIF
 			// Analyze First
 			IF !SELF:xPorter:ProcessPJX()
 				MessageBox.Show( "Error during analyzing operation.", "Analyzing Project", MessageBoxButtons.OK, MessageBoxIcon.Error )
 				RETURN
-			ENDIF
-			//
+            ENDIF
+
+    		//
 			// DoBackup, ProcessFirst
 			SELF:Processing( TRUE )
 			SELF:backgroundExport:RunWorkerAsync()
@@ -38,7 +68,8 @@ BEGIN NAMESPACE VFPXPorter
 
 		METHOD Processing( state AS LOGIC ) AS VOID
 			SELF:exportButton:Enabled := !state
-			SELF:cancelBtn:Visible := state
+            SELF:cancelBtn:Visible := state
+            SELF:settingsBtn:Visible := !state
 
 
 
@@ -55,7 +86,13 @@ BEGIN NAMESPACE VFPXPorter
 			ofd:DefaultExt := "PJX"
 			ofd:Filter := "Pjx files (*.pjx)|*.pjx|All files (*.*)|*.*"
 			IF ( ofd:ShowDialog() == DialogResult.OK )
-				SELF:pjxPathTextBox:Text := ofd:FileName
+                SELF:pjxPathTextBox:Text := ofd:FileName
+
+                // Auto-Complete: if solution name is empty, we set it to the PJX folder
+                SELF:SolutionName:Text := Path.GetFileNameWithoutExtension(ofd:FileName)
+                // outputPathTextBox is the "main" folder (where the solution goes) : per default,
+                // we use the OutputDir from Settings, combined with the name of the VFP Project.
+                SELF:outputPathTextBox:Text := Path.Combine(Settings:OutputPath, Path.GetFileNameWithoutExtension(ofd:FileName))
 			ENDIF
 			RETURN
 		PRIVATE METHOD outputButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
@@ -68,47 +105,91 @@ BEGIN NAMESPACE VFPXPorter
 			IF ( fbd:ShowDialog() == DialogResult.OK )
 				SELF:outputPathTextBox:Text := fbd:SelectedPath
 			ENDIF
-			RETURN
-		PRIVATE METHOD CheckFileAndFolder() AS LOGIC
+            RETURN
+
+		PRIVATE METHOD CheckFileAndFolder( analysis AS LOGIC ) AS LOGIC
 			//
 			SELF:infoStripLabel:Text := ""
-			SELF:infoStripError:Text := ""
-			SELF:infoStripLabel:ForeColor := Color.Black
+            SELF:infoStripError:Text := ""
+            SELF:infoStripLabel:ForeColor := Color.Black
+
 			VAR pjxFilePath := SELF:pjxPathTextBox:Text
-			VAR outputPath := SELF:outputPathTextBox:Text
+            // outputPathTextBox is the "main" folder : this is where the .sln goes.
+            VAR mainFolder := SELF:outputPathTextBox:Text
+
 			//
-			IF !File.Exists( pjxFilePath)
+			IF !File.Exists(pjxFilePath)
 				SELF:infoStripLabel:ForeColor := Color.Red
 				SELF:infoStripLabel:Text := "Error : Input Project doesn't exist."
 				RETURN FALSE
-			ENDIF
-			IF !Directory.Exists( outputPath )
+            ENDIF
+            //
+            IF String.IsNullOrEmpty(mainFolder)
 				SELF:infoStripLabel:ForeColor := Color.Red
 				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
 				RETURN FALSE
-			ENDIF
-			// Get the PJX File name, and use it as a SubFolder
-			LOCAL destFile AS STRING
-			destFile := Path.GetFileNameWithoutExtension( pjxFilePath )
-			outputPath := Path.Combine( outputPath, destFile )
-			// Warning, we may NOT be able to create the Directory
-			TRY
-				IF Directory.Exists( outputPath )
-					SELF:EraseFolder( outputPath, FALSE )
-				ENDIF
-				Directory.CreateDirectory( outputPath )
-			CATCH e AS Exception
-				//
-				SELF:resultText:Text := "Cannot delete Folder : " + e.Message
-				IF !SELF:Settings:IgnoreErrors
-					THROW e
-				ENDIF
-			END TRY
+            ENDIF
+            IF analysis .AND. !Directory.Exists(mainFolder)
+				SELF:infoStripLabel:ForeColor := Color.Red
+				SELF:infoStripLabel:Text := "Error : Output Path doesn't exist."
+				RETURN FALSE
+            ENDIF
+            //
+            VAR projectName := SELF:SolutionName:Text
+            IF String.IsNullOrWhiteSpace(projectName)
+                projectName := Path.GetFileNameWithoutExtension(pjxFilePath)
+            ENDIF
+
+            // Unless the solution and project share the same directory, the project's own
+            // files are exported one level below the main folder, in a subfolder named
+            // after the project.
+            LOCAL baseOutputPath AS STRING
+            IF SELF:Settings:PlaceSolutionInSameDirectory
+                baseOutputPath := mainFolder
+            ELSE
+                baseOutputPath := Path.Combine( mainFolder, projectName )
+            ENDIF
+
+            IF !analysis
+			    // Warning, we may NOT be able to create the Directory
+			    TRY
+                    IF SELF:Settings:EmptyFolder .AND. Directory.Exists(baseOutputPath)
+                        // If Append: do not delete the folder. We might delete the solution.
+                        // or sibling project folders. We just delete if not Append.
+                        IF !SELF:Settings:AppendToSolution
+                            SELF:EraseFolder(baseOutputPath, FALSE )
+                        ELSE
+                            // If Append: we just delete sub-folders of the current project
+                            // to ensure a clean export of the current project.
+                            VAR codeDir := Path.Combine(baseOutputPath, "Code")
+                            IF Directory.Exists(codeDir)
+                                SELF:EraseFolder(codeDir, TRUE)
+                            ENDIF
+                            var xsharpDir := Path.Combine(baseOutputPath, "XSharp")
+                            IF Directory.Exists(xsharpDir)
+                                SELF:EraseFolder(xsharpDir, TRUE)
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                    // Ensure the full folder structure exists (main/solution folder,
+                    // and the project's own subfolder if it is a distinct level).
+                    Directory.CreateDirectory(mainFolder)
+                    Directory.CreateDirectory(baseOutputPath)
+			    CATCH e AS Exception
+				    //
+                    SELF:resultText:Text += "Warning during folder cleanup: " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+				        THROW e
+				    ENDIF
+                END TRY
+            ENDIF
 			//
-			SELF:xPorter := XPorterProject{ pjxFilePath, outputPath }
+            SELF:xPorter := XPorterProject{ pjxFilePath, baseOutputPath }
+            SELF:xPorter:SolutionPath := mainFolder
+
 			RETURN TRUE
 		PRIVATE METHOD analysisButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
-			IF !SELF:CheckFileAndFolder()
+			IF !SELF:CheckFileAndFolder( TRUE )
 				RETURN
 			ENDIF
 			//
@@ -119,9 +200,12 @@ BEGIN NAMESPACE VFPXPorter
 		PRIVATE METHOD openButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
 			VAR pjxFilePath := SELF:pjxPathTextBox:Text
 			VAR outputPath := SELF:outputPathTextBox:Text
-			// Get the SCX File name, and use it as a SubFolder
+			// Get the Project name, and use it as a SubFolder
 			LOCAL destFile AS STRING
-			destFile := Path.GetFileNameWithoutExtension( pjxFilePath )
+			destFile := SELF:SolutionName:Text
+			IF String.IsNullOrWhiteSpace(destFile)
+				destFile := Path.GetFileNameWithoutExtension( pjxFilePath )
+			ENDIF
 			outputPath := Path.Combine( outputPath, destFile )
 			IF !Directory.Exists( outputPath )
 				outputPath := SELF:outputPathTextBox:Text
@@ -170,17 +254,47 @@ BEGIN NAMESPACE VFPXPorter
 			RETURN
 
 		private method EraseFolder( folderPath AS STRING, eraseTop AS LOGIC ) AS VOID
-			foreach cFile AS String in Directory.GetFiles(folderPath)
-				System.IO.File.Delete( cFile )
+            FOREACH cFile AS String in Directory.GetFiles(folderPath)
+                TRY
+                    System.IO.File.Delete( cFile )
+                CATCH e AS Exception
+                    //
+                    SELF:resultText:Text += "Delete Error " + cFile + " : " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+				        THROW e
+				    ENDIF
+                END TRY
 			NEXT
 
-			foreach subfolder AS String in Directory.GetDirectories(folderPath)
+			FOREACH subfolder AS String in Directory.GetDirectories(folderPath)
 				SELF:EraseFolder(subfolder, TRUE)
 			NEXT
-			IF eraseTop
-				Directory.Delete( folderPath )
+            IF eraseTop
+                TRY
+                    Directory.Delete( folderPath )
+                CATCH e AS Exception
+                    //
+                    SELF:resultText:Text += "Delete Error " + folderPath + " : " + e:Message + Environment.NewLine
+                    IF !SELF:Settings:IgnoreErrors
+                        THROW e
+                    ENDIF
+                 END TRY
 			ENDIF
 			RETURN
+        PRIVATE METHOD settingsBtn_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
+			LOCAL oDlg AS SettingsDialog
+			LOCAL sessionSettings AS ExporterSettings
+			//
+			// Memory-only settings, seeded from this window's current values : edits made
+			// here apply only to this window and are never persisted to the settings file.
+			sessionSettings := ExporterSettings{ SELF:Settings }
+            oDlg := SettingsDialog{ sessionSettings }
+            oDlg:Text := "Exporter SessionSettings"
+			IF oDlg:ShowDialog() == DialogResult.OK
+				SELF:Settings := sessionSettings:ToXPorterSettings()
+			ENDIF
+            RETURN
+        END METHOD
 
 	END CLASS
 END NAMESPACE

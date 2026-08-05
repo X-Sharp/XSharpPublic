@@ -15,6 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using System.Diagnostics;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
     internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
@@ -129,12 +130,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
+        public override void EnterAccessMember([NotNull] AccessMemberContext context)
         {
-            if (context.Expr != null && context.Op.Type == XP.DOT)  // do not assume an area when no Expr (inside WITH Block)
+            // do not assume an area when no Expr (inside WITH Block)
+            if (context.Expr != null && context.Op.Type == XP.DOT
+                && context.Parent is not MethodCallContext
+                && (context.AreaName == "M" ||
+                    _options.HasOption(CompilerOption.Fox3, context, PragmaOptions)))
             {
                 context.foxFlags |= XP.FoxFlags.MemberAccess;
+                if (context.Parent is not AccessMemberContext && CurrentMember != null)
+                {
+                    var name = context.AreaName;
+                    var fld = CurrentMember.Data.GetField(name);
+                    if (fld == null)
+                    {
+                        fld = CurrentMember.Data.AddField(name, "_UNKNOWN", context);
+                    }
+                }
             }
+            base.EnterAccessMember(context);
+        }
+
+        public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
+        {
             base.ExitAccessMember(context);
             // FoxPro uses M. for Locals and memvars
             // We assume it is a local and then will later correct this inside Binder_Expressions.cs if we can't find the local
@@ -293,7 +312,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         /*
                             // This includes array indices and optional type per name
-        foxmemvardecl       :  T=( MEMVAR |PARAMETERS | PRIVATE | PUBLIC ) FoxVars+=foxmemvar[$T]  (COMMA FoxVars+=foxmemvar[$T])*  end=eos 
+        foxmemvardecl       :  T=( MEMVAR |PARAMETERS | PRIVATE | PUBLIC ) FoxVars+=foxmemvar[$T]  (COMMA FoxVars+=foxmemvar[$T])*  end=eos
                     ;
 
                              // For the variable list for Private and Public

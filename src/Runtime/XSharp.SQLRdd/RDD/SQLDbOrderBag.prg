@@ -58,7 +58,7 @@ internal class SqlDbOrderBag INHERIT BaseIndex
         super(oRdd)
         self:RDD      := oRdd
         SELF:LogicalName := cName
-        if File(cName)
+        if System.IO.File.Exists(cName)
             cName            := FPathName()
             SELF:Path        := System.IO.Path.GetDirectoryName(cName)
             SELF:FileName    := System.IO.Path.GetFileNameWithoutExtension(cName)

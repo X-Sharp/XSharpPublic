@@ -107,6 +107,12 @@
 // so that the dialect specific headers can override the commands if needed
 #include "dbcmd.xh"
 
+#ifdef __MEMVAR__
+// include memvar commands when memvar options are enabled
+#include "memvar.xh"
+#endif
+
+
 #ifdef __DIALECT_XBASEPP__
 #include "XbasePPCmd.xh"
 #endif
@@ -123,10 +129,6 @@
 #include "set.xh"
 
 
-#ifdef __MEMVAR__
-// include memvar commands when memvar options are enabled
-#include "memvar.xh"
-#endif
 // Include (optional) custom UDCs
 #include "CustomDefs.xh"
 #endif

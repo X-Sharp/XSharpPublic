@@ -35,16 +35,16 @@ FUNCTION EVL( eExpression1 AS USUAL, eExpression2  AS USUAL) AS USUAL
     ENDIF
     RETURN eExpression2
 
-//#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>)                   => __FoxCast(<expression>,<(type)>)
-//#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
-//#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
-
 FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LONG) AS USUAL
     LOCAL result := NIL AS USUAL
     LOCAL error := FALSE AS LOGIC
-    // This follows the FoxPro conversion rules from the CAST() function as close as possible
+
+    // VFP accepts full type names (and Num) besides single-letter codes, and is case-insensitive
+    targetType := Upper(targetType)
+
     SWITCH targetType
     CASE "W" // blob
+    CASE "BLOB"
         // no width
         // no decimals
         IF IsBinary(expr)
@@ -55,9 +55,13 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "C" // Char
-        // no decimals
-        result := PadR(expr,10)
+    CASE "CHAR"
+    CASE "CHARACTER"
+        // width applies, decimals disregarded; VFP default width is 1
+        VAR str := ((OBJECT)expr):ToString()
+        result := PadR(str, IIF(nLen == -1, 1, nLen))
     CASE "Y" // Currency
+    CASE "CURRENCY"
         // no width
         // no decimals
         IF IsNumeric(expr)
@@ -66,6 +70,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "D" // Date
+    CASE "DATE"
         // no width
         // no decimals
         IF IsString(expr)
@@ -76,6 +81,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "T" // DateTime
+    CASE "DATETIME"
         // no width
         // no decimals
         IF IsString(expr)
@@ -86,6 +92,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "B" // Double
+    CASE "DOUBLE"
         // nLen is # of decimals
         IF IsString(expr)
             expr := Val(expr)
@@ -99,7 +106,10 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "N" // Numeric
+    CASE "NUM"
+    CASE "NUMERIC"
     CASE "F" // Float
+    CASE "FLOAT"
         IF IsString(expr)
             expr := Val(expr)
         ENDIF
@@ -112,10 +122,13 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "G" // General
+    CASE "GENERAL"
         // no width
         // no decimals
         result := expr
     CASE "I" // Int
+    CASE "INT"
+    CASE "INTEGER"
         // no width
         // no decimals
         IF IsString(expr)
@@ -125,6 +138,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             result := (INT) expr
         ENDIF
     CASE "L" // Logic
+    CASE "LOGICAL"
         // no width
         // no decimals
         IF IsString(expr)
@@ -144,10 +158,12 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "M" // Memo
+    CASE "MEMO"
         // no width
         // no decimals
         result := ((OBJECT)expr):ToString()
     CASE "Q" // VarBinary
+    CASE "VARBINARY"
         // no decimals
         IF IsString(expr)
             expr := BINARY{expr}
@@ -168,6 +184,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
             error := TRUE
         ENDIF
     CASE "V" // VarChar
+    CASE "VARCHAR"
         // no decimals
         VAR str := ((OBJECT)expr):ToString()
         IF nLen != -1 .AND. nLen < str:Length

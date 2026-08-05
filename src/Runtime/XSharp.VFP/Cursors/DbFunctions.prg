@@ -564,3 +564,50 @@ FUNCTION CursorGetProp(cProperty, uArea) AS USUAL CLIPPER
     FINALLY
         RuntimeState.CurrentWorkarea := nOldArea
     END TRY
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/keymatch/*" />
+[FoxProFunction("KEYMATCH", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC CLIPPER
+    RETURN _DoInArea(uArea, { =>
+        VAR nOldRec := RecNo()
+        VAR cOldOrder := ""
+        VAR cOldBag := ""
+        VAR lResult := FALSE
+
+        IF !IsNil(nIndexNumber)
+            cOldOrder := OrdName()
+            cOldBag := OrdBagName()
+            OrdSetFocus(nIndexNumber)
+        ENDIF
+
+        DbSeek(eIndexKey)
+        lResult := Found()
+
+        IF !IsNil(nIndexNumber)
+            OrdSetFocus(cOldOrder, cOldBag)
+        ENDIF
+        DbGoto(nOldRec)
+
+        RETURN lResult
+    }, false, __FUNCTION__, 3)
+END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/lookup/*" />
+[FoxProFunction("LOOKUP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION Lookup( ReturnField, eSearchExpression, SearchedField , cTagName) AS USUAL CLIPPER
+    IF !IsNil(cTagName)
+        OrdSetFocus(cTagName)
+    ENDIF
+
+    DbSeek(eSearchExpression)
+
+    IF Found()
+        IF IsString(ReturnField)
+            RETURN FieldGet(FieldPos(ReturnField))
+        ELSEIF IsNumeric(ReturnField)
+            RETURN FieldGet((DWORD)ReturnField)
+        ENDIF
+    ENDIF
+
+    RETURN NIL
+END FUNCTION

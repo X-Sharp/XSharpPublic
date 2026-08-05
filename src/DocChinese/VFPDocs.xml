@@ -6327,38 +6327,10 @@
             指定从中创建新类或对象的类或对象。
         </param>
         <param name="cModule">
-            指定包含由cClassName指定的类或对象的.vcx文件或X#程序（.prg、.fxp、.mpr、.app、.exe等）。
-            默认为.vcx文件。如果指定程序文件，必须包含扩展名。
-            <note name="注意">
-                类库可以有别名。要指定带有别名的类库中的类或对象，
-                请包含类库别名，后跟句点和对象名称。<br/>
-                当类存储在程序文件（.prg）中时，尽可能指定已编译的程序名（.fxp）。
-                这确保从正确的类定义文件加载类。
-            </note>
-            如果省略cModule，或为空字符串或空值，X#按以下顺序搜索类或对象：
-            <list type="bullet">
-                <item>X#基类。</item>
-                <item>当前程序中的类。</item>
-                <item>使用Set CLASSLIB打开的类库。</item>
-                <item>使用Set PROCEDURE打开的过程文件中的类。</item>
-                <item>X#程序执行链中的类。</item>
-                <item>如果Set OLEOBJECT为ON，则搜索OLE注册表。</item>
-            </list>
+          此参数在 X# 中未使用，仅为兼容 Visual FoxPro 而包含。
         </param>
         <param name="cInApplication">
-            指定包含您用cModule指定的.vcx文件的X#应用程序（.exe或.app）。
-            必须为应用程序包含扩展名。如果省略cModule，或cInApplication为空字符串或空值，则忽略cInApplication。<br/>
-            如果要使用cInApplication参数，必须为cModule指定.vcx文件的名称。
-            不能传递.prg文件或已编译程序（.fxp）的名称。
-        </param>
-        <param name="0">
-            指定实例化类或对象时不执行类或对象中的任何事件或方法代码。
-            此功能在运行时应用程序中不受支持。<br/>
-            父类的所有子类或对象也会被实例化。子类或对象中的事件或方法代码不会被执行。<br/>
-            此选项提供了查看类或对象结构的能力（例如，使用AMembers()函数），
-            而无需在类设计器或窗体设计器中打开类或对象。<br/>
-            注意，绝不应执行类或对象中的代码 - 不支持代码执行，可能会使X#不稳定。
-            您不应显式调用事件或方法，或设置属性。设置属性可能会调用Access和Assign方法。
+          此参数在 X# 中未使用，仅为兼容 Visual FoxPro 而包含。
         </param>
         <param name="eParameter1">
             指定传递给类或对象的Init事件过程的可选参数。

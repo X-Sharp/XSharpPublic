@@ -89,13 +89,43 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     RETURN FieldGetSelect(area,fieldName)
 
 /// <exclude />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGIC) AS USUAL
     LOCAL nArea := VoDbGetSelect(wa) AS DWORD
-    IF nArea != 0 .OR. ! lAllowUndeclared
+    IF nArea != 0
         RETURN __FieldGetWa(wa, fldName)
     ENDIF
-    LOCAL uObject := __MemVarGet(wa) AS USUAL
-    RETURN IVarGet(uObject, fldName)
+    IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
+        return IVarGet(uLocal, fldName)
+    ENDIF
+    IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
+        local uVar := IVarGet(uLocal, wa) AS USUAL
+        return IVarGet(uVar, fldName)
+    ENDIF
+    if (lAllowUndeclared)
+        if XSharp.MemVar.TryGet(wa, out var value)
+            return IVarGet(value, fldName)
+        endif
+    endif
+    local type := OOPHelpers.FindClass(wa,false) as System.Type
+    if type != null
+        var prop := type:GetProperty(fldName)
+        if prop != null
+            return prop:GetValue(null)
+        endif
+        var fld := type:GetField(fldName)
+        if fld != null
+            return fld:GetValue(null)
+        endif
+        var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})
+        oError:Description := oError:Message + i": '{fldName}'"
+        throw oError
+    endif
+    VAR err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
+    err:FuncSym := __function__
+    err:ArgNum := 2
+    err:Args := <OBJECT>{wa, fldName}
+    THROW err
 
 /// <exclude />
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
@@ -125,13 +155,64 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
 
 
 /// <exclude />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUndeclared AS LOGIC) AS USUAL
     LOCAL nArea := VoDbGetSelect(wa) AS DWORD
-    IF nArea != 0 .OR. ! lAllowUndeclared
-        RETURN __FieldSetWa(wa, fldName,uValue)
+    IF nArea != 0
+        LOCAL nOldArea := RuntimeState.CurrentWorkarea AS DWORD
+        TRY
+            IF nArea != nOldArea
+                VoDbSetSelect((INT)nArea)
+            ENDIF
+            var isLocked := DbRecordInfo(DBRI_LOCKED)
+            IF ! isLocked
+                DbAutoLock()
+            ENDIF
+            var result := __FieldSet(fldName,uValue)
+            IF ! isLocked
+                DbAutoUnLock()
+            ENDIF
+            RETURN result
+        Finally
+            IF nArea != nOldArea
+                VoDbSetSelect((INT)nOldArea)
+            ENDIF
+        END TRY
+
     ENDIF
-    LOCAL uObject := __MemVarGet(wa) AS USUAL
-    RETURN IVarPut(uObject, fldName, uValue)
+    IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
+        return IVarPut(uLocal, fldName, uValue)
+    ENDIF
+    IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
+        local uVar := IVarGet(uLocal, wa) AS USUAL
+        return IVarPut(uVar, fldName, uValue)
+    ENDIF
+    if (lAllowUndeclared)
+        if XSharp.MemVar.TryGet(wa, out var value)
+            return IVarPut(value, fldName, uValue)
+        endif
+    endif
+    local type := OOPHelpers.FindClass(wa,false) as System.Type
+    if type != null
+        var prop := type:GetProperty(fldName)
+        if prop != null
+            prop:SetValue(null, OOPHelpers.ValueConvert(uValue, prop:PropertyType))
+            RETURN uValue
+        endif
+        var fld := type:GetField(fldName)
+        if fld != null
+            fld:SetValue(null, OOPHelpers.ValueConvert(uValue, fld:FieldType))
+            RETURN uValue
+        endif
+        var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})
+        oError:Description := oError:Message + i": '{fldName}'"
+        throw oError
+    endif
+    VAR err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
+    err:FuncSym := __function__
+    err:ArgNum := 2
+    err:Args := <OBJECT>{wa, fldName}
+    THROW err
 
 
 /// <exclude />

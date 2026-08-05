@@ -11,6 +11,7 @@ Definitions are mostly stored in external files. The Folder structure is the fol
 |   +--  TypeConvert.json
 |   +--  Statements.json
 |   +--  VFP2WinForms.json
+|   +--  AliasTypeCollisions.json
 |   +-templates
 |     +-- form
 |         +--  prefix.prg
@@ -210,6 +211,20 @@ A Simple Dictionary with elements that are replaced one-to-one.
   "Click()": "_Click()"
 }
 ~~~~
+
+#### AliasTypeCollisions.json
+Simple array of cursor/alias names known to collide with a resolvable .NET/X# type name
+(e.g. a cursor called `Currency` colliding with a `Currency` type). For a colliding name,
+`alias.field` would bind to the type's static member instead of the DBF field, and the
+compiler complains the type has no such member.
+~~~~
+[
+  "Currency"
+]
+~~~~
+For every name in the list, `Name.` is rewritten to `Name->` (the unambiguous alias-field
+operator) wherever it appears in converted code. If you hit the same problem with another
+cursor name, just add it to this list — no code changes needed.
 *thisObject* will be created by the VFPXPorter, and refer to the Control/Object that originally contained an EventHandler.  
 *_Parent* is a Property of each VFP* Controls, typed as Object to force Late-Bound call
 

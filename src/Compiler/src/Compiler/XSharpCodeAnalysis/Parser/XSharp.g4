@@ -252,6 +252,7 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
 class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (C=CLASS | R=RECORD | R=RECORD C=CLASS) (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
+                      (ParamList=parameterList)?
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
@@ -289,6 +290,7 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (R=RECORD)? S=STRUCTURE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
+                      (ParamList=parameterList)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
@@ -695,7 +697,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // validExpressionStmt check  for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
-	                ;
+                  ;
 
 blockTokens          : Token=(SCOPE|CHECKED|UNCHECKED|UNSAFE)
                      ;
@@ -874,11 +876,11 @@ localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
+expression          : Expr=expression Op=(DOT|COLON|DOTCOLON) Name=simpleName          #accessMember           // member access.
                     | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
-                    | Left=expression Op=(DOT|COLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
+                    | Left=expression Op=(DOT|COLON|DOTCOLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
                     // Latebound member access with a ampersand and a name or an expression that evaluates to a string
-                    | Left=expression Op=(DOT|COLON) AMP
+                    | Left=expression Op=(DOT|COLON|DOTCOLON) AMP
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH

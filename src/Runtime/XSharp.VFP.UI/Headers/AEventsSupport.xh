@@ -6,11 +6,14 @@
 // AEventsSupport.xh
 // AEVENTS & AMOUSEOBJ
 
-// HACK : It should be PROTECTED
+// Ideally PROTECTED — PUBLIC to allow cross-class access from included event handlers.
 PUBLIC __aeventsData AS AEventsDefinition
 
-
-
+/// <summary>
+/// VFP <c>AEVENTS()</c> compatibility: when <paramref name="uMode"/> is 0, populates
+/// <paramref name="arrayName"/> with the last-fired event's source object, event name, and event type.
+/// Returns 0.
+/// </summary>
 METHOD AEVENTS( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
     IF IsArray( arrayName )
         IF IsNumeric( uMode )
@@ -27,6 +30,11 @@ METHOD AEVENTS( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
     RETURN 0
 
 
+/// <summary>
+/// VFP <c>AMOUSEOBJ()</c> compatibility: when <paramref name="uMode"/> is 0, populates
+/// <paramref name="arrayName"/> with the control itself, its parent, and the current mouse X/Y position.
+/// Returns 0.
+/// </summary>
 METHOD AMOUSEOBJ( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
     IF IsArray( arrayName )
         IF IsNumeric( uMode )
@@ -44,6 +52,11 @@ METHOD AMOUSEOBJ( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
     RETURN 0
 
 
+/// <summary>
+/// VFP <c>BINDEVENT()</c> compatibility: wires <paramref name="cDelegate"/> on <paramref name="oEventHandler"/>
+/// to the VFP event property <c>vfp&lt;cEvent&gt;</c> on <paramref name="oEventSource"/> via <c>IVarPut</c>.
+/// Returns 1 on success, 0 on failure.
+/// </summary>
 METHOD BINDEVENT( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
     IF IsNumeric( oEventSource )
         RETURN SELF:BindEvent2( oEventSource, cEvent, oEventHandler, cDelegate, nFlags )

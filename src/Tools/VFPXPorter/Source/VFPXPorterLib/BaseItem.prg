@@ -50,13 +50,23 @@ BEGIN NAMESPACE VFPXPorterLib
         END PROPERTY
 
         [XmlIgnore];
-        PROPERTY IsConverted AS LOGIC GET SELF:_isConverted
+        PROTECTED PROPERTY IsConverted AS LOGIC GET SELF:_isConverted
 
         [XmlIgnore];
         PROPERTY IsForm AS LOGIC GET ( String.Compare( SELF:BaseClassName, "form", TRUE ) == 0 )
 
         [XmlIgnore];
         PROPERTY IsFormSet AS LOGIC GET ( String.Compare( SELF:BaseClassName, "formset", TRUE ) == 0 )
+
+        [XmlIgnore];
+        PROPERTY IsPageFrame AS LOGIC GET ( String.Compare( SELF:BaseClassName, "pageframe", TRUE ) == 0 )
+
+        [XmlIgnore];
+        PROPERTY IsPage AS LOGIC GET ( String.Compare( SELF:BaseClassName, "page", TRUE ) == 0 )
+
+        [XmlIgnore];
+        PROPERTY IsReportListener AS LOGIC GET ( String.Compare( SELF:BaseClassName, "reportlistener", TRUE ) == 0 .OR. ;
+                                                  String.Compare( SELF:ClassName,     "reportlistener", TRUE ) == 0 )
 
             [XmlIgnore];
         PROPERTY FullyQualifiedName AS STRING
@@ -72,10 +82,23 @@ BEGIN NAMESPACE VFPXPorterLib
                     // Ok, we must check the ClassLocation, if not empty, that is a ClassLibrary file
                     // and we will use it as a Namespace
                     LOCAL nSpace := "" AS STRING
+                    LOCAL classNamePart := SELF:ClassName AS STRING
                     IF !String.IsNullOrEmpty( SELF:ClassLocation )
-                        nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ) + "."
+                        nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ):Replace(" ", "_") + "."
+                        // This references a class declared elsewhere (a VCX, same or different from
+                        // the current output), which GetFormClassName() exports with the prefix applied
+                        // (prefix + item:Name for library items) — match that here so the reference
+                        // resolves to the actual generated type name.
+                        classNamePart := XPorterSettings.ClassNamePrefix + classNamePart
+                    ELSE
+                        // No ClassLocation and not converted: bare class name is returned as-is, NOT
+                        // prefixed here. This covers FormSet sub-form stubs and Page stubs, whose
+                        // ClassName is assigned directly in SCXVCXFile.prg (bypassing GetFormClassName)
+                        // to already match the prefixed name of the real exported entity. Prefixing
+                        // again here would double the prefix.
+                        XPorterLogger.Instance:Verbose( "FullyQualifiedName: item '" + SELF:Name + "' has no ClassLocation and was not converted (ClassName='" + SELF:ClassName + "')" )
                     ENDIF
-                    fqn := nSpace + SELF:ClassName
+                    fqn := nSpace + classNamePart
                 ENDIF
                 //
                 RETURN fqn
@@ -94,7 +117,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 // and we will use it as a Namespace
                 LOCAL nSpace := "" AS STRING
                 IF !String.IsNullOrEmpty( SELF:ClassLocation )
-                    nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ) + "."
+                    nSpace := System.IO.Path.GetFileNameWithoutExtension( SELF:ClassLocation ):Replace(" ", "_") + "."
                 ENDIF
                 RETURN nSpace + SELF:FoxClassName
             END GET
@@ -223,8 +246,8 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:PLATFORM := itemToCopy:PLATFORM
             SELF:UNIQUEID := itemToCopy:UNIQUEID
             SELF:TIMESTAMP := itemToCopy:TIMESTAMP
-            // !!! WARNING !!! This may incorrectly set the FoxClassName
-            SELF:ClassName := itemToCopy:ClassName
+            SELF:_className := itemToCopy:ClassName
+            SELF:_isConverted := itemToCopy:_isConverted
             SELF:FoxClassName := itemToCopy:FoxClassName
             //
             SELF:CLASSLOC := itemToCopy:CLASSLOC

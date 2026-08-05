@@ -3094,6 +3094,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
+            ParameterListSyntax primeParam = null;
+            if (context.ParamList != null) primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3106,7 +3108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: null, // TODO nvk
+                        parameterList: primeParam,
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3122,7 +3124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                    keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                    identifier: context.Id.Get<SyntaxToken>(),
                    typeParameterList: getTypeParameters(context.TypeParameters),
-                   parameterList: null, // TODO nvk
+                   parameterList: primeParam,
                    baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                    constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                    openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3209,6 +3211,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Implements);
+            ParameterListSyntax primeParam = null;
+            if (context.ParamList != null) primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3221,7 +3225,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: null, // TODO nvk
+                        parameterList: primeParam,
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3237,7 +3241,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                     identifier: context.Id.Get<SyntaxToken>(),
                     typeParameterList: getTypeParameters(context.TypeParameters),
-                    parameterList: null, // TODO nvk
+                    parameterList: primeParam,
                     baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                     constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                     openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -5138,8 +5142,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var paramCtx in context._Params)
             {
                 var paramNode = paramCtx.Get<ParameterSyntax>();
+                bool isClipper = CurrentMember?.Data.HasClipperCallingConvention ?? false;
+                bool isProperty = CurrentMember?.Data.IsProperty ?? false;
                 if (paramCtx.Type == null && paramCtx.Ellipsis == null &&
-                    !CurrentMember.Data.HasClipperCallingConvention && !CurrentMember.Data.IsProperty)
+                    !isClipper && !isProperty)
                 {
                     var parType = "USUAL";
                     var dt = _getNextParameterDataType(paramCtx);
@@ -7629,12 +7635,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected virtual XP.WithBlockContext FindWithBlock(XSharpParserRuleContext context)
         {
+            bool hasFoundStatementBlock = false;
             var parent = context.Parent;
-            while (parent != null && !(parent is XP.IEntityContext))
+            while (parent is not null && parent is not XP.IEntityContext)
             {
-                if (parent is XP.WithBlockContext wbc)
+                if (hasFoundStatementBlock)
                 {
-                    return wbc;
+                    if (parent is XP.WithBlockContext wbc)
+                    {
+                        return wbc;
+                    }
+                }
+                else if (parent is XP.StatementBlockContext)
+                {
+                    hasFoundStatementBlock = true;
                 }
                 parent = parent.Parent;
             }
@@ -7643,7 +7657,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Op.Type == XP.COLONCOLON)
+            if (context.Op.Type == XP.COLONCOLON && context.Expr == null)
             {
                 context.Put(MakeSimpleMemberAccess(
                     GenerateSelf(),
@@ -7683,7 +7697,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // When AllowDotForInstanceMembers
-                if (context.Op.Type == XP.COLON || _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
+                if (context.Op.Type == XP.DOTCOLON ||
+                        context.Op.Type == XP.COLON || _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
                 {
                     context.Put(MakeSimpleMemberAccess(context.Expr.Get<ExpressionSyntax>(), context.Name.Get<SimpleNameSyntax>()));
                 }
@@ -9607,7 +9622,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(litExpr.WithAdditionalDiagnostics(diag));
                 }
             }
-            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__ are translated by the preprocessor to TRUE const
+            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__, __FOX3__  are translated by the preprocessor to TRUE const
             // determine real value now
             var text = context.Token.Text;
             if (context.Token.Type == XP.TRUE_CONST && text.Length > 4 && text.StartsWith("__") && text.EndsWith("__"))

@@ -153,6 +153,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case COLON:
                 case ALIAS:
                 case COLONCOLON:
+                case DOTCOLON:
                     return true;
             }
             return false;
@@ -1319,6 +1320,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         else if (Expect('.'))
                             parseOne(DOTDOT);
+                        else if (Expect(':'))
+                            parseOne(DOTCOLON);
                         else if (La(3) == '.') // a.or.b should be allowed, so no check for _inDottedIdentifier
                         {
                             if (ExpectLower("or"))
@@ -2615,6 +2618,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XPP1__", MACRO},
                     { "__FOX1__", MACRO},
                     { "__FOX2__", MACRO},
+                    { "__FOX3__", MACRO},
 
                     {"NOT", FOX_NOT},
                 };

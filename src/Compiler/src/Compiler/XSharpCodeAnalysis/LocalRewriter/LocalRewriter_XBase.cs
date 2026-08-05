@@ -254,6 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     XSharpSpecialNames.RTCompilerOptionVO13,
                                     XSharpSpecialNames.RTCompilerOptionVO14,
                                     XSharpSpecialNames.RTCompilerOptionFox2,
+                                    XSharpSpecialNames.RTCompilerOptionFox3,
                                     XSharpSpecialNames.RTDialect,
                     };
                     object[] values = {
@@ -269,6 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         comp.Options.HasOption(CompilerOption.Vo13,null),
                                         comp.Options.HasOption(CompilerOption.Vo14,null),
                                         comp.Options.HasOption(CompilerOption.Fox2,null),
+                                        comp.Options.HasOption(CompilerOption.Fox3,null),
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {

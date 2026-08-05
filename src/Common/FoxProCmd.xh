@@ -158,9 +158,24 @@
 
 #command DIR <*any*>       => __VfpDir( <"any"> )
 #command DIRECTORY <*any*> => __VfpDir( <"any"> )
-
+#command CLEAR => __VfpUnsupported(<"udc">)
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
+
+// WAIT
+#xcommand WAIT <msg> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT <msg> TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT CLEAR => __VfpWaitClear()
 
 // Commands with IN clause, commands without are defined in DBCMD.XH
 
@@ -173,14 +188,14 @@
 #command COMMIT            IN  <(a)>                    => (<(a)>) -> (DbCommit())
 #command UNLOCK [RECORD <rcd>] IN  <(a)>    => (<(a)>) -> (DbUnLock(<rcd>))
 
-#command GOTO <n>  		   IN <(a)>     => (<a>)->(DbGoto(<n>))
-#command GO [RECORD] <n>   IN <(a)>     => (<a>)->(DbGoto(<n>))
-#command GOTO TOP  		   IN <(a)>     => (<a>)->(DbGoTop())
-#command GO TOP   		   IN <(a)>     => (<a>)->(DbGoTop())
-#command GOTO BOTTOM 	   IN <(a)>     => (<a>)->(DbGoBottom())
-#command GO BOTTOM  	      IN <(a)>     => (<a>)->(DbGoBottom())
-#command SKIP 			      IN <(a)>     => (<a>)->(DbSkip(1))
-#command SKIP <n> 		   IN <(a)>     => (<a>)->(DbSkip(<n>))
+#command GOTO <n>  		   IN <(a)>     => (<(a)>)->(DbGoto(<n>))
+#command GO [RECORD] <n>   IN <(a)>     => (<(a)>)->(DbGoto(<n>))
+#command GOTO TOP  		   IN <(a)>     => (<(a)>)->(DbGoTop())
+#command GO TOP   		   IN <(a)>     => (<(a)>)->(DbGoTop())
+#command GOTO BOTTOM 	   IN <(a)>     => (<(a)>)->(DbGoBottom())
+#command GO BOTTOM  	      IN <(a)>     => (<(a)>)->(DbGoBottom())
+#command SKIP 			      IN <(a)>     => (<(a)>)->(DbSkip(1))
+#command SKIP <n> 		   IN <(a)>     => (<(a)>)->(DbSkip(<n>))
 
 #command SET FILTER TO     IN  <(a)>        => (<(a)>) -> (DbClearFilter())
 #command SET FILTER TO <xpr>  IN  <(a)>   => (<(a)>) -> (DbSetFilter( <{xpr}>, <"xpr"> ))
@@ -212,31 +227,67 @@
 // This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
 #command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
 
-#command COPY MEMO <field> TO <(file)> <add:ADDITIVE> [AS <nCP>]  ;
-        => DbCopyMemo( <"field">, <(file)>, <ADD>[, <nCP>] )
+#command COPY MEMO <field> TO <(file)> [<add:ADDITIVE>]           ;
+        => DbCopyMemo( <"field">, <(file)>, <.add.>, 0 )
 
-// REPLACE ... [ADDITIVE] — without IN clause
-#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
-                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+#command COPY MEMO <field> TO <(file)> [<add:ADDITIVE>] AS <nCP>  ;
+        => DbCopyMemo( <"field">, <(file)>, <.add.>, <nCP> )
+
+// Scoped REPLACE — without IN clause
+// Note: no nested optional ADDITIVE inside the repeated clause: the preprocessor
+// drops the whole output repetition when the nested marker has no matches
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                        ;
            [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
            [<REST:REST>] [<noopt:NOOPTIMIZE>] [all]                           ;
         => DbEval(                                                             ;
                {|| DbAutoLock(),                                               ;
-                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
-                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   __FieldSet(<(f1)>, <x1>)                                   ;
+                   [, __FieldSet(<(fn)>, <xn>)],                              ;
                    DbAutoUnLock() },                                          ;
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
              )
 
-// REPLACE ... [ADDITIVE] IN workarea — defined LAST, tried FIRST
-#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
-                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+// Scoped REPLACE, single field with ADDITIVE — without IN clause
+#command REPLACE <(f1)> WITH <x1> ADDITIVE                                    ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] [<noopt:NOOPTIMIZE>] [ALL]                           ;
+        => DbEval(                                                             ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSetAdd(<(f1)>, <x1>, .T.),                          ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             )
+
+// Single record REPLACE — no scope clauses: current record only (VFP default)
+// Note: no nested optional ADDITIVE inside the repeated clause: the preprocessor
+// drops the whole output repetition when the nested marker has no matches
+#command REPLACE <(f1)> WITH <v1> [, <(fn)> WITH <vN>]                     ;
+      => DbAutoLock(); __FieldSet(<(f1)>, <v1>)                            ;
+         [; __FieldSet(<(fn)>, <vN>)]; DbAutoUnLock()
+
+// Single record, single field with ADDITIVE — current record only
+#command REPLACE <(f1)> WITH <v1> ADDITIVE                                 ;
+      => DbAutoLock(); __FieldSetAdd(<(f1)>, <v1>, .T.); DbAutoUnLock()
+
+// Scoped REPLACE IN workarea
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                        ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] IN <(a)> [<noopt:NOOPTIMIZE>] [ALL]                ;
+        => (<(a)>)->(DbEval(                                              ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSet(<(f1)>, <x1>)                                   ;
+                   [, __FieldSet(<(fn)>, <xn>)],                              ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             ))
+
+// Scoped REPLACE, single field with ADDITIVE, IN workarea
+#command REPLACE <(f1)> WITH <x1> ADDITIVE                                    ;
            [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
            [<REST:REST>] IN <(a)> [<noopt:NOOPTIMIZE>] [all]                ;
         => (<(a)>)->(DbEval(                                              ;
                {|| DbAutoLock(),                                               ;
-                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
-                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   __FieldSetAdd(<(f1)>, <x1>, .T.),                          ;
                    DbAutoUnLock() },                                          ;
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
              ))
@@ -295,6 +346,18 @@
 #command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                 ;
           IN  <(a)>                                             ;
          => DbAutoLockArea(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fn)>,<vN>)], DbAutoUnLockArea(<(a)>)
+
+// Single record REPLACE IN workarea — current record only (VFP default)
+#command REPLACE <(f1)> WITH <v1> [, <(fn)> WITH <vN>] IN <(a)>            ;
+      => DbAutoLockArea(<(a)>),                                            ;
+         (<(a)>)->(__FieldSet(<(f1)>, <v1>) [, __FieldSet(<(fn)>, <vN>)]), ;
+         DbAutoUnLockArea(<(a)>)
+
+// Single record, single field with ADDITIVE, IN workarea — current record only
+#command REPLACE <(f1)> WITH <v1> ADDITIVE IN <(a)>                        ;
+      => DbAutoLockArea(<(a)>),                                            ;
+         (<(a)>)->(__FieldSetAdd(<(f1)>, <v1>, .T.)),                      ;
+         DbAutoUnLockArea(<(a)>)
 
 #command DELETE   IN  <(a)> =>  (<(a)>)->(__DbDelete())
 
@@ -650,17 +713,17 @@
 #command RD <(dir)>    => _cmdDirRemove (<(dir)>)
 #command RMDIR <(dir)> => _cmdDirRemove (<(dir)>)
 
-// CAST AS Expression
-// types in the order of the FoxPro docs!
+// CAST AS Expression  -->  CAST( eExpr AS cType [(nWidth[,nPrec])] [NULL | NOT NULL] )
+// cType: single-letter code, full type name, or a parenthesized expression that yields the type
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> ( <width> , <dec> ) [NOT] [NULL] )  => __FoxCast( <expression>, <(type)>, <width>, <dec> )
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> ( <width> ) [NOT] [NULL] )         => __FoxCast( <expression>, <(type)>, <width>, -1 )
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> [NOT] [NULL] )                       => __FoxCast( <expression>, <(type)>, -1, -1 )
+#translate CAST ( <expression> AS ( <typeExpr> ) [NOT] [NULL] )                                                                                                                                                              => __FoxCast( <expression>, <typeExpr>, -1, -1 )
 
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>)                   => __FoxCast(<expression>,<(type)>, -1, -1)
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
-
-#command LABEL <*any*> => __VfpUnsupported("LABEL")
+#command LABEL <*any*> => __VfpUnsupported(<"udc">)
 
 #command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
-         => #error This command is not supported: <(udc)>
+         => __VfpUnsupported(<"udc">)
 
 // supported CREATE commands in FoxProSql.xh
 // CREATE CURSOR
@@ -669,7 +732,7 @@
 // CREATE [SQL] VIEW
 
 #command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
-            => #error This command is not supported: <(udc)>
+            => __VfpUnsupported(<"udc">)
 
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
@@ -680,6 +743,11 @@
 #translate VARTYPE(<v>,<1>)  => __VfpVarType( {|| <v> }, <1> )
 
 #include "FoxProSql.xh"
+
+#command CLEAR <*any*> => __VfpUnsupported(<"udc">)
+
+#command RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,MENUS,PAD,POPUPS,PROCEDURE,WINDOWS> [<*any*>] => __VfpUnsupported(<"udc">)
+
 #endif
 
 // EOF

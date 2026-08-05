@@ -20,20 +20,74 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // only do this when not bound to a field/property in the current type
                 // in that case BoundCall is usually a VarGet()
-                if (loweredReceiver is BoundCall bc && bc.ReceiverOpt == null)
+                //if (loweredReceiver is BoundCall bc && bc.ReceiverOpt == null)
+                //{
+                if (xNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
                 {
-                    if (xNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
+                    if (/*loweredReceiver is BoundCall &&*/ amc.Expr is XSharpParser.PrimaryExpressionContext pc
+                        && pc.Expr is XSharpParser.NameExpressionContext)
                     {
-                        if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
-                            && pc.Expr is XSharpParser.NameExpressionContext)
-                        {
-                            areaName = amc.AreaName;
-                            return true;
-                        }
+                        areaName = amc.AreaName;
+                        return true;
                     }
                 }
+                //}
             }
             return false;
+        }
+
+        private BoundExpression HandleLocalSymbol(BoundExpression expr, BoundLocal loc, NamedTypeSymbol rtType)
+        {
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var symbol = loc.LocalSymbol;
+            var usual = _compilation.UsualType();
+            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+            var tempSym = _factory.SynthesizedLocal(usual);
+            locals.Add(tempSym);
+            var tempLocal = _factory.Local(tempSym);
+            var value = MakeConversionNode(loc, usual, false);
+            value.WasCompilerGenerated = true;
+            var localname = _factory.Literal(symbol.Name);
+            var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+            mcall.WasCompilerGenerated = true;
+            exprs.Add(VisitExpression(mcall));
+            var assign = _factory.AssignmentExpression(tempLocal, expr);
+            exprs.Add(assign);
+
+            var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+            exprs.Add(clear);
+            var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(),tempLocal);
+            return seq;
+
+        }
+
+        private BoundExpression HandleSelf(BoundExpression expr, XSharpParser.AccessMemberContext amc, NamedTypeSymbol rtType)
+        {
+            var function = _factory.CurrentFunction;
+            if (function == null || function.IsStatic)
+            {
+                return expr;
+            }
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var usual = _compilation.UsualType();
+            var thisRef = _factory.This();
+            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+            var tempSym = _factory.SynthesizedLocal(usual);
+            locals.Add(tempSym);
+            var tempLocal = _factory.Local(tempSym);
+            var value = MakeConversionNode(thisRef, usual, false);
+            value.WasCompilerGenerated = true;
+            var localname = _factory.Literal("SELF");
+            var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+            mcall.WasCompilerGenerated = true;
+            exprs.Add(VisitExpression(mcall));
+            var assign = _factory.AssignmentExpression(tempLocal, expr);
+            exprs.Add(assign);
+            var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+            exprs.Add(clear);
+            var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(), tempLocal);
+            return seq;
+
         }
 
         public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, BoundDynamicMemberAccess node)
@@ -51,7 +105,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 string method = ReservedNames.FieldGetWaUndeclared;
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _factory.Literal(areaName);
-                var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
+                var rtType = _compilation.RuntimeFunctionsType();
+                var expr = _factory.StaticCall(rtType, method, areaExpr, nameExpr, exprUndeclared);
+                if (loweredReceiver is BoundLocal loc)
+                {
+                    expr = HandleLocalSymbol(expr, loc, rtType);
+                }
+                else if (node.Syntax.XNode is XSharpParser.AccessMemberContext amc)
+                {
+                    expr = HandleSelf(expr, amc, rtType);
+                }
                 return expr;
             }
             var constructedFrom = ((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom;
@@ -102,7 +165,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 string method = ReservedNames.FieldSetWaUndeclared;
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _factory.Literal(areaName);
-                var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, value, exprUndeclared);
+                var rtType = _compilation.RuntimeFunctionsType();
+                var expr = _factory.StaticCall(rtType, method, areaExpr, nameExpr, value, exprUndeclared);
+                if (loweredReceiver is BoundLocal loc)
+                {
+                    expr = HandleLocalSymbol(expr, loc, rtType);
+                }
+                else if (node.Syntax.XNode is XSharpParser.AccessMemberContext amc)
+                {
+                    expr = HandleSelf(expr, amc, rtType);
+                }
                 return expr;
             }
 

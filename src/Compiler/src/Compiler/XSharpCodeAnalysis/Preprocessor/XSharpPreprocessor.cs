@@ -353,7 +353,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             addMacro("__WINDRIVE__", XSharpLexer.STRING_CONST, XSharpSpecificCompilationOptions.WindowsDir?.Substring(0, 2));
             var options = new string[] { "__VO1__", "__VO2__", "__VO3__", "__VO4__", "__VO5__", "__VO6__", "__VO7__", "__VO8__", "__VO9__", "__VO10__",
                                         "__VO11__","__VO12__","__VO13__","__VO14__","__VO15__","__VO16__","__VO17__","__XPP1__", "__FOX1__","__FOX2__",
-                                        "__MEMVAR__","__UNDECLARED__"};
+                                        "__FOX3__","__MEMVAR__","__UNDECLARED__"};
             foreach (var option in options)
             {
                 _macroDefines.Add(option, (token) => new XSharpPPToken(_options.HasOption(option.Replace("_", ""), token, null) ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, option, token));
@@ -2344,6 +2344,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     break;
                                 case CompilerOption.Fox1:    // Inherit from Base
                                 case CompilerOption.Fox2:    // FoxPro array syntax
+                                case CompilerOption.Fox3:    // Compatible Ambiguous Dot Handling
                                     if (_options.Dialect != XSharpDialect.FoxPro)
                                         goto default;
                                     pragma = new PragmaOption(start, state, compopt);

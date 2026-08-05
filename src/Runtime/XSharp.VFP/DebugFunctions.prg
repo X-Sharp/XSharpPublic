@@ -5,6 +5,7 @@
 //
 
 USING System
+USING XSharp.Internal
 USING System.Collections.Generic
 USING System.Text
 using System.Diagnostics
@@ -48,7 +49,7 @@ FUNCTION Program( nLevel, lShowSignature) AS USUAL CLIPPER
     return ""
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lineno/*" />
-[FoxProFunction("LINENO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
+[FoxProFunction("LINENO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION LineNo(nPos := 0 AS USUAL) AS LONG
     VAR nLevel := 1
     LOCAL oFrame := NULL AS StackFrame
@@ -61,3 +62,52 @@ FUNCTION LineNo(nPos := 0 AS USUAL) AS LONG
 
     RETURN 0
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/astackinfo/*" />
+[FoxArrayInputParameter(1)];
+[FoxProFunction("ASTACKINFO", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION AStackInfo (ArrayName AS USUAL) AS DWORD
+    LOCAL aFoxArray AS __FoxArray
+    IF ArrayName IS __FoxArray VAR aFox
+        aFoxArray := aFox
+    ELSE
+        VAR cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
+
+    VAR oTrace := StackTrace{TRUE}
+    VAR nFrames := oTrace:FrameCount
+
+    VAR nLevels := nFrames - 1
+    IF nLevels <= 0
+        RETURN 0
+    ENDIF
+
+    aFoxArray:ReDim((DWORD)nLevels, 6)
+
+    LOCAL nIdx := 0 AS DWORD
+    FOR VAR i := 1 TO nLevels - 1
+        VAR oFrame := oTrace:GetFrame(i)
+        VAR oMethod := oFrame:GetMethod()
+        VAR nBase := (INT)(nIdx * 6)
+
+        aFoxArray.__SetElement(nIdx + 1, nBase)      // Col 1: Stack Level
+
+        VAR cFile := oFrame:GetFileName()
+        aFoxArray.__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 1)  // Col 2: File
+
+        VAR cModule := ""
+        IF oMethod:DeclaringType != NULL
+            cModule := oMethod:DeclaringType:Name + "." + oMethod:Name
+        ELSE
+            cModule := oMethod:Name
+        ENDIF
+
+        aFoxArray.__SetElement(cModule, nBase + 2)    // Col 3: Module/Object
+        aFoxArray.__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 3)  // Col 4: Source file
+        aFoxArray.__SetElement(oFrame:GetFileLineNumber(), nBase + 4)      // Col 5: Line
+        aFoxArray.__SetElement("", nBase + 5)          // Col 6: Source content (n/a)
+        nIdx += 1
+    NEXT
+
+    RETURN (DWORD)nIdx
+END FUNCTION

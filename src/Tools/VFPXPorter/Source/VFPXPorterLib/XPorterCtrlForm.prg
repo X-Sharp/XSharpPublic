@@ -8,6 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.IO
+USING System.Text.RegularExpressions
 USING Newtonsoft.Json
 USING System.Xml.Serialization
 USING System.ComponentModel
@@ -35,16 +36,20 @@ BEGIN NAMESPACE VFPXPorterLib
         PRIVATE FormInitTypeFile AS STRING
         PRIVATE BindingCodeFile AS STRING
 
+        // Template cache dictionaries to avoid repeated disk I/O
+        PRIVATE _templateCache AS Dictionary<STRING, STRING>
+        PRIVATE _jsonCache AS Dictionary<STRING, Dictionary<STRING, Dictionary<STRING,STRING>>>
 
-        PROPERTY DesignerPrefix AS STRING GET File.ReadAllText(DesignerPrefixFile)
-        PROPERTY DesignerStartType AS STRING GET File.ReadAllText(DesignerStartTypeFile)
-        PROPERTY DesignerEndType AS STRING GET File.ReadAllText(DesignerEndTypeFile)
-        PROPERTY DesignerInitType AS STRING GET File.ReadAllText(DesignerInitTypeFile)
-        PROPERTY FormPrefix AS STRING GET File.ReadAllText(FormPrefixFile)
-        PROPERTY FormStartType AS STRING GET File.ReadAllText(FormStartTypeFile)
-        PROPERTY FormEndType AS STRING GET File.ReadAllText(FormEndTypeFile)
-        PROPERTY FormInitType AS STRING GET File.ReadAllText(FormInitTypeFile)
-        PROPERTY BindingCode AS STRING GET File.ReadAllText(BindingCodeFile)
+
+        PROPERTY DesignerPrefix AS STRING GET SELF:GetTemplateFromCache(DesignerPrefixFile)
+        PROPERTY DesignerStartType AS STRING GET SELF:GetTemplateFromCache(DesignerStartTypeFile)
+        PROPERTY DesignerEndType AS STRING GET SELF:GetTemplateFromCache(DesignerEndTypeFile)
+        PROPERTY DesignerInitType AS STRING GET SELF:GetTemplateFromCache(DesignerInitTypeFile)
+        PROPERTY FormPrefix AS STRING GET SELF:GetTemplateFromCache(FormPrefixFile)
+        PROPERTY FormStartType AS STRING GET SELF:GetTemplateFromCache(FormStartTypeFile)
+        PROPERTY FormEndType AS STRING GET SELF:GetTemplateFromCache(FormEndTypeFile)
+        PROPERTY FormInitType AS STRING GET SELF:GetTemplateFromCache(FormInitTypeFile)
+        PROPERTY BindingCode AS STRING GET SELF:GetTemplateFromCache(BindingCodeFile)
 
         PROPERTY NamespaceDefinition AS STRING AUTO
 
@@ -77,31 +82,31 @@ BEGIN NAMESPACE VFPXPorterLib
         /// Rules that applies to Properties (Caption->Text, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY PropRules AS STRING GET File.ReadAllText( PropRulesFile )
+        PROPERTY PropRules AS STRING GET SELF:GetJsonFromCache( PropRulesFile )
 
         /// <summary>
         /// Rules that applies to Events (DblClick->DoubleClick, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY EventRules AS STRING GET File.ReadAllText( EventRulesFile )
+        PROPERTY EventRules AS STRING GET SELF:GetJsonFromCache( EventRulesFile )
 
         /// <summary>
         /// Type convertion table (Button->VFPCommandButton, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY ConvertTable AS STRING GET File.ReadAllText( ConvertTableFile )
+        PROPERTY ConvertTable AS STRING GET SELF:GetJsonFromCache( ConvertTableFile )
 
         /// <summary>
         /// List of Statements than will need () at the end (.Refresh->.Refresh(), ...)
         /// </summary>
         /// <value></value>
-        PROPERTY Statements AS STRING GET File.ReadAllText( StatementsFile )
+        PROPERTY Statements AS STRING GET SELF:GetJsonFromCache( StatementsFile )
 
         /// <summary>
         /// List of VFP language elements and their traduction (Parent->_Parent,this->thisObject, ...)
         /// </summary>
         /// <value></value>
-        PROPERTY VFPElements AS STRING GET File.ReadAllText( VFPElementsFile )
+        PROPERTY VFPElements AS STRING GET SELF:GetJsonFromCache( VFPElementsFile )
 
 
         /// <summary>
@@ -135,6 +140,9 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:ConvertTableFile	:= XPorterSettings.ConvertTableFile
             SELF:StatementsFile		:= XPorterSettings.StatementsFile
             SELF:VFPElementsFile	:= XPorterSettings.VFPElementsFile
+            // Initialize caches
+            SELF:_templateCache := Dictionary<STRING, STRING>{}
+            SELF:_jsonCache := Dictionary<STRING, Dictionary<STRING, Dictionary<STRING,STRING>>>{}
             //
             SELF:Items := List<BaseItem>{ }
             SELF:CustomControls := Dictionary<STRING, SCXVCXItem>{}
@@ -202,6 +210,11 @@ BEGIN NAMESPACE VFPXPorterLib
             sttmnts := JsonConvert.DeserializeObject<List<STRING>>( SELF:Statements )
             LOCAL vfpElts AS Dictionary<STRING,STRING>
             vfpElts := JsonConvert.DeserializeObject<Dictionary<STRING,STRING>>( SELF:VFPElements )
+            LOCAL colorProps AS List<STRING>
+            colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
+            // Suspended along with ChangeAliasTypeCollisions() itself, kept for reference (2026-07-27)
+            LOCAL aliasTypeCollisions AS List<STRING>
+            // aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
             //
             LOCAL items AS List<BaseItem>
             items := List<BaseItem>{}
@@ -216,13 +229,22 @@ BEGIN NAMESPACE VFPXPorterLib
                     IF SELF:Canceled
                         EXIT
                     ENDIF
-                    SELF:ConvertHandlerCode( subItem, typeList, eventList, sttmnts, vfpElts,TRUE )
+                    SELF:ConvertHandlerCode( subItem, typeList, eventList, sttmnts, vfpElts, colorProps, aliasTypeCollisions, TRUE )
+                    // Also process children of non-grid containers (e.g., PageFrame page controls)
+                    IF String.Compare( subItem:BaseClassName, "grid", TRUE ) != 0 .AND. subItem:Childs:Count > 0
+                        FOREACH grandSubItem AS SCXVCXItem IN subItem:Childs
+                            IF SELF:Canceled
+                                EXIT
+                            ENDIF
+                            SELF:ConvertHandlerCode( grandSubItem, typeList, eventList, sttmnts, vfpElts, colorProps, aliasTypeCollisions, TRUE )
+                        NEXT
+                    ENDIF
                 NEXT
                 IF SELF:Canceled
                     EXIT
                 ENDIF
                 // Don't forget to process the Item itself
-                SELF:ConvertHandlerCode( item, typeList, eventList, sttmnts, vfpElts,FALSE )
+                SELF:ConvertHandlerCode( item, typeList, eventList, sttmnts, vfpElts, colorProps, aliasTypeCollisions, FALSE )
             NEXT
             RETURN !SELF:Canceled
 
@@ -235,7 +257,7 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <param name="typeList"></param>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        PROTECTED METHOD ConvertHandlerCode( subItem AS SCXVCXItem, typeList AS Dictionary<STRING,STRING[]>, eventList AS Dictionary<STRING, Dictionary<STRING,STRING[]>>, sttmnt AS List<STRING>, vfpElt AS Dictionary<STRING,STRING>, isChild AS LOGIC ) AS VOID
+        PROTECTED METHOD ConvertHandlerCode( subItem AS SCXVCXItem, typeList AS Dictionary<STRING,STRING[]>, eventList AS Dictionary<STRING, Dictionary<STRING,STRING[]>>, sttmnt AS List<STRING>, vfpElt AS Dictionary<STRING,STRING>, colorProps AS List<STRING>, aliasTypeCollisions AS List<STRING>, isChild AS LOGIC ) AS VOID
             subItem:ConvertClassName( typeList )
             // Extract the code, and split it to Events
             subItem:XPortedCode := ItemCode{ subItem, isChild }
@@ -244,7 +266,7 @@ BEGIN NAMESPACE VFPXPorterLib
             // Use the Rendering ClassName in order to get the Events name
             evtRules := SELF:BuildEventRules( eventList, subItem:BaseClassName )
             // Apply Rules and Create EventHandlers
-            subItem:ConvertEvents( evtRules, sttmnt, vfpElt, SELF:Settings )
+            subItem:ConvertEvents( evtRules, sttmnt, vfpElt, colorProps, SELF:Settings, aliasTypeCollisions )
             //
             SELF:UpdateProgress()
             RETURN
@@ -363,8 +385,10 @@ BEGIN NAMESPACE VFPXPorterLib
             TRY
                 lOk := TRUE
                 SELF:ExportWindow( dest, entity:Item, entity:DataEnvironment )
-            CATCH
+            CATCH e AS Exception
                 lOk := FALSE
+                XPorterLogger.Instance:Error("ExportAsWindowAndDesigner: Failed to export window form")
+                XPorterLogger.Instance:Error("Exception: " + e:Message)
             FINALLY
                 dest:Close()
             END TRY
@@ -379,8 +403,10 @@ BEGIN NAMESPACE VFPXPorterLib
                 TRY
                     lOk := TRUE
                     SELF:ExportDesigner( dest, entity:Item, entity:DataEnvironment )
-                CATCH
+                CATCH e AS Exception
                     lOk := FALSE
+                    XPorterLogger.Instance:Error("ExportAsWindowAndDesigner: Failed to export designer for form")
+                    XPorterLogger.Instance:Error("Exception: " + e:Message)
                 FINALLY
                     dest:Close()
                 END TRY
@@ -397,13 +423,17 @@ BEGIN NAMESPACE VFPXPorterLib
             // Where do we write
             LOCAL dest AS StreamWriter
             dest := StreamWriter{ fileName }
-            // First Export the Window
-            SELF:InitElementsSingleForm( entity:Item:IsContainer )
+            // First Export the Window — skip template init for ReportListener (already set by caller)
+            IF !entity:Item:IsReportListener
+                SELF:InitElementsSingleForm( entity:Item:IsContainer )
+            ENDIF
             TRY
                 lOk := TRUE
                 SELF:ExportSingleFile( dest, entity:Item, entity:DataEnvironment )
-            CATCH
+            CATCH e AS Exception
                 lOk := FALSE
+                XPorterLogger.Instance:Error("ExportAsSingleFile: Failed to export single file form")
+                XPorterLogger.Instance:Error("Exception: " + e:Message)
             FINALLY
                 dest:Close()
             END TRY
@@ -427,8 +457,9 @@ BEGIN NAMESPACE VFPXPorterLib
             ENDIF
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}
+            VAR cursorAliases := List<STRING>{}
             // Create the code for a DataEnvironment Object, with the attached Cursors
-            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv )
+            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv, cursorAliases )
             //
             dest:Write( SELF:FormPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
@@ -459,22 +490,44 @@ BEGIN NAMESPACE VFPXPorterLib
                 NEXT
 
             ENDIF
+            // If this Form is a member of a FormSet, shadow the inherited ThisFormSet
+            // property (typed as the generic runtime FormSet base) with one typed either
+            // as OBJECT (late-bound, default) or as the real generated FormSet class
+            // (when Settings:TypedThisFormSet is set), so ThisFormSet-based code compiles.
+            IF !String.IsNullOrEmpty( oneItem:FormSetClassName )
+                IF SELF:Settings:TypedThisFormSet
+                    declaration:Append( "PUBLIC NEW PROPERTY ThisFormSet AS " + oneItem:FormSetClassName + Environment.NewLine )
+                    declaration:Append( "    GET ; RETURN (" + oneItem:FormSetClassName + ") SUPER:ThisFormSet ; END GET" + Environment.NewLine )
+                    declaration:Append( "    SET ; SUPER:ThisFormSet := VALUE ; END SET" + Environment.NewLine )
+                    declaration:Append( "END PROPERTY" + Environment.NewLine )
+                ELSE
+                    declaration:Append( "PUBLIC NEW PROPERTY ThisFormSet AS OBJECT" + Environment.NewLine )
+                    declaration:Append( "    GET ; RETURN SUPER:ThisFormSet ; END GET" + Environment.NewLine )
+                    declaration:Append( "    SET ; SUPER:ThisFormSet := (FormSet) VALUE ; END SET" + Environment.NewLine )
+                    declaration:Append( "END PROPERTY" + Environment.NewLine )
+                ENDIF
+            ENDIF
             //FOREACH VAR prop IN item:Properties
             //	formProp += "SELF:" + prop:Key + " := " + prop:Value + Environment.NewLine
             //NEXT
 //             IF String.IsNullOrEmpty( SELF:FormNameOverride )
-                code:Replace( "<@formName@>", oneItem.FullName )
+            VAR formStartReplacements := Dictionary<STRING, STRING>{}
+            formStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
+            formStartReplacements["superName"] := oneItem:FullyQualifiedName
+            formStartReplacements["dataenvironment"] := declareDataEnv:ToString()
+            formStartReplacements["childsDeclaration"] := declaration:ToString()
+            // Experimental CURSOR hint (still commented out — the CURSOR keyword is not yet implemented in the compiler)
+            formStartReplacements["cursorAliases"] := IIF( cursorAliases:Count > 0, "// CURSOR " + String.Join(", ", cursorAliases), "" )
+            code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormStartType, "FormStartType", formStartReplacements)}
 //             ELSE
 //                 code:Replace( "<@formName@>", SELF:FormNameOverride )
 //             ENDIF
-            code:Replace( "<@superName@>", oneItem:FullyQualifiedName )   //<- FoxClassName
-            code:Replace( "<@dataenvironment@>", declareDataEnv:ToString() )
-            code:Replace( "<@childsDeclaration@>", declaration:ToString() )
             //
             dest:Write( code:ToString() )
             // Now, the Core-Code
             code := StringBuilder{SELF:FormInitType}
             //
+            VAR windowDescendants := SELF:CollectContainerDescendants( oneItem )
             LOCAL handlers AS StringBuilder
             handlers := StringBuilder{}
             FOREACH VAR subItem IN oneItem:Childs
@@ -484,6 +537,10 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
                 // Add EventHandlers
                 handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
+            NEXT
+            // Also add event handlers from container descendants
+            FOREACH VAR pair IN windowDescendants
+                handlers:AppendLine( SELF:BuildEventHandlers( pair:Item1 ) )
             NEXT
             IF SELF:Canceled
                 RETURN
@@ -508,30 +565,37 @@ BEGIN NAMESPACE VFPXPorterLib
                     Grids:Add( scxSubItem )
                 ENDIF
             NEXT
+            // Also collect containerHandlers and grids from descendants
+            FOREACH VAR pair IN windowDescendants
+                VAR scxDescItem := pair:Item1
+                IF scxDescItem:XPortedCode != NULL
+                    containerHandlers:Append( scxDescItem:CreateEventHandlers( TRUE, SELF:Settings ) )
+                ENDIF
+                IF String.Compare( scxDescItem:BaseClassName, "grid", TRUE ) == 0
+                    Grids:Add( scxDescItem )
+                ENDIF
+            NEXT
             IF SELF:Canceled
                 RETURN
             ENDIF
-            code:Replace("<@InitContainers@>", containerHandlers:ToString() )
-            // Now, check the Grids
-            VAR columnSettings := SELF:GenerateGrids( Grids )
-            code:Replace("<@InitGrids@>", columnSettings:ToString() )
-
             // Any event for the Form ?
             handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
             //
-            IF oneItem:IsForm
-                code:Replace( "<@setdataenvironment@>", setDataEnv:ToString() )
-            ELSE
-                code:Replace( "<@setdataenvironment@>", "" )
-            ENDIF
-            // Add User-defined code, if any
+            VAR formInitReplacements := Dictionary<STRING, STRING>{}
+            formInitReplacements["InitContainers"] := containerHandlers:ToString()
+            VAR columnSettings := SELF:GenerateGrids( Grids )
+            formInitReplacements["InitGrids"] := columnSettings:ToString()
+            formInitReplacements["setdataenvironment"] := IIF(dataEnvItem != NULL, setDataEnv:ToString(), "")
+            formInitReplacements["DoBindings"] := IIF(dataEnvItem != NULL, "DoBindings()", "")
             IF oneItem:UserDefItems != NULL
                 VAR userdefProp := StringBuilder{}
                 userdefProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 2 ))
-                code:Replace( "<@userdefProps@>", userdefProp:ToString() )
+                formInitReplacements["userdefProps"] := userdefProp:ToString()
+            ELSE
+                formInitReplacements["userdefProps"] := ""
             ENDIF
-            //
-            code:Replace( "<@EventHandlers@>", handlers:ToString() )
+            formInitReplacements["EventHandlers"] := handlers:ToString()
+            code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormInitType, "FormInitType", formInitReplacements)}
             dest:Write( code:ToString() )
             //
             dest:Write( SELF:FormEndType )
@@ -556,101 +620,176 @@ BEGIN NAMESPACE VFPXPorterLib
 //                 dataEnvItem := SCXVCXItem{ orgDataEnvItem }
 //             ENDIF
 //             //
+            // Build DBC field property cache from the original (unmodified) DataEnvironment
+            VAR dbcCache := DbcFieldCache{Path.GetDirectoryName(SELF:Settings:ItemsPath), orgDataEnvItem}
             dest:Write( SELF:DesignerPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
                 dest.WriteLine("")
                 dest.WriteLine( "BEGIN NAMESPACE " + SELF:NamespaceDefinition )
                 dest.WriteLine("")
             ENDIF
-            LOCAL code AS StringBuilder
-            VAR formProp := StringBuilder{}
-            //
-            SELF:UpdateProgress()
-            // Form class definition
-            code := StringBuilder{ SELF:DesignerStartType }
-            oneItem:ConvertClassName( SELF:_typeList )
-            // We can be here from a Library, and this item is maybe not a Form....
-            // Retrieve the Form Conversion rule
-            VAR formRules := SELF:BuildControlRules( SELF:_propertiesRules, oneItem:FullyQualifiedFoxClassName ) //:FoxClassName )
-            oneItem:ConvertProperties( formRules, SELF:_defaultValues )
-            formProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 1 ))
+             LOCAL code AS StringBuilder
+             VAR formProp := StringBuilder{}
+             //
+             SELF:UpdateProgress()
+             // Form class definition
+             code := StringBuilder{ SELF:DesignerStartType }
+             oneItem:ConvertClassName( SELF:_typeList )
+             // We can be here from a Library, and this item is maybe not a Form....
+             // Retrieve the Form Conversion rule
+             VAR formRules := SELF:BuildControlRules( SELF:_propertiesRules, oneItem:FullyQualifiedFoxClassName ) //:FoxClassName )
+             oneItem:ConvertProperties( formRules, SELF:_defaultValues )
+             formProp:Append(oneItem:ApplyPropertiesRules( FALSE, FALSE, 1 ))
 
-//             IF String.IsNullOrEmpty( SELF:FormNameOverride )
-                code:Replace( "<@formName@>", IIF( String.IsNullOrEmpty(oneItem:Parent),oneItem:Name, oneItem:Parent + "_" + oneItem:Name ))
-//             ELSE
-//                 code:Replace( "<@formName@>",  SELF:FormNameOverride )
-//             ENDIF
-            // NameSpace addition ??
-            code:Replace( "<@superName@>", oneItem:FullyQualifiedName )
-            // Declaration of Childrens (Sub-Controls)
-            VAR declaration := StringBuilder{}
-            FOREACH VAR subItem IN oneItem:Childs
-                LOCAL scxSubItem AS SCXVCXItem
-                scxSubItem := (SCXVCXItem) subItem
-                scxSubItem:ConvertClassName( SELF:_typeList )
-                declaration:Append( SELF:Settings:Modifier )
-                declaration:Append(" ")
-                declaration:Append(subItem:Name)
-                declaration:Append(" AS ")
-                // NameSpace addition ??
-                declaration:Append(subItem:FullyQualifiedName)
-                declaration:Append(Environment.NewLine)
-            NEXT
-            code:Replace( "<@childsDeclaration@>", declaration:ToString() )
-            dest:Write( code:ToString() )
-            // Now, Instantiation of these Childrens
-            VAR controlStack := Stack<STRING>{}
-            VAR instantiate := StringBuilder{}
-            VAR initChilds := StringBuilder{}
-            code := StringBuilder{ SELF:DesignerInitType }
-            FOREACH VAR subItem IN oneItem:Childs
-                LOCAL scxSubItem AS SCXVCXItem
-                scxSubItem := (SCXVCXItem) subItem
-                SELF:UpdateProgress()
-                //
-                instantiate:Append("SELF:")
-                instantiate:Append(scxSubItem:Name)
-                instantiate:Append(" := ")
-                instantiate:Append(scxSubItem:FullyQualifiedName)
-                instantiate:Append("{}")
-                instantiate:Append(Environment.NewLine)
+             // Build replacements for DesignerStartType
+             VAR designerStartReplacements := Dictionary<STRING, STRING>{}
+             designerStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
+             designerStartReplacements["superName"] := oneItem:FullyQualifiedName
+             // Declaration of Childrens (Sub-Controls)
+             VAR declaration := StringBuilder{}
+             FOREACH VAR subItem IN oneItem:Childs
+                 LOCAL scxSubItem AS SCXVCXItem
+                 scxSubItem := (SCXVCXItem) subItem
+                 scxSubItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxSubItem:Name)
+                 declaration:Append(" AS ")
+                 IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                     declaration:Append(scxSubItem:PageFrameSubclassName)
+                 ELSE
+                     declaration:Append(scxSubItem:FullyQualifiedName)
+                 ENDIF
+                 declaration:Append(Environment.NewLine)
+             NEXT
+             // Also declare descendants of non-grid containers (e.g., controls inside PageFrame pages)
+             VAR designerDescendants := SELF:CollectContainerDescendants( oneItem )
+             FOREACH VAR pair IN designerDescendants
+                 VAR scxDescItem := pair:Item1
+                 scxDescItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxDescItem:Name)
+                 declaration:Append(" AS ")
+                 declaration:Append(scxDescItem:FullyQualifiedName)
+                 declaration:Append(Environment.NewLine)
+             NEXT
+             designerStartReplacements["childsDeclaration"] := declaration:ToString()
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:DesignerStartType, "DesignerStartType", designerStartReplacements)}
+             dest:Write( code:ToString() )
+             // Now, Instantiation of these Childrens
+             VAR controlStack := Stack<STRING>{}
+             VAR instantiate := StringBuilder{}
+             VAR initChilds := StringBuilder{}
+             VAR pageFrameInits := StringBuilder{}
+             code := StringBuilder{ SELF:DesignerInitType }
+             FOREACH VAR subItem IN oneItem:Childs
+                 LOCAL scxSubItem AS SCXVCXItem
+                 scxSubItem := (SCXVCXItem) subItem
+                 SELF:UpdateProgress()
+                 //
+                 instantiate:Append("SELF:")
+                 instantiate:Append(scxSubItem:Name)
+                 instantiate:Append(" := ")
+                 IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                     instantiate:Append(scxSubItem:PageFrameSubclassName)
+                 ELSE
+                     instantiate:Append(scxSubItem:FullyQualifiedName)
+                 ENDIF
+                 instantiate:Append("{}")
+                 instantiate:Append(Environment.NewLine)
 
-                // Set of Rules
-                ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
-                // Apply Rules to Properties
-                scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
-                initChilds:Append(scxSubItem:ApplyPropertiesRules( TRUE ))
-                // Add EventHandlers
-                IF scxSubItem:XPortedCode != NULL
-                    initChilds:Append( scxSubItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
-                ENDIF
-                initChilds:Append("//")
-                initChilds:Append(Environment.NewLine)
+                 // Set of Rules
+                 VAR memberFactoryDes := SELF:BuildMemberFactory( scxSubItem )
+                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
+                 // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                 dbcCache:InjectMissingProperties(scxSubItem)
+                 // Apply Rules to Properties
+                 scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 IF !String.IsNullOrEmpty(memberFactoryDes)
+                     initChilds:Append(memberFactoryDes)
+                 ENDIF
+                 initChilds:Append(scxSubItem:ApplyPropertiesRules( TRUE ))
+                 // Add EventHandlers
+                 IF scxSubItem:XPortedCode != NULL
+                     initChilds:Append( scxSubItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
+                 ENDIF
+                 // For PageFrames: emit TabPages:Add for each synthesized Page stub
+                 // and generate the typed PageFrame subclass file for compile-time page access
+                 IF scxSubItem:IsPageFrame
+                     IF !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                         SELF:GenerateTypedPageFrameClass(scxSubItem)
+                     ENDIF
+                     FOREACH VAR pageBase IN scxSubItem:Childs
+                         VAR pageStub := (SCXVCXItem) pageBase
+                         IF pageStub:IsPage
+                             pageFrameInits:Append("SELF:")
+                             pageFrameInits:Append(scxSubItem:Name)
+                             pageFrameInits:Append(":TabPages:Add(")
+                             pageFrameInits:Append(pageStub:FullyQualifiedName)
+                             pageFrameInits:Append("{})")
+                             pageFrameInits:Append(Environment.NewLine)
+                         ENDIF
+                     NEXT
+                 ENDIF
+                 initChilds:Append("//")
+                 initChilds:Append(Environment.NewLine)
 
-                IF scxSubItem:AddToControls
-                    controlStack:Push(scxSubItem:Name)
-                ENDIF
-            NEXT
-            // Controls must be added in reverse order
-            VAR addCtrl := StringBuilder{}
-            WHILE controlStack:Count > 0
-                addCtrl:Append("SELF:Controls:Add(SELF:")
-                addCtrl:Append(controlStack:Pop())
-                addCtrl:Append(")")
-                addCtrl:Append(Environment.NewLine)
-            ENDDO
-            // Now, put the code at the right places
-            code:Replace( "<@childsInstantiate@>", instantiate:ToString())
-            code:Replace( "<@childsInitialize@>", initChilds:ToString())
-            code:Replace( "<@addChildsToParent@>", addCtrl:ToString() )
-            // Now, set the Parent Properties
-
-            // Add EventHandlers
-            IF oneItem:XPortedCode != NULL
-                formProp:Append( oneItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
-            ENDIF
-            code:Replace( "<@formProps@>", formProp:ToString() )
-            dest:Write( code:ToString() )
+                 IF scxSubItem:AddToControls
+                     controlStack:Push(scxSubItem:Name)
+                 ENDIF
+             NEXT
+             // Also instantiate and init descendants of non-grid, non-pageframe containers
+             FOREACH VAR pair IN designerDescendants
+                 VAR scxDescItem := pair:Item1
+                 instantiate:Append("SELF:")
+                 instantiate:Append(scxDescItem:Name)
+                 instantiate:Append(" := ")
+                 instantiate:Append(scxDescItem:FullyQualifiedName)
+                 instantiate:Append("{}")
+                 instantiate:Append(Environment.NewLine)
+                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxDescItem:FullyQualifiedFoxClassName )
+                 // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                 dbcCache:InjectMissingProperties(scxDescItem)
+                 scxDescItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 initChilds:Append( scxDescItem:ApplyPropertiesRules( TRUE ) )
+                 IF scxDescItem:XPortedCode != NULL
+                     initChilds:Append( scxDescItem:CreateEventHandlers( FALSE, SELF:Settings ) )
+                 ENDIF
+                 initChilds:Append("//")
+                 initChilds:Append(Environment.NewLine)
+             NEXT
+             // PageFrame pages are added before Controls:Add
+             VAR addCtrl := StringBuilder{}
+             addCtrl:Append(pageFrameInits:ToString())
+             // Controls must be added in reverse order
+             WHILE controlStack:Count > 0
+                 addCtrl:Append("SELF:Controls:Add(SELF:")
+                 addCtrl:Append(controlStack:Pop())
+                 addCtrl:Append(")")
+                 addCtrl:Append(Environment.NewLine)
+             ENDDO
+             // Descendants of non-pageframe containers add to their parent container
+             FOREACH VAR pair IN designerDescendants
+                 addCtrl:Append("SELF:")
+                 addCtrl:Append(pair:Item2:Name)
+                 addCtrl:Append(":Controls:Add(SELF:")
+                 addCtrl:Append(pair:Item1:Name)
+                 addCtrl:Append(")")
+                 addCtrl:Append(Environment.NewLine)
+             NEXT
+             // Build replacements for DesignerInitType
+             VAR designerInitReplacements := Dictionary<STRING, STRING>{}
+             designerInitReplacements["childsInstantiate"] := instantiate:ToString()
+             designerInitReplacements["childsInitialize"] := initChilds:ToString()
+             designerInitReplacements["addChildsToParent"] := addCtrl:ToString()
+             // Add EventHandlers
+             IF oneItem:XPortedCode != NULL
+                 formProp:Append( oneItem:CreateEventHandlers( FALSE, SELF:Settings  ) )
+             ENDIF
+             designerInitReplacements["formProps"] := formProp:ToString()
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:DesignerInitType, "DesignerInitType", designerInitReplacements)}
+             dest:Write( code:ToString() )
             //
             dest:Write( SELF:DesignerEndType )
             //
@@ -678,10 +817,13 @@ BEGIN NAMESPACE VFPXPorterLib
             ELSE
                 dataEnvItem := NULL
             ENDIF
+            // Build DBC field property cache from the original (unmodified) DataEnvironment
+            VAR dbcCache := DbcFieldCache{Path.GetDirectoryName(SELF:Settings:ItemsPath), orgDataEnvItem}
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}
+            VAR cursorAliases := List<STRING>{}
             // Create the code for a DataEnvironment Object, with the attached Cursors
-            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv )
+            SELF:GenerateDataEnvironment( dataEnvItem, setDataEnv, declareDataEnv, cursorAliases )
             //
             dest:Write( SELF:FormPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
@@ -717,16 +859,13 @@ BEGIN NAMESPACE VFPXPorterLib
             // Do we have some inherited Controls ?
             LOCAL processingItem := NULL AS SCXVCXItem
             FOREACH VAR propInheritedCtrl IN propertiesFromInheritedControls
-                // So here, we have Tuple with a KeyValuePair which is Property/Value and the SCXVCXItem that is the inherited Control
-                // Create a copy of the Item
+                // Each tuple pairs a dotted property (e.g. "Text1.InputMask") with the SCXVCXItem of the child it belongs to.
                 VAR scxSubItem := SCXVCXItem{ propInheritedCtrl:Item2 }
                 IF processingItem != NULL
                     IF ( processingItem:Name != scxSubItem:Name )
-                        // Set of Rules
+                        // Flush the completed batch for the previous child
                         ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, processingItem:FullyQualifiedFoxClassName )
-                        // Apply Rules to Properties
                         processingItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
-                        // There should be only one Property in the Dict here...
                         FOREACH VAR prop IN processingItem:PropertiesDict
                             IF !prop:Key:StartsWith("_")
                                 formProp:Append("SELF:")
@@ -740,19 +879,27 @@ BEGIN NAMESPACE VFPXPorterLib
                         NEXT
                         processingItem := scxSubItem
                         processingItem:PropertiesDict:Clear()
+                        // Fall through to add the first property of the new child (shared with ELSE branch below)
                     ELSE
-                        // And set its Property
+                        // Same child — add the property and move on
                         VAR propItem := propInheritedCtrl:Item1
                         VAR propName := propItem:Key
                         VAR dotPos := propName:IndexOf('.')
                         propName := propName:Substring( dotPos+1 )
-                        //processingItem:PropertiesDict:Remove( propName )
                         processingItem:PropertiesDict:Add( propName, propItem:Value )
+                        LOOP  // skip the add-first-property block below
                     ENDIF
                 ELSE
                     processingItem := scxSubItem
                     processingItem:PropertiesDict:Clear()
                 ENDIF
+                // Add the first property of a newly started child batch.
+                // This runs when processingItem was just set (new child or very first child).
+                VAR firstPropItem := propInheritedCtrl:Item1
+                VAR firstPropName := firstPropItem:Key
+                VAR firstDotPos   := firstPropName:IndexOf('.')
+                firstPropName := firstPropName:Substring( firstDotPos+1 )
+                processingItem:PropertiesDict:Add( firstPropName, firstPropItem:Value )
             NEXT
             IF processingItem != NULL
                 // Set of Rules
@@ -770,38 +917,81 @@ BEGIN NAMESPACE VFPXPorterLib
                         formProp:Append(prop:Value)
                         formProp:Append(Environment.NewLine)
                     ENDIF
-                NEXT
-            ENDIF
-            //
-            code:Replace( "<@formName@>", oneItem:Name )
-            code:Replace( "<@superName@>", oneItem:ClassName )
-            // Declaration of Childrens (Sub-Controls)
-            VAR declaration := StringBuilder{}
-            FOREACH VAR subItem IN oneItem:Childs
-                LOCAL scxSubItem AS SCXVCXItem
-                scxSubItem := (SCXVCXItem) subItem
-                scxSubItem:ConvertClassName( SELF:_typeList )
-                declaration:Append( SELF:Settings:Modifier )
-                declaration:Append(" ")
-                declaration:Append(scxSubItem:Name)
-                declaration:Append(" AS ")
-                declaration:Append(scxSubItem:FullyQualifiedName)
-                declaration:Append(Environment.NewLine)
-            NEXT
-            // Declaration of User-Defined Properties (If Any)
-            IF oneItem:UserDefItems != NULL
-                FOREACH VAR userDefItem IN oneItem:UserDefItems
-                    // Here, only Field and FieldArray
-                    IF userDefItem:Kind != UserDefinition.ItemKind.Method
-                        declaration:Append( userDefItem:Declaration )
-                        declaration:Append(Environment.NewLine)
-                    ENDIF
-                NEXT
-            ENDIF
-            //
-            code:Replace( "<@dataenvironment@>", declareDataEnv:ToString() )
-            code:Replace( "<@childsDeclaration@>", declaration:ToString() )
-            dest:Write( code:ToString() )
+             NEXT
+             ENDIF
+             //
+             // Build replacements for FormStartType
+             VAR singleFileStartReplacements := Dictionary<STRING, STRING>{}
+             singleFileStartReplacements["formName"] := SELF:GetFormClassName( oneItem )
+             // superName is the PARENT class (what this VCX class inherits FROM), not the class
+             // being defined.  oneItem.ClassName is the user-defined name (e.g. "ccheckbox");
+             // the actual parent is oneItem.BaseClassName (e.g. "checkbox").
+             // If it maps to a standard VFP control we fully-qualify it with XSharp.VFP.UI so
+             // the compiler doesn't accidentally resolve to System.Windows.Forms.CheckBox etc.
+             LOCAL vcxSuperName AS STRING
+             VAR vcxBaseKey := oneItem:BaseClassName
+             IF SELF:_typeList:ContainsKey(vcxBaseKey)
+                 // Standard VFP control — use the converted .NET name, fully qualified.
+                 LOCAL vcxBaseData AS STRING[]
+                 vcxBaseData := SELF:_typeList[vcxBaseKey]
+                 vcxSuperName := vcxBaseData[1]
+                 IF !String.IsNullOrEmpty(XPorterSettings.SuppportLib)
+                     vcxSuperName := XPorterSettings.SuppportLib + "." + vcxSuperName
+                 ENDIF
+             ELSEIF !String.IsNullOrEmpty(oneItem:ClassLocation)
+                 // User-defined parent class from another VCX — namespace = VCX filename.
+                 VAR vcxNs := System.IO.Path.GetFileNameWithoutExtension(oneItem:ClassLocation):Replace(" ", "_")
+                 vcxSuperName := vcxNs + "." + vcxBaseKey
+             ELSE
+                 // Fallback: use BaseClassName as-is (may produce a warning at compile time).
+                 vcxSuperName := vcxBaseKey
+             ENDIF
+             singleFileStartReplacements["superName"] := vcxSuperName
+             // Declaration of Childrens (Sub-Controls)
+             VAR declaration := StringBuilder{}
+             FOREACH VAR subItem IN oneItem:Childs
+                 LOCAL scxSubItem AS SCXVCXItem
+                 scxSubItem := (SCXVCXItem) subItem
+                 scxSubItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxSubItem:Name)
+                 declaration:Append(" AS ")
+                 IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                     declaration:Append(scxSubItem:PageFrameSubclassName)
+                 ELSE
+                     declaration:Append(scxSubItem:FullyQualifiedName)
+                 ENDIF
+                 declaration:Append(Environment.NewLine)
+             NEXT
+             // Also declare descendants of non-grid containers (e.g., controls inside PageFrame pages)
+             VAR descendants := SELF:CollectContainerDescendants( oneItem )
+             FOREACH VAR pair IN descendants
+                 VAR scxDescItem := pair:Item1
+                 scxDescItem:ConvertClassName( SELF:_typeList )
+                 declaration:Append( SELF:Settings:Modifier )
+                 declaration:Append(" ")
+                 declaration:Append(scxDescItem:Name)
+                 declaration:Append(" AS ")
+                 declaration:Append(scxDescItem:FullyQualifiedName)
+                 declaration:Append(Environment.NewLine)
+             NEXT
+             // Declaration of User-Defined Properties (If Any)
+             IF oneItem:UserDefItems != NULL
+                 FOREACH VAR userDefItem IN oneItem:UserDefItems
+                     // Here, only Field and FieldArray
+                     IF userDefItem:Kind != UserDefinition.ItemKind.Method
+                         declaration:Append( userDefItem:Declaration )
+                         declaration:Append(Environment.NewLine)
+                     ENDIF
+                 NEXT
+             ENDIF
+             singleFileStartReplacements["dataenvironment"] := declareDataEnv:ToString()
+             singleFileStartReplacements["childsDeclaration"] := declaration:ToString()
+             // Experimental CURSOR hint (still commented out — the CURSOR keyword is not yet implemented in the compiler)
+             singleFileStartReplacements["cursorAliases"] := IIF( cursorAliases:Count > 0, "// CURSOR " + String.Join(", ", cursorAliases), "" )
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormStartType, "FormStartType", singleFileStartReplacements)}
+             dest:Write( code:ToString() )
             // Now, Instantiation of these Childrens
             VAR containerHandlers := StringBuilder{}
             VAR Grids := List<SCXVCXItem>{ }
@@ -826,14 +1016,24 @@ BEGIN NAMESPACE VFPXPorterLib
                 instantiate:Append("SELF:")
                 instantiate:Append(scxSubItem:Name)
                 instantiate:Append(" := ")
-                instantiate:Append(scxSubItem:FullyQualifiedName)
+                IF scxSubItem:IsPageFrame .AND. !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                    instantiate:Append(scxSubItem:PageFrameSubclassName)
+                ELSE
+                    instantiate:Append(scxSubItem:FullyQualifiedName)
+                ENDIF
                 instantiate:Append("{}")
                 instantiate:Append(Environment.NewLine)
 
                 // Set of Rules
+                VAR memberFactorySF := SELF:BuildMemberFactory( scxSubItem )
                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxSubItem:FullyQualifiedFoxClassName )
+                // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                dbcCache:InjectMissingProperties(scxSubItem)
                 // Apply Rules to Properties
                 scxSubItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                IF !String.IsNullOrEmpty(memberFactorySF)
+                    initChilds:Append(memberFactorySF)
+                ENDIF
                 initChilds:Append( scxSubItem:ApplyPropertiesRules( TRUE ) )
                 // Add EventHandlers
                 IF scxSubItem:XPortedCode != NULL
@@ -846,6 +1046,24 @@ BEGIN NAMESPACE VFPXPorterLib
                 ENDIF
                 initChilds:Append("//")
                 initChilds:Append(Environment.NewLine)
+                // For PageFrames: emit TabPages:Add for each synthesized Page stub
+                // and generate the typed PageFrame subclass file for compile-time page access
+                IF scxSubItem:IsPageFrame
+                    IF !String.IsNullOrEmpty(scxSubItem:PageFrameSubclassName)
+                        SELF:GenerateTypedPageFrameClass(scxSubItem)
+                    ENDIF
+                    FOREACH VAR pageBase IN scxSubItem:Childs
+                        VAR pageStub := (SCXVCXItem) pageBase
+                        IF pageStub:IsPage
+                            addCtrl:Append("SELF:")
+                            addCtrl:Append(scxSubItem:Name)
+                            addCtrl:Append(":TabPages:Add(")
+                            addCtrl:Append(pageStub:FullyQualifiedName)
+                            addCtrl:Append("{})")
+                            addCtrl:Append(Environment.NewLine)
+                        ENDIF
+                    NEXT
+                ENDIF
                 // In order to Add Controls to Forms, or Forms to Formset
                 IF scxSubItem:AddToControls .OR. oneItem:IsFormSet
                     controlStack:Push(scxSubItem:Name)
@@ -862,82 +1080,166 @@ BEGIN NAMESPACE VFPXPorterLib
                     RETURN
                 ENDIF
                 //
-            NEXT
-            IF oneItem:XPortedCode != NULL
-                formProp:Append( oneItem:CreateEventHandlers( FALSE , SELF:Settings ) )
+             NEXT
+             // Also process descendants of non-grid, non-pageframe containers
+             FOREACH VAR pair IN descendants
+                 VAR scxDescItem := pair:Item1
+                 VAR container := pair:Item2
+                 IF SELF:Canceled
+                     EXIT
+                 ENDIF
+                 instantiate:Append("SELF:")
+                 instantiate:Append(scxDescItem:Name)
+                 instantiate:Append(" := ")
+                 instantiate:Append(scxDescItem:FullyQualifiedName)
+                 instantiate:Append("{}")
+                 instantiate:Append(Environment.NewLine)
+                 ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, scxDescItem:FullyQualifiedFoxClassName )
+                 // Inject DBC-derived properties (Caption/InputMask/Format) not already in SCX
+                 dbcCache:InjectMissingProperties(scxDescItem)
+                 scxDescItem:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
+                 initChilds:Append( scxDescItem:ApplyPropertiesRules( TRUE ) )
+                 IF scxDescItem:XPortedCode != NULL
+                     initChilds:Append( scxDescItem:CreateEventHandlers( FALSE, SELF:Settings ) )
+                     containerHandlers:Append( scxDescItem:CreateEventHandlers( TRUE, SELF:Settings ) )
+                 ENDIF
+                 initChilds:Append("//")
+                 initChilds:Append(Environment.NewLine)
+                 addCtrl:Append("SELF:")
+                 addCtrl:Append(container:Name)
+                 addCtrl:Append(":Controls:Add(SELF:")
+                 addCtrl:Append(scxDescItem:Name)
+                 addCtrl:Append(")")
+                 addCtrl:Append(Environment.NewLine)
+                 IF String.Compare( scxDescItem:BaseClassName, "grid", TRUE ) == 0
+                     Grids:Add( scxDescItem )
+                 ENDIF
+             NEXT
+             IF oneItem:XPortedCode != NULL
+                 formProp:Append( oneItem:CreateEventHandlers( FALSE , SELF:Settings ) )
+             ENDIF
+             // Build replacements for FormInitType
+             VAR singleFileInitReplacements := Dictionary<STRING, STRING>{}
+             singleFileInitReplacements["childsInstantiate"] := instantiate:ToString()
+             singleFileInitReplacements["childsInitialize"] := initChilds:ToString()
+             singleFileInitReplacements["addChildsToParent"] := addCtrl:ToString()
+             singleFileInitReplacements["formProps"] := formProp:ToString()
+             singleFileInitReplacements["userdefProps"] := userdefProp:ToString()
+             singleFileInitReplacements["setdataenvironment"] := IIF(dataEnvItem != NULL, setDataEnv:ToString(), "")
+             singleFileInitReplacements["DoBindings"] := IIF(dataEnvItem != NULL, "DoBindings()", "")
+
+             // Add EventHandlers
+             VAR handlers := StringBuilder{}
+             FOREACH VAR subItem IN oneItem:Childs
+                 //
+                 handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
+             NEXT
+             // Also collect event handlers from container descendants
+             FOREACH VAR pair IN descendants
+                 handlers:AppendLine( SELF:BuildEventHandlers( pair:Item1 ) )
+             NEXT
+             // Any event for the Form ?
+             handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
+             //
+             singleFileInitReplacements["InitContainers"] := containerHandlers:ToString()
+             // Now, check the Grids
+             VAR columnSettings := SELF:GenerateGrids( Grids )
+             singleFileInitReplacements["InitGrids"] := columnSettings:ToString()
+             singleFileInitReplacements["EventHandlers"] := handlers:ToString()
+             code := StringBuilder{TemplateHelper.ReplaceAndValidate(SELF:FormInitType, "FormInitType", singleFileInitReplacements)}
+             dest:Write( code:ToString() )
+             // Do we need to push some Extra Code ?
+             IF needBinding
+                 dest:Write( SELF:BindingCode )
+             ENDIF
+             // Now, push the Closing definition
+             dest:Write( SELF:FormEndType )
+             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
+                 dest.WriteLine( "END NAMESPACE " )
+             ENDIF
+             //
+             RETURN
+         END METHOD
+
+
+        /// <summary>
+        /// Returns the X# class name for a form/control entity.
+        /// - VCX: use the OBJNAME (each entry is an explicitly named class definition).
+        /// - SCX, simple form: use the SCX filename — that is the DO FORM identity in VFP.
+        /// - SCX, FormSet sub-form: use scxName_formOBJNAME to make each sub-form unique.
+        /// </summary>
+        PRIVATE METHOD GetFormClassName( item AS SCXVCXItem ) AS STRING
+            VAR prefix := XPorterSettings.ClassNamePrefix
+            IF SELF:IsLibrary
+                RETURN prefix + item:Name
             ENDIF
-            // Now, put the code at the right places
-            code:Replace( "<@childsInstantiate@>", instantiate:ToString())
-            code:Replace( "<@childsInitialize@>", initChilds:ToString())
-            code:Replace( "<@addChildsToParent@>", addCtrl:ToString() )
-            // Now, set the Parent Properties, usually in InitializeComponent()
-            code:Replace( "<@formProps@>", formProp:ToString() )
-            code:Replace( "<@userdefProps@>", userdefProp:ToString() )
-            //
-            IF oneItem:IsForm
-                code:Replace( "<@setdataenvironment@>", setDataEnv:ToString() )
-            ELSE
-                code:Replace( "<@setdataenvironment@>", "" )
+            VAR scxName := prefix + Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_")
+            IF item:IsForm .AND. !String.IsNullOrEmpty( item:Parent )
+                RETURN scxName + "_" + item:Name
             ENDIF
-            // Add EventHandlers
-            VAR handlers := StringBuilder{}
-            FOREACH VAR subItem IN oneItem:Childs
-                //
-                handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
-            NEXT
-            // Any event for the Form ?
-            handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
-            //
-            code:Replace("<@InitContainers@>", containerHandlers:ToString() )
-            // Now, check the Grids
-            VAR columnSettings := SELF:GenerateGrids( Grids )
-            code:Replace("<@InitGrids@>", columnSettings:ToString() )
-            //
-            code:Replace( "<@EventHandlers@>", handlers:ToString() )
-            dest:Write( code:ToString() )
-            // Do we need to push some Extra Code ?
-            IF needBinding
-                dest:Write( SELF:BindingCode )
+            IF item:IsPage .AND. !String.IsNullOrEmpty( item:Parent )
+                // Parent = PageFrame.FullName, e.g. "Formset.Form1.Pageframe1"
+                // Drop the top-level FormSet segment so the name stays compact.
+                VAR pfPath := item:Parent
+                VAR firstDot := pfPath:IndexOf('.')
+                VAR suffix := IIF(firstDot >= 0, pfPath:Substring(firstDot + 1):Replace(".", "_"), pfPath)
+                RETURN scxName + "_" + suffix + "_" + item:Name
             ENDIF
-            // Now, push the Closing definition
-            dest:Write( SELF:FormEndType )
-            IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
-                dest.WriteLine( "END NAMESPACE " )
-            ENDIF
-            //
-            RETURN
+            RETURN scxName
         END METHOD
 
+        /// <summary>
+        /// Writes a typed PageFrame subclass that exposes named, typed Page properties.
+        /// This lets the compiler resolve pageframe1.page1 with the correct concrete type.
+        /// </summary>
+        PRIVATE METHOD GenerateTypedPageFrameClass( pageFrame AS SCXVCXItem ) AS VOID
+            VAR subclassName := pageFrame:PageFrameSubclassName
+            VAR outFile := Path.Combine(SELF:Settings:OutputPath, subclassName + ".prg")
+            BEGIN USING VAR writer := StreamWriter{ outFile }
+                writer:WriteLine( SELF:FormPrefix )
+                IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
+                    writer:WriteLine( "" )
+                    writer:WriteLine( "BEGIN NAMESPACE " + SELF:NamespaceDefinition )
+                ENDIF
+                writer:WriteLine( "" )
+                writer:WriteLine( "PUBLIC CLASS " + subclassName + " INHERIT " + XPorterSettings.SuppportLib + ".PageFrame" )
+                writer:WriteLine( "" )
+                LOCAL pageIdx := 0 AS INT
+                FOREACH VAR pageBase IN pageFrame:Childs
+                    VAR stub := (SCXVCXItem) pageBase
+                    IF stub:IsPage
+                        VAR pageClassName := stub:ClassName  // already the generated class name
+                        writer:WriteLine( "    PUBLIC PROPERTY " + stub:Name + " AS " + pageClassName )
+                        writer:WriteLine( "        GET ; RETURN (" + pageClassName + ") SELF:TabPages[" + pageIdx:ToString() + "] ; END GET" )
+                        writer:WriteLine( "    END PROPERTY" )
+                        writer:WriteLine( "" )
+                        pageIdx++
+                    ENDIF
+                NEXT
+                writer:WriteLine( "END CLASS" )
+                IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
+                    writer:WriteLine( "" )
+                    writer:WriteLine( "END NAMESPACE" )
+                ENDIF
+            END USING
+            SELF:GeneratedFiles:Add( GeneratedFile{ outFile, "Form" } )
+        END METHOD
 
         PROTECTED METHOD GetOutputFilename( item AS BaseItem ) AS STRING
             LOCAL outFileName AS STRING
-            //
-//             IF String.IsNullOrEmpty( SELF:FormNameOverride )
-                // Only one Form ?
-                IF item != NULL
-                    VAR itemName := item:Name
-                    // We could be in a FormSet, add the Parent as a Prefix
-                    IF item:IsForm .AND. !String.IsNullOrEmpty(item:Parent)
-                        itemName := item:Parent + "_" + itemName
-                    ENDIF
-                    IF SELF:Settings:PrefixClassFile
-                        outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ) + "_" + itemName
-                    ELSE
-                        outFileName := itemName
-                    ENDIF
-                    outFileName := Path.GetFileNameWithoutExtension(SELF:Settings:ItemsPath ) + "_" + outFileName
-
+            IF item != NULL
+                VAR className := SELF:GetFormClassName( (SCXVCXItem)item )
+                // For VCX items, PrefixClassFile optionally groups files under the VCX name.
+                // For SCX items the class name already embeds the SCX filename, so no extra prefix.
+                IF SELF:IsLibrary .AND. SELF:Settings:PrefixClassFile
+                    outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_") + "_" + className
                 ELSE
-                    outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath )
+                    outFileName := className
                 ENDIF
-//             ELSE
-//                 outFileName := SELF:FormNameOverride
-//             ENDIF
-            // Create the File based on the Form Name, or the scx file in case of trouble...
-            LOCAL destFile AS STRING
-            destFile := Path.Combine(SELF:Settings:OutputPath, outFileName ) + ".prg"
-            //destFile := Path.ChangeExtension( destFile, "prg")
-            RETURN destFile
+            ELSE
+                outFileName := Path.GetFileNameWithoutExtension( SELF:Settings:ItemsPath ):Replace(" ", "_")
+            ENDIF
+            RETURN Path.Combine(SELF:Settings:OutputPath, outFileName ) + ".prg"
         END METHOD
 
         /// <summary>
@@ -1003,10 +1305,24 @@ BEGIN NAMESPACE VFPXPorterLib
                     //					thisObjectDecl:Append(Environment.NewLine)
                     // Get the first line of SourceCode
                     LOCAL line AS STRING
+                    // Now, we will put line 0, so after we continue at line 1
+                    VAR start := 1
                     IF cdeBlock:Source:Count > 0
                         line := cdeBlock:Source[0]
                         IF line:TrimStart():ToUpper():StartsWith("LPARAMETERS") .OR. line:TrimStart():ToUpper():StartsWith("PARAMETERS")
                             handlers:AppendLine( line )
+                            IF line:EndsWith(";") // Continued line ?
+                                VAR i := 1
+                                WHILE i < cdeBlock:Source:Count
+                                    line := cdeBlock:Source[i]
+                                    handlers:AppendLine( line )
+                                    IF !line:EndsWith(";")
+                                        start := i+1 // Skip the lines we have already put
+                                        EXIT
+                                    ENDIF
+                                    i++
+                                END
+                            ENDIF
                             handlers:AppendLine( thisObjectDecl:ToString() )
                         ELSE
                             handlers:AppendLine( thisObjectDecl:ToString() )
@@ -1014,7 +1330,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         ENDIF
                     ENDIF
                     //
-                    FOR VAR i:= 1 TO cdeBlock:Source:Count-1
+                    FOR VAR i:= start TO cdeBlock:Source:Count-1
                         line := cdeBlock:Source[i]
                         IF ( i == cdeBlock:Source:Count-1 )
                             IF ( line == "ENDPROC" )
@@ -1034,8 +1350,10 @@ BEGIN NAMESPACE VFPXPorterLib
         /// </summary>
         /// <param name="dataEnvItem"></param>
         /// <returns></returns>
-        PROTECTED METHOD GenerateDataEnvironment( dataEnvItem AS SCXVCXItem, setDataEnv AS StringBuilder, declareDataEnv AS StringBuilder  ) AS VOID
+        PROTECTED METHOD GenerateDataEnvironment( dataEnvItem AS SCXVCXItem, setDataEnv AS StringBuilder, declareDataEnv AS StringBuilder, cursorAliases AS List<STRING>  ) AS VOID
             LOCAL dataRules AS Dictionary<STRING,STRING>
+            // Collect unique DBC paths referenced by cursors (insertion-ordered via List)
+            VAR dbcPaths := List<STRING>{}
             //
             IF dataEnvItem != NULL
                 // For the DataEnvironment (one only!?)
@@ -1053,10 +1371,13 @@ BEGIN NAMESPACE VFPXPorterLib
                 // Apply Rules to Properties
                 dataEnvItem:ConvertProperties( dataRules, SELF:_defaultValues )
                 setDataEnv:Append( dataEnvItem:ApplyPropertiesRules( TRUE ) )
-                // For each Cursor
+                // Pass 1 — Cursors
                 FOREACH VAR dataCursor IN dataEnvItem:Childs
                     LOCAL cursorItem AS SCXVCXItem
                     cursorItem := (SCXVCXItem) dataCursor
+                    IF String.Compare( cursorItem:BaseClassName, "cursor", TRUE ) != 0
+                        LOOP
+                    ENDIF
                     cursorItem:ConvertClassName( SELF:_typeList )
                     declareDataEnv:Append( SELF:Settings:Modifier )
                     declareDataEnv:Append(" ")
@@ -1071,16 +1392,174 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append(cursorItem:ClassName)
                     setDataEnv:Append("{}")
                     setDataEnv:Append(Environment.NewLine)
+                    // Collect DBC path before ConvertProperties strips/transforms it
+                    LOCAL dbRaw AS STRING
+                    IF cursorItem:PropertiesDict:TryGetValue("Database", OUT dbRaw)
+                        dbRaw := dbRaw:Trim()
+                        IF dbRaw:Length >= 2 .AND. dbRaw[0] == '"' .AND. dbRaw[dbRaw:Length-1] == '"'
+                            dbRaw := dbRaw:Substring(1, dbRaw:Length-2)
+                        ENDIF
+                        IF !String.IsNullOrEmpty(dbRaw) .AND. !dbcPaths:Contains(dbRaw)
+                            dbcPaths:Add(dbRaw)
+                        ENDIF
+                    ENDIF
+                    // Also read CursorSource raw (unquoted) up-front — used both for the runtime
+                    // path override below (free tables only) and as the Alias fallback, since VFP
+                    // defaults a Cursor's Alias to its CursorSource base name when Alias is empty.
+                    LOCAL csRawForAlias AS STRING
+                    cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRawForAlias)
+                    IF !String.IsNullOrEmpty(csRawForAlias)
+                        csRawForAlias := csRawForAlias:Trim()
+                        IF csRawForAlias:Length >= 2 .AND. csRawForAlias[0] == '"' .AND. csRawForAlias[csRawForAlias:Length-1] == '"'
+                            csRawForAlias := csRawForAlias:Substring(1, csRawForAlias:Length-2)
+                        ENDIF
+                    ENDIF
+                    // Collect the Cursor's Alias before ConvertProperties, for the (still experimental,
+                    // hence emitted as a comment) CURSOR hint line above the CLASS definition
+                    LOCAL aliasRaw AS STRING
+                    IF cursorItem:PropertiesDict:TryGetValue("Alias", OUT aliasRaw)
+                        aliasRaw := aliasRaw:Trim()
+                        IF aliasRaw:Length >= 2 .AND. aliasRaw[0] == '"' .AND. aliasRaw[aliasRaw:Length-1] == '"'
+                            aliasRaw := aliasRaw:Substring(1, aliasRaw:Length-2)
+                        ENDIF
+                    ENDIF
+                    IF String.IsNullOrEmpty(aliasRaw)
+                        IF !String.IsNullOrEmpty(csRawForAlias)
+                            aliasRaw := Path.GetFileNameWithoutExtension(csRawForAlias)
+                        ELSE
+                            aliasRaw := cursorItem:Name
+                        ENDIF
+                    ENDIF
+                    IF !String.IsNullOrEmpty(aliasRaw) .AND. !cursorAliases:Contains(aliasRaw)
+                        cursorAliases:Add(aliasRaw)
+                    ENDIF
+                    // For free table cursors (no Database), collect CursorSource filename for runtime path override
+                    LOCAL csFileName := "" AS STRING
+                    LOCAL csRelDir := "" AS STRING
+                    IF String.IsNullOrEmpty(dbRaw)
+                        LOCAL csRaw AS STRING
+                        IF cursorItem:PropertiesDict:TryGetValue("CursorSource", OUT csRaw)
+                            csRaw := csRaw:Trim()
+                            IF csRaw:Length >= 2 .AND. csRaw[0] == '"' .AND. csRaw[csRaw:Length-1] == '"'
+                                csRaw := csRaw:Substring(1, csRaw:Length-2)
+                            ENDIF
+                            IF !String.IsNullOrEmpty(csRaw)
+                                IF String.IsNullOrEmpty(Path.GetExtension(csRaw))
+                                    csRaw := Path.ChangeExtension(csRaw, ".dbf")
+                                ENDIF
+                                csFileName := Path.GetFileName(csRaw)
+                                csRelDir := Path.GetDirectoryName(csRaw)
+                            ENDIF
+                        ENDIF
+                    ENDIF
                     // Set of Rules
                     dataRules := SELF:BuildControlRules( SELF:_propertiesRules, cursorItem:FoxClassName )
                     // Apply Rules to Properties
                     cursorItem:ConvertProperties( dataRules, SELF:_defaultValues )
                     setDataEnv:Append( cursorItem:ApplyPropertiesRules( TRUE ) )
+                    // Override CursorSource with a relative path for free table cursors
+                    IF !String.IsNullOrEmpty(csFileName)
+                        setDataEnv:Append("SELF:")
+                        setDataEnv:Append(cursorItem:Name)
+                        IF SELF:Settings:KeepFolderStructure
+                            IF !String.IsNullOrEmpty(csRelDir)
+                                setDataEnv:Append(e":CursorSource := Path.Combine(\"" + csRelDir + e"\", \"" + csFileName + e"\")")
+                            ELSE
+                                setDataEnv:Append(e":CursorSource := \"" + csFileName + e"\"")
+                            ENDIF
+                        ELSEIF SELF:Settings:StoreInFolders
+                            VAR ftFolder := SELF:Settings:FolderNames["FreeTables"]
+                            setDataEnv:Append(e":CursorSource := Path.Combine(\"" + ftFolder + e"\", \"" + csFileName + e"\")")
+                        ELSE
+                            setDataEnv:Append(e":CursorSource := \"" + csFileName + e"\"")
+                        ENDIF
+                        setDataEnv:Append(Environment.NewLine)
+                    ENDIF
+                    // Override Database with a relative path for DBC-bound cursors.
+                    // DbCursor.Open() passes this to DbcManager.Open() which resolves
+                    // it relative to the working directory (respects SET DEFAULT).
+                    IF !String.IsNullOrEmpty(dbRaw)
+                        VAR dbcFileForRuntime := Path.GetFileName(dbRaw)
+                        IF String.IsNullOrEmpty(Path.GetExtension(dbcFileForRuntime))
+                            dbcFileForRuntime := Path.ChangeExtension(dbcFileForRuntime, ".dbc")
+                        ENDIF
+                        setDataEnv:Append("SELF:")
+                        setDataEnv:Append(cursorItem:Name)
+                        IF SELF:Settings:KeepFolderStructure
+                            VAR dbRelDir := Path.GetDirectoryName(dbRaw)
+                            IF !String.IsNullOrEmpty(dbRelDir)
+                                setDataEnv:Append(e":Database := Path.Combine(\"" + dbRelDir + e"\", \"" + dbcFileForRuntime + e"\")")
+                            ELSE
+                                setDataEnv:Append(e":Database := \"" + dbcFileForRuntime + e"\"")
+                            ENDIF
+                        ELSEIF SELF:Settings:StoreInFolders
+                            VAR dbFolder := SELF:Settings:FolderNames["Databases"]
+                            setDataEnv:Append(e":Database := Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileForRuntime + e"\")")
+                        ELSE
+                            setDataEnv:Append(e":Database := \"" + dbcFileForRuntime + e"\"")
+                        ENDIF
+                        setDataEnv:Append(Environment.NewLine)
+                    ENDIF
                     setDataEnv:Append("SELF:")
                     setDataEnv:Append(dataEnvItem:Name)
                     setDataEnv:Append(":Cursors:Add( ")
                     setDataEnv:Append(cursorItem:Name)
                     setDataEnv:Append(" )")
+                    setDataEnv:Append(Environment.NewLine)
+                NEXT
+                // Pass 2 — Relations
+                FOREACH VAR dataRel IN dataEnvItem:Childs
+                    LOCAL relItem AS SCXVCXItem
+                    relItem := (SCXVCXItem) dataRel
+                    IF String.Compare( relItem:BaseClassName, "relation", TRUE ) != 0
+                        LOOP
+                    ENDIF
+                    relItem:ConvertClassName( SELF:_typeList )
+                    declareDataEnv:Append( SELF:Settings:Modifier )
+                    declareDataEnv:Append(" ")
+                    declareDataEnv:Append(relItem:Name)
+                    declareDataEnv:Append(" AS ")
+                    declareDataEnv:Append(relItem:ClassName)
+                    declareDataEnv:Append(Environment.NewLine)
+                    //
+                    setDataEnv:Append("SELF:")
+                    setDataEnv:Append(relItem:Name)
+                    setDataEnv:Append(" := ")
+                    setDataEnv:Append(relItem:ClassName)
+                    setDataEnv:Append("{}")
+                    setDataEnv:Append(Environment.NewLine)
+                    // Set of Rules
+                    dataRules := SELF:BuildControlRules( SELF:_propertiesRules, relItem:FoxClassName )
+                    // Apply Rules to Properties
+                    relItem:ConvertProperties( dataRules, SELF:_defaultValues )
+                    setDataEnv:Append( relItem:ApplyPropertiesRules( TRUE ) )
+                    setDataEnv:Append("SELF:")
+                    setDataEnv:Append(dataEnvItem:Name)
+                    setDataEnv:Append(":Relations:Add( ")
+                    setDataEnv:Append(relItem:Name)
+                    setDataEnv:Append(" )")
+                    setDataEnv:Append(Environment.NewLine)
+                NEXT
+                // Emit OPEN DATABASE for each DBC referenced by a cursor.
+                // Relative path — resolved from the working directory (respects SET DEFAULT).
+                FOREACH VAR dbcPath IN dbcPaths
+                    VAR dbcFileName := Path.GetFileName(dbcPath)
+                    IF String.IsNullOrEmpty(Path.GetExtension(dbcFileName))
+                        dbcFileName := Path.ChangeExtension(dbcFileName, ".dbc")
+                    ENDIF
+                    IF SELF:Settings:KeepFolderStructure
+                        VAR dbRelDir := Path.GetDirectoryName(dbcPath)
+                        IF !String.IsNullOrEmpty(dbRelDir)
+                            setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbRelDir + e"\", \"" + dbcFileName + e"\"))")
+                        ELSE
+                            setDataEnv:Append(e"OPEN DATABASE \"" + dbcFileName + e"\"")
+                        ENDIF
+                    ELSEIF SELF:Settings:StoreInFolders
+                        VAR dbFolder := SELF:Settings:FolderNames["Databases"]
+                        setDataEnv:Append(e"OPEN DATABASE (Path.Combine(\"" + dbFolder + e"\", \"" + dbcFileName + e"\"))")
+                    ELSE
+                        setDataEnv:Append(e"OPEN DATABASE \"" + dbcFileName + e"\"")
+                    ENDIF
                     setDataEnv:Append(Environment.NewLine)
                 NEXT
                 // Now, init (if needed) all Cursors
@@ -1094,7 +1573,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 setDataEnv:Append(", @DataEnvironment.DataEnvironment_FormClosing() }")
                 setDataEnv:Append(Environment.NewLine)
                 //
-                setDataEnv:Append("DoBindings()")
+                //setDataEnv:Append("DoBindings()") Do The Binding in the Template
                 setDataEnv:Append(Environment.NewLine)
                 //
             ENDIF
@@ -1103,70 +1582,252 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROTECTED METHOD GenerateGrids( Grids AS List<SCXVCXItem> ) AS StringBuilder
             VAR columnSettings := StringBuilder{}
-            VAR locals := List<STRING>{}
-            LOCAL ctrlRules AS Dictionary<STRING,STRING>
             FOREACH VAR grid IN Grids
-                // Todo : If we have more than one grid, prefix the Column Setting with the Grid Name ??
-                // Column settings are Childs of the Grid
+                // grid:Childs now contains synthetic Column items (BaseClassName="column")
+                // produced by SCXVCXFile.SynthesizeGridColumns.  Each synthetic column
+                // carries its own PropertiesDict and a Childs list with Header/Text/Spinner.
                 FOREACH VAR subItem IN grid:Childs
-                    LOCAL columnSetting AS SCXVCXItem
-                    columnSetting := (SCXVCXItem) subItem
-                    columnSetting:ConvertClassName( SELF:_typeList )
-                    // Set of Rules
-                    ctrlRules := SELF:BuildControlRules( SELF:_propertiesRules, columnSetting:FullyQualifiedFoxClassName )
-                    columnSetting:ConvertProperties( ctrlRules, SELF:_defaultValues, TRUE )
-                    // Var Already defined ?
-                    IF !locals:Contains( columnSetting:Name:ToLower() )
-                        columnSettings:Append("LOCAL ")
-                        columnSettings:Append(columnSetting:Name)
-                        columnSettings:Append(" AS ")
-                        // NameSpace addition ??
-                        columnSettings:Append(columnSetting:FullyQualifiedName)
-                        columnSettings:Append(Environment.NewLine)
-                        //
-                        locals:Add( columnSetting:Name:ToLower() )
+                    VAR col := (SCXVCXItem) subItem
+                    IF String.Compare( col:BaseClassName, "column", TRUE ) != 0
+                        LOOP
                     ENDIF
-                    //
-                    columnSettings:Append(columnSetting:Name)
-                    columnSettings:Append(" := ")
-                    columnSettings:Append(columnSetting:ClassName)
-                    columnSettings:Append("{}")
-                    columnSettings:Append(Environment.NewLine)
-                    //
-                    // true => to get the Item name: true => as Local, so no SELF prefix
-                    columnSettings:Append( columnSetting:ApplyPropertiesRules( TRUE, TRUE ) )
-                    // The parentName contains the Grid and the Column, on form of form1.grid1.column1
-                    // so extract the grid and column grid1.column1
-                    VAR gridName := String.Empty
-                    VAR startG := columnSetting:Parent:ToLower():IndexOf( ".grid" )
-                    gridName := columnSetting:Parent:Substring( startG+1 )
-                    // then turn it to grid1.column(1)
-                    VAR columnNumber := StringBuilder{}
-                    FOR VAR i := gridName:Length-1 TO 0 STEP -1
-                        IF !Char.IsDigit( gridName[i] )
-                            gridName := gridName:Substring( 0, i+1 )
-                            EXIT
+                    // Extract 1-based index from "Column<n>"
+                    LOCAL colIdx AS INT
+                    IF col:Name:Length <= 6 .OR. !col:Name:StartsWith("Column", StringComparison.OrdinalIgnoreCase)
+                        LOOP
+                    ENDIF
+                    IF !Int32.TryParse( col:Name:Substring(6), OUT colIdx )
+                        LOOP
+                    ENDIF
+                    VAR colPrefix := "SELF:" + grid:Name + ":Column(" + colIdx:ToString() + "):"
+                    // Detect non-text CurrentControl (ComboBox, CheckBox, etc.)
+                    LOCAL currentControl := "" AS STRING
+                    LOCAL currentControlItem AS SCXVCXItem
+                    currentControlItem := NULL_OBJECT
+                    IF col:PropertiesDict:ContainsKey("CurrentControl")
+                        currentControl := col:PropertiesDict["CurrentControl"]:Trim():Trim( <CHAR>{ '"' } ):Trim()
+                    ENDIF
+                    IF String.IsNullOrEmpty(currentControl)
+                        // Fall back: look for a non-Header, non-TextBox child
+                        FOREACH VAR childItem IN col:Childs
+                            VAR child := (SCXVCXItem)childItem
+                            VAR childBase := child:BaseClassName:ToLowerInvariant()
+                            IF childBase != "header" .AND. childBase != "textbox"
+                                currentControl := childBase
+                                currentControlItem := child
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ELSE
+                        // Find the matching child item by name for property extraction
+                        FOREACH VAR childItem IN col:Childs
+                            VAR child := (SCXVCXItem)childItem
+                            IF String.Compare(child:Name, currentControl, TRUE) == 0 .OR. ;
+                               String.Compare(child:BaseClassName, currentControl, TRUE) == 0
+                                currentControlItem := child
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ENDIF
+                    IF !String.IsNullOrEmpty(currentControl)
+                        LOCAL colType AS INT
+                        colType := -1
+                        SWITCH currentControl:ToLowerInvariant()
+                        CASE "checkbox" ; colType := 3
+                        CASE "check1"   ; colType := 3
+                        CASE "combobox" ; colType := 5
+                        CASE "combo1"   ; colType := 5
+                        END SWITCH
+                        IF colType > 0
+                            columnSettings:Append(colPrefix)
+                            columnSettings:AppendLine("ColumnType := " + colType:ToString())
+                            IF colType == 5 .AND. currentControlItem != NULL_OBJECT
+                                LOCAL rowSourceType := 0 AS INT
+                                IF currentControlItem:PropertiesDict:ContainsKey("RowSourceType")
+                                    Int32.TryParse(currentControlItem:PropertiesDict["RowSourceType"]:Trim(), OUT rowSourceType)
+                                ENDIF
+                                columnSettings:Append(colPrefix)
+                                columnSettings:AppendLine("RowSourceType := " + rowSourceType:ToString())
+                                IF currentControlItem:PropertiesDict:ContainsKey("RowSource")
+                                    VAR rowSource := currentControlItem:PropertiesDict["RowSource"]:Trim()
+                                    IF !String.IsNullOrEmpty(rowSource) .AND. rowSource != "Nil"
+                                        columnSettings:Append(colPrefix)
+                                        columnSettings:AppendLine("RowSource := " + rowSource)
+                                    ENDIF
+                                ENDIF
+                            ENDIF
                         ELSE
-                            columnNumber:Insert( 0, gridName[i] )
+                            VAR msg := "Column " + colIdx:ToString() + " of grid '" + grid:Name + "' uses '" + currentControl + "' as CurrentControl — ColumnType not yet mapped"
+                            XPorterLogger.Instance:Warning(msg)
+                            columnSettings:AppendLine("// TODO VFPXPorter: " + msg)
+                        ENDIF
+                    ENDIF
+                    // Emit column properties from the synthetic column's PropertiesDict
+                    FOREACH VAR kv IN col:PropertiesDict
+                        VAR mapped := SELF:MapColumnProperty( kv:Key )
+                        IF mapped == NULL
+                            LOOP  // removed by rule
+                        ENDIF
+                        columnSettings:Append(colPrefix)
+                        columnSettings:Append(mapped)
+                        columnSettings:Append(" := ")
+                        IF ( String.Compare(kv:Key, "ForeColor", TRUE) == 0 .OR. ;
+                             String.Compare(kv:Key, "BackColor", TRUE) == 0 )
+                            columnSettings:Append("VFPTools.ColorFromVFP((int)")
+                            columnSettings:Append(kv:Value)
+                            columnSettings:AppendLine(")")
+                        ELSE
+                            columnSettings:AppendLine(kv:Value)
                         ENDIF
                     NEXT
-                    //
-                    columnSettings:Append("SELF:")
-                    columnSettings:Append(gridName)
-                    columnSettings:Append("(")
-                    columnSettings:Append(columnNumber:ToString())
-                    columnSettings:Append("):")
-                    columnSettings:Append(columnSetting:BASECLASS)
-                    columnSettings:Append(" := ")
-                    columnSettings:Append(columnSetting:Name)
-                    columnSettings:Append(Environment.NewLine)
-                    columnSettings:Append(Environment.NewLine)
+                    // Emit HeaderText and Header style properties from the Header grandchild
+                    FOREACH VAR grandSubItem IN col:Childs
+                        VAR grandChild := (SCXVCXItem) grandSubItem
+                        IF String.Compare( grandChild:BaseClassName, "header", TRUE ) == 0
+                            VAR hdrPrefix := colPrefix + "Header:"
+                            // Caption → column HeaderText (convenience shortcut on the column itself)
+                            IF grandChild:PropertiesDict:ContainsKey("Caption")
+                                VAR caption := grandChild:PropertiesDict["Caption"]
+                                IF !String.IsNullOrEmpty(caption) .AND. caption != "Nil"
+                                    columnSettings:Append(colPrefix)
+                                    columnSettings:Append("HeaderText := ")
+                                    columnSettings:AppendLine(caption)
+                                ENDIF
+                            ENDIF
+                            // Color properties — wrap with ColorFromVFP
+                            FOREACH VAR colorKey IN <STRING>{ "ForeColor", "BackColor" }
+                                IF grandChild:PropertiesDict:ContainsKey(colorKey)
+                                    VAR val := grandChild:PropertiesDict[colorKey]:Trim()
+                                    IF !String.IsNullOrEmpty(val) .AND. val != "Nil"
+                                        columnSettings:Append(hdrPrefix)
+                                        columnSettings:Append(colorKey)
+                                        columnSettings:Append(" := VFPTools.ColorFromVFP((int)")
+                                        columnSettings:Append(val)
+                                        columnSettings:AppendLine(")")
+                                    ENDIF
+                                ENDIF
+                            NEXT
+                            // Style properties — direct assignment
+                            FOREACH VAR propKey IN <STRING>{ "Alignment", "FontBold", "FontName", "FontSize", "FontItalic", "FontUnderline" }
+                                IF grandChild:PropertiesDict:ContainsKey(propKey)
+                                    VAR val := grandChild:PropertiesDict[propKey]:Trim()
+                                    IF !String.IsNullOrEmpty(val) .AND. val != "Nil"
+                                        columnSettings:Append(hdrPrefix)
+                                        columnSettings:Append(propKey)
+                                        columnSettings:Append(" := ")
+                                        columnSettings:AppendLine(val)
+                                    ENDIF
+                                ENDIF
+                            NEXT
+                        ENDIF
+                    NEXT
                 NEXT
             NEXT
-            //
             RETURN columnSettings
         END METHOD
 
+        // Maps a raw VFP column property name to its .NET counterpart.
+        // Returns NULL to indicate the property should be dropped.
+        // Returns the original name for unknown properties (pass-through).
+        PRIVATE METHOD MapColumnProperty( propName AS STRING ) AS STRING
+            SWITCH propName:ToUpperInvariant()
+            CASE "CONTROLSOURCE" ; RETURN "ControlSource"
+            CASE "WIDTH"         ; RETURN "Width"
+            CASE "ALIGNMENT"     ; RETURN "Alignment"
+            CASE "COLUMNORDER"   ; RETURN "ColumnOrder"
+            CASE "SPARSE"        ; RETURN "Sparse"
+            CASE "RESIZABLE"     ; RETURN "Resizable"
+            CASE "FORMAT"        ; RETURN "Format"
+            CASE "INPUTMASK"     ; RETURN "InputMask"
+            CASE "FORECOLOR"     ; RETURN "ForeColor"
+            CASE "BACKCOLOR"     ; RETURN "BackColor"
+            CASE "CURRENTCONTROL"
+            CASE "TEXTALIGN"
+            CASE "TEXTUALIGN"
+            CASE "MOUSEPOINTER"   // no per-column cursor in WinForms DataGridViewColumn
+                RETURN NULL  // removed
+            END SWITCH
+            RETURN propName  // unknown — pass through
+        END METHOD
+
+        // Collect all non-virtual descendants of non-grid, non-pageframe containers within item.
+        // Returns pairs of (descendant, real-parent-container).
+        // Grid and PageFrame sub-controls are excluded — they are handled by their own classes.
+        PRIVATE METHOD CollectContainerDescendants( item AS SCXVCXItem ) AS List<Tuple<SCXVCXItem,SCXVCXItem>>
+            VAR result := List<Tuple<SCXVCXItem,SCXVCXItem>>{}
+            IF item:IsFormSet
+                RETURN result
+            ENDIF
+            FOREACH VAR subItem IN item:Childs
+                VAR child := (SCXVCXItem) subItem
+                IF String.Compare( child:BaseClassName, "grid", TRUE ) == 0
+                    LOOP
+                ENDIF
+                IF child:IsPageFrame
+                    LOOP
+                ENDIF
+                IF child:Childs:Count > 0
+                    FOREACH VAR grandSubItem IN child:Childs
+                        VAR grand := (SCXVCXItem) grandSubItem
+                        result:Add( Tuple.Create( grand, child ) )
+                    NEXT
+                ENDIF
+            NEXT
+            RETURN result
+        END METHOD
+
+        // Build the Controls:Add statement for a descendant whose direct parent is a virtual
+        // Page<n> inside the given real ancestor container.
+        PRIVATE METHOD GetPageAddStatement( child AS SCXVCXItem, ancestor AS SCXVCXItem ) AS STRING
+            VAR prefix := ancestor:FullName + "."
+            IF child:Parent:Length > prefix:Length .AND. child:Parent:StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                VAR virtualSeg := child:Parent:Substring(prefix:Length)
+                VAR dotPos := virtualSeg:IndexOf('.')
+                IF dotPos > 0
+                    virtualSeg := virtualSeg:Substring(0, dotPos)
+                ENDIF
+                IF virtualSeg:Length > 4 .AND. virtualSeg:StartsWith("Page", StringComparison.OrdinalIgnoreCase)
+                    LOCAL pageNum AS INT
+                    IF Int32.TryParse( virtualSeg:Substring(4), OUT pageNum )
+                        RETURN "SELF:" + ancestor:Name + ":Page(" + pageNum:ToString() + "):Controls:Add(SELF:" + child:Name + ")"
+                    ENDIF
+                ENDIF
+                RETURN "SELF:" + ancestor:Name + ":Controls:Add(SELF:" + child:Name + ")"
+            ENDIF
+            RETURN "SELF:" + ancestor:Name + ":Controls:Add(SELF:" + child:Name + ")"
+        END METHOD
+
+        /// <summary>
+        /// Returns a ButtonFactory assignment line for CommandGroup/OptionGroup items whose
+        /// MemberClass is a non-default custom type. Must be called BEFORE ConvertProperties
+        /// so MemberClass is still in PropertiesDict. Returns empty string when not applicable.
+        /// </summary>
+        PRIVATE METHOD BuildMemberFactory( item AS SCXVCXItem ) AS STRING
+            VAR baseClass := item:BaseClassName
+            IF String.Compare(baseClass, "commandgroup", TRUE) != 0 .AND. ;
+               String.Compare(baseClass, "optiongroup",  TRUE) != 0
+                RETURN ""
+            ENDIF
+            IF !item:PropertiesDict:ContainsKey("MemberClass")
+                RETURN ""
+            ENDIF
+            VAR memberClass := item:PropertiesDict["MemberClass"]:Trim()
+            IF String.IsNullOrEmpty(memberClass)
+                RETURN ""
+            ENDIF
+            VAR defaultMember := IIF(String.Compare(baseClass, "commandgroup", TRUE) == 0, "commandbutton", "optionbutton")
+            IF String.Compare(memberClass, defaultMember, TRUE) == 0
+                RETURN ""
+            ENDIF
+            // Map VFP class name to X# type via TypeConvert, fall back to as-is
+            VAR typeName := memberClass
+            IF SELF:_typeList != NULL .AND. SELF:_typeList:ContainsKey(memberClass)
+                 LOCAL vcxBaseData AS STRING[]
+                 vcxBaseData := SELF:_typeList[memberClass]
+                 typeName := vcxBaseData[1]                 // take the first mapped type if multiple
+            ENDIF
+            RETURN "SELF:" + item:Name + ":ButtonFactory := { => " + typeName + "{} }" + Environment.NewLine
+        END METHOD
 
         PROTECTED METHOD ProcessUserDefinition( userDefs AS List<UserDefinition>, userDefCode AS STRING ) AS VOID
             LOCAL sourceLines AS List<STRING>
@@ -1309,6 +1970,15 @@ BEGIN NAMESPACE VFPXPorterLib
             FormInitTypeFile		:= XPorterSettings.FormInitTypeFile
 
         /// <summary>
+        /// Point the decoration elements to ReportListener file (no WinForms dependencies)
+        /// </summary>
+        METHOD InitElementsReportListener() AS VOID
+            FormPrefixFile    := XPorterSettings.ReportListenerPrefixFile
+            FormStartTypeFile := XPorterSettings.ReportListenerStartTypeFile
+            FormEndTypeFile   := XPorterSettings.ReportListenerEndTypeFile
+            FormInitTypeFile  := XPorterSettings.ReportListenerInitTypeFile
+
+        /// <summary>
         /// Point the decoration elements to single Form file
         /// </summary>
         METHOD InitElementsSingleForm( container AS LOGIC ) AS VOID
@@ -1326,8 +1996,38 @@ BEGIN NAMESPACE VFPXPorterLib
             BindingCodeFile			:= XPorterSettings.BindingCodeFile
             RETURN
 
+        /// <summary>
+        /// Gets template file content from cache, loading from disk only if not cached.
+        /// Caching significantly reduces disk I/O for repeated template access.
+        /// </summary>
+        PROTECTED METHOD GetTemplateFromCache(filePath AS STRING) AS STRING
+            LOCAL content AS STRING
+            IF SELF:_templateCache:ContainsKey(filePath)
+                RETURN SELF:_templateCache[filePath]
+            ENDIF
+            content := File.ReadAllText(filePath)
+            SELF:_templateCache[filePath] := content
+            RETURN content
 
+        /// <summary>
+        /// Gets JSON configuration file content from cache, loading from disk only if not cached.
+        /// Reduces disk I/O when the same JSON files are accessed repeatedly across conversions.
+        /// </summary>
+        PROTECTED METHOD GetJsonFromCache(filePath AS STRING) AS STRING
+            LOCAL content AS STRING
+            IF SELF:_templateCache:ContainsKey(filePath)
+                RETURN SELF:_templateCache[filePath]
+            ENDIF
+            content := File.ReadAllText(filePath)
+            SELF:_templateCache[filePath] := content
+            RETURN content
 
+        /// <summary>
+        /// Extracts all placeholders from a template string.
+        /// Placeholders are in the format <@placeholderName@>
+        /// </summary>
+        /// <param name="template">The template string to analyze</param>
+        /// <returns>HashSet of placeholder names found (without the <@ @> delimiters)</returns>
 #region vfpxporter
         PROTECTED _worker AS BackgroundWorker
         PROPERTY Worker AS BackgroundWorker

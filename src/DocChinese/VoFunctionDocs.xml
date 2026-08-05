@@ -21671,14 +21671,14 @@
     <summary>
       确定工作区的编号。
     </summary>
-    <param name="uWorkArea">
+    <param name="sWorkArea">
       标识工作区的值。<br/>
       这可以是工作区的编号或其别名，可以用符号或字符串指定。<br/>
-      如果未指定 <paramref name="uWorkArea"/>，则返回当前工作区编号。<br/>
+      如果未指定 <paramref name="sWorkArea"/>，则返回当前工作区编号。<br/>
       因此，Select() 与 DBGetSelect() 相同。
     </param>
     <returns>
-      从 0 到 4096 的数字。如果 <paramref name="uWorkArea"/> 没有标识有效的工作区或不对应有效的别名，则返回 0。
+      从 0 到 4096 的数字。如果 <paramref name="sWorkArea"/> 没有标识有效的工作区或不对应有效的别名，则返回 0。
     </returns>
     <remarks>
       Select() 函数和与扩展表达式参数一起指定的 SELECT 命令看起来有些相似。

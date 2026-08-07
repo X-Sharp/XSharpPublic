@@ -120,6 +120,9 @@ internal static class OOPHelpers
                     exit
                 endif
             NEXT
+            if ret != null
+                exit
+            endif
             // The class could be prefixed with a Namespace.
             // If there is a class library attribute and we prefixed all classes with a namespace then
             // this is visible in the ClassLibraryAttribute

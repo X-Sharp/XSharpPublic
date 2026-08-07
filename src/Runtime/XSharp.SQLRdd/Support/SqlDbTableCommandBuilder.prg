@@ -227,11 +227,14 @@ internal class SqlDbTableCommandBuilder
         endif
         sb:Replace(SqlDbProvider.TableNameMacro, cFromWhere)
 
-        var cOrderby := Functions.List2String(_oRdd:CurrentOrder:OrderList)
+        var cOrderby := ""
+        if currentOrder != null
+            cOrderby := Functions.List2String(currentOrder:OrderList)
+        endif
         if SELF:_oTable:HasRecnoColumn
             if ! String.IsNullOrEmpty(cOrderby)
                 cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
-                if _oRdd:CurrentOrder:Descending
+                if currentOrder != null .and. currentOrder:Descending
                     cOrderby += " DESC"
                 endif
             else

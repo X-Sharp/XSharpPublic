@@ -33,6 +33,21 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
 
     override property TrueLiteral            as string => "1"
     override property FalseLiteral            as string => "0"
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// SQL Server table and column names are created and stored with the case they were
+    /// created in (case-preserving). Whether a query matching a different case succeeds
+    /// depends entirely on the database/column collation - it is not safe to assume
+    /// case-insensitivity. Unlike the default (lowercasing) implementation, we must
+    /// therefore leave the identifier untouched here, or queries against tables/columns
+    /// created with mixed/upper case (e.g. "PARTDB") fail with "Invalid object name" on
+    /// a case-sensitive collation.
+    /// </remarks>
+    override method CaseSync(cIdentifier as string) as string
+        return cIdentifier
+    end method
+
     private static lockObj := object{} as object
 
     constructor() strict

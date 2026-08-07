@@ -787,6 +787,10 @@ partial class SQLRDD inherit Workarea
 
     public override method Lock(lockInfo ref DbLockInfo) as logic
         // TODO thomas: implement Multiple Lock
+        if Connection?:Provider is null .or. !self:Connection:IsOpen
+            lockInfo:Result := false
+            return false
+        endif
         var sb := StringBuilder{}
         var messageLocked := StringBuilder{}
 

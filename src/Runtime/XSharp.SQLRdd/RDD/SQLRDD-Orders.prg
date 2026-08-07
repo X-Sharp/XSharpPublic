@@ -150,6 +150,17 @@ partial class SQLRDD
         return result
     end method
 
+    /// <summary>The column metadata of the underlying table, used to determine the
+    /// declared (maximum) width of the columns that make up an index key expression.</summary>
+    internal property TableColumns as IList<SqlDbColumnDef> get _oTd:Columns
+
+    /// <summary>Whether string field values returned by GetValue() are right-trimmed
+    /// (TRUE) or padded to the declared column width (FALSE). Exposed so that
+    /// SqlDbOrder can temporarily disable trimming while probing the maximum
+    /// length of an index key expression.</summary>
+    internal property TrimValues as logic get _trimValues set _trimValues := value
+
+
 	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the order to select.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -158,13 +169,27 @@ partial class SQLRDD
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
             self:_CloseCursor()
-            SELF:CurrentOrder := self:FindOrder(orderInfo)
-            result := CurrentOrder != null
-            IF result
-                SELF:CurrentOrder:ClearCache()
-                SELF:CurrentOrder:CalculateKeyLength()
+            if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
+               (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
+                // Order 0 (or an empty order name) means: switch back to the natural/physical
+                // record order, i.e. no order at all. There is no "tag zero" to look up, so
+                // this must always succeed - matching VO, which returns TRUE for SetOrder(0).
+                SELF:CurrentOrder := null
                 self:GoTo(currentRecord)
-            ENDIF
+                result := true
+            else
+                SELF:CurrentOrder := self:FindOrder(orderInfo)
+                result := CurrentOrder != null
+                IF result
+                    SELF:CurrentOrder:ClearCache()
+                    // Position on a record BEFORE calculating the key length: CalculateKeyLength()
+                    // evaluates the key expression against the current record, which requires a
+                    // loaded row. _CloseCursor() above cleared it, so without this GoTo there would
+                    // be nothing to evaluate.
+                    self:GoTo(currentRecord)
+                    SELF:CurrentOrder:CalculateKeyLength()
+                ENDIF
+            endif
         else
             if orderInfo:Order != null
                 if orderInfo:Order is long var nOrder .and. nOrder == 0
@@ -452,11 +477,18 @@ partial class SQLRDD
             return false
         endif
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+
         SELF:_ClearTable()
         SELF:_currentPageNo := 1
         // save PageSize
         var nPageSize := SELF:_oTd:PageSize
-        SELF:_oTd:PageSize := 1
+        // When a filter is active we may need to skip past several candidate
+        // keys to find one that also satisfies the filter, so we need more
+        // than a single row in the buffer. Only shrink the page to 1 row
+        // when there is no filter to evaluate.
+        if ! SELF:_FilterInfo:Active
+            SELF:_oTd:PageSize := 1
+        endif
         self:_OpenTable(cSeekWhere)
         SELF:_oTd:PageSize := nPageSize
 

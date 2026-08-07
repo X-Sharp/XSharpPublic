@@ -7,6 +7,7 @@
 
 using System
 using System.Collections.Generic
+using System.Linq
 using System.Text
 using XSharp.RDD.Support
 using XSharp.RDD.Enums
@@ -67,12 +68,52 @@ internal class SqlDbOrder inherit SqlDbObject
         return
     end constructor
 
+    /// <summary>Calculate the (maximum) length of the key value.</summary>
+    /// <remarks>
+    /// We evaluate the actual key expression (KeyCodeBlock) against the current record, with
+    /// trimming of trailing spaces temporarily switched off. This gives the true maximum
+    /// length regardless of what function(s) the expression applies (UPPER, LEFT, DTOS, DTOC,
+    /// concatenation, ...), because it runs the real expression instead of guessing from
+    /// column metadata. Disabling trimming matters because GetValue() would otherwise strip
+    /// trailing spaces from the underlying field(s) before the expression sees them, which
+    /// would understate the length whenever the current record's value happens to be shorter
+    /// than the column's declared width.
+    /// If no record is available to evaluate (e.g. an empty table) we fall back to summing the
+    /// declared column widths - not exact for length-changing functions like LEFT()/DTOS(), but
+    /// a safe (never too small) approximation.
+    /// </remarks>
     method CalculateKeyLength() as void
-        var result := self:RDD:EvalBlock(self:KeyCodeBlock) // this will set the KeyValue property
+        var lOldTrim := self:RDD:TrimValues
+        self:RDD:TrimValues := false
+        local result as object
+        try
+            result := self:RDD:EvalBlock(self:KeyCodeBlock)
+        finally
+            self:RDD:TrimValues := lOldTrim
+        end try
         if result is string var strValue
             self:KeyLength := strValue:Length
+        else
+            self:KeyLength := self:CalculateKeyLengthFromMetadata()
         endif
         return
+    end method
+
+    private method CalculateKeyLengthFromMetadata() as int
+        local nLen := 0 as int
+        foreach var cCol in self:DbExpression:ColumnList
+            var cName  := cCol:Trim(<char>{'[',']','"','`'})
+            var oCol   := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
+            if oCol != null
+                nLen += (int) oCol:Length
+            endif
+        next
+        if nLen == 0
+            // Could not determine the width from metadata either - fall back to a value that
+            // is always treated as "the search value may be shorter than the key".
+            nLen := Int32.MaxValue
+        endif
+        return nLen
     end method
 
     method ClearScopes() as void

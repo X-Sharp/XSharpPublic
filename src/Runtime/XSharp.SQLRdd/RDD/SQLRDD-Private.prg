@@ -136,8 +136,8 @@ partial class SQLRDD
     end constructor
 
     destructor()
-        Command:Dispose()
-        _connection:Dispose()
+        Command?:Dispose()
+        _connection?:Dispose()
     end destructor
 
     internal method _ClearTable() AS VOID
@@ -607,13 +607,10 @@ partial class SQLRDD
         return result
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
-
-        // if record to go to is already in loaded page
-        if self:_GotoRecordInPage(nRec)
-            return true
-        endif
-
-        // Brute walk
+        // GoTo() only calls _GotoRecord() after it already established that nRec is NOT in
+        // the currently loaded buffer. Whether that buffer happens to be empty or merely
+        // contains the wrong rows makes no difference - either way we must locate and load
+        // the page that actually contains nRec, so this brute walk must always run.
         SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
         var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
         var iResult := Convert.ToInt64(result)
@@ -623,17 +620,13 @@ partial class SQLRDD
         SELF:_ClearTable()
         SELF:DataTable := SELF:_ReadTable("")
 
-        RETURN self:_GotoRecordInPage(nRec)
-
-    PRIVATE METHOD _GotoRecordInPage(nRec as DWORD) AS LOGIC
-        LOCAL nRowNumber AS INT
-        nRowNumber := 1
-        DO WHILE nRowNumber <= SELF:DataTable:Rows:Count
-            IF nRec == Convert.ToInt32(SELF:DataTable:Rows[nRowNumber-1][self:_recnoColumNo])
-                SELF:RowNumber := nRowNumber
+        // locate the row in the page
+        SELF:RowNumber := 1
+        DO WHILE SELF:RowNumber <= SELF:DataTable:Rows:Count
+            IF SELF:RecNo == nRec
                 RETURN TRUE
             ENDIF
-            nRowNumber += 1
+            SELF:RowNumber+= 1
         ENDDO
         RETURN FALSE
 

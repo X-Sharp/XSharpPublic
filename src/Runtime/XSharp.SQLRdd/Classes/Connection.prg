@@ -105,7 +105,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     internal const DefaultConnection := "DEFAULT" as string
     internal static Connections      as List<SqlDbConnection>
     static internal property DefaultCached  as logic auto
-    private static oExistingTables := List<string>{} as List<string>
 
     static constructor()
         Connections     := List<SqlDbConnection>{}
@@ -625,10 +624,12 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="cTableName">Name of the table to check</param>
     /// <returns>TRUE when the table exists. </returns>
     method DoesTableExist(cTableName as string) as logic
+        // Always query live: this result must reflect DDL (CREATE/DROP TABLE) executed
+        // moments earlier on this same connection, so it must never be cached. A cache
+        // here (previously a process-wide static list that was never invalidated on
+        // DROP TABLE) causes DoesTableExist() to keep reporting a just-dropped table as
+        // existing, which then skips re-creating it.
         try
-            if oExistingTables:Contains(cTableName)
-                return true
-            endif
             if !SELF:HasCollection(TABLECOLLECTION)
                 return false
             endif
@@ -637,7 +638,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 aTableRestrictions[2] := cTableName
                 var dt := self:DbConnection:GetSchema(TABLECOLLECTION, aTableRestrictions)
                 if dt:Rows:Count > 0
-                    oExistingTables:Add(cTableName)
                     return true
                 endif
             else
@@ -645,7 +645,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 foreach row as DataRow in dt:Rows
                     var tbl := row["TABLE_NAME"]:ToString()
                     if String.Compare(tbl, cTableName, true) == 0
-                        oExistingTables:Add(cTableName)
                         return true
                     endif
                 next

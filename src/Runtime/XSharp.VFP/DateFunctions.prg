@@ -248,6 +248,91 @@ FUNCTION TToC(tdExpression AS System.DateTime, nParam := 0 AS LONG) AS STRING
 	RETURN lcResult
 ENDFUNC
 
+/// <exclude/>
+/// <summary>
+/// Runtime implementation of SET DATE TO expr
+/// The value arrives as a string holding one of the SET DATE keywords.
+/// </summary>
+FUNCTION __VfpSetDate(uValue AS USUAL) AS VOID
+    LOCAL cValue AS STRING
+    LOCAL eCountry AS DateCountry
+
+    IF !IsString(uValue)
+        THROW Error.ArgumentError(__function__, nameof(uValue), ;
+            __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, AsString(uValue)), 1, <object>{uValue})
+    ENDIF
+
+    cValue := (string) uValue
+
+    // Three VFP keywords have no matching name in the DateCountry enum
+    SWITCH cValue:ToUpperInvariant()
+    CASE "JAPAN"
+        cValue := "Japanese"
+    CASE "SHORT"
+        cValue := "System"
+    CASE "LONG"
+        THROW Error.ArgumentError(__function__, nameof(uValue), ;
+        __VfpStr(VFPErrors.VFP_INVALID_FORMAT, "SET DATE", cValue), 1, <object>{uValue})
+    END SWITCH
+
+    IF Enum.TryParse<DateCountry>(cValue, TRUE, OUT eCountry)
+        SetDateCountry((dword) __VfpDateCountryAlias(eCountry))
+        RETURN
+    ENDIF
+
+    IF __IsDatePicture(cValue)
+        SetDateFormat(cValue)
+        RETURN
+    ENDIF
+
+    THROW Error.ArgumentError(__function__, nameof(uValue), ;
+        __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, cValue), 1, <object>{uValue})
+
+/// <exclude/>
+/// <summary>Returns TRUE when the string is a date picture such as DD.MM.YYYY</summary>
+INTERNAL FUNCTION __IsDatePicture(cValue AS STRING) AS LOGIC
+    VAR lDay := FALSE
+    VAR lMonth := FALSE
+    VAR lYear := FALSE
+
+    IF String.IsNullOrEmpty(cValue)
+        RETURN FALSE
+    ENDIF
+
+    FOREACH cChar AS CHAR IN cValue:ToUpperInvariant()
+        SWITCH cChar
+        CASE c'D'
+            lDay := true
+        CASE c'M'
+            lMonth := true
+        CASE c'Y'
+            lYear := true
+        CASE c'/'
+        CASE c'-'
+        CASE c'.'
+            NOP
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+    NEXT
+    RETURN lDay .AND. lMonth .AND. lYear
+
+/// <exclude/>
+/// <summary>
+/// Maps the alias members of DateCountry onto the canonical ones.
+/// </summary>
+INTERNAL FUNCTION __VfpDateCountryAlias(eCountry AS DateCountry) AS DateCountry
+    SWITCH eCountry
+    CASE DateCountry.MDY
+        RETURN DateCountry.American
+    CASE DateCountry.DMY
+        RETURN DateCountry.British
+    CASE DateCountry.YMD
+    CASE DateCountry.Taiwan
+        RETURN DateCountry.Japanese
+    END SWITCH
+    RETURN eCountry
+
 INTERNAL STATIC CLASS DateTimeHelper
 	STATIC METHOD NormalizeWhitespace(tcInput AS STRING) AS STRING
 	    IF String.IsNullOrEmpty(tcInput)

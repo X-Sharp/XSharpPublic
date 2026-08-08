@@ -248,6 +248,92 @@ FUNCTION TToC(tdExpression AS System.DateTime, nParam := 0 AS LONG) AS STRING
 	RETURN lcResult
 ENDFUNC
 
+/// <exclude/>
+/// <summary>
+/// Runtime implementation of SET DATE TO expr
+/// The value arrives as a string holding one of the SET DATE keywords.
+/// </summary>
+FUNCTION __VfpSetDate(uValue AS USUAL) AS VOID
+    LOCAL cValue AS STRING
+    IF !IsString(uValue)
+        THROW Error.ArgumentError(__function__, nameof(uValue), ;
+            __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, AsString(uValue)), 1, <object>{uValue})
+    ENDIF
+
+    cValue := (string) uValue
+    // Like VFP, the value is not trimmed: SET DATE TO ("AMERICAN  ")
+    // raises an error there as well.
+    SWITCH cValue:ToUpperInvariant()
+    CASE "AMERICAN"
+    CASE "MDY"
+        SetDateCountry((dword) DateCountry.American)
+    CASE "ANSI"
+        SetDateCountry((dword) DateCountry.Ansi)
+    CASE "BRITISH"
+    CASE "FRENCH"
+    CASE "DMY"
+        SetDateCountry((dword) DateCountry.British)
+    CASE "GERMAN"
+        SetDateCountry((dword) DateCountry.German)
+    CASE "ITALIAN"
+    CASE "DUTCH"
+        SetDateCountry((dword) DateCountry.Italian)
+    CASE "JAPAN"
+    CASE "JAPANESE"
+    CASE "TAIWAN"
+    CASE "YMD"
+        SetDateCountry((dword) DateCountry.Japanese)
+    CASE "USA"
+        SetDateCountry((dword) DateCountry.USA)
+    CASE "SHORT"
+    CASE "SYSTEM"
+    CASE "WINDOWS"
+        // SHORT selects the Windows short date format, which is what
+        // DateCountry.System already does.
+        SetDateCountry((dword) DateCountry.System)
+    CASE "LONG"
+        THROW Error.ArgumentError(__function__, nameof(uValue), ;
+        __VfpStr(VFPErrors.VFP_INVALID_FORMAT, "SET DATE", cValue), 1, <object>{uValue})
+    OTHERWISE
+        // Not a keyword
+        IF __IsDatePicture(cValue)
+            SetDateFormat(cValue)
+        ELSE
+            THROW Error.ArgumentError(__function__, nameof(uValue), ;
+                __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, cValue), 1, <object>{uValue})
+        ENDIF
+    END SWITCH
+    RETURN
+
+/// <exclude/>
+/// <summary>Returns TRUE when the string is a date picture such as DD.MM.YYYY</summary>
+INTERNAL FUNCTION __IsDatePicture(cValue AS STRING) AS LOGIC
+    VAR lDay := FALSE
+    VAR lMonth := FALSE
+    VAR lYear := FALSE
+
+    IF String.IsNullOrEmpty(cValue)
+        RETURN FALSE
+    ENDIF
+
+    FOREACH cChar AS CHAR IN cValue:ToUpperInvariant()
+        SWITCH cChar
+        CASE c'D'
+            lDay := true
+        CASE c'M'
+            lMonth := true
+        CASE c'Y'
+            lYear := true
+        CASE c'/'
+        CASE c'-'
+        CASE c'.'
+            NOP
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+    NEXT
+    RETURN lDay .AND. lMonth .AND. lYear
+
 INTERNAL STATIC CLASS DateTimeHelper
 	STATIC METHOD NormalizeWhitespace(tcInput AS STRING) AS STRING
 	    IF String.IsNullOrEmpty(tcInput)

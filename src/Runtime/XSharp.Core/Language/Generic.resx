@@ -2786,6 +2786,9 @@
   <data name="VFP_INVALID_FORMAT" xml:space="preserve">
     <value>The {0} format '{1}' is not available yet</value>
   </data>
+  <data name="VFP_INVALID_DATE_SETTING" xml:space="preserve">
+    <value>'{0}' is not a valid SET DATE value. Expected AMERICAN, ANSI, BRITISH, FRENCH, GERMAN, ITALIAN, JAPAN, TAIWAN, USA, MDY, DMY, YMD, SHORT or LONG</value>
+  </data>
   <data name="VFP_INVALID_DB_OBJECT" xml:space="preserve">
     <value>Database object type '{0}' is invalid</value>
   </data>

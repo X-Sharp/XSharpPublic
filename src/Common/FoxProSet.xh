@@ -81,6 +81,9 @@
 #command SET HOURS TO 24                  => SetHours(24)
 
 #command SET SECONDS <x:ON,OFF,&>         => Set(Set.Seconds, <(x)>)
+#command SET DATE [TO] (<uExpr>)          => __VfpSetDate(<uExpr>)
+#command SET DATE [TO] <fn>(<uArgs,...>)  => __VfpSetDate(<fn>(<uArgs>))
+#command SET DATE [TO] <x:&>              => __VfpSetDate(<(x)>)
 
 ///////////////////////////////////////////////////////////////////////////////
 // SET commands for Numric formatting

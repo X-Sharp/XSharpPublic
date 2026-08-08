@@ -173,18 +173,15 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         END METHOD
 
         [Fact, Trait("Category", "SetDate")];
-        METHOD SetDateRejectsAValueWithTrailingSpaces AS VOID
-            LOCAL lThrown := FALSE AS LOGIC
+        METHOD SetDateAcceptsAValueWithTrailingSpaces AS VOID
             LOCAL cFmt AS STRING
             VAR cOld := GetDateFormat()
             TRY
+                SET CENTURY ON
                 cFmt := "AMERICAN  "
-                TRY
-                    SET DATE TO (cFmt)
-                CATCH AS Exception
-                    lThrown := TRUE
-                END TRY
-                Assert.True(lThrown)
+                SET DATE TO GERMAN
+                SET DATE TO (cFmt)
+                Assert.Equal("MM/DD/YYYY", GetDateFormat())
             FINALLY
                 SetDateFormat(cOld)
             END TRY

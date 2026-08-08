@@ -255,55 +255,38 @@ ENDFUNC
 /// </summary>
 FUNCTION __VfpSetDate(uValue AS USUAL) AS VOID
     LOCAL cValue AS STRING
+    LOCAL eCountry AS DateCountry
+
     IF !IsString(uValue)
         THROW Error.ArgumentError(__function__, nameof(uValue), ;
             __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, AsString(uValue)), 1, <object>{uValue})
     ENDIF
 
     cValue := (string) uValue
-    // Like VFP, the value is not trimmed: SET DATE TO ("AMERICAN  ")
-    // raises an error there as well.
+
+    // Three VFP keywords have no matching name in the DateCountry enum
     SWITCH cValue:ToUpperInvariant()
-    CASE "AMERICAN"
-    CASE "MDY"
-        SetDateCountry((dword) DateCountry.American)
-    CASE "ANSI"
-        SetDateCountry((dword) DateCountry.Ansi)
-    CASE "BRITISH"
-    CASE "FRENCH"
-    CASE "DMY"
-        SetDateCountry((dword) DateCountry.British)
-    CASE "GERMAN"
-        SetDateCountry((dword) DateCountry.German)
-    CASE "ITALIAN"
-    CASE "DUTCH"
-        SetDateCountry((dword) DateCountry.Italian)
     CASE "JAPAN"
-    CASE "JAPANESE"
-    CASE "TAIWAN"
-    CASE "YMD"
-        SetDateCountry((dword) DateCountry.Japanese)
-    CASE "USA"
-        SetDateCountry((dword) DateCountry.USA)
+        cValue := "Japanese"
     CASE "SHORT"
-    CASE "SYSTEM"
-    CASE "WINDOWS"
-        // SHORT selects the Windows short date format, which is what
-        // DateCountry.System already does.
-        SetDateCountry((dword) DateCountry.System)
+        cValue := "System"
     CASE "LONG"
         THROW Error.ArgumentError(__function__, nameof(uValue), ;
         __VfpStr(VFPErrors.VFP_INVALID_FORMAT, "SET DATE", cValue), 1, <object>{uValue})
-    OTHERWISE
-        // Not a keyword
-        IF __IsDatePicture(cValue)
-            SetDateFormat(cValue)
-        ELSE
-            THROW Error.ArgumentError(__function__, nameof(uValue), ;
-                __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, cValue), 1, <object>{uValue})
-        ENDIF
     END SWITCH
-    RETURN
+
+    IF Enum.TryParse<DateCountry>(cValue, TRUE, OUT eCountry)
+        SetDateCountry((dword) __VfpDateCountryAlias(eCountry))
+        RETURN
+    ENDIF
+
+    IF __IsDatePicture(cValue)
+        SetDateFormat(cValue)
+        RETURN
+    ENDIF
+
+    THROW Error.ArgumentError(__function__, nameof(uValue), ;
+        __VfpStr(VFPErrors.VFP_INVALID_DATE_SETTING, cValue), 1, <object>{uValue})
 
 /// <exclude/>
 /// <summary>Returns TRUE when the string is a date picture such as DD.MM.YYYY</summary>
@@ -333,6 +316,22 @@ INTERNAL FUNCTION __IsDatePicture(cValue AS STRING) AS LOGIC
         END SWITCH
     NEXT
     RETURN lDay .AND. lMonth .AND. lYear
+
+/// <exclude/>
+/// <summary>
+/// Maps the alias members of DateCountry onto the canonical ones.
+/// </summary>
+INTERNAL FUNCTION __VfpDateCountryAlias(eCountry AS DateCountry) AS DateCountry
+    SWITCH eCountry
+    CASE DateCountry.MDY
+        RETURN DateCountry.American
+    CASE DateCountry.DMY
+        RETURN DateCountry.British
+    CASE DateCountry.YMD
+    CASE DateCountry.Taiwan
+        RETURN DateCountry.Japanese
+    END SWITCH
+    RETURN eCountry
 
 INTERNAL STATIC CLASS DateTimeHelper
 	STATIC METHOD NormalizeWhitespace(tcInput AS STRING) AS STRING

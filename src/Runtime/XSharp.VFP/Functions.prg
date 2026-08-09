@@ -41,9 +41,9 @@ FUNCTION NewObject(cClassName, cModule, cInApplication, eParameter1, eParameter2
     // NOTE: this project is compiled with 1-based array, so uArgs[1] is the
     //       first element.
     VAR uArgs := USUAL[]{nInitCount + 1}
-    uArgs[1] := cClassName
+    uArgs[__ARRAYBASE__] := cClassName
     FOR VAR i := 1 TO nInitCount
-        uArgs[i + 1] := _GetFParam(nInitStart + i - 1)
+        uArgs[__ARRAYBASE__ + i] := _GetFParam(nInitStart + i - 1)
     NEXT
 
     RETURN CreateInstance(uArgs)

@@ -411,6 +411,42 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         METHOD NewObjectWithModuleThrows AS VOID
             Assert.Throws<NotImplementedException>({ => NEWOBJECT("Custom", "algo.vcx") })
         END METHOD
+
+        [Fact, Trait("Category", "NewObject")];
+        METHOD NewObjectWithOneInitParameterTest AS VOID
+            VAR o := NEWOBJECT("NewObjectTestClass", "", "", 42)
+            Assert.NotNull(o)
+            VAR oTest := (NewObjectTestClass)o
+            Assert.Equal(42, oTest:Arg1)
+            Assert.Equal("", oTest:Arg2)
+        END METHOD
+
+        [Fact, Trait("Category", "NewObject")];
+        METHOD NewObjectWithInitParametersTest AS VOID
+            VAR o := NEWOBJECT("NewObjectTestClass", "", "", 42, "abc")
+            Assert.NotNull(o)
+            VAR oTest := (NewObjectTestClass)o
+            Assert.Equal(42, oTest:Arg1)
+            Assert.Equal("abc", oTest:Arg2)
+        END METHOD
     END CLASS
 
 END NAMESPACE
+
+CLASS NewObjectTestClass
+    PROPERTY Arg1 AS INT AUTO
+    PROPERTY Arg2 AS STRING AUTO
+
+    CONSTRUCTOR()
+        SELF:Arg1 := 0
+        SELF:Arg2 := ""
+
+    CONSTRUCTOR(nArg1 AS INT)
+        SELF:Arg1 := nArg1
+        SELF:Arg2 := ""
+
+    CONSTRUCTOR(nArg1 AS INT, cArg2 AS STRING)
+        SELF:Arg1 := nArg1
+        SELF:Arg2 := cArg2
+
+END CLASS

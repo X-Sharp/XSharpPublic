@@ -38,10 +38,12 @@ FUNCTION NewObject(cClassName, cModule, cInApplication, eParameter1, eParameter2
         RETURN CreateInstance(cClassName)
     ENDIF
 
+    // NOTE: this project is compiled with 1-based array, so uArgs[1] is the
+    //       first element.
     VAR uArgs := USUAL[]{nInitCount + 1}
-    uArgs[0] := cClassName
+    uArgs[1] := cClassName
     FOR VAR i := 1 TO nInitCount
-        uArgs[i] := _GetFParam(nInitStart + i - 1)
+        uArgs[i + 1] := _GetFParam(nInitStart + i - 1)
     NEXT
 
     RETURN CreateInstance(uArgs)

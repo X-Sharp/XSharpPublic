@@ -55,7 +55,7 @@ BEGIN NAMESPACE VFPXPorterLib
         /// Report Item and Childs name to XPorterLogger.
         /// </summary>
         METHOD Analyze() AS VOID
-            SELF:DefiningControls := Dictionary<STRING, SCXVCXItem>{}
+            SELF:DefiningControls := Dictionary<STRING, SCXVCXItem>{StringComparer.InvariantCultureIgnoreCase}
             SELF:DependsOn := HashSet<STRING>{}
             //
             SELF:AnalyzeItem( SELF:Item )

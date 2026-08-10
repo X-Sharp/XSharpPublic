@@ -145,7 +145,7 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:_jsonCache := Dictionary<STRING, Dictionary<STRING, Dictionary<STRING,STRING>>>{}
             //
             SELF:Items := List<BaseItem>{ }
-            SELF:CustomControls := Dictionary<STRING, SCXVCXItem>{}
+            SELF:CustomControls := Dictionary<STRING, SCXVCXItem>{StringComparer.InvariantCultureIgnoreCase}
             SELF:HasFormSet := FALSE
             SELF:InitElementsFormDesigner()
             SELF:ExportInOneFile := FALSE

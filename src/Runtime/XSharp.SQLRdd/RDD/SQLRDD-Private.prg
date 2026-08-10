@@ -137,7 +137,14 @@ partial class SQLRDD
 
     destructor()
         Command?:Dispose()
-        _connection?:Dispose()
+        // Mirror the explicit Close() path (SQLRDD-Main.prg): unregister from the
+        // shared connection so a leaked/finalized work area only closes the physical
+        // connection when it was truly the last one AND KeepOpen is off. Calling
+        // Dispose() here instead used to force-close and deregister the shared
+        // SqlDbConnection unconditionally, ignoring KeepOpen, whenever this work area
+        // happened to be the last one registered at finalization time - killing the
+        // connection for every other still-open table on the same connection.
+        _connection?:UnregisterRdd(self)
     end destructor
 
     internal method _ClearTable() AS VOID

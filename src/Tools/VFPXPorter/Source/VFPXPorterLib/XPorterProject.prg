@@ -271,7 +271,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 XPorterLogger.SetLoggerToFile( Path.Combine( SELF:outputPath, "VFPXPorter.log" )  )
                 // Before, we need to enumerate all Controls that belongs to Libraries
                 // These definitions will be used when converting Control Properties
-                VAR newControls := Dictionary<STRING, SCXVCXItem>{}
+                VAR newControls := Dictionary<STRING, SCXVCXItem>{StringComparer.InvariantCultureIgnoreCase}
                 VAR generatedNamespaces := List<STRING>{}
                 FOREACH libName AS STRING IN Dependencies
                     //

@@ -29,6 +29,9 @@
 				IF (VALUE == 0 )
 					SELF:FlatStyle := FlatStyle.Flat
 					SELF:BackColor := System.Drawing.Color.Transparent
+				ELSE
+					SELF:FlatStyle := FlatStyle.Standard
+					SELF:ResetBackColor()
 				ENDIF
 			END SET
 			END PROPERTY

@@ -74,7 +74,17 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <summary>Provider for the Metadata, such as columnlist, maxrecords etc.</summary>
     property MetadataProvider   as ISqlMetadataProvider auto
     /// <summary>Last exception that occurred in the RDD</summary>
-    property LastException      as Exception auto get internal set
+    property LastException as Exception
+        get
+            return _lastException
+        end get
+        internal set
+            _lastException := value
+            if value != null
+                System.Diagnostics.Trace.WriteLine(String.Format("SqlDbConnection '{0}': {1}", self:Name, value:ToString()))
+            endif
+        end set
+    end property
     /// <summary>Connection State</summary>
     PROPERTY State              as ConnectionState get iif(self:DbConnection == null, ConnectionState.Closed, self:DbConnection:State)
 
@@ -368,7 +378,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 return false
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             self:DbTransaction := null
         end try
         return self:DbTransaction != null
@@ -388,7 +398,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 return false
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             self:DbTransaction := null
         end try
         return self:DbTransaction != null
@@ -447,7 +457,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             _command:CommandText := cCommand
             result := _command:ExecuteScalar(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := null
         end try
         return result
@@ -465,7 +475,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
              _command:CommandText := cCommand
             result := _command:ExecuteNonQuery(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := false
         end try
         return result
@@ -483,7 +493,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
              _command:CommandText := cCommand
             result := _command:ExecuteReader(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := null
         end try
         return result
@@ -501,7 +511,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             _command:CommandText := cCommand
             result := _command:GetDataTable(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := null
         end try
         return result
@@ -583,7 +593,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             next
             return oTd
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return null
     end method
@@ -613,7 +623,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             self:Schema:Add(TableName, oTd)
             return oTd
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return null
     end method
@@ -630,6 +640,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         // DROP TABLE) causes DoesTableExist() to keep reporting a just-dropped table as
         // existing, which then skips re-creating it.
         try
+            self:ForceOpen()
             if !SELF:HasCollection(TABLECOLLECTION)
                 return false
             endif
@@ -650,7 +661,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 next
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return false
     end method
@@ -662,6 +673,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="cDatabase">Name of the database to check</param>
     method DoesDatabaseExist(cDatabase as string) as logic
         try
+            self:ForceOpen()
             if !SELF:HasCollection(DATABASECOLLECTION)
                     return false
             endif
@@ -682,7 +694,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 next
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return false
     end method
@@ -693,6 +705,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <returns>List of table names that match the filter</returns>
     method GetTables(filter := "" as string) as List<string>
         try
+            self:ForceOpen()
             var result := List<string>{}
             if self:HasCollection(TABLECOLLECTION)
                 var dt := self:DbConnection:GetSchema(TABLECOLLECTION)
@@ -709,7 +722,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             endif
             return result
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return null
     end method
@@ -719,6 +732,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
  /// </summary>
  /// <returns>List of metadata collections</returns>
     method GetMetaDataCollections() as List<string>
+        self:ForceOpen()
         var dt := self:DbConnection:GetSchema(DbMetaDataCollectionNames.MetaDataCollections)
         var result := List<string>{}
         foreach row as DataRow in dt:Rows
@@ -737,6 +751,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 /// </summary>
 /// <returns>List of metadata collections</returns>
    method GetMetaDataCollection(cCollection as string) as DataTable
+       self:ForceOpen()
        var dt := self:DbConnection:GetSchema(cCollection)
        return dt
    end method

@@ -168,6 +168,14 @@ partial class SQLRDD
         local result := false as logic
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
+            // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
+            // tearing down the cursor. _CloseCursor() below nulls out the table the
+            // CurrentRow property reads from, so GoCold() called any later (e.g. via the
+            // GoTo() further down) would see the phantom row instead of the real dirty one
+            // and silently report success without writing anything - a change made via
+            // SetOrder()/RestDB() around a write (the standard "write outside the active
+            // index/order" pattern used throughout the app) would be lost.
+            SELF:GoCold()
             self:_CloseCursor()
             if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
                (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))

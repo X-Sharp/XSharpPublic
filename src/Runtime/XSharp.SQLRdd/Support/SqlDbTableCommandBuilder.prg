@@ -246,6 +246,28 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.WhereMacro, nRec:ToString())
         return sb:ToString()
 
+    /// <summary>
+    /// Build a fetch of a single record by its physical recno, ignoring the current order's
+    /// FOR-condition/scope and any filter.
+    /// </summary>
+    /// <remarks>
+    /// DBF's GoTo() is a physical positioning operation: it must succeed even for a record that
+    /// does not match the active order, unlike BuildRowNumberStatement/BuildSqlStatement which
+    /// always fold the order's condition into the query. Found and OrderKeyNo separately reflect
+    /// that the record has no valid position in the current order.
+    /// </remarks>
+    method BuildDirectRecnoStatement(nRec as DWORD) as string
+        var sb := System.Text.StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append(self:ColumnList())
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
+        sb:Append(SqlDbProvider.WhereClause)
+        sb:Append(Provider:QuoteIdentifier(self:_oTable:RecnoColumn))
+        sb:Append(" = ")
+        sb:Append(nRec:ToString())
+        return sb:ToString()
+
 
     method ColumnList() as string
         var sb := StringBuilder{}

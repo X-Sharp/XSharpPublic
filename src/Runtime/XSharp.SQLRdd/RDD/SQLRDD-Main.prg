@@ -488,10 +488,53 @@ partial class SQLRDD inherit Workarea
             return false
         elseif uiOrdinal == DbInfo.DBI_ISDBF
             return false
+        elseif uiOrdinal == DbInfo.DBI_GETLOCKARRAY
+            return SELF:_GetMyLockedRecords()
+        elseif uiOrdinal == DbInfo.DBI_LOCKCOUNT
+            return (int) SELF:_GetMyLockedRecords():Length
         endif
         return super:Info(uiOrdinal, oNewValue)
     end method
 
+    /// <summary>
+    /// Records currently locked by this connection in this table, per the xs_locks table.
+    /// </summary>
+    /// <remarks>
+    /// Backs DBI_GETLOCKARRAY/DBI_LOCKCOUNT (and therefore VO's RLockList/IsLocked()), since
+    /// SQLRDD's locking is tracked entirely in xs_locks rather than in the base RDD's own
+    /// bookkeeping. Without this, IsLocked() always reports false for SQLRDD tables, and
+    /// callers relying on it (e.g. HomeBase's transaction end) never commit pending changes.
+    /// </remarks>
+    private method _GetMyLockedRecords() as DWORD[]
+        var recNos := List<DWORD>{}
+        if Connection?:Provider is null .or. !self:Connection:IsOpen .or. _oTd == null
+            return recNos:ToArray()
+        endif
+        try
+            var sb := StringBuilder{}
+            sb:AppendLine("select recno from " + SqlDbConnection.LockTableName)
+            sb:AppendLine("where tablename = "+self:Provider:ParameterPrefix+"p1")
+            sb:AppendLine(" and connectionid = "+self:Provider:ParameterPrefix+"p2")
+            sb:AppendLine(" and workarea = "+self:Provider:ParameterPrefix+"p3")
+
+            using var cmd := SqlDbCommand{"GetLockArray", self:Connection, false}
+            cmd:CommandText := sb:ToString()
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p1", _oTd:RealName)
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p2", self:Connection:ConnectionId:ToString())
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p3", (int)super:Area)
+
+            using var reader := cmd:ExecuteReader()
+            do while reader:Read()
+                var recNoTemp := (int) reader["recno"]
+                if recNoTemp > 0
+                    recNos:Add((DWORD) recNoTemp)
+                endif
+            end do
+        catch
+            nop
+        end try
+        return recNos:ToArray()
+    end method
 
     /// <inheritdoc />
     /// <remarks>
@@ -501,6 +544,7 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_outsideOrder := FALSE
         SELF:_ClearTable()
         SELF:_FetchPage( 1)
         SELF:RowNumber  := 1
@@ -525,6 +569,7 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_outsideOrder := FALSE
         SELF:_ClearTable()
         local nMaxRecNo as dword
         if self:CurrentOrder = Null
@@ -622,6 +667,7 @@ partial class SQLRDD inherit Workarea
         ENDIF
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE
+        SELF:_outsideOrder := FALSE
         IF SELF:_tableMode == TableMode.Query .and. self:_recnoColumNo == -1
             RETURN SELF:_GotoRow((LONG) nRec)
         ENDIF
@@ -638,9 +684,9 @@ partial class SQLRDD inherit Workarea
             rowIndex++
         next
 
-        SELF:_GotoRecord(nRec)
+        var found := SELF:_GotoRecord(nRec)
         SELF:_CheckEofBof()
-        RETURN TRUE
+        RETURN found
     end method
 
 
@@ -678,6 +724,21 @@ partial class SQLRDD inherit Workarea
         SELF:_Bottom := FALSE
         IF nToSkip == 0
             result := SELF:GoCold()
+        ELSEIF SELF:_outsideOrder
+            // Positioned (via GoTo()) on a record outside the current order (OrderKeyNo 0).
+            // RowNumber/_currentPageNo do not correspond to any real position in the order's
+            // sequence, so a relative skip from here is meaningless. Matching DBF: a negative
+            // skip always lands on the first record of the order; a positive skip lands on
+            // record nToSkip, as if skipping forward from just before the top.
+            SELF:GoCold()
+            result := SELF:GoTop()
+            IF result
+                IF nToSkip < 0
+                    SELF:BoF := TRUE
+                ELSEIF nToSkip > 1
+                    result := SELF:Skip(nToSkip - 1)
+                ENDIF
+            ENDIF
         ELSE
             result := SELF:SkipRaw( nToSkip )
             if result

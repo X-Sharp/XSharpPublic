@@ -56,6 +56,13 @@ partial class SQLRDD
 
     private _numHiddenColumns as long
     private _serverReccount as dword
+    /// <summary>
+    /// TRUE when the cursor is positioned (via GoTo()) on a record that physically exists but
+    /// does not satisfy the current order's FOR-condition/scope, i.e. OrderKeyNo is 0. Skip()
+    /// needs this because RowNumber/_currentPageNo no longer correspond to any real position in
+    /// the order's sequence, so the normal relative-skip logic cannot be used from here.
+    /// </summary>
+    private _outsideOrder as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -620,6 +627,13 @@ partial class SQLRDD
         // the page that actually contains nRec, so this brute walk must always run.
         SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
         var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+        if result == null .or. result == DBNull.Value
+            // nRec does not satisfy the current order's FOR-condition/scope. DBF's GoTo() is a
+            // physical positioning operation, independent of the active order: it must still
+            // succeed when the record exists at all - Found/OrderKeyNo separately reflect that
+            // it has no valid position in this order.
+            return SELF:_GotoRecordOutsideOrder(nRec)
+        endif
         var iResult := Convert.ToInt64(result)
 
         // determine correct page
@@ -636,6 +650,24 @@ partial class SQLRDD
             SELF:RowNumber+= 1
         ENDDO
         RETURN FALSE
+
+    PRIVATE METHOD _GotoRecordOutsideOrder(nRec as DWORD) AS LOGIC
+        try
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
+            SELF:_command:ClearParameters()
+            var oTable := SELF:_command:GetDataTable(SELF:Alias)
+            if oTable == null .or. oTable:Rows:Count == 0
+                // Does not exist even physically.
+                return false
+            endif
+            SELF:_ClearTable()
+            SELF:DataTable := oTable
+            SELF:RowNumber := 1
+            SELF:_outsideOrder := true
+            return true
+        catch as Exception
+            return false
+        end try
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE
@@ -670,6 +702,11 @@ partial class SQLRDD
                     row := tableRow
                 endif
             next
+
+            if row == null
+                self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:GoCold", "Record "+nRecNo:ToString()+" no longer in buffer, cannot save changes" )
+                return false
+            endif
 
             // Check row lock
             var dbLockInfo := DbLockInfo{}

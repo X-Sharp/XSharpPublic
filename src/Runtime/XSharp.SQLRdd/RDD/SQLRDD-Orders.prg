@@ -441,7 +441,15 @@ partial class SQLRDD
             self:_ForceOpen()
             info:Result := self:OrderKeyCount
         case DBOI_POSITION
-            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            // OrdKeyNo()/DBOI_POSITION reports the record's position within the current order.
+            // When the cursor sits on a record outside the order (see GoTo()/_outsideOrder),
+            // RowNumber/_currentPageNo just reflect the ad-hoc single-row buffer we loaded for
+            // it, not a real position - matching DBF, that must report 0, not a bogus row number.
+            if self:_outsideOrder
+                info:Result := 0
+            else
+                info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            endif
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize

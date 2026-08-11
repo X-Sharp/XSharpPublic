@@ -102,5 +102,17 @@ namespace Microsoft.VisualStudio.Project
 
         public const int IDM_VS_CTXT_PACKAGEREFERENCE = 1187;
         public const int IDM_VS_CTXT_PACKAGEREFERENCE_GROUP = 1186;
+
+        // Context menus of the "Dependencies" tree of SDK style projects.
+        // These menus contain the "Add Assembly Reference..." and "Add Project Reference..."
+        // commands from the guidVSStd16 command set.
+        [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+        public const int IDM_VS_CTXT_DEPENDENCYTARGET = 0x04A0;
+
+        [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+        public const int IDM_VS_CTXT_REFERENCE_GROUP = 0x04A1;
+
+        [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+        public const int IDM_VS_CTXT_PROJECTREFERENCE_GROUP = 0x04A6;
     }
 }

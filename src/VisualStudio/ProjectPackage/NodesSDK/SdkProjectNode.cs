@@ -17,6 +17,7 @@ using System.Linq;
 
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using XSharpModel;
 
@@ -443,12 +444,68 @@ namespace XSharp.Project
         }
 
 
-        protected Guid VsStd16 = new Guid("8F380902-6040-4097-9837-D3F40E66F908");
-        protected const uint idAddAssemblyReference = (uint) VSConstants.VSStd16CmdID.AddAssemblyReference;
-        protected const uint idAddCOMReference = (uint)VSConstants.VSStd16CmdID.AddComReference;
-        protected const uint idAddProjectReference = (uint)VSConstants.VSStd16CmdID.AddProjectReference;
-        protected const uint idAddSharedProjectReference = (uint)VSConstants.VSStd16CmdID.AddSharedProjectReference;
-        protected const uint idAddSDKReference = (uint)VSConstants.VSStd16CmdID.AddSdkReference;
+        internal static readonly Guid VsStd16 = new Guid("8F380902-6040-4097-9837-D3F40E66F908");
+        internal const uint idAddAssemblyReference = (uint) VSConstants.VSStd16CmdID.AddAssemblyReference;
+        internal const uint idAddCOMReference = (uint)VSConstants.VSStd16CmdID.AddComReference;
+        internal const uint idAddProjectReference = (uint)VSConstants.VSStd16CmdID.AddProjectReference;
+        internal const uint idAddSharedProjectReference = (uint)VSConstants.VSStd16CmdID.AddSharedProjectReference;
+        internal const uint idAddSDKReference = (uint)VSConstants.VSStd16CmdID.AddSdkReference;
+
+        /// <summary>
+        /// Answer the "Add ... Reference..." commands of the guidVSStd16 command set.
+        /// </summary>
+        /// <remarks>
+        /// These commands are DefaultInvisible + DynamicVisibility, so they only appear when we
+        /// report them as SUPPORTED. VS asks the _selected_ node, so the nodes inside the
+        /// "Dependencies" tree have to delegate here, otherwise the commands stay hidden.
+        /// </remarks>
+        internal int QueryStatusReferenceCommand(uint cmd, ref QueryStatusResult result)
+        {
+            switch (cmd)
+            {
+                case idAddProjectReference:
+                    result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                    return VSConstants.S_OK;
+
+                case idAddAssemblyReference:
+                case idAddCOMReference:
+                    if (this.IsNetCoreApp)
+                    {
+                        result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                    }
+                    else
+                    {
+                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                    }
+                    return VSConstants.S_OK;
+
+                case idAddSharedProjectReference:
+                case idAddSDKReference:
+                    result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                    return VSConstants.S_OK;
+            }
+            return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
+        }
+
+        /// <summary>
+        /// Execute one of the guidVSStd16 "Add ... Reference..." commands.
+        /// Returns E_NOTIMPL when the command is not one of ours, so the caller can call its base.
+        /// </summary>
+        internal int ExecReferenceCommand(uint cmd)
+        {
+            switch (cmd)
+            {
+                case idAddProjectReference:
+                    return this.AddProjectReference();
+
+                case idAddAssemblyReference when !this.IsNetCoreApp:
+                    return this.AddAssemblyReference();
+
+                case idAddCOMReference when !this.IsNetCoreApp:
+                    return this.AddCOMReference();
+            }
+            return VSConstants.E_NOTIMPL;
+        }
 
 
         protected override QueryStatusResult QueryStatusCommandFromOleCommandTarget(Guid cmdGroup, uint cmd, out bool handled)
@@ -479,29 +536,9 @@ namespace XSharp.Project
             }
             else if (cmdGroup == VsStd16)
             {
-                switch (cmd)
-                {
-                    case idAddProjectReference:
-                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
-                        return VSConstants.S_OK;
-
-                    case idAddAssemblyReference:
-                    case idAddCOMReference:
-                        if (this.IsNetCoreApp)
-                        {
-                            result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
-                        }
-                        else
-                        {
-                            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
-                        }
-                        return VSConstants.S_OK;
-
-                    case idAddSharedProjectReference:
-                    case idAddSDKReference:
-                        result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
-                        return VSConstants.S_OK;
-                }
+                var hr = QueryStatusReferenceCommand(cmd, ref result);
+                if (hr == VSConstants.S_OK)
+                    return hr;
             }
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
@@ -510,18 +547,9 @@ namespace XSharp.Project
         {
             if (cmdGroup == VsStd16)
             {
-                switch (cmd)
-                {
-                    case idAddProjectReference:
-                        return this.AddProjectReference();
-
-                    case idAddAssemblyReference when  !this.IsNetCoreApp:
-                        return this.AddAssemblyReference();
-
-                    case idAddCOMReference when !this.IsNetCoreApp:
-                        return this.AddCOMReference();
-
-                }
+                var hr = ExecReferenceCommand(cmd);
+                if (hr != VSConstants.E_NOTIMPL)
+                    return hr;
             }
             return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
         }

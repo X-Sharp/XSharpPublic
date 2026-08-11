@@ -725,7 +725,13 @@ namespace XSharp.Project
         bool ItemHasValue(string itemName, string value)
         {
             if (!ItemNode.Item.HasMetadata(itemName))
-                return false;
+            {
+                // A missing metadata value means the same as an empty one, so assigning null or "" is not a
+                // change. Reporting a change here makes the callers write the metadata anyway, and for an item
+                // that comes from a wildcard in an imported file that means creating an Update item plus a
+                // complete MSBuild re-evaluation - for no actual change.
+                return string.IsNullOrEmpty(value);
+            }
             var current = ItemNode.GetMetadata(itemName);
             if (current != null)
             {

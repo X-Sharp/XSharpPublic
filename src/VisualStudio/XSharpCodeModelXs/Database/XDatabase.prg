@@ -27,7 +27,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.8 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.9 AS System.Double     // 3.9: added Types_File / Types_Project indexes
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -348,6 +348,10 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
             stmt	+= "CREATE INDEX Types_BaseTypeName ON Types (BaseTypeName); "
             stmt	+= "CREATE INDEX Types_Kind         ON Types (Kind); "
             stmt	+= "CREATE INDEX Types_Namespace    ON Types (Namespace); "
+            // idFile and idProject are ON DELETE CASCADE foreign keys. Without an index SQLite has to
+            // scan the whole table to enforce the cascade for every deleted Files / Projects row.
+            stmt	+= "CREATE INDEX Types_File         ON Types (idFile); "
+            stmt	+= "CREATE INDEX Types_Project      ON Types (idProject); "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 

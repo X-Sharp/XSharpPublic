@@ -639,7 +639,11 @@ namespace XSharp.Project
             if (IsCodeFile(include) && item.ItemName == "Compile")
                 newNode.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider),
                     new XSharpVSMDProvider(newNode), false);
-            if (newNode.FileType == XFileType.ManagedResource)
+            // Only clear the generator when there is one to clear. Assigning it unconditionally is not free:
+            // for an item that comes from a wildcard in an imported file (which is every .resx in an SDK
+            // project) the setter has to materialize an Update item, and that forces a complete MSBuild
+            // re-evaluation of the project - once per dependent .resx node.
+            if (newNode.FileType == XFileType.ManagedResource && !string.IsNullOrEmpty(newNode.Generator))
             {
                 newNode.Generator = null;
             }

@@ -258,6 +258,15 @@ internal class SqlDbOrder inherit SqlDbObject
         if seekInfo:Value is string var strValue
             var strLen := strValue:Length
             if strLen < self:KeyLength
+                var cColumnCondition := SELF:BuildColumnAwareCondition(strValue, seekInfo:SoftSeek, cComp)
+                if cColumnCondition != null
+                    return cColumnCondition
+                endif
+                // Fallback for keys we can't map onto individual columns (functions in the key
+                // expression, unknown column metadata, ...): the original, always-correct
+                // condition against the fully concatenated SQLKey expression. SQL Server cannot
+                // use a normal index to seek into this - it has to compute the concatenation for
+                // every row - so prefer the column-aware path above whenever possible.
                 if (! seekInfo:SoftSeek)
                     cComp := " like "
                     strValue += "%"
@@ -276,6 +285,73 @@ internal class SqlDbOrder inherit SqlDbObject
             cWhereClause := self:SQLKey+cComp+Functions.XsValueToSqlValue(seekInfo:Value)
         endif
         return cWhereClause
+    end method
+
+    /// <summary>
+    /// Build a seek/scope condition against the individual columns that make up a plain
+    /// concatenated key (e.g. ALORT+NAMEUMLAUT), instead of against the fully concatenated
+    /// SQLKey expression.
+    /// </summary>
+    /// <remarks>
+    /// A condition like `[ALORT]+[NAMEUMLAUT] LIKE 'X%'` cannot use a normal index on
+    /// (ALORT, NAMEUMLAUT, ...) - SQL Server has to evaluate the concatenation for every row.
+    /// A value that covers one or more leading columns exactly can instead be expressed as
+    /// `[ALORT] = 'X' AND [NAMEUMLAUT] LIKE 'Y%'`, which is a normal composite-index seek.
+    /// Returns NULL when the key has functions in it, or column metadata/widths can't be
+    /// determined - callers must fall back to the concatenation-based condition in that case.
+    /// </remarks>
+    private method BuildColumnAwareCondition(strValue as string, lSoftSeek as logic, cRangeComp as string) as string
+        if self:HasFunctions
+            return null
+        endif
+        var columns := self:ColumnList
+        if columns == null .or. columns:Count == 0
+            return null
+        endif
+        var widths := List<int>{}
+        foreach var cCol in columns
+            var cName := cCol:Trim(<char>{'[',']','"','`'})
+            var oCol := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
+            if oCol == null
+                return null
+            endif
+            widths:Add((int) oCol:Length)
+        next
+
+        var sb := StringBuilder{}
+        var cRemaining := strValue
+        for var i := 0 upto columns:Count-1
+            if cRemaining:Length == 0
+                exit
+            endif
+            var nWidth   := widths[i]
+            var cColExpr := columns[i]
+            if sb:Length > 0
+                sb:Append(SqlDbProvider.AndClause)
+            endif
+            if cRemaining:Length >= nWidth
+                // The seek value fully covers this column - pin it down with equality and
+                // carry on with whatever's left over into the next column.
+                var cPart := cRemaining:Substring(0, nWidth)
+                sb:Append(cColExpr + " = " + Functions.XsValueToSqlValue(cPart))
+                cRemaining := cRemaining:Substring(nWidth)
+            else
+                // Partial match on this column - the same range/prefix logic the concatenation
+                // fallback uses, just scoped to this one column so the index can still be used.
+                if !lSoftSeek
+                    sb:Append(cColExpr + " like " + Functions.XsValueToSqlValue(cRemaining + "%"))
+                else
+                    var cSubstr := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
+                    cSubstr := cSubstr:Replace("%1%", cColExpr):Replace("%2%","1"):Replace("%3%", cRemaining:Length:ToString())
+                    sb:Append(cSubstr + cRangeComp + Functions.XsValueToSqlValue(cRemaining))
+                endif
+                cRemaining := ""
+            endif
+        next
+        if sb:Length == 0
+            return null
+        endif
+        return sb:ToString()
     end method
 
 end class

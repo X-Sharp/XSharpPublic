@@ -446,6 +446,42 @@ partial class SQLRDD
         return true
     end method
 
+    /// <summary>
+    /// Fetch the last page of the current order/scope/filter directly, without going through
+    /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
+    /// </summary>
+    /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
+    private method _FetchLastPage(nPage as int) as logic
+        try
+            SELF:_command:CommandText := _builder:BuildLastPageStatement()
+            SELF:_command:ClearParameters()
+            var newTable := SELF:_command:GetDataTable(SELF:Alias)
+            if newTable == null
+                return false
+            endif
+            // The query is sorted DESCENDING (to avoid the large OFFSET) - insert forwards at
+            // position 0 so the rows end up in the normal ascending order the rest of the RDD
+            // (Skip, RecNo lookups, ...) expects from the buffer.
+            for var nRow := 0 upto newTable:Rows:Count-1
+                var row := newTable:Rows[nRow]
+                var newRow := SELF:DataTable:NewRow()
+                newRow:ItemArray := row:ItemArray
+                SELF:DataTable:Rows:InsertAt(newRow, 0)
+                newRow:AcceptChanges()
+            next
+            SELF:_currentPageNo := nPage
+            SELF:_firstPageNo := nPage
+            // This IS the last page by definition - without this, a Skip(1) right after
+            // GoBottom() (e.g. GoTo(0)'s GoBottom()+Skip(1)) would not know it's already at
+            // the end, and would fall through to fetching "the next page" via the normal
+            // ascending, huge-OFFSET query - the exact cost this method exists to avoid.
+            SELF:_hasEOF := true
+            return true
+        catch as Exception
+            return false
+        end try
+    end method
+
     protected method _ForceOpen() as logic
         if self:_tableMode != TableMode.Table
             return true
@@ -473,6 +509,11 @@ partial class SQLRDD
         try
             SELF:_currentPageNo := 1
             SELF:_firstPageNo := 1
+            // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
+            // rows" flag left over from whatever this buffer was doing before - otherwise
+            // Skip() refuses to fetch the next page and reports EOF even though the new
+            // WHERE clause has plenty more rows past the first page.
+            SELF:_hasEOF := false
             SELF:DataTable := self:_ReadTable(sWhereClause)
             self:_GetRecCount()
         catch as Exception
@@ -556,7 +597,16 @@ partial class SQLRDD
         return
 
     private method _GetRecCount() as void
-        self:_serverReccount := self:_builder:GetRecCount()
+        // Must respect the current order's scope/condition, same as GoBottom() already does -
+        // otherwise a scope/seek-scoped browse (e.g. one city's streets) gets its RecCount
+        // silently overwritten with the whole unscoped table's count the moment anything
+        // triggers a recount (GoCold() does, on every flush of a "hot" row), corrupting the
+        // page/EOF math for the rest of the browse.
+        if self:CurrentOrder == null
+            self:_serverReccount := self:_builder:GetRecCount()
+        else
+            self:_serverReccount := self:OrderKeyCount
+        endif
     end method
 
     private method _FetchPage(nNewPageNo as int ) as logic
@@ -638,6 +688,12 @@ partial class SQLRDD
 
         // determine correct page
         SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
+        // This is a freshly loaded page - whether it happens to be the last one needs to be
+        // re-determined from here, not inherited from whatever a previous, unrelated GoBottom()
+        // (e.g. on a completely different page) left behind. Without this, a stale _hasEOF=true
+        // makes every subsequent forward Skip() from this page falsely believe it's already at
+        // the end and never fetch the next page.
+        SELF:_hasEOF := false
         SELF:_ClearTable()
         SELF:DataTable := SELF:_ReadTable("")
 
@@ -664,6 +720,7 @@ partial class SQLRDD
             SELF:DataTable := oTable
             SELF:RowNumber := 1
             SELF:_outsideOrder := true
+            SELF:_hasEOF := false
             return true
         catch as Exception
             return false

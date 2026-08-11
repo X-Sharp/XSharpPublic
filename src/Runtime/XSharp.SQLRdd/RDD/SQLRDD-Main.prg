@@ -581,7 +581,19 @@ partial class SQLRDD inherit Workarea
         if SELF:RecCount % self:_oTd:PageSize != 0
             nPage += 1
         ENDIF
-        SELF:_FetchPage((INT) nPage)
+        // For a large table, fetching the last page via the normal ascending, OFFSET-based
+        // query (_FetchPage) forces the server to walk/skip almost the entire ordered result -
+        // the further from the top, the worse. _FetchLastPage avoids that by sorting in
+        // reverse and asking for OFFSET 0 instead, which is always cheap. Only safe when the
+        // order isn't already descending (that would invert the reversal); falls back to the
+        // original approach for natural order, descending orders, or if it fails outright.
+        if self:CurrentOrder == null .or. !self:CurrentOrder:Descending
+            if !SELF:_FetchLastPage((INT) nPage)
+                SELF:_FetchPage((INT) nPage)
+            endif
+        else
+            SELF:_FetchPage((INT) nPage)
+        endif
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
         SELF:_Bottom    := TRUE
@@ -603,7 +615,6 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         LOCAL isOK := TRUE AS LOGIC
-        //
         SELF:GoCold()
         IF nToSkip == 0
             NOP

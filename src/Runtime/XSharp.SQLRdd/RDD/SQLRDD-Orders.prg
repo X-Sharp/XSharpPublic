@@ -496,17 +496,14 @@ partial class SQLRDD
 
         SELF:_ClearTable()
         SELF:_currentPageNo := 1
-        // save PageSize
-        var nPageSize := SELF:_oTd:PageSize
-        // When a filter is active we may need to skip past several candidate
-        // keys to find one that also satisfies the filter, so we need more
-        // than a single row in the buffer. Only shrink the page to 1 row
-        // when there is no filter to evaluate.
-        if ! SELF:_FilterInfo:Active
-            SELF:_oTd:PageSize := 1
-        endif
+        // Fetch a normal, full-size page here - NOT a single-row buffer. _FetchPage()'s
+        // paging math ((CurrentPage-1) * PageSize) assumes every page, including this first
+        // one, holds a full PageSize worth of rows; a caller that finds a match and then
+        // walks forward with Skip() past this buffer (the common "seek to the first record
+        // of a key, then Skip() while the key still matches" idiom) would otherwise jump
+        // straight to absolute offset PageSize on the next fetch instead of to row 2,
+        // silently skipping every other row that shares this seek's key.
         self:_OpenTable(cSeekWhere)
-        SELF:_oTd:PageSize := nPageSize
 
         IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
             SELF:GoTo(0)

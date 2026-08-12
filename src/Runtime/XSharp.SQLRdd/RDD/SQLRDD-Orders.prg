@@ -168,6 +168,14 @@ partial class SQLRDD
         local result := false as logic
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
+            // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
+            // tearing down the cursor. _CloseCursor() below nulls out the table the
+            // CurrentRow property reads from, so GoCold() called any later (e.g. via the
+            // GoTo() further down) would see the phantom row instead of the real dirty one
+            // and silently report success without writing anything - a change made via
+            // SetOrder()/RestDB() around a write (the standard "write outside the active
+            // index/order" pattern used throughout the app) would be lost.
+            SELF:GoCold()
             self:_CloseCursor()
             if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
                (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
@@ -441,7 +449,15 @@ partial class SQLRDD
             self:_ForceOpen()
             info:Result := self:OrderKeyCount
         case DBOI_POSITION
-            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            // OrdKeyNo()/DBOI_POSITION reports the record's position within the current order.
+            // When the cursor sits on a record outside the order (see GoTo()/_outsideOrder),
+            // RowNumber/_currentPageNo just reflect the ad-hoc single-row buffer we loaded for
+            // it, not a real position - matching DBF, that must report 0, not a bogus row number.
+            if self:_outsideOrder
+                info:Result := 0
+            else
+                info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            endif
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
@@ -480,17 +496,14 @@ partial class SQLRDD
 
         SELF:_ClearTable()
         SELF:_currentPageNo := 1
-        // save PageSize
-        var nPageSize := SELF:_oTd:PageSize
-        // When a filter is active we may need to skip past several candidate
-        // keys to find one that also satisfies the filter, so we need more
-        // than a single row in the buffer. Only shrink the page to 1 row
-        // when there is no filter to evaluate.
-        if ! SELF:_FilterInfo:Active
-            SELF:_oTd:PageSize := 1
-        endif
+        // Fetch a normal, full-size page here - NOT a single-row buffer. _FetchPage()'s
+        // paging math ((CurrentPage-1) * PageSize) assumes every page, including this first
+        // one, holds a full PageSize worth of rows; a caller that finds a match and then
+        // walks forward with Skip() past this buffer (the common "seek to the first record
+        // of a key, then Skip() while the key still matches" idiom) would otherwise jump
+        // straight to absolute offset PageSize on the next fetch instead of to row 2,
+        // silently skipping every other row that shares this seek's key.
         self:_OpenTable(cSeekWhere)
-        SELF:_oTd:PageSize := nPageSize
 
         IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
             SELF:GoTo(0)

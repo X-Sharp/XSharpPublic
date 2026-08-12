@@ -194,6 +194,78 @@ internal class SqlDbTableCommandBuilder
 
         return sb:ToString()
 
+    /// <summary>
+    /// Build a fetch of the last page of the current order/scope/filter, without the classic
+    /// "large OFFSET" performance problem.
+    /// </summary>
+    /// <remarks>
+    /// GoBottom() needs the last PageSize rows of a potentially huge result set. The normal
+    /// paging query (BuildSqlStatement) would ask for that via `ORDER BY ... OFFSET (millions)
+    /// ROWS FETCH NEXT PageSize ROWS`, which forces SQL Server to walk/skip almost the entire
+    /// ordered result before it can return anything - the cost grows with table size even
+    /// though the caller only wants a handful of rows. Sorting in reverse and asking for
+    /// OFFSET 0 is always cheap regardless of table size; the caller is responsible for
+    /// reversing the returned rows back into ascending order.
+    /// </remarks>
+    method BuildLastPageStatement() as string
+        var sb := System.Text.StringBuilder{}
+        local scopeWhere := null as string
+        var CurrentOrder := _oRdd:CurrentOrder
+        var whereClauses := List<String>{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append(self:ColumnList())
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
+        if CurrentOrder != null
+            scopeWhere := CurrentOrder:GetScopeClause()
+            if ! String.IsNullOrEmpty(CurrentOrder:SqlWhere)
+                whereClauses:Add(CurrentOrder:SqlWhere)
+            endif
+        endif
+        if ! String.IsNullOrEmpty(scopeWhere)
+            whereClauses:Add(scopeWhere)
+        endif
+        if SELF:_oTable:HasServerFilter
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+        var sWhereClause := self:CombineWhereClauses(whereClauses)
+        sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
+        if ! String.IsNullOrEmpty(sWhereClause)
+            sb:Append(SqlDbProvider.WhereClause)
+            sb:Append(sWhereClause)
+        endif
+        local cOrderby := "" AS string
+        if CurrentOrder != null
+            sb:Append(Provider.OrderByClause)
+            foreach var cCol in CurrentOrder:OrderList
+                if !String.IsNullOrEmpty(cOrderby)
+                    cOrderby += ", "
+                endif
+                cOrderby += cCol + " DESC"
+            next
+            if SELF:_oTable:HasRecnoColumn
+                var cRecnoCol := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                if ! String.IsNullOrEmpty(cOrderby)
+                    if !cOrderby:Contains(cRecnoCol)
+                        cOrderby := cOrderby + ", " + cRecnoCol + " DESC"
+                    endif
+                else
+                    cOrderby := cRecnoCol + " DESC"
+                endif
+            endif
+        elseif SELF:_oTable:HasRecnoColumn
+            sb:Append(Provider:OrderByClause)
+            cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn) + " DESC"
+        endif
+        cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
+        sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
+
+        sb:Append(Provider:PagingClause)
+        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:PageSize:ToString())
+        sb:Replace(SqlDbProvider.StartRecMacro, "0")
+
+        return sb:ToString()
+
     METHOD BuildRowNumberStatement(nRec as DWORD) AS STRING
         var sb := System.Text.StringBuilder{}
 
@@ -244,6 +316,28 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         sb:Replace(SqlDbProvider.RecordNumberMacro, self:_oTable:RecnoColumn)
         sb:Replace(SqlDbProvider.WhereMacro, nRec:ToString())
+        return sb:ToString()
+
+    /// <summary>
+    /// Build a fetch of a single record by its physical recno, ignoring the current order's
+    /// FOR-condition/scope and any filter.
+    /// </summary>
+    /// <remarks>
+    /// DBF's GoTo() is a physical positioning operation: it must succeed even for a record that
+    /// does not match the active order, unlike BuildRowNumberStatement/BuildSqlStatement which
+    /// always fold the order's condition into the query. Found and OrderKeyNo separately reflect
+    /// that the record has no valid position in the current order.
+    /// </remarks>
+    method BuildDirectRecnoStatement(nRec as DWORD) as string
+        var sb := System.Text.StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append(self:ColumnList())
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
+        sb:Append(SqlDbProvider.WhereClause)
+        sb:Append(Provider:QuoteIdentifier(self:_oTable:RecnoColumn))
+        sb:Append(" = ")
+        sb:Append(nRec:ToString())
         return sb:ToString()
 
 

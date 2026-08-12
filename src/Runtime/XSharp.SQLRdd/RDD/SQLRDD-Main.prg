@@ -665,6 +665,17 @@ partial class SQLRDD inherit Workarea
                 ELSE
                     SELF:RowNumber :=  newRow
                     SELF:_FetchPage(SELF:_currentPageNo +1)
+                    if SELF:RowNumber > SELF:RowCount
+                        // The page we just fetched turned out to be empty (we were already on
+                        // the last real row) - report EOF right away instead of leaving RowNumber
+                        // past the end with EOF still FALSE, which otherwise sits stale until a
+                        // second Skip() happens to see _hasEOF. In between, RecNo/CurrentRow
+                        // reflect the phantom row - e.g. nextrec()'s "IF EOF THEN GOTO(oldRecno)"
+                        // never fires on the first PgDn past the end, and the recno it captures
+                        // on the following call is the phantom row's blank value, not a real one.
+                        SELF:RowNumber := 0
+                        SELF:_SetEOF(TRUE)
+                    endif
                 endif
             ELSE
                 IF SELF:_currentPageNo == 1

@@ -666,7 +666,15 @@ partial class SQLRDD
                     newRow:AcceptChanges()
                 next
             endif
-            if lForward .and. newTable:Rows:Count < _oTd:PageSize
+            // A short page always means EOF. But when the total record count is an exact
+            // multiple of PageSize, the last page comes back FULL - "short page" never fires,
+            // so also check whether this page's absolute record range already reaches the
+            // known total. Without this, sequential forward paging (unlike GoBottom(), which
+            // jumps straight to the last page and marks it via _FetchLastPage) never sets
+            // _hasEOF on that exactly-full last page: the next Skip() then fetches a
+            // nonexistent page past it, landing on a bogus RowNumber instead of staying put.
+            var nAbsoluteRowsSeen := ((nNewPageNo - 1) * _oTd:PageSize) + newTable:Rows:Count
+            if lForward .and. (newTable:Rows:Count < _oTd:PageSize .or. nAbsoluteRowsSeen >= SELF:_serverReccount)
                 SELF:_hasEOF := true
             else
                 _currentPageNo := nNewPageNo

@@ -6701,6 +6701,14 @@ namespace Microsoft.VisualStudio.Project
                     var projectInfo = ProjectInfo.GetProjectInfo(url);
                     if (projectInfo == null)
                     {
+                        if (node.ReferencedProjectGuid == Guid.Empty)
+                        {
+                            // The referenced project has not been loaded, so we do not know its guid yet.
+                            // Do not register a ProjectInfo with an empty guid: that would be cached by url
+                            // and would prevent the guid from being resolved later on.
+                            Logger.Information($"No BuildDependency for project {this.Caption} on {url}: the guid of the referenced project is unknown");
+                            continue;
+                        }
                         projectInfo = new ProjectInfo(node.ReferencedProjectGuid, url);
                     }
                     var dependency = new BuildDependency(this, projectInfo.Id);

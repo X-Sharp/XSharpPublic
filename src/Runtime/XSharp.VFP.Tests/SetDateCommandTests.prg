@@ -187,6 +187,89 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             END TRY
         END METHOD
 
+        [Fact, Trait("Category", "SetDate")];
+        METHOD SetDateQueryReturnsTheCountryKeywordNotThePicture AS VOID
+            VAR cOld := GetDateFormat()
+            TRY
+                SET CENTURY ON
+                SET DATE TO GERMAN
+                Assert.Equal("GERMAN", (STRING) Set("DATE"))
+                Assert.Equal("DD.MM.YYYY", (STRING) Set("DATEFORMAT"))
+            FINALLY
+                SetDateFormat(cOld)
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "SetDate")];
+        METHOD SetDateQueryReturnsEveryKeyword AS VOID
+            LOCAL cKw AS STRING
+            VAR cOld := GetDateFormat()
+            TRY
+                SET CENTURY ON
+                FOREACH oPair AS STRING[] IN <STRING[]>{ ;
+                        <STRING>{"AMERICAN", "AMERICAN"}, ;
+                        <STRING>{"ANSI"    , "ANSI"    }, ;
+                        <STRING>{"BRITISH" , "BRITISH" }, ;
+                        <STRING>{"FRENCH"  , "FRENCH"  }, ;
+                        <STRING>{"GERMAN"  , "GERMAN"  }, ;
+                        <STRING>{"ITALIAN" , "ITALIAN" }, ;
+                        <STRING>{"DUTCH"   , "ITALIAN" }, ;
+                        <STRING>{"JAPAN"   , "JAPAN"   }, ;
+                        <STRING>{"JAPANESE", "JAPAN"   }, ;
+                        <STRING>{"USA"     , "USA"     }, ;
+                        <STRING>{"SHORT"   , "SHORT"   }  ;
+                    }
+                    cKw := oPair[1]
+                    SET DATE TO (cKw)
+                    Assert.Equal(oPair[2], (STRING) Set("DATE"))
+                NEXT
+            FINALLY
+                SetDateFormat(cOld)
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "SetDate")];
+        METHOD SetDateQueryCollapsesAliasKeywords_KnownLimitation AS VOID
+            LOCAL cKw AS STRING
+            VAR cOld := GetDateFormat()
+            TRY
+                SET CENTURY ON
+                FOREACH oPair AS STRING[] IN <STRING[]>{ ;
+                        <STRING>{"TAIWAN", "JAPAN"   }, ;
+                        <STRING>{"MDY"   , "AMERICAN"}, ;
+                        <STRING>{"DMY"   , "BRITISH" }, ;
+                        <STRING>{"YMD"   , "JAPAN"   }  ;
+                    }
+                    cKw := oPair[1]
+                    SET DATE TO (cKw)
+                    Assert.Equal(oPair[2], (STRING) Set("DATE"))
+                NEXT
+            FINALLY
+                SetDateFormat(cOld)
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "SetDate")];
+        METHOD SetDateQueryWorksForLiteralKeywordsToo AS VOID
+            VAR cOld := GetDateFormat()
+            TRY
+                SET CENTURY ON
+                SET DATE TO AMERICAN
+                Assert.Equal("AMERICAN", (STRING) Set("DATE"))
+                SET DATE TO ANSI
+                Assert.Equal("ANSI", (STRING) Set("DATE"))
+                SET DATE TO FRENCH
+                Assert.Equal("FRENCH", (STRING) Set("DATE"))
+                SET DATE TO ITALIAN
+                Assert.Equal("ITALIAN", (STRING) Set("DATE"))
+                SET DATE TO JAPANESE
+                Assert.Equal("JAPAN", (STRING) Set("DATE"))
+                SET DATE TO USA
+                Assert.Equal("USA", (STRING) Set("DATE"))
+            FINALLY
+                SetDateFormat(cOld)
+            END TRY
+        END METHOD
     END CLASS
 
 END NAMESPACE

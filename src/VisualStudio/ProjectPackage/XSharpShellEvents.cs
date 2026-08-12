@@ -86,17 +86,23 @@ namespace XSharp.Project
 #if DEV17
         private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
+            FixIncompleteReferences();
+        }
 
+        /// <summary>
+        /// Complete the project references of SDK style projects that could not be resolved while the
+        /// project was loading, because the referenced project was not loaded yet.
+        /// </summary>
+        private void FixIncompleteReferences()
+        {
             foreach (var project in XSharpProjectNode.AllProjects)
             {
                 if (project.HasIncompleteReferences)
                 {
-
                     project.FixReferences();
                 }
             }
-
-    }
+        }
 #endif
         private void SolutionEvents_OnBeforeCloseSolution()
         {
@@ -129,6 +135,11 @@ namespace XSharp.Project
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+#if DEV17
+            // Projects may have been loaded after OnAfterOpenSolution, so check again now that all
+            // projects of the solution are available.
+            FixIncompleteReferences();
+#endif
             RestoreDesignerWindows();
             RestoreStartupProject();
         }

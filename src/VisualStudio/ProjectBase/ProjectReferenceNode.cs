@@ -252,6 +252,36 @@ namespace Microsoft.VisualStudio.Project
             referencedProjectIsCached = false;
         }
 
+        /// <summary>
+        /// Assign the guid of the referenced project.
+        /// </summary>
+        /// <remarks>
+        /// SDK style project files do not store the guid of the referenced project, so it can only be
+        /// resolved when the referenced project has been loaded. This also updates the build dependency,
+        /// which could not be created when the node was constructed without a guid.
+        /// </remarks>
+        public void UpdateReferencedProjectGuid(Guid guid)
+        {
+            if (guid == this.referencedProjectGuid)
+            {
+                return;
+            }
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.buildDependency != null)
+            {
+                this.ProjectMgr.RemoveBuildDependency(this.buildDependency);
+                this.buildDependency = null;
+            }
+            this.referencedProjectGuid = guid;
+            if (guid != Guid.Empty)
+            {
+                this.buildDependency = new BuildDependency(this.ProjectMgr, guid);
+                this.ProjectMgr.AddBuildDependency(this.buildDependency);
+            }
+            this.DropReferencedProjectCache();
+            this.ReDraw(UIHierarchyElement.Icon);
+        }
+
 
         EnvDTE.Property GetPropertySave(string name, bool onConfig)
         {
@@ -399,21 +429,26 @@ namespace Microsoft.VisualStudio.Project
                 ReferencedProjectName = Path.GetFileNameWithoutExtension(referencedProjectRelativePath);
             }
 
-            // Continue even if project settings cannot be read.
-            try
+            // An SDK style project file does not store the guid of the referenced project, so we may
+            // not have one here, for example when the referenced project has not been loaded yet.
+            // Do not throw in that case: the node must appear in the hierarchy anyway. The guid is
+            // filled in later, see XSharpProjectNode.FixReferences() and UpdateReferencedProjectGuid().
+            if (!Guid.TryParse(guidString, out var guid))
             {
-                this.referencedProjectGuid = new Guid(guidString);
-
+                guid = Guid.Empty;
+            }
+            this.referencedProjectGuid = guid;
+            if (guid != Guid.Empty)
+            {
                 this.buildDependency = new BuildDependency(this.ProjectMgr, this.referencedProjectGuid);
                 this.ProjectMgr.AddBuildDependency(this.buildDependency);
             }
-            finally
+            var name = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
+            if (!string.IsNullOrEmpty(name))
             {
-                //Debug.Assert(this.referencedProjectGuid != Guid.Empty, "Could not retrieve referenced project guidproject file");
-
-                this.ReferencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
-
-                //Debug.Assert(!String.IsNullOrEmpty(this.referencedProjectName), "Could not retrieve referenced project name form project file");
+                // Do not clear the name that was determined above when the metadata could not be written,
+                // which happens for imported items.
+                this.ReferencedProjectName = name;
             }
 
             Uri uri = new Uri(this.ProjectMgr.BaseURI.Uri, this.referencedProjectRelativePath);

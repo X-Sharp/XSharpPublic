@@ -389,7 +389,9 @@ partial class SQLRDD inherit Workarea
         if current == null
             return false
         endif
-        var lWasHot := current:RowState != DataRowState.Unchanged
+        // RowState alone misses rows only marked via Delete()/Recall() without a DeletedColumn,
+        // since those touch no DataColumn and leave RowState Unchanged.
+        var lWasHot := current:RowState != DataRowState.Unchanged .or. _updatedRecNos:Count > 0
         local lOk := TRUE as logic
         if lWasHot .and. self:DataTable != null
 
@@ -441,6 +443,29 @@ partial class SQLRDD inherit Workarea
         return lOk
     end method
 
+    /// <summary>Is the given row marked for deletion?</summary>
+    /// <remarks>
+    /// When a DeletedColumn is defined, then the value of that column is checked.
+    /// Otherwise the row's recno is looked up in the internal _deletedRowIds set,
+    /// since Workarea.Deleted is a hardcoded stub that cannot track this state.
+    /// </remarks>
+    private method _IsRowDeleted(row as DataRow) as logic
+        if self:_deletedColumnNo > -1
+            var res := row[self:_deletedColumnNo]
+            if res is logic
+                return (logic) res
+            else
+                try
+                    var iRes := Convert.ToInt64(res)
+                    return iRes != 0
+                catch
+                    return false
+                end try
+            endif
+        endif
+        return self:_deletedRowIds:Contains((int)row[self:_recnoColumNo])
+    end method
+
     /// <summary>Mark the row at the current cursor position for deletion.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>
@@ -449,14 +474,20 @@ partial class SQLRDD inherit Workarea
     /// </remarks>
 
     override method Delete() as logic
+        var row := self:CurrentRow
         if self:_deletedColumnNo > -1
-            var row := self:CurrentRow
             if self:_deletedColumnIsLogic
                 row[_deletedColumnNo] := true
             else
                 row[_deletedColumnNo] := 1
             endif
+        else
+            self:_deletedRowIds:Add((int)row[self:_recnoColumNo])
         endif
+        if !_updatedRecNos:Contains((int)row[self:_recnoColumNo])
+            _updatedRecNos:Add((int)row[self:_recnoColumNo])
+        endif
+        self:GoHot()
         return true
     end method
 
@@ -467,17 +498,21 @@ partial class SQLRDD inherit Workarea
     /// Otherwise when the current row is deleted and not persisted to the server yet, then the deletion is undone.
     /// </remarks>
     override method Recall() as logic
+        var row := self:CurrentRow
         if self:_deletedColumnNo >= 0
-            var row := self:CurrentRow
             if self:_deletedColumnIsLogic
                 row[_deletedColumnNo] := false
             else
                 row[_deletedColumnNo] := 0
             endif
+        else
+            self:_deletedRowIds:Remove((int)row[self:_recnoColumNo])
         endif
-        // Must position the DBF on the right row for the recall
-        super:GoTo((DWORD) SELF:RowNumber)
-        return super:Recall()
+        if !_updatedRecNos:Contains((int)row[self:_recnoColumNo])
+            _updatedRecNos:Add((int)row[self:_recnoColumNo])
+        endif
+        self:GoHot()
+        return true
     end method
 
     /// <summary>Retrieve and optionally change information about a work area.</summary>
@@ -782,21 +817,10 @@ partial class SQLRDD inherit Workarea
     /// </remarks>
     override property Deleted		as logic
         get
-            if self:_deletedColumnNo > 0
-                var res:= CurrentRow[self:_deletedColumnNo]
-                if res is logic
-                    return (logic) res
-                else
-                    try
-                        var iRes := Convert.ToInt64(res)
-                        return iRes != 0
-                    catch
-                        return false
-                    end try
-                endif
-            else
-                return super:Deleted
+            if self:CurrentRow == null
+                return false
             endif
+            return self:_IsRowDeleted(self:CurrentRow)
         end get
     end property
 

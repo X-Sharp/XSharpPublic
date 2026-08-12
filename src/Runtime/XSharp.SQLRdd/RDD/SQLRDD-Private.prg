@@ -40,6 +40,9 @@ partial class SQLRDD
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRecNos  as List<int>
+    /// <summary>Recnos of rows marked for deletion via Delete() when there is no DeletedColumn on the table.
+    /// Workarea.Deleted is a hardcoded stub (always FALSE), so this state cannot be tracked in the base class.</summary>
+    private _deletedRowIds  as HashSet<int>
     private _orderBagList   as List<SqlDbOrderBag>
     private _rowNumber      as long
 
@@ -135,6 +138,7 @@ partial class SQLRDD
         SELF:_firstPageNo      := 1
         self:_trimValues       := true // trim String Valuess
         SELF:_updatedRecNos    := List<int>{}
+        SELF:_deletedRowIds    := HashSet<int>{}
         SELF:_keyColumns       := List<RddFieldInfo>{}
         SELF:_updatableColumns := List<RddFieldInfo>{}
         SELF:_orderBagList     := List<SqlDbOrderBag>{}
@@ -780,7 +784,7 @@ partial class SQLRDD
             endif
 
             lOk := true
-            if super:Deleted
+            if self:_IsRowDeleted(row)
                 local wasNew := false as logic
                 // Append from may add deleted rows
                 if row:RowState.HasFlag(DataRowState.Added)

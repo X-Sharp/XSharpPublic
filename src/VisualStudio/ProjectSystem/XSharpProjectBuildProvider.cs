@@ -25,12 +25,14 @@ namespace XSharp.VisualStudio.ProjectSystem
     [AppliesTo(XSharpProjectCapabilities.XSharp)]
     internal sealed class XSharpProjectBuildProvider : IBuildPropertiesProvider
     {
-        private readonly ConfiguredProject _configuredProject;
+        // Reserved for future use: inject or transform per-project build properties
+        // (e.g. dialect, include paths) at build time.
+        // private readonly ConfiguredProject _configuredProject;
 
         [ImportingConstructor]
         public XSharpProjectBuildProvider(ConfiguredProject configuredProject)
         {
-            _configuredProject = configuredProject;
+            // configuredProject reserved for future build-property injection.
         }
 
         /// <inheritdoc />
@@ -65,12 +67,14 @@ namespace XSharp.VisualStudio.ProjectSystem
     [ExportMetadata("Name", "XSharpUpToDateCheck")]
     internal sealed class XSharpUpToDateCheckProvider : IBuildUpToDateCheckProvider
     {
-        private readonly ConfiguredProject _configuredProject;
+        // Reserved for future use: compare source timestamps against output assembly
+        // to implement a fast "up-to-date" check without invoking MSBuild.
+        // private readonly ConfiguredProject _configuredProject;
 
         [ImportingConstructor]
         public XSharpUpToDateCheckProvider(ConfiguredProject configuredProject)
         {
-            _configuredProject = configuredProject;
+            // configuredProject reserved for future up-to-date timestamp checking.
         }
 
         /// <inheritdoc />

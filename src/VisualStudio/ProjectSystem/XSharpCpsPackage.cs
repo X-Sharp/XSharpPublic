@@ -96,14 +96,12 @@ namespace XSharp.VisualStudio.ProjectSystem
                 if (s_isCpsEnabled.HasValue)
                     return s_isCpsEnabled.Value;
 
+                // Default to false until the version check succeeds.
+                s_isCpsEnabled = false;
+
                 try
                 {
-                    s_isCpsEnabled =
-                        typeof(XSharpCpsPackage).Assembly
-                            .GetName().Version.Major >= 1 // always true; real check below
-                        && System.Environment.Version.Major >= 4;  // .NET 4+ implies VS2019+
-
-                    // The reliable check is the VS shell version.
+                    // The reliable check is the VS shell release version string.
                     var shell = ServiceProvider.GlobalProvider.GetService(
                         typeof(SVsShell)) as IVsShell;
                     if (shell != null)

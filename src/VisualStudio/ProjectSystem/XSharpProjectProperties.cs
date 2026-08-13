@@ -43,8 +43,16 @@ namespace XSharp.VisualStudio.ProjectSystem
 
         private IProjectProperties GetConfigurationProperties()
         {
+            // Retrieve properties with a per-configuration context so that
+            // configuration-specific values (e.g. OutputPath, DefineConstants) are
+            // read from the active configuration rather than the common project properties.
+            var context = ProjectPropertiesContext.GetContext(
+                _project,
+                propertyPageSchemaElement: null,
+                itemType: null,
+                itemName: null);
             return _project.Services.ProjectPropertiesProvider
-                           .GetCommonProperties(); // configuration-specific read would use a context
+                           .GetProperties(context.File, context.ItemType, context.ItemName);
         }
 
         // ─── Application properties ──────────────────────────────────────────────────

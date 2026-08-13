@@ -519,7 +519,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Fox2:
                     return "FoxPro Compatible Array Handling";
                 case CompilerOption.Fox3:
-                    return "FoxPro Compatible Ambiguous Dot Handling";
+                    return "FoxPro Compatible Cursor Handling";
                 case CompilerOption.ImplicitNamespace:
                     return "Enable Implicit Namespace lookups";
                 case CompilerOption.InitLocals:

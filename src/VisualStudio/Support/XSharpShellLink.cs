@@ -308,7 +308,7 @@ namespace XSharp.Support
         private void BuildEvents_ProjectConfigurationChanged(Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Project Configuration changed: " + project.Name);
+            Logger.Information("Project Configuration changed: " + project?.Name);
         }
 
         private void BuildEvents_SolutionConfigurationChanged()

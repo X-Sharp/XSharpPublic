@@ -1,4 +1,4 @@
-﻿//
+﻿﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -17,25 +17,152 @@ using System.Text
 using System.Runtime.CompilerServices
 using System.Diagnostics
 
+// Everything that FindBestOverLoad() and CompareMethods() need to know about one candidate.
+// GetParameters() returns a new array on every call and IsDefined() and the default values of the
+// parameters are reflection lookups as well, so this is collected once per candidate instead of
+// inside the loop that compares every candidate with every other candidate
+internal sealed class __OverLoadInfo
+    // Method, Member and Parameters are all keywords, hence the abbreviated names
+    internal Mb          as MethodBase
+    internal DeclType    as System.Type
+    internal Pars        as ParameterInfo[]
+    internal IsClipper   as logic
+    private  _nonDefault as long        // -1 as long as it has not been calculated
+
+    internal constructor(m as MethodBase)
+        self:Mb          := m
+        self:DeclType    := m:DeclaringType
+        self:Pars        := m:GetParameters()
+        self:IsClipper   := m:IsDefined(OOPHelpers.clipperCallType, false)
+        self:_nonDefault := -1
+        return
+
+    // The number of parameters that have no default value. Calculated when it is first asked for,
+    // because the most common cases are decided on the number of parameters alone
+    internal property NonDefault as long
+        get
+            if self:_nonDefault < 0
+                self:_nonDefault := OOPHelpers.CountNonDefaultParameters(self:Pars)
+            endif
+            return self:_nonDefault
+        end get
+    end property
+end class
+
 internal static class OOPHelpers
-    static internal aXsAssemblies  as IList<Assembly>
+    static internal aXsAssemblies  as HashSet<Assembly>
     static internal EnableOptimizations as logic
     static internal cacheClassesAll as ConcurrentDictionary<string,Type>
     static internal cacheClassesOurAssemblies as ConcurrentDictionary<string,Type>
     static internal fieldPropCache    as ConcurrentDictionary<System.Type, ConcurrentDictionary<string, MemberInfo> >
     static internal overloadCache     as ConcurrentDictionary<System.Type, ConcurrentDictionary<string, IList<MethodInfo>> >
+    // The assemblies with a ClassLibraryAttribute and the clipper functions inside these assemblies
+    // are cached. Both caches are invalidated when a new assembly is loaded into the AppDomain.
+    // asmGeneration is used to detect that an assembly was loaded while we were filling a cache
+    static internal ourAssemblies     as Assembly[]
+    static internal clipperFuncCache  as ConcurrentDictionary<string, MethodInfo[]>
+    static internal asmGeneration     as long
+    // Conversion operators are members of a type, so they never change. Both the operators that were
+    // found and the fact that a type has no operator for a certain target type are worth caching
+    static internal operatorCache     as ConcurrentDictionary<System.Type, ConcurrentDictionary<System.Type, MethodInfo> >
+    // typeof() is a runtime call, so the types and attributes that are needed inside loops are resolved once
+    static internal usualType         as System.Type
+    static internal usualArrayType    as System.Type
+    static internal objectType        as System.Type
+    static internal stringType        as System.Type
+    static internal arrayType         as System.Type
+    static internal codeblockType     as System.Type
+    static internal floatType         as System.Type
+    static internal dateType          as System.Type
+    static internal symbolType        as System.Type
+    static internal ptrType           as System.Type
+    static internal paramArrayType    as System.Type
+    static internal clipperCallType   as System.Type
+    static internal classLibraryType  as System.Type
+    static internal implicitNsType    as System.Type
+    static internal rtAssembly        as Assembly
+    // The namespaces that FindClass() prefixes to the classname, in the order in which they are tried
+    static internal searchNameSpaces  as string[]
+    // The runtime assemblies in the order of their dependencies. Used to decide which overload wins
+    // when the same method is defined in more than one of them. The index per assembly is cached
+    // because GetName() allocates a new AssemblyName on every call
+    static internal ourAssemblyNames  as string[]
+    static internal asmIndexCache     as ConcurrentDictionary<Assembly, long>
     static constructor()
         cacheClassesAll             := ConcurrentDictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
         cacheClassesOurAssemblies   := ConcurrentDictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
         fieldPropCache              := ConcurrentDictionary<System.Type, ConcurrentDictionary<string, MemberInfo> >{}
         overloadCache               := ConcurrentDictionary<System.Type, ConcurrentDictionary<string, IList<MethodInfo>> >{}
-        aXsAssemblies               := List<Assembly>{}
+        aXsAssemblies               := HashSet<Assembly>{}
+        clipperFuncCache            := ConcurrentDictionary<string, MethodInfo[]>{StringComparer.OrdinalIgnoreCase}
+        operatorCache               := ConcurrentDictionary<System.Type, ConcurrentDictionary<System.Type, MethodInfo> >{}
+        dynamicMethodCache          := ConcurrentDictionary<MethodInfo, Func<object, object[], object> >{}
+        ourAssemblies               := null
+        asmGeneration               := 0
+        asmIndexCache               := ConcurrentDictionary<Assembly, long>{}
+        usualType                   := typeof(usual)
+        usualArrayType              := typeof(usual[])
+        objectType                  := typeof(object)
+        stringType                  := typeof(System.String)
+        arrayType                   := typeof(XSharp.__Array)
+        codeblockType               := typeof(XSharp.Codeblock)
+        floatType                   := typeof(float)
+        dateType                    := typeof(date)
+        symbolType                  := typeof(symbol)
+        ptrType                     := typeof(ptr)
+        paramArrayType              := typeof(ParamArrayAttribute)
+        clipperCallType             := typeof(ClipperCallingConventionAttribute)
+        classLibraryType            := typeof(ClassLibraryAttribute)
+        implicitNsType              := typeof(ImplicitNamespaceAttribute)
+        rtAssembly                  := typeof(__Usual):Assembly     // XSharp.RT
+        searchNameSpaces            := <string>{"","System.","XSharp.", "XSharp.Internal."}
+        ourAssemblyNames            := <string>{"xsharp.core", "xsharp.rt", "xsharp.vo", "xsharp.vfp", "xsharp.xpp", "xsharp.harbour"}
+        AppDomain.CurrentDomain:AssemblyLoad += OnAssemblyLoad
+        return
+
+    // A newly loaded assembly may contain classes and clipper functions that we have not seen before,
+    // so the caches that depend on the list of loaded assemblies have to be thrown away
+    static method OnAssemblyLoad(sender as object, args as AssemblyLoadEventArgs) as void
+        System.Threading.Interlocked.Increment(ref asmGeneration)
+        ourAssemblies := null
+        clipperFuncCache:Clear()
+        // The classes that we did find are still valid, but the new assembly may contain a class
+        // that we have been looking for before without success
+        RemoveNegativeEntries(cacheClassesAll)
+        RemoveNegativeEntries(cacheClassesOurAssemblies)
+        return
+
+    static method RemoveNegativeEntries(cache as ConcurrentDictionary<string, Type>) as void
+        var keys := List<string>{}
+        foreach var pair in cache
+            if pair:Value == null
+                // do not delete inside the foreach, this may throw an exception
+                keys:Add(pair:Key)
+            endif
+        next
+        foreach var strKey in keys
+            cache:TryRemove(strKey, out var _)
+        next
         return
 
     static method FindOurAssemblies as IEnumerable<Assembly>
-        return	from asm in AppDomain.CurrentDomain:GetAssemblies() ;
-            where asm:IsDefined(typeof( ClassLibraryAttribute ), false) ;
-            select asm
+        var result := ourAssemblies
+        if result == null
+            var gen  := asmGeneration
+            var cla  := typeof( ClassLibraryAttribute )
+            var list := List<Assembly>{}
+            foreach asm as Assembly in AppDomain.CurrentDomain:GetAssemblies()
+                if asm:IsDefined(cla, false)
+                    list:Add(asm)
+                endif
+            next
+            result := list:ToArray()
+            if gen == asmGeneration
+                // no assembly was loaded while we were building the list, so we can cache it
+                ourAssemblies := result
+            endif
+        endif
+        return result
 
     static method MethodMatches(m as MethodInfo, cName as STRING) AS LOGIC
         if m:IsSpecialName
@@ -44,6 +171,17 @@ internal static class OOPHelpers
         return String.Equals(m:Name, cName, StringComparison.OrdinalIgnoreCase)
 
     static method FindClipperFunctions(cFunction as string) as MethodInfo[]
+        if String.IsNullOrEmpty(cFunction)
+            return MethodInfo[]{0}
+        endif
+        // Looking up a function means walking all our assemblies and doing several reflection
+        // calls per assembly, so the result is cached. _HasClipFunc() and _CallClipFunc() are
+        // often called right after each other for the same name
+        var cache := clipperFuncCache
+        if cache:TryGetValue(cFunction, out var cached)
+            return cached
+        endif
+        var gen := asmGeneration
         var cla := typeof( ClassLibraryAttribute )
         local aMethods as List<MethodInfo>
         aMethods := List<MethodInfo>{}
@@ -82,15 +220,20 @@ internal static class OOPHelpers
                 end try
             endif
         next
-        return aMethods:ToArray()
+        var result := aMethods:ToArray()
+        if gen == asmGeneration
+            // no assembly was loaded while we were looking, so the result is still valid
+            cache:TryAdd(cFunction, result)
+        endif
+        return result
 
 
     static method FindClass(cName as string) as System.Type
         return OOPHelpers.FindClass(cName, true)
 
     static method FindClass(cName as string, lOurAssembliesOnly as logic) as System.Type
-        // TOdo Optimize FindClass
         local ret := null as System.Type
+        local cache as ConcurrentDictionary<string,Type>
         local aAssemblies as IEnumerable<Assembly>
 
         if String.IsNullOrWhiteSpace(cName)
@@ -99,18 +242,23 @@ internal static class OOPHelpers
         end if
 
         if lOurAssembliesOnly
-            if cacheClassesOurAssemblies:TryGetValue(cName, out ret)
-                return ret
-            end if
+            cache := cacheClassesOurAssemblies
+        else
+            cache := cacheClassesAll
+        end if
+        // A NULL in the cache means that we have looked for this class before and did not find it.
+        // That is worth remembering: the search below walks all assemblies and may even have to
+        // enumerate all their types. The negative entries are removed when an assembly is loaded
+        if cache:TryGetValue(cName, out ret)
+            return ret
+        end if
+        if lOurAssembliesOnly
             aAssemblies := OOPHelpers.FindOurAssemblies()
         else
-            if cacheClassesAll:TryGetValue(cName, out ret)
-                return ret
-            end if
             aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
         end if
-        local ns as string[]
-        ns := <string>{"","System.","XSharp.", "XSharp.Internal."}
+        var gen := asmGeneration
+        var ns  := searchNameSpaces
 
         foreach asm as Assembly in aAssemblies
             FOREACH var n in ns
@@ -128,7 +276,7 @@ internal static class OOPHelpers
             // this is visible in the ClassLibraryAttribute
             // We don't know if the current assembly is compiler with /INS, but we assume it is when they
             // use the 'old fashioned' CreateInstance().
-            var att := typeof( ClassLibraryAttribute )
+            var att := classLibraryType
             if asm:IsDefined(  att, false )
                 // there should be only one but it does not hurt to be cautious
                 foreach var attribute in asm:GetCustomAttributes(att,false)
@@ -146,7 +294,7 @@ internal static class OOPHelpers
                 exit
             end if
             // If there is an Implicit Namespace Attribute
-            att := typeof( ImplicitNamespaceAttribute )
+            att := implicitNsType
             if asm:IsDefined(  att, false )
                 foreach var attribute in asm:GetCustomAttributes(att,false)
                     var ins := (ImplicitNamespaceAttribute) attribute
@@ -164,13 +312,14 @@ internal static class OOPHelpers
             endif
         next
         if ret == null
-            // try to find classes in a namespace
+            // try to find classes in a namespace. This forces all types of the assembly to be loaded,
+            // so it is the most expensive part of this method
+            var cla := classLibraryType
             foreach asm as Assembly in aAssemblies
-                var cla := typeof( ClassLibraryAttribute )
                 if asm:IsDefined(  cla, false )
                     var types := asm:GetTypes()
                     foreach type as System.Type in types
-                        if String.Compare(type:Name, cName, StringComparison.OrdinalIgnoreCase) == 0
+                        if String.Equals(type:Name, cName, StringComparison.OrdinalIgnoreCase)
                             ret := type
                             exit
                         endif
@@ -182,16 +331,10 @@ internal static class OOPHelpers
             next
         endif
 
-        if ret != null
-            if lOurAssembliesOnly
-                if .not. cacheClassesOurAssemblies:ContainsKey(cName)
-                    cacheClassesOurAssemblies:TryAdd(cName , ret)
-                end if
-            else
-                if .not. cacheClassesAll:ContainsKey(cName)
-                    cacheClassesAll:TryAdd(cName , ret)
-                end if
-            end if
+        if gen == asmGeneration
+            // No assembly was loaded while we were searching. Also cache a NULL result, so the next
+            // lookup for this name does not have to walk all assemblies again
+            cache:TryAdd(cName , ret)
         end if
 
         return ret
@@ -222,19 +365,19 @@ internal static class OOPHelpers
 
         return oMI
 
-    static method CompareMethods(t as System.Type, m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
-        if (m1:DeclaringType != m2:DeclaringType)
-            if m1:DeclaringType == t .and. m1:IsHideBySig
+    static method CompareMethods(t as System.Type, m1 as __OverLoadInfo, m2 as __OverLoadInfo, uArgs as usual[]) as long
+        if (m1:DeclType != m2:DeclType)
+            if m1:DeclType == t .and. m1:Mb:IsHideBySig
                 return 1
             endif
-            if m2:DeclaringType == t .and. m2:IsHideBySig
+            if m2:DeclType == t .and. m2:Mb:IsHideBySig
                 return 2
             endif
         endif
-        var p1 := m1:GetParameters()
-        var p2 := m2:GetParameters()
-        var n1 := CountNonDefaultParameters(p1)
-        var n2 := CountNonDefaultParameters(p2)
+        var p1 := m1:Pars
+        var p2 := m2:Pars
+        var n1 := m1:NonDefault
+        var n2 := m2:NonDefault
         if n1 != n2
             if n1 == uArgs:Length
                 return 1
@@ -261,16 +404,16 @@ internal static class OOPHelpers
                 if parType2:IsAssignableFrom(arg:SystemType)
                     return 2
                 endif
-                if parType1 = typeof(usual)
+                if parType1 = usualType
                     return 1
                 endif
-                if parType2 = typeof(usual)
+                if parType2 = usualType
                     return 2
                 endif
             endif
         next
-        var type1 := m1:DeclaringType
-        var type2 := m2:DeclaringType
+        var type1 := m1:DeclType
+        var type2 := m2:DeclType
         if (type1 != type2)
             if type1:IsAssignableFrom(type2)
                 return 2
@@ -285,12 +428,25 @@ internal static class OOPHelpers
 
 
         return 0
+    static method IndexOfOurAssembly(asm as Assembly) as long
+        if asmIndexCache:TryGetValue(asm, out var result)
+            return result
+        endif
+        var name := asm:GetName():Name
+        var idx  := -1
+        for var i := 0 upto ourAssemblyNames:Length-1
+            if String.Equals(ourAssemblyNames[i], name, StringComparison.OrdinalIgnoreCase)
+                idx := i
+                exit
+            endif
+        next
+        asmIndexCache:TryAdd(asm, idx)
+        return idx
+
     static method ResolveByAssembly(asm1 as Assembly, asm2 as Assembly) as long
-        var name1 := asm1:GetName():Name:ToLower()
-        var name2 := asm2:GetName():Name:ToLower()
-        var ourassemblies := List<String>{}{"xsharp.core", "xsharp.rt", "xsharp.vo", "xsharp.vfp", "xsharp.xpp", "xsharp.harbour"}
-        var idx1 := ourassemblies:IndexOf(name1)
-        var idx2 := ourassemblies:IndexOf(name2)
+        // this is called from the O(n*n) loop in FindBestOverLoad(), so it must not allocate
+        var idx1 := IndexOfOurAssembly(asm1)
+        var idx2 := IndexOfOurAssembly(asm2)
         if idx1 >= 0 .and. idx2 >= 0
             if idx1 > idx2
                 return 1
@@ -302,22 +458,47 @@ internal static class OOPHelpers
 
     /// <include file="XSharp.RT.Docs.xml" path="doc/OOPHelpers.ConvertFromNull/*" />
     static method ConvertFromNull(type as System.Type) as usual
-        if type == typeof(System.String)
+        if type == stringType
             return __Usual{__UsualType.String, false}
-        elseif type == typeof(XSharp.__Array)
+        elseif type == arrayType
             return __Usual{__UsualType.Array, false}
-        elseif type == typeof(XSharp.Codeblock)
+        elseif type == codeblockType
             return __Usual{__UsualType.Codeblock, false}
         elseif type:IsValueType
             return NIL
         endif
         return NULL_OBJECT
+
+    // Does GetDefaultValue() return a value other than NULL for this parameter ? This is a lot cheaper
+    // than calling GetDefaultValue() itself, because the value does not have to be built and converted
+    static method HasDefaultValue(oPar as ParameterInfo) as logic
+        if oPar:HasDefaultValue
+            return oPar:DefaultValue != null
+        endif
+        local oDefAttrib as DefaultParameterValueAttribute
+        oDefAttrib := (DefaultParameterValueAttribute) oPar:GetCustomAttribute(typeof(DefaultParameterValueAttribute))
+        if oDefAttrib == null
+            return false
+        endif
+        switch oDefAttrib:Flag
+        case 1  // NIL, and that results in a NULL value, just like a missing attribute
+            return false
+        case 2  // DATE
+        case 3  // SYMBOL
+        case 4  // NULL_PSZ
+        case 5  // NULL_PTR
+        case 6  // Decimal
+            return true
+        otherwise
+            return oDefAttrib:Value != null
+        end switch
+
     /// <include file="XSharp.RT.Docs.xml" path="doc/OOPHelpers.CountNonDefaultParameters/*" />
     static method CountNonDefaultParameters(pars as IList<ParameterInfo>) as long
+        // We only need to know if a parameter has a default value, so we do not call GetDefaultValue()
+        // here: that would also convert the value to the type of the parameter and that is not needed
         for var i := 0 upto pars:Count -1
-            local oPar := pars[i] as ParameterInfo
-            var oArg    := OOPHelpers.GetDefaultValue(oPar)
-            if oArg != null
+            if OOPHelpers.HasDefaultValue(pars[i])
                 return i
             endif
         next
@@ -327,55 +508,48 @@ internal static class OOPHelpers
         if overloads:Count <= 1
             return overloads:FirstOrDefault()
         endif
-        // More than one
-        var found := List<T>{}
-        // first look for methods with the same ! of parametes
+        // More than one. Collect the reflection info for every candidate once, in the same order as
+        // the overloads, so we can map a candidate back to the overload that it belongs to
+        var infos := List<__OverLoadInfo>{overloads:Count}
         foreach var m in overloads
-            var pars := m:GetParameters()
-            var isClipper := m:IsDefined(typeof(ClipperCallingConventionAttribute),false)
-            if isClipper
-                found:Add(m)
-            elseif pars:Length == uArgs:Length
-                found:Add(m)
-            elseif pars:Length > 0
+            infos:Add(__OverLoadInfo{m})
+        next
+        // first look for methods with the same ! of parametes
+        var found := List<__OverLoadInfo>{}
+        foreach var info in infos
+            if info:IsClipper
+                found:Add(info)
+            elseif info:Pars:Length == uArgs:Length
+                found:Add(info)
+            elseif info:Pars:Length > 0
                 // check to see if there are default parameters for the method
-                var nonDefault := CountNonDefaultParameters(pars)
-                if uArgs:Length >= nonDefault
-                    found:Add(m)
+                if uArgs:Length >= info:NonDefault
+                    found:Add(info)
                 endif
             endif
         next
         if found:Count == 1
-            return found:First() // collection, so 0 based !
+            return overloads[infos:IndexOf(found[0])]
         endif
-        var filtered := List<T>{}
-        filtered:AddRange(found)
-        // then look for methods with
-        found:Clear()
-        foreach var m1 in filtered
-            foreach var m2 in filtered
+        // then compare the candidates with each other. A HashSet, because this loop adds and removes
+        // candidates repeatedly and Contains() and Remove() on a List are linear scans
+        var winners := HashSet<__OverLoadInfo>{}
+        foreach var m1 in found
+            foreach var m2 in found
                 if (m2 != m1)
                     var result := OOPHelpers.CompareMethods(t, m1, m2, uArgs)
                     if result == 1
-                        if ! found:Contains(m1)
-                            found:Add(m1)
-                        endif
-                        if found:Contains(m2)
-                            found:Remove(m2)
-                        endif
+                        winners:Add(m1)
+                        winners:Remove(m2)
                     elseif result == 2
-                        if ! found:Contains(m2)
-                            found:Add(m2)
-                        endif
-                        if found:Contains(m1)
-                            found:Remove(m1)
-                        endif
+                        winners:Add(m2)
+                        winners:Remove(m1)
                     endif
                 endif
             next
         next
-        if found:Count == 1
-            return found:First()
+        if winners:Count == 1
+            return overloads[infos:IndexOf(winners:First())]
         endif
         local cClass as string
         cClass := overloads:First():DeclaringType:Name
@@ -384,10 +558,11 @@ internal static class OOPHelpers
         local sb as StringBuilder
         sb := StringBuilder{}
         sb:AppendLine(oError:Message)
-        sb:AppendLine(i"Found {found:Count} overloads")
+        sb:AppendLine(i"Found {winners:Count} overloads")
         var current := 0
 
-        foreach overload as MethodBase in found
+        foreach var info in winners
+            var overload := info:Mb
             current += 1
             sb:Append( ei"{current}. {overload:DeclaringType:Name}:{overload:Name}")
             if overload:IsGenericMethod
@@ -460,15 +635,14 @@ internal static class OOPHelpers
         var aPars := methodinfo:GetParameters()
         var numDefinedParameters := aPars:Length
         var numActualParameters  := args:Length
-        if numDefinedParameters == 1 .and. methodinfo:IsDefined(typeof(ClipperCallingConventionAttribute),false)
+        if numDefinedParameters == 1 .and. methodinfo:IsDefined(clipperCallType,false)
             lClipper := true
         elseif numDefinedParameters >= 1
             local pi := aPars[aPars:Length-1] as ParameterInfo
 
-            if pi:ParameterType:IsArray .and. ;
-                pi:CustomAttributes:Any( { ca => ca:AttributeType == typeof(ParamArrayAttribute) })
+            if pi:ParameterType:IsArray .and. pi:IsDefined(paramArrayType, false)
                 lParams := true
-                lClipper := numDefinedParameters == 1 .and. pi:ParameterType == typeof(usual[])
+                lClipper := numDefinedParameters == 1 .and. pi:ParameterType == usualArrayType
                 paramsType  := pi:ParameterType
                 elementType := paramsType:GetElementType()
             endif
@@ -513,21 +687,15 @@ internal static class OOPHelpers
                 local parType   := pi:ParameterType as System.Type
                 local arg       := args[nPar] as usual
                 if parType:IsByRef
-                    // Get the referenced type. We assume it is in the assembly where the ByRef type is also defined
-                    // I am not sure if that is always true ?
+                    // Get the type that the ByRef parameter refers to. GetElementType() gives us that
+                    // directly, without building the name of the type and looking it up in an assembly
                     hasByRef := true
-                    var typeName := parType:FullName
-                    typeName := typeName:Substring(0, typeName:Length-1)
-                    try
-                        var referencedType := parType:Assembly:GetType(typeName)
-                        if referencedType != null
-                            parType := referencedType
-                        endif
-                    catch
-                        nop
-                    end try
+                    var referencedType := parType:GetElementType()
+                    if referencedType != null
+                        parType := referencedType
+                    endif
                 endif
-                if parType == typeof(usual)
+                if parType == usualType
                     // We need to box a usual here
                     oArgs[nPar] := __castclass(object, arg)
                 elseif arg == nil // this is also true when arg == NULL_OBJECT
@@ -537,7 +705,7 @@ internal static class OOPHelpers
                     oArgs[nPar] := arg
                 elseif arg == null .or. parType:IsAssignableFrom(arg:SystemType) // Null check must appear first !
                     oArgs[nPar] := arg
-                elseif pi:GetCustomAttributes( typeof( ParamArrayAttribute ), false ):Length > 0
+                elseif pi:IsDefined( paramArrayType, false )
                     // Parameter array of certain type
                     // -> convert remaining elements from uArgs to an array and assign that to oArgs[i]
                     local aVarArgs    := System.Array.CreateInstance(elementType, args:Length - nPar +1) as System.Array
@@ -720,11 +888,14 @@ internal static class OOPHelpers
         endif
         // Note that VO only returns PUBLIC properties and fields
         var aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        // the list keeps the order in which the members were found, the set is there to detect the
+        // duplicates without a linear scan through the list for every member
         var list := List<string>{}
+        var seen := HashSet<string>{}
         foreach fi as FieldInfo in aFields
             if fi:IsPublic || (fi:IsFamily  .and. fi:IsDefined(typeof(IsInstanceAttribute), false))
                 var name := fi:Name:ToUpperInvariant()
-                if ! list:Contains(name)
+                if seen:Add(name)
                     list:Add(name)
                 endif
             endif
@@ -734,7 +905,7 @@ internal static class OOPHelpers
 
         foreach pi as PropertyInfo in aProps
             var name := pi:Name:ToUpperInvariant()
-            if ! list:Contains(name)
+            if seen:Add(name)
                 list:Add(name)
             endif
         next
@@ -743,12 +914,15 @@ internal static class OOPHelpers
 
     static method MethodList(t as Type) as array
         var list := List<string>{}
+        var seen := HashSet<string>{}
         var aInfo := t:GetMethods( BindingFlags.Instance | BindingFlags.Public )
         foreach oMI as MethodInfo in aInfo
             // convert to uppercase. We do not want duplicates that only differ by case
-            var name := oMI:Name:ToUpper()
-            if !oMI:IsSpecialName .and. ! list:Contains(name)
-                list:Add(name)
+            if !oMI:IsSpecialName
+                var name := oMI:Name:ToUpper()
+                if seen:Add(name)
+                    list:Add(name)
+                endif
             endif
         next
         return list:ToVoSymArray()
@@ -777,20 +951,24 @@ internal static class OOPHelpers
         foreach type as Type in aInheritance
             var listMethod := List<string>{}
             var listVar    := List<string>{}
+            // the lists keep the order in which the members were found, the sets are there to detect
+            // the duplicates without a linear scan for every member
+            var seenMethod := HashSet<string>{}
+            var seenVar    := HashSet<string>{}
             var aInfo := type:GetMembers(BindingFlags.Instance + BindingFlags.Public + BindingFlags.NonPublic)
             foreach oInfo as MemberInfo in aInfo
                 var name := oInfo:Name:ToUpperInvariant()
                 switch oInfo
                 case fld as FieldInfo
-                    if listVar:IndexOf(name)  == -1 .and. fld:IsPublic
+                    if fld:IsPublic .and. seenVar:Add(name)
                         listVar:Add(name)
                     end if
                 case prop as PropertyInfo when ! prop:IsSpecialName
-                    if listVar:IndexOf(name)  == -1
+                    if seenVar:Add(name)
                         listVar:Add(name)
                     end if
                 case m as MethodInfo when ! m:IsSpecialName
-                    if listMethod:IndexOf(name)  == -1
+                    if seenMethod:Add(name)
                         listMethod:Add(name)
                     end if
                 end switch
@@ -816,13 +994,17 @@ internal static class OOPHelpers
             elseif ! lAccess .and. pi:CanWrite .and. IsVisible(pi:SetMethod, lSelf)
                 return pi
             endif
+        elseif mi is FieldInfo
+            return null     // it must be a field then, so there is no property with this name
         endif
 
-
+        // Remember the type we were called for. When the property is found in a parent class then it
+        // must still be cached for this type, otherwise the cache would never be hit for subclasses
+        var bt := t
         do while t != null
             var oInfo := OOPHelpers.GetProperty(t, cName, true, lSelf)
             if oInfo != null .and. ( (lAccess .and. oInfo:CanRead) .or. (.not. lAccess .and. oInfo:CanWrite) )
-                AddMemberToCache(t, cName, oInfo)
+                AddMemberToCache(bt, cName, oInfo)
                 return oInfo
             else
                 t := t:BaseType
@@ -896,15 +1078,18 @@ internal static class OOPHelpers
     /// <include file="XSharp.RT.Docs.xml" path="doc/OOPHelpers.IsInternalVisible/*" />
     static method IsInternalVisible(propInfo as PropertyInfo) as logic
         local asm       := propInfo:DeclaringType:Assembly  as Assembly
-        local frames    := StackTrace{false} :GetFrames()   as StackFrame[]
-        local thisasm   := typeof(__Usual):Assembly         as Assembly         // XSharp.RT
-        foreach frame as StackFrame in frames
-            var frameAsm := frame:GetMethod():DeclaringType:Assembly
-            if frameAsm != thisasm
-                if frameAsm == asm
-                    return true
-                endif
-                exit
+        local st        := StackTrace{false}                as StackTrace
+        // walk the frames one by one instead of materializing the whole array with GetFrames().
+        // We only need the first frame that is not inside XSharp.RT itself
+        for var i := 0 upto st:FrameCount-1
+            var frameMethod := st:GetFrame(i):GetMethod()
+            var declType    := frameMethod?:DeclaringType
+            if declType == null
+                exit                                        // dynamic method: we cannot tell
+            endif
+            var frameAsm := declType:Assembly
+            if frameAsm != rtAssembly
+                return frameAsm == asm
             endif
         next
         return false
@@ -919,11 +1104,11 @@ internal static class OOPHelpers
         var oClass := oType
         do while oClass != null
             var list := oClass:GetMember(cName, MemberTypes.Field | MemberTypes.Property, bf)
-            if list != null .and. list:Count() > 0
+            if list != null .and. list:Length > 0
                 foreach var fld in list
                     OOPHelpers.AddMemberToCache(oType, cName, fld)
                 next
-                return list:First()
+                return list[0]
             endif
             oClass := oClass:BaseType
         enddo
@@ -1090,7 +1275,7 @@ internal static class OOPHelpers
 
     static method FindOverloads(t as System.Type, cMethod as string, lInstance as logic) as IList<MethodInfo>
         var mlist := GetCachedOverLoads(t, cMethod)
-        if mlist != null .and. mlist:Count() > 0
+        if mlist != null .and. mlist:Count > 0
             return mlist
         endif
         mlist := List<MethodInfo>{}
@@ -1121,12 +1306,11 @@ internal static class OOPHelpers
 
     static method CacheOverLoads(t as System.Type, cMethod as string, ml as IList<MethodInfo>) as logic
         if !overloadCache:TryGetValue(t, out var typeDict)
-            typeDict := ConcurrentDictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase}
-            overloadCache:TryAdd(t, typeDict)
+            // GetOrAdd() so that we keep using the dictionary of the thread that won the race,
+            // otherwise the entries that the other thread added would be lost
+            typeDict := overloadCache:GetOrAdd(t, ConcurrentDictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase})
         endif
-        if typeDict:ContainsKey(cMethod)
-            return false
-        endif
+        // TryAdd() already returns FALSE when the method is in the cache, so no ContainsKey() first
         return typeDict:TryAdd(cMethod, ml)
 
     static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual, lCallBase as logic) as logic
@@ -1144,7 +1328,8 @@ internal static class OOPHelpers
             throw Error.NullArgumentError( cMethod, nameof(cMethod), 2 )
         endif
         local mi := null as MethodInfo
-        cMethod := cMethod:ToUpperInvariant()
+        // The name is not converted to uppercase here: the overload cache uses a case insensitive
+        // comparer and the reflection lookups all pass BindingFlags.IgnoreCase
         var list := OOPHelpers.GetCachedOverLoads(t, cMethod)
         if list == null
             mi := OOPHelpers.FindMethod(t, cMethod, false, true)
@@ -1155,8 +1340,9 @@ internal static class OOPHelpers
             endif
             try
                 if list:Count > 0
-                    var mis := list:ToArray()
-                    mi := OOPHelpers.FindBestOverLoad(t, mis, cMethod,uArgs)
+                    // FindBestOverLoad() takes an IList<> and does not change it, so there is
+                    // no need to copy the (cached) list to an array first
+                    mi := OOPHelpers.FindBestOverLoad(t, list, cMethod,uArgs)
                 endif
             catch as Error
                 throw
@@ -1173,53 +1359,67 @@ internal static class OOPHelpers
         static method SendHelper(oObject as object, mi as MethodInfo , uArgs as usual[], result out usual) as logic
             return SendHelper(oObject, mi, uArgs, out result, false)
 
-    static internal dynamicMethodCache as ConcurrentDictionary<MethodInfo,DynamicMethod>
+    static internal dynamicMethodCache as ConcurrentDictionary<MethodInfo, Func<object, object[], object> >
+
+    // Build a helper that performs a non virtual call to methodInfo, so we can call the method of a
+    // parent class even when it is overridden in the class of the object.
+    // The idea for this comes from
+    // http://www.simplygoodcode.com/2012/08/invoke-base-method-using-reflection/index.html
+    // I would have never come up with this myself.
+    // Thanks for the Internet and for people that share code!
+    // The helper takes (object, object[]) and returns object, so it does not depend on the type of the
+    // object it is called for. That way it can be cached per method and exposed as a delegate
+    static method CreateNotOverriddenMethodInvoker( methodInfo as MethodInfo) as Func<object, object[], object>
+        var parameters := methodInfo:GetParameters()
+        var owner      := methodInfo:DeclaringType
+        var dynamicMethod := DynamicMethod{"", objectType, <Type>{ objectType, typeof(object[]) }, owner}
+        var iLGenerator := dynamicMethod:GetILGenerator()
+        iLGenerator:Emit(OpCodes.Ldarg_0)                       // load the object to call the method on
+        if owner:IsValueType
+            iLGenerator:Emit(OpCodes.Unbox, owner)
+        else
+            iLGenerator:Emit(OpCodes.Castclass, owner)
+        endif
+        for var i := 0 upto parameters:Length-1
+            iLGenerator:Emit(OpCodes.Ldarg_1)                   // load array argument
+            // get element at index. Ldc_I4 (and not Ldc_I4_S) because that also works for
+            // methods with more than 127 parameters
+            iLGenerator:Emit(OpCodes.Ldc_I4, i)                 // specify index
+            iLGenerator:Emit(OpCodes.Ldelem_Ref)                // get element
+            var parameterType := parameters[i]:ParameterType
+            // Unbox_Any for every value type and not only for the primitive ones: a Castclass on a
+            // value type (a DATE or a USUAL for example) would result in invalid IL
+            if parameterType:IsValueType
+                iLGenerator:Emit(OpCodes.Unbox_Any, parameterType)
+            elseif parameterType != objectType
+                iLGenerator:Emit(OpCodes.Castclass, parameterType)
+            endif
+        next
+        iLGenerator:Emit(OpCodes.Call, methodInfo)               // Call and not Callvirt: no override
+        if methodInfo:ReturnType == typeof(void)
+            iLGenerator:Emit(OpCodes.Ldnull)
+        elseif methodInfo:ReturnType:IsValueType
+            iLGenerator:Emit(OpCodes.Box, methodInfo:ReturnType)
+        endif
+        iLGenerator:Emit(OpCodes.Ret)
+        return (Func<object, object[], object>) dynamicMethod:CreateDelegate(typeof(Func<object, object[], object>))
+
     static method InvokeNotOverriddenMethod( methodInfo as MethodInfo, targetObject as object, arguments as object[]) as object
-        // this code is from
-        // http://www.simplygoodcode.com/2012/08/invoke-base-method-using-reflection/index.html
-        // I would have never come up with this myself.
-        // Thanks for the Internet and for people that share code!
         var parameters := methodInfo:GetParameters()
         if (parameters:Length == 0)
             if arguments != null .and. arguments:Length != 0
                  throw Exception{"Arguments count doesn't match"}
             endif
-        elseif parameters:Length != arguments:Length
+        elseif arguments == null .or. parameters:Length != arguments:Length
             throw Exception{"Arguments count doesn't match"}
         endif
-        local dynamicMethod as DynamicMethod
-        if dynamicMethodCache == null
-            dynamicMethodCache := ConcurrentDictionary<MethodInfo,DynamicMethod>{}
+        // Generating the IL is expensive, so the invoker is cached. Calling the delegate is also much
+        // cheaper than invoking the DynamicMethod through reflection
+        if ! dynamicMethodCache:TryGetValue(methodInfo, out var invoker)
+            invoker := CreateNotOverriddenMethodInvoker(methodInfo)
+            dynamicMethodCache:TryAdd(methodInfo, invoker)
         endif
-        if .not. dynamicMethodCache:TryGetValue(methodInfo, out dynamicMethod)
-            local returnType := null as System.Type
-            if (methodInfo:ReturnType != typeof(void))
-                returnType := methodInfo:ReturnType
-            endif
-            var type := targetObject:GetType()
-            dynamicMethod := DynamicMethod{"", returnType, <Type> { type, typeof(object) }, type}
-            var iLGenerator := dynamicMethod:GetILGenerator()
-            iLGenerator:Emit(OpCodes.Ldarg_0)
-            for var i := 0 upto parameters:Length-1
-                var parameter := parameters[i]
-                iLGenerator:Emit(OpCodes.Ldarg_1) // load array argument
-                // get element at index
-                iLGenerator:Emit(OpCodes.Ldc_I4_S, i) // specify index
-                iLGenerator:Emit(OpCodes.Ldelem_Ref) // get element
-                var parameterType := parameter:ParameterType
-                if (parameterType:IsPrimitive)
-                    iLGenerator:Emit(OpCodes.Unbox_Any, parameterType)
-                elseif (parameterType == typeof(object))
-                    nop
-                else
-                    iLGenerator:Emit(OpCodes.Castclass, parameterType)
-                endif
-            next
-            iLGenerator:Emit(OpCodes.Call, methodInfo)
-            iLGenerator:Emit(OpCodes.Ret)
-            dynamicMethodCache:TryAdd(methodInfo, dynamicMethod)
-        endif
-        return dynamicMethod:Invoke(null, <object>{ targetObject, arguments })
+        return invoker:Invoke( targetObject, arguments )
 
     static method SendHelper(oObject as object, mi as MethodInfo , uArgs as usual[], result out usual, lCallBase as logic) as logic
         result := nil
@@ -1235,7 +1435,7 @@ internal static class OOPHelpers
         if mi != null
             var oArgs := OOPHelpers.MatchParameters(mi, uArgs, out var hasByRef)
             try
-                if mi:ReturnType == typeof(usual)
+                if mi:ReturnType == usualType
                     if lCallBase
                         // Call the base method using a helper dynamic method
                         result := InvokeNotOverriddenMethod(mi, oObject, oArgs)
@@ -1313,17 +1513,35 @@ internal static class OOPHelpers
         next
 
     static method FindOperator(srcType as System.Type,toType as System.Type) as MethodInfo
+        if srcType == null .or. toType == null
+            return null_object
+        endif
+        if ! operatorCache:TryGetValue(srcType, out var toTypes)
+            // GetOrAdd() so that we keep using the dictionary of the thread that won the race
+            toTypes := operatorCache:GetOrAdd(srcType, ConcurrentDictionary<System.Type, MethodInfo>{})
+        endif
+        if toTypes:TryGetValue(toType, out var cached)
+            // this may be NULL: the most common case is that there is no operator at all and
+            // looking that up costs two calls to GetMember(), so it is cached as well
+            return cached
+        endif
+        local result := null as MethodInfo
         foreach oMember as MethodInfo in srcType:GetMember("op_Implicit")
             if oMember:ReturnType == toType
-                return oMember
+                result := oMember
+                exit
             endif
         next
-        foreach oMember as MethodInfo in srcType:GetMember("op_Explicit")
-            if oMember:ReturnType == toType
-                return oMember
-            endif
-        next
-        return null_object
+        if result == null
+            foreach oMember as MethodInfo in srcType:GetMember("op_Explicit")
+                if oMember:ReturnType == toType
+                    result := oMember
+                    exit
+                endif
+            next
+        endif
+        toTypes:TryAdd(toType, result)
+        return result
 
     static method IsNumericTypeCode(tc as TypeCode) as logic
         switch tc
@@ -1350,7 +1568,7 @@ internal static class OOPHelpers
         if oResult?:GetType() == toType
             RETURN oResult
         endif
-        if toType == typeof(float)
+        if toType == floatType
             return (float) uValue
         elseif uValue:SystemType == toType
             return uValue
@@ -1365,20 +1583,20 @@ internal static class OOPHelpers
                     uValue := Val(uValue:ToString())
                 endif
             endif
-            if toType == typeof(usual)
+            if toType == usualType
                 // return a boxed usual
                 return __castclass(object, uValue)
-            elseif toType == typeof(date) .and. uValue:IsDateTime
+            elseif toType == dateType .and. uValue:IsDateTime
                 return (date)(System.DateTime) uValue
-            elseif uValue:IsArray .and. toType == typeof(array)
+            elseif uValue:IsArray .and. toType == arrayType
                 return (array) uValue
-            elseif uValue:IsString .and. toType == typeof(symbol)
+            elseif uValue:IsString .and. toType == symbolType
                 return (symbol) uValue
-            elseif uValue:IsSymbol .and. toType == typeof(string)
+            elseif uValue:IsSymbol .and. toType == stringType
                 return (string) uValue
             elseif uValue:IsObject .or. uValue:IsCodeblock
                 return (object) uValue
-            elseif uValue:IsPtr .and. (toType == typeof(ptr) .or. toType:IsPointer)
+            elseif uValue:IsPtr .and. (toType == ptrType .or. toType:IsPointer)
                 return IntPtr{(ptr) uValue}
             elseif oResult != null
                 // check to see if the source type contains an implicit converter
@@ -1386,7 +1604,7 @@ internal static class OOPHelpers
                 if oOperator != null_object
                     NOP
                 else
-                    oOperator := FindOperator(typeof(usual), toType)
+                    oOperator := FindOperator(usualType, toType)
                     if oOperator != null_object
                         // box the usual
                         oResult := __castclass(object, uValue)
@@ -1457,7 +1675,7 @@ internal static class OOPHelpers
         return result
     static method LoadXSharpRuntimeAssemblies() as void
         foreach asm as Assembly in FindOurAssemblies()
-            if aXsAssemblies:IndexOf(asm) == -1
+            if ! aXsAssemblies:Contains(asm)
                 var attr := (AssemblyCompanyAttribute) asm:GetCustomAttribute(typeof(AssemblyCompanyAttribute))
                 if attr != null
                     if attr:Company == XSharp.Constants.Company
@@ -1475,22 +1693,21 @@ internal static class OOPHelpers
         var level := 2
         var mi := st:GetFrame(level):GetMethod()
         var type := mi:DeclaringType
-        local lastFrame := null as StackFrame
-        if type != null // For dynamic methods the type can be NULL
-            // when nested call from the runtime walk the stack
-            do while aXsAssemblies:Contains(type:Assembly)
-                level += 1
-                var frame := st:GetFrame(level)
-                if (frame != null)
-                    lastFrame := frame
-                else
-                    exit
-                endif
-            enddo
-            if lastFrame != null
-                mi := lastFrame:GetMethod()
+        // when nested call from the runtime walk the stack until we find a method that is not
+        // declared in one of the runtime assemblies. For dynamic methods the type can be NULL
+        do while type != null .and. aXsAssemblies:Contains(type:Assembly)
+            level += 1
+            var frame := st:GetFrame(level)
+            if frame == null
+                exit
             endif
-        endif
+            var frameMethod := frame:GetMethod()
+            if frameMethod == null
+                exit
+            endif
+            mi   := frameMethod
+            type := frameMethod:DeclaringType
+        enddo
         return mi
 
 end class
@@ -1520,7 +1737,20 @@ function CheckInstanceOf(oObject as object,symClassName as string) as logic
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classcount/*" />
 function ClassCount() as dword
-    return ClassList():Length
+    // count the classes without building the array of symbols that ClassList() returns
+    local nCount := 0 as dword
+    foreach assembly as System.Reflection.Assembly in System.AppDomain.CurrentDomain:GetAssemblies()
+        try
+            foreach type as System.Type in assembly:GetTypes()
+                if type:IsPublic
+                    nCount += 1
+                endif
+            next
+        catch as Exception
+            nop
+        end try
+    next
+    return nCount
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classlist/*" />
 function ClassList() as array
@@ -1680,7 +1910,7 @@ function IsInstanceOf(oObject as object,symClassName as string) as logic
     local oType as Type
     oType := oObject:GetType()
     do while oType != null
-        if String.Compare(oType:Name, symClassName, true) == 0
+        if String.Equals(oType:Name, symClassName, StringComparison.OrdinalIgnoreCase)
             return true
         end if
         oType := oType:BaseType

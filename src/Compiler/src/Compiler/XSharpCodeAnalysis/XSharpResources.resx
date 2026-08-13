@@ -5512,8 +5512,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor
 -vo17[+|-]                     VO Compatible BEGIN SEQUENCE .. END SEQUENCE handling
 -fox1[+|-]                     Obsolete
--fox2[+|-]                     FoxPro Array support (fill with simple assignment, alow parenthesized array elements)
--fox3[+|-]                     FoxPro Compatible Ambiguous Dot Handling
+-fox2[+|-]                     FoxPro Compatible Array support
+-fox3[+|-]                     FoxPro Compatible Cursor Support (automatically enables memvars)
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
 -memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported.
                                This only works for the VO, XPP and Harbour dialects.

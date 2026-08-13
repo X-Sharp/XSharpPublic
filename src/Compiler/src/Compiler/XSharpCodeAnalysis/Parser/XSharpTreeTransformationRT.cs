@@ -974,11 +974,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Parent.Parent is not XP.MethodCallContext ||
                 (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
             {
-                MemVarFieldInfo fieldInfo = findMemVar(Name);
+                MemVarFieldInfo fieldInfo = findVar(Name);
                 var amc = context.Parent.Parent as XP.AccessMemberContext;
                 var staticCall = amc?.Op.Type == XP.DOTCOLON;
                 var methodCall = amc?.Parent is MethodCallContext;
-                if (fieldInfo != null && !staticCall && !methodCall)
+                if (fieldInfo != null && !staticCall && !methodCall && !context.IsInLambdaOrCodeBlock())
                 {
                     // for code that looks like this we do not want to change the expression
                     // Foo(1,2)
@@ -1139,25 +1139,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
-        {
-            base.EnterLocalvar(context);
-            if (_options.SupportsMemvars)
-            {
-                var name = context.Id.GetText();
-                AddLocalName(name, context);
-            }
-        }
-
-        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
-        {
-            base.EnterImpliedvar(context);
-            if (_options.SupportsMemvars)
-            {
-                var name = context.Id.GetText();
-                AddLocalName(name, context);
-            }
-        }
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix,
             XSharpParserRuleContext context, IToken modifier)
         {
@@ -3275,7 +3256,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string name;
             if (expr is IdentifierNameSyntax ins)
             {
-                // Intrinsic functions that depend on Vulcan types
+                // Intrinsic functions that depend on X# types
                 name = ins.Identifier.Text.ToUpper();
                 switch (name)
                 {

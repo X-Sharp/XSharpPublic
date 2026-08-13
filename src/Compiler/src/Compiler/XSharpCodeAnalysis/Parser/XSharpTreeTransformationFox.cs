@@ -134,6 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // do not assume an area when no Expr (inside WITH Block)
             if (context.Expr != null && context.Op.Type == XP.DOT
+                && !context.IsInLambdaOrCodeBlock()
                 && context.Parent is not MethodCallContext
                 && (context.AreaName == "M" ||
                     _options.HasOption(CompilerOption.Fox3, context, PragmaOptions)))
@@ -270,7 +271,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 CurrentMember.Data.HasThisForm = true;
             }
         }
+        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
+        {
+            base.EnterLocalvar(context);
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) ||
+                _options.HasOption(CompilerOption.Fox3, context, PragmaOptions))
+            {
+                var name = context.Id.GetText();
+                AddLocalName(name, context);
+            }
+        }
 
+        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
+        {
+            base.EnterImpliedvar(context);
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) ||
+                _options.HasOption(CompilerOption.Fox3, context, PragmaOptions))
+            {
+                var name = context.Id.GetText();
+                AddLocalName(name, context);
+            }
+        }
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
         {
             base.ExitNameExpression(context);

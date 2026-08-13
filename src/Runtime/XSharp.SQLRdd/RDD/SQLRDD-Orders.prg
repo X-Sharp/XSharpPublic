@@ -505,7 +505,10 @@ partial class SQLRDD
         // silently skipping every other row that shares this seek's key.
         self:_OpenTable(cSeekWhere)
 
-        IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
+        // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
+        // null instead of an empty table - treat that the same as "no rows found" instead of
+        // crashing on DataTable:Rows below, same fix as GoTo()/_ClearTable() already got.
+        IF (SELF:DataTable == null .or. SELF:DataTable:Rows:Count = 0) .and. !seekInfo.SoftSeek
             SELF:GoTo(0)
             SELF:_Found := false
             SELF:_SetEOF(true)

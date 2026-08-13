@@ -29,6 +29,7 @@
     <initlocals>true</initlocals>
     <fox1>true</fox1>
     <fox2>true</fox2>
+    <fox3>true</fox3>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <Allowdot>True</Allowdot>
     <NamedArgs>False</NamedArgs>

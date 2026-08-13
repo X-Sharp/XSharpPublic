@@ -1183,6 +1183,8 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Vo15, "true");
                     AddProjectProperty(XSharpProjectFileConstants.Vo9, "true");
                     AddProjectProperty(XSharpProjectFileConstants.Fox1, "true");
+                    AddProjectProperty(XSharpProjectFileConstants.Fox2, "true");
+                    AddProjectProperty(XSharpProjectFileConstants.Fox3, "true");
                     AddProjectProperty(XSharpProjectFileConstants.InitLocals, "true");
                     AddProjectProperty(XSharpProjectFileConstants.NamedArgs, "false");
                     RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);

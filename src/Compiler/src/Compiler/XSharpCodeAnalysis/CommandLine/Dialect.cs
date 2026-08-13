@@ -14,8 +14,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         Harbour = 3,
         FoxPro = 4,
         XPP = 5,
-        dBase = 6,
-        Last = 6
+        XBaseNet = 6,
+        Last = 7
     }
     public static class DialectExtensions
     {
@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.Core:
                 case XSharpDialect.Vulcan:
+                case XSharpDialect.XBaseNet:
                     return false;
                 default:
                     return true;
@@ -53,6 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (dialect)
             {
                 case XSharpDialect.Core:
+                case XSharpDialect.XBaseNet:
                     return false;
                 default:
                     return true;
@@ -95,6 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 case XSharpDialect.Core:
                 case XSharpDialect.Vulcan:
+                case XSharpDialect.XBaseNet:
                 default:
                     return false;
             }
@@ -111,6 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.Harbour:
                 case XSharpDialect.XPP:
                 case XSharpDialect.Vulcan:
+                case XSharpDialect.XBaseNet:
                 default:
                     return false;
             }
@@ -125,6 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.FoxPro:
                     return true;
                 case XSharpDialect.Core:
+                case XSharpDialect.XBaseNet:
                 case XSharpDialect.Vulcan:
                 default:
                     return false;
@@ -135,6 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (dialect)
             {
                 case XSharpDialect.Core:
+                case XSharpDialect.XBaseNet:
                     return false;
                 case XSharpDialect.VO:
                 case XSharpDialect.Vulcan:
@@ -152,6 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.Core:
                 case XSharpDialect.VO:
                 case XSharpDialect.Vulcan:
+                case XSharpDialect.XBaseNet:
                     return false;
                 case XSharpDialect.Harbour:
                 case XSharpDialect.XPP:
@@ -183,6 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.FoxPro:
                 case XSharpDialect.XPP:
+                case XSharpDialect.XBaseNet:
                     return true;
                 default:
                     return false;

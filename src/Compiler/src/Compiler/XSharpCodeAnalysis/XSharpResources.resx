@@ -5483,7 +5483,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -allowoldstyleassignments[+|-] Control if the Equals operator (=) can be used for assignments
 -az[+|-]                       Use Zero based arrays
 -cs[+|-]                       Case Sensitivity on/off
--dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
+-dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, XBaseNet, FoxPro, xBase++, Harbour
 -enforceself[+|-]              Enforce the use of SELF (or SUPER) inside methods to access properties and methods.
 -enforceoverride[+|-]          Enforce the use of OVERRIDE or NEW for members in subclasses
 -fovf[+|-]                     Float overflow exceptions(mapped to /checked)

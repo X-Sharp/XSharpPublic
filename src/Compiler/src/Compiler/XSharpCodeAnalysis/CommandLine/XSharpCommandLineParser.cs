@@ -478,9 +478,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #else
                     return true;
 #endif
-                case "dbase":
-                    dialect = XSharpDialect.dBase;
-                    return true;
 
                 case "foxpro":
                 case "foxbase":
@@ -497,6 +494,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "xbasepp":
                 case "xpp":
                     dialect = XSharpDialect.XPP;
+                    return true;
+                case "xbasenet":
+                    dialect = XSharpDialect.XBaseNet;
                     return true;
                 default:
                     dialect = XSharpDialect.Core;
@@ -547,6 +547,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (options.Dialect == XSharpDialect.XPP ||
                         options.Dialect == XSharpDialect.FoxPro ||
+                        options.Dialect == XSharpDialect.XBaseNet ||
                         options.Dialect == XSharpDialect.Harbour)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),

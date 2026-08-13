@@ -237,6 +237,14 @@ partial class SQLRDD inherit Workarea
             self:_CloseCursor()
         else
             self:DataTable      := _command:GetDataTable(self:Alias)
+            if self:DataTable == null
+                // Unlike Table mode, _ForceOpen() is a permanent no-op once _tableMode is
+                // Query (see _ForceOpen() below), so a failed SELECT here has no later retry
+                // path - DataTable would stay null for the object's entire lifetime and every
+                // subsequent access (Rows:Count right below, _GotoRow, GoTop, ...) would NPE.
+                self:_dbfError(self:Connection:LastException, Subcodes.EDB_USE, Gencode.EG_OPEN, "SQLRDD.Open", FALSE)
+                return false
+            endif
             SELF:_serverReccount := (DWORD) self:DataTable:Rows:Count
             SELF:_ReadOnly := true
             SELF:_hasEOF := TRUE
@@ -255,7 +263,9 @@ partial class SQLRDD inherit Workarea
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
     override method Append(lReleaseLock as logic) as logic
-        self:_ForceOpen()
+        if !self:_ForceOpen()
+            return false
+        endif
         var lResult := SELF:GoCold()
         if lResult
             var key := (dword) self:_builder:GetNextKey()
@@ -351,7 +361,9 @@ partial class SQLRDD inherit Workarea
     /// </remarks>
     override method PutValue(nFldPos as int, oValue as object) as logic
         // nFldPos is 1 based, the RDD compiles with /az+
-        SELF:_ForceOpen()
+        if !SELF:_ForceOpen()
+            return false
+        endif
         if self:_ReadOnly
             self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:PutValue", "Table is not Updatable" )
             return false
@@ -698,7 +710,10 @@ partial class SQLRDD inherit Workarea
 	    LOCAL result AS LOGIC
 		TRY
             VAR nRec := Convert.ToUInt32( oRec )
-            if oRec != self:CurrentRow[self:_recnoColumNo]
+            // CurrentRow is null when the table has never been successfully opened (the
+            // phantom row is only built once a SELECT actually loaded a schema - see the
+            // DataTable setter) - same case GetValue() already guards against above.
+            if self:CurrentRow == null .or. oRec != self:CurrentRow[self:_recnoColumNo]
                 result := SELF:GoTo( (DWORD) nRec )
             endif
 		CATCH ex AS Exception
@@ -728,18 +743,23 @@ partial class SQLRDD inherit Workarea
         IF SELF:_tableMode == TableMode.Query .and. self:_recnoColumNo == -1
             RETURN SELF:_GotoRow((LONG) nRec)
         ENDIF
-        // Check to see if we have the record in the current buffer
-        var rowIndex := 1
-        foreach oRow as DataRow in SELF:DataTable:Rows
-            if (int)oRow[self:_recnoColumNo] = nRec
-                SELF:RowNumber := rowIndex
-                SELF:_SetEOF(FALSE)
-                SELF:_SetBOF(FALSE)
-                SELF:_Found := TRUE
-                return true
-            endif
-            rowIndex++
-        next
+        // Check to see if we have the record in the current buffer. DataTable can be null
+        // here if _ForceOpen() above reported success while the underlying SELECT actually
+        // failed (see _OpenTable()) - treat that as "not in the current buffer" rather than
+        // crashing, and fall through to the direct single-record fetch below.
+        if SELF:DataTable != null
+            var rowIndex := 1
+            foreach oRow as DataRow in SELF:DataTable:Rows
+                if (int)oRow[self:_recnoColumNo] = nRec
+                    SELF:RowNumber := rowIndex
+                    SELF:_SetEOF(FALSE)
+                    SELF:_SetBOF(FALSE)
+                    SELF:_Found := TRUE
+                    return true
+                endif
+                rowIndex++
+            next
+        endif
 
         var found := SELF:_GotoRecord(nRec)
         SELF:_CheckEofBof()

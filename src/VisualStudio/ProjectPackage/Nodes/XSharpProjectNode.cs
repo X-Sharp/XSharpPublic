@@ -1174,6 +1174,7 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Allowdot, "true");
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox1);
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox2);
+                    RemoveProjectProperty(XSharpProjectFileConstants.Fox3);
                     RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
                     break;
                 case XDialect.FoxPro:
@@ -1192,6 +1193,7 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Allowdot, "false");
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox1);
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox2);
+                    RemoveProjectProperty(XSharpProjectFileConstants.Fox3);
                     if (dialect != XDialect.XPP)
                     {
                         RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);

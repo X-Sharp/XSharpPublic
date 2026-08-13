@@ -85,7 +85,10 @@ namespace XSharp.Project
             Community.VisualStudio.Toolkit.VS.StatusBar.ClearAsync().FireAndForget();
         }
 
-
+        public override int MenuCommandId
+        {
+            get { return Microsoft.VisualStudio.Project.VsMenus.IDM_VS_CTXT_COMREFERENCE; }
+        }
         protected override void BindReferenceData()
         {
             ThreadHelper.ThrowIfNotOnUIThread();

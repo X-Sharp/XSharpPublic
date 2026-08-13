@@ -159,7 +159,9 @@ partial class SQLRDD
     end destructor
 
     internal method _ClearTable() AS VOID
-        SELF:DataTable:Rows:Clear()
+        IF SELF:DataTable != null
+            SELF:DataTable:Rows:Clear()
+        ENDIF
         RETURN
 
 
@@ -519,6 +521,15 @@ partial class SQLRDD
             // WHERE clause has plenty more rows past the first page.
             SELF:_hasEOF := false
             SELF:DataTable := self:_ReadTable(sWhereClause)
+            if SELF:DataTable == null
+                // _ReadTable() -> Command:GetDataTable()/ExecuteReader() swallow the real
+                // ADO.NET exception into Connection:LastException instead of throwing it.
+                // Without this check we'd return TRUE here with no data loaded, and the
+                // first caller to touch DataTable (GoTo(), GoTop(), ...) would crash with
+                // a bare NullReferenceException that hides the actual database error.
+                self:_dbfError(self:Connection:LastException, Subcodes.EDB_USE, Gencode.EG_OPEN, "SQLRDD._OpenTable", FALSE)
+                return false
+            endif
             self:_GetRecCount()
         catch as Exception
             return false
@@ -740,7 +751,10 @@ partial class SQLRDD
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE
-        var nCount := SELF:DataTable:Rows:Count
+        // DataTable can be null here for a Query-mode table whose SELECT failed (see Open())
+        // and that has no recno column to route through _GotoRecord() instead - treat that
+        // the same as an empty result set rather than crashing.
+        var nCount := IIF(SELF:DataTable == null, 0, SELF:DataTable:Rows:Count)
         IF  nRow <= nCount  .AND.  nRow > 0
             SELF:RowNumber := nRow
             SELF:_SetEOF(FALSE)
@@ -765,6 +779,11 @@ partial class SQLRDD
     PRIVATE METHOD _UpdateRow(nRecNo AS INT) AS LOGIC
         local row as DataRow
         local lOk := TRUE as logic
+        // Reachable via UnLock() -> Close(), which never checks _ForceOpen()/DataTable itself -
+        // if the buffer was already torn down (_CloseCursor()) there is nothing left to persist.
+        if self:DataTable == null
+            return true
+        endif
         try
             foreach tableRow as DataRow in self:DataTable:Rows
                 if (int)tableRow[self:_recnoColumNo] = nRecNo

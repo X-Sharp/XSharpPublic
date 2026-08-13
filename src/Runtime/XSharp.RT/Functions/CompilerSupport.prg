@@ -350,6 +350,10 @@ FUNCTION __MemVarInit() AS INT STRICT
 FUNCTION __MemVarInit(lFromRuntime AS LOGIC) AS INT STRICT
     RETURN XSharp.MemVar.InitPrivates(lFromRuntime)
 
+/// <exclude />
+FUNCTION __MemVarInit(oOwner as OBJECT) AS INT STRICT
+    RETURN XSharp.MemVar.InitPrivates(oOwner)
+
 
 /// <exclude />
 FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT

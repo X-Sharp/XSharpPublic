@@ -564,6 +564,26 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             var fieldNames := List<string>{}
             foreach row as DataRow in schema:Rows
                 local colInfo  := SQLHelpers.GetColumnInfoFromSchemaRow(row, fieldNames, longFieldNames) as DbColumnInfo
+                if colInfo:FieldType == DbFieldType.DateTime
+                    // SQLHelpers.GetColumnInfo() tells DBF "D" (Date) apart from "T" (DateTime)
+                    // purely by NumericPrecision, but a plain SQL Server `date` column reports
+                    // the very same "not applicable" sentinel precision (255, via
+                    // System.Data.SqlClient) as `datetime2` does, so it always fails that check
+                    // and comes back as "T" - a Date column can never round-trip correctly.
+                    // NumericScale tells them apart reliably instead: any genuine time-bearing
+                    // column (datetime/datetime2/smalldatetime, whatever fractional-seconds
+                    // precision) reports a real, small scale (0-7), while a `date` column keeps
+                    // the 255 sentinel there too - so an implausibly high scale means "no time
+                    // component", i.e. this is really a Date.
+                    local nScale := 0 as short
+                    if row:Table:Columns:Contains("NumericScale") .and. row["NumericScale"] is short var nScaleVal
+                        nScale := nScaleVal
+                    endif
+                    if nScale >= 100
+                        colInfo:FieldType := DbFieldType.Date
+                        colInfo:Length := 8
+                    endif
+                endif
                 if SELF:LegacyFieldTypes
                     // Map back to the old field types
                     switch colInfo:FieldType

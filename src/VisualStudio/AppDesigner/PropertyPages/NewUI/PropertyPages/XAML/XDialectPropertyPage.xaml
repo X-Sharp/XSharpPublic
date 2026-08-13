@@ -21,7 +21,7 @@
         Layout mirrors the WinForms XDialectPropertyPagePanel two-column table:
           Left column  - "All dialects" group  (VO1-VO4, VO8-VO10, VO2)
           Right column - "Not in Core dialect" group (VO5-VO7, VO11-VO17)
-          Bottom row   - Visual FoxPro compatibility (Fox2, only FoxPro dialect)
+          Bottom row   - Visual FoxPro compatibility (Fox2,Fonly FoxPro dialect)
                        - Xbase++ compatibility (Xpp1, only XPP dialect)
     -->
 
@@ -90,14 +90,17 @@
             <!-- ============================================================ -->
             <Label Content="{Binding CaptFoxCompat}" FontWeight="Bold" Margin="0,12,0,4"/>
 
-            <local:PropertyCheckBox Label="{Binding CaptFox2}" Value="{Binding Fox2, Mode=TwoWay}" PropertyName="Fox2" IsEnabled="{Binding Fox2Enabled}" ToolTip="{Binding DescFox2}" Margin="0,3,0,0"/>
+            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                <local:PropertyCheckBox Label="{Binding CaptFox2}" Value="{Binding Fox2, Mode=TwoWay}" PropertyName="Fox2" IsEnabled="{Binding IsFox}" ToolTip="{Binding DescFox2}" Margin="0,3,0,0"/>
+                <local:PropertyCheckBox Label="{Binding CaptFox3}" Value="{Binding Fox3, Mode=TwoWay}" PropertyName="Fox3" IsEnabled="{Binding IsFox}" ToolTip="{Binding DescFox3}" Margin="0,3,0,0"/>
+            </StackPanel>
 
             <!-- ============================================================ -->
             <!-- BOTTOM - Xbase++ compatibility (XPP dialect only)            -->
             <!-- ============================================================ -->
             <Label Content="{Binding CaptXppCompat}" FontWeight="Bold" Margin="0,12,0,4"/>
 
-            <local:PropertyCheckBox Label="{Binding CaptXpp1}" Value="{Binding Xpp1, Mode=TwoWay}" PropertyName="Xpp1" IsEnabled="{Binding Xpp1Enabled}" ToolTip="{Binding DescXpp1}" Margin="0,3,0,0"/>
+            <local:PropertyCheckBox Label="{Binding CaptXpp1}" Value="{Binding Xpp1, Mode=TwoWay}" PropertyName="Xpp1" IsEnabled="{Binding IsXpp}" ToolTip="{Binding DescXpp1}" Margin="0,3,0,0"/>
 
         </StackPanel>
     </ScrollViewer>

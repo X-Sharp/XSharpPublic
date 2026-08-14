@@ -158,10 +158,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Fox1:
                     //Fox1 = value;
                     break;
-                case CompilerOption.Fox2:
+                case CompilerOption.FoxArraySupport:
                     Fox2 = value;
                     break;
-                case CompilerOption.Fox3:
+                case CompilerOption.FoxCursorSupport:
                     Fox3 = value;
                     break;
                 case CompilerOption.ImplicitNamespace:
@@ -442,6 +442,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         AllowOldStyleAssignments = 1L << 32,
         ModernSyntax = 1L << 33,
         Fox3 = 1L << 34,
+        FoxCursorSupport = Fox3,
         All = -1,       // used for Push/Pop
     }
 

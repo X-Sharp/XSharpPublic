@@ -678,7 +678,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             isUsual = nts.ConstructedFrom.IsUsualType();
                             isArray = nts.ConstructedFrom.IsArrayType();
                             if (node.Parent is not InvocationExpressionSyntax)
-                                isFox3 = boundLeft is BoundLocal && Compilation.Options.HasOption(CompilerOption.Fox3, node);
+                                isFox3 = (boundLeft is BoundLocal  || boundLeft is BoundParameter)
+                                    && Compilation.Options.HasOption(CompilerOption.FoxCursorSupport, node);
                         }
                     }
                     // Late bound will only work for OBJECT or USUAL or for /fox3 also for typed locals

@@ -977,12 +977,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MemVarFieldInfo fieldInfo = findVar(Name);
                 var amc = context.Parent.Parent as XP.AccessMemberContext;
                 var staticCall = amc?.Op.Type == XP.DOTCOLON;
-                var methodCall = amc?.Parent is MethodCallContext;
-                if (fieldInfo != null && !staticCall && !methodCall && !context.IsInLambdaOrCodeBlock())
+                if (fieldInfo != null && !staticCall)
                 {
-                    // for code that looks like this we do not want to change the expression
-                    // Foo(1,2)
-                    // even when Foo is a private because this can never be a assignment
                     if (!fieldInfo.IsField)
                     {
                         if (context.Parent is XP.PrimaryExpressionContext pec &&

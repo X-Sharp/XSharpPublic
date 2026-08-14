@@ -6,7 +6,7 @@
 #nullable disable
 
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
 using System.Collections.Generic;
@@ -1236,6 +1236,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             None = 0,
             MemberAccess = 1,
             MPrefix = 2,
+
+        }
+
+        public partial class CodeblockContext
+        {
+            internal HashSet<string> parameters;
+            internal void AddParameter(string name)
+            {
+                if (parameters == null)
+                    parameters = new HashSet<string>(XSharpString.Comparer);
+                if (!parameters.Contains(name))
+                    parameters.Add(name);
+            }
+            internal bool HasParameter(string name)
+            {
+                return parameters != null && parameters.Contains(name);
+            }
         }
         public partial class AccessMemberContext
         {

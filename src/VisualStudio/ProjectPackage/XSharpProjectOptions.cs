@@ -122,6 +122,8 @@ namespace XSharp.Project
                 XSharpProjectFileConstants.Unsafe,
                 XSharpProjectFileConstants.Xpp1,
                 XSharpProjectFileConstants.Fox1,
+                XSharpProjectFileConstants.Fox2,
+                XSharpProjectFileConstants.Fox3,
                 XSharpProjectFileConstants.Allowdot,
                 XSharpProjectFileConstants.EnforceSelf,
                 XSharpProjectFileConstants.EnforceOverride,

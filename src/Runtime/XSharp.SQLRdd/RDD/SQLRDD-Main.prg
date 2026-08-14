@@ -237,6 +237,14 @@ partial class SQLRDD inherit Workarea
             self:_CloseCursor()
         else
             self:DataTable      := _command:GetDataTable(self:Alias)
+            if self:DataTable == null
+                // Unlike Table mode, _ForceOpen() is a permanent no-op once _tableMode is
+                // Query (see _ForceOpen() below), so a failed SELECT here has no later retry
+                // path - DataTable would stay null for the object's entire lifetime and every
+                // subsequent access (Rows:Count right below, _GotoRow, GoTop, ...) would NPE.
+                self:_dbfError(self:Connection:LastException, Subcodes.EDB_USE, Gencode.EG_OPEN, "SQLRDD.Open", FALSE)
+                return false
+            endif
             SELF:_serverReccount := (DWORD) self:DataTable:Rows:Count
             SELF:_ReadOnly := true
             SELF:_hasEOF := TRUE
@@ -255,7 +263,9 @@ partial class SQLRDD inherit Workarea
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
     override method Append(lReleaseLock as logic) as logic
-        self:_ForceOpen()
+        if !self:_ForceOpen()
+            return false
+        endif
         var lResult := SELF:GoCold()
         if lResult
             var key := (dword) self:_builder:GetNextKey()
@@ -351,7 +361,9 @@ partial class SQLRDD inherit Workarea
     /// </remarks>
     override method PutValue(nFldPos as int, oValue as object) as logic
         // nFldPos is 1 based, the RDD compiles with /az+
-        SELF:_ForceOpen()
+        if !SELF:_ForceOpen()
+            return false
+        endif
         if self:_ReadOnly
             self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:PutValue", "Table is not Updatable" )
             return false
@@ -389,7 +401,9 @@ partial class SQLRDD inherit Workarea
         if current == null
             return false
         endif
-        var lWasHot := current:RowState != DataRowState.Unchanged
+        // RowState alone misses rows only marked via Delete()/Recall() without a DeletedColumn,
+        // since those touch no DataColumn and leave RowState Unchanged.
+        var lWasHot := current:RowState != DataRowState.Unchanged .or. _updatedRecNos:Count > 0
         local lOk := TRUE as logic
         if lWasHot .and. self:DataTable != null
 
@@ -441,6 +455,29 @@ partial class SQLRDD inherit Workarea
         return lOk
     end method
 
+    /// <summary>Is the given row marked for deletion?</summary>
+    /// <remarks>
+    /// When a DeletedColumn is defined, then the value of that column is checked.
+    /// Otherwise the row's recno is looked up in the internal _deletedRowIds set,
+    /// since Workarea.Deleted is a hardcoded stub that cannot track this state.
+    /// </remarks>
+    private method _IsRowDeleted(row as DataRow) as logic
+        if self:_deletedColumnNo > -1
+            var res := row[self:_deletedColumnNo]
+            if res is logic
+                return (logic) res
+            else
+                try
+                    var iRes := Convert.ToInt64(res)
+                    return iRes != 0
+                catch
+                    return false
+                end try
+            endif
+        endif
+        return self:_deletedRowIds:Contains((int)row[self:_recnoColumNo])
+    end method
+
     /// <summary>Mark the row at the current cursor position for deletion.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>
@@ -449,14 +486,20 @@ partial class SQLRDD inherit Workarea
     /// </remarks>
 
     override method Delete() as logic
+        var row := self:CurrentRow
         if self:_deletedColumnNo > -1
-            var row := self:CurrentRow
             if self:_deletedColumnIsLogic
                 row[_deletedColumnNo] := true
             else
                 row[_deletedColumnNo] := 1
             endif
+        else
+            self:_deletedRowIds:Add((int)row[self:_recnoColumNo])
         endif
+        if !_updatedRecNos:Contains((int)row[self:_recnoColumNo])
+            _updatedRecNos:Add((int)row[self:_recnoColumNo])
+        endif
+        self:GoHot()
         return true
     end method
 
@@ -467,17 +510,21 @@ partial class SQLRDD inherit Workarea
     /// Otherwise when the current row is deleted and not persisted to the server yet, then the deletion is undone.
     /// </remarks>
     override method Recall() as logic
+        var row := self:CurrentRow
         if self:_deletedColumnNo >= 0
-            var row := self:CurrentRow
             if self:_deletedColumnIsLogic
                 row[_deletedColumnNo] := false
             else
                 row[_deletedColumnNo] := 0
             endif
+        else
+            self:_deletedRowIds:Remove((int)row[self:_recnoColumNo])
         endif
-        // Must position the DBF on the right row for the recall
-        super:GoTo((DWORD) SELF:RowNumber)
-        return super:Recall()
+        if !_updatedRecNos:Contains((int)row[self:_recnoColumNo])
+            _updatedRecNos:Add((int)row[self:_recnoColumNo])
+        endif
+        self:GoHot()
+        return true
     end method
 
     /// <summary>Retrieve and optionally change information about a work area.</summary>
@@ -488,10 +535,53 @@ partial class SQLRDD inherit Workarea
             return false
         elseif uiOrdinal == DbInfo.DBI_ISDBF
             return false
+        elseif uiOrdinal == DbInfo.DBI_GETLOCKARRAY
+            return SELF:_GetMyLockedRecords()
+        elseif uiOrdinal == DbInfo.DBI_LOCKCOUNT
+            return (int) SELF:_GetMyLockedRecords():Length
         endif
         return super:Info(uiOrdinal, oNewValue)
     end method
 
+    /// <summary>
+    /// Records currently locked by this connection in this table, per the xs_locks table.
+    /// </summary>
+    /// <remarks>
+    /// Backs DBI_GETLOCKARRAY/DBI_LOCKCOUNT (and therefore VO's RLockList/IsLocked()), since
+    /// SQLRDD's locking is tracked entirely in xs_locks rather than in the base RDD's own
+    /// bookkeeping. Without this, IsLocked() always reports false for SQLRDD tables, and
+    /// callers relying on it (e.g. HomeBase's transaction end) never commit pending changes.
+    /// </remarks>
+    private method _GetMyLockedRecords() as DWORD[]
+        var recNos := List<DWORD>{}
+        if Connection?:Provider is null .or. !self:Connection:IsOpen .or. _oTd == null
+            return recNos:ToArray()
+        endif
+        try
+            var sb := StringBuilder{}
+            sb:AppendLine("select recno from " + SqlDbConnection.LockTableName)
+            sb:AppendLine("where tablename = "+self:Provider:ParameterPrefix+"p1")
+            sb:AppendLine(" and connectionid = "+self:Provider:ParameterPrefix+"p2")
+            sb:AppendLine(" and workarea = "+self:Provider:ParameterPrefix+"p3")
+
+            using var cmd := SqlDbCommand{"GetLockArray", self:Connection, false}
+            cmd:CommandText := sb:ToString()
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p1", _oTd:RealName)
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p2", self:Connection:ConnectionId:ToString())
+            cmd:AddParameter(self:Provider:ParameterPrefix+"p3", (int)super:Area)
+
+            using var reader := cmd:ExecuteReader()
+            do while reader:Read()
+                var recNoTemp := (int) reader["recno"]
+                if recNoTemp > 0
+                    recNos:Add((DWORD) recNoTemp)
+                endif
+            end do
+        catch
+            nop
+        end try
+        return recNos:ToArray()
+    end method
 
     /// <inheritdoc />
     /// <remarks>
@@ -501,6 +591,7 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_outsideOrder := FALSE
         SELF:_ClearTable()
         SELF:_FetchPage( 1)
         SELF:RowNumber  := 1
@@ -525,6 +616,7 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_outsideOrder := FALSE
         SELF:_ClearTable()
         local nMaxRecNo as dword
         if self:CurrentOrder = Null
@@ -536,7 +628,19 @@ partial class SQLRDD inherit Workarea
         if SELF:RecCount % self:_oTd:PageSize != 0
             nPage += 1
         ENDIF
-        SELF:_FetchPage((INT) nPage)
+        // For a large table, fetching the last page via the normal ascending, OFFSET-based
+        // query (_FetchPage) forces the server to walk/skip almost the entire ordered result -
+        // the further from the top, the worse. _FetchLastPage avoids that by sorting in
+        // reverse and asking for OFFSET 0 instead, which is always cheap. Only safe when the
+        // order isn't already descending (that would invert the reversal); falls back to the
+        // original approach for natural order, descending orders, or if it fails outright.
+        if self:CurrentOrder == null .or. !self:CurrentOrder:Descending
+            if !SELF:_FetchLastPage((INT) nPage)
+                SELF:_FetchPage((INT) nPage)
+            endif
+        else
+            SELF:_FetchPage((INT) nPage)
+        endif
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
         SELF:_Bottom    := TRUE
@@ -558,7 +662,6 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         LOCAL isOK := TRUE AS LOGIC
-        //
         SELF:GoCold()
         IF nToSkip == 0
             NOP
@@ -574,6 +677,17 @@ partial class SQLRDD inherit Workarea
                 ELSE
                     SELF:RowNumber :=  newRow
                     SELF:_FetchPage(SELF:_currentPageNo +1)
+                    if SELF:RowNumber > SELF:RowCount
+                        // The page we just fetched turned out to be empty (we were already on
+                        // the last real row) - report EOF right away instead of leaving RowNumber
+                        // past the end with EOF still FALSE, which otherwise sits stale until a
+                        // second Skip() happens to see _hasEOF. In between, RecNo/CurrentRow
+                        // reflect the phantom row - e.g. nextrec()'s "IF EOF THEN GOTO(oldRecno)"
+                        // never fires on the first PgDn past the end, and the recno it captures
+                        // on the following call is the phantom row's blank value, not a real one.
+                        SELF:RowNumber := 0
+                        SELF:_SetEOF(TRUE)
+                    endif
                 endif
             ELSE
                 IF SELF:_currentPageNo == 1
@@ -596,7 +710,10 @@ partial class SQLRDD inherit Workarea
 	    LOCAL result AS LOGIC
 		TRY
             VAR nRec := Convert.ToUInt32( oRec )
-            if oRec != self:CurrentRow[self:_recnoColumNo]
+            // CurrentRow is null when the table has never been successfully opened (the
+            // phantom row is only built once a SELECT actually loaded a schema - see the
+            // DataTable setter) - same case GetValue() already guards against above.
+            if self:CurrentRow == null .or. oRec != self:CurrentRow[self:_recnoColumNo]
                 result := SELF:GoTo( (DWORD) nRec )
             endif
 		CATCH ex AS Exception
@@ -622,25 +739,31 @@ partial class SQLRDD inherit Workarea
         ENDIF
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE
+        SELF:_outsideOrder := FALSE
         IF SELF:_tableMode == TableMode.Query .and. self:_recnoColumNo == -1
             RETURN SELF:_GotoRow((LONG) nRec)
         ENDIF
-        // Check to see if we have the record in the current buffer
-        var rowIndex := 1
-        foreach oRow as DataRow in SELF:DataTable:Rows
-            if (int)oRow[self:_recnoColumNo] = nRec
-                SELF:RowNumber := rowIndex
-                SELF:_SetEOF(FALSE)
-                SELF:_SetBOF(FALSE)
-                SELF:_Found := TRUE
-                return true
-            endif
-            rowIndex++
-        next
+        // Check to see if we have the record in the current buffer. DataTable can be null
+        // here if _ForceOpen() above reported success while the underlying SELECT actually
+        // failed (see _OpenTable()) - treat that as "not in the current buffer" rather than
+        // crashing, and fall through to the direct single-record fetch below.
+        if SELF:DataTable != null
+            var rowIndex := 1
+            foreach oRow as DataRow in SELF:DataTable:Rows
+                if (int)oRow[self:_recnoColumNo] = nRec
+                    SELF:RowNumber := rowIndex
+                    SELF:_SetEOF(FALSE)
+                    SELF:_SetBOF(FALSE)
+                    SELF:_Found := TRUE
+                    return true
+                endif
+                rowIndex++
+            next
+        endif
 
-        SELF:_GotoRecord(nRec)
+        var found := SELF:_GotoRecord(nRec)
         SELF:_CheckEofBof()
-        RETURN TRUE
+        RETURN found
     end method
 
 
@@ -678,6 +801,21 @@ partial class SQLRDD inherit Workarea
         SELF:_Bottom := FALSE
         IF nToSkip == 0
             result := SELF:GoCold()
+        ELSEIF SELF:_outsideOrder
+            // Positioned (via GoTo()) on a record outside the current order (OrderKeyNo 0).
+            // RowNumber/_currentPageNo do not correspond to any real position in the order's
+            // sequence, so a relative skip from here is meaningless. Matching DBF: a negative
+            // skip always lands on the first record of the order; a positive skip lands on
+            // record nToSkip, as if skipping forward from just before the top.
+            SELF:GoCold()
+            result := SELF:GoTop()
+            IF result
+                IF nToSkip < 0
+                    SELF:BoF := TRUE
+                ELSEIF nToSkip > 1
+                    result := SELF:Skip(nToSkip - 1)
+                ENDIF
+            ENDIF
         ELSE
             result := SELF:SkipRaw( nToSkip )
             if result
@@ -710,21 +848,10 @@ partial class SQLRDD inherit Workarea
     /// </remarks>
     override property Deleted		as logic
         get
-            if self:_deletedColumnNo > 0
-                var res:= CurrentRow[self:_deletedColumnNo]
-                if res is logic
-                    return (logic) res
-                else
-                    try
-                        var iRes := Convert.ToInt64(res)
-                        return iRes != 0
-                    catch
-                        return false
-                    end try
-                endif
-            else
-                return super:Deleted
+            if self:CurrentRow == null
+                return false
             endif
+            return self:_IsRowDeleted(self:CurrentRow)
         end get
     end property
 
@@ -787,6 +914,10 @@ partial class SQLRDD inherit Workarea
 
     public override method Lock(lockInfo ref DbLockInfo) as logic
         // TODO thomas: implement Multiple Lock
+        if Connection?:Provider is null .or. !self:Connection:IsOpen
+            lockInfo:Result := false
+            return false
+        endif
         var sb := StringBuilder{}
         var messageLocked := StringBuilder{}
 

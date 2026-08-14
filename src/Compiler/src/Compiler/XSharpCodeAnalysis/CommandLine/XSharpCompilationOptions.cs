@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool HasDefaultTree { get; set; } = false;
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
         public bool FoxArraySupport { get; private set; } = false;
-        public bool FoxAmbigousDot { get; private set; } = false;
+        public bool FoxCursorSupport { get; private set; } = false;
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool UseNativeVersion { get; private set; } = false;
 
@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
                 FoxArraySupport = opt.Fox2;
-                FoxAmbigousDot = opt.Fox3;
+                FoxCursorSupport = opt.Fox3;
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
@@ -200,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckOption(option, FoxArraySupport, syntax);
 
                 case CompilerOption.Fox3: // Fox Ambigous Dot
-                    return CheckOption(option, FoxAmbigousDot, syntax);
+                    return CheckOption(option, FoxCursorSupport, syntax);
                 // other options are not handled or only handled during parsing
                 case CompilerOption.Vo8: //  Compatible Preprocessor
                 case CompilerOption.Vo16: // DefaultClipperContructors:

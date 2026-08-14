@@ -7,8 +7,10 @@ FUNCTION Start as VOID
     try
     foo = CreateObject("Empty")
     AddProperty(foo, "bar", 456)
-    CREATE Table foo (bar n(10))
-    INSERT INTO foo values(123)
+    DbCreate("foo", {{"Bar","N",10,0}})
+    USE Foo
+    Append blank
+    FieldPut(1, 123)
     ? "->",Foo->Bar
     xAssert(Foo->Bar == 123)
     ? "m ",m->Foo.Bar

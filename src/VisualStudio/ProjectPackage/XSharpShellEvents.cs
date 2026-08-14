@@ -28,34 +28,22 @@ namespace XSharp.Project
         bool isInitialized = false;
         static XSharpShellEvents()
         {
+            // Only read the environment here. Showing the warning is UI work and would block while
+            // waiting for the UI thread, which deadlocks when we are constructed during a package
+            // load that the shell is waiting for. It is reported from InitializeAsync() instead.
             hasEnvironmentvariable = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
-            if (!hasEnvironmentvariable)
-            {
-                VS.MessageBox.ShowWarning("The environment variable 'XSharpMsBuildDir' is missing. \rSome projects may have problems loading. \rPlease run the XSharp setup program again.");
-            }
         }
 
-        internal XSharpShellEvents()
-        {
-            if (ThreadHelper.CheckAccess())
-            {
-                // Already on UI thread
-                Initialize();
-            }
-            else
-            {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    Initialize();
-                });
-            }
-        }
-        internal void Initialize()
+        /// <summary>
+        /// Subscribe to the shell events. Must be awaited and never waited on: we are called from
+        /// XSharpProjectPackage.InitializeAsync(), where blocking while waiting for the UI thread
+        /// deadlocks the IDE. See the remarks on Logger.InitializeAsync().
+        /// </summary>
+        internal async Task InitializeAsync()
         {
             if (isInitialized)
                 return;
-            ThreadHelper.ThrowIfNotOnUIThread();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 #if DEV17
             VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
 #endif
@@ -65,20 +53,22 @@ namespace XSharp.Project
             VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
 
             VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
 
-                _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
-                _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
-                var sol = await VS.Solutions.GetCurrentSolutionAsync();
+            _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
+            _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
+            var sol = await VS.Solutions.GetCurrentSolutionAsync();
 #if DEV17
-                if (sol is Solution)
-                {
-                    SolutionEvents_OnAfterOpenSolution(sol);
-                }
+            if (sol is Solution)
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                SolutionEvents_OnAfterOpenSolution(sol);
+            }
 #endif
-            });
             isInitialized = true;
+            if (!hasEnvironmentvariable)
+            {
+                VS.MessageBox.ShowWarningAsync("The environment variable 'XSharpMsBuildDir' is missing. \rSome projects may have problems loading. \rPlease run the XSharp setup program again.").FireAndForget();
+            }
         }
 
 
@@ -86,17 +76,23 @@ namespace XSharp.Project
 #if DEV17
         private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
+            FixIncompleteReferences();
+        }
 
+        /// <summary>
+        /// Complete the project references of SDK style projects that could not be resolved while the
+        /// project was loading, because the referenced project was not loaded yet.
+        /// </summary>
+        private void FixIncompleteReferences()
+        {
             foreach (var project in XSharpProjectNode.AllProjects)
             {
                 if (project.HasIncompleteReferences)
                 {
-
                     project.FixReferences();
                 }
             }
-
-    }
+        }
 #endif
         private void SolutionEvents_OnBeforeCloseSolution()
         {
@@ -129,6 +125,11 @@ namespace XSharp.Project
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+#if DEV17
+            // Projects may have been loaded after OnAfterOpenSolution, so check again now that all
+            // projects of the solution are available.
+            FixIncompleteReferences();
+#endif
             RestoreDesignerWindows();
             RestoreStartupProject();
         }

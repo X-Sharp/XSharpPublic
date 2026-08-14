@@ -47,6 +47,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     private _metadataCollections as List<string>
     private _databaseRestrictions as int
     private _tableRestrictions as int
+    // Must be kept in a field: a System.Timers.Timer with no other root gets garbage
+    // collected (it stops firing silently), which would disable the periodic stale-lock cleanup.
+    private _lockTimer as System.Timers.Timer
 
     #region Connection Only Properties
     /// <summary>Dictionary with properties defined by the Ado.Net provider</summary>
@@ -74,7 +77,17 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <summary>Provider for the Metadata, such as columnlist, maxrecords etc.</summary>
     property MetadataProvider   as ISqlMetadataProvider auto
     /// <summary>Last exception that occurred in the RDD</summary>
-    property LastException      as Exception auto get internal set
+    property LastException as Exception
+        get
+            return _lastException
+        end get
+        internal set
+            _lastException := value
+            if value != null
+                System.Diagnostics.Trace.WriteLine(String.Format("SqlDbConnection '{0}': {1}", self:Name, value:ToString()))
+            endif
+        end set
+    end property
     /// <summary>Connection State</summary>
     PROPERTY State              as ConnectionState get iif(self:DbConnection == null, ConnectionState.Closed, self:DbConnection:State)
 
@@ -105,7 +118,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     internal const DefaultConnection := "DEFAULT" as string
     internal static Connections      as List<SqlDbConnection>
     static internal property DefaultCached  as logic auto
-    private static oExistingTables := List<string>{} as List<string>
 
     static constructor()
         Connections     := List<SqlDbConnection>{}
@@ -265,6 +277,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         BufferSize         := DEFAULT_BUFFERSIZE
         DeletedColumn      := DEFAULT_DELETEDCOLUMN
         RecnoColumn        := DEFAULT_RECNOCOLUMN
+        LockRefreshInterval:= DEFAULT_LOCKREFRESHINTERVAL
+        LockStaleThreshold := DEFAULT_LOCKSTALETHRESHOLD
         cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
@@ -285,6 +299,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         SELF:_FillDataSourceProperties()
         SELF:_CreateLockTable()
         SELF:InitializeLockTimer()
+        // Sweep stale locks (e.g. left behind by a crashed/killed previous process) right away,
+        // instead of waiting for the first 120-second timer tick.
+        SELF:LockTimerElapsedEvent(null, null)
         // Todo: Check for # of open users and close the connection when no users are left and then throw an exception
         return
     end constructor
@@ -299,6 +316,11 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     method Close() as logic
         if self:RDDs:Count > 0
             return false
+        endif
+        if _lockTimer != null
+            _lockTimer:Enabled := false
+            _lockTimer:Dispose()
+            _lockTimer := null
         endif
         // Logout the workstation from the Open Connections table
         if _command != null
@@ -369,7 +391,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 return false
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             self:DbTransaction := null
         end try
         return self:DbTransaction != null
@@ -389,7 +411,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 return false
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             self:DbTransaction := null
         end try
         return self:DbTransaction != null
@@ -448,7 +470,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             _command:CommandText := cCommand
             result := _command:ExecuteScalar(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := null
         end try
         return result
@@ -466,7 +488,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
              _command:CommandText := cCommand
             result := _command:ExecuteNonQuery(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := false
         end try
         return result
@@ -484,7 +506,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
              _command:CommandText := cCommand
             result := _command:ExecuteReader(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := null
         end try
         return result
@@ -502,7 +524,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             _command:CommandText := cCommand
             result := _command:GetDataTable(cTable)
         catch e as Exception
-            _lastException := e
+            self:LastException := e
             result := null
         end try
         return result
@@ -542,6 +564,26 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             var fieldNames := List<string>{}
             foreach row as DataRow in schema:Rows
                 local colInfo  := SQLHelpers.GetColumnInfoFromSchemaRow(row, fieldNames, longFieldNames) as DbColumnInfo
+                if colInfo:FieldType == DbFieldType.DateTime
+                    // SQLHelpers.GetColumnInfo() tells DBF "D" (Date) apart from "T" (DateTime)
+                    // purely by NumericPrecision, but a plain SQL Server `date` column reports
+                    // the very same "not applicable" sentinel precision (255, via
+                    // System.Data.SqlClient) as `datetime2` does, so it always fails that check
+                    // and comes back as "T" - a Date column can never round-trip correctly.
+                    // NumericScale tells them apart reliably instead: any genuine time-bearing
+                    // column (datetime/datetime2/smalldatetime, whatever fractional-seconds
+                    // precision) reports a real, small scale (0-7), while a `date` column keeps
+                    // the 255 sentinel there too - so an implausibly high scale means "no time
+                    // component", i.e. this is really a Date.
+                    local nScale := 0 as short
+                    if row:Table:Columns:Contains("NumericScale") .and. row["NumericScale"] is short var nScaleVal
+                        nScale := nScaleVal
+                    endif
+                    if nScale >= 100
+                        colInfo:FieldType := DbFieldType.Date
+                        colInfo:Length := 8
+                    endif
+                endif
                 if SELF:LegacyFieldTypes
                     // Map back to the old field types
                     switch colInfo:FieldType
@@ -584,7 +626,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             next
             return oTd
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return null
     end method
@@ -614,7 +656,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             self:Schema:Add(TableName, oTd)
             return oTd
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return null
     end method
@@ -625,10 +667,13 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="cTableName">Name of the table to check</param>
     /// <returns>TRUE when the table exists. </returns>
     method DoesTableExist(cTableName as string) as logic
+        // Always query live: this result must reflect DDL (CREATE/DROP TABLE) executed
+        // moments earlier on this same connection, so it must never be cached. A cache
+        // here (previously a process-wide static list that was never invalidated on
+        // DROP TABLE) causes DoesTableExist() to keep reporting a just-dropped table as
+        // existing, which then skips re-creating it.
         try
-            if oExistingTables:Contains(cTableName)
-                return true
-            endif
+            self:ForceOpen()
             if !SELF:HasCollection(TABLECOLLECTION)
                 return false
             endif
@@ -637,7 +682,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 aTableRestrictions[2] := cTableName
                 var dt := self:DbConnection:GetSchema(TABLECOLLECTION, aTableRestrictions)
                 if dt:Rows:Count > 0
-                    oExistingTables:Add(cTableName)
                     return true
                 endif
             else
@@ -645,13 +689,12 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 foreach row as DataRow in dt:Rows
                     var tbl := row["TABLE_NAME"]:ToString()
                     if String.Compare(tbl, cTableName, true) == 0
-                        oExistingTables:Add(cTableName)
                         return true
                     endif
                 next
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return false
     end method
@@ -663,6 +706,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="cDatabase">Name of the database to check</param>
     method DoesDatabaseExist(cDatabase as string) as logic
         try
+            self:ForceOpen()
             if !SELF:HasCollection(DATABASECOLLECTION)
                     return false
             endif
@@ -683,7 +727,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 next
             endif
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return false
     end method
@@ -694,6 +738,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <returns>List of table names that match the filter</returns>
     method GetTables(filter := "" as string) as List<string>
         try
+            self:ForceOpen()
             var result := List<string>{}
             if self:HasCollection(TABLECOLLECTION)
                 var dt := self:DbConnection:GetSchema(TABLECOLLECTION)
@@ -710,7 +755,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             endif
             return result
         catch e as Exception
-            _lastException := e
+            self:LastException := e
         end try
         return null
     end method
@@ -720,6 +765,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
  /// </summary>
  /// <returns>List of metadata collections</returns>
     method GetMetaDataCollections() as List<string>
+        self:ForceOpen()
         var dt := self:DbConnection:GetSchema(DbMetaDataCollectionNames.MetaDataCollections)
         var result := List<string>{}
         foreach row as DataRow in dt:Rows
@@ -738,6 +784,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 /// </summary>
 /// <returns>List of metadata collections</returns>
    method GetMetaDataCollection(cCollection as string) as DataTable
+       self:ForceOpen()
        var dt := self:DbConnection:GetSchema(cCollection)
        return dt
    end method
@@ -751,6 +798,39 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     end method
 
     #endregion
+
+    // Interval at which a connection refreshes the timestamp on its own locks, and the age at
+    // which another connection's lock is considered abandoned and cleared. The threshold must
+    // stay comfortably above the refresh interval: with no margin, a lock could be judged
+    // abandoned just before its owner's own refresh tick runs, e.g. under GC/scheduler jitter,
+    // and a still-active user on another workstation (or another instance) would lose their lock.
+    // Both are overridable per connection, via ini or callback, same as PageSize/BufferSize -
+    // see SqlRDDEventReason.LockRefreshInterval/LockStaleThreshold and Metadata/Abstract.prg.
+    INTERNAL CONST DEFAULT_LOCKREFRESHINTERVAL := 120 AS INT
+    INTERNAL CONST DEFAULT_LOCKSTALETHRESHOLD := 600 AS INT
+
+    /// <summary>
+    /// The interval (in seconds) at which this connection refreshes the timestamp on its own
+    /// locks and sweeps locks older than <see cref="LockStaleThreshold"/> (also in seconds).
+    /// </summary>
+    property LockRefreshInterval as int
+        get
+            return _lockRefreshInterval
+        end get
+        set
+            _lockRefreshInterval := value
+            if _lockTimer != null
+                _lockTimer:Interval := value * 1000
+            endif
+        end set
+    end property
+    private _lockRefreshInterval as int
+
+    /// <summary>
+    /// The age (in seconds) after which another connection's lock is considered abandoned and
+    /// cleared. Must stay comfortably above <see cref="LockRefreshInterval"/> (see remarks above).
+    /// </summary>
+    property LockStaleThreshold as int auto
 
     INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_COMPAREMEMO := TRUE AS LOGIC
@@ -855,10 +935,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     end method
 
     private method InitializeLockTimer() as void
-        var timer := System.Timers.Timer{120000} // 120 sec
-        timer:Elapsed += System.Timers.ElapsedEventHandler{ @@LockTimerElapsedEvent }
-        timer:AutoReset := true
-        timer:Enabled := true
+        _lockTimer := System.Timers.Timer{SELF:LockRefreshInterval * 1000}
+        _lockTimer:Elapsed += System.Timers.ElapsedEventHandler{ @@LockTimerElapsedEvent }
+        _lockTimer:AutoReset := true
+        _lockTimer:Enabled := true
     return
 
     method LockTimerElapsedEvent(sender as object, e as System.Timers.ElapsedEventArgs) as void
@@ -884,7 +964,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         endif
         cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
         cmdClear:Parameters := List<SqlDbParameter>{}
-        cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-120)})
+        cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-SELF:LockStaleThreshold)})
         cmdClear:ExecuteNonQuery()
     return
 

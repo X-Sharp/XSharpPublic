@@ -150,6 +150,17 @@ partial class SQLRDD
         return result
     end method
 
+    /// <summary>The column metadata of the underlying table, used to determine the
+    /// declared (maximum) width of the columns that make up an index key expression.</summary>
+    internal property TableColumns as IList<SqlDbColumnDef> get _oTd:Columns
+
+    /// <summary>Whether string field values returned by GetValue() are right-trimmed
+    /// (TRUE) or padded to the declared column width (FALSE). Exposed so that
+    /// SqlDbOrder can temporarily disable trimming while probing the maximum
+    /// length of an index key expression.</summary>
+    internal property TrimValues as logic get _trimValues set _trimValues := value
+
+
 	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the order to select.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -157,14 +168,36 @@ partial class SQLRDD
         local result := false as logic
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
+            // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
+            // tearing down the cursor. _CloseCursor() below nulls out the table the
+            // CurrentRow property reads from, so GoCold() called any later (e.g. via the
+            // GoTo() further down) would see the phantom row instead of the real dirty one
+            // and silently report success without writing anything - a change made via
+            // SetOrder()/RestDB() around a write (the standard "write outside the active
+            // index/order" pattern used throughout the app) would be lost.
+            SELF:GoCold()
             self:_CloseCursor()
-            SELF:CurrentOrder := self:FindOrder(orderInfo)
-            result := CurrentOrder != null
-            IF result
-                SELF:CurrentOrder:ClearCache()
-                SELF:CurrentOrder:CalculateKeyLength()
+            if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
+               (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
+                // Order 0 (or an empty order name) means: switch back to the natural/physical
+                // record order, i.e. no order at all. There is no "tag zero" to look up, so
+                // this must always succeed - matching VO, which returns TRUE for SetOrder(0).
+                SELF:CurrentOrder := null
                 self:GoTo(currentRecord)
-            ENDIF
+                result := true
+            else
+                SELF:CurrentOrder := self:FindOrder(orderInfo)
+                result := CurrentOrder != null
+                IF result
+                    SELF:CurrentOrder:ClearCache()
+                    // Position on a record BEFORE calculating the key length: CalculateKeyLength()
+                    // evaluates the key expression against the current record, which requires a
+                    // loaded row. _CloseCursor() above cleared it, so without this GoTo there would
+                    // be nothing to evaluate.
+                    self:GoTo(currentRecord)
+                    SELF:CurrentOrder:CalculateKeyLength()
+                ENDIF
+            endif
         else
             if orderInfo:Order != null
                 if orderInfo:Order is long var nOrder .and. nOrder == 0
@@ -416,7 +449,15 @@ partial class SQLRDD
             self:_ForceOpen()
             info:Result := self:OrderKeyCount
         case DBOI_POSITION
-            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            // OrdKeyNo()/DBOI_POSITION reports the record's position within the current order.
+            // When the cursor sits on a record outside the order (see GoTo()/_outsideOrder),
+            // RowNumber/_currentPageNo just reflect the ad-hoc single-row buffer we loaded for
+            // it, not a real position - matching DBF, that must report 0, not a bogus row number.
+            if self:_outsideOrder
+                info:Result := 0
+            else
+                info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            endif
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
@@ -452,15 +493,22 @@ partial class SQLRDD
             return false
         endif
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+
         SELF:_ClearTable()
         SELF:_currentPageNo := 1
-        // save PageSize
-        var nPageSize := SELF:_oTd:PageSize
-        SELF:_oTd:PageSize := 1
+        // Fetch a normal, full-size page here - NOT a single-row buffer. _FetchPage()'s
+        // paging math ((CurrentPage-1) * PageSize) assumes every page, including this first
+        // one, holds a full PageSize worth of rows; a caller that finds a match and then
+        // walks forward with Skip() past this buffer (the common "seek to the first record
+        // of a key, then Skip() while the key still matches" idiom) would otherwise jump
+        // straight to absolute offset PageSize on the next fetch instead of to row 2,
+        // silently skipping every other row that shares this seek's key.
         self:_OpenTable(cSeekWhere)
-        SELF:_oTd:PageSize := nPageSize
 
-        IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
+        // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
+        // null instead of an empty table - treat that the same as "no rows found" instead of
+        // crashing on DataTable:Rows below, same fix as GoTo()/_ClearTable() already got.
+        IF (SELF:DataTable == null .or. SELF:DataTable:Rows:Count = 0) .and. !seekInfo.SoftSeek
             SELF:GoTo(0)
             SELF:_Found := false
             SELF:_SetEOF(true)

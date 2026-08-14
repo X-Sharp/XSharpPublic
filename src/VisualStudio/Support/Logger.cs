@@ -24,13 +24,23 @@ namespace XSharp.Support
         static object gate = new object ();
         static bool initialized = false;
 
-        public static bool Initialize()
+        /// <summary>
+        /// Initialize the logger and the link to the VS shell.
+        /// </summary>
+        /// <remarks>
+        /// Nothing on this path may block the calling thread, because this is called from the
+        /// InitializeAsync() of our packages. The shell can load those packages synchronously from
+        /// Solution.OpenAsync() -> CanOpenProject() when a solution is opened while VS is starting
+        /// (a pinned solution or a solution on the commandline). The UI thread then waits for the
+        /// package load to complete, so anything here that blocks while waiting for the UI thread -
+        /// a JoinableTaskFactory.Run() or one of the synchronous Community Toolkit wrappers -
+        /// deadlocks the IDE. The work that needs the UI thread is therefore awaited and never
+        /// waited on: see StartAsync(), LogEnvironmentAsync() and XSharpShellLink.InitializeAsync().
+        /// Flags are still set inside the lock and everything else happens after it is released,
+        /// so we also never hold the lock while waiting for another thread.
+        /// </remarks>
+        public static async System.Threading.Tasks.Task<bool> InitializeAsync()
         {
-            // Flags set inside the lock; all JoinableTaskFactory.Run work happens outside it.
-            // Holding a lock while calling JoinableTaskFactory.Run risks a deadlock: the background
-            // thread blocks waiting for the UI thread, but the UI thread may be waiting to acquire
-            // the same lock. XSharpShellLink's constructor and Logger.Start/Stop all call
-            // JoinableTaskFactory.Run, so they must be invoked after the lock is released.
             bool needsShellLink = false;
             bool shouldStart = false;
             bool alreadyActive;
@@ -57,13 +67,17 @@ namespace XSharp.Support
                 }
             }
             if (needsShellLink)
-                XSettings.ShellLink = new XSharpShellLink();
+            {
+                var shellLink = new XSharpShellLink();
+                XSettings.ShellLink = shellLink;
+                await shellLink.InitializeAsync();
+            }
             if (alreadyActive)
                 return active;
             if (shouldStart)
-                        Logger.Start();
-                    else
-                        Logger.Stop();
+                await Logger.StartAsync();
+            else
+                Logger.Stop();
             return shouldStart;
         }
 
@@ -73,127 +87,177 @@ namespace XSharp.Support
 
         static bool active = false;
         internal static bool Active => active;
+        /// <summary>
+        /// Start logging. The environment is logged in the background, because that part needs the
+        /// UI thread. Callers that can await should use StartAsync().
+        /// </summary>
         public static void Start()
         {
             try
             {
-                if (!active ||
-                    log2debugger != XSettings.EnableDebugLogging ||
-                    log2file != XSettings.EnableFileLogging)
+                if (ConfigureSerilog())
                 {
-                    if (active)
-                    {
-                        Stop();
-                    }
-                    var config = new LoggerConfiguration()
-                            .MinimumLevel.Debug();
-                    log2debugger = false;
-                    log2file = false;
-                    if (XSettings.EnableDebugLogging)
-                    {
-                        config = config.WriteTo.Debug();
-                        log2debugger = true;
-                    }
-                    if (XSettings.EnableFileLogging)
-                    {
-                        var temp = Path.GetTempPath();
-                        temp = Path.Combine(temp, "XSharp.Intellisense");
-                        if (!Directory.Exists(temp))
-                        {
-                            Directory.CreateDirectory(temp);
-                        }
-                        int threadid = Process.GetCurrentProcess().Id;
-                        string strId = threadid.ToString("X");
-                        var log = Path.Combine(temp, "Project_" + strId + "_.log");
-                        config = config.WriteTo.File(log,
-                            rollingInterval: RollingInterval.Day,
-                            rollOnFileSizeLimit: true,
-                            flushToDiskInterval: TimeSpan.FromSeconds(15),
-                            retainedFileCountLimit: 5);
-                        log2file = true;
-                    }
-
-
-                    Log.Logger = config.CreateLogger();
-
-                    Log.Information(doubleline);
-                    Log.Information("Started Logging");
-                    string version = "";
-                    bool isOpening = false;     // This is TRUE when we are opening VS with a solution from the commandline
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        var ver = await VS.Shell.GetVsVersionAsync();
-                        isOpening = await VS.Solutions.IsOpeningAsync();
-                        version = ver.ToString();
-                    });
-                    Log.Information("Visual Studio Exe     : " + Process.GetCurrentProcess().MainModule.FileName);
-                    Log.Information("Visual Studio version : " + version);
-                    Log.Information("XSharp Project System : " + Constants.FileVersion);
-                    Log.Information("Commandline           : " + Environment.CommandLine.ToString());
-
-
-                    Log.Information(doubleline);
-                    var sol = VS.Solutions.GetCurrentSolution();
-                    if (sol != null)
-                    {
-                        Log.Information(singleline);
-                        Log.Information("Current solution: " + sol.FullPath);
-                        if (!XSolution.IsOpen)
-                            XSolution.Open(sol.FullPath);
-                        // we only want to enum projects when the solution explorer window is already visible
-                        bool enumProjects = !isOpening;
-                        if (enumProjects)
-                        {
-                            ThreadHelper.JoinableTaskFactory.Run(async delegate
-                            {
-                                try
-                                {
-                                    var solwin = await VS.Windows.GetSolutionExplorerWindowAsync();
-                                    enumProjects = solwin != null;
-                                }
-                                catch (Exception)
-                                {
-                                    // This happens when the solution explorer is not visible yet
-                                    // do not enum the projects then
-                                    enumProjects = false;
-                                }
-
-                            });
-                        }
-                        if (enumProjects)
-                        {
-                            var children = EnumChildren(sol, SolutionItemType.Project);
-                            try
-                            {
-                                if (children != null)
-                                {
-                                    foreach (var child in children)
-                                    {
-                                        if (child.Type == SolutionItemType.Project)
-                                        {
-                                            Log.Information("Project " + child.FullPath);
-                                        }
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error(e.Message);
-                            }
-                        }
-                        else
-                        {
-                            Log.Information("No projects opened yet");
-                        }
-                        Log.Information(singleline);
-
-                        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-                        //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-                    }
                     active = true;
+                    LogEnvironmentAsync().FireAndForget();
                 }
                 // Force all Logging options to be enabled
                 XSettings.EnableAll();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Start logging without ever blocking the calling thread. Use this from package
+        /// initialization. See the remarks on InitializeAsync().
+        /// </summary>
+        public static async System.Threading.Tasks.Task StartAsync()
+        {
+            try
+            {
+                if (ConfigureSerilog())
+                {
+                    active = true;
+                    await LogEnvironmentAsync();
+                }
+                // Force all Logging options to be enabled
+                XSettings.EnableAll();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// (Re)create the Serilog logger. This is pure configuration: no VS services, no UI thread.
+        /// </summary>
+        /// <returns>TRUE when the logger was (re)created, so the environment must be logged again</returns>
+        private static bool ConfigureSerilog()
+        {
+            if (active &&
+                log2debugger == XSettings.EnableDebugLogging &&
+                log2file == XSettings.EnableFileLogging)
+            {
+                return false;
+            }
+            if (active)
+            {
+                Stop();
+            }
+            var config = new LoggerConfiguration()
+                    .MinimumLevel.Debug();
+            log2debugger = false;
+            log2file = false;
+            if (XSettings.EnableDebugLogging)
+            {
+                config = config.WriteTo.Debug();
+                log2debugger = true;
+            }
+            if (XSettings.EnableFileLogging)
+            {
+                var temp = Path.GetTempPath();
+                temp = Path.Combine(temp, "XSharp.Intellisense");
+                if (!Directory.Exists(temp))
+                {
+                    Directory.CreateDirectory(temp);
+                }
+                int threadid = Process.GetCurrentProcess().Id;
+                string strId = threadid.ToString("X");
+                var log = Path.Combine(temp, "Project_" + strId + "_.log");
+                config = config.WriteTo.File(log,
+                    rollingInterval: RollingInterval.Day,
+                    rollOnFileSizeLimit: true,
+                    flushToDiskInterval: TimeSpan.FromSeconds(15),
+                    retainedFileCountLimit: 5);
+                log2file = true;
+            }
+
+
+            Log.Logger = config.CreateLogger();
+
+            Log.Information(doubleline);
+            Log.Information("Started Logging");
+            return true;
+        }
+
+        /// <summary>
+        /// Log the environment and register the current solution with the code model.
+        /// This needs the UI thread, so it must be awaited and never waited on.
+        /// </summary>
+        internal static async System.Threading.Tasks.Task LogEnvironmentAsync()
+        {
+            try
+            {
+                var ver = await VS.Shell.GetVsVersionAsync();
+                // This is TRUE when we are opening VS with a solution from the commandline,
+                // which is also what happens for a solution pinned to the start window or the jumplist
+                bool isOpening = await VS.Solutions.IsOpeningAsync();
+                Log.Information("Visual Studio Exe     : " + Process.GetCurrentProcess().MainModule.FileName);
+                Log.Information("Visual Studio version : " + ver?.ToString());
+                Log.Information("XSharp Project System : " + Constants.FileVersion);
+                Log.Information("Commandline           : " + Environment.CommandLine.ToString());
+
+
+                Log.Information(doubleline);
+                var sol = await VS.Solutions.GetCurrentSolutionAsync();
+                if (sol == null)
+                {
+                    return;
+                }
+                Log.Information(singleline);
+                Log.Information("Current solution: " + sol.FullPath);
+                if (!XSolution.IsOpen)
+                    XSolution.Open(sol.FullPath);
+                // we only want to enum projects when the solution explorer window is already visible
+                bool enumProjects = !isOpening;
+                if (enumProjects)
+                {
+                    try
+                    {
+                        var solwin = await VS.Windows.GetSolutionExplorerWindowAsync();
+                        enumProjects = solwin != null;
+                    }
+                    catch (Exception)
+                    {
+                        // This happens when the solution explorer is not visible yet
+                        // do not enum the projects then
+                        enumProjects = false;
+                    }
+                }
+                if (enumProjects)
+                {
+                    // walking the solution items is COM work, so we need the UI thread for that
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    try
+                    {
+                        var children = EnumChildren(sol, SolutionItemType.Project);
+                        if (children != null)
+                        {
+                            foreach (var child in children)
+                            {
+                                if (child.Type == SolutionItemType.Project)
+                                {
+                                    Log.Information("Project " + child.FullPath);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.Message);
+                    }
+                }
+                else
+                {
+                    Log.Information("No projects opened yet");
+                }
+                Log.Information(singleline);
+
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             }
             catch (Exception e)
             {

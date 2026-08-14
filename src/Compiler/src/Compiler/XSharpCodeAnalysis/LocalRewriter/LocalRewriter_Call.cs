@@ -5,14 +5,11 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Linq.Expressions;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -41,62 +38,75 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (root is null)
                 return expression;
 
-            // find the current member to see if we have a local SELF or THIS
-            var parent = expression.Syntax.Parent;
-            while (parent != null && !(parent is MemberDeclarationSyntax))
-            {
-                parent = parent.Parent;
-            }
-            bool isStatic = false;
-            if (parent is MemberDeclarationSyntax mds)
-            {
-                var mods = mds.Modifiers;
-                isStatic = mods.Any(SyntaxKind.StaticKeyword);
-            }
+            bool isStatic = _factory.CurrentFunction != null && _factory.CurrentFunction.IsStatic;
 
-            // check for the FoxArrayParameter Attribute
-            if (expression is BoundCall bc && bc.Method.HasFoxArrayParameter(out var attr))
+            if (expression is BoundCall bc)
             {
-                // get the attribute and retrieve the parameter index
-                if (attr.ConstructorArguments.Count() > 0)
+                if (bc.Method?.Name == ReservedNames.MemVarInit && _compilation.Options.HasOption(CompilerOption.Fox3, expression.Syntax))
                 {
-                    var oIndex = attr.ConstructorArguments.First().Value;
-                    if (oIndex is not null)
+                    if (!isStatic)
                     {
-                        var index = (int)oIndex;
-                        var args = bc.Arguments;
-
-                        if (index > 0 && index <= args.Length)
+                        // For /fox3 find the __MemVarInit() call that has an object parameter
+                        // and call it with Self, so that the runtime can switch the DataSession inside the method
+                        var arg = _factory.This();
+                        var rtType = _compilation.RuntimeFunctionsType();
+                        var methods = rtType.GetMembers(ReservedNames.MemVarInit);
+                        foreach (MethodSymbol m in methods)
                         {
-                            var arg = args[index - 1]; // index is 1 based
-
-                            BoundExpression argToCheck = arg;
-                            while (argToCheck is BoundConversion bconv)
+                            if (m.ParameterCount == 1 && m.Parameters[0].Type?.SpecialType == SpecialType.System_Object)
                             {
-                                argToCheck = bconv.Operand;
+                                var newCall = _factory.Call(null, m, arg);
+                                newCall.WasCompilerGenerated = true;
+                                return newCall;
                             }
+                        }
+                    }
+                }
 
-                            if (argToCheck is BoundCall bc2)
+                // check for the FoxArrayParameter Attribute
+                if (bc.Method != null && bc.Method.HasFoxArrayParameter(out var attr))
+                {
+                    // get the attribute and retrieve the parameter index
+                    if (attr.ConstructorArguments.Count() > 0)
+                    {
+                        var oIndex = attr.ConstructorArguments.First().Value;
+                        if (oIndex is not null)
+                        {
+                            var index = (int)oIndex;
+                            var args = bc.Arguments;
+
+                            if (index > 0 && index <= args.Length)
                             {
-                                var method2 = bc2.Method;
-                                if (method2.Name == ReservedNames.VarGet)
+                                var arg = args[index - 1]; // index is 1 based
+
+                                BoundExpression argToCheck = arg;
+                                while (argToCheck is BoundConversion bconv)
                                 {
-                                    var margs = bc2.Arguments;
-                                    var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
-                                    var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
-                                    if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
+                                    argToCheck = bconv.Operand;
+                                }
+
+                                if (argToCheck is BoundCall bc2)
+                                {
+                                    var method2 = bc2.Method;
+                                    if (method2.Name == ReservedNames.VarGet)
                                     {
-                                        var newCall = _factory.StaticCall(symMethod, margs);
-
-                                        BoundExpression finalArg = newCall;
-                                        if (arg is BoundConversion originalConv)
+                                        var margs = bc2.Arguments;
+                                        var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
+                                        var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
+                                        if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
                                         {
-                                            finalArg = MakeConversionNode(newCall, originalConv.Type, originalConv.Checked);
-                                        }
+                                            var newCall = _factory.StaticCall(symMethod, margs);
 
-                                        var newArgs = args.ToBuilder();
-                                        newArgs[index - 1] = finalArg;
-                                        newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                                            BoundExpression finalArg = newCall;
+                                            if (arg is BoundConversion originalConv)
+                                            {
+                                                finalArg = MakeConversionNode(newCall, originalConv.Type, originalConv.Checked);
+                                            }
+
+                                            var newArgs = args.ToBuilder();
+                                            newArgs[index - 1] = finalArg;
+                                            newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                                        }
                                     }
                                 }
                             }

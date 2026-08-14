@@ -26,6 +26,8 @@
 				// Remove it in DesignMode to avoid Designer crash
 				IF (VALUE == 0 )
 					SELF:BackColor := System.Drawing.Color.Transparent
+				ELSE
+					SELF:ResetBackColor()
 				ENDIF
 			END SET
 		END PROPERTY

@@ -200,8 +200,9 @@ METHOD Parse(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
     ENDIF
     WriteOutputMessage("-->> Parse() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
     TRY
+#ifdef USEANTLR
         VAR tree := SELF:AntlrParse(cSource, out var oStream)
-
+#endif
         VAR stream   := SELF:Lex(cSource)
         if stream != null
             SELF:ParseTokens(stream:GetTokens(), FALSE, lIncludeLocals)

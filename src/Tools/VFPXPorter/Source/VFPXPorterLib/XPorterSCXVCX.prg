@@ -36,7 +36,7 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:_fileName := filePath
             SELF:_outPath := destPath
             SELF:Settings := settings
-            SELF:CustomControls := Dictionary<STRING, SCXVCXItem>{}
+            SELF:CustomControls := Dictionary<STRING, SCXVCXItem>{StringComparer.InvariantCultureIgnoreCase}
             RETURN
 
         /// <summary>
@@ -57,7 +57,7 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:_file := SCXVCXFile{ SELF:_fileName }
             //
             SELF:DependsOn := HashSet<STRING>{}
-            SELF:DefiningControls := Dictionary<STRING, SCXVCXItem>{}
+            SELF:DefiningControls := Dictionary<STRING, SCXVCXItem>{StringComparer.InvariantCultureIgnoreCase}
             //
             VAR success := SELF:_file:Analyze()
             IF success

@@ -76,6 +76,10 @@ enum SqlRDDEventReason
     member TagName
 /// <summary>Retrieve Buffersize in pages</summary>
     member BufferSize
+/// <summary>Specifies the interval (in seconds) at which a connection refreshes its own locks and sweeps stale ones</summary>
+    member LockRefreshInterval
+/// <summary>Specifies the age (in seconds) after which another connection's lock is considered abandoned and cleared</summary>
+    member LockStaleThreshold
 
 end enum
 

@@ -40,6 +40,9 @@ partial class SQLRDD
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRecNos  as List<int>
+    /// <summary>Recnos of rows marked for deletion via Delete() when there is no DeletedColumn on the table.
+    /// Workarea.Deleted is a hardcoded stub (always FALSE), so this state cannot be tracked in the base class.</summary>
+    private _deletedRowIds  as HashSet<int>
     private _orderBagList   as List<SqlDbOrderBag>
     private _rowNumber      as long
 
@@ -56,6 +59,13 @@ partial class SQLRDD
 
     private _numHiddenColumns as long
     private _serverReccount as dword
+    /// <summary>
+    /// TRUE when the cursor is positioned (via GoTo()) on a record that physically exists but
+    /// does not satisfy the current order's FOR-condition/scope, i.e. OrderKeyNo is 0. Skip()
+    /// needs this because RowNumber/_currentPageNo no longer correspond to any real position in
+    /// the order's sequence, so the normal relative-skip logic cannot be used from here.
+    /// </summary>
+    private _outsideOrder as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -128,6 +138,7 @@ partial class SQLRDD
         SELF:_firstPageNo      := 1
         self:_trimValues       := true // trim String Valuess
         SELF:_updatedRecNos    := List<int>{}
+        SELF:_deletedRowIds    := HashSet<int>{}
         SELF:_keyColumns       := List<RddFieldInfo>{}
         SELF:_updatableColumns := List<RddFieldInfo>{}
         SELF:_orderBagList     := List<SqlDbOrderBag>{}
@@ -136,12 +147,21 @@ partial class SQLRDD
     end constructor
 
     destructor()
-        Command:Dispose()
-        _connection:Dispose()
+        Command?:Dispose()
+        // Mirror the explicit Close() path (SQLRDD-Main.prg): unregister from the
+        // shared connection so a leaked/finalized work area only closes the physical
+        // connection when it was truly the last one AND KeepOpen is off. Calling
+        // Dispose() here instead used to force-close and deregister the shared
+        // SqlDbConnection unconditionally, ignoring KeepOpen, whenever this work area
+        // happened to be the last one registered at finalization time - killing the
+        // connection for every other still-open table on the same connection.
+        _connection?:UnregisterRdd(self)
     end destructor
 
     internal method _ClearTable() AS VOID
-        SELF:DataTable:Rows:Clear()
+        IF SELF:DataTable != null
+            SELF:DataTable:Rows:Clear()
+        ENDIF
         RETURN
 
 
@@ -432,6 +452,42 @@ partial class SQLRDD
         return true
     end method
 
+    /// <summary>
+    /// Fetch the last page of the current order/scope/filter directly, without going through
+    /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
+    /// </summary>
+    /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
+    private method _FetchLastPage(nPage as int) as logic
+        try
+            SELF:_command:CommandText := _builder:BuildLastPageStatement()
+            SELF:_command:ClearParameters()
+            var newTable := SELF:_command:GetDataTable(SELF:Alias)
+            if newTable == null
+                return false
+            endif
+            // The query is sorted DESCENDING (to avoid the large OFFSET) - insert forwards at
+            // position 0 so the rows end up in the normal ascending order the rest of the RDD
+            // (Skip, RecNo lookups, ...) expects from the buffer.
+            for var nRow := 0 upto newTable:Rows:Count-1
+                var row := newTable:Rows[nRow]
+                var newRow := SELF:DataTable:NewRow()
+                newRow:ItemArray := row:ItemArray
+                SELF:DataTable:Rows:InsertAt(newRow, 0)
+                newRow:AcceptChanges()
+            next
+            SELF:_currentPageNo := nPage
+            SELF:_firstPageNo := nPage
+            // This IS the last page by definition - without this, a Skip(1) right after
+            // GoBottom() (e.g. GoTo(0)'s GoBottom()+Skip(1)) would not know it's already at
+            // the end, and would fall through to fetching "the next page" via the normal
+            // ascending, huge-OFFSET query - the exact cost this method exists to avoid.
+            SELF:_hasEOF := true
+            return true
+        catch as Exception
+            return false
+        end try
+    end method
+
     protected method _ForceOpen() as logic
         if self:_tableMode != TableMode.Table
             return true
@@ -459,7 +515,21 @@ partial class SQLRDD
         try
             SELF:_currentPageNo := 1
             SELF:_firstPageNo := 1
+            // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
+            // rows" flag left over from whatever this buffer was doing before - otherwise
+            // Skip() refuses to fetch the next page and reports EOF even though the new
+            // WHERE clause has plenty more rows past the first page.
+            SELF:_hasEOF := false
             SELF:DataTable := self:_ReadTable(sWhereClause)
+            if SELF:DataTable == null
+                // _ReadTable() -> Command:GetDataTable()/ExecuteReader() swallow the real
+                // ADO.NET exception into Connection:LastException instead of throwing it.
+                // Without this check we'd return TRUE here with no data loaded, and the
+                // first caller to touch DataTable (GoTo(), GoTop(), ...) would crash with
+                // a bare NullReferenceException that hides the actual database error.
+                self:_dbfError(self:Connection:LastException, Subcodes.EDB_USE, Gencode.EG_OPEN, "SQLRDD._OpenTable", FALSE)
+                return false
+            endif
             self:_GetRecCount()
         catch as Exception
             return false
@@ -542,7 +612,16 @@ partial class SQLRDD
         return
 
     private method _GetRecCount() as void
-        self:_serverReccount := self:_builder:GetRecCount()
+        // Must respect the current order's scope/condition, same as GoBottom() already does -
+        // otherwise a scope/seek-scoped browse (e.g. one city's streets) gets its RecCount
+        // silently overwritten with the whole unscoped table's count the moment anything
+        // triggers a recount (GoCold() does, on every flush of a "hot" row), corrupting the
+        // page/EOF math for the rest of the browse.
+        if self:CurrentOrder == null
+            self:_serverReccount := self:_builder:GetRecCount()
+        else
+            self:_serverReccount := self:OrderKeyCount
+        endif
     end method
 
     private method _FetchPage(nNewPageNo as int ) as logic
@@ -598,7 +677,15 @@ partial class SQLRDD
                     newRow:AcceptChanges()
                 next
             endif
-            if lForward .and. newTable:Rows:Count < _oTd:PageSize
+            // A short page always means EOF. But when the total record count is an exact
+            // multiple of PageSize, the last page comes back FULL - "short page" never fires,
+            // so also check whether this page's absolute record range already reaches the
+            // known total. Without this, sequential forward paging (unlike GoBottom(), which
+            // jumps straight to the last page and marks it via _FetchLastPage) never sets
+            // _hasEOF on that exactly-full last page: the next Skip() then fetches a
+            // nonexistent page past it, landing on a bogus RowNumber instead of staying put.
+            var nAbsoluteRowsSeen := ((nNewPageNo - 1) * _oTd:PageSize) + newTable:Rows:Count
+            if lForward .and. (newTable:Rows:Count < _oTd:PageSize .or. nAbsoluteRowsSeen >= SELF:_serverReccount)
                 SELF:_hasEOF := true
             else
                 _currentPageNo := nNewPageNo
@@ -607,39 +694,67 @@ partial class SQLRDD
         return result
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
-
-        // if record to go to is already in loaded page
-        if self:_GotoRecordInPage(nRec)
-            return true
-        endif
-
-        // Brute walk
+        // GoTo() only calls _GotoRecord() after it already established that nRec is NOT in
+        // the currently loaded buffer. Whether that buffer happens to be empty or merely
+        // contains the wrong rows makes no difference - either way we must locate and load
+        // the page that actually contains nRec, so this brute walk must always run.
         SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
         var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+        if result == null .or. result == DBNull.Value
+            // nRec does not satisfy the current order's FOR-condition/scope. DBF's GoTo() is a
+            // physical positioning operation, independent of the active order: it must still
+            // succeed when the record exists at all - Found/OrderKeyNo separately reflect that
+            // it has no valid position in this order.
+            return SELF:_GotoRecordOutsideOrder(nRec)
+        endif
         var iResult := Convert.ToInt64(result)
 
         // determine correct page
         SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
+        // This is a freshly loaded page - whether it happens to be the last one needs to be
+        // re-determined from here, not inherited from whatever a previous, unrelated GoBottom()
+        // (e.g. on a completely different page) left behind. Without this, a stale _hasEOF=true
+        // makes every subsequent forward Skip() from this page falsely believe it's already at
+        // the end and never fetch the next page.
+        SELF:_hasEOF := false
         SELF:_ClearTable()
         SELF:DataTable := SELF:_ReadTable("")
 
-        RETURN self:_GotoRecordInPage(nRec)
-
-    PRIVATE METHOD _GotoRecordInPage(nRec as DWORD) AS LOGIC
-        LOCAL nRowNumber AS INT
-        nRowNumber := 1
-        DO WHILE nRowNumber <= SELF:DataTable:Rows:Count
-            IF nRec == Convert.ToInt32(SELF:DataTable:Rows[nRowNumber-1][self:_recnoColumNo])
-                SELF:RowNumber := nRowNumber
+        // locate the row in the page
+        SELF:RowNumber := 1
+        DO WHILE SELF:RowNumber <= SELF:DataTable:Rows:Count
+            IF SELF:RecNo == nRec
                 RETURN TRUE
             ENDIF
-            nRowNumber += 1
+            SELF:RowNumber+= 1
         ENDDO
         RETURN FALSE
 
+    PRIVATE METHOD _GotoRecordOutsideOrder(nRec as DWORD) AS LOGIC
+        try
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
+            SELF:_command:ClearParameters()
+            var oTable := SELF:_command:GetDataTable(SELF:Alias)
+            if oTable == null .or. oTable:Rows:Count == 0
+                // Does not exist even physically.
+                return false
+            endif
+            SELF:_ClearTable()
+            SELF:DataTable := oTable
+            SELF:RowNumber := 1
+            SELF:_outsideOrder := true
+            SELF:_hasEOF := false
+            return true
+        catch as Exception
+            return false
+        end try
+
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE
-        var nCount := SELF:DataTable:Rows:Count
+        // DataTable can be null here for a Query-mode table whose SELECT failed (see Open())
+        // and that has no recno column to route through _GotoRecord() instead - treat that
+        // the same as an empty result set rather than crashing.
+        var nCount := IIF(SELF:DataTable == null, 0, SELF:DataTable:Rows:Count)
         IF  nRow <= nCount  .AND.  nRow > 0
             SELF:RowNumber := nRow
             SELF:_SetEOF(FALSE)
@@ -664,12 +779,22 @@ partial class SQLRDD
     PRIVATE METHOD _UpdateRow(nRecNo AS INT) AS LOGIC
         local row as DataRow
         local lOk := TRUE as logic
+        // Reachable via UnLock() -> Close(), which never checks _ForceOpen()/DataTable itself -
+        // if the buffer was already torn down (_CloseCursor()) there is nothing left to persist.
+        if self:DataTable == null
+            return true
+        endif
         try
             foreach tableRow as DataRow in self:DataTable:Rows
                 if (int)tableRow[self:_recnoColumNo] = nRecNo
                     row := tableRow
                 endif
             next
+
+            if row == null
+                self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:GoCold", "Record "+nRecNo:ToString()+" no longer in buffer, cannot save changes" )
+                return false
+            endif
 
             // Check row lock
             var dbLockInfo := DbLockInfo{}
@@ -686,7 +811,7 @@ partial class SQLRDD
             endif
 
             lOk := true
-            if super:Deleted
+            if self:_IsRowDeleted(row)
                 local wasNew := false as logic
                 // Append from may add deleted rows
                 if row:RowState.HasFlag(DataRowState.Added)

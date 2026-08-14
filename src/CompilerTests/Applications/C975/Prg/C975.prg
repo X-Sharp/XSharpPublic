@@ -7,15 +7,8 @@ RETURN
 
 CLASS TestClass
 	METHOD Foo( o AS TestClass ) AS VOID
-		
-	LocProc( o )		
-
-	LOCAL PROCEDURE LocProc( oo AS TestClass )		
-
-	END PROCEDURE
 
 	? doesnotexist
-
 	o:Bar( )
 	END METHOD
 

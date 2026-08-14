@@ -7,6 +7,7 @@
 
 using System
 using System.Collections.Generic
+using System.Linq
 using System.Text
 using XSharp.RDD.Support
 using XSharp.RDD.Enums
@@ -67,12 +68,52 @@ internal class SqlDbOrder inherit SqlDbObject
         return
     end constructor
 
+    /// <summary>Calculate the (maximum) length of the key value.</summary>
+    /// <remarks>
+    /// We evaluate the actual key expression (KeyCodeBlock) against the current record, with
+    /// trimming of trailing spaces temporarily switched off. This gives the true maximum
+    /// length regardless of what function(s) the expression applies (UPPER, LEFT, DTOS, DTOC,
+    /// concatenation, ...), because it runs the real expression instead of guessing from
+    /// column metadata. Disabling trimming matters because GetValue() would otherwise strip
+    /// trailing spaces from the underlying field(s) before the expression sees them, which
+    /// would understate the length whenever the current record's value happens to be shorter
+    /// than the column's declared width.
+    /// If no record is available to evaluate (e.g. an empty table) we fall back to summing the
+    /// declared column widths - not exact for length-changing functions like LEFT()/DTOS(), but
+    /// a safe (never too small) approximation.
+    /// </remarks>
     method CalculateKeyLength() as void
-        var result := self:RDD:EvalBlock(self:KeyCodeBlock) // this will set the KeyValue property
+        var lOldTrim := self:RDD:TrimValues
+        self:RDD:TrimValues := false
+        local result as object
+        try
+            result := self:RDD:EvalBlock(self:KeyCodeBlock)
+        finally
+            self:RDD:TrimValues := lOldTrim
+        end try
         if result is string var strValue
             self:KeyLength := strValue:Length
+        else
+            self:KeyLength := self:CalculateKeyLengthFromMetadata()
         endif
         return
+    end method
+
+    private method CalculateKeyLengthFromMetadata() as int
+        local nLen := 0 as int
+        foreach var cCol in self:DbExpression:ColumnList
+            var cName  := cCol:Trim(<char>{'[',']','"','`'})
+            var oCol   := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
+            if oCol != null
+                nLen += (int) oCol:Length
+            endif
+        next
+        if nLen == 0
+            // Could not determine the width from metadata either - fall back to a value that
+            // is always treated as "the search value may be shorter than the key".
+            nLen := Int32.MaxValue
+        endif
+        return nLen
     end method
 
     method ClearScopes() as void
@@ -217,6 +258,15 @@ internal class SqlDbOrder inherit SqlDbObject
         if seekInfo:Value is string var strValue
             var strLen := strValue:Length
             if strLen < self:KeyLength
+                var cColumnCondition := SELF:BuildColumnAwareCondition(strValue, seekInfo:SoftSeek, cComp)
+                if cColumnCondition != null
+                    return cColumnCondition
+                endif
+                // Fallback for keys we can't map onto individual columns (functions in the key
+                // expression, unknown column metadata, ...): the original, always-correct
+                // condition against the fully concatenated SQLKey expression. SQL Server cannot
+                // use a normal index to seek into this - it has to compute the concatenation for
+                // every row - so prefer the column-aware path above whenever possible.
                 if (! seekInfo:SoftSeek)
                     cComp := " like "
                     strValue += "%"
@@ -235,6 +285,73 @@ internal class SqlDbOrder inherit SqlDbObject
             cWhereClause := self:SQLKey+cComp+Functions.XsValueToSqlValue(seekInfo:Value)
         endif
         return cWhereClause
+    end method
+
+    /// <summary>
+    /// Build a seek/scope condition against the individual columns that make up a plain
+    /// concatenated key (e.g. ALORT+NAMEUMLAUT), instead of against the fully concatenated
+    /// SQLKey expression.
+    /// </summary>
+    /// <remarks>
+    /// A condition like `[ALORT]+[NAMEUMLAUT] LIKE 'X%'` cannot use a normal index on
+    /// (ALORT, NAMEUMLAUT, ...) - SQL Server has to evaluate the concatenation for every row.
+    /// A value that covers one or more leading columns exactly can instead be expressed as
+    /// `[ALORT] = 'X' AND [NAMEUMLAUT] LIKE 'Y%'`, which is a normal composite-index seek.
+    /// Returns NULL when the key has functions in it, or column metadata/widths can't be
+    /// determined - callers must fall back to the concatenation-based condition in that case.
+    /// </remarks>
+    private method BuildColumnAwareCondition(strValue as string, lSoftSeek as logic, cRangeComp as string) as string
+        if self:HasFunctions
+            return null
+        endif
+        var columns := self:ColumnList
+        if columns == null .or. columns:Count == 0
+            return null
+        endif
+        var widths := List<int>{}
+        foreach var cCol in columns
+            var cName := cCol:Trim(<char>{'[',']','"','`'})
+            var oCol := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
+            if oCol == null
+                return null
+            endif
+            widths:Add((int) oCol:Length)
+        next
+
+        var sb := StringBuilder{}
+        var cRemaining := strValue
+        for var i := 0 upto columns:Count-1
+            if cRemaining:Length == 0
+                exit
+            endif
+            var nWidth   := widths[i]
+            var cColExpr := columns[i]
+            if sb:Length > 0
+                sb:Append(SqlDbProvider.AndClause)
+            endif
+            if cRemaining:Length >= nWidth
+                // The seek value fully covers this column - pin it down with equality and
+                // carry on with whatever's left over into the next column.
+                var cPart := cRemaining:Substring(0, nWidth)
+                sb:Append(cColExpr + " = " + Functions.XsValueToSqlValue(cPart))
+                cRemaining := cRemaining:Substring(nWidth)
+            else
+                // Partial match on this column - the same range/prefix logic the concatenation
+                // fallback uses, just scoped to this one column so the index can still be used.
+                if !lSoftSeek
+                    sb:Append(cColExpr + " like " + Functions.XsValueToSqlValue(cRemaining + "%"))
+                else
+                    var cSubstr := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
+                    cSubstr := cSubstr:Replace("%1%", cColExpr):Replace("%2%","1"):Replace("%3%", cRemaining:Length:ToString())
+                    sb:Append(cSubstr + cRangeComp + Functions.XsValueToSqlValue(cRemaining))
+                endif
+                cRemaining := ""
+            endif
+        next
+        if sb:Length == 0
+            return null
+        endif
+        return sb:ToString()
     end method
 
 end class

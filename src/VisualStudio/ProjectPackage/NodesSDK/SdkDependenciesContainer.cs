@@ -97,6 +97,36 @@ namespace XSharp.Project
             base.RemoveChild(node);
         }
 
+        /// <summary>
+        /// Handle the guidVSStd16 "Add ... Reference..." commands of the IDM_VS_CTXT_REFERENCEROOT menu.
+        /// </summary>
+        /// <remarks>
+        /// ReferenceContainerNode.QueryStatusOnNode returns OLECMDERR_E_UNKNOWNGROUP for every command
+        /// group other than the 97 and 2K sets without calling its base, so we have to answer the
+        /// guidVSStd16 commands here, before base is called.
+        /// </remarks>
+        protected override int QueryStatusOnNode(System.Guid cmdGroup, uint cmd, System.IntPtr pCmdText, ref QueryStatusResult result)
+        {
+            if (cmdGroup == XSharpSdkProjectNode.VsStd16 && this.ProjectMgr is XSharpSdkProjectNode sdk)
+            {
+                var hr = sdk.QueryStatusReferenceCommand(cmd, ref result);
+                if (hr == Microsoft.VisualStudio.VSConstants.S_OK)
+                    return hr;
+            }
+            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+        }
+
+        protected override int ExecCommandOnNode(System.Guid cmdGroup, uint cmd, uint nCmdexecopt, System.IntPtr pvaIn, System.IntPtr pvaOut)
+        {
+            if (cmdGroup == XSharpSdkProjectNode.VsStd16 && this.ProjectMgr is XSharpSdkProjectNode sdk)
+            {
+                var hr = sdk.ExecReferenceCommand(cmd);
+                if (hr != Microsoft.VisualStudio.VSConstants.E_NOTIMPL)
+                    return hr;
+            }
+            return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
+        }
+
         public void DeleteDependencies(string targetframework)
         {
 

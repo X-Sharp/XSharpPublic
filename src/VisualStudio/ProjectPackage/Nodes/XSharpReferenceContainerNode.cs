@@ -39,16 +39,39 @@ namespace XSharp.Project
             bool changed = false;
             if (parent.IsSdkProject)
             {
-                // already handled in the DependenciesContainer
+                // An SDK style project file does not store the guid and the name of the referenced project,
+                // so we resolve them here and store them in the (in memory) project element. The base
+                // ProjectReferenceNode reads them from there. BeforeSave() removes them again, so they are
+                // not written to the project file, see XSharpSdkProjectNode.Clean().
                 name = System.IO.Path.GetFileNameWithoutExtension(path);
+                guid = null;
                 if (refnode != null)
                 {
                     guid = refnode.ProjectIDGuid.ToString("B");
                 }
                 else
                 {
-                    guid = null;
+                    // Not one of our projects, or a project that has not been loaded yet
+                    var projectInfo = ProjectInfo.GetProjectInfo(path);
+                    if (projectInfo == null && parent.GetProjectGuid(path, out var foreignGuid) && foreignGuid != Guid.Empty)
+                    {
+                        projectInfo = new ProjectInfo(foreignGuid, path);
+                    }
+                    if (projectInfo != null && projectInfo.Id != Guid.Empty)
+                    {
+                        guid = projectInfo.Id.ToString("B");
+                    }
+                }
+                element.SetMetadata(ProjectFileConstants.Name, name);
+                if (string.IsNullOrEmpty(guid))
+                {
+                    // The referenced project is not available yet. The node is created without a guid and
+                    // FixReferences() completes it when the solution has finished loading.
                     parent.HasIncompleteReferences = true;
+                }
+                else
+                {
+                    element.SetMetadata(ProjectFileConstants.Project, guid);
                 }
             }
             else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
@@ -84,7 +107,17 @@ namespace XSharp.Project
                 parent.BuildProject.Save();
             }
 
-            var node = (XSharpProjectReferenceNode) Activator.CreateInstance(ProjectReferenceType,this.ProjectMgr, element);
+            XSharpProjectReferenceNode node = null;
+            try
+            {
+                node = (XSharpProjectReferenceNode)Activator.CreateInstance(ProjectReferenceType, this.ProjectMgr, element);
+            }
+            catch (Exception e)
+            {
+                // Do not let this bubble up: ReferenceContainerNode.CreateReferenceNode() swallows the
+                // exception without logging it and the reference would disappear from the hierarchy.
+                Logger.Exception(e, "CreateProjectReferenceNode");
+            }
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {

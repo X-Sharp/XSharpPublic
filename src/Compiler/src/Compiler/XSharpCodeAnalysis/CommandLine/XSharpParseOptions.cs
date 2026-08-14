@@ -95,7 +95,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool VOStringComparisons = false;
         private bool XPPInheritFromAbstract = false;
         private bool FoxArraySupport = false;
-        private bool FoxAmbigousDot = false;
+        private bool FoxCursorSupport = false;
         private bool LateBinding = false;
 
         #endregion
@@ -155,7 +155,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool cs => CaseSensitive;
         //public bool fox1 => FoxInheritUnknown;
         public bool fox2 => FoxArraySupport;
-        public bool fox3 => FoxAmbigousDot;
+        public bool fox3 => FoxCursorSupport;
         public bool lb => LateBinding;
         public bool vo1 => VoInitAxitMethods;
         public bool vo10 => VOCompatibleIIF;
@@ -194,7 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 EnforceSelf = opt.EnforceSelf;
                 //FoxInheritUnknown = opt.Fox1;
                 FoxArraySupport = opt.Fox2;
-                FoxAmbigousDot = opt.Fox3;
+                FoxCursorSupport = opt.Fox3;
                 ImplicitNamespace = opt.ImplicitNameSpace;
 #if !VSPARSER
                 IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? ImmutableArray<string>.Empty;
@@ -284,7 +284,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             EnforceSelf = opt.EnforceSelf;
             //FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
             FoxArraySupport = opt.FoxArraySupport;      // fox2
-            FoxAmbigousDot = opt.FoxAmbigousDot;        // fox3
+            FoxCursorSupport = opt.FoxCursorSupport;        // fox3
             ImplicitNamespace = opt.ImplicitNamespace;
             IncludePaths = opt.IncludePaths;
             InitLocals = opt.InitLocals;
@@ -453,7 +453,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckOption(option, FoxArraySupport, token, options);
 
                 case CompilerOption.Fox3: // fox3
-                    return CheckOption(option, FoxAmbigousDot, token, options);
+                    return CheckOption(option, FoxCursorSupport, token, options);
 
                 case CompilerOption.LateBinding:  // lb
                     return CheckOption(option, LateBinding, token, options);

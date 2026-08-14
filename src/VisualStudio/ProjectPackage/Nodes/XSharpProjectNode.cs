@@ -639,7 +639,11 @@ namespace XSharp.Project
             if (IsCodeFile(include) && item.ItemName == "Compile")
                 newNode.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider),
                     new XSharpVSMDProvider(newNode), false);
-            if (newNode.FileType == XFileType.ManagedResource)
+            // Only clear the generator when there is one to clear. Assigning it unconditionally is not free:
+            // for an item that comes from a wildcard in an imported file (which is every .resx in an SDK
+            // project) the setter has to materialize an Update item, and that forces a complete MSBuild
+            // re-evaluation of the project - once per dependent .resx node.
+            if (newNode.FileType == XFileType.ManagedResource && !string.IsNullOrEmpty(newNode.Generator))
             {
                 newNode.Generator = null;
             }
@@ -1170,6 +1174,7 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Allowdot, "true");
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox1);
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox2);
+                    RemoveProjectProperty(XSharpProjectFileConstants.Fox3);
                     RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
                     break;
                 case XDialect.FoxPro:
@@ -1178,6 +1183,8 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Vo15, "true");
                     AddProjectProperty(XSharpProjectFileConstants.Vo9, "true");
                     AddProjectProperty(XSharpProjectFileConstants.Fox1, "true");
+                    AddProjectProperty(XSharpProjectFileConstants.Fox2, "true");
+                    AddProjectProperty(XSharpProjectFileConstants.Fox3, "true");
                     AddProjectProperty(XSharpProjectFileConstants.InitLocals, "true");
                     AddProjectProperty(XSharpProjectFileConstants.NamedArgs, "false");
                     RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
@@ -1188,6 +1195,7 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Allowdot, "false");
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox1);
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox2);
+                    RemoveProjectProperty(XSharpProjectFileConstants.Fox3);
                     if (dialect != XDialect.XPP)
                     {
                         RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
@@ -1486,16 +1494,19 @@ namespace XSharp.Project
                     var refnode = FindProject(completePath);
                     Guid refnodeGuid = Guid.Empty;
                     string refnodeName = child.Caption;
-                    if (refnode == null)
+                    if (refnode != null)
+                    {
+                        refnodeGuid = refnode.ProjectIDGuid;
+                    }
+                    else
                     {
                         // this must be a foreign project reference
                         var projectInfo = ProjectInfo.GetProjectInfo(completePath);
                         if (projectInfo == null)
                         {
-                            if (this.GetProjectGuid(completePath, out refnodeGuid))
+                            if (this.GetProjectGuid(completePath, out refnodeGuid) && refnodeGuid != Guid.Empty)
                             {
                                 projectInfo = new ProjectInfo(refnodeGuid, completePath);
-                                element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
                             }
                         }
                         else
@@ -1507,19 +1518,19 @@ namespace XSharp.Project
                     {
                         element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
                         element.SetMetadata(ProjectFileConstants.Name, refnodeName);
+                        sdkref.SaveProperties();
+                        // The node was created before the referenced project was available, so it has no
+                        // guid and no build dependency yet.
+                        sdkref.UpdateReferencedProjectGuid(refnodeGuid);
                     }
                     else
                     {
+                        Logger.Information($"Could not determine the guid of project {completePath}, referenced by {this.Caption}");
                         found = false;
                     }
-                    if (found)
-                    {
-                        sdkref.SaveProperties();
-                    }
                 }
-
-                HasIncompleteReferences = !found;
             }
+            HasIncompleteReferences = !found;
             this.SetProjectFileDirty(false);
             return found;
         }

@@ -119,6 +119,7 @@
     <Compile Include="StringTests.prg" />
     <Compile Include="UdcCommandFixTests.prg" />
     <Compile Include="VfpStringFunctionsTests.prg" />
+    <Compile Include="WaitCommandTests.prg" />
     <Compile Include="WrappedStubsTests.prg" />
   </ItemGroup>
   <ItemGroup>

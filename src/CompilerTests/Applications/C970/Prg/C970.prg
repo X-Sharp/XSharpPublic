@@ -1,8 +1,10 @@
-// 970. Problems with the /fox3 option - static vars
+// 970. Problems with the /fox3 option - full test
 // https://github.com/X-Sharp/XSharpPublic/issues/2025
 
 #pragma options("fox3", enable)
 #pragma options("allowdot", enable)
+#pragma options("memvar", enable)
+#pragma options("undeclared", enable)
 CLASS Customers
 	STATIC EXPORT id := 123 AS USUAL
 	STATIC EXPORT typedId := 10 AS INT

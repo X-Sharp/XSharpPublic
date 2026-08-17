@@ -43,7 +43,22 @@ partial class SQLRDD
             selectedBag := self:FindOrderBag(bagName)
         endif
         order := null
-        if orderInfo:Order is long var iOrder
+        // A tag number can arrive as any integer type, not just LONG - VO code commonly passes
+        // it as DWORD (e.g. from IndexCount()/DBOI_ORDERCOUNT, both DWORD-typed), and ADS/DBF
+        // accepts that without complaint. Checking only "is long" made SetOrder(<a DWORD>)
+        // silently fail here (falls through both branches, order stays null) even though the
+        // tag genuinely exists - a real ADS-compatibility gap, not a missing/misconfigured tag.
+        var lHasNumericOrder := false
+        var iOrder := 0
+        if orderInfo:Order != null
+            try
+                iOrder := Convert.ToInt32(orderInfo:Order)
+                lHasNumericOrder := true
+            catch
+                lHasNumericOrder := false
+            end try
+        endif
+        if lHasNumericOrder
             if selectedBag != null
                 order := selectedBag:FindTag(iOrder)
             else

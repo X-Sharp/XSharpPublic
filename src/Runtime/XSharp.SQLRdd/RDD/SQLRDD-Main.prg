@@ -420,7 +420,14 @@ partial class SQLRDD inherit Workarea
         endif
         // RowState alone misses rows only marked via Delete()/Recall() without a DeletedColumn,
         // since those touch no DataColumn and leave RowState Unchanged.
-        var lWasHot := current:RowState != DataRowState.Unchanged .or. _updatedRecNos:Count > 0
+        // The phantom row (CurrentRow when positioned at EOF/an empty result) is a placeholder
+        // created via DataTable:NewRow() but never added to the table, so its RowState is
+        // Detached - always "!= Unchanged" even though nothing was ever actually edited. Without
+        // excluding it explicitly, every GoCold() call while on an empty/EOF cursor spuriously
+        // looked "hot", forcing a full recount (_GetRecCount()) on every single call - observed
+        // to defeat the GoBottom() recount cache for any Lister stuck retrying GoTo(0) against a
+        // table with no matching rows (e.g. PLZInfo/stradb before a city is chosen).
+        var lWasHot := (current != self:_phantomRow) .and. (current:RowState != DataRowState.Unchanged .or. _updatedRecNos:Count > 0)
         local lOk := TRUE as logic
         if lWasHot .and. self:DataTable != null
 
@@ -447,6 +454,9 @@ partial class SQLRDD inherit Workarea
                 self:DataTable:RejectChanges()
             endif
             _updatedRecNos:Clear()
+            // A write may have changed the true row count (insert/physical delete) - force a
+            // real requery here rather than trusting a cached pre-write value.
+            self:_serverReccountValid := false
             self:_GetRecCount()
         endif
         return lOk
@@ -620,7 +630,7 @@ partial class SQLRDD inherit Workarea
         VAR result := SELF:SkipFilter(1)
         SELF:_CheckEofBof()
         #ifdef TRACERDD
-        System.Diagnostics.Debug.WriteLine("GoTop Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _RecCount, RecNo, RowNumber, EoF, BoF)
+        System.Diagnostics.Debug.WriteLine("GoTop Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _serverReccount, RecNo, RowNumber, EoF, BoF)
         #endif
         RETURN result
     end method
@@ -635,12 +645,12 @@ partial class SQLRDD inherit Workarea
         endif
         SELF:_outsideOrder := FALSE
         SELF:_ClearTable()
-        local nMaxRecNo as dword
-        if self:CurrentOrder = Null
-            nMaxRecNo := self:_builder:GetRecCount()
-        else
-            nMaxRecNo := self:OrderKeyCount
-        endif
+        // Route through the cached count instead of always querying directly - GoBottom() can
+        // be called many times in a row against unchanged data (e.g. Lister construction
+        // retrying GoTo(0) when it can't establish a valid position), and each direct query
+        // here used to pay for a fresh COUNT(*) every single time.
+        self:_GetRecCount()
+        local nMaxRecNo := self:_serverReccount as dword
         var nPage       := nMaxRecNo / self:_oTd:PageSize
         if SELF:RecCount % self:_oTd:PageSize != 0
             nPage += 1
@@ -665,7 +675,7 @@ partial class SQLRDD inherit Workarea
         VAR result := SELF:SkipFilter(-1)
         SELF:_CheckEofBof()
         #ifdef TRACERDD
-        System.Diagnostics.Debug.WriteLine("GoBottom Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _RecCount, RecNo, RowNumber, EoF, BoF)
+        System.Diagnostics.Debug.WriteLine("GoBottom Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _serverReccount, RecNo, RowNumber, EoF, BoF)
         #endif
         RETURN result
     end method
@@ -717,7 +727,7 @@ partial class SQLRDD inherit Workarea
             ENDIF
         ENDIF
         #ifdef TRACERDD
-        System.Diagnostics.Debug.WriteLine("SkipRaw Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", isOK, _RecCount, RecNo, RowNumber, EoF, BoF)
+        System.Diagnostics.Debug.WriteLine("SkipRaw Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", isOK, _serverReccount, RecNo, RowNumber, EoF, BoF)
         #endif
         return isOK
     end method
@@ -813,6 +823,8 @@ partial class SQLRDD inherit Workarea
     /// <inheritdoc />
     override method Skip(nToSkip as long) as logic
         LOCAL result := FALSE AS LOGIC
+        LOCAL oldRow   := SELF:RowNumber as int
+        LOCAL oldRecNo := SELF:RecNo as dword
         SELF:_ForceOpen()
         SELF:_Top := FALSE
         SELF:_Bottom := FALSE

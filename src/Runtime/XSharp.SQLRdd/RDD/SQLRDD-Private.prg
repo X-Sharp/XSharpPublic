@@ -59,6 +59,10 @@ partial class SQLRDD
 
     private _numHiddenColumns as long
     private _serverReccount as dword
+    /// <summary>TRUE when _serverReccount already reflects the current order/scope/data and
+    /// does not need to be recomputed. Cleared whenever the underlying data, order or scope
+    /// actually changes (_CloseCursor(), a fresh _OpenTable() fetch, or a write in GoCold()).</summary>
+    private _serverReccountValid as logic
     /// <summary>
     /// TRUE when the cursor is positioned (via GoTo()) on a record that physically exists but
     /// does not satisfy the current order's FOR-condition/scope, i.e. OrderKeyNo is 0. Skip()
@@ -530,6 +534,9 @@ partial class SQLRDD
                 self:_dbfError(self:Connection:LastException, Subcodes.EDB_USE, Gencode.EG_OPEN, "SQLRDD._OpenTable", FALSE)
                 return false
             endif
+            // A fresh fetch always means a (potentially) different row count - force a real
+            // requery here rather than trusting whatever was cached before this WHERE clause.
+            self:_serverReccountValid := false
             self:_GetRecCount()
         catch as Exception
             return false
@@ -609,9 +616,20 @@ partial class SQLRDD
     private method _CloseCursor() as void
         self:_hasData       := FALSE
         self:_table         := null
+        // Whatever the cached count reflected (a prior WHERE clause, order or scope) no longer
+        // applies once the cursor is torn down - force the next _GetRecCount() to requery.
+        self:_serverReccountValid := false
         return
 
     private method _GetRecCount() as void
+        // Skip the round trip entirely when nothing has changed since the last real count.
+        // GoBottom() calls this every time it runs, and callers like Lister's GoTo(0)/GoBottom()
+        // handling can retry that many times in a row against the same unchanged data (observed:
+        // ~29 repeats, each paying for a fresh COUNT(*) on a large table) - one real query is
+        // enough until _OpenTable()/GoCold()/_CloseCursor() actually invalidate the cache.
+        if self:_serverReccountValid
+            return
+        endif
         // Must respect the current order's scope/condition, same as GoBottom() already does -
         // otherwise a scope/seek-scoped browse (e.g. one city's streets) gets its RecCount
         // silently overwritten with the whole unscoped table's count the moment anything
@@ -622,6 +640,7 @@ partial class SQLRDD
         else
             self:_serverReccount := self:OrderKeyCount
         endif
+        self:_serverReccountValid := true
     end method
 
     private method _FetchPage(nNewPageNo as int ) as logic

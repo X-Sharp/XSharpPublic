@@ -169,6 +169,18 @@
 #xcommand WAIT <msg> TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
     => <v> := __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
 
+#xcommand WAIT WINDOW <msg> [AT <nRow>, <nCol>] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(<msg>, TRUE, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW <msg> TO <v> [AT <nRow>, <nCol>] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, TRUE, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW <msg> AT <nRow>, <nCol> TO <v> [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, TRUE, <nRow>, <nCol>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW TO <v> [AT <nRow>, <nCol>] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(NIL, TRUE, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
 #xcommand WAIT [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
     => __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
 

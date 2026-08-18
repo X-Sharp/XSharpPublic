@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// Maps to System.Windows.Forms.ToolStripDropDownMenu.
 	/// Add items via AddBar(). A caption of "--" inserts a separator.
 	/// </summary>
-	PARTIAL CLASS Popup INHERIT System.Windows.Forms.ToolStripDropDownMenu
+	PARTIAL CLASS Popup INHERIT System.Windows.Forms.ToolStripDropDownMenu IMPLEMENTS IVfpPopupContainer
 
 		PRIVATE STATIC _registry AS Dictionary<STRING, Popup>
 

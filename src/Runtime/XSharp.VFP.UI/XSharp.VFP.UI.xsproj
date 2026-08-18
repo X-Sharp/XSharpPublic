@@ -125,6 +125,7 @@
     <Compile Include="InputBoxForm.prg" />
     <Compile Include="Bar.prg" />
     <Compile Include="ContextMenu.prg" />
+    <Compile Include="IVfpPopupContainer.prg" />
     <Compile Include="MaskProvider.prg" />
     <Compile Include="Application.prg" />
     <Compile Include="Checkbox.prg" />

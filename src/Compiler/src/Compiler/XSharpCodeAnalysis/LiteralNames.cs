@@ -139,7 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XppStaticClassPrefix = "Xs$XppStaticClasses";
         internal const string ThisForm = "Xs$ThisForm";
         internal const string FindForm = "FindForm";
-
+        internal const string This = "Xs$This";
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
         internal const string XSharpCoreFunctionsClass = "XSharp.Core.Functions";

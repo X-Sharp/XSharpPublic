@@ -377,6 +377,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasExplicitOverride = 1 << 22,
             IsProperty = 1 << 23,
             HasThisForm = 1 << 24,
+            HasThisInCodeBlock = 1 << 25,
         }
         #endregion
 
@@ -553,6 +554,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(MemberFlags.HasThisForm); }
                 set { setFlags(MemberFlags.HasThisForm, value); }
+            }
+            public bool HasThisInCodeBlock
+            {
+                get { return flags.HasFlag(MemberFlags.HasThisInCodeBlock); }
+                set { setFlags(MemberFlags.HasThisInCodeBlock, value); }
             }
 
             #endregion
@@ -1236,6 +1242,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             None = 0,
             MemberAccess = 1,
             MPrefix = 2,
+            ThisPrefix = 4,
 
         }
 
@@ -1261,6 +1268,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal bool HasMPrefix => foxFlags.HasFlag(FoxFlags.MPrefix);
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
+            internal bool HasThisReference => Op.Type == XSharpLexer.DOT && Expr != null &&
+                (AreaName == "SELF" || AreaName == "THIS");
 
         }
         #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set

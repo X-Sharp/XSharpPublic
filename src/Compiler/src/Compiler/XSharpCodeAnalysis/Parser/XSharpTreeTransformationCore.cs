@@ -7655,6 +7655,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
+        protected XP.CodeblockContext GetCodeBlock(XSharpParserRuleContext context)
+        {
+            var parent = context.Parent;
+            while (parent != null && parent is not XP.IEntityContext)
+            {
+                if (parent is XP.CodeblockContext codeblock)
+                {
+                    return codeblock;
+                }
+                parent = parent.Parent;
+            }
+            return null;
+        }
+        public override void EnterAccessMember([NotNull] XP.AccessMemberContext context)
+        {
+            base.EnterAccessMember(context);
+            var cb = GetCodeBlock(context);
+            if (cb != null && context.HasThisReference)
+            {
+                // there is a self or this prefix in the codeblock
+                // we need to create a special variable for this
+                CurrentMember.Data.HasThisInCodeBlock = true;
+            }
+        }
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
             if (context.Op.Type == XP.COLONCOLON && context.Expr == null)
@@ -7698,9 +7722,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // When AllowDotForInstanceMembers
                 if (context.Op.Type == XP.DOTCOLON ||
-                        context.Op.Type == XP.COLON || _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
+                    context.Op.Type == XP.COLON ||
+                    _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
                 {
-                    context.Put(MakeSimpleMemberAccess(context.Expr.Get<ExpressionSyntax>(), context.Name.Get<SimpleNameSyntax>()));
+                    var left = context.Expr.Get<ExpressionSyntax>();
+                    var cb = GetCodeBlock(context);
+                    if (cb != null && context.HasThisReference)
+                    {
+                        left = GenerateSimpleName(XSharpSpecialNames.This);
+                    }
+                    context.Put(MakeSimpleMemberAccess(left, context.Name.Get<SimpleNameSyntax>()));
                 }
                 else if (context.Expr.Get<ExpressionSyntax>() is NameSyntax)
                 {
@@ -7716,7 +7747,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return;
         }
-
+        protected virtual void ImplementThisForm(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
+        {
+            if (context.Data.HasThisInCodeBlock)
+            {
+                // Add local Xs$This and assign SELF
+                var thisdecl = GenerateLocalDecl(XSharpSpecialNames.This, ObjectType, GenerateSelf());
+                thisdecl.XGenerated = true;
+                stmts.Add(thisdecl);
+            }
+        }
         public override void ExitAccessMemberWith([NotNull] XP.AccessMemberWithContext context)
         {
             var expr = context.Right.Get<ExpressionSyntax>();

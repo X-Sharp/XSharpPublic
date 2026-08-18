@@ -3554,10 +3554,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = MakeParameterList(@params);
             }
         }
-        protected virtual void ImplementThisForm(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
-        {
-
-        }
         protected override void ImplementClipperAndPSZ(XP.IMemberWithBodyContext context,
             ref SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType)
@@ -3616,6 +3612,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ||
                 context.Data.HasThisForm ||
+                context.Data.HasThisInCodeBlock ||
                 _options.HasOption(CompilerOption.MemVars, (XSharpParserRuleContext)context, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
@@ -3625,7 +3622,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     implementNoClipCall(context, ref parameters, ref dataType);
                     context.Data.HasClipperCallingConvention = false;
                 }
-                // If the code contains a THISFORM
+                // If the code contains a THISFORM or THIS in a codeblock
                 ImplementThisForm(context, stmts);
                 if (context.Data.HasClipperCallingConvention && !_options.NoClipCall)
                 {

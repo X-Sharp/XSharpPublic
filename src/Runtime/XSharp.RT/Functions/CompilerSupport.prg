@@ -7,7 +7,7 @@
 
 USING XSharp.Internal
 USING System.Collections
-
+USING System.Reflection
 /// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     RETURN RuntimeState.StringCompare(strLHS, strRHS)
@@ -88,19 +88,48 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     ENDIF
     RETURN FieldGetSelect(area,fieldName)
 
+ INTERNAL FUNCTION IsMemberAccessible(mem as MemberInfo, isSelf as LOGIC, lAssembly as LOGIC) AS LOGIC
+    local nFrame := 0 as long
+    var memType  := mem:DeclaringType
+    // find first frame that is not in our runtime
+    var st := System.Diagnostics.StackTrace{FALSE}
+    for var i := 0 to st:FrameCount - 1
+        var frame := st:GetFrame(i)
+        var m := frame:GetMethod()
+        if !m:DeclaringType:Assembly:FullName:StartsWith("XSharp.")
+            nFrame := i
+            exit
+        endif
+    next
+    if nFrame == 0
+        return false
+    endif
+    var callingFrame := st:GetFrame(nFrame)
+    var type := callingFrame:GetMethod():DeclaringType
+    if isSelf
+        return type == memType
+    elseif lAssembly
+        return type:Assembly == memType:Assembly
+    endif
+    return memType:IsAssignableFrom(type)
 /// <exclude />
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGIC) AS USUAL
-    LOCAL nArea := VoDbGetSelect(wa) AS DWORD
+LOCAL nArea := VoDbGetSelect(wa) AS DWORD
     IF nArea != 0
         RETURN __FieldGetWa(wa, fldName)
     ENDIF
     IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
         return IVarGet(uLocal, fldName)
     ENDIF
+    local ok as LOGIC
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
-        local uVar := IVarGet(uLocal, wa) AS USUAL
-        return IVarGet(uVar, fldName)
+        local oLocal := uLocal as object
+        // we do not use IVarGet because we also want to support static fields and properties
+        var res := _GetValue(oLocal:GetType(), oLocal)
+        if ok
+            return res
+        endif
     ENDIF
     if (lAllowUndeclared)
         if XSharp.MemVar.TryGet(wa, out var value)
@@ -109,13 +138,9 @@ FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGI
     endif
     local type := OOPHelpers.FindClass(wa,false) as System.Type
     if type != null
-        var prop := type:GetProperty(fldName)
-        if prop != null
-            return prop:GetValue(null)
-        endif
-        var fld := type:GetField(fldName)
-        if fld != null
-            return fld:GetValue(null)
+        var res := _GetValue(type, null)
+        if ok
+            return res
         endif
         var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})
         oError:Description := oError:Message + i": '{fldName}'"
@@ -126,6 +151,29 @@ FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGI
     err:ArgNum := 2
     err:Args := <OBJECT>{wa, fldName}
     THROW err
+    LOCAL FUNCTION _GetValue(oType as System.Type, oObject as object) as USUAL
+        ok := TRUE
+        var mem := OOPHelpers.GetFieldOrProperty(oType, fldName)
+        if mem is FieldInfo var fld
+            if ! fld:IsPublic
+                if ! IsMemberAccessible(fld, fld:IsPrivate, fld:IsFamilyOrAssembly)
+                    ok := FALSE
+                    return NIL
+                endif
+            endif
+            return fld:GetValue(oObject)
+        elseif mem is PropertyInfo var prop .and. prop:CanRead
+            if ! prop:GetMethod:IsPublic
+                if ! IsMemberAccessible(prop, prop:GetMethod:IsPrivate, prop:GetMethod:IsFamilyOrAssembly)
+                    ok := FALSE
+                    return NIL
+                endif
+            endif
+            return prop:GetValue(oObject)
+        endif
+        ok := FALSE
+        RETURN NIL
+    END FUNCTION
 
 /// <exclude />
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
@@ -184,8 +232,11 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
         return IVarPut(uLocal, fldName, uValue)
     ENDIF
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
-        local uVar := IVarGet(uLocal, wa) AS USUAL
-        return IVarPut(uVar, fldName, uValue)
+        local oLocal := uLocal as object
+        // we do not use IVarPut because we also want to support static fields and properties
+        IF _SetValue(oLocal:GetType(), oLocal, uValue)
+            return uValue
+        ENDIF
     ENDIF
     if (lAllowUndeclared)
         if XSharp.MemVar.TryGet(wa, out var value)
@@ -194,15 +245,8 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
     endif
     local type := OOPHelpers.FindClass(wa,false) as System.Type
     if type != null
-        var prop := type:GetProperty(fldName)
-        if prop != null
-            prop:SetValue(null, OOPHelpers.ValueConvert(uValue, prop:PropertyType))
-            RETURN uValue
-        endif
-        var fld := type:GetField(fldName)
-        if fld != null
-            fld:SetValue(null, OOPHelpers.ValueConvert(uValue, fld:FieldType))
-            RETURN uValue
+        IF _SetValue(type, NULL, uValue)
+            return uValue
         endif
         var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})
         oError:Description := oError:Message + i": '{fldName}'"
@@ -213,7 +257,30 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
     err:ArgNum := 2
     err:Args := <OBJECT>{wa, fldName}
     THROW err
+    LOCAL FUNCTION _SetValue(oType as System.Type, oObject as object, uValue as USUAL) as LOGIC
+        var mem := OOPHelpers.GetFieldOrProperty(oType, fldName)
+        if mem is FieldInfo var fld
+            var oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
+            if ! fld:IsPublic
+                if ! IsMemberAccessible(fld, fld:IsPrivate, fld:IsFamilyOrAssembly)
+                    return FALSE
+                endif
+            endif
 
+            fld:SetValue(oObject, oValue)
+            return TRUE
+        elseif mem is PropertyInfo var prop .and. prop:CanWrite
+            if ! prop:SetMethod:IsPublic
+                if ! IsMemberAccessible(prop, prop:SetMethod:IsPrivate, prop:SetMethod:IsFamilyOrAssembly)
+                    return FALSE
+                endif
+            endif
+            var oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
+            prop:SetValue(oObject, oValue)
+            return TRUE
+        endif
+        RETURN FALSE
+    END FUNCTION
 
 /// <exclude />
 FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS T

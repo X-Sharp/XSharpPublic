@@ -299,19 +299,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        CodeblockContext GetCodeBlock(XSharpParserRuleContext context)
-        {
-            var parent = context.Parent;
-            while (parent != null && parent is not IEntityContext)
-            {
-                if (parent is CodeblockContext codeblock)
-                {
-                    return codeblock;
-                }
-                parent = parent.Parent;
-            }
-            return null;
-        }
 
         public override void EnterCodeblockParamList([NotNull] CodeblockParamListContext context)
         {
@@ -408,6 +395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected override void ImplementThisForm(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
         {
+            base.ImplementThisForm(context, stmts);
             if (context.Data.HasThisForm)
             {
                 // Add local Xs$ThisForm and assign the result of FindForm()

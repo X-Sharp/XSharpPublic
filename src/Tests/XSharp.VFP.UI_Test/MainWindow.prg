@@ -42,5 +42,9 @@ PRIVATE METHOD dOFORMToolStripMenuItem_Click(sender AS System.Object, e AS Syste
 		DO FORM TestVFPForm
 			RETURN
 		END METHOD
-	END CLASS 
+		PRIVATE METHOD transparencyToolStripMenuItem_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
+			ShowTransparencyTest()
+			RETURN
+		END METHOD
+	END CLASS
 END NAMESPACE

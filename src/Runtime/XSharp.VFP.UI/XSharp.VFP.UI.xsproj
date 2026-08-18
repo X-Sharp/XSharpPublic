@@ -126,6 +126,7 @@
     <Compile Include="Bar.prg" />
     <Compile Include="ContextMenu.prg" />
     <Compile Include="IVfpPopupContainer.prg" />
+    <Compile Include="TransparentZOrder.prg" />
     <Compile Include="MaskProvider.prg" />
     <Compile Include="Application.prg" />
     <Compile Include="Checkbox.prg" />

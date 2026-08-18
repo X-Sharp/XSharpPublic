@@ -12,7 +12,7 @@
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>FoxPro</Dialect>
-    <vo15>false</vo15>
+    <vo15>False</vo15>
     <OutputName>xsVFPLibrary_Test</OutputName>
     <StartupObject />
     <MemVar>True</MemVar>
@@ -22,7 +22,7 @@
     <LB>True</LB>
     <Fox2>True</Fox2>
     <NamedArgs>False</NamedArgs>
-    <EnforceSelf>True</EnforceSelf>
+    <EnforceSelf>False</EnforceSelf>
     <Vo9>true</Vo9>
     <Fox1>true</Fox1>
     <InitLocals>true</InitLocals>
@@ -90,6 +90,9 @@
     </Compile>
     <Compile Include="TestVFPTextBox.prg">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestTransparency.prg">
+      <SubType>Code</SubType>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING System.Linq
 USING System.Reflection
 USING System.Globalization
 USING System.Collections.Generic
@@ -49,9 +50,15 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         LOCAL oResult AS XSharp._Codeblock
         LOCAL cMacro as STRING
         IF RuntimeState.Dialect == XSharpDialect.FoxPro
-            cMacro := MPrepare(cString)
+            // count # of dots in the macro. If there is exactly 1 dot, we need to prepare the macro for FoxPro
+            var dots := cString:Count( { ch => ch == c'.' })
+            if dots == 1
+                cMacro := MPrepare(cString)
+            ELSE
+                cMacro := cString
+            ENDIF
         ELSE
-            cMacro := cString // MPrepare(cString)
+            cMacro := cString
         ENDIF
         IF oMC IS IMacroCompilerUsual VAR oMCU
             oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)

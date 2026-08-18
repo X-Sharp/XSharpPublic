@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// Action methods live on a subclass — vfpClick dispatch finds them via
 	/// Bar.Owner (which is this ContextMenu instance directly).
 	/// </summary>
-PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
+PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip IMPLEMENTS IVfpPopupContainer
 
 		PRIVATE STATIC _registry AS Dictionary<STRING, ContextMenu>
 
@@ -52,6 +52,24 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 				RETURN _registry[cName]
 			ENDIF
 			RETURN NULL
+
+		// Returns a snapshot of all currently registered SHORTCUT-popup (ContextMenu) names.
+		STATIC METHOD GetAllNames() AS List<STRING>
+			IF _registry == NULL
+				RETURN List<STRING>{}
+			ENDIF
+			RETURN List<STRING>{ _registry:Keys }
+
+		// Releases every registered ContextMenu (used by RELEASE POPUPS with no list).
+		STATIC METHOD ReleaseAll() AS VOID
+			IF _registry == NULL
+				RETURN
+			ENDIF
+			LOCAL values AS List<ContextMenu>
+			values := List<ContextMenu>{ _registry:Values }
+			FOREACH VAR oCtx IN values
+				oCtx:Release()
+			NEXT
 
 		// ── BarCount ──────────────────────────────────────────────────────────
 		/// <summary>
@@ -109,6 +127,14 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip
 		INTERNAL METHOD IndexOf( bar AS Bar ) AS INT
 			LOCAL idx := SELF:_bars:IndexOf(bar) AS INT
 			RETURN IIF( idx < 0, 0, idx + 1 )
+
+		// -- Release -------------------------------------------------------------
+		METHOD Release() AS USUAL CLIPPER
+			IF !String.IsNullOrEmpty(SELF:Name) .AND. _registry != NULL
+				_registry:Remove(SELF:Name)
+			ENDIF
+			SELF:Dispose()
+			RETURN NIL
 
 		// -- Lifecycle stubs ---------------------------------------------------
 		/// <summary>

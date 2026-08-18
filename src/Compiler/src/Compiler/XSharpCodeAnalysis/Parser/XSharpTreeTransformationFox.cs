@@ -468,7 +468,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         // declare the private.
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
-                        var exp = GenerateMemVarDecl(memvar, varname, true);
+                        var exp = GenerateMemVarDecl(memvar, varname, context.T.Type == XP.PRIVATE);
                         exp.XNode = memvar;
                         stmts.Add(GenerateExpressionStatement(exp, memvar));
                         ExpressionSyntax initializer = null;

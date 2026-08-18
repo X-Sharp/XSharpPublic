@@ -14,7 +14,7 @@ USING XSharp.VFP.UI
 // ── Private helpers ──────────────────────────────────────────────────────────
 
 // Returns the Bar in oPopup whose Name equals nBar.ToString(), or NULL.
-FUNCTION __VFPFindBarByNumber( oPopup AS Popup, nBar AS INT ) AS Bar
+FUNCTION __VFPFindBarByNumber( oPopup AS IVfpPopupContainer, nBar AS INT ) AS Bar
     IF oPopup == NULL_OBJECT
         RETURN NULL_OBJECT
     ENDIF
@@ -27,6 +27,25 @@ FUNCTION __VFPFindBarByNumber( oPopup AS Popup, nBar AS INT ) AS Bar
         ENDIF
     NEXT
     RETURN NULL_OBJECT
+
+// Looks up a popup name in both the Popup registry (DEFINE POPUP) and the
+// ContextMenu registry (DEFINE POPUP ... SHORTCUT), so every helper below
+// works the same way regardless of whether the popup was declared SHORTCUT.
+FUNCTION __VFPFindPopupContainer( cName AS STRING ) AS IVfpPopupContainer
+    LOCAL oPopup AS Popup
+    oPopup := Popup.Find( cName )
+    IF oPopup != NULL_OBJECT
+        RETURN oPopup
+    ENDIF
+    RETURN ContextMenu.Find( cName )
+
+// Same lookup as __VFPFindPopupContainer, typed for the WinForms operations
+// (Show/Hide/Visible) both Popup and ContextMenu share via their common
+// System.Windows.Forms.ToolStripDropDownMenu ancestor.
+FUNCTION __VFPFindPopupControl( cName AS STRING ) AS System.Windows.Forms.ToolStripDropDownMenu
+    LOCAL oContainer AS IVfpPopupContainer
+    oContainer := __VFPFindPopupContainer( cName )
+    RETURN oContainer ASTYPE System.Windows.Forms.ToolStripDropDownMenu
 
 // Returns the first Pad on oMenu whose Name matches (case-insensitive).
 FUNCTION __VFPFindPadByName( oMenu AS Menu, cPadName AS STRING ) AS Pad
@@ -75,8 +94,8 @@ FUNCTION __VFPDefineContextMenu( cName AS STRING ) AS VOID
 /// A PROMPT of "\-" inserts a separator.
 /// </summary>
 FUNCTION __VFPDefineBar( nBar AS INT, cPopupName AS STRING, cCaption AS STRING ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cPopupName )
+    LOCAL oPopup AS IVfpPopupContainer
+    oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup != NULL_OBJECT
         LOCAL cActualCaption AS STRING
         cActualCaption := IIF( cCaption == "\-", "--", cCaption )
@@ -113,8 +132,8 @@ FUNCTION __VFPOnPad( cPadName AS STRING, cMenuName AS STRING, cPopupName AS STRI
 /// Implements ON BAR &lt;n&gt; OF &lt;popup&gt; ACTIVATE POPUP &lt;subPopup&gt; (or empty to detach).
 /// </summary>
 FUNCTION __VFPOnBar( nBar AS INT, cPopupName AS STRING, cSubPopupName AS STRING ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cPopupName )
+    LOCAL oPopup AS IVfpPopupContainer
+    oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup == NULL_OBJECT
         RETURN
     ENDIF
@@ -161,8 +180,8 @@ FUNCTION __VFPOnSelectionPadCmd( cPadName AS STRING, cMenuName AS STRING, block 
 
 /// <summary>Implements ON SELECTION BAR &lt;n&gt; OF &lt;popup&gt; DO &lt;procName&gt;.</summary>
 FUNCTION __VFPOnSelectionBar( nBar AS INT, cPopupName AS STRING, cProc AS STRING ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cPopupName )
+    LOCAL oPopup AS IVfpPopupContainer
+    oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup == NULL_OBJECT
         RETURN
     ENDIF
@@ -174,8 +193,8 @@ FUNCTION __VFPOnSelectionBar( nBar AS INT, cPopupName AS STRING, cProc AS STRING
 
 /// <summary>Implements ON SELECTION BAR &lt;n&gt; OF &lt;popup&gt; &lt;arbitrary code&gt; (codeblock variant).</summary>
 FUNCTION __VFPOnSelectionBarCmd( nBar AS INT, cPopupName AS STRING, block AS USUAL ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cPopupName )
+    LOCAL oPopup AS IVfpPopupContainer
+    oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup == NULL_OBJECT
         RETURN
     ENDIF
@@ -193,8 +212,8 @@ FUNCTION __VFPOnSelectionPopup( cPopupName AS STRING, cProc AS STRING ) AS VOID
     IF cPopupName == "*"
         __VFPOnSelectionPopupAll( NULL, cProc )
     ELSE
-        LOCAL oPopup AS Popup
-        oPopup := Popup.Find( cPopupName )
+        LOCAL oPopup AS IVfpPopupContainer
+        oPopup := __VFPFindPopupContainer( cPopupName )
         IF oPopup != NULL_OBJECT
             __VFPSetPopupSelectionProc( oPopup, cProc )
         ENDIF
@@ -207,35 +226,36 @@ FUNCTION __VFPOnSelectionPopupCmd( cPopupName AS STRING, block AS USUAL ) AS VOI
     IF cPopupName == "*"
         __VFPOnSelectionPopupAll( block, NULL )
     ELSE
-        LOCAL oPopup AS Popup
-        oPopup := Popup.Find( cPopupName )
+        LOCAL oPopup AS IVfpPopupContainer
+        oPopup := __VFPFindPopupContainer( cPopupName )
         IF oPopup != NULL_OBJECT
             __VFPSetPopupSelectionBlock( oPopup, block )
         ENDIF
     ENDIF
 
 // Applies a string-based proc handler to every bar in one popup.
-FUNCTION __VFPSetPopupSelectionProc( oPopup AS Popup, cProc AS STRING ) AS VOID
+FUNCTION __VFPSetPopupSelectionProc( oPopup AS IVfpPopupContainer, cProc AS STRING ) AS VOID
     LOCAL i AS INT
     FOR i := 1 TO (INT) oPopup:BarCount
         oPopup:Bars[i]:vfpClick := cProc
     NEXT
 
 // Applies a codeblock handler to every bar in one popup.
-FUNCTION __VFPSetPopupSelectionBlock( oPopup AS Popup, block AS USUAL ) AS VOID
+FUNCTION __VFPSetPopupSelectionBlock( oPopup AS IVfpPopupContainer, block AS USUAL ) AS VOID
     LOCAL i AS INT
     FOR i := 1 TO (INT) oPopup:BarCount
         oPopup:Bars[i]:SetClickAction( block )
     NEXT
 
-// Applies proc/block to ALL registered popups.
+// Applies proc/block to ALL registered popups, both plain (Popup) and SHORTCUT (ContextMenu).
 // Exactly one of cProc / block should be non-null.
 FUNCTION __VFPOnSelectionPopupAll( block AS USUAL, cProc AS STRING ) AS VOID
     LOCAL names AS List<STRING>
     names := Popup.GetAllNames()
+    names:AddRange( ContextMenu.GetAllNames() )
     FOREACH VAR cName IN names
-        LOCAL oPopup AS Popup
-        oPopup := Popup.Find( cName )
+        LOCAL oPopup AS IVfpPopupContainer
+        oPopup := __VFPFindPopupContainer( cName )
         IF oPopup == NULL_OBJECT
             LOOP
         ENDIF
@@ -285,14 +305,14 @@ FUNCTION __VFPActivateMenu( cName AS STRING ) AS VOID
 /// Pass nRow = nCol = 0 to show at the current mouse position.
 /// </summary>
 FUNCTION __VFPActivatePopup( cName AS STRING, nRow AS INT, nCol AS INT ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cName )
-    IF oPopup == NULL_OBJECT
+    LOCAL oControl AS System.Windows.Forms.ToolStripDropDownMenu
+    oControl := __VFPFindPopupControl( cName )
+    IF oControl == NULL_OBJECT
         RETURN
     ENDIF
     LOCAL pt AS System.Drawing.Point
     IF nRow == 0 .AND. nCol == 0
-        IF oPopup:HasPendingPosition
+        IF oControl IS Popup VAR oPopup .AND. oPopup:HasPendingPosition
             pt := System.Drawing.Point{ oPopup:PendingCol, oPopup:PendingRow }
         ELSE
             pt := System.Windows.Forms.Control.MousePosition
@@ -301,7 +321,7 @@ FUNCTION __VFPActivatePopup( cName AS STRING, nRow AS INT, nCol AS INT ) AS VOID
         // VFP AT clause uses screen row/col in characters; approximate with mouse pos.
         pt := System.Drawing.Point{ nCol, nRow }
     ENDIF
-    oPopup:Show( pt )
+    oControl:Show( pt )
 
 /// <summary>
 /// Implements MOVE POPUP &lt;name&gt; TO &lt;nRow&gt;, &lt;nCol&gt;.
@@ -309,16 +329,20 @@ FUNCTION __VFPActivatePopup( cName AS STRING, nRow AS INT, nCol AS INT ) AS VOID
 /// popup is already visible, repositions it immediately.
 /// </summary>
 FUNCTION __VFPMovePopup( cName AS STRING, nRow AS INT, nCol AS INT ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cName )
-    IF oPopup == NULL_OBJECT
+    LOCAL oControl AS System.Windows.Forms.ToolStripDropDownMenu
+    oControl := __VFPFindPopupControl( cName )
+    IF oControl == NULL_OBJECT
         RETURN
     ENDIF
-    oPopup:HasPendingPosition := TRUE
-    oPopup:PendingRow := nRow
-    oPopup:PendingCol := nCol
-    IF oPopup:Visible
-        oPopup:Show( System.Drawing.Point{ nCol, nRow } )
+    // Pending position (consumed by a later bare ACTIVATE POPUP) is a Popup-only
+    // feature — SHORTCUT popups (ContextMenu) don't support a bare ACTIVATE POPUP.
+    IF oControl IS Popup VAR oPopup
+        oPopup:HasPendingPosition := TRUE
+        oPopup:PendingRow := nRow
+        oPopup:PendingCol := nCol
+    ENDIF
+    IF oControl:Visible
+        oControl:Show( System.Drawing.Point{ nCol, nRow } )
     ENDIF
 
 /// <summary>Implements DEACTIVATE MENU &lt;name&gt;. Detaches the menu from its host form.</summary>
@@ -335,10 +359,10 @@ FUNCTION __VFPDeactivateMenu( cName AS STRING ) AS VOID
 /// </summary>
 FUNCTION __VFPDeactivatePopup( cName AS STRING ) AS VOID
     IF !String.IsNullOrEmpty( cName )
-        LOCAL oPopup AS Popup
-        oPopup := Popup.Find( cName )
-        IF oPopup != NULL_OBJECT
-            oPopup:Hide()
+        LOCAL oControl AS System.Windows.Forms.ToolStripDropDownMenu
+        oControl := __VFPFindPopupControl( cName )
+        IF oControl != NULL_OBJECT
+            oControl:Hide()
         ENDIF
     ELSE
         // No name given — close any open drop-down on _Screen's menu by
@@ -371,20 +395,20 @@ FUNCTION __VFPShowMenu( cName AS STRING ) AS VOID
 /// <summary>Implements HIDE POPUP [&lt;name&gt;]. Empty string hides all.</summary>
 FUNCTION __VFPHidePopup( cName AS STRING ) AS VOID
     IF !String.IsNullOrEmpty( cName )
-        LOCAL oPopup AS Popup
-        oPopup := Popup.Find( cName )
-        IF oPopup != NULL_OBJECT
-            oPopup:Visible := FALSE
+        LOCAL oControl AS System.Windows.Forms.ToolStripDropDownMenu
+        oControl := __VFPFindPopupControl( cName )
+        IF oControl != NULL_OBJECT
+            oControl:Visible := FALSE
         ENDIF
     ENDIF
 
 /// <summary>Implements SHOW POPUP [&lt;name&gt;].</summary>
 FUNCTION __VFPShowPopup( cName AS STRING ) AS VOID
     IF !String.IsNullOrEmpty( cName )
-        LOCAL oPopup AS Popup
-        oPopup := Popup.Find( cName )
-        IF oPopup != NULL_OBJECT
-            oPopup:Visible := TRUE
+        LOCAL oControl AS System.Windows.Forms.ToolStripDropDownMenu
+        oControl := __VFPFindPopupControl( cName )
+        IF oControl != NULL_OBJECT
+            oControl:Visible := TRUE
         ENDIF
     ENDIF
 
@@ -415,11 +439,12 @@ FUNCTION __VFPReleaseMenus( aNames AS USUAL[], lExtended AS LOGIC ) AS VOID
 FUNCTION __VFPReleasePopups( aNames AS USUAL[], lExtended AS LOGIC ) AS VOID
     IF aNames == NULL .OR. aNames:Length == 0
         Popup.ReleaseAll()
+        ContextMenu.ReleaseAll()
     ELSE
         LOCAL i AS INT
         FOR i := 0 TO aNames:Length - 1
-            LOCAL oPopup AS Popup
-            oPopup := Popup.Find( (STRING) aNames[i] )
+            LOCAL oPopup AS IVfpPopupContainer
+            oPopup := __VFPFindPopupContainer( (STRING) aNames[i] )
             IF oPopup != NULL_OBJECT
                 oPopup:Release()
             ENDIF
@@ -451,16 +476,16 @@ FUNCTION __VFPSetSkipOfPad( cPadName AS STRING, cMenuName AS STRING, lSkip AS LO
 
 /// <summary>Implements SET SKIP OF POPUP &lt;name&gt; &lt;expr&gt;.</summary>
 FUNCTION __VFPSetSkipOfPopup( cPopupName AS STRING, lSkip AS LOGIC ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cPopupName )
+    LOCAL oPopup AS IVfpPopupContainer
+    oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup != NULL_OBJECT
         oPopup:Skip := lSkip
     ENDIF
 
 /// <summary>Implements SET SKIP OF BAR &lt;n&gt; OF &lt;popup&gt; &lt;expr&gt;.</summary>
 FUNCTION __VFPSetSkipOfBar( nBar AS INT, cPopupName AS STRING, lSkip AS LOGIC ) AS VOID
-    LOCAL oPopup AS Popup
-    oPopup := Popup.Find( cPopupName )
+    LOCAL oPopup AS IVfpPopupContainer
+    oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup == NULL_OBJECT
         RETURN
     ENDIF

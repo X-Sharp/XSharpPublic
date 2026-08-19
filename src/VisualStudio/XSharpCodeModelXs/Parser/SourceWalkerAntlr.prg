@@ -72,6 +72,14 @@ METHOD ProcessMember(memberCtx as XP.IMemberContext) AS VOID
     // XP.IMethodContext
 
     RETURN
+METHOD ProcessBlock(blockCtx as XP.StatementBlockContext) AS VOID
+    // Process StatementBlock to generate blocks for the editor
+    // Only when blockCtx.Parent is not an entity
+    if blockCtx:Parent is XP.IEntityContext
+        RETURN
+    endif
+    RETURN
+
 METHOD ProcessEnum(enumCtx as XP.Enum_Context) AS VOID
 
     RETURN
@@ -112,5 +120,7 @@ OVERRIDE METHOD EnterEveryRule(ctx AS ParserRuleContext) AS VOID
         SELF:Walker:ProcessSource(srcCtx)
     CASE ctxfoxSrc as XP.FoxsourceContext
         SELF:Walker:ProcessFoxSource(ctxfoxSrc)
+    CASE blockCtx as XP.StatementBlockContext
+        SELF:Walker:ProcessBlock(blockCtx)
     END SWITCH
 END CLASS

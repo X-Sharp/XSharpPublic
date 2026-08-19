@@ -63,6 +63,7 @@ namespace XSharp.Project
         // =========================================================================================
 
         private bool _fox2;
+        private bool _fox3;
         private bool _xpp1;
 
         // =========================================================================================
@@ -70,8 +71,8 @@ namespace XSharp.Project
         // =========================================================================================
 
         private bool _isNotCoreDialect = true;
-        private bool _fox2Enabled      = false;
-        private bool _xpp1Enabled      = false;
+        private bool _isFox      = false;
+        private bool _isXpp      = false;
 
         private bool _isBinding   = false;
         private bool _isNotifying = false;
@@ -154,6 +155,8 @@ namespace XSharp.Project
 
         /// <summary>Gets or sets the Fox2 (Compatible Array Handling) option. Only enabled for the FoxPro dialect.</summary>
         public bool Fox2 { get => _fox2; set => SetProperty(ref _fox2, value); }
+        /// <summary>Gets or sets the Fox3 (Compatible Cursor Handling) option. Only enabled for the FoxPro dialect.</summary>
+        public bool Fox3 { get => _fox3; set => SetProperty(ref _fox3, value); }
 
         /// <summary>Gets or sets the Xpp1 (Inherit From Abstract class) option. Only enabled for the XPP dialect.</summary>
         public bool Xpp1 { get => _xpp1; set => SetProperty(ref _xpp1, value); }
@@ -176,20 +179,20 @@ namespace XSharp.Project
         /// <see langword="true"/> only when the current dialect is FoxPro;
         /// drives <c>IsEnabled</c> on the Fox2 checkbox.
         /// </summary>
-        public bool Fox2Enabled
+        public bool IsFox
         {
-            get => _fox2Enabled;
-            set => SetProperty(ref _fox2Enabled, value);
+            get => _isFox;
+            set => SetProperty(ref _isFox, value);
         }
 
         /// <summary>
         /// <see langword="true"/> only when the current dialect is XPP;
         /// drives <c>IsEnabled</c> on the Xpp1 checkbox.
         /// </summary>
-        public bool Xpp1Enabled
+        public bool IsXpp
         {
-            get => _xpp1Enabled;
-            set => SetProperty(ref _xpp1Enabled, value);
+            get => _isXpp;
+            set => SetProperty(ref _isXpp, value);
         }
 
         // =========================================================================================
@@ -214,6 +217,7 @@ namespace XSharp.Project
         public string CaptVO16 => DialectPropertyPagePanel.VO16Caption;
         public string CaptVO17 => DialectPropertyPagePanel.VO17Caption;
         public string CaptFox2 => DialectPropertyPagePanel.FOX2Caption;
+        public string CaptFox3 => DialectPropertyPagePanel.FOX3Caption;
         public string CaptXpp1 => DialectPropertyPagePanel.XPP1Caption;
 
         public string DescVO1  => DialectPropertyPagePanel.VO1Description;
@@ -234,6 +238,7 @@ namespace XSharp.Project
         public string DescVO16 => DialectPropertyPagePanel.VO16Description;
         public string DescVO17 => DialectPropertyPagePanel.VO17Description;
         public string DescFox2 => DialectPropertyPagePanel.FOX2Description;
+        public string DescFox3 => DialectPropertyPagePanel.FOX3Description;
         public string DescXpp1 => DialectPropertyPagePanel.XPP1Description;
 
         public string CaptAllDialects => DialectPropertyPagePanel.CatCompatibility;
@@ -253,8 +258,8 @@ namespace XSharp.Project
                 ThreadHelper.ThrowIfNotOnUIThread();
                 // UI-state properties do not represent project edits — skip dirty.
                 if (e.PropertyName == nameof(IsNotCoreDialect)
-                    || e.PropertyName == nameof(Fox2Enabled)
-                    || e.PropertyName == nameof(Xpp1Enabled))
+                    || e.PropertyName == nameof(IsFox)
+                    || e.PropertyName == nameof(IsXpp))
                     return;
 
                 // Ignore re-entrant notifications from BindProperties load or Item[] pulse.
@@ -300,6 +305,7 @@ namespace XSharp.Project
 
                 // ---- Dialect-specific checkboxes ----
                 Fox2 = GetBoolPropertyValue(XSharpProjectFileConstants.Fox2);
+                Fox3 = GetBoolPropertyValue(XSharpProjectFileConstants.Fox3);
                 Xpp1 = GetBoolPropertyValue(XSharpProjectFileConstants.Xpp1);
 
                 // ---- Dialect-dependent enabling ----
@@ -338,6 +344,7 @@ namespace XSharp.Project
             SetBoolPropertyValue(XSharpProjectFileConstants.Vo14, Vo14);
             SetBoolPropertyValue(XSharpProjectFileConstants.Vo15, Vo15);
             SetBoolPropertyValue(XSharpProjectFileConstants.Vo16, Vo16);
+            SetBoolPropertyValue(XSharpProjectFileConstants.Fox3, Fox3);
             SetBoolPropertyValue(XSharpProjectFileConstants.Vo17, Vo17);
             SetBoolPropertyValue(XSharpProjectFileConstants.Fox2, Fox2);
             SetBoolPropertyValue(XSharpProjectFileConstants.Xpp1, Xpp1);
@@ -363,8 +370,8 @@ namespace XSharp.Project
             bool isXpp    = string.Equals(dialect, "xpp",    System.StringComparison.OrdinalIgnoreCase);
 
             IsNotCoreDialect = !isCore;
-            Fox2Enabled      = isFoxPro;
-            Xpp1Enabled      = isXpp;
+            IsFox = isFoxPro;
+            IsXpp = isXpp;
 
             if (isCore)
             {
@@ -384,14 +391,20 @@ namespace XSharp.Project
             }
 
             if (!isFoxPro)
+            {
                 Fox2 = false;
+                Fox3 = false;
+            }
 
             if (!isXpp)
                 Xpp1 = false;
 
             // Auto-check Fox2 when switching to FoxPro (mirrors WinForms behaviour).
             if (isFoxPro)
+            {
                 Fox2 = true;
+                Fox3 = true;
+            }
         }
     }
 }

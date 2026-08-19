@@ -50,6 +50,7 @@ namespace XSharp.Project
             this.chkVO16.Text = DialectPropertyPagePanel.VO16Caption;
             this.chkVO17.Text = DialectPropertyPagePanel.VO17Caption;
             this.chkFox2.Text = DialectPropertyPagePanel.FOX2Caption;
+            this.chkFox3.Text = DialectPropertyPagePanel.FOX3Caption;
             this.chkXPP1.Text = DialectPropertyPagePanel.XPP1Caption;
             this.chkVO1.Tag = XSharpProjectFileConstants.Vo1;
             this.chkVO2.Tag = XSharpProjectFileConstants.Vo2;
@@ -69,6 +70,7 @@ namespace XSharp.Project
             this.chkVO16.Tag = XSharpProjectFileConstants.Vo16;
             this.chkVO17.Tag = XSharpProjectFileConstants.Vo17;
             this.chkFox2.Tag = XSharpProjectFileConstants.Fox2;
+            this.chkFox3.Tag = XSharpProjectFileConstants.Fox3;
             this.chkXPP1.Tag = XSharpProjectFileConstants.Xpp1;
             toolTip1.SetToolTip(chkVO1, DialectPropertyPagePanel.VO1Description);
             toolTip1.SetToolTip(chkVO2, DialectPropertyPagePanel.VO2Description);
@@ -89,6 +91,7 @@ namespace XSharp.Project
             toolTip1.SetToolTip(chkVO17, DialectPropertyPagePanel.VO17Description);
 
             toolTip1.SetToolTip(chkFox2, DialectPropertyPagePanel.FOX2Description);
+            toolTip1.SetToolTip(chkFox3, DialectPropertyPagePanel.FOX3Description);
             toolTip1.SetToolTip(chkXPP1, DialectPropertyPagePanel.XPP1Description);
             this.lblAllDialects.Text = DialectPropertyPagePanel.CatCompatibility;
             this.lblNotInCore.Text = DialectPropertyPagePanel.CatNotCore;
@@ -113,10 +116,12 @@ namespace XSharp.Project
                         if (e.NewValue.ToLower() == "foxpro")
                         {
                             chkFox2.Checked = true;
+                            chkFox3.Checked = true;
                         }
                         else
                         {
                             chkFox2.Checked = false;
+                            chkFox3.Checked = false;
                         }
                         EnableDialectOptions(e.NewValue);
                     }
@@ -132,6 +137,7 @@ namespace XSharp.Project
         {
             dialect = dialect.ToLower();
             chkFox2.Enabled = dialect == "foxpro";
+            chkFox3.Enabled = dialect == "foxpro";
             chkXPP1.Enabled = dialect == "xpp";
             bool core = dialect == "core";
             chkVO5.Enabled = !core;
@@ -160,6 +166,8 @@ namespace XSharp.Project
             }
             if (!chkFox2.Enabled)
                 chkFox2.Checked = false;
+            if (!chkFox3.Enabled)
+                chkFox3.Checked = false;
             if (!chkXPP1.Enabled)
                 chkXPP1.Checked = false;
         }

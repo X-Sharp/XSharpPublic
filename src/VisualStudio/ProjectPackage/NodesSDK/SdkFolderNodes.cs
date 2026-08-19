@@ -102,6 +102,7 @@ namespace XSharp.Project
         {
         }
         public override int SortPriority => DefaultSortOrderNode.TargetFrameworksNode;
+        public override int MenuCommandId => VsMenus.IDM_VS_CTXT_FRAMEWORKREFERENCE_GROUP;
     }
     [DebuggerDisplay("{Caption,nq}")]
     class XSharpTargetFrameworkReferenceNode : XSharpSdkFolderNode
@@ -111,7 +112,7 @@ namespace XSharp.Project
         {
         }
         protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.DotNETFrameworkDependency;
-
+        public override int MenuCommandId => VsMenus.IDM_VS_CTXT_FRAMEWORKREFERENCE_GROUP;
     }
 }
 #endif

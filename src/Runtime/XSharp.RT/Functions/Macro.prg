@@ -47,7 +47,12 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
             XSharp.RuntimeState.MacroResolver := DefaultMacroAmbigousMatchResolver
         ENDIF
         LOCAL oResult AS XSharp._Codeblock
-        VAR cMacro := cString // MPrepare(cString)
+        LOCAL cMacro as STRING
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            cMacro := MPrepare(cString)
+        ELSE
+            cMacro := cString // MPrepare(cString)
+        ENDIF
         IF oMC IS IMacroCompilerUsual VAR oMCU
             oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)
         ELSE
@@ -59,33 +64,56 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
     ENDIF
     RETURN NULL_OBJECT
 
-    //INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
-    //
-    //INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
-    //    // Replace ".or." and other strings when they are part of the macro
-    //    VAR pos := cMacro:IndexOf(c'.')
-    //    IF pos < 0
-    //        RETURN cMacro
-    //    ENDIF
-    //    // This is probably too much but it works
-    //    // and it does not fix MiXeD cased NaMeS
-    //    IF macroTokens == NULL
-    //        macroTokens := Dictionary<STRING, STRING>{}
-    //        macroTokens:Add("\.or\.", " .or. ")
-    //        macroTokens:Add("\.and\.", " .and. ")
-    //        macroTokens:Add("\.not\.", " .not. ")
-    //        macroTokens:Add("\.xor\.", " .xor. ")
-    //        macroTokens:Add("\.t\.", " .t. ")
-    //        macroTokens:Add("\.f\.", " .f. ")
-    //        macroTokens:Add("\.n\.", " .n. ")
-    //        macroTokens:Add("\.y\.", " .y. ")
-    //    ENDIF
-    //    VAR result := cMacro
-    //
-    //    FOREACH VAR replace IN macroTokens
-    //        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
-    //    NEXT
-    //    RETURN result
+FUNCTION MPrepare(cString AS STRING) AS STRING
+    // This function is used to pars FoxPro macros and replace the DOT inside an expression
+    // with a Alias operator when relevant.
+    var sb := System.Text.StringBuilder{cString:Length}
+    var sbId := System.Text.StringBuilder{cString:Length}
+    var dotCount := 0
+    foreach var c in cString
+        if Char.IsLetterOrDigit(c) .or. c = c'_'
+            sbId:Append(c)
+        elseif c == c'.'
+            if dotCount == 1
+                // there is already a dot, so add the expression to the result
+                // and start a new expression
+                var sTemp := sbId:ToString()
+                sTemp := AliasReplace(sTemp)
+                sb:Append(sTemp)
+                sbId:Clear()
+                sbId:Append(c)
+                dotCount := 0
+            else
+                dotCount := 1
+                sbId:Append(c)
+            endif
+
+        else
+            var sTemp := sbId:ToString()
+            sTemp := AliasReplace(sTemp)
+            sb:Append(sTemp)
+            sbId:Clear()
+            sb:Append(c)
+        end if
+    next
+    if sbId:Length > 0
+        sb:Append(AliasReplace(sbId:ToString()))
+    endif
+    local function AliasReplace(cText as string) as string
+        // convert the Foo DOT Bar expression to a IIF expression
+        if cText:IndexOf(c'.') = -1
+            return cText
+        endif
+        var elements := cText:Split(c'.')
+        if elements:Length == 2 .and. ! String.IsNullOrEmpty(elements[1])
+            var fldvar := cText:Replace(".","->")
+            return "IIF (_selectString('"+elements[1] + "') > 0, "+fldvar+", "+cText+")"
+        endif
+        return cText
+    end function
+
+    return sb:ToString()
+
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />

@@ -174,9 +174,14 @@ namespace XSharp.Project
         /// </summary>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Give the codemodel a way to talk to the VS Shell
+            // Give the codemodel a way to talk to the VS Shell.
+            // Everything on this path is awaited and must stay that way: when a solution is opened
+            // while VS is starting, the shell loads this package synchronously from
+            // Solution.OpenAsync() -> CanOpenProject() and waits for it on the UI thread. Blocking
+            // here while waiting for that same UI thread deadlocks the IDE.
             _shellEvents = new XSharpShellEvents();
-            XSharp.Support.Logger.Initialize();
+            await _shellEvents.InitializeAsync();
+            await XSharp.Support.Logger.InitializeAsync();
             this.RegisterToolWindows();
 
             await base.InitializeAsync(cancellationToken, progress);

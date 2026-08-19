@@ -459,6 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpDialect.XPP:
                     return new XSharpTreeTransformationXPP(parser, options, pool, syntaxFactory, fileName);
                 case XSharpDialect.Harbour:
+                case XSharpDialect.XBaseNet:
                 default:
                     return new XSharpTreeTransformationRT(parser, options, pool, syntaxFactory, fileName);
             }

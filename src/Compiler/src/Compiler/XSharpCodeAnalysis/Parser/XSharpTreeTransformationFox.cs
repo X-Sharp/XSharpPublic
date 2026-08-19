@@ -136,16 +136,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Expr != null && context.Op.Type == XP.DOT
                 && context.Parent is not MethodCallContext
                 && (context.AreaName == "M" ||
-                    _options.HasOption(CompilerOption.Fox3, context, PragmaOptions)))
+                    _options.HasOption(CompilerOption.FoxCursorSupport, context, PragmaOptions)))
             {
                 context.foxFlags |= XP.FoxFlags.MemberAccess;
                 if (context.Parent is not AccessMemberContext && CurrentMember != null)
                 {
+                    var cb = GetCodeBlock(context);
                     var name = context.AreaName;
-                    var fld = CurrentMember.Data.GetField(name);
-                    if (fld == null)
+                    if (cb != null && cb.HasParameter(name))
                     {
-                        fld = CurrentMember.Data.AddField(name, "_UNKNOWN", context);
+                        ; // do nothing
+                    }
+                    else
+                    {
+                        var fld = CurrentMember.Data.GetField(name);
+                        if (fld == null)
+                        {
+                            fld = CurrentMember.Data.AddField(name, "_UNKNOWN", context);
+                        }
                     }
                 }
             }
@@ -270,19 +278,133 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 CurrentMember.Data.HasThisForm = true;
             }
         }
+        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
+        {
+            base.EnterLocalvar(context);
+            // register the names of local variables as pseudo memvars because for FoxPro they are not really local
+            if (_options.HasOption(CompilerOption.FoxCursorSupport, context, PragmaOptions))
+            {
+                var name = context.Id.GetText();
+                AddLocalName(name, context);
+            }
+        }
+        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
+        {
+            base.EnterImpliedvar(context);
+            // register the names of local variables as pseudo memvars because for FoxPro they are not really local
+            if (_options.HasOption(CompilerOption.FoxCursorSupport, context, PragmaOptions))
+            {
+                var name = context.Id.GetText();
+                AddLocalName(name, context);
+            }
+        }
 
+        CodeblockContext GetCodeBlock(XSharpParserRuleContext context)
+        {
+            var parent = context.Parent;
+            while (parent != null && parent is not IEntityContext)
+            {
+                if (parent is CodeblockContext codeblock)
+                {
+                    return codeblock;
+                }
+                parent = parent.Parent;
+            }
+            return null;
+        }
+
+        public override void EnterCodeblockParamList([NotNull] CodeblockParamListContext context)
+        {
+            base.EnterCodeblockParamList(context);
+            if (_options.HasOption(CompilerOption.FoxCursorSupport, context, PragmaOptions))
+            {
+                // Register the parameters for the codeblock so we know their names later
+                var cb = GetCodeBlock(context);
+                if (cb != null)
+                {
+                    foreach (var id in context._Ids)
+                    {
+                        var name = id.GetText();
+                        cb.AddParameter(name);
+                    }
+                }
+            }
+        }
+
+        public override void EnterExplicitAnonymousFunctionParamList([NotNull] ExplicitAnonymousFunctionParamListContext context)
+        {
+            base.EnterExplicitAnonymousFunctionParamList(context);
+            if (_options.HasOption(CompilerOption.FoxCursorSupport, context, PragmaOptions))
+            {
+                // Register the parameters for the codeblock so we know their names later
+                var cb = GetCodeBlock(context);
+                if (cb != null)
+                {
+                    foreach (var par in context._Params)
+                    {
+                        var name = par.Id.GetText();
+                        cb.AddParameter(name);
+                    }
+                }
+            }
+        }
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
         {
             base.ExitNameExpression(context);
+            string name = context.Name.GetText();
+            ExpressionSyntax expr = context.Name.Get<NameSyntax>();
+            // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             if (context.Start.Type == XP.THISFORM)
             {
                 // Translate to Xs$ThisForm
                 if (CurrentMember != null && CurrentMember.Data.HasThisForm)
                 {
-                    var expr = GenerateSimpleName(XSharpSpecialNames.ThisForm);
+                    expr = GenerateSimpleName(XSharpSpecialNames.ThisForm);
                     context.Put(expr);
+                    return;
                 }
             }
+            if (context.IsInLambdaOrCodeBlock())
+            {
+                // Make sure parameters for codeblocks are not "touched"
+                var cb = GetCodeBlock(context);
+                if (cb != null && cb.HasParameter(name))
+                {
+                    expr = GenerateSimpleName(name);
+                    context.Put(expr);
+                    return;
+                }
+            }
+
+            // SomeVar(1,2) Can also be a FoxPro array access
+            if (context.Parent.Parent is not XP.MethodCallContext ||
+                (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
+            {
+                MemVarFieldInfo fieldInfo = findVar(name);
+                var amc = context.Parent.Parent as XP.AccessMemberContext;
+                var staticCall = amc?.Op.Type == XP.DOTCOLON;
+                var methodCall = amc?.Parent is MethodCallContext;
+                if (fieldInfo != null && !staticCall && !methodCall)
+                {
+                    // for code that looks like this we do not want to change the expression
+                    // Foo(1,2)
+                    // even when Foo is a private because this can never be a assignment
+                    if (!fieldInfo.IsField)
+                    {
+                        if (context.Parent is XP.PrimaryExpressionContext pec &&
+                            pec.Parent is XP.MethodCallContext mcc &&
+                            mcc.Parent is XP.ExpressionStmtContext)
+                        {
+                            fieldInfo = null;
+                        }
+                    }
+                    if (fieldInfo != null)
+                    {
+                        expr = MakeMemVarField(fieldInfo);
+                    }
+                }
+            }
+            context.Put(expr);
         }
         protected override void ImplementThisForm(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
         {

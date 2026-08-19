@@ -66,6 +66,10 @@ namespace Microsoft.VisualStudio.Project.Automation
                 {
                     return null;
                 }
+                if (BaseReferenceNode.ProjectMgr == null)
+                {
+                    return null;
+                }
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

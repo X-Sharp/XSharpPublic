@@ -2344,7 +2344,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     break;
                                 case CompilerOption.Fox1:    // Inherit from Base
                                 case CompilerOption.Fox2:    // FoxPro array syntax
-                                case CompilerOption.Fox3:    // Compatible Ambiguous Dot Handling
+                                case CompilerOption.Fox3:    // Compatible Cursor Support
                                     if (_options.Dialect != XSharpDialect.FoxPro)
                                         goto default;
                                     pragma = new PragmaOption(start, state, compopt);

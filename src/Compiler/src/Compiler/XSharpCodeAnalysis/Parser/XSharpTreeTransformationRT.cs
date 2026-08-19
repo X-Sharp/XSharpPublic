@@ -3623,7 +3623,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Data.HasClipperCallingConvention = false;
                 }
                 // If the code contains a THISFORM or THIS in a codeblock
-                ImplementThisForm(context, stmts);
+                ImplementSpecialLocals(context, stmts);
                 if (context.Data.HasClipperCallingConvention && !_options.NoClipCall)
                 {
                     // Assuming the parameters are called oPar1 and oPar2 then the following code is generated

@@ -125,8 +125,9 @@ LOCAL nArea := VoDbGetSelect(wa) AS DWORD
     local ok as LOGIC
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
         local oLocal := uLocal as object
+        var ivar := (OBJECT) IVarGet(oLocal, wa)
         // we do not use IVarGet because we also want to support static fields and properties
-        var res := _GetValue(oLocal:GetType(), oLocal)
+        var res := _GetValue(ivar:GetType(), ivar)
         if ok
             return res
         endif
@@ -234,7 +235,8 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
         local oLocal := uLocal as object
         // we do not use IVarPut because we also want to support static fields and properties
-        IF _SetValue(oLocal:GetType(), oLocal, uValue)
+        var ivar := (OBJECT) IVarGet(oLocal, wa)
+        IF _SetValue(ivar:GetType(), ivar, uValue)
             return uValue
         ENDIF
     ENDIF

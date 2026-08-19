@@ -275,7 +275,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.EnterKeywordsoft(context);
             if (CurrentMember != null && context.Start.Type == XSharpLexer.THISFORM)
             {
-                CurrentMember.Data.HasThisForm = true;
+                if (!_options.HasOption(CompilerOption.NoThisForm, context, PragmaOptions))
+                {
+                    CurrentMember.Data.HasThisForm = true;
+                }
             }
         }
         public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
@@ -341,7 +344,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
-            if (context.Start.Type == XP.THISFORM)
+            if (!_options.HasOption(CompilerOption.NoThisForm, context, PragmaOptions)
+                && context.Start.Type == XP.THISFORM)
             {
                 // Translate to Xs$ThisForm
                 if (CurrentMember != null && CurrentMember.Data.HasThisForm)
@@ -351,6 +355,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
+
             if (context.IsInLambdaOrCodeBlock())
             {
                 // Make sure parameters for codeblocks are not "touched"
@@ -393,9 +398,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(expr);
         }
-        protected override void ImplementThisForm(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
+        protected override void ImplementSpecialLocals(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
         {
-            base.ImplementThisForm(context, stmts);
+            base.ImplementSpecialLocals(context, stmts);
             if (context.Data.HasThisForm)
             {
                 // Add local Xs$ThisForm and assign the result of FindForm()

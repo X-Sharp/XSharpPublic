@@ -144,6 +144,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.NoStdDef = positive;
                     break;
 
+                case "nothisform":
+                    options.NoThisForm = positive;
+                    break;
                 case "ns":
                     if (value == null)
                     {

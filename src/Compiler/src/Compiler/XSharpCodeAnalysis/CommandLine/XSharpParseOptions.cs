@@ -110,6 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public bool NoStdDef { get; private set; }
+        public bool NoThisForm { get; private set; }
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
@@ -210,6 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ModernSyntax = opt.ModernSyntax;
                 NoClipCall = opt.NoClipCall;
                 NoStdDef = opt.NoStdDef;
+                NoThisForm = opt.NoThisForm;
                 Overflow = opt.Overflow;
                 ParseLevel = opt.ParseLevel;
                 ParseLevel = opt.ParseLevel;
@@ -295,6 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemVars = opt.MemVars;
             NoClipCall = opt.NoClipCall;
             NoStdDef = opt.NoStdDef;
+            NoThisForm = opt.NoThisForm;
             Overflow = opt.Overflow;
             ParseLevel = opt.ParseLevel;
             PreprocessorOutput = opt.PreprocessorOutput;
@@ -394,6 +397,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.Overflow: // ovf
                     return CheckOption(option, Overflow, token, options);
+
+                case CompilerOption.NoThisForm: // ovf
+                    return CheckOption(option, NoThisForm, token, options);
 
                 case CompilerOption.UndeclaredMemVars: // undeclared
                     return CheckOption(option, UndeclaredMemVars, token, options);

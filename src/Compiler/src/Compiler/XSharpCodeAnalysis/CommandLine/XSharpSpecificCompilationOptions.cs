@@ -82,6 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ModernSyntax { get; internal set; } = false;
         public bool NoClipCall { get; internal set; } = false;
         public bool NoStdDef { get; internal set; } = false;
+        public bool NoThisForm { get; internal set; } = false;
         public string NameSpace { get; set; } = string.Empty;
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
@@ -443,6 +444,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ModernSyntax = 1L << 33,
         Fox3 = 1L << 34,
         FoxCursorSupport = Fox3,
+        NoThisForm = 1L << 35,
         All = -1,       // used for Push/Pop
     }
 
@@ -493,6 +495,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.None:
                 case CompilerOption.Overflow:
                 case CompilerOption.ModernSyntax:
+                case CompilerOption.NoThisForm:
                     return false;
                 default:
                     break;
@@ -573,6 +576,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "VO Compatible BEGIN SEQUENCE .. END ";
                 case CompilerOption.Xpp1:
                     return "All classes inherit from XPP.Abstract";
+                case CompilerOption.NoThisForm:
+                    return "Do not translate THISFORM to special code";
                 case CompilerOption.None:
                     return "";
             }
@@ -655,6 +660,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Vo17;
                 case "xpp1":
                     return CompilerOption.Xpp1;
+                case "nothisform":
+                    return CompilerOption.NoThisForm;
                 default:
                     break;
             }

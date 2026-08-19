@@ -6,31 +6,39 @@
 #pragma options("lb", enable)
 #pragma options("memvar", enable)
 #pragma options("undeclared", enable)
-CLASS MyForm INHERIT XSharp.VFP.Custom // problem happens even if not inheriting from any class
-	PROPERTY Test AS INT AUTO
+#pragma options("allowoldstyleassignments", enable)
+CLASS Form INHERIT XSharp.VFP.Custom // problem happens even if not inheriting from any class
+	EXPORT Button AS Button
+	PROPERTY Caption AS STRING AUTO
+	CONSTRUCTOR( )
+		SUPER( )
+		SELF:Button := Button{ SELF }
+		SELF:Caption := "Main Form"
 END CLASS
 
-CLASS TestControl INHERIT XSharp.VFP.Custom // problem happens even if not inheriting from any class
-	PROPERTY ThisForm AS MyForm AUTO
-
-	// should compile also without this, but for now uncomment to run test:
-
-/*	METHOD FindForm() AS MyForm // workaround because the compiler needs this method to exist
-	RETURN SELF:ThisForm*/
+CLASS Button INHERIT XSharp.VFP.Custom // problem happens even if not inheriting from any class
+	PROPERTY @@ThisForm AS OBJECT AUTO // or AS Form, AS USUAL, etc
+	PROPERTY Caption AS STRING AUTO
+	
+	CONSTRUCTOR( oForm AS Form )
+		SUPER( )
+		SELF:ThisForm := oForm
+		SELF:Caption := "Click me"
 		
-	METHOD DoTest() AS VOID
-		thisform := MyForm{}
-		thisform.Test := 123
-		? thisform.Test
+	// workaround because the compiler needs this method to exist
+	METHOD FindForm() AS Form // or AS USUAL, AS OBJECT etc
+	RETURN SELF:ThisForm
+		
+	METHOD Click() AS VOID
+		// that's the original VFP code
+		thisform.Button.Caption = "test"
+		? thisform.Button.Caption
+
+		thisform.Caption := "another test"
+		? thisform.Caption
 END CLASS
 
 FUNCTION Start() AS VOID
-	TRY
-		TestControl{}:DoTest()
-	CATCH oException AS System.Reflection.ReflectionTypeLoadException
-		FOREACH oLoaderException AS Exception IN oException:LoaderExceptions
-			// System.TypeLoadException: Declaration referenced in a method implementation cannot be a final method.  Type: 'ImplementClass'.
-			? oLoaderException:ToString( )
-		NEXT
-	END TRY		
-
+	LOCAL oForm AS Form
+	oForm := Form{}
+	oForm:Button:Click() // emulate user clicking the button

@@ -43,7 +43,22 @@ partial class SQLRDD
             selectedBag := self:FindOrderBag(bagName)
         endif
         order := null
-        if orderInfo:Order is long var iOrder
+        // A tag number can arrive as any integer type, not just LONG - VO code commonly passes
+        // it as DWORD (e.g. from IndexCount()/DBOI_ORDERCOUNT, both DWORD-typed), and ADS/DBF
+        // accepts that without complaint. Checking only "is long" made SetOrder(<a DWORD>)
+        // silently fail here (falls through both branches, order stays null) even though the
+        // tag genuinely exists - a real ADS-compatibility gap, not a missing/misconfigured tag.
+        var lHasNumericOrder := false
+        var iOrder := 0
+        if orderInfo:Order != null
+            try
+                iOrder := Convert.ToInt32(orderInfo:Order)
+                lHasNumericOrder := true
+            catch
+                lHasNumericOrder := false
+            end try
+        endif
+        if lHasNumericOrder
             if selectedBag != null
                 order := selectedBag:FindTag(iOrder)
             else
@@ -169,24 +184,39 @@ partial class SQLRDD
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
             // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
-            // tearing down the cursor. _CloseCursor() below nulls out the table the
-            // CurrentRow property reads from, so GoCold() called any later (e.g. via the
-            // GoTo() further down) would see the phantom row instead of the real dirty one
-            // and silently report success without writing anything - a change made via
-            // SetOrder()/RestDB() around a write (the standard "write outside the active
-            // index/order" pattern used throughout the app) would be lost.
+            // possibly tearing down the cursor further down. This must run even when the
+            // requested order turns out to already be the active one (see the short-circuits
+            // below) - GoCold() is cheap when nothing is dirty, so it is always safe to call
+            // first. Skipping it in the "nothing to do" case would silently lose pending writes:
+            // SetOrder()/RestDB() around a write is a standard "write outside the active
+            // index/order" pattern used throughout the app, and it must keep flushing even when
+            // the order doesn't actually change.
             SELF:GoCold()
-            self:_CloseCursor()
             if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
                (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
                 // Order 0 (or an empty order name) means: switch back to the natural/physical
                 // record order, i.e. no order at all. There is no "tag zero" to look up, so
                 // this must always succeed - matching VO, which returns TRUE for SetOrder(0).
+                if !(SELF:CurrentOrder == null .and. self:_hasData)
+                    // Only reset the cursor when the order is actually changing, or when this
+                    // is the table's first activation (no data loaded yet - _hasData false).
+                    // _CloseCursor() forces the GoTo() below to pay for a full requery/recount
+                    // via _ForceOpen(). Application code commonly calls SetOrder(0) defensively
+                    // ("just in case") without checking the current order first - harmless under
+                    // DBF, expensive here, and skipping the reset when nothing actually changes
+                    // is safe: GoTo()/CalculateKeyLength() below still run unconditionally (see
+                    // comment further down) so nothing is silently left stale.
+                    self:_CloseCursor()
+                endif
                 SELF:CurrentOrder := null
                 self:GoTo(currentRecord)
                 result := true
             else
-                SELF:CurrentOrder := self:FindOrder(orderInfo)
+                var newOrder := self:FindOrder(orderInfo)
+                if !(newOrder != null .and. newOrder == SELF:CurrentOrder .and. self:_hasData)
+                    self:_CloseCursor()
+                endif
+                SELF:CurrentOrder := newOrder
                 result := CurrentOrder != null
                 IF result
                     SELF:CurrentOrder:ClearCache()
@@ -409,8 +439,15 @@ partial class SQLRDD
         case DBOI_SCOPETOPCLEAR
         case DBOI_SCOPEBOTTOMCLEAR
             if workOrder != null
-                workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
-                self:_CloseCursor()
+                var alreadyClear := (nOrdinal == DBOI_SCOPETOPCLEAR    .and. workOrder:TopScope    == null) .or. ;
+                                     (nOrdinal == DBOI_SCOPEBOTTOMCLEAR .and. workOrder:BottomScope == null)
+                if !alreadyClear
+                    // Only reset the cursor when there was actually a scope to clear - re-clearing
+                    // an already-clear scope (a common defensive pattern) would otherwise pay for a
+                    // cursor reset for nothing under SqlRDD, unlike DBF where this is free.
+                    workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                    self:_CloseCursor()
+                endif
             endif
             info:Result := null
         case DBOI_SCOPETOP
@@ -424,11 +461,15 @@ partial class SQLRDD
                 else
                     oldValue := DBNull.Value
                 endif
-                if info:Result != null
+                if info:Result != null .and. !Object.Equals(oldValue, info:Result)
+                    // Only touch the cursor when the scope value actually changes - re-applying
+                    // the same scope value (a common defensive pattern, e.g. re-scoping on every
+                    // keystroke when the underlying value hasn't changed) would otherwise pay for
+                    // a cursor reset for nothing under SqlRDD, unlike DBF where this is free.
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                    self:_CloseCursor()
                 endif
                 info:Result := oldValue
-                self:_CloseCursor()
             else
                 info:Result := DBNull.Value
             endif

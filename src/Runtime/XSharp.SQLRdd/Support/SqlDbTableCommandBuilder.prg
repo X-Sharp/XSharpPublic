@@ -89,10 +89,19 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
         sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(oTag:Name))
         sb:Replace(SqlDbProvider.UniqueMacro, iif(oTag:Unique, " unique", ""))
-        var columnList := Functions.List2String(oTag:ColumnList)
+        // A DBF/ADS key expression may legitimately reference the same physical column more
+        // than once (e.g. IIF(EMPTY(DATUM), BUCHDATUM, DATUM)) - that's fine for evaluating the
+        // key, but a SQL "CREATE INDEX ON table(col, col)" rejects the duplicate column name
+        // outright, silently leaving the index missing (surfaces later as "Index nicht
+        // vorhanden" the first time something tries to use it). Distinct() here only affects
+        // the index's column list, not oTag:ColumnList itself, which other callers (e.g.
+        // CalculateKeyLengthFromMetadata()) still need to see every occurrence, since that's
+        // summing up how much buffer space the compound expression's actual result needs.
+        var distinctColumns := oTag:ColumnList:Distinct(StringComparer.OrdinalIgnoreCase):ToList()
+        var columnList := Functions.List2String(distinctColumns)
         // When there is a recno column then we want to add that,to make sure that duplicate keys
         // are sorted by record number
-        if SELF:_oTable:HasRecnoColumn
+        if SELF:_oTable:HasRecnoColumn .and. !distinctColumns:Contains(Provider:QuoteIdentifier(SELF:_oTable:RecnoColumn), StringComparer.OrdinalIgnoreCase)
             columnList += ", "+ Provider:QuoteIdentifier(SELF:_oTable:RecnoColumn)
         endif
         sb:Replace(SqlDbProvider.FieldListMacro, columnList)

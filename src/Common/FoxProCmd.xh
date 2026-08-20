@@ -162,6 +162,42 @@
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
 
+// COUNT — the VO rule in dbcmd.xh requires the TO clause (it expands to
+// "<xvar> := 0", which leaves a dangling ":=" when TO is omitted) and never
+// updates _TALLY. VFP accepts the TO clause both right after COUNT and at the
+// end, so both orders need their own rule: an optional clause cannot be matched
+// across a mandatory one.
+#command COUNT                                                          ;
+         [ALL]                                                          ;
+         [<REST:REST>]                                                  ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+      => __VfpCount( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+#command COUNT TO <xvar>                                                ;
+         [ALL]                                                          ;
+         [<REST:REST>]                                                  ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+      => <xvar> := __VfpCount( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+#command COUNT                                                          ;
+         [ALL]                                                          ;
+         [<REST:REST>]                                                  ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         TO <xvar>                                                      ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+      => <xvar> := __VfpCount( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
 // WAIT
 #xcommand WAIT <msg> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
     => __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)

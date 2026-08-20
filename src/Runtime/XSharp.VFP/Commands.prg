@@ -224,3 +224,10 @@ FUNCTION __VfpWaitForKey(uTimeout AS USUAL) AS STRING
 
 function __VfpWaitClear() as void
     return
+
+/// <exclude/>
+FUNCTION __VfpCount(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
+    LOCAL nCount := 0 AS LONG
+    DbEval({|| nCount += 1}, cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    _TALLY := nCount
+    RETURN nCount

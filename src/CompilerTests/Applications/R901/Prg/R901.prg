@@ -1,10 +1,15 @@
+// There is no warning reported by the compiler now for using REF instead of OUT
 FUNCTION Start() AS VOID STRICT
 
 	LOCAL x := "" AS STRING
-	TestFunc(REF x)
+	TestFuncOut(REF x)
+//	TestFuncRef(OUT x) // this one does throw an error (not warning)
     ? x
 	RETURN
 
-FUNCTION TestFunc(x OUT STRING) AS VOID STRICT
+FUNCTION TestFuncOut(x OUT STRING) AS VOID STRICT
+	x := "test"
+	RETURN
+FUNCTION TestFuncRef(x REF STRING) AS VOID STRICT
 	x := "test"
 	RETURN

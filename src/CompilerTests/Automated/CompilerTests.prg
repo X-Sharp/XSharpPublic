@@ -189,6 +189,9 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		// make sure helper apps get compiled first
 		cKey := iif(oApp:cName:ToUpper():Contains("HELPER") , "0" , "1")
 		cKey += "_" + oApp:cName
+		IF oApp:cName:ToUpper():StartsWith("D") // just a test to see if this prg gets auto compiled
+			LOOP
+		END IF
 		aApps:Add(cKey ,oApp)
 	NEXT
 

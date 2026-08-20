@@ -108,6 +108,7 @@
     <Compile Include="SetDateCommandTests.prg" />
     <Compile Include="SQLStatementTests.prg" />
     <Compile Include="StrConvTests.prg" />
+    <Compile Include="TallyTests.prg" />
     <Compile Include="TypeTests.prg" />
     <Compile Include="EmptyTests.prg" />
     <Compile Include="FoxArraytests.prg" />

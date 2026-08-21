@@ -1,7 +1,7 @@
 // 977. DataSession implementation
 // https://github.com/X-Sharp/XSharpPublic/issues/2033
 
-#pragma options("fox3", enable)
+//#pragma options("fox3", enable)
 #pragma options("allowdot", enable)
 #pragma options("lb", enable)
 #pragma options("memvar", enable)

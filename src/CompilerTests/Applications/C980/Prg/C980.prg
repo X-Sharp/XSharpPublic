@@ -7,6 +7,14 @@
 #pragma options("memvar", enable)
 #pragma options("undeclared", enable)
 
+CLASS TestGlobalClass
+	EXPORT n := 100 AS INT
+	PROPERTY prop AS INT GET 500 SET SELF:n := value
+END CLASS
+
+GLOBAL GlobalString := "test" AS STRING
+GLOBAL GlobalClass := TestGlobalClass{} AS TestGlobalClass
+
 CLASS Customers
 	STATIC PROTECT StaticProtect AS INT
 	STATIC PROTECT StaticPrivate AS INT
@@ -37,6 +45,12 @@ CLASS Customers
 		xAssert( localusual.InstanceProtect == 321 )
 		localusual.InstancePrivate := 333
 		xAssert( localusual.InstancePrivate == 333 )
+
+		? GlobalString.Length
+		? GlobalClass.n
+		? GlobalClass.prop
+		GlobalClass.prop := 777
+		? GlobalClass.n
 	
 	METHOD InstanceMethod() AS VOID
 		Customers.StaticProtect := 200
@@ -56,10 +70,23 @@ CLASS Customers
 		xAssert( localusual.InstanceProtect == 321 )
 		localusual.InstancePrivate := 333
 		xAssert( localusual.InstancePrivate == 333 )
+
+		? GlobalString.Length
+		? GlobalClass.n
+		? GlobalClass.prop
+		GlobalClass.prop := 888
+		? GlobalClass.n
 	
 END CLASS
 
 FUNCTION Start( ) AS VOID
+	? GlobalString:Length
+	? GlobalString.Length
+	? GlobalClass.n
+	? GlobalClass.prop
+	GlobalClass.prop := 999
+	? GlobalClass.n
+	
 	Customers.StaticMethod()
 	Customers{}:InstanceMethod()
 	

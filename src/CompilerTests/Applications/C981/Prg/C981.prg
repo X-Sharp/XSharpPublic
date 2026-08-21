@@ -1,5 +1,5 @@
 // 981. Problems with the /fox3 option -  macrocompiler #2057
-// https://github.com/X-Sharp/XSharpPublic/issues/2056
+// https://github.com/X-Sharp/XSharpPublic/issues/2057
 
 // Both with fox3+ and fox3-
 //#pragma options("fox3", enable)

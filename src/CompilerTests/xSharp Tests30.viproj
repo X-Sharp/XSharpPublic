@@ -146894,7 +146894,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = D002 - Primary Constructor VO Dialect
 
-ApplicationGroup = 70E3DAB7-5F3E-45A2-B617-437A91064B55
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION D003 - Primary Constructor NetCore VO Dialect *************
 Application = D003 - Primary Constructor NetCore VO Dialect
 IDEVersion = 1.06

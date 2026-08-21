@@ -10,6 +10,7 @@ DEFINE TAG_WARNING := "$WARNING"
 DEFINE TAG_NOWARNING := "$NOWARNING"
 
 GLOBAL gcRuntimeFolder AS STRING
+GLOBAL gcNetCoreRuntimeFolder AS STRING
 GLOBAL gcCompilerFilename AS STRING
 GLOBAL glNetCore := FALSE AS LOGIC
 
@@ -38,21 +39,24 @@ FUNCTION Start() AS VOID
 //	#define LOCALTEST
 	#ifdef LOCALTEST
 	
-	gcCompilerFilename := "C:\Program Files (x86)\XSharp\Bin\xsc.exe"
-	cProjectFile       := "C:\xSharp\Dev\src\CompilerTests\xSharp Tests30.viproj"
-	gcRuntimeFolder    := "C:\xSharp\Dev\Artifacts\Release"
-	cTestTheFixedOnes  := "TRUE"
-	cConfigName        := "DEBUG"
-	cLogFilename       := "C:\xSharp\Dev\src\CompilerTests\Automated\log.txt"
+	gcCompilerFilename     := "C:\Program Files (x86)\XSharp\Bin\xsc.exe"
+	cProjectFile           := "C:\xSharp\Dev\src\CompilerTests\xSharp Tests30.viproj"
+	gcRuntimeFolder        := "C:\xSharp\Dev\Artifacts\Release\net46"
+//	gcNetCoreRuntimeFolder := "C:\xSharp\Dev\Artifacts\Release"
+	gcNetCoreRuntimeFolder := "C:\Program Files (x86)\XSharp\Redist\net8.0"
+	cTestTheFixedOnes      := "TRUE"
+	cConfigName            := "DEBUG"
+	cLogFilename           := "C:\xSharp\Dev\src\CompilerTests\Automated\log.txt"
 
 	#else
 	
-	gcCompilerFilename := Environment.GetEnvironmentVariable("XSCOMPILER")?:Trim()
-	cProjectFile       := Environment.GetEnvironmentVariable("XSTESTPROJECT")?:Trim()
-	gcRuntimeFolder    := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
-	cTestTheFixedOnes  := Environment.GetEnvironmentVariable("XSFIXEDTESTS")?:Trim()
-	cConfigName        := Environment.GetEnvironmentVariable("XSCONFIG")?:Trim()
-	cLogFilename       := Environment.GetEnvironmentVariable("XSLOGFILE")?:Trim()
+	gcCompilerFilename     := Environment.GetEnvironmentVariable("XSCOMPILER")?:Trim()
+	cProjectFile           := Environment.GetEnvironmentVariable("XSTESTPROJECT")?:Trim()
+	gcRuntimeFolder        := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
+	gcNetCoreRuntimeFolder := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
+	cTestTheFixedOnes      := Environment.GetEnvironmentVariable("XSFIXEDTESTS")?:Trim()
+	cConfigName            := Environment.GetEnvironmentVariable("XSCONFIG")?:Trim()
+	cLogFilename           := Environment.GetEnvironmentVariable("XSLOGFILE")?:Trim()
 	IF String.IsNullOrEmpty(gcCompilerFilename ) .OR. ;
 		String.IsNullOrEmpty(cProjectFile      ) .OR. ;
 		String.IsNullOrEmpty(gcRuntimeFolder   ) .OR. ;
@@ -103,7 +107,7 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 	LOCAL nFail AS INT
 	
 	#ifdef LOCALTEST
-	RETURN 0
+//	RETURN 0
 	#endif
 
 	oProject := oXide:Project
@@ -189,9 +193,6 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		// make sure helper apps get compiled first
 		cKey := iif(oApp:cName:ToUpper():Contains("HELPER") , "0" , "1")
 		cKey += "_" + oApp:cName
-		IF oApp:cName:ToUpper():StartsWith("D") // just a test to see if this prg gets auto compiled
-			LOOP
-		END IF
 		aApps:Add(cKey ,oApp)
 	NEXT
 
@@ -202,7 +203,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		oApp := oPair:Value
 
 		#ifdef LOCALTEST
-/*		IF .not. oApp:cName:StartsWith("C93")
+/*		IF .not. oApp:cName:StartsWith("C586")
 			LOOP
 		END IF*/
 		#endif
@@ -873,7 +874,11 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader) AS STRING
 		FOREACH cTest AS STRING IN aRuntime
 			IF oRef:cName:ToUpper():Contains(cTest:ToUpper())
 				LOCAL cFileName AS STRING
-				cFileName := gcRuntimeFolder + "\" + cTest + ".dll"
+				IF oApp:eClr == ClrType.NetCore
+					cFileName := gcNetCoreRuntimeFolder + "\" + cTest + ".dll"
+				ELSE
+					cFileName := gcRuntimeFolder + "\" + cTest + ".dll"
+				END IF
 				oRef := ReferenceObject{cFileName , ReferenceType.Browse}
 				oRef:cFileName := cFileName
 				oApp:aReferences[nRef] := oRef
@@ -977,10 +982,11 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    CASE sLine:cParam == "RUNTIME"
 	    	IF cUpper == "CLR2"
 	    		oApp:eClr := ClrType.v2
+	    	ELSEIF cUpper == "NETCORE"
+	    		oApp:eClr := ClrType.NetCore
 	    	ELSE
 	    		oApp:eClr := ClrType.v4
 	    	ENDIF
-	    	oApp:eClr := ClrType.v4
 	    CASE sLine:cParam == "DIALECT"
 	    	DO CASE
 	    	CASE cUpper == "CORE"
@@ -1229,16 +1235,25 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 
 	    CASE sLine:cParam=="REFERENCEGAC"
 	    	LOCAL eClr AS ClrType
+	    	LOCAL cNetCoreFolder AS STRING
+	    	cNetCoreFolder := ""
 	    	eClr := ClrType.v4
 	    	cLine := sLine:cValue
 	    	nAt := At("," , cLine)
-	    	IF (cLine:StartsWith("CLR2") .or. cLine:StartsWith("CLR4")) .and. nAt != 0
+	    	IF (cLine:StartsWith("CLR2") .or. cLine:StartsWith("CLR4") .or. cLine:StartsWith("NetCore")) .and. nAt != 0
 	    		IF cLine:StartsWith("CLR2")
 	    			eClr := ClrType.v2
+	    		ELSEIF cLine:StartsWith("NetCore")
+	    			eClr := ClrType.NetCore
+	    			cNetCoreFolder := Left(cLine, nAt - 1)
+	    			IF At("|", cNetCoreFolder) != 0
+	    				cNetCoreFolder := SubStr(cNetCoreFolder, At("|", cNetCoreFolder) + 1)
+	    			ELSE
+	    				cNetCoreFolder := ""
+	    			ENDIF
 	    		ELSE
 	    			eClr := ClrType.v4
 	    		END IF
-	    		eClr := ClrType.v4
 	    		cLine := SubStr(cLine , nAt +1)
 	    		nAt := At("," , cLine)
 	    	END IF
@@ -1250,17 +1265,22 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    		cLine := SubStr(cLine , nAt +1)
 	    	ENDIF
 	    	oRef := ReferenceObject{cRef,ReferenceType.GAC}
+	    	oRef:cNetCoreFolder := cNetCoreFolder
 	    	ReadReference(oRef , cLine)
-	    	oTestRef := GACClass.GetClosestReference(oRef:cName , oRef:cVersion , eClr)
-	    	IF oTestRef != NULL
-	    		oTestRef:lCopy := oRef:lCopy
-	    		oTestRef:eFrameworks := oRef:eFrameworks
-	    		oRef := oTestRef
-	    		IF oRef:cName:ToUpper() == "XSHARP.VO"
-	    			lHasRefVO := TRUE
-	    		ELSEIF oRef:cName:ToUpper() == "XSHARP.RT"
-	    			lHasRefRT := TRUE
-	    		END IF
+	    	IF eClr == ClrType.NetCore
+	    		oRef:eClr := ClrType.NetCore
+	    	ELSE
+		    	oTestRef := GACClass.GetClosestReference(oRef:cName , oRef:cVersion , eClr)
+		    	IF oTestRef != NULL
+		    		oTestRef:lCopy := oRef:lCopy
+		    		oTestRef:eFrameworks := oRef:eFrameworks
+		    		oRef := oTestRef
+	/* 	    		IF oRef:cName:ToUpper() == "XSHARP.VO"
+		    			lHasRefVO := TRUE
+		    		ELSEIF oRef:cName:ToUpper() == "XSHARP.RT"
+		    			lHasRefRT := TRUE
+		    		END IF*/
+		    	END IF
 	    	END IF
 	    	oApp:AddReference(oRef)
 	    CASE sLine:cParam=="REFERENCEPROJECT"
@@ -1388,7 +1408,7 @@ STATIC METHOD ReadReference(oRef AS ReferenceObject,cLine AS STRING) AS VOID
 				n := INT(Val(Left(cLine,nAt-1)))
 				cLine := SubStr(cLine , nAt + 1):Trim()
 				oRef:lCopy := n == 1
-				IF oRef:eType == ReferenceType.GAC
+				IF oRef:eReferenceType == ReferenceType.GAC
 					oRef:cVersion := cLine:Trim()
 				ELSE
 					oRef:cLoadingName := cLine:Trim()
@@ -1424,6 +1444,8 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 
 	LOCAL oCompile AS CompileOptions
 	oCompile:=CompileOptions{}
+
+	LOCAL cNetCoreVersion := "" AS STRING
 
 	lCF := FALSE
 	oConfig:=SELF:Project:oConfigs:Get( iif(cConfigName:ToUpper() == "DEBUG" , 1 , 2) )
@@ -1472,6 +1494,10 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 		ENDIF
 	NEXT
 
+	IF oApp:eClr == ClrType.NetCore
+		cNetCoreVersion := oApp:RealNetCoreVersion
+	END IF
+
 	FOR n := 1 UPTO oApp:GetReferenceCount()
 		oRef := oApp:GetReference(n)
 /*		IF (lCF .and. _And( INT(oRef:eFrameworks) , INT(Frameworks.CF)) == 0) .or. ;
@@ -1479,7 +1505,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			LOOP
 		ENDIF*/
 		DO CASE
-		CASE oRef:eType==ReferenceType.GAC
+		CASE oRef:eReferenceType==ReferenceType.GAC
 			cDll := oRef:cName:Trim()
 
 /*			IF glReplaceVulcanRuntimeWithXSharp
@@ -1510,19 +1536,26 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 /*			If !InStr(".DLL" , cDll:ToUpper())
 				cDll += ".dll"
 			EndIf*/
-			IF oRef:cVersion == ""
-				oRef := GACClass.GetClosestReference(oRef)
-			ENDIF
-			IF !oRef:cFileName == "" .and. File.Exists(oRef:cFileName)
-				cDll := oRef:cFileName
-			ENDIF
+			IF oRef:eClr == ClrType.NetCore
+/*				IF .not. oRef:cNetCoreFolder:StartsWith("XSharp")
+					oRef:cVersion := cNetCoreVersion
+				END IF*/
+				cDll := Fun.GetNetCoreReferenceFilename(oRef, oApp, cNetCoreVersion)
+			ELSE
+				IF oRef:cVersion == ""
+					oRef := GACClass.GetClosestReference(oRef)
+				ENDIF
+				IF !oRef:cFileName == "" .and. File.Exists(oRef:cFileName)
+					cDll := oRef:cFileName
+				ENDIF
+			END IF
 			oCompile:cSwitches+="/r:" + e"\"" + cDll + e"\"" + " "
-		CASE oRef:eType==ReferenceType.Project
+		CASE oRef:eReferenceType==ReferenceType.Project
 			oLibrary:=SELF:GetAppFromGuid(oRef:cGuid)
 			IF oLibrary!=NULL
 				oCompile:cSwitches+="/r:" + e"\"" + oLibrary:GetOutputFileName(oConfig:cSubFolder,lCF) + e"\"" + " "
 			END IF
-		CASE oRef:eType==ReferenceType.Browse
+		CASE oRef:eReferenceType==ReferenceType.Browse
 			cRef := oRef:cFileName
 			DO CASE
 			CASE Left(cRef:ToUpper() , 10) == "%CFFOLDER%"
@@ -1742,14 +1775,22 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 		IF oApp != NULL .and. oApp:cExtension:Trim() != ""
 			oCompile:cOut += "." + oApp:cExtension
 		ELSE
-			oCompile:cOut+=".exe"
+			IF (oApp != NULL .and. oApp:eClr == ClrType.NetCore)
+				oCompile:cOut+=".dll"
+			ELSE
+				oCompile:cOut+=".exe"
+			END IF
 		ENDIF
 	CASE nTarget==1
 		oCompile:cSwitches+="/t:winexe "
 		IF oApp != NULL .and. oApp:cExtension:Trim() != ""
 			oCompile:cOut += "." + oApp:cExtension
 		ELSE
-			oCompile:cOut+=".exe"
+			IF (oApp != NULL .and. oApp:eClr == ClrType.NetCore)
+				oCompile:cOut+=".dll"
+			ELSE
+				oCompile:cOut+=".exe"
+			END IF
 		ENDIF
 	CASE nTarget==2
 		oCompile:cSwitches+="/t:library "
@@ -1777,6 +1818,10 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 	CASE ePlatform == Platform.x64
 		oCompile:cSwitches += " /platform:x64"
 	END CASE
+
+	IF (oApp != NULL .and. oApp:eClr == ClrType.NetCore)
+		oCompile:cSwitches += " /nostdlib"
+	END IF
 
 	IF oCompile:lDebug
 		oCompile:cSwitches+=" /debug+ "
@@ -1903,6 +1948,23 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 		oCompile:cSwitches+=" /fovf+"
 	ELSE
 		oCompile:cSwitches+=" /fovf-"
+	END IF
+
+	IF (oApp != NULL .and. oApp:eClr == ClrType.NetCore)
+		oCompile:cSwitches += " /define:NET5_0_OR_GREATER"
+		LOCAL nMajorNetCoreVersion := 0 AS INT
+		LOCAL nDot := cNetCoreVersion:IndexOf('.') AS INT
+		IF nDot !=- 1
+			Int32.TryParse( cNetCoreVersion, OUT nMajorNetCoreVersion )
+		END IF
+		IF nMajorNetCoreVersion != 0
+			IF nMajorNetCoreVersion >= 8
+				oCompile:cSwitches += " /define:NET8_0_OR_GREATER"
+			END IF
+			IF nMajorNetCoreVersion >= 10
+				oCompile:cSwitches += " /define:NET10_0_OR_GREATER"
+			END IF
+		END IF
 	END IF
 
 	IF oApp != NULL .and. ! String.IsNullOrWhiteSpace( oApp:cStdDefsFile:Trim() )
@@ -2501,6 +2563,7 @@ CLASS AppClass INHERIT GeneralProjectClass
 	EXPORT cIconFileName AS STRING
 	EXPORT eLanguage AS ApplicationLanguage
 	EXPORT eClr AS ClrType
+	EXPORT cNetVersion AS STRING
 
 	EXPORT eDialect AS ApplicationDialect
 
@@ -2571,7 +2634,18 @@ CONSTRUCTOR(_oProject AS ProjectClass,_cName AS STRING)
 	SELF:dRealSavedTime := DateTime.MinValue
 
 	SELF:cAppToRun := ""
+	SELF:cNetVersion := ""
 RETURN
+
+PROPERTY RealNetCoreVersion AS STRING
+	GET
+		IF String.IsNullOrWhiteSpace( SELF:cNetVersion ) .or. SELF:cNetVersion:StartsWith("<")
+			RETURN Fun.GetLatestNetCoreVersion()
+		ELSE
+			RETURN SELF:cNetVersion
+		END IF
+	END GET
+END PROPERTY
 
 VIRTUAL METHOD SetDirty() AS LOGIC
 RETURN SELF:SetDirty(DateTime.Now)
@@ -3476,64 +3550,90 @@ ENUM ReferenceType
 	MEMBER Project
 	MEMBER Ide
 	MEMBER Browse
+	MEMBER NetCore
 END ENUM
 
 ENUM ClrType
 	MEMBER v2
 	MEMBER v4
+	MEMBER NetCore
 	MEMBER Unknown
 END ENUM
 
-CLASS ReferenceObject
-EXPORT eType AS ReferenceType
-EXPORT cName AS STRING
+CLASS ReferenceObject INHERIT GeneralProjectClass
+EXPORT eReferenceType AS ReferenceType
+//EXPORT cName AS STRING
 EXPORT cLoadingName AS STRING
 EXPORT cFileName AS STRING
-EXPORT cGuid AS STRING
+//EXPORT cGuid AS STRING
 EXPORT eFrameworks AS Frameworks
 EXPORT lCopy AS LOGIC
 EXPORT cVersion AS STRING
 EXPORT cCulture AS STRING
 EXPORT cKeyToken AS STRING
-EXPORT cArchitecture AS STRING
+EXPORT ePlatform AS Platform
+EXPORT cNetCoreFolder AS STRING
 EXPORT eClr AS ClrType
-CONSTRUCTOR(_cName AS STRING,_eType AS ReferenceType)
+EXPORT oApp AS AppClass
+CONSTRUCTOR(_cName AS STRING,_eReferenceType AS ReferenceType)
 SELF:cName:=_cName
-SELF:eType:=_eType
-SELF:eClr := ClrType.v4
+SELF:eReferenceType:=_eReferenceType
+SELF:eClr := ClrType.Unknown
 SELF:_Init()
 RETURN
-CONSTRUCTOR(_cName AS STRING,_eType AS ReferenceType , _eClr AS ClrType)
+CONSTRUCTOR(_cName AS STRING,_eReferenceType AS ReferenceType , _eClr AS ClrType)
 SELF:cName:=_cName
-SELF:eType:=_eType
+SELF:eReferenceType:=_eReferenceType
 SELF:eClr := _eClr
 SELF:_Init()
 RETURN
 INTERNAL METHOD _Init() AS VOID
+SELF:eType := ProjectType.Reference
 SELF:cLoadingName:=""
 SELF:eFrameworks := Frameworks.Full
 SELF:cVersion := ""
 SELF:cCulture := ""
 SELF:cKeyToken := ""
-SELF:cArchitecture := ""
+SELF:ePlatform := Platform.AnyCPU
+SELF:cNetCoreFolder := ""
 RETURN
+OVERRIDE METHOD GetApp() AS AppClass
+RETURN SELF:oApp
 VIRTUAL METHOD ToString() AS STRING
 	LOCAL cRet AS STRING
 	cRet := SELF:cName
-	IF SELF:eType == ReferenceType.GAC
-//		RETURN SELF:cName + "," + SELF:cVersion //+ "," + SELF:cArchitecture
-//		RETURN SELF:cName + "   (" + SELF:cVersion + ")" //+ "," + SELF:cArchitecture
-		IF SELF:eClr != ClrType.Unknown
-			cRet += "   " + iif(SELF:eClr == ClrType.v2 , "(v2.0)" , "(v4.0)")
-		END IF
-		cRet += "   (" + SELF:cVersion + ")" //+ "," + SELF:cArchitecture
+	IF SELF:eReferenceType == ReferenceType.GAC
+//		RETURN SELF:cName + "," + SELF:cVersion //+ "," + SELF:ePlatform:ToString()
+//		RETURN SELF:cName + "   (" + SELF:cVersion + ")" //+ "," + SELF:ePlatform:ToString()
+		DO CASE
+		CASE SELF:eClr == ClrType.v2
+			cRet += "   " + "(v2.0)"
+		CASE SELF:eClr == ClrType.v4
+			cRet += "   " + "(v4.0)"
+		CASE SELF:eClr == ClrType.NetCore
+			cRet += "   " + "(NetCore)"
+			IF .not. String.IsNullOrEmpty( SELF:cNetCoreFolder )
+				cRet += " (" + SELF:cNetCoreFolder + ")"
+			END IF
+		END CASE
+		cRet += "   (" + SELF:cVersion + ")" //+ "," + SELF:ePlatform:ToString()
+	ELSEIF SELF:eReferenceType == ReferenceType.Browse
+		cRet := Fun.GetFileName(SELF:cName) + " (" + SELF:cName + ")"
 	ENDIF
+RETURN cRet
+VIRTUAL ACCESS DisplayName AS STRING
+	LOCAL cRet AS STRING
+	IF SELF:eReferenceType == ReferenceType.Browse
+		cRet := Fun.GetFileName(SELF:cName)
+	ELSE
+		cRet := SELF:cName
+	END IF
 RETURN cRet
 
 VIRTUAL METHOD Clone() AS ReferenceObject
 	LOCAL oRef AS ReferenceObject
-	oRef := ReferenceObject{SELF:cName , SELF:eType}
-	oRef:cName := cName
+	oRef := ReferenceObject{SELF:cName , SELF:eReferenceType}
+	oRef:cName := SELF:cName
 	oRef:cLoadingName := SELF:cLoadingName
 	oRef:cFileName := SELF:cFileName
 	oRef:cGuid := SELF:cGuid
@@ -3542,7 +3642,8 @@ VIRTUAL METHOD Clone() AS ReferenceObject
 	oRef:cVersion := SELF:cVersion
 	oRef:cCulture := SELF:cCulture
 	oRef:cKeyToken := SELF:cKeyToken
-	oRef:cArchitecture := SELF:cArchitecture
+	oRef:ePlatform := SELF:ePlatform
+	oRef:cNetCoreFolder := SELF:cNetCoreFolder
 	oRef:eClr := SELF:eClr
 RETURN oRef
 
@@ -3867,9 +3968,13 @@ END ENUM
 CLASS Glo
 	STATIC EXPORT gcImportBreak := "%#IDE#%" AS STRING
 	STATIC EXPORT gcDotNetInstallDrive := "C" AS STRING
+	STATIC EXPORT gcDefaultNetVersion := "" AS STRING
+	STATIC EXPORT gcNetInstallFolder64 := "C:\Program Files\dotnet" AS STRING
+	STATIC EXPORT gcNetInstallFolder32 := "C:\Program Files (x86)\dotnet" AS STRING
 END CLASS
 
 CLASS Fun
+
 	STATIC METHOD CRLFToLine(cString AS STRING) AS STRING
 		cString:=StrTran(cString,ChrW(13)+ChrW(10)," ")
 		cString:=StrTran(cString,ChrW(10)+ChrW(13)," ")
@@ -4332,6 +4437,72 @@ CLASS Fun
 			lRet := System.IO.File.Exists(cSource)
 		END TRY
 	RETURN lRet
+
+	STATIC METHOD GetLatestNetCoreVersion() AS STRING
+		LOCAL cNetCoreVersion AS STRING
+//		cNetCoreVersion := "10.0.2"
+		cNetCoreVersion := "0.0.0"
+//		cNetCoreVersion := ""
+		LOCAL nMaxVersion := 0 AS INT
+		TRY
+			FOREACH oDir AS DirectoryInfo IN DirectoryInfo{Glo.gcNetInstallFolder64 + "\shared\Microsoft.NETCore.App"}:GetDirectories()
+				LOCAL cDir AS STRING
+				cDir := oDir:Name:Trim()
+				IF cDir:Length < 2
+					LOOP
+				END IF
+				LOCAL aVersion AS STRING[]
+				aVersion := cDir:Split(<Char>{'.'})
+				LOCAL nVersion AS INT
+				IF aVersion:Length == 0 .or. .not. Int32.TryParse(aVersion[1], OUT nVersion)
+					LOOP
+				END IF
+				IF nVersion >= nMaxVersion
+					cNetCoreVersion := cDir
+					nMaxVersion := nVersion
+					IF nVersion == 8
+						#warning returning net8 version
+						RETURN cNetCoreVersion
+					END IF
+				END IF
+			NEXT
+		END TRY
+	RETURN cNetCoreVersion
+
+	STATIC METHOD GetDefaultNetCoreVersion() AS STRING
+		LOCAL cNetCoreVersion AS STRING
+		IF String.IsNullOrWhiteSpace( Glo.gcDefaultNetVersion )
+			cNetCoreVersion := Fun.GetLatestNetCoreVersion()
+		ELSE
+			cNetCoreVersion := Glo.gcDefaultNetVersion
+		END IF
+	RETURN cNetCoreVersion
+
+	STATIC METHOD GetNetCoreReferenceFilename(oRef AS ReferenceObject, oApp AS AppClass, cForceVersion AS STRING) AS STRING
+		LOCAL cFileName := "" AS STRING
+		IF oRef:eClr == ClrType.NetCore
+			cFileName := oRef:cName:Trim()
+			IF oRef:cNetCoreFolder:StartsWith("XSharp")
+				LOCAL cRedistFolder AS STRING
+				cRedistFolder := gcNetCoreRuntimeFolder
+				cFileName := Fun.ConnectPathAndFileName( cRedistFolder , cFileName )
+			ELSE
+				LOCAL cNetCoreVersion AS STRING
+				cNetCoreVersion := oApp:RealNetCoreVersion
+				IF .not. String.IsNullOrWhiteSpace(cForceVersion)
+					cNetCoreVersion := cForceVersion
+				END IF
+
+//				cNetCoreVersion := "3.1.32"
+				IF oApp:ePlatform == Platform.x86
+					cFileName := Glo.gcNetInstallFolder32 + "\shared\" + oRef:cNetCoreFolder + "\" + cNetCoreVersion + "\" + cFileName
+				ELSE
+					cFileName := Glo.gcNetInstallFolder64 + "\shared\" + oRef:cNetCoreFolder + "\" + cNetCoreVersion + "\" + cFileName
+				END IF
+			END IF
+			
+		END IF
+	RETURN cFileName
 END CLASS
 
 STRUCTURE NameValue
@@ -4437,41 +4608,41 @@ CLASS NameValueEnumerator IMPLEMENTS IEnumerator
 
 END CLASS
 
-CLASS GACClass
+STATIC CLASS GACClass
 	STATIC PRIVATE aGAC AS SortedList
 	STATIC CONSTRUCTOR()
-		Load()
-	RETURN
-
-	STATIC METHOD Load() AS VOID
-
+		
 		GACClass.aGAC := SortedList{}
-/*		IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_32")
-			GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_32" , ClrType.v2)
-		ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_32")
-			GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_32" , ClrType.v2)
-		END IF
-		IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_MSIL")
-			GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_MSIL" , ClrType.v2)
-		ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_MSIL")
-			GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_MSIL" , ClrType.v2)
-		END IF*/
-
+/*		TRY
+			IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_32")
+				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_32" , ClrType.v2)
+			ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_32")
+				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_32" , ClrType.v2)
+			END IF
+			IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_MSIL")
+				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_MSIL" , ClrType.v2)
+			ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_MSIL")
+				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_MSIL" , ClrType.v2)
+			END IF
+		END TRY
+*/		
 		IF TRUE
-			IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_32")
-				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_32" , ClrType.v4)
-			ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_32")
-				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_32" , ClrType.v4)
-			END IF
-			IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_MSIL")
-				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_MSIL" , ClrType.v4)
-			ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_MSIL")
-				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_MSIL" , ClrType.v4)
-			END IF
+			TRY
+				IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_32")
+					GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_32" , ClrType.v4)
+				ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_32")
+					GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_32" , ClrType.v4)
+				END IF
+				IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_MSIL")
+					GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_MSIL" , ClrType.v4)
+				ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_MSIL")
+					GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_MSIL" , ClrType.v4)
+				END IF
+			END TRY
 		END IF
-
+		
 	RETURN
-
+	
 	STATIC METHOD GetAllReferences() AS ReferenceObject[]
 		LOCAL aRef AS ReferenceObject[]
 		LOCAL n AS INT
@@ -4479,7 +4650,7 @@ CLASS GACClass
 		FOR n := 1 UPTO aRef:Length
 			aRef[n] := ((ReferenceObject)GACClass.aGAC:GetByIndex(n - 1)):Clone()
 		NEXT
-	RETURN aRef
+	RETURN aRef	
 
 	STATIC METHOD GetClosestReference(oRef AS ReferenceObject) AS ReferenceObject
 		LOCAL oRet AS ReferenceObject
@@ -4526,7 +4697,7 @@ CLASS GACClass
 			ENDIF
 		NEXT
 	RETURN oRet
-
+	
 	STATIC METHOD LoadFromDir(cFolder AS STRING , eClr AS ClrType) AS VOID
 		LOCAL aFiles AS STRING[]
 		LOCAL aDirs AS STRING[]
@@ -4538,10 +4709,18 @@ CLASS GACClass
 		LOCAL cKey AS STRING
 		LOCAL n,m,nAt AS INT
 
-		aDirs := Directory.GetDirectories(cFolder)
+		TRY
+			aDirs := Directory.GetDirectories(cFolder)
+		END TRY
+		IF aDirs == NULL
+			RETURN
+		END IF
 		FOR n := 1 UPTO aDirs:Length
 			cBaseFolder := aDirs[n]
 			cName := Fun.GetFileName(cBaseFolder)
+			IF cName:EndsWith(".resources") .or. cName:EndsWith(".Resources")
+				LOOP
+			END IF
 			aVerDirs := Directory.GetDirectories(cBaseFolder)
 			FOR m := 1 UPTO aVerDirs:Length
 				cVerFolder := aVerDirs[m]
@@ -4571,16 +4750,16 @@ CLASS GACClass
 						oRef:cKeyToken := cVerFolder:Substring(nAt + 1)
 					ENDIF
 					DO CASE
-					CASE cBaseFolder:IndexOf("GAC_32") != 0
-						oRef:cArchitecture := "32"
-					CASE cBaseFolder:IndexOf("GAC_64") != 0
-						oRef:cArchitecture := "64"
-					CASE cBaseFolder:IndexOf("GAC_MSIL") != 0
-						oRef:cArchitecture := "MSIL"
+					CASE cBaseFolder:IndexOf("GAC_32") != -1
+						oRef:ePlatform := Platform.x86
+					CASE cBaseFolder:IndexOf("GAC_64") != -1
+						oRef:ePlatform := Platform.x64
+					CASE cBaseFolder:IndexOf("GAC_MSIL") != -1
+						oRef:ePlatform := Platform.AnyCPU
 					END CASE
 					oRef:eFrameworks := Frameworks.Full
 					oRef:lCopy := FALSE
-					cKey := oRef:cName + oRef:cVersion + oRef:cCulture + oRef:cKeyToken + oRef:cArchitecture
+					cKey := oRef:cName + oRef:cVersion + oRef:cCulture + oRef:cKeyToken + oRef:ePlatform:ToString()
 					IF !GACClass.aGAC:ContainsKey(cKey)
 						IF .not. String.IsNullOrEmpty(oRef:cVersion) .and. oRef:cName:StartsWith("Vulcan") .and. oRef:cVersion:StartsWith("1.1.1")
 //						IF .not. String.IsNullOrEmpty(oRef:cVersion) .and. oRef:cName:StartsWith("Vulcan") .and. oRef:cVersion:StartsWith("1.1.20")
@@ -4590,9 +4769,9 @@ CLASS GACClass
 					ENDIF
 				ENDIF
 			NEXT
-
+			
 		NEXT
-
+		
 	RETURN
 
 END CLASS

@@ -54,46 +54,40 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PUBLIC METHOD SysMetric(nScreenElement AS LONG) AS LONG
             SWITCH nScreenElement
-            CASE 1 // SYSMETRIC_SCREENWIDTH
-                LOCAL hDC := VfpWin32UI.GetDC(IntPtr.Zero) AS IntPtr
-                LOCAL nRes := VfpWin32UI.GetDeviceCaps(hDC, VfpWin32UI.DESKTOP_HORZRES) AS LONG
-                VfpWin32UI.ReleaseDC(IntPtr.Zero, hDC)
-                RETURN nRes
-            CASE 2 // SYSMETRIC_SCREENHEIGHT
-                LOCAL hDC := VfpWin32UI.GetDC(IntPtr.Zero) AS IntPtr
-                LOCAL nRes := VfpWin32UI.GetDeviceCaps(hDC, VfpWin32UI.DESKTOP_VERTRES) AS LONG
-                VfpWin32UI.ReleaseDC(IntPtr.Zero, hDC)
-                RETURN nRes
-            CASE 3; RETURN SystemInformation.MinimizedWindowSpacingSize.Width
-            CASE 4; RETURN SystemInformation.MinimizedWindowSpacingSize.Height
-            CASE 5; RETURN SystemInformation.VerticalScrollBarWidth
-            CASE 6; RETURN SystemInformation.VerticalScrollBarArrowHeight
-            CASE 7; RETURN SystemInformation.HorizontalScrollBarArrowWidth
-            CASE 8; RETURN SystemInformation.HorizontalScrollBarHeight
-            CASE 9; RETURN SystemInformation.CaptionHeight
-            CASE 10; RETURN SystemInformation.FixedFrameBorderSize.Width
-            CASE 11; RETURN SystemInformation.FixedFrameBorderSize.Height
-            CASE 12; RETURN SystemInformation.FrameBorderSize.Width
-            CASE 13; RETURN SystemInformation.FrameBorderSize.Height
-            CASE 14; RETURN SystemInformation.HorizontalScrollBarThumbWidth
-            CASE 15; RETURN SystemInformation.VerticalScrollBarWidth
-            CASE 16; RETURN SystemInformation.IconSize.Width
-            CASE 17; RETURN SystemInformation.IconSize.Height
-            CASE 18; RETURN 0
-            CASE 19; RETURN 0
-            CASE 20; RETURN SystemInformation.MenuHeight
-            CASE 21; RETURN SystemInformation.MaxWindowTrackSize.Width
-            CASE 22; RETURN SystemInformation.MaxWindowTrackSize.Height
-            CASE 23; RETURN SystemInformation.KanjiWindowHeight
-            CASE 24; RETURN SystemInformation.MinWindowTrackSize.Width
-            CASE 25; RETURN SystemInformation.MinWindowTrackSize.Height
-            CASE 26; RETURN SystemInformation.MinimumWindowSize.Width
-            CASE 27; RETURN SystemInformation.MinimumWindowSize.Height
-            CASE 30; RETURN iif(SystemInformation.MousePresent == TRUE,  1, 0)
-            CASE 31; RETURN iif(SystemInformation.DebugOS == TRUE , 1, 0)
-            CASE 32; RETURN iif(SystemInformation.MouseButtonsSwapped == TRUE, 1, 0)
-            CASE 33; RETURN SystemInformation.ToolWindowCaptionButtonSize.Width
-            CASE 34; RETURN SystemInformation.ToolWindowCaptionHeight
+            CASE 1;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXSCREEN)
+            CASE 2;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYSCREEN)
+            CASE 3;  RETURN SystemInformation.MinimizedWindowSpacingSize.Width
+            CASE 4;  RETURN SystemInformation.MinimizedWindowSpacingSize.Height
+            CASE 5;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXVSCROLL)
+            CASE 6;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYVSCROLL)
+            CASE 7;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXHSCROLL)
+            CASE 8;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYHSCROLL)
+            CASE 9;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYCAPTION)
+            CASE 10; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXBORDER)
+            CASE 11; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYBORDER)
+            CASE 12; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXDLGFRAME)
+            CASE 13; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYDLGFRAME)
+            CASE 14; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXHTHUMB)
+            CASE 15; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYVTHUMB)
+            CASE 16; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXICON)
+            CASE 17; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYICON)
+            CASE 18; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXCURSOR)
+            CASE 19; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYCURSOR)
+            CASE 20; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYMENU)
+            CASE 21; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXFULLSCREEN)
+            CASE 22; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYFULLSCREEN)
+            CASE 23; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYKANJIWINDOW)
+            CASE 24; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXMINTRACK)
+            CASE 25; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYMINTRACK)
+            CASE 26; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXMIN)
+            CASE 27; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYMIN)
+            CASE 28; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXSIZE)
+            CASE 29; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYSIZE)
+            CASE 30; RETURN IIF(VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_MOUSEPRESENT) != 0, 1, 0)
+            CASE 31; RETURN IIF(VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_DEBUG) != 0, 1, 0)
+            CASE 32; RETURN IIF(VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_SWAPBUTTON) != 0, 1, 0)
+            CASE 33; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXSMSIZE)
+            CASE 34; RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYSMSIZE)
             END SWITCH
             RETURN 0
         END METHOD

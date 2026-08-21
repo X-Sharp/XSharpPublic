@@ -71,8 +71,16 @@ FUNCTION Start() AS INT
 	// TODO Must fail: "C135"
 
 	FOREACH cTest AS STRING IN aTests:ToArray()
-		TRY
-			IF DoTest(cTest)
+		TRY 
+			LOCAL lTestSuccess := FALSE AS LOGIC
+			
+			TRY
+				lTestSuccess := DoTest(cTest)
+			CATCH
+				NOP
+			END TRY
+				
+			IF lTestSuccess
 				nSuccess ++
 			ELSE
 				? "Failed Runtime Test", cTest

@@ -163,9 +163,15 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 	ENDIF
 	Message( "" )
 
-	FOREACH cMessage AS STRING IN gaCompilerMessages
+	// Apparently messages can be still updating from the process even when we have reached here
+/*	FOREACH cMessage AS STRING IN gaCompilerMessages
 		Message(cMessage)
-	NEXT
+	NEXT*/
+	LOCAL nMessage := 0 AS INT
+	DO WHILE nMessage < gaCompilerMessages:Count
+		Message( gaCompilerMessages[nMessage] )
+		nMessage ++
+	END DO
 RETURN nFail
 
 

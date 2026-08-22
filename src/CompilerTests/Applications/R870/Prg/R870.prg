@@ -11,7 +11,7 @@ c := "a" +;
 ? StackFrame{true}:GetFileLineNumber()
 xAssert(StackFrame{true}:GetFileLineNumber() , 12)
 
-PROC xAssert(nExpected AS INT, nResult AS INT)  AS VOID
+PROC xAssert(nResult AS INT, nExpected AS INT)  AS VOID
 	IF nExpected == nResult
 		? "Assertion passed"
 	ELSE

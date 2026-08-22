@@ -17,7 +17,7 @@ FUNCTION Start() AS INT
 	 "C427", "C433", "C434", "C435", "C437", "C441", "C444", "C445", "C446", "C448", ;
 	 "C450", "C452", "C457", "C460", /*"C475",*/ "C478", "C479", "C484", "C499", "C504", ;
 	 "C505", "C506", "C507", "C508", "C509", "C515", "C519", "C520", "C521", "C527", ;
-	 "C528", "C536", "C538", /*"C541",*/ "C542", "C543", /*"C548", */"C552", "C557", "C558", ;
+	 "C528", "C536", "C538", /*"C541",*/ "C542", "C543", "C552", "C557", "C558", ;
 	 "C560", "C564", "C567", "C573", "C578", "C579", "C582", "C588", "C590", "C591",  ;
  	 "C599", "C602", "C604", "C606", "C607", "C609", "C610", "C611", "C612", "C613", "C615", ;
  	 "C616", "C617", "C618", "C621", "C628", "C629", "C630", "C631", "C632", "C635", ;
@@ -64,8 +64,8 @@ FUNCTION Start() AS INT
 	aTests:Remove("C521")
 	#endif
 
-	#warning Removed C729 because it uses macrocompiler substitution which fails in the the tests
-	aTests:Remove("C729")
+	aTests:Remove("C729") // Removed C729 because it uses macrocompiler substitution which fails in the the tests
+	aTests:Add( "C548" ) // Added C548 at the end because for some reason causes several tests following it to fail
 
 
 	// TODO Must fail: "C135"

@@ -41,9 +41,8 @@ FUNCTION Start() AS VOID
 	
 	gcCompilerFilename     := "C:\Program Files (x86)\XSharp\Bin\xsc.exe"
 	cProjectFile           := "C:\xSharp\Dev\src\CompilerTests\xSharp Tests30.viproj"
-	gcRuntimeFolder        := "C:\xSharp\Dev\Artifacts\Release\net46"
-//	gcNetCoreRuntimeFolder := "C:\xSharp\Dev\Artifacts\Release"
-	gcNetCoreRuntimeFolder := "C:\Program Files (x86)\XSharp\Redist\net8.0"
+	gcRuntimeFolder        := "C:\xSharp\Dev\src\CompilerTests\Runtime"
+	gcNetCoreRuntimeFolder := gcRuntimeFolder + "Net8"
 	cTestTheFixedOnes      := "TRUE"
 	cConfigName            := "DEBUG"
 	cLogFilename           := "C:\xSharp\Dev\src\CompilerTests\Automated\log.txt"
@@ -53,7 +52,7 @@ FUNCTION Start() AS VOID
 	gcCompilerFilename     := Environment.GetEnvironmentVariable("XSCOMPILER")?:Trim()
 	cProjectFile           := Environment.GetEnvironmentVariable("XSTESTPROJECT")?:Trim()
 	gcRuntimeFolder        := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
-	gcNetCoreRuntimeFolder := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
+	gcNetCoreRuntimeFolder := gcRuntimeFolder + "Net8"
 	cTestTheFixedOnes      := Environment.GetEnvironmentVariable("XSFIXEDTESTS")?:Trim()
 	cConfigName            := Environment.GetEnvironmentVariable("XSCONFIG")?:Trim()
 	cLogFilename           := Environment.GetEnvironmentVariable("XSLOGFILE")?:Trim()

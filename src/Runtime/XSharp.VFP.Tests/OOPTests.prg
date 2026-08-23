@@ -16,14 +16,14 @@ begin namespace XSharp.VFP.Tests
 
         [Fact, Trait("Category", "OOP")];
         method NumericPropertyIsUsableInArithmetic as void
-            var oCircle := Circle{}
+            local oCircle := Circle{} as Circle
             oCircle:Ratio := 5
             Assert.Equal(31.4, (real8)oCircle:Perimeter(), 2)
         end method
 
         [Fact, Trait("Category", "OOP")];
         method NumericPropertyRoundTripsThroughLateBoundAccess as void
-            var oCircle := Circle{}
+            local oCircle := Circle{} as Usual
             oCircle:Ratio := 5
             Assert.Equal(10, (int)(oCircle:Ratio * 2))
         end method

@@ -477,6 +477,14 @@
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
+    <Compile Include="ShadowDesigner\ShadowDesignerBridge.cs" />
+    <Compile Include="ShadowDesigner\CompanionProjectWriter.cs" />
+    <Compile Include="ShadowDesigner\SolutionWiring.cs" />
+    <Compile Include="ShadowDesigner\RoslynToCodeDom.cs" />
+    <Compile Include="ShadowDesigner\EventHandlerSync.cs" />
+    <Compile Include="ShadowDesigner\DesignerChangesSync.cs" />
+    <Compile Include="Commands\CommandSyncEventHandlers.cs" />
+    <Compile Include="Commands\CommandSyncDesignerChanges.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Nodes\XSharpProjectNode.cs" />
     <Compile Include="XSharpProjectPackage.cs" />
@@ -793,6 +801,9 @@
     </PackageReference>
     <PackageReference Include="MessagePack">
       <Version>2.5.302</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+      <Version>4.8.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>2.2.2</Version>

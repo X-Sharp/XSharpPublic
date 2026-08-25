@@ -57,6 +57,8 @@ namespace XSharp.Project
         public const int idGenerateWinForm = 0x0120;
         public const int idPublishProject = 0x0121;
         public const int idPackProject = 0x0122;
+        public const int idSyncEventHandlers = 0x0123;
+        public const int idSyncDesignerChanges = 0x0124;
         public const int idExporterSubMenu = 0x1030;
         public const int idExporterGroup = 0x1040;
         public const int idDebuggerSubMenu = 0x1050;

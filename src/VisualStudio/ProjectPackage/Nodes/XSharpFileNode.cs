@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 
 using XSharpModel;
+using XSharp.Settings;
 
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
@@ -892,6 +893,23 @@ namespace XSharp.Project
             string projectItemType = XSharpFileType.GetItemType(this.FileName);
             if (HasDesigner)
             {
+                // SDK-style (.NET Core) projects: VS's out-of-process WinForms Designer has
+                // no extensibility point for third-party languages and will reject this
+                // project outright if opened directly (confirmed:
+                // E:\VSDesigner\research\06-document-binding-substitution.md). Redirect to
+                // the shadow-file bridge instead, which opens an auto-generated companion C#
+                // project's Designer view (a real C# project, so the Designer's project-type
+                // gate passes). Legacy .NET Framework projects are unaffected -- they keep
+                // opening this .prg directly below, backed by the working CodeDom-provider
+                // integration (VSXSharpCodeDomProvider).
+                if (this.ProjectMgr is XSharpSdkProjectNode)
+                {
+                    if (XSharp.Project.ShadowDesigner.ShadowDesignerBridge.TryOpen(this, out string shadowError))
+                    {
+                        return;
+                    }
+                    XSettings.Information("XSharp ShadowDesigner: " + shadowError);
+                }
                 viewGuid = VSConstants.LOGVIEWID.Designer_guid;
             }
             else if (projectItemType == ProjectFileConstants.Compile)

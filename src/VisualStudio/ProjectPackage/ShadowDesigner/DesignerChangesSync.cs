@@ -17,18 +17,15 @@ namespace XSharp.Project.ShadowDesigner
 {
     /// <summary>
     /// "Designer -> Code, beyond handler creation" (general property edits, control
-    /// add/remove/reorder) -- ported from the research spike
-    /// (E:\VSDesigner\research\spikes\spike-vsix, "Stage 5") once confirmed working
-    /// end-to-end there. Fully regenerates the real Form1.Designer.prg from the companion
+    /// add/remove/reorder). Fully regenerates the real Form1.Designer.prg from the companion
     /// project's current InitializeComponent on every sync: parse the companion C# with
     /// Roslyn, translate to System.CodeDom objects (RoslynToCodeDom), then hand that
     /// CodeCompileUnit to the existing, already-production-proven XSharpCodeGenerator (the
     /// SAME class VSXSharpCodeDomProvider.cs uses for the classic .NET Framework
     /// integration) to emit X# text.
     ///
-    /// Unlike the spike (a separate VSIX needing reflection to instantiate
-    /// XSharpCodeGenerator across an assembly-identity boundary), this calls it directly --
-    /// see ShadowDesignerBridge's class doc for why that's safe here.
+    /// This calls XSharpCodeGenerator directly -- see ShadowDesignerBridge's class doc for
+    /// why that's safe here.
     ///
     /// NOT YET COORDINATED with EventHandlerSync: that command also writes wiring (+=)
     /// lines into Form1.Designer.prg via targeted regex insertion. Confirmed working
@@ -131,8 +128,7 @@ namespace XSharp.Project.ShadowDesigner
         {
             // Directly instantiated -- XSharpCodeGenerator lives in this same assembly's
             // reference graph (XSharp.CodeDomProvider.dll, already used unqualified by
-            // VSXSharpCodeDomProvider.cs's classic .NET Framework integration), so no
-            // reflection is needed the way the research spike's separate-VSIX version required.
+            // VSXSharpCodeDomProvider.cs's classic .NET Framework integration).
             var generator = new XSharpCodeGenerator();
             var options = new CodeGeneratorOptions { BracingStyle = "C" };
             using (var writer = new StringWriter())

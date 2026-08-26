@@ -23,27 +23,21 @@ namespace XSharp.Project.ShadowDesigner
     /// <summary>
     /// Entry point for the "View Designer on a SDK-style .prg" bridge. VS's out-of-process
     /// WinForms Designer (used for .NET Core/SDK-style projects) has no extensibility point
-    /// for third-party languages -- confirmed via decompilation early in this investigation
-    /// (see E:\VSDesigner\research\00-overview.md). This ports the shadow-file-bridge
-    /// approach, confirmed working end-to-end in a standalone research spike
-    /// (E:\VSDesigner\research\spikes\spike-vsix\RESULTS.md, Stages 1-3), directly into the
-    /// product ProjectSystem: parse the real .prg/.Designer.prg with the real X# parser,
-    /// merge into one CodeCompileUnit, generate C# via the stock BCL CSharpCodeProvider,
-    /// write/refresh a real, hidden, auto-generated companion C# project next to the real
-    /// one, and open ITS Designer view (whose owning IVsHierarchy is a real C# project, so
-    /// the out-of-process Designer's project-type gate passes -- see
-    /// E:\VSDesigner\research\06-document-binding-substitution.md for why this works).
+    /// for third-party languages, so a .prg can never be opened in it directly. This bridges
+    /// the gap: parse the real .prg/.Designer.prg with the real X# parser, merge into one
+    /// CodeCompileUnit, generate C# via the stock BCL CSharpCodeProvider, write/refresh a
+    /// real, hidden, auto-generated companion C# project next to the real one, and open ITS
+    /// Designer view (whose owning IVsHierarchy is a real C# project, so the out-of-process
+    /// Designer's project-type gate passes).
     ///
-    /// Unlike the research spike (a separate VSIX reaching into X# from outside, needing
-    /// reflection to cross assembly-identity boundaries), this code lives inside X#'s own
-    /// ProjectSystem, so XSharpCodeParser/XSharpCodeDomHelper/XProject are called directly --
-    /// no reflection needed anywhere in this port.
+    /// This code lives inside X#'s own ProjectSystem, so XSharpCodeParser/
+    /// XSharpCodeDomHelper/XProject are called directly -- no reflection is needed to reach
+    /// them.
     ///
     /// Also exposes <see cref="TryResolveCompanionPaths"/>, used by
-    /// <see cref="EventHandlerSync"/> and <see cref="DesignerChangesSync"/> (the Stage 4/5
-    /// sync commands) to locate an already-open companion project's files deterministically,
-    /// without the research spike's static <c>ShadowSession</c> global -- recomputed fresh
-    /// each time from the real .prg's own class name.
+    /// <see cref="EventHandlerSync"/> and <see cref="DesignerChangesSync"/> to locate an
+    /// already-open companion project's files deterministically, recomputed fresh each time
+    /// from the real .prg's own class name.
     /// </summary>
     internal static class ShadowDesignerBridge
     {
@@ -98,11 +92,10 @@ namespace XSharp.Project.ShadowDesigner
 
                 // A project that has never been built this session has no .rsp response file,
                 // so XProject.AssemblyReferences has nothing to resolve -- any 3rd-party type
-                // reference (e.g. a Guna control) silently corrupts the generated code instead
-                // of failing loudly (a multi-segment member-access chain like
-                // "oGunaButton1:FillColor := x" collapses to a bare "this.oGunaButton1 = x",
-                // confirmed in the research spike's investigation). Ensure a build has
-                // happened before parsing.
+                // reference silently corrupts the generated code instead of failing loudly (a
+                // multi-segment member-access chain like "oControl1:SomeProperty := x"
+                // collapses to a bare "oControl1 = x"). Ensure a build has happened before
+                // parsing.
                 if (IsMissingAnyPackageReference(xProject) && !EnsureBuilt(dte, xProject, out error))
                 {
                     return false;
@@ -147,9 +140,9 @@ namespace XSharp.Project.ShadowDesigner
         }
 
         /// <summary>
-        /// Result of <see cref="TryResolveCompanionPaths"/> -- everything the Stage 4/5 sync
-        /// commands need to locate the real .prg pair and an already-existing companion
-        /// project's files.
+        /// Result of <see cref="TryResolveCompanionPaths"/> -- everything the sync commands
+        /// need to locate the real .prg pair and an already-existing companion project's
+        /// files.
         /// </summary>
         public sealed class CompanionLocation
         {
@@ -219,9 +212,9 @@ namespace XSharp.Project.ShadowDesigner
         }
 
         /// <summary>
-        /// Coarse but reliable check (settled on after the research spike's own reference-
-        /// resolution investigation): does the real .xsproj declare any &lt;PackageReference&gt;
-        /// at all, and is the filtered (non-framework) reference list still empty? True only
+        /// Coarse but reliable check: does the real .xsproj declare any
+        /// &lt;PackageReference&gt; at all, and is the filtered (non-framework) reference
+        /// list still empty? True only
         /// when a build is genuinely needed -- a project with no NuGet references at all
         /// (nothing to resolve) or one that's already built correctly both return false here.
         /// </summary>
@@ -294,8 +287,7 @@ namespace XSharp.Project.ShadowDesigner
         /// <summary>
         /// Removes trailing CodeMethodReturnStatement(s) from InitializeComponent -- the
         /// out-of-process Designer's own strict parser for that method rejects a trailing
-        /// `return;`, which X#'s CodeDom model includes by default (confirmed in the
-        /// research spike, Stage 2).
+        /// `return;`, which X#'s CodeDom model includes by default.
         /// </summary>
         private static void StripTrailingReturnFromInitializeComponent(CodeCompileUnit unit)
         {
@@ -322,12 +314,7 @@ namespace XSharp.Project.ShadowDesigner
         /// Reads xProject.AssemblyReferences (its public getter already triggers resolution,
         /// subject to XProject's own internal throttle/staleness rules) and filters out
         /// shared-framework/runtime paths that come implicitly via the companion project's
-        /// own UseWindowsForms=true SDK import. Deliberately simpler than the research
-        /// spike's AssemblyReferenceResolver: the reference-resolution bug that spike had to
-        /// work around (a UI-thread violation silently dropping AddPendingReferences) is
-        /// already fixed upstream (see E:\VSDesigner\research\spikes\spike-vsix\RESULTS.md,
-        /// "ROOT CAUSE FOUND"), so the force-resolve/reload workarounds aren't carried over
-        /// for this first cut.
+        /// own UseWindowsForms=true SDK import.
         /// </summary>
         private static List<string> GetFilteredReferencePaths(XProject xProject)
         {

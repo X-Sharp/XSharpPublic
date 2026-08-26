@@ -16,9 +16,8 @@ using XSharpModel;
 namespace XSharp.Project
 {
     /// <summary>
-    /// File-context-menu command for Stage 4 of the shadow-designer bridge (see
-    /// E:\VSDesigner\research\06-document-binding-substitution.md): after double-clicking
-    /// a control in the shadow Designer (which lands the new handler stub in the companion
+    /// File-context-menu command for the shadow-designer bridge: after double-clicking a
+    /// control in the shadow Designer (which lands the new handler stub in the companion
     /// project's C# files, not the real .prg), run this to detect what's new and write it
     /// into the real X# source. Visible only for a SDK-style project's .prg file that
     /// already has an open shadow companion project.

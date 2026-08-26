@@ -9,21 +9,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace XSharp.Project.ShadowDesigner
 {
     /// <summary>
-    /// RESEARCH SPIKE piece -- see E:\VSDesigner\research\05-shadow-file-sync-design.md.
     /// "Designer -> Code, beyond handler creation" (general property edits, control
     /// add/remove/reorder). Translates the statement shapes the out-of-process WinForms
-    /// Designer actually emits into the companion project's InitializeComponent (observed
-    /// empirically in WinForm1_Core.ShadowDesigner\Form1.Designer.cs, NOT the idealized
-    /// hand-authored shape assumed earlier) into equivalent System.CodeDom objects, so the
-    /// existing, already-production-proven XSharpCodeGenerator can turn them into X# text --
-    /// reusing tested codegen instead of a second hand-rolled string templater (see Stage 4's
-    /// narrower EventHandlerSync for why that approach was fine for boilerplate handler
-    /// stubs, but doesn't scale to arbitrary property/control edits).
+    /// Designer actually emits into the companion project's InitializeComponent into
+    /// equivalent System.CodeDom objects, so the existing, already-production-proven
+    /// XSharpCodeGenerator can turn them into X# text -- reusing tested codegen instead of a
+    /// second hand-rolled string templater (see EventHandlerSync's narrower, template-based
+    /// approach, which is fine for boilerplate handler stubs but doesn't scale to arbitrary
+    /// property/control edits).
     ///
-    /// Key real-world wrinkle (not in the original hand-written WinForm1_Core sample): the
-    /// real Designer's regenerated code uses IMPLICIT `this` everywhere (`oButton1.Location =
-    /// ...`, not `this.oButton1.Location = ...`) and introduces local temp variables for
-    /// nested-object properties (e.g. Guna's `CustomizableEdges`). Both are handled below.
+    /// Key real-world wrinkle: the out-of-process Designer's regenerated code uses IMPLICIT
+    /// `this` everywhere (`oButton1.Location = ...`, not `this.oButton1.Location = ...`) and
+    /// introduces local temp variables for nested-object properties on some 3rd-party
+    /// controls. Both are handled below.
     ///
     /// Deliberately syntax-only (no semantic model) -- distinguishing "this.field" chains from
     /// "Namespace.Type.StaticMember" chains is done by checking whether the chain's root
@@ -62,9 +60,9 @@ namespace XSharp.Project.ShadowDesigner
                     return TranslateExpressionStatement(exprStmt.Expression, ctx);
 
                 case ReturnStatementSyntax _:
-                    // InitializeComponent never wants a trailing RETURN in the X# CodeDom model
-                    // (confirmed in Stage 2 -- the Designer's own parser rejects it). Skip
-                    // silently rather than flagging as unsupported.
+                    // InitializeComponent never wants a trailing RETURN in the X# CodeDom
+                    // model -- the Designer's own parser rejects it. Skip silently rather than
+                    // flagging as unsupported.
                     return null;
 
                 default:
@@ -145,7 +143,7 @@ namespace XSharp.Project.ShadowDesigner
                 // TranslateExpression's generic "unknown identifier -> type reference"
                 // fallback (methods are never in KnownFieldNames) and always resolve as
                 // SELF:name, matching the convention used everywhere else in this codebase
-                // (e.g. Stage 4's EventHandlerSync-generated wiring).
+                // (e.g. EventHandlerSync's generated wiring).
                 handler = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), handlerId.Identifier.Text);
             }
             else
@@ -215,8 +213,7 @@ namespace XSharp.Project.ShadowDesigner
                         // "Controls.Add(...)", "Name = ..." -- implicit-this Form properties/
                         // methods the Designer emits unqualified), never a real type on its
                         // own -- default to implicit SELF, matching every other convention in
-                        // this codebase (Stage 4's EventHandlerSync wiring, the original
-                        // hand-authored sample).
+                        // this codebase (e.g. EventHandlerSync's wiring).
                         return new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), name);
                     }
 
@@ -240,9 +237,9 @@ namespace XSharp.Project.ShadowDesigner
                         var target = TranslateExpression(memberAccess.Expression, ctx);
                         if (target == null) return null;
                         // X# uses ':' for both field and property access -- CodeFieldReferenceExpression
-                        // and CodePropertyReferenceExpression render identically for our purposes
-                        // (confirmed by reading XSharpCodeGenerator.GenerateFieldReferenceExpression),
-                        // so there's no need for a semantic model to disambiguate the two.
+                        // and CodePropertyReferenceExpression render identically in
+                        // XSharpCodeGenerator, so there's no need for a semantic model to
+                        // disambiguate the two.
                         return new CodeFieldReferenceExpression(target, memberAccess.Name.Identifier.Text);
                     }
 

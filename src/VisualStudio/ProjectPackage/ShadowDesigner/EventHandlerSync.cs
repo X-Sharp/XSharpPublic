@@ -17,12 +17,10 @@ namespace XSharp.Project.ShadowDesigner
     /// <summary>
     /// Detects event-handler stubs and wiring statements the out-of-process Designer added
     /// to the companion project's C# files, and writes the X# equivalents into the real
-    /// .prg sources. Ported from the research spike (E:\VSDesigner\research\spikes\
-    /// spike-vsix, "Stage 4") once confirmed working end-to-end there. Scoped narrowly to
-    /// handler *creation* only -- rename/delete of an existing wired handler isn't
-    /// attempted. Uses Roslyn to parse the companion C# files:
-    /// Microsoft.CSharp.CSharpCodeProvider.Parse() doesn't implement C# parsing (confirmed
-    /// via the spike's investigation), so this is the only real option.
+    /// .prg sources. Scoped narrowly to handler *creation* only -- rename/delete of an
+    /// existing wired handler isn't attempted. Uses Roslyn to parse the companion C# files,
+    /// since Microsoft.CSharp.CSharpCodeProvider.Parse() doesn't implement C# parsing at all
+    /// (CodeDom only ever supported generation, not parsing, for this provider).
     /// </summary>
     internal static class EventHandlerSync
     {
@@ -33,7 +31,7 @@ namespace XSharp.Project.ShadowDesigner
             public bool HasChanges => NewHandlerNames.Count > 0 || NewWiringDescriptions.Count > 0;
         }
 
-        // Only the couple of keywords event-handler signatures actually need -- this is
+        // Only the couple of type keywords event-handler signatures actually need -- this is
         // intentionally not a general C#->X# type translator (XSharpCodeGenerator already
         // exists for that, and is used directly by DesignerChangesSync for the harder case).
         private static readonly Dictionary<string, string> TypeTranslations = new Dictionary<string, string>(StringComparer.Ordinal)

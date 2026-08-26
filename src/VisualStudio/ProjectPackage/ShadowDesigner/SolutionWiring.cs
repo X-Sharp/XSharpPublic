@@ -11,9 +11,8 @@ using EnvDTE80;
 namespace XSharp.Project.ShadowDesigner
 {
     /// <summary>
-    /// The only class in this feature that touches EnvDTE/DTE2, ported from the research
-    /// spike. Adds the companion project to the running solution and opens it in Designer
-    /// view.
+    /// The only class in this feature that touches EnvDTE/DTE2. Adds the companion project
+    /// to the running solution and opens it in Designer view.
     /// </summary>
     internal static class SolutionWiring
     {

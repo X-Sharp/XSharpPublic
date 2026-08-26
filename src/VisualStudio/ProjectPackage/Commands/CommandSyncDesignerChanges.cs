@@ -17,12 +17,11 @@ using XSharpModel;
 namespace XSharp.Project
 {
     /// <summary>
-    /// File-context-menu command for Stage 5 of the shadow-designer bridge (see
-    /// E:\VSDesigner\research\06-document-binding-substitution.md): after editing
-    /// properties or adding/removing/reordering controls in the shadow Designer, run this
-    /// to fully regenerate the real Form1.Designer.prg from the companion project's current
-    /// state. Visible only for a SDK-style project's .prg file that already has an open
-    /// shadow companion project.
+    /// File-context-menu command for the shadow-designer bridge: after editing properties or
+    /// adding/removing/reordering controls in the shadow Designer, run this to fully
+    /// regenerate the real Form1.Designer.prg from the companion project's current state.
+    /// Visible only for a SDK-style project's .prg file that already has an open shadow
+    /// companion project.
     /// </summary>
     [Command(PackageIds.idSyncDesignerChanges)]
     internal sealed class CommandSyncDesignerChanges : BaseCommand<CommandSyncDesignerChanges>

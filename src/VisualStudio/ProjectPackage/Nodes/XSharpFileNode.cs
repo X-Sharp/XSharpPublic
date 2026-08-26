@@ -894,14 +894,13 @@ namespace XSharp.Project
             if (HasDesigner)
             {
                 // SDK-style (.NET Core) projects: VS's out-of-process WinForms Designer has
-                // no extensibility point for third-party languages and will reject this
-                // project outright if opened directly (confirmed:
-                // E:\VSDesigner\research\06-document-binding-substitution.md). Redirect to
-                // the shadow-file bridge instead, which opens an auto-generated companion C#
-                // project's Designer view (a real C# project, so the Designer's project-type
-                // gate passes). Legacy .NET Framework projects are unaffected -- they keep
-                // opening this .prg directly below, backed by the working CodeDom-provider
-                // integration (VSXSharpCodeDomProvider).
+                // no extensibility point for third-party languages and rejects this project
+                // outright if opened directly. Redirect to the shadow-file bridge instead,
+                // which opens an auto-generated companion C# project's Designer view (a real
+                // C# project, so the Designer's project-type gate passes). Legacy .NET
+                // Framework projects are unaffected -- they keep opening this .prg directly
+                // below, backed by the classic CodeDom-provider integration
+                // (VSXSharpCodeDomProvider).
                 if (this.ProjectMgr is XSharpSdkProjectNode)
                 {
                     if (XSharp.Project.ShadowDesigner.ShadowDesignerBridge.TryOpen(this, out string shadowError))

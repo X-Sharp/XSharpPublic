@@ -15,9 +15,7 @@ namespace XSharp.Project.ShadowDesigner
     /// <summary>
     /// Generates/refreshes a plain C# companion project (sibling to the real .xsproj's
     /// folder) that VS's out-of-process WinForms Designer can open directly, mirroring the
-    /// real project's TargetFramework and filtered reference set. Ported from the research
-    /// spike (E:\VSDesigner\research\spikes\spike-vsix) once the shadow-designer-bridge
-    /// approach was confirmed working end-to-end there. Pure disk I/O, no VS API.
+    /// real project's TargetFramework and filtered reference set. Pure disk I/O, no VS API.
     /// </summary>
     internal static class CompanionProjectWriter
     {

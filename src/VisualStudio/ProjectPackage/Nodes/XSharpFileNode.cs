@@ -18,7 +18,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
+using XSharp.CodeDom;
 using XSharpModel;
 using XSharp.Settings;
 
@@ -326,9 +328,74 @@ namespace XSharp.Project
         }
 
 
+        // Cached result of InferSubTypeFromBaseClass, set by UpdateHasDesigner -- lets
+        // HasSubType (and therefore IsForm/IsUserControl, and so the Solution Explorer icon)
+        // work for an auto-detected file the same way it does for one with an explicit
+        // <SubType>, without re-scanning the file on every icon query.
+        private string _inferredSubType;
+
         public void UpdateHasDesigner()
         {
-            HasDesigner = XSharpFileType.HasDesigner(this.Url, SubType);
+            string subType = SubType;
+            bool hasDesigner = XSharpFileType.HasDesigner(this.Url, subType);
+            _inferredSubType = null;
+            if (!hasDesigner && string.IsNullOrEmpty(subType))
+            {
+                // SDK-style projects use implicit globbing, so a file never gets an explicit
+                // <SubType> unless the user opts in manually with a <Compile Update="..."><
+                // SubType>Form</SubType></Compile> entry. Infer designer support instead from
+                // a matching sibling .Designer.prg -- the same signal the legacy CodeDom
+                // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
+                // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
+                string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
+                hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg);
+                if (hasDesigner)
+                {
+                    _inferredSubType = InferSubTypeFromBaseClass(this.Url);
+                }
+            }
+            HasDesigner = hasDesigner;
+        }
+
+        /// <summary>
+        /// Cheap, non-parsing inference of Form vs UserControl from the class declaration's
+        /// INHERIT clause (e.g. "CLASS Form1 INHERIT System.Windows.Forms.Form"), used only
+        /// to pick the right Solution Explorer icon for a file whose designer support was
+        /// itself auto-detected (see UpdateHasDesigner) rather than declared via an explicit
+        /// &lt;SubType&gt;. Deliberately a plain regex scan, not a real parse -- getting it
+        /// wrong only costs a wrong icon, never functionality, so it's not worth the
+        /// cost/risk of invoking the real X# parser just for this.
+        /// </summary>
+        private static string InferSubTypeFromBaseClass(string prgPath)
+        {
+            try
+            {
+                string text = File.ReadAllText(prgPath);
+                var match = Regex.Match(text, @"\bCLASS\s+\S+\s+INHERIT\s+([A-Za-z_][\w.]*)", RegexOptions.IgnoreCase);
+                if (!match.Success)
+                {
+                    return null;
+                }
+                string baseType = match.Groups[1].Value;
+                if (baseType.Equals("Form", StringComparison.OrdinalIgnoreCase) ||
+                    baseType.EndsWith(".Form", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ProjectFileAttributeValue.Form;
+                }
+                if (baseType.Equals("UserControl", StringComparison.OrdinalIgnoreCase) ||
+                    baseType.EndsWith(".UserControl", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ProjectFileAttributeValue.UserControl;
+                }
+                return null;
+            }
+            catch
+            {
+                // Best-effort only -- a read/regex failure here should never break icon
+                // rendering or (more importantly) HasDesigner/the shadow bridge, which don't
+                // depend on this.
+                return null;
+            }
         }
 
         #region Dependent Items
@@ -563,8 +630,14 @@ namespace XSharp.Project
         private bool HasSubType(string value)
         {
             string result = SubType;
-            return !String.IsNullOrEmpty(result) && MyStringEquals(result, value);
-
+            if (!String.IsNullOrEmpty(result))
+            {
+                return MyStringEquals(result, value);
+            }
+            // No explicit <SubType> metadata -- fall back to what UpdateHasDesigner inferred
+            // from the class's INHERIT clause, so an auto-detected file (see
+            // UpdateHasDesigner) still gets the right Solution Explorer icon.
+            return !String.IsNullOrEmpty(_inferredSubType) && MyStringEquals(_inferredSubType, value);
         }
         public bool IsXAML
         {
@@ -882,6 +955,55 @@ namespace XSharp.Project
         }
 
         /// <summary>
+        /// SDK-style (.NET Core) projects: VS's out-of-process WinForms Designer has no
+        /// extensibility point for third-party languages and rejects this project outright
+        /// if opened directly. Redirect to the shadow-file bridge instead, which opens an
+        /// auto-generated companion C# project's Designer view (a real C# project, so the
+        /// Designer's project-type gate passes). Legacy .NET Framework projects are
+        /// unaffected -- they keep opening this .prg directly, backed by the classic
+        /// CodeDom-provider integration (VSXSharpCodeDomProvider).
+        ///
+        /// Called from BOTH <see cref="DoDefaultAction"/> (double-click / Enter key) and the
+        /// <see cref="ExecCommandOnNode"/> override for VsCommands.ViewForm (the right-click
+        /// "View Designer" command) -- the base FileNode.ExecCommandOnNode handles ViewForm
+        /// directly and unconditionally (opens `this` in Designer view), completely
+        /// bypassing DoDefaultAction, so relying on DoDefaultAction alone only redirects the
+        /// double-click path and leaves the context-menu command opening the real .prg.
+        /// Returns true if the shadow Designer was opened (caller should not do anything
+        /// else); false if the caller should fall back to its own default behavior.
+        /// </summary>
+        private bool TryRedirectToShadowDesigner()
+        {
+            if (!(this.ProjectMgr is XSharpSdkProjectNode))
+            {
+                return false;
+            }
+            if (XSharp.Project.ShadowDesigner.ShadowDesignerBridge.TryOpen(this, out string shadowError))
+            {
+                return true;
+            }
+            XSettings.Information("XSharp ShadowDesigner: " + shadowError);
+            return false;
+        }
+
+        protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        {
+            if (cmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97 &&
+                (VsCommands)cmd == VsCommands.ViewForm && HasDesigner)
+            {
+                if (TryRedirectToShadowDesigner())
+                {
+                    return VSConstants.S_OK;
+                }
+                // Not an SDK-style project, or the shadow bridge failed -- fall through to
+                // the base class's normal ViewForm handling (opens this .prg's Designer view
+                // directly), matching pre-existing behavior for legacy .NET Framework
+                // projects and as a last-resort fallback.
+            }
+            return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
+        }
+
+        /// <summary>
         /// Open a file depending on the SubType property associated with the file item in the project file
         /// </summary>
         protected override void DoDefaultAction()
@@ -893,21 +1015,9 @@ namespace XSharp.Project
             string projectItemType = XSharpFileType.GetItemType(this.FileName);
             if (HasDesigner)
             {
-                // SDK-style (.NET Core) projects: VS's out-of-process WinForms Designer has
-                // no extensibility point for third-party languages and rejects this project
-                // outright if opened directly. Redirect to the shadow-file bridge instead,
-                // which opens an auto-generated companion C# project's Designer view (a real
-                // C# project, so the Designer's project-type gate passes). Legacy .NET
-                // Framework projects are unaffected -- they keep opening this .prg directly
-                // below, backed by the classic CodeDom-provider integration
-                // (VSXSharpCodeDomProvider).
-                if (this.ProjectMgr is XSharpSdkProjectNode)
+                if (TryRedirectToShadowDesigner())
                 {
-                    if (XSharp.Project.ShadowDesigner.ShadowDesignerBridge.TryOpen(this, out string shadowError))
-                    {
-                        return;
-                    }
-                    XSettings.Information("XSharp ShadowDesigner: " + shadowError);
+                    return;
                 }
                 viewGuid = VSConstants.LOGVIEWID.Designer_guid;
             }

@@ -94,8 +94,11 @@ namespace XSharp.Project.ShadowDesigner
                 // so XProject.AssemblyReferences has nothing to resolve -- any 3rd-party type
                 // reference silently corrupts the generated code instead of failing loudly (a
                 // multi-segment member-access chain like "oControl1:SomeProperty := x"
-                // collapses to a bare "oControl1 = x"). Ensure a build has happened before
-                // parsing.
+                // collapses to a bare "oControl1 = x"). Confirmed empirically that VS's own
+                // automatic design-time ("Sync") build does NOT resolve 3rd-party/NuGet
+                // references either (only plain framework reference-assembly paths show up) --
+                // a real build is genuinely required, not just avoidable overhead. Ensure a
+                // build has happened before parsing.
                 if (IsMissingAnyPackageReference(xProject) && !EnsureBuilt(dte, xProject, out error))
                 {
                     return false;

@@ -50,6 +50,26 @@ namespace XSharp.Project.ShadowDesigner
             "Microsoft.AspNetCore.App",
         };
 
+        // DIAGNOSTIC (deliberately left in, not a one-off spike): the CS0029/unresolved-
+        // 3rd-party-reference corruption (see the "Confirmed empirically" comment below) has
+        // recurred more than once across a long testing session for reasons not yet fully
+        // pinned down (stale process state was confirmed as the cause once, but not proven
+        // as the ONLY possible cause). Plain-file logger, deliberately bypassing X#'s own
+        // Logger/XSettings (Serilog-backed, gated behind Log2File/Log2Debug settings that
+        // default OFF -- confirmed to swallow output silently in earlier diagnosis). Writes
+        // unconditionally so results are visible with zero configuration. Safe to delete
+        // once this class of failure is fully understood and no longer recurring.
+        internal static void DiagLog(string message)
+        {
+            try
+            {
+                string path = Path.Combine(Path.GetTempPath(), "XSharpShadowDesigner", "diagnostic.log");
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.AppendAllText(path, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {message}{Environment.NewLine}");
+            }
+            catch { /* best-effort diagnostic only */ }
+        }
+
         /// <summary>
         /// Attempts to open the shadow Designer for <paramref name="fileNode"/> (expected to
         /// be a SDK-style project's .prg file with HasDesigner true). Returns false with an
@@ -60,6 +80,7 @@ namespace XSharp.Project.ShadowDesigner
         /// </summary>
         public static bool TryOpen(XSharpFileNode fileNode, out string error)
         {
+            DiagLog($"=== TryOpen: {fileNode.Url} ===");
             try
             {
                 var projectNode = fileNode.ProjectMgr as XSharpProjectNode;
@@ -99,10 +120,26 @@ namespace XSharp.Project.ShadowDesigner
                 // references either (only plain framework reference-assembly paths show up) --
                 // a real build is genuinely required, not just avoidable overhead. Ensure a
                 // build has happened before parsing.
-                if (IsMissingAnyPackageReference(xProject) && !EnsureBuilt(dte, xProject, out error))
+                bool missingRef = IsMissingAnyPackageReference(xProject);
+                DiagLog($"IsMissingAnyPackageReference={missingRef} (raw AssemblyReferences count={xProject.AssemblyReferences?.Count() ?? -1})");
+                if (missingRef)
                 {
-                    return false;
+                    bool built = EnsureBuilt(dte, xProject, out error);
+                    DiagLog($"EnsureBuilt returned {built}" + (built ? "" : $", error={error}"));
+                    if (!built)
+                    {
+                        return false;
+                    }
+                    // Don't trust that BuildEnded(true)'s own RefreshReferences() call (fired
+                    // from XSharpIDEBuildLogger's MSBuild logger callback) has already
+                    // completed by the time the synchronous BuildProject(...) call above
+                    // returned -- force a synchronous re-read right now instead.
+                    projectNode.ForceRefreshReferences();
+                    DiagLog($"ForceRefreshReferences: raw AssemblyReferences count now={xProject.AssemblyReferences?.Count() ?? -1}");
                 }
+                var preParseRefs = GetFilteredReferencePaths(xProject);
+                DiagLog($"Filtered (non-framework) references at parse time, count={preParseRefs.Count}: " +
+                    string.Join("; ", preParseRefs.Select(Path.GetFileNameWithoutExtension)));
 
                 XCodeCompileUnit mainUnit = ToXCodeCompileUnit(ParseFile(xProject, mainPrgPath, null));
                 CodeTypeDeclaration firstClass = mainUnit.GetFirstClass();
@@ -132,12 +169,25 @@ namespace XSharp.Project.ShadowDesigner
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
                     xProject.FileName, referencePaths, shadowCSharp, namespaceName, className);
 
+                CompanionSaveWatcher.Watch(fileNode.ProjectMgr, new CompanionLocation
+                {
+                    MainPrgPath = mainPrgPath,
+                    DesignerPrgPath = designerPrgPath,
+                    CompanionCsprojPath = companion.CsprojPath,
+                    CompanionFormCsPath = CompanionProjectWriter.ComputeFormCsPath(xProject.FileName, className),
+                    CompanionDesignerCsPath = companion.DesignerCsPath,
+                });
+                ShadowDesignerCleanup.Track(companion.CsprojPath);
+
                 SolutionWiring.EnsureProjectInSolution(dte, companion.CsprojPath);
-                return SolutionWiring.TryOpenInDesigner(dte, companion.DesignerCsPath, out error);
+                bool opened = SolutionWiring.TryOpenInDesigner(dte, companion.DesignerCsPath, out error);
+                DiagLog($"TryOpenInDesigner returned {opened}" + (opened ? "" : $", error={error}"));
+                return opened;
             }
             catch (Exception ex)
             {
                 error = ex.ToString();
+                DiagLog($"EXCEPTION: {error}");
                 return false;
             }
         }
@@ -314,13 +364,45 @@ namespace XSharp.Project.ShadowDesigner
         }
 
         /// <summary>
-        /// Reads xProject.AssemblyReferences (its public getter already triggers resolution,
-        /// subject to XProject's own internal throttle/staleness rules) and filters out
-        /// shared-framework/runtime paths that come implicitly via the companion project's
-        /// own UseWindowsForms=true SDK import.
+        /// XProject.AssemblyReferences's own getter only actually processes newly-queued
+        /// references at most once every 15 seconds (XProject's internal RefCheckTimeOut
+        /// throttle, gated on a _lastRefCheck timestamp touched by ANY caller anywhere in the
+        /// IDE, e.g. editor IntelliSense polling -- not something under this bridge's
+        /// control). Confirmed via diagnostic logging: a reference already correctly written
+        /// into the real .rsp by a build that just finished can still read back as "not
+        /// there" immediately afterward, purely because of this timing gate, not because it
+        /// was actually missing. Bypasses it the same way the research spike proved out
+        /// (research/spikes/spike-vsix/RESULTS.md, AssemblyReferenceResolver
+        /// .ForceResolveReferences) -- reflecting into the private
+        /// ResolveUnprocessedAssemblyReferences() and calling it directly. Reflection is
+        /// still needed here even though this code lives inside X#'s own product source
+        /// (unlike everywhere else in this bridge): XProject lives in the separate
+        /// XSharpModel assembly, and this specific method is private there, not just
+        /// internal.
+        /// </summary>
+        private static void ForceResolveUnprocessedReferences(XProject xProject)
+        {
+            try
+            {
+                var method = xProject.GetType().GetMethod("ResolveUnprocessedAssemblyReferences",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                method?.Invoke(xProject, null);
+            }
+            catch (Exception ex)
+            {
+                DiagLog($"ForceResolveUnprocessedReferences: reflection failed: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reads xProject.AssemblyReferences (forcing resolution of anything still queued
+        /// first, see ForceResolveUnprocessedReferences) and filters out shared-framework/
+        /// runtime paths that come implicitly via the companion project's own
+        /// UseWindowsForms=true SDK import.
         /// </summary>
         private static List<string> GetFilteredReferencePaths(XProject xProject)
         {
+            ForceResolveUnprocessedReferences(xProject);
             var seenSimpleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var result = new List<string>();
             foreach (XAssembly asm in xProject.AssemblyReferences)

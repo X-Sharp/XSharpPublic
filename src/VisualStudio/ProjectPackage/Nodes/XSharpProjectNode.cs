@@ -2102,6 +2102,22 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
+        /// <summary>
+        /// Exposes RefreshReferences to code elsewhere in this assembly that isn't an
+        /// XSharpProjectNode subclass (e.g. ShadowDesignerBridge), for forcing a synchronous
+        /// re-read of the .rsp/reference list right after a build it just ran itself --
+        /// rather than trusting that the normal BuildEnded(true) -> RefreshReferences() path
+        /// (triggered by XSharpIDEBuildLogger's MSBuild logger callback) has already
+        /// completed by the time a synchronous EnvDTE BuildProject(...) call returns.
+        /// Confirmed via diagnostic logging that it sometimes hasn't: GetFilteredReferencePaths
+        /// read a stale, empty (framework-only) list immediately after EnsureBuilt reported
+        /// success, causing the unresolved-3rd-party-reference CodeDom corruption
+        /// (oControl1:Property := x collapsing to a bare oControl1 = x) intermittently.
+        /// Virtual dispatch through this wrapper still reaches the most-derived override
+        /// (e.g. XSharpSdkProjectNode.RefreshReferences), same as calling it directly would.
+        /// </summary>
+        internal List<string> ForceRefreshReferences() => RefreshReferences();
+
         protected virtual List<string> RefreshReferences()
         {
             // find the resource file and read the lines with /reference

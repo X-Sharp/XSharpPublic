@@ -483,6 +483,8 @@
     <Compile Include="ShadowDesigner\RoslynToCodeDom.cs" />
     <Compile Include="ShadowDesigner\EventHandlerSync.cs" />
     <Compile Include="ShadowDesigner\DesignerChangesSync.cs" />
+    <Compile Include="ShadowDesigner\CompanionSaveWatcher.cs" />
+    <Compile Include="ShadowDesigner\ShadowDesignerCleanup.cs" />
     <Compile Include="Commands\CommandSyncEventHandlers.cs" />
     <Compile Include="Commands\CommandSyncDesignerChanges.cs" />
     <Compile Include="GlobalSuppressions.cs" />

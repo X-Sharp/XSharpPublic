@@ -123,6 +123,7 @@
     <Compile Include="VfpStringFunctionsTests.prg" />
     <Compile Include="WaitCommandTests.prg" />
     <Compile Include="WrappedStubsTests.prg" />
+    <Compile Include="XmlToCursorTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

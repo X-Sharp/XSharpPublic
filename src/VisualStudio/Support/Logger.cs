@@ -402,7 +402,7 @@ namespace XSharp.Support
 
         public void Exception(Exception e, string sMsg)
         {
-            Logger.Debug(sMsg);
+            Logger.Exception(e, sMsg);
         }
 
         public void Information(string sMsg)

@@ -2831,19 +2831,11 @@
   <data name="VFP_COLLECTION_INCORRECT_KEYSORT" xml:space="preserve">
     <value>Keysort on {0} is not supported for collections ordered by {1}</value>
   </data>
-
-
-
-
-
-
-
-
-
-
-
-
+  <data name="VFP_XML_PARSE_ERROR" xml:space="preserve">
+    <value>XML Parse error: {0}</value>
+  </data>
+  <data name="VFP_XML_NOSCHEMA" xml:space="preserve">
+    <value>Unable to infer XML schema.</value>
+  </data>
   <!-- End of FoxPro runtime-->
-
-
 </root>

@@ -21,5 +21,6 @@ STATIC CLASS XCustomEditorSettings
     STATIC PROPERTY MenuParentClass AS STRING AUTO := "Menu"
     STATIC PROPERTY ToolbarParentClass AS STRING AUTO := "Menu"
     STATIC PROPERTY BackupFormFiles AS LOGIC AUTO := FALSE
+    STATIC PROPERTY AutoBuildForShadowDesigner AS LOGIC AUTO := FALSE
 
 END CLASS

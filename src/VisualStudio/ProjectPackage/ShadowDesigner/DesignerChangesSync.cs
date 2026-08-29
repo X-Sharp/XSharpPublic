@@ -27,10 +27,9 @@ namespace XSharp.Project.ShadowDesigner
     /// This calls XSharpCodeGenerator directly -- see ShadowDesignerBridge's class doc for
     /// why that's safe here.
     ///
-    /// NOT YET COORDINATED with EventHandlerSync: that command also writes wiring (+=)
-    /// lines into Form1.Designer.prg via targeted regex insertion. Confirmed working
-    /// together once (event sync, then this), in that order, but not stress-tested in
-    /// other orderings.
+    /// Not coordinated with EventHandlerSync at the file level: that command also writes
+    /// wiring (+=) lines into Form1.Designer.prg, via targeted regex insertion rather than
+    /// a full regenerate. Run event sync before this one when both apply in the same pass.
     /// </summary>
     internal static class DesignerChangesSync
     {

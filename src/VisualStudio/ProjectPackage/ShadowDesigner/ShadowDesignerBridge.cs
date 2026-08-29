@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.CodeDom;
 using XSharp.Settings;
 using XSharpModel;
+using Logger = XSharp.Project.Logger;
 
 namespace XSharp.Project.ShadowDesigner
 {
@@ -50,26 +51,6 @@ namespace XSharp.Project.ShadowDesigner
             "Microsoft.AspNetCore.App",
         };
 
-        // DIAGNOSTIC (deliberately left in, not a one-off spike): the CS0029/unresolved-
-        // 3rd-party-reference corruption (see the "Confirmed empirically" comment below) has
-        // recurred more than once across a long testing session for reasons not yet fully
-        // pinned down (stale process state was confirmed as the cause once, but not proven
-        // as the ONLY possible cause). Plain-file logger, deliberately bypassing X#'s own
-        // Logger/XSettings (Serilog-backed, gated behind Log2File/Log2Debug settings that
-        // default OFF -- confirmed to swallow output silently in earlier diagnosis). Writes
-        // unconditionally so results are visible with zero configuration. Safe to delete
-        // once this class of failure is fully understood and no longer recurring.
-        internal static void DiagLog(string message)
-        {
-            try
-            {
-                string path = Path.Combine(Path.GetTempPath(), "XSharpShadowDesigner", "diagnostic.log");
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                File.AppendAllText(path, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {message}{Environment.NewLine}");
-            }
-            catch { /* best-effort diagnostic only */ }
-        }
-
         /// <summary>
         /// Attempts to open the shadow Designer for <paramref name="fileNode"/> (expected to
         /// be a SDK-style project's .prg file with HasDesigner true). Returns false with an
@@ -80,7 +61,6 @@ namespace XSharp.Project.ShadowDesigner
         /// </summary>
         public static bool TryOpen(XSharpFileNode fileNode, out string error)
         {
-            DiagLog($"=== TryOpen: {fileNode.Url} ===");
             try
             {
                 var projectNode = fileNode.ProjectMgr as XSharpProjectNode;
@@ -120,13 +100,9 @@ namespace XSharp.Project.ShadowDesigner
                 // references either (only plain framework reference-assembly paths show up) --
                 // a real build is genuinely required, not just avoidable overhead. Ensure a
                 // build has happened before parsing.
-                bool missingRef = IsMissingAnyPackageReference(xProject);
-                DiagLog($"IsMissingAnyPackageReference={missingRef} (raw AssemblyReferences count={xProject.AssemblyReferences?.Count() ?? -1})");
-                if (missingRef)
+                if (IsMissingAnyPackageReference(xProject))
                 {
-                    bool built = EnsureBuilt(dte, xProject, out error);
-                    DiagLog($"EnsureBuilt returned {built}" + (built ? "" : $", error={error}"));
-                    if (!built)
+                    if (!EnsureBuilt(dte, xProject, out error))
                     {
                         return false;
                     }
@@ -135,11 +111,7 @@ namespace XSharp.Project.ShadowDesigner
                     // completed by the time the synchronous BuildProject(...) call above
                     // returned -- force a synchronous re-read right now instead.
                     projectNode.ForceRefreshReferences();
-                    DiagLog($"ForceRefreshReferences: raw AssemblyReferences count now={xProject.AssemblyReferences?.Count() ?? -1}");
                 }
-                var preParseRefs = GetFilteredReferencePaths(xProject);
-                DiagLog($"Filtered (non-framework) references at parse time, count={preParseRefs.Count}: " +
-                    string.Join("; ", preParseRefs.Select(Path.GetFileNameWithoutExtension)));
 
                 XCodeCompileUnit mainUnit = ToXCodeCompileUnit(ParseFile(xProject, mainPrgPath, null));
                 CodeTypeDeclaration firstClass = mainUnit.GetFirstClass();
@@ -181,13 +153,16 @@ namespace XSharp.Project.ShadowDesigner
 
                 SolutionWiring.EnsureProjectInSolution(dte, companion.CsprojPath);
                 bool opened = SolutionWiring.TryOpenInDesigner(dte, companion.DesignerCsPath, out error);
-                DiagLog($"TryOpenInDesigner returned {opened}" + (opened ? "" : $", error={error}"));
+                if (!opened)
+                {
+                    Logger.Error($"ShadowDesignerBridge.TryOpen: {error}");
+                }
                 return opened;
             }
             catch (Exception ex)
             {
                 error = ex.ToString();
-                DiagLog($"EXCEPTION: {error}");
+                Logger.Exception(ex, "ShadowDesignerBridge.TryOpen");
                 return false;
             }
         }
@@ -390,7 +365,7 @@ namespace XSharp.Project.ShadowDesigner
             }
             catch (Exception ex)
             {
-                DiagLog($"ForceResolveUnprocessedReferences: reflection failed: {ex.Message}");
+                Logger.Exception(ex, "ForceResolveUnprocessedReferences: reflection failed");
             }
         }
 

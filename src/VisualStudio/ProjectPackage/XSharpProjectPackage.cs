@@ -360,6 +360,10 @@ namespace XSharp.Project
         {
             XSettings.Logger.Debug(msg);
         }
+        internal static void Error(string msg)
+        {
+            XSettings.Logger.Error(msg);
+        }
     }
 
 }

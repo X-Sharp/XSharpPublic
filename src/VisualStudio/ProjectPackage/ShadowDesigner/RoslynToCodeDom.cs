@@ -9,24 +9,21 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace XSharp.Project.ShadowDesigner
 {
     /// <summary>
-    /// "Designer -> Code, beyond handler creation" (general property edits, control
-    /// add/remove/reorder). Translates the statement shapes the out-of-process WinForms
-    /// Designer actually emits into the companion project's InitializeComponent into
-    /// equivalent System.CodeDom objects, so the existing, already-production-proven
-    /// XSharpCodeGenerator can turn them into X# text -- reusing tested codegen instead of a
-    /// second hand-rolled string templater (see EventHandlerSync's narrower, template-based
-    /// approach, which is fine for boilerplate handler stubs but doesn't scale to arbitrary
-    /// property/control edits).
+    /// Translates the statement shapes the out-of-process WinForms Designer emits into the
+    /// companion project's InitializeComponent into equivalent System.CodeDom objects, so
+    /// the existing, production XSharpCodeGenerator can turn them into X# text -- reusing
+    /// tested codegen instead of a second hand-rolled string templater (see
+    /// EventHandlerSync's narrower, template-based approach for boilerplate handler stubs).
     ///
-    /// Key real-world wrinkle: the out-of-process Designer's regenerated code uses IMPLICIT
-    /// `this` everywhere (`oButton1.Location = ...`, not `this.oButton1.Location = ...`) and
-    /// introduces local temp variables for nested-object properties on some 3rd-party
-    /// controls. Both are handled below.
+    /// Key wrinkle: the Designer's regenerated code uses IMPLICIT `this` everywhere
+    /// (`oButton1.Location = ...`, not `this.oButton1.Location = ...`) and introduces local
+    /// temp variables for nested-object properties on some 3rd-party controls. Both handled
+    /// below.
     ///
-    /// Deliberately syntax-only (no semantic model) -- distinguishing "this.field" chains from
+    /// Deliberately syntax-only (no semantic model): distinguishing "this.field" chains from
     /// "Namespace.Type.StaticMember" chains is done by checking whether the chain's root
-    /// identifier is a known field/local/`this`, not by resolving symbols. Good enough for
-    /// InitializeComponent's constrained shape; not a general C#->X# transpiler.
+    /// identifier is a known field/local/`this`, not by resolving symbols -- good enough for
+    /// InitializeComponent's constrained shape, not a general C#->X# transpiler.
     /// </summary>
     internal static class RoslynToCodeDom
     {

@@ -7,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Logger = XSharp.Project.Logger;
 
 namespace XSharp.Project.ShadowDesigner
 {
@@ -32,9 +35,120 @@ namespace XSharp.Project.ShadowDesigner
             {
                 return;
             }
+
+            // A stale/"zombie" hierarchy can be registered at this exact path without
+            // EnvDTE's enumeration above finding it -- e.g. a .slnx left over from a session
+            // that ended abnormally (still references a companion project/folder that no
+            // longer exists on disk), which VS loads automatically on solution open, before
+            // any of this bridge's code runs. Left in place, AddFromFile below throws
+            // COMException 0x80041FE0 ("already a member of the solution"), and the Designer
+            // itself may report "does not support project" on the very first double-click of
+            // the session -- both confirmed via real repeated testing (see research/06-
+            // document-binding-substitution.md). Self-heal instead of requiring the user to
+            // hand-edit the .slnx: remove any existing hierarchy at this path first.
+            RemoveStaleHierarchy(csprojPath);
+            TryRemoveStaleProjectItem(dte, System.IO.Path.GetFileNameWithoutExtension(csprojPath));
+
             var folder = EnsureSolutionFolder(dte, ShadowDesignerFolderName);
             var solutionFolder = folder.Object as EnvDTE80.SolutionFolder;
             solutionFolder.AddFromFile(csprojPath);
+        }
+
+        /// <summary>
+        /// Second removal attempt, tried regardless of whether RemoveStaleHierarchy succeeded
+        /// -- IVsSolution.CloseSolutionElement can't be trusted to have actually removed a
+        /// stale StubHierarchy. Works on the raw EnvDTE.ProjectItem inside the Solution
+        /// Folder, not via its .SubProject (null for a broken reference, which is also why
+        /// EnumerateProjects/FindProjectByFullName above can never find it).
+        /// </summary>
+        private static void TryRemoveStaleProjectItem(DTE2 dte, string expectedName)
+        {
+            foreach (EnvDTE.Project project in dte.Solution.Projects)
+            {
+                if (!IsSolutionFolder(project))
+                {
+                    continue;
+                }
+                for (int i = 1; i <= project.ProjectItems.Count; i++)
+                {
+                    EnvDTE.ProjectItem item = project.ProjectItems.Item(i);
+                    if (item == null || !string.Equals(item.Name, expectedName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        item.Remove();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Exception(ex, $"SolutionWiring.TryRemoveStaleProjectItem: Remove() failed for '{expectedName}'");
+                    }
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds any IVsHierarchy already registered in the solution at csprojPath --
+        /// searching every project, including ones nested in Solution Folders, via the same
+        /// low-level IVsSolution API ShadowDesignerCleanup.CloseProjectElement uses to
+        /// sidestep EnvDTE's issues with nested/broken projects -- and closes/removes it.
+        /// Safe no-op if nothing matches or the solution service isn't available.
+        /// </summary>
+        private static void RemoveStaleHierarchy(string csprojPath)
+        {
+            if (!(((IServiceProvider)XSharpProjectPackage.XInstance)?.GetService(typeof(SVsSolution)) is IVsSolution vsSolution))
+            {
+                return;
+            }
+
+            Guid enumFlags = Guid.Empty;
+            int hr = vsSolution.GetProjectEnum((uint)__VSENUMPROJFLAGS.EPF_ALLINSOLUTION, ref enumFlags, out IEnumHierarchies hierarchies);
+            if (ErrorHandler.Failed(hr) || hierarchies == null)
+            {
+                return;
+            }
+
+            // Match by the project's simple NAME, not just its path -- confirmed via real
+            // testing that a "(not found)"/broken project reference (e.g. from a stale .slnx
+            // entry pointing at a since-deleted companion folder) surfaces as a
+            // `Microsoft.VisualStudio.CommonIDE.Solutions.ProjectSystems.StubHierarchy` that
+            // does NOT implement IVsProject at all (so GetMkDocument can't be called on it,
+            // and this bridge has no real path to resolve for it anyway) -- but it still
+            // reports its declared name via the plain IVsHierarchy property, which is all a
+            // stub for a missing project file has left to go on.
+            string expectedName = System.IO.Path.GetFileNameWithoutExtension(csprojPath);
+
+            var buffer = new IVsHierarchy[1];
+            while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                var hierarchy = buffer[0];
+                bool pathMatch = false;
+                if (hierarchy is IVsProject vsProject &&
+                    ErrorHandler.Succeeded(vsProject.GetMkDocument(VSConstants.VSITEMID_ROOT, out string mkDocument)))
+                {
+                    pathMatch = string.Equals(mkDocument, csprojPath, StringComparison.OrdinalIgnoreCase);
+                }
+
+                bool nameMatch = false;
+                if (!pathMatch &&
+                    ErrorHandler.Succeeded(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out object nameObj)))
+                {
+                    nameMatch = string.Equals(nameObj as string, expectedName, StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (pathMatch || nameMatch)
+                {
+                    // Plain 0 returns E_INVALIDARG for a StubHierarchy (a broken/"not found"
+                    // reference) -- unlike a normal loaded project, it needs this explicit
+                    // close option to be accepted. Whether or not this call itself succeeds,
+                    // TryRemoveStaleProjectItem (the caller's next step) is the removal path
+                    // actually confirmed to work for this case.
+                    vsSolution.CloseSolutionElement((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_DeleteProject, hierarchy, 0);
+                    break;
+                }
+            }
         }
 
         /// <summary>Finds the top-level Solution Folder with the given name, creating it if

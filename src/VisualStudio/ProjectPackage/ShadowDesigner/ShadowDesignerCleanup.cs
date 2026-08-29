@@ -10,6 +10,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Logger = XSharp.Project.Logger;
 
 namespace XSharp.Project.ShadowDesigner
 {
@@ -181,17 +182,17 @@ namespace XSharp.Project.ShadowDesigner
                         return;
                     }
                     Directory.Delete(dir, recursive: true);
-                    ShadowDesignerBridge.DiagLog($"ShadowDesignerCleanup: deleted {dir} (attempt {attempt})");
                     return;
                 }
                 catch (Exception ex)
                 {
                     if (attempt == maxAttempts)
                     {
-                        ShadowDesignerBridge.DiagLog($"ShadowDesignerCleanup: FAILED to delete {dir} after {maxAttempts} attempts: {ex}");
                         // Best-effort cleanup only -- regeneration is idempotent, so a
                         // leftover folder just gets overwritten fresh next time, not a
-                        // failure worth surfacing to the user.
+                        // failure worth surfacing to the user. Still worth a log entry in
+                        // case a folder is being left behind repeatedly.
+                        Logger.Exception(ex, $"ShadowDesignerCleanup: failed to delete {dir} after {maxAttempts} attempts");
                         return;
                     }
                     System.Threading.Thread.Sleep(delayMs);

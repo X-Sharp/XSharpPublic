@@ -348,7 +348,8 @@ namespace XSharp.Project
                 // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
                 // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
                 string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
-                hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg);
+                hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg) &&
+                    ! String.Equals(this.Url, designerPrg, StringComparison.OrdinalIgnoreCase);
                 if (hasDesigner)
                 {
                     _inferredSubType = InferSubTypeFromBaseClass(this.Url);

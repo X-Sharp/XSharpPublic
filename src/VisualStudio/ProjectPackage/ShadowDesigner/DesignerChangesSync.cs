@@ -101,6 +101,31 @@ namespace XSharp.Project.ShadowDesigner
             int statementCount = 0;
             foreach (var stmt in initializeComponent.Body.Statements)
             {
+                if (stmt.HasLeadingTrivia)
+                {
+                    var trivia = stmt.GetLeadingTrivia().ToString();
+                    if (! string.IsNullOrWhiteSpace(trivia))
+                    {
+                        bool docComment = trivia.Contains("///");
+                        if (docComment)
+                        {
+                            trivia = trivia.Replace("///", "");
+                        }
+                        else
+                        {
+                            trivia = trivia.Replace("//", "");
+                        }
+                        var lines = trivia.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        // remove the last line because that is the trivia receding the statement
+                        for (int i = 0; i < lines.Length-1; i++)
+                        {
+                            var line = lines[i];
+                            var comment = new CodeCommentStatement(line.TrimStart(), docComment);
+                            method.Statements.Add(comment);
+                        }
+                    }
+
+                }
                 var translated = RoslynToCodeDom.TranslateStatement(stmt, ctx);
                 if (translated != null)
                 {

@@ -23,14 +23,15 @@ namespace XSharpDebugger.ResultProvider
 
         public DkmClrValue GetClrValue(DkmSuccessEvaluationResult successResult)
         {
-            Logger.Information("Debugger: ResultProvider.GetClrValue");
-            return successResult.GetClrValue();
+            var value = successResult.GetClrValue();
+            Logger.Information($"Debugger: ResultProvider.GetClrValue: {value.ToString()}");
+            return value;
         }
 
         public void GetItems(DkmEvaluationResultEnumContext enumContext, DkmWorkList workList, int startIndex, int count, DkmCompletionRoutine<DkmEvaluationEnumAsyncResult> completionRoutine)
         {
-            Logger.Information("Debugger: ResultProvider.GetItems");
             enumContext.GetItems(workList, startIndex, count, completionRoutine);
+            Logger.Information($"Debugger: ResultProvider.GetItems: {count}");
             return;
         }
 
@@ -43,8 +44,8 @@ namespace XSharpDebugger.ResultProvider
 
         public string GetUnderlyingString(DkmEvaluationResult result)
         {
-            Logger.Information("Debugger: ResultProvider.GetUnderlyingString");
             var resString = result.GetUnderlyingString();
+            Logger.Information($"Debugger: ResultProvider.GetUnderlyingString: {resString}");
             return resString;
         }
     }

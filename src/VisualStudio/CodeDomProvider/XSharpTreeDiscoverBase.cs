@@ -1741,6 +1741,8 @@ namespace XSharp.CodeDom
 
         protected IXTypeSymbol findInCache(string typeName)
         {
+            if (typeName == null)
+                return null;
             if (_types.ContainsKey(typeName))
             {
                 return _types[typeName];

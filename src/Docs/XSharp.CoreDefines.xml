@@ -2062,6 +2062,15 @@
   <Set.TextMerge>
     <summary>FoxPro: Is Textmerge enabled.</summary>
   </Set.TextMerge>
+  <Set.Hours>
+    <summary>FoxPro: Setting for SET HOURS.</summary>
+  </Set.Hours>
+  <Set.Seconds>
+    <summary>FoxPro: Setting for SET SECONDS.</summary>
+  </Set.Seconds>
+  <Set.Tally>
+    <summary>Stores the tally result for latest bulk operation.</summary>
+  </Set.Tally>
   <Set.ThousandSep>
     <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
   </Set.ThousandSep>

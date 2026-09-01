@@ -744,6 +744,19 @@ namespace XSharp.Project
 
         private void AddPendingReferences(List<string> newReferences, SdkSubProjectInfo active)
         {
+            // Callers include XSharpIDEBuildLogger.ProjectFinishedHandler, which runs on
+            // an MSBuild logger (background) thread, but this method disposes
+            // XSharpDependencyNode (an AssemblyReferenceNode), whose Dispose() requires
+            // the UI thread. Marshal onto the UI thread before touching any hierarchy node.
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                AddPendingReferencesOnUIThread(newReferences, active);
+            });
+        }
+
+        private void AddPendingReferencesOnUIThread(List<string> newReferences, SdkSubProjectInfo active)
+        {
             HierarchyNode frameworkNode = null;
             if (SubProjects.Count > 1)
                 frameworkNode = active.TargetFrameworkReferenceNode;

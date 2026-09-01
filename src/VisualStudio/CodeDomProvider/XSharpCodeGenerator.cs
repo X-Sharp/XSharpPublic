@@ -1745,6 +1745,26 @@ namespace XSharp.CodeDom
             }
             else
             {
+                if (e.Value is System.Single fl)
+                {
+                    GenerateSingleFloatValue(fl);
+                    Output.Write("s");
+                    return;
+
+                }
+                else if (e.Value is System.Double db)
+                {
+                    GenerateDoubleValue(db);
+                    Output.Write("d");
+                    return;
+                }
+                else if (e.Value is System.Decimal dec)
+                {
+                    GenerateDecimalValue(dec);
+                    Output.Write("m");
+                    return;
+                }
+                else
                 if (e.Value is uint || e.Value is ulong)
                 {
                     var tmp = Convert.ToDouble(e.Value);

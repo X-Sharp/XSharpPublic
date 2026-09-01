@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <RootNamespace>XSharp</RootNamespace>
+    <RootNamespace>XSharp.Debugger</RootNamespace>
     <AssemblyName>XSharp.RT.Debugger</AssemblyName>
     <UseWindowsForms>true</UseWindowsForms>
     <Dialect>Core</Dialect>

@@ -14,6 +14,41 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PUBLIC CONST DESKTOP_HORZRES := 117 AS INT
         PUBLIC CONST DESKTOP_VERTRES := 118 AS INT
         PUBLIC CONST PD_PRINTSETUP := 0x40U AS DWORD
+
+        // SYSMETRIC(): the VFP help points at GetSystemMetrics()
+        PUBLIC CONST SM_CXSCREEN       :=  0 AS INT
+        PUBLIC CONST SM_CYSCREEN       :=  1 AS INT
+        PUBLIC CONST SM_CXVSCROLL      :=  2 AS INT
+        PUBLIC CONST SM_CYHSCROLL      :=  3 AS INT
+        PUBLIC CONST SM_CYCAPTION      :=  4 AS INT
+        PUBLIC CONST SM_CXBORDER       :=  5 AS INT
+        PUBLIC CONST SM_CYBORDER       :=  6 AS INT
+        PUBLIC CONST SM_CXDLGFRAME     :=  7 AS INT
+        PUBLIC CONST SM_CYDLGFRAME     :=  8 AS INT
+        PUBLIC CONST SM_CYVTHUMB       :=  9 AS INT
+        PUBLIC CONST SM_CXHTHUMB       := 10 AS INT
+        PUBLIC CONST SM_CXICON         := 11 AS INT
+        PUBLIC CONST SM_CYICON         := 12 AS INT
+        PUBLIC CONST SM_CXCURSOR       := 13 AS INT
+        PUBLIC CONST SM_CYCURSOR       := 14 AS INT
+        PUBLIC CONST SM_CYMENU         := 15 AS INT
+        PUBLIC CONST SM_CXFULLSCREEN   := 16 AS INT
+        PUBLIC CONST SM_CYFULLSCREEN   := 17 AS INT
+        PUBLIC CONST SM_CYKANJIWINDOW  := 18 AS INT
+        PUBLIC CONST SM_MOUSEPRESENT   := 19 AS INT
+        PUBLIC CONST SM_CYVSCROLL      := 20 AS INT
+        PUBLIC CONST SM_CXHSCROLL      := 21 AS INT
+        PUBLIC CONST SM_DEBUG          := 22 AS INT
+        PUBLIC CONST SM_SWAPBUTTON     := 23 AS INT
+        PUBLIC CONST SM_CXMIN          := 28 AS INT
+        PUBLIC CONST SM_CYMIN          := 29 AS INT
+        PUBLIC CONST SM_CXSIZE         := 30 AS INT
+        PUBLIC CONST SM_CYSIZE         := 31 AS INT
+        PUBLIC CONST SM_CXMINTRACK     := 34 AS INT
+        PUBLIC CONST SM_CYMINTRACK     := 35 AS INT
+        PUBLIC CONST SM_CXSMSIZE       := 52 AS INT
+        PUBLIC CONST SM_CYSMSIZE       := 53 AS INT
+
         [StructLayout(LayoutKind.Sequential, CharSet := CharSet.Unicode)];
         PUBLIC STRUCT PRINTDLGW
             PUBLIC lStructSize AS DWORD
@@ -83,6 +118,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
         STATIC EXTERN METHOD GetDeviceCaps(hDC AS IntPtr, nIndex AS INT) AS INT
+
+        [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
+        STATIC EXTERN METHOD GetSystemMetrics(nIndex AS INT) AS INT
 
         [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
         STATIC EXTERN METHOD GetDC(hWnd AS IntPtr) AS IntPtr

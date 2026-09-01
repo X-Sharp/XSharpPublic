@@ -26,15 +26,6 @@ FUNCTION TxtWidth( cExpression , cFontName, nFontSize , cFontStyle) AS FLOAT
     THROW NotImplementedException{}
     // RETURN 0
 
-
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/xmltocursor/*" />
-[FoxProFunction("XMLTOCURSOR", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION XmlToCursor( eExpression , cCursorName , nFlags ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/xmlupdategram/*" />
 [FoxProFunction("XMLUPDATEGRAM", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];

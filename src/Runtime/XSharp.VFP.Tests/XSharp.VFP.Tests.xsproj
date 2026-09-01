@@ -104,6 +104,7 @@
     <Compile Include="IndexOnTrimTests.prg" />
     <Compile Include="IntrospectionTests.prg" />
     <Compile Include="KeyMatchLookupTests.prg" />
+    <Compile Include="OOPTests.prg" />
     <Compile Include="ReplaceScopeTests.prg" />
     <Compile Include="SetDateCommandTests.prg" />
     <Compile Include="SQLStatementTests.prg" />
@@ -122,6 +123,7 @@
     <Compile Include="VfpStringFunctionsTests.prg" />
     <Compile Include="WaitCommandTests.prg" />
     <Compile Include="WrappedStubsTests.prg" />
+    <Compile Include="XmlToCursorTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

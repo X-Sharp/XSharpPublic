@@ -9,12 +9,13 @@ c := "a" +;
 
 ? c
 ? StackFrame{true}:GetFileLineNumber()
-xAssert(StackFrame{true}:GetFileLineNumber() == 12)
-PROC xAssert(l AS LOGIC)  AS VOID
-	IF l
+xAssert(StackFrame{true}:GetFileLineNumber() , 12)
+
+PROC xAssert(nResult AS INT, nExpected AS INT)  AS VOID
+	IF nExpected == nResult
 		? "Assertion passed"
 	ELSE
-		THROW Exception{"Incorrect result"}
+		THROW Exception{ System.String.Format("Incorrect result, expected {0}, returned {1}", nExpected, nResult)}
 	END IF
 RETURN
 

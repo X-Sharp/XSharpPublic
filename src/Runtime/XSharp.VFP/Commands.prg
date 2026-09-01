@@ -227,7 +227,6 @@ function __VfpWaitClear() as void
 
 /// <exclude/>
 FUNCTION __VfpCount(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
-    LOCAL nCount := 0 AS LONG
-    DbEval({|| nCount += 1}, cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
-    _TALLY := nCount
-    RETURN nCount
+    DbEval({||TRUE}, cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    _TALLY := RuntimeState.Tally
+    RETURN _TALLY

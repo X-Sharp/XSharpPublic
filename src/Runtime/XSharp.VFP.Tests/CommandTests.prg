@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 // Found -> pointer must move
                 GO TOP
                 Assert.True(IndexSeek("Beta", .T.))
-                Assert.Equal("Beta", ALLTRIM(SeekTest.Name))
+                Assert.Equal("Beta", ALLTRIM(SeekTest->Name))
 
                 // Not found with lMovePointer = .T.
                 Assert.False(IndexSeek("Zeta", .T.))

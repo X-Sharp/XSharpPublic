@@ -338,9 +338,10 @@ ENUM Set
     // MEMBER UdfParams
     /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Hours/*" />
     MEMBER Hours				:= 147
-
     /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Seconds/*" />
     MEMBER Seconds				:= 148
+    /// <include file="XSharp.Core.Docs.xml" path="doc/Set.Tally/*" />
+    MEMBER Tally                := 149
     // Xbase++ defines
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CharSet/*" />
     MEMBER CharSet          := 160

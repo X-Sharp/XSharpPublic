@@ -352,6 +352,12 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, value)
 
+    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.Tally/*" />
+    STATIC PROPERTY Tally AS LONG ;
+        GET GetValue<LONG>(Set.Tally);
+        SET SetValue<LONG>(Set.Tally, value)
+
+
    /// <include file="XSharp.Core.Docs.xml" path="doc/RuntimeState.CollationMode/*" />
    static property CollationMode as CollationMode
         get

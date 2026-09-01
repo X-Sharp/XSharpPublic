@@ -232,6 +232,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                    Assert.True(cTypeName:Contains("Drawing") .OR. cTypeName:Contains("Image") .OR. cTypeName:Contains("Bitmap"))
                 ENDIF
             FINALLY
+                // We need to dispose the picture object if it implements IDisposable, otherwise we get a file lock on the temp file
+                if oPic is IDisposable var oDisposable
+                    oDisposable:Dispose()
+                endif
                 IF File.Exists(cTempFile)
                     File.Delete(cTempFile)
                 ENDIF

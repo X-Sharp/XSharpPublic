@@ -170,7 +170,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             PUBLIC tmCharSet AS BYTE
         END STRUCT
 
-        [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];
+        [DllImport("gdi32.dll", CharSet := CharSet.Unicode, SetLastError := TRUE, ExactSpelling := TRUE, EntryPoint :="GetTextMetricsW")];
         STATIC EXTERN METHOD GetTextMetrics(hDC AS IntPtr, lpMetrics OUT TEXTMETRIC) AS LOGIC
 
         [DllImport("gdi32.dll", CharSet := CharSet.Auto, SetLastError := TRUE, ExactSpelling := TRUE)];

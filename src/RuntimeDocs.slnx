@@ -23,6 +23,8 @@
     <File Path="DocChinese/VoFunctionDocs.xml" />
     <File Path="DocChinese/VOSDK.Xml" />
     <File Path="DocChinese/XPPComments.Xml" />
+    <File Path="DocChinese/XSharp.Core.Docs.xml" />
+    <File Path="DocChinese/XSharp.CoreDefines.xml" />
   </Folder>
   <Folder Name="/Docs/">
     <File Path="Docs/Console.Xml" />
@@ -40,7 +42,11 @@
     <File Path="Docs/VoFunctionDocs.xml" />
     <File Path="Docs/VOSDK.Xml" />
     <File Path="Docs/XPPComments.Xml" />
+    <File Path="Docs/XSharp.Core.Docs.xml" />
     <File Path="Docs/XSharp.CoreDefines.xml" />
+    <File Path="Docs/XSharp.Data.Docs.xml" />
+    <File Path="Docs/XSharp.RDD.Docs.xml" />
+    <File Path="Docs/XSharp.RT.Docs.xml" />
     <File Path="Docs/XsRuntimeClasses.xml" />
     <File Path="Runtime/Docs/RuntimeSpecsV1.docx" />
     <File Path="Runtime/Docs/RuntimeSpecsV2.docx" />

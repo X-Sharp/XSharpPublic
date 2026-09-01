@@ -230,3 +230,49 @@ FUNCTION __VfpCount(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPP
     DbEval({||TRUE}, cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
     _TALLY := RuntimeState.Tally
     RETURN _TALLY
+
+/// <exclude/>
+FUNCTION __VfpDelete(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
+    LOCAL nCount := 0 AS LONG
+    // _TALLY counts the records actually deleted: a record that was already
+    // deleted is visited but not counted, so RuntimeState.Tally (which counts
+    // every record matching the scope) cannot be used here
+    DbEval({|| nCount += IIF(Deleted(), 0, 1), __DbDelete()}, ;
+           cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    _TALLY := nCount
+    RETURN nCount
+
+/// <exclude/>
+FUNCTION __VfpDeleteRecord() AS LOGIC
+    IF Deleted()
+        _TALLY := 0
+    ELSE
+        _TALLY := 1
+    ENDIF
+    RETURN __DbDelete()
+
+/// <exclude/>
+FUNCTION __VfpRecall(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
+    LOCAL nCount := 0 AS LONG
+    LOCAL lOldDeleted AS LOGIC
+    // RECALL has to visit the deleted records, which DbEval() skips when
+    // SET DELETED is ON. Only the scan is affected: the caller has already
+    // positioned the cursor, and VFP does honour SET DELETED for that
+    lOldDeleted := SetDeleted(FALSE)
+    TRY
+        DbEval({|| nCount += IIF(Deleted(), 1, 0), __DbRecall()}, ;
+               cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    FINALLY
+        SetDeleted(lOldDeleted)
+    END TRY
+    _TALLY := nCount
+    RETURN nCount
+
+/// <exclude/>
+FUNCTION __VfpRecallRecord() AS LOGIC
+    IF Deleted()
+        _TALLY := 1
+    ELSE
+        _TALLY := 0
+    ENDIF
+    RETURN __DbRecall()

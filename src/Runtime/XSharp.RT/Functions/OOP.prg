@@ -2373,3 +2373,5 @@ function EnableLBOptimizations(lSet as logic) as logic
     OOPHelpers.EnableOptimizations := lSet
     return lOld
 
+public function GetCacheClassesOurAssemblies() as ConcurrentDictionary<string, Type>
+    return OOPHelpers.cacheClassesOurAssemblies

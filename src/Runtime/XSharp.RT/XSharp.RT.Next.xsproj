@@ -2,7 +2,7 @@
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <RootNamespace>XSharp</RootNamespace>
+    <RootNamespace>XSharp.RT</RootNamespace>
     <AssemblyName>XSharp.RT</AssemblyName>
     <Dialect>VO</Dialect>
     <Unsafe>True</Unsafe>

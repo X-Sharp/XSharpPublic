@@ -154,6 +154,17 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 		ENDIF
 		cName := _PrivateNext()
 	ENDDO
+	cName := _PublicFirst()
+	DO WHILE cName != NULL
+		IF _Like(cMask, cName) == lMatch
+            IF lFoxPro
+                MemVarRelease(cName)
+            ELSE
+			    MemVarClear(cName)
+            ENDIF
+		ENDIF
+		cName := _PublicNext()
+	ENDDO
 	RETURN
 
 

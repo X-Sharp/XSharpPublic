@@ -16,6 +16,19 @@ Copyright (C) XSharp BV. All rights reserved.
     <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
     <AppXamlFiles>**\App.xaml</AppXamlFiles>
     <HeaderFiles>**\*.vh;**\*.xh</HeaderFiles>
+    <!-- Exclusions for the globs below. This must be captured BEFORE the item types owned by
+         X# are appended to DefaultItemExcludes: using the appended value would exclude exactly
+         the files these globs are meant to collect.
+         $(DefaultExcludesInProjectFolder) is still empty here (Microsoft.NET.Sdk.DefaultItems.props
+         is imported after this file) and is listed so the value is picked up should that order
+         ever change. The output directories are added explicitly for the same reason - they are
+         only appended to DefaultItemExcludes later, which is too late for the globs below. -->
+    <XSharpDefaultItemExcludes>$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)</XSharpDefaultItemExcludes>
+    <XSharpDefaultItemExcludes Condition="'$(BaseOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(BaseOutputPath)/**</XSharpDefaultItemExcludes>
+    <XSharpDefaultItemExcludes Condition="'$(BaseIntermediateOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(BaseIntermediateOutputPath)/**</XSharpDefaultItemExcludes>
+    <XSharpDefaultItemExcludes Condition="'$(OutputPath)' != ''">$(XSharpDefaultItemExcludes);$(OutputPath)/**</XSharpDefaultItemExcludes>
+    <XSharpDefaultItemExcludes Condition="'$(IntermediateOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(IntermediateOutputPath)/**</XSharpDefaultItemExcludes>
+
     <!-- App.xaml files need special item type ApplicationDefinition, so exclude these as well -->
     <!-- $(DefaultItemExcludes) must be preserved: the value set by the user in Directory.Build.props
          is evaluated before this file. Assigning without it silently discards their setting, unlike
@@ -25,24 +38,24 @@ Copyright (C) XSharp BV. All rights reserved.
   
   <ItemGroup>
     <!-- App.xaml files need special item type ApplicationDefinition -->
-    <ApplicationDefinition Include="$(AppXamlFiles)">
+    <ApplicationDefinition Include="$(AppXamlFiles)" Exclude="$(XSharpDefaultItemExcludes)">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
-    <VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
+    <VOBinary Include="$(VOBinaryFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </VOBinary>
-    <NativeResource Include="**/*.rc" >
+    <NativeResource Include="**/*.rc" Exclude="$(XSharpDefaultItemExcludes)" >
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </NativeResource >
-	<Compile Include="**/*.xaml.prg"  KeepDuplicates="false" >
+	<Compile Include="**/*.xaml.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
 	   <!-- .xaml.prg can depend on xaml -->
       <ParentXamlName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.xaml.prg$', '.xaml', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentXamlName>
       <DependentUpon Condition="Exists('%(ParentXamlName)')">%(ParentXamlName)</DependentUpon>
 	</Compile>
-    <Compile Include="**/*.designer.prg"  KeepDuplicates="false" >
+    <Compile Include="**/*.designer.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
       <!-- Designer.prg can depend on prg, resx or settings -->
       <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
       <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
@@ -51,12 +64,12 @@ Copyright (C) XSharp BV. All rights reserved.
       <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
       <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="**/*.resx"   KeepDuplicates="false">
+    <EmbeddedResource Include="**/*.resx" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
       <!-- This handles .resx that depends on a prg -->
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </EmbeddedResource>
-    <None Include="$(HeaderFiles)"  KeepDuplicates="false">
+    <None Include="$(HeaderFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
       <!-- This handles header files that depend on a prg -->
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>

@@ -58,8 +58,14 @@
 
 // SQL Delete, mapped to normal delete
 #command DELETE [<*clauses*>] WHERE [<*moreclauses*>] => DELETE <clauses> FOR <moreclauses>
-#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <target>
-#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a>
+#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <target> ; _TALLY := RuntimeState.Tally
+#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a> ; _TALLY := RuntimeState.Tally
+
+// Temporary: DELETE FROM <table> without WHERE deletes only the current record
+// (VFP deletes them all). Until that is fixed the command must not overwrite
+// _TALLY with a stale RuntimeState.Tally, since no DbEval() runs. Remove this
+// rule together with that fix.
+#command DELETE FROM <(a)> => DELETE IN <a>
 
 // Delete with Join or Subselect is not supported
 #command DELETE [<*clauses*>] <s:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>

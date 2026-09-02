@@ -17,7 +17,10 @@ Copyright (C) XSharp BV. All rights reserved.
     <AppXamlFiles>**\App.xaml</AppXamlFiles>
     <HeaderFiles>**\*.vh;**\*.xh</HeaderFiles>
     <!-- App.xaml files need special item type ApplicationDefinition, so exclude these as well -->
-    <DefaultItemExcludes>$(VOBinaryFiles);$(AppXamlFiles);$(HeaderFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
+    <!-- $(DefaultItemExcludes) must be preserved: the value set by the user in Directory.Build.props
+         is evaluated before this file. Assigning without it silently discards their setting, unlike
+         Microsoft.NET.Sdk.DefaultItems.props, which always appends. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(VOBinaryFiles);$(AppXamlFiles);$(HeaderFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
   </PropertyGroup>
   
   <ItemGroup>

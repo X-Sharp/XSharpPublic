@@ -12,6 +12,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         STATIC CONSTRUCTOR
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            RegisterFoxMemVarSupport()
         END CONSTRUCTOR
 
         [Fact, Trait("Category", "Tally")];

@@ -871,7 +871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
         {
-            if (_options.Dialect != XSharpDialect.VO && _options.Dialect != XSharpDialect.Vulcan)
+            if (!_options.Dialect.LikeVO())
             {
                 NotInDialect(context, "VOSTRUCT");
             }
@@ -879,7 +879,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
         {
-            if (_options.Dialect != XSharpDialect.VO && _options.Dialect != XSharpDialect.Vulcan)
+            if (!_options.Dialect.LikeVO())
             {
                 NotInDialect(context, "UNION");
             }

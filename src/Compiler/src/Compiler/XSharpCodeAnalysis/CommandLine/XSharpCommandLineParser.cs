@@ -13,8 +13,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public partial class CSharpCommandLineParser : CommandLineParser
     {
-        private XSharpSpecificCompilationOptions options;
-        // Vulcan Assembly Names
+        // The parser state below must not be shared between concurrent compilations.
+        // CSharpCommandLineParser.Default is a process-wide singleton and, with the shared
+        // compiler server (/shared), several compilations are parsed concurrently through it.
+        // Keeping this per-parse state thread-static isolates each parse so that one request's
+        // ResetXSharpCommandlineOptions() cannot discard the half-built options of another.
+        // See https://github.com/X-Sharp/XSharpPublic/issues/2076
+        private static XSharpSpecificCompilationOptions options;
+
 
         public XSharpSpecificCompilationOptions XSharpSpecificCompilationOptions
         {

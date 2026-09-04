@@ -111,7 +111,15 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 {
                     return (false, "Could not obtain the DTE service.");
                 }
-                bool opened = SolutionWiring.TryOpenInDesigner(dte, location.CompanionDesignerCsPath, out error);
+                // Open the plain "{ClassName}.cs" stub, not "{ClassName}.Designer.cs":
+                // the companion .csproj has no <DependentUpon>/<SubType> item metadata (pure
+                // implicit SDK globbing), so the out-of-process Designer falls back to naming
+                // any new .resx after whichever file is actually open -- opening the
+                // .Designer.cs file produced "Form1.Designer.resx" instead of the canonical
+                // "Form1.resx". Opening the main partial instead matches ordinary C# WinForms
+                // project convention and fixes both the resx naming and the misleading
+                // "Form1.Designer.cs [Design]" tab caption.
+                bool opened = SolutionWiring.TryOpenInDesigner(dte, location.CompanionFormCsPath, out error);
                 if (!opened)
                 {
                     Logger.Error($"ShadowDesignerBridge.TryOpenAsync: {error}");

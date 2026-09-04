@@ -154,7 +154,16 @@ namespace XSharp.Project.ShadowDesigner
                 ShadowDesignerCleanup.Track(companion.CsprojPath);
 
                 SolutionWiring.EnsureProjectInSolution(dte, companion.CsprojPath);
-                bool opened = SolutionWiring.TryOpenInDesigner(dte, companion.DesignerCsPath, out error);
+                // Open the plain "{ClassName}.cs" stub, not "{ClassName}.Designer.cs":
+                // the companion .csproj has no <DependentUpon>/<SubType> item metadata (pure
+                // implicit SDK globbing), so the out-of-process Designer falls back to naming
+                // any new .resx after whichever file is actually open -- opening the
+                // .Designer.cs file produced "Form1.Designer.resx" instead of the canonical
+                // "Form1.resx". Opening the main partial instead matches ordinary C# WinForms
+                // project convention and fixes both the resx naming and the misleading
+                // "Form1.Designer.cs [Design]" tab caption. Confirmed empirically 2026-09-04
+                // (see research/06-document-binding-substitution.md).
+                bool opened = SolutionWiring.TryOpenInDesigner(dte, location.CompanionFormCsPath, out error);
                 if (!opened)
                 {
                     Logger.Error($"ShadowDesignerBridge.TryOpen: {error}");

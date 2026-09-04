@@ -73,9 +73,11 @@ namespace XSharp.Project
             }
 
             DesignerChangesSync.SyncResult result;
+            CompanionResourceSync.SyncResult resxResult;
             try
             {
                 result = DesignerChangesSync.Sync(location);
+                resxResult = CompanionResourceSync.Sync(location);
             }
             catch (Exception ex)
             {
@@ -89,8 +91,11 @@ namespace XSharp.Project
                 ? $" ({result.SkippedStatements.Count} statement(s) skipped -- unsupported shape, check manually: " +
                   string.Join("; ", result.SkippedStatements) + ")"
                 : "";
+            string resxText = resxResult.CopiedFileNames.Count > 0
+                ? $" Synced {resxResult.CopiedFileNames.Count} resource file(s)."
+                : "";
             await VS.StatusBar.ShowMessageAsync(
-                $"Regenerated Form1.Designer.prg: {result.FieldCount} field(s), {result.StatementCount} statement(s).{skippedText}");
+                $"Regenerated Form1.Designer.prg: {result.FieldCount} field(s), {result.StatementCount} statement(s).{skippedText}{resxText}");
         }
     }
 }

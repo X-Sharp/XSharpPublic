@@ -597,27 +597,6 @@ namespace Microsoft.VisualStudio.Project
         {
             Utilities.ArgumentNotNull("node", node);
 
-            // Defensive: if `node` is already linked into this parent's own children list,
-            // do nothing rather than re-splice it in a second time. A caller passing in a
-            // node that is still linked (e.g. a duplicate-reference check further up the
-            // call chain returning an existing, not-yet-removed node instead of creating a
-            // fresh one -- confirmed for XSharpReferenceContainerNode.CreateFileComponent
-            // combined with ReferenceNode.IsAlreadyAdded not finding nodes nested under a
-            // sub-container like the SDK-style "Assemblies" node) can otherwise corrupt this
-            // singly-linked list: either a node ends up referenced from two positions at
-            // once, or, in the specific case where the sorted-insert scan below walks back
-            // into `node` itself as the last entry compared, a direct self-referencing cycle
-            // (node.nextSibling == node) that hangs any future walk of this list forever.
-            // Confirmed via live debugging, 2026-09-06 (a framework assembly reference
-            // node's own nextSibling pointed back to itself, freezing the IDE).
-            for (HierarchyNode existing = this.firstChild; existing != null; existing = existing.nextSibling)
-            {
-                if (ReferenceEquals(existing, node))
-                {
-                    return;
-                }
-            }
-
             // make sure the node is in the map.
             Object nodeWithSameID = this.projectMgr.ItemIdMap[node.hierarchyId];
             if(!Object.ReferenceEquals(node, nodeWithSameID as HierarchyNode))

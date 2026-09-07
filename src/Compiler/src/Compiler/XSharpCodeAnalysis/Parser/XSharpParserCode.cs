@@ -1668,10 +1668,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return type.IsOfType(OurTypeNames.SymbolType);
         }
-        internal static bool IsPtrType(this InternalSyntax.TypeSyntax type)
+        internal static bool IsVoidPtr(this InternalSyntax.TypeSyntax type)
         {
-            return type.IsOfType("IntPtr");
+            return type is PointerTypeSyntax pts && pts.ElementType is PredefinedTypeSyntax pds
+                            && pds.Keyword.Kind == SyntaxKind.VoidKeyword;
         }
+
         internal static bool IsStatic(this InternalSyntax.ConstructorDeclarationSyntax ctordecl)
         {
             return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);

@@ -337,7 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (node.Syntax.XIsExplicitTypeCastInCode && srcType.SpecialType.SizeInBytes() != 8)
                     {
-                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x86");
+                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x64");
                     }
                     break;
                 default:

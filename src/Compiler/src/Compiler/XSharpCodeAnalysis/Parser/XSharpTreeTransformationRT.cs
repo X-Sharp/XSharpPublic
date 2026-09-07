@@ -3674,7 +3674,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     stmts.Add(ifStatement);
                     // create PCount variable
                     var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
-                    var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, IntType,argLen);
+                    var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, IntType, argLen);
                     decl.XGenerated = true;
                     stmts.Add(decl);
                     // Now Change argument to X$Args PARAMS USUAL[]
@@ -3718,7 +3718,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // String2PszRelease(Xs$PszList)
                         var listOfIntPtr = _syntaxFactory.QualifiedName(GenerateQualifiedName(SystemQualifiedNames.CollectionsGeneric),
                             SyntaxFactory.DotToken,
-                            MakeGenericName("List", PtrType));
+                            MakeGenericName("List", IntPtrType));
                         var expr = CreateObject(listOfIntPtr, EmptyArgumentList());
                         stmts.Add(GenerateLocalDecl(XSharpSpecialNames.VoPszList, _impliedType, expr));
                         finallystmts.Add(GenerateExpressionStatement(
@@ -4186,7 +4186,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = GenerateNIL();
                     break;
                 case XP.NULL_PTR:
-                    expr = MakeSimpleMemberAccess(PtrType, GenerateSimpleName("Zero"));
+                    expr = MakeCastTo(PtrType, GenerateLiteralNull());
                     break;
                 case XP.NULL_PSZ:
                     expr = MakeDefault(PszType);
@@ -4793,7 +4793,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             && pe.Expr is XP.LiteralExpressionContext le
                             && le.Literal.Token.IsZeroLiteral()) // treat PTR(_CAST,0) as NULL_PTR
                         {
-                            context.Put(MakeSimpleMemberAccess(PtrType, GenerateSimpleName("Zero")));
+                            context.Put(MakeSimpleMemberAccess(IntPtrType, GenerateSimpleName("Zero")));
                             return;
                         }
                         break;

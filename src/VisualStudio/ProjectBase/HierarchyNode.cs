@@ -597,6 +597,7 @@ namespace Microsoft.VisualStudio.Project
         {
             Utilities.ArgumentNotNull("node", node);
 
+
             // A node that is already a member of this list must not be re-inserted: the
             // sorted-insert scan below can splice it into a self-referencing cycle, hanging
             // any later traversal of the list (see issue #2078).

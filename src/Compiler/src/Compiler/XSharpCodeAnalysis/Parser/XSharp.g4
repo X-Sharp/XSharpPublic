@@ -55,8 +55,8 @@ entity              : namespace_
                     | event_
                     | enum_
                     | globalAttributes          // Assembly attributes, Module attributes etc.
-                    | {IsVO}? vostruct          // VO Compatibility (unsafe) structure
-                    | {IsVO}? vounion           // VO Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | vostruct                  // VO Compatibility (unsafe) structure
+                    | vounion                   // VO Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     // members of the functions class
                     | funcproc                  // This will become part of the 'Globals' class
                     | using_                    // Using Namespace
@@ -491,7 +491,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
-                    | {IsVO}? Member=vodllmethod                    #clsvodllmethod   //  old style declaration of methods inside external DLL
+                    | Member=vodllmethod                            #clsvodllmethod   //  old style declaration of methods inside external DLL
                     | eos                                           #clseos// Blank Lines between entities
                     ;
 
@@ -1214,8 +1214,8 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier          : ID            // No rule names, we use the Start property to access the token
                     | keywordsoft
-                    | {!IsCoreVO}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
-                    | {!IsCoreVO}? nativeType    // VO, Vulcan and Core allow TYPE(something)
+                    | {!AllowTypeAsNumber}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
+                    | {!AllowTypeAsNumber}? nativeType    // VO, Vulcan and Core allow TYPE(something)
                     ;
 
 identifierString    : ID            // No rule names, we use the Start property to access the token

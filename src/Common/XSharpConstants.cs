@@ -128,6 +128,7 @@ namespace XSharp
         internal const string DialectVO = "VO";
         internal const string DialectVulcan = "Vulcan.NET";
         internal const string DialectXPP = "Xbase++";
+        internal const string DialectXBaseNet = "XBase.Net";
         internal const string DisabledWarnings = nameof(DisabledWarnings);
         internal const string NoWarn = nameof(NoWarn);
         internal const string DocumentationFile = nameof(DocumentationFile);

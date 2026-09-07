@@ -453,7 +453,7 @@ FUNCTION MemCheckPtr( pMemory AS PTR, dwSize AS DWORD ) AS LOGIC
     IF (IntPtr) pMemory == IntPtr.Zero
         RETURN FALSE
     ENDIF
-    IF RuntimeState.RunningOnWindows .AND. Win32.IsBadWritePtr(pMemory, dwSize)
+    IF RuntimeState.RunningOnWindows .AND. XSharp.Win32.IsBadWritePtr(pMemory, dwSize)
         RETURN FALSE
     ENDIF
     VAR pWork := (IntPtr) pMemory

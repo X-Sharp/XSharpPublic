@@ -64,7 +64,25 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
         public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
         public bool IsVO => Options.Dialect switch { XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
-        public bool IsCoreVO => Options.Dialect switch { XSharpDialect.Core => true, XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
+        public bool AllowTypeAsNumber
+        {
+            get
+            {
+                switch (Options.Dialect)
+                {
+                    case XSharpDialect.Core:
+                    case XSharpDialect.VO:
+                    case XSharpDialect.Vulcan:
+                    case XSharpDialect.XBaseNet:
+                        return true;
+                    case XSharpDialect.XPP:
+                    case XSharpDialect.Harbour:
+                    case XSharpDialect.FoxPro:
+                    default:
+                        return false;
+                }
+            }
+        }
         public bool ModernSyntax => Options.ModernSyntax;
         public bool HasMemVars
         {

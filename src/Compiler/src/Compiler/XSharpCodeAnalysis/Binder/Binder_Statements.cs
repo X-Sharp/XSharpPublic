@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
-
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
@@ -369,7 +369,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (sourceType is { } && !Equals(targetType, sourceType))
             {
                 var rule = expression.Syntax.XRuleContext;
-                if (targetType.IsPointerType() && sourceType.IsPointerType() && rule != null && rule.Start.Type == XP.NULL_PTR && rule.ChildCount == 1)
+                if (targetType.IsPointerType() && sourceType.IsPointerType() && rule?.IsNullPtr() == true)
                 {
                     // allow NULL_PTR to typed pointer assignment
                     expression = CreateConversion(expression, targetType, diagnostics);

@@ -19,12 +19,13 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using System.Xml.Linq;
+using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
+
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
-    using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
-    using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
-
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
         #region Nested classes
@@ -5622,6 +5623,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (type.IsVoidPtr())
             {
                 isConst = false;
+                if (context.Expr.IsVoCast())
+                {
+                    var pec = context.Expr as XP.PrimaryExpressionContext;
+                    var cast = pec.Expr as XP.VoCastExpressionContext;
+                    if (cast.IsPtrCastZero())
+					{
+                        isConst = true;
+					}
+                }
             }
             var list = _pool.Allocate();
             SyntaxList<SyntaxToken> modifiers = null;

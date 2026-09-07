@@ -2987,7 +2987,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var newParam = _syntaxFactory.Parameter(
                             attributeLists: GetActualArgs(),
                             modifiers: p.Modifiers,
-                            type: PtrType,
+                            type: IntPtrType,
                             identifier: p.Identifier,
                             @default: p.Default
                             );
@@ -4789,9 +4789,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (type.Token.Type)
                 {
                     case XP.PTR:
-                        if (context.Expr is XP.PrimaryExpressionContext pe
-                            && pe.Expr is XP.LiteralExpressionContext le
-                            && le.Literal.Token.IsZeroLiteral()) // treat PTR(_CAST,0) as NULL_PTR
+                        if (context.IsPtrCastZero()) // treat PTR(_CAST,0) as IntPtr.Zero
                         {
                             context.Put(MakeSimpleMemberAccess(IntPtrType, GenerateSimpleName("Zero")));
                             return;

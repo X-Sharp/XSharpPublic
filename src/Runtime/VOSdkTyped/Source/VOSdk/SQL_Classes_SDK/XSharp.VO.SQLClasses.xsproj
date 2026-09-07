@@ -10,7 +10,7 @@
     <OutputName>XSharp.VOSQLClasses</OutputName>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Unsafe>false</Unsafe>
+    <Unsafe>False</Unsafe>
     <VO6>false</VO6>
     <VO9>false</VO9>
     <VO10>false</VO10>

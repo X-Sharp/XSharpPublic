@@ -1,8 +1,6 @@
 <Solution>
   <Configurations>
-    <BuildType Name="Debug" />
-    <BuildType Name="Release" />
-    <ProjectType Name="XSharp" TypeId="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Extension = ".xsproj" />
+    <ProjectType Name="XSharp" TypeId="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Extension=".xsproj" />
 </Configurations>
   <Folder Name="/Runtime/">
     <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.Next.xsproj" />

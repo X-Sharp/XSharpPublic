@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>XSharp.Data</RootNamespace>
     <AssemblyName>XSharp.Data</AssemblyName>
-    <Dialect>VO</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -11,6 +11,7 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
+    <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

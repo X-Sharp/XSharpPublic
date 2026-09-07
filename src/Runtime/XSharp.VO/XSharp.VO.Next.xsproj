@@ -10,6 +10,7 @@
     <Cs>true</Cs>
     <StartupObject />
     <TargetFramework>net8.0</TargetFramework>
+    <Vo15>true</Vo15>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

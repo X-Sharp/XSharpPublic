@@ -241,7 +241,6 @@ FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue IN USUAL)
     RETURN FieldPutArea(@@Select(symAlias ), symField, uNewValue)
 
 
-    *----------------------------------------------------------------------------
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias/*" />
 FUNCTION Alias(uWorkArea) AS STRING CLIPPER
@@ -665,7 +664,6 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
 
 
 
-    *----------------------------------------------------------------------------
 /// <include file="XSharp.RT.Docs.xml" path="doc/DbSetRelation/*" />
 FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
 

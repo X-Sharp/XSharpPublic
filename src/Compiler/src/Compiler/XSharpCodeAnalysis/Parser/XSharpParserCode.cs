@@ -17,6 +17,8 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Atn;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+
 
 
 #if !VSPARSER
@@ -1639,6 +1641,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
     internal static class RuleExtensions
     {
+        internal static bool IsPtrCastZero([NotNull] this XSharpParserRuleContext context)
+        {
+            return context is VoCastExpressionContext voc
+                            && voc.Expr is PrimaryExpressionContext pe
+                            && pe.Expr is LiteralExpressionContext le
+                            && le.Literal.Token.IsZeroLiteral();
+        }
+
+        internal static bool IsNullPtr([NotNull] this XSharpParserRuleContext context)
+        {
+            return context.ChildCount == 1 && context.Start.Type == XSharpParser.NULL_PTR;
+        }
         internal static XSharpParserRuleContext Context([NotNull] this XSharpParser.IEntityContext entity) => (XSharpParserRuleContext)entity;
         internal static bool isScript([NotNull] this XSharpParser.IEntityContext entity) => entity is XSharpParser.ScriptContext;
 #if !VSPARSER
@@ -1668,10 +1682,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return type.IsOfType(OurTypeNames.SymbolType);
         }
-        internal static bool IsPtrType(this InternalSyntax.TypeSyntax type)
+        internal static bool IsVoidPtr(this InternalSyntax.TypeSyntax type)
         {
-            return type.IsOfType("IntPtr");
+            return type is PointerTypeSyntax pts && pts.ElementType is PredefinedTypeSyntax pds
+                            && pds.Keyword.Kind == SyntaxKind.VoidKeyword;
         }
+
         internal static bool IsStatic(this InternalSyntax.ConstructorDeclarationSyntax ctordecl)
         {
             return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);

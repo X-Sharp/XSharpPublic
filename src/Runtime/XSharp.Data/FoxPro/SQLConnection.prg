@@ -16,14 +16,14 @@ USING XSharp.VFP
 USING XSharp.Data
 USING XSharp.RDD
 
-*-- Remote connection login prompt options
+// -- Remote connection login prompt options
 /// <exclude/>
 DEFINE DB_PROMPTCOMPLETE     :=  1
 /// <exclude/>
 DEFINE DB_PROMPTALWAYS       :=  2
 /// <exclude/>
 DEFINE DB_PROMPTNEVER        :=  3
-*-- Remote transaction modes
+// -- Remote transaction modes
 /// <exclude/>
 DEFINE DB_TRANSAUTO          :=  1
 /// <exclude/>

@@ -209,6 +209,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            if (destination is PointerTypeSymbol pts && pts.PointedAtType.IsVoStructOrUnion())
+            {
+                // Allow NULL_PTR source for VoSTruct or Union Ptr
+                if (source is PointerTypeSymbol pts2 && pts2.IsVoidPointer())
+                {
+                    var rule = sourceExpression.Syntax.XRuleContext;
+                    if (rule?.IsNullPtr() == true)
+                    {
+                        return Conversion.Identity;
+                    }
+                }
+            }
+
             // From Anything -> IntPtr
             if (dstType == SpecialType.System_IntPtr || dstType == SpecialType.System_UIntPtr)
             {

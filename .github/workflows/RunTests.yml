@@ -16,7 +16,7 @@ env:
 
 jobs:
   job1:
-    name: BuildXSharpCompiler
+    name: RunTests
     runs-on: windows-2022 # Specify the OS to execute on
 
     steps:

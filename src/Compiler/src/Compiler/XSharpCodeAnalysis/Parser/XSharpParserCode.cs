@@ -1640,13 +1640,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
     internal static class RuleExtensions
     {
-        internal static bool IsPtrCastZero([NotNull] this XSharpParserRuleContext context)
-        {
-            return context is VoCastExpressionContext voc
-                            && voc.Expr is PrimaryExpressionContext pe
-                            && pe.Expr is LiteralExpressionContext le
-                            && le.Literal.Token.IsZeroLiteral();
-        }
 
         internal static bool IsNullPtr([NotNull] this XSharpParserRuleContext context)
         {
@@ -1655,6 +1648,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal static XSharpParserRuleContext Context([NotNull] this XSharpParser.IEntityContext entity) => (XSharpParserRuleContext)entity;
         internal static bool isScript([NotNull] this XSharpParser.IEntityContext entity) => entity is XSharpParser.ScriptContext;
 #if !VSPARSER
+
+        internal static bool IsPtrCastZero([NotNull] this XSharpParserRuleContext context)
+        {
+            return context is VoCastExpressionContext voc
+                            && voc.Expr is PrimaryExpressionContext pe
+                            && pe.Expr is LiteralExpressionContext le
+                            && le.Literal.Token.IsZeroLiteral();
+        }
+
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
             return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);

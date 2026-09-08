@@ -38,25 +38,25 @@ jobs:
           call ContinuousIntegrationBuild.cmd
 
       - name: Upload BuildLogs
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: BuildLogs
           path: ./src/build*.Log
 
       - name: Upload Zips
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: BuildResultsZip
           path: ./Artifacts/Zips/*.zip
 
       - name: Upload Bin
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: BuildResultsBin
           path: ./Artifacts/Bin/xsc/Release/net472/*.*
 
       - name: Upload Shared Files
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Shared
           path: |

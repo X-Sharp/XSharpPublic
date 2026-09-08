@@ -16,18 +16,17 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Atn;
 using System.Diagnostics;
-using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 
 
 #if !VSPARSER
-using MCT = Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
 #endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
+    using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
     internal class XSharpErrorListener : IAntlrErrorListener<IToken>
     {
         readonly String _fileName;

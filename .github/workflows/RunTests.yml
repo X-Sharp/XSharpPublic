@@ -1,0 +1,47 @@
+#See https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow for help
+name: ContinuousBuild
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # every night at 3 am UTC
+  pull_request:
+    types: [opened, assigned, synchronize, edited]
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # Optional canary for upcoming runner runtime changes; enable when you want to test early.
+  # FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  job1:
+    name: BuildXSharpCompiler
+    runs-on: windows-2022 # Specify the OS to execute on
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Download Bin
+        uses: actions/download-artifact@v6
+        with:
+          name: BuildResultsBin
+ 
+      - name: RunTests
+        shell: cmd
+        run: |
+          call RunCompilertests.cmd
+
+      - name: Upload TestLogs
+        uses: actions/upload-artifact@v6
+        with:
+          name: TestLogs
+          path: ./Artifacts/Tests/*.Log
+
+ 

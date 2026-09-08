@@ -29,7 +29,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Download Bin
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v7
         with:
           name: BuildResultsBin
  

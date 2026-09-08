@@ -1,5 +1,5 @@
 #See https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow for help
-name: ContinuousBuild
+name: BuildCompiler
 
 on:
   schedule:

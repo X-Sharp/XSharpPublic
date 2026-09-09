@@ -34,6 +34,7 @@ CLASS Button INHERIT XSharp.VFP.Custom // problem happens even if not inheriting
 		thisform.Button.Caption = "test"
 		? thisform.Button.Caption
 		xAssert( thisform.Button.Caption == "test" )
+		xAssert( thisform:Button:Caption == "test" )
 
 		xAssert( thisform.Caption == "Main Form" )
 		thisform.Caption = "another test"
@@ -49,6 +50,7 @@ CLASS TextBox
 		
 		thisform.caption = "caption"
 		xAssert( thisform.caption == "caption" )
+		xAssert( thisform:caption == "caption" )
 END CLASS
 
 CLASS ComboBox
@@ -59,6 +61,11 @@ CLASS ComboBox
 		
 		thisform.caption = "another caption"
 		xAssert( thisform.caption == "another caption" )
+		xAssert( thisform:caption == "another caption" )
+
+		thisform:caption = "another :caption:"
+		xAssert( thisform.caption == "another :caption:" )
+		xAssert( thisform:caption == "another :caption:" )
 END CLASS
 
 CLASS ParentClass // INHERIT XSharp.VFP.Custom 
@@ -72,6 +79,11 @@ CLASS ListBox inherit ParentClass
 		SUPER( oForm )
 		thisform.caption = "ccc"
 		xAssert( thisform.caption == "ccc" )
+		xAssert( thisform:caption == "ccc" )
+
+		thisform:caption = "ccc:"
+		xAssert( thisform.caption == "ccc:" )
+		xAssert( thisform:caption == "ccc:" )
 END CLASS
 
 FUNCTION Start() AS VOID

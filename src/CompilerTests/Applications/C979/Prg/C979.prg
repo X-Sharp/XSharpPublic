@@ -1,4 +1,4 @@
-// 979. Problems with the /fox3 option - instance vars #2055
+// 979. Problems with the /fox3 option - static vars.instance method #2055
 // https://github.com/X-Sharp/XSharpPublic/issues/2055
 
 #pragma options("fox3", enable)

@@ -23,7 +23,13 @@ RETURN
 procedure testnested() AS VOID
 	? ALen(aPublic) 
 
-	? ALen(aLocal) // there should be an exception here, var is a local of the calling function
+	LOCAL lException := false AS LOGIC
+	TRY
+		? ALen(aLocal) // there should be an exception here, var is a local of the calling function
+	CATCH
+		lException := true
+	END TRY
+	xAssert(lException)
 
 PROC xAssert(l AS LOGIC)
 IF .not. l

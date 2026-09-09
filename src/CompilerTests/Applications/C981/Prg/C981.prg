@@ -2,7 +2,7 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/2057
 
 // Both with fox3+ and fox3-
-//#pragma options("fox3", enable)
+#pragma options("fox3", enable)
 
 GLOBAL TestGlobalFloat := 1.5 AS FLOAT
 GLOBAL TestGlobalString := "test" AS STRING
@@ -30,6 +30,16 @@ FUNCTION Start() AS VOID
 ? &("System.Int32.MaxValue == 2147483647")
 ? &("TestNS.TestFox.StaticExport")
 ? &("TestNS.TestFox.StaticProperty")
+
+xAssert( &("System.Int32.MaxValue") == 2147483647 )
+xAssert( &("System.Int32.MaxValue == 2147483647") )
+xAssert( &("TestNS.TestFox.StaticExport") == 0    )
+xAssert( &("TestNS.TestFox.StaticProperty") == 0  )
+
+TestNS.TestFox.StaticExport := 123
+TestNS.TestFox.StaticProperty := 321
+xAssert( &("TestNS.TestFox.StaticExport") == 123    )
+xAssert( &("TestNS.TestFox.StaticProperty") == 321  )
     
 // those work fine:
 ? &("Int32.MaxValue")
@@ -37,11 +47,18 @@ FUNCTION Start() AS VOID
 ? &("NoNamespace.StaticProperty")
 ? &("NoNamespace.TestFloat == 1.0")
 
+xAssert( &("Int32.MaxValue") == 2147483647 )
+xAssert( &("Int32.MaxValue == 2147483647") )
+xAssert( &("NoNamespace.StaticExport") == 0    )
+xAssert( &("NoNamespace.StaticProperty") == 0  )
+
 ? &("TestGlobalFloat := 2.5")
 ? &("TestGlobalFloat")
+xAssert( &("TestGlobalFloat") == 2.5  )
 
 ? &("TestGlobalString := 'test.me'")
 ? &("TestGlobalString")
+xAssert( &("TestGlobalString") == 'test.me'  )
 
 PROC xAssert(l AS LOGIC) AS VOID
 IF .NOT. l

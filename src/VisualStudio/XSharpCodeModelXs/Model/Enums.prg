@@ -265,7 +265,7 @@ ENUM XDialect
     MEMBER Harbour := XSharpDialect.Harbour
     MEMBER FoxPro := XSharpDialect.FoxPro
     MEMBER XPP := XSharpDialect.XPP
-    MEMBER dBase := XSharpDialect.dBase
+    MEMBER XBaseNet := XSharpDialect.XBaseNet
     MEMBER Last := XSharpDialect.Last
 END ENUM
 

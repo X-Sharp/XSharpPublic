@@ -10,7 +10,7 @@ namespace XSharp.Project
             DebuggerOptions = new DebuggerOptions();
             WindowEditorOptions = new WindowEditorOptions();
             OtherEditorOptions = new OtherEditorOptions();
-        } 
+        }
         public DebuggerOptions DebuggerOptions { get; set; }
         public WindowEditorOptions WindowEditorOptions { get; set; }
         public OtherEditorOptions OtherEditorOptions { get; set; }
@@ -46,7 +46,9 @@ namespace XSharp.Project
                 if (System.IO.File.Exists(sFile))
                 {
                     var str = System.IO.File.ReadAllText(sFile);
-                    return JsonConvert.DeserializeObject<ProjectSystemOptions>(str);
+                    var result = JsonConvert.DeserializeObject<ProjectSystemOptions>(str);
+                    result.WriteToSettings();
+                    return result;
                 }
             }
             catch

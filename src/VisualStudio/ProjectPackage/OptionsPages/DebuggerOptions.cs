@@ -46,7 +46,7 @@ namespace XSharp.Project.Options
         [DisplayName(DialectPropertyPagePanel.VO4Caption)]
         [Description(DialectPropertyPagePanel.VO4Description)]
         [DefaultValue(false)]
-        public bool Vo4 { get; set; } 
+        public bool Vo4 { get; set; }
 
         [Category(DllOptions)]
         [DisplayName(DialectPropertyPagePanel.VO12Caption)]
@@ -58,35 +58,35 @@ namespace XSharp.Project.Options
         [DisplayName(DialectPropertyPagePanel.VO13Caption)]
         [Description(DialectPropertyPagePanel.VO13Description)]
         [DefaultValue(false)]
-        public bool Vo13 { get; set; } 
+        public bool Vo13 { get; set; }
 
         [Category(DllOptions)]
         [DisplayName(DialectPropertyPagePanel.VO7Caption)]
         [Description(DialectPropertyPagePanel.VO7Description)]
         [DefaultValue(false)]
-        public bool Vo7 { get; set; } 
+        public bool Vo7 { get; set; }
 
         [Category(DllOptions)]
         [DisplayName(DialectPropertyPagePanel.VO6Caption)]
         [Description(DialectPropertyPagePanel.VO6Description)]
         [DefaultValue(false)]
-        public bool Vo6 { get; set; } 
+        public bool Vo6 { get; set; }
 
         [Category(DllOptions)]
         [DisplayName(LanguagePropertyPagePanel.CSCaption)]
         [Description(LanguagePropertyPagePanel.CSDescription)]
         [DefaultValue(false)]
-        public bool CaseSensitive { get; set; } 
+        public bool CaseSensitive { get; set; }
         [Category(DllOptions)]
         [DisplayName(DialectPropertyPagePanel.VO14Caption)]
         [Description(DialectPropertyPagePanel.VO14Description)]
         [DefaultValue(false)]
-        public bool Vo14 { get; set; } 
+        public bool Vo14 { get; set; }
         [Category(General)]
         [DisplayName(NoLBCaption)]
         [Description(NoLBDescription)]
         [DefaultValue(false)]
-        public bool NoLateBinding { get; set; } 
+        public bool NoLateBinding { get; set; }
         private const string NoLBCaption = "Disable Late Binding";
         private const string NoLBDescription = "Disable property access and method calls on expressions of type OBJECT and USUAL (/lb-)";
 
@@ -107,6 +107,11 @@ namespace XSharp.Project.Options
             XDebuggerSettings.Vo14 = this.Vo14;
             XDebuggerSettings.NoLateBinding = this.NoLateBinding;
             XDebuggerSettings.CaseSensitive = this.CaseSensitive;
+        }
+        public override void Save()
+        {
+            base.Save();
+            WriteToSettings();
         }
     }
 }

@@ -66,15 +66,33 @@ BEGIN NAMESPACE XSharp.IO
             RETURN
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
-            STARTIO
-            SUPER:Lock(position, length)
-            ENDIO
+            TRY
+                XSharp.IO.File.ClearErrorState()
+                SUPER:Lock(position, length)
+            CATCH e AS Exception
+                SELF:__SetLockError(e)
+                THROW
+            END TRY
             RETURN
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Unlock(position AS INT64, length AS INT64)  AS VOID
-            STARTIO
-            SUPER:Unlock(position, length)
-            ENDIO
+            TRY
+                XSharp.IO.File.ClearErrorState()
+                SUPER:Unlock(position, length)
+            CATCH e AS Exception
+                SELF:__SetLockError(e)
+                THROW
+            END TRY
+        RETURN
+
+        // A failed lock is what NetErr() reports in the xBase world. SetErrorState() only sets NetErr for
+        // a sharing violation (32), but a lock violation is 33, so it has to be set here.
+        PRIVATE METHOD __SetLockError(e AS Exception) AS VOID
+            XSharp.IO.File.SetErrorState(e)
+            IF RuntimeState.FileError == 0
+                FError(33) // DOS lock violation
+            ENDIF
+            NetErr(TRUE)
         RETURN
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
@@ -91,11 +109,10 @@ BEGIN NAMESPACE XSharp.IO
         /// <include file="XSharp.Core.Docs.xml" path="doc/XsFileStream.CreateFileStream/*" />
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             IF share != FileShare.None
-                IF RuntimeState.RunningOnWindows
-                    RETURN CreateWin32FileStream(path, mode, faccess, share, bufferSize, options)
-                ELSE
-                    RETURN XsFileStream{path, mode, faccess, share, 0xFFFF, options}
-                ENDIF
+                // Shared access, so the same file may change under us at any moment. There is no platform
+                // check here anymore: this used to be the branch that decided between a hand written Win32
+                // stream on Windows and a buffered stream everywhere else.
+                RETURN CreateSharedFileStream(path, mode, faccess, share, bufferSize, options)
             ELSE
                 IF UseBufferedFileStream
                     RETURN XsBufferedFileStream{path, mode, faccess, share, bufferSize, options}
@@ -104,8 +121,13 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
             ENDIF
 
-        INTERNAL STATIC METHOD CreateWin32FileStream(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
+        INTERNAL STATIC METHOD CreateSharedFileStream(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             RETURN XsWin32FileStream{path, mode, faccess, share, bufferSize, options}
+
+        /// <exclude />
+        [Obsolete("Use CreateSharedFileStream(). The shared file stream no longer uses the Win32 API.")];
+        INTERNAL STATIC METHOD CreateWin32FileStream(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
+            RETURN CreateSharedFileStream(path, mode, faccess, share, bufferSize, options)
         #endregion
 
     END CLASS

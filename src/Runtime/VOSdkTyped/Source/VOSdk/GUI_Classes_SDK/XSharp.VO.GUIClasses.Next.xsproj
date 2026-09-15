@@ -22,7 +22,7 @@
     <EnforceSelf>true</EnforceSelf>
     <EnforceOverride>false</EnforceOverride>
     <Allowdot>false</Allowdot>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Vo5>False</Vo5>
     <NoWarn>168;165</NoWarn>
     <AZ>false</AZ>

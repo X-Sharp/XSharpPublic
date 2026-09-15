@@ -14,7 +14,7 @@
     <StartupObject />
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

@@ -7,7 +7,6 @@
 DEFINE F_ERROR := IntPtr{-1} // Error value (all functions)
 
 FUNCTION Start() AS VOID
-
 LOCAL h AS PTR
 h := NULL_PTR
 IF h == NULL_PTR
@@ -40,7 +39,7 @@ LOCAL pTest AS test PTR
 IF pTest == NULL_PTR
     ? "null"
 ENDIF
-
+pTest := IntPtr{123}
 IF pTest != NULL_PTR
     ? "not null"
 ENDIF

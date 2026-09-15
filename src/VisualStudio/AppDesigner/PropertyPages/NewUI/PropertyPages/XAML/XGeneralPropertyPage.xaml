@@ -73,25 +73,42 @@
                     Margin="0,2,8,0"/>
 
             <!-- Row 2/3: Target Framework (combo for single, textbox for multi) -->
-            <!-- Single-target combo + reset -->
-            <local:PropertyComboBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
-                    Label="{Binding TargetFrameworkLabel}"
+            <Grid Margin="0,6,8,0" Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
+                  Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToInverseVisibility}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Single-target combo + reset -->
+                <local:PropertyComboBox Grid.Column="0"
+                    Label="{Binding CaptTargetFramework}"
                     Items="{Binding FrameworkItems}"
+                    ToolTip="{Binding DescTargetFramework}"
                     Value="{Binding TargetFramework, Mode=TwoWay}"
                     PropertyName="TargetFramework"
-                    Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToInverseVisibility}}"
-                    Margin="0,6,8,0"/>
+                    />
+                <!-- TargetOS combo + reset -->
+                <local:PropertyComboBox Grid.Column="1"
+                    Label="{Binding CaptTargetOS}"
+                    Items="{Binding TargetOSItems}"
+                    ToolTip="{Binding DescTargetOS}"
+                    Value="{Binding TargetOS, Mode=TwoWay}"
+                    PropertyName="TargetOS"
+                    />
+
+            </Grid>
             <!-- Multi-target textbox + reset -->
             <local:PropertyTextBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
-                    Label="{Binding TargetFrameworkLabel}"
+                    Label="{Binding CaptTargetFramework}"
                     Value="{Binding TargetFrameworks, Mode=TwoWay}"
+                    ToolTip="{Binding DescTargetFramework}"
                     PropertyName="TargetFrameworks"
                     Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToVisibility}}"
                     Margin="0,6,8,0"/>
 
             <!-- Row 4/5: Dialect -->
             <local:PropertyComboBox Grid.Column="0" Grid.Row="4" Grid.RowSpan="2"
-                    Label="Dialect:"
+                    Label="{Binding CaptDialect}"
                     Items="{Binding DialectItems}"
                     Value="{Binding Dialect, Mode=TwoWay}"
                     PropertyName="Dialect"

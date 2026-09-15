@@ -115,6 +115,8 @@ class GeneralPropertyPagePanel
     const descStartup := "Defines the entry point to be called when the application loads. Generally this is set either to the main form in your application or to the 'Start' function that should run when the application starts. Class libraries do not define an entry point." as string
     const descIcon := "Sets the .ico file that you want to use as your program icon. Note you must specify the icon and manifest -or- a resource file." as string
     const captIcon := "Application Icon:" as string
+    const captTargetOS := "Target OS:" as string
+    const descTargetOS := "Specifies the target operating system for the application. This option can have different values depending on which versions of Windows are installed on your computer." as string
 end class
 
 class LanguagePropertyPagePanel

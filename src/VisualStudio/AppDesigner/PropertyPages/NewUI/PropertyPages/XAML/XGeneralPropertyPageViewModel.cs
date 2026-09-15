@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.Project;
 using XSharp.Settings;
+using System.Windows.Markup;
+using System.Runtime.InteropServices;
 
 namespace XSharp.Project
 {
@@ -46,6 +48,7 @@ namespace XSharp.Project
         private string _rootNamespace;
         private string _outputType;
         private string _dialect;
+        private string _targetOS;
         private string _targetFramework;
         private string _targetFrameworks;         // multi-targeting
         private string _startupObject;
@@ -62,6 +65,7 @@ namespace XSharp.Project
         private ObservableCollection<string> _outputTypeItems  = new ObservableCollection<string>();
         private ObservableCollection<string> _dialectItems     = new ObservableCollection<string>();
         private ObservableCollection<string> _frameworkItems   = new ObservableCollection<string>();
+        private ObservableCollection<string> _targetOSItems    = new ObservableCollection<string>();
         private ObservableCollection<string> _startupItems     = new ObservableCollection<string>();
 
         private bool _isBinding   = false;   // true while BindProperties is loading values
@@ -130,6 +134,16 @@ namespace XSharp.Project
         {
             get => _targetFramework;
             set => SetProperty(ref _targetFramework, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the selected target operating system display name for single-targeting
+        /// projects (e.g., "Windows").  Stored in MSBuild as part of TargetFramework.
+        /// </summary>
+        public string TargetOS
+        {
+            get => _targetOS;
+            set => SetProperty(ref _targetOS, value);
         }
 
         /// <summary>
@@ -307,9 +321,23 @@ namespace XSharp.Project
 
         /// <summary>Gets the localized tooltip for the Dialect combo.</summary>
         public string DescDialect                   => GeneralPropertyPagePanel.descDialect;
+        public string CaptDialect => GeneralPropertyPagePanel.captDialect+":";
 
         /// <summary>Gets the localized tooltip for the Output Type combo.</summary>
         public string DescOutputType                => GeneralPropertyPagePanel.descOutputType;
+
+        /// <summary>Gets the localized tooltip for the Target OS combo.</summary>
+        public string DescTargetOS                   => GeneralPropertyPagePanel.descTargetOS;
+
+        /// <summary>Gets the localized label text for the Target OS combo.</summary>
+        public string CaptTargetOS                   => GeneralPropertyPagePanel.captTargetOS;
+
+        /// <summary>Gets the localized tooltip for the Target OS combo.</summary>
+        public string DescTargetFramework => GeneralPropertyPagePanel.descFramework;
+
+        /// <summary>Gets the localized label text for the Target OS combo.</summary>
+        public string CaptTargetFramework => GeneralPropertyPagePanel.captTargetFramework;
+
 
         // =========================================================================================
         // Observable Collections (combo-box item sources)
@@ -326,6 +354,8 @@ namespace XSharp.Project
 
         /// <summary>Gets the list of startup-object names shown in the Startup Object combo.</summary>
         public ObservableCollection<string> StartupItems => _startupItems;
+        /// <summary>Gets the list of target OS names shown in the Target OS combo.</summary>
+        public ObservableCollection<string> TargetOSItems => _targetOSItems;
 
         // =========================================================================================
         // IPropertyPagePanel — ViewModel lifecycle
@@ -375,6 +405,7 @@ namespace XSharp.Project
                 PopulateOutputTypeItems();
                 PopulateDialectItems();
                 PopulateFrameworkItems(isSdk, isMultiTarget);
+                PopulateTargetOSItems();
                 PopulateStartupItems();
 
                 // ---- Target framework label ----
@@ -403,7 +434,18 @@ namespace XSharp.Project
                     string fwProp = isSdk
                         ? XSharpProjectFileConstants.TargetFramework
                         : XSharpProjectFileConstants.TargetFrameworkVersion;
-                    TargetFramework = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
+                    var tfm = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
+                    if (tfm.Contains("-"))
+                    {
+                        TargetFramework = tfm.Substring(0, tfm.IndexOf("-"));
+                        TargetOS = tfm.Substring(tfm.IndexOf("-") + 1);
+                    }
+                    else
+                    {
+                        TargetFramework = tfm;
+                        TargetOS = "(None)";
+                    }
+
                 }
 
                 // ---- Startup object ----
@@ -460,7 +502,18 @@ namespace XSharp.Project
                 string fwProp = IsSdkProject
                     ? XSharpProjectFileConstants.TargetFramework
                     : XSharpProjectFileConstants.TargetFrameworkVersion;
-                SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
+                if (IsSdkProject && TargetOS != null && TargetOS.Length > 0 && TargetOS != "(None)")
+                {
+                    SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
+                    string tfm = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
+                    tfm += $"{TargetOS}";
+                    parentPropertyPage.SetProperty(fwProp, tfm);
+                }
+                else
+                {
+                    SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
+                }
+
             }
 
             // Startup object — convert DefaultValue sentinel back to ""
@@ -509,6 +562,22 @@ namespace XSharp.Project
                 string display = (string)converter.ConvertTo(val, typeof(string));
                 if (!string.IsNullOrEmpty(display))
                     _dialectItems.Add(display);
+            }
+        }
+
+
+        private void PopulateTargetOSItems()
+        {
+            var project = parentPropertyPage?.ProjectMgr;
+            if (project == null)
+                return;
+            _targetOSItems.Clear();
+            _targetOSItems.Add("(None)");
+            var converter = new TargetOSConverter(project.BuildProject);
+            foreach (string val in converter.GetStandardValues(null))
+            {
+                if (!string.IsNullOrEmpty(val))
+                    _targetOSItems.Add(val);
             }
         }
 

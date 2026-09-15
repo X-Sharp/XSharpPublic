@@ -536,10 +536,7 @@ namespace XSharp.Project
                     }
                     return _checker;
 
-                // Test ?
-                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformIdentifier:
-                    return "Windows";
-            }
+             }
             return base.GetProperty(propId);
         }
         static private XSharpProjectCapabilitiesPresenceChecker _checker;

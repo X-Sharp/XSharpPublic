@@ -339,20 +339,23 @@ namespace XSharp.Project
             string subType = SubType;
             bool hasDesigner = XSharpFileType.HasDesigner(this.Url, subType);
             _inferredSubType = null;
-            if (!hasDesigner && string.IsNullOrEmpty(subType))
+            if (this.ProjectMgr.IsSdkProject)
             {
-                // SDK-style projects use implicit globbing, so a file never gets an explicit
-                // <SubType> unless the user opts in manually with a <Compile Update="..."><
-                // SubType>Form</SubType></Compile> entry. Infer designer support instead from
-                // a matching sibling .Designer.prg -- the same signal the legacy CodeDom
-                // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
-                // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
-                string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
-                hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg) &&
-                    ! String.Equals(this.Url, designerPrg, StringComparison.OrdinalIgnoreCase);
-                if (hasDesigner)
+                if (!hasDesigner && string.IsNullOrEmpty(subType))
                 {
-                    _inferredSubType = InferSubTypeFromBaseClass(this.Url);
+                    // SDK-style projects use implicit globbing, so a file never gets an explicit
+                    // <SubType> unless the user opts in manually with a <Compile Update="..."><
+                    // SubType>Form</SubType></Compile> entry. Infer designer support instead from
+                    // a matching sibling .Designer.prg -- the same signal the legacy CodeDom
+                    // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
+                    // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
+                    string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
+                    hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg) &&
+                        !String.Equals(this.Url, designerPrg, StringComparison.OrdinalIgnoreCase);
+                    if (hasDesigner)
+                    {
+                        _inferredSubType = InferSubTypeFromBaseClass(this.Url);
+                    }
                 }
             }
             HasDesigner = hasDesigner;

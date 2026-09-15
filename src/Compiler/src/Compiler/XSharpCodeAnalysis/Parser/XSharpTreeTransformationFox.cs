@@ -374,9 +374,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 MemVarFieldInfo fieldInfo = findVar(name);
                 var amc = context.Parent.Parent as XP.AccessMemberContext;
-                var staticCall = amc?.Op.Type == XP.DOTCOLON;
-                var methodCall = amc?.Parent is MethodCallContext;
-                if (fieldInfo != null && !staticCall && !methodCall)
+                var dotCall = amc?.Op.Type == XP.DOT;
+                if (fieldInfo != null && dotCall)
                 {
                     // for code that looks like this we do not want to change the expression
                     // Foo(1,2)

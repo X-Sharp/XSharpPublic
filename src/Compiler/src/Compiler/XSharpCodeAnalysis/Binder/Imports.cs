@@ -118,6 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.Namespace)
                                         {
+                                            imported.NamespaceOrTypeSymbol.IsImported = true;
                                             AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }

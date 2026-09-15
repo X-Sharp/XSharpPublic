@@ -1912,7 +1912,6 @@ namespace XSharp.Project
             }
             RemoveEmptyProperty(projectInstance, XSharpProjectFileConstants.PreBuildEvent);
             RemoveEmptyProperty(projectInstance, XSharpProjectFileConstants.PostBuildEvent);
-			projectInstance.SetProperty("ProvideCommandLineArgs", "true");
             if (designTime)
             {
                 projectInstance.SetProperty("SkipCompilerExecution", "true");
@@ -1921,6 +1920,8 @@ namespace XSharp.Project
             var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
             return result;
         }
+
+        protected List<string> _commandLineArguments = new List<string>();
 
         private string ResponseFilePath
         {
@@ -1942,6 +1943,7 @@ namespace XSharp.Project
                 response = response.Replace("\r", "");
                 response = response.Replace("\n", "");
                 var lines = response.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var args = new List<string>();
                 foreach (var line in lines)
                 {
                     if (line.StartsWith("reference:"))
@@ -1952,11 +1954,18 @@ namespace XSharp.Project
                         references.Add(reffile);
 
                     }
+                    else
+                    {
+                        args.Add("/"+line);
+                    }
                 }
+                _commandLineArguments = args;
                 ProjectModel.RefreshReferences(references);
+                var options = this.GetProjectOptions(CurrentConfig.ConfigCanonicalName);
             }
             return references;
         }
+
 
 
 

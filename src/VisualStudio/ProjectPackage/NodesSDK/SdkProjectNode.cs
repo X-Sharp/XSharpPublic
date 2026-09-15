@@ -446,7 +446,6 @@ namespace XSharp.Project
             ProcessOptions(projectInstance, target);
             return result;
         }
-        private List<string> _commandLineArguments = new List<string>();
         protected List<string> _sdkReferences = new List<string>();
         protected List<string> _allReferenceAssemblies = new List<string>();
         void ProcessOptions(ProjectInstance projectInstance, string target)
@@ -485,9 +484,6 @@ namespace XSharp.Project
                             if (item.HasMetadata("FrameworkReferenceName"))
                                 sdkReferences.AddUnique(file);
                             break;
-                        case "xsccommandlineargs":
-                            commandLineArguments.AddUnique(item.EvaluatedInclude);
-                            break;
                         case "resolvedframeworkreference":
                             break;
                         default:
@@ -495,10 +491,6 @@ namespace XSharp.Project
                     }
 
                     Logger.Information($"Build:  Item: {item.ItemType} {item.EvaluatedInclude}");
-                }
-                if (commandLineArguments.Count > 0)
-                {
-                    _commandLineArguments = commandLineArguments;
                 }
                 if (sdkReferences.Count > 0)
                 {

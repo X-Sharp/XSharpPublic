@@ -10,11 +10,11 @@
     <LB>true</LB>
     <Cs>false</Cs>
     <VO15>true</VO15>
-    <Memvar>True</Memvar>
+    <Memvar>true</Memvar>
     <StartupObject />
     <Allowdot>false</Allowdot>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
-    <NoStandardDefs>False</NoStandardDefs>
+    <NoStandardDefs>false</NoStandardDefs>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

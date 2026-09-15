@@ -8,8 +8,26 @@ See License.txt in the project root for license information.
 . -->
 <Project>
   <PropertyGroup>
-    <AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
-    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <!-- Set Binaries/Artifacts and BaseIntermediateOutputPath early to avoid MSB3539 warnings
+         These are intentionally defined here so they are available before Microsoft.Common.props
+         and before any project or Shared.props can override them. -->
+    <ArtifactsDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\Artifacts\'))</ArtifactsDir>
+    <BinariesDir>$(ArtifactsDir)</BinariesDir>
+    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+	<!-- VisualStudioVersion is defined only for IDE/design-time builds.
+		Clearing these prevents VS from synthesizing the -windowsN.N suffix. 
+	<TargetPlatformIdentifier Condition="'$(VisualStudioVersion)' != ''"></TargetPlatformIdentifier>
+	<TargetPlatformMinVersion Condition="'$(VisualStudioVersion)' != ''"></TargetPlatformMinVersion>
+	-->
+  </PropertyGroup>
+ <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
+	<!-- Prevent SDK-style projects from inheriting a Windows platform and being promoted to '-windows' TFMs -->
+	<TargetPlatformIdentifier></TargetPlatformIdentifier>
+	<TargetPlatformVersion></TargetPlatformVersion>
+	<SupportedOSPlatformVersion></SupportedOSPlatformVersion>
+	<GenerateSupportedOSPlatformAttribute>false</GenerateSupportedOSPlatformAttribute>
+	<_EnableDefaultWindowsPlatform>false</_EnableDefaultWindowsPlatform>
   </PropertyGroup>
 </Project>
 

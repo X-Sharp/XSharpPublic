@@ -31,6 +31,7 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
     public class XSharpGeneralPropertyPage : XPropertyPage
     {
+        private const string None = XGeneralPropertyPageViewModel.None;
 
         // =========================================================================================
         // Constructors
@@ -64,30 +65,46 @@ namespace XSharp.Project
         {
             string value = base.GetProperty(propertyName);
 
-            if (propertyName == XSharpProjectFileConstants.OutputType)
+            switch (propertyName)
             {
-                var outputType = (OutputType)converterOutPut.ConvertFrom(value);
-                value = (string)converterOutPut.ConvertTo(outputType, typeof(string));
-            }
-            else if (propertyName == XSharpProjectFileConstants.Dialect)
-            {
-                var dialect = (Dialect)converterDialect.ConvertFrom(value);
-                value = (string)converterDialect.ConvertTo(dialect, typeof(string));
-            }
-            else if (propertyName == XSharpProjectFileConstants.TargetFramework && IsSdkProject)
-            {
-                value = ConvertFrameworkName(value);
-            }
-            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion && !IsSdkProject)
-            {
-                value = ConvertFrameworkName(value);
-            }
-            else if (propertyName == XSharpProjectFileConstants.StartupObject)
-            {
-                if (string.IsNullOrEmpty(value))
+                case XSharpProjectFileConstants.OutputType:
+                    var outputType = (OutputType)converterOutPut.ConvertFrom(value);
+                    value = (string)converterOutPut.ConvertTo(outputType, typeof(string));
+                    break;
+
+                case XSharpProjectFileConstants.Dialect:
+                    var dialect = (Dialect)converterDialect.ConvertFrom(value);
+                    value = (string)converterDialect.ConvertTo(dialect, typeof(string));
+                    break;
+
+                case XSharpProjectFileConstants.TargetFramework when IsSdkProject:
+                    value = ConvertFrameworkName(value);
+                    break;
+                case XSharpProjectFileConstants.TargetFrameworkVersion when !IsSdkProject:
+                    value = ConvertFrameworkName(value);
+                    break;
+                case XSharpProjectFileConstants.StartupObject when string.IsNullOrEmpty(value):
                     value = GeneralPropertyPagePanel.DefaultValue;
+                    break;
+                case XSharpProjectFileConstants.RuntimeIdentifier when string.IsNullOrEmpty(value):
+                    value = None;
+                    break;
             }
 
+            return value;
+        }
+
+        string ConvertRuntimeIdentifier(string value)
+        {
+            try
+            {
+                var converter = new RuntimeIdentifierConverter(ProjectMgr.BuildProject);
+                value = (string) converter.ConvertFrom(value);
+            }
+            catch
+            {
+                ;
+            }
             return value;
         }
         string ConvertFrameworkName(string value)
@@ -179,7 +196,12 @@ namespace XSharp.Project
                     value = ConvertFrameworkName(value);
                 }
             }
-			else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
+            else if (propertyName == XSharpProjectFileConstants.RuntimeIdentifier)
+            {
+                oldValue = base.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier);
+                value = ConvertRuntimeIdentifier(value);
+            }
+            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
                 oldValue = base.GetProperty(XSharpProjectFileConstants.TargetFrameworkVersion);
                 value = value.ToLower();
@@ -200,7 +222,7 @@ namespace XSharp.Project
 
             ThreadHelper.ThrowIfNotOnUIThread();
             var oldvalueFromFile = base.GetProperty(propertyName);
-            
+
             bool changed = value != oldvalueFromFile;
 
             if (changed)

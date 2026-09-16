@@ -81,7 +81,7 @@
                 </Grid.ColumnDefinitions>
                 <!-- Single-target combo + reset -->
                 <local:PropertyComboBox Grid.Column="0"
-                    Label="{Binding CaptTargetFramework}"
+                    Label="{Binding TargetFrameworkLabel}"
                     Items="{Binding FrameworkItems}"
                     ToolTip="{Binding DescTargetFramework}"
                     Value="{Binding TargetFramework, Mode=TwoWay}"
@@ -90,16 +90,16 @@
                 <!-- TargetOS combo + reset -->
                 <local:PropertyComboBox Grid.Column="1"
                     Label="{Binding CaptTargetOS}"
-                    Items="{Binding TargetOSItems}"
+                    Items="{Binding RuntimeIdentifierItems}"
                     ToolTip="{Binding DescTargetOS}"
-                    Value="{Binding TargetOS, Mode=TwoWay}"
-                    PropertyName="TargetOS"
+                    Value="{Binding RuntimeIdentifier, Mode=TwoWay}"
+                    PropertyName="RuntimeIdentifier"
                     />
 
             </Grid>
             <!-- Multi-target textbox + reset -->
             <local:PropertyTextBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
-                    Label="{Binding CaptTargetFramework}"
+                    Label="{Binding TargetFrameworkLabel}"
                     Value="{Binding TargetFrameworks, Mode=TwoWay}"
                     ToolTip="{Binding DescTargetFramework}"
                     PropertyName="TargetFrameworks"

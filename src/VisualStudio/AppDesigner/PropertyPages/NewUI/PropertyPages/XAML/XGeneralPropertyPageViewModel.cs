@@ -48,7 +48,7 @@ namespace XSharp.Project
         private string _rootNamespace;
         private string _outputType;
         private string _dialect;
-        private string _targetOS;
+        private string _runtimeIdentifier;
         private string _targetFramework;
         private string _targetFrameworks;         // multi-targeting
         private string _startupObject;
@@ -65,12 +65,14 @@ namespace XSharp.Project
         private ObservableCollection<string> _outputTypeItems  = new ObservableCollection<string>();
         private ObservableCollection<string> _dialectItems     = new ObservableCollection<string>();
         private ObservableCollection<string> _frameworkItems   = new ObservableCollection<string>();
-        private ObservableCollection<string> _targetOSItems    = new ObservableCollection<string>();
+        private ObservableCollection<string> _runtimeIdItems    = new ObservableCollection<string>();
         private ObservableCollection<string> _startupItems     = new ObservableCollection<string>();
 
         private bool _isBinding   = false;   // true while BindProperties is loading values
 
         private bool _isNotifying = false;   // true while firing Item[] refresh pulse
+
+        internal const string None = "(None)";
 
         // =========================================================================================
         // Constructor
@@ -138,12 +140,19 @@ namespace XSharp.Project
 
         /// <summary>
         /// Gets or sets the selected target operating system display name for single-targeting
-        /// projects (e.g., "Windows").  Stored in MSBuild as part of TargetFramework.
+        /// projects (e.g., "Windows").
         /// </summary>
-        public string TargetOS
+        public string RuntimeIdentifier
         {
-            get => _targetOS;
-            set => SetProperty(ref _targetOS, value);
+            get => _runtimeIdentifier;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    value = None;
+                SetProperty(ref _runtimeIdentifier, value);
+
+            }
+
         }
 
         /// <summary>
@@ -335,9 +344,6 @@ namespace XSharp.Project
         /// <summary>Gets the localized tooltip for the Target OS combo.</summary>
         public string DescTargetFramework => GeneralPropertyPagePanel.descFramework;
 
-        /// <summary>Gets the localized label text for the Target OS combo.</summary>
-        public string CaptTargetFramework => GeneralPropertyPagePanel.captTargetFramework;
-
 
         // =========================================================================================
         // Observable Collections (combo-box item sources)
@@ -355,7 +361,7 @@ namespace XSharp.Project
         /// <summary>Gets the list of startup-object names shown in the Startup Object combo.</summary>
         public ObservableCollection<string> StartupItems => _startupItems;
         /// <summary>Gets the list of target OS names shown in the Target OS combo.</summary>
-        public ObservableCollection<string> TargetOSItems => _targetOSItems;
+        public ObservableCollection<string> RuntimeIdentifierItems => _runtimeIdItems;
 
         // =========================================================================================
         // IPropertyPagePanel — ViewModel lifecycle
@@ -434,19 +440,12 @@ namespace XSharp.Project
                     string fwProp = isSdk
                         ? XSharpProjectFileConstants.TargetFramework
                         : XSharpProjectFileConstants.TargetFrameworkVersion;
-                    var tfm = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
-                    if (tfm.Contains("-"))
-                    {
-                        TargetFramework = tfm.Substring(0, tfm.IndexOf("-"));
-                        TargetOS = tfm.Substring(tfm.IndexOf("-") + 1);
-                    }
-                    else
-                    {
-                        TargetFramework = tfm;
-                        TargetOS = "(None)";
-                    }
+                    TargetFramework = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
 
                 }
+                RuntimeIdentifier = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier) ?? None;
+                if (string.IsNullOrEmpty(RuntimeIdentifier))
+                    RuntimeIdentifier = None;
 
                 // ---- Startup object ----
                 string startupRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.StartupObject) ?? string.Empty;
@@ -502,19 +501,18 @@ namespace XSharp.Project
                 string fwProp = IsSdkProject
                     ? XSharpProjectFileConstants.TargetFramework
                     : XSharpProjectFileConstants.TargetFrameworkVersion;
-                if (IsSdkProject && TargetOS != null && TargetOS.Length > 0 && TargetOS != "(None)")
-                {
-                    SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
-                    string tfm = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
-                    tfm += $"{TargetOS}";
-                    parentPropertyPage.SetProperty(fwProp, tfm);
-                }
-                else
-                {
-                    SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
-                }
+                SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
 
             }
+            if (RuntimeIdentifier == None)
+            {
+                parentPropertyPage.ResetProperty(XSharpProjectFileConstants.RuntimeIdentifier, null);
+            }
+            else
+            {
+                parentPropertyPage.SetProperty(XSharpProjectFileConstants.RuntimeIdentifier, RuntimeIdentifier ?? string.Empty);
+            }
+
 
             // Startup object — convert DefaultValue sentinel back to ""
             string startupRaw = (StartupObject == GeneralPropertyPagePanel.DefaultValue)
@@ -571,13 +569,13 @@ namespace XSharp.Project
             var project = parentPropertyPage?.ProjectMgr;
             if (project == null)
                 return;
-            _targetOSItems.Clear();
-            _targetOSItems.Add("(None)");
-            var converter = new TargetOSConverter(project.BuildProject);
+            _runtimeIdItems.Clear();
+            _runtimeIdItems.Add(None);
+            var converter = new RuntimeIdentifierConverter(project.BuildProject);
             foreach (string val in converter.GetStandardValues(null))
             {
                 if (!string.IsNullOrEmpty(val))
-                    _targetOSItems.Add(val);
+                    _runtimeIdItems.Add(val);
             }
         }
 

@@ -366,14 +366,14 @@ namespace Microsoft.VisualStudio.Project
     }
 
 
-    public class TargetOSConverter : FrameworkNameConverter
+    public class RuntimeIdentifierConverter : FrameworkNameConverter
     {
         MSBuild.Project Project = null;
         List<string> names = new List<string>();
-        public TargetOSConverter()
+        public RuntimeIdentifierConverter()
         {
         }
-        public TargetOSConverter(MSBuild.Project project) : base()
+        public RuntimeIdentifierConverter(MSBuild.Project project) : base()
         {
             Project = project;
             names.Clear();
@@ -386,7 +386,7 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
         }
-        // SupportedNETFrameworkTargetFramewor
+
         public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             return new StandardValuesCollection(names.ToArray());

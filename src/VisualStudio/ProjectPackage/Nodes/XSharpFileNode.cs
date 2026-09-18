@@ -978,6 +978,7 @@ namespace XSharp.Project
         /// </summary>
         private bool TryRedirectToShadowDesigner()
         {
+        #if DEV17
             if (!(this.ProjectMgr is XSharpSdkProjectNode))
             {
                 return false;
@@ -987,6 +988,7 @@ namespace XSharp.Project
                 return true;
             }
             XSettings.Information("XSharp ShadowDesigner: " + shadowError);
+        #endif
             return false;
         }
 
@@ -1137,9 +1139,9 @@ namespace XSharp.Project
             return result;
         }
 
-        #endregion
+#endregion
 
-        #region Private implementation
+#region Private implementation
         internal OleServiceProvider.ServiceCreatorCallback ServiceCreator
         {
             get { return new OleServiceProvider.ServiceCreatorCallback(this.CreateServices); }
@@ -1155,9 +1157,9 @@ namespace XSharp.Project
             return service;
         }
 
-        #endregion
+#endregion
 
-        #region Operate on Open Files
+#region Operate on Open Files
         private IVsTextLines TextLines
         {
             get
@@ -1175,6 +1177,6 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
+#endregion
     }
 }

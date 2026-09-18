@@ -39,7 +39,7 @@ namespace XSharp.Project
         /// XSharpProjectPackage.InitializeAsync(), where blocking while waiting for the UI thread
         /// deadlocks the IDE. See the remarks on Logger.InitializeAsync().
         /// </summary>
-        internal async Task InitializeAsync()
+        internal async System.Threading.Tasks.Task InitializeAsync()
         {
             if (isInitialized)
                 return;

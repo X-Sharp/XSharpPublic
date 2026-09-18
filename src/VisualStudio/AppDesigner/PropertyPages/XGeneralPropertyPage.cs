@@ -78,7 +78,8 @@ namespace XSharp.Project
                     break;
 
                 case XSharpProjectFileConstants.TargetFramework when IsSdkProject:
-                    value = ConvertFrameworkName(value);
+                    if (! value.Contains("-"))
+                        value = ConvertFrameworkName(value);
                     break;
                 case XSharpProjectFileConstants.TargetFrameworkVersion when !IsSdkProject:
                     value = ConvertFrameworkName(value);
@@ -86,15 +87,12 @@ namespace XSharp.Project
                 case XSharpProjectFileConstants.StartupObject when string.IsNullOrEmpty(value):
                     value = GeneralPropertyPagePanel.DefaultValue;
                     break;
-                case XSharpProjectFileConstants.RuntimeIdentifier when string.IsNullOrEmpty(value):
-                    value = None;
-                    break;
             }
 
             return value;
         }
 
-        string ConvertRuntimeIdentifier(string value)
+        internal string ConvertRuntimeIdentifier(string value)
         {
             try
             {
@@ -107,7 +105,7 @@ namespace XSharp.Project
             }
             return value;
         }
-        string ConvertFrameworkName(string value)
+        internal string ConvertFrameworkName(string value)
         {
             try
             {
@@ -195,11 +193,6 @@ namespace XSharp.Project
                 {
                     value = ConvertFrameworkName(value);
                 }
-            }
-            else if (propertyName == XSharpProjectFileConstants.RuntimeIdentifier)
-            {
-                oldValue = base.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier);
-                value = ConvertRuntimeIdentifier(value);
             }
             else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {

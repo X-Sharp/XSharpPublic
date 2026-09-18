@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 using Community.VisualStudio.Toolkit;
-using CVT=Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
@@ -28,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -38,6 +38,7 @@ using XSharp.VisualStudio.Project;
 
 using XSharpModel;
 
+using CVT=Community.VisualStudio.Toolkit;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
@@ -500,15 +501,20 @@ namespace XSharp.Project
         }
         public override object GetProperty(int propId)
         {
+
+            object result = null;
             switch (propId)
             {
                 case unchecked((int)VSConstants.VSITEMID_ROOT):
-                    return this;
+                    result = this;
+                    break;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
-                    return this.RootNameSpace;
+                    result = this.RootNameSpace;
+                    break;
 
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
-                    return (uint)GetOutPutType();
+                    result  = (uint)GetOutPutType();
+                    break;
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
                 case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
                 case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
@@ -516,17 +522,21 @@ namespace XSharp.Project
                 case (int)__VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
                 case (int)__VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
                 case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
-                    return true;
+                    result =  true;
+                    break;
                 case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
-                    return "XSharp.ProjectSystem";
+                    result =  "XSharp.ProjectSystem";
+                    break;
                 //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
                 //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
                 //    return "X#";
                 case (int)__VSHPROPID7.VSHPROPID_CanBuildQuickCheck:
                 case (int)__VSHPROPID7.VSHPROPID_CanDebugLaunchQuickCheck:
-                    return _VSQuickCheckAnswer.QCA_Always;
+                    result = _VSQuickCheckAnswer.QCA_Always;
+                    break;
                 case (int)__VSHPROPID5.VSHPROPID_ReferenceManagerUser:
-                    return this.VsReferenceManager;
+                    result = this.VsReferenceManager;
+                    break;
 
                 // Added for NuGet Support
                 case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
@@ -534,9 +544,32 @@ namespace XSharp.Project
                     {
                         _checker = new XSharpProjectCapabilitiesPresenceChecker();
                     }
-                    return _checker;
+                    result = _checker;
+                    break;
+                // Test ?
+                case (int)__VSHPROPID4.VSHPROPID_AlwaysBuildOnDebugLaunch:
+                    result =false;
+                    break;
+                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformVersion:
+                    result = "8.0";
+                    break;
+                case (int)__VSHPROPID5.VSHPROPID_TargetRuntime:
+                    result =  __VSPROJTARGETRUNTIME.VSPROJ_TARGETRUNTIME_MANAGED;
+                    break;
+                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformIdentifier:
+                    result = "Windows";
+                    break;
 
-             }
+
+            }
+            if (result != null)
+            {
+#if DEBUG
+                DebugGetProperty(propId, result);
+#endif
+                return result;
+            }
+
             return base.GetProperty(propId);
         }
         static private XSharpProjectCapabilitiesPresenceChecker _checker;
@@ -1400,7 +1433,7 @@ namespace XSharp.Project
 
         public virtual XSharpPackageReferenceNode CreatePackageReferenceNode(string name)
         {
-            ProjectElement item = CreateMsBuildFileItem(name, "PackageReference");
+            ProjectElement item = CreateMsBuildFileItem(name, ProjectFileConstants.PackageReference);
             return new XSharpPackageReferenceNode(this, item);
         }
         #endregion
@@ -1975,7 +2008,7 @@ namespace XSharp.Project
 
         }
 
-        internal void BuildEnded(bool didCompile)
+        internal virtual void BuildEnded(bool didCompile)
         {
             if (didCompile)
             {
@@ -2013,7 +2046,7 @@ namespace XSharp.Project
             {
                 if (this.BuildProject != null)
                 {
-                    var result = this.BuildProject.GetPropertyValue("IntermediateOutputPath");
+                    var result = this.BuildProject.GetPropertyValue(XProjectFileConstants.IntermediateOutputPath);
                     if (!Path.IsPathRooted(result))
                         result = Path.Combine(this.ProjectFolder, result);
                     return result;
@@ -2054,7 +2087,8 @@ namespace XSharp.Project
 
         #endregion
 
-        internal void Unload()
+
+        internal virtual void Unload()
         {
             this.BeforeSave();
             this.BuildProject.Save();
@@ -3241,10 +3275,12 @@ namespace XSharp.Project
                     return true;
                 case PackageReferences:
                     return false;
+                case CPS:
+                    return false;
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
-                case CPS:
+
                 case DependenciesTree:
                 case DependencyPackageManagement:
                 case DNX:

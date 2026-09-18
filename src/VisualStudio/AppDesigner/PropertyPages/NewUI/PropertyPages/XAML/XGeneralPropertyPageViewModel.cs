@@ -4,13 +4,17 @@
 // See License.txt in the project root for license information.
 //
 
+using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
+
+using Newtonsoft.Json.Linq;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.VisualStudio.Project;
-using XSharp.Settings;
-using System.Windows.Markup;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
+
+using XSharp.Settings;
 
 namespace XSharp.Project
 {
@@ -73,6 +77,7 @@ namespace XSharp.Project
         private bool _isNotifying = false;   // true while firing Item[] refresh pulse
 
         internal const string None = "(None)";
+        internal XSharpGeneralPropertyPage parent;
 
         // =========================================================================================
         // Constructor
@@ -87,6 +92,7 @@ namespace XSharp.Project
         public XGeneralPropertyPageViewModel(XPropertyPage parentPropertyPage)
             : base(parentPropertyPage)
         {
+            parent = parentPropertyPage as XSharpGeneralPropertyPage;
         }
 
         // =========================================================================================
@@ -435,17 +441,30 @@ namespace XSharp.Project
                 {
                     TargetFrameworks = parentPropertyPage.GetProperty(XSharpProjectFileConstants.XTargetFrameworks) ?? string.Empty;
                 }
+                else if (isSdk)
+                {
+                    RuntimeIdentifier = None;
+                    TargetFramework = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TargetFramework) ?? string.Empty;
+                    var elements = TargetFramework.Split('-');
+                    if (elements.Length > 1)
+                    {
+                        TargetFramework = parent.ConvertFrameworkName(elements[0]);
+                        RuntimeIdentifier = parent.ConvertRuntimeIdentifier(elements[1]);
+                    }
+                    else
+                    {
+                        var id = parent.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier);
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            RuntimeIdentifier = parent.ConvertRuntimeIdentifier(id);
+                        }
+                    }
+                }
                 else
                 {
-                    string fwProp = isSdk
-                        ? XSharpProjectFileConstants.TargetFramework
-                        : XSharpProjectFileConstants.TargetFrameworkVersion;
-                    TargetFramework = parentPropertyPage.GetProperty(fwProp) ?? string.Empty;
-
+                    TargetFramework = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TargetFrameworkVersion) ?? string.Empty;
                 }
-                RuntimeIdentifier = parentPropertyPage.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier) ?? None;
-                if (string.IsNullOrEmpty(RuntimeIdentifier))
-                    RuntimeIdentifier = None;
+
 
                 // ---- Startup object ----
                 string startupRaw = parentPropertyPage.GetProperty(XSharpProjectFileConstants.StartupObject) ?? string.Empty;
@@ -491,26 +510,29 @@ namespace XSharp.Project
             // Dialect — page's SetProperty handles display→raw conversion + Allowdot side-effect
             parentPropertyPage.SetProperty(XSharpProjectFileConstants.Dialect, Dialect ?? string.Empty);
 
+
+
             // Target framework
             if (IsMultiTargeting)
             {
                 SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.XTargetFrameworks, TargetFrameworks ?? string.Empty);
             }
-            else
+            else if (IsSdkProject)
             {
-                string fwProp = IsSdkProject
-                    ? XSharpProjectFileConstants.TargetFramework
-                    : XSharpProjectFileConstants.TargetFrameworkVersion;
-                SetPropertyIfOverriddenOrNonEmpty(fwProp, TargetFramework ?? string.Empty);
-
-            }
-            if (RuntimeIdentifier == None)
-            {
+                var fw = TargetFramework ?? string.Empty;
+                fw= parent.ConvertFrameworkName(fw);
+                if (RuntimeIdentifier != None && !string.IsNullOrEmpty(RuntimeIdentifier))
+                {
+                    var rt = RuntimeIdentifier.ToLower();
+                    // For SDK projects with RID, we need to write the full TFM+RID string
+                    fw = fw + "-" + rt;
+                }
+                SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.TargetFramework, fw ?? string.Empty);
                 parentPropertyPage.ResetProperty(XSharpProjectFileConstants.RuntimeIdentifier, null);
             }
             else
             {
-                parentPropertyPage.SetProperty(XSharpProjectFileConstants.RuntimeIdentifier, RuntimeIdentifier ?? string.Empty);
+                SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.TargetFrameworkVersion, TargetFramework ?? string.Empty);
             }
 
 

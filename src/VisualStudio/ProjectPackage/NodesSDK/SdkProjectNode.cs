@@ -25,12 +25,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 
 using Microsoft.Build.Execution;
 
-using System.Xml;
 using System.IO;
-
-using EnvDTE80;
-
-using VSLangProj80;
 
 
 namespace XSharp.Project
@@ -215,6 +210,24 @@ namespace XSharp.Project
             RefreshReferences();
         }
 
+        public override int Close()
+        {
+            ProcessNuGetFiles();
+            // remove folder items from BuildProject
+            var items = this.BuildProject.Items.Where(i => i.ItemType == ProjectFileConstants.Folder).ToList();
+            foreach (var item in items)
+            {
+                this.BuildProject.RemoveItem(item);
+            }
+            this.BuildProject.Save();
+            return base.Close();
+        }
+        internal override void Unload()
+        {
+            ProcessNuGetFiles();
+            base.Unload();
+        }
+
         public string BaseName => base.Caption;
 
         internal bool SelectSubProject(SdkSubProjectInfo info)
@@ -369,8 +382,19 @@ namespace XSharp.Project
                 this.BeforeSave();
                 newBuildProject.Save();
             }
+        }
 
+        bool EnableNuGetRestore(bool enable)
+        {
+            var old = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
+            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", enable);
+            return old;
+        }
 
+        internal override void BuildEnded(bool didCompile)
+        {
+            base.BuildEnded(didCompile);
+            ProcessNuGetFiles();
         }
 
         private void SaveTargetFrameworks()
@@ -440,8 +464,94 @@ namespace XSharp.Project
             };
         }
 
+
+
+        // Process NuGet Files in the obj f
+        string ProcessNuGetFiles()
+        {
+            var folder = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.MSBuildProjectExtensionsPath);
+            ProcessNuGetFiles(folder, false, false);
+            return folder;
+        }
+
+        void ProcessNuGetFiles(string folder, bool lSetReadOnly, bool lDelete)
+        {
+            var files = Directory.GetFiles(folder);
+            foreach (var file in files)
+            {
+                if (lDelete)
+                {
+                    Utilities.DeleteFileSafe(file);
+                }
+                else if (lSetReadOnly)
+                {
+                    File.SetAttributes(file, FileAttributes.ReadOnly);
+                }
+                else
+                {
+                    var attributes = File.GetAttributes(file);
+                    if (attributes.HasFlag(FileAttributes.ReadOnly))
+                    {
+                        attributes &= ~FileAttributes.ReadOnly;
+                        File.SetAttributes(file, attributes);
+                    }
+                }
+            }
+        }
+
+        void RunDotNetRestore( string folder)
+        {
+            ProcessNuGetFiles(folder, false, true);
+            var old = EnableNuGetRestore(false);
+            var projectFile = this.BuildProject.FullPath;
+            var startInfo = new ProcessStartInfo("dotnet", $"restore \"{projectFile}\"")
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+            using (var process = new Process { StartInfo = startInfo })
+            {
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                if (process.ExitCode != 0)
+                {
+                    Logger.Error($"dotnet restore failed for project {projectFile} with exit code {process.ExitCode}.\nOutput: {output}\nError: {error}");
+                }
+                else
+                {
+                    Logger.Information($"dotnet restore succeeded for project {projectFile}.\nOutput: {output}");
+                }
+            }
+            ProcessNuGetFiles(folder, true, false);
+
+        }
+
+        HashSet<string> _restoreTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { MsBuildTarget.Build, MsBuildTarget.Rebuild, MsBuildTarget.Publish };
+
         protected override BuildSubmission DoMSBuildSubmission(BuildKind buildKind, string target, ref ProjectInstance projectInstance, MSBuildCoda uiThreadCallback)
         {
+            var folder = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.MSBuildProjectExtensionsPath);
+            var platform = this.GetProjectProperty(XSharpProjectFileConstants.TargetPlatformIdentifier, false) ?? "";
+
+            if (target == null || _restoreTargets.Contains(target))
+            {
+
+                // Run DotNet Restore from the command Line and mark the assets files readonly
+                if (!string.IsNullOrEmpty(platform))
+                {
+                    RunDotNetRestore(folder);
+                }
+                else
+                {
+                    // Remove the Readonly flag
+                    ProcessNuGetFiles(folder, false, false);
+                }
+            }
+
             var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
             ProcessOptions(projectInstance, target);
             return result;
@@ -863,6 +973,7 @@ namespace XSharp.Project
         }
     }
 
+	
 }
 
 #endif

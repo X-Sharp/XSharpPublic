@@ -9,6 +9,16 @@
  *
  * ***************************************************************************/
 
+using Microsoft.Build.Utilities;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+//#define CCI_TRACING
+using Microsoft.VisualStudio.Shell.Interop;
+
+using Newtonsoft.Json.Linq;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,18 +29,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
-//#define CCI_TRACING
-using Microsoft.VisualStudio.Shell.Interop;
+
+using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using Microsoft.VisualStudio.Imaging.Interop;
-using Microsoft.Build.Utilities;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -80,9 +84,6 @@ namespace Microsoft.VisualStudio.Project
         #region static/const fields
         public static readonly Guid SolutionExplorer = new Guid(EnvDTE.Constants.vsWindowKindSolutionExplorer);
         public const int NoImage = -1;
-#if DEBUG
-        internal static int LastTracedProperty = 0;
-#endif
         #endregion
 
         #region fields
@@ -917,16 +918,28 @@ namespace Microsoft.VisualStudio.Project
         }
 
 #if DEBUG
-            if (propId != LastTracedProperty)
-            {
-                string trailer = (result == null) ? "null" : result.ToString();
-                CCITracing.TraceCall(this.hierarchyId + "," + propId.ToString() + " = " + trailer);
-                LastTracedProperty = propId; // some basic filtering here...
-            }
+            DebugGetProperty(propId, result);
 #endif
             return result;
         }
+#if DEBUG
+        protected void DebugGetProperty(int propid, object value)
+        {
+            //if (propid != (int) __VSHPROPID.VSHPROPID_ParentHierarchyItemid)
+            //{
+            //    Debug.WriteLine(String.Format(CultureInfo.InvariantCulture,
+            //        "GetProperty({0}) on {1} returns {2}", VsHierarchyPropIdNames.GetName(propid), this.Caption, value));
+            //}
 
+
+        }
+        protected void DebugSetProperty(int propid, object value)
+        {
+            //Debug.WriteLine(String.Format(CultureInfo.InvariantCulture,
+            //     "SetProperty({0}) on {1} sets {2}", VsHierarchyPropIdNames.GetName(propid), this.Caption, value));
+
+        }
+#endif
         /// <summary>
         /// Sets the value of a property for a given property id
         /// </summary>
@@ -936,6 +949,9 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "propid")]
         public virtual int SetProperty(int propid, object value)
         {
+#if DEBUG
+            DebugSetProperty(propid, value);
+#endif
             __VSHPROPID id = (__VSHPROPID)propid;
             ThreadHelper.ThrowIfNotOnUIThread();
 

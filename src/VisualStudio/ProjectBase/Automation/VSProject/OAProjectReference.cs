@@ -75,7 +75,10 @@ namespace Microsoft.VisualStudio.Project.Automation
                 // project, and it is dropped or cleared when that project closes, unloads or
                 // reloads. So anything found here is both current and worth reusing, which
                 // keeps this resolution at once per project instead of once per reference.
-                var projectInfo = ProjectInfo.GetProjectInfo(referencedGuid);
+                // Register the entry when it is missing: the build dependency pass that
+                // normally creates it can run after this property is first read, and without
+                // an entry there is nowhere to cache and every caller resolves again.
+                var projectInfo = ProjectInfo.GetOrCreate(referencedGuid, BaseReferenceNode.Url);
                 var cached = projectInfo?.DteProject;
                 if (cached != null)
                 {

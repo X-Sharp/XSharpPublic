@@ -145,6 +145,33 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        /// <summary>
+        /// Find the entry for a project, registering one when it does not exist yet.
+        /// </summary>
+        /// <remarks>
+        /// ProjectNode.CreateBuildDependencies normally registers these, but it can run
+        /// after the automation layer has already started reading project references.
+        /// Anything that wants to cache per project needs an entry to cache on, so it
+        /// creates one here instead of giving up and resolving again on every call: one
+        /// session logged 253 solution wide hierarchy lookups for each of 88 projects
+        /// purely because the entries did not exist yet.
+        /// Two threads racing here end up with two equivalent entries and the last one
+        /// wins, which costs at most one extra resolution.
+        /// </remarks>
+        public static ProjectInfo GetOrCreate(Guid id, string url)
+        {
+            if (id == Guid.Empty || string.IsNullOrEmpty(url))
+            {
+                return null;
+            }
+            var result = GetProjectInfo(url, id);
+            if (result == null)
+            {
+                result = new ProjectInfo(id, url);
+            }
+            return result;
+        }
+
         public static void RemoveProjectInfo(string url, Guid id)
         {
             var projectInfo = GetProjectInfo(url, id);

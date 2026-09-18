@@ -24,6 +24,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE oConn   AS DbConnection     // In memory database !
 
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
+    STATIC PRIVATE backupRunning := 0 AS LONG          // guards against overlapping backups
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
@@ -173,12 +174,17 @@ STATIC METHOD SafeFileDelete(cFile as STRING) AS VOID
         var deleted := false
         do while tries < 4 .and. !deleted
             try
-                System.Threading.Thread.Sleep(tries * 100)
                 File.Delete(cFile)
                 deleted := true
             catch as IOException
                 Log(i"Failed to delete file {cFile}, attempts {tries}")
                 tries++
+                // Only back off when we are actually going to try again. This used to
+                // sleep before the first attempt as well, which cost 100 ms on every
+                // single backup for nothing.
+                if tries < 4
+                    System.Threading.Thread.Sleep(tries * 100)
+                endif
             end try
         enddo
         if ! deleted
@@ -188,11 +194,18 @@ STATIC METHOD SafeFileDelete(cFile as STRING) AS VOID
 
 STATIC METHOD SaveToDisk(oConn AS DbConnection, cFile AS STRING) AS VOID
     CHECKIFOPEN
+    // Only the BackupDatabase call below touches the in memory connection. Deleting
+    // the old file, opening the disk database and vacuuming it all work on the disk
+    // side, so they must stay outside the lock on oConn: that lock serializes the
+    // whole code model, and holding it for a full backup plus a VACUUM blocked every
+    // parse and every lookup for seconds at a time.
     Log(i"SafeDelete file {cFile}")
     SafeFileDelete(cFile)
     USING VAR diskdb := OpenFile(cFile)
     Log(i"Save DB to disk {cFile}")
-    oConn:BackupDatabase(diskdb, "main")
+    BEGIN LOCK oConn
+        oConn:BackupDatabase(diskdb, "main")
+    END LOCK
     USING VAR oCmd := CreateCommand("VACUUM", diskdb)
     Log(i"Execute VACUUM command")
     oCmd:ExecuteNonQuery()
@@ -211,27 +224,39 @@ STATIC METHOD CommitWhenNeeded() AS VOID
     VAR ts := DateTime.Now - lastWritten
     // Save to disk every 5 minutes
     Log(i"Time since last backup {ts}")
-    IF ts:Minutes >= 5 .OR. ts:Hours > 0
-        LOCAL oBW AS BackgroundWorker
-        oBW := BackgroundWorker{}
-        oBW:DoWork += BackupInBackground
-        oBW:RunWorkerAsync()
-
+    IF ts:TotalMinutes < 5
+        RETURN
     ENDIF
+    // Let one backup run at a time. This is called from every write to the database,
+    // so without the guard each caller inside the 5 minute window starts its own
+    // BackgroundWorker and they all queue up behind each other: the logs show runs of
+    // 5 and 6 backups back to back, 32 seconds of the code model being unavailable.
+    IF System.Threading.Interlocked.CompareExchange(REF backupRunning, 1, 0) != 0
+        Log("A backup is already running, skipping this one")
+        RETURN
+    ENDIF
+    // Claim the interval right away. SaveToDisk sets it again when it has finished,
+    // but until then everybody else must already see this interval as taken care of.
+    lastWritten := DateTime.Now
+    LOCAL oBW AS BackgroundWorker
+    oBW := BackgroundWorker{}
+    oBW:DoWork += BackupInBackground
+    oBW:RunWorkerAsync()
 
 STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS VOID
-    CHECKIFOPEN
-    BEGIN LOCK oConn
-        TRY
-            Log(i"Starting backup to {currentFile}")
-            SaveToDisk(oConn, currentFile )
-        CATCH e AS Exception
-            Log(i"Error backing up to {currentFile}")
-            XSettings.Exception(e)
-        FINALLY
-            Log(i"Completed backup to {currentFile}")
-        END TRY
-    END LOCK
+    TRY
+        CHECKIFOPEN
+        Log(i"Starting backup to {currentFile}")
+        // SaveToDisk takes the lock on oConn itself, and only around the part that
+        // actually needs it.
+        SaveToDisk(oConn, currentFile )
+    CATCH e AS Exception
+        Log(i"Error backing up to {currentFile}")
+        XSettings.Exception(e)
+    FINALLY
+        Log(i"Completed backup to {currentFile}")
+        System.Threading.Interlocked.Exchange(REF backupRunning, 0)
+    END TRY
     RETURN
 
 STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID

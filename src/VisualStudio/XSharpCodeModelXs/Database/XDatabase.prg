@@ -627,6 +627,26 @@ STATIC METHOD ValidateSchema( Connection AS DbConnection) AS LOGIC
     Log(i"Validate database schema: {lOk}")
     RETURN lOk
 
+STATIC METHOD DeleteOrphanIncludeFiles() AS VOID
+    // Drop IncludeFiles rows that no longer belong to any file.
+    // This used to run inside UpdateFileContents, once for every file written: a full anti
+    // join over IncludeFilesPerFile, while holding the lock that serializes the whole code
+    // model. A cold walk of RadixWf.sln does that 39387 times. Orphan rows are harmless
+    // until they are cleaned up - nothing reads them, and UpdateIncludeFiles reuses a row
+    // when the include comes back - so once per project walk is enough.
+    CHECKIFOPEN
+    BEGIN LOCK oConn
+        TRY
+            Log("Delete orphan include files")
+            USING VAR cmd := CreateCommand("Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)", oConn)
+            cmd:ExecuteNonQuery()
+        CATCH e AS Exception
+            Log("Error deleting orphaned include files")
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    RETURN
+
 STATIC METHOD DeleteOrphanFiles() AS List<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
@@ -1387,10 +1407,8 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
                 // Update Includefile IDs and write to disk
                 UpdateIncludeFiles(oFile)
             endif
-            // Remove orphans from IncludeFiles table
-            oCmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
-            oCmd:Parameters:Clear()
-            oCmd:ExecuteScalar()
+            // Orphans in the IncludeFiles table are collected once per project walk, see
+            // DeleteOrphanIncludeFiles(). Doing it here meant a full anti join per file.
 
         CATCH e AS Exception
             Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())

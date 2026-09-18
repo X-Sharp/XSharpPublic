@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -46,6 +46,11 @@ CLASS XProject
     PRIVATE _resolvingReferences               AS LOGIC
     private _globalUsings                      AS List<STRING>
     private _globalStaticUsing                 AS List<STRING>
+    // Set when a file is written to the database, cleared when the lists are rebuilt.
+    // Rebuilding queries the database, so it must not happen once per saved file.
+    // Starts TRUE so the first reader fills the lists even when the project is opened
+    // from an up to date database and no file is ever written.
+    private _globalUsingsDirty                 := TRUE AS LOGIC
 
     PRIVATE _cachedAllNamespaces               AS IList<STRING>
     PRIVATE _cachedUsingStatics                AS IList<STRING>
@@ -60,8 +65,8 @@ CLASS XProject
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
     PROPERTY DisplayName                       AS STRING GET _projectNode?.DisplayName
-    property GlobalUsings                      AS List<STRING> GET SELF:_globalUsings
-    property GlobalStaticUsings                AS List<STRING> GET SELF:_globalStaticUsing
+    property GlobalUsings                      AS List<STRING> GET SELF:EnsureGlobalUsings():_globalUsings
+    property GlobalStaticUsings                AS List<STRING> GET SELF:EnsureGlobalUsings():_globalStaticUsing
 
     PROPERTY DependentAssemblyList             AS STRING
         GET
@@ -656,22 +661,40 @@ CLASS XProject
 #endregion
 
 #region 'Normal' Files
+    // Mark the global usings as out of date. Deliberately cheap: this is called for every
+    // file that gets written to the database, and rebuilding the lists means a query, so
+    // the work is deferred until somebody actually reads them.
+    METHOD InvalidateGlobalUsings() AS VOID
+        SELF:_globalUsingsDirty := TRUE
+
+    // Rebuild the lists when they are stale. Returns SELF so the properties can chain.
+    PRIVATE METHOD EnsureGlobalUsings() AS XProject
+        IF SELF:_globalUsingsDirty
+            SELF:RefreshGlobalUsings()
+        ENDIF
+        RETURN SELF
+
     METHOD RefreshGlobalUsings() AS VOID
+        SELF:_globalUsingsDirty := FALSE
         var usings := XDatabase.GetProjectGlobalUsings(SELF:Id)
-        SELF:_globalUsings:Clear()
-        SELF:_globalStaticUsing:Clear()
+        // Build into fresh lists and swap them in, so a reader iterating the old list never
+        // sees it half emptied. The walker writes from several threads at once.
+        var newUsings := List<STRING>{}
+        var newStatics := List<STRING>{}
         foreach var item in usings
             if item:Attributes:HasFlag(Modifiers.Global)
                 if item:Attributes:HasFlag(Modifiers.Static)
-                    SELF:AddUniqueUsing(_globalStaticUsing, item:Namespace)
+                    SELF:AddUniqueUsing(newStatics, item:Namespace)
 
                 else
-                    SELF:AddUniqueUsing(_globalUsings, item:Namespace)
+                    SELF:AddUniqueUsing(newUsings, item:Namespace)
                 endif
             endif
         next
-        SELF:AddUniqueUsing(_globalUsings, "System")
-        SELF:AddUniqueUsing(_globalUsings, "XSharp")
+        SELF:AddUniqueUsing(newUsings, "System")
+        SELF:AddUniqueUsing(newUsings, "XSharp")
+        SELF:_globalUsings       := newUsings
+        SELF:_globalStaticUsing  := newStatics
     METHOD AddUniqueUsing(list as List<STRING>, name as string) AS VOID
         var old := list:Find( { x => x:ToUpper() == name:ToUpper()})
         if String.IsNullOrEmpty(old)
@@ -1577,7 +1600,7 @@ CLASS XProject
                 NEXT
                 result := asmNS
             ENDIF
-            FOREACH var ns in SELF:_globalUsings
+            FOREACH var ns in SELF:GlobalUsings
                 if !result:Contains(ns)
                     result:Add(ns)
                 endif
@@ -1601,7 +1624,7 @@ CLASS XProject
                     ENDIF
                 NEXT
             ENDIF
-            FOREACH var ns in SELF:_globalStaticUsing
+            FOREACH var ns in SELF:GlobalStaticUsings
                 if !statics:Contains(ns)
                     statics:Add(ns)
                 endif

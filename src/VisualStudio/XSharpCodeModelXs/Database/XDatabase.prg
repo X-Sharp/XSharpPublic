@@ -627,6 +627,13 @@ STATIC METHOD ValidateSchema( Connection AS DbConnection) AS LOGIC
     Log(i"Validate database schema: {lOk}")
     RETURN lOk
 
+STATIC PRIVATE METHOD ExecuteSimpleSql(cSql AS STRING) AS VOID
+    // For statements that take no parameters and return nothing, such as BEGIN and COMMIT.
+    // The caller is expected to hold the lock on oConn.
+    USING VAR cmd := CreateCommand(cSql, oConn)
+    cmd:ExecuteNonQuery()
+    RETURN
+
 STATIC METHOD DeleteOrphanIncludeFiles() AS VOID
     // Drop IncludeFiles rows that no longer belong to any file.
     // This used to run inside UpdateFileContents, once for every file written: a full anti
@@ -1369,8 +1376,17 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
         NEXT
     NEXT
     Log(i"Start Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
+    LOCAL lInTransaction := FALSE AS LOGIC
     BEGIN LOCK oConn
         TRY
+            // One transaction for the whole file. Without it every statement below is its
+            // own implicit transaction, and AddTypes/AddMembers issue one INSERT per type
+            // and per member: a file with 159 entities costs about 160 of them.
+            // BEGIN/COMMIT are sent as plain SQL on purpose. Handing out a DbTransaction
+            // would mean assigning it to every command created further down the call chain,
+            // and Microsoft.Data.Sqlite throws when a command misses it.
+            ExecuteSimpleSql("BEGIN IMMEDIATE")
+            lInTransaction := TRUE
 
             // Check to see if file is in multiple projects.
             // If so then generate a new type for each of the projects
@@ -1410,10 +1426,23 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
             // Orphans in the IncludeFiles table are collected once per project walk, see
             // DeleteOrphanIncludeFiles(). Doing it here meant a full anti join per file.
 
+            ExecuteSimpleSql("COMMIT")
+            lInTransaction := FALSE
+
         CATCH e AS Exception
             Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
             XSettings.Exception(e)
 
+        FINALLY
+            IF lInTransaction
+                // The commit never happened. Undo the half written file and, more
+                // importantly, leave the connection out of a transaction for the next one.
+                TRY
+                    ExecuteSimpleSql("ROLLBACK")
+                CATCH
+                    NOP
+                END TRY
+            ENDIF
         END TRY
 
     END LOCK

@@ -91,11 +91,17 @@ BEGIN NAMESPACE XSharp.IO
         /// <include file="XSharp.Core.Docs.xml" path="doc/XsFileStream.CreateFileStream/*" />
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             IF share != FileShare.None
+#ifdef NET6_0_OR_GREATER
+                // The shared stream is plain managed code here, so there is no platform check needed.
+                RETURN CreateWin32FileStream(path, mode, faccess, share, bufferSize, options)
+#else
+                // Unchanged: the shared stream does its IO with the Win32 API, so Windows only.
                 IF RuntimeState.RunningOnWindows
                     RETURN CreateWin32FileStream(path, mode, faccess, share, bufferSize, options)
                 ELSE
                     RETURN XsFileStream{path, mode, faccess, share, 0xFFFF, options}
                 ENDIF
+#endif
             ELSE
                 IF UseBufferedFileStream
                     RETURN XsBufferedFileStream{path, mode, faccess, share, bufferSize, options}

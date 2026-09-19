@@ -27,6 +27,8 @@ namespace Microsoft.VisualStudio.Project
         public const string Build = nameof(Build);
         public const string Rebuild = nameof(Rebuild);
         public const string Clean = nameof(Clean);
+        public const string Publish = nameof(Publish);
+        public const string Pack = nameof(Pack);
     }
 
     public static class MsBuildGeneratedItemType
@@ -82,6 +84,7 @@ namespace Microsoft.VisualStudio.Project
 		public const string SpecificVersion = nameof(SpecificVersion);
         public const string COMReference = nameof(COMReference);
         public const string Guid = nameof(Guid);
+        public const string Version = nameof(Version);
         public const string VersionMajor = nameof(VersionMajor);
         public const string VersionMinor = nameof(VersionMinor);
         public const string Lcid = nameof(Lcid);
@@ -149,11 +152,6 @@ namespace Microsoft.VisualStudio.Project
       	public const string Visible = nameof(Visible);
     }
 
-    internal static class ProjectFileValues
-    {
-        internal const string AnyCPU = nameof(AnyCPU);
-    }
-
     public enum WrapperToolAttributeValue
     {
         Primary,
@@ -178,22 +176,5 @@ namespace Microsoft.VisualStudio.Project
         public const int FolderNode = 500;
         public const int VOBinaryNode = 750;
         public const int HierarchyNode = 1000;
-    }
-    public static class XSharpImageListIndex
-    {
-        public const int Project = 0;
-        public const int Source = 1;
-        public const int Form = 2;
-        public const int Server = 3;
-        public const int FieldSpec = 4;
-        public const int Menu = 5;
-        public const int VO = 6;
-        public const int Grid = 7;
-        public const int Test = 8;
-        public const int Properties = 9;
-        public const int Reference = 10;
-        public const int DanglingReference = 11;
-        public const int TabOrder = 12;
-
     }
 }

@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Microsoft.VisualStudio.Project;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -126,7 +128,7 @@ namespace XSharp.Project.ShadowDesigner
         private static string ReadTargetFramework(string xsprojPath)
         {
             var doc = XDocument.Load(xsprojPath);
-            var element = doc.Descendants("TargetFramework").FirstOrDefault();
+            var element = doc.Descendants(XSharpProjectFileConstants.TargetFramework).FirstOrDefault();
             if (element == null)
             {
                 throw new InvalidOperationException($"No <TargetFramework> element found in {xsprojPath}.");
@@ -202,12 +204,12 @@ namespace XSharp.Project.ShadowDesigner
         {
             var doc = XDocument.Load(xsprojPath);
             var result = new List<PackageRef>();
-            foreach (var el in doc.Descendants("PackageReference"))
+            foreach (var el in doc.Descendants(ProjectFileConstants.PackageReference))
             {
-                string include = el.Attribute("Include")?.Value;
+                string include = el.Attribute(ProjectFileConstants.Include)?.Value;
                 if (string.IsNullOrEmpty(include)) continue;
-                string version = el.Attribute("Version")?.Value
-                    ?? el.Element("Version")?.Value;
+                string version = el.Attribute(ProjectFileConstants.Version)?.Value
+                    ?? el.Element(ProjectFileConstants.Version)?.Value;
                 result.Add(new PackageRef(include, version));
             }
             return result;

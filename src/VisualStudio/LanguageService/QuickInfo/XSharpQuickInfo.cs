@@ -94,7 +94,7 @@ namespace XSharp.LanguageService
                 lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 var lastToken = tokenList.LastOrDefault();
                 //
-                if (lookupresult.Count > 0)
+                if (lookupresult.Count > 0 && lookupresult[0] != null)
                 {
                     var element = lookupresult[0];
                     if (element.Name == location.Member?.Name)

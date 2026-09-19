@@ -760,10 +760,16 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="propertyName">MSBuild property name.</param>
         /// <param name="configs">Configurations whose property group entries should be removed.</param>
-        public void ResetPropertyForConfigs(string propertyName, IList<XProjectConfig> configs)
+        public void ResetProperty(string propertyName, IList<XProjectConfig> configs = null)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (configs == null || configs.Count == 0 || this.project == null)
+            if (this.project == null)
+                return;
+            if (configs == null)
+            {
+                configs = this.GetAllProjectConfigs().ToList();
+            }
+            if (configs.Count == 0)
                 return;
 
             var buildProject = this.project.BuildProject;

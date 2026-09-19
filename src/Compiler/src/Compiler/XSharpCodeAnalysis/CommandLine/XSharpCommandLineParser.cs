@@ -19,7 +19,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Keeping this per-parse state thread-static isolates each parse so that one request's
         // ResetXSharpCommandlineOptions() cannot discard the half-built options of another.
         // See https://github.com/X-Sharp/XSharpPublic/issues/2076
-        private static XSharpSpecificCompilationOptions options;
+        [ThreadStatic]
+        private static XSharpSpecificCompilationOptions t_options;
+        private XSharpSpecificCompilationOptions options
+        {
+            get { if (t_options == null) t_options = new XSharpSpecificCompilationOptions(); return t_options; }
+            set => t_options = value;
+        }
 
 
         public XSharpSpecificCompilationOptions XSharpSpecificCompilationOptions

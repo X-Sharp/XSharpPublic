@@ -58,9 +58,6 @@
     <compile Remove="Types\Win32FileStream.prg" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Update="Language\Croatia.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

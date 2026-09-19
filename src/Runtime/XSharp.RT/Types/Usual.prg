@@ -2137,18 +2137,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <remarks>When the usual contains an integral value then this value is converted to an IntPtr</remarks>
     [NODEBUG];
     STATIC OPERATOR IMPLICIT(u AS __Usual) AS PTR
-        // Note Vulcan has a different implementation for USUAL -> PTR and USUAL -> IntPtr
-        IF u:IsNull  .or. !u:_initialized
-            RETURN NULL_PTR
-        ENDIF
-        SWITCH u:_usualType
-        CASE __UsualType.Ptr		; RETURN u:_ptrValue
-        CASE __UsualType.Long		; RETURN (IntPtr) u:_intValue
-        CASE __UsualType.Int64		; RETURN (IntPtr) u:_i64Value
-        OTHERWISE
-            THROW ConversionError(PTR, TYPEOF(IntPtr), u)
-        END SWITCH
-
+        local p as IntPtr
+        p := (IntPtr) u
+        return p:ToPointer()
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />

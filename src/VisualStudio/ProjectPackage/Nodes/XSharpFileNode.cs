@@ -339,20 +339,23 @@ namespace XSharp.Project
             string subType = SubType;
             bool hasDesigner = XSharpFileType.HasDesigner(this.Url, subType);
             _inferredSubType = null;
-            if (!hasDesigner && string.IsNullOrEmpty(subType))
+            if (this.ProjectMgr.IsSdkProject)
             {
-                // SDK-style projects use implicit globbing, so a file never gets an explicit
-                // <SubType> unless the user opts in manually with a <Compile Update="..."><
-                // SubType>Form</SubType></Compile> entry. Infer designer support instead from
-                // a matching sibling .Designer.prg -- the same signal the legacy CodeDom
-                // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
-                // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
-                string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
-                hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg) &&
-                    ! String.Equals(this.Url, designerPrg, StringComparison.OrdinalIgnoreCase);
-                if (hasDesigner)
+                if (!hasDesigner && string.IsNullOrEmpty(subType))
                 {
-                    _inferredSubType = InferSubTypeFromBaseClass(this.Url);
+                    // SDK-style projects use implicit globbing, so a file never gets an explicit
+                    // <SubType> unless the user opts in manually with a <Compile Update="..."><
+                    // SubType>Form</SubType></Compile> entry. Infer designer support instead from
+                    // a matching sibling .Designer.prg -- the same signal the legacy CodeDom
+                    // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
+                    // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
+                    string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
+                    hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg) &&
+                        !String.Equals(this.Url, designerPrg, StringComparison.OrdinalIgnoreCase);
+                    if (hasDesigner)
+                    {
+                        _inferredSubType = InferSubTypeFromBaseClass(this.Url);
+                    }
                 }
             }
             HasDesigner = hasDesigner;
@@ -975,6 +978,7 @@ namespace XSharp.Project
         /// </summary>
         private bool TryRedirectToShadowDesigner()
         {
+        #if DEV17
             if (!(this.ProjectMgr is XSharpSdkProjectNode))
             {
                 return false;
@@ -984,6 +988,7 @@ namespace XSharp.Project
                 return true;
             }
             XSettings.Information("XSharp ShadowDesigner: " + shadowError);
+        #endif
             return false;
         }
 
@@ -1134,9 +1139,9 @@ namespace XSharp.Project
             return result;
         }
 
-        #endregion
+#endregion
 
-        #region Private implementation
+#region Private implementation
         internal OleServiceProvider.ServiceCreatorCallback ServiceCreator
         {
             get { return new OleServiceProvider.ServiceCreatorCallback(this.CreateServices); }
@@ -1152,9 +1157,9 @@ namespace XSharp.Project
             return service;
         }
 
-        #endregion
+#endregion
 
-        #region Operate on Open Files
+#region Operate on Open Files
         private IVsTextLines TextLines
         {
             get
@@ -1172,6 +1177,6 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
+#endregion
     }
 }

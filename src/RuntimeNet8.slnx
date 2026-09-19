@@ -50,11 +50,21 @@
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/VOSDK/">
+    <File Path="Runtime/VOSDK/Source/VOSDK/version.Props" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Common.props" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Props" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.SDK.Props" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDKDocs.Props" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" />
   </Folder>
   <Folder Name="/VOSDKTyped/">
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/version.Props" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Common.Props" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.Props" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDK.SDK.Props" />
+    <File Path="Runtime/VOSdkTyped/Source/VOSdk/VOSDKDocs.Props" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.Next.xsproj" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" />

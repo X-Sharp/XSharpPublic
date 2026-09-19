@@ -566,17 +566,15 @@ INTERNAL STATIC CLASS FoxXml
 
     /// <summary>True when the value is an xsd date, the only date layout VFP infers.</summary>
     INTERNAL STATIC METHOD IsDate(cValue as string) as logic
-        local dValue as DateTime
         return DateTime.TryParseExact(cValue, "yyyy-MM-dd", CultureInfo.InvariantCulture, ;
-            DateTimeStyles.None, out dValue)
+            DateTimeStyles.None, out var _)
 
     /// <summary>True when the value is an xsd dateTime.</summary>
     INTERNAL STATIC METHOD IsDateTime(cValue as string) as logic
-        local dValue   as DateTime
         local aFormats as string[]
         aFormats := <string>{"yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ss.FFFFFFF"}
         return DateTime.TryParseExact(cValue, aFormats, CultureInfo.InvariantCulture, ;
-            DateTimeStyles.None, out dValue)
+            DateTimeStyles.None, out var _)
 
     /// <summary>The text of one cell, trimmed the way VFP trims it.</summary>
     INTERNAL STATIC METHOD CellText(oRow as DataRow, oColumn as DataColumn) as string
@@ -719,6 +717,7 @@ INTERNAL STATIC CLASS FoxXml
             oRDD:PutValue(nField, oValue)
         catch
             // the field keeps its blank value
+            NOP
         end try
         return
 

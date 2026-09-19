@@ -9,8 +9,10 @@ using Microsoft.VisualStudio.Shell;
 
 using Newtonsoft.Json.Linq;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Markup;
 
@@ -75,6 +77,8 @@ namespace XSharp.Project
         private bool _isBinding   = false;   // true while BindProperties is loading values
 
         private bool _isNotifying = false;   // true while firing Item[] refresh pulse
+
+        private bool _migrateLegacyRuntimeIdentifier = false; // true when RuntimeIdentifier holds a legacy target OS value
 
         internal const string None = "(None)";
         internal XSharpGeneralPropertyPage parent;
@@ -444,6 +448,7 @@ namespace XSharp.Project
                 else if (isSdk)
                 {
                     RuntimeIdentifier = None;
+                    _migrateLegacyRuntimeIdentifier = false;
                     TargetFramework = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TargetFramework) ?? string.Empty;
                     var elements = TargetFramework.Split('-');
                     if (elements.Length > 1)
@@ -453,10 +458,18 @@ namespace XSharp.Project
                     }
                     else
                     {
+                        // Older projects stored the target OS in the RuntimeIdentifier property.
+                        // Only migrate values that match a known platform name; leave genuine
+                        // runtime identifiers (such as "win-x64") untouched.
                         var id = parent.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier);
                         if (!string.IsNullOrEmpty(id))
                         {
-                            RuntimeIdentifier = parent.ConvertRuntimeIdentifier(id);
+                            var converted = parent.ConvertRuntimeIdentifier(id);
+                            if (_runtimeIdItems.Any(item => string.Equals(item, converted, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                RuntimeIdentifier = converted;
+                                _migrateLegacyRuntimeIdentifier = true;
+                            }
                         }
                     }
                 }
@@ -521,14 +534,21 @@ namespace XSharp.Project
             {
                 var fw = TargetFramework ?? string.Empty;
                 fw= parent.ConvertFrameworkName(fw);
-                if (RuntimeIdentifier != None && !string.IsNullOrEmpty(RuntimeIdentifier))
+                if (RuntimeIdentifier != None && !string.IsNullOrEmpty(RuntimeIdentifier) &&
+                    _runtimeIdItems.Any(item => string.Equals(item, RuntimeIdentifier, StringComparison.OrdinalIgnoreCase)))
                 {
                     var rt = RuntimeIdentifier.ToLower();
-                    // For SDK projects with RID, we need to write the full TFM+RID string
+                    // For SDK projects with a target OS, we need to write the full TFM+platform string
                     fw = fw + "-" + rt;
                 }
                 SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.TargetFramework, fw ?? string.Empty);
-                parentPropertyPage.ResetProperty(XSharpProjectFileConstants.RuntimeIdentifier, null);
+                if (_migrateLegacyRuntimeIdentifier)
+                {
+                    // remove the legacy target OS value that older versions stored in RuntimeIdentifier.
+                    // Genuine runtime identifiers (such as "win-x64") are left untouched.
+                    parentPropertyPage.ResetProperty(XSharpProjectFileConstants.RuntimeIdentifier, null);
+                    _migrateLegacyRuntimeIdentifier = false;
+                }
             }
             else
             {

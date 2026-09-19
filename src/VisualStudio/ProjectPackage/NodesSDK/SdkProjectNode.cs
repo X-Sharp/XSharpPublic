@@ -213,13 +213,31 @@ namespace XSharp.Project
         public override int Close()
         {
             ProcessNuGetFiles();
-            // remove folder items from BuildProject
-            var items = this.BuildProject.Items.Where(i => i.ItemType == ProjectFileConstants.Folder).ToList();
-            foreach (var item in items)
+            try
             {
-                this.BuildProject.RemoveItem(item);
+                // remove folder items from BuildProject that were added at runtime.
+                // Keep explicit <Folder> items for empty folders: they are the only way to persist those in an SDK project.
+                var projectDir = Path.GetDirectoryName(this.BuildProject.FullPath);
+                var items = this.BuildProject.Items.Where(i => i.ItemType == ProjectFileConstants.Folder && !i.IsImported).ToList();
+                bool changed = false;
+                foreach (var item in items)
+                {
+                    var path = Path.Combine(projectDir, item.EvaluatedInclude);
+                    if (Directory.Exists(path) && Directory.EnumerateFileSystemEntries(path).Any())
+                    {
+                        this.BuildProject.RemoveItem(item);
+                        changed = true;
+                    }
+                }
+                if (changed)
+                {
+                    this.BuildProject.Save();
+                }
             }
-            this.BuildProject.Save();
+            catch (Exception e)
+            {
+                Logger.Exception(e, "Could not remove folder items from project file");
+            }
             return base.Close();
         }
         internal override void Unload()
@@ -476,26 +494,42 @@ namespace XSharp.Project
 
         void ProcessNuGetFiles(string folder, bool lSetReadOnly, bool lDelete)
         {
-            var files = Directory.GetFiles(folder);
-            foreach (var file in files)
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+                return;
+            try
             {
-                if (lDelete)
+                var files = Directory.GetFiles(folder);
+                foreach (var file in files)
                 {
-                    Utilities.DeleteFileSafe(file);
-                }
-                else if (lSetReadOnly)
-                {
-                    File.SetAttributes(file, FileAttributes.ReadOnly);
-                }
-                else
-                {
-                    var attributes = File.GetAttributes(file);
-                    if (attributes.HasFlag(FileAttributes.ReadOnly))
+                    try
                     {
-                        attributes &= ~FileAttributes.ReadOnly;
-                        File.SetAttributes(file, attributes);
+                        if (lDelete)
+                        {
+                            Utilities.DeleteFileSafe(file);
+                        }
+                        else if (lSetReadOnly)
+                        {
+                            File.SetAttributes(file, FileAttributes.ReadOnly);
+                        }
+                        else
+                        {
+                            var attributes = File.GetAttributes(file);
+                            if (attributes.HasFlag(FileAttributes.ReadOnly))
+                            {
+                                attributes &= ~FileAttributes.ReadOnly;
+                                File.SetAttributes(file, attributes);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Exception(e, $"Could not process NuGet file {file}");
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, $"Could not process NuGet files in folder {folder}");
             }
         }
 
@@ -504,30 +538,45 @@ namespace XSharp.Project
             ProcessNuGetFiles(folder, false, true);
             var old = EnableNuGetRestore(false);
             var projectFile = this.BuildProject.FullPath;
-            var startInfo = new ProcessStartInfo("dotnet", $"restore \"{projectFile}\"")
+            try
             {
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
-            };
-            using (var process = new Process { StartInfo = startInfo })
-            {
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-                if (process.ExitCode != 0)
+                var startInfo = new ProcessStartInfo("dotnet", $"restore \"{projectFile}\"")
                 {
-                    Logger.Error($"dotnet restore failed for project {projectFile} with exit code {process.ExitCode}.\nOutput: {output}\nError: {error}");
-                }
-                else
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+                using (var process = new Process { StartInfo = startInfo })
                 {
-                    Logger.Information($"dotnet restore succeeded for project {projectFile}.\nOutput: {output}");
+                    process.Start();
+                    // Read stderr asynchronously while draining stdout synchronously,
+                    // otherwise the child process can deadlock when one of the pipes fills up.
+                    var errorTask = process.StandardError.ReadToEndAsync();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+                    string error = errorTask.Result;
+                    if (process.ExitCode != 0)
+                    {
+                        Logger.Error($"dotnet restore failed for project {projectFile} with exit code {process.ExitCode}.\nOutput: {output}\nError: {error}");
+                    }
+                    else
+                    {
+                        Logger.Information($"dotnet restore succeeded for project {projectFile}.\nOutput: {output}");
+                    }
                 }
+                ProcessNuGetFiles(folder, true, false);
             }
-            ProcessNuGetFiles(folder, true, false);
-
+            catch (Exception e)
+            {
+                // for example when dotnet.exe is not on the PATH
+                Logger.Exception(e, $"Could not run dotnet restore for project {projectFile}");
+            }
+            finally
+            {
+                // restore the user's original NuGet automatic restore setting
+                EnableNuGetRestore(old);
+            }
         }
 
         HashSet<string> _restoreTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { MsBuildTarget.Build, MsBuildTarget.Rebuild, MsBuildTarget.Publish };

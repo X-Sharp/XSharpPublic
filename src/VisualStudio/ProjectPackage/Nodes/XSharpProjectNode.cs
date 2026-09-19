@@ -546,20 +546,6 @@ namespace XSharp.Project
                     }
                     result = _checker;
                     break;
-                // Test ?
-                case (int)__VSHPROPID4.VSHPROPID_AlwaysBuildOnDebugLaunch:
-                    result =false;
-                    break;
-                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformVersion:
-                    result = "8.0";
-                    break;
-                case (int)__VSHPROPID5.VSHPROPID_TargetRuntime:
-                    result =  __VSPROJTARGETRUNTIME.VSPROJ_TARGETRUNTIME_MANAGED;
-                    break;
-                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformIdentifier:
-                    result = "Windows";
-                    break;
-
 
             }
             if (result != null)

@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AMembersTests.prg" />
+    <Compile Include="ATagInfoTests.prg" />
     <Compile Include="AUsedTests.prg" />
     <Compile Include="CastTests.prg" />
     <Compile Include="CommandTests.prg" />

@@ -20,13 +20,6 @@ FUNCTION ANetResources (ArrayName, cNetworkName, nResourceType)
     THROW NotImplementedException{}
     //RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ataginfo/*" />
-[FoxProFunction("ATAGINFO", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION ATagInfo (ArrayName ,cCDXName , uArea )
-    THROW NotImplementedException{}
-    //RETURN 0
-
 /*
 FALSE  Boolean
 0.0.0  DATE

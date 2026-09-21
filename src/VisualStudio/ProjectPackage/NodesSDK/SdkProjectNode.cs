@@ -718,10 +718,10 @@ namespace XSharp.Project
             switch (cmd)
             {
                 case idAddProjectReference:
+                case idAddAssemblyReference:
                     result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                     return VSConstants.S_OK;
 
-                case idAddAssemblyReference:
                 case idAddCOMReference:
                     if (this.IsNetCoreApp)
                     {
@@ -752,7 +752,7 @@ namespace XSharp.Project
                 case idAddProjectReference:
                     return this.AddProjectReference();
 
-                case idAddAssemblyReference when !this.IsNetCoreApp:
+                case idAddAssemblyReference:
                     return this.AddAssemblyReference();
 
                 case idAddCOMReference when !this.IsNetCoreApp:

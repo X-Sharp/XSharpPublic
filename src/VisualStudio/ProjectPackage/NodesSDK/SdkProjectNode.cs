@@ -691,6 +691,7 @@ namespace XSharp.Project
             {
                 return new[] {
                           VSConstants.ProjectReferenceProvider_Guid,
+                          VSConstants.AssemblyReferenceProvider_Guid,
                           VSConstants.FileReferenceProvider_Guid,
                     };
             }

@@ -14,20 +14,13 @@ See License.txt in the project root for license information.
          and before any project or Shared.props can override them. -->
     <ArtifactsDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\Artifacts\'))</ArtifactsDir>
     <BinariesDir>$(ArtifactsDir)</BinariesDir>
-    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-	<!-- VisualStudioVersion is defined only for IDE/design-time builds.
-		Clearing these prevents VS from synthesizing the -windowsN.N suffix. 
-	<TargetPlatformIdentifier Condition="'$(VisualStudioVersion)' != ''"></TargetPlatformIdentifier>
-	<TargetPlatformMinVersion Condition="'$(VisualStudioVersion)' != ''"></TargetPlatformMinVersion>
-	-->
-  </PropertyGroup>
- <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
-	<!-- Prevent SDK-style projects from inheriting a Windows platform and being promoted to '-windows' TFMs -->
-	<TargetPlatformIdentifier></TargetPlatformIdentifier>
-	<TargetPlatformVersion></TargetPlatformVersion>
-	<SupportedOSPlatformVersion></SupportedOSPlatformVersion>
-	<GenerateSupportedOSPlatformAttribute>false</GenerateSupportedOSPlatformAttribute>
-	<_EnableDefaultWindowsPlatform>false</_EnableDefaultWindowsPlatform>
-  </PropertyGroup>
+		<BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+		<!-- Do NOT clear TargetPlatformIdentifier/TargetPlatformVersion here.
+				 Directory.Build.props is imported before the .NET SDK sets UsingMicrosoftNETSdk,
+				 so such a condition only takes effect for the property set Visual Studio passes in.
+				 That makes restore inside VS write a platform-less 'net8.0' assets file while the
+				 build still evaluates 'net8.0-windows7.0', causing NETSDK1005.
+				 Projects control their platform through their own TargetFramework value. -->
+	</PropertyGroup>
 </Project>
 

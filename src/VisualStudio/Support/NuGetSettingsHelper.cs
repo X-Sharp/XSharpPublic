@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Shell.Settings;
 using NuGet.Configuration;
 using NuGet.VisualStudio;
 
-namespace XSharp.Project
+namespace XSharp.Support
 {
     /// <summary>
     /// Helper methods to read and update the NuGet Package Manager settings from inside the extension.
@@ -18,7 +18,7 @@ namespace XSharp.Project
     /// is the instance the IDE itself uses. The Tools/Options toggles live in the VS settings store instead.
     /// All members must be called on the UI thread.
     /// </remarks>
-    internal static class NuGetSettingsHelper
+    public static class NuGetSettingsHelper
     {
         private const string NuGetSettingsCollection = "NuGet";
 

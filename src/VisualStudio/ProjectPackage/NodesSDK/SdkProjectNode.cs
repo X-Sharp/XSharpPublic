@@ -27,6 +27,7 @@ using Microsoft.Build.Execution;
 
 using System.IO;
 
+using XSharp.Support;
 
 namespace XSharp.Project
 {
@@ -533,10 +534,10 @@ namespace XSharp.Project
             }
         }
 
-        void RunDotNetRestore( string folder)
+        void RunDotNetRestore(string folder)
         {
             ProcessNuGetFiles(folder, false, true);
-            var old = EnableNuGetRestore(false);
+
             var projectFile = this.BuildProject.FullPath;
             try
             {
@@ -555,7 +556,9 @@ namespace XSharp.Project
                     var errorTask = process.StandardError.ReadToEndAsync();
                     string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
                     string error = errorTask.Result;
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
                     if (process.ExitCode != 0)
                     {
                         Logger.Error($"dotnet restore failed for project {projectFile} with exit code {process.ExitCode}.\nOutput: {output}\nError: {error}");
@@ -572,38 +575,56 @@ namespace XSharp.Project
                 // for example when dotnet.exe is not on the PATH
                 Logger.Exception(e, $"Could not run dotnet restore for project {projectFile}");
             }
-            finally
-            {
-                // restore the user's original NuGet automatic restore setting
-                EnableNuGetRestore(old);
-            }
+
         }
 
-        HashSet<string> _restoreTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { MsBuildTarget.Build, MsBuildTarget.Rebuild, MsBuildTarget.Publish };
+        HashSet<string> _restoreTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { MsBuildTarget.Build, MsBuildTarget.Rebuild, MsBuildTarget.Publish };
 
         protected override BuildSubmission DoMSBuildSubmission(BuildKind buildKind, string target, ref ProjectInstance projectInstance, MSBuildCoda uiThreadCallback)
         {
             var folder = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.MSBuildProjectExtensionsPath);
             var platform = this.GetProjectProperty(XSharpProjectFileConstants.TargetPlatformIdentifier, false) ?? "";
-
-            if (target == null || _restoreTargets.Contains(target))
+            var mustRestore = false;
+            bool restoreFlag = false;
+            try
             {
-
-                // Run DotNet Restore from the command Line and mark the assets files readonly
-                if (!string.IsNullOrEmpty(platform))
+                restoreFlag = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
+                if (target == null || _restoreTargets.Contains(target))
                 {
-                    RunDotNetRestore(folder);
+                    // Run DotNet Restore from the command Line and mark the assets files readonly
+                    if (!string.IsNullOrEmpty(platform))
+                    {
+                        mustRestore = true;
+                        EnableNuGetRestore(false);
+                        RunDotNetRestore(folder);
+                    }
+                    else
+                    {
+                        // Remove the Readonly flag
+                        ProcessNuGetFiles(folder, false, false);
+                    }
                 }
-                else
+
+                var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
+                ProcessOptions(projectInstance, target);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, $"DoMSBuildSubmission failed for {this.Caption}");
+                return null;
+            }
+            finally
+            {
+                if (mustRestore)
                 {
-                    // Remove the Readonly flag
-                    ProcessNuGetFiles(folder, false, false);
+                    // Restore the original setting for NuGet Restore
+                    EnableNuGetRestore(restoreFlag);
                 }
             }
 
-            var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
-            ProcessOptions(projectInstance, target);
-            return result;
+
         }
         protected List<string> _sdkReferences = new List<string>();
         protected List<string> _allReferenceAssemblies = new List<string>();
@@ -678,7 +699,7 @@ namespace XSharp.Project
 
 
         internal static readonly Guid VsStd16 = new Guid("8F380902-6040-4097-9837-D3F40E66F908");
-        internal const uint idAddAssemblyReference = (uint) VSConstants.VSStd16CmdID.AddAssemblyReference;
+        internal const uint idAddAssemblyReference = (uint)VSConstants.VSStd16CmdID.AddAssemblyReference;
         internal const uint idAddCOMReference = (uint)VSConstants.VSStd16CmdID.AddComReference;
         internal const uint idAddProjectReference = (uint)VSConstants.VSStd16CmdID.AddProjectReference;
         internal const uint idAddSharedProjectReference = (uint)VSConstants.VSStd16CmdID.AddSharedProjectReference;
@@ -753,7 +774,7 @@ namespace XSharp.Project
                         return QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
                 }
             }
-            return base.QueryStatusCommandFromOleCommandTarget (cmdGroup, cmd, out handled);
+            return base.QueryStatusCommandFromOleCommandTarget(cmdGroup, cmd, out handled);
         }
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
@@ -798,7 +819,7 @@ namespace XSharp.Project
             AddPendingReferences(sdkrefs, this.ActiveSubProject);
 
             var rsprefs = base.RefreshReferencesFromResponseFile();
-            foreach ( var reference in rsprefs)
+            foreach (var reference in rsprefs)
             {
                 references.AddUnique(reference);
             }
@@ -860,9 +881,9 @@ namespace XSharp.Project
                 {
                     try
                     {
-                    this.BuildProject.RemoveItem(node.ItemNode.Item);
-                    Logger.Information($"Clean: Removed folder node {node.Caption} from project {this.Caption}");
-                    dirty = true;
+                        this.BuildProject.RemoveItem(node.ItemNode.Item);
+                        Logger.Information($"Clean: Removed folder node {node.Caption} from project {this.Caption}");
+                        dirty = true;
                     }
                     catch
                     {
@@ -937,7 +958,7 @@ namespace XSharp.Project
             foreach (var reference in newReferences)
             {
                 var name = reference.ToLower();
-                if (sdkReferences.Find( r => r.ToLower() == name) == null)
+                if (sdkReferences.Find(r => r.ToLower() == name) == null)
                 {
                     toAdd.Add(reference);
                 }
@@ -984,7 +1005,7 @@ namespace XSharp.Project
             if (this.ItemNode != null && this.ItemNode.Item != null)
                 root.BuildProject.RemoveItem(this.ItemNode.Item);
         }
-        public override bool EmbedInteropTypes { get => false; set { }}
+        public override bool EmbedInteropTypes { get => false; set { } }
 
 
         protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.DotNETFrameworkDependency;
@@ -1022,7 +1043,7 @@ namespace XSharp.Project
         }
     }
 
-	
+
 }
 
 #endif

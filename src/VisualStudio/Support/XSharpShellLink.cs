@@ -1,4 +1,5 @@
 ﻿using Community.VisualStudio.Toolkit;
+using CVT=Community.VisualStudio.Toolkit;
 
 //using EnvDTE;
 
@@ -413,23 +414,36 @@ namespace XSharp.Support
         {
             Logger.Information("Solution Build Cancelled");
             building = false;
+#if DEV17
+            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", restoreDuringBuild);
+#endif
         }
         bool building;
-
+#if DEV17
+        bool restoreDuringBuild = false;
+#endif
         private void BuildEvents_SolutionBuildDone(bool result)
         {
             Logger.Information($"Solution Build Done, result {result}");
+#if DEV17
+            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", restoreDuringBuild);
+#endif
             building = false;
+
         }
 
         private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
         {
             Logger.Information("Solution Build Started");
+            // Save Nuget Setting
+#if DEV17
+            restoreDuringBuild = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
+#endif
             building = true;
         }
-        #endregion
+#endregion
 
-        #region Shell Events
+#region Shell Events
         private void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;
@@ -440,15 +454,15 @@ namespace XSharp.Support
             Logger.Information("Shutdown VS");
             Logger.SingleLine();
         }
-        #endregion
+#endregion
 
 
-        #region Document Events
+#region Document Events
         private void DocumentEvents_Opened(string doc)
         {
             Logger.Information("Opened document: " + doc ?? "");
         }
-        #endregion
+#endregion
 
 
         public ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
@@ -627,7 +641,7 @@ namespace XSharp.Support
     }
     internal class ErrorIgnorer : IErrorListener
     {
-        #region IErrorListener
+#region IErrorListener
         public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
         {
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
@@ -637,6 +651,6 @@ namespace XSharp.Support
         {
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
         }
-        #endregion
+#endregion
     }
 }

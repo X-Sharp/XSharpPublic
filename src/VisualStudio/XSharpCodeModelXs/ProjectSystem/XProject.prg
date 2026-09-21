@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -46,6 +46,16 @@ CLASS XProject
     PRIVATE _resolvingReferences               AS LOGIC
     private _globalUsings                      AS List<STRING>
     private _globalStaticUsing                 AS List<STRING>
+    // A version counter rather than a dirty flag. Rebuilding the lists queries the
+    // database, so it must not happen once per saved file - but a flag cleared at the
+    // start of the rebuild lets every other thread believe the lists are current while
+    // they are still the old ones, and silently loses an invalidation that arrives while
+    // the query is running. Comparing "built" against "current" has neither problem.
+    // They start out different, so the first reader fills the lists even when the project
+    // is opened from an up to date database and no file is ever written.
+    private _globalUsingsVersion               := 1 AS LONG
+    private _globalUsingsBuilt                 := 0 AS LONG
+    private _globalUsingsGate                  AS OBJECT
 
     PRIVATE _cachedAllNamespaces               AS IList<STRING>
     PRIVATE _cachedUsingStatics                AS IList<STRING>
@@ -60,8 +70,8 @@ CLASS XProject
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
     PROPERTY DisplayName                       AS STRING GET _projectNode?.DisplayName
-    property GlobalUsings                      AS List<STRING> GET SELF:_globalUsings
-    property GlobalStaticUsings                AS List<STRING> GET SELF:_globalStaticUsing
+    property GlobalUsings                      AS List<STRING> GET SELF:EnsureGlobalUsings():_globalUsings
+    property GlobalStaticUsings                AS List<STRING> GET SELF:EnsureGlobalUsings():_globalStaticUsing
 
     PROPERTY DependentAssemblyList             AS STRING
         GET
@@ -189,6 +199,7 @@ CLASS XProject
         SELF:_failedStrangerProjectReferences     := List<STRING>{}
         SELF:_globalUsings                        := List<STRING>{}
         SELF:_globalStaticUsing                   := List<STRING>{}
+        SELF:_globalUsingsGate                    := OBJECT{}
         SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
         SELF:_ReferencedProjects := List<XProject>{}
         SELF:_StrangerProjects := List<Object>{}
@@ -656,22 +667,56 @@ CLASS XProject
 #endregion
 
 #region 'Normal' Files
-    METHOD RefreshGlobalUsings() AS VOID
-        var usings := XDatabase.GetProjectGlobalUsings(SELF:Id)
-        SELF:_globalUsings:Clear()
-        SELF:_globalStaticUsing:Clear()
-        foreach var item in usings
-            if item:Attributes:HasFlag(Modifiers.Global)
-                if item:Attributes:HasFlag(Modifiers.Static)
-                    SELF:AddUniqueUsing(_globalStaticUsing, item:Namespace)
+    // Mark the global usings as out of date. Deliberately cheap: this is called for every
+    // file that gets written to the database, and rebuilding the lists means a query, so
+    // the work is deferred until somebody actually reads them.
+    METHOD InvalidateGlobalUsings() AS VOID
+        // Deliberately cheap: this runs for every file written to the database.
+        System.Threading.Interlocked.Increment(REF SELF:_globalUsingsVersion)
 
-                else
-                    SELF:AddUniqueUsing(_globalUsings, item:Namespace)
+    // Rebuild the lists when they are out of date. Returns SELF so the properties can chain.
+    PRIVATE METHOD EnsureGlobalUsings() AS XProject
+        IF System.Threading.Volatile.Read(REF SELF:_globalUsingsBuilt) != SELF:_globalUsingsVersion
+            BEGIN LOCK SELF:_globalUsingsGate
+                // A reader that arrives while another thread is rebuilding blocks here
+                // instead of reading the old lists, because the version is only marked as
+                // built after the new lists have been published.
+                IF SELF:_globalUsingsBuilt != SELF:_globalUsingsVersion
+                    SELF:RefreshGlobalUsings()
+                ENDIF
+            END LOCK
+        ENDIF
+        RETURN SELF
+
+    METHOD RefreshGlobalUsings() AS VOID
+        BEGIN LOCK SELF:_globalUsingsGate
+            // Capture the version before the query. Anything invalidated while the query
+            // runs bumps it past this value, so the next reader rebuilds rather than
+            // keeping a result that was already out of date when it was produced.
+            VAR version := SELF:_globalUsingsVersion
+            var usings := XDatabase.GetProjectGlobalUsings(SELF:Id)
+            // Build into fresh lists and swap them in, so a reader iterating the old list
+            // never sees it half emptied. The walker writes from several threads at once.
+            var newUsings := List<STRING>{}
+            var newStatics := List<STRING>{}
+            foreach var item in usings
+                if item:Attributes:HasFlag(Modifiers.Global)
+                    if item:Attributes:HasFlag(Modifiers.Static)
+                        SELF:AddUniqueUsing(newStatics, item:Namespace)
+
+                    else
+                        SELF:AddUniqueUsing(newUsings, item:Namespace)
+                    endif
                 endif
-            endif
-        next
-        SELF:AddUniqueUsing(_globalUsings, "System")
-        SELF:AddUniqueUsing(_globalUsings, "XSharp")
+            next
+            SELF:AddUniqueUsing(newUsings, "System")
+            SELF:AddUniqueUsing(newUsings, "XSharp")
+            SELF:_globalUsings       := newUsings
+            SELF:_globalStaticUsing  := newStatics
+            // Publish the lists first: a reader outside the lock decides on this value, so
+            // it must never see it updated while the lists still point at the old content.
+            System.Threading.Volatile.Write(REF SELF:_globalUsingsBuilt, version)
+        END LOCK
     METHOD AddUniqueUsing(list as List<STRING>, name as string) AS VOID
         var old := list:Find( { x => x:ToUpper() == name:ToUpper()})
         if String.IsNullOrEmpty(old)
@@ -1577,7 +1622,7 @@ CLASS XProject
                 NEXT
                 result := asmNS
             ENDIF
-            FOREACH var ns in SELF:_globalUsings
+            FOREACH var ns in SELF:GlobalUsings
                 if !result:Contains(ns)
                     result:Add(ns)
                 endif
@@ -1601,7 +1646,7 @@ CLASS XProject
                     ENDIF
                 NEXT
             ENDIF
-            FOREACH var ns in SELF:_globalStaticUsing
+            FOREACH var ns in SELF:GlobalStaticUsings
                 if !statics:Contains(ns)
                     statics:Add(ns)
                 endif

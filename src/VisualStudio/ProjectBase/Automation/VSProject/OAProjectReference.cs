@@ -62,7 +62,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                if (Guid.Empty == BaseReferenceNode.ReferencedProjectGuid)
+                var referencedGuid = BaseReferenceNode.ReferencedProjectGuid;
+                if (Guid.Empty == referencedGuid)
                 {
                     return null;
                 }
@@ -70,20 +71,50 @@ namespace Microsoft.VisualStudio.Project.Automation
                 {
                     return null;
                 }
+                // The ProjectInfo is shared by every project reference that points at this
+                // project, and it is dropped or cleared when that project closes, unloads or
+                // reloads. So anything found here is both current and worth reusing, which
+                // keeps this resolution at once per project instead of once per reference.
+                // Register the entry when it is missing: the build dependency pass that
+                // normally creates it can run after this property is first read, and without
+                // an entry there is nowhere to cache and every caller resolves again.
+                var projectInfo = ProjectInfo.GetOrCreate(referencedGuid, BaseReferenceNode.Url);
+                var cached = projectInfo?.DteProject;
+                if (cached != null)
+                {
+                    return cached;
+                }
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    IVsHierarchy hierarchy = VsShellUtilities.GetHierarchy(BaseReferenceNode.ProjectMgr.Site, BaseReferenceNode.ReferencedProjectGuid);
-                    Logger.Information($"OAProjectReference: GetHierarchy for project reference {BaseReferenceNode.ReferencedProjectGuid} returned {(hierarchy != null ? "a hierarchy" : "null")}");
+                    IVsHierarchy hierarchy = projectInfo?.Hierarchy;
+                    if (hierarchy == null)
+                    {
+                        hierarchy = VsShellUtilities.GetHierarchy(BaseReferenceNode.ProjectMgr.Site, referencedGuid);
+                        Logger.Information($"OAProjectReference: Resolved hierarchy for project reference {referencedGuid} through the shell");
+                    }
+                    Logger.Information($"OAProjectReference: GetHierarchy for project reference {referencedGuid} returned {(hierarchy != null ? "a hierarchy" : "null")}");
                     if (null == hierarchy)
                     {
                         return null;
                     }
+                    // Cache the hierarchy even when the automation object below cannot be
+                    // obtained: the hierarchy is what costs a solution wide lookup, and
+                    // leaving it unstored made every later caller pay for it again.
+                    if (projectInfo != null)
+                    {
+                        projectInfo.Hierarchy = hierarchy;
+                    }
                     object extObject;
                     if (Microsoft.VisualStudio.ErrorHandler.Succeeded(
-                            hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out extObject)))
+                            hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out extObject))
+                        && extObject is EnvDTE.Project project)
                     {
-                        return extObject as EnvDTE.Project;
+                        if (projectInfo != null)
+                        {
+                            projectInfo.DteProject = project;
+                        }
+                        return project;
                     }
                     return null;
                 });

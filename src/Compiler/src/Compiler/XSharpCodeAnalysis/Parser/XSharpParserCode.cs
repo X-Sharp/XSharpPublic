@@ -1641,6 +1641,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     internal static class RuleExtensions
     {
 
+        internal static IMemberContext GetCurrentMember([NotNull] this XSharpParserRuleContext context)
+        {
+            var current = context.Parent;
+            while (current != null)
+            {
+                if (current is IMemberContext member)
+                    return member;
+                current = current.Parent;
+            }
+            return null;
+        }
+
         internal static bool IsNullPtr([NotNull] this XSharpParserRuleContext context)
         {
             return context.ChildCount == 1 && context.Start.Type == XSharpParser.NULL_PTR;

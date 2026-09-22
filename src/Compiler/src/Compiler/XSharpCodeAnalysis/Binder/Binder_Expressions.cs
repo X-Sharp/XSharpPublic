@@ -1234,6 +1234,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     get = GetCandidateMembers(type, ReservedNames.VarGetSafe, LookupOptions.MustNotBeInstance, this);
                 }
                 var set = GetCandidateMembers(type, ReservedNames.VarPut, LookupOptions.MustNotBeInstance, this);
+                if (!memvarorfield)
+                {
+                    // see if we can find the field in the current member. If so get its full name
+                    var member = node.XRuleContext?.GetCurrentMember();
+                    if (member != null)
+                    {
+                        var fieldinfo = member?.Data.GetField(name);
+                        if (fieldinfo != null)
+                        {
+                            if (!fieldinfo.IsLocal)
+                            {
+                                memvarorfield = true;
+                                name = fieldinfo.FullName;
+                            }
+                        }
+                    }
+                }
                 if (memvarorfield)
                 {
                     // this is either:
@@ -1273,6 +1290,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
                 var warning = ErrorCode.WRN_UndeclaredVariable;
+
                 var undeclaredMemVar = Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node);
                 if (isFoxMemberAccess)
                 {

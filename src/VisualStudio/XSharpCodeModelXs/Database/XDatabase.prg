@@ -1416,7 +1416,7 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
             NEXT // IdProject
 
             WriteLocalFunctions(oFile:EntityList:Where ( {m => m.Kind.IsLocal() } ), oFile)
-            if oFile:CommentTasks:Any()
+            if oFile:CommentTasks != NULL
                 WriteCommentTasks(oFile)
             endif
             if !oFile:IsBuiltInFunctions

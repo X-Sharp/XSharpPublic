@@ -1,5 +1,4 @@
-﻿extern alias codeanalysis;
-
+﻿
 #if DEV17
 using Community.VisualStudio.Toolkit;
 
@@ -210,17 +209,27 @@ namespace XSharp.Project
             base.ProcessReferences();
             RefreshReferences();
         }
-
-        public override int Close()
+        private bool CleanReferenceItem(MSBuild.ProjectItem item, string propertyName)
         {
-            ProcessNuGetFiles();
+            bool changed = false;
+            var value = item.GetMetadataValue(propertyName);
+            if (!string.IsNullOrEmpty(value))
+            {
+                item.RemoveMetadata(propertyName);
+                changed = true;
+            }
+            return changed;
+        }
+
+        protected void CleanupProjectFile()
+        {
+            // remove folder items from BuildProject that were added at runtime.
+            // Keep explicit <Folder> items for empty folders: they are the only way to persist those in an SDK project.
             try
             {
-                // remove folder items from BuildProject that were added at runtime.
-                // Keep explicit <Folder> items for empty folders: they are the only way to persist those in an SDK project.
                 var projectDir = Path.GetDirectoryName(this.BuildProject.FullPath);
-                var items = this.BuildProject.Items.Where(i => i.ItemType == ProjectFileConstants.Folder && !i.IsImported).ToList();
-                bool changed = false;
+                var items = this.BuildProject.GetItems(ProjectFileConstants.Folder).Where(i => !i.IsImported).ToList();
+                bool changed = this.BuildProject.IsDirty;
                 foreach (var item in items)
                 {
                     var path = Path.Combine(projectDir, item.EvaluatedInclude);
@@ -230,7 +239,24 @@ namespace XSharp.Project
                         changed = true;
                     }
                 }
-                if (changed)
+                items = this.BuildProject.GetItems(ProjectFileConstants.ProjectReference).Where ( i => !i.IsImported).ToList();
+                foreach (var item in items)
+                {
+                    if (CleanReferenceItem(item, ProjectFileConstants.Name))
+                        changed = true;
+                    if (CleanReferenceItem(item, ProjectFileConstants.Project))
+                        changed = true;
+                    if (CleanReferenceItem(item, ProjectFileConstants.Private))
+                        changed = true;
+                }
+                var guidProperty = this.BuildProject.GetProperty(ProjectFileConstants.ProjectGuid);
+                if  (guidProperty != null)
+                {
+                    this.BuildProject.RemoveProperty(guidProperty);
+                    changed = true;
+                }
+
+                if (changed )
                 {
                     this.BuildProject.Save();
                 }
@@ -239,6 +265,13 @@ namespace XSharp.Project
             {
                 Logger.Exception(e, "Could not remove folder items from project file");
             }
+
+        }
+
+        public override int Close()
+        {
+            ProcessNuGetFiles();
+            CleanupProjectFile();
             return base.Close();
         }
         internal override void Unload()
@@ -872,41 +905,7 @@ namespace XSharp.Project
 
         void Clean()
         {
-            var folderNodes = new List<FolderNode>();
-            bool dirty = false;
-            this.FindNodesOfType(folderNodes);
-            foreach (var node in folderNodes)
-            {
-                if (!(node is XSharpSdkFolderNode) && node.ItemNode != null
-                    && node.ItemNode.Item != null)
-                {
-                    try
-                    {
-                        this.BuildProject.RemoveItem(node.ItemNode.Item);
-                        Logger.Information($"Clean: Removed folder node {node.Caption} from project {this.Caption}");
-                        dirty = true;
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-            var referenceNodes = new List<XSharpSDKProjectReferenceNode>();
-            this.FindNodesOfType(referenceNodes);
-            foreach (var node in referenceNodes)
-            {
-                node.RemoveProperties();
-            }
-            if (this.GetProjectProperty(ProjectFileConstants.ProjectGuid) != null)
-            {
-                Logger.Information($"Clean: Removed project Guid from project{this.Caption}");
-                this.RemoveProjectProperty(ProjectFileConstants.ProjectGuid);
-            }
-            if (this.BuildProject.IsDirty || dirty)
-            {
-                this.BuildProject.Save();
-            }
+            CleanupProjectFile();
         }
         public override void BeforeSave()
         {

@@ -27,7 +27,7 @@
     <StandardDefs />
     <MemVar>true</MemVar>
     <Undeclared>false</Undeclared>
-    <InitLocals>false</InitLocals>
+    <InitLocals>True</InitLocals>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Allowdot>True</Allowdot>
     <Fox2>True</Fox2>

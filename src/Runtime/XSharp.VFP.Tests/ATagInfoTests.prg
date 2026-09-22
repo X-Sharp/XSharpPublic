@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             XSharp.CoreDb.CloseAll()
             SET DEFAULT TO (cOldDir)
             Directory.SetCurrentDirectory(cOldDir)
-            TRY ; Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+            TRY ; Directory.Delete(cTempPath, TRUE) ; CATCH ; NOP; END TRY
         END METHOD
 
         [Fact, Trait("Category", "ATagInfo")];

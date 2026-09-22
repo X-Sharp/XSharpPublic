@@ -848,23 +848,30 @@ namespace Microsoft.VisualStudio.Project
             {
                 bool done = false;
                 Exception ex = null;
-                for (int i = 0; i < 10 && !done; i++)
+                if (!System.IO.File.Exists(fullProjectPath))
                 {
-                    try
+                    VS.MessageBox.ShowError("Project file does not exist: " + fullProjectPath);
+                    return null;
+                }
+                else
+                {
+                    for (int i = 0; i < 10 && !done; i++)
                     {
-                        // VS 2019 seems to cache the project files.
-                        // if we have changed the project file then it may have to try to load the file more than once.
-                        //buildProject = buildEngine.LoadProject(fullProjectPath);
-                        var projectRootElement = Build.Construction.ProjectRootElement.Open(fullProjectPath, buildEngine, preserveFormatting: true);
-                        buildProject = new MSBuild.Project(projectRootElement, null, null, buildEngine);
-                        done = true;
-                    }
-                    catch (Exception e)
-                    {
-                        ex = e;
+                        try
+                        {
+                            // VS 2019 seems to cache the project files.
+                            // if we have changed the project file then it may have to try to load the file more than once.
+                            //buildProject = buildEngine.LoadProject(fullProjectPath);
+                            var projectRootElement = Build.Construction.ProjectRootElement.Open(fullProjectPath, buildEngine, preserveFormatting: true);
+                            buildProject = new MSBuild.Project(projectRootElement, null, null, buildEngine);
+                            done = true;
+                        }
+                        catch (Exception e)
+                        {
+                            ex = e;
+                        }
                     }
                 }
-
                 if (!done && ex != null)
                     VS.MessageBox.ShowError("Error loading project " + ex.Message);
             }

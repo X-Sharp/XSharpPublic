@@ -9,11 +9,15 @@
  *
  * ***************************************************************************/
 
+using Community.VisualStudio.Toolkit;
+
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+
 using MSBuild = Microsoft.Build.Evaluation;
 
 
@@ -108,7 +112,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region overriden methods
         /// <summary>
-        /// Rather than directly creating the project, ask VS to initate the process of
+        /// Rather than directly creating the project, ask VS to initiate the process of
         /// creating an aggregated project in case we are flavored. We will be called
         /// on the IVsAggregatableProjectFactory to do the real project creation.
         /// </summary>
@@ -123,6 +127,13 @@ namespace Microsoft.VisualStudio.Project
         {
             project = IntPtr.Zero;
             canceled = 0;
+
+            if (!System.IO.File.Exists(fileName))
+            {
+                //VS.MessageBox.ShowError("Project file does not exist: " + fileName);
+                canceled = 1;
+                return;
+            }
 
             // Get the list of GUIDs from the project/template
             string guidsList = this.ProjectTypeGuids(fileName);

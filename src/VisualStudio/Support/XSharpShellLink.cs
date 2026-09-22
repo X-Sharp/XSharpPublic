@@ -250,6 +250,19 @@ namespace XSharp.Support
             Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
             Logger.SingleLine();
             solutionName = solution?.FullPath;
+            if (_missingProjects.Count > 0)
+            {
+                var strMsg = "The following projects from the solution were not found : " + Environment.NewLine;
+                Logger.Information("Missing projects:");
+                foreach (var missing in _missingProjects)
+                {
+                    Logger.Information("  " + missing);
+                    strMsg += "  " + missing + Environment.NewLine;
+                }
+                VS.MessageBox.ShowWarning(strMsg);
+                _missingProjects.Clear();
+
+            }
             XSolution.AfterOpen();
         }
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
@@ -388,18 +401,29 @@ namespace XSharp.Support
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
-            Logger.SingleLine();
-            var ext = Path.GetExtension(projectFileName);
-            if (!string.IsNullOrEmpty(ext))
-                Logger.Information("Opening project: " + projectFileName ?? "");
-            else
-                Logger.Information("Opening folder: " + projectFileName ?? "");
-            Logger.SingleLine();
             if (!string.IsNullOrEmpty(projectFileName))
             {
-                if (_projects.ContainsKey(projectFileName))
+                Logger.SingleLine();
+                var ext = Path.GetExtension(projectFileName);
+                if (!string.IsNullOrEmpty(ext) && !File.Exists(projectFileName))
                 {
-                    _projects.TryRemove(projectFileName, out _);
+                    _missingProjects.Add(projectFileName);
+                    Logger.Error("Project : " + projectFileName+ " is missing");
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(ext))
+                        Logger.Information("Opening project: " + projectFileName );
+                    else
+                        Logger.Information("Opening folder: " + projectFileName );
+                    Logger.SingleLine();
+                    if (!string.IsNullOrEmpty(projectFileName))
+                    {
+                        if (_projects.ContainsKey(projectFileName))
+                        {
+                            _projects.TryRemove(projectFileName, out _);
+                        }
+                    }
                 }
             }
         }
@@ -464,8 +488,8 @@ namespace XSharp.Support
         }
 #endregion
 
-
-        public ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
+        private List<string> _missingProjects = new List<string>();
+        private ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 
         public object FindVsProject(string sUrl)
         {

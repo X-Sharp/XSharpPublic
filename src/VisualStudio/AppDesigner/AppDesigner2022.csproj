@@ -72,12 +72,12 @@
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XLanguagePropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XLanguagePropertyPage.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XGeneralPropertyPage.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XGeneralPropertyPagePanelWinForms.cs">
+    <Compile Include="PropertyPages\WinForms\XLanguagePropertyPage.cs" />
+    <Compile Include="PropertyPages\WinForms\XGeneralPropertyPage.cs" />
+    <Compile Include="PropertyPages\WinForms\XGeneralPropertyPagePanelWinForms.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XLanguagePropertyPagePanelWinForms.cs">
+    <Compile Include="PropertyPages\WinForms\XLanguagePropertyPagePanelWinForms.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDialectPropertyPageViewModel.cs" />
@@ -85,8 +85,8 @@
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDialectPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XDialectPropertyPage.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XDialectPropertyPagePanelWinForms.cs">
+    <Compile Include="PropertyPages\WinForms\XDialectPropertyPage.cs" />
+    <Compile Include="PropertyPages\WinForms\XDialectPropertyPagePanelWinForms.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildPropertyPageViewModel.cs" />
@@ -94,8 +94,8 @@
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XBuildPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XBuildPropertyPage.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XBuildPropertyPagePanelWinForms.cs">
+    <Compile Include="PropertyPages\WinForms\XBuildPropertyPage.cs" />
+    <Compile Include="PropertyPages\WinForms\XBuildPropertyPagePanelWinForms.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PropertyPages\NewUI\PropertyPages\XAML\XDebugPropertyPageViewModel.cs" />
@@ -133,8 +133,8 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PropertyPages\XPackagePropertyPage.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XDebugPropertyPage.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\WinForms\XDebugPropertyPagePanelWinForms.cs">
+    <Compile Include="PropertyPages\WinForms\XDebugPropertyPage.cs" />
+    <Compile Include="PropertyPages\WinForms\XDebugPropertyPagePanelWinForms.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PropertyPages\XGlobalUsingsPropertyPagePanel.cs">

@@ -19,7 +19,11 @@ namespace XSharp.Project
 
     internal partial class XDebugPropertyPagePanel : XPropertyPagePanel
     {
-       
+        public XDebugPropertyPagePanel() : base()
+        {
+            this.InitializeComponent();
+        }
+
 
         // =========================================================================================
         // Constructors

@@ -278,7 +278,7 @@
             // 
             this.tbMaxEntries.Location = new System.Drawing.Point(104, 141);
             this.tbMaxEntries.Maximum = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             0});

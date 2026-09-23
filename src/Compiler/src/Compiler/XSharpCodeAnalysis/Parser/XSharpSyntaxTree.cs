@@ -167,7 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal ITokenStream XTokens { get; set; } = null;
         internal ITokenStream XPPTokens { get; set; } = null;
         internal IList<Tuple<int, string>> InitProcedures { get; set; } = new List<Tuple<int, string>>();
-        internal IList<MemVarFieldInfo> FileWidePublics { get; set; } = new List<MemVarFieldInfo>();
+        internal MemVarFieldInfoList FileWidePublics { get; set; } = new MemVarFieldInfoList();
         internal IList<FieldDeclarationSyntax> Globals { get; set; } = new List<FieldDeclarationSyntax>();
         internal IList<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings { get; set; } = null;
         internal IList<PragmaOption> PragmaOptions { get; set; } = null;
@@ -358,6 +358,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax)this.CsGreen;
         public XSharpParser.SourceContext XSource => internalUnit.XSource;
         public ITokenStream XTokens => internalUnit.XTokens;
+
+        public MemVarFieldInfoList FileWidePublics => internalUnit.FileWidePublics;
         public ITokenStream XPPTokens => internalUnit.XPPTokens;
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
         public bool HasPartialType => internalUnit.HasPartialType;

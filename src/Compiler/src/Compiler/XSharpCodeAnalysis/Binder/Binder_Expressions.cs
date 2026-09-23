@@ -1241,6 +1241,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (member != null)
                     {
                         var fieldinfo = member?.Data.GetField(name);
+                        if (fieldinfo == null)
+                        {
+                            var root = node.SyntaxTree.GetRoot(new System.Threading.CancellationToken());
+                            if (root is CompilationUnitSyntax cus)
+                            {
+                                var publics = cus.FileWidePublics;
+                                if (publics != null)
+                                {
+                                    publics.TryGetValue(name, out fieldinfo);
+                                }
+                            }
+                        }
                         if (fieldinfo != null)
                         {
                             if (!fieldinfo.IsLocal)

@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public XP.Namespace_Context FileScopedNamespace;
             public SyntaxListBuilder<MemberDeclarationSyntax> GlobalClassMembers;
             public SyntaxListBuilder<MemberDeclarationSyntax> StaticGlobalClassMembers;
-            public List<MemVarFieldInfo> FileWidePublics;
+            public MemVarFieldInfoList FileWidePublics { get; private set; }
             public object LastMember;
             public bool LastIsStatic;
             public bool HasSlen = false;
@@ -52,6 +52,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public bool HasPCall;
             public bool HasPartialType;
 
+
+            internal void AddFileWidePublic(MemVarFieldInfo var)
+            {
+                if (FileWidePublics == null)
+                    FileWidePublics = new MemVarFieldInfoList();
+                FileWidePublics.Add(var);
+            }
+
             internal SyntaxEntities(SyntaxListPool pool)
             {
                 Externs = pool.Allocate<ExternAliasDirectiveSyntax>();
@@ -62,7 +70,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 StaticGlobalClassMembers = pool.Allocate<MemberDeclarationSyntax>();
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
-                FileWidePublics = new List<MemVarFieldInfo>();
                 FileScopedNamespace = null;
                 _pool = pool;
                 HasPCall = false;

@@ -122,10 +122,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (memvar.Amp == null)
                 {
                     var name = CleanVarName(memvar.Id.GetText());
-                    var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
-                    mv.IsPublic = true;
-                    _fileWideVars.Add(mv.Name, mv);
-                    GlobalEntities.FileWidePublics.Add(mv);
+                    var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true)
+                    {
+                        IsPublic = true
+                    };
+                    AddFileWideVar(mv);
                 }
             }
         }
@@ -342,7 +343,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             base.ExitNameExpression(context);
             string name = context.Name.GetText();
-            ExpressionSyntax expr = context.Name.Get<NameSyntax>();
+            ExpressionSyntax expr = context.Get<ExpressionSyntax>();
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             if (!_options.HasOption(CompilerOption.NoThisForm, context, PragmaOptions)
                 && context.Start.Type == XP.THISFORM)

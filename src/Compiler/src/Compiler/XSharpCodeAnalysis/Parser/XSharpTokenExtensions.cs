@@ -1833,9 +1833,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static bool IsIdentifier(this ParserRuleContext context)
         {
-            return context.Start == context.Stop && context.Start.Type == XSharpParser.ID;
+            return context != null && context.Start == context.Stop && context.Start.Type == XSharpParser.ID;
         }
-        public static bool IsAliasExpression(this IXParseTree context)
+
+        public static bool IsAliasedExpression(this XSharpParserRuleContext context)
         {
             if (context is XSharpParser.PrimaryExpressionContext)
             {
@@ -1843,7 +1844,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context is XSharpParser.ArrayElementContext aec)
             {
-                return aec.Expr.IsAliasExpression();
+                return aec.Expr.IsAliasedExpression();
             }
             return false;
         }

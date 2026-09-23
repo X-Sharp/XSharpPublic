@@ -4,13 +4,12 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Collections.Generic;
-using System.Linq;
-using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {

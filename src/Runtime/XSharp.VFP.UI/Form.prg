@@ -270,12 +270,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					sender := bindingInfo:Key
 					// Do we have a DataSource Name ?
 					IF fieldName:IndexOf(".") > 0
-						sourceName := fieldName.Substring(0,fieldName:IndexOf("."))
+						sourceName := fieldName:Substring(0,fieldName:IndexOf("."))
 						cursor := SELF:DataEnvironment[ sourceName ]
 						IF cursor != NULL
 							ds := cursor:BindingSource
 						ENDIF
-						fieldName := fieldName.Substring(fieldName:IndexOf(".")+1)
+						fieldName := fieldName:Substring(fieldName:IndexOf(".")+1)
 					ENDIF
 					IF ds != NULL
 						LOCAL propName AS STRING
@@ -291,7 +291,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 						OTHERWISE
 							propName := "Text"
 						END CASE
-						sender.DataBindings.Add( Binding{ propName, ds , fieldName } )
+						sender:DataBindings:Add( Binding{ propName, ds , fieldName } )
 					ENDIF
 				NEXT
 				// Apply Grid RecordSources now that tables are open.
@@ -329,7 +329,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				ENDIF
 				// The Child is a Container ?
 				VAR chld := child ASTYPE System.Windows.Forms.Control
-				IF ( chld != NULL) AND ( chld:Controls:Count > 0)
+				IF ( chld != NULL) .AND. ( chld:Controls:Count > 0)
 					SELF:PopulateBindings( chld:Controls )
 				ENDIF
 			NEXT

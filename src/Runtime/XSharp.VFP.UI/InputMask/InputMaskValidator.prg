@@ -123,7 +123,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
             // Logical Y: canonicalise input — J/T/Y → "Y", everything else → "N"
             IF maskPos:Type == "logical" .AND. maskPos:Modifier == "Y"
                 VAR upCh := Char.ToUpper(result[0])
-                result := IIF(upCh == c'Y' .OR. upCh == c'J' .OR. upCh == c'T', 'Y', 'N')
+                switch upCh
+                case c'Y'
+                case c'J'
+                case c'T'
+                    result := "Y"
+                otherwise
+                    result := "N"
+                end switch
             ENDIF
 
             RETURN result

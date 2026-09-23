@@ -13,7 +13,7 @@
 [EditorBrowsable(EditorBrowsableState.Never)];
 [Bindable(false)];
 [Browsable(false)];
-PROPERTY ThisForm AS USUAL GET THIS.FindForm()
+PROPERTY ThisForm AS USUAL GET THIS:FindForm()
 
 /// <summary>
 /// Return the Parent of the Control, but as Object.

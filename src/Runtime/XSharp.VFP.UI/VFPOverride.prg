@@ -111,7 +111,7 @@ CLASS VFPOverride
             IF oForm IS System.Windows.Forms.Control
                 // Search the Form in the Parent tree
                 REPEAT
-                    LOCAL ctrl := oForm AS System.Windows.Forms.Control
+                    LOCAL ctrl := (System.Windows.Forms.Control) oForm AS System.Windows.Forms.Control
                     oForm := ctrl:Parent
                     //
                     IF IsMethod( oForm, _sendTo )

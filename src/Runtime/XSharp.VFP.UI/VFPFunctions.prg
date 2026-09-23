@@ -81,7 +81,7 @@ FUNCTION WEXIST( windowName AS STRING ) AS LOGIC
 /// <c>\&lt;X</c> → <c>&amp;X</c> (access key), <c>\\</c> → <c>\</c> (literal backslash), <c>\!</c> → empty (suppress accelerator).
 /// </summary>
 FUNCTION __VFPConvertCaption(s AS STRING) AS STRING
-    IF String.IsNullOrEmpty(s) .OR. s:IndexOf('\') < 0
+    IF String.IsNullOrEmpty(s) .OR. s:IndexOf("\") < 0
         RETURN s
     ENDIF
     VAR sb := System.Text.StringBuilder{}
@@ -93,7 +93,7 @@ FUNCTION __VFPConvertCaption(s AS STRING) AS STRING
                 sb:Append('&')
                 i += 2
             CASE c'\\'
-                sb:Append('\')
+                sb:Append("\")
                 i += 2
             CASE c'!'
                 i += 2    // \! disables accelerator display — skip both chars

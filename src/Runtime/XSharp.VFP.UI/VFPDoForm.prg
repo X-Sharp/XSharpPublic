@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// Appends a single constructor argument to the parameter list.
 		/// </summary>
 		STATIC METHOD Param( p AS USUAL ) AS VOID
-			__VFPDoForm.formParam.Add( p )
+			__VFPDoForm.formParam:Add( p )
 
 
 		/// <summary>

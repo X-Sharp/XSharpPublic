@@ -56,8 +56,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SWITCH nScreenElement
             CASE 1;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXSCREEN)
             CASE 2;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYSCREEN)
-            CASE 3;  RETURN SystemInformation.MinimizedWindowSpacingSize.Width
-            CASE 4;  RETURN SystemInformation.MinimizedWindowSpacingSize.Height
+            CASE 3;  RETURN SystemInformation.MinimizedWindowSpacingSize:Width
+            CASE 4;  RETURN SystemInformation.MinimizedWindowSpacingSize:Height
             CASE 5;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXVSCROLL)
             CASE 6;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CYVSCROLL)
             CASE 7;  RETURN VfpWin32UI.GetSystemMetrics(VfpWin32UI.SM_CXHSCROLL)

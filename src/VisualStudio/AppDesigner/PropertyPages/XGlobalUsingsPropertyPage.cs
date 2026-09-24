@@ -1,3 +1,4 @@
+#if DEV17
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -46,9 +47,12 @@ namespace XSharp.Project
         /// <returns>The newly created main control that hosts the property page.</returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
+
             if (IsSdkProject)
                 return new XGlobalUsingsPropertyPageXamlHost(this);
+
             return new XGlobalUsingsPropertyPagePanel(this);
         }
     }
 }
+#endif

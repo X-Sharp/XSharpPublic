@@ -1632,6 +1632,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
         C=CLASS (Namespace=nameDot)? Id=identifier
         TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
+        (ParamList=parameterList)?                                        // Primary constructor parameters
         (INHERIT BaseType=datatype)?
         (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
         (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
@@ -1642,6 +1643,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
         S=STRUCTURE (Namespace=nameDot)? Id=identifier
         TypeParameters=typeparameters?
+        (ParamList=parameterList)?                                        // Primary constructor parameters
         (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
         (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
         (Members+=classmember)*
@@ -1680,9 +1682,18 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         LOCAL constraints   AS List<STRING>
         LOCAL parentType    AS STRING
         LOCAL interfaces    AS List<STRING>
+        LOCAL primaryParams  := NULL AS List<XSourceParameterSymbol>
+        local startParen as XSharpToken
+        local endParen  as XSharpToken
         // read Id with optional namespace prefix
         VAR id := SELF:ParseQualifiedName()
         VAR typePars := SELF:ParseTypeParameters()
+        IF SELF:Matches(XSharpLexer.LPAREN)
+            startParen := SELF:Lt1
+            primaryParams := SELF:ParseParameterList(FALSE,  OUT VAR isSelf)
+            endParen := SELF:Lt1
+            endParen := (XSharpToken) self:_tokens[endParen:OriginalTokenIndex-1]
+        ENDIF
         // get inherit clause
         IF SELF:ExpectAny(XSharpLexer.INHERIT, XSharpLexer.COLON)
             parentType := SELF:ParseTypeName()
@@ -1726,6 +1737,15 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             FOREACH VAR typepar IN typePars
                 xType:AddTypeParameter(typepar)
             NEXT
+        ENDIF
+        if primaryParams?:Count > 0
+            range := TextRange{startParen, endParen}
+            interval := TextInterval{startParen, endParen}
+            VAR xMember := XSourceMemberSymbol{XLiterals.ConstructorName, Kind.Constructor, _attributes, range, interval,"", _modifiers}
+            xMember:SourceCode := source
+            xMember:AddParameters(primaryParams)
+            xMember:File := _file
+            xType:AddMember(xMember)
         ENDIF
         SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}

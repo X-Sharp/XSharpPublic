@@ -22,7 +22,10 @@ namespace XSharp.Project
     /// </summary>
     internal partial class XGeneralPropertyPagePanel : XPropertyPagePanel
     {
-
+        public XGeneralPropertyPagePanel() : base()
+        {
+            this.InitializeComponent();
+        }
         private bool IsSdkProject => !string.IsNullOrEmpty(ParentPropertyPage.ProjectMgr?.BuildProject.Xml.Sdk);
         private bool IsMultiTargetingProject =>
             ParentPropertyPage.ProjectMgr?.GetProjectProperty(XSharpProjectFileConstants.TargetFrameworks) != null ||

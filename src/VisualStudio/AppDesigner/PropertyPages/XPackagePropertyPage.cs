@@ -1,3 +1,4 @@
+#if DEV17
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -38,3 +39,4 @@ namespace XSharp.Project
         }
     }
 }
+#endif

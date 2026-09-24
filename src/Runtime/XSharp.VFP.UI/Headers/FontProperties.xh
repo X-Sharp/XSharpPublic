@@ -40,7 +40,7 @@
 				elseif ft:Bold
 					style := style | System.Drawing.FontStyle.Bold
 				ENDIF
-				VAR newFont := System.Drawing.Font{ ft:Name, ft.Size, (System.Drawing.FontStyle)style, ft.Unit}
+				VAR newFont := System.Drawing.Font{ ft:Name, ft:Size, (System.Drawing.FontStyle)style, ft:Unit}
 				SELF:Font := newFont
 			ENDIF
 		/// <summary>
@@ -136,7 +136,7 @@
 			SET
 				VAR ft := SELF:Font
 				IF ft != NULL
-					VAR newFont := System.Drawing.Font{ ft.Name, (Single)VALUE, ft.Style, ft.Unit}
+					VAR newFont := System.Drawing.Font{ ft:Name, (Single)VALUE, ft:Style, ft:Unit}
 					SELF:Font := newFont
 				ENDIF
 			END SET
@@ -159,7 +159,7 @@
 			SET
 				VAR ft := SELF:Font
 				IF ft != NULL
-					VAR newFont := System.Drawing.Font{ VALUE, ft.Size, ft.Style, ft.Unit}
+					VAR newFont := System.Drawing.Font{ VALUE, ft:Size, ft:Style, ft:Unit}
 					SELF:Font := newFont
 				ENDIF
 			END SET

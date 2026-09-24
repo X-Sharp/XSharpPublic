@@ -1,4 +1,5 @@
 ﻿using Community.VisualStudio.Toolkit;
+using CVT=Community.VisualStudio.Toolkit;
 
 //using EnvDTE;
 
@@ -249,6 +250,19 @@ namespace XSharp.Support
             Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
             Logger.SingleLine();
             solutionName = solution?.FullPath;
+            if (_missingProjects.Count > 0)
+            {
+                var strMsg = "The following projects from the solution were not found : " + Environment.NewLine;
+                Logger.Information("Missing projects:");
+                foreach (var missing in _missingProjects)
+                {
+                    Logger.Information("  " + missing);
+                    strMsg += "  " + missing + Environment.NewLine;
+                }
+                VS.MessageBox.ShowWarning(strMsg);
+                _missingProjects.Clear();
+
+            }
             XSolution.AfterOpen();
         }
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
@@ -387,18 +401,29 @@ namespace XSharp.Support
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
-            Logger.SingleLine();
-            var ext = Path.GetExtension(projectFileName);
-            if (!string.IsNullOrEmpty(ext))
-                Logger.Information("Opening project: " + projectFileName ?? "");
-            else
-                Logger.Information("Opening folder: " + projectFileName ?? "");
-            Logger.SingleLine();
             if (!string.IsNullOrEmpty(projectFileName))
             {
-                if (_projects.ContainsKey(projectFileName))
+                Logger.SingleLine();
+                var ext = Path.GetExtension(projectFileName);
+                if (!string.IsNullOrEmpty(ext) && !File.Exists(projectFileName))
                 {
-                    _projects.TryRemove(projectFileName, out _);
+                    _missingProjects.Add(projectFileName);
+                    Logger.Error("Project : " + projectFileName+ " is missing");
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(ext))
+                        Logger.Information("Opening project: " + projectFileName );
+                    else
+                        Logger.Information("Opening folder: " + projectFileName );
+                    Logger.SingleLine();
+                    if (!string.IsNullOrEmpty(projectFileName))
+                    {
+                        if (_projects.ContainsKey(projectFileName))
+                        {
+                            _projects.TryRemove(projectFileName, out _);
+                        }
+                    }
                 }
             }
         }
@@ -413,23 +438,36 @@ namespace XSharp.Support
         {
             Logger.Information("Solution Build Cancelled");
             building = false;
+#if DEV17
+            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", restoreDuringBuild);
+#endif
         }
         bool building;
-
+#if DEV17
+        bool restoreDuringBuild = false;
+#endif
         private void BuildEvents_SolutionBuildDone(bool result)
         {
             Logger.Information($"Solution Build Done, result {result}");
+#if DEV17
+            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", restoreDuringBuild);
+#endif
             building = false;
+
         }
 
         private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
         {
             Logger.Information("Solution Build Started");
+            // Save Nuget Setting
+#if DEV17
+            restoreDuringBuild = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
+#endif
             building = true;
         }
-        #endregion
+#endregion
 
-        #region Shell Events
+#region Shell Events
         private void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;
@@ -440,18 +478,18 @@ namespace XSharp.Support
             Logger.Information("Shutdown VS");
             Logger.SingleLine();
         }
-        #endregion
+#endregion
 
 
-        #region Document Events
+#region Document Events
         private void DocumentEvents_Opened(string doc)
         {
             Logger.Information("Opened document: " + doc ?? "");
         }
-        #endregion
+#endregion
 
-
-        public ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
+        private List<string> _missingProjects = new List<string>();
+        private ConcurrentDictionary<string, Project> _projects = new ConcurrentDictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 
         public object FindVsProject(string sUrl)
         {
@@ -627,7 +665,7 @@ namespace XSharp.Support
     }
     internal class ErrorIgnorer : IErrorListener
     {
-        #region IErrorListener
+#region IErrorListener
         public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
         {
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
@@ -637,6 +675,6 @@ namespace XSharp.Support
         {
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
         }
-        #endregion
+#endregion
     }
 }

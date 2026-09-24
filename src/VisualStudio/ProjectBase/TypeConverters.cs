@@ -365,6 +365,60 @@ namespace Microsoft.VisualStudio.Project
         }
     }
 
+
+    public class RuntimeIdentifierConverter : FrameworkNameConverter
+    {
+        MSBuild.Project Project = null;
+        List<string> names = new List<string>();
+        public RuntimeIdentifierConverter()
+        {
+        }
+        public RuntimeIdentifierConverter(MSBuild.Project project) : base()
+        {
+            Project = project;
+            names.Clear();
+            string itemType1 = "SupportedPlatform";
+            foreach (var item in Project.AllEvaluatedItems)
+            {
+                if (item.ItemType == itemType1 )
+                {
+                    names.Add(item.EvaluatedInclude);
+                }
+            }
+        }
+
+        public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(names.ToArray());
+        }
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+            {
+                return value as string;
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            string str = value as string;
+
+            if (str != null)
+            {
+                foreach (var name in names)
+                {
+                    if (String.Compare(name,str, true) == 0)
+                    {
+                        return name;
+                    }
+                }
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
+
     public class SdkFrameworkName
     {
         public string DisplayName { get; set; }

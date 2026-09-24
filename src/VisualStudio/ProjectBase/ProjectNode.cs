@@ -1487,6 +1487,9 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_ShowProjInSolutionPage:
                     Logger.Information(String.Format(CultureInfo.CurrentCulture, "Setting ShowProjInSolutionPage to {0} for project {1}", value, this.Caption));
                     this.ShowProjectInSolutionPage = (bool)value;
+#if DEBUG
+                    DebugSetProperty(propid, value);
+#endif
                     return VSConstants.S_OK;
             }
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -1633,53 +1636,74 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>A property dependent value. See: <see cref="__VSHPROPID"/> for details.</returns>
         public override object GetProperty(int propId)
         {
+            object result = null;
             ThreadHelper.ThrowIfNotOnUIThread();
             switch ((__VSHPROPID)propId)
             {
                 case __VSHPROPID.VSHPROPID_ConfigurationProvider:
-                    return this.ConfigProvider;
+                    result =  this.ConfigProvider;
+                    break;
 
                 case __VSHPROPID.VSHPROPID_ProjectName:
-                    return this.Caption;
+                    result =  this.Caption;
+                    break;
 
                 case __VSHPROPID.VSHPROPID_ProjectDir:
-                    return this.ProjectFolder;
+                    result = this.ProjectFolder;
+                    break;
 
                 case __VSHPROPID.VSHPROPID_TypeName:
-                    return this.ProjectType;
+                    result = this.ProjectType;
+                    break       ;
 
                 case __VSHPROPID.VSHPROPID_ShowProjInSolutionPage:
                     Logger.Information(String.Format(CultureInfo.CurrentCulture, "Getting ShowProjInSolutionPage for project {0}: {1}", this.Caption, this.ShowProjectInSolutionPage));
-                    return this.ShowProjectInSolutionPage;
+                    result = this.ShowProjectInSolutionPage;
+                    break;
 
                 case __VSHPROPID.VSHPROPID_ExpandByDefault:
-                    return true;
+                    result = true;
+                    break;
 
                 // Use the same icon as if the folder was closed
                 case __VSHPROPID.VSHPROPID_OpenFolderIconIndex:
-                    return GetProperty((int)__VSHPROPID.VSHPROPID_IconIndex);
+                    result = GetProperty((int)__VSHPROPID.VSHPROPID_IconIndex);
+                    break;
             }
 
             switch ((__VSHPROPID2)propId)
             {
                 case __VSHPROPID2.VSHPROPID_SupportsProjectDesigner:
-                    return this.SupportsProjectDesigner;
+                    result = this.SupportsProjectDesigner;
+                    break;
 
                 case __VSHPROPID2.VSHPROPID_PropertyPagesCLSIDList:
-                    return Utilities.CreateSemicolonDelimitedListOfStringFromGuids(this.GetConfigurationIndependentPropertyPages());
+                    result  = Utilities.CreateSemicolonDelimitedListOfStringFromGuids(this.GetConfigurationIndependentPropertyPages());
+                    break;
 
                 case __VSHPROPID2.VSHPROPID_CfgPropertyPagesCLSIDList:
-                    return Utilities.CreateSemicolonDelimitedListOfStringFromGuids(this.GetConfigurationDependentPropertyPages());
+                    result = Utilities.CreateSemicolonDelimitedListOfStringFromGuids(this.GetConfigurationDependentPropertyPages());
+                    break;
 
                 case __VSHPROPID2.VSHPROPID_PriorityPropertyPagesCLSIDList:
-                    return Utilities.CreateSemicolonDelimitedListOfStringFromGuids(this.GetPriorityProjectDesignerPages());
+                    result = Utilities.CreateSemicolonDelimitedListOfStringFromGuids(this.GetPriorityProjectDesignerPages());
+                    break;
+
 
                 case __VSHPROPID2.VSHPROPID_Container:
-                    return true;
+                    result = true;
+                    break;
                 default:
                     break;
             }
 
+            if (result != null)
+            {
+#if DEBUG
+                DebugGetProperty(propId, result);
+#endif
+                return result;
+            }
             return base.GetProperty(propId);
         }
 
@@ -7442,6 +7466,15 @@ namespace Microsoft.VisualStudio.Project
         public int UpdateTargetFramework(IVsHierarchy pHier, string currentTargetFramework, string newTargetFramework)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.IsSdkProject)
+            {
+                // Let the .NET SDK infer TargetFrameworkIdentifier/Version/Profile and the
+                // TargetPlatform* properties from the full moniker. Setting them here would
+                // suppress that inference and drop the platform suffix (e.g. net8.0-windows7.0).
+                SetProjectProperty("TargetFramework", newTargetFramework);
+                return VSConstants.S_OK;
+            }
             FrameworkName moniker = new FrameworkName(newTargetFramework);
             SetProjectProperty(ProjectFileConstants.TargetFrameworkIdentifier, moniker.Identifier);
             SetProjectProperty(ProjectFileConstants.TargetFrameworkVersion, "v" + moniker.Version);

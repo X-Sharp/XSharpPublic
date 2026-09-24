@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             DBGoTop()
             DbCopyToArray(aValues)
             Assert.True(ALen(aValues,1) == 3)
-            Assert.True(ALen(aValues,2) == 3)
+            Assert.True(ALen(aValues,2) == 3) 
             Assert.True(ALen(aValues) == 9)
             Assert.True(aValues[1,1] == 1)
             Assert.True(aValues[1,2] == 2)

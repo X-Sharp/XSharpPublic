@@ -20,6 +20,10 @@ namespace XSharp.Project
     internal partial class XDialectPropertyPagePanel : XPropertyPagePanel
     {
 
+        public XDialectPropertyPagePanel() : base()
+        {
+            this.InitializeComponent();
+        }
         // =========================================================================================
         // Constructors
         // =========================================================================================

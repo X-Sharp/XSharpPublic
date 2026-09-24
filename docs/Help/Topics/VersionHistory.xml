@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-06-15T14:16:34.591Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-09-24T10:42:00.784Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -14,6 +14,19 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue</para>
+    <para styleclass="Heading1">Changes in XSharp 3.02</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Heading3">New Features</para>
+    <para styleclass="Heading3">Bug Fixes</para>
+    <para styleclass="Heading2">Runtime</para>
+    <para styleclass="Heading3">New Features</para>
+    <para styleclass="Heading3">Bug Fixes</para>
+    <para styleclass="Heading2">Visual Studio Integration</para>
+    <para styleclass="Heading3">New Features</para>
+    <para styleclass="Heading3">Bug Fixes</para>
+    <para styleclass="Heading2">Tools</para>
+    <para styleclass="Heading3">New Features</para>
+    <para styleclass="Heading3">Bug Fixes</para>
     <para styleclass="Heading1">Changes in XSharp 3</para>
     <para styleclass="Normal">X# 3 has some breaking changes, so you should take the time to recompile and test all your existing projects and solutions.</para>
     <para styleclass="Heading2">Compiler</para>

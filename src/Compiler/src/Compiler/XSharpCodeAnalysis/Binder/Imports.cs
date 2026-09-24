@@ -89,11 +89,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved).NamespaceOrTypeSymbol;
                         if (imported.Kind == SymbolKind.Namespace)
                         {
+                            imported.IsImported = true;
                             AddNs(usingDirective, imported, usings, uniqueUsings);
                         }
                         else if (imported.Kind == SymbolKind.NamedType)
                         {
+
                             var importedType = (NamedTypeSymbol)imported;
+                            imported.IsImported = true;
                             AddNs(usingDirective, importedType, usings, uniqueUsings);
                         }
                     }
@@ -104,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         foreach (var attr in r.GetAttributes())
                         {
-                            // Check for VulcanImplicitNameSpace attribute
+                            // Check for ImplicitNameSpace attribute
                             if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vins) && compilation.Options.ImplicitNameSpace)
                             {
                                 var args = attr.CommonConstructorArguments;
@@ -118,12 +121,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.Namespace)
                                         {
+                                            imported.NamespaceOrTypeSymbol.IsImported = true;
                                             AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }
                                 }
                             }
-                            // Check for VulcanClasslibrary  attribute
+                            // Check for Classlibrary  attribute
                             else if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom,vcla))
                             {
                                 var args = attr.CommonConstructorArguments;
@@ -137,6 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.NamedType)
                                         {
+                                            imported.NamespaceOrTypeSymbol.IsImported = true;
                                             AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }
@@ -148,6 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
                                         if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.Namespace)
                                         {
+                                            imported.NamespaceOrTypeSymbol.IsImported = true;
                                             AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }

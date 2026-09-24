@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <RootNamespace>XSharp</RootNamespace>
+    <RootNamespace>XSharp1</RootNamespace>
     <AssemblyName>XSharp.Core</AssemblyName>
     <Dialect>Core</Dialect>
     <AZ>true</AZ>
     <CS>true</CS>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
     <Allowdot>true</Allowdot>
     <StartupObject />
     <NamedArgs>true</NamedArgs>
@@ -17,13 +16,23 @@
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <NoWin32Manifest>false</NoWin32Manifest>
     <VulcanCompatibleResources>true</VulcanCompatibleResources>
-    <AllowOldStyleAssignments>false</AllowOldStyleAssignments>
-    <ModernSyntax>false</ModernSyntax>
-    <IncludePaths />
     <ImplicitUsings>enable</ImplicitUsings>
     <Vo17>false</Vo17>
     <Fox2>false</Fox2>
     <Xpp1>false</Xpp1>
+    <INS>false</INS>
+    <LB>false</LB>
+    <MemVar>false</MemVar>
+    <NS>false</NS>
+    <Undeclared>false</Undeclared>
+    <IncludePaths />
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <EnforceOverride>false</EnforceOverride>
+    <AllowOldStyleAssignments>false</AllowOldStyleAssignments>
+    <ModernSyntax>false</ModernSyntax>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <NoWarn />
@@ -56,9 +65,6 @@
     <compile Remove="Collations\*.prg" />
     <compile Remove="Language\*.prg" />
     <compile Remove="Types\Win32FileStream.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Language\Croatia.resx">
@@ -142,6 +148,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Language\Turkish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Collations.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>

@@ -5,8 +5,8 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFrameworkVersion Condition="'$(UsingMicrosoftNETSdk)' != 'true'">v4.6</TargetFrameworkVersion>
+    <TargetFrameworkProfile Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
     <Nostandarddefs>true</Nostandarddefs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>

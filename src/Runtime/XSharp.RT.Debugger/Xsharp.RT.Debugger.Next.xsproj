@@ -1,33 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.Sdk.Props" />
-  <PropertyGroup>
-    <RootNamespace>XSharp.Debugger</RootNamespace>
-    <AssemblyName>XSharp.RT.Debugger</AssemblyName>
-    <UseWindowsForms>true</UseWindowsForms>
-    <Dialect>Core</Dialect>
-    <AZ>true</AZ>
-    <CS>true</CS>
-    <INS>true</INS>
-    <NamedArgs>True</NamedArgs>
-    <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <StartupObject />
-    <Allowdot>True</Allowdot>
-    <EnforceSelf>True</EnforceSelf>
-    <TargetFramework>net8.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="VariablesWindow.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="..\XmlDoc.Props" />
+	<Import Project="..\Runtime.Sdk.Props" />
+	<PropertyGroup>
+		<RootNamespace>XSharp.Debugger</RootNamespace>
+		<AssemblyName>XSharp.RT.Debugger</AssemblyName>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Dialect>Core</Dialect>
+		<AZ>true</AZ>
+		<CS>true</CS>
+		<INS>true</INS>
+		<NamedArgs>True</NamedArgs>
+		<Nostandarddefs>true</Nostandarddefs>
+		<Allowdot>True</Allowdot>
+		<EnforceSelf>True</EnforceSelf>
+		<TargetFramework>net8.0-windows</TargetFramework>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+		<ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="VariablesWindow.resx">
+			<SubType>Designer</SubType>
+			<Generator>ResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+	</ItemGroup>
+	<Import Project="..\XmlDoc.Props" />
 </Project>

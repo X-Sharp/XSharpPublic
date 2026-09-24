@@ -654,7 +654,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!integralTypes)
             {
                 // Logical Operators on USUALS require a conversion
-                AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
+                AdjustVOBinaryOperands(node, ref left, ref right, diagnostics);
                 leftType = left.Type;
                 rightType = right.Type;
             }
@@ -1056,7 +1056,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             // Logical Operators on USUALS require a conversion
-            AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
+            AdjustVOBinaryOperands(node, ref left, ref right, diagnostics);
 #endif
             // Let's take an easy out here. The vast majority of the time the operands will
             // both be bool. This is the only situation in which the expression can be a

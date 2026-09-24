@@ -150,7 +150,7 @@ PRIVATE METHOD OnVFPValid( sender AS OBJECT, e AS CancelEventArgs ) AS VOID
 		ENDIF
 		IF IsNumeric( retValue )
 			IF retValue == 0
-				e.Cancel := TRUE
+				e:Cancel := TRUE
 			ELSE
 				NOP
 			ENDIF
@@ -216,7 +216,7 @@ PRIVATE METHOD OnVFPGotFocus( sender AS OBJECT, e AS System.EventArgs) AS VOID
 			IF !retValue
 				// Go to next Control
 				// Get the parent of the current control
-				IF ((System.Windows.Forms.Control)sender).Parent IS System.Windows.Forms.Control VAR p
+				IF ((System.Windows.Forms.Control)sender):Parent IS System.Windows.Forms.Control VAR p
 					// And ask it for the next control
 					VAR ctl := p:GetNextControl( SELF, TRUE )
 					// If not Null, SetFocus

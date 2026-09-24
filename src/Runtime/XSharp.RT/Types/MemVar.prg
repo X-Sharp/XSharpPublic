@@ -101,6 +101,12 @@ INTERNAL CLASS XSharp.MemVarLevel
         // find local and value returns TRUE when found (value could also be NIL !)
     INTERNAL METHOD FindLocal(cName AS STRING, uValue OUT USUAL) AS LOGIC
         if cName:ToLower() == "this"
+            cName := "SELF"
+        endif
+        IF Locals != NULL .AND. Locals:TryGetValue(cName, OUT uValue)
+            RETURN TRUE
+        ENDIF
+        if cName:ToLower() == "self"
             cName := "_this"
         endif
         IF Locals != NULL .AND. Locals:TryGetValue(cName, OUT uValue)
@@ -420,32 +426,32 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     INTERNAL STATIC METHOD LocalFind(name AS STRING, uValue OUT USUAL, level OUT MemVarLevel) AS LOGIC
         level := NULL
-        VAR curr := CheckCurrent()
-        IF curr == NULL
+        VAR current := CheckCurrent()
+        IF current == NULL
             uValue := NIL
             RETURN FALSE
         ENDIF
-        IF curr:FindLocal(name, OUT uValue)
-            level := curr
+        IF current:FindLocal(name, OUT uValue)
+            level := current
             RETURN TRUE
         ENDIF
         uValue := NIL
-        IF ! curr:SystemLevel
+        IF ! current:SystemLevel
             RETURN FALSE
         ENDIF
-        RETURN GetHigherLevelLocal(name, curr:Depth, OUT uValue, OUT level)
+        RETURN GetHigherLevelLocal(name, current:Depth, OUT uValue, OUT level)
 
     INTERNAL STATIC METHOD ClearLocals() AS VOID
-        VAR curr := CheckCurrent()
-        IF curr != NULL
-            curr:ClearLocals()
+        VAR current := CheckCurrent()
+        IF current != NULL
+            current:ClearLocals()
         ENDIF
         RETURN
 
     INTERNAL STATIC METHOD LocalsUpdated() AS LOGIC
-        VAR curr := CheckCurrent()
-        IF curr != NULL
-            RETURN curr:LocalsUpdated
+        VAR current := CheckCurrent()
+        IF current != NULL
+            RETURN current:LocalsUpdated
         ENDIF
         RETURN FALSE
 

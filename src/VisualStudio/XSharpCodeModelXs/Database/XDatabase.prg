@@ -24,6 +24,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE oConn   AS DbConnection     // In memory database !
 
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
+    STATIC PRIVATE backupRunning := 0 AS LONG          // guards against overlapping backups
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
@@ -173,12 +174,17 @@ STATIC METHOD SafeFileDelete(cFile as STRING) AS VOID
         var deleted := false
         do while tries < 4 .and. !deleted
             try
-                System.Threading.Thread.Sleep(tries * 100)
                 File.Delete(cFile)
                 deleted := true
             catch as IOException
                 Log(i"Failed to delete file {cFile}, attempts {tries}")
                 tries++
+                // Only back off when we are actually going to try again. This used to
+                // sleep before the first attempt as well, which cost 100 ms on every
+                // single backup for nothing.
+                if tries < 4
+                    System.Threading.Thread.Sleep(tries * 100)
+                endif
             end try
         enddo
         if ! deleted
@@ -188,11 +194,18 @@ STATIC METHOD SafeFileDelete(cFile as STRING) AS VOID
 
 STATIC METHOD SaveToDisk(oConn AS DbConnection, cFile AS STRING) AS VOID
     CHECKIFOPEN
+    // Only the BackupDatabase call below touches the in memory connection. Deleting
+    // the old file, opening the disk database and vacuuming it all work on the disk
+    // side, so they must stay outside the lock on oConn: that lock serializes the
+    // whole code model, and holding it for a full backup plus a VACUUM blocked every
+    // parse and every lookup for seconds at a time.
     Log(i"SafeDelete file {cFile}")
     SafeFileDelete(cFile)
     USING VAR diskdb := OpenFile(cFile)
     Log(i"Save DB to disk {cFile}")
-    oConn:BackupDatabase(diskdb, "main")
+    BEGIN LOCK oConn
+        oConn:BackupDatabase(diskdb, "main")
+    END LOCK
     USING VAR oCmd := CreateCommand("VACUUM", diskdb)
     Log(i"Execute VACUUM command")
     oCmd:ExecuteNonQuery()
@@ -211,27 +224,39 @@ STATIC METHOD CommitWhenNeeded() AS VOID
     VAR ts := DateTime.Now - lastWritten
     // Save to disk every 5 minutes
     Log(i"Time since last backup {ts}")
-    IF ts:Minutes >= 5 .OR. ts:Hours > 0
-        LOCAL oBW AS BackgroundWorker
-        oBW := BackgroundWorker{}
-        oBW:DoWork += BackupInBackground
-        oBW:RunWorkerAsync()
-
+    IF ts:TotalMinutes < 5
+        RETURN
     ENDIF
+    // Let one backup run at a time. This is called from every write to the database,
+    // so without the guard each caller inside the 5 minute window starts its own
+    // BackgroundWorker and they all queue up behind each other: the logs show runs of
+    // 5 and 6 backups back to back, 32 seconds of the code model being unavailable.
+    IF System.Threading.Interlocked.CompareExchange(REF backupRunning, 1, 0) != 0
+        Log("A backup is already running, skipping this one")
+        RETURN
+    ENDIF
+    // Claim the interval right away. SaveToDisk sets it again when it has finished,
+    // but until then everybody else must already see this interval as taken care of.
+    lastWritten := DateTime.Now
+    LOCAL oBW AS BackgroundWorker
+    oBW := BackgroundWorker{}
+    oBW:DoWork += BackupInBackground
+    oBW:RunWorkerAsync()
 
 STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS VOID
-    CHECKIFOPEN
-    BEGIN LOCK oConn
-        TRY
-            Log(i"Starting backup to {currentFile}")
-            SaveToDisk(oConn, currentFile )
-        CATCH e AS Exception
-            Log(i"Error backing up to {currentFile}")
-            XSettings.Exception(e)
-        FINALLY
-            Log(i"Completed backup to {currentFile}")
-        END TRY
-    END LOCK
+    TRY
+        CHECKIFOPEN
+        Log(i"Starting backup to {currentFile}")
+        // SaveToDisk takes the lock on oConn itself, and only around the part that
+        // actually needs it.
+        SaveToDisk(oConn, currentFile )
+    CATCH e AS Exception
+        Log(i"Error backing up to {currentFile}")
+        XSettings.Exception(e)
+    FINALLY
+        Log(i"Completed backup to {currentFile}")
+        System.Threading.Interlocked.Exchange(REF backupRunning, 0)
+    END TRY
     RETURN
 
 STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
@@ -601,6 +626,33 @@ STATIC METHOD ValidateSchema( Connection AS DbConnection) AS LOGIC
     END LOCK
     Log(i"Validate database schema: {lOk}")
     RETURN lOk
+
+STATIC PRIVATE METHOD ExecuteSimpleSql(cSql AS STRING) AS VOID
+    // For statements that take no parameters and return nothing, such as BEGIN and COMMIT.
+    // The caller is expected to hold the lock on oConn.
+    USING VAR cmd := CreateCommand(cSql, oConn)
+    cmd:ExecuteNonQuery()
+    RETURN
+
+STATIC METHOD DeleteOrphanIncludeFiles() AS VOID
+    // Drop IncludeFiles rows that no longer belong to any file.
+    // This used to run inside UpdateFileContents, once for every file written: a full anti
+    // join over IncludeFilesPerFile, while holding the lock that serializes the whole code
+    // model. A cold walk of RadixWf.sln does that 39387 times. Orphan rows are harmless
+    // until they are cleaned up - nothing reads them, and UpdateIncludeFiles reuses a row
+    // when the include comes back - so once per project walk is enough.
+    CHECKIFOPEN
+    BEGIN LOCK oConn
+        TRY
+            Log("Delete orphan include files")
+            USING VAR cmd := CreateCommand("Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)", oConn)
+            cmd:ExecuteNonQuery()
+        CATCH e AS Exception
+            Log("Error deleting orphaned include files")
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    RETURN
 
 STATIC METHOD DeleteOrphanFiles() AS List<STRING>
     VAR result := List<STRING>{}
@@ -1324,8 +1376,17 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
         NEXT
     NEXT
     Log(i"Start Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
+    LOCAL lInTransaction := FALSE AS LOGIC
     BEGIN LOCK oConn
         TRY
+            // One transaction for the whole file. Without it every statement below is its
+            // own implicit transaction, and AddTypes/AddMembers issue one INSERT per type
+            // and per member: a file with 159 entities costs about 160 of them.
+            // BEGIN/COMMIT are sent as plain SQL on purpose. Handing out a DbTransaction
+            // would mean assigning it to every command created further down the call chain,
+            // and Microsoft.Data.Sqlite throws when a command misses it.
+            ExecuteSimpleSql("BEGIN IMMEDIATE")
+            lInTransaction := TRUE
 
             // Check to see if file is in multiple projects.
             // If so then generate a new type for each of the projects
@@ -1355,22 +1416,33 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
             NEXT // IdProject
 
             WriteLocalFunctions(oFile:EntityList:Where ( {m => m.Kind.IsLocal() } ), oFile)
-            if oFile:CommentTasks:Any()
+            if oFile:CommentTasks != NULL
                 WriteCommentTasks(oFile)
             endif
             if !oFile:IsBuiltInFunctions
                 // Update Includefile IDs and write to disk
                 UpdateIncludeFiles(oFile)
             endif
-            // Remove orphans from IncludeFiles table
-            oCmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
-            oCmd:Parameters:Clear()
-            oCmd:ExecuteScalar()
+            // Orphans in the IncludeFiles table are collected once per project walk, see
+            // DeleteOrphanIncludeFiles(). Doing it here meant a full anti join per file.
+
+            ExecuteSimpleSql("COMMIT")
+            lInTransaction := FALSE
 
         CATCH e AS Exception
             Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
             XSettings.Exception(e)
 
+        FINALLY
+            IF lInTransaction
+                // The commit never happened. Undo the half written file and, more
+                // importantly, leave the connection out of a transaction for the next one.
+                TRY
+                    ExecuteSimpleSql("ROLLBACK")
+                CATCH
+                    NOP
+                END TRY
+            ENDIF
         END TRY
 
     END LOCK

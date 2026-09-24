@@ -581,12 +581,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
 
             #endregion
-            internal Dictionary<string, MemVarFieldInfo> Fields = null;
+            internal MemVarFieldInfoList Fields = null;
             internal MemVarFieldInfo AddField(string name, string Alias, XSharpParserRuleContext context)
             {
                 if (Fields == null)
                 {
-                    Fields = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
+                    Fields = new MemVarFieldInfoList();
                 }
                 MemVarFieldInfo info;
                 if (Fields.ContainsKey(name))
@@ -596,7 +596,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 else
                 {
                     info = new MemVarFieldInfo(name, Alias, context);
-                    Fields.Add(info.Name, info);
+                    Fields.Add(info);
                 }
                 if (!info.IsMacroMemvar)
                 {
@@ -607,12 +607,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             internal MemVarFieldInfo GetField(string name)
             {
-                if (Fields != null && Fields.ContainsKey(name))
+                if (Fields != null && Fields.TryGetValue(name, out var field))
                 {
-                    return Fields[name];
+                    return field;
                 }
                 return null;
             }
+
         }
 #endif
         public partial class ScriptContext : IEntityContext
@@ -1201,6 +1202,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public bool XSharpRuntime;
         }
+
         public partial class XppdeclarepropertyContext : IMemberContext
         {
             public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
@@ -1491,6 +1493,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     }
 
 #if !VSPARSER
+
+    public class MemVarFieldInfoList : Dictionary<string, MemVarFieldInfo>
+    {
+        public MemVarFieldInfoList() : base(StringComparer.OrdinalIgnoreCase)
+        {
+
+        }
+
+        public void Add(MemVarFieldInfo info)
+        {
+            this.TryAdd(info.Name, info);
+            if (!info.IsMacroMemvar && info.Name != info.FullName)
+            {
+                this.TryAdd(info.FullName, info);
+            }
+        }
+
+    }
     [DebuggerDisplay("{_fieldType} {FullName}")]
     public class MemVarFieldInfo
     {
@@ -1503,6 +1523,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Local,
             Unknown
         }
+        public bool IsMemvar => _fieldType == MemvarType.Memvar;
         public bool IsField => _fieldType == MemvarType.Field;
         public bool IsClipperParameter => _fieldType == MemvarType.ClipperParameter;
         public bool IsMacroMemvar => _fieldType == MemvarType.MacroMemvar;
@@ -1640,6 +1661,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
     internal static class RuleExtensions
     {
+
+        internal static IMemberContext GetCurrentMember([NotNull] this XSharpParserRuleContext context)
+        {
+            var current = context.Parent;
+            while (current != null)
+            {
+                if (current is IMemberContext member)
+                    return member;
+                current = current.Parent;
+            }
+            return null;
+        }
 
         internal static bool IsNullPtr([NotNull] this XSharpParserRuleContext context)
         {

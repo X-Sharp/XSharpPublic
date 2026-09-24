@@ -191,7 +191,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             END GET
             SET
                 VAR ft := SELF:Font
-                VAR newFont := System.Drawing.Font{ ft.Name, (Single)VALUE, ft.Style, ft.Unit}
+                VAR newFont := System.Drawing.Font{ ft:Name, (Single)VALUE, ft:Style, ft:Unit}
                 SELF:Font := newFont
             END SET
         END PROPERTY
@@ -373,7 +373,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 DbSelectArea( SELF:_nameOfTable )
                 VAR nFields := FCount()
                 FOR VAR i := 1 UPTO nFields
-                    VAR cName := FieldName( i )
+                    VAR cName := FieldName( (DWORD) i )
                     VAR cType := (STRING) DbFieldInfo( DBS_TYPE, i )
                     VAR nLen  := (INT) DbFieldInfo( DBS_LEN, i )
                     VAR oCol := Column{}

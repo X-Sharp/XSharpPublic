@@ -54,6 +54,7 @@ begin namespace XSharp.VFP.Tests
                 try
                     System.IO.Directory.Delete(cTempPath)
                 catch
+                    NOP
                 end try
             end try
         end method

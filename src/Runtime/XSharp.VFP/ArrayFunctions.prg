@@ -285,12 +285,12 @@ FUNCTION ALines ( ArrayName AS USUAL, cExpression AS STRING, nFlags := 0 AS INT,
         ENDIF
     NEXT
 
-    VAR @@regexOptions := RegexOptions.None
+    VAR lregexOptions := RegexOptions.None
     IF lIgnoreCase
-        @@regexOptions := RegexOptions.IgnoreCase
+        lregexOptions := RegexOptions.IgnoreCase
     ENDIF
 
-    VAR aRawParts := Regex.Split(cExpression, sbPattern:ToString(), @@regexOptions)
+    VAR aRawParts := Regex.Split(cExpression, sbPattern:ToString(), lregexOptions)
 
     VAR finalLines := List<STRING>{}
     VAR nIndex := 0

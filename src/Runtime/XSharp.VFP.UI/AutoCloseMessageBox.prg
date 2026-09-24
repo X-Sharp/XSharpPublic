@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             SELF:_caption := IIF( caption != NULL, caption,"")
             SELF:_result := buttons:ToDialogResult(defaultResult)
 
-            BEGIN USING VAR timer := System.Threading.Timer {OnTimerElapsed, _result.ToDialogButtonId(buttons), timeout, System.Threading.Timeout.Infinite}
+            BEGIN USING VAR timer := System.Threading.Timer {OnTimerElapsed, _result:ToDialogButtonId(buttons), timeout, System.Threading.Timeout.Infinite}
                 SELF:_result := showMethod(SELF:_caption, buttons)
             END USING
         END CONSTRUCTOR

@@ -9,7 +9,6 @@
     <Name>XSharp.VO.VOGUIClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-    <LB>false</LB>
     <NS>true</NS>
     <Ins>true</Ins>
     <unsafe>true</unsafe>
@@ -18,11 +17,11 @@
     <NamedArgs>false</NamedArgs>
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
-    <NoWin32Manifest>False</NoWin32Manifest>
+    <NoWin32Manifest>false</NoWin32Manifest>
     <EnforceSelf>true</EnforceSelf>
     <EnforceOverride>false</EnforceOverride>
     <Allowdot>false</Allowdot>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Vo5>False</Vo5>
     <NoWarn>168;165</NoWarn>
     <AZ>false</AZ>

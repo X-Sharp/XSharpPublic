@@ -148,6 +148,7 @@ namespace XSharp
         internal const string MemVar = nameof(MemVar);
         internal const string ModernSyntax = nameof(ModernSyntax);
         internal const string NamedArgs = nameof(NamedArgs);
+        internal const string MSBuildProjectExtensionsPath = nameof(MSBuildProjectExtensionsPath);
         internal const string NativeResource = nameof(NativeResource);
         internal const string NoStandardDefs = nameof(NoStandardDefs);
         internal const string NoWin32Manifest = nameof(NoWin32Manifest);
@@ -186,6 +187,7 @@ namespace XSharp
         internal const string StandardDefs = nameof(StandardDefs);
         internal const string SuppressRCWarnings = nameof(SuppressRCWarnings);
         internal const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
+        internal const string TargetPlatformIdentifier = nameof(TargetPlatformIdentifier);
         internal const string ToolsVersion = nameof(ToolsVersion);
         internal const string TreatWarningsAsErrors = nameof(TreatWarningsAsErrors);
         internal const string Undeclared = nameof(Undeclared);
@@ -228,6 +230,7 @@ namespace XSharp
         internal const string TargetFrameworks = nameof(TargetFrameworks);
         internal const string XTargetFrameworks = nameof(XTargetFrameworks);
         internal const string ActiveTargetFramework = nameof(ActiveTargetFramework);
+        internal const string RuntimeIdentifier = nameof(RuntimeIdentifier);
         // Assembly info properties
         internal const string AssemblyTitle = nameof(AssemblyTitle);
         internal const string Description = nameof(Description);

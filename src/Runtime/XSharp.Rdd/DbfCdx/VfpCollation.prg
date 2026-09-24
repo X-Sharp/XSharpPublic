@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL CONSTRUCTOR(cName AS STRING, nCodePage AS INT)
             SELF:HasCombi := FALSE
+            SELF:Name := Upper(cName)
             SELF:ResourceName := Upper(cName)+"_"+nCodePage:ToString()
             SELF:WorkBuffer := BYTE[]{512}
             SWITCH Upper(cName)
@@ -74,7 +75,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Unsupported(cName, nCodePage)
                 END SWITCH
             CASE "HUNGARY"
-                SELF:HasCombi := TRUE  
+                SELF:HasCombi := TRUE
                 SWITCH nCodePage
                 CASE 852
                 CASE 1250
@@ -95,7 +96,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE "MACHINE"
 				SELF:ResourceName := Upper(cName)	// All codepages have the same table
             CASE "NORDAN"
-                SELF:HasCombi := TRUE  
+                SELF:HasCombi := TRUE
                 SWITCH nCodePage
                 CASE 437
                 CASE 850
@@ -123,7 +124,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Unsupported(cName, nCodePage)
                 END SWITCH
             CASE "SLOVAK"
-                SELF:HasCombi := TRUE  
+                SELF:HasCombi := TRUE
                 SWITCH nCodePage
                 CASE 852
                 CASE 859
@@ -133,7 +134,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Unsupported(cName, nCodePage)
                 END SWITCH
             CASE "SPANISH"
-                SELF:HasCombi := TRUE  
+                SELF:HasCombi := TRUE
                 SWITCH nCodePage
                 CASE 437
                 CASE 850
@@ -173,7 +174,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:Unsupported(cName, nCodePage)
             END SWITCH
 	        VAR rm := System.Resources.ResourceManager{ "XSharp.RDD.VfpCollations", TYPEOF(Functions):Assembly }
-	        VAR obj := rm:GetObject(ResourceName+"_COLLATE") 
+	        VAR obj := rm:GetObject(ResourceName+"_COLLATE")
 	        IF obj != NULL
 		        VAR bytes := obj ASTYPE BYTE[]
 		        IF bytes != NULL
@@ -181,7 +182,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		        ENDIF
 	        ENDIF
             IF SELF:HasCombi
-	            obj := rm:GetObject(ResourceName+"_COMBI") 
+	            obj := rm:GetObject(ResourceName+"_COMBI")
 	            IF obj != NULL
 		            VAR bytes := obj ASTYPE BYTE[]
 		            IF bytes != NULL
@@ -234,7 +235,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         VAR nCombi1 := SELF:CombiTable[nCombi]
                         VAR nCombi2 := SELF:CombiTable[nCombi+1]
                         IF bSource == nCombi1 .AND. bNext == nCombi2
-                            // Found match 
+                            // Found match
                             WorkBuffer[nTargetOffSet]   := SELF:CombiTable[nCombi+2]
                             nTargetOffSet += 1
                             nI            += 1 // increment extra because we have just consumed 2 characters
@@ -249,7 +250,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOR nI := nTargetOffSet TO bytes:Length -1
                 WorkBuffer[nI] := 0
             NEXT
-            System.Array.Copy(WorkBuffer, bytes, bytes:Length)            
+            System.Array.Copy(WorkBuffer, bytes, bytes:Length)
             RETURN TRUE
 
         PRIVATE METHOD TranslateWorker(bSource AS BYTE, nTargetOffSet REF LONG) AS LOGIC
@@ -303,7 +304,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOR nI := nTargetOffSet TO bytes:Length -1
                 WorkBuffer[nI] := 0
             NEXT
-            System.Array.Copy(WorkBuffer, bytes, bytes:Length)            
+            System.Array.Copy(WorkBuffer, bytes, bytes:Length)
             RETURN TRUE
 
     END CLASS

@@ -125,12 +125,16 @@ LOCAL nArea := VoDbGetSelect(wa) AS DWORD
     local ok as LOGIC
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
         local oLocal := uLocal as object
-        var ivar := (OBJECT) IVarGet(oLocal, wa)
-        // we do not use IVarGet because we also want to support static fields and properties
-        var res := _GetValue(ivar:GetType(), ivar)
+        try
+            var ivar := (OBJECT) IVarGet(oLocal, wa)
+            // we do not use IVarGet because we also want to support static fields and properties
+            var res := _GetValue(ivar:GetType(), ivar)
         if ok
             return res
         endif
+        catch as Exception
+            nop
+        end try
     ENDIF
     if (lAllowUndeclared)
         if XSharp.MemVar.TryGet(wa, out var value)
@@ -147,6 +151,10 @@ LOCAL nArea := VoDbGetSelect(wa) AS DWORD
         oError:Description := oError:Message + i": '{fldName}'"
         throw oError
     endif
+    IF Globals.Get(wa, OUT var uGlobal)
+        return IVarGet(uGlobal, fldName)
+    ENDIF
+
     VAR err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
     err:FuncSym := __function__
     err:ArgNum := 2
@@ -235,10 +243,16 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
         local oLocal := uLocal as object
         // we do not use IVarPut because we also want to support static fields and properties
-        var ivar := (OBJECT) IVarGet(oLocal, wa)
-        IF _SetValue(ivar:GetType(), ivar, uValue)
-            return uValue
-        ENDIF
+        try
+            // if the field is not found, we will get an exception and we will continue to the next check
+            var ivar := (OBJECT) IVarGet(oLocal, wa)
+            IF _SetValue(ivar:GetType(), ivar, uValue)
+                return uValue
+            ENDIF
+        catch as Exception
+            nop
+        end try
+
     ENDIF
     if (lAllowUndeclared)
         if XSharp.MemVar.TryGet(wa, out var value)
@@ -254,6 +268,10 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
         oError:Description := oError:Message + i": '{fldName}'"
         throw oError
     endif
+    IF Globals.Get(wa, OUT var uGlobal)
+        return IVarPut(uGlobal, fldName, uValue)
+    ENDIF
+
     VAR err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
     err:FuncSym := __function__
     err:ArgNum := 2

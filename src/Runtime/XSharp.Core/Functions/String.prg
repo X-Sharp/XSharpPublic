@@ -350,7 +350,10 @@ INTERNAL FUNCTION _nibble (c AS CHAR) AS BYTE
 /// <include file="XSharp.Core.Docs.xml" path="doc/Hex2C/*" />
 FUNCTION Hex2C(c AS STRING) AS STRING
 	LOCAL i AS INT
-	LOCAL sb AS StringBuilder
+    LOCAL sb AS StringBuilder
+    IF c == NULL
+        return ""
+    endif
 	sb := StringBuilder{c:Length}
 	i := 0
 	DO WHILE i <= c:Length - 2

@@ -55,8 +55,10 @@ namespace XSharp.Project
         /// <returns>An <see cref="IPropertyPagePanel"/> implementation.</returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-            if (IsSdkProject)
+#if DEV17
+        if (IsSdkProject)
                 return new XBuildPropertyPageXamlHost(this);
+#endif
             return new XBuildPropertyPagePanelWinForms(this);
         }
 
@@ -76,9 +78,10 @@ namespace XSharp.Project
             {
                 // WinForms path
                 (PropertyPagePanel as XBuildPropertyPagePanel)?.Project_OnProjectPropertyChanged(sender, e);
-
+#if DEV17
                 // XAML path
                 (PropertyPagePanel as XBuildPropertyPageXamlHost)?.NotifyPlatformTargetChanged(e.NewValue);
+#endif
             }
         }
     }

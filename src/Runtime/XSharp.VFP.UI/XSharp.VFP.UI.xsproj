@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\Runtime.props" />
@@ -7,7 +7,7 @@
     <RootNamespace>XSharp.VFP.UI</RootNamespace>
     <AssemblyName>XSharp.VFP.UI</AssemblyName>
     <Name>XSharp.VFP.UI</Name>
-    <Dialect>FoxPro</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <OutputName>XSharp.VFP.UI</OutputName>
     <na>false</na>
     <az>false</az>
@@ -18,24 +18,23 @@
     <vo3>true</vo3>
     <vo4>true</vo4>
     <vo6>False</vo6>
-    <vo7>true</vo7>
+    <vo7>False</vo7>
     <vo9>true</vo9>
     <vo10>true</vo10>
-    <vo13>true</vo13>
-    <vo14>true</vo14>
+    <vo13>False</vo13>
+    <vo14>False</vo14>
     <vo15>False</vo15>
     <vo16>False</vo16>
     <lb>False</lb>
     <memvar>False</memvar>
     <undeclared>False</undeclared>
     <initlocals>true</initlocals>
-    <fox1>true</fox1>
     <StartupObject />
     <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
     <CS>False</CS>
     <NoStandardDefs>False</NoStandardDefs>
     <OutPutCopy>$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)</OutPutCopy>
-    <Allowdot>True</Allowdot>
+    <Allowdot>false</Allowdot>
     <EnforceSelf>False</EnforceSelf>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
@@ -44,6 +43,7 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
     <IncludePaths>$(IncludePaths);$(ProjectDir)..\XSharp.VFP;$(ProjectDir)\Headers</IncludePaths>
+    <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

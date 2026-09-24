@@ -18,6 +18,10 @@ namespace XSharp.Project
     /// </summary>
     internal partial class XBuildPropertyPagePanel : XPropertyPagePanel
     {
+        public XBuildPropertyPagePanel() : base()
+        {
+            this.InitializeComponent();
+        }
 
 
         // =========================================================================================

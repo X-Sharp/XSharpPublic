@@ -3,6 +3,7 @@ if "%1" == "Debug" goto Ok
 if "%1" == "Release" goto Ok
 Goto Error
 :Ok
+copy ..\..\..\Artifacts\%1\Net8.0-windows\*.dll ..\..\..\Artifacts\%1\Net8.0 /y
 xsi XSPackNuget.prgx Core %1
 xsi XSPackNuget.prgx RT %1
 xsi XSPackNuget.prgx VO %1

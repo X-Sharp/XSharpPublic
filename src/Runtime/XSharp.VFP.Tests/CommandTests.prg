@@ -113,6 +113,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 TRY
                     System.IO.Directory.Delete(cTempPath, TRUE)
                 CATCH
+                    NOP
                 END TRY
             END TRY
         END METHOD
@@ -164,6 +165,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 TRY
                     System.IO.Directory.Delete(cTempPath, TRUE)
                 CATCH
+                    NOP
                 END TRY
             END TRY
         END METHOD
@@ -218,7 +220,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 XSharp.CoreDb.CloseAll()
                 SET DEFAULT TO (cOldDir)
                 System.IO.Directory.SetCurrentDirectory(cOldDir)
-                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ;NOP; END TRY
             END TRY
         END METHOD
 
@@ -285,7 +287,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 XSharp.CoreDb.CloseAll()
                 SET DEFAULT TO (cOldDir)
                 System.IO.Directory.SetCurrentDirectory(cOldDir)
-                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; NOP; END TRY
             END TRY
         END METHOD
 
@@ -345,7 +347,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 XSharp.CoreDb.CloseAll()
                 SET DEFAULT TO (cOldDir)
                 System.IO.Directory.SetCurrentDirectory(cOldDir)
-                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; END TRY
+                TRY ; System.IO.Directory.Delete(cTempPath, TRUE) ; CATCH ; NOP; END TRY
             END TRY
         END METHOD
 

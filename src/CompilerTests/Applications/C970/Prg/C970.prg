@@ -63,13 +63,21 @@ CLASS Customers
 		LOCAL localthis := Customers{} AS Customers
 		localthis.InstanceExport := 123
 		xAssert( localthis.InstanceExport == 123 )
+		xAssert( localthis:InstanceExport == 123 )
+
 		localthis.InstanceProtect := 321
 		xAssert( localthis.InstanceProtect == 321 )
+		xAssert( localthis:InstanceProtect == 321 )
+	
 		localthis.InstancePrivate := 333
 		xAssert( localthis.InstancePrivate == 333 )
+		xAssert( localthis:InstancePrivate == 333 )
+
 		localthis.InstanceProperty := 500
 		xAssert( localthis.InstanceProperty == 500 )
 		xAssert( localthis.OnlyGetProperty == 100 )
+		xAssert( localthis:InstanceProperty == 500 )
+		xAssert( localthis:OnlyGetProperty == 100 )
 
 		LOCAL localusual := Customers{} AS USUAL
 		localusual.InstanceExport := 123
@@ -120,13 +128,28 @@ CLASS Customers
 		
 		this.InstanceExport := 123
 		xAssert( this.InstanceExport == 123 )
+		xAssert( this:InstanceExport == 123 )
+
+		this:InstanceExport := 321
+		xAssert( this.InstanceExport == 321 )
+		xAssert( this:InstanceExport == 321 )
+
 		this.InstanceProtect := 321
 		xAssert( this.InstanceProtect == 321 )
+		xAssert( this:InstanceProtect == 321 )
+
 		this.InstancePrivate := 333
 		xAssert( this.InstancePrivate == 333 )
+		xAssert( this:InstancePrivate == 333 )
+
 		this.InstanceProperty := 500
 		xAssert( this.InstanceProperty == 500 )
 		xAssert( this.OnlyGetProperty == 100 )
+
+		this:InstanceProperty := 1500
+		xAssert( this:InstanceProperty == 1500 )
+		xAssert( this:OnlyGetProperty == 100 )
+
 
 		Customers.StaticProperty := 1000
 		xAssert( Customers.StaticProperty == 1000 )
@@ -147,6 +170,8 @@ CLASS Customers
 		LOCAL localusual := Customers{} AS USUAL
 		localusual.InstanceExport := 123
 		xAssert( localusual.InstanceExport == 123 )
+		xAssert( localusual:InstanceExport == 123 )
+
 		localusual.InstanceProtect := 321
 		xAssert( localusual.InstanceProtect == 321 )
 		localusual.InstancePrivate := 333

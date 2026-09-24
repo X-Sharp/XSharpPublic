@@ -18,7 +18,10 @@ namespace XSharp.Project
     /// </summary>
     internal partial class XLanguagePropertyPagePanel : XPropertyPagePanel
     {
-
+        public XLanguagePropertyPagePanel() : base()
+        {
+            this.InitializeComponent();
+        }
 
         // =========================================================================================
         // Constructors
@@ -147,7 +150,7 @@ namespace XSharp.Project
             }
             else
             {
-                chkUndefined.Enabled = false; 
+                chkUndefined.Enabled = false;
                 chkMemVar.Checked = false;
                 chkUndefined.Checked = false;
                 chkLB.Checked = false;

@@ -490,13 +490,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
             ENDIF
             VAR culture := System.Globalization.CultureInfo.InvariantCulture
             VAR styles  := System.Globalization.DateTimeStyles.None
-            LOCAL dt AS DateTime
-            IF DateTime.TryParseExact(displayVal, dateFormatPattern, culture, styles, OUT dt)
+            IF DateTime.TryParseExact(displayVal, dateFormatPattern, culture, styles, OUT NULL)
                 RETURN TRUE
             ENDIF
             // 2-digit year fallback
             VAR fmt2 := dateFormatPattern:Replace("yyyy", "yy")
-            IF DateTime.TryParseExact(displayVal, fmt2, culture, styles, OUT dt)
+            IF DateTime.TryParseExact(displayVal, fmt2, culture, styles, OUT NULL)
                 RETURN TRUE
             ENDIF
             MessageBox.Show("** Invalid date **", "", MessageBoxButtons.OK, MessageBoxIcon.Warning)

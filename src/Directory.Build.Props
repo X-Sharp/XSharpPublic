@@ -8,8 +8,19 @@ See License.txt in the project root for license information.
 . -->
 <Project>
   <PropertyGroup>
-    <AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
-    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
-  </PropertyGroup>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <!-- Set Binaries/Artifacts and BaseIntermediateOutputPath early to avoid MSB3539 warnings
+         These are intentionally defined here so they are available before Microsoft.Common.props
+         and before any project or Shared.props can override them. -->
+    <ArtifactsDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\Artifacts\'))</ArtifactsDir>
+    <BinariesDir>$(ArtifactsDir)</BinariesDir>
+		<BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+		<!-- Do NOT clear TargetPlatformIdentifier/TargetPlatformVersion here.
+				 Directory.Build.props is imported before the .NET SDK sets UsingMicrosoftNETSdk,
+				 so such a condition only takes effect for the property set Visual Studio passes in.
+				 That makes restore inside VS write a platform-less 'net8.0' assets file while the
+				 build still evaluates 'net8.0-windows7.0', causing NETSDK1005.
+				 Projects control their platform through their own TargetFramework value. -->
+	</PropertyGroup>
 </Project>
 

@@ -1,5 +1,4 @@
-﻿extern alias codeanalysis;
-
+﻿
 #if DEV17
 using Community.VisualStudio.Toolkit;
 
@@ -25,13 +24,9 @@ using MSBuild = Microsoft.Build.Evaluation;
 
 using Microsoft.Build.Execution;
 
-using System.Xml;
 using System.IO;
 
-using EnvDTE80;
-
-using VSLangProj80;
-
+using XSharp.Support;
 
 namespace XSharp.Project
 {
@@ -214,6 +209,76 @@ namespace XSharp.Project
             base.ProcessReferences();
             RefreshReferences();
         }
+        private bool CleanReferenceItem(MSBuild.ProjectItem item, string propertyName)
+        {
+            bool changed = false;
+            var value = item.GetMetadataValue(propertyName);
+            if (!string.IsNullOrEmpty(value))
+            {
+                item.RemoveMetadata(propertyName);
+                changed = true;
+            }
+            return changed;
+        }
+
+        protected void CleanupProjectFile()
+        {
+            // remove folder items from BuildProject that were added at runtime.
+            // Keep explicit <Folder> items for empty folders: they are the only way to persist those in an SDK project.
+            try
+            {
+                var projectDir = Path.GetDirectoryName(this.BuildProject.FullPath);
+                var items = this.BuildProject.GetItems(ProjectFileConstants.Folder).Where(i => !i.IsImported).ToList();
+                bool changed = this.BuildProject.IsDirty;
+                foreach (var item in items)
+                {
+                    var path = Path.Combine(projectDir, item.EvaluatedInclude);
+                    if (Directory.Exists(path) && Directory.EnumerateFileSystemEntries(path).Any())
+                    {
+                        this.BuildProject.RemoveItem(item);
+                        changed = true;
+                    }
+                }
+                items = this.BuildProject.GetItems(ProjectFileConstants.ProjectReference).Where ( i => !i.IsImported).ToList();
+                foreach (var item in items)
+                {
+                    if (CleanReferenceItem(item, ProjectFileConstants.Name))
+                        changed = true;
+                    if (CleanReferenceItem(item, ProjectFileConstants.Project))
+                        changed = true;
+                    if (CleanReferenceItem(item, ProjectFileConstants.Private))
+                        changed = true;
+                }
+                var guidProperty = this.BuildProject.GetProperty(ProjectFileConstants.ProjectGuid);
+                if  (guidProperty != null)
+                {
+                    this.BuildProject.RemoveProperty(guidProperty);
+                    changed = true;
+                }
+
+                if (changed )
+                {
+                    this.BuildProject.Save();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, "Could not remove folder items from project file");
+            }
+
+        }
+
+        public override int Close()
+        {
+            ProcessNuGetFiles();
+            CleanupProjectFile();
+            return base.Close();
+        }
+        internal override void Unload()
+        {
+            ProcessNuGetFiles();
+            base.Unload();
+        }
 
         public string BaseName => base.Caption;
 
@@ -369,8 +434,19 @@ namespace XSharp.Project
                 this.BeforeSave();
                 newBuildProject.Save();
             }
+        }
 
+        bool EnableNuGetRestore(bool enable)
+        {
+            var old = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
+            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", enable);
+            return old;
+        }
 
+        internal override void BuildEnded(bool didCompile)
+        {
+            base.BuildEnded(didCompile);
+            ProcessNuGetFiles();
         }
 
         private void SaveTargetFrameworks()
@@ -440,13 +516,149 @@ namespace XSharp.Project
             };
         }
 
+
+
+        // Process NuGet Files in the obj f
+        string ProcessNuGetFiles()
+        {
+            var folder = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.MSBuildProjectExtensionsPath);
+            ProcessNuGetFiles(folder, false, false);
+            return folder;
+        }
+
+        void ProcessNuGetFiles(string folder, bool lSetReadOnly, bool lDelete)
+        {
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+                return;
+            try
+            {
+                var files = Directory.GetFiles(folder);
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        if (lDelete)
+                        {
+                            Utilities.DeleteFileSafe(file);
+                        }
+                        else if (lSetReadOnly)
+                        {
+                            File.SetAttributes(file, FileAttributes.ReadOnly);
+                        }
+                        else
+                        {
+                            var attributes = File.GetAttributes(file);
+                            if (attributes.HasFlag(FileAttributes.ReadOnly))
+                            {
+                                attributes &= ~FileAttributes.ReadOnly;
+                                File.SetAttributes(file, attributes);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Exception(e, $"Could not process NuGet file {file}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, $"Could not process NuGet files in folder {folder}");
+            }
+        }
+
+        void RunDotNetRestore(string folder)
+        {
+            ProcessNuGetFiles(folder, false, true);
+
+            var projectFile = this.BuildProject.FullPath;
+            try
+            {
+                var startInfo = new ProcessStartInfo("dotnet", $"restore \"{projectFile}\"")
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+                using (var process = new Process { StartInfo = startInfo })
+                {
+                    process.Start();
+                    // Read stderr asynchronously while draining stdout synchronously,
+                    // otherwise the child process can deadlock when one of the pipes fills up.
+                    var errorTask = process.StandardError.ReadToEndAsync();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+                    string error = errorTask.Result;
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
+                    if (process.ExitCode != 0)
+                    {
+                        Logger.Error($"dotnet restore failed for project {projectFile} with exit code {process.ExitCode}.\nOutput: {output}\nError: {error}");
+                    }
+                    else
+                    {
+                        Logger.Information($"dotnet restore succeeded for project {projectFile}.\nOutput: {output}");
+                    }
+                }
+                ProcessNuGetFiles(folder, true, false);
+            }
+            catch (Exception e)
+            {
+                // for example when dotnet.exe is not on the PATH
+                Logger.Exception(e, $"Could not run dotnet restore for project {projectFile}");
+            }
+
+        }
+
+        HashSet<string> _restoreTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { MsBuildTarget.Build, MsBuildTarget.Rebuild, MsBuildTarget.Publish };
+
         protected override BuildSubmission DoMSBuildSubmission(BuildKind buildKind, string target, ref ProjectInstance projectInstance, MSBuildCoda uiThreadCallback)
         {
-            var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
-            ProcessOptions(projectInstance, target);
-            return result;
+            var folder = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.MSBuildProjectExtensionsPath);
+            var platform = this.GetProjectProperty(XSharpProjectFileConstants.TargetPlatformIdentifier, false) ?? "";
+            var mustRestore = false;
+            bool restoreFlag = false;
+            try
+            {
+                restoreFlag = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
+                if (target == null || _restoreTargets.Contains(target))
+                {
+                    // Run DotNet Restore from the command Line and mark the assets files readonly
+                    if (!string.IsNullOrEmpty(platform))
+                    {
+                        mustRestore = true;
+                        EnableNuGetRestore(false);
+                        RunDotNetRestore(folder);
+                    }
+                    else
+                    {
+                        // Remove the Readonly flag
+                        ProcessNuGetFiles(folder, false, false);
+                    }
+                }
+
+                var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
+                ProcessOptions(projectInstance, target);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, $"DoMSBuildSubmission failed for {this.Caption}");
+                return null;
+            }
+            finally
+            {
+                if (mustRestore)
+                {
+                    // Restore the original setting for NuGet Restore
+                    EnableNuGetRestore(restoreFlag);
+                }
+            }
+
+
         }
-        private List<string> _commandLineArguments = new List<string>();
         protected List<string> _sdkReferences = new List<string>();
         protected List<string> _allReferenceAssemblies = new List<string>();
         void ProcessOptions(ProjectInstance projectInstance, string target)
@@ -485,9 +697,6 @@ namespace XSharp.Project
                             if (item.HasMetadata("FrameworkReferenceName"))
                                 sdkReferences.AddUnique(file);
                             break;
-                        case "xsccommandlineargs":
-                            commandLineArguments.AddUnique(item.EvaluatedInclude);
-                            break;
                         case "resolvedframeworkreference":
                             break;
                         default:
@@ -495,10 +704,6 @@ namespace XSharp.Project
                     }
 
                     Logger.Information($"Build:  Item: {item.ItemType} {item.EvaluatedInclude}");
-                }
-                if (commandLineArguments.Count > 0)
-                {
-                    _commandLineArguments = commandLineArguments;
                 }
                 if (sdkReferences.Count > 0)
                 {
@@ -519,6 +724,7 @@ namespace XSharp.Project
             {
                 return new[] {
                           VSConstants.ProjectReferenceProvider_Guid,
+                          VSConstants.AssemblyReferenceProvider_Guid,
                           VSConstants.FileReferenceProvider_Guid,
                     };
             }
@@ -527,7 +733,7 @@ namespace XSharp.Project
 
 
         internal static readonly Guid VsStd16 = new Guid("8F380902-6040-4097-9837-D3F40E66F908");
-        internal const uint idAddAssemblyReference = (uint) VSConstants.VSStd16CmdID.AddAssemblyReference;
+        internal const uint idAddAssemblyReference = (uint)VSConstants.VSStd16CmdID.AddAssemblyReference;
         internal const uint idAddCOMReference = (uint)VSConstants.VSStd16CmdID.AddComReference;
         internal const uint idAddProjectReference = (uint)VSConstants.VSStd16CmdID.AddProjectReference;
         internal const uint idAddSharedProjectReference = (uint)VSConstants.VSStd16CmdID.AddSharedProjectReference;
@@ -546,10 +752,10 @@ namespace XSharp.Project
             switch (cmd)
             {
                 case idAddProjectReference:
+                case idAddAssemblyReference:
                     result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                     return VSConstants.S_OK;
 
-                case idAddAssemblyReference:
                 case idAddCOMReference:
                     if (this.IsNetCoreApp)
                     {
@@ -580,7 +786,7 @@ namespace XSharp.Project
                 case idAddProjectReference:
                     return this.AddProjectReference();
 
-                case idAddAssemblyReference when !this.IsNetCoreApp:
+                case idAddAssemblyReference:
                     return this.AddAssemblyReference();
 
                 case idAddCOMReference when !this.IsNetCoreApp:
@@ -602,7 +808,7 @@ namespace XSharp.Project
                         return QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
                 }
             }
-            return base.QueryStatusCommandFromOleCommandTarget (cmdGroup, cmd, out handled);
+            return base.QueryStatusCommandFromOleCommandTarget(cmdGroup, cmd, out handled);
         }
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
@@ -647,7 +853,7 @@ namespace XSharp.Project
             AddPendingReferences(sdkrefs, this.ActiveSubProject);
 
             var rsprefs = base.RefreshReferencesFromResponseFile();
-            foreach ( var reference in rsprefs)
+            foreach (var reference in rsprefs)
             {
                 references.AddUnique(reference);
             }
@@ -699,41 +905,7 @@ namespace XSharp.Project
 
         void Clean()
         {
-            var folderNodes = new List<FolderNode>();
-            bool dirty = false;
-            this.FindNodesOfType(folderNodes);
-            foreach (var node in folderNodes)
-            {
-                if (!(node is XSharpSdkFolderNode) && node.ItemNode != null
-                    && node.ItemNode.Item != null)
-                {
-                    try
-                    {
-                    this.BuildProject.RemoveItem(node.ItemNode.Item);
-                    Logger.Information($"Clean: Removed folder node {node.Caption} from project {this.Caption}");
-                    dirty = true;
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-            var referenceNodes = new List<XSharpSDKProjectReferenceNode>();
-            this.FindNodesOfType(referenceNodes);
-            foreach (var node in referenceNodes)
-            {
-                node.RemoveProperties();
-            }
-            if (this.GetProjectProperty(ProjectFileConstants.ProjectGuid) != null)
-            {
-                Logger.Information($"Clean: Removed project Guid from project{this.Caption}");
-                this.RemoveProjectProperty(ProjectFileConstants.ProjectGuid);
-            }
-            if (this.BuildProject.IsDirty || dirty)
-            {
-                this.BuildProject.Save();
-            }
+            CleanupProjectFile();
         }
         public override void BeforeSave()
         {
@@ -786,7 +958,7 @@ namespace XSharp.Project
             foreach (var reference in newReferences)
             {
                 var name = reference.ToLower();
-                if (sdkReferences.Find( r => r.ToLower() == name) == null)
+                if (sdkReferences.Find(r => r.ToLower() == name) == null)
                 {
                     toAdd.Add(reference);
                 }
@@ -833,7 +1005,7 @@ namespace XSharp.Project
             if (this.ItemNode != null && this.ItemNode.Item != null)
                 root.BuildProject.RemoveItem(this.ItemNode.Item);
         }
-        public override bool EmbedInteropTypes { get => false; set { }}
+        public override bool EmbedInteropTypes { get => false; set { } }
 
 
         protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.DotNETFrameworkDependency;
@@ -870,6 +1042,7 @@ namespace XSharp.Project
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
     }
+
 
 }
 

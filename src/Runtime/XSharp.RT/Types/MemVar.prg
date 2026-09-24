@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -68,7 +68,9 @@ INTERNAL CLASS XSharp.MemVarLevel
     INTERNAL PROPERTY Count AS INT GET Variables:Count
 
     INTERNAL METHOD SetDataSession(oNewSession as XSharp.RDD.DataSession) AS VOID
-        SELF:DataSession := XSharp.RuntimeState.SetDataSession(oNewSession)
+        IF oNewSession != NULL
+	        SELF:DataSession := XSharp.RuntimeState.SetDataSession(oNewSession)
+        END IF
         RETURN
 
     INTERNAL METHOD RestoreDataSession() AS VOID

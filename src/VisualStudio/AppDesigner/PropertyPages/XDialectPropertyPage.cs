@@ -45,8 +45,10 @@ namespace XSharp.Project
         /// </returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
+#if DEV17
             if (IsSdkProject)
                 return new XDialectPropertyPageXamlHost(this);
+#endif
             return new XDialectPropertyPagePanelWinForms(this);
         }
 
@@ -61,9 +63,10 @@ namespace XSharp.Project
 
             if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
             {
+#if DEV17
                 // XAML path — notify the host which delegates to the ViewModel.
                 (PropertyPagePanel as XDialectPropertyPageXamlHost)?.NotifyDialectChanged(e.NewValue);
-
+#endif
                 // WinForms path — delegate directly to the panel (null-safe).
                 (PropertyPagePanel as XDialectPropertyPagePanel)?.Project_OnProjectPropertyChanged(sender, e);
             }

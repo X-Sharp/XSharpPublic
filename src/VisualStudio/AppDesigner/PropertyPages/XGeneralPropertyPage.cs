@@ -31,7 +31,9 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
     public class XSharpGeneralPropertyPage : XPropertyPage
     {
+#if DEV17
         private const string None = XGeneralPropertyPageViewModel.None;
+#endif
 
         // =========================================================================================
         // Constructors
@@ -257,8 +259,10 @@ namespace XSharp.Project
         /// </returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
+#if DEV17
             if (IsSdkProject)
                 return new XGeneralPropertyPageXamlHost(this);
+#endif
 
             return new XGeneralPropertyPagePanelWinForms(this);
         }

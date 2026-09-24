@@ -53,8 +53,10 @@ namespace XSharp.Project
         /// <returns>An <see cref="IPropertyPagePanel"/> implementation.</returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
+#if DEV17
             if (IsSdkProject)
                 return new XDebugPropertyPageXamlHost(this);
+#endif
             return new XDebugPropertyPagePanelWinForms(this);
         }
     }

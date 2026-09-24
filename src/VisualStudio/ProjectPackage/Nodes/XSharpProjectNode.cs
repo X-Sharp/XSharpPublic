@@ -680,7 +680,9 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-                typeof(XSharpGlobalUsingsPropertiesPage).GUID,
+#if DEV17
+                 typeof(XSharpGlobalUsingsPropertiesPage).GUID,
+#endif
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
@@ -1258,7 +1260,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
 
         public override bool IsProjectItemType(MSBuild.ProjectItem item)
@@ -1285,7 +1287,7 @@ namespace XSharp.Project
         }
 
 
-        #region PackageReferences
+#region PackageReferences
 
 
         protected override void ProcessReferences()
@@ -1422,9 +1424,9 @@ namespace XSharp.Project
             ProjectElement item = CreateMsBuildFileItem(name, ProjectFileConstants.PackageReference);
             return new XSharpPackageReferenceNode(this, item);
         }
-        #endregion
+#endregion
 
-        #region References Management Events
+#region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
         {
@@ -1452,10 +1454,10 @@ namespace XSharp.Project
                     ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
-        #endregion
+#endregion
 
 
-        #region Private implementation
+#region Private implementation
 
         private void CreateListManagers()
         {
@@ -1631,7 +1633,7 @@ namespace XSharp.Project
         {
             return new XSharpProjectNodeProperties(this);
         }
-        #endregion
+#endregion
 
 
         public XSharpModel.XProject ProjectModel
@@ -2004,7 +2006,7 @@ namespace XSharp.Project
 
 
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
 
         public void AddIntellisenseError(XError error)
         {
@@ -2071,7 +2073,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
 
         internal virtual void Unload()
@@ -2253,7 +2255,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IProjectTypeHelper
+#region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -2300,8 +2302,8 @@ namespace XSharp.Project
         }
 
 
-        #endregion
-        #region IVsSingleFileGeneratorFactory
+#endregion
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -2356,9 +2358,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
-        #region IVsDesignTimeAssemblyResolution
+#region IVsDesignTimeAssemblyResolution
 
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", XSharpProjectFileConstants.AnyCPU);
 
@@ -2378,8 +2380,8 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
-        #region TableManager
+#endregion
+#region TableManager
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
 
@@ -2416,7 +2418,7 @@ namespace XSharp.Project
             _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);
         }
 
-        #endregion
+#endregion
 
 
         public void AddFileNode(string strFileName)
@@ -3151,7 +3153,7 @@ namespace XSharp.Project
 
 
 
-        #region IVsProject5
+#region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -3186,7 +3188,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        #endregion
+#endregion
 
     }
 

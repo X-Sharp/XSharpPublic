@@ -20,7 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public static BoundExpression StaticCall(this SyntheticBoundNodeFactory factory, NamedTypeSymbol type, string name, params BoundExpression[] arguments)
         {
-            var method = type.GetMembers(name).OfType<MethodSymbol>().FirstOrDefault();
+            var method = type.GetMembers(name).OfType<MethodSymbol>().Where(m => m.GetParameterCount() == arguments.Length).FirstOrDefault();
             if (method is null)
                 throw new InvalidOperationException($"Method {name} not found in type {type.Name}");
             return factory.Call(factory.Type(type), method, arguments);
@@ -56,7 +56,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (m.ParameterCount == 1 && m.Parameters[0].Type?.SpecialType == SpecialType.System_Object)
                             {
                                 var newCall = _factory.Call(null, m, arg);
-                                newCall.WasCompilerGenerated = true;
                                 return newCall;
                             }
                         }
@@ -135,8 +134,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var rtType = _compilation.RuntimeFunctionsType();
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
                 var block = ImmutableArray.CreateBuilder<BoundExpression>();
+                // we need an array of the local symbols for the sequence
+                var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+
                 var usual = _compilation.UsualType();
                 _factory.Syntax = expression.Syntax;
+
+                // Save the current 'HasLocals' state so we will not clear inside a recursive loop
+                // $hasLocal := __HasLocals()
+                var hasLocalvar = CreateHasLocalVar(rtType, locals, exprs);
 
                 if (!isStatic)
                 {
@@ -144,7 +150,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     value = MakeConversionNode(value, usual, false);
                     var localname = _factory.Literal("_THIS");
                     var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
-                    mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
                 }
 
@@ -173,21 +178,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var value = MakeConversionNode(localvar, usual, false);
                     value.WasCompilerGenerated = true;
                     var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
-                    mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
 
                     // create assignment expression for inside the block that is executed when locals are updated
                     // LocalVar := (CorrectType) __LocalGet("name")
                     mcall = _factory.StaticCall(rtType, ReservedNames.LocalGet, localname);
-                    mcall.WasCompilerGenerated = true;
                     value = MakeConversionNode(mcall, localvar.Type!, false);
                     value.WasCompilerGenerated = true;
-                    var ass = _factory.AssignmentExpression(localvar, value);
-                    ass.WasCompilerGenerated = true;
-                    block.Add(ass);
+                    var ass2 = _factory.AssignmentExpression(localvar, value);
+                    block.Add(ass2);
                 }
-                // we need an array of the local symbols for the sequence
-                var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
                 var type = expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object);
                 var isVoid = type.SpecialType == SpecialType.System_Void;
                 var tempSym = _factory.SynthesizedLocal(isVoid ? usual : type);
@@ -208,20 +208,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
                     var t = _factory.Literal(true);
                     var f = _factory.Literal(false);
-                    cond.WasCompilerGenerated = true;
                     // create a sequence with the assignment expressions, return true (because the conditional expression needs a value)
                     var assignmentsequence = _factory.Sequence(block.ToArray(), t);
-                    assignmentsequence.WasCompilerGenerated = true;
                     // iif ( __localupdated(), <assignmentsequence>, false)
                     var condexpr = _factory.Conditional(cond, assignmentsequence, f, _compilation.GetSpecialType(SpecialType.System_Boolean));
-                    condexpr.WasCompilerGenerated = true;
                     exprs.Add(condexpr);
                 }
                 if (count > 0)
                 {
-                    // __LocalsClear()
-                    var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
-                    exprs.Add(VisitExpression(clear));
+                    // __LocalsClear($hasLocal)
+                    var clear = CreateLocalsClear(rtType, hasLocalvar);
+                    exprs.Add(clear);
                 }
 
                 // create a sequence that returns the temp var.

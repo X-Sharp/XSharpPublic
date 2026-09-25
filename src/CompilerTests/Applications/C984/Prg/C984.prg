@@ -1,7 +1,7 @@
 // 984. Problem with /fox3 when /fox2 is also enabled #2083
 // https://github.com/X-Sharp/XSharpPublic/issues/2083
 
-//#pragma options("fox2", enable)
+#pragma options("fox2", enable)
 
 #pragma options("fox3", enable)
 #pragma options("allowdot", enable)
@@ -42,7 +42,9 @@ FUNCTION Start( ) AS VOID
 
 
 PROC xAssert(l AS LOGIC) AS VOID
-IF .not. l
+IF l
+	? "Assertion passed"
+ELSE
 	THROW Exception{"Incorrect result"}
 END IF
 

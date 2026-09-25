@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!uniqueUsings.Contains(ns))
             {
                 uniqueUsings.Add(ns);
-                usings.Add(new NamespaceOrTypeAndUsingDirective(ns, usingDirective, ImmutableArray<AssemblySymbol>.Empty));
+                usings.Add(new NamespaceOrTypeAndUsingDirective(ns, usingDirective, []));
             }
 
         }

@@ -7732,8 +7732,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // When AllowDotForInstanceMembers
-                if (context.Op.Type == XP.DOTCOLON ||
-                    context.Op.Type == XP.COLON ||
+                if (context.IsDotColonExpression || context.IsColonExpression ||
                     _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
                 {
                     var left = context.Expr.Get<ExpressionSyntax>();

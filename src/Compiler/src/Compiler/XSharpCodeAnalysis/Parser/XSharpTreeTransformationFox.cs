@@ -135,7 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // do not assume an area when no Expr (inside WITH Block)
             if (context.Expr != null && context.Op.Type == XP.DOT
-                && context.Parent is not MethodCallContext
+                && !context.IsStaticMethodCall
                 && (context.AreaName == "M" ||
                     _options.HasOption(CompilerOption.FoxCursorSupport, context, PragmaOptions)))
             {
@@ -370,11 +370,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             // SomeVar(1,2) Can also be a FoxPro array access
-            if (context.Parent.Parent is not XP.MethodCallContext ||
+
+            var isMethodCall = false;
+            var amc = context.XParent.XParent as XP.AccessMemberContext;
+            if (amc != null)
+            {
+                isMethodCall = amc.IsStaticMethodCall;
+            }
+            if (!isMethodCall &&
                 (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
             {
                 MemVarFieldInfo fieldInfo = findVar(name);
-                var amc = context.Parent.Parent as XP.AccessMemberContext;
                 var dotCall = amc?.Op.Type == XP.DOT;
                 if (fieldInfo != null && dotCall)
                 {
@@ -383,9 +389,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // even when Foo is a private because this can never be a assignment
                     if (!fieldInfo.IsField)
                     {
-                        if (context.Parent is XP.PrimaryExpressionContext pec &&
-                            pec.Parent is XP.MethodCallContext mcc &&
-                            mcc.Parent is XP.ExpressionStmtContext)
+                        if (isMethodCall)
                         {
                             fieldInfo = null;
                         }

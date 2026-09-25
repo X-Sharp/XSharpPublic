@@ -1292,6 +1292,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal bool HasThisReference => Op.Type == XSharpLexer.DOT && Expr != null &&
                 (AreaName == "SELF" || AreaName == "THIS");
 
+            internal bool IsDotExpression => Op.Type == XSharpParser.DOT;
+            internal bool IsColonExpression => Op.Type == XSharpParser.COLON;
+            internal bool IsDotColonExpression => Op.Type == XSharpParser.DOTCOLON;
+            internal bool IsStaticMethodCall => IsDotExpression &&
+                        this.XParent is XSharpParser.MethodCallContext;
+
         }
         #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set
 

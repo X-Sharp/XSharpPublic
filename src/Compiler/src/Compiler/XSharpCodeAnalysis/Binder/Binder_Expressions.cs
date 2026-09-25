@@ -167,13 +167,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression isFromEnd;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Index__get_IsFromEnd) as MethodSymbol;
-                isFromEnd = new BoundCall(syntax, left, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                isFromEnd = new BoundCall(syntax, left, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             BoundExpression leftValue;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Index__get_Value) as MethodSymbol;
-                leftValue = new BoundCall(syntax, left, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                leftValue = new BoundCall(syntax, left, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             var opKind = BinaryOperatorKind.IntSubtraction;
@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var sig = this.Compilation.BuiltInOperators.GetSignature(opKind);
             BoundExpression whenFalse = new BoundBinaryOperator(syntax, opKind, leftValue, right, resultConstant, sig.Method, null,
                 resultKind: LookupResultKind.Viable,
-                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                originalUserDefinedOperatorsOpt: [],
                 type: int32type,
                 hasErrors: false)
             { WasCompilerGenerated = true };
@@ -245,13 +245,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression start;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Range__get_Start) as MethodSymbol;
-                start = new BoundCall(syntax, range, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                start = new BoundCall(syntax, range, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             BoundExpression end;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Range__get_End) as MethodSymbol;
-                end = new BoundCall(syntax, range, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                end = new BoundCall(syntax, range, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             start = SubtractSystemIndex(start, diagnostics, checkZero: true);
@@ -311,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 sig.Method,
                 null,
                 resultKind: LookupResultKind.Viable,
-                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                originalUserDefinedOperatorsOpt: [],
                 type: expr.Type,
                 hasErrors: false)
             { WasCompilerGenerated = true };
@@ -485,7 +485,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 creationSyntax: null,
                                 initSyntax: initSyntax,
                                 type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, tint32),
-                                sizes: ImmutableArray<BoundExpression>.Empty,
+                                sizes: [],
                                 boundInitExprOpt: args));
                             args = argsBuilder.ToImmutableAndFree();
                         }
@@ -1183,7 +1183,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     xnode1 = xnode1.Parent as XSharpParserRuleContext;
                 }
-                if (xnode1 is AccessMemberContext amc && amc.IsFox)
+                if (xnode1 is AccessMemberContext amc && amc.IsFox && amc.IsDotExpression)
                 {
                     isFoxMemberAccess = true;
                     if (amc.HasMPrefix)
@@ -1203,7 +1203,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     xnode = xnode.Parent as XSharpParserRuleContext;
                 }
-                if (xnode is AccessMemberContext amc && amc.IsFox)
+                if (xnode is AccessMemberContext amc && amc.IsFox && amc.IsDotExpression)
                 {
                     isFoxMemberAccess = true;
                     if (amc.HasMPrefix)

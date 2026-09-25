@@ -240,6 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LocalGet = "__LocalGet";
         internal const string LocalsUpdated = "__LocalsUpdated";
         internal const string LocalsClear = "__LocalsClear";
+        internal const string HasLocals = "__HasLocals";
         internal const string FoxRedim = "__FoxRedim";
         internal const string FoxAssign = "__FoxAssign";
         internal const string FoxFillArray = "__FoxFillArray";

@@ -42,9 +42,14 @@ inspired by Microsoft.CSharp.DesignTime.targets
     <!-- XSharpConstants.guidXSharpLanguageServicePkgString -->
     <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{E9B6EE0F-9BFA-4CFF-A60B-51A08BBC5050}</LanguageServiceId>
     <TemplateLanguage Condition="'$(TemplateLanguage)' == ''">XSharp</TemplateLanguage>
-    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{FAE04EC0-301F-11d3-BF4B-00C04F79EFBC}</AddItemTemplatesGuid>
-    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</CmdUIContextGuid>
-    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</GeneratorsTypeGuid>
+    <!--
+      X# project factory GUID (XSharpConstants.guidXSharpProjectFactoryString): the X# item templates
+      (Projects\{AA6C8D78-...}\AddItemTemplates) and single file generators (Generators\{AA6C8D78-...})
+      are registered there by the X# project package. The C# values would show the C# item templates.
+    -->
+    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</AddItemTemplatesGuid>
+    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</CmdUIContextGuid>
+    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</GeneratorsTypeGuid>
     <DesignerFunctionVisibility Condition="'$(DesignerFunctionVisibility)' == ''">Private</DesignerFunctionVisibility>
     <DesignerVariableNaming Condition="'$(DesignerVariableNaming)' == ''">Camel</DesignerVariableNaming>
     <DesignerHiddenCodeGeneration Condition="'$(DesignerHiddenCodeGeneration)' == ''">Declarations</DesignerHiddenCodeGeneration>
@@ -52,6 +57,13 @@ inspired by Microsoft.CSharp.DesignTime.targets
 
   <ItemGroup>
     <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml" />
+    <!-- X# item types: file properties and Properties window -->
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml;$(XSharpXamlDir)VOBinary.xaml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml;$(XSharpXamlDir)VOBinary.BrowseObject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
     <!-- Data for XSharpProjectAdapter (code model), invisible -->
     <PropertyPageSchema Include="$(XSharpXamlDir)XSharpCompilerCommandLineArgs.xaml;$(XSharpXamlDir)XSharpProjectProperties.xaml">
       <Context>ProjectSubscriptionService</Context>

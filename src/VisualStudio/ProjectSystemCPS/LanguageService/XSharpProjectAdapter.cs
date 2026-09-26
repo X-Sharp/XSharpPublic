@@ -66,6 +66,8 @@ namespace XSharp.ProjectSystem.LanguageService
 
         private XProject model;
         private List<IDisposable> links;
+        private IntellisenseErrorList errorList;
+        private CommentTaskList taskList;
         private XParseOptions parseOptions = XParseOptions.Default;
         private bool parseOptionsFromCommandLine;
         private string rootNamespace = "";
@@ -102,8 +104,13 @@ namespace XSharp.ProjectSystem.LanguageService
                 if (model != null)
                     return;
                 model = new XProject(this);
+                model.ProjectWalkComplete += OnProjectWalkComplete;
+                model.FileWalkComplete += OnFileWalkComplete;
             }
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
+            errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName);
+            errors.Changed = errorList.Update;
+            taskList = new CommentTaskList(threading.JoinableTaskFactory, DisplayName);
 
             var linkOptions = new DataflowLinkOptions { PropagateCompletion = true };
             links = new List<IDisposable>
@@ -133,8 +140,18 @@ namespace XSharp.ProjectSystem.LanguageService
                         link.Dispose();
                     links = null;
                 }
+                if (model != null)
+                {
+                    model.ProjectWalkComplete -= OnProjectWalkComplete;
+                    model.FileWalkComplete -= OnFileWalkComplete;
+                }
                 oldModel = model;
                 model = null;
+                errors.Changed = null;
+                errorList?.Dispose();
+                errorList = null;
+                taskList?.Dispose();
+                taskList = null;
                 files.Clear();
                 projectReferences.Clear();
             }
@@ -318,6 +335,26 @@ namespace XSharp.ProjectSystem.LanguageService
         private static string GetProperty(IProjectRuleSnapshot snapshot, string name)
         {
             return snapshot.Properties.TryGetValue(name, out var value) && value != null ? value : "";
+        }
+
+        // Like XSharpProjectNode.OnProjectWalkComplete/OnFileWalkComplete: refresh the comment tasks
+        private void OnProjectWalkComplete(XProject xProject) => RefreshCommentTasks();
+
+        private void OnFileWalkComplete(XFile xFile) => RefreshCommentTasks();
+
+        private void RefreshCommentTasks()
+        {
+            try
+            {
+                var current = model;
+                var tasks = taskList;
+                if (current != null && tasks != null)
+                    tasks.Update(current.GetCommentTasks());
+            }
+            catch (Exception e)
+            {
+                XSettings.Exception(e);
+            }
         }
 
         private void WalkProject()

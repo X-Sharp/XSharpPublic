@@ -36,7 +36,8 @@ namespace XSharp.Project
         }
         private async Task CheckAvailabilityAsync()
         {
-            Command.Visible = await Commands.ProjectIsXSharpProjectAsync();
+            // CPS projects have their own "Edit Project File" command (capability OpenProjectFile)
+            Command.Visible = await Commands.ProjectIsMpfProjectAsync();
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {

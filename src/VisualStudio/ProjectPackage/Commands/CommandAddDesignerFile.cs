@@ -49,6 +49,12 @@ namespace XSharp.Project
                     }
                 }
             }
+            // The designer file is generated from the MPFproj file node (XSharpFileNode)
+            if (visible && !await Commands.ProjectIsMpfProjectAsync())
+            {
+                visible = false;
+                currentFile = null;
+            }
             Command.Visible = visible;
             if (items.Count() != 1)
             {

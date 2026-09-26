@@ -29,6 +29,15 @@ namespace XSharp.Project
             var project = await VS.Solutions.GetActiveProjectAsync();
             return project.IsXSharp();
         }
+        /// <summary>
+        /// True when the active project is an X# project that is loaded by the MPFproj project system.
+        /// X# projects that are loaded by the CPS project system (XSharp.ProjectSystemCPS) have no XSharpProjectNode.
+        /// </summary>
+        internal async static Task<bool> ProjectIsMpfProjectAsync()
+        {
+            var project = await VS.Solutions.GetActiveProjectAsync();
+            return project != null && XSharpProjectNode.FindProject(project.FullPath) != null;
+        }
         internal async static Task<bool> ProjectIsXSharpSdkProjectAsync()
         {
             var project = await VS.Solutions.GetActiveProjectAsync();

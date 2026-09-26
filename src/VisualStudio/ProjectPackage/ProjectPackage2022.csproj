@@ -743,6 +743,13 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectSystemCPS\ProjectSystemCPS.csproj">
+      <Project>{99708d46-58a9-46b6-b77f-003adaf15ff6}</Project>
+      <Name>ProjectSystemCPS</Name>
+      <!-- Only the assembly and its pkgdef: CPS is part of VS, XSharp.CodeModel is already included by this project -->
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\Support\Support2022.csproj">
       <Project>{fb387be5-a620-46ea-a7a6-1ccb9177f7c1}</Project>
       <Name>Support2022</Name>

@@ -6,14 +6,18 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
           created a backup copy.  Incorrect changes to this file will make it
           impossible to load or build your projects from the command-line or the IDE.
 
-  This file contains Visual Studio and designer-related properties and items for X# projects.
-  It is based on Microsoft.CSharp.DesignTime.targets
-  It gets install inside the <VisualStudio>\MSBuild\Microsoft\VisualStudio\Managed folder.
-  This folder is also known as "ManagedXamlResourcesDirectory"
-  We inherit the property pages from Microsoft.Managed.DesignTime.targets and extend some of them
-  with X# specific properties. Our pages are called <Somepage>.XSharp.Xaml.
-  The order attribute in the xaml files determines the order in which pages are shown in the UI.
+  This file contains Visual Studio and designer-related properties and items for X# projects
+  that are loaded by the CPS based X# project system (XSharp.ProjectSystemCPS).
+  It is based on Microsoft.CSharp.DesignTime.targets.
 
+  It is imported by XSharp.CurrentVersion.targets and XSharp.CrossTargeting.targets, but only when
+  the property XSharpCpsProjectSystem is 'true'. The CPS project type sets that property as a global
+  property, so projects loaded by the MPFproj project system and command line builds are not affected.
+
+  It imports Microsoft.Managed.DesignTime.targets from the Visual Studio installation
+  (<VisualStudio>\MSBuild\Microsoft\VisualStudio\Managed). That file declares the managed capabilities
+  (.NET, DependenciesTree, PackageReferences, ...) and the property page rules of the managed project system.
+  X# specific rules live in the Rules subfolder of this folder.
 
 Copyright (c) XSharp B.V.  All Rights Reserved
 
@@ -24,19 +28,19 @@ inspired by Microsoft.CSharp.DesignTime.targets
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
-	<ManagedXamlResourcesDirectory>$(MSBuildThisFileDirectory)\Microsoft</ManagedXamlResourcesDirectory>
+    <XSharpManagedDesignTimeTargetsPath Condition="'$(XSharpManagedDesignTimeTargetsPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</XSharpManagedDesignTimeTargetsPath>
+    <XSharpXamlDir Condition="'$(XSharpXamlDir)' == ''">$(MSBuildThisFileDirectory)Rules\</XSharpXamlDir>
   </PropertyGroup>
 
-
-  <Import Project="$(ManagedXamlResourcesDirectory)\Managed.DesignTime.targets" />
+  <Import Project="$(XSharpManagedDesignTimeTargetsPath)" />
 
   <!-- Properties -->
   <PropertyGroup>
     <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
     <AppDesignerFolderContentsVisibleOnlyInShowAllFiles Condition="'$(AppDesignerFolderContentsVisibleOnlyInShowAllFiles)' == ''">false</AppDesignerFolderContentsVisibleOnlyInShowAllFiles>
     <LanguageServiceName Condition="'$(LanguageServiceName)' == ''">X#</LanguageServiceName>
-    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{694DD9B6-B865-4C5B-AD85-86356E9C88DC}</LanguageServiceId>
+    <!-- XSharpConstants.guidXSharpLanguageServicePkgString -->
+    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{E9B6EE0F-9BFA-4CFF-A60B-51A08BBC5050}</LanguageServiceId>
     <TemplateLanguage Condition="'$(TemplateLanguage)' == ''">XSharp</TemplateLanguage>
     <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{FAE04EC0-301F-11d3-BF4B-00C04F79EFBC}</AddItemTemplatesGuid>
     <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</CmdUIContextGuid>
@@ -44,10 +48,21 @@ inspired by Microsoft.CSharp.DesignTime.targets
     <DesignerFunctionVisibility Condition="'$(DesignerFunctionVisibility)' == ''">Private</DesignerFunctionVisibility>
     <DesignerVariableNaming Condition="'$(DesignerVariableNaming)' == ''">Camel</DesignerVariableNaming>
     <DesignerHiddenCodeGeneration Condition="'$(DesignerHiddenCodeGeneration)' == ''">Declarations</DesignerHiddenCodeGeneration>
-    <!-- Turn off rules and capabilities that are defined in MSBuild so that we can import our own below -->
-    <DefineXSharpItemSchemas>false</DefineXSharpItemSchemas>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml" />
+    <ProjectCapability Include="
+                          XSharp;
+                          Managed;
+                          SingleTargetBuildForStartupProjects;" />
+    <!--
+      The managed project system hooks up the Roslyn workspace for ".NET & LanguageService" projects.
+      X# has its own language service and code model, so LanguageService must not be declared.
+      ReferencesFolder is replaced by the Dependencies tree (DependenciesTree capability).
+    -->
+    <ProjectCapability Remove="LanguageService;ReferencesFolder" />
+  </ItemGroup>
 
   <!-- Targets -->
 

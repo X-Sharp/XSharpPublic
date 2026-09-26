@@ -289,6 +289,7 @@
     <Project Path="VisualStudio/LanguageService/LanguageService2022.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7396" />
     <Project Path="VisualStudio/ProjectBase/ProjectBase2022.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c696" />
     <Project Path="VisualStudio/ProjectPackage/ProjectPackage2022.csproj" Id="f4adebdb-cd20-4532-b4e3-fe7424f5369d" />
+    <Project Path="VisualStudio/ProjectSystemCPS/ProjectSystemCPS.csproj" Id="99708d46-58a9-46b6-b77f-003adaf15ff6" />
     <Project Path="VisualStudio/Support/Support2022.csproj" Id="fb387be5-a620-46ea-a7a6-1ccb9177f7c1" />
   </Folder>
 </Solution>

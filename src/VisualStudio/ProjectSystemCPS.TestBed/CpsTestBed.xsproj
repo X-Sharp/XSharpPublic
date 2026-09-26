@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    WP-1 test bed for the CPS based X# project system (src/VisualStudio/ProjectSystemCPS).
+    Open CpsTestBed.sln in the experimental instance: it references this project with the
+    CPS project type GUID {AB494DCE-A11B-4583-851E-D4A86775B3F0} instead of the MPFproj GUID.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <Dialect>Core</Dialect>
+    <RootNamespace>CpsTestBed</RootNamespace>
+  </PropertyGroup>
+</Project>

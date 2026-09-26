@@ -374,6 +374,11 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 
   <!-- Import design time targets for Roslyn Project System. These are only available if Visual Studio is installed. -->
   <!-- Import design time targets before the common targets, which import targets from Nuget. -->
+  <PropertyGroup>
+    <XSharpDesignTimeTargetsPath Condition="'$(XSharpDesignTimeTargetsPath)'==''">$(MSBuildThisFileDirectory)XSharp.DesignTime.targets</XSharpDesignTimeTargetsPath>
+  </PropertyGroup>
+  <!-- Only for projects loaded by the CPS based X# project system, which sets XSharpCpsProjectSystem as a global property -->
+  <Import Project="$(XSharpDesignTimeTargetsPath)" Condition="'$(XSharpCpsProjectSystem)' == 'true' and '$(XSharpDesignTimeTargetsPath)' != '' and Exists('$(XSharpDesignTimeTargetsPath)') and Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 

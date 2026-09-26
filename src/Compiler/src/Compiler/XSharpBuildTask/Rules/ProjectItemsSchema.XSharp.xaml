@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  X# item schema for the CPS based X# project system.
+  Maps the X# file extensions to MSBuild item types, like ProjectItemsSchema.CSharp.xaml does for C#.
+  NativeResource (.rc) and VOBinary (.xsfrm etc.) are added together with their File/BrowseObject rules (WP-3).
+-->
+<ProjectSchemaDefinitions
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <ContentType
+      Name="XSharpFile"
+      DisplayName="X# file"
+      ItemType="Compile">
+  </ContentType>
+
+  <ContentType
+      Name="XSharpHeader"
+      DisplayName="X# header"
+      ItemType="None">
+  </ContentType>
+
+  <ItemType Name="Compile" DisplayName="X# compiler"/>
+  <ItemType Name="AdditionalFiles" DisplayName="X# analyzer additional file"/>
+  <ItemType Name="EditorConfigFiles" DisplayName=".editorconfig file" />
+
+  <FileExtension Name=".prg" ContentType="XSharpFile"/>
+  <FileExtension Name=".prgx" ContentType="XSharpFile"/>
+  <FileExtension Name=".xs" ContentType="XSharpFile"/>
+  <FileExtension Name=".vh" ContentType="XSharpHeader"/>
+  <FileExtension Name=".xh" ContentType="XSharpHeader"/>
+  <FileExtension Name=".ch" ContentType="XSharpHeader"/>
+</ProjectSchemaDefinitions>

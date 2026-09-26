@@ -378,21 +378,52 @@ namespace XSharp.ProjectSystem.LanguageService
 
         public bool HasFileNode(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+            var fullPath = XSharpCommandLine.MakeFullPath(fileName, ProjectFolder);
             lock (gate)
             {
-                return files.Contains(fileName);
+                return files.Contains(fullPath);
             }
         }
 
+        /// <summary>
+        /// Called by the VO designers (XSharpVoEditors, Functions.EnsureFileNodeExists) after they have written a
+        /// generated file (.prg, .rc, ...) to disk.
+        /// </summary>
+        /// <remarks>
+        /// In SDK-style X# projects these files are included by the globs of XSharp.SDK.Props (including
+        /// DependentUpon), so the project file does not change: CPS picks the file up with the next evaluation.
+        /// The file is registered with the code model immediately, so HasFileNode is true right away; the later
+        /// source item update finds it already registered.
+        /// Projects without default items (EnableDefaultItems=false, legacy format) would need an explicit item
+        /// through CPS; that belongs to the legacy-format step.
+        /// </remarks>
         public void AddFileNode(string fileName)
         {
-            // Called by the code model for files that it wants to see in the project (e.g. generated files).
-            // Under CPS the project file is the source of truth; adding items is done through CPS (WP-6).
+            if (string.IsNullOrEmpty(fileName))
+                return;
+            var fullPath = XSharpCommandLine.MakeFullPath(fileName, ProjectFolder);
+            lock (gate)
+            {
+                if (model != null && files.Add(fullPath))
+                    model.AddFile(fullPath);
+            }
         }
 
+        /// <summary>
+        /// Called by the VO designers before they delete a generated file. See <see cref="AddFileNode"/>.
+        /// </summary>
         public void DeleteFileNode(string fileName)
         {
-            // See AddFileNode
+            if (string.IsNullOrEmpty(fileName))
+                return;
+            var fullPath = XSharpCommandLine.MakeFullPath(fileName, ProjectFolder);
+            lock (gate)
+            {
+                if (model != null && files.Remove(fullPath))
+                    model.RemoveFile(fullPath);
+            }
         }
 
         public void ClearIntellisenseErrors(string fileName) => errors.Clear(fileName);

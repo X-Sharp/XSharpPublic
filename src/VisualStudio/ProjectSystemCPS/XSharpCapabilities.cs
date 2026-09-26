@@ -31,9 +31,11 @@ namespace XSharp.ProjectSystem
         /// SharedImports (VB) and EditAndContinue (not supported by the X# debugger integration).
         /// AppDesigner: "Properties" folder; OpenProjectFile: "Edit Project File";
         /// HandlesOwnReload: the project system reloads the project file itself after external changes;
-        /// ProjectConfigurationsDeclaredDimensions: configurations/platforms/target frameworks from the project file.
+        /// ProjectConfigurationsDeclaredDimensions: configurations/platforms/target frameworks from the project file;
+        /// ProjectPropertiesEditor: the AppDesigner opens the new property editor (XAML rules). Also declared in
+        /// XSharp.DesignTime.targets, but repeated here so that it does not depend on the installed X# targets.
         /// </summary>
         public const string ProjectTypeCapabilities =
-            XSharpCps + "; AppDesigner; HandlesOwnReload; OpenProjectFile; PreserveFormatting; ProjectConfigurationsDeclaredDimensions; .NET; UseProjectEvaluationCache";
+            XSharpCps + "; AppDesigner; HandlesOwnReload; OpenProjectFile; PreserveFormatting; ProjectConfigurationsDeclaredDimensions; ProjectPropertiesEditor; .NET; UseProjectEvaluationCache";
     }
 }

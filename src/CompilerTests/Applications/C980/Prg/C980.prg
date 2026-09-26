@@ -15,7 +15,7 @@ END CLASS
 GLOBAL GlobalString := "test" AS STRING
 GLOBAL GlobalClass := TestGlobalClass{} AS TestGlobalClass
 
-CLASS Customers
+CLASS CustomersClass
 	STATIC PROTECT StaticProtect AS INT
 	STATIC PROTECT StaticPrivate AS INT
 	
@@ -28,12 +28,12 @@ CLASS Customers
 	PROPERTY OnlyGetProperty AS INT GET 100
 	
 	STATIC METHOD StaticMethod() AS VOID
-		Customers.StaticProtect := 200
-		xAssert( Customers.StaticProtect == 200 )
-		Customers.StaticPrivate := 300
-		xAssert( Customers.StaticPrivate == 300 )
+		CustomersClass.StaticProtect := 200
+		xAssert( CustomersClass.StaticProtect == 200 )
+		CustomersClass.StaticPrivate := 300
+		xAssert( CustomersClass.StaticPrivate == 300 )
 
-		LOCAL localthis := Customers{} AS Customers
+		LOCAL localthis := CustomersClass{} AS CustomersClass
 		localthis.InstanceProtect := 321
 		xAssert( localthis.InstanceProtect == 321 )
 		xAssert( localthis:InstanceProtect == 321 )
@@ -43,7 +43,7 @@ CLASS Customers
 		xAssert( localthis:InstancePrivate == 333 )
 
 		// When using a usual, should there actually be a runtime error trying to use non-public members?
-/*		LOCAL localusual := Customers{} AS USUAL
+/*		LOCAL localusual := CustomersClass{} AS USUAL
 		localusual.InstanceProtect := 321 
 		xAssert( localusual.InstanceProtect == 321 )
 		xAssert( localusual:InstanceProtect == 321 )
@@ -73,12 +73,12 @@ CLASS Customers
 		xAssert(GlobalClass:n==777)
 	
 	METHOD InstanceMethod() AS VOID
-		Customers.StaticProtect := 200
-		xAssert( Customers.StaticProtect == 200 )
-		Customers.StaticPrivate := 300
-		xAssert( Customers.StaticPrivate == 300 )
+		CustomersClass.StaticProtect := 200
+		xAssert( CustomersClass.StaticProtect == 200 )
+		CustomersClass.StaticPrivate := 300
+		xAssert( CustomersClass.StaticPrivate == 300 )
 
-		LOCAL localthis := Customers{} AS Customers
+		LOCAL localthis := CustomersClass{} AS CustomersClass
 		localthis.InstanceProtect := 321
 		xAssert( localthis.InstanceProtect == 321 )
 		xAssert( localthis:InstanceProtect == 321 )
@@ -97,7 +97,7 @@ CLASS Customers
 		xAssert( localthis:InstancePrivate == 444 )
 
 		// When using a usual, should there actually be a runtime error trying to use non-public members?
-/*		LOCAL localusual := Customers{} AS USUAL
+/*		LOCAL localusual := CustomersClass{} AS USUAL
 		localusual.InstanceProtect := 321
 		xAssert( localusual.InstanceProtect == 321 )
 		xAssert( localusual:InstanceProtect == 321 )
@@ -150,8 +150,8 @@ FUNCTION Start( ) AS VOID
 	? GlobalClass.n
 	xAssert(GlobalClass.n == 2000)
 	
-	Customers.StaticMethod()
-	Customers{}:InstanceMethod()
+	CustomersClass.StaticMethod()
+	CustomersClass{}:InstanceMethod()
 	
 
 

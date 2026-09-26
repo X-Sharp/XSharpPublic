@@ -144273,7 +144273,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C955 - Bug in GetObjectByHandle() #1794
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C956 - [Net8] Problems with PTR type in Net 10 #1793 *************
 Application = C956 - [Net8] Problems with PTR type in Net 10 #1793
 IDEVersion = 1.06
@@ -144283,7 +144283,7 @@ GalleryDefaultName =
 Target = 0
 Platform = AnyCPU
 Language = XSharp
-Runtime = CLR4
+Runtime = NetCore
 NetVersion = 
 Dialect = VO
 Folder = %ProjectPath%\Applications\C956\
@@ -144318,10 +144318,12 @@ FileGUID = BBFC54FD-6D21-41A9-9BBB-AE521334535A
 FileType = Code
 CopyToBin = 0
 [C956 - [Net8] Problems with PTR type in Net 10 #1793 References]
-ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
+ReferenceGAC = NetCore|Microsoft.NETCore.App,System.dll,1,0
+ReferenceGAC = NetCore|Microsoft.NETCore.App,System.Runtime.dll,1,0
+ReferenceGAC = NetCore|Microsoft.NETCore.App,System.Private.CoreLib.dll,1,0
+ReferenceGAC = NetCore|Microsoft.NETCore.App,System.Console.dll,1,0
+ReferenceGAC = NetCore|XSharpRuntime,XSharp.Core.dll,1,1
+ReferenceGAC = NetCore|XSharpRuntime,XSharp.RT.dll,1,1
 [C956 - [Net8] Problems with PTR type in Net 10 #1793 Resources]
 [C956 - [Net8] Problems with PTR type in Net 10 #1793 Native Resources]
 [C956 - [Net8] Problems with PTR type in Net 10 #1793 License files]
@@ -147772,7 +147774,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 NetVersion = 
@@ -148645,7 +148647,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C976 - Problems with the /fox3 option - thisform implementation
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C977 - DataSession implementation [#2033] *************
 Application = C977 - DataSession implementation [#2033]
 IDEVersion = 1.06
@@ -149527,7 +149529,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C983 - PTR problems in .Net 10
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C984 - Problem with /fox3 when /fox2 is also enabled *************
 Application = C984 - Problem with /fox3 when /fox2 is also enabled
 IDEVersion = 1.06

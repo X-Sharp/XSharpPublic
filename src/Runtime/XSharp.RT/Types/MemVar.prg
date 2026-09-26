@@ -125,6 +125,7 @@ INTERNAL CLASS XSharp.MemVarLevel
         RETURN NIL
 
     INTERNAL PROPERTY LocalsUpdated AS LOGIC GET _localsUpdated
+    INTERNAL PROPERTY HasLocals     AS LOGIC GET Locals?:Count > 0
 #endregion
     INTERNAL METHOD DebuggerDisplay() AS STRING
         IF Depth == -1
@@ -454,6 +455,13 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         VAR current := CheckCurrent()
         IF current != NULL
             RETURN current:LocalsUpdated
+        ENDIF
+        RETURN FALSE
+
+    INTERNAL STATIC METHOD HasLocals() AS LOGIC
+        VAR current := CheckCurrent()
+        IF current != NULL
+            RETURN current:HasLocals
         ENDIF
         RETURN FALSE
 

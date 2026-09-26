@@ -147766,7 +147766,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R936 - FoxPro DOT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C970 - Problems with the /fox3 option - static vars *************
 Application = C970 - Problems with the /fox3 option - static vars
 IDEVersion = 1.06

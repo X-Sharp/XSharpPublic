@@ -4,6 +4,7 @@
 #pragma options("fox3", enable)
 #pragma options("allowdot", enable)
 #pragma options("memvar", enable)
+#pragma options("lb", enable)
 #pragma options("undeclared", enable)
 CLASS Customers
 	STATIC EXPORT id := 123 AS USUAL

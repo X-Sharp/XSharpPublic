@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Evaluation rule for the CPS based X# project system.
+  The properties that XSharpProjectAdapter needs for the IXSharpProject contract of the code model.
+-->
+<Rule Name="XSharpProjectProperties"
+      DisplayName="X# Project Properties"
+      PageTemplate="generic"
+      Description="X# project properties used by the code model"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+  </Rule.DataSource>
+  <StringProperty Name="RootNamespace" ReadOnly="True" Visible="False" />
+  <StringProperty Name="IntermediateOutputPath" ReadOnly="True" Visible="False" />
+  <StringProperty Name="TargetPath" ReadOnly="True" Visible="False" />
+  <StringProperty Name="NS" ReadOnly="True" Visible="False" />
+  <StringProperty Name="Dialect" ReadOnly="True" Visible="False" />
+</Rule>

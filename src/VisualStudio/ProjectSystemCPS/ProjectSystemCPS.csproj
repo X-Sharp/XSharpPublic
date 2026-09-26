@@ -49,6 +49,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <!-- Types of the code model API (e.g. XError.Span); shipped in the VSIX by ProjectPackage2022 -->
+    <Reference Include="XSharp.Vsparser">
+      <HintPath>$(VsExternalDir)XSharp.Vsparser.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj" />
   </ItemGroup>
   <!-- Explicit SDK imports: the VSSDK targets must be imported after the SDK targets -->

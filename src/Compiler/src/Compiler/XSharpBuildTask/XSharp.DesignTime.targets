@@ -52,6 +52,10 @@ inspired by Microsoft.CSharp.DesignTime.targets
 
   <ItemGroup>
     <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml" />
+    <!-- Data for XSharpProjectAdapter (code model), invisible -->
+    <PropertyPageSchema Include="$(XSharpXamlDir)XSharpCompilerCommandLineArgs.xaml;$(XSharpXamlDir)XSharpProjectProperties.xaml">
+      <Context>ProjectSubscriptionService</Context>
+    </PropertyPageSchema>
     <ProjectCapability Include="
                           XSharp;
                           Managed;

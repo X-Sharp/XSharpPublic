@@ -57,6 +57,14 @@ inspired by Microsoft.CSharp.DesignTime.targets
 
   <ItemGroup>
     <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml" />
+    <!--
+      X# project property pages (new property editor, capability ProjectPropertiesEditor).
+      Language, Dialect and Global Usings are X# pages; Application and Build extend the managed pages
+      (OverrideMode="Extend"). The property names match what the X# targets (Xsc task) and MPFproj persist.
+    -->
+    <PropertyPageSchema Include="$(XSharpXamlDir)ApplicationPropertyPage.XSharp.xaml;$(XSharpXamlDir)BuildPropertyPage.XSharp.xaml;$(XSharpXamlDir)LanguagePage.XSharp.xaml;$(XSharpXamlDir)DialectPage.XSharp.xaml;$(XSharpXamlDir)ReferencesPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
     <!-- X# item types: file properties and Properties window -->
     <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml;$(XSharpXamlDir)VOBinary.xaml">
       <Context>File</Context>

@@ -6,6 +6,9 @@ rem XSharpCpsProjectSystem import in XSharp.CurrentVersion.targets). They are no
 rem copies the installed X# MsBuild folder to Artifacts\CpsMsBuild, overlays the changed files from the
 rem repository and starts devenv with XSharpMsBuildDir pointing to that folder. The installed X# is not changed.
 rem
+rem Usage: StartExp.cmd [solution]   (default CpsTestBed.sln; SelectorTestBed.sln tests the project selector:
+rem        both projects use the classic X# project type GUID, the SDK-style one must be loaded by CPS)
+rem
 rem Prerequisite: a Debug build of VisualStudio\ProjectPackage\ProjectPackage2022.csproj, which deploys the
 rem VSIX (including XSharp.ProjectSystemCPS) to the experimental instance.
 setlocal
@@ -32,4 +35,6 @@ if not defined DEVENV (
 
 set XSharpMsBuildDir=%OVERLAY%
 echo XSharpMsBuildDir=%XSharpMsBuildDir%
-start "" "%DEVENV%" /rootSuffix Exp "%~dp0CpsTestBed.sln"
+set SOLUTION=%~1
+if "%SOLUTION%" == "" set SOLUTION=CpsTestBed.sln
+start "" "%DEVENV%" /rootSuffix Exp "%~dp0%SOLUTION%"

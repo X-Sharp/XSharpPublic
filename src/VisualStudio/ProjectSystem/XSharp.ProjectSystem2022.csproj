@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) XSharp B.V.  All Rights Reserved.
+  Licensed under the Apache License, Version 2.0.
+  See License.txt in the project root for license information.
+
+  CPS-based XSharp project system — targets VS2022 and VS2026.
+  For VS2019 the MPF-based ProjectPackage is still used.
+-->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Common2022.props" />
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp.VisualStudio.ProjectSystem</RootNamespace>
+    <AssemblyName>XSharp.ProjectSystem2022</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <ProjectGuid>{AB494DCE-A11B-4583-851E-D4A86775B3F0}</ProjectGuid>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <!-- Place output alongside the other VS2022 assemblies -->
+    <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
+    <VsixType>v3</VsixType>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <CreateVsixContainer>False</CreateVsixContainer>
+    <UseCodebase>true</UseCodebase>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1762;VSSDK006;NU1903</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>XSHARP;TRACE;DEV17</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>VSTHRD010;VSSDK006;1762;NU1903</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Shared assembly info -->
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonDir)Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonDir)XSharpConstants.cs">
+      <Link>XSharpConstants.cs</Link>
+    </Compile>
+
+    <!-- Assembly info -->
+    <Compile Include="Properties\AssemblyInfo.cs" />
+
+    <!-- Core CPS integration -->
+    <Compile Include="XSharpProjectCapabilities.cs" />
+    <Compile Include="XSharpProjectCapabilitiesProvider.cs" />
+    <Compile Include="XSharpProjectType.cs" />
+    <Compile Include="XSharpProjectTreePropertiesProvider.cs" />
+    <Compile Include="XSharpProjectBuildProvider.cs" />
+    <Compile Include="XSharpProjectProperties.cs" />
+    <Compile Include="XSharpTargetFrameworkProvider.cs" />
+    <Compile Include="XSharpCodeDomIntegration.cs" />
+
+    <!-- Property pages -->
+    <Compile Include="PropertyPages\XSharpGeneralPropertyPageProvider.cs" />
+    <Compile Include="PropertyPages\XSharpBuildPropertyPageProvider.cs" />
+    <Compile Include="PropertyPages\XSharpDebugPropertyPageProvider.cs" />
+
+    <!-- CPS package registration -->
+    <Compile Include="XSharpCpsPackage.cs" />
+  </ItemGroup>
+
+  <!-- MSBuild property rules (XAML format) — shown in Solution Explorer / project designer -->
+  <ItemGroup>
+    <XamlPropertyRule Include="Rules\XSharp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <DataSource>MSBuild</DataSource>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="Rules\XSharpMultiTarget.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <DataSource>MSBuild</DataSource>
+    </XamlPropertyRule>
+  </ItemGroup>
+
+  <!-- pkgdef for CPS project type registry entries -->
+  <ItemGroup>
+    <Content Include="XSharpCpsPackage.pkgdef">
+      <IncludeInVSIX>false</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- NuGet packages -->
+  <ItemGroup>
+    <!-- CPS core + SDK (MEF, project system APIs) -->
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
+      <Version>17.10.60</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Sdk">
+      <Version>17.10.60</Version>
+    </PackageReference>
+
+    <!-- VS Shell / SDK interop -->
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>17.10.40171</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Imaging">
+      <Version>17.10.40171</Version>
+    </PackageReference>
+
+    <!-- Community toolkit (same version as ProjectBase2022) -->
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.551</Version>
+    </PackageReference>
+
+    <!-- Threading -->
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>17.10.48</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+      <Version>17.10.48</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <!-- Build evaluation -->
+    <PackageReference Include="Microsoft.Build">
+      <Version>17.10.46</Version>
+    </PackageReference>
+
+    <!-- Immutable collections (used by CPS) -->
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>10.0.5</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Project reference to the XSharp code model (same as ProjectBase) -->
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>CodeModel</Name>
+    </ProjectReference>
+    <!-- Reference existing ProjectPackage for editor factories, CodeDom provider, etc. -->
+    <ProjectReference Include="..\ProjectPackage\ProjectPackage2022.csproj">
+      <Project>{5891B814-A2E0-4e64-9A2F-2C2ECAB940FE}</Project>
+      <Name>ProjectPackage2022</Name>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) XSharp B.V.  All Rights Reserved.
+  Licensed under the Apache License, Version 2.0.
+  See License.txt in the project root for license information.
+
+  Multi-targeting rules for XSharp SDK-style projects.
+  This rule file surfaces the TargetFrameworks property in the project designer
+  when the project targets more than one framework.
+
+  Multi-targeting is a VS2022+ / CPS-only feature.
+  The MPF-based path (VS2019) does NOT use this file.
+-->
+<Rule
+    Name="XSharpMultiTarget"
+    DisplayName="XSharp Multi-Targeting"
+    PageTemplate="generic"
+    Description="XSharp multi-targeting properties (VS2022+ SDK-style projects only)"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label="" HasConfigurationCondition="False" />
+  </Rule.DataSource>
+
+  <!--
+    TargetFrameworks (plural) — semicolon-separated list, e.g. "net48;net6.0-windows".
+    Setting this property enables multi-targeting; each framework gets its own
+    ConfiguredProject slice in CPS.
+  -->
+  <StringProperty
+      Name="TargetFrameworks"
+      DisplayName="Target frameworks"
+      Description="Semicolon-separated list of target frameworks for multi-targeting, e.g. 'net48;net6.0-windows'. VS2022+ / CPS-based project system only."
+      Category="Application" />
+
+  <!--
+    ActiveTargetFramework — the framework currently selected in the Solution Explorer
+    framework picker drop-down.  This is read-only from the project designer.
+  -->
+  <StringProperty
+      Name="ActiveTargetFramework"
+      DisplayName="Active target framework"
+      Description="The currently active target framework (read-only — chosen via the Solution Explorer drop-down)."
+      Category="Application"
+      ReadOnly="True" />
+
+</Rule>

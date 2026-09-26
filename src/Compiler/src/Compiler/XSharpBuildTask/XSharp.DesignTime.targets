@@ -59,7 +59,8 @@ inspired by Microsoft.CSharp.DesignTime.targets
     <ProjectCapability Include="
                           XSharp;
                           Managed;
-                          SingleTargetBuildForStartupProjects;" />
+                          SingleTargetBuildForStartupProjects;
+                          ProjectPropertiesEditor;" />
     <!--
       The managed project system hooks up the Roslyn workspace for ".NET & LanguageService" projects.
       X# has its own language service and code model, so LanguageService must not be declared.

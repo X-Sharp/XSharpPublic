@@ -44,6 +44,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <!-- CPS based project system (migration from MPFproj). The CPS project type is only registered in Debug builds. -->
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="ProjectSystemCPS" Path="|ProjectSystemCPS;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="ProjectSystemCPS" Path="|ProjectSystemCPS|" />
+        <Asset Type="Microsoft.VisualStudio.ImageManifest" d:Source="File" Path="XSharp.ProjectSystemCPS.imagemanifest" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

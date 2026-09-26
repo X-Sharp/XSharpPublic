@@ -23,5 +23,17 @@ namespace XSharp.ProjectSystem
         /// UnconfiguredProject scoped parts that influence that evaluation. Never declared in MSBuild.
         /// </summary>
         public const string XSharpCps = "XSharpCps";
+
+        /// <summary>
+        /// Initial capabilities of the X# CPS project type (ProjectTypeRegistration.Capabilities).
+        /// Modelled on the registration of the C# project type of the managed project system, without
+        /// LanguageService (X# has its own language service, see XSharp.DesignTime.targets), CSharp,
+        /// SharedImports (VB) and EditAndContinue (not supported by the X# debugger integration).
+        /// AppDesigner: "Properties" folder; OpenProjectFile: "Edit Project File";
+        /// HandlesOwnReload: the project system reloads the project file itself after external changes;
+        /// ProjectConfigurationsDeclaredDimensions: configurations/platforms/target frameworks from the project file.
+        /// </summary>
+        public const string ProjectTypeCapabilities =
+            XSharpCps + "; AppDesigner; HandlesOwnReload; OpenProjectFile; PreserveFormatting; ProjectConfigurationsDeclaredDimensions; .NET; UseProjectEvaluationCache";
     }
 }

@@ -34,7 +34,7 @@ namespace XSharp.ProjectSystem
         defaultProjectExtension: XSharpConstants.ProjectExtension,
         language: LanguageVsTemplate,
         resourcePackageGuid: XSharpConstants.guidXSharpCpsProjectPkgString,
-        Capabilities = XSharpCapabilities.XSharpCps,
+        Capabilities = XSharpCapabilities.ProjectTypeCapabilities,
         PossibleProjectExtensions = XSharpConstants.ProjectExtension)]
 #endif
     public sealed class XSharpProjectSystemPackage : AsyncPackage

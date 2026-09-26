@@ -16,6 +16,8 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- WPF resources (pack URIs) for the images of XSharp.ProjectSystemCPS.imagemanifest -->
+    <UseWPF>true</UseWPF>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU1903</NoWarn>
   </PropertyGroup>
@@ -39,6 +41,12 @@
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
     <Compile Include="$(CommonDir)Constants.cs" Link="Constants.cs" />
     <Compile Include="$(CommonDir)XSharpConstants.cs" Link="XSharpConstants.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\XSharpProject.png" />
+    <Resource Include="Resources\XSharpDocument.png" />
+    <!-- Included in the VSIX by ProjectPackage2022 -->
+    <None Include="XSharp.ProjectSystemCPS.imagemanifest" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.10.40171" />

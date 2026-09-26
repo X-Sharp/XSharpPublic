@@ -743,6 +743,10 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <Content Include="..\ProjectSystemCPS\XSharp.ProjectSystemCPS.imagemanifest">
+      <Link>XSharp.ProjectSystemCPS.imagemanifest</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <ProjectReference Include="..\ProjectSystemCPS\ProjectSystemCPS.csproj">
       <Project>{99708d46-58a9-46b6-b77f-003adaf15ff6}</Project>
       <Name>ProjectSystemCPS</Name>

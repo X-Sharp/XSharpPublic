@@ -11,8 +11,10 @@
     <RootNamespace>CpsTestBed</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <!-- The legacy test project (SelectorTestBed.sln) lives in a subfolder: keep it out of the SDK globs -->
+    <!-- The legacy and WinForms test projects (SelectorTestBed.sln) live in subfolders: keep them out of the SDK globs -->
     <Compile Remove="Legacy\**" />
     <None Remove="Legacy\**" />
+    <Compile Remove="WinForms\**" />
+    <None Remove="WinForms\**" />
   </ItemGroup>
 </Project>

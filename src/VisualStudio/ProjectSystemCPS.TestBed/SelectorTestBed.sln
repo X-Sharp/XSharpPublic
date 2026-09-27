@@ -6,6 +6,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CpsTestBed", "CpsTestBed.xs
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "LegacyTestBed", "Legacy\LegacyTestBed.xsproj", "{9DAD9E60-2617-45A2-ADB3-98DD2AFD9EF3}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "WinFormsTestBed", "WinForms\WinFormsTestBed.xsproj", "{6804AF7F-4D24-45EE-B0B3-6CD0758A7641}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{9DAD9E60-2617-45A2-ADB3-98DD2AFD9EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DAD9E60-2617-45A2-ADB3-98DD2AFD9EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DAD9E60-2617-45A2-ADB3-98DD2AFD9EF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6804AF7F-4D24-45EE-B0B3-6CD0758A7641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6804AF7F-4D24-45EE-B0B3-6CD0758A7641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6804AF7F-4D24-45EE-B0B3-6CD0758A7641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6804AF7F-4D24-45EE-B0B3-6CD0758A7641}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

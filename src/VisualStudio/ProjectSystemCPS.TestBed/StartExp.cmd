@@ -33,6 +33,11 @@ if not defined DEVENV (
     exit /b 1
 )
 
+rem A Debug build deploys the VSIX to the experimental instance without refreshing its image library cache,
+rem so new image monikers (XSharp.ProjectSystemCPS.imagemanifest: project and file icons) would not be found.
+rem VS rebuilds the cache when it is missing.
+for /d %%h in ("%LOCALAPPDATA%\Microsoft\VisualStudio\17.0_*Exp") do if exist "%%h\ImageLibrary\ImageLibrary.cache" del /q "%%h\ImageLibrary\ImageLibrary.cache"
+
 set XSharpMsBuildDir=%OVERLAY%
 echo XSharpMsBuildDir=%XSharpMsBuildDir%
 set SOLUTION=%~1

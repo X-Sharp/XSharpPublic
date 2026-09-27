@@ -160,9 +160,16 @@ namespace XSharp.ProjectSystem.LanguageService
         }
 
         /// <summary>
-        /// The X# solution model (database) is opened by the X# packages when a solution opens. When a CPS
-        /// project loads before these packages have been initialized, load the X# project package and wait.
+        /// Makes sure that the X# solution model (database) is open before the code model is created.
         /// </summary>
+        /// <remarks>
+        /// The X# project package opens it in OnBeforeOpenSolution. For solutions with the MPFproj project type
+        /// VS loads that package before the solution opens (it provides the project factory). For the CPS project
+        /// type it does not: the X# package is only loaded later (autoload), misses OnBeforeOpenSolution and does
+        /// not see the solution yet while it is still opening, so the database was never opened.
+        /// Load the X# project package (shell link, logging, settings) and open the database for the solution
+        /// file that is being loaded, like XSharpShellLink does in OnBeforeOpenSolution.
+        /// </remarks>
         private async Task<bool> EnsureSolutionIsOpenAsync()
         {
             if (XSolution.IsOpen)
@@ -173,10 +180,12 @@ namespace XSharp.ProjectSystem.LanguageService
                 var packageGuid = new Guid(XSharpConstants.guidXSharpProjectPkgString);
                 shell.LoadPackage(ref packageGuid, out _);
             }
-            await TaskScheduler.Default;
-            for (int i = 0; i < 100 && !XSolution.IsOpen; i++)
+            if (!XSolution.IsOpen && ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) is IVsSolution solution &&
+                solution.GetSolutionInfo(out _, out var solutionFile, out _) == 0 &&
+                !string.IsNullOrEmpty(solutionFile) && File.Exists(solutionFile))
             {
-                await Task.Delay(100);
+                XSettings.Information("XSharpProjectAdapter: opening the X# solution model for " + solutionFile);
+                XSolution.Open(solutionFile);
             }
             return XSolution.IsOpen;
         }

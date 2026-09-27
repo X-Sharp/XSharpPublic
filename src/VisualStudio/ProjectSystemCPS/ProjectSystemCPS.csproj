@@ -29,17 +29,19 @@
     <DeployExtension>false</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17;XSHARP_PROJECTSYSTEMCPS</DefineConstants>
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
+    <DefineConstants>TRACE;XSHARP;DEV17;XSHARP_PROJECTSYSTEMCPS</DefineConstants>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
     <Compile Include="$(CommonDir)Constants.cs" Link="Constants.cs" />
     <Compile Include="$(CommonDir)XSharpConstants.cs" Link="XSharpConstants.cs" />
+    <!-- Internal copy for the shadow WinForms designer (see the comment in the file) -->
+    <Compile Include="..\ProjectPackage\CodeDomProvider\XSharpCodeDomHelper.cs" Link="ShadowDesigner\XSharpCodeDomHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\XSharpProject.png" />

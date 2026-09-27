@@ -10,7 +10,14 @@ using System.IO;
 
 namespace XSharp.CodeDom
 {
+    // Also compiled into XSharp.ProjectSystemCPS (shadow WinForms designer), as an internal copy. It does not
+    // live in XSharp.CodeDomProvider because the X# installation puts that assembly in the GAC: a newer
+    // VSIX would then run against the older installed version.
+#if XSHARP_PROJECTSYSTEMCPS
+    internal class XSharpCodeDomHelper
+#else
     public class XSharpCodeDomHelper
+#endif
     {
         /// <summary>
         /// Merge both CodeCompileUnit. The main type (class) will come from formCompileUnit
@@ -18,7 +25,7 @@ namespace XSharp.CodeDom
         /// <param name="compileUnit"></param>
         /// <param name="designerCompileUnit"></param>
         /// <returns></returns>
-        public static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit formCompileUnit, XCodeCompileUnit designerCompileUnit)
+        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit formCompileUnit, XCodeCompileUnit designerCompileUnit)
         {
             // Create the merged CodeCompileUnit
             var mergedCodeCompileUnit = new XMergedCodeCompileUnit(formCompileUnit);
@@ -73,7 +80,7 @@ namespace XSharp.CodeDom
 
         }
 
-        public static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, CodeTypeDeclaration masterClass)
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, CodeTypeDeclaration masterClass)
         {
             return FindDesignerClass(ccu, out _, masterClass.Name);
         }
@@ -83,12 +90,12 @@ namespace XSharp.CodeDom
         /// <param name="ccu"></param>
         /// <param name="namespaceName"></param>
         /// <returns></returns>
-        public static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu)
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu)
         {
             return FindDesignerClass(ccu, out _);
         }
 
-        public static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName, string name = "")
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName, string name = "")
         {
             namespaceName = null;
             // We search the first Class that has a Candidate for InitializeComponent

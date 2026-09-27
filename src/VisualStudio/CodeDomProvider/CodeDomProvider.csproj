@@ -65,7 +65,6 @@
     <Compile Include="XSharpCodeDomProvider.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="XSharpCodeDomHelper.cs" />
     <Compile Include="XSharpCodeGenerator.cs" />
     <Compile Include="XSharpCodeParser.cs" />
     <Compile Include="XSharpKeywords.cs" />

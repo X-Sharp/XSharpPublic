@@ -118,6 +118,7 @@
     <Compile Include="Automation\OAXSharpVsProject .cs" />
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
+    <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />

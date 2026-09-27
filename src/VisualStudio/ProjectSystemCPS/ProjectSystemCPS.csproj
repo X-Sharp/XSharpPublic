@@ -29,8 +29,7 @@
     <DeployExtension>false</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <!-- XSHARPCPS registers the CPS project type. Debug only during the side-by-side phase with MPFproj. -->
-    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17;XSHARPCPS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -7,13 +7,11 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.VisualStudio.Shell;
-#if XSHARPCPS
 using Microsoft.VisualStudio.ProjectSystem.VS;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.ProjectSystem.Options;
 using XSharp.ProjectSystem.Selection;
-#endif
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.ProjectSystem
@@ -31,11 +29,9 @@ namespace XSharp.ProjectSystem
     /// to the CPS project type (switchable in Tools > Options > X# > Project System), so existing solution files
     /// do not change. The CPS project type keeps its own template language, so the X# project templates keep
     /// creating projects through the MPFproj project type (and the selector).
-    /// Everything is only registered when XSHARPCPS is defined (Debug builds) until parity with MPFproj is proven.
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(XSharpConstants.guidXSharpCpsProjectPkgString)]
-#if XSHARPCPS
     [ProjectTypeRegistration(
         projectTypeGuid: XSharpConstants.guidCpsProjectTypeString,
         displayName: "XSharp (CPS)",
@@ -47,7 +43,6 @@ namespace XSharp.ProjectSystem
         PossibleProjectExtensions = XSharpConstants.ProjectExtension)]
     [ProvideProjectSelector(XSharpConstants.guidXSharpProjectFactoryString, XSharpConstants.guidProjectSelectorString)]
     [ProvideOptionPage(typeof(ProjectSystemOptionsPage), ProjectSystemOptionsPage.CategoryName, ProjectSystemOptionsPage.PageName, 0, 0, true)]
-#endif
     public sealed class XSharpProjectSystemPackage : AsyncPackage
     {
         /// <summary>
@@ -56,16 +51,13 @@ namespace XSharp.ProjectSystem
         /// </summary>
         internal const string LanguageVsTemplate = "XSharpCps";
 
-#if XSHARPCPS
         private IVsRegisterProjectSelector projectSelectorRegistration;
         private uint projectSelectorCookie;
         private ProjectSystemOptionsPage options;
-#endif
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-#if XSHARPCPS
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             options = (ProjectSystemOptionsPage)GetDialogPage(typeof(ProjectSystemOptionsPage));
             projectSelectorRegistration = await GetServiceAsync(typeof(SVsRegisterProjectTypes)) as IVsRegisterProjectSelector;
@@ -75,12 +67,10 @@ namespace XSharp.ProjectSystem
                 var selector = new XSharpProjectSelector(() => options?.UseCpsForSdkProjects ?? true);
                 projectSelectorRegistration.RegisterProjectSelector(ref selectorGuid, selector, out projectSelectorCookie);
             }
-#endif
         }
 
         protected override void Dispose(bool disposing)
         {
-#if XSHARPCPS
             if (disposing && projectSelectorCookie != 0)
             {
                 JoinableTaskFactory.Run(async () =>
@@ -89,10 +79,8 @@ namespace XSharp.ProjectSystem
                     UnregisterProjectSelector();
                 });
             }
-#endif
             base.Dispose(disposing);
         }
-#if XSHARPCPS
 
         private void UnregisterProjectSelector()
         {
@@ -103,6 +91,5 @@ namespace XSharp.ProjectSystem
                 projectSelectorCookie = 0;
             }
         }
-#endif
     }
 }

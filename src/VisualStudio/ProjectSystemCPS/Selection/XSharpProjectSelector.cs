@@ -23,7 +23,8 @@ namespace XSharp.ProjectSystem.Selection
     /// registered for the legacy project type GUID (pkgdef "Projects\{guid}\ProjectSelector", see
     /// <see cref="ProvideProjectSelectorAttribute"/>), so existing solution files keep their project type GUID.
     /// Solutions that use the CPS project type GUID directly do not go through the selector.
-    /// Any problem (unreadable project file, routing switched off) falls back to MPFproj, the project system
+    /// Any problem (unreadable project file, routing switched off, X# MSBuild support files without the CPS
+    /// design-time import, see <see cref="XSharpMsBuildSupport"/>) falls back to MPFproj, the project system
     /// that loaded these projects before.
     /// </remarks>
     [Guid(XSharpConstants.guidProjectSelectorString)]
@@ -43,7 +44,7 @@ namespace XSharp.ProjectSystem.Selection
             guidProjectFactory = XSharpConstants.guidXSharpProjectFactory;
             try
             {
-                if (useCpsForSdkProjects() && IsSdkProject(pszFilename))
+                if (useCpsForSdkProjects() && IsSdkProject(pszFilename) && XSharpMsBuildSupport.SupportsCps)
                 {
                     guidProjectFactory = XSharpConstants.guidCpsProjectType;
                 }

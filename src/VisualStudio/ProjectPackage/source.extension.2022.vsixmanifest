@@ -41,7 +41,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeDomProvider" Path="|CodeDomProvider|" AssemblyName="|CodeDomProvider;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.Designers2022.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Support2022" Path="|Support2022|" AssemblyName="|Support2022;AssemblyName|" />
-        <!-- CPS based project system (migration from MPFproj). The CPS project type is only registered in Debug builds. -->
+        <!-- CPS based project system for SDK-style projects (legacy projects stay on MPFproj, see XSharpProjectSelector) -->
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="ProjectSystemCPS" Path="|ProjectSystemCPS;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="ProjectSystemCPS" Path="|ProjectSystemCPS|" />
         <Asset Type="Microsoft.VisualStudio.ImageManifest" d:Source="File" Path="XSharp.ProjectSystemCPS.imagemanifest" />

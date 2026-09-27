@@ -115,8 +115,11 @@ namespace XSharp.ProjectSystem.LanguageService
             var linkOptions = new DataflowLinkOptions { PropagateCompletion = true };
             links = new List<IDisposable>
             {
+                // The source item rules are dynamic (one per item type): take the rule names from
+                // SourceItemRuleNamesSource. LinkTo without rule names subscribes to no rules at all.
                 subscriptions.SourceItemsRuleSource.SourceBlock.LinkTo(
                     DataflowBlockSlim.CreateActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(OnSourceItemsChanged),
+                    subscriptions.SourceItemRuleNamesSource.SourceBlock,
                     linkOptions),
                 subscriptions.ProjectRuleSource.SourceBlock.LinkTo(
                     DataflowBlockSlim.CreateActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(OnEvaluationChanged),
@@ -254,6 +257,7 @@ namespace XSharp.ProjectSystem.LanguageService
                     if (changes.TryGetValue(ProjectPropertiesRule, out var properties) && properties.Difference.AnyChanges)
                     {
                         ReadProjectProperties(properties.After);
+                        XSettings.Information($"XSharpProjectAdapter: {project.FullPath}: properties RootNamespace={rootNamespace}, TargetPath={outputFile}, NS={prefixClassesWithDefaultNamespace}");
                     }
                     if (changes.TryGetValue(ProjectReferenceRule, out var references) && references.Difference.AnyChanges)
                     {

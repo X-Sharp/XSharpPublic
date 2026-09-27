@@ -18,7 +18,7 @@ namespace XSharp.CodeDom
         /// <param name="compileUnit"></param>
         /// <param name="designerCompileUnit"></param>
         /// <returns></returns>
-        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit formCompileUnit, XCodeCompileUnit designerCompileUnit)
+        public static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit formCompileUnit, XCodeCompileUnit designerCompileUnit)
         {
             // Create the merged CodeCompileUnit
             var mergedCodeCompileUnit = new XMergedCodeCompileUnit(formCompileUnit);
@@ -73,7 +73,7 @@ namespace XSharp.CodeDom
 
         }
 
-        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, CodeTypeDeclaration masterClass)
+        public static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, CodeTypeDeclaration masterClass)
         {
             return FindDesignerClass(ccu, out _, masterClass.Name);
         }
@@ -83,12 +83,12 @@ namespace XSharp.CodeDom
         /// <param name="ccu"></param>
         /// <param name="namespaceName"></param>
         /// <returns></returns>
-        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu)
+        public static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu)
         {
             return FindDesignerClass(ccu, out _);
         }
 
-        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName, string name = "")
+        public static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName, string name = "")
         {
             namespaceName = null;
             // We search the first Class that has a Candidate for InitializeComponent

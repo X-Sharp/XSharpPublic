@@ -3,16 +3,17 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Logger = XSharp.Project.Logger;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// Removes each shadow companion project from the solution and deletes its folder when
@@ -38,7 +39,7 @@ namespace XSharp.Project.ShadowDesigner
     /// fully unloaded, so there's no risk of deleting files still locked by an active
     /// project node.
     /// </summary>
-    internal sealed class ShadowDesignerCleanup : SolutionListener
+    internal sealed class ShadowDesignerCleanup : IVsSolutionEvents
     {
         private static readonly object _lock = new object();
         private static ShadowDesignerCleanup _instance;
@@ -49,16 +50,18 @@ namespace XSharp.Project.ShadowDesigner
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         private readonly IVsSolution _vsSolution;
+        private uint _eventsCookie;
 
-        private ShadowDesignerCleanup(IServiceProvider serviceProvider) : base(serviceProvider)
+        private ShadowDesignerCleanup(IServiceProvider serviceProvider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var solutionService = serviceProvider.GetService(typeof(SVsSolution));
             if (solutionService == null)
             {
                 throw new InvalidOperationException("Could not obtain the IVsSolution service.");
             }
             _vsSolution = (IVsSolution)solutionService;
-            Init();
+            ErrorHandler.ThrowOnFailure(_vsSolution.AdviseSolutionEvents(this, out _eventsCookie));
         }
 
         /// <summary>
@@ -75,19 +78,14 @@ namespace XSharp.Project.ShadowDesigner
                 {
                     if (_instance == null)
                     {
-                        var package = XSharpProjectPackage.XInstance;
-                        if (package == null)
-                        {
-                            return;
-                        }
-                        _instance = new ShadowDesignerCleanup(package);
+                        _instance = new ShadowDesignerCleanup(ServiceProvider.GlobalProvider);
                     }
                 }
             }
             _companionCsprojPaths.Add(companionCsprojPath);
         }
 
-        public override int OnQueryCloseSolution(object reserved, ref int cancel)
+        public int OnQueryCloseSolution(object reserved, ref int cancel)
         {
             if (_vsSolution != null)
             {
@@ -143,7 +141,7 @@ namespace XSharp.Project.ShadowDesigner
             }
         }
 
-        public override int OnAfterCloseSolution(object reserved)
+        public int OnAfterCloseSolution(object reserved)
         {
             // Confirmed via diagnostic logging (twice) that the folder is still locked well
             // beyond a ~1 second bounded retry at the moment this event fires ("The process
@@ -199,5 +197,16 @@ namespace XSharp.Project.ShadowDesigner
                 }
             }
         }
+
+        #region IVsSolutionEvents members that are not used
+        public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded) => VSConstants.S_OK;
+        public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel) => VSConstants.S_OK;
+        public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved) => VSConstants.S_OK;
+        public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy) => VSConstants.S_OK;
+        public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel) => VSConstants.S_OK;
+        public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy) => VSConstants.S_OK;
+        public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution) => VSConstants.S_OK;
+        public int OnBeforeCloseSolution(object pUnkReserved) => VSConstants.S_OK;
+        #endregion
     }
 }

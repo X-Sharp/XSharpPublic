@@ -118,7 +118,6 @@
     <Compile Include="Automation\OAXSharpVsProject .cs" />
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
-    <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Commands\CommandBuild.cs" />
     <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
@@ -477,14 +476,6 @@
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
-    <Compile Include="ShadowDesigner\ShadowDesignerBridge.cs" />
-    <Compile Include="ShadowDesigner\CompanionProjectWriter.cs" />
-    <Compile Include="ShadowDesigner\SolutionWiring.cs" />
-    <Compile Include="ShadowDesigner\RoslynToCodeDom.cs" />
-    <Compile Include="ShadowDesigner\EventHandlerSync.cs" />
-    <Compile Include="ShadowDesigner\DesignerChangesSync.cs" />
-    <Compile Include="ShadowDesigner\CompanionSaveWatcher.cs" />
-    <Compile Include="ShadowDesigner\ShadowDesignerCleanup.cs" />
     <Compile Include="Commands\CommandSyncEventHandlers.cs" />
     <Compile Include="Commands\CommandSyncDesignerChanges.cs" />
     <Compile Include="GlobalSuppressions.cs" />

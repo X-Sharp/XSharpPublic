@@ -3,13 +3,15 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Community.VisualStudio.Toolkit;
 using EnvDTE80;
 using Microsoft.CSharp;
 using Microsoft.VisualStudio.Shell;
@@ -17,9 +19,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.CodeDom;
 using XSharp.Settings;
 using XSharpModel;
-using Logger = XSharp.Project.Logger;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// Entry point for the "View Designer on a SDK-style .prg" bridge. VS's out-of-process
@@ -31,17 +32,42 @@ namespace XSharp.Project.ShadowDesigner
     /// Designer view (whose owning IVsHierarchy is a real C# project, so the out-of-process
     /// Designer's project-type gate passes).
     ///
-    /// This code lives inside X#'s own ProjectSystem, so XSharpCodeParser/
-    /// XSharpCodeDomHelper/XProject are called directly -- no reflection is needed to reach
-    /// them.
+    /// XSharpCodeParser/XSharpCodeDomHelper/XProject are called directly -- no reflection is
+    /// needed to reach them. The bridge only needs the path of the .prg and the X# code model
+    /// (XProject) of its project, so it serves both project systems: the CPS project system
+    /// (XSharpShadowDesignerDefaultActionCommand, XSharpShadowDesignerViewFormCommand) and the MPFproj SDK project node (XSharpFileNode).
     ///
     /// Also exposes <see cref="TryResolveCompanionPaths"/>, used by
     /// <see cref="EventHandlerSync"/> and <see cref="DesignerChangesSync"/> to locate an
     /// already-open companion project's files deterministically, recomputed fresh each time
     /// from the real .prg's own class name.
     /// </summary>
-    internal static class ShadowDesignerBridge
+    public static class ShadowDesignerBridge
     {
+        /// <summary>
+        /// True when <paramref name="project"/> is loaded by the CPS project system (its IXSharpProject is the
+        /// XSharpProjectAdapter). Lets the X# project package decide without knowing the CPS types.
+        /// </summary>
+        public static bool IsCpsProject(XProject project) => project?.ProjectNode is LanguageService.XSharpProjectAdapter;
+
+        /// <summary>
+        /// True when <paramref name="prgPath"/> is a .prg with a matching .Designer.prg next to it -- the signal
+        /// for a form/user control in SDK-style projects, which rarely have an explicit SubType.
+        /// </summary>
+        public static bool HasDesignerFile(string prgPath)
+        {
+            if (string.IsNullOrEmpty(prgPath) ||
+                !string.Equals(Path.GetExtension(prgPath), ".prg", StringComparison.OrdinalIgnoreCase) ||
+                prgPath.EndsWith(".designer.prg", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(prgPath);
+            return !string.IsNullOrEmpty(designerPrg) &&
+                !string.Equals(designerPrg, prgPath, StringComparison.OrdinalIgnoreCase) &&
+                File.Exists(designerPrg);
+        }
+
         private static readonly string[] SharedFrameworkMarkers =
         {
             @"\dotnet\shared\",
@@ -52,31 +78,27 @@ namespace XSharp.Project.ShadowDesigner
         };
 
         /// <summary>
-        /// Attempts to open the shadow Designer for <paramref name="fileNode"/> (expected to
-        /// be a SDK-style project's .prg file with HasDesigner true). Returns false with an
+        /// Attempts to open the shadow Designer for <paramref name="mainPrgPath"/> (expected to
+        /// be a SDK-style project's .prg file with a matching .Designer.prg), using the code model
+        /// <paramref name="xProject"/> of its project. <paramref name="refreshReferences"/> is called
+        /// after a build that was needed to resolve the references (MPFproj reads them from the
+        /// response file); CPS projects pass null, their references come from the design-time build. Returns false with an
         /// error message on failure -- callers should fall back to whatever they'd otherwise
         /// have done (e.g. today's "does not support project" Designer error) rather than
         /// throwing, since a partially-set-up solution (mid-restore, no build yet) is a
         /// normal, recoverable condition, not a bug.
         /// </summary>
-        public static bool TryOpen(XSharpFileNode fileNode, out string error)
+        public static bool TryOpen(string mainPrgPath, XProject xProject, Action refreshReferences, out string error)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                var projectNode = fileNode.ProjectMgr as XSharpProjectNode;
-                if (projectNode == null)
-                {
-                    error = "Could not resolve the owning X# project.";
-                    return false;
-                }
-                XProject xProject = projectNode.ProjectModel;
                 if (xProject == null)
                 {
                     error = "The project model is not available yet.";
                     return false;
                 }
 
-                string mainPrgPath = fileNode.Url;
                 string designerPrgPath = XSharpCodeDomHelper.BuildDesignerFileName(mainPrgPath);
                 if (string.IsNullOrEmpty(designerPrgPath) || !File.Exists(designerPrgPath))
                 {
@@ -84,7 +106,7 @@ namespace XSharp.Project.ShadowDesigner
                     return false;
                 }
 
-                var dte = fileNode.ProjectMgr.GetService(typeof(SDTE)) as DTE2;
+                var dte = ServiceProvider.GlobalProvider.GetService(typeof(SDTE)) as DTE2;
                 if (dte == null)
                 {
                     error = "Could not obtain the DTE service.";
@@ -110,7 +132,7 @@ namespace XSharp.Project.ShadowDesigner
                     // from XSharpIDEBuildLogger's MSBuild logger callback) has already
                     // completed by the time the synchronous BuildProject(...) call above
                     // returned -- force a synchronous re-read right now instead.
-                    projectNode.ForceRefreshReferences();
+                    refreshReferences?.Invoke();
                 }
 
                 XCodeCompileUnit mainUnit = ToXCodeCompileUnit(ParseFile(xProject, mainPrgPath, null));
@@ -141,7 +163,7 @@ namespace XSharp.Project.ShadowDesigner
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
                     xProject.FileName, referencePaths, shadowCSharp, namespaceName, className);
 
-                CompanionSaveWatcher.Watch(fileNode.ProjectMgr, new CompanionLocation
+                CompanionSaveWatcher.Watch(ServiceProvider.GlobalProvider, new CompanionLocation
                 {
                     MainPrgPath = mainPrgPath,
                     DesignerPrgPath = designerPrgPath,
@@ -182,27 +204,24 @@ namespace XSharp.Project.ShadowDesigner
         }
 
         /// <summary>
-        /// Locates an already-open companion project's files for <paramref name="fileNode"/>
+        /// Locates an already-open companion project's files for <paramref name="mainPrgPath"/>
         /// deterministically -- only a lightweight parse of the main .prg (to get the class
         /// name), no merge/generate/write. Does NOT create the companion project if it
         /// doesn't exist yet (callers should tell the user to run "Open Shadow Designer"
         /// first in that case, distinguishable via the companion .csproj not existing on
         /// disk).
         /// </summary>
-        public static bool TryResolveCompanionPaths(XSharpFileNode fileNode, out CompanionLocation location, out string error)
+        public static bool TryResolveCompanionPaths(string mainPrgPath, XProject xProject, out CompanionLocation location, out string error)
         {
             location = null;
             try
             {
-                var projectNode = fileNode.ProjectMgr as XSharpProjectNode;
-                XProject xProject = projectNode?.ProjectModel;
                 if (xProject == null)
                 {
                     error = "Could not resolve the owning X# project.";
                     return false;
                 }
 
-                string mainPrgPath = fileNode.Url;
                 string designerPrgPath = XSharpCodeDomHelper.BuildDesignerFileName(mainPrgPath);
                 if (string.IsNullOrEmpty(designerPrgPath) || !File.Exists(designerPrgPath))
                 {
@@ -267,13 +286,12 @@ namespace XSharp.Project.ShadowDesigner
             bool proceed = XCustomEditorSettings.AutoBuildForShadowDesigner;
             if (!proceed)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async () =>
-                {
-                    proceed = await VS.MessageBox.ShowConfirmAsync(
-                        "X# WinForms Designer",
-                        "This project needs to be built at least once so X# can resolve its " +
-                        "assembly references for the Designer.\n\nBuild now?");
-                });
+                proceed = VsShellUtilities.ShowMessageBox(ServiceProvider.GlobalProvider,
+                    "This project needs to be built at least once so X# can resolve its " +
+                    "assembly references for the Designer.\n\nBuild now?",
+                    "X# WinForms Designer",
+                    OLEMSGICON.OLEMSGICON_QUERY, OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST) == 1; // IDOK
             }
             if (!proceed)
             {

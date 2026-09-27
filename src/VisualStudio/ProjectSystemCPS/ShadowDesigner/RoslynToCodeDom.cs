@@ -1,3 +1,6 @@
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -6,7 +9,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// Translates the statement shapes the out-of-process WinForms Designer emits into the

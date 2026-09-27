@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using Microsoft.VisualStudio.Project;
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// Generates/refreshes a plain C# companion project (sibling to the real .xsproj's
@@ -204,12 +206,12 @@ namespace XSharp.Project.ShadowDesigner
         {
             var doc = XDocument.Load(xsprojPath);
             var result = new List<PackageRef>();
-            foreach (var el in doc.Descendants(ProjectFileConstants.PackageReference))
+            foreach (var el in doc.Descendants("PackageReference"))
             {
-                string include = el.Attribute(ProjectFileConstants.Include)?.Value;
+                string include = el.Attribute("Include")?.Value;
                 if (string.IsNullOrEmpty(include)) continue;
-                string version = el.Attribute(ProjectFileConstants.Version)?.Value
-                    ?? el.Element(ProjectFileConstants.Version)?.Value;
+                string version = el.Attribute("Version")?.Value
+                    ?? el.Element("Version")?.Value;
                 result.Add(new PackageRef(include, version));
             }
             return result;

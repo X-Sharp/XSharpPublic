@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <!--
     X# project system based on the Visual Studio Common Project System (CPS).
     Replaces the forked MPFproj project system (ProjectBase + ProjectPackage/Nodes), see
@@ -50,6 +50,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.10.40171" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Sdk" Version="17.9.380" />
+    <!-- Roslyn C# for the companion C# project of the shadow WinForms designer, same version as ProjectPackage2022 -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.14.2142">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -64,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj" />
+    <!-- X# CodeDOM parser/generator for the shadow WinForms designer (no MPFproj dependency) -->
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj" />
   </ItemGroup>
   <!-- Explicit SDK imports: the VSSDK targets must be imported after the SDK targets -->
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />

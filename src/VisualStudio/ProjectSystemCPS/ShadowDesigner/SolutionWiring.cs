@@ -3,6 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.Collections.Generic;
 using EnvDTE;
@@ -10,9 +13,8 @@ using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Logger = XSharp.Project.Logger;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// The only class in this feature that touches EnvDTE/DTE2. Adds the companion project
@@ -98,7 +100,7 @@ namespace XSharp.Project.ShadowDesigner
         /// </summary>
         private static void RemoveStaleHierarchy(string csprojPath)
         {
-            if (!(((IServiceProvider)XSharpProjectPackage.XInstance)?.GetService(typeof(SVsSolution)) is IVsSolution vsSolution))
+            if (!(ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) is IVsSolution vsSolution))
             {
                 return;
             }

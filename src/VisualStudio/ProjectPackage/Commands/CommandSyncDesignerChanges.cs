@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using XSharp.Project.ShadowDesigner;
+using XSharp.ProjectSystem.ShadowDesigner;
 using XSharpModel;
 
 namespace XSharp.Project
@@ -26,12 +26,14 @@ namespace XSharp.Project
     [Command(PackageIds.idSyncDesignerChanges)]
     internal sealed class CommandSyncDesignerChanges : BaseCommand<CommandSyncDesignerChanges>
     {
-        private XSharpFileNode _currentFile;
+        private string _currentPath;
+        private XProject _currentProject;
 
         protected override void BeforeQueryStatus(EventArgs e)
         {
             base.BeforeQueryStatus(e);
-            _currentFile = null;
+            _currentPath = null;
+            _currentProject = null;
             ThreadHelper.JoinableTaskFactory.Run(CheckAvailabilityAsync);
         }
 
@@ -43,14 +45,13 @@ namespace XSharp.Project
             {
                 if (item is PhysicalFile file)
                 {
-                    var project = await VS.Solutions.GetActiveProjectAsync();
-                    var xproject = project != null ? XSolution.FindProject(project.FullPath, "") : null;
-                    if (xproject?.ProjectNode is XSharpProjectNode prjNode &&
-                        prjNode.FindChild(file.FullPath) is XSharpFileNode fileNode &&
-                        fileNode.HasDesigner &&
-                        prjNode is XSharpSdkProjectNode)
+                    // SDK-style projects: loaded by CPS (default) or by the MPFproj SDK project node
+                    var xproject = XSolution.FindFile(file.FullPath)?.Project;
+                    bool sdkProject = ShadowDesignerBridge.IsCpsProject(xproject) || xproject?.ProjectNode is XSharpSdkProjectNode;
+                    if (sdkProject && ShadowDesignerBridge.HasDesignerFile(file.FullPath))
                     {
-                        _currentFile = fileNode;
+                        _currentPath = file.FullPath;
+                        _currentProject = xproject;
                         visible = true;
                     }
                 }
@@ -62,11 +63,11 @@ namespace XSharp.Project
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if (_currentFile == null) return;
+            if (_currentPath == null) return;
 
             await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
 
-            if (!ShadowDesignerBridge.TryResolveCompanionPaths(_currentFile, out var location, out string error))
+            if (!ShadowDesignerBridge.TryResolveCompanionPaths(_currentPath, _currentProject, out var location, out string error))
             {
                 await VS.MessageBox.ShowErrorAsync("X# WinForms Designer", error);
                 return;

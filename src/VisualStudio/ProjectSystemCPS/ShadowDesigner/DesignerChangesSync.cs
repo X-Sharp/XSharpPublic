@@ -3,6 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
@@ -13,7 +16,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using XSharp.CodeDom;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// "Designer -> Code, beyond handler creation" (general property edits, control
@@ -31,7 +34,7 @@ namespace XSharp.Project.ShadowDesigner
     /// wiring (+=) lines into Form1.Designer.prg, via targeted regex insertion rather than
     /// a full regenerate. Run event sync before this one when both apply in the same pass.
     /// </summary>
-    internal static class DesignerChangesSync
+    public static class DesignerChangesSync
     {
         public sealed class SyncResult
         {

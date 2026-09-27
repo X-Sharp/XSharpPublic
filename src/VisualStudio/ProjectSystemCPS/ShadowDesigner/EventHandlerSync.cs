@@ -3,6 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +15,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// Detects event-handler stubs and wiring statements the out-of-process Designer added
@@ -22,7 +25,7 @@ namespace XSharp.Project.ShadowDesigner
     /// since Microsoft.CSharp.CSharpCodeProvider.Parse() doesn't implement C# parsing at all
     /// (CodeDom only ever supported generation, not parsing, for this provider).
     /// </summary>
-    internal static class EventHandlerSync
+    public static class EventHandlerSync
     {
         public sealed class SyncResult
         {

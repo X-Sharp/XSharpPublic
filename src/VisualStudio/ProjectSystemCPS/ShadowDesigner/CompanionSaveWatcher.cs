@@ -3,6 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,14 +17,12 @@ using EnvDTE80;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Threading;
-using Logger = XSharp.Project.Logger;
 
-namespace XSharp.Project.ShadowDesigner
+namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
     /// Automatically runs the two manual sync commands (EventHandlerSync then
@@ -68,7 +69,7 @@ namespace XSharp.Project.ShadowDesigner
         /// ShadowDesignerBridge.TryOpen succeeds -- idempotent (overwrites any existing
         /// entry for the same paths).
         /// </summary>
-        public static void Watch(ProjectNode projectMgr, ShadowDesignerBridge.CompanionLocation location)
+        public static void Watch(IServiceProvider services, ShadowDesignerBridge.CompanionLocation location)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance == null)
@@ -77,8 +78,8 @@ namespace XSharp.Project.ShadowDesigner
                 {
                     if (_instance == null)
                     {
-                        var rdt = projectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                        var dte = projectMgr.GetService(typeof(SDTE)) as DTE2;
+                        var rdt = services.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+                        var dte = services.GetService(typeof(SDTE)) as DTE2;
                         if (rdt == null || dte == null)
                         {
                             return;
@@ -218,12 +219,14 @@ namespace XSharp.Project.ShadowDesigner
             // above is unaffected.
             //
             // Deliberately fire-and-forget (this call must return now so the frame can
-            // finish showing) -- uses the package's own JoinableTaskFactory rather than the
-            // static ThreadHelper one so VS can still track/join the pending operation.
-            XSharpProjectPackage.XInstance.JoinableTaskFactory.RunAsync(async () =>
+            // finish showing) -- ThreadHelper.JoinableTaskFactory lets VS track/join the pending operation.
+            // VSSDK007 wants a package JoinableTaskFactory; this static, package independent code uses
+            // ThreadHelper and hands the task to FileAndForget (fault reporting) instead.
+#pragma warning disable VSSDK007
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
             {
                 await Task.Yield();
-                await XSharpProjectPackage.XInstance.JoinableTaskFactory.SwitchToMainThreadAsync();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 try
                 {
                     string handlerName = TryGetCaretMethodName(pFrame, path);
@@ -237,7 +240,8 @@ namespace XSharp.Project.ShadowDesigner
                 {
                     _syncing = false;
                 }
-            }).Task.FileAndForget("XSharp/ShadowDesigner/ExistingHandlerRedirect");
+            }).FileAndForget("XSharp/ShadowDesigner/ExistingHandlerRedirect");
+#pragma warning restore VSSDK007
             return VSConstants.S_OK;
         }
 

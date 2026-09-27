@@ -983,7 +983,9 @@ namespace XSharp.Project
             {
                 return false;
             }
-            if (XSharp.Project.ShadowDesigner.ShadowDesignerBridge.TryOpen(this, out string shadowError))
+            var projectNode = (XSharpProjectNode)this.ProjectMgr;
+            if (XSharp.ProjectSystem.ShadowDesigner.ShadowDesignerBridge.TryOpen(this.Url, projectNode.ProjectModel,
+                () => projectNode.ForceRefreshReferences(), out string shadowError))
             {
                 return true;
             }

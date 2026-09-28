@@ -25,6 +25,7 @@ xcopy /y /e /q /i "%XSharpMsBuildDir%" "%OVERLAY%" >nul
 copy /y "%BUILDTASK%\XSharp.CurrentVersion.targets" "%OVERLAY%" >nul
 copy /y "%BUILDTASK%\XSharp.CrossTargeting.targets" "%OVERLAY%" >nul
 copy /y "%BUILDTASK%\XSharp.DesignTime.targets" "%OVERLAY%" >nul
+copy /y "%BUILDTASK%\XSharp.SDK.Props" "%OVERLAY%" >nul
 xcopy /y /e /q /i "%BUILDTASK%\Rules" "%OVERLAY%\Rules" >nul
 
 for /f "usebackq delims=" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -version [17.0^,18.0^) -latest -property productPath`) do set DEVENV=%%i

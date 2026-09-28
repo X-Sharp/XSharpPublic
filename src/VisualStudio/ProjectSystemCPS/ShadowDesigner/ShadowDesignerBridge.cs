@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -135,6 +135,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     refreshReferences?.Invoke();
                 }
 
+                // The parser resolves System.Windows.Forms.Form & co. through the project's assembly references.
+                // Shortly after the solution loaded they can still be queued (XProject.ResolveReferences runs at
+                // most every 15 seconds); unresolved types make the parser drop the right-hand side of assignments
+                // and CSharpCodeProvider then throws ArgumentNullException ("e") on the first open.
+                ForceResolveUnprocessedReferences(xProject);
                 XCodeCompileUnit mainUnit = ToXCodeCompileUnit(ParseFile(xProject, mainPrgPath, null));
                 CodeTypeDeclaration firstClass = mainUnit.GetFirstClass();
                 XCodeCompileUnit designerUnit = ToXCodeCompileUnit(ParseFile(xProject, designerPrgPath, firstClass));

@@ -24,10 +24,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// project on demand -- so cleaning it up on close is safe: nothing is lost, it's purely
     /// auto-generated output.
     ///
-    /// Subclasses the existing Microsoft.VisualStudio.Project.SolutionListener base
-    /// (ProjectBase\SolutionListener.cs) rather than implementing IVsSolutionEvents by hand
-    /// -- it already provides correct advise/unadvise lifecycle and E_NOTIMPL defaults for
-    /// every method in the IVsSolutionEvents family.
+    /// Implements IVsSolutionEvents directly (the MPFproj SolutionListener base is not available in the
+    /// CPS project system); advised once, on first use, for the lifetime of the process.
     ///
     /// TWO separate hooks are needed, not one, because of a real ordering bug found in
     /// testing: removing the project from the solution has to happen BEFORE VS's own
@@ -38,6 +36,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// OnAfterCloseSolution, by which point every project (including the companion) has
     /// fully unloaded, so there's no risk of deleting files still locked by an active
     /// project node.
+    ///
+    /// OnQueryCloseSolution is not final: the close can still be cancelled afterwards (e.g. Cancel in the save
+    /// prompt). The companion projects are then no longer in the solution, which is harmless: their paths stay
+    /// tracked, the next View Designer adds the project back (SolutionWiring.EnsureProjectInSolution), and the
+    /// folders are only deleted after a real close.
     /// </summary>
     internal sealed class ShadowDesignerCleanup : IVsSolutionEvents
     {
@@ -87,6 +90,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
         public int OnQueryCloseSolution(object reserved, ref int cancel)
         {
+            // Another listener already cancelled the close: the solution stays open, keep the companions.
+            if (cancel != 0)
+            {
+                return VSConstants.S_OK;
+            }
             if (_vsSolution != null)
             {
                 foreach (string csprojPath in _companionCsprojPaths)

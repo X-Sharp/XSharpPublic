@@ -172,6 +172,10 @@ namespace XSharp.ProjectSystem.LanguageService
         /// not see the solution yet while it is still opening, so the database was never opened.
         /// Load the X# project package (shell link, logging, settings) and open the database for the solution
         /// file that is being loaded, like XSharpShellLink does in OnBeforeOpenSolution.
+        /// The solution file does not have to exist yet: a project that is opened without a solution
+        /// (devenv project.xsproj, File > Open > Project) or a new project lives in a solution that VS only writes
+        /// when it is saved. XSolution.Open only needs the folder and the name (database in .vs\{name}), so the
+        /// database is opened for the future solution file; without a solution file name the project file is used.
         /// </remarks>
         private async Task<bool> EnsureSolutionIsOpenAsync()
         {
@@ -181,13 +185,24 @@ namespace XSharp.ProjectSystem.LanguageService
             if (ServiceProvider.GlobalProvider.GetService(typeof(SVsShell)) is IVsShell shell)
             {
                 var packageGuid = new Guid(XSharpConstants.guidXSharpProjectPkgString);
-                shell.LoadPackage(ref packageGuid, out _);
+                if (shell is IVsShell7 shell7)
+                    await shell7.LoadPackageAsync(ref packageGuid);
+                else
+                    shell.LoadPackage(ref packageGuid, out _);
+                await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
             }
-            if (!XSolution.IsOpen && ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) is IVsSolution solution &&
-                solution.GetSolutionInfo(out _, out var solutionFile, out _) == 0 &&
-                !string.IsNullOrEmpty(solutionFile) && File.Exists(solutionFile))
+            if (!XSolution.IsOpen)
             {
-                XSettings.Information("XSharpProjectAdapter: opening the X# solution model for " + solutionFile);
+                string solutionFile = null;
+                if (ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) is IVsSolution solution &&
+                    solution.GetSolutionInfo(out _, out var file, out _) == 0)
+                {
+                    solutionFile = file;
+                }
+                if (string.IsNullOrEmpty(solutionFile))
+                    solutionFile = Path.ChangeExtension(project.FullPath, ".sln");
+                XSettings.Information("XSharpProjectAdapter: opening the X# solution model for " + solutionFile +
+                    (File.Exists(solutionFile) ? "" : " (solution file not saved yet)"));
                 XSolution.Open(solutionFile);
             }
             return XSolution.IsOpen;

@@ -104,6 +104,8 @@ namespace XSharp.ProjectSystem.LanguageService
             // created OrphanedFiles project was added twice: SQLite "FOREIGN KEY constraint failed" with a new
             // X# database, verified in VS).
             await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
+            // Before the first walk, so the parser finds the comment tasks (TODO etc.)
+            ProjectFileSaveWatcher.EnsureCommentTokens();
             lock (gate)
             {
                 if (model != null)
@@ -115,6 +117,8 @@ namespace XSharp.ProjectSystem.LanguageService
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
             // Forms added with "Add New Item" open in the shadow designer instead of the code editor
             ShadowDesigner.NewFormDesignerRedirect.EnsureAdvised(threading.JoinableTaskFactory);
+            // Saved files are walked again (comment tasks), like XSharpProjectNode.OnFileChanged
+            ProjectFileSaveWatcher.EnsureAdvised(threading.JoinableTaskFactory);
             errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName);
             errors.Changed = errorList.Update;
             taskList = new CommentTaskList(threading.JoinableTaskFactory, DisplayName);

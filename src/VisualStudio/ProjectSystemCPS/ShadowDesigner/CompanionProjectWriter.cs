@@ -93,6 +93,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         public static string ComputeCompanionDir(string realXsprojPath) => GetCompanionDir(realXsprojPath);
 
         /// <param name="realXsprojPath">The X# project.</param>
+        /// <param name="evaluatedTargetFramework">The active target framework of the loaded project (short form, e.g.
+        /// net8.0), or null to read it from the project file.</param>
         /// <param name="referencePaths">Filtered assembly references of the X# project.</param>
         /// <param name="generatedDesignerCsharp">The merged form class (.prg + .Designer.prg) as C#.</param>
         /// <param name="stubCsharp">The Form1.cs-equivalent stub: the partial class with the same base types and
@@ -100,6 +102,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <param name="className">The form class.</param>
         public static CompanionPaths EnsureCompanionProject(
             string realXsprojPath,
+            string evaluatedTargetFramework,
             IReadOnlyList<string> referencePaths,
             string generatedDesignerCsharp,
             string stubCsharp,
@@ -108,7 +111,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             string companionDir = GetCompanionDir(realXsprojPath);
             Directory.CreateDirectory(companionDir);
 
-            string targetFramework = ReadTargetFramework(realXsprojPath);
+            string targetFramework = GetTargetFramework(realXsprojPath, evaluatedTargetFramework);
 
             // Read <PackageReference> items directly out of the real .xsproj's XML (Include +
             // Version only, no MSBuild evaluation) and emit equivalent items into the
@@ -143,15 +146,30 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             return paths;
         }
 
-        private static string ReadTargetFramework(string xsprojPath)
+        /// <summary>
+        /// The target framework of the companion project: the evaluated (active) target framework of the loaded
+        /// project, which also covers multi-targeting and a TargetFramework set in Directory.Build.props; otherwise
+        /// the first of &lt;TargetFramework&gt; / &lt;TargetFrameworks&gt; in the project file.
+        /// </summary>
+        private static string GetTargetFramework(string xsprojPath, string evaluatedTargetFramework)
         {
-            var doc = XDocument.Load(xsprojPath);
-            var element = doc.Descendants(XSharpProjectFileConstants.TargetFramework).FirstOrDefault();
-            if (element == null)
+            string tfm = evaluatedTargetFramework;
+            if (string.IsNullOrEmpty(tfm))
             {
-                throw new InvalidOperationException($"No <TargetFramework> element found in {xsprojPath}.");
+                var doc = XDocument.Load(xsprojPath);
+                tfm = doc.Descendants(XSharpProjectFileConstants.TargetFramework).FirstOrDefault()?.Value?.Trim();
+                if (string.IsNullOrEmpty(tfm))
+                {
+                    tfm = doc.Descendants("TargetFrameworks").FirstOrDefault()?.Value
+                        ?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(t => t.Trim())
+                        .FirstOrDefault(t => t.Length > 0 && t.IndexOf('$') < 0);
+                }
+                if (string.IsNullOrEmpty(tfm))
+                {
+                    throw new InvalidOperationException($"Could not determine the target framework of {xsprojPath}.");
+                }
             }
-            string tfm = element.Value;
 
             // The out-of-process Designer's host-process launcher requires a Windows-Desktop
             // TFM (observed empirically as a "Timed out while connecting to the named pipe"

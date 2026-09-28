@@ -13,8 +13,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using EnvDTE80;
 using Microsoft.CSharp;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.CodeDom;
@@ -171,7 +173,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // A background deletion from the previous solution close may still be retrying on this folder
                 ShadowDesignerCleanup.CancelPendingDelete(CompanionProjectWriter.ComputeCompanionDir(xProject.FileName));
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
-                    xProject.FileName, referencePaths, shadowCSharp, stubCSharp, className);
+                    xProject.FileName, GetEvaluatedTargetFramework(xProject.FileName), referencePaths, shadowCSharp, stubCSharp, className);
 
                 CompanionSaveWatcher.Watch(ServiceProvider.GlobalProvider, new CompanionLocation
                 {
@@ -325,6 +327,72 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             {
                 error = $"Build failed: {ex.Message}";
                 return false;
+            }
+        }
+
+        private static IVsHierarchy FindHierarchy(string projectFile)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!(ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) is IVsSolution solution))
+            {
+                return null;
+            }
+            Guid ignored = Guid.Empty;
+            if (ErrorHandler.Failed(solution.GetProjectEnum((uint)__VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION, ref ignored, out IEnumHierarchies hierarchies)) || hierarchies == null)
+            {
+                return null;
+            }
+            var buffer = new IVsHierarchy[1];
+            while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                if (buffer[0] is IVsProject project &&
+                    ErrorHandler.Succeeded(project.GetMkDocument(VSConstants.VSITEMID_ROOT, out string mkDocument)) &&
+                    string.Equals(mkDocument, projectFile, StringComparison.OrdinalIgnoreCase))
+                {
+                    return buffer[0];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// The active target framework of the loaded X# project in short form (net8.0, net48, ...), from the
+        /// hierarchy (VSHPROPID_TargetFrameworkMoniker): unlike the project file XML it covers
+        /// &lt;TargetFrameworks&gt; and a TargetFramework from Directory.Build.props. Null when not available;
+        /// the companion writer then reads the project file.
+        /// </summary>
+        private static string GetEvaluatedTargetFramework(string projectFile)
+        {
+            try
+            {
+                var hierarchy = FindHierarchy(projectFile);
+                if (hierarchy == null ||
+                    ErrorHandler.Failed(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID4.VSHPROPID_TargetFrameworkMoniker, out object value)) ||
+                    !(value is string moniker) || string.IsNullOrEmpty(moniker))
+                {
+                    return null;
+                }
+                return ToShortTargetFramework(new FrameworkName(moniker));
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "ShadowDesignerBridge.GetEvaluatedTargetFramework");
+                return null;
+            }
+        }
+
+        private static string ToShortTargetFramework(FrameworkName framework)
+        {
+            var version = framework.Version;
+            switch (framework.Identifier)
+            {
+                case ".NETFramework":
+                    // v4.8 -> net48, v4.7.2 -> net472
+                    return "net" + version.ToString().Replace(".", "");
+                case ".NETCoreApp":
+                    return (version.Major >= 5 ? "net" : "netcoreapp") + version.Major + "." + version.Minor;
+                default:
+                    return null;
             }
         }
 

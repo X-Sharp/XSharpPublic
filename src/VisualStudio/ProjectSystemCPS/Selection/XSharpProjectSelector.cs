@@ -15,14 +15,19 @@ using XSharp.Settings;
 namespace XSharp.ProjectSystem.Selection
 {
     /// <summary>
-    /// Chooses the project system for projects with the X# (MPFproj) project type GUID {AA6C8D78-...}:
-    /// SDK-style projects are loaded by the CPS project type, all other (legacy) projects by MPFproj.
+    /// Chooses the project system for projects with the X# (MPFproj) project type GUID {AA6C8D78-...} or the CPS
+    /// project type GUID {AB494DCE-...}: SDK-style projects are loaded by the CPS project type, all other (legacy)
+    /// projects by MPFproj. VS rewrites {AA6C8D78} to {AB494DCE} in the .sln when it saves the solution, so both
+    /// GUIDs are routed the same way.
     /// </summary>
     /// <remarks>
     /// Same mechanism as the managed project system uses for C#/VB/F# (FSharpProjectSelector): the selector is
     /// registered for the legacy project type GUID (pkgdef "Projects\{guid}\ProjectSelector", see
-    /// <see cref="ProvideProjectSelectorAttribute"/>), so existing solution files keep their project type GUID.
-    /// Solutions that use the CPS project type GUID directly do not go through the selector.
+    /// <see cref="ProvideProjectSelectorAttribute"/>), so existing solution files keep working. Unlike the managed
+    /// project system it is registered for the CPS project type GUID as well: VS persists the GUID of the factory
+    /// the selector returned, so an SDK project's .sln entry flips to {AB494DCE} once (C# has the same flip,
+    /// {FAE04EC0} -> {9A19103F}); with the second registration such an entry still loads with MPFproj when the
+    /// routing is switched off or the X# MSBuild support files are too old.
     /// Any problem (unreadable project file, routing switched off, X# MSBuild support files without the CPS
     /// design-time import, see <see cref="XSharpMsBuildSupport"/>) falls back to MPFproj, the project system
     /// that loaded these projects before.

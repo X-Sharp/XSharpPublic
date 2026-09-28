@@ -42,6 +42,11 @@ namespace XSharp.ProjectSystem
         Capabilities = XSharpCapabilities.ProjectTypeCapabilities,
         PossibleProjectExtensions = XSharpConstants.ProjectExtension)]
     [ProvideProjectSelector(XSharpConstants.guidXSharpProjectFactoryString, XSharpConstants.guidProjectSelectorString)]
+    // Visual Studio writes the GUID of the project system that actually loaded a project into the .sln when it
+    // saves the solution ({AA6C8D78} -> {AB494DCE}, the same happens for C#: {FAE04EC0} -> {9A19103F}). The
+    // selector on the CPS project type makes such entries behave like the original ones: legacy projects, the
+    // Tools > Options switch and the X# MSBuild support check still send projects to MPFproj.
+    [ProvideProjectSelector(XSharpConstants.guidCpsProjectTypeString, XSharpConstants.guidProjectSelectorString)]
     [ProvideOptionPage(typeof(ProjectSystemOptionsPage), ProjectSystemOptionsPage.CategoryName, ProjectSystemOptionsPage.PageName, 0, 0, true)]
     public sealed class XSharpProjectSystemPackage : AsyncPackage
     {

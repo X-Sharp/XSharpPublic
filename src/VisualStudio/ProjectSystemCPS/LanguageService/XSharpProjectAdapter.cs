@@ -108,6 +108,9 @@ namespace XSharp.ProjectSystem.LanguageService
                 model.FileWalkComplete += OnFileWalkComplete;
             }
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
+            // Forms added with "Add New Item" open in the shadow designer instead of the code editor
+            await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
+            ShadowDesigner.NewFormDesignerRedirect.EnsureAdvised(threading.JoinableTaskFactory);
             errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName);
             errors.Changed = errorList.Update;
             taskList = new CommentTaskList(threading.JoinableTaskFactory, DisplayName);

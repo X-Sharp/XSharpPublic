@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.Shell;
 using XSharpModel;
 
 namespace XSharp.ProjectSystem.ShadowDesigner
@@ -45,6 +46,16 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         public static async Task<bool> TryOpenAsync(IProjectThreadingService threading, string path)
         {
             await threading.SwitchToUIThread();
+            return await TryOpenAsync(path);
+        }
+
+        /// <summary>
+        /// Opens the shadow designer for the form <paramref name="path"/>; false when it could not be opened.
+        /// Also used by <see cref="NewFormDesignerRedirect"/> for forms added with "Add New Item".
+        /// </summary>
+        public static async Task<bool> TryOpenAsync(string path)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (opening)
                 return true;
             opening = true;
@@ -57,7 +68,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     return false;
                 }
                 var (ok, error) = await ShadowDesignerBridge.EnsureReferencesAsync(xProject);
-                await threading.SwitchToUIThread();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 // The project can have been unloaded or reloaded while waiting
                 xProject = XSolution.FindFile(path)?.Project;
                 if (ok && xProject != null)

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -23,6 +23,9 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// </summary>
     internal static class CompanionProjectWriter
     {
+        /// <summary>Companion project name = real project name + this suffix (also its folder name).</summary>
+        internal const string CompanionSuffix = ".ShadowDesigner";
+
         public readonly struct CompanionPaths
         {
             public CompanionPaths(string csprojPath, string designerCsPath)
@@ -61,7 +64,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         public static CompanionPaths ComputePaths(string realXsprojPath, string className)
         {
             string companionDir = GetCompanionDir(realXsprojPath);
-            string csprojName = Path.GetFileNameWithoutExtension(realXsprojPath) + ".ShadowDesigner";
+            string csprojName = Path.GetFileNameWithoutExtension(realXsprojPath) + CompanionSuffix;
             return new CompanionPaths(
                 Path.Combine(companionDir, csprojName + ".csproj"),
                 Path.Combine(companionDir, className + ".Designer.cs"));
@@ -80,7 +83,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             string realProjectName = Path.GetFileNameWithoutExtension(realXsprojPath);
             string solutionParentDir = Path.GetDirectoryName(realProjectDir)
                 ?? throw new InvalidOperationException($"Could not determine parent directory of {realProjectDir}.");
-            return Path.Combine(solutionParentDir, realProjectName + ".ShadowDesigner");
+            return Path.Combine(solutionParentDir, realProjectName + CompanionSuffix);
         }
 
         public static CompanionPaths EnsureCompanionProject(

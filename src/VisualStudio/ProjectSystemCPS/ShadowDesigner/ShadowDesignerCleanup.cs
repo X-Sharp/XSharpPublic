@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -113,9 +113,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     // Without this the empty Solution Folder stayed in the saved .sln.
                     CloseEmptyShadowDesignerFolder();
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Best-effort, see above
+                    Logger.Exception(ex, "ShadowDesignerCleanup: could not remove the Solution Folder");
                 }
             }
             return VSConstants.S_OK;
@@ -128,11 +129,14 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// </summary>
         private void CloseEmptyShadowDesignerFolder()
         {
+            // Solution Folders are virtual projects: EPF_ALLINSOLUTION alone (loaded + unloaded) does not return
+            // them, EPF_ALLPROJECTS includes EPF_ALLVIRTUAL.
             Guid solutionFolderType = new Guid("2150E333-8FDC-42A3-9474-1A3956D46DE8");
-            int hr = _vsSolution.GetProjectEnum((uint)(__VSENUMPROJFLAGS.EPF_ALLINSOLUTION | __VSENUMPROJFLAGS.EPF_MATCHTYPE),
+            int hr = _vsSolution.GetProjectEnum((uint)(__VSENUMPROJFLAGS.EPF_ALLPROJECTS | __VSENUMPROJFLAGS.EPF_MATCHTYPE),
                 ref solutionFolderType, out IEnumHierarchies hierarchies);
             if (ErrorHandler.Failed(hr) || hierarchies == null)
             {
+                Logger.Information($"ShadowDesignerCleanup: GetProjectEnum failed, hr=0x{hr:X8}");
                 return;
             }
 
@@ -140,15 +144,63 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
             {
                 var hierarchy = buffer[0];
-                if (ErrorHandler.Succeeded(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out object name)) &&
-                    string.Equals(name as string, SolutionWiring.ShadowDesignerFolderName, StringComparison.OrdinalIgnoreCase) &&
-                    ErrorHandler.Succeeded(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_FirstChild, out object firstChild)) &&
-                    IsNil(firstChild))
+                if (ErrorHandler.Failed(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out object name)) ||
+                    !string.Equals(name as string, SolutionWiring.ShadowDesignerFolderName, StringComparison.OrdinalIgnoreCase))
                 {
-                    _vsSolution.CloseSolutionElement(0, hierarchy, 0);
+                    continue;
+                }
+                // The companion projects removed just before can still be listed as children at this point, so the
+                // folder counts as empty when it only contains companion projects.
+                if (!ContainsOnlyCompanionProjects(hierarchy, out string otherChild))
+                {
+                    Logger.Information($"ShadowDesignerCleanup: Solution Folder '{name}' contains '{otherChild}', kept");
                     return;
                 }
+                hr = _vsSolution.CloseSolutionElement(0, hierarchy, 0);
+                Logger.Information($"ShadowDesignerCleanup: removed the empty Solution Folder '{name}', hr=0x{hr:X8}");
+                return;
             }
+            Logger.Information($"ShadowDesignerCleanup: Solution Folder '{SolutionWiring.ShadowDesignerFolderName}' not found");
+        }
+
+        private bool ContainsOnlyCompanionProjects(IVsHierarchy folder, out string otherChild)
+        {
+            otherChild = null;
+            folder.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_FirstChild, out object child);
+            while (!IsNil(child))
+            {
+                uint itemId = child is int i ? unchecked((uint)i) : (uint)child;
+                folder.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Name, out object childName);
+                string projectPath = null;
+                Guid hierarchyGuid = typeof(IVsHierarchy).GUID;
+                if (ErrorHandler.Succeeded(folder.GetNestedHierarchy(itemId, ref hierarchyGuid, out IntPtr nested, out uint _)) && nested != IntPtr.Zero)
+                {
+                    try
+                    {
+                        if (System.Runtime.InteropServices.Marshal.GetObjectForIUnknown(nested) is IVsProject project)
+                        {
+                            project.GetMkDocument(VSConstants.VSITEMID_ROOT, out projectPath);
+                        }
+                    }
+                    finally
+                    {
+                        System.Runtime.InteropServices.Marshal.Release(nested);
+                    }
+                }
+                // A removed companion can remain as a child without name and without nested project until the
+                // solution refreshes its hierarchy; that is not user content either.
+                bool isCompanion = (projectPath != null && _companionCsprojPaths.Contains(projectPath)) ||
+                    (childName as string)?.EndsWith(CompanionProjectWriter.CompanionSuffix, StringComparison.OrdinalIgnoreCase) == true ||
+                    (projectPath == null && string.IsNullOrEmpty(childName as string));
+                Logger.Information($"ShadowDesignerCleanup: Solution Folder child '{childName}' ({projectPath ?? "no project"}), companion: {isCompanion}");
+                if (!isCompanion)
+                {
+                    otherChild = childName as string ?? projectPath ?? itemId.ToString();
+                    return false;
+                }
+                folder.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_NextSibling, out child);
+            }
+            return true;
         }
 
         private static bool IsNil(object itemId)

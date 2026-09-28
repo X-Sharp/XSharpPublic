@@ -14,9 +14,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using EnvDTE80;
 using Microsoft.CSharp;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OperationProgress;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.CodeDom;
@@ -37,8 +39,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     ///
     /// XSharpCodeParser/XSharpCodeDomHelper/XProject are called directly -- no reflection is
     /// needed to reach them. The bridge only needs the path of the .prg and the X# code model
-    /// (XProject) of its project, so it serves both project systems: the CPS project system
-    /// (XSharpShadowDesignerDefaultActionCommand, XSharpShadowDesignerViewFormCommand) and the MPFproj SDK project node (XSharpFileNode).
+    /// (XProject) of its project. Entry points: the CPS commands XSharpShadowDesignerDefaultActionCommand and
+    /// XSharpShadowDesignerViewFormCommand (MPFproj no longer loads SDK-style projects).
     ///
     /// Also exposes <see cref="TryResolveCompanionPaths"/>, used by
     /// <see cref="EventHandlerSync"/> and <see cref="DesignerChangesSync"/> to locate an
@@ -83,15 +85,14 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <summary>
         /// Attempts to open the shadow Designer for <paramref name="mainPrgPath"/> (expected to
         /// be a SDK-style project's .prg file with a matching .Designer.prg), using the code model
-        /// <paramref name="xProject"/> of its project. <paramref name="refreshReferences"/> is called
-        /// after a build that was needed to resolve the references (MPFproj reads them from the
-        /// response file); CPS projects pass null, their references come from the design-time build. Returns false with an
+        /// <paramref name="xProject"/> of its project. Call <see cref="EnsureReferencesAsync"/> first: this method
+        /// does not wait for or build anything. Returns false with an
         /// error message on failure -- callers should fall back to whatever they'd otherwise
         /// have done (e.g. today's "does not support project" Designer error) rather than
         /// throwing, since a partially-set-up solution (mid-restore, no build yet) is a
         /// normal, recoverable condition, not a bug.
         /// </summary>
-        public static bool TryOpen(string mainPrgPath, XProject xProject, Action refreshReferences, out string error)
+        public static bool TryOpen(string mainPrgPath, XProject xProject, out string error)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             try
@@ -114,28 +115,6 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 {
                     error = "Could not obtain the DTE service.";
                     return false;
-                }
-
-                // A project that has never been built this session has no .rsp response file,
-                // so XProject.AssemblyReferences has nothing to resolve -- any 3rd-party type
-                // reference silently corrupts the generated code instead of failing loudly (a
-                // multi-segment member-access chain like "oControl1:SomeProperty := x"
-                // collapses to a bare "oControl1 = x"). Confirmed empirically that VS's own
-                // automatic design-time ("Sync") build does NOT resolve 3rd-party/NuGet
-                // references either (only plain framework reference-assembly paths show up) --
-                // a real build is genuinely required, not just avoidable overhead. Ensure a
-                // build has happened before parsing.
-                if (IsMissingAnyPackageReference(xProject))
-                {
-                    if (!EnsureBuilt(dte, xProject, out error))
-                    {
-                        return false;
-                    }
-                    // Don't trust that BuildEnded(true)'s own RefreshReferences() call (fired
-                    // from XSharpIDEBuildLogger's MSBuild logger callback) has already
-                    // completed by the time the synchronous BuildProject(...) call above
-                    // returned -- force a synchronous re-read right now instead.
-                    refreshReferences?.Invoke();
                 }
 
                 // The parser resolves System.Windows.Forms.Form & co. through the project's assembly references.
@@ -284,50 +263,151 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             return GetFilteredReferencePaths(xProject).Count == 0;
         }
 
+        // How long to wait for the project load (NuGet restore + design-time build) before offering a build
+        private static readonly TimeSpan ProjectLoadTimeout = TimeSpan.FromSeconds(60);
+        // The adapter processes a design-time build result asynchronously, shortly after the load stage completed
+        private static readonly TimeSpan ReferenceUpdateTimeout = TimeSpan.FromSeconds(3);
+
         /// <summary>
-        /// Builds the real project via VS's own build pipeline (EnvDTE SolutionBuild, not a
-        /// separately-spawned dotnet.exe process) so XSharpIDEBuildLogger's BuildEnded hook
-        /// fires normally and refreshes XProject.AssemblyReferences the same way a manual
-        /// Build would. Prompts for confirmation first unless
-        /// XCustomEditorSettings.AutoBuildForShadowDesigner is set (Tools > Options > X#
-        /// Project System > Other Editor Options > Windows Forms Editor).
+        /// Makes sure that the assembly references of the project's packages are known to the code model before the
+        /// forms are parsed: without them any 3rd-party type reference silently corrupts the generated code instead
+        /// of failing loudly (a multi-segment member-access chain like "oControl1:SomeProperty := x" collapses to a
+        /// bare "oControl1 = x").
         /// </summary>
-        private static bool EnsureBuilt(DTE2 dte, XProject xProject, out string error)
+        /// <remarks>
+        /// Under CPS the references come from the design-time build (XSharpProjectAdapter), which runs after the NuGet
+        /// restore. When they are missing (shortly after the solution was opened, or while restoring) this waits
+        /// asynchronously for the IntelliSense stage of the project load. Only when they are still missing, a build is
+        /// offered (the build also restores); it runs asynchronously (IVsSolutionBuildManager), without the nested
+        /// message pump of EnvDTE's BuildProject(WaitForBuildToFinish: true) inside the CPS command handler.
+        /// Returns false with an error when the user declined the build or it could not be started.
+        /// </remarks>
+        public static async Task<(bool Ok, string Error)> EnsureReferencesAsync(XProject xProject)
         {
-            error = null;
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (!IsMissingAnyPackageReference(xProject))
+            {
+                return (true, null);
+            }
+            Logger.Information("ShadowDesignerBridge: package references not resolved yet, waiting for the project load");
+            await WaitForReferencesAsync(xProject);
+            if (!IsMissingAnyPackageReference(xProject))
+            {
+                return (true, null);
+            }
+
             bool proceed = XCustomEditorSettings.AutoBuildForShadowDesigner;
             if (!proceed)
             {
                 proceed = VsShellUtilities.ShowMessageBox(ServiceProvider.GlobalProvider,
-                    "This project needs to be built at least once so X# can resolve its " +
-                    "assembly references for the Designer.\n\nBuild now?",
+                    "X# could not resolve the package references of this project for the Designer yet. " +
+                    "Building the project restores and resolves them.\n\nBuild now?",
                     "X# WinForms Designer",
                     OLEMSGICON.OLEMSGICON_QUERY, OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST) == 1; // IDOK
             }
             if (!proceed)
             {
-                error = "Cancelled -- build the project manually, then try View Designer again.";
-                return false;
+                return (false, "Cancelled -- build the project manually, then try View Designer again.");
             }
-
-            var project = SolutionWiring.FindProjectByFullPath(dte, xProject.FileName);
-            if (project == null)
+            string buildError = await BuildAsync(xProject.FileName);
+            if (buildError != null)
             {
-                error = $"Could not find an open project matching {xProject.FileName} in the solution.";
-                return false;
+                return (false, buildError);
             }
+            await WaitForReferencesAsync(xProject);
+            // Like before: continue even when references are still missing (e.g. a failed build)
+            return (true, null);
+        }
+
+        private static async Task WaitForReferencesAsync(XProject xProject)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsOperationProgressStatusService)) is IVsOperationProgressStatusService progress)
+            {
+                var stage = progress.GetStageStatusForSolutionLoad(CommonOperationProgressStageIds.Intellisense);
+                if (stage != null && stage.IsInProgress)
+                {
+                    await Task.WhenAny(stage.WaitForCompletionAsync(), Task.Delay(ProjectLoadTimeout));
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                }
+            }
+            var deadline = DateTime.UtcNow + ReferenceUpdateTimeout;
+            while (IsMissingAnyPackageReference(xProject) && DateTime.UtcNow < deadline)
+            {
+                await Task.Delay(250);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            }
+        }
+
+        /// <summary>
+        /// Builds the X# project through the solution build manager and waits asynchronously for the build to end.
+        /// Returns an error message when the build could not be started, null otherwise (also for a failed build).
+        /// </summary>
+        private static async Task<string> BuildAsync(string projectFile)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var hierarchy = FindHierarchy(projectFile);
+            if (hierarchy == null)
+            {
+                return $"Could not find an open project matching {projectFile} in the solution.";
+            }
+            if (!(await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsSolutionBuildManager)) is IVsSolutionBuildManager2 buildManager))
+            {
+                return "Could not obtain the solution build manager.";
+            }
+            if (ErrorHandler.Succeeded(buildManager.QueryBuildManagerBusy(out int busy)) && busy != 0)
+            {
+                return "A build is already running -- try View Designer again when it has finished.";
+            }
+            var completion = new BuildCompletion();
+            ErrorHandler.ThrowOnFailure(buildManager.AdviseUpdateSolutionEvents(completion, out uint cookie));
             try
             {
-                string configName = dte.Solution.SolutionBuild.ActiveConfiguration.Name;
-                dte.Solution.SolutionBuild.BuildProject(configName, project.UniqueName, WaitForBuildToFinish: true);
-                return true;
+                int hr = buildManager.StartSimpleUpdateProjectConfiguration(hierarchy, null, null,
+                    (uint)VSSOLNBUILDUPDATEFLAGS.SBF_OPERATION_BUILD, 0, 0);
+                if (ErrorHandler.Failed(hr))
+                {
+                    return $"The build could not be started (0x{hr:X8}).";
+                }
+                bool succeeded = await completion.Task;
+                Logger.Information($"ShadowDesignerBridge: build of {projectFile} finished, succeeded: {succeeded}");
+                return null;
             }
-            catch (Exception ex)
+            finally
             {
-                error = $"Build failed: {ex.Message}";
-                return false;
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                buildManager.UnadviseUpdateSolutionEvents(cookie);
             }
+        }
+
+        /// <summary>
+        /// Completes when the next solution build (the one started by BuildAsync) ends.
+        /// </summary>
+        private sealed class BuildCompletion : IVsUpdateSolutionEvents
+        {
+            private readonly TaskCompletionSource<bool> completion =
+                new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            public Task<bool> Task => completion.Task;
+
+            public int UpdateSolution_Begin(ref int pfCancelUpdate) => VSConstants.S_OK;
+
+            public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
+            {
+                completion.TrySetResult(fSucceeded != 0);
+                return VSConstants.S_OK;
+            }
+
+            public int UpdateSolution_StartUpdate(ref int pfCancelUpdate) => VSConstants.S_OK;
+
+            public int UpdateSolution_Cancel()
+            {
+                completion.TrySetResult(false);
+                return VSConstants.S_OK;
+            }
+
+            public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy) => VSConstants.S_OK;
         }
 
         private static IVsHierarchy FindHierarchy(string projectFile)

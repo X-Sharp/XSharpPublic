@@ -38,19 +38,37 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             return true;
         }
 
+        // Set while an open waits for the project load or a build (UI thread only): a second double click in that
+        // time is swallowed instead of starting a second wait/build.
+        private static bool opening;
+
         public static async Task<bool> TryOpenAsync(IProjectThreadingService threading, string path)
         {
             await threading.SwitchToUIThread();
-            var xProject = XSolution.FindFile(path)?.Project;
-            if (xProject == null)
+            if (opening)
+                return true;
+            opening = true;
+            try
             {
-                Logger.Information("XSharp ShadowDesigner: no X# code model for " + path);
+                var xProject = XSolution.FindFile(path)?.Project;
+                if (xProject == null)
+                {
+                    Logger.Information("XSharp ShadowDesigner: no X# code model for " + path);
+                    return false;
+                }
+                var (ok, error) = await ShadowDesignerBridge.EnsureReferencesAsync(xProject);
+                await threading.SwitchToUIThread();
+                // The project can have been unloaded or reloaded while waiting
+                xProject = XSolution.FindFile(path)?.Project;
+                if (ok && xProject != null && ShadowDesignerBridge.TryOpen(path, xProject, out error))
+                    return true;
+                Logger.Information("XSharp ShadowDesigner: " + (error ?? "no X# code model for " + path));
                 return false;
             }
-            if (ShadowDesignerBridge.TryOpen(path, xProject, null, out var error))
-                return true;
-            Logger.Information("XSharp ShadowDesigner: " + error);
-            return false;
+            finally
+            {
+                opening = false;
+            }
         }
 
         public static Task<CommandStatusResult> EnabledStatusAsync(string commandText) =>

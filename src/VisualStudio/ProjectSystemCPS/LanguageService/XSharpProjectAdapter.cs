@@ -99,6 +99,11 @@ namespace XSharp.ProjectSystem.LanguageService
                 XSettings.Information("XSharpProjectAdapter: X# solution model is not open, no code model for " + project.FullPath);
                 return;
             }
+            // Create the code model on the UI thread, like MPFproj: the projects of a solution load in parallel, and
+            // creating two XProjects at the same time on background threads raced in the code model (the lazily
+            // created OrphanedFiles project was added twice: SQLite "FOREIGN KEY constraint failed" with a new
+            // X# database, verified in VS).
+            await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
             lock (gate)
             {
                 if (model != null)
@@ -109,7 +114,6 @@ namespace XSharp.ProjectSystem.LanguageService
             }
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
             // Forms added with "Add New Item" open in the shadow designer instead of the code editor
-            await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
             ShadowDesigner.NewFormDesignerRedirect.EnsureAdvised(threading.JoinableTaskFactory);
             errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName);
             errors.Changed = errorList.Update;

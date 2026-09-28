@@ -45,9 +45,9 @@ namespace XSharp.Project
             {
                 if (item is PhysicalFile file)
                 {
-                    // SDK-style projects: loaded by CPS (default) or by the MPFproj SDK project node
+                    // SDK-style projects, loaded by the CPS project system
                     var xproject = XSolution.FindFile(file.FullPath)?.Project;
-                    bool sdkProject = ShadowDesignerBridge.IsCpsProject(xproject) || xproject?.ProjectNode is XSharpSdkProjectNode;
+                    bool sdkProject = ShadowDesignerBridge.IsCpsProject(xproject);
                     if (sdkProject && ShadowDesignerBridge.HasDesignerFile(file.FullPath))
                     {
                         _currentPath = file.FullPath;

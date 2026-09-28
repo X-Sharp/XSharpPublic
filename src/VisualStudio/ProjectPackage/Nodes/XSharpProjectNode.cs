@@ -1490,70 +1490,6 @@ namespace XSharp.Project
             return new XSharpReferenceContainerNode(this);
         }
 
-        internal bool HasIncompleteReferences = false;
-
-#if DEV17
-        internal bool FixReferences()
-        {
-            var found = true;
-            var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
-            if (container == null)
-                return false;
-            foreach (var child in container.EnumReferences())
-            {
-                if (child is XSharpSDKProjectReferenceNode sdkref)
-                {
-
-                    var element = child.ItemNode;
-
-                    var path = element.Item.EvaluatedInclude;
-                    var completePath = Path.Combine(this.ProjectFolder, path);
-                    completePath = Path.GetFullPath(completePath);
-                    var refnode = FindProject(completePath);
-                    Guid refnodeGuid = Guid.Empty;
-                    string refnodeName = child.Caption;
-                    if (refnode != null)
-                    {
-                        refnodeGuid = refnode.ProjectIDGuid;
-                    }
-                    else
-                    {
-                        // this must be a foreign project reference
-                        var projectInfo = ProjectInfo.GetProjectInfo(completePath);
-                        if (projectInfo == null)
-                        {
-                            if (this.GetProjectGuid(completePath, out refnodeGuid) && refnodeGuid != Guid.Empty)
-                            {
-                                projectInfo = new ProjectInfo(refnodeGuid, completePath);
-                            }
-                        }
-                        else
-                        {
-                            refnodeGuid = projectInfo.Id;
-                        }
-                    }
-                    if (refnodeGuid != Guid.Empty)
-                    {
-                        element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
-                        element.SetMetadata(ProjectFileConstants.Name, refnodeName);
-                        sdkref.SaveProperties();
-                        // The node was created before the referenced project was available, so it has no
-                        // guid and no build dependency yet.
-                        sdkref.UpdateReferencedProjectGuid(refnodeGuid);
-                    }
-                    else
-                    {
-                        Logger.Information($"Could not determine the guid of project {completePath}, referenced by {this.Caption}");
-                        found = false;
-                    }
-                }
-            }
-            HasIncompleteReferences = !found;
-            this.SetProjectFileDirty(false);
-            return found;
-        }
-#endif
-
         internal bool GetProjectGuid(string url, out  Guid guid)
         {
             guid = Guid.Empty;
@@ -2130,22 +2066,6 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
-        /// <summary>
-        /// Exposes RefreshReferences to code elsewhere in this assembly that isn't an
-        /// XSharpProjectNode subclass (e.g. ShadowDesignerBridge), for forcing a synchronous
-        /// re-read of the .rsp/reference list right after a build it just ran itself --
-        /// rather than trusting that the normal BuildEnded(true) -> RefreshReferences() path
-        /// (triggered by XSharpIDEBuildLogger's MSBuild logger callback) has already
-        /// completed by the time a synchronous EnvDTE BuildProject(...) call returns.
-        /// Confirmed via diagnostic logging that it sometimes hasn't: GetFilteredReferencePaths
-        /// read a stale, empty (framework-only) list immediately after EnsureBuilt reported
-        /// success, causing the unresolved-3rd-party-reference CodeDom corruption
-        /// (oControl1:Property := x collapsing to a bare oControl1 = x) intermittently.
-        /// Virtual dispatch through this wrapper still reaches the most-derived override
-        /// (e.g. XSharpSdkProjectNode.RefreshReferences), same as calling it directly would.
-        /// </summary>
-        internal List<string> ForceRefreshReferences() => RefreshReferences();
-
         protected virtual List<string> RefreshReferences()
         {
             // find the resource file and read the lines with /reference
@@ -2173,25 +2093,6 @@ namespace XSharp.Project
                 }
             }
         }
-#if DEV17
-        internal IList<XSharpSDKProjectReferenceNode> GetSdkProjectReferences()
-        {
-            var nodes = new List<XSharpSDKProjectReferenceNode>();
-            var container = this.GetReferenceContainer() as ReferenceContainerNode;
-            if (container != null)
-                container.FindNodesOfType(nodes);
-            return nodes;
-        }
-        internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
-        {
-            var nodes = GetSdkProjectReferences();
-            foreach (var node in nodes)
-            {
-                node.RemoveProperties();
-            }
-            return nodes;
-        }
-#endif
 #if DEV17
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {

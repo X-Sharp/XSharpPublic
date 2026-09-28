@@ -38,6 +38,23 @@ namespace XSharp.Project
         #endregion
 #if !DEV17
         internal static List<string> InvalidProjectFiles = new List<string>();
+#else
+        /// <summary>
+        /// SDK-style projects are loaded by the CPS project system (XSharp.ProjectSystemCPS): its project selector
+        /// sends them there. They only arrive here when that is not possible, for example because the installed X#
+        /// MSBuild support files are older than this Visual Studio integration (XSharpMsBuildSupport).
+        /// </summary>
+        private static bool IsSdkProjectFile(string fileName)
+        {
+            try
+            {
+                return XSharp.ProjectSystem.Selection.SdkProjectFile.IsSdkProject(fileName);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 #endif
         #region Overriden implementation
         protected override void CreateProject(string fileName, string location, string name, uint flags, ref Guid projectGuid, out IntPtr project, out int canceled)
@@ -48,6 +65,15 @@ namespace XSharp.Project
             {
                 InvalidProjectFiles.Remove(fileName.ToLower());
                 VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project and cannot be loaded inside this version of Visual Studio");
+                canceled = 1;
+                return;
+            }
+#else
+            if (IsSdkProjectFile(fileName))
+            {
+                VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project. " +
+                    "SDK style X# projects are loaded by the X# project system for SDK style projects, which needs " +
+                    "the X# MSBuild support files of a matching X# installation. Please run the X# setup program again.");
                 canceled = 1;
                 return;
             }
@@ -71,18 +97,8 @@ namespace XSharp.Project
         }
         protected override ProjectNode CreateSdkProject()
         {
-#if DEV17
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var project = new XSharpSdkProjectNode(this.package);
-            IOleServiceProvider provider = null;
-            var serviceProvider = this.package as IServiceProvider;
-            // ProjectPackage already switches to UI thread inside GetService
-            provider = (IOleServiceProvider)serviceProvider.GetService(typeof(IOleServiceProvider));
-            project.SetSite(provider);
-            return project;
-#else
+            // SDK-style projects are rejected in CreateProject, see IsSdkProjectFile
             return null;
-#endif
         }
 #endregion
     }

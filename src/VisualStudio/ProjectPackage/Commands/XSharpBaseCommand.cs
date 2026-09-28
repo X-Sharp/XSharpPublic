@@ -38,12 +38,6 @@ namespace XSharp.Project
             var project = await VS.Solutions.GetActiveProjectAsync();
             return project != null && XSharpProjectNode.FindProject(project.FullPath) != null;
         }
-        internal async static Task<bool> ProjectIsXSharpSdkProjectAsync()
-        {
-            var project = await VS.Solutions.GetActiveProjectAsync();
-            var xproject = XSharpProjectNode.FindProject(project.FullPath);
-            return xproject != null && xproject.IsSdkProject;
-        }
 
         internal static string GetXsPath(string subpath)
         {

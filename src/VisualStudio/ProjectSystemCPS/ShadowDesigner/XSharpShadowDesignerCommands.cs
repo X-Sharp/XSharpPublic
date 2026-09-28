@@ -15,12 +15,11 @@ using XSharpModel;
 namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
-    /// Opens the shadow WinForms designer for X# forms in CPS projects (the CPS counterpart of
-    /// XSharpFileNode.TryRedirectToShadowDesigner in MPFproj).
+    /// Opens the shadow WinForms designer for X# forms in CPS projects (double click / Enter and View Designer).
     /// </summary>
     /// <remarks>
-    /// A .prg is treated as a form when a matching .Designer.prg exists next to it, the same signal the MPFproj
-    /// SDK project node uses (SDK-style projects rarely have an explicit SubType). When the shadow designer
+    /// A .prg is treated as a form when a matching .Designer.prg exists next to it (SDK-style projects rarely
+    /// have an explicit SubType). When the shadow designer
     /// cannot be opened the command is not handled, so CPS falls back to its default action.
     /// </remarks>
     internal static class XSharpShadowDesignerCommands

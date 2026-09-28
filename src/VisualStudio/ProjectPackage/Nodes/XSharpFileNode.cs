@@ -959,59 +959,6 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// SDK-style (.NET Core) projects: VS's out-of-process WinForms Designer has no
-        /// extensibility point for third-party languages and rejects this project outright
-        /// if opened directly. Redirect to the shadow-file bridge instead, which opens an
-        /// auto-generated companion C# project's Designer view (a real C# project, so the
-        /// Designer's project-type gate passes). Legacy .NET Framework projects are
-        /// unaffected -- they keep opening this .prg directly, backed by the classic
-        /// CodeDom-provider integration (VSXSharpCodeDomProvider).
-        ///
-        /// Called from BOTH <see cref="DoDefaultAction"/> (double-click / Enter key) and the
-        /// <see cref="ExecCommandOnNode"/> override for VsCommands.ViewForm (the right-click
-        /// "View Designer" command) -- the base FileNode.ExecCommandOnNode handles ViewForm
-        /// directly and unconditionally (opens `this` in Designer view), completely
-        /// bypassing DoDefaultAction, so relying on DoDefaultAction alone only redirects the
-        /// double-click path and leaves the context-menu command opening the real .prg.
-        /// Returns true if the shadow Designer was opened (caller should not do anything
-        /// else); false if the caller should fall back to its own default behavior.
-        /// </summary>
-        private bool TryRedirectToShadowDesigner()
-        {
-        #if DEV17
-            if (!(this.ProjectMgr is XSharpSdkProjectNode))
-            {
-                return false;
-            }
-            var projectNode = (XSharpProjectNode)this.ProjectMgr;
-            if (XSharp.ProjectSystem.ShadowDesigner.ShadowDesignerBridge.TryOpen(this.Url, projectNode.ProjectModel,
-                () => projectNode.ForceRefreshReferences(), out string shadowError))
-            {
-                return true;
-            }
-            XSettings.Information("XSharp ShadowDesigner: " + shadowError);
-        #endif
-            return false;
-        }
-
-        protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            if (cmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97 &&
-                (VsCommands)cmd == VsCommands.ViewForm && HasDesigner)
-            {
-                if (TryRedirectToShadowDesigner())
-                {
-                    return VSConstants.S_OK;
-                }
-                // Not an SDK-style project, or the shadow bridge failed -- fall through to
-                // the base class's normal ViewForm handling (opens this .prg's Designer view
-                // directly), matching pre-existing behavior for legacy .NET Framework
-                // projects and as a last-resort fallback.
-            }
-            return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
-        }
-
-        /// <summary>
         /// Open a file depending on the SubType property associated with the file item in the project file
         /// </summary>
         protected override void DoDefaultAction()
@@ -1023,10 +970,6 @@ namespace XSharp.Project
             string projectItemType = XSharpFileType.GetItemType(this.FileName);
             if (HasDesigner)
             {
-                if (TryRedirectToShadowDesigner())
-                {
-                    return;
-                }
                 viewGuid = VSConstants.LOGVIEWID.Designer_guid;
             }
             else if (projectItemType == ProjectFileConstants.Compile)

@@ -119,16 +119,9 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
-    <Compile Include="Commands\CommandBuild.cs" />
-    <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
-    <Compile Include="Commands\CommandPublish.cs" />
-    <Compile Include="Commands\CommandPack.cs" />
-    <Compile Include="Commands\PublishDialog.xaml.cs">
-      <DependentUpon>PublishDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
     <Compile Include="Commands\CommandViewInDisassembler.cs" />
@@ -188,10 +181,6 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
-    <Compile Include="NodesSDK\SdkDependenciesContainer.cs" />
-    <Compile Include="NodesSDK\SdkFolderNodes.cs" />
-    <Compile Include="NodesSDK\SdkReferenceNodes.cs" />
-    <Compile Include="NodesSDK\SdkProjectNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
@@ -520,10 +509,6 @@
       <Link>Commands\VsThemeDictionary.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Commands\PublishDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <EmbeddedResource Include="Resources.resx">
       <DependentUpon>Resources.cs</DependentUpon>

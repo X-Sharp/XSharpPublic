@@ -10,7 +10,6 @@ using System.Threading;
 using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using XSharp.ProjectSystem.Options;
 using XSharp.ProjectSystem.Selection;
 using Task = System.Threading.Tasks.Task;
 
@@ -26,8 +25,7 @@ namespace XSharp.ProjectSystem
     /// <item>SDK-style .xsproj: CPS (this package), project type {AB494DCE-...}</item>
     /// </list>
     /// <see cref="XSharpProjectSelector"/> is registered for the MPFproj project type and sends SDK-style projects
-    /// to the CPS project type (switchable in Tools > Options > X# > Project System), so existing solution files
-    /// do not change. The CPS project type keeps its own template language, so the X# project templates keep
+    /// to the CPS project type, so existing solution files keep working. MPFproj no longer loads SDK-style projects. The CPS project type keeps its own template language, so the X# project templates keep
     /// creating projects through the MPFproj project type (and the selector).
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
@@ -44,10 +42,9 @@ namespace XSharp.ProjectSystem
     [ProvideProjectSelector(XSharpConstants.guidXSharpProjectFactoryString, XSharpConstants.guidProjectSelectorString)]
     // Visual Studio writes the GUID of the project system that actually loaded a project into the .sln when it
     // saves the solution ({AA6C8D78} -> {AB494DCE}, the same happens for C#: {FAE04EC0} -> {9A19103F}). The
-    // selector on the CPS project type makes such entries behave like the original ones: legacy projects, the
-    // Tools > Options switch and the X# MSBuild support check still send projects to MPFproj.
+    // selector on the CPS project type makes such entries behave like the original ones: legacy projects and the
+    // X# MSBuild support check still send projects to MPFproj.
     [ProvideProjectSelector(XSharpConstants.guidCpsProjectTypeString, XSharpConstants.guidProjectSelectorString)]
-    [ProvideOptionPage(typeof(ProjectSystemOptionsPage), ProjectSystemOptionsPage.CategoryName, ProjectSystemOptionsPage.PageName, 0, 0, true)]
     public sealed class XSharpProjectSystemPackage : AsyncPackage
     {
         /// <summary>
@@ -58,18 +55,16 @@ namespace XSharp.ProjectSystem
 
         private IVsRegisterProjectSelector projectSelectorRegistration;
         private uint projectSelectorCookie;
-        private ProjectSystemOptionsPage options;
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            options = (ProjectSystemOptionsPage)GetDialogPage(typeof(ProjectSystemOptionsPage));
             projectSelectorRegistration = await GetServiceAsync(typeof(SVsRegisterProjectTypes)) as IVsRegisterProjectSelector;
             if (projectSelectorRegistration != null)
             {
                 var selectorGuid = new Guid(XSharpConstants.guidProjectSelectorString);
-                var selector = new XSharpProjectSelector(() => options?.UseCpsForSdkProjects ?? true);
+                var selector = new XSharpProjectSelector();
                 projectSelectorRegistration.RegisterProjectSelector(ref selectorGuid, selector, out projectSelectorCookie);
             }
         }

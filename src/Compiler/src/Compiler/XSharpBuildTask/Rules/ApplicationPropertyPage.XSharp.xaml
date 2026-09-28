@@ -16,9 +16,18 @@
               Description="Packaging settings for the application." />
   </Rule.Categories>
 
+  <!--
+    X# does not support the C# "Resource file" option: the Xsc task gets its Win32 resources from the
+    Win32Resource *item* (@(Win32Resource), compiled from the .rc files by AfterResGen), the $(Win32Resource)
+    property is never read. Selecting "Resource file" would make the managed interceptor remove ApplicationIcon
+    and ApplicationManifest and write a property that the build ignores. So ResourceSpecificationKind and
+    Win32Resource are hidden; the managed interceptor still evaluates ResourceSpecificationKind to
+    IconAndManifest (no $(Win32Resource)), which keeps Icon and Manifest visible.
+  -->
   <EnumProperty Name="ResourceSpecificationKind"
                 DisplayName="Resources"
                 Description="Specifies how application resources will be managed."
+                Visible="False"
                 Category="Resources">
     <EnumProperty.DataSource>
       <DataSource PersistedName="ResourceSpecificationKind"
@@ -80,6 +89,7 @@
                   DisplayName="Resource file"
                   Description="Specifies a resource file for the project."
                   HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147078"
+                  Visible="False"
                   Category="Resources">
     <StringProperty.ValueEditors>
       <ValueEditor EditorType="FilePath">

@@ -7673,7 +7673,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (parent is XP.CodeblockContext codeblock)
                 {
-                    return codeblock;
+                    if (codeblock.IsLambda)
+                        return null;
+                    else
+                        return codeblock;
                 }
                 parent = parent.Parent;
             }
@@ -7683,7 +7686,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             base.EnterAccessMember(context);
             var cb = GetCodeBlock(context);
-            if (cb != null && context.HasThisReference)
+            if (CurrentMember != null && cb != null && context.HasThisReference)
             {
                 // there is a self or this prefix in the codeblock
                 // we need to create a special variable for this
@@ -7732,13 +7735,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // When AllowDotForInstanceMembers
-                if (context.Op.Type == XP.DOTCOLON ||
-                    context.Op.Type == XP.COLON ||
+                if (context.IsDotColonExpression || context.IsColonExpression ||
                     _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
                 {
                     var left = context.Expr.Get<ExpressionSyntax>();
                     var cb = GetCodeBlock(context);
-                    if (cb != null && context.HasThisReference)
+					var mem = CurrentMember;
+                    if (mem != null && cb != null && context.HasThisReference && mem.Data.HasThisInCodeBlock)
                     {
                         left = GenerateSimpleName(XSharpSpecialNames.This);
                     }
@@ -9968,13 +9971,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             ParameterListSyntax paramList = context.LambdaParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             bool updateparams = false;
-            if (context.lambda == null &&
+            if (context.IsCodeBlock &&
                 context.LambdaParamList?.ExplicitParams != null)
             {
                 //paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
                 updateparams = true;
             }
-            if (context.lambda != null)
+            if (context.IsLambda)
             {
                 context.SetSequencePoint(context.Start, context.lambda);
                 bool bWarn;

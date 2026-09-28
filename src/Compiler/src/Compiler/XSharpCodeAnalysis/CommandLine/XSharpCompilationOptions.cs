@@ -201,6 +201,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.Fox3: // Fox Ambigous Dot
                     return CheckOption(option, FoxCursorSupport, syntax);
+
                 // other options are not handled or only handled during parsing
                 case CompilerOption.Vo8: //  Compatible Preprocessor
                 case CompilerOption.Vo16: // DefaultClipperContructors:
@@ -283,6 +284,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
 
             FoxArraySupport = opt.FoxArraySupport;
+            FoxCursorSupport = opt.FoxCursorSupport;
             ConsoleOutput = opt.ConsoleOutput;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             MemVars = opt.MemVars;

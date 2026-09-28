@@ -839,11 +839,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
                             r2.ContainingAssembly.Name,
                         });
-                var diags = ImmutableArray.CreateBuilder<DiagnosticInfo>(1);
-                diags.Add(diagInfo);
-                return diags.MoveToImmutable();
+                return [diagInfo];
             }
-            return ImmutableArray<DiagnosticInfo>.Empty;
+            return [];
         }
 
         /// <summary>

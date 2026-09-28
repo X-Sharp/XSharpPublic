@@ -38,6 +38,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
+
+        BoundLocal CreateHasLocalVar(NamedTypeSymbol rtType, ImmutableArray<LocalSymbol>.Builder locals, ImmutableArray<BoundExpression>.Builder exprs)
+        {
+
+            var hasLocalSym = _factory.SynthesizedLocal(_compilation.GetSpecialType(SpecialType.System_Boolean));
+            locals.Add(hasLocalSym);
+            var hasLocalvar = _factory.Local(hasLocalSym);
+            var callHasLocal = _factory.StaticCall(rtType, ReservedNames.HasLocals);
+            var ass = _factory.AssignmentExpression(hasLocalvar, callHasLocal);
+            exprs.Add(ass);
+            return hasLocalvar;
+        }
+        BoundExpression CreateLocalsClear(NamedTypeSymbol rtType, BoundLocal hasLocalvar)
+        {
+            return _factory.StaticCall(rtType, ReservedNames.LocalsClear, hasLocalvar);
+        }
+
+
         /// <summary>
         /// Adjust the code to add a __LocalPut and __LocalClear around a function call
         /// that uses a local or parameter symbol
@@ -69,8 +87,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
                 return expr;
+
+
+            // Save the current 'HasLocals' state so we will not clear inside a recursive loop
+            // $hasLocal := __HasLocals()
+
+
+
+            var locals = ImmutableArray.CreateBuilder<Symbols.LocalSymbol>();
+
+            var hasLocalvar = CreateHasLocalVar(rtType, locals, exprs);
+
             var usual = _compilation.UsualType();
-            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
             var tempSym = _factory.SynthesizedLocal(usual);
             locals.Add(tempSym);
             var tempLocal = _factory.Local(tempSym);
@@ -81,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             exprs.Add(VisitExpression(mcall));
             var assign = _factory.AssignmentExpression(tempLocal, expr);
             exprs.Add(assign);
-            var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+            var clear = CreateLocalsClear(rtType, hasLocalvar);
             exprs.Add(clear);
             var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(),tempLocal);
             return seq;
@@ -106,7 +134,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
             var usual = _compilation.UsualType();
             var thisRef = _factory.This();
-            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+            var locals = ImmutableArray.CreateBuilder<Symbols.LocalSymbol>();
+
+            var hasLocalvar = CreateHasLocalVar(rtType, locals, exprs);
+
             var tempSym = _factory.SynthesizedLocal(usual);
             locals.Add(tempSym);
             var tempLocal = _factory.Local(tempSym);
@@ -117,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             exprs.Add(VisitExpression(mcall));
             var assign = _factory.AssignmentExpression(tempLocal, expr);
             exprs.Add(assign);
-            var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+            var clear = CreateLocalsClear(rtType, hasLocalvar);
             exprs.Add(clear);
             var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(), tempLocal);
             return seq;

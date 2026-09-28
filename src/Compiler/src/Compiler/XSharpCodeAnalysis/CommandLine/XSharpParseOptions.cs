@@ -198,7 +198,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 FoxCursorSupport = opt.Fox3;
                 ImplicitNamespace = opt.ImplicitNameSpace;
 #if !VSPARSER
-                IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? ImmutableArray<string>.Empty;
+                IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? [];
 #else
                 var paths = opt.IncludePaths;
                 if (paths == null)

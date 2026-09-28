@@ -82,14 +82,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (op1.Type.IsUsualType())
             {
                 var syms1 = vfpfuncs.GetMembers(ReservedNames.FoxAssign);
-                var args = new List<BoundExpression>();
-                args.Add(CreateConversion(op1, Compilation.UsualType(), diagnostics));
-                args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
+                var args = new BoundExpression[]
+                {
+                    CreateConversion(op1, Compilation.UsualType(), diagnostics),
+                    CreateConversion(op2, Compilation.UsualType(), diagnostics)
+                };
                 var call = new BoundCall(syntax: node,
                         receiverOpt: null,
                         initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms1[0],
-                        arguments: args.ToImmutableArray(),
+                        arguments: ImmutableArray.Create(args),
                         argumentNamesOpt: default,
                         argumentRefKindsOpt: default,
                         isDelegateCall: false,
@@ -105,14 +107,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!op1.Type.IsUsualType())
             {
                 var syms2 = vfpfuncs.GetMembers(ReservedNames.FoxFillArray);
-                var args = new List<BoundExpression>();
-                args.Add(CreateConversion(op1, Compilation.UsualType(), diagnostics));
-                args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
+                var args = new BoundExpression[]
+                {
+                    CreateConversion(op1, Compilation.UsualType(), diagnostics),
+                    CreateConversion(op2, Compilation.UsualType(), diagnostics)
+                };
                 var call = new BoundCall(syntax: node,
                         receiverOpt: null,
                         initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms2[0],
-                        arguments: args.ToImmutableArray(),
+                        arguments: ImmutableArray.Create(args),
                         argumentNamesOpt: default,
                         argumentRefKindsOpt: default,
                         isDelegateCall: false,
@@ -137,13 +141,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var syms = rtfuncs.GetMembers(ReservedNames.UsualEnumerator);
                 if (syms.Length == 1)
                 {
-                    var args = new List<BoundExpression>();
-                    args.Add(collection);
+                    var args = new BoundExpression[]
+                    {
+                        collection
+                    };
                     var call = new BoundCall(syntax: collection.Syntax,
                         receiverOpt: null,
                         initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms[0],
-                        arguments: args.ToImmutableArray(),
+                        arguments: ImmutableArray.Create(args),
                         argumentNamesOpt: default,
                         argumentRefKindsOpt: default,
                         isDelegateCall: false,
@@ -196,13 +202,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                 }
 
-                var args = new List<BoundExpression>();
-                args.Add(expression);
+                var args = new BoundExpression[]
+                {
+                    expression
+                };
                 return new BoundCall(syntax: expression.Syntax,
                     receiverOpt: expression,
                     initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                     method: (MethodSymbol)mem,
-                    arguments: args.ToImmutableArray(),
+                    arguments: ImmutableArray.Create(args),
                     argumentNamesOpt: default,
                     argumentRefKindsOpt: default,
                     isDelegateCall: false,

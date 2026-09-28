@@ -464,10 +464,18 @@ FUNCTION __LocalPut(name AS STRING, uValue IN USUAL) AS VOID STRICT
 FUNCTION __LocalsClear() AS VOID STRICT
     XSharp.MemVar.ClearLocals()
 
+/// <exclude />
+FUNCTION __LocalsClear(hadLocals as LOGIC) AS VOID STRICT
+    IF ! hadLocals
+        XSharp.MemVar.ClearLocals()
+    ENDIF
 
 /// <exclude />
 FUNCTION __LocalsUpdated() AS LOGIC STRICT
     RETURN XSharp.MemVar.LocalsUpdated()
+
+FUNCTION __HasLocals() as LOGIC STRICT
+    RETURN XSharp.MemVar.HasLocals()
 
 /// <exclude />
 FUNCTION __LocalGet(name AS STRING) AS USUAL STRICT

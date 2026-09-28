@@ -62,9 +62,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         //public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 
-        public override ImmutableArray<CustomModifier> RefCustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        public override ImmutableArray<CustomModifier> RefCustomModifiers => [];
 
-        public override ImmutableArray<ParameterSymbol> Parameters => ImmutableArray<ParameterSymbol>.Empty;
+        public override ImmutableArray<ParameterSymbol> Parameters => [];
 
         public override bool IsIndexer => false;
 
@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override MethodSymbol SetMethod => _setMethod;
 
-        public override ImmutableArray<PropertySymbol> ExplicitInterfaceImplementations => ImmutableArray<PropertySymbol>.Empty;
+        public override ImmutableArray<PropertySymbol> ExplicitInterfaceImplementations => [];
 
         public override Symbol ContainingSymbol => _getMethod.ContainingSymbol;
 

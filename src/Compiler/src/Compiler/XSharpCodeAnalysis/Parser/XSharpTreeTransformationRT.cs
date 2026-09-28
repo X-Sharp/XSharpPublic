@@ -980,24 +980,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            // SomeVar(1,2) Can also be a FoxPro array access
-            if (context.Parent.Parent is not XP.MethodCallContext ||
-                (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
+            // For expressions such as String.IsNullOrEmpty()
+            // we do not want String to be seen as a memvar.
+            // in this case the Parent of name is SimpleName and the parent of that is a Primary
+            var amc = context.XParent.XParent as XP.AccessMemberContext;
+            var staticCall = false;
+            var usesColon = false;
+            if (amc != null)
             {
-                MemVarFieldInfo fieldInfo = findVar(Name);
-                var amc = context.Parent.Parent as XP.AccessMemberContext;
-                var staticCall = amc?.Op.Type == XP.DOTCOLON;
-                if (fieldInfo != null && !staticCall)
+                staticCall = amc.IsStaticMethodCall || amc.IsDotColonExpression;
+                usesColon = amc.IsColonExpression;
+            }
+            // SomeVar(1,2) Can also be a FoxPro array access
+            if (!usesColon)
+            {
+                if (!staticCall ||
+                    (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
                 {
-                    if (!fieldInfo.IsField)
-                    {
-                        if (context.Parent is XP.PrimaryExpressionContext pec &&
-                            pec.Parent is XP.MethodCallContext mcc &&
-                            mcc.Parent is XP.ExpressionStmtContext)
-                        {
-                            fieldInfo = null;
-                        }
-                    }
+                    MemVarFieldInfo fieldInfo = null;
+                    if (!staticCall)
+                        fieldInfo = findVar(Name);
                     if (fieldInfo != null)
                     {
                         expr = MakeMemVarField(fieldInfo);
@@ -4332,7 +4334,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
         {
             base.ExitCodeblock(context);
-            if (context.lambda == null)
+            if (context.IsCodeBlock)
             {
                 var expr = context.Get<ExpressionSyntax>();
                 expr = MakeCastTo(CodeblockType, expr);
@@ -4364,7 +4366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // empty codeblock ?
                 var cbcontext = context.Parent as XP.CodeblockContext;
-                if (cbcontext?.lambda == null)
+                if (cbcontext != null && cbcontext.IsCodeBlock)
                 {
                     //block = MakeBlock(GenerateReturn(GenerateNIL()));
                     //context.Put(block);

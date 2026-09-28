@@ -1274,13 +1274,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (parameters == null)
                     parameters = new HashSet<string>(XSharpString.Comparer);
-                if (!parameters.Contains(name))
-                    parameters.Add(name);
+                parameters.Add(name);
             }
             internal bool HasParameter(string name)
             {
                 return parameters != null && parameters.Contains(name);
             }
+            internal bool IsLambda => this.lambda != null;
+            internal bool IsCodeBlock => this.lambda == null;
         }
         public partial class AccessMemberContext
         {
@@ -1290,7 +1291,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
             internal bool HasThisReference => Op.Type == XSharpLexer.DOT && Expr != null &&
-                (AreaName == "SELF" || AreaName == "THIS");
+                this.Expr.Start == this.Expr.Stop &&
+                (this.Expr.Start.Type == XSharpParser.SELF);
+
+            internal bool IsDotExpression => Op.Type == XSharpParser.DOT;
+            internal bool IsColonExpression => Op.Type == XSharpParser.COLON;
+            internal bool IsDotColonExpression => Op.Type == XSharpParser.DOTCOLON;
+            internal bool IsStaticMethodCall => IsDotExpression &&
+                        this.XParent is XSharpParser.MethodCallContext;
 
         }
         #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set
@@ -1783,24 +1791,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal static bool IsRealCodeBlock([NotNull] this XSharpParserRuleContext context)
         {
 
-            if (context is XSharpParser.ArrayElementContext aelc)
+            if (context is ArrayElementContext aelc)
                 return aelc.Expr.IsRealCodeBlock();
-            if (context is XSharpParser.PrimaryExpressionContext pec)
+            if (context is PrimaryExpressionContext pec)
                 return pec.Expr.IsRealCodeBlock();
-            if (context is XSharpParser.CodeblockExpressionContext cec)
+            if (context is CodeblockExpressionContext cec)
                 return cec.CbExpr.IsRealCodeBlock();
-            if (context is XSharpParser.AliasedExpressionContext aexc)
+            if (context is AliasedExpressionContext aexc)
             {
                 if (aexc.XSharpRuntime)
                 {
                     return false;
                 }
             }
-            if (context is XSharpParser.CodeblockCodeContext cbcc)
+            if (context is CodeblockCodeContext cbcc)
                 return cbcc.XParent.IsRealCodeBlock();
-            if (context is XSharpParser.CodeblockContext cbc)
+            if (context is CodeblockContext cbc)
             {
-                if (cbc.lambda != null)
+                if (cbc.IsLambda)
                     return false;
                 // when no => operator and no explicit parameters
                 // then this is a true codeblock
@@ -1811,24 +1819,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal static string CodeBlockSource([NotNull] this XSharpParserRuleContext context)
         {
 
-            if (context is XSharpParser.ArrayElementContext aelc)
+            if (context is ArrayElementContext aelc)
                 return aelc.Expr.CodeBlockSource();
-            if (context is XSharpParser.PrimaryExpressionContext pec)
+            if (context is PrimaryExpressionContext pec)
                 return pec.Expr.CodeBlockSource();
-            if (context is XSharpParser.CodeblockExpressionContext cec)
+            if (context is CodeblockExpressionContext cec)
                 return cec.CbExpr.CodeBlockSource();
-            if (context is XSharpParser.AliasedExpressionContext aexc)
+            if (context is AliasedExpressionContext aexc)
             {
                 if (aexc.XSharpRuntime)
                 {
                     return null;
                 }
             }
-            if (context is XSharpParser.CodeblockCodeContext)
+            if (context is CodeblockCodeContext)
                 return context.XParent.CodeBlockSource();
-            if (context is XSharpParser.CodeblockContext cbc)
+            if (context is CodeblockContext cbc)
             {
-                if (cbc.lambda != null)
+                if (cbc.IsLambda)
                     return null;
                 // when no => operator and no explicit parameters
                 // then this is a true codeblock
@@ -1842,8 +1850,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var parent = context.Parent;
             if (parent == null)
                 return false;
-            if (parent is XSharpParser.ClassmemberContext)
-                return parent.Parent is XSharpParser.Interface_Context;
+            if (parent is ClassmemberContext)
+                return parent.Parent is Interface_Context;
             else
                 return parent.isInInterface();
         }
@@ -1855,7 +1863,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return null;
             if (parent is XSharpParser.CodeblockContext cbc)
             {
-                if (cbc.lambda != null || cbc.Or != null || cbc.P1 != null)
+                if (cbc.IsLambda || cbc.Or != null || cbc.P1 != null)
                     return cbc;
             }
             return parent.GetParentCodeBlock();
@@ -1870,17 +1878,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var parent = context.Parent;
             if (parent == null)
                 return false;
-            if (parent is XSharpParser.ClassmemberContext)
+            if (parent is ClassmemberContext)
             {
-                if (parent.Parent is XSharpParser.Class_Context)
+                if (parent.Parent is Class_Context)
                     return true;
-                if (parent.Parent is XSharpParser.FoxclassContext)
-                    return true;
+                // can also be an interface or a structure
                 return false;
             }
-            else if (parent is XSharpParser.XppclassMemberContext)
+            else if (parent is FoxclassmemberContext)
             {
-                return parent.Parent is XSharpParser.XppclassContext;
+                return parent.Parent is FoxclassContext;
+            }
+            else if (parent is XppclassMemberContext)
+            {
+                return parent.Parent is XppclassContext;
             }
             return parent.isInClass();
         }
@@ -1889,8 +1900,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var parent = context.Parent;
             if (parent == null)
                 return false;
-            if (parent is XSharpParser.ClassmemberContext)
-                return parent.Parent is XSharpParser.Structure_Context;
+            if (parent is ClassmemberContext)
+                return parent.Parent is Structure_Context;
             else
                 return parent.isInStructure();
         }

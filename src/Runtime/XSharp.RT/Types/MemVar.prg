@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -68,7 +68,9 @@ INTERNAL CLASS XSharp.MemVarLevel
     INTERNAL PROPERTY Count AS INT GET Variables:Count
 
     INTERNAL METHOD SetDataSession(oNewSession as XSharp.RDD.DataSession) AS VOID
-        SELF:DataSession := XSharp.RuntimeState.SetDataSession(oNewSession)
+        IF oNewSession != NULL
+	        SELF:DataSession := XSharp.RuntimeState.SetDataSession(oNewSession)
+        END IF
         RETURN
 
     INTERNAL METHOD RestoreDataSession() AS VOID
@@ -123,6 +125,7 @@ INTERNAL CLASS XSharp.MemVarLevel
         RETURN NIL
 
     INTERNAL PROPERTY LocalsUpdated AS LOGIC GET _localsUpdated
+    INTERNAL PROPERTY HasLocals     AS LOGIC GET Locals?:Count > 0
 #endregion
     INTERNAL METHOD DebuggerDisplay() AS STRING
         IF Depth == -1
@@ -452,6 +455,13 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         VAR current := CheckCurrent()
         IF current != NULL
             RETURN current:LocalsUpdated
+        ENDIF
+        RETURN FALSE
+
+    INTERNAL STATIC METHOD HasLocals() AS LOGIC
+        VAR current := CheckCurrent()
+        IF current != NULL
+            RETURN current:HasLocals
         ENDIF
         RETURN FALSE
 

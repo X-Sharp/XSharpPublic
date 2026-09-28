@@ -66,7 +66,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <summary>
         /// Registers a companion's paths for auto-sync-on-save, lazily advising the RDT the
         /// first time this is called in the session. Safe to call every time
-        /// ShadowDesignerBridge.TryOpen succeeds -- idempotent (overwrites any existing
+        /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (overwrites any existing
         /// entry for the same paths).
         /// </summary>
         public static void Watch(IServiceProvider services, ShadowDesignerBridge.CompanionLocation location)

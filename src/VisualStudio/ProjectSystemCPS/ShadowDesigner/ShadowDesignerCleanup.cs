@@ -21,7 +21,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// the solution closes. Leaving stale companion projects/folders around between sessions
     /// has been a real, confusing source of test failures in this feature's own development
     /// (half-regenerated files, leftover references from an earlier attempt). Regeneration
-    /// is already proven idempotent -- ShadowDesignerBridge.TryOpen recreates the companion
+    /// is already proven idempotent -- ShadowDesignerBridge.TryOpenAsync recreates the companion
     /// project on demand -- so cleaning it up on close is safe: nothing is lost, it's purely
     /// auto-generated output.
     ///
@@ -77,7 +77,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <summary>
         /// Registers a companion project for cleanup on solution close, lazily advising
         /// solution events the first time this is called. Safe to call every time
-        /// ShadowDesignerBridge.TryOpen succeeds -- idempotent (HashSet).
+        /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (HashSet).
         /// </summary>
         public static void Track(string companionCsprojPath)
         {

@@ -86,15 +86,109 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// Attempts to open the shadow Designer for <paramref name="mainPrgPath"/> (expected to
         /// be a SDK-style project's .prg file with a matching .Designer.prg), using the code model
         /// <paramref name="xProject"/> of its project. Call <see cref="EnsureReferencesAsync"/> first: this method
-        /// does not wait for or build anything. Returns false with an
+        /// does not wait for the references or build anything. Returns false with an
         /// error message on failure -- callers should fall back to whatever they'd otherwise
         /// have done (e.g. today's "does not support project" Designer error) rather than
         /// throwing, since a partially-set-up solution (mid-restore, no build yet) is a
         /// normal, recoverable condition, not a bug.
         /// </summary>
-        public static bool TryOpen(string mainPrgPath, XProject xProject, out string error)
+        public static async Task<(bool Ok, string Error)> TryOpenAsync(string mainPrgPath, XProject xProject)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (!TryPrepareCompanion(mainPrgPath, xProject, out var location, out string error))
+            {
+                return (false, error);
+            }
+            try
+            {
+                // The companion project includes its files through the SDK globs. When it was already loaded (another
+                // form of this project was opened before), it only picks up newly written files after its file watcher
+                // and a re-evaluation. Opening the designer before that fails with "... is not contained within a
+                // project that supports code" -- wait until the project contains the files.
+                await WaitForCompanionFilesAsync(location);
+                var dte = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SDTE)) as DTE2;
+                if (dte == null)
+                {
+                    return (false, "Could not obtain the DTE service.");
+                }
+                bool opened = SolutionWiring.TryOpenInDesigner(dte, location.CompanionDesignerCsPath, out error);
+                if (!opened)
+                {
+                    Logger.Error($"ShadowDesignerBridge.TryOpenAsync: {error}");
+                }
+                return (opened, error);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "ShadowDesignerBridge.TryOpenAsync");
+                return (false, ex.ToString());
+            }
+        }
+
+        // How long to wait for an already loaded companion project to contain newly written files
+        private static readonly TimeSpan CompanionFilesTimeout = TimeSpan.FromSeconds(10);
+
+        /// <remarks>
+        /// Verified in VS: the companion project did not pick up new files through its globs even after 10 s.
+        /// So the missing files are added explicitly (ProjectItems.AddFromFile); for a file that a glob of the
+        /// SDK-style project already covers, CPS does not write an explicit item into the .csproj.
+        /// </remarks>
+        private static async Task WaitForCompanionFilesAsync(CompanionLocation location)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var project = FindHierarchy(location.CompanionCsprojPath) as IVsProject;
+            if (project == null)
+            {
+                // Not loaded yet: a freshly added project (SolutionWiring.EnsureProjectInSolution) loads with its files
+                return;
+            }
+            var files = new[] { location.CompanionFormCsPath, location.CompanionDesignerCsPath };
+            var missing = files.Where(f => !IsInProject(project, f)).ToList();
+            if (missing.Count == 0)
+            {
+                return;
+            }
+            try
+            {
+                var dte = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SDTE)) as DTE2;
+                var dteProject = dte == null ? null : SolutionWiring.FindProjectByFullPath(dte, location.CompanionCsprojPath);
+                foreach (var file in missing)
+                {
+                    Logger.Information($"ShadowDesignerBridge: adding {file} to the companion project");
+                    dteProject?.ProjectItems.AddFromFile(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "ShadowDesignerBridge: could not add the files to the companion project");
+            }
+            var deadline = DateTime.UtcNow + CompanionFilesTimeout;
+            while (!files.All(f => IsInProject(project, f)))
+            {
+                if (DateTime.UtcNow >= deadline)
+                {
+                    Logger.Information($"ShadowDesignerBridge: {location.CompanionDesignerCsPath} is not part of the companion project after {CompanionFilesTimeout.TotalSeconds} s, opening anyway");
+                    return;
+                }
+                await Task.Delay(200);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            }
+        }
+
+        private static bool IsInProject(IVsProject project, string file)
+        {
+            var priority = new VSDOCUMENTPRIORITY[1];
+            return ErrorHandler.Succeeded(project.IsDocumentInProject(file, out int found, priority, out uint _)) && found != 0;
+        }
+
+        /// <summary>
+        /// Parses the form, writes the companion project and makes sure it is part of the solution
+        /// (everything except opening the designer, see <see cref="TryOpenAsync"/>).
+        /// </summary>
+        private static bool TryPrepareCompanion(string mainPrgPath, XProject xProject, out CompanionLocation location, out string error)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            location = null;
             try
             {
                 if (xProject == null)
@@ -154,28 +248,25 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
                     xProject.FileName, GetEvaluatedTargetFramework(xProject.FileName), referencePaths, shadowCSharp, stubCSharp, className);
 
-                CompanionSaveWatcher.Watch(ServiceProvider.GlobalProvider, new CompanionLocation
+                location = new CompanionLocation
                 {
                     MainPrgPath = mainPrgPath,
                     DesignerPrgPath = designerPrgPath,
                     CompanionCsprojPath = companion.CsprojPath,
                     CompanionFormCsPath = CompanionProjectWriter.ComputeFormCsPath(xProject.FileName, className),
                     CompanionDesignerCsPath = companion.DesignerCsPath,
-                });
+                };
+                CompanionSaveWatcher.Watch(ServiceProvider.GlobalProvider, location);
                 ShadowDesignerCleanup.Track(companion.CsprojPath);
 
                 SolutionWiring.EnsureProjectInSolution(dte, companion.CsprojPath);
-                bool opened = SolutionWiring.TryOpenInDesigner(dte, companion.DesignerCsPath, out error);
-                if (!opened)
-                {
-                    Logger.Error($"ShadowDesignerBridge.TryOpen: {error}");
-                }
-                return opened;
+                error = null;
+                return true;
             }
             catch (Exception ex)
             {
                 error = ex.ToString();
-                Logger.Exception(ex, "ShadowDesignerBridge.TryOpen");
+                Logger.Exception(ex, "ShadowDesignerBridge.TryPrepareCompanion");
                 return false;
             }
         }

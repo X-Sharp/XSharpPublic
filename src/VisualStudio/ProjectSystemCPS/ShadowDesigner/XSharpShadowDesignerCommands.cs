@@ -60,8 +60,12 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 await threading.SwitchToUIThread();
                 // The project can have been unloaded or reloaded while waiting
                 xProject = XSolution.FindFile(path)?.Project;
-                if (ok && xProject != null && ShadowDesignerBridge.TryOpen(path, xProject, out error))
-                    return true;
+                if (ok && xProject != null)
+                {
+                    (ok, error) = await ShadowDesignerBridge.TryOpenAsync(path, xProject);
+                    if (ok)
+                        return true;
+                }
                 Logger.Information("XSharp ShadowDesigner: " + (error ?? "no X# code model for " + path));
                 return false;
             }

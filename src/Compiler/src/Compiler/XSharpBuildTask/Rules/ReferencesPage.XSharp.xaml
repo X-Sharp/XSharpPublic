@@ -35,23 +35,12 @@
     </BoolProperty.Metadata>
   </BoolProperty>
 
-  <StringProperty Name="ImplicitUsingsEditor"
-                       DisplayName="Manage Implicit Global Usings"
-                       Description="Manage common global usings directives for your project to reference."
-                       Category="General">
-    <StringProperty.DataSource>
-      <DataSource Persistence="ProjectFileWithInterception"
-                  HasConfigurationCondition="False" />
-    </StringProperty.DataSource>
-    <StringProperty.ValueEditors>
-      <ValueEditor EditorType="CSharpImplicitUsingsEditor" />
-    </StringProperty.ValueEditors>
-    <StringProperty.Metadata>
-      <NameValuePair Name="VisibilityCondition">
-        <NameValuePair.Value>(has-evaluated-value "References" "ImplicitUsings" true)</NameValuePair.Value>
-      </NameValuePair>
-    </StringProperty.Metadata>
-  </StringProperty>
-
+  <!--
+    No "Manage Implicit Global Usings" editor (ImplicitUsingsEditor, CSharpImplicitUsingsEditor): its value is
+    intercepted by ImplicitUsingsValueProvider of the managed project system, which maps it to the <Using> items and
+    only applies to CSharp projects. For X# the editor would read and write a meaningless ImplicitUsingsEditor
+    property. The interceptor contract lives in the private Microsoft.VisualStudio.ProjectSystem.Managed.dll, so an
+    X# version would tie the VSIX to one VS build. The <Using> items are edited in the project file.
+  -->
 
 </Rule>

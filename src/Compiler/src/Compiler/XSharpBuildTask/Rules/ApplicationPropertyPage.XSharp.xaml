@@ -107,23 +107,23 @@
 
     </BoolProperty.DataSource>
   </BoolProperty>
-<BoolProperty Name="usenativeversion "
+<BoolProperty Name="UseNativeVersion"
                 DisplayName="Prefer explicit version resource"
 				Description="When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc." 
                 Category="Resources">
     <BoolProperty.DataSource>
-      <DataSource PersistedName="usenativeversion   "
+      <DataSource PersistedName="UseNativeVersion"
                   Persistence="ProjectFileWithInterception"
                   HasConfigurationCondition="False" />
 
     </BoolProperty.DataSource>
   </BoolProperty>  
-  <BoolProperty Name="nowin32manifest"
+  <BoolProperty Name="NoWin32Manifest"
                 DisplayName="Suppress default Win32 manifest"
 				Description="Use The -nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file." 
                 Category="Resources">
     <BoolProperty.DataSource>
-      <DataSource PersistedName="nowin32manifest  "
+      <DataSource PersistedName="NoWin32Manifest"
                   Persistence="ProjectFileWithInterception"
                   HasConfigurationCondition="False" />
 

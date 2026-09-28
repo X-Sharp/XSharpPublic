@@ -45,6 +45,13 @@ namespace XSharp.ProjectSystem
     // selector on the CPS project type makes such entries behave like the original ones: legacy projects and the
     // X# MSBuild support check still send projects to MPFproj.
     [ProvideProjectSelector(XSharpConstants.guidCpsProjectTypeString, XSharpConstants.guidProjectSelectorString)]
+    // The image manifest (XSharp.ProjectSystemCPS.imagemanifest) refers to its PNGs with pack URIs that name this
+    // assembly by its short name. The image library resolves them when it builds its cache at startup, usually before
+    // a CPS project has loaded the assembly: without the extension folder as binding path the lookup failed, the
+    // manifest was dropped from the cache and the project and .prg icons stayed empty (unless a CPS project happened
+    // to load first). The codeBase entry (ProvideCodeBase in ProjectPackage/ExternalAssemblies.cs) only helps loads
+    // with the full identity.
+    [ProvideBindingPath]
     public sealed class XSharpProjectSystemPackage : AsyncPackage
     {
         /// <summary>

@@ -440,9 +440,20 @@ namespace XSharp.ProjectSystem.LanguageService
         }
 
         public void ClearIntellisenseErrors(string fileName) => errors.Clear(fileName);
+
+        /// <summary>
+        /// The code model errors and the errors and warnings of the last build (squiggles, XSharpErrorColorizer),
+        /// like XSharpProjectNode.GetIntellisenseErrors in MPFproj.
+        /// </summary>
         public List<IXErrorPosition> GetIntellisenseErrors(string filename) => errors.Get(filename);
         public void AddIntellisenseError(XError error) => errors.Add(error);
 
         #endregion
+
+        /// <summary>
+        /// Called by <see cref="BuildErrorLoggerProvider"/> after a build of <paramref name="configuration"/>.
+        /// </summary>
+        internal void SetBuildErrors(string configuration, IEnumerable<BuildErrorPosition> positions) =>
+            errors.SetBuildErrors(configuration, positions);
     }
 }

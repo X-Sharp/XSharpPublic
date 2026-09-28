@@ -12,19 +12,28 @@ using XSharpModel;
 namespace XSharp.ProjectSystem.LanguageService
 {
     /// <summary>
-    /// Intellisense errors that the code model reports for the files of a CPS project.
+    /// Errors of the files of a CPS project for the editor (GetIntellisenseErrors, used for the error squiggles by
+    /// XSharpErrorColorizer) and the Error List.
     /// </summary>
     /// <remarks>
     /// The MPFproj project system keeps these in its ErrorListManager (ProjectPackage), which is tied to the
-    /// MPFproj hierarchy. This store keeps the errors for the code model (GetIntellisenseErrors) and reports
-    /// every change through <see cref="Changed"/> (used for the Error List, see IntellisenseErrorList).
+    /// MPFproj hierarchy. Two sources, like there:
+    /// <list type="bullet">
+    /// <item>intellisense errors reported by the code model (AddIntellisenseError); every change is reported
+    ///       through <see cref="Changed"/> (used for the Error List, see IntellisenseErrorList)</item>
+    /// <item>errors and warnings of the last real build (<see cref="SetBuildErrors"/>, see BuildErrorLoggerProvider).
+    ///       Only for the squiggles: VS itself shows the build errors in the Error List.</item>
+    /// </list>
     /// </remarks>
     internal sealed class IntellisenseErrorStore
     {
         private readonly Dictionary<string, List<XError>> errors = new Dictionary<string, List<XError>>(StringComparer.OrdinalIgnoreCase);
 
+        // Build errors per project configuration (one build per target framework), each keyed by the full file name
+        private readonly Dictionary<string, ILookup<string, IXErrorPosition>> buildErrors = new Dictionary<string, ILookup<string, IXErrorPosition>>(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>
-        /// Called with all errors of the project after each change.
+        /// Called with all intellisense errors of the project after each change.
         /// </summary>
         public Action<IReadOnlyList<XError>> Changed { get; set; }
 
@@ -57,6 +66,18 @@ namespace XSharp.ProjectSystem.LanguageService
                 OnChanged();
         }
 
+        /// <summary>
+        /// Replaces the build errors of <paramref name="configuration"/> with the errors and warnings of its last build.
+        /// </summary>
+        public void SetBuildErrors(string configuration, IEnumerable<BuildErrorPosition> positions)
+        {
+            var lookup = positions.ToLookup(p => p.FileName, p => (IXErrorPosition)p, StringComparer.OrdinalIgnoreCase);
+            lock (errors)
+            {
+                buildErrors[configuration ?? ""] = lookup;
+            }
+        }
+
         private void OnChanged()
         {
             var changed = Changed;
@@ -75,14 +96,24 @@ namespace XSharp.ProjectSystem.LanguageService
             var result = new List<IXErrorPosition>();
             if (string.IsNullOrEmpty(fileName))
                 return result;
+            // dedupe errors on the same position, like the ErrorListManager does
+            var positions = new HashSet<(int, int)>();
             lock (errors)
             {
                 if (errors.TryGetValue(fileName, out var list))
                 {
-                    // dedupe errors on the same position, like the ErrorListManager does
-                    foreach (var error in list.GroupBy(e => (e.Span.Line, e.Span.Column)).Select(g => g.First()))
+                    foreach (var error in list)
                     {
-                        result.Add(new ErrorPosition(error.Span.Line, error.Span.Column, 1));
+                        if (positions.Add((error.Span.Line, error.Span.Column)))
+                            result.Add(new ErrorPosition(error.Span.Line, error.Span.Column, 1));
+                    }
+                }
+                foreach (var lookup in buildErrors.Values)
+                {
+                    foreach (var error in lookup[fileName])
+                    {
+                        if (positions.Add((error.Line, error.Column)))
+                            result.Add(error);
                     }
                 }
             }
@@ -102,5 +133,24 @@ namespace XSharp.ProjectSystem.LanguageService
             public int Length { get; set; }
             public int Line { get; set; }
         }
+    }
+
+    /// <summary>
+    /// Position of a build error or warning (1-based, like the MSBuild events and the code model errors).
+    /// </summary>
+    internal sealed class BuildErrorPosition : IXErrorPosition
+    {
+        public BuildErrorPosition(string fileName, int line, int column)
+        {
+            FileName = fileName;
+            Line = line;
+            Column = column;
+            Length = 1;
+        }
+
+        public string FileName { get; }
+        public int Column { get; set; }
+        public int Length { get; set; }
+        public int Line { get; set; }
     }
 }

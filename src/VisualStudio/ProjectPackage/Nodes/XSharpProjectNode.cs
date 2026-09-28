@@ -2058,7 +2058,7 @@ namespace XSharp.Project
             base.Reload();
             CreateListManagers();
             this.CreateIncludeFileFolder();
-            if (ResetDependencies() && !this.IsSdkProject)
+            if (ResetDependencies())
             {
                 this.BeforeSave();
                 this.BuildProject.Save();
@@ -2543,11 +2543,6 @@ namespace XSharp.Project
                 Utilities.DeleteFileSafe(this.Url);
                 File.WriteAllText(Url, changedSource);
                 ok = false;
-            }
-            if (ok && this.IsSdkProject)
-            {
-                // do not touch SDK style projects !
-                return VSConstants.S_OK;
             }
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);

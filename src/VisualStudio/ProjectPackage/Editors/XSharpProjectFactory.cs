@@ -95,11 +95,6 @@ namespace XSharp.Project
             project.SetSite(provider);
             return project;
         }
-        protected override ProjectNode CreateSdkProject()
-        {
-            // SDK-style projects are rejected in CreateProject, see IsSdkProjectFile
-            return null;
-        }
 #endregion
     }
 }

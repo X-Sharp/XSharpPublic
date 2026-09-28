@@ -1244,30 +1244,15 @@ namespace Microsoft.VisualStudio.Project
                         bool bDependantItem = !string.IsNullOrEmpty(dependentOf);
                         childAdded.ItemNode.RemoveFromProjectFile();
 
-                        if (this.ProjectMgr.IsSdkProject)
+                        // Assign the existing MSBuild item to the new child node and update its path.
+                        childAdded.ItemNode = this.ItemNode;
+                        childAdded.ItemNode.RefreshProperties();
+                        if (!childAdded.IsImported)
                         {
-                            // For SDK Projects we retrieve the new element from the
-                            // build project since the item was added to the project file and MSBuild will have created a new item for it.
-                            this.ProjectMgr.BuildProject.ReevaluateIfNecessary();
-                            var items = this.ProjectMgr.BuildProject.Items.ToArray();
-                            foreach (var item in items.Where(i => i.EvaluatedInclude == newInclude && i.ItemType == this.ItemNode.ItemName))
-                            {
-                                childAdded.ItemNode = new ProjectElement(ProjectMgr, item,false);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            // Assign the existing MSBuild item to the new child node and update its path.
-                            childAdded.ItemNode = this.ItemNode;
-                            childAdded.ItemNode.RefreshProperties();
-                            if (!childAdded.IsImported)
-                            {
-                                childAdded.ItemNode.Item.ItemType = this.ItemNode.ItemName;
-                                childAdded.ItemNode.Item.Xml.Include = newInclude;
-                                if (bDependantItem)
-                                    childAdded.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, dependentOf);
-                            }
+                            childAdded.ItemNode.Item.ItemType = this.ItemNode.ItemName;
+                            childAdded.ItemNode.Item.Xml.Include = newInclude;
+                            if (bDependantItem)
+                                childAdded.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, dependentOf);
                         }
                         childAdded.ItemNode.RefreshProperties();
 

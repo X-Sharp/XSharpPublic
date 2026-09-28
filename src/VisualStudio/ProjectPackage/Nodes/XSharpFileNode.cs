@@ -165,26 +165,6 @@ namespace XSharp.Project
         {
             int result = base.IncludeInProject();
 
-            if (((XSharpProjectNode)this.ProjectMgr).IsSdkProject)
-            {
-                var buildProject = this.ProjectMgr.BuildProject;
-                var filename = ProjectMgr.GetRelativePath(this.Url);
-                foreach (var xmlItem in buildProject.Xml.Items)
-                {
-                    if (xmlItem.ItemType == ItemNode.ItemName && MyStringEquals(xmlItem.Remove, filename))
-                    {
-                        xmlItem.Parent.RemoveChild(xmlItem);
-                        buildProject.RemoveItem(this.ItemNode.Item);
-                        buildProject.MarkDirty();
-                        ProjectMgr.SetProjectFileDirty(true);
-                        buildProject.ReevaluateIfNecessary();
-                        break;
-                    }
-                }
-            }
-            // we could be including a file that was removed earlier
-
-
             DetermineSubType();
             if (this.ProjectMgr is XSharpProjectNode prjNode)
             {
@@ -328,78 +308,11 @@ namespace XSharp.Project
         }
 
 
-        // Cached result of InferSubTypeFromBaseClass, set by UpdateHasDesigner -- lets
-        // HasSubType (and therefore IsForm/IsUserControl, and so the Solution Explorer icon)
-        // work for an auto-detected file the same way it does for one with an explicit
-        // <SubType>, without re-scanning the file on every icon query.
-        private string _inferredSubType;
-
         public void UpdateHasDesigner()
         {
             string subType = SubType;
             bool hasDesigner = XSharpFileType.HasDesigner(this.Url, subType);
-            _inferredSubType = null;
-            if (this.ProjectMgr.IsSdkProject)
-            {
-                if (!hasDesigner && string.IsNullOrEmpty(subType))
-                {
-                    // SDK-style projects use implicit globbing, so a file never gets an explicit
-                    // <SubType> unless the user opts in manually with a <Compile Update="..."><
-                    // SubType>Form</SubType></Compile> entry. Infer designer support instead from
-                    // a matching sibling .Designer.prg -- the same signal the legacy CodeDom
-                    // provider (VSXsharpCodeDomProvider.cs) and the shadow-designer bridge
-                    // (ShadowDesignerBridge.TryOpen) already use for the identical purpose.
-                    string designerPrg = XSharpCodeDomHelper.BuildDesignerFileName(this.Url);
-                    hasDesigner = !string.IsNullOrEmpty(designerPrg) && File.Exists(designerPrg) &&
-                        !String.Equals(this.Url, designerPrg, StringComparison.OrdinalIgnoreCase);
-                    if (hasDesigner)
-                    {
-                        _inferredSubType = InferSubTypeFromBaseClass(this.Url);
-                    }
-                }
-            }
             HasDesigner = hasDesigner;
-        }
-
-        /// <summary>
-        /// Cheap, non-parsing inference of Form vs UserControl from the class declaration's
-        /// INHERIT clause (e.g. "CLASS Form1 INHERIT System.Windows.Forms.Form"), used only
-        /// to pick the right Solution Explorer icon for a file whose designer support was
-        /// itself auto-detected (see UpdateHasDesigner) rather than declared via an explicit
-        /// &lt;SubType&gt;. Deliberately a plain regex scan, not a real parse -- getting it
-        /// wrong only costs a wrong icon, never functionality, so it's not worth the
-        /// cost/risk of invoking the real X# parser just for this.
-        /// </summary>
-        private static string InferSubTypeFromBaseClass(string prgPath)
-        {
-            try
-            {
-                string text = File.ReadAllText(prgPath);
-                var match = Regex.Match(text, @"\bCLASS\s+\S+\s+INHERIT\s+([A-Za-z_][\w.]*)", RegexOptions.IgnoreCase);
-                if (!match.Success)
-                {
-                    return null;
-                }
-                string baseType = match.Groups[1].Value;
-                if (baseType.Equals("Form", StringComparison.OrdinalIgnoreCase) ||
-                    baseType.EndsWith(".Form", StringComparison.OrdinalIgnoreCase))
-                {
-                    return ProjectFileAttributeValue.Form;
-                }
-                if (baseType.Equals("UserControl", StringComparison.OrdinalIgnoreCase) ||
-                    baseType.EndsWith(".UserControl", StringComparison.OrdinalIgnoreCase))
-                {
-                    return ProjectFileAttributeValue.UserControl;
-                }
-                return null;
-            }
-            catch
-            {
-                // Best-effort only -- a read/regex failure here should never break icon
-                // rendering or (more importantly) HasDesigner/the shadow bridge, which don't
-                // depend on this.
-                return null;
-            }
         }
 
         #region Dependent Items
@@ -638,10 +551,7 @@ namespace XSharp.Project
             {
                 return MyStringEquals(result, value);
             }
-            // No explicit <SubType> metadata -- fall back to what UpdateHasDesigner inferred
-            // from the class's INHERIT clause, so an auto-detected file (see
-            // UpdateHasDesigner) still gets the right Solution Explorer icon.
-            return !String.IsNullOrEmpty(_inferredSubType) && MyStringEquals(_inferredSubType, value);
+            return false;
         }
         public bool IsXAML
         {
@@ -1059,13 +969,6 @@ namespace XSharp.Project
             base.Remove(removeFromStorage);
             project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
-            if (project.IsSdkProject)
-            {
-                // we have to do this after the file was deleted to make sure
-                // that Msbuild cannot find it anymore
-                project.BuildProject.MarkDirty();
-            }
-
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {

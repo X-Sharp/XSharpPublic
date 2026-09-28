@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace XSharp.ProjectSystem.ShadowDesigner
@@ -91,11 +92,17 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// </summary>
         public static string ComputeCompanionDir(string realXsprojPath) => GetCompanionDir(realXsprojPath);
 
+        /// <param name="realXsprojPath">The X# project.</param>
+        /// <param name="referencePaths">Filtered assembly references of the X# project.</param>
+        /// <param name="generatedDesignerCsharp">The merged form class (.prg + .Designer.prg) as C#.</param>
+        /// <param name="stubCsharp">The Form1.cs-equivalent stub: the partial class with the same base types and
+        /// imports as the generated designer code (see ShadowDesignerBridge.BuildStubCSharp).</param>
+        /// <param name="className">The form class.</param>
         public static CompanionPaths EnsureCompanionProject(
             string realXsprojPath,
             IReadOnlyList<string> referencePaths,
             string generatedDesignerCsharp,
-            string namespaceName,
+            string stubCsharp,
             string className)
         {
             string companionDir = GetCompanionDir(realXsprojPath);
@@ -124,12 +131,13 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             WriteIfChanged(paths.CsprojPath, BuildCsprojContent(targetFramework, filteredReferencePaths, packageReferences));
             WriteIfChanged(paths.DesignerCsPath, generatedDesignerCsharp);
 
-            // Only written once -- an "ordinary user file" slot, not regenerated each run, so
-            // a future manual tweak here survives re-runs.
+            // The stub is where the Designer puts new members (e.g. event handler stubs, picked up by
+            // EventHandlerSync), so it is only regenerated while it is still an empty generated stub -- e.g. one
+            // that was written with an outdated base class.
             string stubCsPath = ComputeFormCsPath(realXsprojPath, className);
-            if (!File.Exists(stubCsPath))
+            if (!File.Exists(stubCsPath) || IsEmptyStub(File.ReadAllText(stubCsPath)))
             {
-                File.WriteAllText(stubCsPath, BuildStubContent(namespaceName, className));
+                WriteIfChanged(stubCsPath, stubCsharp);
             }
 
             return paths;
@@ -225,16 +233,21 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             return result;
         }
 
-        private static string BuildStubContent(string namespaceName, string className)
+        // An empty generated stub: comments, usings, optional namespace and a partial class without members
+        private static readonly Regex EmptyStubRegex = new Regex(
+            @"^\s*(namespace\s+[\w.]+\s*\{)?\s*public\s+partial\s+class\s+\w+(\s*:[^{]*)?\s*\{\s*\}\s*\}?\s*$",
+            RegexOptions.Singleline);
+
+        /// <summary>
+        /// True when <paramref name="content"/> is an empty generated stub (from this writer), i.e. a file that can be
+        /// regenerated without losing anything.
+        /// </summary>
+        internal static bool IsEmptyStub(string content)
         {
-            return
-$@"namespace {namespaceName}
-{{
-    public partial class {className} : System.Windows.Forms.Form
-    {{
-    }}
-}}
-";
+            var lines = content.Replace("\r", "").Split('\n')
+                .Select(l => l.Trim())
+                .Where(l => !l.StartsWith("//", StringComparison.Ordinal) && !(l.StartsWith("using ", StringComparison.Ordinal) && l.EndsWith(";", StringComparison.Ordinal)));
+            return EmptyStubRegex.IsMatch(string.Join("\n", lines));
         }
 
         private static string Escape(string value) => System.Security.SecurityElement.Escape(value);

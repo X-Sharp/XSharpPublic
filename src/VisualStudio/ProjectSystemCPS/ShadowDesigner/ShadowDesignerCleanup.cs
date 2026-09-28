@@ -108,8 +108,60 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                         // anyway; a stale .sln reference is a lesser, recoverable annoyance.
                     }
                 }
+                try
+                {
+                    // Without this the empty Solution Folder stayed in the saved .sln.
+                    CloseEmptyShadowDesignerFolder();
+                }
+                catch
+                {
+                    // Best-effort, see above
+                }
             }
             return VSConstants.S_OK;
+        }
+
+        /// <summary>
+        /// Removes the "Shadow Designer (generated)" Solution Folder (SolutionWiring) once the companion
+        /// projects in it have been removed, so the saved .sln does not keep an empty folder. Only removed
+        /// when empty -- a user who moved own projects into it keeps them.
+        /// </summary>
+        private void CloseEmptyShadowDesignerFolder()
+        {
+            Guid solutionFolderType = new Guid("2150E333-8FDC-42A3-9474-1A3956D46DE8");
+            int hr = _vsSolution.GetProjectEnum((uint)(__VSENUMPROJFLAGS.EPF_ALLINSOLUTION | __VSENUMPROJFLAGS.EPF_MATCHTYPE),
+                ref solutionFolderType, out IEnumHierarchies hierarchies);
+            if (ErrorHandler.Failed(hr) || hierarchies == null)
+            {
+                return;
+            }
+
+            var buffer = new IVsHierarchy[1];
+            while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                var hierarchy = buffer[0];
+                if (ErrorHandler.Succeeded(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out object name)) &&
+                    string.Equals(name as string, SolutionWiring.ShadowDesignerFolderName, StringComparison.OrdinalIgnoreCase) &&
+                    ErrorHandler.Succeeded(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_FirstChild, out object firstChild)) &&
+                    IsNil(firstChild))
+                {
+                    _vsSolution.CloseSolutionElement(0, hierarchy, 0);
+                    return;
+                }
+            }
+        }
+
+        private static bool IsNil(object itemId)
+        {
+            switch (itemId)
+            {
+                case int i:
+                    return unchecked((uint)i) == VSConstants.VSITEMID_NIL;
+                case uint u:
+                    return u == VSConstants.VSITEMID_NIL;
+                default:
+                    return itemId == null;
+            }
         }
 
         /// <summary>

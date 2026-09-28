@@ -24,7 +24,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     {
         /// <summary>Name of the Solution Folder companion projects are nested under, to keep
         /// them visually separated from the user's real projects in Solution Explorer.</summary>
-        private const string ShadowDesignerFolderName = "Shadow Designer (generated)";
+        internal const string ShadowDesignerFolderName = "Shadow Designer (generated)";
 
         /// <summary>
         /// Adds csprojPath to the running solution, nested inside a dedicated Solution Folder

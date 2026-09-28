@@ -53,6 +53,14 @@ inspired by Microsoft.CSharp.DesignTime.targets
     <DesignerFunctionVisibility Condition="'$(DesignerFunctionVisibility)' == ''">Private</DesignerFunctionVisibility>
     <DesignerVariableNaming Condition="'$(DesignerVariableNaming)' == ''">Camel</DesignerVariableNaming>
     <DesignerHiddenCodeGeneration Condition="'$(DesignerHiddenCodeGeneration)' == ''">Declarations</DesignerHiddenCodeGeneration>
+    <!--
+      XSharpCpsProjectSystem is a global property of this project only (set by the CPS project type). Do not pass it
+      to referenced projects: C# and legacy X# projects would be evaluated and built a second time with different
+      global properties (overbuild, file locks), and a referenced X# project would import these design-time targets
+      in a normal build. The MSBuild task calls in Microsoft.Common.CurrentVersion.targets append this list directly
+      to %(GlobalPropertiesToRemove), so it must start with a semicolon.
+    -->
+    <_GlobalPropertiesToRemoveFromProjectReferences>$(_GlobalPropertiesToRemoveFromProjectReferences);XSharpCpsProjectSystem</_GlobalPropertiesToRemoveFromProjectReferences>
   </PropertyGroup>
 
   <ItemGroup>

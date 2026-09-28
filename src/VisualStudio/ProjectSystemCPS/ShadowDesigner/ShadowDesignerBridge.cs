@@ -165,6 +165,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
                 var referencePaths = GetFilteredReferencePaths(xProject);
 
+                // A background deletion from the previous solution close may still be retrying on this folder
+                ShadowDesignerCleanup.CancelPendingDelete(CompanionProjectWriter.ComputeCompanionDir(xProject.FileName));
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
                     xProject.FileName, referencePaths, shadowCSharp, namespaceName, className);
 

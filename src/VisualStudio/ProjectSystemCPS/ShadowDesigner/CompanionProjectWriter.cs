@@ -86,6 +86,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             return Path.Combine(solutionParentDir, realProjectName + CompanionSuffix);
         }
 
+        /// <summary>
+        /// Folder of the companion project of <paramref name="realXsprojPath"/>.
+        /// </summary>
+        public static string ComputeCompanionDir(string realXsprojPath) => GetCompanionDir(realXsprojPath);
+
         public static CompanionPaths EnsureCompanionProject(
             string realXsprojPath,
             IReadOnlyList<string> referencePaths,

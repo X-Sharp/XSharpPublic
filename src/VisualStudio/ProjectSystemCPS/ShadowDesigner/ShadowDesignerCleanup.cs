@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -52,6 +53,12 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         private static readonly HashSet<string> _companionCsprojPaths =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        // Background deletions of companion folders (OnAfterCloseSolution), by folder. A folder that is used again
+        // (the solution is reopened while the deletion still retries) cancels its deletion, see CancelPendingDelete.
+        private static readonly Dictionary<string, CancellationTokenSource> _pendingDeletes =
+            new Dictionary<string, CancellationTokenSource>(StringComparer.OrdinalIgnoreCase);
+        private static readonly object _deleteLock = new object();
+
         private readonly IVsSolution _vsSolution;
         private uint _eventsCookie;
 
@@ -86,6 +93,27 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 }
             }
             _companionCsprojPaths.Add(companionCsprojPath);
+        }
+
+        /// <summary>
+        /// Stops a pending background deletion of <paramref name="companionDir"/> before the companion project is
+        /// written there again. When this returns, no deletion of the folder is running or will start.
+        /// </summary>
+        public static void CancelPendingDelete(string companionDir)
+        {
+            if (string.IsNullOrEmpty(companionDir))
+            {
+                return;
+            }
+            lock (_deleteLock)
+            {
+                if (_pendingDeletes.TryGetValue(companionDir, out var pending))
+                {
+                    pending.Cancel();
+                    _pendingDeletes.Remove(companionDir);
+                    Logger.Information($"ShadowDesignerCleanup: cancelled the pending deletion of {companionDir}");
+                }
+            }
         }
 
         public int OnQueryCloseSolution(object reserved, ref int cancel)
@@ -271,42 +299,79 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 {
                     continue;
                 }
+                var cancellation = new CancellationTokenSource();
+                lock (_deleteLock)
+                {
+                    if (_pendingDeletes.TryGetValue(dir, out var previous))
+                    {
+                        previous.Cancel();
+                    }
+                    _pendingDeletes[dir] = cancellation;
+                }
                 // Intentionally fire-and-forget: best-effort background cleanup, nothing to
                 // await it against.
-                _ = System.Threading.Tasks.Task.Run(() => DeleteWithRetry(dir));
+                _ = System.Threading.Tasks.Task.Run(() => DeleteWithRetry(dir, cancellation));
             }
             _companionCsprojPaths.Clear();
             return VSConstants.S_OK;
         }
 
-        private static void DeleteWithRetry(string dir)
+        /// <summary>
+        /// Deletes <paramref name="dir"/>, retrying while it is locked. Each attempt runs under _deleteLock and
+        /// checks the cancellation first, so CancelPendingDelete never overlaps with a running Directory.Delete.
+        /// </summary>
+        private static void DeleteWithRetry(string dir, CancellationTokenSource cancellation)
         {
             const int maxAttempts = 20;
             const int delayMs = 1000;
-            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            try
             {
-                try
+                for (int attempt = 1; attempt <= maxAttempts; attempt++)
                 {
-                    if (!Directory.Exists(dir))
+                    try
+                    {
+                        lock (_deleteLock)
+                        {
+                            if (cancellation.IsCancellationRequested)
+                            {
+                                return;
+                            }
+                            if (Directory.Exists(dir))
+                            {
+                                Directory.Delete(dir, recursive: true);
+                            }
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            // Best-effort cleanup only -- regeneration is idempotent, so a
+                            // leftover folder just gets overwritten fresh next time, not a
+                            // failure worth surfacing to the user. Still worth a log entry in
+                            // case a folder is being left behind repeatedly.
+                            Logger.Exception(ex, $"ShadowDesignerCleanup: failed to delete {dir} after {maxAttempts} attempts");
+                            return;
+                        }
+                    }
+                    // Wait outside the lock; a cancellation ends the wait early
+                    if (cancellation.Token.WaitHandle.WaitOne(delayMs))
                     {
                         return;
                     }
-                    Directory.Delete(dir, recursive: true);
-                    return;
                 }
-                catch (Exception ex)
+            }
+            finally
+            {
+                lock (_deleteLock)
                 {
-                    if (attempt == maxAttempts)
+                    if (_pendingDeletes.TryGetValue(dir, out var current) && current == cancellation)
                     {
-                        // Best-effort cleanup only -- regeneration is idempotent, so a
-                        // leftover folder just gets overwritten fresh next time, not a
-                        // failure worth surfacing to the user. Still worth a log entry in
-                        // case a folder is being left behind repeatedly.
-                        Logger.Exception(ex, $"ShadowDesignerCleanup: failed to delete {dir} after {maxAttempts} attempts");
-                        return;
+                        _pendingDeletes.Remove(dir);
                     }
-                    System.Threading.Thread.Sleep(delayMs);
                 }
+                cancellation.Dispose();
             }
         }
 

@@ -28,7 +28,8 @@ namespace XSharp.ProjectSystem.LanguageService
         private TaskProvider provider;
         private IList<XCommentTask> pending;
         private int refreshScheduled;
-        private bool disposed;
+        // Written by Dispose on any thread, read by RefreshAsync on the UI thread
+        private volatile bool disposed;
 
         public CommentTaskList(JoinableTaskFactory joinableTaskFactory, string projectName)
         {
@@ -91,20 +92,24 @@ namespace XSharp.ProjectSystem.LanguageService
             }
         }
 
+        /// <summary>
+        /// Removes the entries. The provider is only touched on the UI thread, after <c>disposed</c> is set: a
+        /// refresh that runs before this sees the flag or has already created the provider, which is then disposed here.
+        /// </summary>
         public void Dispose()
         {
             disposed = true;
-            var old = provider;
-            provider = null;
-            if (old != null)
+            joinableTaskFactory.RunAsync(async () =>
             {
-                joinableTaskFactory.RunAsync(async () =>
+                await joinableTaskFactory.SwitchToMainThreadAsync();
+                var old = provider;
+                provider = null;
+                if (old != null)
                 {
-                    await joinableTaskFactory.SwitchToMainThreadAsync();
                     old.Tasks.Clear();
                     old.Dispose();
-                }).FileAndForget("XSharp/ProjectSystemCPS/TaskList");
-            }
+                }
+            }).FileAndForget("XSharp/ProjectSystemCPS/TaskList");
         }
     }
 }

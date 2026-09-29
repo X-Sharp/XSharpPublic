@@ -40,6 +40,12 @@
                DisplayName="5 - Most warnings, including less severe issues" />
   </EnumProperty>
 
+  <!-- Passed to the NativeResourceCompiler task (XSharp.CurrentVersion.targets), default true (XSharp.props) -->
+  <BoolProperty Name="SuppressRCWarnings"
+                DisplayName="Suppress Resource Compiler warnings"
+                Description="Suppress warnings from the Native Resource Compiler about duplicate defines (RC4005)"
+                Category="ErrorsAndWarnings" />
+
   <BoolProperty Name="AllowUnsafeBlocks" Visible="False" />
 
   <StringProperty Name="LangVersion" Visible="False" />

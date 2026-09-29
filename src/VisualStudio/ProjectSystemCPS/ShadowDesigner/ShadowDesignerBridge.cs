@@ -347,7 +347,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// when a build is genuinely needed -- a project with no NuGet references at all
         /// (nothing to resolve) or one that's already built correctly both return false here.
         /// </summary>
-        private static bool IsMissingAnyPackageReference(XProject xProject)
+        internal static bool IsMissingAnyPackageReference(XProject xProject)
         {
             var packageReferences = CompanionProjectWriter.ReadPackageReferences(xProject.FileName);
             if (packageReferences.Count == 0) return false;
@@ -356,8 +356,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
         // How long to wait for the project load (NuGet restore + design-time build) before offering a build
         private static readonly TimeSpan ProjectLoadTimeout = TimeSpan.FromSeconds(60);
-        // The adapter processes a design-time build result asynchronously, shortly after the load stage completed
-        private static readonly TimeSpan ReferenceUpdateTimeout = TimeSpan.FromSeconds(3);
+        // How long to wait for the references after the load stage. The stage can already be complete when the NuGet
+        // restore has not finished yet (the first design-time build ran without the packages; seen in VS), and the
+        // design-time build after the restore follows a few seconds later.
+        private static readonly TimeSpan ReferenceUpdateTimeout = TimeSpan.FromSeconds(20);
 
         /// <summary>
         /// Makes sure that the assembly references of the project's packages are known to the code model before the
@@ -370,7 +372,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// restore. When they are missing (shortly after the solution was opened, or while restoring) this waits
         /// asynchronously for the IntelliSense stage of the project load. Only when they are still missing, a build is
         /// offered (the build also restores); it runs asynchronously (IVsSolutionBuildManager), without the nested
-        /// message pump of EnvDTE's BuildProject(WaitForBuildToFinish: true) inside the CPS command handler.
+        /// message pump of EnvDTE's BuildProject(WaitForBuildToFinish: true). Callers must not be awaited
+        /// synchronously on the UI thread (as CPS does with command handlers): see XSharpShadowDesignerCommands.
         /// Returns false with an error when the user declined the build or it could not be started.
         /// </remarks>
         public static async Task<(bool Ok, string Error)> EnsureReferencesAsync(XProject xProject)
@@ -412,6 +415,22 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         }
 
         private static async Task WaitForReferencesAsync(XProject xProject)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var statusBar = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+            statusBar?.SetText("X# WinForms Designer: waiting for the package references of " + Path.GetFileNameWithoutExtension(xProject.FileName) + "...");
+            try
+            {
+                await WaitForReferencesCoreAsync(xProject);
+            }
+            finally
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                statusBar?.SetText("");
+            }
+        }
+
+        private static async Task WaitForReferencesCoreAsync(XProject xProject)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsOperationProgressStatusService)) is IVsOperationProgressStatusService progress)

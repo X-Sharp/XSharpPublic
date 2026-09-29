@@ -43,10 +43,37 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         // time is swallowed instead of starting a second wait/build.
         private static bool opening;
 
+        /// <summary>
+        /// Entry of the Solution Explorer commands (double click / Enter, View Designer).
+        /// </summary>
+        /// <remarks>
+        /// CPS waits synchronously on the UI thread for the task of a command handler (ProjectNode.ExecCommand), without
+        /// pumping messages. While package references are missing, EnsureReferencesAsync waits for the project load and
+        /// may build: neither can finish while the UI thread is blocked, and VS hung after the build prompt (verified
+        /// in VS). Then the command is reported as handled right away and the open continues in the background; a form
+        /// that could not be opened is shown in the code editor, the default action CPS would have taken.
+        /// </remarks>
         public static async Task<bool> TryOpenAsync(IProjectThreadingService threading, string path)
         {
             await threading.SwitchToUIThread();
-            return await TryOpenAsync(path);
+            var xProject = XSolution.FindFile(path)?.Project;
+            if (xProject == null || !ShadowDesignerBridge.IsMissingAnyPackageReference(xProject))
+                return await TryOpenAsync(path);
+            // Deliberately fire-and-forget, like CompanionSaveWatcher: VSSDK007 wants a package JoinableTaskFactory;
+            // the project's one (IProjectThreadingService) would make an unload wait for the build prompt.
+#pragma warning disable VSSDK007
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+            {
+                if (!await TryOpenAsync(path))
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    VsShellUtilities.OpenDocument(ServiceProvider.GlobalProvider, path, VSConstants.LOGVIEWID.Code_guid,
+                        out _, out _, out var frame);
+                    frame?.Show();
+                }
+            }).FileAndForget("XSharp/ProjectSystemCPS/ShadowDesignerOpen");
+#pragma warning restore VSSDK007
+            return true;
         }
 
         /// <summary>

@@ -77,8 +77,10 @@ namespace XSharp.ProjectSystem.Imaging
         private static readonly ConcurrentDictionary<string, (DateTime Checked, DateTime Stamp, HashSet<string> Names)> designerFilesByFolder =
             new ConcurrentDictionary<string, (DateTime, DateTime, HashSet<string>)>(StringComparer.OrdinalIgnoreCase);
 
+        // The X# CodeDOM generator (form designers, "Add .designer file") writes the declaration over two lines, with a
+        // line continuation: "CLASS Form1 ;" and "INHERIT System.Windows.Forms.Form"
         private static readonly Regex BaseClassRegex =
-            new Regex(@"\bCLASS\s+\S+\s+INHERIT\s+([A-Za-z_][\w.]*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            new Regex(@"\bCLASS\s+[^\s;]+[\s;]+INHERIT\s+([A-Za-z_][\w.]*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private readonly UnconfiguredProject project;
 

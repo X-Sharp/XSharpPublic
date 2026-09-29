@@ -28,10 +28,9 @@ namespace XSharp.ProjectSystem.Imaging
     /// A .prg is a form/user control when its SubType says so, or -- SDK-style projects rarely have a SubType --
     /// when it has a matching .Designer.prg and its class inherits from Form/UserControl (same inference as the
     /// MPFproj SDK project node).
+    /// Not a MEF export: <see cref="XSharpProjectTreePropertiesProviderSource"/> supplies it, so that the icons of
+    /// all nodes are calculated again when a .Designer.prg is added or removed.
     /// </remarks>
-    [Export(typeof(IProjectTreePropertiesProvider))]
-    [AppliesTo(XSharpCapabilities.XSharpCps)]
-    [Order(1000)]
     internal sealed class XSharpProjectTreePropertiesProvider : IProjectTreePropertiesProvider
     {
         private static readonly ProjectImageMoniker WindowsForm = Known(KnownImageIds.WindowsForm);
@@ -57,9 +56,10 @@ namespace XSharp.ProjectSystem.Imaging
                 { ".vnrep", Known(KnownImageIds.Report) },
             };
 
-        // This provider runs synchronously on the CPS tree thread for every node, on every tree update, so it keeps
-        // file system access low: the designer files are looked up in a cached list per folder, and a form's file is
-        // only read until its CLASS declaration. Both caches are cleared when they grow beyond MaxCacheEntries.
+        // This provider runs synchronously on the CPS tree thread for the nodes of each tree update (all nodes when
+        // the provider instance changes), so it keeps file system access low: the designer files are looked up in a
+        // cached list per folder, and a form's file is only read until its CLASS declaration. Both caches are
+        // cleared when they grow beyond MaxCacheEntries.
         private const int MaxCacheEntries = 1000;
         // A folder listing is reused for this long, then again as long as the folder's timestamp is unchanged
         // (on NTFS it changes when a file in it is created, deleted or renamed). Short: it only has to cover the burst
@@ -84,7 +84,6 @@ namespace XSharp.ProjectSystem.Imaging
 
         private readonly UnconfiguredProject project;
 
-        [ImportingConstructor]
         public XSharpProjectTreePropertiesProvider(UnconfiguredProject project)
         {
             this.project = project;

@@ -51,6 +51,15 @@ namespace XSharp.Project.ShadowDesigner
         private static readonly Dictionary<string, ShadowDesignerBridge.CompanionLocation> _watched =
             new Dictionary<string, ShadowDesignerBridge.CompanionLocation>(StringComparer.OrdinalIgnoreCase);
 
+        // Keyed by the companion project's folder -> every form's location known to live
+        // there. A .resx the Designer writes (e.g. a newly added Form1.nl.resx from changing
+        // the form's Language property) doesn't necessarily touch Form1.cs/Form1.Designer.cs
+        // at all, so it's never a key in _watched above -- this lets OnAfterSave still
+        // recognize "a resx under a known companion folder was just saved" and resolve which
+        // form it belongs to by filename prefix, via CompanionResourceSync.
+        private static readonly Dictionary<string, List<ShadowDesignerBridge.CompanionLocation>> _companionDirs =
+            new Dictionary<string, List<ShadowDesignerBridge.CompanionLocation>>(StringComparer.OrdinalIgnoreCase);
+
         private readonly IVsRunningDocumentTable _rdt;
         private readonly DTE2 _dte;
         private bool _syncing;
@@ -89,6 +98,18 @@ namespace XSharp.Project.ShadowDesigner
             }
             _watched[location.CompanionFormCsPath] = location;
             _watched[location.CompanionDesignerCsPath] = location;
+
+            string companionDir = Path.GetDirectoryName(location.CompanionDesignerCsPath);
+            if (!string.IsNullOrEmpty(companionDir))
+            {
+                if (!_companionDirs.TryGetValue(companionDir, out var locations))
+                {
+                    locations = new List<ShadowDesignerBridge.CompanionLocation>();
+                    _companionDirs[companionDir] = locations;
+                }
+                locations.RemoveAll(l => string.Equals(l.MainPrgPath, location.MainPrgPath, StringComparison.OrdinalIgnoreCase));
+                locations.Add(location);
+            }
         }
 
         public int OnAfterSave(uint docCookie)
@@ -103,8 +124,18 @@ namespace XSharp.Project.ShadowDesigner
             }
 
             string path = GetDocumentMoniker(docCookie);
-            if (string.IsNullOrEmpty(path) || !_watched.TryGetValue(path, out var location))
+            if (string.IsNullOrEmpty(path))
             {
+                return VSConstants.S_OK;
+            }
+
+            if (!_watched.TryGetValue(path, out var location))
+            {
+                // Not Form1.cs/Form1.Designer.cs -- still worth checking whether this is a
+                // .resx living directly in a known companion folder (e.g. a new
+                // Form1.nl.resx from changing the form's Language property), since that can
+                // be saved without either code file ever becoming dirty.
+                TryHandleResxOnlySave(path);
                 return VSConstants.S_OK;
             }
 
@@ -119,6 +150,7 @@ namespace XSharp.Project.ShadowDesigner
                 _dte.ExecuteCommand("File.SaveAll");
                 EventHandlerSync.Sync(location);
                 DesignerChangesSync.Sync(location);
+                CompanionResourceSync.Sync(location);
             }
             catch (Exception ex)
             {
@@ -131,6 +163,49 @@ namespace XSharp.Project.ShadowDesigner
                 _syncing = false;
             }
             return VSConstants.S_OK;
+        }
+
+        /// <summary>
+        /// Handles a save of a .resx file that isn't Form1.cs/Form1.Designer.cs itself --
+        /// resolves which form it belongs to (by companion folder + filename prefix) and
+        /// copies it to the real project, without running the code-sync steps that only
+        /// apply to Form1.cs/Form1.Designer.cs saves.
+        /// </summary>
+        private void TryHandleResxOnlySave(string path)
+        {
+            if (!path.EndsWith(".resx", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+            string dir = Path.GetDirectoryName(path);
+            if (string.IsNullOrEmpty(dir) || !_companionDirs.TryGetValue(dir, out var locations))
+            {
+                return;
+            }
+            string fileName = Path.GetFileName(path);
+            var location = locations.FirstOrDefault(l =>
+            {
+                string className = Path.GetFileNameWithoutExtension(l.MainPrgPath);
+                return fileName.StartsWith(className, StringComparison.OrdinalIgnoreCase);
+            });
+            if (location == null)
+            {
+                return;
+            }
+
+            _syncing = true;
+            try
+            {
+                CompanionResourceSync.Sync(location);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "CompanionSaveWatcher.TryHandleResxOnlySave: resx sync failed");
+            }
+            finally
+            {
+                _syncing = false;
+            }
         }
 
         private string GetDocumentMoniker(uint docCookie)
@@ -180,6 +255,7 @@ namespace XSharp.Project.ShadowDesigner
                 // companion buffer without that being on disk yet.
                 _dte.ExecuteCommand("File.SaveAll");
                 result = EventHandlerSync.Sync(location);
+                CompanionResourceSync.Sync(location);
             }
             catch (Exception ex)
             {

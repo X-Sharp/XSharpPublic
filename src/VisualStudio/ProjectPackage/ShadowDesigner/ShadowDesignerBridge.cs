@@ -141,14 +141,16 @@ namespace XSharp.Project.ShadowDesigner
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
                     xProject.FileName, referencePaths, shadowCSharp, namespaceName, className);
 
-                CompanionSaveWatcher.Watch(fileNode.ProjectMgr, new CompanionLocation
+                var location = new CompanionLocation
                 {
                     MainPrgPath = mainPrgPath,
                     DesignerPrgPath = designerPrgPath,
                     CompanionCsprojPath = companion.CsprojPath,
                     CompanionFormCsPath = CompanionProjectWriter.ComputeFormCsPath(xProject.FileName, className),
                     CompanionDesignerCsPath = companion.DesignerCsPath,
-                });
+                };
+                CompanionResourceSync.PrimeFromReal(location);
+                CompanionSaveWatcher.Watch(fileNode.ProjectMgr, location);
                 ShadowDesignerCleanup.Track(companion.CsprojPath);
 
                 SolutionWiring.EnsureProjectInSolution(dte, companion.CsprojPath);

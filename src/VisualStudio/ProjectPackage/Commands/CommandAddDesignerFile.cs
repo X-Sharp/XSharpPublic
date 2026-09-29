@@ -224,10 +224,11 @@ namespace XSharp.Project
                     var writer = new StringWriter();
                     var options = new CodeGeneratorOptions();
                     provider.GenerateCodeFromCompileUnit(mergedccu, writer, options);
-                    var newSource = writer.ToString().ToLower();
-                    if (newSource.Contains("#endregion") && !newSource.Contains("#region"))
+                    var newSource = writer.ToString();
+                    // only the check is case insensitive: the form file is written as generated
+                    var lowerSource = newSource.ToLower();
+                    if (lowerSource.Contains("#endregion") && !lowerSource.Contains("#region"))
                     {
-                        newSource = writer.ToString();
                         var lines = Regex.Split(newSource, "\r\n|\r|\n");
                         var sb = new StringBuilder();
                         foreach (var line in lines)

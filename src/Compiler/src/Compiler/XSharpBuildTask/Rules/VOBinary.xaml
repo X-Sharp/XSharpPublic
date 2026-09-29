@@ -3,6 +3,7 @@
 	Name="VOBinary"
 	DisplayName="VO Compatible Binary"
 	PageTemplate="generic"
+	PropertyPagesHidden="true"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
@@ -86,6 +87,18 @@
                   PersistedName="SubType"
                   HasConfigurationCondition="false"/>
     </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="TargetPath"
+                  Visible="false">
+    <StringProperty.DataSource>
+      <DataSource PersistenceStyle="Attribute"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+    <StringProperty.Metadata>
+      <NameValuePair Name="DoNotCopyAcrossProjects"
+                     Value="true" />
+    </StringProperty.Metadata>
   </StringProperty>
 
   <BoolProperty Name="Visible"

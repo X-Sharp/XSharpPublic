@@ -598,11 +598,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     info = new MemVarFieldInfo(name, Alias, context);
                     Fields.Add(info);
                 }
-                if (!info.IsMacroMemvar)
-                {
-                    if (info.Name != info.FullName && !Fields.ContainsKey(info.FullName))
-                        Fields.Add(info.FullName, info);
-                }
                 return info;
             }
             internal MemVarFieldInfo GetField(string name)
@@ -1288,8 +1283,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal FoxFlags foxFlags = FoxFlags.None;
             internal bool IsFox => foxFlags != FoxFlags.None;
             internal bool HasMPrefix => foxFlags.HasFlag(FoxFlags.MPrefix);
-            internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
-            internal string FieldName => Name.GetText().ToUpper();
+            internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpperInvariant();
+            internal string FieldName => Name.GetText().ToUpperInvariant();
             internal bool HasThisReference => Op.Type == XSharpLexer.DOT && Expr != null &&
                 this.Expr.Start == this.Expr.Stop &&
                 (this.Expr.Start.Type == XSharpParser.SELF);
@@ -1554,7 +1549,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (_fieldType == MemvarType.MacroMemvar)
                 {
-                    var name = Name.Substring(0, Name.IndexOf(":"));
+                    var name = Name.Substring(0, Name.IndexOf(':'));
                     return Alias + "->" + name;
                 }
                 if (Alias != null)
@@ -1615,7 +1610,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (alias.StartsWith("@@"))
                     alias = alias.Substring(2);
-                switch (alias.ToUpper())
+                switch (alias.ToUpperInvariant())
                 {
                     case "&":
                         _fieldType = MemvarType.MacroMemvar;

@@ -707,7 +707,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Intrinsic functions that depend on Vulcan types
                 IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-                name = ins.Identifier.Text.ToUpper();
+                name = ins.Identifier.Text.ToUpperInvariant();
                 if (name == XSharpIntrinsicNames.DoDefault)
                 {
                     var entity = CurrentMember;
@@ -824,7 +824,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterFoxmethod([NotNull] XP.FoxmethodContext context)
         {
             Check4ClipperCC(context, context.Sig.ParamList?._Params, context.Sig.CallingConvention?.Convention, context.Sig.Type);
-            var name = context.Id.GetText().ToUpper();
+            var name = context.Id.GetText().ToUpperInvariant();
             if (name == "INIT" && (context.Params == null || context.Params._Params.Count == 0))
             {
                 context.Data.HasClipperCallingConvention = true;
@@ -997,7 +997,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var mem = fcfc.Member;
                     foreach (var v in mem._Vars)
                     {
-                        fieldNames.Add(v.GetText().ToLower());
+                        fieldNames.Add(v.GetText().ToLowerInvariant());
                     }
                     if (mem.CsNode is List<MemberDeclarationSyntax> list)
                     {
@@ -1211,7 +1211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // fetch parameters from procedure/function init, so they can be copied to the generated constructor
                     var method = fm.Member;
-                    if (method.Id.GetText().ToLower() == "init")
+                    if (string.Equals(method.Id.GetText(), "init", StringComparison.OrdinalIgnoreCase))
                     {
                         var syntax = method.Get<MethodDeclarationSyntax>();
                         initparams = syntax.ParameterList;

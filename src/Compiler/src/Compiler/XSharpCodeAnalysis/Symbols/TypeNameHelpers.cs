@@ -5,6 +5,8 @@
 //
 #nullable disable
 
+using System;
+
 namespace Microsoft.CodeAnalysis
 {
     internal static class XsHelpers
@@ -12,7 +14,7 @@ namespace Microsoft.CodeAnalysis
         internal static string ReplaceTypeNames(string result)
         {
             result = result.Replace("void*", "ptr");
-            if (result.IndexOf("XSharp.") >= 0)
+            if (result.IndexOf("XSharp.", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 result = result.Replace("XSharp.__Usual", "usual");
                 result = result.Replace("XSharp.__Date", "date");

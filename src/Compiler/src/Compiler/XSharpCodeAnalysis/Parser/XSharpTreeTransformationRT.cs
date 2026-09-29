@@ -281,7 +281,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
             bool publicValue;
-            switch (name.ToUpper())
+            switch (name.ToUpperInvariant())
             {
                 case "FOX":
                 case "FOXPRO":
@@ -928,7 +928,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (alias.ToUpper() == "M")
+                if (alias.ToUpperInvariant() == "M")
                 {
                     return GenerateMemVarGet(context, field);
                 }
@@ -980,26 +980,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            // For expressions such as String.IsNullOrEmpty()
-            // we do not want String to be seen as a memvar.
-            // in this case the Parent of name is SimpleName and the parent of that is a Primary
-            var amc = context.XParent.XParent as XP.AccessMemberContext;
-            var staticCall = false;
-            var usesColon = false;
-            if (amc != null)
-            {
-                staticCall = amc.IsStaticMethodCall || amc.IsDotColonExpression;
-                usesColon = amc.IsColonExpression;
-            }
             // SomeVar(1,2) Can also be a FoxPro array access
-            if (!usesColon)
+
+            if (context.Parent.Parent is not XP.MethodCallContext ||
+                   (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
             {
-                if (!staticCall ||
-                    (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
+                MemVarFieldInfo fieldInfo = findVar(Name);
+                var amc = context.Parent.Parent as XP.AccessMemberContext;
+                var staticCall = amc?.Op.Type == XP.DOTCOLON;
+                var methodCall = amc?.Parent is MethodCallContext;
+                if (fieldInfo != null && !staticCall && !methodCall && !context.IsInLambdaOrCodeBlock())
                 {
-                    MemVarFieldInfo fieldInfo = null;
-                    if (!staticCall)
-                        fieldInfo = findVar(Name);
+                    // for code that looks like this we do not want to change the expression
+                    // Foo(1,2)
+                    // even when Foo is a private because this can never be a assignment
+                    if (!fieldInfo.IsField)
+                    {
+                        if (context.Parent is XP.PrimaryExpressionContext pec &&
+                            pec.Parent is XP.MethodCallContext mcc &&
+                            mcc.Parent is XP.ExpressionStmtContext)
+                        {
+                            fieldInfo = null;
+                        }
+                    }
                     if (fieldInfo != null)
                     {
                         expr = MakeMemVarField(fieldInfo);
@@ -2811,7 +2814,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             bool Ok;
                             Ok = datatype is XP.SimpleDatatypeContext sdtc1 && sdtc1.TypeName.Start.Type == XP.USUAL;
                             var typename = datatype.GetText();
-                            Ok = Ok || typename.ToLower().EndsWith(OurTypeNames.UsualType.ToLower());
+                            Ok = Ok || typename.ToLowerInvariant().EndsWith(OurTypeNames.UsualType.ToLowerInvariant());
                             if (!Ok)
                             {
                                 _parseErrors.Add(new ParseErrorData(initexpr, ErrorCode.WRN_ConversionFromNilNotSupported, typename));
@@ -3171,10 +3174,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             //remove the # from the string
             symbol = symbol.Substring(1);
-            var expr = CreateObject(SymbolType, MakeArgumentList(MakeArgument(GenerateLiteral(symbol.ToUpper()))));
+            var expr = CreateObject(SymbolType, MakeArgumentList(MakeArgument(GenerateLiteral(symbol.ToUpperInvariant()))));
             if (_options.MacroScript || _options.Kind == SourceCodeKind.Script)
                 return expr;
-            var lsym = "_" + symbol.ToLower();
+            var lsym = "_" + symbol.ToLowerInvariant();
             if (!_literalSymbols.ContainsKey(lsym))
             {
                 // create field declarator with inline assignment
@@ -3295,7 +3298,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (expr is IdentifierNameSyntax ins)
             {
                 // Intrinsic functions that depend on X# types
-                name = ins.Identifier.Text.ToUpper();
+                name = ins.Identifier.Text.ToUpperInvariant();
                 switch (name)
                 {
                     case "MEXEC":
@@ -3368,7 +3371,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (expr is GenericNameSyntax)
             {
                 var gns = expr as GenericNameSyntax;
-                name = gns.Identifier.Text.ToUpper();
+                name = gns.Identifier.Text.ToUpperInvariant();
                 switch (name)
                 {
                     case XSharpIntrinsicNames.PCallNative:
@@ -3396,7 +3399,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (expr is MemberAccessExpressionSyntax maes)
             {
-                var memname = maes.Name.Identifier.Text.ToUpper();
+                var memname = maes.Name.Identifier.Text.ToUpperInvariant();
                 if (memname == "EVAL" && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && CurrentMember != null)
                 {
                     CurrentMember.Data.HasMemVars = true;
@@ -3508,15 +3511,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool hasConvention = false;
             if (context is XP.FuncprocContext fc)
             {
-                isEntryPoint = fc.Id.GetText().ToLower() == "start";
+                isEntryPoint = string.Equals(fc.Id.GetText(), "start", StringComparison.OrdinalIgnoreCase);
             }
 
             context.Data.HasTypedParameter = false;
             context.Data.HasMissingReturnType = (returnType == null);
             if (!context.Data.HasMissingReturnType)
             {
-                string rtype = returnType.GetText().ToLower();
-                if (rtype == "void" || rtype == "system.void")
+                string rtype = returnType.GetText();
+                if (string.Equals(rtype, "void", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(rtype, "system.void", StringComparison.OrdinalIgnoreCase))
                 {
                     context.Data.MustBeVoid = true;
                 }
@@ -4617,7 +4621,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 CurrentMember.Data.HasMemVars = true;
             }
             context.SetSequencePoint();
-            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && context.Name.GetText().IndexOf(".") > 0)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && context.Name.GetText().IndexOf('.') > 0)
             {
                 var id = getMacroNameExpression(context.Name);
                 var expr = GenerateMemVarGet(context, id);

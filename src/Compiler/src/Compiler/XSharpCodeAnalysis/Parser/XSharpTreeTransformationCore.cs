@@ -608,7 +608,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    name = name.ToUpper() + suffix;
+                    name = name.ToUpperInvariant() + suffix;
                 }
             }
             return name;
@@ -1271,7 +1271,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string[] ids = name.Split('.');
             string idName = ids[0];
             string alias = null;
-            int cc = idName.IndexOf("::");
+            int cc = idName.IndexOf("::", StringComparison.Ordinal);
             if (cc >= 0)
             {
                 alias = idName.Substring(0, cc);
@@ -1306,7 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string[] ids = name.Split('.');
             string idName = ids[0];
             string alias = null;
-            int cc = idName.IndexOf("::");
+            int cc = idName.IndexOf("::", StringComparison.Ordinal);
             if (cc >= 0)
             {
                 alias = idName.Substring(0, cc);
@@ -2662,7 +2662,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpper()));
+                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpperInvariant()));
                         list.Add(id);
                     }
                 }
@@ -3858,8 +3858,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     && pts.Keyword.Kind == SyntaxKind.StringKeyword;
                 if (!isString)
                 {
-                    var typeText = datatype.GetText().ToLower();
-                    isString = typeText == "string" || typeText == "system.string";
+                    var typeText = datatype.GetText();
+                    isString = typeText.Equals("string", StringComparison.OrdinalIgnoreCase) ||
+                        typeText.Equals("system.string", StringComparison.OrdinalIgnoreCase);
                 }
                 if (isString)
                 {
@@ -4848,7 +4849,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     walker.Walk(this, attblock);
                     var list = attblock.CsNode as AttributeListSyntax;
                     context.Put(list);
-                    if (list.Attributes.Count == 0)
+                    if (list?.Attributes.Count == 0)
                     {
                         ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
                     }
@@ -4876,7 +4877,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAttributeTarget([NotNull] XP.AttributeTargetContext context)
         {
-            string target = context.Token.Text.ToLower();
+            string target = context.Token.Text.ToLowerInvariant();
             switch (target)
             {
                 // numeric values in the switch are the values of the AttributeTargets enum
@@ -4960,7 +4961,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // we leave the handling of '*' inside AssemblyVersion to the roslyn code
                 // if the version does not have a '*' character then we use the string that was passed by the user.
                 // this also allows for non numeric versions for InformationalVersion
-                if (context.Target.Token.Text.ToLower() == "assembly")
+                if (context.Target.Token.Text.Equals("assembly", StringComparison.CurrentCultureIgnoreCase))
                 {
                     string[] names = {  "AssemblyFileVersionAttribute","AssemblyFileVersion",
                                         "AssemblyInformationalVersionAttribute","AssemblyInformationalVersion"};
@@ -5010,7 +5011,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitGlobalAttributeTarget([NotNull] XP.GlobalAttributeTargetContext context)
         {
-            var text = context.Token.Text.ToLower();
+            var text = context.Token.Text.ToLowerInvariant();
             if (text != "assembly" && text != "module")
             {
                 ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
@@ -5547,7 +5548,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (_options.Dialect != XSharpDialect.FoxPro)
                 {
-                    if (context.ReturnType != null && context.ReturnType.GetText().ToLower() != "void")
+                    if (context.ReturnType != null && context.ReturnType.GetText().ToLowerInvariant() != "void")
                     {
                         returntype = NotInDialect(returntype, "Procedure with non VOID return type");
                     }
@@ -5777,7 +5778,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // convert to 1 Upper char and lower chars
                 string cs = context.CharSet.Text;
-                cs = cs.Substring(0, 1).ToUpper() + cs.Substring(1).ToLower();
+                cs = cs.Substring(0, 1).ToUpperInvariant() + cs.Substring(1).ToLowerInvariant();
                 id = SyntaxFactory.Identifier(cs);
             }
             else
@@ -5972,7 +5973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     for (int i = 0; i < ats.Count; i++)
                     {
                         var at = ats[i] as AttributeSyntax;
-                        if (at.ToString().ToLower().Contains("dllimport"))
+                        if (at.ToString().Contains("dllimport", StringComparison.OrdinalIgnoreCase))
                         {
                             return true;
                         }
@@ -7740,8 +7741,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var left = context.Expr.Get<ExpressionSyntax>();
                     var cb = GetCodeBlock(context);
-					var mem = CurrentMember;
-                    if (mem != null && cb != null && context.HasThisReference && mem.Data.HasThisInCodeBlock)
+                    if (CurrentMember != null && cb != null && context.HasThisReference && CurrentMember.Data.HasThisInCodeBlock)
                     {
                         left = GenerateSimpleName(XSharpSpecialNames.This);
                     }
@@ -8094,11 +8094,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string name = String.Empty;
             if (expr is IdentifierNameSyntax ins)
             {
-                name = ins.Identifier.Text.ToUpper();
+                name = ins.Identifier.Text.ToUpperInvariant();
             }
             else if (expr is GenericNameSyntax gns)
             {
-                name = gns.Identifier.Text.ToUpper();
+                name = gns.Identifier.Text.ToUpperInvariant();
             }
             switch (name)
             {
@@ -9069,7 +9069,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (String.Compare(context.Start.Text, "value", true) == 0)
                         {
                             var token = context.Start as XSharpToken;
-                            token.Text = token.Text.ToLower();
+                            token.Text = token.Text.ToLowerInvariant();
                         }
                     }
                 }
@@ -9393,7 +9393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string expr = e;
                 bool singleColon = false;
                 // Format character?
-                int pos = expr.IndexOf("::");
+                int pos = expr.IndexOf("::", StringComparison.Ordinal);
                 if (pos < 0 && allowDot)
                 {
                     pos = expr.IndexOf(':');
@@ -9498,7 +9498,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (args.Length == 7)
                             {
-                                var suffix = args[6].Trim().ToLower();
+                                var suffix = args[6].Trim().ToLowerInvariant();
                                 if (suffix == "am" || suffix == "pm")
                                 {
                                     bool pm = suffix == "pm";
@@ -9592,7 +9592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         try
                         {
-                            var dt = new DateTime(elements[0], elements[1], elements[2], 0, 0, 0);
+                            var _ = new DateTime(elements[0], elements[1], elements[2], 0, 0, 0);
                         }
                         catch (Exception e)
                         {
@@ -9616,7 +9616,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         try
                         {
-                            var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                            var _ = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
                         }
                         catch (Exception e)
                         {
@@ -9700,7 +9700,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     try
                     {
-                        var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                        var _ = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
                     }
                     catch (Exception e)
                     {

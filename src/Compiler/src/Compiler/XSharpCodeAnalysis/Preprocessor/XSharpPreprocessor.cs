@@ -286,9 +286,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.PreprocessorSymbolsUpper.Contains("NDEBUG"))
                 debug = false;
 #else
-            if (_options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "DEBUG"))
+            if (_options.PreprocessorSymbolNames.Contains((name) => name.Equals("DEBUG",StringComparison.OrdinalIgnoreCase)))
                 debug = true;
-            if (_options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "NDEBUG"))
+            if (_options.PreprocessorSymbolNames.Contains((name) => name.Equals("NDEBUG",StringComparison.OrdinalIgnoreCase)))
                 debug = false;
 #endif
 #endif
@@ -547,7 +547,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _ppoWriter = null;
                     _preprocessorOutput = _options.PreprocessorOutput;
-                    if (FileNameUtilities.GetExtension(fileName).ToLower() == ".ppo")
+                    if (FileNameUtilities.GetExtension(fileName).ToLowerInvariant() == ".ppo")
                     {
                         _preprocessorOutput = false;
                     }
@@ -795,7 +795,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                         var sLine = sb.ToString().Trim();
-                        if (sLine.ToUpper().StartsWith("ENDTEXT"))
+                        if (sLine.StartsWith("ENDTEXT", StringComparison.OrdinalIgnoreCase))
                         {
                             var temp = stripWs(line);
                             line = doNormalLine(temp, write2ppo);
@@ -1153,7 +1153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
         private bool isObsoleteIncludeFile(string includeFileName, XSharpToken token)
         {
-            string file = Path.GetFileName(includeFileName).ToLower();
+            string file = Path.GetFileName(includeFileName).ToLowerInvariant();
             bool obsolete = false;
             string assemblyName = "";
             bool sdkdefs = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.SdkDefines);
@@ -1303,7 +1303,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (resolvedIncludeFileName == null)
             {
                 loadResources();
-                var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
+                var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLowerInvariant();
                 if (embeddedHeaders.TryGetValue(baseName, out var source))
                 {
                     text = SourceText.From(source);
@@ -2106,7 +2106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // #nullable <qualifier>
             Pragmastate state;
-            switch (tokens[1].Text.ToLower())
+            switch (tokens[1].Text.ToLowerInvariant())
             {
                 case "enable":
                     state = Pragmastate.On;
@@ -2127,7 +2127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (tokens.Count == 3)
             {
                 optionToken = tokens[2];
-                switch (optionToken.Text.ToLower())
+                switch (optionToken.Text.ToLowerInvariant())
                 {
                     case "warnings":
                         kind = SyntaxKind.WarningsKeyword;
@@ -2220,7 +2220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (error == ErrorCode.Unknown)
                 {
 
-                    switch (i1.Text.ToLower())
+                    switch (i1.Text.ToLowerInvariant())
                     {
                         case "options":
                             isWarning = false;
@@ -2239,7 +2239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (i2 != null)
                     {
-                        switch (i2.Text.ToLower())
+                        switch (i2.Text.ToLowerInvariant())
                         {
                             case "enable":
                             case "true":
@@ -2278,7 +2278,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else if (numbers.Count == 0)
                     {
                         // options pop
-                        if (i2.Text.ToLower() == "pop")
+                        if (i2.Text.ToLowerInvariant() == "pop")
                         {
                             pragma = new PragmaOption(start, Pragmastate.Default, CompilerOption.All);
                         }
@@ -2291,7 +2291,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         var token = numbers[0];
-                        var opt = token.Text.ToLower();
+                        var opt = token.Text.ToLowerInvariant();
                         if (token.Type == XSharpParser.STRING_CONST && opt.StartsWith("\"") && opt.EndsWith("\"") && opt.Length > 2)
                         {
                             opt = opt.Substring(1, opt.Length - 2);

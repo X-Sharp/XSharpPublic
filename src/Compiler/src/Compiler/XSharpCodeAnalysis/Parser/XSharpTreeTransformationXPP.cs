@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     public class XppClassInfo
     {
         internal IList<XppDeclaredMethodInfo> Methods { get; set; }
-        private IList<string> Properties { get; set; }
+        private HashSet<string> Properties { get; set; }
         internal IList<XP.XppmethodContext> ExternalMethods { get; set; }
         internal string Name { get; set; }
         internal string BaseClassName { get; set; }
@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Name = name;
             Methods = new List<XppDeclaredMethodInfo>();
             ExternalMethods = new List<XP.XppmethodContext>();
-            Properties = new List<string>();
+            Properties = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             BaseClassName = string.Empty;
             CurrentVisibility = XP.HIDDEN;
         }
@@ -56,15 +56,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal void AddProperty(string name)
         {
-            name = name.ToLower();
-            if (!Properties.Contains(name))
-            {
-                Properties.Add(name);
-            }
+            Properties.Add(name);
         }
         internal bool HasProperty(string name)
         {
-            name = name.ToLower();
             return Properties.Contains(name);
         }
     }
@@ -1205,7 +1200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // convert ClassName():New(...) to ClassName{...}
             if (context.Expr is XP.AccessMemberContext lhs)
             {
-                if (lhs.Name.GetText().ToLower() == "new")
+                if (string.Equals(lhs.Name.GetText(), "new", StringComparison.OrdinalIgnoreCase))
                 {
                     if (lhs.Op.Type == XP.COLONCOLON)
                     {
@@ -1299,7 +1294,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var parent = info.Parent;
                         var parentName = GenerateSimpleName(parent.Name);
                         var name = context.Name.Get<SimpleNameSyntax>();
-                        if (context.Name.GetText().ToLower() != "new")
+                        if (!string.Equals(context.Name.GetText(), "new", StringComparison.OrdinalIgnoreCase))
                         {
                             context.Put(MakeSimpleMemberAccess(parentName, name));
                         }

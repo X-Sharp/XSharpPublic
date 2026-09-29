@@ -103,7 +103,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (symbol.Kind == SymbolKind.Local || symbol.Kind == SymbolKind.Parameter)
             {
-                if (symbol.Name != null && symbol.Name.StartsWith("Xs$") )
+                if (symbol.Name != null && symbol.Name.StartsWith("Xs$",
+                    System.StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

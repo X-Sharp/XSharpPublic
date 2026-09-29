@@ -69,15 +69,15 @@ namespace XSharp.Build
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(itemSpec);
                     string dependentUpOn = taskItem.GetMetadata("DependentUpon");
                     string type = taskItem.GetMetadata("Type");
-                    bool isResx = !string.IsNullOrEmpty(type) && type.ToLower() == "resx";
+                    bool isResx = !string.IsNullOrEmpty(type) && type.ToLowerInvariant() == "resx";
                     if (string.IsNullOrEmpty(dependentUpOn))
                     {
-                        isResx = Path.GetExtension(itemSpec).ToLower() == ".resx";
+                        isResx = Path.GetExtension(itemSpec).ToLowerInvariant() == ".resx";
                     }
                     if (isResx && UseDependentUponConvention && string.IsNullOrEmpty(dependentUpOn))
                     {
                         var temp = Path.ChangeExtension(Path.GetFileName(itemSpec), Constants.SourceFileExtension);
-                        if (taskItem.GetMetadata("WithCulture").ToLower() == "true")
+                        if (taskItem.GetMetadata("WithCulture").ToLowerInvariant() == "true")
                         {
                             string culture = taskItem.GetMetadata("Culture");
                             if (!string.IsNullOrEmpty(culture))

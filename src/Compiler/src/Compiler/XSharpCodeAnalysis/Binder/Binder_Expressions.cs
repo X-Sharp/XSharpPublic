@@ -1029,7 +1029,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var name = node.Identifier.ValueText;
             var useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
-            var memvarorfield = name.IndexOf("->") > 0;
+            var memvarorfield = name.IndexOf("->", StringComparison.Ordinal) > 0;
             // no need to look for our special names
             if (!memvarorfield)
             {

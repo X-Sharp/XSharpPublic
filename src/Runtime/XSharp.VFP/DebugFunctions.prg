@@ -90,10 +90,10 @@ FUNCTION AStackInfo (ArrayName AS USUAL) AS DWORD
         VAR oMethod := oFrame:GetMethod()
         VAR nBase := (INT)(nIdx * 6)
 
-        aFoxArray.__SetElement(nIdx + 1, nBase)      // Col 1: Stack Level
+        aFoxArray:__SetElement(nIdx + 1, nBase)      // Col 1: Stack Level
 
         VAR cFile := oFrame:GetFileName()
-        aFoxArray.__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 1)  // Col 2: File
+        aFoxArray:__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 1)  // Col 2: File
 
         VAR cModule := ""
         IF oMethod:DeclaringType != NULL
@@ -102,10 +102,10 @@ FUNCTION AStackInfo (ArrayName AS USUAL) AS DWORD
             cModule := oMethod:Name
         ENDIF
 
-        aFoxArray.__SetElement(cModule, nBase + 2)    // Col 3: Module/Object
-        aFoxArray.__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 3)  // Col 4: Source file
-        aFoxArray.__SetElement(oFrame:GetFileLineNumber(), nBase + 4)      // Col 5: Line
-        aFoxArray.__SetElement("", nBase + 5)          // Col 6: Source content (n/a)
+        aFoxArray:__SetElement(cModule, nBase + 2)    // Col 3: Module/Object
+        aFoxArray:__SetElement(IIF(cFile != NULL, cFile, ""), nBase + 3)  // Col 4: Source file
+        aFoxArray:__SetElement(oFrame:GetFileLineNumber(), nBase + 4)      // Col 5: Line
+        aFoxArray:__SetElement("", nBase + 5)          // Col 6: Source content (n/a)
         nIdx += 1
     NEXT
 

@@ -32,17 +32,17 @@ INTERNAL FUNCTION InitFoxState() AS VOID
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
 
-    XSharp.__Array.FoxArrayHelpers.ADel         := XSharp.VFP.Functions.ADel
-    XSharp.__Array.FoxArrayHelpers.ALen         := XSharp.VFP.Functions.FoxALen
-    XSharp.__Array.FoxArrayHelpers.AIns         := XSharp.VFP.Functions.FoxAIns
-    XSharp.__Array.FoxArrayHelpers.ShowArray    := XSharp.VFP.Functions.ShowFoxArray
+    XSharp.__Array.FoxArrayHelpers:ADel         := XSharp.VFP.Functions.ADel
+    XSharp.__Array.FoxArrayHelpers:ALen         := XSharp.VFP.Functions.FoxALen
+    XSharp.__Array.FoxArrayHelpers:AIns         := XSharp.VFP.Functions.FoxAIns
+    XSharp.__Array.FoxArrayHelpers:ShowArray    := XSharp.VFP.Functions.ShowFoxArray
 RETURN
 
 INTERNAL FUNCTION ClearFoxState as VOID
     XSharp.MemVar.Initialize()
     XSharp.RuntimeState.AutoLock    := NULL
     XSharp.RuntimeState.AutoUnLock  := NULL
-    XSharp.__Array.FoxArrayHelpers.Reset()
+    XSharp.__Array.FoxArrayHelpers:Reset()
 
 
 

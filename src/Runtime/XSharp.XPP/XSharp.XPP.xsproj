@@ -7,7 +7,7 @@
     <RootNamespace>XSharp.XPP</RootNamespace>
     <AssemblyName>XSharp.XPP</AssemblyName>
     <Name>XSharp.XPP</Name>
-    <Dialect>XPP</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <OutputName>XSharp.XPP</OutputName>
     <CS>true</CS>
     <Unsafe>true</Unsafe>

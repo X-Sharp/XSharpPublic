@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\Runtime.props" />
@@ -7,10 +7,10 @@
     <RootNamespace>XSharp.VFP</RootNamespace>
     <AssemblyName>XSharp.VFP</AssemblyName>
     <Name>XSharp.VFP</Name>
-    <Dialect>FoxPro</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <OutputName>XSharp.VFP</OutputName>
     <CS>true</CS>
-    <Unsafe>true</Unsafe>
+    <Unsafe>False</Unsafe>
     <NS>true</NS>
     <vo15>False</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
@@ -18,10 +18,7 @@
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
     <StartupObject />
-    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
-    <Allowdot>True</Allowdot>
-    <EnforceSelf>True</EnforceSelf>
-  </PropertyGroup>
+   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

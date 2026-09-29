@@ -210,7 +210,7 @@ FUNCTION CToT(cCharacterExpression AS STRING) AS System.DateTime
     ENDIF
 
     RETURN DateTime.MinValue
-ENDFUNC
+END FUNCTION
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ttoc/*" />
 [FoxProFunction("TTOC", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -246,7 +246,7 @@ FUNCTION TToC(tdExpression AS System.DateTime, nParam := 0 AS LONG) AS STRING
 	END SWITCH
 
 	RETURN lcResult
-ENDFUNC
+END FUNCTION
 
 /// <exclude/>
 /// <summary>

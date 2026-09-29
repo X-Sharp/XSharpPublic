@@ -5,7 +5,7 @@
 //
 // The defines below are imported from FoxPro.h
 
-************************************************************************************
+/***********************************************************************************
 ************************************************************************************
 **                                                                                **
 ** ================                    ===========                                **
@@ -30,16 +30,16 @@
 ** This file contains named constants for most Visual FoxPro functions            **
 **                                                                                **
 ************************************************************************************
-************************************************************************************
+***********************************************************************************/
 
-*-- General
-*--ZOrder Method
+//-- General
+//--ZOrder Method
 /// <exclude/>
 DEFINE ZORDER_BRINGTOFRONT   := 0
 /// <exclude/>
 DEFINE ZORDER_SENDTOBACK     := 1
 
-*-- TYPE() tags
+//-- TYPE() tags
 /// <exclude/>
 DEFINE T_CHARACTER    :=  "C"
 /// <exclude/>
@@ -73,7 +73,7 @@ DEFINE T_VARBINARY    :=  "Q"
 /// <exclude/>
 DEFINE T_BLOB         :=  "W"
 
-*-- QueryUnload
+//-- QueryUnload
 /// <exclude/>
 DEFINE FORM_CONTROLMENU     := 0
 /// <exclude/>
@@ -86,7 +86,7 @@ DEFINE APP_TASKMANAGER      := 3
 DEFINE FORM_MDIFORM         := 4
 /// <exclude/>
 
-*-- Columns in array returned by AVCXCLASSES()
+//-- Columns in array returned by AVCXCLASSES()
 /// <exclude/>
 DEFINE AVCX_CLASS            := 1    // OBJNAME field
 /// <exclude/>
@@ -111,8 +111,8 @@ DEFINE AVCX_USERINFO         := 10   // USER field
 DEFINE AVCX_OLEPUBLIC        := 11   // RESERVED2 field
 
 
-*-- Active Document
-*-- CommandTargetQuery Command Options
+//-- Active Document
+//-- CommandTargetQuery Command Options
 /// <exclude/>
 DEFINE CMDF_NOTSUPPORTED           := 0  // The command is not supported by this object
 /// <exclude/>
@@ -124,7 +124,7 @@ DEFINE CMDF_LATCHED                := 4  // The command is an on-off toggle and 
 /// <exclude/>
 DEFINE CMDF_NINCHED                := 8  // The command state is indeterminate
 
-*-- CommandTargetQuery CommandTextFlag values
+//-- CommandTargetQuery CommandTextFlag values
 /// <exclude/>
 DEFINE CMDTEXTF_NONE               := 0  // No extra information is requested
 /// <exclude/>
@@ -132,7 +132,7 @@ DEFINE CMDTEXTF_NAME               := 1  // Object should provide the localized 
 /// <exclude/>
 DEFINE CMDTEXTF_STATUS             := 2  // Object should provide a localized status string for the command
 
-*-- CommandTarget Command IDs
+//-- CommandTarget Command IDs
 /// <exclude/>
 DEFINE CMDID_OPEN               :=   1  // File menu, Open command
 /// <exclude/>
@@ -201,7 +201,7 @@ DEFINE CMDID_ENABLE_INTERACTION :=  36  // Asks the Active Document to either pa
 DEFINE CMDID_ONUNLOAD           :=  37  // Sent by the Active Document host before navigation to another
                                         // site is initiated or the host is closed
 
-*-- CommantTargetExec nExecOption parameter
+//-- CommantTargetExec nExecOption parameter
 /// <exclude/>
 DEFINE CMDEXECOPT_DODEFAULT       := 0  // Use the default behavior
 /// <exclude/>
@@ -212,7 +212,7 @@ DEFINE CMDEXECOPT_DONTPROMPTUSER  := 2  // Execute the command without prompting
 DEFINE CMDEXECOPT_SHOWHELP        := 3  // Show help for the corresponding command
 /// <exclude/>
 
-*-- CommandTargetExec Return Values
+//-- CommandTargetExec Return Values
 /// <exclude/>
 DEFINE CMD_OK                     :=  0  // Command handled okay by the Active Document
 /// <exclude/>
@@ -225,8 +225,8 @@ DEFINE CMD_NOHELP                 :=  3  // No help is available for the command
 DEFINE CMD_CANCELED               :=  4  // The user canceled the execution of the command
 
 
-*-- Project Hooks
-*-- Build Actions
+//-- Project Hooks
+//-- Build Actions
 /// <exclude/>
 DEFINE BUILDACTION_REBUILD        := 1  // Rebuild Project
 /// <exclude/>
@@ -238,7 +238,7 @@ DEFINE BUILDACTION_BUILDDLL       := 4  // Build DLL
 /// <exclude/>
 DEFINE BUILDACTION_BUILDMTDLL     := 5  // Build MTDLL
 
-*-- File Object SCCStatus Property
+//-- File Object SCCStatus Property
 /// <exclude/>
 DEFINE SCCFILE_NOTCONTROLLED      :=  0  // File is not source controlled
 /// <exclude/>
@@ -254,7 +254,7 @@ DEFINE SCCFILE_MERGE              :=  5  // File has been merged without conflic
 /// <exclude/>
 DEFINE SCCFILE_CHECKEDOUTMU       :=  6  // File is checked out to multiple users
 
-*-- File Object Type Property
+//-- File Object Type Property
 /// <exclude/>
 DEFINE FILETYPE_DATABASE        :=  "d"  // Database (.DBC)
 /// <exclude/>
@@ -282,7 +282,7 @@ DEFINE FILETYPE_TEXT            :=  "T"  // Text (.TXT, .H., etc.)
 /// <exclude/>
 DEFINE FILETYPE_OTHER           :=  "x"  // Other file types not enumerated above
 
-*-- Server Object Instancing Property
+//-- Server Object Instancing Property
 /// <exclude/>
 DEFINE SERVERINSTANCE_NOTCREATABLE := 0  // Instances creatable only inside Visual FoxPro
 /// <exclude/>
@@ -291,8 +291,8 @@ DEFINE SERVERINSTANCE_SINGLEUSE    := 1  // Single use server
 DEFINE SERVERINSTANCE_MULTIUSE     := 2  // Multi-use server
 
 
-*-- Drag and Drop
-*-- OLE Drag and Drop:  Drop Effects
+//-- Drag and Drop
+//-- OLE Drag and Drop:  Drop Effects
 /// <exclude/>
 DEFINE DROPEFFECT_NONE     := 0
 /// <exclude/>
@@ -302,7 +302,7 @@ DEFINE DROPEFFECT_MOVE     := 2
 /// <exclude/>
 DEFINE DROPEFFECT_LINK     := 4
 
-*-- OLE Drag and Drop:  Drop Modes
+//-- OLE Drag and Drop:  Drop Modes
 /// <exclude/>
 DEFINE DROP_DISABLED        :=0
 /// <exclude/>
@@ -310,7 +310,7 @@ DEFINE DROP_ENABLED         :=1
 /// <exclude/>
 DEFINE DROP_PASSTOCONTAINER :=2
 
-*-- OLE Drag and Drop:  OLEDropHasData settings
+//-- OLE Drag and Drop:  OLEDropHasData settings
 /// <exclude/>
 DEFINE DROPHASDATA_VFPDETERMINE := -1
 /// <exclude/>
@@ -319,7 +319,7 @@ DEFINE DROPHASDATA_NOTUSEFUL    :=  0
 DEFINE DROPHASDATA_USEFUL       :=  1
 /// <exclude/>
 
-*-- Clipboard formats (Global)
+//-- Clipboard formats (Global)
 /// <exclude/>
 DEFINE CF_TEXT             := 1      // Text
 /// <exclude/>
@@ -357,7 +357,7 @@ DEFINE CF_LOCALE           := 16     // A handle to the locale identifier
 /// <exclude/>
 DEFINE CF_MAX              := 17
 
-*-- Other Miscellaneous Clipboard formats
+//-- Other Miscellaneous Clipboard formats
 /// <exclude/>
 DEFINE CFSTR_HYPERLINK     := "Hyperlink"               // A Hyperlink
 /// <exclude/>
@@ -388,7 +388,7 @@ DEFINE CFSTR_RTFNOOBJS     := "Rich Text Format Without Objects"
 /// <exclude/>
 DEFINE CFSTR_RETEXTOBJ     := "RichEdit Text and Objects"
 
-*-- Clipboard formats (Private to VFP)
+//-- Clipboard formats (Private to VFP)
 /// <exclude/>
 DEFINE CFSTR_OLEVARIANTARRAY :="OLE Variant Array"       // VFP array
 /// <exclude/>
@@ -396,13 +396,13 @@ DEFINE CFSTR_OLEVARIANT      :="OLE Variant"             // Data in variant form
 /// <exclude/>
 DEFINE CFSTR_VFPSOURCEOBJECT :="VFP Source Object"       // A reference to the VFP source object
 
-*-- DragMode
+//-- DragMode
 /// <exclude/>
 DEFINE DRAG_MANUAL          := 0      // 0 - Manual
 /// <exclude/>
 DEFINE DRAG_AUTOMATIC       := 1      // 1 - Automatic
 
-*-- DragOver
+//-- DragOver
 /// <exclude/>
 DEFINE DRAG_ENTER          := 0
 /// <exclude/>
@@ -410,7 +410,7 @@ DEFINE DRAG_LEAVE          := 1
 /// <exclude/>
 DEFINE DRAG_OVER           := 2
 
-*-- Drag (controls)
+//-- Drag (controls)
 /// <exclude/>
 DEFINE DRAG_CANCEL          := 0
 /// <exclude/>
@@ -419,8 +419,8 @@ DEFINE DRAG_BEGIN           := 1
 DEFINE DRAG_END             := 2
 
 
-*-- Properties
-*-- Colors
+//-- Properties
+//-- Colors
 /// <exclude/>
 DEFINE COLOR_WHITE       :=16777215
 /// <exclude/>
@@ -455,7 +455,7 @@ DEFINE COLOR_MAGENTA     :=16711935
 DEFINE COLOR_DARK_MAGENTA:= 8388736
 /// <exclude/>
 
-*-- MousePointer
+//-- MousePointer
 /// <exclude/>
 DEFINE MOUSE_DEFAULT          := 0       // 0 - Default
 /// <exclude/>
@@ -489,7 +489,7 @@ DEFINE MOUSE_ARROW2           := 14      // 14 - Arrow
 /// <exclude/>
 DEFINE MOUSE_CUSTOM           := 99      // 99 - Custom
 
-*-- ScrollBars
+//-- ScrollBars
 /// <exclude/>
 DEFINE SCROLLBARS_NONE         := 0      // 0 - None (Default)
 /// <exclude/>
@@ -499,7 +499,7 @@ DEFINE SCROLLBARS_VERTICAL     := 2      // 2 - Vertical
 /// <exclude/>
 DEFINE SCROLLBARS_BOTH         := 3      // 3 - Both
 
-*-- DrawMode
+//-- DrawMode
 /// <exclude/>
 DEFINE DRAWMODE_BLACKNESS     := 1       // 1 - Blackness
 /// <exclude/>
@@ -533,7 +533,7 @@ DEFINE DRAWMODE_MERGE_PEN     := 15      // 15 - Merge Pen
 /// <exclude/>
 DEFINE DRAWMODE_WHITENESS     := 16      // 16 - Whiteness
 
-*-- DrawStyle
+//-- DrawStyle
 /// <exclude/>
 DEFINE DRAWSTYLE_SOLID         :=  0       // 0 - Solid
 /// <exclude/>
@@ -549,7 +549,7 @@ DEFINE DRAWSTYLE_INVISIBLE     :=  5       // 5 - Invisible
 /// <exclude/>
 DEFINE DRAWSTYLE_INSIDE_SOLID  :=  6       // 6 - Inside Solid
 
-*-- FillStyle
+//-- FillStyle
 /// <exclude/>
 DEFINE FILLSTYLE_SOLID               :=    0       // 0 - Solid
 /// <exclude/>
@@ -567,13 +567,13 @@ DEFINE FILLSTYLE_CROSS               :=    6       // 6 - Cross
 /// <exclude/>
 DEFINE FILLSTYLE_DIAGONAL_CROSS      :=    7       // 7 - Diagonal Cross
 
-*-- ScaleMode
+//-- ScaleMode
 /// <exclude/>
 DEFINE SCALEMODE_PIXELS        :=  3       // 3 - Pixel
 /// <exclude/>
 DEFINE SCALEMODE_FOXELS        :=  0       // 0 - Foxels
 
-*-- WindowState
+//-- WindowState
 /// <exclude/>
 DEFINE WINDOWSTATE_NORMAL        :=  0       // 0 - Normal
 /// <exclude/>
@@ -581,7 +581,7 @@ DEFINE WINDOWSTATE_MINIMIZED     :=  1       // 1 - Minimized
 /// <exclude/>
 DEFINE WINDOWSTATE_MAXIMIZED     :=  2       // 2 - Maximized
 
-*-- Window Borders
+//-- Window Borders
 /// <exclude/>
 DEFINE BORDER_NONE    := 0
 /// <exclude/>
@@ -591,7 +591,7 @@ DEFINE BORDER_DOUBLE  := 2
 /// <exclude/>
 DEFINE BORDER_SYSTEM  := 3
 
-*-- Toolbar and Form Docking Positions
+//-- Toolbar and Form Docking Positions
 /// <exclude/>
 DEFINE TOOL_NOTDOCKED:=  -1
 /// <exclude/>
@@ -607,7 +607,7 @@ DEFINE TOOL_TAB     :=	4
 /// <exclude/>
 DEFINE TOOL_LINK     :=	5
 
-*-- Button parameter masks
+//-- Button parameter masks
 /// <exclude/>
 DEFINE BUTTON_LEFT     :=1
 /// <exclude/>
@@ -615,8 +615,8 @@ DEFINE BUTTON_RIGHT    :=2
 /// <exclude/>
 DEFINE BUTTON_MIDDLE   :=4
 
-*-- Function Parameters
-*-- MessageBox parameters
+//-- Function Parameters
+//-- MessageBox parameters
 /// <exclude/>
 DEFINE MB_OK                :=  0       // OK button only
 /// <exclude/>
@@ -653,7 +653,7 @@ DEFINE MB_DEFBUTTON3        :=  512     // Third button is default
 DEFINE MB_SYSTEMMODAL       :=  4096    // System Modal
 /// <exclude/>
 
-*-- MsgBox return values
+//-- MsgBox return values
 /// <exclude/>
 DEFINE IDOK          :=1       // OK button pressed
 /// <exclude/>
@@ -673,7 +673,7 @@ DEFINE IDTIMEOUT 		:=-1		// Timeout occurs
 /// <exclude/>
 
 
-*-- Low Level File Constants
+//-- Low Level File Constants
 /// <exclude/>
 DEFINE F_READONLY             := 0
 /// <exclude/>
@@ -687,8 +687,8 @@ DEFINE F_WRITEONLY_UNBUFF     := 11
 /// <exclude/>
 DEFINE F_READWRITE_UNBUFF     := 12
 
-*-- PRTINFO() Constants
-*-- PRTINFO() Valid types to pass
+//-- PRTINFO() Constants
+//-- PRTINFO() Valid types to pass
 /// <exclude/>
 DEFINE PRT_ORIENTATION       := 1
 /// <exclude/>
@@ -716,8 +716,8 @@ DEFINE PRT_TTOPTION          := 12
 /// <exclude/>
 DEFINE PRT_COLLATE           := 13
 
-*--PRTINFO() Return types
-*-- Paper sizes
+//--PRTINFO() Return types
+//-- Paper sizes
 /// <exclude/>
 DEFINE PRTPAPER_LETTER     := 1       // Letter 8 1/2 x 11 in
 /// <exclude/>
@@ -801,7 +801,7 @@ DEFINE PRTPAPER_FANFOLD_STD_GERMAN := 40 // German Std Fanfold 8 1/2 x 12 in
 /// <exclude/>
 DEFINE PRTPAPER_FANFOLD_LGL_GERMAN := 41 // German Legal Fanfold 8 1/2 x 13 in
 
-*-- Paper bins
+//-- Paper bins
 /// <exclude/>
 DEFINE PRTBIN_UPPER           :=1
 /// <exclude/>
@@ -832,7 +832,7 @@ DEFINE PRTBIN_CASSETTE        :=14
 DEFINE PRTBIN_AUTOSELECT   	:=15
 /// <exclude/>
 
-*-- Print qualities
+//-- Print qualities
 /// <exclude/>
 DEFINE PRTRES_DRAFT      :=  -1
 /// <exclude/>
@@ -842,13 +842,13 @@ DEFINE PRTRES_MEDIUM     :=  -3
 /// <exclude/>
 DEFINE PRTRES_HIGH       :=  -4
 
-*-- Color printer
+//-- Color printer
 /// <exclude/>
 DEFINE PRTCOLOR_MONOCHROME := 1
 /// <exclude/>
 DEFINE PRTCOLOR_COLOR      := 2
 
-*-- Duplexing
+//-- Duplexing
 /// <exclude/>
 DEFINE PRTDUP_SIMPLEX   :=1
 /// <exclude/>
@@ -856,7 +856,7 @@ DEFINE PRTDUP_VERTICAL  :=2
 /// <exclude/>
 DEFINE PRTDUP_HORIZONTAL:=3
 
-*-- True Type fonts
+//-- True Type fonts
 /// <exclude/>
 DEFINE PRTTT_BITMAP    := 1  // Print True Type fonts as graphics
 /// <exclude/>
@@ -864,7 +864,7 @@ DEFINE PRTTT_DOWNLOAD  := 2  // Download True Type fonts as soft fonts
 /// <exclude/>
 DEFINE PRTTT_SUBDEV    := 3  // Substitute device fonts for True Type
 
-*-- FontMetric()
+//-- FontMetric()
 /// <exclude/>
 DEFINE TM_HEIGHT         := 1
 /// <exclude/>
@@ -907,7 +907,7 @@ DEFINE TM_ASPECTX        :=19
 DEFINE TM_ASPECTY        :=20
 /// <exclude/>
 
-*-- Sysmetric() parameter values
+//-- Sysmetric() parameter values
 /// <exclude/>
 DEFINE SYSMETRIC_SCREENWIDTH       := 1 // Screen width
 /// <exclude/>
@@ -981,7 +981,7 @@ DEFINE SYSMETRIC_HALFHEIGHTBUTTONWIDTH := 33 // Width of a button in a half-heig
 DEFINE SYSMETRIC_HALFHEIGHTBUTTONHEIGHT:= 34 // Height of a button in a half-height title bar
 /// <exclude/>
 
-*-- Windows GetSysMetric() defines
+//-- Windows GetSysMetric() defines
 /// <exclude/>
 DEFINE SM_CXSCREEN          :=  0
 /// <exclude/>
@@ -1059,7 +1059,7 @@ DEFINE SM_CMETRICS          :=  36
 /// <exclude/>
 
 /// <exclude/>
-*-- Cursor buffering modes
+//-- Cursor buffering modes
 /// <exclude/>
 DEFINE DB_BUFOFF            :=  1
 /// <exclude/>
@@ -1072,13 +1072,13 @@ DEFINE DB_BUFLOCKTABLE      :=  4
 DEFINE DB_BUFOPTTABLE       :=  5
 /// <exclude/>
 
-*-- Update types for views/cursors
+//-- Update types for views/cursors
 /// <exclude/>
 DEFINE DB_UPDATE             :=  1
 /// <exclude/>
 DEFINE DB_DELETEINSERT       :=  2
 
-*-- WHERE clause types for views/cursors
+//-- WHERE clause types for views/cursors
 /// <exclude/>
 DEFINE DB_KEY                := 1
 /// <exclude/>
@@ -1091,7 +1091,7 @@ DEFINE DB_KEYANDTIMESTAMP    := 4
 
 
 
-*-- Source Types for CursorGetProp()
+//-- Source Types for CursorGetProp()
 /// <exclude/>
 DEFINE DB_SRCLOCALVIEW       :=  1
 /// <exclude/>
@@ -1099,8 +1099,8 @@ DEFINE DB_SRCREMOTEVIEW      :=  2
 /// <exclude/>
 DEFINE DB_SRCTABLE           :=  3
 
-*--  Language IDs.
-*
+//--  Language IDs.
+/*
 *  A language ID is a 16 bit value which is the combination of a
 *  primary language ID and a secondary language ID.  The bits are
 *  allocated as follows:
@@ -1123,7 +1123,7 @@ DEFINE DB_SRCTABLE           :=  3
 
 *
 *  Primary language IDs.
-*
+*/
 
 /// <exclude/>
 DEFINE LANG_NEUTRAL                   :=  0x00
@@ -1215,13 +1215,13 @@ DEFINE LANG_UKRAINIAN                 := 0x22
 DEFINE LANG_VIETNAMESE                :=  0x2a
 /// <exclude/>
 
-*
+/*
 *  Sublanguage IDs.
 *
 *  The name immediately following SUBLANG_ dictates which primary
 *  language ID that sublanguage ID can be combined with to form a
 *  valid language ID.
-*
+*/
 
 /// <exclude/>
 DEFINE SUBLANG_NEUTRAL                :=  0x0000    // language neutral
@@ -1381,7 +1381,7 @@ DEFINE SUBLANG_SWEDISH               :=  0x0400    // Swedish
 /// <exclude/>
 DEFINE SUBLANG_SWEDISH_FINLAND       :=  0x0800    // Swedish (Finland)
 
-*-- DBC Events constants
+//-- DBC Events constants
 /// <exclude/>
 DEFINE DBCEVENTS_NULLTYPE:=0
 /// <exclude/>
@@ -1406,7 +1406,7 @@ DEFINE DBCEVENTS_LASTTYPE	:=8
 DEFINE DBCEVENTS_STPROCS	:=	9
 /// <exclude/>
 
-*-- AFields() Constants
+//-- AFields() Constants
 /// <exclude/>
 DEFINE AFIELDS_NAME				:=		1
 /// <exclude/>
@@ -1444,14 +1444,14 @@ DEFINE AFIELDS_AUTOINC_NEXT_VALUE		:=	17
 /// <exclude/>
 DEFINE AFIELDS_AUTOINC_STEP			:=	18
 
-* UCS Transformation Format byte order marks.
+// UCS Transformation Format byte order marks.
 /// <exclude/>
 DEFINE ENCODE_UTF16	:= e"\uFFFE"
 /// <exclude/>
 DEFINE ENCODE_UTF8		:=""
 /// <exclude/>
 
-* COM_Attrib flag settings for Type Library attributes support
+// COM_Attrib flag settings for Type Library attributes support
 /// <exclude/>
 DEFINE COMATTRIB_RESTRICTED	:=0x1			// The property/method should not be accessible from macro languages.
 /// <exclude/>

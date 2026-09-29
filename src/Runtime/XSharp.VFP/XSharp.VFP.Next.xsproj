@@ -3,20 +3,19 @@
   <PropertyGroup>
     <RootNamespace>XSharp.VFP</RootNamespace>
     <AssemblyName>XSharp.VFP</AssemblyName>
-    <Dialect>FoxPro</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
-    <Unsafe>True</Unsafe>
+    <Unsafe>false</Unsafe>
     <NS>true</NS>
     <vo15>False</vo15>
+    <VulcanCompatibleResources>true</VulcanCompatibleResources>
+    <IncludePaths>$(ProjectDir)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
     <StartupObject />
-    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
-    <Allowdot>True</Allowdot>
-    <EnforceSelf>True</EnforceSelf>
+    <EnforceSelf>true</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <TargetFramework>net8.0</TargetFramework>
-    <IncludePaths>$(ProjectDir)</IncludePaths>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management">

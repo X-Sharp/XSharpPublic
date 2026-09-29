@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp.VFP
     /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxFunctionStatus/*" />
     PUBLIC ENUM FoxFunctionStatus
         Full := 0 // Fully supported (same as VFP)
-        Partial := 1 // Partially supported (edge cases missed, flags or optional params)
+        @@Partial := 1 // Partially supported (edge cases missed, flags or optional params)
         Changed := 2 // Supported with changes (eg: requires .NET type or behavior differs by design)
         Stub := 3 // Compiles but not functionally implemented
         Obsolete := 4 // Obsolete (exists for retrocompatibility but it's usage is not recommended)
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.VFP
 
     /// <include file="XSharp.VFP.Docs.xml" path="doc/FoxFunctionCategory/*" />
     PUBLIC ENUM FoxFunctionCategory
-        Array := 0
+        @@Array := 0
         Bitwise := 1
         ClassAndObject := 2
         CursorAndTable := 3

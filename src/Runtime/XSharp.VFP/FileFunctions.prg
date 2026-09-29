@@ -7,14 +7,14 @@
 USING System.IO
 
 // VFP standard flags
-DEFINE S2F_FLAG_OVERWRITE           = 0x0000
-DEFINE S2F_FLAG_APPEND              = 0x0001
-DEFINE S2F_FLAG_UNICODE_LE          = 0x0002
-DEFINE S2F_FLAG_UTF8                = 0x0004
+DEFINE S2F_FLAG_OVERWRITE           := 0x0000
+DEFINE S2F_FLAG_APPEND              := 0x0001
+DEFINE S2F_FLAG_UNICODE_LE          := 0x0002
+DEFINE S2F_FLAG_UTF8                := 0x0004
 // X# extension flags
-DEFINE S2F_FLAG_UNICODE_BE          = 0x0008
-DEFINE S2F_FLAG_UNICODE_FORMATS     = S2F_FLAG_UNICODE_LE | S2F_FLAG_UTF8 | S2F_FLAG_UNICODE_BE
-DEFINE S2F_FLAG_UNICODE_TEXT        = 0x0100
+DEFINE S2F_FLAG_UNICODE_BE          := 0x0008
+DEFINE S2F_FLAG_UNICODE_FORMATS     := S2F_FLAG_UNICODE_LE | S2F_FLAG_UTF8 | S2F_FLAG_UNICODE_BE
+DEFINE S2F_FLAG_UNICODE_TEXT        := 0x0100
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mkdir/*" />
 FUNCTION MkDir(cPath AS STRING) AS INT
@@ -99,27 +99,27 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
         ENDIF
     END SWITCH
 
-    * append mode?
+    //* append mode?
     IF Additive
 
         IF VFPBehavior
 
-            * open an existing file, or create if it does not exists
+            // open an existing file, or create if it does not exists
             FHandle := FOpen(cFileName, FO_READWRITE + FO_SHARED)
             IF FHandle != F_ERROR
-                * try to move to the end of the file
+                //try to move to the end of the file
                 FSeek3(FHandle, 0, FS_END)
-                * and write the contents of the buffer
+                // and write the contents of the buffer
                 IF FError() == 0
                     Result := FWrite(FHandle, cExpression, (DWORD) cExpression:Length)
                 ENDIF
-                * if everything went ok, close the file handle
+                // if everything went ok, close the file handle
                 IF FError() == 0
                     FClose(FHandle)
                     IF FError() != 0
                         THROW FException()
                     ENDIF
-                    * if not, before throwing the exception...
+                    // if not, before throwing the exception...
                 ELSE
                     IOError := FException()
                     FClose(FHandle)         // ... try to close the handle, anyway
@@ -129,7 +129,7 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
                 THROW FException()
             ENDIF
         ELSE
-            * in non-VFP behavior, just append the Unicode string to an existing file
+            // in non-VFP behavior, just append the Unicode string to an existing file
             TRY
                 File.AppendAllText(cFileName, cExpression, UnicodeEncoding)
             CATCH
@@ -142,31 +142,31 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
 
     ELSE
 
-        * TO-DO: check on SET("Safety")
+        // TODO: check on SET("Safety")
 
-        * create a new file
+        // create a new file
         IF VFPBehavior
 
-            * get an handle for a new file
+            // get an handle for a new file
             FHandle := FCreate(cFileName)
             IF FHandle != F_ERROR
-                * start with the BOM of the file
+                // start with the BOM of the file
                 IF !String.IsNullOrEmpty(BOM)
-                    Result = FWrite(FHandle, BOM, (DWORD) BOM:Length)
+                    Result := FWrite(FHandle, BOM, (DWORD) BOM:Length)
                 ENDIF
-                * try to write the contents from the buffer
+                // try to write the contents from the buffer
                 IF FError() == 0
                     Result += FWrite(FHandle, cExpression, (DWORD) cExpression:Length)
                 ENDIF
-                * and close the file
+                // and close the file
                 IF FError() == 0
                     FClose(FHandle)
                     IF FError() != 0
                         THROW FException()
                     ENDIF
-                    * if an error occurred...
+                    // if an error occurred...
                 ELSE
-                    IOError = FException()
+                    IOError := FException()
                     FClose(FHandle)     // ... try to not leave the handle open, in any case
                     THROW IOError
                 ENDIF
@@ -176,7 +176,7 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
 
         ELSE
 
-            * write the Unicode string to a text file
+            // write the Unicode string to a text file
             TRY
                 File.WriteAllText(cFileName, cExpression, UnicodeEncoding)
             CATCH
@@ -187,7 +187,7 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
 
     ENDIF
 
-    * return the length of bytes / characters
+    // return the length of bytes / characters
     RETURN (INT) Result
 
 END FUNCTION
@@ -211,18 +211,18 @@ FUNCTION FileToStr (cFileName AS STRING, Flags AS INT) AS STRING
         ENDIF
         FHandle := FOpen(cFileName, FO_READ + FO_SHARED)
         IF FHandle != F_ERROR
-            * success opening the file, get its size...
+            // success opening the file, get its size...
             StrLen := (DWORD) FSize(FHandle)
             IF StrLen > 0
-                * ...and allocate a buffer for it
+                // ...and allocate a buffer for it
                 Result := Space(StrLen)
-                IF FRead(FHandle, @Result, StrLen) != StrLen
+                IF FRead(FHandle, REF Result, StrLen) != StrLen
                     Result := ""
                 ENDIF
             ELSE
                 Result := ""
             ENDIF
-            * any IO error will throw an exception
+            // any IO error will throw an exception
             IF FError() != 0
                 IOError := FException()
                 FClose(FHandle)
@@ -236,7 +236,7 @@ FUNCTION FileToStr (cFileName AS STRING, Flags AS INT) AS STRING
 
     ELSE
 
-        * for a Unicode text file, just read it into a string
+        // for a Unicode text file, just read it into a string
         TRY
             Result := File.ReadAllText(cFileName)     // read a text file
         CATCH
@@ -245,7 +245,7 @@ FUNCTION FileToStr (cFileName AS STRING, Flags AS INT) AS STRING
 
     ENDIF
 
-    * return the contents of the file
+    // return the contents of the file
     RETURN Result
 
 END FUNCTION

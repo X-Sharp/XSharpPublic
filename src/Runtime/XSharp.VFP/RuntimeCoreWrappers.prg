@@ -158,7 +158,7 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
     IF XSharp.RuntimeState.Compatible .AND. IsNil(eWorkArea)
         VAR cSearchFile := cFieldName
 
-        IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cSearchFile)) AND XSharp.Core.Functions.File(cSearchFile + ".dbf")
+        IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cSearchFile)) .AND. XSharp.Core.Functions.File(cSearchFile + ".dbf")
             cSearchFile += ".dbf"
         ENDIF
 

@@ -34,7 +34,7 @@ FUNCTION AddBs (cPath AS STRING) AS STRING
         RETURN ""
     ENDIF
     cPath := cPath:TrimEnd()
-    IF ! cPath.EndsWith(PathHelpers.PathChar)
+    IF ! cPath:EndsWith(PathHelpers.PathChar)
         cPath += PathHelpers.PathChar
     ENDIF
     RETURN cPath
@@ -51,16 +51,16 @@ FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/forceext/*" />
 FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING, tlOptAsVfp9 AS LOGIC) AS STRING
-    *-- current take on matters is that the Dotnet-Version should be Default behaviour
-    *-- as vfp9 version behaviour in edge cases could be seen as erroneous
-    *-- work in progress and not tested, as existing code should only call 2-parameter overload should be safe
+    //-- current take on matters is that the Dotnet-Version should be Default behaviour
+    //-- as vfp9 version behaviour in edge cases could be seen as erroneous
+    //-- work in progress and not tested, as existing code should only call 2-parameter overload should be safe
     IF tlOptAsVfp9 == .f.
         RETURN ForceExt( cFileName, cExtension)
     ENDIF
     cFileName := JustFName(cFileName)
     IF cFileName:EndsWith(".")
-        *-- if filename ends with dot, cut that
-        *-- but only rightmost one, ending in several dots cuts still only 1
+        //-- if filename ends with dot, cut that
+        //-- but only rightmost one, ending in several dots cuts still only 1
         cFileName := cFileName:Substring(0 , cFileName:Length-1)
     ENDIF
     IF cExtension:StartsWith(".")
@@ -77,7 +77,7 @@ FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING, tlOptAsVfp9 AS LOG
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/forcepath/*" />
 [FoxProFunction("FORCEPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ForcePath( cFileName AS STRING, cPath AS STRING) AS STRING
-    *-- check if path needs also check...
+    //-- check if path needs also check...
     IF String.IsNullOrEmpty(cFileName)
         RETURN ""
     ENDIF
@@ -102,8 +102,8 @@ FUNCTION JustDrive(cPath AS STRING) AS STRING
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
 [FoxProFunction("JUSTEXT", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION JustExt(cPath AS STRING) AS STRING
-    *-- Default for new parameter  lOptWithLeadingDot ist .f.
-    *-- As returning all extensions with leading dot could lead to breaking changes
+    //-- Default for new parameter  lOptWithLeadingDot ist .f.
+    //-- As returning all extensions with leading dot could lead to breaking changes
     RETURN JustExt(cPath, .f.)
 
 
@@ -114,7 +114,7 @@ FUNCTION JustExt(cPath AS STRING, lOptWithLeadingDot AS LOGIC) AS STRING
         RETURN ""
     ENDIF
     VAR result := Path.GetExtension(cPath)
-    IF lOptWithLeadingDot == .f. AND result:StartsWith(".")
+    IF lOptWithLeadingDot == .f. .AND. result:StartsWith(".")
         result := result:Substring(1)
     ENDIF
     RETURN result
@@ -365,9 +365,9 @@ FUNCTION Trim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS 
 STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
 
     LOCAL parmNdx AS INT
-    LOCAL Trimmed = .T. AS Boolean
+    LOCAL Trimmed  := .T. AS Boolean
     LOCAL LRTrimmed AS INT
-    LOCAL comparison = StringComparison.Ordinal AS System.StringComparison
+    LOCAL comparison := StringComparison.Ordinal AS System.StringComparison
     LOCAL compared AS STRING
 
     IF Expression = NULL
@@ -375,38 +375,38 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
     END IF
 
     IF Flags = 1
-        comparison = StringComparison.OrdinalIgnoreCase
+        comparison := StringComparison.OrdinalIgnoreCase
     END IF
 
     DO WHILE Trimmed
 
-        Trimmed = .F.
+        Trimmed := .F.
 
-        FOR parmNdx = 1 TO TrimChars:Length
+        FOR parmNdx := 1 TO TrimChars:Length
 
-            compared = TrimChars[parmNdx]
+            compared := TrimChars[parmNdx]
 
             IF TrimLeft
-                LRTrimmed = 0
+                LRTrimmed := 0
 
                 DO WHILE String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
                     LRTrimmed += compared:Length
                 END DO
                 IF LRTrimmed > 0
-                    Expression = Expression:Substring(LRTrimmed)
-                    Trimmed = .T.
+                    Expression := Expression:Substring(LRTrimmed)
+                    Trimmed := .T.
                 END IF
             END IF
 
             IF TrimRight
-                LRTrimmed = Expression:Length - compared:Length
+                LRTrimmed := Expression:Length - compared:Length
 
-                DO WHILE LRTrimmed >= 0 AND String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
+                DO WHILE LRTrimmed >= 0 .AND. String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
                     LRTrimmed -= compared:Length
                 END DO
                 IF LRTrimmed < (Expression:Length - compared:Length)
-                    Expression = Expression:Substring(0, LRTrimmed + compared:Length)
-                    Trimmed = .T.
+                    Expression := Expression:Substring(0, LRTrimmed + compared:Length)
+                    Trimmed := .T.
                 END IF
             END IF
 
@@ -471,7 +471,7 @@ FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDeli
             return ""
         endif
 
-        if lIncludeDelims and (i == nOccurrence)
+        if lIncludeDelims .and. (i == nOccurrence)
             nStart := nAt
         else
             nStart := nAt + cBeginDelim:Length

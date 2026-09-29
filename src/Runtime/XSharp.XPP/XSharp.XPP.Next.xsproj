@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>XSharp.XPP</RootNamespace>
     <AssemblyName>XSharp.XPP</AssemblyName>
-    <Dialect>XPP</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
     <Unsafe>True</Unsafe>
     <NS>true</NS>

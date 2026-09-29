@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>XSharp.Harbour</RootNamespace>
     <AssemblyName>XSharp.Harbour</AssemblyName>
-    <Dialect>VO</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <Nostandarddefs>true</Nostandarddefs>

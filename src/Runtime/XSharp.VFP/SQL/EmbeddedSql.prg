@@ -143,7 +143,7 @@ STATIC CLASS FoxEmbeddedSQL
                 cTable := Path.GetTempFileName()
                 cAlias := oTable:Name
             ENDIF
-            if RuntimeState.Workareas.FindAlias(cAlias) != 0
+            if RuntimeState.Workareas:FindAlias(cAlias) != 0
                 DbCloseArea(cAlias)
             endif
             DbCreate(cTable, aStruct, "DBFVFP", TRUE, cAlias)
@@ -191,11 +191,11 @@ STATIC CLASS FoxEmbeddedSQL
         local table as FoxCreateTableContext
         IF lCursor
             IF ! parser:ParseCreateCursor(out table)
-                THROW Error{"Syntax error in command: "+parser.Error+CRLF+sCommand}
+                THROW Error{"Syntax error in command: "+parser:Error+CRLF+sCommand}
             ENDIF
         ELSE
             IF ! parser:ParseCreateTable(out table)
-                THROW Error{"Syntax error in command: "+parser.Error+CRLF+sCommand}
+                THROW Error{"Syntax error in command: "+parser:Error+CRLF+sCommand}
             ENDIF
         endif
         return table
@@ -248,11 +248,11 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     IF ! FoxEmbeddedSQL.OpenArea(table:Name)
         RETURN FALSE
     ENDIF
-    var area := RuntimeState.Workareas.FindAlias(table:Name)
+    var area := RuntimeState.Workareas:FindAlias(table:Name)
     if area == 0
         Throw Error{"Table "+table:Name+" not found"}
     ENDIF
-    var oRdd := RuntimeState.Workareas.GetRDD(area)
+    var oRdd := RuntimeState.Workareas:GetRDD(area)
     local fields := NULL as RddFieldInfo[]
     if oRdd is XSharp.RDD.Workarea var oWA
         fields := oWA:_Fields
@@ -312,8 +312,8 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
         FRename(newMemo, oldMemo)
     ENDIF
     DbUseArea(TRUE, "DBFVFP", oldFile, table:Name, FALSE, FALSE)
-    area := RuntimeState.Workareas.FindAlias(table:Name)
-    oRdd := RuntimeState.Workareas.GetRDD(area)
+    area := RuntimeState.Workareas:FindAlias(table:Name)
+    oRdd := RuntimeState.Workareas:GetRDD(area)
     if fields != NULL .and. oRdd is XSharp.RDD.Workarea var oWANew
         foreach var fld in oWANew:_Fields
             var oldFld := fields:FirstOrDefault({f => f:Name == fld:Name})

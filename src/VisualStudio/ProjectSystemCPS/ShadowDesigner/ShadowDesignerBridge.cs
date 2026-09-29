@@ -360,6 +360,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         // restore has not finished yet (the first design-time build ran without the packages; seen in VS), and the
         // design-time build after the restore follows a few seconds later.
         private static readonly TimeSpan ReferenceUpdateTimeout = TimeSpan.FromSeconds(20);
+        // After a build (which restores) the design-time build with the references follows right away
+        private static readonly TimeSpan ReferenceUpdateAfterBuildTimeout = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// Makes sure that the assembly references of the project's packages are known to the code model before the
@@ -409,19 +411,22 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             {
                 return (false, buildError);
             }
-            await WaitForReferencesAsync(xProject);
+            // The build has restored: the design-time build with the references follows right after it (0.2 s in
+            // VS). A short wait, also for a failed build, which can have restored as well (compile errors): the
+            // references can still come, but when the restore failed 20 s would only delay the Designer.
+            await WaitForReferencesAsync(xProject, ReferenceUpdateAfterBuildTimeout);
             // Like before: continue even when references are still missing (e.g. a failed build)
             return (true, null);
         }
 
-        private static async Task WaitForReferencesAsync(XProject xProject)
+        private static async Task WaitForReferencesAsync(XProject xProject, TimeSpan? timeout = null)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var statusBar = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
             statusBar?.SetText("X# WinForms Designer: waiting for the package references of " + Path.GetFileNameWithoutExtension(xProject.FileName) + "...");
             try
             {
-                await WaitForReferencesCoreAsync(xProject);
+                await WaitForReferencesCoreAsync(xProject, timeout ?? ReferenceUpdateTimeout);
             }
             finally
             {
@@ -430,7 +435,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
         }
 
-        private static async Task WaitForReferencesCoreAsync(XProject xProject)
+        private static async Task WaitForReferencesCoreAsync(XProject xProject, TimeSpan timeout)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsOperationProgressStatusService)) is IVsOperationProgressStatusService progress)
@@ -442,7 +447,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 }
             }
-            var deadline = DateTime.UtcNow + ReferenceUpdateTimeout;
+            var deadline = DateTime.UtcNow + timeout;
             while (IsMissingAnyPackageReference(xProject) && DateTime.UtcNow < deadline)
             {
                 await Task.Delay(250);

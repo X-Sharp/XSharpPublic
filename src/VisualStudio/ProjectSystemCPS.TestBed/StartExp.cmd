@@ -7,7 +7,9 @@ rem copies the installed X# MsBuild folder to Artifacts\CpsMsBuild, overlays the
 rem repository and starts devenv with XSharpMsBuildDir pointing to that folder. The installed X# is not changed.
 rem
 rem Usage: StartExp.cmd [solution]   (default CpsTestBed.sln; SelectorTestBed.sln tests the project selector:
-rem        both projects use the classic X# project type GUID, the SDK-style one must be loaded by CPS)
+rem        all projects use the classic X# project type GUID, the SDK-style ones must be loaded by CPS:
+rem        CpsTestBed, WinForms\WinFormsTestBed (shadow WinForms designer), VO\VOTestBed (VO designers);
+rem        Legacy\LegacyTestBed stays on MPFproj)
 rem
 rem Prerequisite: a Debug build of VisualStudio\ProjectPackage\ProjectPackage2022.csproj, which deploys the
 rem VSIX (including XSharp.ProjectSystemCPS) to the experimental instance.

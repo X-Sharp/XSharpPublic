@@ -206,7 +206,7 @@ namespace XSharp.Project
          });
         }
 
-        private static string TypeNameToSubtype(string typeName)
+        internal static string TypeNameToSubtype(string typeName)
         {
             switch (typeName.ToLower())
             {

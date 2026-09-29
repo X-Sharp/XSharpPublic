@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) XSharp B.V.  All Rights Reserved.
+  Licensed under the Apache License, Version 2.0.
+  See License.txt in the project root for license information.
+
+  MSBuild property rules for the XSharp CPS project system.
+  These rules define the properties that are surfaced in the project designer
+  (Application, Build, Debug pages).  The XAML rule format is required by CPS.
+
+  References:
+    https://github.com/dotnet/project-system/tree/main/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Rules
+-->
+<Rule
+    Name="XSharp"
+    DisplayName="XSharp"
+    PageTemplate="generic"
+    Description="XSharp project properties"
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label="" HasConfigurationCondition="False" />
+  </Rule.DataSource>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       APPLICATION PAGE
+       ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <StringProperty Name="AssemblyName"
+                  DisplayName="Assembly name"
+                  Description="Specifies the name of the output file that will hold the assembly manifest."
+                  Category="Application" />
+
+  <StringProperty Name="RootNamespace"
+                  DisplayName="Root namespace"
+                  Description="Specifies the base namespace for files added to the project."
+                  Category="Application" />
+
+  <EnumProperty Name="OutputType"
+                DisplayName="Output type"
+                Description="Specifies the format of the output file."
+                Category="Application">
+    <EnumValue Name="WinExe"    DisplayName="Windows Application"  />
+    <EnumValue Name="Exe"       DisplayName="Console Application"  />
+    <EnumValue Name="Library"   DisplayName="Class Library"        />
+  </EnumProperty>
+
+  <StringProperty Name="StartupObject"
+                  DisplayName="Startup object"
+                  Description="Defines the entry point to be called when the application loads."
+                  Category="Application" />
+
+  <StringProperty Name="ApplicationIcon"
+                  DisplayName="Application icon"
+                  Description="Sets the .ico file to use as the application icon."
+                  Category="Application"
+                  Subtype="file" />
+
+  <StringProperty Name="TargetFramework"
+                  DisplayName="Target framework"
+                  Description="Specifies the version of .NET that the application targets."
+                  Category="Application" />
+
+  <EnumProperty Name="Dialect"
+                DisplayName="Dialect"
+                Description="Specifies the XSharp language dialect."
+                Category="Application">
+    <EnumValue Name="Core"         DisplayName="Core"             />
+    <EnumValue Name="VO"           DisplayName="Visual Objects"   />
+    <EnumValue Name="Vulcan.NET"   DisplayName="Vulcan.NET"       />
+    <EnumValue Name="Visual FoxPro" DisplayName="Visual FoxPro"  />
+    <EnumValue Name="Harbour"      DisplayName="Harbour"          />
+    <EnumValue Name="Xbase++"      DisplayName="Xbase++"         />
+  </EnumProperty>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       BUILD PAGE  (has configuration condition)
+       ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label="" HasConfigurationCondition="True" />
+  </Rule.DataSource>
+
+  <BoolProperty Name="Optimize"
+                DisplayName="Optimize code"
+                Description="Enables or disables compiler optimizations."
+                Category="Build" />
+
+  <StringProperty Name="DefineConstants"
+                  DisplayName="Conditional compilation symbols"
+                  Description="Specifies symbols on which to perform conditional compilation."
+                  Category="Build" />
+
+  <StringProperty Name="NoWarn"
+                  DisplayName="Suppress warnings"
+                  Description="Specifies a semicolon-separated list of warning codes to suppress."
+                  Category="Build" />
+
+  <BoolProperty Name="TreatWarningsAsErrors"
+                DisplayName="Treat all warnings as errors"
+                Category="Build" />
+
+  <StringProperty Name="WarningsAsErrors"
+                  DisplayName="Specific warnings as errors"
+                  Category="Build" />
+
+  <EnumProperty Name="WarningLevel"
+                DisplayName="Warning level"
+                Category="Build">
+    <EnumValue Name="0" DisplayName="0" />
+    <EnumValue Name="1" DisplayName="1" />
+    <EnumValue Name="2" DisplayName="2" />
+    <EnumValue Name="3" DisplayName="3" />
+    <EnumValue Name="4" DisplayName="4" />
+  </EnumProperty>
+
+  <StringProperty Name="OutputPath"
+                  DisplayName="Output path"
+                  Description="Specifies the path to the output directory, relative to the project directory."
+                  Category="Build"
+                  Subtype="directory" />
+
+  <StringProperty Name="DocumentationFile"
+                  DisplayName="XML documentation file"
+                  Description="Specifies the name of the XML documentation output file."
+                  Category="Build"
+                  Subtype="file" />
+
+  <BoolProperty Name="RegisterForComInterop"
+                DisplayName="Register for COM interop"
+                Category="Build" />
+
+  <StringProperty Name="IncludePaths"
+                  DisplayName="Include search paths"
+                  Description="Semicolon-separated list of paths that the compiler searches for include files."
+                  Category="Build" />
+
+  <EnumProperty Name="PlatformTarget"
+                DisplayName="Platform target"
+                Description="Specifies the CPU that the output file can run on."
+                Category="Build">
+    <EnumValue Name="AnyCPU" DisplayName="Any CPU" />
+    <EnumValue Name="x86"    DisplayName="x86"     />
+    <EnumValue Name="x64"    DisplayName="x64"     />
+    <EnumValue Name="ARM"    DisplayName="ARM"     />
+    <EnumValue Name="ARM64"  DisplayName="ARM64"   />
+  </EnumProperty>
+
+  <BoolProperty Name="Prefer32Bit"
+                DisplayName="Prefer 32-bit"
+                Description="Run the application in 32-bit mode on systems that support both 32-bit and 64-bit applications."
+                Category="Build" />
+
+  <BoolProperty Name="SignAssembly"
+                DisplayName="Sign the assembly"
+                Category="Build" />
+
+  <StringProperty Name="AssemblyOriginatorKeyFile"
+                  DisplayName="Choose a strong name key file"
+                  Category="Build"
+                  Subtype="file" />
+
+  <StringProperty Name="PreBuildEvent"
+                  DisplayName="Pre-build event command line"
+                  Description="Specifies commands that run before the build starts."
+                  Category="Build Events"
+                  Subtype="multiline" />
+
+  <StringProperty Name="PostBuildEvent"
+                  DisplayName="Post-build event command line"
+                  Description="Specifies commands that run after the build completes."
+                  Category="Build Events"
+                  Subtype="multiline" />
+
+  <EnumProperty Name="RunPostBuildEvent"
+                DisplayName="Run the post-build event"
+                Category="Build Events">
+    <EnumValue Name="Always"            DisplayName="Always"                               />
+    <EnumValue Name="OnBuildSuccess"    DisplayName="On successful build"                  />
+    <EnumValue Name="OnOutputUpdated"   DisplayName="When the build updates the output"    />
+  </EnumProperty>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       DEBUG PAGE  (has configuration condition)
+       ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <StringProperty Name="DebuggerCommand"
+                  DisplayName="Start external program"
+                  Description="Path to an executable to start when debugging."
+                  Category="Debug"
+                  Subtype="file" />
+
+  <StringProperty Name="DebuggerCommandArguments"
+                  DisplayName="Command line arguments"
+                  Description="Command-line arguments to pass to the application."
+                  Category="Debug" />
+
+  <StringProperty Name="DebuggerWorkingDirectory"
+                  DisplayName="Working directory"
+                  Description="The working directory of the program being debugged, relative to the project directory."
+                  Category="Debug"
+                  Subtype="directory" />
+
+  <BoolProperty Name="EnableUnmanagedDebugging"
+                DisplayName="Enable unmanaged code debugging"
+                Category="Debug" />
+
+  <EnumProperty Name="DebugType"
+                DisplayName="Debug symbols"
+                Category="Build">
+    <EnumValue Name="none"    DisplayName="No debug symbols"         />
+    <EnumValue Name="pdbonly" DisplayName="PDB only (release style)" />
+    <EnumValue Name="full"    DisplayName="Full (debug style)"       />
+    <EnumValue Name="portable" DisplayName="Portable (cross-platform)" />
+    <EnumValue Name="embedded" DisplayName="Embedded in assembly"   />
+  </EnumProperty>
+
+</Rule>

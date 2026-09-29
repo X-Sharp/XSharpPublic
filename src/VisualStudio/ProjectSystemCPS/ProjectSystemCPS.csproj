@@ -73,5 +73,6 @@
   </ItemGroup>
   <!-- Explicit SDK imports: the VSSDK targets must be imported after the SDK targets -->
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!--<Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />-->
+  <Import Project="c:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VisualStudio\v17.0\VSSDK\Microsoft.VsSDK.targets" />
 </Project>

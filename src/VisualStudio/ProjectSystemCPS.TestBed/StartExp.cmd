@@ -44,5 +44,5 @@ for /d %%h in ("%LOCALAPPDATA%\Microsoft\VisualStudio\17.0_*Exp") do if exist "%
 set XSharpMsBuildDir=%OVERLAY%
 echo XSharpMsBuildDir=%XSharpMsBuildDir%
 set SOLUTION=%~1
-if "%SOLUTION%" == "" set SOLUTION=CpsTestBed.sln
+if "%SOLUTION%" == "" set SOLUTION=SelectorTestBed.sln
 start "" "%DEVENV%" /rootSuffix Exp "%~dp0%SOLUTION%"

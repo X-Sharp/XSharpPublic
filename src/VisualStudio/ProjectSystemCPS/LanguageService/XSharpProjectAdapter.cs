@@ -129,7 +129,7 @@ namespace XSharp.ProjectSystem.LanguageService
             ShadowDesigner.NewFormDesignerRedirect.EnsureAdvised(threading.JoinableTaskFactory);
             // Saved files are walked again (comment tasks), like XSharpProjectNode.OnFileChanged
             ProjectFileSaveWatcher.EnsureAdvised(threading.JoinableTaskFactory);
-            errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName);
+            errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName, errors.GetAll);
             errors.Changed = errorList.Update;
             taskList = new CommentTaskList(threading.JoinableTaskFactory, DisplayName);
 

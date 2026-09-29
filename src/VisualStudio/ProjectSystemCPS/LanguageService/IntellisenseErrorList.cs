@@ -26,24 +26,25 @@ namespace XSharp.ProjectSystem.LanguageService
     {
         private readonly JoinableTaskFactory joinableTaskFactory;
         private readonly string projectName;
+        private readonly Func<IReadOnlyList<XError>> getErrors;
         private ErrorListProvider provider;
-        private IReadOnlyList<XError> pending;
         private int refreshScheduled;
         // Written by Dispose on any thread, read by RefreshAsync on the UI thread
         private volatile bool disposed;
 
-        public IntellisenseErrorList(JoinableTaskFactory joinableTaskFactory, string projectName)
+        /// <param name="getErrors">Returns the current errors of the project; called once per UI refresh.</param>
+        public IntellisenseErrorList(JoinableTaskFactory joinableTaskFactory, string projectName, Func<IReadOnlyList<XError>> getErrors)
         {
             this.joinableTaskFactory = joinableTaskFactory;
             this.projectName = projectName;
+            this.getErrors = getErrors;
         }
 
         /// <summary>
-        /// Replace the errors of the project with <paramref name="errors"/>.
+        /// The errors of the project changed: refresh the Error List (coalesced, on the UI thread).
         /// </summary>
-        public void Update(IReadOnlyList<XError> errors)
+        public void Update()
         {
-            Volatile.Write(ref pending, errors);
             if (Interlocked.Exchange(ref refreshScheduled, 1) == 0)
             {
                 joinableTaskFactory.RunAsync(RefreshAsync).FileAndForget("XSharp/ProjectSystemCPS/ErrorList");
@@ -56,7 +57,8 @@ namespace XSharp.ProjectSystem.LanguageService
             Interlocked.Exchange(ref refreshScheduled, 0);
             if (disposed)
                 return;
-            var errors = Volatile.Read(ref pending) ?? Array.Empty<XError>();
+            // Fetched after refreshScheduled was reset: a change after this point schedules the next refresh
+            var errors = getErrors() ?? Array.Empty<XError>();
             if (provider == null)
             {
                 provider = new ErrorListProvider(ServiceProvider.GlobalProvider)

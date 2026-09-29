@@ -33,9 +33,22 @@ namespace XSharp.ProjectSystem.LanguageService
         private readonly Dictionary<string, ILookup<string, IXErrorPosition>> buildErrors = new Dictionary<string, ILookup<string, IXErrorPosition>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Called with all intellisense errors of the project after each change.
+        /// Called after each change of the intellisense errors. The receiver fetches the errors with
+        /// <see cref="GetAll"/> when it needs them (IntellisenseErrorList coalesces the changes and fetches once per
+        /// UI refresh), so an Add does not copy all errors of the project.
         /// </summary>
-        public Action<IReadOnlyList<XError>> Changed { get; set; }
+        public Action Changed { get; set; }
+
+        /// <summary>
+        /// All intellisense errors of the project (a copy).
+        /// </summary>
+        public IReadOnlyList<XError> GetAll()
+        {
+            lock (errors)
+            {
+                return errors.Values.SelectMany(l => l).ToList();
+            }
+        }
 
         public void Add(XError error)
         {
@@ -78,18 +91,7 @@ namespace XSharp.ProjectSystem.LanguageService
             }
         }
 
-        private void OnChanged()
-        {
-            var changed = Changed;
-            if (changed == null)
-                return;
-            List<XError> all;
-            lock (errors)
-            {
-                all = errors.Values.SelectMany(l => l).ToList();
-            }
-            changed(all);
-        }
+        private void OnChanged() => Changed?.Invoke();
 
         public List<IXErrorPosition> Get(string fileName)
         {

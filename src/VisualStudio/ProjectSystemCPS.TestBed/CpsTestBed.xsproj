@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    WP-1 test bed for the CPS based X# project system (src/VisualStudio/ProjectSystemCPS).
+    Open CpsTestBed.sln in the experimental instance: it references this project with the
+    CPS project type GUID {AB494DCE-A11B-4583-851E-D4A86775B3F0} instead of the MPFproj GUID.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <Dialect>Core</Dialect>
+    <RootNamespace>CpsTestBed</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The legacy, WinForms and VO test projects (SelectorTestBed.sln) live in subfolders: keep them out of the SDK globs -->
+    <Compile Remove="Legacy\**" />
+    <None Remove="Legacy\**" />
+    <Compile Remove="WinForms\**" />
+    <None Remove="WinForms\**" />
+    <Compile Remove="VO\**" />
+    <None Remove="VO\**" />
+    <NativeResource Remove="VO\**" />
+    <VOBinary Remove="VO\**" />
+  </ItemGroup>
+</Project>

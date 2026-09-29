@@ -10,7 +10,14 @@ using System.IO;
 
 namespace XSharp.CodeDom
 {
+    // Also compiled into XSharp.ProjectSystemCPS (shadow WinForms designer), as an internal copy. It does not
+    // live in XSharp.CodeDomProvider because the X# installation puts that assembly in the GAC: a newer
+    // VSIX would then run against the older installed version.
+#if XSHARP_PROJECTSYSTEMCPS
+    internal class XSharpCodeDomHelper
+#else
     public class XSharpCodeDomHelper
+#endif
     {
         /// <summary>
         /// Merge both CodeCompileUnit. The main type (class) will come from formCompileUnit

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Images of the CPS based X# project system. The IDs match XSharp.ProjectSystem.Imaging.XSharpImages. -->
+<ImageManifest xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
+  <Symbols>
+    <String Name="Resources" Value="/XSharp.ProjectSystemCPS;component/Resources" />
+    <Guid Name="XSharpImagesGuid" Value="{D9769BF1-DF1F-48B6-9642-949FB27BF46D}" />
+    <ID Name="XSharpProject" Value="1" />
+    <ID Name="XSharpDocument" Value="2" />
+  </Symbols>
+  <Images>
+    <Image Guid="$(XSharpImagesGuid)" ID="$(XSharpProject)">
+      <Source Uri="$(Resources)/XSharpProject.png" />
+    </Image>
+    <Image Guid="$(XSharpImagesGuid)" ID="$(XSharpDocument)">
+      <Source Uri="$(Resources)/XSharpDocument.png" />
+    </Image>
+  </Images>
+  <ImageLists />
+</ImageManifest>

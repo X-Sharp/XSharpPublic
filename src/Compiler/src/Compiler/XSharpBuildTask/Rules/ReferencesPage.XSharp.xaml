@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="References"
+      Description="Settings associated with the X# implicit global usings feature."
+      DisplayName="Global Usings"
+      PageTemplate="generic"
+      Order="200"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General"
+              DisplayName="General"
+              Description="Global usings settings for X# projects." />
+  </Rule.Categories>
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext"
+                HasConfigurationCondition="False" />
+  </Rule.DataSource>
+
+  <BoolProperty Name="ImplicitUsings"
+                DisplayName="Implicit global usings"
+                Description="Enable implicit global usings to be declared by the project SDK."
+				Category="General" >
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception"
+                  SourceOfDefaultValue="AfterContext"
+                  HasConfigurationCondition="False" />
+    </BoolProperty.DataSource>
+    <BoolProperty.Metadata>
+      <NameValuePair Name="SearchTerms" Value="implicit" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>true</NameValuePair.Value>
+      </NameValuePair>
+    </BoolProperty.Metadata>
+  </BoolProperty>
+
+  <!--
+    No "Manage Implicit Global Usings" editor (ImplicitUsingsEditor, CSharpImplicitUsingsEditor): its value is
+    intercepted by ImplicitUsingsValueProvider of the managed project system, which maps it to the <Using> items and
+    only applies to CSharp projects. For X# the editor would read and write a meaningless ImplicitUsingsEditor
+    property. The interceptor contract lives in the private Microsoft.VisualStudio.ProjectSystem.Managed.dll, so an
+    X# version would tie the VSIX to one VS build. The <Using> items are edited in the project file.
+  -->
+
+</Rule>

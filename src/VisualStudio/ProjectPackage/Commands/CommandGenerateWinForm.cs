@@ -86,16 +86,19 @@ namespace XSharp.Project
                     }
                     var newdesignerform = Path.ChangeExtension(newform, ".designer.prg");
                     var x = await project.AddExistingFilesAsync(new[] { newform, newdesignerform });
-                    var prjNode = (XSharpProjectNode) xproject.ProjectNode;
-                    var file = prjNode.FindChild(newform);
-                    if (file is XSharpFileNode fileNode && fileNode.IsLink)
+                    // MPFproj only: remove the Link metadata. CPS projects are not an XSharpProjectNode.
+                    if (xproject.ProjectNode is XSharpProjectNode prjNode)
                     {
-                        file.ItemNode.SetMetadata("Link", null);
-                    }
-                    file = prjNode.FindChild(newdesignerform);
-                    if (file is XSharpFileNode designerfileNode && designerfileNode.IsLink)
-                    {
-                        file.ItemNode.SetMetadata("Link", null);
+                        var file = prjNode.FindChild(newform);
+                        if (file is XSharpFileNode fileNode && fileNode.IsLink)
+                        {
+                            file.ItemNode.SetMetadata("Link", null);
+                        }
+                        file = prjNode.FindChild(newdesignerform);
+                        if (file is XSharpFileNode designerfileNode && designerfileNode.IsLink)
+                        {
+                            file.ItemNode.SetMetadata("Link", null);
+                        }
                     }
 
 

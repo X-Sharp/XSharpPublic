@@ -1,0 +1,389 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+// Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
+// requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
+#pragma warning disable VSTHRD010
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+
+namespace XSharp.ProjectSystem.ShadowDesigner
+{
+    /// <summary>
+    /// Removes each shadow companion project from the solution and deletes its folder when
+    /// the solution closes. Leaving stale companion projects/folders around between sessions
+    /// has been a real, confusing source of test failures in this feature's own development
+    /// (half-regenerated files, leftover references from an earlier attempt). Regeneration
+    /// is already proven idempotent -- ShadowDesignerBridge.TryOpenAsync recreates the companion
+    /// project on demand -- so cleaning it up on close is safe: nothing is lost, it's purely
+    /// auto-generated output.
+    ///
+    /// Implements IVsSolutionEvents directly (the MPFproj SolutionListener base is not available in the
+    /// CPS project system); advised once, on first use, for the lifetime of the process.
+    ///
+    /// TWO separate hooks are needed, not one, because of a real ordering bug found in
+    /// testing: removing the project from the solution has to happen BEFORE VS's own
+    /// "save changes?" prompt writes the .sln (otherwise the saved .sln still references a
+    /// project whose folder gets deleted moments later, leaving a dangling reference the
+    /// user hits on next open) -- OnQueryCloseSolution is the earliest close-related event,
+    /// firing before that save. Deleting the folder itself still has to wait until
+    /// OnAfterCloseSolution, by which point every project (including the companion) has
+    /// fully unloaded, so there's no risk of deleting files still locked by an active
+    /// project node.
+    ///
+    /// OnQueryCloseSolution is not final: the close can still be cancelled afterwards (e.g. Cancel in the save
+    /// prompt). The companion projects are then no longer in the solution, which is harmless: their paths stay
+    /// tracked, the next View Designer adds the project back (SolutionWiring.EnsureProjectInSolution), and the
+    /// folders are only deleted after a real close.
+    /// </summary>
+    internal sealed class ShadowDesignerCleanup : IVsSolutionEvents
+    {
+        private static readonly object _lock = new object();
+        private static ShadowDesignerCleanup _instance;
+
+        // Companion .csproj full paths seen this session -- removed from the solution (in
+        // OnQueryCloseSolution) and then deleted from disk (in OnAfterCloseSolution).
+        private static readonly HashSet<string> _companionCsprojPaths =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        // Background deletions of companion folders (OnAfterCloseSolution), by folder. A folder that is used again
+        // (the solution is reopened while the deletion still retries) cancels its deletion, see CancelPendingDelete.
+        private static readonly Dictionary<string, CancellationTokenSource> _pendingDeletes =
+            new Dictionary<string, CancellationTokenSource>(StringComparer.OrdinalIgnoreCase);
+        private static readonly object _deleteLock = new object();
+
+        private readonly IVsSolution _vsSolution;
+        private uint _eventsCookie;
+
+        private ShadowDesignerCleanup(IServiceProvider serviceProvider)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var solutionService = serviceProvider.GetService(typeof(SVsSolution));
+            if (solutionService == null)
+            {
+                throw new InvalidOperationException("Could not obtain the IVsSolution service.");
+            }
+            _vsSolution = (IVsSolution)solutionService;
+            ErrorHandler.ThrowOnFailure(_vsSolution.AdviseSolutionEvents(this, out _eventsCookie));
+        }
+
+        /// <summary>
+        /// Registers a companion project for cleanup on solution close, lazily advising
+        /// solution events the first time this is called. Safe to call every time
+        /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (HashSet).
+        /// </summary>
+        public static void Track(string companionCsprojPath)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (_instance == null)
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new ShadowDesignerCleanup(ServiceProvider.GlobalProvider);
+                    }
+                }
+            }
+            _companionCsprojPaths.Add(companionCsprojPath);
+        }
+
+        /// <summary>
+        /// Stops a pending background deletion of <paramref name="companionDir"/> before the companion project is
+        /// written there again. When this returns, no deletion of the folder is running or will start.
+        /// </summary>
+        public static void CancelPendingDelete(string companionDir)
+        {
+            if (string.IsNullOrEmpty(companionDir))
+            {
+                return;
+            }
+            lock (_deleteLock)
+            {
+                if (_pendingDeletes.TryGetValue(companionDir, out var pending))
+                {
+                    pending.Cancel();
+                    _pendingDeletes.Remove(companionDir);
+                    Logger.Information($"ShadowDesignerCleanup: cancelled the pending deletion of {companionDir}");
+                }
+            }
+        }
+
+        public int OnQueryCloseSolution(object reserved, ref int cancel)
+        {
+            // Another listener already cancelled the close: the solution stays open, keep the companions.
+            if (cancel != 0)
+            {
+                return VSConstants.S_OK;
+            }
+            if (_vsSolution != null)
+            {
+                foreach (string csprojPath in _companionCsprojPaths)
+                {
+                    try
+                    {
+                        // EnvDTE's Solution.Remove/ProjectItem.Remove both throw
+                        // NullReferenceException on a project nested inside a Solution Folder
+                        // when called from this particular solution-closing callback -- use
+                        // the lower-level IVsSolution API instead (what VS's own "Remove"
+                        // command uses internally), which handles nested/virtual projects
+                        // correctly here.
+                        CloseProjectElement(csprojPath);
+                    }
+                    catch
+                    {
+                        // Best-effort -- if removal fails here, the folder still gets deleted
+                        // below on full close, which is the more visible half of this cleanup
+                        // anyway; a stale .sln reference is a lesser, recoverable annoyance.
+                    }
+                }
+                try
+                {
+                    // Without this the empty Solution Folder stayed in the saved .sln.
+                    CloseEmptyShadowDesignerFolder();
+                }
+                catch (Exception ex)
+                {
+                    // Best-effort, see above
+                    Logger.Exception(ex, "ShadowDesignerCleanup: could not remove the Solution Folder");
+                }
+            }
+            return VSConstants.S_OK;
+        }
+
+        /// <summary>
+        /// Removes the "Shadow Designer (generated)" Solution Folder (SolutionWiring) once the companion
+        /// projects in it have been removed, so the saved .sln does not keep an empty folder. Only removed
+        /// when empty -- a user who moved own projects into it keeps them.
+        /// </summary>
+        private void CloseEmptyShadowDesignerFolder()
+        {
+            // Solution Folders are virtual projects: EPF_ALLINSOLUTION alone (loaded + unloaded) does not return
+            // them, EPF_ALLPROJECTS includes EPF_ALLVIRTUAL.
+            Guid solutionFolderType = new Guid("2150E333-8FDC-42A3-9474-1A3956D46DE8");
+            int hr = _vsSolution.GetProjectEnum((uint)(__VSENUMPROJFLAGS.EPF_ALLPROJECTS | __VSENUMPROJFLAGS.EPF_MATCHTYPE),
+                ref solutionFolderType, out IEnumHierarchies hierarchies);
+            if (ErrorHandler.Failed(hr) || hierarchies == null)
+            {
+                Logger.Information($"ShadowDesignerCleanup: GetProjectEnum failed, hr=0x{hr:X8}");
+                return;
+            }
+
+            var buffer = new IVsHierarchy[1];
+            while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                var hierarchy = buffer[0];
+                if (ErrorHandler.Failed(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out object name)) ||
+                    !string.Equals(name as string, SolutionWiring.ShadowDesignerFolderName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                // The companion projects removed just before can still be listed as children at this point, so the
+                // folder counts as empty when it only contains companion projects.
+                if (!ContainsOnlyCompanionProjects(hierarchy, out string otherChild))
+                {
+                    Logger.Information($"ShadowDesignerCleanup: Solution Folder '{name}' contains '{otherChild}', kept");
+                    return;
+                }
+                hr = _vsSolution.CloseSolutionElement(0, hierarchy, 0);
+                Logger.Information($"ShadowDesignerCleanup: removed the empty Solution Folder '{name}', hr=0x{hr:X8}");
+                return;
+            }
+            Logger.Information($"ShadowDesignerCleanup: Solution Folder '{SolutionWiring.ShadowDesignerFolderName}' not found");
+        }
+
+        private bool ContainsOnlyCompanionProjects(IVsHierarchy folder, out string otherChild)
+        {
+            otherChild = null;
+            folder.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_FirstChild, out object child);
+            while (!IsNil(child))
+            {
+                uint itemId = child is int i ? unchecked((uint)i) : (uint)child;
+                folder.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Name, out object childName);
+                string projectPath = null;
+                Guid hierarchyGuid = typeof(IVsHierarchy).GUID;
+                if (ErrorHandler.Succeeded(folder.GetNestedHierarchy(itemId, ref hierarchyGuid, out IntPtr nested, out uint _)) && nested != IntPtr.Zero)
+                {
+                    try
+                    {
+                        if (System.Runtime.InteropServices.Marshal.GetObjectForIUnknown(nested) is IVsProject project)
+                        {
+                            project.GetMkDocument(VSConstants.VSITEMID_ROOT, out projectPath);
+                        }
+                    }
+                    finally
+                    {
+                        System.Runtime.InteropServices.Marshal.Release(nested);
+                    }
+                }
+                // A removed companion can remain as a child without name and without nested project until the
+                // solution refreshes its hierarchy; that is not user content either.
+                bool isCompanion = (projectPath != null && _companionCsprojPaths.Contains(projectPath)) ||
+                    (childName as string)?.EndsWith(CompanionProjectWriter.CompanionSuffix, StringComparison.OrdinalIgnoreCase) == true ||
+                    (projectPath == null && string.IsNullOrEmpty(childName as string));
+                Logger.Information($"ShadowDesignerCleanup: Solution Folder child '{childName}' ({projectPath ?? "no project"}), companion: {isCompanion}");
+                if (!isCompanion)
+                {
+                    otherChild = childName as string ?? projectPath ?? itemId.ToString();
+                    return false;
+                }
+                folder.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_NextSibling, out child);
+            }
+            return true;
+        }
+
+        private static bool IsNil(object itemId)
+        {
+            switch (itemId)
+            {
+                case int i:
+                    return unchecked((uint)i) == VSConstants.VSITEMID_NIL;
+                case uint u:
+                    return u == VSConstants.VSITEMID_NIL;
+                default:
+                    return itemId == null;
+            }
+        }
+
+        /// <summary>
+        /// Finds the IVsHierarchy for the project at csprojPath (searching every project in
+        /// the solution, including ones nested in Solution Folders) and asks IVsSolution to
+        /// close/remove it directly -- bypasses the EnvDTE object model entirely, which is
+        /// what makes this reliable for a nested project during OnQueryCloseSolution.
+        /// </summary>
+        private void CloseProjectElement(string csprojPath)
+        {
+            Guid enumFlags = Guid.Empty;
+            int hr = _vsSolution.GetProjectEnum((uint)__VSENUMPROJFLAGS.EPF_ALLINSOLUTION, ref enumFlags, out IEnumHierarchies hierarchies);
+            if (ErrorHandler.Failed(hr) || hierarchies == null)
+            {
+                return;
+            }
+
+            var buffer = new IVsHierarchy[1];
+            while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                var hierarchy = buffer[0];
+                if (hierarchy is IVsProject vsProject &&
+                    ErrorHandler.Succeeded(vsProject.GetMkDocument(VSConstants.VSITEMID_ROOT, out string mkDocument)) &&
+                    string.Equals(mkDocument, csprojPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    _vsSolution.CloseSolutionElement(0, hierarchy, 0);
+                    return;
+                }
+            }
+        }
+
+        public int OnAfterCloseSolution(object reserved)
+        {
+            // Confirmed via diagnostic logging (twice) that the folder is still locked well
+            // beyond a ~1 second bounded retry at the moment this event fires ("The process
+            // cannot access the file '...ShadowDesigner' because it is being used by another
+            // process" -- the lock is on the directory handle itself, not a specific file
+            // inside it), presumably the out-of-process Designer host taking longer than that
+            // to fully exit. Rather than block VS's solution-close UI for the ~10+ seconds
+            // that could take, retry on a background thread instead -- costs nothing (this is
+            // best-effort cleanup either way) and gives the external process realistic time to
+            // release its handle.
+            foreach (string csprojPath in _companionCsprojPaths)
+            {
+                string dir = Path.GetDirectoryName(csprojPath);
+                if (string.IsNullOrEmpty(dir))
+                {
+                    continue;
+                }
+                var cancellation = new CancellationTokenSource();
+                lock (_deleteLock)
+                {
+                    if (_pendingDeletes.TryGetValue(dir, out var previous))
+                    {
+                        previous.Cancel();
+                    }
+                    _pendingDeletes[dir] = cancellation;
+                }
+                // Intentionally fire-and-forget: best-effort background cleanup, nothing to
+                // await it against.
+                _ = System.Threading.Tasks.Task.Run(() => DeleteWithRetry(dir, cancellation));
+            }
+            _companionCsprojPaths.Clear();
+            return VSConstants.S_OK;
+        }
+
+        /// <summary>
+        /// Deletes <paramref name="dir"/>, retrying while it is locked. Each attempt runs under _deleteLock and
+        /// checks the cancellation first, so CancelPendingDelete never overlaps with a running Directory.Delete.
+        /// </summary>
+        private static void DeleteWithRetry(string dir, CancellationTokenSource cancellation)
+        {
+            const int maxAttempts = 20;
+            const int delayMs = 1000;
+            try
+            {
+                for (int attempt = 1; attempt <= maxAttempts; attempt++)
+                {
+                    try
+                    {
+                        lock (_deleteLock)
+                        {
+                            if (cancellation.IsCancellationRequested)
+                            {
+                                return;
+                            }
+                            if (Directory.Exists(dir))
+                            {
+                                Directory.Delete(dir, recursive: true);
+                            }
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            // Best-effort cleanup only -- regeneration is idempotent, so a
+                            // leftover folder just gets overwritten fresh next time, not a
+                            // failure worth surfacing to the user. Still worth a log entry in
+                            // case a folder is being left behind repeatedly.
+                            Logger.Exception(ex, $"ShadowDesignerCleanup: failed to delete {dir} after {maxAttempts} attempts");
+                            return;
+                        }
+                    }
+                    // Wait outside the lock; a cancellation ends the wait early
+                    if (cancellation.Token.WaitHandle.WaitOne(delayMs))
+                    {
+                        return;
+                    }
+                }
+            }
+            finally
+            {
+                lock (_deleteLock)
+                {
+                    if (_pendingDeletes.TryGetValue(dir, out var current) && current == cancellation)
+                    {
+                        _pendingDeletes.Remove(dir);
+                    }
+                }
+                cancellation.Dispose();
+            }
+        }
+
+        #region IVsSolutionEvents members that are not used
+        public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded) => VSConstants.S_OK;
+        public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel) => VSConstants.S_OK;
+        public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved) => VSConstants.S_OK;
+        public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy) => VSConstants.S_OK;
+        public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel) => VSConstants.S_OK;
+        public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy) => VSConstants.S_OK;
+        public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution) => VSConstants.S_OK;
+        public int OnBeforeCloseSolution(object pUnkReserved) => VSConstants.S_OK;
+        #endregion
+    }
+}

@@ -1,0 +1,77 @@
+﻿<Project>
+  <!--
+    X# project system based on the Visual Studio Common Project System (CPS).
+    Replaces the forked MPFproj project system (ProjectBase + ProjectPackage/Nodes), see
+    the MPFproj -> CPS migration spec. This project must NOT reference ProjectBase or
+    ProjectPackage: it only depends on the code model (XSharpCodeModelXs).
+  -->
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="..\Common2022.props" />
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>XSharp.ProjectSystemCPS</AssemblyName>
+    <RootNamespace>XSharp.ProjectSystem</RootNamespace>
+    <Platforms>AnyCPU</Platforms>
+    <!-- Common.props already defines OutputPath and the assembly attributes (CommonAssemblyInfo.cs) -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- WPF resources (pack URIs) for the images of XSharp.ProjectSystemCPS.imagemanifest -->
+    <UseWPF>true</UseWPF>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);NU1903</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- VSSDK: generate a pkgdef for the package; the assembly is shipped in the VSIX of ProjectPackage2022 -->
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <CreateVsixContainer>false</CreateVsixContainer>
+    <DeployExtension>false</DeployExtension>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17;XSHARP_PROJECTSYSTEMCPS</DefineConstants>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DefineConstants>TRACE;XSHARP;DEV17;XSHARP_PROJECTSYSTEMCPS</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
+    <Compile Include="$(CommonDir)Constants.cs" Link="Constants.cs" />
+    <Compile Include="$(CommonDir)XSharpConstants.cs" Link="XSharpConstants.cs" />
+    <!-- Internal copy for the shadow WinForms designer (see the comment in the file) -->
+    <Compile Include="..\ProjectPackage\CodeDomProvider\XSharpCodeDomHelper.cs" Link="ShadowDesigner\XSharpCodeDomHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\XSharpProject.png" />
+    <Resource Include="Resources\XSharpDocument.png" />
+    <!-- Included in the VSIX by ProjectPackage2022 -->
+    <None Include="XSharp.ProjectSystemCPS.imagemanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.10.40171" />
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Sdk" Version="17.9.380" />
+    <!-- Roslyn C# for the companion C# project of the shadow WinForms designer, same version as ProjectPackage2022 -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.14.2142">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Types of the code model API (e.g. XError.Span); shipped in the VSIX by ProjectPackage2022 -->
+    <Reference Include="XSharp.Vsparser">
+      <HintPath>$(VsExternalDir)XSharp.Vsparser.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj" />
+    <!-- X# CodeDOM parser/generator for the shadow WinForms designer (no MPFproj dependency) -->
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj" />
+  </ItemGroup>
+  <!-- Explicit SDK imports: the VSSDK targets must be imported after the SDK targets -->
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

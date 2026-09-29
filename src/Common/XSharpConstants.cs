@@ -22,6 +22,7 @@ namespace XSharp
         internal const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
         internal const string guidCpsProjectTypeString = "AB494DCE-A11B-4583-851E-D4A86775B3F0";
         internal const string guidProjectSelectorString = "DF89AA3B-6AE6-4971-8F78-1A03B346A7D5";
+        internal const string guidXSharpCpsProjectPkgString = "BAE3ADAE-83B3-44CC-BA79-A18F03F0D121";
         internal static readonly Guid guidXSharpProjectFactory = new Guid(guidXSharpProjectFactoryString);
         internal static readonly Guid guidVOMenuEditorFactory = new Guid(guidXSharpVOMenuEditor);
         internal static readonly Guid guidVODbServerEditorFactory = new Guid(guidXSharpVODbServerEditor);

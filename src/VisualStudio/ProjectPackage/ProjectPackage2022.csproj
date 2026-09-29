@@ -119,16 +119,9 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
-    <Compile Include="Commands\CommandBuild.cs" />
-    <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
-    <Compile Include="Commands\CommandPublish.cs" />
-    <Compile Include="Commands\CommandPack.cs" />
-    <Compile Include="Commands\PublishDialog.xaml.cs">
-      <DependentUpon>PublishDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
     <Compile Include="Commands\CommandViewInDisassembler.cs" />
@@ -188,10 +181,6 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
-    <Compile Include="NodesSDK\SdkDependenciesContainer.cs" />
-    <Compile Include="NodesSDK\SdkFolderNodes.cs" />
-    <Compile Include="NodesSDK\SdkReferenceNodes.cs" />
-    <Compile Include="NodesSDK\SdkProjectNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
@@ -477,14 +466,6 @@
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
-    <Compile Include="ShadowDesigner\ShadowDesignerBridge.cs" />
-    <Compile Include="ShadowDesigner\CompanionProjectWriter.cs" />
-    <Compile Include="ShadowDesigner\SolutionWiring.cs" />
-    <Compile Include="ShadowDesigner\RoslynToCodeDom.cs" />
-    <Compile Include="ShadowDesigner\EventHandlerSync.cs" />
-    <Compile Include="ShadowDesigner\DesignerChangesSync.cs" />
-    <Compile Include="ShadowDesigner\CompanionSaveWatcher.cs" />
-    <Compile Include="ShadowDesigner\ShadowDesignerCleanup.cs" />
     <Compile Include="Commands\CommandSyncEventHandlers.cs" />
     <Compile Include="Commands\CommandSyncDesignerChanges.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -528,10 +509,6 @@
       <Link>Commands\VsThemeDictionary.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Commands\PublishDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <EmbeddedResource Include="Resources.resx">
       <DependentUpon>Resources.cs</DependentUpon>
@@ -741,6 +718,17 @@
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <Content Include="..\ProjectSystemCPS\XSharp.ProjectSystemCPS.imagemanifest">
+      <Link>XSharp.ProjectSystemCPS.imagemanifest</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <ProjectReference Include="..\ProjectSystemCPS\ProjectSystemCPS.csproj">
+      <Project>{99708d46-58a9-46b6-b77f-003adaf15ff6}</Project>
+      <Name>ProjectSystemCPS</Name>
+      <!-- Only the assembly and its pkgdef: CPS is part of VS, XSharp.CodeModel is already included by this project -->
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\Support\Support2022.csproj">

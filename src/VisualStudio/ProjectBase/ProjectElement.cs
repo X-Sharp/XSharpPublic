@@ -355,19 +355,15 @@ namespace Microsoft.VisualStudio.Project
             if(this.IsVirtual)
                 return;
 
-            bool isSdk = !string.IsNullOrEmpty(itemProject?.BuildProject?.Xml?.Sdk);
-            if (!isSdk)
+            // prevent duplicate items.
+            itemProject.BuildProject.ReevaluateIfNecessary();
+            IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(this.item.ItemType);
+            foreach (ProjectItem projectItem in items)
             {
-				// prevent duplicate items.
-                itemProject.BuildProject.ReevaluateIfNecessary();
-                IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(this.item.ItemType);
-                foreach (ProjectItem projectItem in items)
+                if (string.Equals(projectItem?.UnevaluatedInclude, item.UnevaluatedInclude, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (string.Equals(projectItem?.UnevaluatedInclude, item.UnevaluatedInclude, StringComparison.OrdinalIgnoreCase))
-                    {
-                        this.item = projectItem;
-                        return;
-                    }
+                    this.item = projectItem;
+                    return;
                 }
             }
         }

@@ -62,6 +62,12 @@ namespace XSharp.ProjectSystem.LanguageService
         private readonly IntellisenseErrorStore errors = new IntellisenseErrorStore();
         private readonly HashSet<string> files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> projectReferences = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // Two locks, always taken in this order (modelGate, then gate):
+        // - modelGate serializes the changes of the code model (the three subscriptions, AddFileNode/DeleteFileNode,
+        //   load/unload); XProject.AddFile/RemoveFile do database I/O.
+        // - gate only protects the file set and the model field, briefly, so HasFileNode (called by the VO designers on
+        //   the UI thread) never waits for that I/O.
+        private readonly object modelGate = new object();
         private readonly object gate = new object();
 
         private XProject model;
@@ -106,13 +112,17 @@ namespace XSharp.ProjectSystem.LanguageService
             await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
             // Before the first walk, so the parser finds the comment tasks (TODO etc.)
             ProjectFileSaveWatcher.EnsureCommentTokens();
-            lock (gate)
+            lock (modelGate)
             {
                 if (model != null)
                     return;
-                model = new XProject(this);
-                model.ProjectWalkComplete += OnProjectWalkComplete;
-                model.FileWalkComplete += OnFileWalkComplete;
+                var newModel = new XProject(this);
+                newModel.ProjectWalkComplete += OnProjectWalkComplete;
+                newModel.FileWalkComplete += OnFileWalkComplete;
+                lock (gate)
+                {
+                    model = newModel;
+                }
             }
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
             // Forms added with "Add New Item" open in the shadow designer instead of the code editor
@@ -146,7 +156,7 @@ namespace XSharp.ProjectSystem.LanguageService
         public Task UnloadAsync()
         {
             XProject oldModel;
-            lock (gate)
+            lock (modelGate)
             {
                 if (links != null)
                 {
@@ -160,13 +170,16 @@ namespace XSharp.ProjectSystem.LanguageService
                     model.FileWalkComplete -= OnFileWalkComplete;
                 }
                 oldModel = model;
-                model = null;
+                lock (gate)
+                {
+                    model = null;
+                    files.Clear();
+                }
                 errors.Changed = null;
                 errorList?.Dispose();
                 errorList = null;
                 taskList?.Dispose();
                 taskList = null;
-                files.Clear();
                 projectReferences.Clear();
             }
             oldModel?.Close();
@@ -229,9 +242,10 @@ namespace XSharp.ProjectSystem.LanguageService
             {
                 var added = new List<string>();
                 var removed = new List<string>();
-                lock (gate)
+                lock (modelGate)
                 {
-                    if (model == null)
+                    var current = model;
+                    if (current == null)
                         return;
                     foreach (var change in update.Value.ProjectChanges)
                     {
@@ -248,16 +262,17 @@ namespace XSharp.ProjectSystem.LanguageService
                             added.Add(XSharpCommandLine.MakeFullPath(rename.Value, ProjectFolder));
                         }
                     }
-                    foreach (var file in removed)
+                    List<string> toRemove, toAdd;
+                    lock (gate)
                     {
-                        if (files.Remove(file))
-                            model.RemoveFile(file);
+                        toRemove = removed.Where(files.Remove).ToList();
+                        toAdd = added.Where(files.Add).ToList();
                     }
-                    foreach (var file in added)
-                    {
-                        if (files.Add(file))
-                            model.AddFile(file);
-                    }
+                    // Database I/O, outside gate
+                    foreach (var file in toRemove)
+                        current.RemoveFile(file);
+                    foreach (var file in toAdd)
+                        current.AddFile(file);
                 }
                 if (added.Count > 0 || removed.Count > 0)
                 {
@@ -276,7 +291,7 @@ namespace XSharp.ProjectSystem.LanguageService
             try
             {
                 var changes = update.Value.ProjectChanges;
-                lock (gate)
+                lock (modelGate)
                 {
                     if (model == null)
                         return;
@@ -311,18 +326,22 @@ namespace XSharp.ProjectSystem.LanguageService
                 }
                 var commandLine = XSharpCommandLine.Parse(arguments, ProjectFolder);
                 var options = XParseOptions.FromVsValues(commandLine.ParseOptions);
-                lock (gate)
+                XProject current;
+                lock (modelGate)
                 {
-                    if (model == null)
+                    current = model;
+                    if (current == null)
                         return;
                     parseOptions = options;
                     parseOptionsFromCommandLine = true;
-                    model.ResetParseOptions(options);
-                    model.RefreshReferences(commandLine.References);
+                    current.ResetParseOptions(options);
+                    current.RefreshReferences(commandLine.References);
                     foreach (var reference in projectReferences)
-                        model.AddProjectReference(reference);
-                    model.ResolveReferences();
+                        current.AddProjectReference(reference);
                 }
+                // Loads the referenced assemblies: outside the locks. XProject guards it itself (_resolvingReferences),
+                // and the ModelWalker and the type lookups call it without these locks as well.
+                current.ResolveReferences();
                 XSettings.Information($"XSharpProjectAdapter: {project.FullPath}: design-time build, {commandLine.ParseOptions.Count} options, {commandLine.References.Count} references, dialect {options.Dialect}");
                 WalkProject();
             }
@@ -443,10 +462,16 @@ namespace XSharp.ProjectSystem.LanguageService
             if (string.IsNullOrEmpty(fileName))
                 return;
             var fullPath = XSharpCommandLine.MakeFullPath(fileName, ProjectFolder);
-            lock (gate)
+            lock (modelGate)
             {
-                if (model != null && files.Add(fullPath))
-                    model.AddFile(fullPath);
+                XProject current;
+                lock (gate)
+                {
+                    current = model;
+                    if (current == null || !files.Add(fullPath))
+                        return;
+                }
+                current.AddFile(fullPath);
             }
         }
 
@@ -458,10 +483,16 @@ namespace XSharp.ProjectSystem.LanguageService
             if (string.IsNullOrEmpty(fileName))
                 return;
             var fullPath = XSharpCommandLine.MakeFullPath(fileName, ProjectFolder);
-            lock (gate)
+            lock (modelGate)
             {
-                if (model != null && files.Remove(fullPath))
-                    model.RemoveFile(fullPath);
+                XProject current;
+                lock (gate)
+                {
+                    current = model;
+                    if (current == null || !files.Remove(fullPath))
+                        return;
+                }
+                current.RemoveFile(fullPath);
             }
         }
 

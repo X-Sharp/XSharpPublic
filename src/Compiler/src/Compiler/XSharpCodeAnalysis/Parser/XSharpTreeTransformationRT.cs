@@ -4334,7 +4334,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
         {
             base.ExitCodeblock(context);
-            if (context.lambda == null)
+            if (context.IsCodeBlock)
             {
                 var expr = context.Get<ExpressionSyntax>();
                 expr = MakeCastTo(CodeblockType, expr);
@@ -4366,7 +4366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // empty codeblock ?
                 var cbcontext = context.Parent as XP.CodeblockContext;
-                if (cbcontext?.lambda == null)
+                if (cbcontext != null && cbcontext.IsCodeBlock)
                 {
                     //block = MakeBlock(GenerateReturn(GenerateNIL()));
                     //context.Put(block);

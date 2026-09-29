@@ -35,6 +35,8 @@
                DisplayName="Visual FoxPro" />
     <EnumValue Name="Harbour"
                DisplayName="Harbour" />
+    <EnumValue Name="XbaseNet"
+               DisplayName="Xbase.Net" />
 
   </EnumProperty>
 

@@ -54,5 +54,7 @@
   <FileExtension Name=".xsfs" ContentType="VOBinary"/>
   <FileExtension Name=".vnfs" ContentType="VOBinary"/>
   <FileExtension Name=".xssql" ContentType="VOBinary"/>
+  <FileExtension Name=".vnsqs" ContentType="VOBinary"/>
   <FileExtension Name=".xsrep" ContentType="VOBinary"/>
+  <FileExtension Name=".vnrep" ContentType="VOBinary"/>
 </ProjectSchemaDefinitions>

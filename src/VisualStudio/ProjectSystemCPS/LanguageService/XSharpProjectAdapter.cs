@@ -74,6 +74,7 @@ namespace XSharp.ProjectSystem.LanguageService
         private List<IDisposable> links;
         private IntellisenseErrorList errorList;
         private CommentTaskList taskList;
+        private SourceFileWatcher sourceWatcher;
         private XParseOptions parseOptions = XParseOptions.Default;
         private bool parseOptionsFromCommandLine;
         private string rootNamespace = "";
@@ -111,7 +112,7 @@ namespace XSharp.ProjectSystem.LanguageService
             // X# database, verified in VS).
             await threading.JoinableTaskFactory.SwitchToMainThreadAsync();
             // Before the first walk, so the parser finds the comment tasks (TODO etc.)
-            ProjectFileSaveWatcher.EnsureCommentTokens();
+            CommentTokens.EnsureSet();
             lock (modelGate)
             {
                 if (model != null)
@@ -127,8 +128,9 @@ namespace XSharp.ProjectSystem.LanguageService
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
             // Forms added with "Add New Item" open in the shadow designer instead of the code editor
             ShadowDesigner.NewFormDesignerRedirect.EnsureAdvised(threading.JoinableTaskFactory);
-            // Saved files are walked again (comment tasks), like XSharpProjectNode.OnFileChanged
-            ProjectFileSaveWatcher.EnsureAdvised(threading.JoinableTaskFactory);
+            // Source files that change on disk (editor saves, VO designers, external tools) are walked again, like
+            // XSharpProjectNode.OnFileChanged
+            sourceWatcher = new SourceFileWatcher(ProjectFolder, IsSourceFileOfProject, WalkChangedFile, WalkProject);
             errorList = new IntellisenseErrorList(threading.JoinableTaskFactory, DisplayName, errors.GetAll);
             errors.Changed = errorList.Update;
             taskList = new CommentTaskList(threading.JoinableTaskFactory, DisplayName);
@@ -176,6 +178,8 @@ namespace XSharp.ProjectSystem.LanguageService
                     files.Clear();
                 }
                 errors.Changed = null;
+                sourceWatcher?.Dispose();
+                sourceWatcher = null;
                 errorList?.Dispose();
                 errorList = null;
                 taskList?.Dispose();
@@ -413,6 +417,35 @@ namespace XSharp.ProjectSystem.LanguageService
             {
                 XSettings.Exception(e);
             }
+        }
+
+        /// <summary>
+        /// For <see cref="SourceFileWatcher"/> (its thread): <paramref name="path"/> is a source file of this project.
+        /// </summary>
+        private bool IsSourceFileOfProject(string path)
+        {
+            XProject current;
+            lock (gate)
+            {
+                current = model;
+                if (current == null || !files.Contains(path))
+                    return false;
+            }
+            return current.FindXFile(path)?.IsSource == true;
+        }
+
+        /// <summary>
+        /// For <see cref="SourceFileWatcher"/> (background thread): walk a changed source file again. notify: true
+        /// raises FileWalkComplete, which refreshes the Task List.
+        /// </summary>
+        private void WalkChangedFile(string path)
+        {
+            var current = model;
+            var file = current?.FindXFile(path);
+            if (file == null || !file.IsSource)
+                return;
+            XSettings.Information("XSharpProjectAdapter: " + path + " changed on disk, walking it again");
+            current.WalkFile(file, true);
         }
 
         private void WalkProject()

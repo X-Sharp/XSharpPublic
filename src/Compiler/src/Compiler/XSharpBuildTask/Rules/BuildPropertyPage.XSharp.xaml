@@ -3,6 +3,30 @@
       OverrideMode="Extend"
       xmlns="http://schemas.microsoft.com/build/2009/properties">
 
+  <!-- The managed definition with the X# persistence "XSharpDefineConstants" (XSharpDefineConstantsPropertiesProvider in
+       XSharp.ProjectSystemCPS): the managed "ProjectFileWithInterception" converts the list editor's value only for
+       C#/F#, for X# it wrote "MYSYM=False" and lost the implicit DEBUG/TRACE. -->
+  <StringProperty Name="DefineConstants"
+                  DisplayName="Conditional compilation symbols"
+                  Description="Specifies symbols on which to perform conditional compilation."
+                  HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147079"
+                  Category="General">
+    <StringProperty.DataSource>
+      <DataSource Persistence="XSharpDefineConstants"
+                  HasConfigurationCondition="True" />
+    </StringProperty.DataSource>
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="MultiStringSelector">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="TypeDescriptorText" Value="Custom symbols" />
+          <NameValuePair Name="AllowsCustomStrings" Value="True" />
+          <NameValuePair Name="ShouldDisplayEvaluatedPreview" Value="True" />
+          <NameValuePair Name="SingleValueConfigurationCommandEnabled" Value="False" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+
   <StringProperty Name="CommandLineOption"
                 DisplayName="Other flags"
                 Description="Additional compiler flags. Separate flags with whitespace."

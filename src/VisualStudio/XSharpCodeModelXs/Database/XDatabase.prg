@@ -28,7 +28,9 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.9 AS System.Double     // 3.9: added Types_File / Types_Project indexes
+    // 3.9: added Types_File / Types_Project indexes
+    // 3.10: fixed typo in view ProjectExtensionMethods
+    PRIVATE CONST CurrentDbVersion := 3.10 AS System.Double     
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -561,7 +563,7 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := " CREATE VIEW ProjectExtensionMethods as SELECT em.FullName, m.*  FROM ExtensionMethods em" + ;
+            stmt := " CREATE VIEW ProjectExtensionMethods as SELECT em.FullName, pm.*  FROM ExtensionMethods em" + ;
                 " JOIN ProjectMembers pm ON em.IdMember = pm.Id"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()

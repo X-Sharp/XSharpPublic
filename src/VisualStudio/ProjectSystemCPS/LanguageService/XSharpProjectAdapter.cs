@@ -58,10 +58,16 @@ namespace XSharp.ProjectSystem.LanguageService
 
         private readonly UnconfiguredProject project;
         private readonly IActiveConfiguredProjectSubscriptionService subscriptions;
+        private readonly IActiveConfigurationGroupService configurationGroups;
         private readonly IProjectThreadingService threading;
         private readonly IntellisenseErrorStore errors = new IntellisenseErrorStore();
         private readonly HashSet<string> files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> projectReferences = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // One design-time build subscription per TargetFramework of a cross targeting project (TargetFrameworks),
+        // keyed by target framework. Recreated when the active configuration group changes.
+        private readonly Dictionary<string, IDisposable> targetLinks = new Dictionary<string, IDisposable>(StringComparer.OrdinalIgnoreCase);
+        // The command line of the last successful design-time build per TargetFramework.
+        private readonly Dictionary<string, XSharpCommandLine> commandLines = new Dictionary<string, XSharpCommandLine>(StringComparer.OrdinalIgnoreCase);
         // Two locks, always taken in this order (modelGate, then gate):
         // - modelGate serializes the changes of the code model (the three subscriptions, AddFileNode/DeleteFileNode,
         //   load/unload); XProject.AddFile/RemoveFile do database I/O.
@@ -69,14 +75,21 @@ namespace XSharp.ProjectSystem.LanguageService
         //   the UI thread) never waits for that I/O.
         private readonly object modelGate = new object();
         private readonly object gate = new object();
+        private bool parseOptionsFromCommandLine;
 
+        // One code model per TargetFramework: every target has its own compiler options and assembly references,
+        // so the types of e.g. net48 and net8.0-windows do not end up in the same model.
+        private readonly Dictionary<string, XProject> models = new Dictionary<string, XProject>(StringComparer.OrdinalIgnoreCase);
+        // The model of the active configuration: the one the editor, the designers and IXSharpProject use.
+        // Null for the target frameworks of a cross targeting project until the configuration group has arrived.
         private XProject model;
+        private string primaryTargetFramework;
+
         private List<IDisposable> links;
         private IntellisenseErrorList errorList;
         private CommentTaskList taskList;
         private SourceFileWatcher sourceWatcher;
         private XParseOptions parseOptions = XParseOptions.Default;
-        private bool parseOptionsFromCommandLine;
         private string rootNamespace = "";
         private string intermediateOutputPath = "";
         private string outputFile = "";
@@ -86,15 +99,43 @@ namespace XSharp.ProjectSystem.LanguageService
         public XSharpProjectAdapter(
             UnconfiguredProject project,
             IActiveConfiguredProjectSubscriptionService subscriptions,
+            IActiveConfigurationGroupService configurationGroups,
             IProjectThreadingService threading)
         {
             this.project = project;
             this.subscriptions = subscriptions;
+            this.configurationGroups = configurationGroups;
             this.threading = threading;
         }
 
         internal XProject Model => model;
-
+        /// <summary>
+        /// The code model of a TargetFramework, or the primary model when <paramref name="targetFramework"/> is empty
+        /// or unknown.
+        /// </summary>
+        internal XProject GetModel(string targetFramework)
+        {
+            lock (modelGate)
+            {
+                if (IsCrossTargeting(targetFramework) && models.TryGetValue(targetFramework, out var target))
+                    return target;
+                return model;
+            }
+        }
+        /// <summary>
+        /// The code models per TargetFramework of a cross targeting project.
+        /// </summary>
+        internal IReadOnlyDictionary<string, XProject> ModelsPerTarget
+        {
+            get
+            {
+                lock (modelGate)
+                {
+                    return models.Where(p => IsCrossTargeting(p.Key))
+                        .ToDictionary(p => p.Key, p => p.Value, StringComparer.OrdinalIgnoreCase);
+                }
+            }
+        }
         private string ProjectFolder => Path.GetDirectoryName(project.FullPath);
 
         #region IProjectDynamicLoadComponent
@@ -117,7 +158,13 @@ namespace XSharp.ProjectSystem.LanguageService
             {
                 if (model != null)
                     return;
-                var newModel = new XProject(this);
+                // The primary model (no target framework yet): for a project with a single TargetFramework this is
+                // the only model. For a cross targeting project the configuration group renames/replaces it below.
+                var newModel = CreateModel(SingleTarget);
+                lock (gate)
+                {
+                    model = newModel;
+                }
                 newModel.ProjectWalkComplete += OnProjectWalkComplete;
                 newModel.FileWalkComplete += OnFileWalkComplete;
                 lock (gate)
@@ -148,30 +195,92 @@ namespace XSharp.ProjectSystem.LanguageService
                     DataflowBlockSlim.CreateActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(OnEvaluationChanged),
                     linkOptions,
                     ruleNames: new[] { ProjectPropertiesRule, ProjectReferenceRule }),
+                // Feeds the code model: the active configuration (the first TargetFramework of a cross targeting project)
                 subscriptions.ProjectBuildRuleSource.SourceBlock.LinkTo(
                     DataflowBlockSlim.CreateActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(OnDesignTimeBuildChanged),
                     linkOptions,
                     ruleNames: new[] { CommandLineRule }),
+                // And one subscription per TargetFramework, so a design-time build runs for each of them
+                configurationGroups.ActiveConfigurationGroupSource.SourceBlock.LinkTo(
+                    DataflowBlockSlim.CreateActionBlock<IProjectVersionedValue<IConfigurationGroup<ProjectConfiguration>>>(OnConfigurationGroupChanged),
+                    linkOptions),
             };
         }
 
+        /// <summary>
+        /// Creates a code model for one TargetFramework (null for a project that does not cross target) and
+        /// registers the files that are already known.
+        /// </summary>
+        /// <remarks>Call under <see cref="modelGate"/>.</remarks>
+        private XProject CreateModel(string targetFramework)
+        {
+            var newModel = IsCrossTargeting(targetFramework)
+                ? new XProject(this, targetFramework, this.Url)
+                : new XProject(this);
+            newModel.ProjectWalkComplete += OnProjectWalkComplete;
+            newModel.FileWalkComplete += OnFileWalkComplete;
+            newModel.ResetParseOptions(parseOptions);
+            List<string> known;
+            lock (gate)
+            {
+                known = files.ToList();
+            }
+            foreach (var file in known)
+                newModel.AddFile(file);
+            foreach (var reference in projectReferences)
+                newModel.AddProjectReference(reference);
+            models[targetFramework] = newModel;
+            XSettings.Information($"XSharpProjectAdapter: created code model for {project.FullPath}" +
+                (IsCrossTargeting(targetFramework) ? " (" + targetFramework + ")" : ""));
+            return newModel;
+        }
+
+
+        /// <summary>
+        /// Closes a model: unhook the events, then <see cref="XProject.Close"/> outside the locks.
+        /// </summary>
+        /// <remarks>Call under <see cref="modelGate"/>; close the returned model outside the locks.</remarks>
+        private XProject DetachModel(XProject toClose)
+        {
+            if (toClose == null)
+                return null;
+            toClose.ProjectWalkComplete -= OnProjectWalkComplete;
+            toClose.FileWalkComplete -= OnFileWalkComplete;
+            return toClose;
+        }
+        /// <summary>
+        /// All code models: the primary one and, for a cross targeting project, the one of every TargetFramework.
+        /// </summary>
+        /// <remarks>Call under <see cref="modelGate"/>.</remarks>
+        private List<XProject> AllModels()
+        {
+            var all = new List<XProject>(models.Values);
+            if (model != null && !all.Contains(model))
+                all.Add(model);
+            return all;
+        }
         public Task UnloadAsync()
         {
-            XProject oldModel;
+            List<XProject> oldModels;
             lock (modelGate)
             {
-                if (links != null)
+                if(links != null)
                 {
                     foreach (var link in links)
                         link.Dispose();
                     links = null;
                 }
+                foreach (var link in targetLinks.Values)
+                    link.Dispose();
+                targetLinks.Clear();
                 if (model != null)
                 {
                     model.ProjectWalkComplete -= OnProjectWalkComplete;
                     model.FileWalkComplete -= OnFileWalkComplete;
                 }
-                oldModel = model;
+                oldModels = AllModels().Select(DetachModel).ToList();
+                models.Clear();
+                primaryTargetFramework = null;
                 lock (gate)
                 {
                     model = null;
@@ -186,7 +295,8 @@ namespace XSharp.ProjectSystem.LanguageService
                 taskList = null;
                 projectReferences.Clear();
             }
-            oldModel?.Close();
+            foreach (var old in oldModels)
+                old?.Close();
             return Task.CompletedTask;
         }
 
@@ -239,6 +349,47 @@ namespace XSharp.ProjectSystem.LanguageService
         #endregion
 
         #region Subscriptions
+        private void OnDesignTimeBuildChanged(IProjectVersionedValue<IProjectSubscriptionUpdate> update)
+        {
+            try
+            {
+                lock (modelGate)
+                {
+                    // Served by the per-configuration subscription (OnTargetDesignTimeBuildChanged) as soon as it exists
+                    if (primaryTargetFramework != null)
+                        return;
+                }
+                var commandLine = ParseCommandLine(update);
+                if (commandLine == null)
+                {
+                    // No changes, or a failed design-time build (no arguments): keep the previous options and references.
+                    return;
+                }
+                var options = XParseOptions.FromVsValues(commandLine.ParseOptions);
+                XProject current;
+                lock (modelGate)
+                {
+                    current = model;
+                    if (current == null)
+                        return;
+                    parseOptions = options;
+                    parseOptionsFromCommandLine = true;
+                    current.ResetParseOptions(options);
+                    current.RefreshReferences(commandLine.References);
+                    foreach (var reference in projectReferences)
+                        current.AddProjectReference(reference);
+                }
+                // Loads the referenced assemblies: outside the locks. XProject guards it itself (_resolvingReferences),
+                // and the ModelWalker and the type lookups call it without these locks as well.
+                current.ResolveReferences();
+                XSettings.Information($"XSharpProjectAdapter: {project.FullPath}: design-time build, {commandLine.ParseOptions.Count} options, {commandLine.References.Count} references, dialect {options.Dialect}");
+                WalkProject();
+            }
+            catch (Exception e)
+            {
+                XSettings.Exception(e);
+            }
+        }
 
         private void OnSourceItemsChanged(IProjectVersionedValue<IProjectSubscriptionUpdate> update)
         {
@@ -273,10 +424,13 @@ namespace XSharp.ProjectSystem.LanguageService
                         toAdd = added.Where(files.Add).ToList();
                     }
                     // Database I/O, outside gate
-                    foreach (var file in toRemove)
-                        current.RemoveFile(file);
-                    foreach (var file in toAdd)
-                        current.AddFile(file);
+                    foreach (var target in AllModels())
+                    {
+                        foreach (var file in toRemove)
+                            target.RemoveFile(file);
+                        foreach (var file in toAdd)
+                            target.AddFile(file);
+                    }
                 }
                 if (added.Count > 0 || removed.Count > 0)
                 {
@@ -316,38 +470,43 @@ namespace XSharp.ProjectSystem.LanguageService
             }
         }
 
-        private void OnDesignTimeBuildChanged(IProjectVersionedValue<IProjectSubscriptionUpdate> update)
+        /// <summary>
+        /// Design-time build of one TargetFramework. Only collects the command line: the code model has a single set
+        /// of parse options and references, which <see cref="OnDesignTimeBuildChanged"/> feeds from the active
+        /// configuration.
+        /// </summary>
+        private void OnTargetDesignTimeBuildChanged(string targetFramework, IProjectVersionedValue<IProjectSubscriptionUpdate> update)
         {
             try
             {
-                if (!update.Value.ProjectChanges.TryGetValue(CommandLineRule, out var change) || !change.Difference.AnyChanges)
+                var commandLine = ParseCommandLine(update);
+                if (commandLine == null)
                     return;
-                var arguments = change.After.Items.Keys.ToList();
-                if (arguments.Count == 0)
-                {
-                    // A failed design-time build returns no arguments. Keep the previous options and references.
-                    return;
-                }
-                var commandLine = XSharpCommandLine.Parse(arguments, ProjectFolder);
                 var options = XParseOptions.FromVsValues(commandLine.ParseOptions);
-                XProject current;
+                XProject target;
                 lock (modelGate)
                 {
-                    current = model;
-                    if (current == null)
+                    if (model == null || !models.TryGetValue(targetFramework, out target))
                         return;
-                    parseOptions = options;
-                    parseOptionsFromCommandLine = true;
-                    current.ResetParseOptions(options);
-                    current.RefreshReferences(commandLine.References);
+                    commandLines[targetFramework] = commandLine;
+                    if (string.Equals(targetFramework, primaryTargetFramework, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // The active configuration also drives IXSharpProject.ParseOptions
+                        parseOptions = options;
+                        parseOptionsFromCommandLine = true;
+                    }
+                    target.ResetParseOptions(options);
+                    target.RefreshReferences(commandLine.References);
                     foreach (var reference in projectReferences)
-                        current.AddProjectReference(reference);
+                        target.AddProjectReference(reference);
                 }
-                // Loads the referenced assemblies: outside the locks. XProject guards it itself (_resolvingReferences),
-                // and the ModelWalker and the type lookups call it without these locks as well.
-                current.ResolveReferences();
-                XSettings.Information($"XSharpProjectAdapter: {project.FullPath}: design-time build, {commandLine.ParseOptions.Count} options, {commandLine.References.Count} references, dialect {options.Dialect}");
-                WalkProject();
+                // Loads the referenced assemblies: outside the locks. XProject guards it itself (_resolvingReferences).
+                target.ResolveReferences();
+                XSettings.Information($"XSharpProjectAdapter: {project.FullPath}" +
+                     (IsCrossTargeting(targetFramework) ? " (" + targetFramework + ")" : "") +
+                     $": design-time build, {commandLine.ParseOptions.Count} options, " +
+                     $"{commandLine.References.Count} references, dialect {options.Dialect}");
+                ModelWalker.AddProject(target);
             }
             catch (Exception e)
             {
@@ -355,6 +514,206 @@ namespace XSharp.ProjectSystem.LanguageService
             }
         }
 
+        /// <summary>
+        /// Key for the single model of a project that does not cross target (no TargetFramework dimension).
+        /// </summary>
+        private const string SingleTarget = "";
+        private static string GetTargetFramework(ProjectConfiguration configuration)
+        {
+            return configuration.Dimensions.TryGetValue("TargetFramework", out var target) && !string.IsNullOrEmpty(target)
+                ? target : SingleTarget;
+        }
+        private static bool IsCrossTargeting(string targetFramework) => !string.IsNullOrEmpty(targetFramework);
+
+        /// <summary>
+        /// The command line of a design-time build, or null when there are no changes or the build failed
+        /// (a failed design-time build returns no arguments).
+        /// </summary>
+        private XSharpCommandLine ParseCommandLine(IProjectVersionedValue<IProjectSubscriptionUpdate> update)
+        {
+            if (!update.Value.ProjectChanges.TryGetValue(CommandLineRule, out var change) || !change.Difference.AnyChanges)
+                return null;
+            var arguments = change.After.Items.Keys.ToList();
+            if (arguments.Count == 0)
+                return null;
+            return XSharpCommandLine.Parse(arguments, ProjectFolder);
+        }
+
+        /// <summary>
+        /// The compiler options and references per TargetFramework, from the design-time builds that have completed.
+        /// </summary>
+        internal IReadOnlyDictionary<string, XSharpCommandLine> CommandLinesPerTarget
+        {
+            get
+            {
+                lock (modelGate)
+                {
+                    return new Dictionary<string, XSharpCommandLine>(commandLines, StringComparer.OrdinalIgnoreCase);
+                }
+            }
+        }      /// <summary>
+               /// The active configuration group contains one <see cref="ProjectConfiguration"/> per TargetFramework of a
+               /// cross targeting project (TargetFrameworks) and a single one for a project with one TargetFramework.
+               /// It fires again when the user switches Configuration/Platform or when TargetFrameworks is edited.
+               /// </summary>
+               /// <remarks>
+               /// CPS only runs a design-time build for a ConfiguredProject that has a subscriber on its build rule source.
+               /// <see cref="IActiveConfiguredProjectSubscriptionService"/> only covers the active configuration (the first
+               /// TargetFramework), so the other targets need their own subscription to produce compiler options and references.
+               /// </remarks>
+        private void OnConfigurationGroupChanged(IProjectVersionedValue<IConfigurationGroup<ProjectConfiguration>> update)
+        {
+            // Fire and forget: LoadConfiguredProjectAsync may not block this dataflow action (and must not block
+            // the UI thread). Exceptions are logged in the task itself.
+            threading.JoinableTaskFactory.RunAsync(() => UpdateTargetSubscriptionsAsync(update.Value)).Task.Forget();
+        }
+        private async Task UpdateTargetSubscriptionsAsync(IConfigurationGroup<ProjectConfiguration> configurations)
+        {
+            try
+            {
+                var wanted = new Dictionary<string, ProjectConfiguration>(StringComparer.OrdinalIgnoreCase);
+                foreach (var configuration in configurations)
+                    wanted[GetTargetFramework(configuration)] = configuration;
+
+                // The group fires more than once: the first time often for the configuration without a
+                // TargetFramework dimension (key SingleTarget), only afterwards for the real target frameworks of a
+                // cross targeting project. Hand the primary model over to the first target framework then, instead of
+                // keeping a SingleTarget model next to the models of the targets.
+                RekeyPrimaryModel(wanted.Keys.ToList());
+
+                // Drop the targets that no longer exist
+                var obsolete = new List<IDisposable>();
+                var closing = new List<XProject>();
+                lock (modelGate)
+                {
+                    foreach (var target in targetLinks.Keys.Where(t => !wanted.ContainsKey(t)).ToList())
+                    {
+                        obsolete.Add(targetLinks[target]);
+                        targetLinks.Remove(target);
+                    }
+                    foreach (var target in models.Keys.Where(t => !wanted.ContainsKey(t)).ToList())
+                    {
+                        var old = models[target];
+                        models.Remove(target);
+                        commandLines.Remove(target);
+                        // The primary model is closed in UnloadAsync, never here
+                        if (!ReferenceEquals(old, model))
+                            closing.Add(DetachModel(old)); closing.Add(DetachModel(old));
+
+                    }
+                }
+                foreach (var link in obsolete)
+                    link.Dispose();
+                foreach (var old in closing)
+                    old?.Close();
+
+                foreach (var pair in wanted)
+                {
+                    lock (modelGate)
+                    {
+                        if (model == null)
+                            return;
+                        if (targetLinks.ContainsKey(pair.Key))
+                            continue;
+                    }
+                    // Loading the ConfiguredProject and subscribing to its build rule source is what makes CPS
+                    // schedule a design-time build for this configuration.
+                    var configured = await project.LoadConfiguredProjectAsync(pair.Value).ConfigureAwait(false);
+                    var buildSource = configured?.Services.ProjectSubscription?.ProjectBuildRuleSource;
+                    if (buildSource == null)
+                        continue;
+                    var targetFramework = pair.Key;
+                    var link = buildSource.SourceBlock.LinkTo(
+                        DataflowBlockSlim.CreateActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(
+                            u => OnTargetDesignTimeBuildChanged(targetFramework, u)),
+                        new DataflowLinkOptions { PropagateCompletion = true },
+                        ruleNames: new[] { CommandLineRule });
+                    bool keep;
+                    lock (modelGate)
+                    {
+                        keep = model != null && !targetLinks.ContainsKey(targetFramework);
+                        lock (modelGate)
+                        {
+                            keep = model != null && !targetLinks.ContainsKey(targetFramework);
+                            if (keep)
+                            {
+                                targetLinks[targetFramework] = link;
+                                if (!models.ContainsKey(targetFramework))
+                                    CreateModel(targetFramework);
+                            }
+                        }
+                    }
+                    if (!keep)
+                        link.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                XSettings.Exception(e);
+            }
+        }
+        /// <summary>
+        /// Makes sure that the primary model (the one that <see cref="LoadAsync"/> created) is registered under the
+        /// key of the first configuration of <paramref name="targets"/>, and under that key only.
+        /// </summary>
+        /// <remarks>
+        /// A project switches between a single TargetFramework and TargetFrameworks (and the group fires before the
+        /// target frameworks are known), so the key of the primary model changes: from SingleTarget to the first
+        /// target framework, or back. Without this the SingleTarget model stays behind in the dictionary next to the
+        /// models of the target frameworks.
+        /// Call outside <see cref="modelGate"/>: the model of an obsolete key is closed here.
+        /// </remarks>
+        private void RekeyPrimaryModel(IList<string> targets)
+        {
+            if (targets.Count == 0)
+                return;
+            // Keep the current key when it is still one of the targets: the editor and the designers keep working
+            // with the same XProject.
+            var newKey = primaryTargetFramework != null && targets.Contains(primaryTargetFramework, StringComparer.OrdinalIgnoreCase)
+                ? primaryTargetFramework : targets[0];
+            var closing = new List<XProject>();
+            lock (modelGate)
+            {
+                if (model == null)
+                    return;
+                if (string.Equals(primaryTargetFramework, newKey, StringComparison.OrdinalIgnoreCase) &&
+                    models.TryGetValue(newKey, out var registered) && ReferenceEquals(registered, model))
+                {
+                    return;
+                }
+                // Remove the primary model from the key it had (SingleTarget, or a target framework that is gone)
+                foreach (var key in models.Where(p => ReferenceEquals(p.Value, model)).Select(p => p.Key).ToList())
+                {
+                    models.Remove(key);
+                    commandLines.Remove(key);
+                    if (targetLinks.TryGetValue(key, out var link))
+                    {
+                        targetLinks.Remove(key);
+                        link.Dispose();
+                    }
+                }
+                // XProject takes its TargetFramework in the constructor: replace the primary model instead of
+                // re-keying it when the project turns out to cross target.
+                if (IsCrossTargeting(newKey))
+                {
+                    closing.Add(DetachModel(model));
+                    var replacement = CreateModel(newKey);   // registers itself in models
+                    lock (gate)
+                    {
+                        model = replacement;
+                    }
+                }
+                else
+                {
+                    models[newKey] = model;
+                }
+                primaryTargetFramework = newKey;
+                XSettings.Information($"XSharpProjectAdapter: {project.FullPath}: primary code model is " +
+                    (IsCrossTargeting(newKey) ? newKey : "the single target"));
+            }
+            foreach (var old in closing)
+                old?.Close();
+        }
         private void ReadProjectProperties(IProjectRuleSnapshot snapshot)
         {
             rootNamespace = GetProperty(snapshot, "RootNamespace");
@@ -369,7 +728,8 @@ namespace XSharp.ProjectSystem.LanguageService
                 var dialect = GetProperty(snapshot, "Dialect");
                 var options = new List<string> { "dialect:" + (dialect.Length > 0 ? dialect : "Core"), "i:" + XParseOptions.DefaultIncludeDir };
                 parseOptions = XParseOptions.FromVsValues(options);
-                model.ResetParseOptions(parseOptions);
+                foreach (var target in AllModels())
+                    target.ResetParseOptions(parseOptions);
             }
         }
 
@@ -385,12 +745,14 @@ namespace XSharp.ProjectSystem.LanguageService
             foreach (var removed in projectReferences.Where(r => !current.Contains(r)).ToList())
             {
                 projectReferences.Remove(removed);
-                model.RemoveProjectReference(removed);
+                foreach (var target in AllModels())
+                    target.RemoveProjectReference(removed);
             }
             foreach (var added in current.Where(r => !projectReferences.Contains(r)).ToList())
             {
                 projectReferences.Add(added);
-                model.AddProjectReference(added);
+                foreach (var target in AllModels())
+                    target.AddProjectReference(added);
             }
         }
 
@@ -450,9 +812,13 @@ namespace XSharp.ProjectSystem.LanguageService
 
         private void WalkProject()
         {
-            var current = model;
-            if (current != null)
-                ModelWalker.AddProject(current);
+            List<XProject> all;
+            lock (modelGate)
+            {
+                all = AllModels();
+            }
+            foreach (var target in all)
+                ModelWalker.AddProject(target);
         }
 
         #endregion
@@ -504,7 +870,8 @@ namespace XSharp.ProjectSystem.LanguageService
                     if (current == null || !files.Add(fullPath))
                         return;
                 }
-                current.AddFile(fullPath);
+                foreach (var target in AllModels())
+                    target.AddFile(fullPath);
             }
         }
 
@@ -525,7 +892,8 @@ namespace XSharp.ProjectSystem.LanguageService
                     if (current == null || !files.Remove(fullPath))
                         return;
                 }
-                current.RemoveFile(fullPath);
+                foreach (var target in AllModels())
+                    target.RemoveFile(fullPath);
             }
         }
 

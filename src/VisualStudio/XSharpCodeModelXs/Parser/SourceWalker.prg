@@ -79,7 +79,11 @@ METHOD Lex(cSource AS STRING) AS BufferedTokenStream
     SELF:_errors := List<XError>{}
     LOCAL stream := NULL AS ITokenStream
     TRY
-        XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, (XSharpParseOptions) SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
+        var parseOptions := SELF:ParseOptions
+        if SELF:File?:Project?:ParseOptions != NULL
+            parseOptions := SELF:File:Project:ParseOptions
+        ENDIF
+        XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, (XSharpParseOptions) parseOptions , SELF, OUT stream, OUT VAR includeFiles)
         SELF:AddIncludes(includeFiles)
     CATCH e AS Exception
         WriteOutputMessage("Lex() Failed:")

@@ -75,9 +75,11 @@ namespace XSharp.Project
             }
 
             EventHandlerSync.SyncResult result;
+            CompanionResourceSync.SyncResult resxResult;
             try
             {
                 result = EventHandlerSync.Sync(location);
+                resxResult = CompanionResourceSync.Sync(location);
             }
             catch (Exception ex)
             {
@@ -85,15 +87,18 @@ namespace XSharp.Project
                 return;
             }
 
-            if (!result.HasChanges)
+            if (!result.HasChanges && resxResult.CopiedFileNames.Count == 0)
             {
-                await VS.StatusBar.ShowMessageAsync("Nothing new to sync -- no new handler stubs or event wiring found.");
+                await VS.StatusBar.ShowMessageAsync("Nothing new to sync -- no new handler stubs, event wiring, or resource files found.");
                 return;
             }
 
             await VS.Commands.ExecuteAsync(KnownCommands.File_OpenFile, location.MainPrgPath);
+            string resxText = resxResult.CopiedFileNames.Count > 0
+                ? $", {resxResult.CopiedFileNames.Count} resource file(s)"
+                : "";
             await VS.StatusBar.ShowMessageAsync(
-                $"Synced {result.NewHandlerNames.Count} handler stub(s) and {result.NewWiringDescriptions.Count} event wiring statement(s).");
+                $"Synced {result.NewHandlerNames.Count} handler stub(s) and {result.NewWiringDescriptions.Count} event wiring statement(s){resxText}.");
         }
     }
 }

@@ -15,7 +15,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Terminates a routine by returning control to the calling routine or operating system if executed from the Start() routine.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">RETURN [&lt;<text styleclass="Italic">uValue</text>&gt;]</para>
+    <para styleclass="Normal">RETURN [VOID | &lt;<text styleclass="Italic">uValue</text>&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;uValue&gt;<tab />May be specified in a function or method definition to designate its return value. Procedure definitions do not allow &lt;uValue&gt; as part of the RETURN statement. See the FUNCTION and METHOD entries in this guide for information about default return values if &lt;uValue&gt; is not specified.</para>
     <para styleclass="Heading1">Description</para>

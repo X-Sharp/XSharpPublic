@@ -115,7 +115,8 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
 /// <exclude />
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGIC) AS USUAL
-LOCAL nArea := VoDbGetSelect(wa) AS DWORD
+    LOCAL nArea := VoDbGetSelect(wa) AS DWORD
+    LOCAL err := NULL as Error
     IF nArea != 0
         RETURN __FieldGetWa(wa, fldName)
     ENDIF
@@ -123,17 +124,24 @@ LOCAL nArea := VoDbGetSelect(wa) AS DWORD
         return IVarGet(uLocal, fldName)
     ENDIF
     local ok as LOGIC
+    local ex := NULL as Exception
     IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
         local oLocal := uLocal as object
         try
             var ivar := (OBJECT) IVarGet(oLocal, wa)
             // we do not use IVarGet because we also want to support static fields and properties
             var res := _GetValue(ivar:GetType(), ivar)
-        if ok
-            return res
-        endif
-        catch as Exception
-            nop
+            if ok
+                return res
+            endif
+            err := Error{EG_NOVAR, nameof(fldName), ErrString(EG_NOVAR) + ": " + fldName}
+            err:FuncSym := __function__
+            err:ArgNum := 2
+            err:Args := <OBJECT>{wa, fldName}
+            THROW err
+
+        catch e as Exception
+            ex := e
         end try
     ENDIF
     if (lAllowUndeclared)
@@ -154,14 +162,26 @@ LOCAL nArea := VoDbGetSelect(wa) AS DWORD
     IF Globals.Get(wa, OUT var uGlobal)
         return IVarGet(uGlobal, fldName)
     ENDIF
+    if ex != null
+        throw ex
+    endif
 
-    VAR err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
+    err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
     err:FuncSym := __function__
     err:ArgNum := 2
     err:Args := <OBJECT>{wa, fldName}
     THROW err
     LOCAL FUNCTION _GetValue(oType as System.Type, oObject as object) as USUAL
         ok := TRUE
+        if oObject is IDynamicProperties var oDynamic
+            try
+                return oDynamic:NoIvarGet(fldName)
+            CATCH as Exception
+                ok := FALSE
+                RETURN NIL
+            end try
+        endif
+
         var mem := OOPHelpers.GetFieldOrProperty(oType, fldName)
         if mem is FieldInfo var fld
             if ! fld:IsPublic
@@ -215,6 +235,7 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUndeclared AS LOGIC) AS USUAL
     LOCAL nArea := VoDbGetSelect(wa) AS DWORD
+    LOCAL err := NULL as Error
     IF nArea != 0
         LOCAL nOldArea := RuntimeState.CurrentWorkarea AS DWORD
         TRY
@@ -252,6 +273,13 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
         catch as Exception
             nop
         end try
+        err := Error{EG_NOVAR, nameof(fldName), ErrString(EG_NOVAR) + ": " + fldName}
+        err:FuncSym := __function__
+        err:ArgNum := 2
+        err:Args := <OBJECT>{wa, fldName}
+        THROW err
+
+
 
     ENDIF
     if (lAllowUndeclared)
@@ -271,13 +299,20 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
     IF Globals.Get(wa, OUT var uGlobal)
         return IVarPut(uGlobal, fldName, uValue)
     ENDIF
-
-    VAR err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
+    err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
     err:FuncSym := __function__
     err:ArgNum := 2
     err:Args := <OBJECT>{wa, fldName}
     THROW err
     LOCAL FUNCTION _SetValue(oType as System.Type, oObject as object, uValue as USUAL) as LOGIC
+        if oObject is IDynamicProperties var oDynamic
+            TRY
+                oDynamic:NoIvarPut(fldName, uValue)
+                return true
+            CATCH as Exception
+                return false
+            END TRY
+        endif
         var mem := OOPHelpers.GetFieldOrProperty(oType, fldName)
         if mem is FieldInfo var fld
             var oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)

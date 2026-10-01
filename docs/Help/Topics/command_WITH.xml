@@ -9,7 +9,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Specifies multiple properties for an object.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">WITH ObjectName<br/> &#160; [cStatements] or<br/><tab />[:Statements]<br/>END WITH</para>
+    <para styleclass="Code with box">WITH ObjectName [AS &lt;idType&gt;]<br/> &#160; [cStatements] or<br/><tab />[:Statements]<br/>END [WITH] | ENDWITH</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">ObjectName <tab />Specifies the name of the object. ObjectName can be the name of the object or a reference to the object.</para>
   </body>

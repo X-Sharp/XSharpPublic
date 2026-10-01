@@ -171,8 +171,7 @@ METHOD ProcessNamespace(nsCtx as XP.Namespace_Context) AS VOID
     TRY
         VAR nsName := nsCtx:Name
         SELF:GetSourceRange(nsCtx, OUT VAR range, OUT VAR interval)
-        VAR ns := XSourceNamespaceSymbol{nsName, range, interval}
-        ns:File := SELF:File
+        VAR ns := XSourceNamespaceSymbol{nsName, range, interval, SELF:File, NULL}
         SELF:_entities:Add(ns)
     CATCH e AS Exception
         WriteOutputMessage("ProcessNamespace() Exception: "+e:Message)

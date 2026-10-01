@@ -158,6 +158,12 @@ INTERNAL METHOD ParseTokens(tokens AS IList<IToken> , lIncludeRegions AS LOGIC, 
         RETURN
     ENDIF
     WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
+    
+    // Initialize collections for this parse
+    SELF:_entities:Clear()
+    SELF:_blocks:Clear()
+    SELF:_locals:Clear()
+    
     TRY
 #ifdef USEANTLR
         var tree := SELF:AntlrParse(_source, out var stream)

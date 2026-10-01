@@ -9,7 +9,6 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
 USING XP := LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser
-USING System.Collections.Concurrent
 NAMESPACE XSharpModel
 PARTIAL CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 
@@ -129,9 +128,14 @@ PRIVATE METHOD GetEntityName(ctx AS XP.IEntityContext) AS STRING
         RETURN ""
     END TRY
 
-PRIVATE METHOD GetSourceRange(ctx AS XP.IEntityContext, range OUT TextRange, interval OUT TextInterval) AS VOID
-    range := TextRange{ctx:Start, ctx:Stop}
-    interval := TextInterval{ctx:Start, ctx:Stop}
+PRIVATE METHOD GetSourceRange(ctx AS ParserRuleContext, range OUT TextRange, interval OUT TextInterval) AS VOID
+    IF ctx != NULL .AND. ctx:Start != NULL .AND. ctx:Stop != NULL
+        range := TextRange{ctx:Start, ctx:Stop}
+        interval := TextInterval{ctx:Start, ctx:Stop}
+    ELSE
+        range := TextRange{}
+        interval := TextInterval{}
+    ENDIF
 
 PRIVATE METHOD DetermineKind(ctx AS XP.IEntityContext) AS Kind
     IF ctx IS XP.Class_Context
@@ -256,7 +260,7 @@ METHOD ProcessBlock(blockCtx as XP.StatementBlockContext) AS VOID
     endif
     
     TRY
-        SELF:GetSourceRange((XP.IEntityContext)blockCtx, OUT VAR range, OUT VAR interval)
+        SELF:GetSourceRange(blockCtx, OUT VAR range, OUT VAR interval)
         VAR block := XSourceBlock{range, interval}
         SELF:_blocks:Add(block)
     CATCH e AS Exception

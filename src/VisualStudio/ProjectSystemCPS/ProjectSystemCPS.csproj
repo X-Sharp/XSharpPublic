@@ -37,6 +37,9 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="PropertyPages\XSharpGlobalUsingsValueEditor.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
     <Compile Include="$(CommonDir)Constants.cs" Link="Constants.cs" />
     <Compile Include="$(CommonDir)XSharpConstants.cs" Link="XSharpConstants.cs" />
@@ -65,6 +68,12 @@
       <HintPath>$(VsExternalDir)XSharp.Vsparser.dll</HintPath>
       <Private>false</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="17.9.5">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj" />

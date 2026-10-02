@@ -1,0 +1,112 @@
+<platformui:DialogWindow
+    x:Class="XSharp.ProjectSystem.Properties.GlobalUsingsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:platformui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    Title="Manage Global Usings"
+    Width="660" Height="520"
+    MinWidth="480" MinHeight="360"
+    WindowStartupLocation="CenterOwner"
+    ShowInTaskbar="False"
+    UseLayoutRounding="True"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
+
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Add-using input row -->
+        <Grid Grid.Row="0" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0"
+                     Text="{Binding NewNamespace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="Namespace"/>
+            <TextBox Grid.Column="2"
+                     Text="{Binding NewAlias, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="Alias"/>
+            <CheckBox Grid.Column="4"
+                      Content="Static"
+                      IsChecked="{Binding NewStatic, Mode=TwoWay}"
+                      VerticalAlignment="Center"/>
+            <Button Grid.Column="6"
+                    Content="Add Using"
+                    MinWidth="80"
+                    IsEnabled="{Binding CanAddUsing}"
+                    Click="OnAddUsingClick"/>
+        </Grid>
+
+        <!-- Using items grid -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding VisibleUsings}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Namespace"
+                                    Binding="{Binding Include}"
+                                    Width="*"
+                                    IsReadOnly="True"/>
+                <DataGridTextColumn Header="Alias"
+                                    Binding="{Binding Alias}"
+                                    Width="80"
+                                    IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Static"
+                                        Binding="{Binding IsStatic}"
+                                        Width="50"
+                                        IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Imported"
+                                        Binding="{Binding IsReadOnly}"
+                                        Width="70"
+                                        IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="Delete" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete"
+                                    IsEnabled="{Binding IsEditable}"
+                                    Tag="{Binding}"
+                                    Padding="4,2"
+                                    Click="OnDeleteUsingClick"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Show imported checkbox -->
+        <CheckBox Grid.Row="2"
+                  Content="Show imported usings"
+                  IsChecked="{Binding ShowImported, Mode=TwoWay}"
+                  Margin="0,6,0,0"/>
+
+        <!-- Dialog buttons -->
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,10,0,0">
+            <Button Content="OK"
+                    MinWidth="80"
+                    IsDefault="True"
+                    Margin="0,0,8,0"
+                    Click="OnOkClick"/>
+            <Button Content="Cancel"
+                    MinWidth="80"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</platformui:DialogWindow>

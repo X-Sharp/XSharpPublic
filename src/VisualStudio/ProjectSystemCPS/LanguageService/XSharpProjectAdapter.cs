@@ -7,10 +7,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using System.Xml;
+
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
 using Microsoft.VisualStudio.Shell;
@@ -39,6 +42,7 @@ namespace XSharp.ProjectSystem.LanguageService
     /// Because the design-time build does not run the compiler, parse options and references are available
     /// before the first real build.
     /// </remarks>
+    [DebuggerDisplay("{" + nameof(DisplayName) + ",nq}")]
     [Export(ExportContractNames.Scopes.UnconfiguredProject, typeof(IProjectDynamicLoadComponent))]
     [AppliesTo(XSharpCapabilities.XSharpCps)]
     internal sealed class XSharpProjectAdapter : IProjectDynamicLoadComponent, IXSharpProject
@@ -160,7 +164,31 @@ namespace XSharp.ProjectSystem.LanguageService
                     return;
                 // The primary model (no target framework yet): for a project with a single TargetFramework this is
                 // the only model. For a cross targeting project the configuration group renames/replaces it below.
-                var newModel = CreateModel(SingleTarget);
+                XmlDocument xDocument = new XmlDocument();
+                xDocument.Load(project.FullPath);
+                var xElement = xDocument.DocumentElement?.GetElementsByTagName("TargetFrameworks").Cast<XmlElement>().LastOrDefault();
+                string frameworks = "";
+                if (xElement != null)
+                    frameworks = xElement.InnerText;
+                xDocument = null;
+                xElement = null;
+
+                XProject newModel;
+                if (!string.IsNullOrEmpty(frameworks))
+                {
+                    var frameworksArray = frameworks.Split(';');
+                    var first = frameworksArray.FirstOrDefault();
+                    foreach (var framework in frameworksArray)
+                    {
+                        if (!string.IsNullOrEmpty(framework))
+                            CreateModel(framework);
+                    }
+                    newModel = GetModel(first);
+                }
+                else
+                {
+                    newModel = CreateModel(SingleTarget);
+                }
                 lock (gate)
                 {
                     model = newModel;

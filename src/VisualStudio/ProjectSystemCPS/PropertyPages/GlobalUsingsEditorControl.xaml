@@ -1,10 +1,16 @@
 ﻿<UserControl
     x:Class="XSharp.ProjectSystem.Properties.GlobalUsingsEditorControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+    FontFamily="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static vsshell:VsFonts.EnvironmentFontSizeKey}}">
     <Button Content="Manage Global Usings…"
-            HorizontalAlignment="Left"
-            Padding="8,2"
-            Click="OnManageClick"
-            AutomationProperties.Name="Manage Global Usings" />
+        HorizontalAlignment="Left"
+        Padding="8,2"
+        Click="OnManageClick"
+        Background="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}"
+        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ButtonTextKey}}"
+        BorderBrush="{DynamicResource {x:Static vsshell:VsBrushes.ActiveBorderKey}}"
+        AutomationProperties.Name="Manage Global Usings" />
 </UserControl>

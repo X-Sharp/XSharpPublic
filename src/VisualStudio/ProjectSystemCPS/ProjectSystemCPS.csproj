@@ -53,6 +53,7 @@
     <None Include="XSharp.ProjectSystemCPS.imagemanifest" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.551" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.10.40171" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Sdk" Version="17.9.380" />
     <!-- Roslyn C# for the companion C# project of the shadow WinForms designer, same version as ProjectPackage2022 -->

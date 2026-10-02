@@ -35,8 +35,72 @@ namespace XSharp.ProjectSystem.Properties
             _projectFullPath = projectFullPath;
         }
 
-        /// <summary>Returns the <c>&lt;Using&gt;</c> items declared in the project file.</summary>
+        /// <summary>
+        /// Returns the evaluated <c>&lt;Using&gt;</c> items, including those contributed by
+        /// the SDK, which are flagged as read-only.
+        /// </summary>
+        /// <remarks>
+        /// Evaluates the project in a private collection: the project system does not
+        /// publish its projects through
+        /// <see cref="ProjectCollection.GlobalProjectCollection"/>.
+        /// </remarks>
         public IReadOnlyList<GlobalUsingItem> GetUsings()
+        {
+            if (string.IsNullOrEmpty(_projectFullPath) || !System.IO.File.Exists(_projectFullPath))
+                return new List<GlobalUsingItem>();
+
+            using (var collection = new ProjectCollection())
+            {
+                try
+                {
+                    var project = new Project(_projectFullPath, null, null, collection,
+                                              ProjectLoadSettings.IgnoreMissingImports);
+
+                    return project.GetItems(UsingItemType)
+                        .Select(item => new GlobalUsingItem
+                        {
+                            Include = item.EvaluatedInclude,
+                            Alias = NullIfEmpty(item.GetMetadataValue(AliasMetadata)),
+                            IsStatic = string.Equals(item.GetMetadataValue(StaticMetadata), "true",
+                                                     StringComparison.OrdinalIgnoreCase),
+                            IsReadOnly = item.IsImported
+                        })
+                        .ToList();
+                }
+                catch (Exception)
+                {
+                    // Evaluation can fail if the SDK cannot be resolved; fall back to the
+                    // items declared in the project file itself.
+                    return GetUsingsFromXml();
+                }
+            }
+        }
+
+        private IReadOnlyList<GlobalUsingItem> GetUsingsFromXml()
+        {
+            var xml = OpenProjectXml();
+            if (xml == null)
+                return new List<GlobalUsingItem>();
+
+            return xml.Items
+                .Where(item => string.Equals(item.ItemType, UsingItemType, StringComparison.OrdinalIgnoreCase))
+                .Select(item => new GlobalUsingItem
+                {
+                    Include = item.Include,
+                    Alias = GetMetadata(item, AliasMetadata),
+                    IsStatic = string.Equals(GetMetadata(item, StaticMetadata), "true",
+                                             StringComparison.OrdinalIgnoreCase),
+                    IsReadOnly = false
+                })
+                .ToList();
+        }
+
+        private static string NullIfEmpty(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
+        /// <summary>Returns the <c>&lt;Using&gt;</c> items declared in the project file.</summary>
+        public IReadOnlyList<GlobalUsingItem> GetUsingsOld()
         {
             var xml = OpenProjectXml();
             if (xml == null)

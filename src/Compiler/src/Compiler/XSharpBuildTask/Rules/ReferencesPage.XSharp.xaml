@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
-<Rule Name="References"
+<Rule Name="XSharpGlobalUsings"
       Description="Settings associated with the X# implicit global usings feature."
       DisplayName="Global Usings"
       PageTemplate="generic"
@@ -23,7 +23,7 @@
                 Description="Enable implicit global usings to be declared by the project SDK."
 				Category="General" >
     <BoolProperty.DataSource>
-      <DataSource Persistence="ProjectFileWithInterception"
+      <DataSource Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext"
                   HasConfigurationCondition="False" />
     </BoolProperty.DataSource>
@@ -42,5 +42,21 @@
     property. The interceptor contract lives in the private Microsoft.VisualStudio.ProjectSystem.Managed.dll, so an
     X# version would tie the VSIX to one VS build. The <Using> items are edited in the project file.
   -->
-
+   <StringProperty Name="XSharpGlobalUsingsEditor"
+                 DisplayName="Manage Global Usings"
+                 Description="Manage the global using directives for your project."
+                 Category="General">
+   <StringProperty.DataSource>
+     <DataSource Persistence="ProjectFile"
+                 HasConfigurationCondition="False" />
+   </StringProperty.DataSource>
+   <StringProperty.ValueEditors>
+     <ValueEditor EditorType="XSharpGlobalUsingsEditor" />
+   </StringProperty.ValueEditors>
+   <StringProperty.Metadata>
+     <NameValuePair Name="VisibilityCondition">
+       <NameValuePair.Value>(has-evaluated-value "XSharpGlobalUsings" "ImplicitUsings" true)</NameValuePair.Value>
+     </NameValuePair>
+   </StringProperty.Metadata>
+ </StringProperty>
 </Rule>

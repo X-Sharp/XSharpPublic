@@ -16,4 +16,6 @@
   <StringProperty Name="TargetPath" ReadOnly="True" Visible="False" />
   <StringProperty Name="NS" ReadOnly="True" Visible="False" />
   <StringProperty Name="Dialect" ReadOnly="True" Visible="False" />
+  <StringProperty Name="TargetFramework" ReadOnly="True" Visible="False" />
+  <StringProperty Name="TargetFrameworks" ReadOnly="True" Visible="False" />
 </Rule>

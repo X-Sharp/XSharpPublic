@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -39,13 +38,16 @@ namespace XSharp.ProjectSystem.Imaging
         private static readonly Dictionary<string, ProjectImageMoniker> ExtensionIcons =
             new Dictionary<string, ProjectImageMoniker>(StringComparer.OrdinalIgnoreCase)
             {
-                { ".prg", XSharpImages.Document },
-                { ".prgx", XSharpImages.Document },
-                { ".xs", XSharpImages.Document },
+                //{ ".prg", XSharpImages.Document },
+                //{ ".prgx", XSharpImages.Document },
+                //{ ".xs", XSharpImages.Document },
+                { ".prg", Known(KnownImageIds.TextFile) },
+                { ".prgx", Known(KnownImageIds.TextFile) },
+                { ".xs", Known(KnownImageIds.TextFile) },
                 { ".xsfrm", Known(KnownImageIds.FormInstance) },
                 { ".vnfrm", Known(KnownImageIds.FormInstance) },
-                { ".xsdbs", Known(KnownImageIds.Database) },
-                { ".vndbs", Known(KnownImageIds.Database) },
+                { ".xsdbs", Known(KnownImageIds.Table) },
+                { ".vndbs", Known(KnownImageIds.Table) },
                 { ".xssql", Known(KnownImageIds.Database) },
                 { ".vnsqs", Known(KnownImageIds.Database) },
                 { ".xsmnu", Known(KnownImageIds.MainMenuControl) },
@@ -84,6 +86,7 @@ namespace XSharp.ProjectSystem.Imaging
 
         private readonly UnconfiguredProject project;
 
+
         public XSharpProjectTreePropertiesProvider(UnconfiguredProject project)
         {
             this.project = project;
@@ -95,7 +98,7 @@ namespace XSharp.ProjectSystem.Imaging
         {
             if (propertyValues.Flags.Contains(ProjectTreeFlags.ProjectRoot))
             {
-                propertyValues.Icon = XSharpImages.Project;
+                propertyValues.Icon = Known(KnownImageIds.OutlinedRectangle);
                 return;
             }
             if (propertyValues.Flags.Contains(ProjectTreeFlags.Folder) || string.IsNullOrEmpty(propertyContext.ItemName))

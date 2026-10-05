@@ -32,10 +32,10 @@ namespace XSharp.ProjectSystem
     [Guid(XSharpConstants.guidXSharpCpsProjectPkgString)]
     [ProjectTypeRegistration(
         projectTypeGuid: XSharpConstants.guidCpsProjectTypeString,
-        displayName: "XSharp (CPS)",
-        displayProjectFileExtensions: "XSharp CPS Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
+        displayName: "XSharp",
+        displayProjectFileExtensions: "XSharp Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
         defaultProjectExtension: XSharpConstants.ProjectExtension,
-        language: LanguageVsTemplate,
+        language: XSharpConstants.LanguageName,
         resourcePackageGuid: XSharpConstants.guidXSharpCpsProjectPkgString,
         Capabilities = XSharpCapabilities.ProjectTypeCapabilities,
         PossibleProjectExtensions = XSharpConstants.ProjectExtension)]
@@ -58,7 +58,6 @@ namespace XSharp.ProjectSystem
         /// Template language of the CPS project type. Deliberately different from the MPFproj "XSharp" language,
         /// so that X# project templates are not matched to both project types.
         /// </summary>
-        internal const string LanguageVsTemplate = "XSharpCps";
 
         private IVsRegisterProjectSelector projectSelectorRegistration;
         private uint projectSelectorCookie;

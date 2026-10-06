@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <RootNamespace>XSharp1</RootNamespace>
@@ -12,52 +12,20 @@
     <NamedArgs>true</NamedArgs>
     <EnforceSelf>true</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net462;net8.0</TargetFrameworks>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <NoWin32Manifest>false</NoWin32Manifest>
     <VulcanCompatibleResources>true</VulcanCompatibleResources>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Vo17>false</Vo17>
-    <Fox2>false</Fox2>
-    <Xpp1>false</Xpp1>
-    <INS>false</INS>
-    <LB>false</LB>
-    <MemVar>false</MemVar>
-    <NS>false</NS>
-    <Undeclared>false</Undeclared>
     <IncludePaths />
     <StandardDefs />
-    <InitLocals>false</InitLocals>
-    <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
-    <EnforceOverride>false</EnforceOverride>
-    <AllowOldStyleAssignments>false</AllowOldStyleAssignments>
-    <ModernSyntax>false</ModernSyntax>
+    <DefineConstants>CPS;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <NoWarn />
-    <Prefer32Bit>false</Prefer32Bit>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <DelaySign>false</DelaySign>
-    <WarningsAsErrors />
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <NoWarn />
-    <Optimize>false</Optimize>
-    <Prefer32Bit>false</Prefer32Bit>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <DelaySign>false</DelaySign>
-    <WarningsAsErrors />
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <DebuggerCommand />
-    <DebuggerCommandArguments />
-    <DebuggerWorkingDirectory />
-    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonInclude)\Constants.prg" />

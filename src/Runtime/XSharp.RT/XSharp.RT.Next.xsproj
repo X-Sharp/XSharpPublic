@@ -7,7 +7,7 @@
     <Dialect>XBaseNet</Dialect>
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net462</TargetFrameworks>
     <Vo15>true</Vo15>
   </PropertyGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net462-windows;net8.0-windows</TargetFrameworks>
     <Vo5>False</Vo5>
   </PropertyGroup>
   <ItemGroup>

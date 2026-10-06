@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
     <AssemblyName>XSharp.MacroCompiler</AssemblyName>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net462</TargetFrameworks>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -17,6 +17,7 @@
       <Name>XSharp.Core</Name>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
+    <ProjectReference Include="..\XSharp.Harbour\XSharp.Harbour.Next.xsproj" />
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT</Name>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>

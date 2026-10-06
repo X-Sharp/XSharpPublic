@@ -8,16 +8,16 @@
     <Name>MacroCompiler.Example.Next</Name>
     <Dialect>VO</Dialect>
     <LB>true</LB>
-    <Cs>false</Cs>
     <VO15>true</VO15>
     <Memvar>true</Memvar>
-    <StartupObject />
-    <Allowdot>false</Allowdot>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <NoStandardDefs>false</NoStandardDefs>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0-windows;net462-windows</TargetFrameworks>
 	<Unsafe>true</Unsafe>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.Next.csproj" />
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />

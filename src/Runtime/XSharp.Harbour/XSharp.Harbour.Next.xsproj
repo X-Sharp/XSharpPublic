@@ -7,11 +7,9 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <StartupObject />
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net462</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

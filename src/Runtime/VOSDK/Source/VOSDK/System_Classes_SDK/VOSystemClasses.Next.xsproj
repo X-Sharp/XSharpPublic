@@ -2,18 +2,9 @@
   <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
     <AssemblyName>VOSystemClasses</AssemblyName>
-    <VO4>false</VO4>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO14>false</VO14>
     <cs>True</cs>
-    <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
-    <Allowdot>false</Allowdot>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net462-windows;net8.0-windows</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj" />

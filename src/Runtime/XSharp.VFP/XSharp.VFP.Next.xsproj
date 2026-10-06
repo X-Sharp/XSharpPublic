@@ -5,17 +5,14 @@
     <AssemblyName>XSharp.VFP</AssemblyName>
     <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
-    <Unsafe>false</Unsafe>
     <NS>true</NS>
     <vo15>False</vo15>
     <VulcanCompatibleResources>true</VulcanCompatibleResources>
     <IncludePaths>$(ProjectDir)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <StartupObject />
     <EnforceSelf>true</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net462</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management">

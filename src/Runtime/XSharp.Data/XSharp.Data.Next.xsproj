@@ -10,7 +10,7 @@
     <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net462</TargetFrameworks>
     <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

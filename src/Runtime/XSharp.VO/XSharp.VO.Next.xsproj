@@ -4,12 +4,13 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.VO</RootNamespace>
     <AssemblyName>XSharp.VO</AssemblyName>
+    <UseWindowsForms>true</UseWindowsForms>
     <Dialect>VO</Dialect>
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>
     <Cs>true</Cs>
     <StartupObject />
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net462-windows;net8.0-windows</TargetFrameworks>
     <Vo15>true</Vo15>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

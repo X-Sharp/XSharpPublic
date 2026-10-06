@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-#ifndef NET5_0_OR_GREATER
+#ifndef NETNEXT
 [ASSEMBLY: AssemblyTitle("XSharp.VFP")]
 #endif
 [ASSEMBLY: AssemblyDescription("XSharp runtime DLL for the (Visual) FoxPro dialect")]

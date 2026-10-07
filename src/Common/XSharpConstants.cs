@@ -187,8 +187,6 @@ namespace XSharp
         internal const string SpecificWarnings = nameof(SpecificWarnings);
         internal const string StandardDefs = nameof(StandardDefs);
         internal const string SuppressRCWarnings = nameof(SuppressRCWarnings);
-        internal const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
-        internal const string TargetPlatformIdentifier = nameof(TargetPlatformIdentifier);
         internal const string ToolsVersion = nameof(ToolsVersion);
         internal const string TreatWarningsAsErrors = nameof(TreatWarningsAsErrors);
         internal const string Undeclared = nameof(Undeclared);
@@ -227,10 +225,10 @@ namespace XSharp
         internal const string DebugType = nameof(DebugType);
         internal const string DebuggerWorkingDirectory = nameof(DebuggerWorkingDirectory);
         internal const string EnableUnmanagedDebugging = nameof(EnableUnmanagedDebugging);
+        internal const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
+        internal const string TargetPlatformIdentifier = nameof(TargetPlatformIdentifier);
         internal const string TargetFramework = nameof(TargetFramework);
         internal const string TargetFrameworks = nameof(TargetFrameworks);
-        internal const string XTargetFrameworks = nameof(XTargetFrameworks);
-        internal const string ActiveTargetFramework = nameof(ActiveTargetFramework);
         internal const string RuntimeIdentifier = nameof(RuntimeIdentifier);
         // Assembly info properties
         internal const string AssemblyTitle = nameof(AssemblyTitle);

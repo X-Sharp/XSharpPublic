@@ -4,6 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
+using Microsoft.VisualStudio.CommandBars;
+
 using System.Windows;
 using System.Windows.Controls;
 

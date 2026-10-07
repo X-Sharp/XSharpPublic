@@ -4,6 +4,7 @@
     <AssemblyName>VOConsoleClasses</AssemblyName>
     <EnforceSelf>True</EnforceSelf>
     <TargetFrameworks>net462-windows;net8.0-windows</TargetFrameworks>
+    <Dialect>XbaseNet</Dialect>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj" />

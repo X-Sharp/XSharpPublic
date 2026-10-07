@@ -30,7 +30,7 @@ STATIC CLASS XDatabase
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
     // 3.9: added Types_File / Types_Project indexes
     // 3.10: fixed typo in view ProjectExtensionMethods
-    PRIVATE CONST CurrentDbVersion := 3.10 AS System.Double     
+    PRIVATE CONST CurrentDbVersion := 3.10 AS System.Double
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -792,6 +792,10 @@ STATIC METHOD Read(oProject AS XProject) AS VOID
                 oProject:Id := Id
                 lUpdated := TRUE
             ENDIF
+            if (! String.IsNullOrEmpty(framework))
+                cmd:CommandText := "DELETE FROM Projects where ProjectFileName = $file and FrameWork = ''"
+                cmd:ExecuteNonQuery()
+            endif
         CATCH e AS Exception
             Log("Error reading project : "+oProject:FileName+" "+oProject:Id:ToString())
             XSettings.Exception(e)

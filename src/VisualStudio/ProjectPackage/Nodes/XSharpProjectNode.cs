@@ -680,9 +680,6 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-#if DEV17
-                 typeof(XSharpGlobalUsingsPropertiesPage).GUID,
-#endif
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID

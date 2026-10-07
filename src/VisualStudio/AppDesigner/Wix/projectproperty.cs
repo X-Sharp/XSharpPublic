@@ -53,7 +53,6 @@ namespace Microsoft.VisualStudio.Project
             XSharpProjectFileConstants.DebuggerWorkingDirectory,
             XSharpProjectFileConstants.DebuggerCommand,
             XSharpProjectFileConstants.TargetFrameworks,
-            XSharpProjectFileConstants.XTargetFrameworks,
             XSharpProjectFileConstants.DebuggerWorkingDirectory
 
         };
@@ -64,7 +63,6 @@ namespace Microsoft.VisualStudio.Project
             XSharpProjectFileConstants.DefineConstants,
             XSharpProjectFileConstants.IncludeSearchPaths,
             XSharpProjectFileConstants.TargetFrameworks,
-            XSharpProjectFileConstants.XTargetFrameworks,
             XSharpProjectFileConstants.ReferencePaths
         };
 

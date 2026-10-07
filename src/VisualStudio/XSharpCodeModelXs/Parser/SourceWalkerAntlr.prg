@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING XSharp.Settings
 USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
@@ -38,12 +39,12 @@ METHOD ConvertParseTree(tree as XSharpParserRuleContext) AS LOGIC
         RETURN FALSE
     END TRY
 
-PRIVATE METHOD ExtractModifiers(ctx AS XP.IEntityContext) AS Modifiers
+PRIVATE METHOD ExtractModifiers(ctx AS object) AS Modifiers
     LOCAL mods := Modifiers.None AS Modifiers
     IF ctx == NULL
         RETURN mods
     ENDIF
-    
+
     TRY
         // Check for visibility modifiers
         VAR modifierCtx := SELF:GetModifierContext(ctx)
@@ -62,7 +63,7 @@ PRIVATE METHOD ExtractModifiers(ctx AS XP.IEntityContext) AS Modifiers
             ELSEIF text:Contains("internal")
                 mods |= Modifiers.Internal
             ENDIF
-            
+
             // Check for other modifiers
             IF text:Contains("static")
                 mods |= Modifiers.Static
@@ -95,12 +96,13 @@ PRIVATE METHOD ExtractModifiers(ctx AS XP.IEntityContext) AS Modifiers
     CATCH e AS Exception
         WriteOutputMessage("ExtractModifiers() Exception: "+e:Message)
     END TRY
-    
+
     RETURN mods
 
-PRIVATE METHOD GetModifierContext(ctx AS XP.IEntityContext) AS XSharpParserRuleContext
+PRIVATE METHOD GetModifierContext(ctx AS object) AS XSharpParserRuleContext
     // Try to get the modifiers context from the entity
     // Different entity types have different paths to modifiers
+
     IF ctx IS XP.Class_Context VAR classCtx
         RETURN classCtx:Modifiers
     ELSEIF ctx IS XP.Interface_Context VAR ifaceCtx
@@ -115,6 +117,10 @@ PRIVATE METHOD GetModifierContext(ctx AS XP.IEntityContext) AS XSharpParserRuleC
         RETURN propCtx:Modifiers
     ELSEIF ctx IS XP.FuncprocContext VAR funcCtx
         RETURN funcCtx:FuncProcModifiers
+    ELSEIF ctx IS XP.FoxclassContext VAR foxClassCtx
+        RETURN foxClassCtx:Modifiers
+    ELSEIF ctx IS XP.XppclassContext VAR xppClassCtx
+        RETURN xppClassCtx:Modifiers
     ENDIF
     RETURN NULL
 
@@ -156,9 +162,9 @@ PRIVATE METHOD DetermineKind(ctx AS XP.IEntityContext) AS Kind
         RETURN Kind.Constructor
     ELSEIF ctx IS XP.DestructorContext
         RETURN Kind.Destructor
-    ELSEIF ctx IS XP.OperatorContext
+    ELSEIF ctx IS XP.Operator_Context
         RETURN Kind.Operator
-    ELSEIF ctx IS XP.EventContext
+    ELSEIF ctx IS XP.Event_Context
         RETURN Kind.Event
     ELSEIF ctx IS XP.FuncprocContext
         RETURN Kind.Function
@@ -169,7 +175,7 @@ PRIVATE METHOD DetermineKind(ctx AS XP.IEntityContext) AS Kind
 
 METHOD ProcessNamespace(nsCtx as XP.Namespace_Context) AS VOID
     TRY
-        VAR nsName := nsCtx:Name
+        VAR nsName := nsCtx:Name:GetText()
         SELF:GetSourceRange(nsCtx, OUT VAR range, OUT VAR interval)
         VAR ns := XSourceNamespaceSymbol{nsName, range, interval, SELF:File, NULL}
         SELF:_entities:Add(ns)
@@ -193,8 +199,8 @@ METHOD ProcessType(typeCtx as XP.ITypeContext) AS VOID
         VAR typeName := SELF:GetEntityName(typeCtx)
         VAR kind := SELF:DetermineKind(typeCtx)
         VAR mods := SELF:ExtractModifiers(typeCtx)
-        SELF:GetSourceRange(typeCtx, OUT VAR range, OUT VAR interval)
-        
+        SELF:GetSourceRange((ParserRuleContext)typeCtx, OUT VAR range, OUT VAR interval)
+
         VAR xType := XSourceTypeSymbol{typeName, kind, mods, range, interval, SELF:File, NULL}
         SELF:_entities:Add(xType)
     CATCH e AS Exception
@@ -230,8 +236,8 @@ METHOD ProcessMember(memberCtx as XP.IMemberContext) AS VOID
         VAR memberName := SELF:GetEntityName(memberCtx)
         VAR kind := SELF:DetermineKind(memberCtx)
         VAR mods := SELF:ExtractModifiers(memberCtx)
-        SELF:GetSourceRange(memberCtx, OUT VAR range, OUT VAR interval)
-        
+        SELF:GetSourceRange((ParserRuleContext)memberCtx, OUT VAR range, OUT VAR interval)
+
         VAR returnType := SELF:GetReturnType(memberCtx)
         VAR xMember := XSourceMemberSymbol{memberName, kind, mods, range, interval, returnType, NULL, mods:HasFlag(Modifiers.Static)}
         SELF:_entities:Add(xMember)
@@ -254,35 +260,35 @@ PRIVATE METHOD GetReturnType(memberCtx AS XP.IMemberContext) AS STRING
 METHOD ProcessBlock(blockCtx as XP.StatementBlockContext) AS VOID
     // Process StatementBlock to generate blocks for the editor
     // Only when blockCtx.Parent is not an entity
-    if blockCtx:Parent is XP.IEntityContext
-        RETURN
-    endif
-    
-    TRY
-        SELF:GetSourceRange(blockCtx, OUT VAR range, OUT VAR interval)
-        VAR block := XSourceBlock{range, interval}
-        SELF:_blocks:Add(block)
-    CATCH e AS Exception
-        WriteOutputMessage("ProcessBlock() Exception: "+e:Message)
-        SELF:_antlrConversionFailed := TRUE
-    END TRY
+    // if blockCtx:Parent is XP.IEntityContext
+        // RETURN
+    // endif
+//
+    // TRY
+        // SELF:GetSourceRange(blockCtx, OUT VAR range, OUT VAR interval)
+        // VAR block := XSourceBlock{range, interval}
+        // SELF:_blocks:Add(block)
+    // CATCH e AS Exception
+        // WriteOutputMessage("ProcessBlock() Exception: "+e:Message)
+        // SELF:_antlrConversionFailed := TRUE
+    // END TRY
     RETURN
 
 METHOD ProcessEnum(enumCtx as XP.Enum_Context) AS VOID
     TRY
-        VAR enumName := enumCtx:Name
+        VAR enumName := enumCtx:Id:GetText()
         VAR mods := SELF:ExtractModifiers(enumCtx)
         SELF:GetSourceRange(enumCtx, OUT VAR range, OUT VAR interval)
-        
+
         VAR xEnum := XSourceTypeSymbol{enumName, Kind.Enum, mods, range, interval, SELF:File, NULL}
         SELF:_entities:Add(xEnum)
-        
+
         // Process enum members if available
         VAR members := enumCtx:enummember()
         IF members != NULL
             FOREACH VAR memberCtx IN members
-                VAR memberName := memberCtx:Name
-                SELF:GetSourceRange((XP.IEntityContext)memberCtx, OUT VAR memRange, OUT VAR memInterval)
+                VAR memberName := memberCtx:Id:GetText()
+                SELF:GetSourceRange((ParserRuleContext)memberCtx, OUT VAR memRange, OUT VAR memInterval)
                 VAR xMember := XSourceMemberSymbol{memberName, Kind.EnumMember, Modifiers.Public, memRange, memInterval, "", NULL, FALSE}
                 SELF:_entities:Add(xMember)
             NEXT
@@ -307,8 +313,8 @@ METHOD ProcessGlobalEntity(globalCtx as XP.IGlobalEntityContext) AS VOID
         VAR name := SELF:GetEntityName(globalCtx)
         VAR kind := SELF:DetermineKind(globalCtx)
         VAR mods := SELF:ExtractModifiers(globalCtx)
-        SELF:GetSourceRange(globalCtx, OUT VAR range, OUT VAR interval)
-        
+        SELF:GetSourceRange((ParserRuleContext)globalCtx, OUT VAR range, OUT VAR interval)
+
         VAR xEntity := XSourceMemberSymbol{name, kind, mods, range, interval, "", NULL, mods:HasFlag(Modifiers.Static)}
         SELF:_entities:Add(xEntity)
     CATCH e AS Exception

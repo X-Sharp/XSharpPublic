@@ -9,7 +9,6 @@
  *
  * ***************************************************************************/
 
-using Community.VisualStudio.Toolkit;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -30,14 +29,14 @@ namespace Microsoft.VisualStudio.Project
     public abstract class ProjectFactory : Microsoft.VisualStudio.Shell.Flavor.FlavoredProjectFactoryBase
     {
         #region fields
-        private Microsoft.VisualStudio.Shell.Package package;
-        private System.IServiceProvider site;
+        private Shell.Package package;
+        private IServiceProvider site;
         private static readonly IVsTaskSchedulerService taskSchedulerService  ;
 
         static ProjectFactory()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            taskSchedulerService= Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsTaskSchedulerService)) as IVsTaskSchedulerService;
+            taskSchedulerService = AsyncProjectPackage.GetGlobalService(typeof(SVsTaskSchedulerService)) as IVsTaskSchedulerService;
         }
         /// <summary>
         /// The msbuild engine that we are going to use.
@@ -55,7 +54,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return this.package;
+                return this.Package1;
             }
         }
 
@@ -92,12 +91,14 @@ namespace Microsoft.VisualStudio.Project
                 this.buildProject = value;
             }
         }
+
+        public Shell.Package Package1 { get => package; set => package = value; }
         #endregion
 
         #region ctor
         protected ProjectFactory(Microsoft.VisualStudio.Shell.Package package)
         {
-            this.package = package;
+            this.Package1 = package;
             this.site = package;
 
             // Please be aware that this methods needs that ServiceProvider is valid, thus the ordering of calls in the ctor matters.
@@ -174,7 +175,7 @@ namespace Microsoft.VisualStudio.Project
             Utilities.CheckNotNull(node, "The project failed to be created");
             node.BuildEngine = this.buildEngine;
             node.BuildProject = this.buildProject;
-            node.Package = this.package as AsyncProjectPackage;
+            node.Package = this.Package1 as AsyncProjectPackage;
             node.InitializeGlobals();
             return node;
         }
@@ -208,7 +209,7 @@ namespace Microsoft.VisualStudio.Project
         #region helpers
         private IProjectEvents GetProjectEventsProvider()
         {
-            AsyncProjectPackage projectPackage = this.package as AsyncProjectPackage;
+            AsyncProjectPackage projectPackage = this.Package1 as AsyncProjectPackage;
             Debug.Assert(projectPackage != null, "Package not inherited from framework");
             if(projectPackage != null)
             {

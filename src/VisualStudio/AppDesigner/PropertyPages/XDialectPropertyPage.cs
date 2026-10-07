@@ -4,12 +4,13 @@
 // See License.txt in the project root for license information.
 //
 
+using System.Runtime.InteropServices;
+
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+
 namespace XSharp.Project
 {
-    using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-
     /// <summary>
     /// COM-visible property page for the Dialect settings tab.
     /// </summary>
@@ -36,6 +37,8 @@ namespace XSharp.Project
             this.PerConfig = false;
         }
 
+
+		private XDialectPropertyPageXamlHost panel;
         /// <summary>
         /// Creates the panel that hosts the Dialect page controls.
         /// </summary>
@@ -45,11 +48,8 @@ namespace XSharp.Project
         /// </returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-#if DEV17
-            if (IsSdkProject)
-                return new XDialectPropertyPageXamlHost(this);
-#endif
-            return new XDialectPropertyPagePanelWinForms(this);
+            panel = new XDialectPropertyPageXamlHost(this);
+			return panel;
         }
 
         /// <summary>
@@ -63,12 +63,8 @@ namespace XSharp.Project
 
             if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
             {
-#if DEV17
                 // XAML path — notify the host which delegates to the ViewModel.
-                (PropertyPagePanel as XDialectPropertyPageXamlHost)?.NotifyDialectChanged(e.NewValue);
-#endif
-                // WinForms path — delegate directly to the panel (null-safe).
-                (PropertyPagePanel as XDialectPropertyPagePanel)?.Project_OnProjectPropertyChanged(sender, e);
+                panel?.NotifyDialectChanged(e.NewValue);
             }
         }
     }

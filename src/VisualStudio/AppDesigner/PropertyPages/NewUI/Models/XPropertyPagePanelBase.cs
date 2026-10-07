@@ -98,13 +98,11 @@ namespace XSharp.Project
         /// target framework simultaneously (multi-targeting).
         /// </summary>
         /// <remarks>
-        /// Multi-targeting is signalled by the presence of either the
-        /// <c>TargetFrameworks</c> or the XSharp-specific <c>XTargetFrameworks</c>
-        /// MSBuild property.
+        /// Multi-targeting is signalled by the presence of the 
+        /// <c>TargetFrameworks</c> MSBuild property.
         /// </remarks>
         protected bool IsMultiTargetingProject
-            => parentPropertyPage?.ProjectMgr?.GetProjectProperty(XSharpProjectFileConstants.TargetFrameworks) != null
-            || parentPropertyPage?.ProjectMgr?.GetProjectProperty(XSharpProjectFileConstants.XTargetFrameworks) != null;
+            => parentPropertyPage?.ProjectMgr?.GetProjectProperty(XSharpProjectFileConstants.TargetFrameworks) != null;
 
         // =========================================================================================
         // Protected Methods — Project property access

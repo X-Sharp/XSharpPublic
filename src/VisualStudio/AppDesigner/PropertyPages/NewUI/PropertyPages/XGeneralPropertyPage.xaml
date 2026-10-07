@@ -30,10 +30,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <!-- BoolToVisibility: true â†’ Visible, false â†’ Collapsed -->
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>
-            <!-- BoolToInverseVisibility: true â†’ Collapsed, false â†’ Visible -->
-            <local:BoolToVisibilityConverter x:Key="BoolToInverseVisibility" Invert="True"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -44,70 +40,51 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>  <!-- 0 label row -->
-                <RowDefinition Height="Auto"/>  <!-- 1 input row -->
-                <RowDefinition Height="Auto"/>  <!-- 2 label -->
-                <RowDefinition Height="Auto"/>  <!-- 3 input (framework) -->
-                <RowDefinition Height="Auto"/>  <!-- 4 label -->
-                <RowDefinition Height="Auto"/>  <!-- 5 input (dialect) -->
-                <RowDefinition Height="Auto"/>  <!-- 6 checkbox -->
-                <RowDefinition Height="Auto"/>  <!-- 7 section header -->
-                <RowDefinition Height="Auto"/>  <!-- 8 icon label -->
-                <RowDefinition Height="Auto"/>  <!-- 9 icon input -->
-                <RowDefinition Height="Auto"/>  <!-- 10 checkbox -->
-                <RowDefinition Height="Auto"/>  <!-- 11 checkbox -->
-                <RowDefinition Height="Auto"/>  <!-- 12 checkbox -->
+                <RowDefinition Height="Auto"/>
+                <!--  0 app name / namespace -->
+                <RowDefinition Height="Auto"/>
+                <!--  1 target framework / output type -->
+                <RowDefinition Height="Auto"/>
+                <!--  2 dialect / startup object -->
+                <RowDefinition Height="Auto"/>
+                <!--  3 checkbox AutoGenerate-->
+                <RowDefinition Height="Auto"/>
+                <!--  4 section header -->
+                <RowDefinition Height="Auto"/>
+                <!--  5 icon label -->
+                <RowDefinition Height="Auto"/>
+                <!--  6 icon input -->
+                <RowDefinition Height="Auto"/>
+                <!--  7 checkbox Win32 -->
+                <RowDefinition Height="Auto"/>
+                <!--  8 checkbox Native Version -->
+                <RowDefinition Height="Auto"/>
+                <!--  9 checkbox Vulcan Resources-->
             </Grid.RowDefinitions>
 
             <!-- ============================================================ -->
             <!-- LEFT COLUMN                                                   -->
             <!-- ============================================================ -->
 
-            <!-- Row 0/1: Application Name -->
-            <Label  Grid.Column="0" Grid.Row="0" Content="{Binding CaptAppName}"
-                    Margin="0,4,8,0" VerticalAlignment="Center"/>
-            <local:PropertyTextBox Grid.Column="0" Grid.Row="1"
+            <!-- Row 0: Application Name -->
+            <local:PropertyTextBox Grid.Column="0" Grid.Row="0"
+                    Label="{Binding CaptAppName}"
                     Value="{Binding AssemblyName, Mode=TwoWay}"
                     PropertyName="AssemblyName"
                     ToolTip="{Binding DescAssembly}"
                     Margin="0,2,8,0"/>
 
-            <!-- Row 2/3: Target Framework (combo for single, textbox for multi) -->
-            <Grid Margin="0,6,8,0" Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
-                  Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToInverseVisibility}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <!-- Single-target combo + reset -->
-                <local:PropertyComboBox Grid.Column="0"
-                    Label="{Binding TargetFrameworkLabel}"
+            <!-- Row 1: Target Framework -->
+            <local:PropertyComboBox Grid.Column="0" Grid.Row="1"
+                    Label="{Binding CaptTargetFramework}"
                     Items="{Binding FrameworkItems}"
                     ToolTip="{Binding DescTargetFramework}"
                     Value="{Binding TargetFramework, Mode=TwoWay}"
                     PropertyName="TargetFramework"
                     />
-                <!-- TargetOS combo + reset -->
-                <local:PropertyComboBox Grid.Column="1"
-                    Label="{Binding CaptTargetOS}"
-                    Items="{Binding RuntimeIdentifierItems}"
-                    ToolTip="{Binding DescTargetOS}"
-                    Value="{Binding RuntimeIdentifier, Mode=TwoWay}"
-                    PropertyName="RuntimeIdentifier"
-                    />
 
-            </Grid>
-            <!-- Multi-target textbox + reset -->
-            <local:PropertyTextBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
-                    Label="{Binding TargetFrameworkLabel}"
-                    Value="{Binding TargetFrameworks, Mode=TwoWay}"
-                    ToolTip="{Binding DescTargetFramework}"
-                    PropertyName="TargetFrameworks"
-                    Visibility="{Binding IsMultiTargeting, Converter={StaticResource BoolToVisibility}}"
-                    Margin="0,6,8,0"/>
-
-            <!-- Row 4/5: Dialect -->
-            <local:PropertyComboBox Grid.Column="0" Grid.Row="4" Grid.RowSpan="2"
+            <!-- Row 2: Dialect -->
+            <local:PropertyComboBox Grid.Column="0" Grid.Row="2"
                     Label="{Binding CaptDialect}"
                     Items="{Binding DialectItems}"
                     Value="{Binding Dialect, Mode=TwoWay}"
@@ -115,26 +92,26 @@
                     ToolTip="{Binding DescDialect}"
                     Margin="0,6,8,0"/>
 
-            <!-- Row 6: Auto-generate binding redirects -->
-            <local:PropertyCheckBox Grid.Column="0" Grid.Row="6"
+            <!-- Row 3: Auto-generate binding redirects -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="3"
                     Label="{Binding CaptBindingRedirects}"
                     Value="{Binding AutoGenerateBindingRedirects, Mode=TwoWay}"
                     PropertyName="AutoGenerateBindingRedirects"
                     ToolTip="{Binding DescBindingRedirects}"
                     Margin="0,8,8,0"/>
 
-            <!-- Row 7: Resources section header -->
-            <Label  Grid.Column="0" Grid.Row="7" Content="Resources:"
+            <!-- Row 4: Resources section header -->
+            <Label  Grid.Column="0" Grid.Row="4" Content="Resources:"
                     FontWeight="Bold" Margin="0,10,8,0" VerticalAlignment="Center"/>
 
-            <!-- Row 8: Icon label -->
-            <Label  Grid.Column="0" Grid.Row="8" Content="{Binding CaptIcon}"
+            <!-- Row 5: Icon label -->
+            <Label  Grid.Column="0" Grid.Row="5" Content="{Binding CaptIcon}"
                     IsEnabled="{Binding IconEnabled}"
                     ToolTip="{Binding DescIcon}"
                     Margin="0,4,8,0" VerticalAlignment="Center"/>
 
-            <!-- Row 9: Icon textbox + browse button + reset button -->
-            <Grid   Grid.Column="0" Grid.Row="9" Margin="0,2,8,0"
+            <!-- Row 6: Icon textbox + browse button + reset button -->
+            <Grid   Grid.Column="0" Grid.Row="6" Margin="0,2,8,0"
                     IsEnabled="{Binding IconEnabled}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -147,29 +124,29 @@
                 <Button  Grid.Column="1" Content="..." Width="26" Margin="4,0,0,0"
                          ToolTip="{Binding DescIcon}"
                          Click="OnBrowseIconClick"/>
-                 <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
-                          Command="{Binding ResetCommand}" CommandParameter="ApplicationIcon"
-                          Margin="4,0,0,0"/>
+                <Button  Grid.Column="2" Style="{DynamicResource ResetButtonStyle}"
+                         Command="{Binding ResetCommand}" CommandParameter="ApplicationIcon"
+                         Margin="4,0,0,0"/>
             </Grid>
 
-            <!-- Row 10: Suppress default Win32 manifest -->
-            <local:PropertyCheckBox Grid.Column="0" Grid.Row="10"
+            <!-- Row 7: Suppress default Win32 manifest -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="7"
                     Label="{Binding CaptWin32Manifest}"
                     Value="{Binding SuppressDefaultManifest, Mode=TwoWay}"
                     PropertyName="NoWin32Manifest"
                     ToolTip="{Binding DescWin32Manifest}"
                     Margin="0,8,8,0"/>
 
-            <!-- Row 11: Prefer native version -->
-            <local:PropertyCheckBox Grid.Column="0" Grid.Row="11"
+            <!-- Row 8: Prefer native version -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="8"
                     Label="{Binding CaptPreferNative}"
                     Value="{Binding PreferNativeVersion, Mode=TwoWay}"
                     PropertyName="UseNativeVersion"
                     ToolTip="{Binding DescPreferNative}"
                     Margin="0,6,8,0"/>
 
-            <!-- Row 12: Vulcan compatible managed resources -->
-            <local:PropertyCheckBox Grid.Column="0" Grid.Row="12"
+            <!-- Row 9: Vulcan compatible managed resources -->
+            <local:PropertyCheckBox Grid.Column="0" Grid.Row="9"
                     Label="{Binding CaptVulcanCompatibleResources}"
                     Value="{Binding VulcanCompatibleResources, Mode=TwoWay}"
                     PropertyName="VulcanCompatibleResources"
@@ -180,27 +157,25 @@
             <!-- RIGHT COLUMN                                                  -->
             <!-- ============================================================ -->
 
-            <!-- Row 0/1: Default Namespace -->
-            <Label  Grid.Column="1" Grid.Row="0" Content="{Binding CaptNamespace}"
-                    ToolTip="{Binding DescNamespace}"
-                    Margin="8,4,0,0" VerticalAlignment="Center"/>
-            <local:PropertyTextBox Grid.Column="1" Grid.Row="1"
+            <!-- Row 0: Default Namespace (aligned with Application Name) -->
+            <local:PropertyTextBox Grid.Column="1" Grid.Row="0"
+                    Label="{Binding CaptNamespace}"
                     Value="{Binding RootNamespace, Mode=TwoWay}"
                     PropertyName="RootNamespace"
                     ToolTip="{Binding DescNamespace}"
                     Margin="8,2,0,0"/>
 
-            <!-- Row 2/3: Output Type -->
-            <local:PropertyComboBox Grid.Column="1" Grid.Row="2" Grid.RowSpan="2"
-                    Label="Output Type:"
+            <!-- Row 1: Output Type -->
+            <local:PropertyComboBox Grid.Column="1" Grid.Row="1"
+                    Label="{Binding CaptOutputType}"
                     Items="{Binding OutputTypeItems}"
                     Value="{Binding OutputType, Mode=TwoWay}"
                     PropertyName="OutputType"
                     ToolTip="{Binding DescOutputType}"
                     Margin="8,6,0,0"/>
 
-            <!-- Row 4/5: Startup Object (aligned to Dialect rows on left) -->
-            <local:PropertyComboBox Grid.Column="1" Grid.Row="4" Grid.RowSpan="2"
+            <!-- Row 2: Startup Object (aligned to Dialect rows on left) -->
+            <local:PropertyComboBox Grid.Column="1" Grid.Row="2"
                     Label="{Binding CaptStartup}"
                     Items="{Binding StartupItems}"
                     Value="{Binding StartupObject, Mode=TwoWay}"

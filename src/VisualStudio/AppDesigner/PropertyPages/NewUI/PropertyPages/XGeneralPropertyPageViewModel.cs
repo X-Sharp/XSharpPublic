@@ -7,14 +7,8 @@
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 
-using Newtonsoft.Json.Linq;
-
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Markup;
 
 using XSharp.Settings;
 
@@ -56,7 +50,6 @@ namespace XSharp.Project
         private string _dialect;
         private string _runtimeIdentifier;
         private string _targetFramework;
-        private string _targetFrameworks;         // multi-targeting
         private string _startupObject;
         private string _applicationIcon;
         private bool   _autoGenerateBindingRedirects;
@@ -65,8 +58,6 @@ namespace XSharp.Project
         private bool   _vulcanCompatibleResources;
         private bool   _iconEnabled = true;       // disabled when RC files are present
         private bool   _startupObjectEnabled = true;
-        private bool   _isMultiTargeting;
-        private string _targetFrameworkLabel;
 
         private ObservableCollection<string> _outputTypeItems  = new ObservableCollection<string>();
         private ObservableCollection<string> _dialectItems     = new ObservableCollection<string>();
@@ -77,8 +68,6 @@ namespace XSharp.Project
         private bool _isBinding   = false;   // true while BindProperties is loading values
 
         private bool _isNotifying = false;   // true while firing Item[] refresh pulse
-
-        private bool _migrateLegacyRuntimeIdentifier = false; // true when RuntimeIdentifier holds a legacy target OS value
 
         internal const string None = "(None)";
         internal XSharpGeneralPropertyPage parent;
@@ -163,17 +152,6 @@ namespace XSharp.Project
 
             }
 
-        }
-
-        /// <summary>
-        /// Gets or sets the raw multi-targeting framework list
-        /// (e.g., "net8.0;net48").  Stored in MSBuild as <c>XTargetFrameworks</c>.
-        /// Only visible when <see cref="IsMultiTargeting"/> is <see langword="true"/>.
-        /// </summary>
-        public string TargetFrameworks
-        {
-            get => _targetFrameworks;
-            set => SetProperty(ref _targetFrameworks, value);
         }
 
         /// <summary>
@@ -266,25 +244,7 @@ namespace XSharp.Project
             set => SetProperty(ref _startupObjectEnabled, value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the project uses multi-targeting
-        /// (<c>XTargetFrameworks</c>).  Controls which target-framework UI element is visible.
-        /// </summary>
-        public bool IsMultiTargeting
-        {
-            get => _isMultiTargeting;
-            set => SetProperty(ref _isMultiTargeting, value);
-        }
 
-        /// <summary>
-        /// Gets or sets the label text for the target framework field ("Target Framework:"
-        /// for single or "Target Frameworks:" for multi-targeting).
-        /// </summary>
-        public string TargetFrameworkLabel
-        {
-            get => _targetFrameworkLabel;
-            set => SetProperty(ref _targetFrameworkLabel, value);
-        }
 
         // =========================================================================================
         // String properties — labels and tooltips from GeneralPropertyPagePanel
@@ -305,6 +265,9 @@ namespace XSharp.Project
         /// <summary>Gets the localized label text for the Suppress Win32 Manifest checkbox.</summary>
         public string CaptWin32Manifest             => GeneralPropertyPagePanel.captWin32Manifest;
 
+        public string CaptTargetFramework          => GeneralPropertyPagePanel.captTargetFramework;
+
+        public string CaptOutputType                => GeneralPropertyPagePanel.captOutputType;
         /// <summary>Gets the localized label text for the Prefer Native Version checkbox.</summary>
         public string CaptPreferNative              => GeneralPropertyPagePanel.captPreferNative;
 
@@ -387,9 +350,7 @@ namespace XSharp.Project
                 ThreadHelper.ThrowIfNotOnUIThread();
                 // Ignore pure UI-state changes — they don't represent project property edits.
                 if (e.PropertyName == nameof(IconEnabled)
-                    || e.PropertyName == nameof(StartupObjectEnabled)
-                    || e.PropertyName == nameof(IsMultiTargeting)
-                    || e.PropertyName == nameof(TargetFrameworkLabel))
+                    || e.PropertyName == nameof(StartupObjectEnabled))
                     return;
 
                 // Ignore re-entrant notifications from BindProperties load or Item[] pulse.
@@ -413,21 +374,12 @@ namespace XSharp.Project
             try
             {
                 // ---- Determine project style ----
-                bool isSdk          = IsSdkProject;
-                bool isMultiTarget  = IsMultiTargetingProject;
-                IsMultiTargeting    = isMultiTarget;
 
                 // ---- Populate combo item sources ----
                 PopulateOutputTypeItems();
                 PopulateDialectItems();
-                PopulateFrameworkItems(isSdk, isMultiTarget);
-                PopulateTargetOSItems();
+                PopulateFrameworkItems();
                 PopulateStartupItems();
-
-                // ---- Target framework label ----
-                TargetFrameworkLabel = isMultiTarget
-                    ? GeneralPropertyPagePanel.captTargetFrameworks
-                    : GeneralPropertyPagePanel.captTargetFramework;
 
                 // ---- Text fields ----
                 AssemblyName    = parentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? string.Empty;
@@ -441,42 +393,7 @@ namespace XSharp.Project
                 Dialect = parentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? string.Empty;
 
                 // ---- Target framework ----
-                if (isMultiTarget)
-                {
-                    TargetFrameworks = parentPropertyPage.GetProperty(XSharpProjectFileConstants.XTargetFrameworks) ?? string.Empty;
-                }
-                else if (isSdk)
-                {
-                    RuntimeIdentifier = None;
-                    _migrateLegacyRuntimeIdentifier = false;
-                    TargetFramework = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TargetFramework) ?? string.Empty;
-                    var elements = TargetFramework.Split('-');
-                    if (elements.Length > 1)
-                    {
-                        TargetFramework = parent.ConvertFrameworkName(elements[0]);
-                        RuntimeIdentifier = parent.ConvertRuntimeIdentifier(elements[1]);
-                    }
-                    else
-                    {
-                        // Older projects stored the target OS in the RuntimeIdentifier property.
-                        // Only migrate values that match a known platform name; leave genuine
-                        // runtime identifiers (such as "win-x64") untouched.
-                        var id = parent.GetProperty(XSharpProjectFileConstants.RuntimeIdentifier);
-                        if (!string.IsNullOrEmpty(id))
-                        {
-                            var converted = parent.ConvertRuntimeIdentifier(id);
-                            if (_runtimeIdItems.Any(item => string.Equals(item, converted, StringComparison.OrdinalIgnoreCase)))
-                            {
-                                RuntimeIdentifier = converted;
-                                _migrateLegacyRuntimeIdentifier = true;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    TargetFramework = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TargetFrameworkVersion) ?? string.Empty;
-                }
+                TargetFramework = parentPropertyPage.GetProperty(XSharpProjectFileConstants.TargetFrameworkVersion) ?? string.Empty;
 
 
                 // ---- Startup object ----
@@ -526,34 +443,7 @@ namespace XSharp.Project
 
 
             // Target framework
-            if (IsMultiTargeting)
-            {
-                SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.XTargetFrameworks, TargetFrameworks ?? string.Empty);
-            }
-            else if (IsSdkProject)
-            {
-                var fw = TargetFramework ?? string.Empty;
-                fw= parent.ConvertFrameworkName(fw);
-                if (RuntimeIdentifier != None && !string.IsNullOrEmpty(RuntimeIdentifier) &&
-                    _runtimeIdItems.Any(item => string.Equals(item, RuntimeIdentifier, StringComparison.OrdinalIgnoreCase)))
-                {
-                    var rt = RuntimeIdentifier.ToLower();
-                    // For SDK projects with a target OS, we need to write the full TFM+platform string
-                    fw = fw + "-" + rt;
-                }
-                SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.TargetFramework, fw ?? string.Empty);
-                if (_migrateLegacyRuntimeIdentifier)
-                {
-                    // remove the legacy target OS value that older versions stored in RuntimeIdentifier.
-                    // Genuine runtime identifiers (such as "win-x64") are left untouched.
-                    parentPropertyPage.ResetProperty(XSharpProjectFileConstants.RuntimeIdentifier, null);
-                    _migrateLegacyRuntimeIdentifier = false;
-                }
-            }
-            else
-            {
-                SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.TargetFrameworkVersion, TargetFramework ?? string.Empty);
-            }
+            SetPropertyIfOverriddenOrNonEmpty(XSharpProjectFileConstants.TargetFrameworkVersion, TargetFramework ?? string.Empty);
 
 
             // Startup object — convert DefaultValue sentinel back to ""
@@ -606,30 +496,13 @@ namespace XSharp.Project
         }
 
 
-        private void PopulateTargetOSItems()
-        {
-            var project = parentPropertyPage?.ProjectMgr;
-            if (project == null)
-                return;
-            _runtimeIdItems.Clear();
-            _runtimeIdItems.Add(None);
-            var converter = new RuntimeIdentifierConverter(project.BuildProject);
-            foreach (string val in converter.GetStandardValues(null))
-            {
-                if (!string.IsNullOrEmpty(val))
-                    _runtimeIdItems.Add(val);
-            }
-        }
-
         /// <summary>
         /// Populates <see cref="FrameworkItems"/> with the available target frameworks.
         /// For multi-targeting projects the combo is hidden, so the list is left empty.
         /// </summary>
-        private void PopulateFrameworkItems(bool isSdk, bool isMultiTarget)
+        private void PopulateFrameworkItems()
         {
             _frameworkItems.Clear();
-            if (isMultiTarget)
-                return;
 
             var project = parentPropertyPage?.ProjectMgr;
             if (project == null)
@@ -639,24 +512,10 @@ namespace XSharp.Project
             if (string.IsNullOrEmpty(moniker))
                 return;
 
-            if (isSdk)
+            var converter = new FrameworkNameConverter();
+            foreach (var fn in converter.GetStandardValues(null))
             {
-                if (moniker.StartsWith(".NETFramework") || moniker.StartsWith(".NETCoreApp"))
-                {
-                    var converter = new SdkFrameworkNameConverter(project.BuildProject);
-                    foreach (SdkFrameworkName fn in converter.GetStandardValues(null))
-                    {
-                        _frameworkItems.Add(fn.DisplayName);
-                    }
-                }
-            }
-            else
-            {
-                var converter = new FrameworkNameConverter();
-                foreach (var fn in converter.GetStandardValues(null))
-                {
-                    _frameworkItems.Add(fn.ToString());
-                }
+                _frameworkItems.Add(fn.ToString());
             }
         }
 

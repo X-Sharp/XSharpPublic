@@ -136,6 +136,8 @@ namespace Microsoft.VisualStudio.Project
         public const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
         public const string TargetFrameworkProfile = nameof(TargetFrameworkProfile);
         public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
+        public const string TargetFramework = nameof(TargetFramework);
+        public const string TargetFrameworks = nameof(TargetFrameworks);
         public const string IntermediateOutputPath = nameof(IntermediateOutputPath);
         public const string DocumentationFile = nameof(DocumentationFile);
         public const string FileAlignment = nameof(FileAlignment);

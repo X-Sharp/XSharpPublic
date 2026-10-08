@@ -38,12 +38,9 @@ namespace XSharp.ProjectSystem.Imaging
         private static readonly Dictionary<string, ProjectImageMoniker> ExtensionIcons =
             new Dictionary<string, ProjectImageMoniker>(StringComparer.OrdinalIgnoreCase)
             {
-                //{ ".prg", XSharpImages.Document },
-                //{ ".prgx", XSharpImages.Document },
-                //{ ".xs", XSharpImages.Document },
-                { ".prg", Known(KnownImageIds.TextFile) },
-                { ".prgx", Known(KnownImageIds.TextFile) },
-                { ".xs", Known(KnownImageIds.TextFile) },
+                { ".prg", XSharpImages.Document },
+                { ".prgx", XSharpImages.Document },
+                { ".xs", XSharpImages.Document },
                 { ".xsfrm", Known(KnownImageIds.FormInstance) },
                 { ".vnfrm", Known(KnownImageIds.FormInstance) },
                 { ".xsdbs", Known(KnownImageIds.Table) },
@@ -98,7 +95,7 @@ namespace XSharp.ProjectSystem.Imaging
         {
             if (propertyValues.Flags.Contains(ProjectTreeFlags.ProjectRoot))
             {
-                propertyValues.Icon = Known(KnownImageIds.OutlinedRectangle);
+                propertyValues.Icon = XSharpImages.Project;
                 return;
             }
             if (propertyValues.Flags.Contains(ProjectTreeFlags.Folder) || string.IsNullOrEmpty(propertyContext.ItemName))

@@ -247,7 +247,7 @@ namespace XSharp.Project
                 var dict = new ResourceDictionary
                 {
                     Source = new Uri(
-                        "pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml",
+                        "pack://application:,,,VsThemeDictionary.xaml",
                         UriKind.Absolute)
                 };
                 content.Resources.MergedDictionaries.Add(dict);

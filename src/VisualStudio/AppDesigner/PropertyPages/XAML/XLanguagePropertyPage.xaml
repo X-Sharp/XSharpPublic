@@ -28,7 +28,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/XSharp.AppDesigner2022;component/VsThemeDictionary.xaml"/>
+                <ResourceDictionary Source="VsThemeDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- BoolToVisibility: true -> Visible, false -> Collapsed -->
             <local:BoolToVisibilityConverter x:Key="BoolToVisibility"        Invert="False"/>

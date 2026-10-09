@@ -48,74 +48,91 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyPages\Enums.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\BoolToVisibilityConverter.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\IPropertyPagePanel.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XConfigSelectorViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XPropertyPagePanelBase.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XPropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <!-- WPF macro/string editor dialogs — used by SDK-style property page code-behinds -->
-    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpMacroDialogViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpSLEDialog.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpMLEDialog.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\Dialogs\XSharpBuildEventEditorDialog.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XGeneralPropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XGeneralPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XGeneralPropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XLanguagePropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XLanguagePropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XLanguagePropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XDialectPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XDialectPropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XDialectPropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XBuildPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XBuildPropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XBuildPropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <!-- Composite controls (Controls folder) -->
-    <Compile Include="PropertyPages\NewUI\Controls\PropertyCheckBox.xaml.cs">
-      <DependentUpon>PropertyCheckBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\Controls\PropertyComboBox.xaml.cs">
-      <DependentUpon>PropertyComboBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\Controls\PropertyTextBox.xaml.cs">
-      <DependentUpon>PropertyTextBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyPages\NewUI\Controls\ConfigSelectorBar.xaml.cs">
+    <Compile Include="PropertyPages\Controls\ConfigSelectorBar.xaml.cs">
       <DependentUpon>ConfigSelectorBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XBuildEventsPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XBuildEventsPropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XBuildEventsPropertyPageXamlHost.cs">
+    <Compile Include="PropertyPages\Controls\PropertyCheckBox.xaml.cs">
+      <DependentUpon>PropertyCheckBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\Controls\PropertyComboBox.xaml.cs">
+      <DependentUpon>PropertyComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\Controls\PropertyTextBox.xaml.cs">
+      <DependentUpon>PropertyTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\Enums.cs" />
+    <Compile Include="PropertyPages\Models\BoolToVisibilityConverter.cs" />
+    <Compile Include="PropertyPages\Models\IPropertyPagePanel.cs" />
+    <Compile Include="PropertyPages\Models\XConfigSelectorViewModel.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPagePanelBase.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPageXamlHost.cs" />
+    <!-- WPF macro/string editor dialogs — used by SDK-style property page code-behinds -->
+    <!-- Composite controls (Controls folder) -->
+    <Compile Include="PropertyPages\XAML\XBuildEventsPropertyPage.xaml.cs">
+      <DependentUpon>XBuildEventsPropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XBuildEventsPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XBuildEventsPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XBuildPropertyPage.xaml.cs">
+      <DependentUpon>XBuildPropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XBuildPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XBuildPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XDebugPropertyPage.xaml.cs">
+      <DependentUpon>XDebugPropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XDebugPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XDebugPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XDialectPropertyPage.xaml.cs">
+      <DependentUpon>XDialectPropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XDialectPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XDialectPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XGeneralPropertyPage.xaml.cs">
+      <DependentUpon>XGeneralPropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XGeneralPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XGeneralPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XLanguagePropertyPage.xaml.cs">
+      <DependentUpon>XLanguagePropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XLanguagePropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XLanguagePropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XPackagePropertyPage.xaml.cs">
+      <DependentUpon>XPackagePropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XPackagePropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XPackagePropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XSharpBuildEventEditorDialog.xaml.cs">
+      <DependentUpon>XSharpBuildEventEditorDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XSharpMacroDialogViewModel.cs" />
+    <Compile Include="PropertyPages\XAML\XSharpMLEDialog.xaml.cs">
+      <DependentUpon>XSharpMLEDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XAML\XSharpSLEDialog.xaml.cs">
+      <DependentUpon>XSharpSLEDialog.xaml</DependentUpon>
     </Compile>
     <!-- Package property page — WPF/XAML (SDK-style projects only) -->
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XPackagePropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XPackagePropertyPage.xaml.cs" />
-    <Compile Include="PropertyPages\NewUI\PropertyPages\XPackagePropertyPageXamlHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="PropertyPages\XGeneralPropertyPage.cs" />
     <Compile Include="PropertyPages\XGeneralPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyPages\XPackagePropertyPage.cs" />
     <Compile Include="PropertyPages\XBuildPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -267,89 +284,75 @@
     <!-- XAML resource dictionary compiled as BAML so it is addressable via pack:// URI -->
     <!-- General (Application) property page — WPF/XAML (SDK-style projects) -->
     <Page Include="..\VsThemeDictionary.xaml">
-      <Link>VsThemeDictionary.xaml</Link>
+      <Link>PropertyPages\XAML\VsThemeDictionary.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PropertyPages\NewUI\PropertyPages\XGeneralPropertyPage.xaml">
+    <Page Include="PropertyPages\Controls\ConfigSelectorBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <DependentUpon>XGeneralPropertyPage.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\Controls\PropertyCheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\Controls\PropertyComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\Controls\PropertyTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <!-- Language property page — WPF/XAML (SDK-style projects) -->
-    <Page Include="PropertyPages\NewUI\PropertyPages\XLanguagePropertyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XLanguagePropertyPage.xaml.cs</DependentUpon>
-    </Page>
     <!-- Dialect property page — WPF/XAML (SDK-style projects) -->
-    <Page Include="PropertyPages\NewUI\PropertyPages\XDialectPropertyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XDialectPropertyPage.xaml.cs</DependentUpon>
-    </Page>
     <!-- Build property page — WPF/XAML (SDK-style projects) -->
-    <Page Include="PropertyPages\NewUI\PropertyPages\XBuildPropertyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XBuildPropertyPage.xaml.cs</DependentUpon>
-    </Page>
     <!-- Debug property page — WPF/XAML (SDK-style projects) -->
-    <Page Include="PropertyPages\NewUI\PropertyPages\XDebugPropertyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XDebugPropertyPage.xaml.cs</DependentUpon>
-    </Page>
     <!-- Build Events property page — WPF/XAML (SDK-style projects) -->
-    <Page Include="PropertyPages\NewUI\PropertyPages\XBuildEventsPropertyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XBuildEventsPropertyPage.xaml.cs</DependentUpon>
-    </Page>
     <!-- Global Usings property page — WPF/XAML (SDK-style projects) -->
     <!-- Package property page — WPF/XAML (SDK-style projects only) -->
-    <Page Include="PropertyPages\NewUI\PropertyPages\XPackagePropertyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XPackagePropertyPage.xaml.cs</DependentUpon>
-    </Page>
     <!-- Composite controls (Controls folder) -->
-    <Page Include="PropertyPages\NewUI\Controls\PropertyCheckBox.xaml">
+    <Page Include="PropertyPages\XAML\XBuildEventsPropertyPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <DependentUpon>PropertyCheckBox.xaml.cs</DependentUpon>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\PropertyComboBox.xaml">
+    <Page Include="PropertyPages\XAML\XBuildPropertyPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <DependentUpon>PropertyComboBox.xaml.cs</DependentUpon>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\PropertyTextBox.xaml">
+    <Page Include="PropertyPages\XAML\XDebugPropertyPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <DependentUpon>PropertyTextBox.xaml.cs</DependentUpon>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\ConfigSelectorBar.xaml">
+    <Page Include="PropertyPages\XAML\XDialectPropertyPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <DependentUpon>ConfigSelectorBar.xaml.cs</DependentUpon>
+    </Page>
+    <Page Include="PropertyPages\XAML\XGeneralPropertyPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\XAML\XLanguagePropertyPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\XAML\XPackagePropertyPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\XAML\XSharpBuildEventEditorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\XAML\XSharpMLEDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyPages\XAML\XSharpSLEDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <!-- WPF macro/string editor dialogs -->
-    <Page Include="PropertyPages\NewUI\Dialogs\XSharpSLEDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XSharpSLEDialog.xaml.cs</DependentUpon>
-    </Page>
-    <Page Include="PropertyPages\NewUI\Dialogs\XSharpMLEDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XSharpMLEDialog.xaml.cs</DependentUpon>
-    </Page>
-    <Page Include="PropertyPages\NewUI\Dialogs\XSharpBuildEventEditorDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <DependentUpon>XSharpBuildEventEditorDialog.xaml.cs</DependentUpon>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Content Include="XSharp.AppDesigner2022.pkgdef">

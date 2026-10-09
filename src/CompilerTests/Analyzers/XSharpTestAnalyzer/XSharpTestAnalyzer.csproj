@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Minimal analyzer that is loaded by compiler tests that need the analyzer code path in the compiler
+    (for example C990). It must be built against the XSharp.CodeAnalysis.dll of the compiler that is tested,
+    so runtests.cmd builds it after the compiler and before the tests.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <XSharpCompilerDir Condition="'$(XSharpCompilerDir)' == ''">$(ArtifactsDir)Bin\xsc\Release\net472\</XSharpCompilerDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="XSharp.CodeAnalysis">
+      <HintPath>$(XSharpCompilerDir)XSharp.CodeAnalysis.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>$(XSharpCompilerDir)System.Collections.Immutable.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>$(XSharpCompilerDir)System.Memory.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

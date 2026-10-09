@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
     <AssemblyName>XSharp.MacroCompiler</AssemblyName>
-    <TargetFrameworks>net8.0;net462</TargetFrameworks>
+    <TargetFrameworks>net462;net8.0</TargetFrameworks>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>

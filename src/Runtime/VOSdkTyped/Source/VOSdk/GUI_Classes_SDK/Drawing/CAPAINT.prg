@@ -1,10 +1,10 @@
-
+#pragma options("vo6", on) // convert @ to typed ptr
 FUNCTION DIBCreateFromFile(pszFName AS PSZ) AS PTR STRICT
 	IF lCAPaintInitialized
 		RETURN PCALL(pfnDIBCreateFromFile, pszFName)
 	ENDIF
-	RETURN NULL_PTR
-
+    RETURN NULL_PTR
+    
 FUNCTION DIBCreateFromPTR(pbImage AS BYTE PTR, nSize AS INT) AS PTR STRICT
 	IF lCAPaintInitialized
 		RETURN PCALL(pfnDIBCreateFromPTR, pbImage, nSize)

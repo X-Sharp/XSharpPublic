@@ -13,8 +13,10 @@
     <TargetFrameworks>net462;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.Next.xsproj" >
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.prg" />

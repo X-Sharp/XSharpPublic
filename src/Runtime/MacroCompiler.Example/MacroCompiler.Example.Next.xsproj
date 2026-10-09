@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -12,8 +12,10 @@
     <Memvar>true</Memvar>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <NoStandardDefs>false</NoStandardDefs>
-    <TargetFrameworks>net8.0-windows;net462-windows</TargetFrameworks>
-	<Unsafe>true</Unsafe>
+    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <NoWarn>Nu1702;$(NoWarn)</NoWarn>
+    <Unsafe>true</Unsafe>
+    <CS>False</CS>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
 
 #define SYSTEM_KEYCODE 0x20000000
 USING System.Diagnostics

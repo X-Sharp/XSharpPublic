@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <RootNamespace>XSharp1</RootNamespace>
+    <RootNamespace>XSharp</RootNamespace>
     <AssemblyName>XSharp.Core</AssemblyName>
     <Dialect>Core</Dialect>
     <AZ>true</AZ>

@@ -12,7 +12,7 @@
 		<Nostandarddefs>true</Nostandarddefs>
 		<Allowdot>True</Allowdot>
 		<EnforceSelf>True</EnforceSelf>
-		<TargetFrameworks>net462-windows;net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>

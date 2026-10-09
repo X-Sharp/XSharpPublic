@@ -10,15 +10,15 @@
     <NamedArgs>True</NamedArgs>
     <Cs>true</Cs>
     <StartupObject />
-    <TargetFrameworks>net462-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;net8.0-windows</TargetFrameworks> 
     <Vo15>true</Vo15>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Props" />
 </Project>

@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.ProjectSystem;
 using XSharp.CodeDom;
 
-namespace XSharp.ProjectSystem.Imaging
+namespace XSharp.Imaging
 {
     /// <summary>
     /// Sets the X# icons in Solution Explorer, like XSharpFileNode does in MPFproj: the project node, forms and
@@ -239,5 +239,6 @@ namespace XSharp.ProjectSystem.Imaging
             }
             return null;
         }
+
     }
 }

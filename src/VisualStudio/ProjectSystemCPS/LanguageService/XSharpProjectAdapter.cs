@@ -178,12 +178,11 @@ namespace XSharp.ProjectSystem.LanguageService
                 {
                     var frameworksArray = frameworks.Split(';');
                     var first = frameworksArray.FirstOrDefault();
-                    foreach (var framework in frameworksArray)
-                    {
-                        if (!string.IsNullOrEmpty(framework))
-                            CreateModel(framework);
-                    }
-                    newModel = GetModel(first);
+                    //foreach (var framework in frameworksArray)
+                    //{
+                    //    models[framework] = null;
+                    //}
+                    newModel = CreateModel(first);
                 }
                 else
                 {
@@ -282,7 +281,7 @@ namespace XSharp.ProjectSystem.LanguageService
         /// <remarks>Call under <see cref="modelGate"/>.</remarks>
         private List<XProject> AllModels()
         {
-            var all = new List<XProject>(models.Values);
+            var all = new List<XProject>(models.Values.Where ( i => i != null));
             if (model != null && !all.Contains(model))
                 all.Add(model);
             return all;
@@ -709,8 +708,12 @@ namespace XSharp.ProjectSystem.LanguageService
                 {
                     return;
                 }
-                // Remove the primary model from the key it had (SingleTarget, or a target framework that is gone)
-                foreach (var key in models.Where(p => ReferenceEquals(p.Value, model)).Select(p => p.Key).ToList())
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    targets[i] = targets[i].Trim().ToLower();
+                }
+                var modelKeys = models.Keys.ToList(); // copy to prevent modification during enumeration
+                foreach (var key in modelKeys.Where ( k => ! targets.Contains(k.ToLower())))
                 {
                     models.Remove(key);
                     commandLines.Remove(key);
@@ -722,19 +725,7 @@ namespace XSharp.ProjectSystem.LanguageService
                 }
                 // XProject takes its TargetFramework in the constructor: replace the primary model instead of
                 // re-keying it when the project turns out to cross target.
-                if (IsCrossTargeting(newKey))
-                {
-                    closing.Add(DetachModel(model));
-                    var replacement = CreateModel(newKey);   // registers itself in models
-                    lock (gate)
-                    {
-                        model = replacement;
-                    }
-                }
-                else
-                {
-                    models[newKey] = model;
-                }
+                models[newKey] = model;
                 primaryTargetFramework = newKey;
                 XSettings.Information($"XSharpProjectAdapter: {project.FullPath}: primary code model is " +
                     (IsCrossTargeting(newKey) ? newKey : "the single target"));

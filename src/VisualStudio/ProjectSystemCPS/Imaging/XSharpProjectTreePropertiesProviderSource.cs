@@ -10,8 +10,9 @@ using System.ComponentModel.Composition;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.VisualStudio.ProjectSystem;
 using XSharp.Settings;
+using XSharp.ProjectSystem;
 
-namespace XSharp.ProjectSystem.Imaging
+namespace XSharp.Imaging
 {
     /// <summary>
     /// Supplies <see cref="XSharpProjectTreePropertiesProvider"/> to the project tree, and a new instance of it when

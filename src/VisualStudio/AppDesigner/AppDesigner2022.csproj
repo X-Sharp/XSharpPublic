@@ -66,7 +66,9 @@
     <Compile Include="PropertyPages\Models\XConfigSelectorViewModel.cs" />
     <Compile Include="PropertyPages\Models\XPropertyPagePanelBase.cs" />
     <Compile Include="PropertyPages\Models\XPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\Models\XPropertyPageXamlHost.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPageXamlHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <!-- WPF macro/string editor dialogs — used by SDK-style property page code-behinds -->
     <!-- Composite controls (Controls folder) -->
     <Compile Include="PropertyPages\XAML\XBuildEventsPropertyPage.xaml.cs">

@@ -27,6 +27,9 @@ using XSharp.Settings;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+#if DEV17
+using XSharp.Imaging;
+#endif
 namespace XSharp.Project
 {
     /// <summary>
@@ -102,7 +105,7 @@ namespace XSharp.Project
                 //return base.SupportsIconMonikers || !File.Exists(this.Url);
                 if (!File.Exists(this.Url))
                     return true;
-                return false;
+                return true;
 #else
                 return base.SupportsIconMonikers;
 #endif
@@ -119,8 +122,10 @@ namespace XSharp.Project
 #if DEV17
             if (!File.Exists(this.Url))
                 return KnownMonikers.MissingFile;
-#endif
+            return XSharpImages.DocumentImg;
+#else
             return base.GetIconMoniker(open);
+#endif
 
         }
 

@@ -47,12 +47,12 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\BoolToVisibilityConverter.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\IPropertyPagePanel.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XConfigSelectorViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XPropertyPagePanelBase.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XPropertyPageViewModel.cs" />
-    <Compile Include="PropertyPages\NewUI\Models\XPropertyPageXamlHost.cs">
+    <Compile Include="PropertyPages\Models\BoolToVisibilityConverter.cs" />
+    <Compile Include="PropertyPages\Models\IPropertyPagePanel.cs" />
+    <Compile Include="PropertyPages\Models\XConfigSelectorViewModel.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPagePanelBase.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPageViewModel.cs" />
+    <Compile Include="PropertyPages\Models\XPropertyPageXamlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <!-- WPF macro/string editor dialogs — used by SDK-style property page code-behinds -->
@@ -86,16 +86,16 @@
       <SubType>UserControl</SubType>
     </Compile>
     <!-- Composite controls (Controls folder) -->
-    <Compile Include="PropertyPages\NewUI\Controls\PropertyCheckBox.xaml.cs">
+    <Compile Include="PropertyPages\Controls\PropertyCheckBox.xaml.cs">
       <DependentUpon>PropertyCheckBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\Controls\PropertyComboBox.xaml.cs">
+    <Compile Include="PropertyPages\Controls\PropertyComboBox.xaml.cs">
       <DependentUpon>PropertyComboBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\Controls\PropertyTextBox.xaml.cs">
+    <Compile Include="PropertyPages\Controls\PropertyTextBox.xaml.cs">
       <DependentUpon>PropertyTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\NewUI\Controls\ConfigSelectorBar.xaml.cs">
+    <Compile Include="PropertyPages\Controls\ConfigSelectorBar.xaml.cs">
       <DependentUpon>ConfigSelectorBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XAML\XBuildEventsPropertyPageViewModel.cs" />
@@ -256,19 +256,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\ConfigSelectorBar.xaml">
+    <Page Include="PropertyPages\Controls\ConfigSelectorBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\PropertyCheckBox.xaml">
+    <Page Include="PropertyPages\Controls\PropertyCheckBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\PropertyComboBox.xaml">
+    <Page Include="PropertyPages\Controls\PropertyComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PropertyPages\NewUI\Controls\PropertyTextBox.xaml">
+    <Page Include="PropertyPages\Controls\PropertyTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -338,10 +338,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PropertyPages\NewUI\Dialogs\" />
-    <Folder Include="PropertyPages\NewUI\PropertyPages\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <!--
     To specify a different registry root to register your package, uncomment the TargetRegistryRoot

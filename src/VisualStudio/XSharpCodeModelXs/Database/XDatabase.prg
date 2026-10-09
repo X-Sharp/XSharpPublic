@@ -882,30 +882,30 @@ STATIC METHOD GetProjectIncludeFiles(oProject AS XProject) AS List<STRING>
 
 STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
     CHECKIFOPEN
-    IF String.IsNullOrEmpty(cFileName)
-        Log("Empty cFilename")
-        RETURN
-    ENDIF
-    Log(i"Delete Project {cFileName}")
-    BEGIN LOCK oConn
-        TRY
-            USING VAR cmd := CreateCommand("", oConn)
-            local cFramework := "" as STRING
-            if cFileName:Contains("|")
-                VAR parts := cFileName:Split('|')
-                cFileName := parts[1]
-                cFramework := parts[2]
-            endif
-            cmd:CommandText := "delete from Projects where ProjectFileName = $file and Framework = $framework"
-            cmd:Parameters:AddWithValue("$file",cFileName)
-            cmd:Parameters:AddWithValue("$framework",cFramework)
-            cmd:ExecuteNonQuery()
-        CATCH e as Exception
-            Log("Error deleting project   : "+cFileName)
-            XSettings.Exception(e)
-        END TRY
-    END LOCK
-    CommitWhenNeeded()
+    // IF String.IsNullOrEmpty(cFileName)
+        // Log("Empty cFilename")
+        // RETURN
+    // ENDIF
+    // Log(i"Delete Project {cFileName}")
+    // BEGIN LOCK oConn
+        // TRY
+            // USING VAR cmd := CreateCommand("", oConn)
+            // local cFramework := "" as STRING
+            // if cFileName:Contains("|")
+                // VAR parts := cFileName:Split('|')
+                // cFileName := parts[1]
+                // cFramework := parts[2]
+            // endif
+            // cmd:CommandText := "delete from Projects where ProjectFileName = $file and Framework = $framework"
+            // cmd:Parameters:AddWithValue("$file",cFileName)
+            // cmd:Parameters:AddWithValue("$framework",cFramework)
+            // cmd:ExecuteNonQuery()
+        // CATCH e as Exception
+            // Log("Error deleting project   : "+cFileName)
+            // XSettings.Exception(e)
+        // END TRY
+    // END LOCK
+    // CommitWhenNeeded()
 
     STATIC METHOD SaveProjectAssemblyReferences(oProject as XProject, Assemblies as List<XAssembly>) AS VOID
         CHECKIFOPEN

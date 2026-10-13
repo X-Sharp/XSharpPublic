@@ -11,7 +11,8 @@ USING System.Reflection
 INTERNAL STATIC CLASS XSharp.ConversionHelpers
     STATIC INTERNAL usCulture AS CultureInfo
     STATIC CONSTRUCTOR
-        usCulture := CultureInfo{"en-US"}
+        // useUserOverride FALSE: a changed Windows decimal/group symbol must not leak into this reference culture
+        usCulture := CultureInfo{"en-US", FALSE}
 END CLASS
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2dw/*" />

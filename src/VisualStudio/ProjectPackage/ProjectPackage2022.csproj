@@ -630,10 +630,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="XSharpDocument.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
     <None Include="FileCodeModel\Readme.md" />
     <None Include="source.extension.vsixmanifest">

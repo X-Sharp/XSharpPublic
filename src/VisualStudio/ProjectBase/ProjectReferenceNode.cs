@@ -420,7 +420,7 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             this.ReferencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
-            if (guidString == String.Empty && ! root.IsSdkProject)
+            if (guidString == String.Empty)
             {
                 guidString = Guid.NewGuid().ToString("B");
             }
@@ -429,10 +429,7 @@ namespace Microsoft.VisualStudio.Project
                 ReferencedProjectName = Path.GetFileNameWithoutExtension(referencedProjectRelativePath);
             }
 
-            // An SDK style project file does not store the guid of the referenced project, so we may
-            // not have one here, for example when the referenced project has not been loaded yet.
-            // Do not throw in that case: the node must appear in the hierarchy anyway. The guid is
-            // filled in later, see XSharpProjectNode.FixReferences() and UpdateReferencedProjectGuid().
+            // Do not throw for an invalid guid: the node must appear in the hierarchy anyway.
             if (!Guid.TryParse(guidString, out var guid))
             {
                 guid = Guid.Empty;

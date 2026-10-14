@@ -8,6 +8,7 @@ USING System.Diagnostics
 USING System.Collections
 USING System.Reflection
 USING Swf := System.Windows.Forms
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
 
 INTERNAL STATIC CLASS LVWin32
 

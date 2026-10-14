@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Design-time build rule for the CPS based X# project system.
+  Returns the Xsc command line arguments of the CompileDesignTime target (compiler switches, source files and
+  /reference: entries) without running the compiler. XSharpProjectAdapter builds the XParseOptions and the
+  assembly references of the code model from it.
+  Same shape as the CompilerCommandLineArgs rule of the managed project system, which is only available for
+  ".NET & LanguageService" projects.
+-->
+<Rule Name="XSharpCompilerCommandLineArgs"
+      DisplayName="X# Compiler Command Line Arguments"
+      PageTemplate="generic"
+      Description="X# compiler command line arguments"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext"
+                SourceType="TargetResults"
+                MSBuildTarget="CompileDesignTime"
+                ItemType="CompilerCommandLineArgs"
+                HasConfigurationCondition="False" />
+  </Rule.DataSource>
+  <StringProperty Name="Value" ReadOnly="True" Visible="False" />
+</Rule>

@@ -69,7 +69,14 @@ CLASS XProject
     PROPERTY FileName                          AS STRING GET _fileName
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
-    PROPERTY DisplayName                       AS STRING GET _projectNode?.DisplayName
+    PROPERTY DisplayName                       AS STRING
+        GET
+            if String.IsNullOrEmpty(self:_framework)
+                return _projectNode?.DisplayName
+            ENDIF
+            return _projectNode?.DisplayName + " (" + _framework + ")"
+        END GET
+    END PROPERTY
     property GlobalUsings                      AS List<STRING> GET SELF:EnsureGlobalUsings():_globalUsings
     property GlobalStaticUsings                AS List<STRING> GET SELF:EnsureGlobalUsings():_globalStaticUsing
 

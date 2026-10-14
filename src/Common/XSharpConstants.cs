@@ -22,6 +22,7 @@ namespace XSharp
         internal const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
         internal const string guidCpsProjectTypeString = "AB494DCE-A11B-4583-851E-D4A86775B3F0";
         internal const string guidProjectSelectorString = "DF89AA3B-6AE6-4971-8F78-1A03B346A7D5";
+        internal const string guidXSharpCpsProjectPkgString = "BAE3ADAE-83B3-44CC-BA79-A18F03F0D121";
         internal static readonly Guid guidXSharpProjectFactory = new Guid(guidXSharpProjectFactoryString);
         internal static readonly Guid guidVOMenuEditorFactory = new Guid(guidXSharpVOMenuEditor);
         internal static readonly Guid guidVODbServerEditorFactory = new Guid(guidXSharpVODbServerEditor);
@@ -186,8 +187,6 @@ namespace XSharp
         internal const string SpecificWarnings = nameof(SpecificWarnings);
         internal const string StandardDefs = nameof(StandardDefs);
         internal const string SuppressRCWarnings = nameof(SuppressRCWarnings);
-        internal const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
-        internal const string TargetPlatformIdentifier = nameof(TargetPlatformIdentifier);
         internal const string ToolsVersion = nameof(ToolsVersion);
         internal const string TreatWarningsAsErrors = nameof(TreatWarningsAsErrors);
         internal const string Undeclared = nameof(Undeclared);
@@ -226,10 +225,10 @@ namespace XSharp
         internal const string DebugType = nameof(DebugType);
         internal const string DebuggerWorkingDirectory = nameof(DebuggerWorkingDirectory);
         internal const string EnableUnmanagedDebugging = nameof(EnableUnmanagedDebugging);
+        internal const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
+        internal const string TargetPlatformIdentifier = nameof(TargetPlatformIdentifier);
         internal const string TargetFramework = nameof(TargetFramework);
         internal const string TargetFrameworks = nameof(TargetFrameworks);
-        internal const string XTargetFrameworks = nameof(XTargetFrameworks);
-        internal const string ActiveTargetFramework = nameof(ActiveTargetFramework);
         internal const string RuntimeIdentifier = nameof(RuntimeIdentifier);
         // Assembly info properties
         internal const string AssemblyTitle = nameof(AssemblyTitle);

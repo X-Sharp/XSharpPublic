@@ -809,7 +809,8 @@ namespace XSharp.CodeDom
             {
                 this.GenerateExpression(e.TargetObject);
                 // If we have a Type, we must use a dot as a selector
-                if (e.TargetObject.GetType() == typeof(CodeTypeReferenceExpression))
+                // (also for XCodeTypeReferenceExpression, which the parser creates, like in GeneratePropertyReferenceExpression)
+                if (e.TargetObject is CodeTypeReferenceExpression)
                 {
                     base.Output.Write(this.staticSelector);
                 }

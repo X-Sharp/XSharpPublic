@@ -24,7 +24,7 @@ namespace XSharp.Project
                 var project = await VS.Solutions.GetActiveProjectAsync();
                 var path = project.FullPath;
                 var prj = XSharpProjectNode.FindProject(path);
-                Command.Visible = prj != null && !prj.IsSdkProject;
+                Command.Visible = prj != null;
             }
         }
 

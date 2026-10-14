@@ -16,9 +16,6 @@ namespace XSharp.Project
         public const string guidProjectPackageString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
         public static Guid guidProjectPackage = new Guid(guidProjectPackageString);
 
-        public const string guidDebugTargetHandlerPackageString = "6e87cfad-6c05-4adf-9cd7-3b7943875b7c";
-        public static Guid guidDebugTargetHandlerPackage = new Guid(guidDebugTargetHandlerPackageString);
-
         public const string guidImagesString = "9f1c712d-4803-4aff-9153-28b74c34e1bf";
         public static Guid guidImages = new Guid(guidImagesString);
 
@@ -55,8 +52,6 @@ namespace XSharp.Project
         public const int idEditProjectFile = 0x010F;
         public const int idHelpOffLineChinese = 0x0110;
         public const int idGenerateWinForm = 0x0120;
-        public const int idPublishProject = 0x0121;
-        public const int idPackProject = 0x0122;
         public const int idSyncEventHandlers = 0x0123;
         public const int idSyncDesignerChanges = 0x0124;
         public const int idExporterSubMenu = 0x1030;
@@ -73,15 +68,7 @@ namespace XSharp.Project
         public const int idDebuggerToolbar = 0x2000;
         public const int idDebuggerToolbarGroup = 0x2001;
         public const int idDebuggerFrameworkSubMenu = 0x2002;
-        public const int DebugTargetMenuDebugFrameworkMenu = 0x7000;
-        public const int DebugTargetMenuDebugFrameworkGroup = 0x7001;
         public const int cmdidProjectDebugger = 0x7002;
-        public const int idFramework1 = 0x7011;
-        public const int idFramework2 = 0x7012;
-        public const int idFramework3 = 0x7013;
-        public const int idFramework4 = 0x7014;
-        public const int DebugTargetMenuControllerGroup = 0x1000;
-        public const int DebugTargetMenuControllerFooterGroup = 0x2000;
         public const int bmpXSharp = 0x0002;
         public const int bmpVO = 0x0007;
         public const int bmpFoxPro = 0x000E;

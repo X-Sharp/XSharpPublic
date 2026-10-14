@@ -13,7 +13,7 @@ using XSharp
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-#ifndef NET5_0_OR_GREATER
+#ifndef NETNEXT
 [assembly: AssemblyTitle("XSharp.Core")]
 #endif
 [assembly: AssemblyDescription("XSharp common runtime DLL (no XBase types)")]

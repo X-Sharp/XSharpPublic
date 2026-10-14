@@ -263,6 +263,12 @@ namespace XSharp.Support
                 _missingProjects.Clear();
 
             }
+            // The database is normally opened in OnBeforeOpenSolution. When this package was loaded after that
+            // event (e.g. a solution with only CPS based X# projects), it is still closed here.
+            if (!XSolution.IsOpen && !string.IsNullOrEmpty(solutionName) && File.Exists(solutionName))
+            {
+                XSolution.Open(solutionName);
+            }
             XSolution.AfterOpen();
         }
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()

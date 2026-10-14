@@ -5,6 +5,7 @@
 //
 //#define EM_FINDTEXTW			(WM_USER + 123)
 //#define EM_FINDTEXTEXW			(WM_USER + 124)
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
 
 
 /// <include file="Gui.xml" path="doc/RichEdit/*" />

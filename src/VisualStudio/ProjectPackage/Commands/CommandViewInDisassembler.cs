@@ -21,11 +21,26 @@ namespace XSharp.Project
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             var project = await VS.Solutions.GetActiveProjectAsync();
-            var path = project.FullPath;
-            var xsproject = XSolution.FindProjectByFileName(path);
-            if (xsproject != null)
+            var isCPS = project.IsCapabilityMatch("CPS");
+            string path = "";
+            if (isCPS)
             {
+                var outputPath = await project.GetAttributeAsync("TargetPath");
+                path = outputPath;
+            }
+            else
+            {
+                var fullpath = project.FullPath;
+                var xsproject = XSolution.FindProjectByFileName(fullpath);
                 path = xsproject.ProjectNode.OutputFile;
+            }
+            if (!String.IsNullOrEmpty(path))
+            {
+                if (!System.IO.File.Exists(path))
+                {
+                    await project.BuildAsync();
+                }
+
                 if (System.IO.File.Exists(path))
                 {
                     var disasm = XSettings.Disassembler;

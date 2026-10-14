@@ -3,17 +3,19 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
+
+using Microsoft.VisualStudio.Shell;
+
+using System;
+using System.ComponentModel;
+using System.Globalization;
+using System.Windows.Forms;
+
+using XSharp.Project;
+
 namespace Microsoft.VisualStudio.Project
 {
-    using Community.VisualStudio.Toolkit;
-    using Microsoft.VisualStudio.Shell;
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Globalization;
-    using System.Windows.Forms;
-    using XSharp.Project;
     /// <summary>
     /// Base WinForms panel for a project property page.
     /// Provides tag-driven property binding (controls with a <c>Tag</c> set to an MSBuild
@@ -450,25 +452,6 @@ namespace Microsoft.VisualStudio.Project
             {
                 ParentPropertyPage.SetProperty((string)tb.Tag, openFileDialog.FileName);
                 tb.Text = openFileDialog.FileName;
-            }
-        }
-        protected void showMacroDialog(TextBox tb, string caption, string filter = "")
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var form = new XSharpSLEPropertyForm();
-            if (! string.IsNullOrEmpty(filter))
-            {
-                form.Filter = filter;
-            }
-            XBuildMacroCollection mc = new XBuildMacroCollection((ProjectNode)this.ParentPropertyPage.ProjectMgr);
-            form.SetMacros(mc);
-            form.PropertyText.Text = tb.Text;
-            form.Text = caption;
-            var result = form.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                tb.Text = form.PropertyText.Text;
-                this.ParentPropertyPage.SetProperty((string)tb.Tag, tb.Text);
             }
         }
 

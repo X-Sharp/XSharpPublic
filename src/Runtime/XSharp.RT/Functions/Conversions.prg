@@ -28,7 +28,8 @@ internal static class XSharp.ConversionHelpers
     static internal usCulture as CultureInfo
     static private formatStrings as ConcurrentDictionary<int, string>
     static constructor
-        usCulture := CultureInfo{"en-US"}
+        // useUserOverride false: a changed Windows decimal/group symbol must not leak into this reference culture
+        usCulture := CultureInfo{"en-US", false}
         formatStrings := ConcurrentDictionary<int, string>{}
 
     static method GetFormatString(nLen as int, nDec as int) as string

@@ -475,9 +475,6 @@
         </Strings>
       </Button>
     </Buttons>
-    <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" />
-    </Bitmaps>
   </Commands>
   <CommandPlacements>
     <!--Group for Tools XSharp Menu-->
@@ -645,7 +642,8 @@
       <IDSymbol name="DebugTargetMenuControllerFooterGroup" value="0x2000" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{9f1c712d-4803-4aff-9153-28b74c34e1bf}">
+    <!-- Image monikers defined in XSharp.ProjectImages.imagemanifest (XSharp.ProjectImages project) -->
+    <GuidSymbol name="guidImages" value="{34382b2d-f265-42d7-88f0-3423331e7210}">
       <IDSymbol name="bmpXSharp" value="2" />
       <IDSymbol name="bmpVO" value="7" />
       <IDSymbol name="bmpFoxPro" value="14" />

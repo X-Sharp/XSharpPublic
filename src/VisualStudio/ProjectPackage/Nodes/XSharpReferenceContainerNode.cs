@@ -206,18 +206,16 @@ namespace XSharp.Project
             }
             return node;
         }
-#if DEV17
         protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {
+#if DEV17
             return KnownMonikers.ReferenceGroup;
-        }
 #else
-        // VS2019 does not have these image monikers
-        protected override bool SupportsIconMonikers => false;
-        public override int ImageIndex => XSharpImageListIndex.ReferenceGroup + XProjectNode.imageOffset;
-
+            // VS2019 does not have this image moniker
+            return XSharpImageMonikers.ReferenceGroup;
 #endif
+        }
 
         private bool isDuplicateNode(string nodeCaption, ref ReferenceNode ExistingNode)
         {

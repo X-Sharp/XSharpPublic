@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<ImageManifest xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
+  <Symbols>
+    <String Name="ImageGuid" Value="{34382b2d-f265-42d7-88f0-3423331e7210}" />
+    <ID Name="Image1" Value="1" />
+    <ID Name="Image2" Value="2" />
+    <ID Name="Image3" Value="3" />
+    <ID Name="Image4" Value="4" />
+    <ID Name="Image5" Value="5" />
+    <ID Name="Image6" Value="6" />
+    <ID Name="Image7" Value="7" />
+    <ID Name="Image8" Value="8" />
+    <ID Name="Image9" Value="9" />
+    <ID Name="Image10" Value="10" />
+    <ID Name="Image11" Value="11" />
+    <ID Name="Image12" Value="12" />
+    <ID Name="Image13" Value="13" />
+    <ID Name="Image14" Value="14" />
+    <ID Name="Image15" Value="15" />
+    <ID Name="Image16" Value="16" />
+    <ID Name="Image17" Value="17" />
+    <ID Name="Image18" Value="18" />
+    <ID Name="Image19" Value="19" />
+  </Symbols>
+  <Images>
+    <Image Guid="$(ImageGuid)" ID="1">
+      <Source Uri="$(ManifestFolder)\Image1.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="2">
+      <Source Uri="$(ManifestFolder)\Image2.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="3">
+      <Source Uri="$(ManifestFolder)\Image3.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="4">
+      <Source Uri="$(ManifestFolder)\Image4.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="5">
+      <Source Uri="$(ManifestFolder)\Image5.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="6">
+      <Source Uri="$(ManifestFolder)\Image6.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="7">
+      <Source Uri="$(ManifestFolder)\Image7.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="8">
+      <Source Uri="$(ManifestFolder)\Image8.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="9">
+      <Source Uri="$(ManifestFolder)\Image9.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="10">
+      <Source Uri="$(ManifestFolder)\Image10.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="11">
+      <Source Uri="$(ManifestFolder)\Image11.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="12">
+      <Source Uri="$(ManifestFolder)\Image12.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="13">
+      <Source Uri="$(ManifestFolder)\Image13.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="14">
+      <Source Uri="$(ManifestFolder)\Image14.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="15">
+      <Source Uri="$(ManifestFolder)\Image15.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="16">
+      <Source Uri="$(ManifestFolder)\Image16.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="17">
+      <Source Uri="$(ManifestFolder)\Image17.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="18">
+      <Source Uri="$(ManifestFolder)\Image18.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+    <Image Guid="$(ImageGuid)" ID="19">
+      <Source Uri="$(ManifestFolder)\Image19.png">
+        <Size Value="16" />
+      </Source>
+    </Image>
+  </Images>
+  <ImageLists />
+</ImageManifest>

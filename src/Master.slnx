@@ -278,6 +278,7 @@
     <Project Path="VisualStudio/CodeDomProvider/CodeDomProvider.csproj" Id="7b7d9574-66a7-4719-aa48-c2386d7bf153" />
     <Project Path="VisualStudio/CodeGenerator/CodeGenerator.xsproj" Id="b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc" />
     <Project Path="VisualStudio/Debugger.Support/Debugger.Support.csproj" Id="bbd309aa-a928-461e-b91c-7c12b1145a06" />
+    <Project Path="VisualStudio/ProjectImages/ProjectImages.csproj" Id="4c74836a-c168-414e-84dc-a2f5c363972e" />
     <Project Path="VisualStudio/VODesigners_tester/VODesigners_tester.xsproj" Id="63d22c03-1d1a-4746-8e24-7bb1248696ee" />
     <Project Path="VisualStudio/XSharpCodeModelXs/CodeModel.xsproj" Id="eed6843b-b727-4f08-aa32-ca0f48fdde3f" />
     <Project Path="VisualStudio/XSharpVoEditors/VoEditors.xsproj" Id="7619db88-6286-4ef1-8273-2a08cc8ac70e" />

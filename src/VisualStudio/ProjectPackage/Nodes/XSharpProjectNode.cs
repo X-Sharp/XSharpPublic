@@ -84,13 +84,6 @@ namespace XSharp.Project
             dependencies.Add(".vh", ".prg");
             dependencies.Add(".xh", ".prg");
             dependencies.Add(".resx", ".prg");
-            try
-            {
-                imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
-            }
-            catch (Exception)
-            {
-            }
             _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
@@ -102,7 +95,6 @@ namespace XSharp.Project
 
         #region Fields
         private XSharpProjectPackage package;
-        private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
         XSharpModel.XProject projectModel;
@@ -123,7 +115,6 @@ namespace XSharp.Project
             this.package = package;
             _cachedProjectProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
-            InitializeImageList();
             InitializeCATIDs();
 
             // Used by (at least) the AddFromTemplate in order (for eg) to have Form1.Designer.Prg depending on Form1.prg
@@ -255,22 +246,6 @@ namespace XSharp.Project
 
         internal bool IsLoading => isLoading;
         /// <summary>
-        /// Gets or sets the image list.
-        /// </summary>
-        /// <value>The image list.</value>
-        public static ImageList ImageList
-        {
-            get
-            {
-                return imageList;
-            }
-            set
-            {
-                imageList = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the XSharpPackage instance for this project.
         /// </summary>
         /// <remarks>The SDK2008 base ProjectNode class has a Package property defined,
@@ -347,17 +322,11 @@ namespace XSharp.Project
             get { return ProjectTypeName; }
         }
 
-        /// <summary>
-        /// Return an imageindex
-        /// </summary>
-        /// <value></value>
-        /// <returns></returns>
-        public override int ImageIndex
+        protected override bool SupportsIconMonikers => true;
+
+        protected override ImageMoniker GetIconMoniker(bool open)
         {
-            get
-            {
-                return imageOffset;
-            }
+            return XSharpImageMonikers.Project;
         }
 
         public override object Object
@@ -1472,15 +1441,6 @@ namespace XSharp.Project
         }
 
 
-        private void InitializeImageList()
-        {
-            imageOffset = this.ImageHandler.ImageList.Images.Count;
-
-            foreach (Image img in ImageList.Images)
-            {
-                this.ImageHandler.AddImage(img);
-            }
-        }
         /// <summary>
         /// Factory method for reference container node
         /// </summary>

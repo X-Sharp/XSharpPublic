@@ -78,32 +78,6 @@ namespace XSharp
 
     }
 
-    /// <summary>
-    /// Indexes to the embedded ImageList .bmp
-    /// </summary>
-    internal static class XSharpImageListIndex
-    {
-        // Commented out entries are now handled with an ImageMoniker
-        internal const int Project = 0;
-        internal const int Source = 1;
-        public const int Form = 2;
-        public const int Server = 3;
-        public const int FieldSpec = 4;
-        public const int Menu = 5;
-        internal const int VO = 6;
-        public const int SQLTable = 7;
-        //public const int Test = 8;
-        public const int Report = 9;
-        //public const int Reference = 10;
-        //public const int DanglingReference = 11;
-        internal const int TabOrder = 12;
-        internal const int FoxPro = 13;
-        //public const int NuGet = 14;
-        //public const int Header = 15;
-        //public const int IncludeFolder = 16;
-        internal const int ReferenceGroup = 17;   // VS2022 has an imagemoniker for this
-        internal const int MissingFile = 18;      // VS2022 has an imagemoniker for this
-    }
     internal static class XSharpProjectFileConstants
     {
         internal const string Allowdot = nameof(Allowdot);

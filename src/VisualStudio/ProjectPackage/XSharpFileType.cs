@@ -9,6 +9,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 
 using System.Collections.Generic;
 using XSharpModel;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Project;
 namespace XSharp.Project
 {
@@ -104,42 +105,29 @@ namespace XSharp.Project
             }
             return hasDesigner;
         }
-        static public int ImageIndex(string fileName)
+        static public ImageMoniker GetIconMoniker(string fileName)
         {
-            int ret ;
             switch (XFileTypeHelpers.GetFileType(fileName))
             {
                 case XFileType.SourceCode:
-                    ret = XSharpImageListIndex.Source + XProjectNode.imageOffset;
-                    break;
                 case XFileType.Header:
                 case XFileType.PreprocessorOutput:
-                    ret = XSharpImageListIndex.Source + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.Source;
                 case XFileType.VOForm:
-                    ret = XSharpImageListIndex.Form + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.Form;
                 case XFileType.VOMenu:
-                    ret = XSharpImageListIndex.Menu + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.Menu;
                 case XFileType.VODBServer:
-                    ret = XSharpImageListIndex.Server + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.Server;
                 case XFileType.VOFieldSpec:
-                    ret = XSharpImageListIndex.FieldSpec + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.FieldSpec;
                 case XFileType.VOSqlTable:
-                    ret = XSharpImageListIndex.SQLTable + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.SQLTable;
                 case XFileType.VOReport:
-                    ret = XSharpImageListIndex.Report + XProjectNode.imageOffset;
-                    break;
+                    return XSharpImageMonikers.Report;
                 default:
-                    ret = -1;
-                    break;
-
+                    return default(ImageMoniker);
             }
-            return ret;
         }
 
     }

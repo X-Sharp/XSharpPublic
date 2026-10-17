@@ -32,6 +32,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Debugger.UI" Path="|Debugger.UI|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeGenerator" Path="|CodeGenerator|" AssemblyName="|CodeGenerator;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.Support" Path="|Debugger.Support|" AssemblyName="|Debugger.Support;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectImages" Path="|ProjectImages|" AssemblyName="|ProjectImages;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.Designers.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Support" Path="|Support|" AssemblyName="|Support;AssemblyName|" />
     </Assets>

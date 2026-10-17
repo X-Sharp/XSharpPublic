@@ -98,14 +98,11 @@ namespace XSharp.Project
             {
                 if (IsForm || IsUserControl || IsNonMemberItem)
                     return true;
-#if DEV17
-                //return base.SupportsIconMonikers || !File.Exists(this.Url);
                 if (!File.Exists(this.Url))
                     return true;
-                return false;
-#else
+                if (XSharpFileType.GetIconMoniker(this.Url).Guid != Guid.Empty)
+                    return true;
                 return base.SupportsIconMonikers;
-#endif
             }
         }
         protected override ImageMoniker GetIconMoniker(bool open)
@@ -116,33 +113,20 @@ namespace XSharp.Project
                 return KnownMonikers.UserControl;
             if (IsNonMemberItem)
                 return KnownMonikers.HiddenFile;
-#if DEV17
             if (!File.Exists(this.Url))
+#if DEV17
                 return KnownMonikers.MissingFile;
+#else
+                return XSharpImageMonikers.MissingFile;
 #endif
+            var moniker = XSharpFileType.GetIconMoniker(this.Url);
+            if (moniker.Guid != Guid.Empty)
+                return moniker;
             return base.GetIconMoniker(open);
 
         }
 
-        public override int ImageIndex
-        {
-            get
-            {
-                int ret = -1;
-                if (SupportsIconMonikers)
-                    return ret;
-                if (!File.Exists(Url))
-                {
-                    return XSharpImageListIndex.MissingFile + XProjectNode.imageOffset;
-                }
-                ret = XSharpFileType.ImageIndex(this.Url);
-                if (ret == -1)
-                {
-                    ret = base.ImageIndex;
-                }
-                return ret;
-            }
-        }
+        public override int ImageIndex => SupportsIconMonikers ? NoImage : base.ImageIndex;
 
         #endregion
         protected override void DeleteFromStorage(string path)

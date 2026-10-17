@@ -339,8 +339,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\ProjectPackage\Resources\XSharpProjectImageList.bmp">
-      <Link>Resources\XSharpProjectImageList.bmp</Link>
+    <EmbeddedResource Include="..\ProjectImages\Images\Image1.png">
+      <Link>Resources\XSharpProjectIcon.png</Link>
     </EmbeddedResource>
     <Content Include="Completion\Notes.txt" />
     <Content Include="Lookup\Notes.txt" />

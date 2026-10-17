@@ -115,10 +115,10 @@ namespace XSharp.LanguageService
             _imageList.ImageSize = new Size(16, 16);
             _imageList.TransparentColor = Color.FromArgb(255, 0, 255);
             _imageList.Images.AddStrip(new Bitmap(stream));
-            // the project Icon is the first in the ImageList from the project package
+            // the project Icon is the first image from the XSharp.ProjectImages project
             projectIcon = _imageList.Images.Count;
-            stream = typeof(XSharpDropDownClient).Assembly.GetManifestResourceStream("XSharp.LanguageService.Resources.XSharpProjectImageList.bmp");
-            _imageList.Images.AddStrip(new Bitmap(stream));
+            stream = typeof(XSharpDropDownClient).Assembly.GetManifestResourceStream("XSharp.LanguageService.Resources.XSharpProjectIcon.png");
+            _imageList.Images.Add(new Bitmap(stream));
         }
 #endif
 

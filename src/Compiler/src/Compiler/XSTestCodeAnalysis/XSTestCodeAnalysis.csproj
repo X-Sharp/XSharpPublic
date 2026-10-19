@@ -21,7 +21,7 @@
     <LargeAddressAware>true</LargeAddressAware>
     <StartupObject>XSTestCodeAnalysis.Program</StartupObject>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>

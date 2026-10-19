@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>VfpCompatMetrics</RootNamespace>
     <AssemblyName>VfpCompatMetrics</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <Name>VfpCompatMetrics</Name>
     <StartupObject>VfpCompatMetrics.Program</StartupObject>
     <Dialect>Core</Dialect>

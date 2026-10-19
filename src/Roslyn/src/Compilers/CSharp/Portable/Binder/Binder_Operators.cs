@@ -203,7 +203,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             (isPredefinedOperator ? ConversionForAssignmentFlags.PredefinedOperator : ConversionForAssignmentFlags.None));
 
 #if XSHARP
-            if (Equals(left.Type, right.Type) && SyntaxFacts.IsAssignmentExpression(node.Kind()))
+            // diagnostics is BindingDiagnosticBag.Discarded (null DiagnosticBag) when a public SemanticModel
+            // query binds. This block only removes 9020 diagnostics, so without a bag there is nothing to do.
+            if (diagnostics.AccumulatesDiagnostics
+                && Equals(left.Type, right.Type) && SyntaxFacts.IsAssignmentExpression(node.Kind()))
             {
                 // clear 9020 errors for assigment expressions where left and right are of the same type
                 // but only for this location

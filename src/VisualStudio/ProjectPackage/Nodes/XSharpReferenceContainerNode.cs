@@ -37,44 +37,7 @@ namespace XSharp.Project
             path = Path.GetFullPath(path);
             var refnode = XSharpProjectNode.FindProject(path);
             bool changed = false;
-            if (parent.IsSdkProject)
-            {
-                // An SDK style project file does not store the guid and the name of the referenced project,
-                // so we resolve them here and store them in the (in memory) project element. The base
-                // ProjectReferenceNode reads them from there. BeforeSave() removes them again, so they are
-                // not written to the project file, see XSharpSdkProjectNode.Clean().
-                name = System.IO.Path.GetFileNameWithoutExtension(path);
-                guid = null;
-                if (refnode != null)
-                {
-                    guid = refnode.ProjectIDGuid.ToString("B");
-                }
-                else
-                {
-                    // Not one of our projects, or a project that has not been loaded yet
-                    var projectInfo = ProjectInfo.GetProjectInfo(path);
-                    if (projectInfo == null && parent.GetProjectGuid(path, out var foreignGuid) && foreignGuid != Guid.Empty)
-                    {
-                        projectInfo = new ProjectInfo(foreignGuid, path);
-                    }
-                    if (projectInfo != null && projectInfo.Id != Guid.Empty)
-                    {
-                        guid = projectInfo.Id.ToString("B");
-                    }
-                }
-                element.SetMetadata(ProjectFileConstants.Name, name);
-                if (string.IsNullOrEmpty(guid))
-                {
-                    // The referenced project is not available yet. The node is created without a guid and
-                    // FixReferences() completes it when the solution has finished loading.
-                    parent.HasIncompleteReferences = true;
-                }
-                else
-                {
-                    element.SetMetadata(ProjectFileConstants.Project, guid);
-                }
-            }
-            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
             {
                 // No guid, so it is probably an old style project reference
                 // In that case we need to get the guid from the project file
@@ -85,10 +48,6 @@ namespace XSharp.Project
                     element.SetMetadata(ProjectFileConstants.Project, guid);
                     element.SetMetadata(ProjectFileConstants.Name, name);
                     changed = true;
-                }
-                else
-                {
-                    parent.HasIncompleteReferences = true;
                 }
                 if (refnode != null)
                 {

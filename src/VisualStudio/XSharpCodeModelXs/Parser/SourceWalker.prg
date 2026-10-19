@@ -79,7 +79,11 @@ METHOD Lex(cSource AS STRING) AS BufferedTokenStream
     SELF:_errors := List<XError>{}
     LOCAL stream := NULL AS ITokenStream
     TRY
-        XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, (XSharpParseOptions) SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
+        var parseOptions := SELF:ParseOptions
+        if SELF:File?:Project?:ParseOptions != NULL
+            parseOptions := SELF:File:Project:ParseOptions
+        ENDIF
+        XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, (XSharpParseOptions) parseOptions , SELF, OUT stream, OUT VAR includeFiles)
         SELF:AddIncludes(includeFiles)
     CATCH e AS Exception
         WriteOutputMessage("Lex() Failed:")
@@ -158,13 +162,39 @@ INTERNAL METHOD ParseTokens(tokens AS IList<IToken> , lIncludeRegions AS LOGIC, 
         RETURN
     ENDIF
     WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
+
+    // Initialize collections for this parse
+    SELF:_entities:Clear()
+    SELF:_blocks:Clear()
+    SELF:_locals:Clear()
+
     TRY
 #ifdef USEANTLR
         var tree := SELF:AntlrParse(_source, out var stream)
-        if self:_errors:Count > 0
-
+        var useAntlr := self:_errors:Count == 0
+        if !useAntlr
             self:_errors:Clear()
+        endif
 #endif
+        VAR useManualParser := FALSE
+#ifdef USEANTLR
+        IF useAntlr
+            // Try to use the ANTLR parse tree
+            if !SELF:ConvertParseTree(tree)
+                // ConvertParseTree failed, fall back to manual parser
+                useManualParser := TRUE
+                SELF:_entities:Clear()
+                SELF:_blocks:Clear()
+            endif
+        ELSE
+            // Had parse errors, use manual parser
+            useManualParser := TRUE
+        ENDIF
+#else
+        useManualParser := TRUE
+#endif
+
+        if useManualParser
             VAR parser := XsParser{_file, SELF:ParseOptions:Dialect}
             parser:SaveToDisk := SELF:SaveToDisk
             WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" ManualParse Start")
@@ -173,11 +203,7 @@ INTERNAL METHOD ParseTokens(tokens AS IList<IToken> , lIncludeRegions AS LOGIC, 
             SELF:_entities := parser:EntityList
             SELF:_blocks   := parser:BlockList
             SELF:_locals   := parser:Locals
-#ifdef USEANTLR
-        else
-            SELF:ConvertParseTree(tree)
         endif
-#endif
     CATCH e AS Exception
         WriteOutputMessage(SELF:SourcePath)
         XSettings.Exception(e)

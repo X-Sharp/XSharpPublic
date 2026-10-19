@@ -4,8 +4,8 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-INTERNAL _DLL FUNCTION FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS PTR PASCAL:USER32.FindWindowA
-INTERNAL _DLL FUNCTION IsWindowVisible(hwnd AS PTR) AS LOGIC PASCAL:USER32.IsWindowVisible
+INTERNAL _DLL FUNCTION FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS IntPtr PASCAL:USER32.FindWindowA
+INTERNAL _DLL FUNCTION IsWindowVisible(hwnd AS IntPtr) AS LOGIC PASCAL:USER32.IsWindowVisible
 DEFINE SW_HIDE                       := 0
 DEFINE SW_NORMAL                     := 1
 

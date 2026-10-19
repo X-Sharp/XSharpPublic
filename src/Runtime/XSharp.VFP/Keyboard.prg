@@ -123,21 +123,21 @@ BEGIN NAMESPACE XSharp.VFP
 
 	    // Press the key
 
-	    ip[1].Type := 1  // 1 for keyboard
-	    ip[1].Input.wScan := 0
-	    ip[1].Input.time := 0
-	    ip[1].Input.dwExtraInfo := IntPtr.Zero
-	    ip[1].Input.wVk := (WORD) nKey
-	    ip[1].Input.dwFlags :=  0 // 0 for key press
+	    ip[1]:Type := 1  // 1 for keyboard
+	    ip[1]:Input:wScan := 0
+	    ip[1]:Input:time := 0
+	    ip[1]:Input:dwExtraInfo := IntPtr.Zero
+	    ip[1]:Input:wVk := (WORD) nKey
+	    ip[1]:Input:dwFlags :=  0 // 0 for key press
 
 	    // Release the key
 
-	    ip[2].Type := 1 // 1 for keyboard
-	    ip[2].Input.wScan := 0
-	    ip[2].Input.time := 0
-	    ip[2].Input.dwExtraInfo := IntPtr.Zero
-	    ip[2].Input.wVk := (WORD) nKey
-	    ip[2].Input.dwFlags := 2 //  2 for key release
+	    ip[2]:Type := 1 // 1 for keyboard
+	    ip[2]:Input:wScan := 0
+	    ip[2]:Input:time := 0
+	    ip[2]:Input:dwExtraInfo := IntPtr.Zero
+	    ip[2]:Input:wVk := (WORD) nKey
+	    ip[2]:Input:dwFlags := 2 //  2 for key release
 
 	    RETURN Win32.SendInput( 2 , ip,  Marshal.SizeOf ( TypeOf ( Win32.winInputXS ) ) ) == 2
 

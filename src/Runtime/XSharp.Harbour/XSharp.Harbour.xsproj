@@ -7,7 +7,7 @@
     <RootNamespace>XSharp.Harbour</RootNamespace>
     <AssemblyName>XSharp.Harbour</AssemblyName>
     <Name>XSharp.Harbour</Name>
-    <Dialect>VO</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <OutputName>XSharp.Harbour</OutputName>
     <CS>true</CS>
     <Unsafe>true</Unsafe>

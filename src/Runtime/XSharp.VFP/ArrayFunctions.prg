@@ -257,7 +257,7 @@ FUNCTION ALines ( ArrayName AS USUAL, cExpression AS STRING, nFlags := 0 AS INT,
 
     VAR separators := List<STRING>{}
 
-    IF cParseChars == NULL OR cParseChars:Length == 0
+    IF cParseChars == NULL .OR. cParseChars:Length == 0
         separators:Add(e"\r\n")
         separators:Add(e"\r")
         separators:Add(e"\n")
@@ -303,11 +303,11 @@ FUNCTION ALines ( ArrayName AS USUAL, cExpression AS STRING, nFlags := 0 AS INT,
             lIsSeparator := (nIndex % 2) == 1
         ENDIF
 
-        IF lTrim AND !lIsSeparator
+        IF lTrim .AND. !lIsSeparator
             sTemp := sTemp:Trim()
         ENDIF
 
-        IF lNoEmpty AND String.IsNullOrEmpty(sTemp) AND !lIsSeparator
+        IF lNoEmpty .AND. String.IsNullOrEmpty(sTemp) .AND. !lIsSeparator
             nIndex++
             LOOP
         ENDIF
@@ -316,7 +316,7 @@ FUNCTION ALines ( ArrayName AS USUAL, cExpression AS STRING, nFlags := 0 AS INT,
         nIndex++
     NEXT
 
-    IF !lIncludeLast AND !lNoEmpty AND finalLines:Count > 0
+    IF !lIncludeLast .AND. !lNoEmpty .AND. finalLines:Count > 0
         VAR nLastIdx := finalLines:Count - 1
         IF String.IsNullOrEmpty(finalLines[nLastIdx])
             finalLines:RemoveAt(nLastIdx)
@@ -325,7 +325,7 @@ FUNCTION ALines ( ArrayName AS USUAL, cExpression AS STRING, nFlags := 0 AS INT,
 
     VAR nRows := (DWORD)finalLines:Count
 
-    IF nRows == 0 AND !lNoEmpty
+    IF nRows == 0 .AND. !lNoEmpty
         nRows := 1
         finalLines:Add("")
     ENDIF

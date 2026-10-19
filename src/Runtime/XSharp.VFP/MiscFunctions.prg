@@ -231,7 +231,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
         END SWITCH
 
         RETURN FALSE
-    ENDFUNC
+    END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isnull/*" />
 [FoxProFunction("ISNULL", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -241,19 +241,19 @@ FUNCTION IsNull(eExpression AS USUAL) AS LOGIC
     ENDIF
 
     RETURN System.Convert.IsDBNull(eExpression)
-ENDFUNC
+END FUNCTION
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/imestatus/*" />
 [FoxProFunction("IMESTATUS", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION ImeStatus(nExpression := 0 AS LONG) AS LONG
     RETURN 0
-ENDFUNC
+END FUNCTION
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ispen/*" />
 [FoxProFunction("ISPEN", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION IsPen() AS LOGIC
     RETURN FALSE
-ENDFUNC
+END FUNCTION
 
 /// <exclude/>
 FUNCTION __VfpUnsupported(cCommand AS STRING) AS VOID

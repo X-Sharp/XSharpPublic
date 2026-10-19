@@ -490,7 +490,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXFunctionExpression([NotNull] XSharpParser.XFunctionExpressionContext context)
         {
-            NotInCore(context, context.XFunc.GetText().ToUpper() + " function");
+            NotInCore(context, context.XFunc.GetText().ToUpperInvariant() + " function");
         }
 
         public override void ExitFoxclsctor([NotNull] XSharpParser.FoxclsctorContext context)
@@ -615,7 +615,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.CharSet != null)
             {
-                var text = context.CharSet.Text.ToUpper();
+                var text = context.CharSet.Text.ToUpperInvariant();
                 if (text != "AUTO" && text != "ANSI" && text != "UNICODE")
                 {
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnExpectedExpected, context.CharSet.Text, "AUTO', 'ANSI' or 'UNICODE"));
@@ -727,8 +727,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //}
             if (isInInterface && _options.VoInitAxitMethods)
             {
-                var name = context.Sig.Id.GetText().ToLower();
-                if (name == "init" || name == "axit")
+                var name = context.Sig.Id.GetText();
+                if (string.Equals(name, "init", System.StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(name, "axit", System.StringComparison.OrdinalIgnoreCase))
                 {
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
                 }

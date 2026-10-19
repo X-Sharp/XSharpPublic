@@ -250,7 +250,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public void SetOptionFromReference(string filename)
         {
-            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
+            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLowerInvariant())
             {
                 case XSharpAssemblyNames.SdkDefines:
                     this.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
@@ -304,17 +304,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "system":
                     if (!this.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
                     {
-                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
+                        var filenameLower = filename.ToLowerInvariant();
+                        if (filenameLower.Contains("\\v2") || filenameLower.Contains("\\2."))
                         {
                             this.ExplicitOptions |= CompilerOption.ClrVersion;
                             this.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
+                        else if (filenameLower.Contains("\\v3") || filenameLower.Contains("\\3."))
                         {
                             this.ExplicitOptions |= CompilerOption.ClrVersion;
                             this.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
+                        else if (filenameLower.Contains("\\v4") || filenameLower.Contains("\\4."))
                         {
                             this.ExplicitOptions |= CompilerOption.ClrVersion;
                             this.ClrVersion = 4;
@@ -586,7 +587,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static CompilerOption Decode(string option)
         {
             // options sorted in alphabetical order
-            switch (option.ToLower())
+            switch (option.ToLowerInvariant())
             {
                 case "allowoldstyleassignments":
                     return CompilerOption.AllowOldStyleAssignments;

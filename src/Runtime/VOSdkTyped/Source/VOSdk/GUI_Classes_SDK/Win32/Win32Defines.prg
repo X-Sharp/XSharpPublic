@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
 #region defines
 DEFINE RC_RT_CURSOR                := 1
 DEFINE RC_RT_BITMAP                := 2

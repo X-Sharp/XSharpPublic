@@ -23,6 +23,10 @@ Copyright (C) XSharp BV. All rights reserved.
          is imported after this file) and is listed so the value is picked up should that order
          ever change. The output directories are added explicitly for the same reason - they are
          only appended to DefaultItemExcludes later, which is too late for the globs below. -->
+    <!-- Companion C# projects of the shadow WinForms designer ({Project}.ShadowDesigner, generated next to the
+         project folder): never part of an X# project, also not of an X# project in a parent folder.
+         Added before XSharpDefaultItemExcludes captures DefaultItemExcludes, so the globs below skip them too. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*.ShadowDesigner/**</DefaultItemExcludes>
     <XSharpDefaultItemExcludes>$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)</XSharpDefaultItemExcludes>
     <XSharpDefaultItemExcludes Condition="'$(BaseOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(BaseOutputPath)/**</XSharpDefaultItemExcludes>
     <XSharpDefaultItemExcludes Condition="'$(BaseIntermediateOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(BaseIntermediateOutputPath)/**</XSharpDefaultItemExcludes>

@@ -28,7 +28,9 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.9 AS System.Double     // 3.9: added Types_File / Types_Project indexes
+    // 3.9: added Types_File / Types_Project indexes
+    // 3.10: fixed typo in view ProjectExtensionMethods
+    PRIVATE CONST CurrentDbVersion := 3.10 AS System.Double
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -561,7 +563,7 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := " CREATE VIEW ProjectExtensionMethods as SELECT em.FullName, m.*  FROM ExtensionMethods em" + ;
+            stmt := " CREATE VIEW ProjectExtensionMethods as SELECT em.FullName, pm.*  FROM ExtensionMethods em" + ;
                 " JOIN ProjectMembers pm ON em.IdMember = pm.Id"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -790,6 +792,10 @@ STATIC METHOD Read(oProject AS XProject) AS VOID
                 oProject:Id := Id
                 lUpdated := TRUE
             ENDIF
+            if (! String.IsNullOrEmpty(framework))
+                cmd:CommandText := "DELETE FROM Projects where ProjectFileName = $file and FrameWork = ''"
+                cmd:ExecuteNonQuery()
+            endif
         CATCH e AS Exception
             Log("Error reading project : "+oProject:FileName+" "+oProject:Id:ToString())
             XSettings.Exception(e)
@@ -876,30 +882,30 @@ STATIC METHOD GetProjectIncludeFiles(oProject AS XProject) AS List<STRING>
 
 STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
     CHECKIFOPEN
-    IF String.IsNullOrEmpty(cFileName)
-        Log("Empty cFilename")
-        RETURN
-    ENDIF
-    Log(i"Delete Project {cFileName}")
-    BEGIN LOCK oConn
-        TRY
-            USING VAR cmd := CreateCommand("", oConn)
-            local cFramework := "" as STRING
-            if cFileName:Contains("|")
-                VAR parts := cFileName:Split('|')
-                cFileName := parts[1]
-                cFramework := parts[2]
-            endif
-            cmd:CommandText := "delete from Projects where ProjectFileName = $file and Framework = $framework"
-            cmd:Parameters:AddWithValue("$file",cFileName)
-            cmd:Parameters:AddWithValue("$framework",cFramework)
-            cmd:ExecuteNonQuery()
-        CATCH e as Exception
-            Log("Error deleting project   : "+cFileName)
-            XSettings.Exception(e)
-        END TRY
-    END LOCK
-    CommitWhenNeeded()
+    // IF String.IsNullOrEmpty(cFileName)
+        // Log("Empty cFilename")
+        // RETURN
+    // ENDIF
+    // Log(i"Delete Project {cFileName}")
+    // BEGIN LOCK oConn
+        // TRY
+            // USING VAR cmd := CreateCommand("", oConn)
+            // local cFramework := "" as STRING
+            // if cFileName:Contains("|")
+                // VAR parts := cFileName:Split('|')
+                // cFileName := parts[1]
+                // cFramework := parts[2]
+            // endif
+            // cmd:CommandText := "delete from Projects where ProjectFileName = $file and Framework = $framework"
+            // cmd:Parameters:AddWithValue("$file",cFileName)
+            // cmd:Parameters:AddWithValue("$framework",cFramework)
+            // cmd:ExecuteNonQuery()
+        // CATCH e as Exception
+            // Log("Error deleting project   : "+cFileName)
+            // XSettings.Exception(e)
+        // END TRY
+    // END LOCK
+    // CommitWhenNeeded()
 
     STATIC METHOD SaveProjectAssemblyReferences(oProject as XProject, Assemblies as List<XAssembly>) AS VOID
         CHECKIFOPEN

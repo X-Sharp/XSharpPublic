@@ -14,6 +14,7 @@ using System.CodeDom.Compiler;
 using Microsoft;
 using Microsoft.VisualStudio.Project;
 using XSharp.Settings;
+using XSharpModel;
 namespace XSharp.Project
 {
 
@@ -30,6 +31,8 @@ namespace XSharp.Project
     public class VSXSharpCodeDomProvider : XSharp.CodeDom.XSharpCodeDomProvider
     {
         private XSharpFileNode _fileNode;
+        // Full path of the file when there is no MPFproj file node (see the second constructor)
+        private string _filePath;
 
         // The parameterless constructor is called by the WPF designer ?
 
@@ -40,22 +43,34 @@ namespace XSharp.Project
             _projectNode = projectNode.ProjectModel;
         }
 
+        /// <summary>
+        /// For a file of a project without MPFproj file nodes (an X# project loaded by the CPS project system):
+        /// the code model project of the file and its full path.
+        /// </summary>
+        public VSXSharpCodeDomProvider(XProject project, string filePath)
+        {
+            _projectNode = project;
+            _filePath = filePath;
+        }
+
         #region helper functions
 
         private bool IsFormSubType
         {
-            get { return _fileNode.HasDesigner; }
+            get { return _fileNode != null && _fileNode.HasDesigner; }
         }
 
         private string GetFilePath()
         {
+            if (_fileNode == null)
+                return _filePath;
             return Path.Combine(Path.GetDirectoryName(_fileNode.GetMkDocument()), _fileNode.FileName);
         }
 
         private string GetDesignerFilePath()
         {
-            return Path.Combine(Path.GetDirectoryName(_fileNode.GetMkDocument()),
-                Path.GetFileNameWithoutExtension(_fileNode.FileName) +
+            return Path.Combine(Path.GetDirectoryName(GetFilePath()),
+                Path.GetFileNameWithoutExtension(GetFilePath()) +
                     ".Designer.prg");
         }
 
@@ -139,17 +154,23 @@ namespace XSharp.Project
         {
             source = XSettings.SynchronizeKeywordCase(source, filename);
 
-            XSharpFileNode node = _fileNode.FindChild(filename) as XSharpFileNode;
-            bool done = false;
-            if (node != null)
+            // assign the source to the open buffer when possible
+            string url = null;
+            if (_fileNode != null)
             {
-                // assign the source to the open buffer when possible
-                if (XDocuments.IsOpen(node.Url))
+                XSharpFileNode node = _fileNode.FindChild(filename) as XSharpFileNode;
+                url = node?.Url;
+            }
+            else
+            {
+                url = filename;
+            }
+            bool done = false;
+            if (url != null && XDocuments.IsOpen(url))
+            {
+                if (XDocuments.SetText(url, source))
                 {
-                    if (XDocuments.SetText(node.Url, source))
-                    {
-                        done = true;
-                    }
+                    done = true;
                 }
             }
             if (!done && SaveToDisk)

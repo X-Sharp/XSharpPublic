@@ -11,8 +11,11 @@ FUNCTION Start() AS VOID
 
 	? GetSystemMessage(0)
 	? GetSystemMessage(1)
-	xAssert(GetSystemMessage(0) = "The operation completed successfully.")
-	xAssert(GetSystemMessage(1) = "Incorrect function.")
+//	xAssert(GetSystemMessage(0) = "The operation completed successfully.")
+//	xAssert(GetSystemMessage(1) = "Incorrect function.")
+	// just make sure we do get some text. Actual message depends on the OS language
+	xAssert(GetSystemMessage(0):Length > 5)
+	xAssert(GetSystemMessage(1):Length > 5)
 RETURN
 
 _DLL FUNCTION TestDll(p AS PSZ) AS VOID PASCAL:KERNEL32.Nothing

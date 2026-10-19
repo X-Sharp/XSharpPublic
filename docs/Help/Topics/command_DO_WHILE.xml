@@ -26,7 +26,7 @@
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
     <para styleclass="Normal">[LOOP]</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
-    <para styleclass="Normal">END[DO]</para>
+    <para styleclass="Normal">END [DO | WHILE] | ENDDO</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;lCondition&gt;<tab />The logical control expression for the DO WHILE loop.</para>
     <para styleclass="List"></para>

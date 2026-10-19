@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 name = name.Substring(0, name.Length - 1);
             }
-            switch (name.ToLower())
+            switch (name.ToLowerInvariant())
             {
                 case "allowoldstyleassignments":
                     options.AllowOldStyleAssignments = positive;
@@ -211,7 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         value = value.Trim();
                         if (value.StartsWith("\"") && value.EndsWith("\""))
                             value = value.Substring(1, value.Length - 2);
-                        string fn = System.IO.Path.GetFileName(value).ToLower();
+                        string fn = System.IO.Path.GetFileName(value).ToLowerInvariant();
                         fn = System.IO.Path.GetFileNameWithoutExtension(fn);
                         switch (fn)
                         {
@@ -302,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             value = value.Substring(1, value.Length - 2);
                         }
                         string filename = value;
-                        if (value.IndexOf(";") != -1)
+                        if (value.IndexOf(';') != -1)
                         {
                             foreach (var fname in ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {

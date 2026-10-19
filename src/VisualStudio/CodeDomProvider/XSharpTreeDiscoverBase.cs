@@ -131,7 +131,7 @@ namespace XSharp.CodeDom
                     }
                 }
             }
-            else
+            else if (type != null)
             {
                 // not in our class, maybe in a parent class
                 var parentType = findParentType(type);

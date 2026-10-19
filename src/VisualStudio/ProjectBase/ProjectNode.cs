@@ -1001,8 +1001,6 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        public virtual bool IsSdkProject => false;
-
         /// <summary>
         /// Gets an ImageHandler for the project node.
         /// </summary>
@@ -7466,15 +7464,6 @@ namespace Microsoft.VisualStudio.Project
         public int UpdateTargetFramework(IVsHierarchy pHier, string currentTargetFramework, string newTargetFramework)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (this.IsSdkProject)
-            {
-                // Let the .NET SDK infer TargetFrameworkIdentifier/Version/Profile and the
-                // TargetPlatform* properties from the full moniker. Setting them here would
-                // suppress that inference and drop the platform suffix (e.g. net8.0-windows7.0).
-                SetProjectProperty("TargetFramework", newTargetFramework);
-                return VSConstants.S_OK;
-            }
             FrameworkName moniker = new FrameworkName(newTargetFramework);
             SetProjectProperty(ProjectFileConstants.TargetFrameworkIdentifier, moniker.Identifier);
             SetProjectProperty(ProjectFileConstants.TargetFrameworkVersion, "v" + moniker.Version);

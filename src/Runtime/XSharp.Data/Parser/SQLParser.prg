@@ -276,7 +276,7 @@ PARTIAL CLASS SQLParser
         table:Name := tableName
         if lTable .and. SELF:Expect("NAME")
             LOCAL cLongName := SELF:ConsumeAndGet():Text AS STRING
-            IF (cLongName:StartsWith('"') .AND. cLongName:EndsWith('"')) .OR. ;
+            IF (cLongName:StartsWith(e"\"") .AND. cLongName:EndsWith(e"\"")) .OR. ;
                (cLongName:StartsWith("'") .AND. cLongName:EndsWith("'"))
                 cLongName := cLongName:Substring(1, cLongName:Length - 2)
             ENDIF
@@ -377,7 +377,7 @@ PARTIAL CLASS SQLParser
         name := ""
         IF SELF:ExpectAndGet(XTokenType.ID, out var id)
             name := id:Text
-            if (name:StartsWith('"') .and. name:EndsWith('"'))
+            if (name:StartsWith(e"\"") .and. name:EndsWith(e"\""))
                 name := name:Substring(1, name:Length - 2)
             ENDIF
             RETURN TRUE

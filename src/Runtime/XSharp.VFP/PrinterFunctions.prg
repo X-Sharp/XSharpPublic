@@ -42,7 +42,7 @@ FUNCTION APrinters( ArrayName AS USUAL, nValue := 0 AS INT ) AS INT
     ENDIF
 
     RETURN (INT)nRows
-ENDFUNC
+END FUNCTION
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/pcol/*" />
 [FoxProFunction("PCOL", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];

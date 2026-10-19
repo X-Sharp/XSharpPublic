@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Generic</RootNamespace>
     <AssemblyName>Generic</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <Name>Generic</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>false</GenerateFullPaths>

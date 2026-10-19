@@ -202,16 +202,13 @@
       <Version>17.0.551</Version>
     </PackageReference>
     <PackageReference Include="MessagePack">
-      <Version>2.5.302</Version>
+      <Version>2.5.307</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>17.10.46</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Tasks.Core">
       <Version>17.10.46</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Data.Sqlite">
-      <Version>9.0.6</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IO.Redist">
       <Version>6.1.0</Version>

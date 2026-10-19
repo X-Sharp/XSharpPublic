@@ -24,7 +24,7 @@ namespace XSharp.ProjectSystem.Selection
         /// </summary>
         public static bool IsSdkProject(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(fileName))
                 return false;
             XDocument document;
             try

@@ -153,7 +153,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     }
 
     /// <summary>
-    /// "View Designer" (Shift+F7) on an X# form.
+    /// "View Code" (F7) on an X# form.and "View Designer" (Shift+F7) on an X# form.
     /// </summary>
     [ExportCommandGroup(VSConstants.CMDSETID.StandardCommandSet97_string)]
     [AppliesTo(XSharpCapabilities.XSharpCps)]
@@ -161,6 +161,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     internal sealed class XSharpShadowDesignerViewFormCommand : IAsyncCommandGroupHandler
     {
         private const long ViewForm = (long)VSConstants.VSStd97CmdID.ViewForm;
+        private const long ViewCode = (long)VSConstants.VSStd97CmdID.ViewCode;
 
         private readonly IProjectThreadingService threading;
 
@@ -173,6 +174,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         public Task<CommandStatusResult> GetCommandStatusAsync(IImmutableSet<IProjectTree> nodes, long commandId, bool focused, string commandText, CommandStatus progressiveStatus)
         {
             if (commandId == ViewForm && XSharpShadowDesignerCommands.TryGetFormFile(nodes, out _))
+                return XSharpShadowDesignerCommands.EnabledStatusAsync(commandText);
+            if (commandId == ViewCode && XSharpShadowDesignerCommands.TryGetFormFile(nodes, out _))
                 return XSharpShadowDesignerCommands.EnabledStatusAsync(commandText);
             return CommandStatusResult.Unhandled.AsTask();
         }

@@ -6,6 +6,7 @@
 // Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
 // requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
 #pragma warning disable VSTHRD010
+
 using System;
 using System.Collections.Generic;
 using System.IO;

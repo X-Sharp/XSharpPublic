@@ -82,8 +82,16 @@ namespace XSharp.Imaging
             new Regex(@"\bCLASS\s+[^\s;]+[\s;]+INHERIT\s+([A-Za-z_][\w.]*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private readonly UnconfiguredProject project;
+        static XSharpProjectTreePropertiesProvider()
+        {
+            Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnAfterCloseSolution += OnCloseSolution;
+        }
 
-
+        internal static void OnCloseSolution()
+        {
+            inferredSubTypes.Clear();
+            designerFilesByFolder.Clear();
+        }
         public XSharpProjectTreePropertiesProvider(UnconfiguredProject project)
         {
             this.project = project;

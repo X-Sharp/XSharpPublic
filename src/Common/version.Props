@@ -3,11 +3,11 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <AssemblyVersion>3.0</AssemblyVersion>
-    <FileVersion>3.0.2.0</FileVersion>
+    <FileVersion>3.1.0.0</FileVersion>
     <Company>XSharp BV</Company>
     <Product>XSharp</Product>
     <Copyright>Copyright (c) XSharp BV 2015-2026.</Copyright>
-    <InformationalVersion>XSharp XSharp Gaia (Γαῖα) Release</InformationalVersion>
+    <InformationalVersion>XSharp XSharp Empordà Release</InformationalVersion>
   </PropertyGroup>
 </Project>
 

@@ -13,8 +13,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocSpanish|AnyCPU'" >
   </PropertyGroup>
   <PropertyGroup>
-    <!-- Adjusted for X# 3: output to Net46 folder-->
-    <OutputPath>$(OutputPath)\net462\</OutputPath>
+    <!-- Adjusted for X# 3.1: output to Net47 folder-->
+    <OutputPath>$(OutputPath)\net47\</OutputPath>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>

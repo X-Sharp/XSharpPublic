@@ -11,7 +11,7 @@
     <Unsafe>True</Unsafe>
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />

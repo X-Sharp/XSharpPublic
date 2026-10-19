@@ -13,7 +13,8 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <ActiveTargetFramework>net47</ActiveTargetFramework>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

@@ -12,7 +12,7 @@
     <Memvar>true</Memvar>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <NoStandardDefs>false</NoStandardDefs>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
     <NoWarn>Nu1702;$(NoWarn)</NoWarn>
     <Unsafe>true</Unsafe>
     <CS>False</CS>

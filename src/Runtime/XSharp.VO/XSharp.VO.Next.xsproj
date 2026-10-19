@@ -9,9 +9,10 @@
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>
     <Cs>true</Cs>
-    <StartupObject />
-    <TargetFrameworks>net462;net8.0-windows</TargetFrameworks> 
-    <Vo15>true</Vo15>
+    <StartupObject /> 
+    <Vo15>true</Vo15> 
+    <ActiveTargetFramework>net47</ActiveTargetFramework> 
+    <TargetFrameworks>net47;net8.0-windows</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

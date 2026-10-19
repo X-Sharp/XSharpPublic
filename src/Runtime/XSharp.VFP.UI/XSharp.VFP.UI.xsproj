@@ -40,7 +40,7 @@
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>$(NoWarn);$(DisabledWarnings);108,114</NoWarn>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
     <IncludePaths>$(IncludePaths);$(ProjectDir)..\XSharp.VFP;$(ProjectDir)\Headers</IncludePaths>
     <NamedArgs>true</NamedArgs>

@@ -7,8 +7,8 @@
     <Dialect>XBaseNet</Dialect>
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
     <Vo15>true</Vo15>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Types\psznew.prg" />

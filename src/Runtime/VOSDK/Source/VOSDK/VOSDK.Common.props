@@ -6,7 +6,7 @@
 	<VOSdkDir>$(MSBuildThisFileDirectory)</VOSdkDir>
     <OutputType>Library</OutputType>
     <RootNamespace>VO</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <Nostandarddefs>true</Nostandarddefs>
     <SignAssembly>true</SignAssembly>

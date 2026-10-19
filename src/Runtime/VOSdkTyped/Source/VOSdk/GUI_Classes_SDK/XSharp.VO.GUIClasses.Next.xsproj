@@ -10,7 +10,7 @@
     <Ins>true</Ins>
     <vo15>true</vo15>
     <EnforceSelf>true</EnforceSelf>
-    <TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0-windows</TargetFrameworks>
     <NoWarn>165;168;NU1702;$(NoWarn)</NoWarn>
     <AZ>false</AZ>
     <VO7>True</VO7>

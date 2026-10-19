@@ -8,7 +8,7 @@
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
     <VO3>True</VO3>
     <Dialect>XBaseNet</Dialect>
     <VO4>True</VO4>

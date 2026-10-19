@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\VOSDK.Props" />
@@ -16,7 +16,7 @@
     <VO10>false</VO10>
     <VO14>false</VO14>
     <VO7>false</VO7>
-    <VO15>False</VO15>
+    <Dialect>XBaseNet</Dialect>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo5>False</Vo5>

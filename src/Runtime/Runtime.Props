@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Specific targets for Framework type projects-->
 <Project>
-
   <Import Project="Runtime.Common.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
   </PropertyGroup>
@@ -14,9 +13,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocSpanish|AnyCPU'" >
   </PropertyGroup>
   <PropertyGroup>
-    <!-- Adjusted for X# 3: output to Net46 folder-->
+    <!-- Adjusted for X# 3.1: output to Net47 folder-->
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-   <OutputPath>$(BaseOutputPath)\$(Configuration)\net462\</OutputPath>
+   <OutputPath>$(BaseOutputPath)\$(Configuration)\net47\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>

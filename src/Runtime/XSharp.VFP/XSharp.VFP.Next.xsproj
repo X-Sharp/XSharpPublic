@@ -12,7 +12,8 @@
     <Nostandarddefs>true</Nostandarddefs>
     <EnforceSelf>true</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <ActiveTargetFramework>net47</ActiveTargetFramework>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management">

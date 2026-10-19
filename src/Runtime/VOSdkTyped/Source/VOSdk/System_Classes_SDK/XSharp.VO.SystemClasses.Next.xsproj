@@ -12,7 +12,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
     <Dialect>XBaseNet</Dialect>
     <InitLocals>True</InitLocals>
     <VO4>False</VO4>

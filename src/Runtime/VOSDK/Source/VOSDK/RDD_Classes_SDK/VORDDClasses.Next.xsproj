@@ -3,7 +3,8 @@
   <PropertyGroup>
     <AssemblyName>VORDDClasses</AssemblyName>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <Nowarn>NU1702;$(NoWarn)</Nowarn>
     <Dialect>XbaseNet</Dialect>
   </PropertyGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@
     <NamedArgs>true</NamedArgs>
     <EnforceSelf>true</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <NoWin32Manifest>false</NoWin32Manifest>
     <VulcanCompatibleResources>true</VulcanCompatibleResources>

@@ -125,7 +125,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			nRet := nIndex
 			oStmt:ErrInfo:ErrorFlag := FALSE
 		ENDIF
-		RETURN (LONG)nRet
+		RETURN nRet
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.FieldPut/*" />

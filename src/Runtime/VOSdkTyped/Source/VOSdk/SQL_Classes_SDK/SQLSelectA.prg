@@ -201,7 +201,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
             IF ! SELF:__ForceOpen()
                 RETURN 0
             ENDIF
-            RETURN SELF:nCurrentRow+1
+            RETURN (DWORD) (SELF:nCurrentRow+1)
         END GET
     END PROPERTY
 

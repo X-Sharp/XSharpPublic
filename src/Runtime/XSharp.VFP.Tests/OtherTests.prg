@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             RELEASE ALL
             LOCAL c AS STRING
             Assert.ThrowsAny<Exception>( { => c := ccc })
-
+            Assert.True(Empty(c))
             ccc := "testing"
             ppp := 100
             RELEASE ALL LIKE "c?c"

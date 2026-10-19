@@ -417,7 +417,7 @@ method GoTo( nRecordNumber as DWORD) as logic
                             __DBSGoBottom( nTries )
                             __DBSSkip( 1, nTries )
                         else
-                            __DBSGoTo( (int) nCurrentRecord, nTries )
+                            __DBSGoTo( nCurrentRecord, nTries )
                         endif
                     endif
                 endif

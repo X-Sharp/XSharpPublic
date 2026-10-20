@@ -46,7 +46,12 @@ internal static class XSharp.ConversionHelpers
             cFormat := "0"
         endif
         cFormat := cFormat:PadLeft(nLen, c'#')
-        cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
+
+#ifdef NET6_0_OR_GREATER
+        // 3 sections: positive;negative;zero. A negative value that rounds to zero uses the zero section,
+        // otherwise .NET Core 3.0+ returns "-0.00" (.NET Framework / VO return "0.00")
+        cFormat := "{0," + nLen:ToString()+":"+cFormat+";-"+cFormat+";"+cFormat+"}"
+#endif
         formatStrings:TryAdd(nKey, cFormat)
         return cFormat
 

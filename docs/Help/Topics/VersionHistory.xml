@@ -14,7 +14,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue</para>
-    <para styleclass="Heading1">Changes in XSharp 3.02</para>
+    <para styleclass="Heading1">Changes in XSharp 3.1</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">New Features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -31,6 +31,8 @@
       <li styleclass="List1">Fixed parser state corruption in shared compiler-server builds (/shared), which could cause random dialect and reference errors during parallel builds (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2076" target="_blank">#2076</link>)</li>
       <li styleclass="List1">Fixed primary-constructor edge cases, including empty primary constructors and preserving the primary constructor when a CLIPPER constructor is added</li>
       <li styleclass="List1">Fixed duplicate import warnings for namespaces supplied through ImplicitNameSpace/ClassLibrary attributes, and corrected problems with LOCAL ARRAY, PUBLIC ARRAY and DIMENSION declarations</li>
+      <li styleclass="List1">Fixed a NullReferenceException in SemanticModel queries on compound assignments (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2096" target="_blank">#2096</link>)</li>
+      <li styleclass="List1">Fixed an IndexOutOfRangeException in the compiler when analyzers and .editorconfig files are used (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2098" target="_blank">#2098</link>)</li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -57,6 +59,8 @@
       <li styleclass="List1">Fixed Dbc.FindTable() to accept either an alias or a file name, and corrected long field-name collisions in DBFs</li>
       <li styleclass="List1">Fixed several XSharp.VFP.UI problems in grids, record-pointer preservation, transparent controls, shapes, shortcut popups, property casing, InputMask and Format handling, and icon and form behavior</li>
       <li styleclass="List1">Fixed wrong file offsets during shared file access on .NET 6 and later (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2082" target="_blank">#2082</link>)</li>
+      <li styleclass="List1">Fixed field and member lookup in __FieldGetWa2 for objects that support dynamic properties, and improved the error that is thrown when a variable cannot be found (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2092" target="_blank">#2092</link>)</li>
+      <li styleclass="List1">Fixed the usCulture used for conversions so it ignores Windows user overrides; this fixes Val(), Str() and Transform() when the user has a custom decimal symbol or digit grouping (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2100" target="_blank">#2100</link>)</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">New Features</para>
@@ -65,6 +69,7 @@
       <li styleclass="List1">Added SDK-style project reference management in the IDE, including &quot;Add Assembly Reference&quot;, &quot;Add Project Reference&quot; and Dependencies-node integration (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2041" target="_blank">#2041</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2048" target="_blank">#2048</link>)</li>
       <li styleclass="List1">Added Target OS and runtime-identifier support to the SDK-style project property pages for modern .NET targets</li>
       <li styleclass="List1">Updated Visual Studio integration for the new FoxPro and XBaseNet compiler options, including /fox3-aware settings and parser support for newer language constructs</li>
+      <li styleclass="List1">(Experimental) Added a CPS-based project system for SDK-style X# projects, with the XBaseNet dialect available in the project property pages (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2094" target="_blank">#2094</link>)</li>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Added support for primary constructors and static interface constructors</li>

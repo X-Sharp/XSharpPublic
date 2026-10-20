@@ -20,12 +20,17 @@ namespace XSharp.Project
         protected override void BeforeQueryStatus(EventArgs e)
         {
             base.BeforeQueryStatus(e);
+#if DEV17
             ThreadHelper.JoinableTaskFactory.Run(CheckAvailabilityAsync);
+#else
+            Command.Visible = false;
+#endif
         }
-
+#if DEV17
         private async Task CheckAvailabilityAsync()
         {
             Command.Visible = await Commands.ProjectIsXSharpProjectAsync();
+
             if (Command.Visible)
             {
                 var project = await VS.Solutions.GetActiveProjectAsync();
@@ -34,7 +39,6 @@ namespace XSharp.Project
                 Command.Visible = prj != null;
             }
         }
-
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             string converterpath = Commands.GetXsPath(@"Converter\Converter.Exe");
@@ -133,5 +137,6 @@ namespace XSharp.Project
                     return exitCode;
                 }, TaskScheduler.Default);
         }
+#endif
     }
 }

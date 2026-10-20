@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-25T20:37:35.612+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-20T13:48:31.250Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 运行时(Runtime)</title>
   <body>
     <header>
@@ -21,7 +21,7 @@
       <li styleclass="Normal">我们希望代码在 &quot;安全&quot; 模式下编译。在非严格需要的情况下，不要使用不安全的代码。这里最大的问题/挑战是 PTR 类型。有了 PTR，即使你不 &quot;拥有&quot; 内存，你也可以直接访问内存和读/写内存。然而，同样的 PTR 类型也被用作 &quot;唯一标识符&quot;，例如在低级文件 i/o 和图形用户界面类中的窗口和控制句柄。这些 PTR 值从不用于读/写内存，而是类似于对象引用。我们决定使用 .Net IntPtr 类型来处理这类句柄。当然，编译器可以在 PTR 和 IntPtr 之间进行透明转换。</li>
       <li styleclass="Normal">我们希望证明 X# 语言是一流的 .Net 开发语言。这就是我们决定用 X# 编写 X# 运行时的原因。通过这样做，我们还创建了一个大型代码库来测试编译器。因此，这是一个双赢的局面。</li>
       <li styleclass="Normal">我们希望运行时是线程安全的。每个线程都有自己的 &quot;全局&quot; 状态和开放工作区列表。当一个新线程启动时，它将继承主线程的状态，但不会继承主线程的工作区。</li>
-      <li styleclass="Normal">目前，X# Runtime 是根据 .Net Framework 4.6 编译的。</li>
+      <li styleclass="Normal">目前，X# Runtime 是根据 .Net Framework 4.7 编译的。</li>
     </list>
     <para styleclass="Heading2">X# 运行时中的程序集</para>
     <para styleclass="Normal"></para>
@@ -54,7 +54,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -68,7 +68,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -82,7 +82,7 @@
           <para styleclass="Normal">X# non - core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -96,7 +96,7 @@
           <para styleclass="Normal">X# core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -110,7 +110,7 @@
           <para styleclass="Normal">X# VO 和 X# Vulcan</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -124,7 +124,7 @@
           <para styleclass="Normal">X# XPP</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -138,7 +138,7 @@
           <para styleclass="Normal">X# FoxPro</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -152,7 +152,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -166,7 +166,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -180,7 +180,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -201,7 +201,7 @@
           <para styleclass="Normal">X# VO 和 X# Vulcan</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
     </table></para>

@@ -51,6 +51,9 @@ internal static class XSharp.ConversionHelpers
         // 3 sections: positive;negative;zero. A negative value that rounds to zero uses the zero section,
         // otherwise .NET Core 3.0+ returns "-0.00" (.NET Framework / VO return "0.00")
         cFormat := "{0," + nLen:ToString()+":"+cFormat+";-"+cFormat+";"+cFormat+"}"
+        #else
+                cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
+
 #endif
         formatStrings:TryAdd(nKey, cFormat)
         return cFormat

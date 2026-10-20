@@ -47,7 +47,9 @@
     <Resource Include="Resources\XSharpProject.png" />
     <Resource Include="Resources\XSharpDocument.png" />
     <!-- Included in the VSIX by ProjectPackage2022 -->
-    <None Include="XSharp.ProjectSystemCPS.imagemanifest" />
+    <Content Include="XSharp.ProjectSystemCPS.imagemanifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.551" />
@@ -82,7 +84,7 @@
     <!-- X# CodeDOM parser/generator for the shadow WinForms designer (no MPFproj dependency) -->
     <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj" />
   </ItemGroup>
-  <!-- Explicit SDK imports: the VSSDK targets must be imported after the SDK targets -->
+   <!-- Explicit SDK imports: the VSSDK targets must be imported after the SDK targets -->
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

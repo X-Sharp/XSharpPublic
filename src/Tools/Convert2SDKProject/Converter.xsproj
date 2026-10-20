@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Tools.props" />
   <PropertyGroup>
     <Name>XsLegacyConverter</Name>
     <TargetFramework>net47</TargetFramework>
     <RootNamespace>XsLegacyConverter</RootNamespace>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <CommonDir>..\..\Common\</CommonDir>
     <NoStandardDefs>True</NoStandardDefs>
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <NoWin32Manifest>false</NoWin32Manifest>
+    <VulcanCompatibleResources>false</VulcanCompatibleResources>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>

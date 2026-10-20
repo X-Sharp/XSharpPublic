@@ -509,6 +509,7 @@
       <DependentUpon>Resources.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
@@ -627,7 +628,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
     <None Include="FileCodeModel\Readme.md" />
     <None Include="source.extension.vsixmanifest">
       <Generator>VsixManifestGenerator</Generator>
@@ -849,7 +849,7 @@
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
@@ -870,7 +870,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>echo Removing PDB files from VSIX
-"$(projectdir)\..\7z.exe" d $(Targetdir)$(TargetName).vsix *.pdb  &gt;nul</PostBuildEvent>
+"$(projectdir)\..\7z.exe" d $(Targetdir)$(TargetName).vsix *.pdb  xsharp*.xml system*.xml
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

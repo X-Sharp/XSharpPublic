@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-10-20T13:36:53.484Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-20T15:19:48.928Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -75,15 +75,14 @@
       <li styleclass="List1">For multi targetting projects, the language service will include a project in the projects combobox for each of the targets. The intellisense information is retrieved from the framework selected in the combobox.</li>
       <li styleclass="List1">Added support for primary constructors and static interface constructors</li>
       <li styleclass="List1">Implemented the Project context menu option &quot;Convert to SDK format&quot; for projects in the legacy format. The old project file is saved with a .BAK extension.</li>
+      <li styleclass="List1">The project Property pages are now based on the XAML files in the MsBuild Rules folder</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Fixed deadlocks and hangs when opening solutions or resolving references, including startup and open-from-command-line cases and UI-thread reference resolution (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2046" target="_blank">#2046</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2066" target="_blank">#2066</link>)</li>
       <li styleclass="List1">Reduced UI-thread marshalling and code-model database lock contention, which improves responsiveness and SDK-style project load performance (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2084" target="_blank">#2084</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2043" target="_blank">#2043</link>)</li>
-      <li styleclass="List1">Fixed SDK-style NuGet restore and property-page handling for target frameworks with embedded platform identifiers such as net8-windows (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2085" target="_blank">#2085</link>)</li>
       <li styleclass="List1">Improved handling of missing project files and prevented several exceptions and hierarchy hangs in the project system and designer support</li>
       <li styleclass="List1">Fixed the completion &quot;Max Entries&quot; option resetting to 25 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2088" target="_blank">#2088</link>)</li>
-      <li styleclass="List1">Building for the Windows platform inside VS would create a project.assets.json file with target that did not have the platform (for example &quot;net8.0&quot; instead of &quot;net8.0-windows&quot;. Building the same project from the DotNet CLI was working correctly. This is an issue in the NuGet support inside VS. We are now calling the DotNet CLI to restore the project.</li>
     </list>
     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">New Features</para>

@@ -2569,6 +2569,20 @@ namespace Microsoft.VisualStudio.Project
             if (cleanBuild && this.ProjectInstance.Targets.ContainsKey(MsBuildTarget.Clean))
             {
                 this.InvokeMsBuild(MsBuildTarget.Clean);
+			    // Clean intermediate window to get rid of 'Nasty' Nuget files
+                var outputDir = this.GetProjectProperty("BaseIntermediateOutputPath");
+                if (!string.IsNullOrEmpty(outputDir) && Directory.Exists(outputDir))
+                {
+                    try
+                    {
+                        Directory.Delete(outputDir, true);
+                        Directory.CreateDirectory(outputDir);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Exception(ex, "PrepareBuild");
+                    }
+                }
             }
 
             PackageUtilities.EnsureOutputPath(outputPath);

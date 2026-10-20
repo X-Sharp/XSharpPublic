@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#define IMAGE
 using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
@@ -78,13 +79,15 @@ namespace XSharp.Project
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
-            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            dependencies.Add(".designer.prg", ".prg");
-            dependencies.Add(".xaml.prg", ".xaml");
-            dependencies.Add(".vh", ".prg");
-            dependencies.Add(".xh", ".prg");
-            dependencies.Add(".resx", ".prg");
-#if !DEV17
+            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { ".designer.prg", ".prg" },
+                { ".xaml.prg", ".xaml" },
+                { ".vh", ".prg" },
+                { ".xh", ".prg" },
+                { ".resx", ".prg" }
+            };
+#if IMAGE
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
@@ -104,7 +107,7 @@ namespace XSharp.Project
 
         #region Fields
         private XSharpProjectPackage package;
-#if !DEV17
+#if IMAGE
         private static ImageList imageList;
 #endif
         private VSLangProj.VSProject vsProject;
@@ -127,7 +130,7 @@ namespace XSharp.Project
             this.package = package;
             _cachedProjectProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
-#if !DEV17
+#if IMAGE
             InitializeImageList();
 #endif
             InitializeCATIDs();
@@ -260,7 +263,7 @@ namespace XSharp.Project
         #region Properties
 
         internal bool IsLoading => isLoading;
-#if !DEV17
+#if IMAGE
         /// <summary>
         /// Gets or sets the image list.
         /// </summary>
@@ -1475,7 +1478,7 @@ namespace XSharp.Project
             }
         }
 
-#if !DEV17
+#if IMAGE
         private void InitializeImageList()
         {
             imageOffset = this.ImageHandler.ImageList.Images.Count;

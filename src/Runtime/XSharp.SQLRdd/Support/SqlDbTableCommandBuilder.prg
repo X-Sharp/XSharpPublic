@@ -71,7 +71,11 @@ internal class SqlDbTableCommandBuilder
                     oBag:Add(oTag)
                 next
                 SELF:OrderBagList:Add(oBag)
-                oBag:Save()
+                // The production index is rebuilt from the metadata on every open, so it is not
+                // written to an .SDX file: nothing reads that file back, and writing it through
+                // WritePrivateProfileString (which rewrites the whole file for every single key)
+                // cost ~20-30ms per table open - the bulk of Open() for code that opens and
+                // closes tables frequently.
             endif
         endif
 

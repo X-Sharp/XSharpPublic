@@ -554,13 +554,20 @@ partial class SQLRDD
             SELF:_Found := false
             SELF:_SetEOF(true)
             SELF:_SetBOF(false)
-            return false
+            // A miss is not a failure: like the DBF/ADS RDDs, report whether the operation
+            // itself succeeded and leave the outcome to Found. DbSeek() raises a runtime error
+            // whenever the RDD returns FALSE here.
+            return true
         ENDIF
 
         var nRec   := SELF:RecNo
         var lFound := SELF:GoTo(nRec)
 
+        // Every row a hard seek returns matches the key, so the first one is the answer. A soft
+        // seek may land on a following key instead, and then Found must stay FALSE - leave
+        // that to the key comparison below.
         if lFound .and.;
+            !seekInfo.SoftSeek .and.;
             !SELF:_FilterInfo:Active .and.;
             !seekInfo.Last
             SELF:_SetEOF(false)
@@ -603,7 +610,8 @@ partial class SQLRDD
             self:Found := false
         ENDIF
 
-        return self:Found
+        // See above: the outcome is in Found, the return value only reports success.
+        return true
     end method
 
     PRIVATE METHOD KeyCompare(oRecKey as OBJECT, oKey as OBJECT) AS LONG

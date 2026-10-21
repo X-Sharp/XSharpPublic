@@ -492,16 +492,16 @@ partial class SQLRDD
         case DBOI_POSITION
             // OrdKeyNo()/DBOI_POSITION reports the record's position within the current order.
             // When the cursor sits on a record outside the order (see GoTo()/_outsideOrder),
-            // RowNumber/_currentPageNo just reflect the ad-hoc single-row buffer we loaded for
-            // it, not a real position - matching DBF, that must report 0, not a bogus row number.
+            // RowNumber just reflects the ad-hoc single-row buffer we loaded for it, not a real
+            // position - matching DBF, that must report 0, not a bogus row number.
             if self:_outsideOrder
                 info:Result := 0
             else
-                info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+                info:Result := self:_AbsolutePosition()
             endif
         case DBOI_RECNO
             // our position is the row number in the local cursor
-            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            info:Result := self:_AbsolutePosition()
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch
@@ -534,17 +534,18 @@ partial class SQLRDD
             return false
         endif
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+        // The buffer is anchored at the soft-seek condition for the same value: the rows a
+        // hard seek returns are exactly the leading rows of that result, so paging forward past
+        // them (the common "seek to the first record of a key, then Skip() while the key still
+        // matches" idiom) continues with the next rows in the order - via an index seek plus a
+        // small OFFSET, without first having to determine the record's absolute position.
+        var softInfo := seekInfo
+        softInfo:SoftSeek := TRUE
+        softInfo:Last     := FALSE
+        var cAnchorWhere := CurrentOrder:SeekExpression(softInfo)
 
         SELF:_ClearTable()
-        SELF:_currentPageNo := 1
-        // Fetch a normal, full-size page here - NOT a single-row buffer. _FetchPage()'s
-        // paging math ((CurrentPage-1) * PageSize) assumes every page, including this first
-        // one, holds a full PageSize worth of rows; a caller that finds a match and then
-        // walks forward with Skip() past this buffer (the common "seek to the first record
-        // of a key, then Skip() while the key still matches" idiom) would otherwise jump
-        // straight to absolute offset PageSize on the next fetch instead of to row 2,
-        // silently skipping every other row that shares this seek's key.
-        self:_OpenTable(cSeekWhere)
+        self:_OpenTable(cSeekWhere, cAnchorWhere)
 
         // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
         // null instead of an empty table - treat that the same as "no rows found" instead of

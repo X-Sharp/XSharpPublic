@@ -145,7 +145,11 @@ internal class SqlDbTableCommandBuilder
         next
         return strResult
 
-    method BuildSqlStatement(sWhereClause as string) as string
+    /// <summary>
+    /// Build a fetch of nCount rows of the current order/scope/filter (further restricted by
+    /// sWhereClause), starting at the 0-based row offset nOffset within that result.
+    /// </summary>
+    method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -200,10 +204,8 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
 
         sb:Append(Provider:PagingClause)
-        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:PageSize:ToString())
-        // start of next page = (CurrentPage-1) * MaxRecords
-        var nStartRec := (_oRdd:CurrentPage-1) * _oTable:PageSize
-        sb:Replace(SqlDbProvider.StartRecMacro, nStartRec:ToString())
+        sb:Replace(SqlDbProvider.PagesizeMacro, nCount:ToString())
+        sb:Replace(SqlDbProvider.StartRecMacro, nOffset:ToString())
 
         return sb:ToString()
 

@@ -282,6 +282,8 @@ partial class SQLRDD inherit Workarea
             var key := (dword) self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
+            // The new row does not belong at the end of the buffered slice of the order.
+            self:_bufferContiguous := false
             if _emptyValues == null
                 self:_GetEmptyValues()
             endif
@@ -645,8 +647,8 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         SELF:_outsideOrder := FALSE
-        SELF:_ClearTable()
-        SELF:_FetchPage( 1)
+        SELF:_anchorWhere := ""
+        SELF:_LoadBufferAt(0)
         SELF:RowNumber  := 1
         SELF:_Top       := TRUE
         SELF:_Bottom    := FALSE
@@ -676,23 +678,20 @@ partial class SQLRDD inherit Workarea
         // retrying GoTo(0) when it can't establish a valid position), and each direct query
         // here used to pay for a fresh COUNT(*) every single time.
         self:_GetRecCount()
-        local nMaxRecNo := self:_serverReccount as dword
-        var nPage       := nMaxRecNo / self:_oTd:PageSize
-        if SELF:RecCount % self:_oTd:PageSize != 0
-            nPage += 1
-        ENDIF
+        local nTotal := (long) self:_serverReccount as long
+        SELF:_anchorWhere := ""
         // For a large table, fetching the last page via the normal ascending, OFFSET-based
-        // query (_FetchPage) forces the server to walk/skip almost the entire ordered result -
+        // query forces the server to walk/skip almost the entire ordered result -
         // the further from the top, the worse. _FetchLastPage avoids that by sorting in
         // reverse and asking for OFFSET 0 instead, which is always cheap. Only safe when the
         // order isn't already descending (that would invert the reversal); falls back to the
         // original approach for natural order, descending orders, or if it fails outright.
         if self:CurrentOrder == null .or. !self:CurrentOrder:Descending
-            if !SELF:_FetchLastPage((INT) nPage)
-                SELF:_FetchPage((INT) nPage)
+            if !SELF:_FetchLastPage(nTotal)
+                SELF:_LoadBufferAt(SELF:_LastPageStart(nTotal))
             endif
         else
-            SELF:_FetchPage((INT) nPage)
+            SELF:_LoadBufferAt(SELF:_LastPageStart(nTotal))
         endif
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
@@ -716,41 +715,8 @@ partial class SQLRDD inherit Workarea
         endif
         LOCAL isOK := TRUE AS LOGIC
         SELF:GoCold()
-        IF nToSkip == 0
-            NOP
-        ELSE
-            var newRow := SELF:RowNumber + nToSkip
-            IF newRow > 0
-                if newRow <= SELF:RowCount
-                    SELF:RowNumber :=  newRow
-                    SELF:_SetEOF(FALSE)
-                ELSEIF SELF:_hasEOF
-                    SELF:RowNumber := 0
-                    SELF:_SetEOF(TRUE)
-                ELSE
-                    SELF:RowNumber :=  newRow
-                    SELF:_FetchPage(SELF:_currentPageNo +1)
-                    if SELF:RowNumber > SELF:RowCount
-                        // The page we just fetched turned out to be empty (we were already on
-                        // the last real row) - report EOF right away instead of leaving RowNumber
-                        // past the end with EOF still FALSE, which otherwise sits stale until a
-                        // second Skip() happens to see _hasEOF. In between, RecNo/CurrentRow
-                        // reflect the phantom row - e.g. nextrec()'s "IF EOF THEN GOTO(oldRecno)"
-                        // never fires on the first PgDn past the end, and the recno it captures
-                        // on the following call is the phantom row's blank value, not a real one.
-                        SELF:RowNumber := 0
-                        SELF:_SetEOF(TRUE)
-                    endif
-                endif
-            ELSE
-                IF SELF:_currentPageNo == 1
-                    isOK := SELF:GoTop()
-                    SELF:_SetBOF(TRUE)
-                    SELF:_currentPageNo := 1
-                ELSE
-                    SELF:_FetchPage(SELF:_currentPageNo -1)
-                ENDIF
-            ENDIF
+        IF nToSkip != 0
+            isOK := SELF:_SkipInBuffer(nToSkip)
         ENDIF
         #ifdef TRACERDD
         System.Diagnostics.Debug.WriteLine("SkipRaw Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", isOK, _serverReccount, RecNo, RowNumber, EoF, BoF)
@@ -858,7 +824,7 @@ partial class SQLRDD inherit Workarea
             result := SELF:GoCold()
         ELSEIF SELF:_outsideOrder
             // Positioned (via GoTo()) on a record outside the current order (OrderKeyNo 0).
-            // RowNumber/_currentPageNo do not correspond to any real position in the order's
+            // RowNumber/_bufferStart do not correspond to any real position in the order's
             // sequence, so a relative skip from here is meaningless. Matching DBF: a negative
             // skip always lands on the first record of the order; a positive skip lands on
             // record nToSkip, as if skipping forward from just before the top.

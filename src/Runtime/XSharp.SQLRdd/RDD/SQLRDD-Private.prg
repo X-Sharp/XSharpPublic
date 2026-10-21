@@ -409,6 +409,7 @@ partial class SQLRDD
         _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
         var res := _command:ExecuteScalar()
         if (hasRowCount)
+            SELF:_ThrowIfStatementFailed(res)
             var i64 := (int64) Convert.ChangeType(res, typeof(int64))
             IF i64 == 1
                 return true
@@ -421,18 +422,33 @@ partial class SQLRDD
 
     private method _HandleNullDate(oValue as object, oCol as DataColumn) as object
         if oValue is DateTime var dt .and. dt == DateTime.MinValue
-            return DBNull.Value
+            return SELF:_EmptyDateValue(oCol)
         elseif oValue is IDate var d
             if d:IsEmpty
-                return DBNull.Value
+                return SELF:_EmptyDateValue(oCol)
             else
                 return DateTime{d:Year, d:Month, d:Day}
             endif
-        elseif oValue is null .and. oCol:DataType == typeof(DateTime)
-            return DBNull.Value
+        elseif (oValue is null .or. oValue == DBNull.Value) .and. oCol:DataType == typeof(DateTime)
+            return SELF:_EmptyDateValue(oCol)
         endif
         return oValue
     end method
+
+    /// <summary>The value stored for an empty date.</summary>
+    /// <remarks>
+    /// With UseNulls (the default) that is NULL. Without it - "empty values instead of NULLs" -
+    /// a DBF "D" field gets DateTime.MinValue (0001-01-01, valid for a SQL `date` column), the
+    /// value GetValue() already reads back as an empty date. Writing NULL there broke every
+    /// save of a record with an empty date into a NOT NULL date column ("Cannot insert the
+    /// value NULL ..."), which is how DBF-migrated tables typically store empty dates.
+    /// </remarks>
+    private method _EmptyDateValue(oCol as DataColumn) as object
+        if !SELF:Connection:UseNulls .and. oCol:Ordinal < SELF:_Fields:Length ;
+            .and. SELF:_Fields[oCol:Ordinal]:FieldType == DbFieldType.Date
+            return DateTime.MinValue
+        endif
+        return DBNull.Value
 
     private method _ExecuteDeleteStatement(row as DataRow) as logic
         // TODO: check config if logic or physical delete
@@ -451,10 +467,27 @@ partial class SQLRDD
         _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
         var res := _command:ExecuteScalar()
         if (hasRowCount)
+            SELF:_ThrowIfStatementFailed(res)
             return res is int var i .and. i == 1
         endif
         return true
     end method
+
+    /// <summary>
+    /// The UPDATE/DELETE statements end with a row count query, so a NULL result means the
+    /// statement itself failed: SqlDbCommand:ExecuteScalar() swallows the provider exception
+    /// into Connection:LastException. Rethrow that, so callers report the database's own
+    /// message (e.g. a NOT NULL violation) instead of a follow-up conversion error.
+    /// </summary>
+    private method _ThrowIfStatementFailed(res as object) as void
+        if res == null .or. res == DBNull.Value
+            var ex := SELF:Connection:LastException
+            if ex != null
+                throw ex
+            endif
+            throw Exception{"The statement did not return a row count: "+_command:CommandText}
+        endif
+        return
 
     /// <summary>
     /// Fetch the last page of the current order/scope/filter directly, without going through

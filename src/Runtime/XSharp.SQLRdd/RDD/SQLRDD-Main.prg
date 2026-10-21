@@ -449,34 +449,43 @@ partial class SQLRDD inherit Workarea
         var lWasHot := (current != self:_phantomRow) .and. (current:RowState != DataRowState.Unchanged .or. _updatedRecNos:Count > 0)
         local lOk := TRUE as logic
         if lWasHot .and. self:DataTable != null
+            lOk := SELF:_WritePendingRows()
+        endif
+        return lOk
+    end method
 
-            // Check file lock
-            var dbLockInfo := DbLockInfo{}
-            dbLockInfo:RecId := 0
-            var myLock := false
-            var otherLock := false
-            SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
-            if (otherLock)
-                return false
+    /// <summary>Write all rows queued in _updatedRecNos to the server.</summary>
+    private method _WritePendingRows() as logic
+        local lOk := TRUE as logic
+        // _UpdateRow() checks for other users' locks on the record and on the whole file
+        // (recno 0) in a single query, so no separate file-lock check is needed here.
+        foreach var rowId in _updatedRecNos
+            lOk := self:_UpdateRow(rowId)
+            if !lOk
+                exit
             endif
-
-            foreach var rowId in _updatedRecNos
-                lOk := self:_UpdateRow(rowId)
-                if !lOk
-                    exit
-                endif
-            next
-            if lOk
-                self:DataTable:AcceptChanges()
-                self:UnLock(0)
-            else
-                self:DataTable:RejectChanges()
-            endif
-            _updatedRecNos:Clear()
-            // A write may have changed the true row count (insert/physical delete) - force a
-            // real requery here rather than trusting a cached pre-write value.
+        next
+        if lOk
+            self:DataTable:AcceptChanges()
+        else
+            self:DataTable:RejectChanges()
+        endif
+        _updatedRecNos:Clear()
+        // Like Commit under DBF/ADS, keep the caller's locks: only release the locks that
+        // _UpdateRow() took itself for this write. Releasing every lock here (UnLock(0)) also
+        // made UnLock() write the still-listed rows a second time, which re-locked them -
+        // leaving a lock behind that blocked other users until the next unlock.
+        foreach var nRecNo in _autoLockedRecNos
+            self:_DeleteLockRows(nRecNo)
+        next
+        _autoLockedRecNos:Clear()
+        // An insert, a delete or an update of a column the count depends on may have changed
+        // the true row count: the next RecCount requeries it. Other updates keep it valid -
+        // e.g. a loop that locks, updates and unlocks record by record would otherwise run a
+        // COUNT(*) for every single record, since RLock() checks the record against RecCount.
+        if self:_countMayHaveChanged
             self:_serverReccountValid := false
-            self:_GetRecCount()
+            self:_countMayHaveChanged := false
         endif
         return lOk
     end method
@@ -956,6 +965,12 @@ partial class SQLRDD inherit Workarea
         endif
         var sb := StringBuilder{}
         var messageLocked := StringBuilder{}
+        var nLockRecNo := SELF:LockRecNo(lockInfo)
+        if SELF:_ownLocks:Contains(nLockRecNo)
+            // Already locked by this work area - no need to ask the lock table again.
+            lockInfo:Result := true
+            return true
+        endif
 
         try
             var otherLock := false
@@ -969,6 +984,7 @@ partial class SQLRDD inherit Workarea
             endif
 
             if myLock
+                SELF:_ownLocks:Add(nLockRecNo)
                 lockInfo:Result := true
                 return true
             endif
@@ -1005,11 +1021,29 @@ partial class SQLRDD inherit Workarea
             return false
         end try
 
+        SELF:_ownLocks:Add(nLockRecNo)
         lockInfo:Result := true
         return true
     end method
 
     public override method UnLock(oRecId as object) as logic
+        // Like DBF/ADS: write pending changes first, while the locks are still held, then
+        // release them. The other way round, writing the pending rows had to lock them again,
+        // and that new lock stayed behind after the unlock.
+        if self:_updatedRecNos.Count > 0 .and. self:DataTable != null
+            SELF:_WritePendingRows()
+        endif
+
+        // In ADS this happens in here: ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
+        if self:Deleted
+            self:_ExecuteDeleteStatement(CurrentRow)
+        endif
+
+        return SELF:_DeleteLockRows(oRecId)
+    end method
+
+    /// <summary>Remove this work area's lock rows for oRecId (all of them for 0/NULL).</summary>
+    private method _DeleteLockRows(oRecId as object) as logic
         if Connection?:Provider is null .or. !self:Connection:IsOpen
             return false
         endif
@@ -1045,18 +1079,11 @@ partial class SQLRDD inherit Workarea
         catch
             return false
         end try
-
-        // In ADS this happens in here: ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
-        if self:Deleted
-            self:_ExecuteDeleteStatement(CurrentRow)
+        if oRecId != null .and. oRecId is int .and. ((int)oRecId) > 0
+            SELF:_ownLocks:Remove((int)oRecId)
+        else
+            SELF:_ownLocks:Clear()
         endif
-        if self:_updatedRecNos.Count > 0
-            foreach var nRecNo in self:_updatedRecNos
-                self:_UpdateRow(nRecNo)
-            next
-            self:_updatedRecNos:Clear()
-        endif
-
         return true
     end method
 

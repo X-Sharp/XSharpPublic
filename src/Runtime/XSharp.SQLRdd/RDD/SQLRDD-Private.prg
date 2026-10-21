@@ -62,6 +62,15 @@ partial class SQLRDD
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRecNos  as List<int>
+    /// <summary>Recnos that _UpdateRow() had to lock itself because the caller held no lock.</summary>
+    private _autoLockedRecNos as List<int>
+    /// <summary>
+    /// Recnos this work area currently holds a lock on (0 = file lock). Lets Lock() and
+    /// _UpdateRow() skip asking the lock table about locks we placed ourselves.
+    /// </summary>
+    private _ownLocks         as HashSet<int>
+    /// <summary>TRUE when a write since the last count may have changed RecCount.</summary>
+    private _countMayHaveChanged as logic
     /// <summary>Recnos of rows marked for deletion via Delete() when there is no DeletedColumn on the table.
     /// Workarea.Deleted is a hardcoded stub (always FALSE), so this state cannot be tracked in the base class.</summary>
     private _deletedRowIds  as HashSet<int>
@@ -166,6 +175,8 @@ partial class SQLRDD
         SELF:_bufferContiguous := true
         self:_trimValues       := true // trim String Valuess
         SELF:_updatedRecNos    := List<int>{}
+        SELF:_autoLockedRecNos := List<int>{}
+        SELF:_ownLocks         := HashSet<int>{}
         SELF:_deletedRowIds    := HashSet<int>{}
         SELF:_keyColumns       := List<RddFieldInfo>{}
         SELF:_updatableColumns := List<RddFieldInfo>{}
@@ -306,6 +317,7 @@ partial class SQLRDD
 
 
     private method _ExecuteInsertStatement(row as DataRow) as logic
+        SELF:_countMayHaveChanged := true
         var sbColumns  := StringBuilder{}
         var sbValues   := StringBuilder{}
         local iCounter := 1 as long
@@ -394,15 +406,23 @@ partial class SQLRDD
             if !self:_oTd:UpdateAllColumns
                 // only update columns that are changed
                 local isEqual := true as Logic
-                if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
-                    isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
+                var oOriginal := row[c, DataRowVersion.Original]
+                var oCurrent  := row[c, DataRowVersion.Current]
+                if oOriginal is string var strOriginal .and. oCurrent is string var strCurrent
+                    isEqual := strOriginal:Trim():Equals(strCurrent:Trim())
                 else
-                    isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
+                    // Compare by value, not by text: decimal 1.00 read from the server and the
+                    // 1 that a FLOAT written back converts to are equal, but "1.00" <> "1" -
+                    // which made every unchanged numeric field look modified and be written.
+                    isEqual := Object.Equals(oOriginal, oCurrent)
                 endif
                 if isEqual
                     loop
                 endif
                 lColumnChanged := true
+            endif
+            if !SELF:_countMayHaveChanged .and. SELF:_ColumnAffectsCount(c:ColumnName)
+                SELF:_countMayHaveChanged := true
             endif
             var name    := i"@p{iCounter}"
             if sbColumns:Length > 0
@@ -474,8 +494,35 @@ partial class SQLRDD
         endif
         return DBNull.Value
 
+    /// <summary>
+    /// Can changing column cColumn change RecCount? RecCount counts the rows of the current
+    /// order (its FOR condition and scope) or of the table, both subject to the server filter.
+    /// Updating any other column - the common case, e.g. recalculating a balance - leaves the
+    /// count as it is, so it does not have to be requeried.
+    /// </summary>
+    private method _ColumnAffectsCount(cColumn as string) as logic
+        local pattern := "\b" + System.Text.RegularExpressions.Regex.Escape(cColumn) + "\b" as string
+        local options := System.Text.RegularExpressions.RegexOptions.IgnoreCase as System.Text.RegularExpressions.RegexOptions
+        if cColumn == SELF:_oTd:DeletedColumn
+            return true
+        endif
+        if SELF:_oTd:HasServerFilter .and. System.Text.RegularExpressions.Regex.IsMatch(SELF:_oTd:ServerFilter, pattern, options)
+            return true
+        endif
+        var order := SELF:CurrentOrder
+        if order != null
+            if order:Conditional .and. System.Text.RegularExpressions.Regex.IsMatch(order:Condition, pattern, options)
+                return true
+            endif
+            if order:HasScopes .and. System.Text.RegularExpressions.Regex.IsMatch(order:Expression, pattern, options)
+                return true
+            endif
+        endif
+        return false
+
     private method _ExecuteDeleteStatement(row as DataRow) as logic
         // TODO: check config if logic or physical delete
+        SELF:_countMayHaveChanged := true
         _command:ClearParameters()
         var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
@@ -1138,18 +1185,22 @@ partial class SQLRDD
                 return false
             endif
 
-            // Check row lock
-            var dbLockInfo := DbLockInfo{}
-            dbLockInfo:RecId := row[_oTd:RecnoColumn]
-            var myLock := false
-            var otherLock := false
-            SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
-            if otherLock
-                return false
-            endif
+            // Check row lock - unless we hold it (or the file lock) ourselves: our lock row in
+            // the lock table already keeps everybody else out, so there is nothing to ask.
+            if !SELF:_ownLocks:Contains(nRecNo) .and. !SELF:_ownLocks:Contains(0)
+                var dbLockInfo := DbLockInfo{}
+                dbLockInfo:RecId := row[_oTd:RecnoColumn]
+                var myLock := false
+                var otherLock := false
+                SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+                if otherLock
+                    return false
+                endif
 
-            if !myLock
-                SELF:Lock(ref dbLockInfo)
+                if !myLock .and. SELF:Lock(ref dbLockInfo)
+                    // Locked only for this write - GoCold() releases it again afterwards.
+                    SELF:_autoLockedRecNos:Add(nRecNo)
+                endif
             endif
 
             lOk := true

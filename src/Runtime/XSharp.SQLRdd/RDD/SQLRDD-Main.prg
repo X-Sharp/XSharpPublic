@@ -963,6 +963,11 @@ partial class SQLRDD inherit Workarea
             lockInfo:Result := false
             return false
         endif
+        if !self:Connection:UseLocks
+            // Locking switched off for this connection (see SqlDbConnection.UseLocks).
+            lockInfo:Result := true
+            return true
+        endif
         var sb := StringBuilder{}
         var messageLocked := StringBuilder{}
         var nLockRecNo := SELF:LockRecNo(lockInfo)
@@ -1046,6 +1051,10 @@ partial class SQLRDD inherit Workarea
     private method _DeleteLockRows(oRecId as object) as logic
         if Connection?:Provider is null .or. !self:Connection:IsOpen
             return false
+        endif
+        if !self:Connection:UseLocks
+            // No lock rows are written when locking is switched off.
+            return true
         endif
 
         try

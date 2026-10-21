@@ -97,6 +97,20 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <summary>Should the phantom record have Null values or empty values?</summary>
     property UseNulls           as logic auto
 
+    /// <summary>
+    /// Should record and file locks (RLock/FLock) be emulated through the lock table? (default TRUE)
+    /// </summary>
+    /// <remarks>
+    /// Every emulated lock and unlock is a statement against the lock table, so code that locks
+    /// and unlocks record by record pays a database round trip for each. With UseLocks FALSE,
+    /// RLock()/FLock() always succeed and UnLock() only writes pending changes, without touching
+    /// the lock table: each UPDATE is still atomic on the server, and only the changed columns
+    /// are written, but nothing keeps two users from editing the same record at the same time
+    /// (the last write wins), and code that relies on RLock() failing for a record somebody
+    /// else is editing no longer sees that.
+    /// </remarks>
+    property UseLocks           as logic auto
+
     /// <summary>Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
     /// <summary>Quoted Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
@@ -206,6 +220,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
                 self:UseNulls := isTrue
+            case "uselocks"
+                self:UseLocks := isTrue
             otherwise
                 builder:Add(key, strValue)
             end switch
@@ -271,6 +287,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         Provider         := SqlDbProvider.Current
         LegacyFieldTypes   := DEFAULT_LEGACYFIELDTYPES
         UseNulls           := DEFAULT_USENULLS
+        UseLocks           := DEFAULT_USELOCKS
         LongFieldNames     := DEFAULT_LONGFIELDNAMES
         TrimTrailingSpaces := DEFAULT_TRIMTRAILINGSPACES
         PageSize           := DEFAULT_PAGESIZE
@@ -883,6 +900,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_USELOCKS := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_MAXRECNOASRECCOUNT := FALSE AS LOGIC
     #region Events
     /// <summary>

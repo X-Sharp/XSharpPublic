@@ -1187,7 +1187,7 @@ partial class SQLRDD
 
             // Check row lock - unless we hold it (or the file lock) ourselves: our lock row in
             // the lock table already keeps everybody else out, so there is nothing to ask.
-            if !SELF:_ownLocks:Contains(nRecNo) .and. !SELF:_ownLocks:Contains(0)
+            if SELF:Connection:UseLocks .and. !SELF:_ownLocks:Contains(nRecNo) .and. !SELF:_ownLocks:Contains(0)
                 var dbLockInfo := DbLockInfo{}
                 dbLockInfo:RecId := row[_oTd:RecnoColumn]
                 var myLock := false

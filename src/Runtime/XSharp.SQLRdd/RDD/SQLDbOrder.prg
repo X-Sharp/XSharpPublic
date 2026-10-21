@@ -223,15 +223,13 @@ internal class SqlDbOrder inherit SqlDbObject
         else
             local cFirst := null, cLast := null as string
             if self:TopScope != null
-                seekInfo:Value    := self:TopScope
-                seekInfo:SoftSeek := true
-                cFirst := self:SeekExpression(seekInfo)
+                cFirst := self:RangeExpression(self:TopScope, false)
             endif
             if self:BottomScope != null
-                seekInfo:Value    := self:BottomScope
-                seekInfo:SoftSeek := true
-                seekInfo:Last     := true
-                cLast := self:SeekExpression(seekInfo)
+                // The bottom scope is an upper bound: keys up to (and starting with) the
+                // bottom value. Building it like a soft seek used to produce a second lower
+                // bound instead, so a range scope selected everything from the bottom value on.
+                cLast := self:RangeExpression(self:BottomScope, true)
             endif
             if String.IsNullOrEmpty(cFirst)
                 return cLast
@@ -244,21 +242,29 @@ internal class SqlDbOrder inherit SqlDbObject
     end method
 
     method SeekExpression(seekInfo as DbSeekInfo) as string
-        local cComp as string
-        local cWhereClause as string
         if seekInfo:SoftSeek
-            if self:Descending
-                cComp := " <= "
-            else
-                cComp := " >= "
-            endif
-        else
-            cComp := " = "
+            return self:RangeExpression(seekInfo:Value, false)
         endif
-        if seekInfo:Value is string var strValue
+        return self:KeyCondition(seekInfo:Value, false, " = ")
+    end method
+
+    /// <summary>
+    /// Condition for all keys on one side of oValue in the order's direction (a key that
+    /// starts with oValue counts as matching). The lower bound (lUpper FALSE) is what a soft
+    /// seek and a top scope need, the upper bound is what a bottom scope needs.
+    /// </summary>
+    method RangeExpression(oValue as object, lUpper as logic) as string
+        // For a descending order the "lower" end in order sense holds the larger keys.
+        local cComp := iif(lUpper != self:Descending, " <= ", " >= ") as string
+        return self:KeyCondition(oValue, true, cComp)
+    end method
+
+    private method KeyCondition(oValue as object, lSoftSeek as logic, cComp as string) as string
+        local cWhereClause as string
+        if oValue is string var strValue
             var strLen := strValue:Length
             if strLen < self:KeyLength
-                var cColumnCondition := SELF:BuildColumnAwareCondition(strValue, seekInfo:SoftSeek, cComp)
+                var cColumnCondition := SELF:BuildColumnAwareCondition(strValue, lSoftSeek, cComp)
                 if cColumnCondition != null
                     return cColumnCondition
                 endif
@@ -267,7 +273,7 @@ internal class SqlDbOrder inherit SqlDbObject
                 // condition against the fully concatenated SQLKey expression. SQL Server cannot
                 // use a normal index to seek into this - it has to compute the concatenation for
                 // every row - so prefer the column-aware path above whenever possible.
-                if (! seekInfo:SoftSeek)
+                if (! lSoftSeek)
                     cComp := " like "
                     strValue += "%"
                     cWhereClause := self:SQLKey
@@ -282,7 +288,7 @@ internal class SqlDbOrder inherit SqlDbObject
             endif
             cWhereClause += cComp + Functions.XsValueToSqlValue(strValue)
         else
-            cWhereClause := self:SQLKey+cComp+Functions.XsValueToSqlValue(seekInfo:Value)
+            cWhereClause := self:SQLKey+cComp+Functions.XsValueToSqlValue(oValue)
         endif
         return cWhereClause
     end method
@@ -318,38 +324,72 @@ internal class SqlDbOrder inherit SqlDbObject
             widths:Add((int) oCol:Length)
         next
 
-        var sb := StringBuilder{}
+        // Split the value over the key columns: every column the value fully covers gets its
+        // full-width part, the column where the value ends (if any) gets the remaining prefix.
+        var parts    := List<string>{}
         var cRemaining := strValue
         for var i := 0 upto columns:Count-1
             if cRemaining:Length == 0
                 exit
             endif
-            var nWidth   := widths[i]
-            var cColExpr := columns[i]
-            if sb:Length > 0
-                sb:Append(SqlDbProvider.AndClause)
-            endif
+            var nWidth := widths[i]
             if cRemaining:Length >= nWidth
-                // The seek value fully covers this column - pin it down with equality and
-                // carry on with whatever's left over into the next column.
-                var cPart := cRemaining:Substring(0, nWidth)
-                sb:Append(cColExpr + " = " + Functions.XsValueToSqlValue(cPart))
+                parts:Add(cRemaining:Substring(0, nWidth))
                 cRemaining := cRemaining:Substring(nWidth)
             else
-                // Partial match on this column - the same range/prefix logic the concatenation
-                // fallback uses, just scoped to this one column so the index can still be used.
-                if !lSoftSeek
-                    sb:Append(cColExpr + " like " + Functions.XsValueToSqlValue(cRemaining + "%"))
-                else
-                    var cSubstr := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
-                    cSubstr := cSubstr:Replace("%1%", cColExpr):Replace("%2%","1"):Replace("%3%", cRemaining:Length:ToString())
-                    sb:Append(cSubstr + cRangeComp + Functions.XsValueToSqlValue(cRemaining))
-                endif
+                parts:Add(cRemaining)
                 cRemaining := ""
             endif
         next
-        if sb:Length == 0
+        if parts:Count == 0
             return null
+        endif
+
+        var sb := StringBuilder{}
+        if !lSoftSeek
+            // Pin down every fully covered column with equality, and match the partial one
+            // (if any) as a prefix - the same logic the concatenation fallback uses, just scoped
+            // to the individual columns so the index can still be used.
+            for var i := 0 upto parts:Count-1
+                if sb:Length > 0
+                    sb:Append(SqlDbProvider.AndClause)
+                endif
+                if parts[i]:Length >= widths[i]
+                    sb:Append(columns[i] + " = " + Functions.XsValueToSqlValue(parts[i]))
+                else
+                    sb:Append(columns[i] + " like " + Functions.XsValueToSqlValue(parts[i] + "%"))
+                endif
+            next
+        else
+            // A range on a concatenated key is a lexicographic comparison of the columns:
+            //   (c1 > v1) OR (c1 = v1 AND c2 > v2) OR ... OR (c1 = v1 AND ... AND cn >= vn)
+            // Pinning the leading columns down with equality instead would confine the range
+            // to the rows that share the leading column values, so e.g. a soft seek past the
+            // last key of such a group would find nothing instead of the next group.
+            var cStrictComp := cRangeComp:Replace("=", "")
+            for var i := 0 upto parts:Count-1
+                if i > 0
+                    sb:Append(" OR ")
+                endif
+                sb:Append("(")
+                for var j := 0 upto i-1
+                    sb:Append(columns[j] + " = " + Functions.XsValueToSqlValue(parts[j]))
+                    sb:Append(SqlDbProvider.AndClause)
+                next
+                var cColExpr := columns[i]
+                if parts[i]:Length < widths[i]
+                    // Compare only the prefix of the column that the value actually covers.
+                    var cSubstr := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
+                    cColExpr := cSubstr:Replace("%1%", cColExpr):Replace("%2%","1"):Replace("%3%", parts[i]:Length:ToString())
+                endif
+                var cComp := iif(i == parts:Count-1, cRangeComp, cStrictComp)
+                sb:Append(cColExpr + cComp + Functions.XsValueToSqlValue(parts[i]))
+                sb:Append(")")
+            next
+            if parts:Count > 1
+                sb:Insert(0, "(")
+                sb:Append(")")
+            endif
         endif
         return sb:ToString()
     end method

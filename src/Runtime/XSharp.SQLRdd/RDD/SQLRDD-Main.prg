@@ -782,6 +782,10 @@ partial class SQLRDD inherit Workarea
     /// <inheritdoc />
     override property RecCount as dword
         get
+            // Counted on demand: a reposition (Seek(), order change, ...) only invalidates it.
+            if self:_tableMode == TableMode.Table .and. !self:_serverReccountValid .and. self:_builder != null
+                self:_GetRecCount()
+            endif
             return Self:_serverReccount
         end get
     end property
@@ -794,6 +798,10 @@ partial class SQLRDD inherit Workarea
         SELF:_ForceOpen()
         SELF:_Top := FALSE
         SELF:_Bottom := FALSE
+        IF nToSkip != 0
+            // e.g. right after SetOrder(): the record's position in the order is still unknown
+            SELF:_EnsurePositioned()
+        ENDIF
         IF nToSkip == 0
             result := SELF:GoCold()
         ELSEIF SELF:_outsideOrder

@@ -183,6 +183,7 @@ partial class SQLRDD
         local result := false as logic
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
+            var lWasEof       := SELF:_EoF
             // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
             // possibly tearing down the cursor further down. This must run even when the
             // requested order turns out to already be the active one (see the short-circuits
@@ -197,23 +198,27 @@ partial class SQLRDD
                 // Order 0 (or an empty order name) means: switch back to the natural/physical
                 // record order, i.e. no order at all. There is no "tag zero" to look up, so
                 // this must always succeed - matching VO, which returns TRUE for SetOrder(0).
-                if !(SELF:CurrentOrder == null .and. self:_hasData)
+                local lReset := !(SELF:CurrentOrder == null .and. self:_hasData) as logic
+                if lReset
                     // Only reset the cursor when the order is actually changing, or when this
                     // is the table's first activation (no data loaded yet - _hasData false).
-                    // _CloseCursor() forces the GoTo() below to pay for a full requery/recount
-                    // via _ForceOpen(). Application code commonly calls SetOrder(0) defensively
-                    // ("just in case") without checking the current order first - harmless under
-                    // DBF, expensive here, and skipping the reset when nothing actually changes
-                    // is safe: GoTo()/CalculateKeyLength() below still run unconditionally (see
-                    // comment further down) so nothing is silently left stale.
+                    // Application code commonly calls SetOrder(0) defensively ("just in case")
+                    // without checking the current order first - harmless under DBF, and
+                    // skipping the reset when nothing actually changes is safe: the
+                    // repositioning below still runs unconditionally, so nothing is left stale.
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := null
-                self:GoTo(currentRecord)
+                if lReset
+                    self:_RepositionAfterOrderChange(currentRecord, lWasEof)
+                else
+                    self:GoTo(currentRecord)
+                endif
                 result := true
             else
                 var newOrder := self:FindOrder(orderInfo)
-                if !(newOrder != null .and. newOrder == SELF:CurrentOrder .and. self:_hasData)
+                local lReset := !(newOrder != null .and. newOrder == SELF:CurrentOrder .and. self:_hasData) as logic
+                if lReset
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := newOrder
@@ -222,9 +227,13 @@ partial class SQLRDD
                     SELF:CurrentOrder:ClearCache()
                     // Position on a record BEFORE calculating the key length: CalculateKeyLength()
                     // evaluates the key expression against the current record, which requires a
-                    // loaded row. _CloseCursor() above cleared it, so without this GoTo there would
+                    // loaded row. _CloseCursor() above cleared it, so without this there would
                     // be nothing to evaluate.
-                    self:GoTo(currentRecord)
+                    if lReset
+                        self:_RepositionAfterOrderChange(currentRecord, lWasEof)
+                    else
+                        self:GoTo(currentRecord)
+                    endif
                     SELF:CurrentOrder:CalculateKeyLength()
                 ENDIF
             endif

@@ -838,7 +838,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_LEGACYFIELDTYPES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_LONGFIELDNAMES := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_PAGESIZE := 100 AS INT
-    INTERNAL CONST DEFAULT_BUFFERSIZE := 1 AS INT
+    // Number of pages kept in the local buffer. At least 2 are needed so that a browse whose
+    // visible rows straddle a page boundary keeps both pages, instead of refetching one of
+    // them on every repaint; the extra pages leave room for scrolling back and forth.
+    INTERNAL CONST DEFAULT_BUFFERSIZE := 4 AS INT
     INTERNAL CONST DEFAULT_RECNOCOLUMN := "" AS STRING
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC

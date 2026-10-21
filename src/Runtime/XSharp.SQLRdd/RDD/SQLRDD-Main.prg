@@ -279,6 +279,7 @@ partial class SQLRDD inherit Workarea
         endif
         var lResult := SELF:GoCold()
         if lResult
+            self:_eofPending := false
             var key := (dword) self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
@@ -621,6 +622,7 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         SELF:_outsideOrder := FALSE
+        SELF:_eofPending := FALSE
         SELF:_anchorWhere := ""
         SELF:_LoadBufferAt(0)
         SELF:RowNumber  := 1
@@ -646,6 +648,7 @@ partial class SQLRDD inherit Workarea
             return false
         endif
         SELF:_outsideOrder := FALSE
+        SELF:_eofPending := FALSE
         SELF:_ClearTable()
         // Route through the cached count instead of always querying directly - GoBottom() can
         // be called many times in a row against unchanged data (e.g. Lister construction
@@ -689,7 +692,18 @@ partial class SQLRDD inherit Workarea
         endif
         LOCAL isOK := TRUE AS LOGIC
         SELF:GoCold()
-        IF nToSkip != 0
+        IF nToSkip != 0 .AND. SELF:_eofPending
+            // On the phantom record after GoTo(0), with a buffer that does not end at the last
+            // record: moving forward stays at EOF, moving backward starts from the last record.
+            SELF:_eofPending := FALSE
+            IF nToSkip > 0
+                RETURN TRUE
+            ENDIF
+            isOK := SELF:GoBottom()
+            IF isOK .AND. nToSkip < -1
+                isOK := SELF:_SkipInBuffer(nToSkip + 1)
+            ENDIF
+        ELSEIF nToSkip != 0
             isOK := SELF:_SkipInBuffer(nToSkip)
         ENDIF
         #ifdef TRACERDD
@@ -727,9 +741,12 @@ partial class SQLRDD inherit Workarea
         endif
         SELF:GoCold()
         IF nRec == 0
-            SELF:GoBottom()
-            RETURN SELF:Skip(1)
+            // DBF semantics: GoTo(0) positions on the phantom record (EOF) without any I/O.
+            // Browsers do this for every empty row they paint, so it must not cost a query.
+            SELF:_GoToPhantom()
+            RETURN TRUE
         ENDIF
+        SELF:_eofPending := FALSE
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE
         SELF:_outsideOrder := FALSE

@@ -530,6 +530,7 @@ partial class SQLRDD
         // In that case we can search in the local buffer
         SELF:_Found := FALSE
         SELF:_SetEOF(FALSE)
+        SELF:_eofPending := FALSE
         oKey := seekInfo:Value
         if oKey == null         // Seek NIL
             if seekInfo:Last

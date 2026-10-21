@@ -46,6 +46,11 @@ partial class SQLRDD
     /// the buffer edges then has to re-locate the current record first.
     /// </summary>
     private _bufferContiguous as logic
+    /// <summary>
+    /// TRUE after GoTo(0) positioned on the phantom record while the buffer does not end at the
+    /// last record of the order: a backward Skip() then has to start from GoBottom().
+    /// </summary>
+    private _eofPending     as logic
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
     private _builder        as SqlDbTableCommandBuilder
@@ -645,7 +650,21 @@ partial class SQLRDD
         return fields:ToArray()
     end method
 
+    /// <summary>Position on the phantom record (EOF) without reading anything.</summary>
+    private method _GoToPhantom() as void
+        SELF:_Found := FALSE
+        SELF:_outsideOrder := FALSE
+        SELF:RowNumber := SELF:RowCount + 1
+        SELF:_SetEOF(TRUE)
+        // BOF too only for an empty table (an empty buffer alone does not mean that)
+        SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:RecCount == 0)
+        // When the buffer already ends at the last record, a backward Skip() from the phantom
+        // row naturally lands on it; otherwise remember to go to the bottom first.
+        SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
+        return
+
     private method _CloseCursor() as void
+        self:_eofPending    := FALSE
         self:_hasData       := FALSE
         self:_table         := null
         self:_bufferStart   := 0

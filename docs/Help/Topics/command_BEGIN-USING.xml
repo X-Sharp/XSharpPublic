@@ -17,7 +17,7 @@
     <para styleclass="Heading1"><text styleclass="Body Text">The </text><text styleclass="Body Text" style="font-weight:bold;">BEGIN USING</text><text styleclass="Body Text"> and </text><text styleclass="Body Text" style="font-weight:bold;">END USING</text><text styleclass="Body Text"> keyword declare a block of code that ensures the correct use of disposable objects.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">BEGIN USING <text style="font-style:italic;">declaration</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END USING</para>
+    <para styleclass="Code with box">BEGIN USING [AWAIT] <text style="font-style:italic;">declaration</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END [USING]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">declaration<tab />Declaration of a variable and assignment that is visible only inside the statement block between BEGIN and END</para>
     <para styleclass="List"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-style:italic; color:#000000;">statements</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text><tab />Code including one or more statements that may contain unsafe code.</para>

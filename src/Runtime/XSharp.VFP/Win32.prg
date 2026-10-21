@@ -25,6 +25,8 @@ BEGIN NAMESPACE XSharp.VFP
         [DllImport("user32.dll", CharSet := CharSet.Auto, ExactSpelling := TRUE, SetLastError := TRUE)];
         PUBLIC STATIC EXTERN METHOD GetSystemMetrics(nIndex AS INT) AS INT
 
+        [DllImport("kernel32.dll")];
+        PUBLIC STATIC EXTERN METHOD GetConsoleWindow() AS IntPtr
     END CLASS
 
 END NAMESPACE

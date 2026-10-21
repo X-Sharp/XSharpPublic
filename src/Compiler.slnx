@@ -58,6 +58,7 @@
     <File Path="Common/NativeResourceDefines.xh" />
     <File Path="Common/README.md" />
     <File Path="Common/set.xh" />
+    <File Path="Common/version.Props" />
     <File Path="Common/version.xh" />
     <File Path="Common/XbasePPCmd.xh" />
     <File Path="Common/XSharp.snk" />

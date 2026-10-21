@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -20,6 +20,7 @@ INTERNAL CLASS XSharp.MemVarLevel
     INTERNAL PROPERTY Locals         AS ConcurrentDictionary<STRING, USUAL>   AUTO
     INTERNAL PROPERTY Depth          AS INT     AUTO GET PRIVATE SET
     INTERNAL PROPERTY SystemLevel    AS LOGIC   AUTO GET PRIVATE SET
+    PRIVATE PROPERTY DataSession    AS XSharp.RDD.DataSession AUTO
 #ifdef DEBUG
     INTERNAL PROPERTY Stack          AS STRING  AUTO
 #endif
@@ -32,7 +33,8 @@ INTERNAL CLASS XSharp.MemVarLevel
         SystemLevel := lSystem
 #ifdef DEBUG
         Stack       := System.Diagnostics.StackTrace{2,TRUE}:ToString()
-#endif
+        #endif
+        DataSession := NULL
         RETURN
 
     INTERNAL METHOD Add(variable AS XSharp.MemVar) AS VOID
@@ -65,6 +67,19 @@ INTERNAL CLASS XSharp.MemVarLevel
 
     INTERNAL PROPERTY Count AS INT GET Variables:Count
 
+    INTERNAL METHOD SetDataSession(oNewSession as XSharp.RDD.DataSession) AS VOID
+        IF oNewSession != NULL
+	        SELF:DataSession := XSharp.RuntimeState.SetDataSession(oNewSession)
+        END IF
+        RETURN
+
+    INTERNAL METHOD RestoreDataSession() AS VOID
+        IF SELF:DataSession != NULL
+            XSharp.RuntimeState.SetDataSession(SELF:DataSession)
+            SELF:DataSession := NULL
+        ENDIF
+        RETURN
+
 #region Locals support
         // Set value for local and mark as 'updated'
     INTERNAL METHOD UpdateLocal(cName AS STRING, uValue IN USUAL) AS VOID
@@ -88,6 +103,12 @@ INTERNAL CLASS XSharp.MemVarLevel
         // find local and value returns TRUE when found (value could also be NIL !)
     INTERNAL METHOD FindLocal(cName AS STRING, uValue OUT USUAL) AS LOGIC
         if cName:ToLower() == "this"
+            cName := "SELF"
+        endif
+        IF Locals != NULL .AND. Locals:TryGetValue(cName, OUT uValue)
+            RETURN TRUE
+        ENDIF
+        if cName:ToLower() == "self"
             cName := "_this"
         endif
         IF Locals != NULL .AND. Locals:TryGetValue(cName, OUT uValue)
@@ -104,6 +125,7 @@ INTERNAL CLASS XSharp.MemVarLevel
         RETURN NIL
 
     INTERNAL PROPERTY LocalsUpdated AS LOGIC GET _localsUpdated
+    INTERNAL PROPERTY HasLocals     AS LOGIC GET Locals?:Count > 0
 #endregion
     INTERNAL METHOD DebuggerDisplay() AS STRING
         IF Depth == -1
@@ -233,6 +255,14 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         IsSystem := lFromSystem
         RETURN Depth
 
+    STATIC INTERNAL METHOD InitPrivates(oOwner as OBJECT) AS INT
+        var result := InitPrivates(FALSE)
+        if oOwner is IDataSession var oSession
+            var currentLevel := CheckCurrent()
+            currentLevel:SetDataSession(oSession:DataSession)
+        ENDIF
+        return result
+
     /// <exclude />
     STATIC PRIVATE METHOD CheckCurrent() AS MemVarLevel
         IF MemVarLevels:Count() == 0 .OR. MemVarLevels:Peek():Depth < Depth
@@ -243,6 +273,8 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar.ReleasePrivates/*" />
     STATIC METHOD ReleasePrivates(nLevel AS INT) AS LOGIC
+        var current := CheckCurrent()
+        current:RestoreDataSession()
         DO WHILE MemVarLevels:Count > 0 .AND. MemVarLevels:Peek():Depth >= nLevel
             MemVarLevels:Pop()
         ENDDO
@@ -397,32 +429,39 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
 
     INTERNAL STATIC METHOD LocalFind(name AS STRING, uValue OUT USUAL, level OUT MemVarLevel) AS LOGIC
         level := NULL
-        VAR curr := CheckCurrent()
-        IF curr == NULL
+        VAR current := CheckCurrent()
+        IF current == NULL
             uValue := NIL
             RETURN FALSE
         ENDIF
-        IF curr:FindLocal(name, OUT uValue)
-            level := curr
+        IF current:FindLocal(name, OUT uValue)
+            level := current
             RETURN TRUE
         ENDIF
         uValue := NIL
-        IF ! curr:SystemLevel
+        IF ! current:SystemLevel
             RETURN FALSE
         ENDIF
-        RETURN GetHigherLevelLocal(name, curr:Depth, OUT uValue, OUT level)
+        RETURN GetHigherLevelLocal(name, current:Depth, OUT uValue, OUT level)
 
     INTERNAL STATIC METHOD ClearLocals() AS VOID
-        VAR curr := CheckCurrent()
-        IF curr != NULL
-            curr:ClearLocals()
+        VAR current := CheckCurrent()
+        IF current != NULL
+            current:ClearLocals()
         ENDIF
         RETURN
 
     INTERNAL STATIC METHOD LocalsUpdated() AS LOGIC
-        VAR curr := CheckCurrent()
-        IF curr != NULL
-            RETURN curr:LocalsUpdated
+        VAR current := CheckCurrent()
+        IF current != NULL
+            RETURN current:LocalsUpdated
+        ENDIF
+        RETURN FALSE
+
+    INTERNAL STATIC METHOD HasLocals() AS LOGIC
+        VAR current := CheckCurrent()
+        IF current != NULL
+            RETURN current:HasLocals
         ENDIF
         RETURN FALSE
 
@@ -518,9 +557,13 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         IF oMemVar != NULL
             RETURN oMemVar:Value
         ENDIF
-        VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(cName),1, <OBJECT>{cName})
+        // VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(cName),1, <OBJECT>{cName})
+        // THROW err
+        VAR err := Error{EG_NOVAR, nameof(cName), ErrString(EG_NOVAR) + ": " + cName}
+        err:FuncSym := "MemVarGet"
+        err:ArgNum := 1
+        err:Args := <OBJECT>{cName}
         THROW err
-
     /// <inheritdoc cref="M:XSharp.MemVar._Put(System.String,XSharp.__Usual)"/>
     STATIC PUBLIC Put AS Putter
     /// <include file="XSharp.RT.Docs.xml" path="doc/MemVar._Put/*" />

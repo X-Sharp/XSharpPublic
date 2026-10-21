@@ -82,4 +82,8 @@ interface IWrappedObject
     property Type   as System.Type get
 end interface
 
+interface IDataSession
+    property DataSession as XSharp.RDD.DataSession GET
+end interface
+
 end namespace

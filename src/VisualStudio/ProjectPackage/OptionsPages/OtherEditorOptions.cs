@@ -49,7 +49,16 @@ namespace XSharp.Project.Options
         [DisplayName("Backup Source Files")]
         [Description("Backup the Form.Prg and Form.Designer.Prg when saving in the Windows Forms Editor.")]
         public bool BackupFormFiles { get; set; } = false;
+
+        [Category("Windows Forms Editor")]
+        [DisplayName("Auto-build for Shadow Designer (SDK-style projects)")]
+        [Description("When a SDK-style project's WinForms Designer needs a build to resolve " +
+            "assembly references (e.g. the first time it's opened in a session), build " +
+            "automatically instead of asking. When off (default), you're prompted to confirm " +
+            "the build first.")]
         [DefaultValue(false)]
+        public bool AutoBuildForShadowDesigner { get; set; } = false;
+
         public override void WriteToSettings()
         {
             XCustomEditorSettings.DbServerDefaultRDD = this.DbServerDefaultRDD;
@@ -58,6 +67,7 @@ namespace XSharp.Project.Options
             XCustomEditorSettings.FieldSpecParentClass = this.FieldSpecParentClass;
             XCustomEditorSettings.ToolbarParentClass = this.ToolbarParentClass;
             XCustomEditorSettings.BackupFormFiles = this.BackupFormFiles;
+            XCustomEditorSettings.AutoBuildForShadowDesigner = this.AutoBuildForShadowDesigner;
             XSettings.Disassembler = this.Disassembler;
             XSettings.HideIncludes = this.HideIncludes;
         }

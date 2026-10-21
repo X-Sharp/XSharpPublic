@@ -58,6 +58,7 @@ class DialectPropertyPagePanel
     const XPP1Caption := "Inherit from Abstract class" as string
     const FOX1Caption := "Inherit from Custom class" as string
     const FOX2Caption := "Compatible Array Handling" as string
+    const FOX3Caption := "Compatible Cursor Handling" as string
     const VO1Description := "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)" as string
     const VO2Description := e"Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0. \rWhen enabled this will initialize local string variables regardless of the setting of 'initialize locals' setting from the Language page." as string
     const VO3Description := "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)" as string
@@ -77,7 +78,8 @@ class DialectPropertyPagePanel
     const VO17Description := "Generate code to fully implement the VO compatible BEGIN SEQUENCE .. END SEQUENCE. The compiler generates calls to the runtime functions _SequenceError and _SequenceRecover that you may override in your own code.(/vo17)" as string
     const XPP1Description := "All classes without parent class inherit from the XPP Abstract class.(/xpp1)" as string
     const FOX1Description := "All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.(/fox1)" as string
-    const FOX2Description := "FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)" as string
+    const FOX2Description := "FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). WARNING Allowing parenthesized arrays may slow down the execution of your program!(/fox2)" as string
+    const FOX3Description := e"FoxPro compatible cursor handling. Warning all Name DOT Name expressions will be evaluated at runtime and not at compile time. This may slow down the program! \rThis also includes saving and restoring of private data sessions when applicable. (/fox3)" as string
     const CatCompatibility := "All dialects" as string
     const CatNotCore := "Not in Core dialect" as string
     const XPPCompatibility := "Xbase++ Compatibility" as string
@@ -113,6 +115,8 @@ class GeneralPropertyPagePanel
     const descStartup := "Defines the entry point to be called when the application loads. Generally this is set either to the main form in your application or to the 'Start' function that should run when the application starts. Class libraries do not define an entry point." as string
     const descIcon := "Sets the .ico file that you want to use as your program icon. Note you must specify the icon and manifest -or- a resource file." as string
     const captIcon := "Application Icon:" as string
+    const captTargetOS := "Target OS:" as string
+    const descTargetOS := "Specifies the target operating system for the application. This option can have different values depending on which versions of Windows are installed on your computer." as string
 end class
 
 class LanguagePropertyPagePanel
@@ -120,7 +124,7 @@ class LanguagePropertyPagePanel
     const CMDCaption := "Extra Command Line Options" as string
     const AZCaption := "Use Zero Based Arrays" as string
     const CSCaption := "Case Sensitive" as string
-    const INSCaption := "Enable Implicit Namespace lookup" as string
+    const INSCaption := "Implicit Namespace lookup" as string
     const LBCaption := "Allow Late Binding" as string
     const NamedArgCaption := "Allow Named Arguments" as string
     const NSCaption := "Prefix classes with default Namespace" as string
@@ -133,9 +137,9 @@ class LanguagePropertyPagePanel
     const EnforceOverrideCaption := "Enforce VIRTUAL / OVERRIDE" as string
     const allowDotCaption := "Allow DOT for instance members" as string
     const allowOldStyleCaption := "Allow Old Style assignments" as string
-    const CSDescription := "Enable/Disable case sensitivity (/cs)" as string
+    const CSDescription := "Enable Case sensitivity (/cs)" as string
     const AZDescription := "Use Zero Based Arrays (/az)" as string
-    const INSDescription := "Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)" as string
+    const INSDescription := "The implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)" as string
     const LBDescription := "Allow property access and method calls on expressions of type OBJECT and USUAL (/lb)" as string
     const NamedArgDescription := "Allow named arguments (Default = TRUE for the Core dialect and FALSE for the other dialects). Changing the dialect may also automatically change this setting. (/namedargs)" as string
     const NSDescription := "Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:<Namespace>)" as string

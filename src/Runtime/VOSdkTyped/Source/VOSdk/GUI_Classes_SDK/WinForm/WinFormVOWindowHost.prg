@@ -11,6 +11,7 @@
 
 
 
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
 
 USING System.ComponentModel
 

@@ -4,6 +4,8 @@
 // See License.txt in the project root for license information.
 //
 /// <include file="Gui.xml" path="doc/HotKey/*" />
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
+
 [XSharp.Internal.TypesChanged];
 CLASS HotKey INHERIT VObject
 	CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt)

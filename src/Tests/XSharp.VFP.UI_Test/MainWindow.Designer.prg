@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
 		PRIVATE toolStripSeparator1 AS System.Windows.Forms.ToolStripSeparator
 		PRIVATE quitToolStripMenuItem AS System.Windows.Forms.ToolStripMenuItem
 		PRIVATE dOFORMToolStripMenuItem AS System.Windows.Forms.ToolStripMenuItem
+		PRIVATE transparencyToolStripMenuItem AS System.Windows.Forms.ToolStripMenuItem
 
         /// <summary>
         /// Clean up any resources being used.
@@ -51,6 +52,7 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
 			SELF:toolStripSeparator1	:=	System.Windows.Forms.ToolStripSeparator{}
 			SELF:quitToolStripMenuItem	:=	System.Windows.Forms.ToolStripMenuItem{}
 			SELF:dOFORMToolStripMenuItem	:=	System.Windows.Forms.ToolStripMenuItem{}
+			SELF:transparencyToolStripMenuItem	:=	System.Windows.Forms.ToolStripMenuItem{}
 			SELF:menuStrip1:SuspendLayout()
 			SELF:SuspendLayout()
 			//
@@ -66,7 +68,7 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
 			//
 			//	testToolStripMenuItem
 			//
-			SELF:testToolStripMenuItem:DropDownItems:AddRange(<System.Windows.Forms.ToolStripItem>{ SELF:miscControlsToolStripMenuItem, SELF:textBoxToolStripMenuItem, SELF:dOFORMToolStripMenuItem, SELF:toolStripSeparator1, SELF:quitToolStripMenuItem })
+			SELF:testToolStripMenuItem:DropDownItems:AddRange(<System.Windows.Forms.ToolStripItem>{ SELF:miscControlsToolStripMenuItem, SELF:textBoxToolStripMenuItem, SELF:dOFORMToolStripMenuItem, SELF:transparencyToolStripMenuItem, SELF:toolStripSeparator1, SELF:quitToolStripMenuItem })
 			SELF:testToolStripMenuItem:Name	:=	"testToolStripMenuItem"
 			SELF:testToolStripMenuItem:Size	:=	System.Drawing.Size{49, 24}
 			SELF:testToolStripMenuItem:Text	:=	"Test"
@@ -103,6 +105,13 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
 			SELF:dOFORMToolStripMenuItem:Size	:=	System.Drawing.Size{224, 26}
 			SELF:dOFORMToolStripMenuItem:Text	:=	"DO FORM"
 			SELF:dOFORMToolStripMenuItem:Click	+=	System.EventHandler{ SELF, @dOFORMToolStripMenuItem_Click() }
+			//
+			//	transparencyToolStripMenuItem
+			//
+			SELF:transparencyToolStripMenuItem:Name	:=	"transparencyToolStripMenuItem"
+			SELF:transparencyToolStripMenuItem:Size	:=	System.Drawing.Size{224, 26}
+			SELF:transparencyToolStripMenuItem:Text	:=	"Transparency Z-Order"
+			SELF:transparencyToolStripMenuItem:Click	+=	System.EventHandler{ SELF, @transparencyToolStripMenuItem_Click() }
 			//
 			//	MainWindow
 			//

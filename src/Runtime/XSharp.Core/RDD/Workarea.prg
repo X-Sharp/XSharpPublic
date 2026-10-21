@@ -157,54 +157,64 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL cbWhile   AS ICodeblock
             LOCAL cbFor     AS ICodeblock
             LOCAL cbEval    AS ICodeblock
-            info:ScopeInfo:Compile(SELF)
-            cbWhile  := info:ScopeInfo:WhileBlock
-            cbFor    := info:ScopeInfo:ForBlock
-            cbEval   := info:Block
-            IF info:ScopeInfo:RecId != NULL
-                nRecno := Convert.ToUInt32(info:ScopeInfo:RecId)
-                isOk   := SELF:GoTo(nRecno)
-                lLimit := TRUE
-                nRecno := 1
-            ELSEIF info:ScopeInfo:NextCount != 0
-                lLimit := TRUE
-                nRecno := info:ScopeInfo:NextCount
-                IF nRecno < 1
-                  RETURN TRUE
-                ENDIF
-            ELSE
-                lLimit  := FALSE
-                IF cbWhile == NULL .AND. ! info:ScopeInfo:Rest
-                  isOk := SELF:GoTop()
-                ENDIF
-            ENDIF
-            DO WHILE isOk .AND. ! SELF:EoF
-                IF cbWhile != NULL
-                    IF ! (LOGIC) SELF:EvalBlock(cbWhile)
-                        EXIT
+            LOCAL nTally    := 0 AS LONG
+            TRY
+                info:ScopeInfo:Compile(SELF)
+                cbWhile  := info:ScopeInfo:WhileBlock
+                cbFor    := info:ScopeInfo:ForBlock
+                cbEval   := info:Block
+                IF info:ScopeInfo:RecId != NULL
+                    nRecno := Convert.ToUInt32(info:ScopeInfo:RecId)
+                    isOk   := SELF:GoTo(nRecno)
+                    lLimit := TRUE
+                    nRecno := 1
+                ELSEIF info:ScopeInfo:NextCount != 0
+                    lLimit := TRUE
+                    nRecno := info:ScopeInfo:NextCount
+                    IF nRecno < 1
+                      RETURN TRUE
                     ENDIF
-                ENDIF
-                IF cbFor != NULL
-                   lRecordOk := (LOGIC) SELF:EvalBlock(cbFor)
                 ELSE
-                   lRecordOk := TRUE
-                ENDIF
-                IF lRecordOk .AND. cbEval != NULL
-                    VAR oResult := SELF:EvalBlock(cbEval)
-                    IF oResult IS LOGIC
-                        isOk := (LOGIC) oResult
+                    lLimit  := FALSE
+                    IF cbWhile == NULL .AND. ! info:ScopeInfo:Rest
+                      isOk := SELF:GoTop()
                     ENDIF
                 ENDIF
-                IF lLimit
-                    nRecno -= 1
-                    IF nRecno == 0
-                        EXIT
+                DO WHILE isOk .AND. ! SELF:EoF
+                    IF cbWhile != NULL
+                        IF ! (LOGIC) SELF:EvalBlock(cbWhile)
+                            EXIT
+                        ENDIF
                     ENDIF
-                ENDIF
-                IF isOk
-                    isOk := SELF:Skip(1)
-                ENDIF
-            ENDDO
+                    IF cbFor != NULL
+                       lRecordOk := (LOGIC) SELF:EvalBlock(cbFor)
+                    ELSE
+                       lRecordOk := TRUE
+                    ENDIF
+                    IF lRecordOk
+                        IF cbEval != NULL
+                            VAR oResult := SELF:EvalBlock(cbEval)
+                            IF oResult IS LOGIC
+                                isOk := (LOGIC) oResult
+                            ENDIF
+                        ENDIF
+                        nTally += 1
+                    ENDIF
+                    IF lLimit
+                        nRecno -= 1
+                        IF nRecno == 0
+                            EXIT
+                        ENDIF
+                    ENDIF
+                    IF isOk
+                        isOk := SELF:Skip(1)
+                    ENDIF
+                ENDDO
+            CATCH ex as Exception
+                XSharp.RuntimeState.LastRddError := ex
+            FINALLY
+                RuntimeState.Tally := nTally
+            END TRY
             RETURN isOk
 
         VIRTUAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG

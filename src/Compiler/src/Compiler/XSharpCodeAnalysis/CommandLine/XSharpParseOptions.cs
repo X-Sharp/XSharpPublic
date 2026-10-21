@@ -95,6 +95,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool VOStringComparisons = false;
         private bool XPPInheritFromAbstract = false;
         private bool FoxArraySupport = false;
+        private bool FoxCursorSupport = false;
         private bool LateBinding = false;
 
         #endregion
@@ -109,6 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public bool NoStdDef { get; private set; }
+        public bool NoThisForm { get; private set; }
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
@@ -154,6 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool cs => CaseSensitive;
         //public bool fox1 => FoxInheritUnknown;
         public bool fox2 => FoxArraySupport;
+        public bool fox3 => FoxCursorSupport;
         public bool lb => LateBinding;
         public bool vo1 => VoInitAxitMethods;
         public bool vo10 => VOCompatibleIIF;
@@ -192,9 +195,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 EnforceSelf = opt.EnforceSelf;
                 //FoxInheritUnknown = opt.Fox1;
                 FoxArraySupport = opt.Fox2;
+                FoxCursorSupport = opt.Fox3;
                 ImplicitNamespace = opt.ImplicitNameSpace;
 #if !VSPARSER
-                IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? ImmutableArray<string>.Empty;
+                IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? [];
 #else
                 var paths = opt.IncludePaths;
                 if (paths == null)
@@ -207,6 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ModernSyntax = opt.ModernSyntax;
                 NoClipCall = opt.NoClipCall;
                 NoStdDef = opt.NoStdDef;
+                NoThisForm = opt.NoThisForm;
                 Overflow = opt.Overflow;
                 ParseLevel = opt.ParseLevel;
                 ParseLevel = opt.ParseLevel;
@@ -281,6 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             EnforceSelf = opt.EnforceSelf;
             //FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
             FoxArraySupport = opt.FoxArraySupport;      // fox2
+            FoxCursorSupport = opt.FoxCursorSupport;        // fox3
             ImplicitNamespace = opt.ImplicitNamespace;
             IncludePaths = opt.IncludePaths;
             InitLocals = opt.InitLocals;
@@ -291,6 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemVars = opt.MemVars;
             NoClipCall = opt.NoClipCall;
             NoStdDef = opt.NoStdDef;
+            NoThisForm = opt.NoThisForm;
             Overflow = opt.Overflow;
             ParseLevel = opt.ParseLevel;
             PreprocessorOutput = opt.PreprocessorOutput;
@@ -391,6 +398,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Overflow: // ovf
                     return CheckOption(option, Overflow, token, options);
 
+                case CompilerOption.NoThisForm: // ovf
+                    return CheckOption(option, NoThisForm, token, options);
+
                 case CompilerOption.UndeclaredMemVars: // undeclared
                     return CheckOption(option, UndeclaredMemVars, token, options);
 
@@ -447,6 +457,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.Fox2: // fox2
                     return CheckOption(option, FoxArraySupport, token, options);
+
+                case CompilerOption.Fox3: // fox3
+                    return CheckOption(option, FoxCursorSupport, token, options);
 
                 case CompilerOption.LateBinding:  // lb
                     return CheckOption(option, LateBinding, token, options);

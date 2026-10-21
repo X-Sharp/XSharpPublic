@@ -1,0 +1,5 @@
+# Used by C990: passed to the compiler with /analyzerconfig
+root = true
+
+[*.prg]
+indent_style = tab

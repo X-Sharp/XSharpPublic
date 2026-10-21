@@ -36,7 +36,7 @@ namespace XSharp.Parser
             {
 
                 string file = error.Node.SourceFileName;
-                var ls = new LinePositionSpan() { Line = error.Node.Line, Column = error.Node.Column, FileName = error.Node.SourceFileName };
+                var ls = new LinePositionSpan() { Line = error.Node.Line, Column = error.Node.Column, FileName = error.Node.SourceFileName, Length = error.Node.FullWidth };
                 var msg = ErrorFacts.GetMessage(error.Code, CultureInfo.CurrentCulture);
                 if (ErrorFacts.IsWarning(error.Code))
                 {

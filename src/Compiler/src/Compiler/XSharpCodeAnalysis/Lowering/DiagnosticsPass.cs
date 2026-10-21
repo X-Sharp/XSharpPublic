@@ -111,7 +111,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 switch (amc.Op.Type)
                 {
                     case XSharpLexer.COLONCOLON:
-                        if (_compilation.Options.Dialect != XSharpDialect.XPP && symbol.IsStatic)
+                    case XSharpLexer.DOTCOLON:
+                        if (_compilation.Options.Dialect != XSharpDialect.XPP &&
+                            _compilation.Options.Dialect != XSharpDialect.FoxPro &&
+                            symbol.IsStatic)
                         {
                             // XPP allows static and instance, other dialects only instance
                             if (string.Compare(symbol.Name, amc.Name.GetText(), true) == 0)
@@ -334,7 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (node.Syntax.XIsExplicitTypeCastInCode && srcType.SpecialType.SizeInBytes() != 8)
                     {
-                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x86");
+                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x64");
                     }
                     break;
                 default:

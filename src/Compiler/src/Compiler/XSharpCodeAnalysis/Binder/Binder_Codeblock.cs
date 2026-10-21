@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 cbType.InstanceConstructors[0],
                 new BoundExpression[] { cbDel, cbSrc }.ToImmutableArrayOrEmpty(),
                 System.Collections.Immutable.ImmutableArray<BoundAnonymousPropertyDeclaration>.Empty, cbType)
-            { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; 
+            { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
 
             if (conv != Conversion.ImplicitReference)
             {
@@ -94,7 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     conversionGroupOpt: null,
                     constantValueOpt: null,
                     type: Compilation.CodeBlockType())
-                { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; 
+                { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
             }
             if (!conv.IsValid || (!isCast && conv.IsExplicit))
             {
@@ -133,12 +133,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // 1) no statements, then add a return statement
             // 2) last statement is a void expression. Then the conversion to USUAL fails
             var count = block.Statements.Length;
-            List<BoundStatement> newlist = new List<BoundStatement>();
+            List<BoundStatement> newlist = [];
             if (count == 0)
             {
                 var result = new BoundDefaultExpression(block.Syntax, usualType);
                 newlist.Add(new BoundReturnStatement(block.Syntax, RefKind.None, result, @checked: false));
-                block = block.Update(block.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, block.HasUnsafeModifier, block.Instrumentation, newlist.ToImmutableArray<BoundStatement>());
+                block = block.Update(block.Locals, [], block.HasUnsafeModifier, block.Instrumentation, newlist.ToImmutableArray<BoundStatement>());
             }
             else
             {
@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     BoundExpression expr = (stmt as BoundReturnStatement).ExpressionOpt;
                     // when the last expression is a conversion to USUAL
-                    // and there is an error, then this is most likely the conversion from 
+                    // and there is an error, then this is most likely the conversion from
                     // a void to USUAL. When that happens, then create an extra stmt in the body of the lambda
                     // store the return expression in an expression statement
                     // and return a NIL

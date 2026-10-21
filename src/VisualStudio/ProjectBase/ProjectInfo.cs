@@ -17,7 +17,50 @@ namespace Microsoft.VisualStudio.Project
     {
         public string Url { get; private set; }
         public Guid Id { get; private set; }
-        public IVsHierarchy Hierarchy { get; set; } = null;
+
+        private IVsHierarchy _hierarchy = null;
+        private EnvDTE.Project _dteProject = null;
+
+        /// <summary>
+        /// The hierarchy of this project, once somebody has resolved it.
+        /// </summary>
+        /// <remarks>
+        /// Resolving a hierarchy from a guid enumerates the whole solution, so it is well
+        /// worth caching. Setting this to null is how close, unload and reload invalidate
+        /// the entry - see the ClearHierarchy methods.
+        /// </remarks>
+        public IVsHierarchy Hierarchy
+        {
+            get { return _hierarchy; }
+            set
+            {
+                _hierarchy = value;
+                if (value == null)
+                {
+                    // Invalidation: the automation object was resolved from the hierarchy
+                    // we are dropping, so it has to go too. Replacing it with another non
+                    // null hierarchy is NOT an invalidation: the shell can hand out a
+                    // different runtime wrapper for the very same project, and treating
+                    // that as a change threw the cache away on almost every write.
+                    _dteProject = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The automation object of this project, resolved from <see cref="Hierarchy"/>.
+        /// </summary>
+        /// <remarks>
+        /// Shared by every project reference that points at this project, so the resolution
+        /// happens once per project instead of once per reference node - on a solution with
+        /// 226 projects that is 88 resolutions instead of 3283. It is dropped whenever
+        /// <see cref="Hierarchy"/> is cleared, so it cannot outlive the project it belongs to.
+        /// </remarks>
+        public EnvDTE.Project DteProject
+        {
+            get { return _hierarchy == null ? null : _dteProject; }
+            set { _dteProject = value; }
+        }
 #if DEBUG
         public string Name => System.IO.Path.GetFileNameWithoutExtension(Url);
 
@@ -60,6 +103,71 @@ namespace Microsoft.VisualStudio.Project
             if (result == null && guid != Guid.Empty)
             {
                 result = GetProjectInfo(guid);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Forget the cached hierarchy of every ProjectInfo that points to it.
+        /// </summary>
+        /// <remarks>
+        /// Readers of <see cref="Hierarchy"/> take a non null value as proof that the project is
+        /// still loaded, so it has to be dropped as soon as that project is closed, unloaded or
+        /// reloaded. Removing the whole ProjectInfo only happens for our own project nodes
+        /// (ProjectNode.Close()), so foreign projects need this. Clearing too eagerly costs
+        /// nothing: the next reader resolves the hierarchy through the shell and caches it again.
+        /// </remarks>
+        public static void ClearHierarchy(IVsHierarchy hierarchy)
+        {
+            if (hierarchy == null)
+            {
+                return;
+            }
+            foreach (var projectInfo in _projectsByUrl.Values)
+            {
+                if (ReferenceEquals(projectInfo.Hierarchy, hierarchy))
+                {
+                    Logger.Information($"Dropping cached hierarchy for {projectInfo.Url} with guid {projectInfo.Id}");
+                    projectInfo.Hierarchy = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Forget all cached hierarchies, for when the whole solution goes away.
+        /// </summary>
+        public static void ClearHierarchies()
+        {
+            Logger.Information("Dropping all cached project hierarchies");
+            foreach (var projectInfo in _projectsByUrl.Values)
+            {
+                projectInfo.Hierarchy = null;
+            }
+        }
+
+        /// <summary>
+        /// Find the entry for a project, registering one when it does not exist yet.
+        /// </summary>
+        /// <remarks>
+        /// ProjectNode.CreateBuildDependencies normally registers these, but it can run
+        /// after the automation layer has already started reading project references.
+        /// Anything that wants to cache per project needs an entry to cache on, so it
+        /// creates one here instead of giving up and resolving again on every call: one
+        /// session logged 253 solution wide hierarchy lookups for each of 88 projects
+        /// purely because the entries did not exist yet.
+        /// Two threads racing here end up with two equivalent entries and the last one
+        /// wins, which costs at most one extra resolution.
+        /// </remarks>
+        public static ProjectInfo GetOrCreate(Guid id, string url)
+        {
+            if (id == Guid.Empty || string.IsNullOrEmpty(url))
+            {
+                return null;
+            }
+            var result = GetProjectInfo(url, id);
+            if (result == null)
+            {
+                result = new ProjectInfo(id, url);
             }
             return result;
         }

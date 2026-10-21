@@ -23,6 +23,8 @@
     <File Path="DocChinese/VoFunctionDocs.xml" />
     <File Path="DocChinese/VOSDK.Xml" />
     <File Path="DocChinese/XPPComments.Xml" />
+    <File Path="DocChinese/XSharp.Core.Docs.xml" />
+    <File Path="DocChinese/XSharp.CoreDefines.xml" />
   </Folder>
   <Folder Name="/Docs/">
     <File Path="Docs/Console.Xml" />
@@ -40,7 +42,11 @@
     <File Path="Docs/VoFunctionDocs.xml" />
     <File Path="Docs/VOSDK.Xml" />
     <File Path="Docs/XPPComments.Xml" />
+    <File Path="Docs/XSharp.Core.Docs.xml" />
     <File Path="Docs/XSharp.CoreDefines.xml" />
+    <File Path="Docs/XSharp.Data.Docs.xml" />
+    <File Path="Docs/XSharp.RDD.Docs.xml" />
+    <File Path="Docs/XSharp.RT.Docs.xml" />
     <File Path="Docs/XsRuntimeClasses.xml" />
     <File Path="Runtime/Docs/RuntimeSpecsV1.docx" />
     <File Path="Runtime/Docs/RuntimeSpecsV2.docx" />
@@ -64,9 +70,6 @@
     <File Path="DocSpanish/VoFunctionDocs.xml" />
     <File Path="DocSpanish/VOSDK.Xml" />
     <File Path="DocSpanish/XPPComments.Xml" />
-  </Folder>
-  <Folder Name="/Macrocompiler/">
-    <Project Path="Runtime/MacroCompiler/MacroCompiler.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
@@ -129,6 +132,7 @@
     <Project Path="Runtime/VOSDK/Source/VOSDK/Win32_API_Library_SDK/VOWin32APILibrary.xsproj" Id="6c93866f-1894-4e82-9aca-55927cae914a" />
   </Folder>
   <Folder Name="/XsRuntime/">
+    <Project Path="Runtime/MacroCompiler/MacroCompiler.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511" />
     <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Id="535dff14-efb7-43f5-a4e1-71c1c4280040" />
     <Project Path="Runtime/XSharp.Data/XSharp.Data.xsproj" Id="db9ad987-ebd9-4f0c-8604-608a9028585c" />
     <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.xsproj" Id="eaee04e4-d7f6-46ac-b65a-e1b416b8d635" />

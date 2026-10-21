@@ -419,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     result.FileWidePublics = treeTransform.GlobalEntities.FileWidePublics;
                     result.HasPCall = treeTransform.GlobalEntities.HasPCall;
-                    result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
+                    result.HasPartialType = treeTransform.GlobalEntities.HasPartialType;
                     if (_options.HasRuntime)
                     {
                         result.LiteralSymbols = ((XSharpTreeTransformationRT)treeTransform).LiteralSymbols;
@@ -459,6 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpDialect.XPP:
                     return new XSharpTreeTransformationXPP(parser, options, pool, syntaxFactory, fileName);
                 case XSharpDialect.Harbour:
+                case XSharpDialect.XBaseNet:
                 default:
                     return new XSharpTreeTransformationRT(parser, options, pool, syntaxFactory, fileName);
             }

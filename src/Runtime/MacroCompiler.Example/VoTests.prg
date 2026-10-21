@@ -73,7 +73,7 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 
-    FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
+    UNSAFE FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
         TestGlobals.tsi := teststruct{1}
         TestGlobals.tci := testclass{1}

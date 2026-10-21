@@ -518,7 +518,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static string GetDisplayName(this TypeSymbol type)
         {
             string strType = type.ToString();
-            switch (strType.ToLower())
+            switch (strType.ToLowerInvariant())
             {
                 case "xsharp.__date":
                     strType = "date";

@@ -77,6 +77,13 @@ PROTECT _nArea   AS LONG
                     oData[nI] := oRDD:GetValue(nI)
                     IF oData[nI] IS STRING VAR strValue
                         oData[nI] := strValue:TrimEnd()
+                    ELSEIF oData[nI] IS XSharp.IDate VAR dValue
+                        // DBF data fields hand out a DbDate, which a DateTime column cannot store
+                        IF dValue:Month == 0
+                            oData[nI] := DBNull.Value
+                        ELSE
+                            oData[nI] := dValue:Value
+                        ENDIF
                     ENDIF
                 NEXT
                 SELF:_AddRow(oData,oRDD:RecNo)

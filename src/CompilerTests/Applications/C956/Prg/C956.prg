@@ -19,7 +19,7 @@ local i64 := (UIntPtr)uValue as UIntPtr
 xAssert((PTR)i64 == (PTR)uValue)
 
 local u64 := i64:ToUInt64() as uint64
-? (int64)u64, (int64)I64
+? ((int64)u64):ToString(), ((int64)I64):ToString()
 xAssert((Uint64)u64 == (Uint64)I64)
 
 

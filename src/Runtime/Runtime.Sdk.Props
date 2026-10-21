@@ -9,7 +9,6 @@
     <cs>True</cs>
     <NS>true</NS>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
-    <GenerateSupportedOSPlatformAttribute>true</GenerateSupportedOSPlatformAttribute>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>

@@ -166,7 +166,9 @@ NAMESPACE XSharpModel
         IF ! SELF:Virtual
             XDatabase.Update(SELF)
             SELF:Project:ClearCache(SELF)
-            SELF:Project:RefreshGlobalUsings()
+            // Just mark them stale. This used to rebuild the project's global usings here,
+            // which is a database query, for every single file written.
+            SELF:Project:InvalidateGlobalUsings()
             IF ! SELF:Interactive
                 SELF:Clear()
             ENDIF

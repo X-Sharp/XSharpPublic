@@ -19,7 +19,7 @@
     <StandardDefs />
     <StartupObject />
     <Unsafe>True</Unsafe>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>True</Allowdot>
   </PropertyGroup>

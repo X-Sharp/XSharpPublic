@@ -6,6 +6,10 @@
 // See License.txt in the project root for license information.
 
 
+/// <summary>
+/// Converts a VFP anchor bitmask to <see cref="System.Windows.Forms.AnchorStyles"/> and applies it to <paramref name="sender"/>.<br/>
+/// Bit 1=Top, 2=Left, 4=Bottom, 8=Right. Value 0 maps to Top|Left (default).
+/// </summary>
 METHOD SetAnchor( sender AS System.Windows.Forms.Control, anchorValue AS INT ) AS VOID
 	LOCAL anchor := AnchorStyles.None AS AnchorStyles
 	//

@@ -32,6 +32,16 @@ BEGIN NAMESPACE VFPXPorter
 			//
 			RETURN
 
+		/// <summary>
+		/// Memory-only instance : values are never read from or written to disk.
+		/// Used to edit a set of values scoped to a single dialog/session without
+		/// touching the persisted settings file.
+		/// </summary>
+		CONSTRUCTOR()
+			jsonFileFullPath := ""
+			SELF:Reset()
+			RETURN
+
 		PROPERTY FullPath AS STRING GET SELF:jsonFileFullPath
 
 
@@ -67,7 +77,9 @@ BEGIN NAMESPACE VFPXPorter
                 NOP
 			END TRY
 			//
-			File.WriteAllText( SELF:jsonFileFullPath, JsonConvert.SerializeObject( iniContent ) )
+			IF !String.IsNullOrEmpty( jsonFileFullPath )
+				File.WriteAllText( SELF:jsonFileFullPath, JsonConvert.SerializeObject( iniContent ) )
+			ENDIF
 			//
 
 		PROTECTED METHOD GetPrivateProfileString( Section AS STRING , Key AS STRING , defValue AS STRING ) AS STRING

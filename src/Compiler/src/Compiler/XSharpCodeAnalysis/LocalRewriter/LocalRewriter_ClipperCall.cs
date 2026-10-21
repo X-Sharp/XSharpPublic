@@ -466,18 +466,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         switch (members[0])
                         {
+                            case PropertySymbol ps:
+                                // starting with 2.9 this is a property
+                                exprs.Add(_factory.Property(null, ps));
+                                rewritten = true;
+                                break;
                             case FieldSymbol fs:
                                 // before 2.9 this was a field
                                 var type = _factory.Type(utype);
                                 exprs.Add(_factory.Field(type, fs));
                                 rewritten = true;
                                 break;
-                            case PropertySymbol ps:
-                                // starting with 2.9 this is a property
-                                exprs.Add(_factory.Property(null, ps));
-                                rewritten = true;
-                                break;
-                            default:
+                          default:
                                 exprs.Add(arg);
                                 break;
                         }

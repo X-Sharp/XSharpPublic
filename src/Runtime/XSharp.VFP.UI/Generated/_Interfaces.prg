@@ -94,9 +94,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY FirstElement AS LONG GET SET
 		METHOD IndexToItemID(nIndex as LONG) AS LONG
 
-		PROPERTY ItemBackColor AS LONG GET SET
+		PROPERTY ItemBackColor AS System.Drawing.Color GET SET
 		PROPERTY ItemData AS LONG  GET SET
-		PROPERTY ItemForeColor AS LONG GET SET
+		PROPERTY ItemForeColor AS System.Drawing.Color GET SET
 			//PROPERTY ItemIDData[nItemId as LONG] AS LONG GET SET
 		METHOD ItemIDToIndex(nItemId as LONG) AS LONG
 
@@ -115,8 +115,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			//PROPERTY Selected[nItem AS LONG] AS LOGIC  GET SET
 			//PROPERTY SelectedID[nItem AS LONG] AS LOGIC GET SET
 
-		PROPERTY SelectedItemBackColor AS LONG  GET SET
-		PROPERTY SelectedItemForeColor  AS LONG  GET SET
+		PROPERTY SelectedItemBackColor AS System.Drawing.Color GET SET
+		PROPERTY SelectedItemForeColor AS System.Drawing.Color GET SET
 
     END INTERFACE
     /// <summary>
@@ -132,8 +132,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
     /// Interface for Text Controls
     /// </summary>
 	INTERFACE IVFPText
-		PROPERTY DisabledBackColor AS LONG GET SET
-		PROPERTY DisabledForeColor AS LONG GET SET
+		PROPERTY DisabledBackColor AS System.Drawing.Color GET SET
+		PROPERTY DisabledForeColor AS System.Drawing.Color GET SET
 	END INTERFACE
 
     /// <summary>

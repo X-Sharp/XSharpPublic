@@ -28,6 +28,7 @@ namespace Microsoft.CodeAnalysis.Text
     {
         public int Line;
         public int Column;
+        public int Length;
         public string FileName;
     }
 
@@ -204,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var opt in options)
             {
                 string name, value;
-                var pos = opt.IndexOf(":");
+                var pos = opt.IndexOf(':');
                 if (pos > 0)
                 {
 
@@ -216,7 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     name = opt;
                     value = "";
                 }
-                name = name.ToLower();
+                name = name.ToLowerInvariant();
                 if (name == "d")
                 {
                     var defs = value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);

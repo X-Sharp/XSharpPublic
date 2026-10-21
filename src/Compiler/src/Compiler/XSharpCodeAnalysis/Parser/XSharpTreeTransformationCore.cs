@@ -19,10 +19,11 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
-    using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
@@ -38,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public XP.Namespace_Context FileScopedNamespace;
             public SyntaxListBuilder<MemberDeclarationSyntax> GlobalClassMembers;
             public SyntaxListBuilder<MemberDeclarationSyntax> StaticGlobalClassMembers;
-            public List<MemVarFieldInfo> FileWidePublics;
+            public MemVarFieldInfoList FileWidePublics { get; private set; }
             public object LastMember;
             public bool LastIsStatic;
             public bool HasSlen = false;
@@ -49,7 +50,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public List<PragmaOption> PragmaOptions;
 
             public bool HasPCall;
-            public bool NeedsProcessing;
+            public bool HasPartialType;
+
+
+            internal void AddFileWidePublic(MemVarFieldInfo var)
+            {
+                if (FileWidePublics == null)
+                    FileWidePublics = new MemVarFieldInfoList();
+                FileWidePublics.Add(var);
+            }
 
             internal SyntaxEntities(SyntaxListPool pool)
             {
@@ -61,11 +70,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 StaticGlobalClassMembers = pool.Allocate<MemberDeclarationSyntax>();
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
-                FileWidePublics = new List<MemVarFieldInfo>();
                 FileScopedNamespace = null;
                 _pool = pool;
                 HasPCall = false;
-                NeedsProcessing = false;
+                HasPartialType = false;
                 LastIsStatic = false;
                 LastMember = null;
                 PragmaWarnings = null;
@@ -187,7 +195,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
         #region Properties
-        protected TypeSyntax PtrType => GenerateQualifiedName(SystemQualifiedNames.IntPtr);
+        protected TypeSyntax IntPtrType => GenerateQualifiedName(SystemQualifiedNames.IntPtr);
+        protected TypeSyntax PtrType => _syntaxFactory.PointerType(VoidType, SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken));
         protected TypeSyntax _impliedType =>
             GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
         protected TypeSyntax IntType =>
@@ -599,7 +608,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    name = name.ToUpper() + suffix;
+                    name = name.ToUpperInvariant() + suffix;
                 }
             }
             return name;
@@ -863,9 +872,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (expr is XP.PrimaryExpressionContext)
             {
                 var prim = expr as XP.PrimaryExpressionContext;
-                if (prim.Expr is XP.VoCastExpressionContext)
+                if (prim.Expr is XP.VoCastExpressionContext vcec)
                 {
-                    var e = prim.Expr as XP.VoCastExpressionContext;
+                    var e = vcec;
                     if (e.Type != null)
                     {
                         type = e.Type.Get<TypeSyntax>();
@@ -883,16 +892,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     isConst = e.Expr.GetLiteralToken() != null;
                 }
-                else if (prim.Expr is XP.VoCastPtrExpressionContext)
+                else if (prim.Expr is XP.VoCastPtrExpressionContext vcpec)
                 {
-                    var e = prim.Expr as XP.VoCastPtrExpressionContext;
-                    var e2 = prim.Expr.Get<CastExpressionSyntax>();
+                    var e = vcpec;
+                    var e2 = vcpec.Get<CastExpressionSyntax>();
                     type = e2.Type;
-                    isConst = e.Expr.GetLiteralToken() != null;
+                    isConst = vcpec.Expr.GetLiteralToken() != null;
                 }
-                else if (prim.Expr is XP.VoConversionExpressionContext)
+                else if (prim.Expr is XP.VoConversionExpressionContext vcoec)
                 {
-                    var e = prim.Expr as XP.VoConversionExpressionContext;
+                    var e = vcoec;
                     if (e.Type != null)
                     {
                         type = e.Type.Get<TypeSyntax>();
@@ -903,15 +912,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     isConst = e.Expr.GetLiteralToken() != null;
                 }
-                else if (prim.Expr is XP.DefaultExpressionContext)
+                else if (prim.Expr is XP.DefaultExpressionContext dec)
                 {
-                    var e = prim.Expr as XP.DefaultExpressionContext;
-                    type = e.Type.Get<TypeSyntax>();
+                    type = dec.Type.Get<TypeSyntax>();
                 }
-                else if (prim.Expr is XP.CtorCallContext)
+                else if (prim.Expr is XP.CtorCallContext ccc)
                 {
-                    var e = prim.Expr as XP.CtorCallContext;
-                    type = e.Type.Get<TypeSyntax>();
+                    type = ccc.Type.Get<TypeSyntax>();
                 }
                 else if (prim.Expr is XP.CodeblockExpressionContext)
                 {
@@ -926,47 +933,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type = IntType;
                     isConst = true;
                 }
-                else if (prim.Expr is XP.TypeExpressionContext)
+                else if (prim.Expr is XP.TypeExpressionContext tec)
                 {
-                    var e = prim.Expr as XP.TypeExpressionContext;
-                    type = e.Type.Get<TypeSyntax>();
+                    type = tec.Type.Get<TypeSyntax>();
                 }
-                else if (prim.Expr is XP.ParenExpressionContext)
+                else if (prim.Expr is XP.ParenExpressionContext pec)
                 {
-                    var e = prim.Expr as XP.ParenExpressionContext;
-                    type = GetExpressionType(e.LastExpression, ref isConst);
-                    isConst = e.LastExpression.GetLiteralToken() != null;
+                    type = GetExpressionType(pec.LastExpression, ref isConst);
+                    isConst = pec.LastExpression.GetLiteralToken() != null;
                 }
-                else if (prim.Expr is XP.IifExpressionContext)
+                else if (prim.Expr is XP.IifExpressionContext iec)
                 {
-                    var e = prim.Expr as XP.IifExpressionContext;
-                    var i = e.Expr;
+                    var i = iec.Expr;
                     type = GetExpressionType(i.TrueExpr, ref isConst);
                 }
             }
-            else if (expr is XP.TypeCastContext)
+            else if (expr is XP.TypeCastContext tcc)
             {
-                var e = expr as XP.TypeCastContext;
-                type = e.Type.Get<TypeSyntax>();
-                isConst = e.Expr.GetLiteralToken() != null;
+                type = tcc.Type.Get<TypeSyntax>();
+                isConst = tcc.Expr.GetLiteralToken() != null;
 
             }
-            else if (expr is XP.TypeCheckExpressionContext)
+            else if (expr is XP.TypeCheckExpressionContext tcec)
             {
-                var e = expr as XP.TypeCheckExpressionContext;
-                if (e.Op.Type == XP.ASTYPE)
+                if (tcec.Op.Type == XP.ASTYPE)
                 {
-                    type = e.Type.Get<TypeSyntax>();
-                    isConst = e.Expr.GetLiteralToken() != null;
+                    type = tcec.Type.Get<TypeSyntax>();
+                    isConst = tcec.Expr.GetLiteralToken() != null;
                 }
             }
-            else if (expr is XP.BinaryExpressionContext)
+            else if (expr is XP.BinaryExpressionContext bec)
             {
-                var e = expr as XP.BinaryExpressionContext;
                 bool leftIsConst = false;
                 bool rightIsConst = false;
-                type = GetExpressionType(e.Left, ref leftIsConst);
-                var type2 = GetExpressionType(e.Right, ref rightIsConst);
+                type = GetExpressionType(bec.Left, ref leftIsConst);
+                var type2 = GetExpressionType(bec.Right, ref rightIsConst);
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
@@ -976,13 +977,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            else if (expr is XP.AssignmentExpressionContext)
+            else if (expr is XP.AssignmentExpressionContext aec)
             {
-                var e = expr as XP.AssignmentExpressionContext;
                 bool leftIsConst = false;
                 bool rightIsConst = false;
-                type = GetExpressionType(e.Left, ref leftIsConst);
-                var type2 = GetExpressionType(e.Right, ref rightIsConst);
+                type = GetExpressionType(aec.Left, ref leftIsConst);
+                var type2 = GetExpressionType(aec.Right, ref rightIsConst);
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
@@ -992,21 +992,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            else if (expr is XP.PrefixExpressionContext)
+            else if (expr is XP.PrefixExpressionContext pec)
             {
-                var e = expr as XP.PrefixExpressionContext;
-                if (e.Op.Type == XP.ADDROF)
+                if (pec.Op.Type == XP.ADDROF)
                     type = _syntaxFactory.PointerType(VoidType, SyntaxFactory.AmpersandToken);
                 else
-                    type = GetExpressionType(e.Expr, ref isConst);
+                    type = GetExpressionType(pec.Expr, ref isConst);
             }
             if (type == null)
             {
                 type = ObjectType;
             }
-            if (type is PredefinedTypeSyntax)
+            if (type is PredefinedTypeSyntax pdt)
             {
-                var pdt = type as PredefinedTypeSyntax;
                 switch (pdt.Keyword.Kind)
                 {
                     case SyntaxKind.IntKeyword:
@@ -1028,7 +1026,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 }
             }
-            else if (type.IsPtrType())
+            else if (type is PointerTypeSyntax)
             {
                 isConst = true;
             }
@@ -1273,7 +1271,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string[] ids = name.Split('.');
             string idName = ids[0];
             string alias = null;
-            int cc = idName.IndexOf("::");
+            int cc = idName.IndexOf("::", StringComparison.Ordinal);
             if (cc >= 0)
             {
                 alias = idName.Substring(0, cc);
@@ -1308,7 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string[] ids = name.Split('.');
             string idName = ids[0];
             string alias = null;
-            int cc = idName.IndexOf("::");
+            int cc = idName.IndexOf("::", StringComparison.Ordinal);
             if (cc >= 0)
             {
                 alias = idName.Substring(0, cc);
@@ -1852,7 +1850,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         result = GeneratePartialProperyMethod(AssMet, false, bStatic);
                     }
-                    GlobalEntities.NeedsProcessing = true;
+                    GlobalEntities.HasPartialType = true;
                     return result;
                 }
             }
@@ -2664,7 +2662,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpper()));
+                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpperInvariant()));
                         list.Add(id);
                     }
                 }
@@ -3042,7 +3040,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Parents);
@@ -3089,11 +3087,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
 
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
+            ParameterListSyntax primeParam = null;
+            if (context.ParamList != null) primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3106,7 +3106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: null, // TODO nvk
+                        parameterList: primeParam,
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3122,7 +3122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                    keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                    identifier: context.Id.Get<SyntaxToken>(),
                    typeParameterList: getTypeParameters(context.TypeParameters),
-                   parameterList: null, // TODO nvk
+                   parameterList: primeParam,
                    baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                    constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                    openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3205,10 +3205,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (context.TypeData.Partial)
             {
-                GlobalEntities.NeedsProcessing = true;
+                GlobalEntities.HasPartialType = true;
             }
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Implements);
+            ParameterListSyntax primeParam = null;
+            if (context.ParamList != null) primeParam = getParameters(context.ParamList);
 
             MemberDeclarationSyntax m;
             if (isRecord)
@@ -3221,7 +3223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                         identifier: context.Id.Get<SyntaxToken>(),
                         typeParameterList: getTypeParameters(context.TypeParameters),
-                        parameterList: null, // TODO nvk
+                        parameterList: primeParam,
                         baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                         constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                         openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3237,7 +3239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                     identifier: context.Id.Get<SyntaxToken>(),
                     typeParameterList: getTypeParameters(context.TypeParameters),
-                    parameterList: null, // TODO nvk
+                    parameterList: primeParam,
                     baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                     constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                     openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3856,8 +3858,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     && pts.Keyword.Kind == SyntaxKind.StringKeyword;
                 if (!isString)
                 {
-                    var typeText = datatype.GetText().ToLower();
-                    isString = typeText == "string" || typeText == "system.string";
+                    var typeText = datatype.GetText();
+                    isString = typeText.Equals("string", StringComparison.OrdinalIgnoreCase) ||
+                        typeText.Equals("system.string", StringComparison.OrdinalIgnoreCase);
                 }
                 if (isString)
                 {
@@ -4498,7 +4501,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var vop = ce.VoProperties.Values.First();
                         var prop = GenerateVoProperty(vop, cls);
                         mem = prop;
-                        GlobalEntities.NeedsProcessing = true;
+                        GlobalEntities.HasPartialType = true;
                         m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem);
                         cls.Put(m);
                     }
@@ -4846,7 +4849,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     walker.Walk(this, attblock);
                     var list = attblock.CsNode as AttributeListSyntax;
                     context.Put(list);
-                    if (list.Attributes.Count == 0)
+                    if (list?.Attributes.Count == 0)
                     {
                         ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
                     }
@@ -4874,7 +4877,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAttributeTarget([NotNull] XP.AttributeTargetContext context)
         {
-            string target = context.Token.Text.ToLower();
+            string target = context.Token.Text.ToLowerInvariant();
             switch (target)
             {
                 // numeric values in the switch are the values of the AttributeTargets enum
@@ -4958,7 +4961,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // we leave the handling of '*' inside AssemblyVersion to the roslyn code
                 // if the version does not have a '*' character then we use the string that was passed by the user.
                 // this also allows for non numeric versions for InformationalVersion
-                if (context.Target.Token.Text.ToLower() == "assembly")
+                if (context.Target.Token.Text.Equals("assembly", StringComparison.CurrentCultureIgnoreCase))
                 {
                     string[] names = {  "AssemblyFileVersionAttribute","AssemblyFileVersion",
                                         "AssemblyInformationalVersionAttribute","AssemblyInformationalVersion"};
@@ -5008,7 +5011,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitGlobalAttributeTarget([NotNull] XP.GlobalAttributeTargetContext context)
         {
-            var text = context.Token.Text.ToLower();
+            var text = context.Token.Text.ToLowerInvariant();
             if (text != "assembly" && text != "module")
             {
                 ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
@@ -5138,8 +5141,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var paramCtx in context._Params)
             {
                 var paramNode = paramCtx.Get<ParameterSyntax>();
+                bool isClipper = CurrentMember?.Data.HasClipperCallingConvention ?? false;
+                bool isProperty = CurrentMember?.Data.IsProperty ?? false;
                 if (paramCtx.Type == null && paramCtx.Ellipsis == null &&
-                    !CurrentMember.Data.HasClipperCallingConvention && !CurrentMember.Data.IsProperty)
+                    !isClipper && !isProperty)
                 {
                     var parType = "USUAL";
                     var dt = _getNextParameterDataType(paramCtx);
@@ -5543,7 +5548,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (_options.Dialect != XSharpDialect.FoxPro)
                 {
-                    if (context.ReturnType != null && context.ReturnType.GetText().ToLower() != "void")
+                    if (context.ReturnType != null && context.ReturnType.GetText().ToLowerInvariant() != "void")
                     {
                         returntype = NotInDialect(returntype, "Procedure with non VOID return type");
                     }
@@ -5621,6 +5626,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 type = context.DataType?.Get<TypeSyntax>();
                 isConst = false;
+            }
+            if (type.IsVoidPtr())
+            {
+                isConst = false;
+                if (context.Expr.IsVoCast())
+                {
+                    var pec = context.Expr as XP.PrimaryExpressionContext;
+                    var cast = pec.Expr as XP.VoCastExpressionContext;
+                    if (cast.IsPtrCastZero())
+					{
+                        isConst = true;
+					}
+                }
             }
             var list = _pool.Allocate();
             SyntaxList<SyntaxToken> modifiers = null;
@@ -5760,7 +5778,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // convert to 1 Upper char and lower chars
                 string cs = context.CharSet.Text;
-                cs = cs.Substring(0, 1).ToUpper() + cs.Substring(1).ToLower();
+                cs = cs.Substring(0, 1).ToUpperInvariant() + cs.Substring(1).ToLowerInvariant();
                 id = SyntaxFactory.Identifier(cs);
             }
             else
@@ -5955,7 +5973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     for (int i = 0; i < ats.Count; i++)
                     {
                         var at = ats[i] as AttributeSyntax;
-                        if (at.ToString().ToLower().Contains("dllimport"))
+                        if (at.ToString().Contains("dllimport", StringComparison.OrdinalIgnoreCase))
                         {
                             return true;
                         }
@@ -7629,21 +7647,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected virtual XP.WithBlockContext FindWithBlock(XSharpParserRuleContext context)
         {
+            bool hasFoundStatementBlock = false;
             var parent = context.Parent;
-            while (parent != null && !(parent is XP.IEntityContext))
+            while (parent is not null && parent is not XP.IEntityContext)
             {
-                if (parent is XP.WithBlockContext wbc)
+                if (hasFoundStatementBlock)
                 {
-                    return wbc;
+                    if (parent is XP.WithBlockContext wbc)
+                    {
+                        return wbc;
+                    }
+                }
+                else if (parent is XP.StatementBlockContext)
+                {
+                    hasFoundStatementBlock = true;
                 }
                 parent = parent.Parent;
             }
             return null;
         }
 
+        protected XP.CodeblockContext GetCodeBlock(XSharpParserRuleContext context)
+        {
+            var parent = context.Parent;
+            while (parent != null && parent is not XP.IEntityContext)
+            {
+                if (parent is XP.CodeblockContext codeblock)
+                {
+                    if (codeblock.IsLambda)
+                        return null;
+                    else
+                        return codeblock;
+                }
+                parent = parent.Parent;
+            }
+            return null;
+        }
+        public override void EnterAccessMember([NotNull] XP.AccessMemberContext context)
+        {
+            base.EnterAccessMember(context);
+            var cb = GetCodeBlock(context);
+            if (CurrentMember != null && cb != null && context.HasThisReference)
+            {
+                // there is a self or this prefix in the codeblock
+                // we need to create a special variable for this
+                CurrentMember.Data.HasThisInCodeBlock = true;
+            }
+        }
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Op.Type == XP.COLONCOLON)
+            if (context.Op.Type == XP.COLONCOLON && context.Expr == null)
             {
                 context.Put(MakeSimpleMemberAccess(
                     GenerateSelf(),
@@ -7683,9 +7736,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // When AllowDotForInstanceMembers
-                if (context.Op.Type == XP.COLON || _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
+                if (context.IsDotColonExpression || context.IsColonExpression ||
+                    _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions))
                 {
-                    context.Put(MakeSimpleMemberAccess(context.Expr.Get<ExpressionSyntax>(), context.Name.Get<SimpleNameSyntax>()));
+                    var left = context.Expr.Get<ExpressionSyntax>();
+                    var cb = GetCodeBlock(context);
+                    if (CurrentMember != null && cb != null && context.HasThisReference && CurrentMember.Data.HasThisInCodeBlock)
+                    {
+                        left = GenerateSimpleName(XSharpSpecialNames.This);
+                    }
+                    context.Put(MakeSimpleMemberAccess(left, context.Name.Get<SimpleNameSyntax>()));
                 }
                 else if (context.Expr.Get<ExpressionSyntax>() is NameSyntax)
                 {
@@ -7701,7 +7761,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return;
         }
-
+        protected virtual void ImplementSpecialLocals(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
+        {
+            if (context.Data.HasThisInCodeBlock)
+            {
+                // Add local Xs$This and assign SELF
+                var thisdecl = GenerateLocalDecl(XSharpSpecialNames.This, ObjectType, GenerateSelf());
+                thisdecl.XGenerated = true;
+                stmts.Add(thisdecl);
+            }
+        }
         public override void ExitAccessMemberWith([NotNull] XP.AccessMemberWithContext context)
         {
             var expr = context.Right.Get<ExpressionSyntax>();
@@ -8025,11 +8094,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string name = String.Empty;
             if (expr is IdentifierNameSyntax ins)
             {
-                name = ins.Identifier.Text.ToUpper();
+                name = ins.Identifier.Text.ToUpperInvariant();
             }
             else if (expr is GenericNameSyntax gns)
             {
-                name = gns.Identifier.Text.ToUpper();
+                name = gns.Identifier.Text.ToUpperInvariant();
             }
             switch (name)
             {
@@ -9000,7 +9069,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (String.Compare(context.Start.Text, "value", true) == 0)
                         {
                             var token = context.Start as XSharpToken;
-                            token.Text = token.Text.ToLower();
+                            token.Text = token.Text.ToLowerInvariant();
                         }
                     }
                 }
@@ -9324,7 +9393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string expr = e;
                 bool singleColon = false;
                 // Format character?
-                int pos = expr.IndexOf("::");
+                int pos = expr.IndexOf("::", StringComparison.Ordinal);
                 if (pos < 0 && allowDot)
                 {
                     pos = expr.IndexOf(':');
@@ -9429,7 +9498,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (args.Length == 7)
                             {
-                                var suffix = args[6].Trim().ToLower();
+                                var suffix = args[6].Trim().ToLowerInvariant();
                                 if (suffix == "am" || suffix == "pm")
                                 {
                                     bool pm = suffix == "pm";
@@ -9523,7 +9592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         try
                         {
-                            var dt = new DateTime(elements[0], elements[1], elements[2], 0, 0, 0);
+                            var _ = new DateTime(elements[0], elements[1], elements[2], 0, 0, 0);
                         }
                         catch (Exception e)
                         {
@@ -9547,7 +9616,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         try
                         {
-                            var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                            var _ = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
                         }
                         catch (Exception e)
                         {
@@ -9607,7 +9676,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(litExpr.WithAdditionalDiagnostics(diag));
                 }
             }
-            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__ are translated by the preprocessor to TRUE const
+            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__, __FOX3__  are translated by the preprocessor to TRUE const
             // determine real value now
             var text = context.Token.Text;
             if (context.Token.Type == XP.TRUE_CONST && text.Length > 4 && text.StartsWith("__") && text.EndsWith("__"))
@@ -9631,7 +9700,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     try
                     {
-                        var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                        var _ = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
                     }
                     catch (Exception e)
                     {
@@ -9902,13 +9971,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             ParameterListSyntax paramList = context.LambdaParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             bool updateparams = false;
-            if (context.lambda == null &&
+            if (context.IsCodeBlock &&
                 context.LambdaParamList?.ExplicitParams != null)
             {
                 //paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
                 updateparams = true;
             }
-            if (context.lambda != null)
+            if (context.IsLambda)
             {
                 context.SetSequencePoint(context.Start, context.lambda);
                 bool bWarn;
@@ -10591,6 +10660,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     transform.Entities.Push(this.CurrentEntity);
                     walker.Walk(transform, tree);
                     walker.Walk(new XSharpClearSequences(), tree);
+                    this.MergeParseResults(transform);
 
                 }
                 catch (Exception e)
@@ -10605,6 +10675,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return new XSharpTreeTransformationCore(parser, _options, _pool, _syntaxFactory, _fileName);
         }
 
+        protected virtual void MergeParseResults(XSharpTreeTransformationCore subparser)
+        {
+            if (subparser.ParseErrors.Count > 0)
+            {
+                this.ParseErrors.AddRange(subparser.ParseErrors);
+            }
+        }
         #endregion
 
     }

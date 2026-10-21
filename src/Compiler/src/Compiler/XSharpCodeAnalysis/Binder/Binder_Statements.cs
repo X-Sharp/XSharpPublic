@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
@@ -81,14 +82,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (op1.Type.IsUsualType())
             {
                 var syms1 = vfpfuncs.GetMembers(ReservedNames.FoxAssign);
-                var args = new List<BoundExpression>();
-                args.Add(CreateConversion(op1, Compilation.UsualType(), diagnostics));
-                args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
+                var args = new BoundExpression[]
+                {
+                    CreateConversion(op1, Compilation.UsualType(), diagnostics),
+                    CreateConversion(op2, Compilation.UsualType(), diagnostics)
+                };
                 var call = new BoundCall(syntax: node,
                         receiverOpt: null,
                         initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms1[0],
-                        arguments: args.ToImmutableArray(),
+                        arguments: ImmutableArray.Create(args),
                         argumentNamesOpt: default,
                         argumentRefKindsOpt: default,
                         isDelegateCall: false,
@@ -104,14 +107,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!op1.Type.IsUsualType())
             {
                 var syms2 = vfpfuncs.GetMembers(ReservedNames.FoxFillArray);
-                var args = new List<BoundExpression>();
-                args.Add(CreateConversion(op1, Compilation.UsualType(), diagnostics));
-                args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
+                var args = new BoundExpression[]
+                {
+                    CreateConversion(op1, Compilation.UsualType(), diagnostics),
+                    CreateConversion(op2, Compilation.UsualType(), diagnostics)
+                };
                 var call = new BoundCall(syntax: node,
                         receiverOpt: null,
                         initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms2[0],
-                        arguments: args.ToImmutableArray(),
+                        arguments: ImmutableArray.Create(args),
                         argumentNamesOpt: default,
                         argumentRefKindsOpt: default,
                         isDelegateCall: false,
@@ -136,13 +141,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var syms = rtfuncs.GetMembers(ReservedNames.UsualEnumerator);
                 if (syms.Length == 1)
                 {
-                    var args = new List<BoundExpression>();
-                    args.Add(collection);
+                    var args = new BoundExpression[]
+                    {
+                        collection
+                    };
                     var call = new BoundCall(syntax: collection.Syntax,
                         receiverOpt: null,
                         initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms[0],
-                        arguments: args.ToImmutableArray(),
+                        arguments: ImmutableArray.Create(args),
                         argumentNamesOpt: default,
                         argumentRefKindsOpt: default,
                         isDelegateCall: false,
@@ -195,13 +202,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                 }
 
-                var args = new List<BoundExpression>();
-                args.Add(expression);
+                var args = new BoundExpression[]
+                {
+                    expression
+                };
                 return new BoundCall(syntax: expression.Syntax,
                     receiverOpt: expression,
                     initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                     method: (MethodSymbol)mem,
-                    arguments: args.ToImmutableArray(),
+                    arguments: ImmutableArray.Create(args),
                     argumentNamesOpt: default,
                     argumentRefKindsOpt: default,
                     isDelegateCall: false,
@@ -365,57 +374,65 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var vo4 = Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, expression.Syntax);
             var sourceType = expression.Type;
-            var rhsType = expression.Type;
-            if (rhsType is { } && !Equals(targetType, rhsType) &&
-                targetType.SpecialType.IsIntegralType() &&
-                rhsType.SpecialType.IsIntegralType())
+            if (sourceType is { } && !Equals(targetType, sourceType))
             {
-                bool ok = false;
-                if (expression.ConstantValueOpt != null)
+                var rule = expression.Syntax.XRuleContext;
+                if (targetType.IsPointerType() && sourceType.IsPointerType() && rule?.IsNullPtr() == true)
                 {
-                    // warnings for literals that are too big are generated later
-                    ok = true;
+                    // allow NULL_PTR to typed pointer assignment
+                    expression = CreateConversion(expression, targetType, diagnostics);
+                    return;
                 }
-                if (!ok)
-                {
-                    if (expression.Syntax is AssignmentExpressionSyntax aes)
-                    {
-                        if (GetBinaryAssignmentKind(aes.Kind()) == BindValueKind.CompoundAssignment
-                                && aes.Right is LiteralExpressionSyntax)
-                            ok = true;
-                    }
-                }
-                if (!ok)
-                {
-                    ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType, this);
-                }
-                if (!ok)
-                {
-                    var sourceSize = sourceType.SpecialType.SizeInBytes();
-                    var targetSize = targetType.SpecialType.SizeInBytes();
 
-                    if (sourceSize > targetSize && expression is BoundBinaryOperator binop)
+                if (targetType.SpecialType.IsIntegralType() && sourceType.SpecialType.IsIntegralType())
+                {
+                    bool ok = false;
+                    if (expression.ConstantValueOpt != null)
                     {
-                        // determine size of smallest of the operands
-                        sourceType = binop.LargestOperand(this.Compilation);
-                        sourceSize = sourceType.SpecialType.SizeInBytes();
+                        // warnings for literals that are too big are generated later
+                        ok = true;
                     }
-                    if (!Equals(sourceType, targetType)
-                        && !expression.Syntax.HasErrors
-                        && vo4
-                        && !expression.Syntax.XContainsGeneratedExpression)
+                    if (!ok)
                     {
-                        // Find sources that do not fit in the target
-                        if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))
+                        if (expression.Syntax is AssignmentExpressionSyntax aes)
                         {
-                            return; // ok
+                            if (GetBinaryAssignmentKind(aes.Kind()) == BindValueKind.CompoundAssignment
+                                    && aes.Right is LiteralExpressionSyntax)
+                                ok = true;
                         }
-                        else
+                    }
+                    if (!ok)
+                    {
+                        ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType, this);
+                    }
+                    if (!ok)
+                    {
+                        var sourceSize = sourceType.SpecialType.SizeInBytes();
+                        var targetSize = targetType.SpecialType.SizeInBytes();
+
+                        if (sourceSize > targetSize && expression is BoundBinaryOperator binop)
                         {
-                            var errorCode = LocalRewriter.DetermineConversionError(sourceType, targetType);
-                            if (errorCode != ErrorCode.Void)
+                            // determine size of smallest of the operands
+                            sourceType = binop.LargestOperand(this.Compilation);
+                            sourceSize = sourceType.SpecialType.SizeInBytes();
+                        }
+                        if (!Equals(sourceType, targetType)
+                            && !expression.Syntax.HasErrors
+                            && vo4
+                            && !expression.Syntax.XContainsGeneratedExpression)
+                        {
+                            // Find sources that do not fit in the target
+                            if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))
                             {
-                                Error(diagnostics, errorCode, expression.Syntax, sourceType, targetType);
+                                return; // ok
+                            }
+                            else
+                            {
+                                var errorCode = LocalRewriter.DetermineConversionError(sourceType, targetType);
+                                if (errorCode != ErrorCode.Void)
+                                {
+                                    Error(diagnostics, errorCode, expression.Syntax, sourceType, targetType);
+                                }
                             }
                         }
                     }

@@ -4,12 +4,13 @@
 // See License.txt in the project root for license information.
 //
 
+using System.Runtime.InteropServices;
+
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+
 namespace XSharp.Project
 {
-    using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-
     /// <summary>
     /// Property page for the Debug settings.
     /// </summary>
@@ -46,6 +47,7 @@ namespace XSharp.Project
             base.SetProperty(propertyName, value);
         }
 
+		private XDebugPropertyPageXamlHost panel;
         /// <summary>
         /// Creates the UI panel for this property page.
         /// SDK-style projects get the XAML/WPF host; legacy projects get the WinForms panel.
@@ -53,9 +55,8 @@ namespace XSharp.Project
         /// <returns>An <see cref="IPropertyPagePanel"/> implementation.</returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-            if (IsSdkProject)
-                return new XDebugPropertyPageXamlHost(this);
-            return new XDebugPropertyPagePanelWinForms(this);
+                panel = new XDebugPropertyPageXamlHost(this);
+				return panel;
         }
     }
 }

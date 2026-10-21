@@ -6,7 +6,7 @@ USING System.Diagnostics
 
 // What XSharp package are we building ?
 VAR Tool := ""
-VAR TFM = "Net46+Net8.0"
+VAR TFM = "net47+net8.0"
 IF Args:Count >= 1
 	Tool := Args[0]
 ENDIF
@@ -74,7 +74,7 @@ IF String.IsNullOrEmpty( Tool )
 	InfoMessage( "Usage : XSPackNuget <Tool> [ <Build> [ <Tfm> [ <SourceFolder> [ <OutputFolder> [<VersionNumber>] ] ] ] ] " )
     InfoMessage( "<Tool> should be Core, RT, VOSDK, VO, VFP, XPP")
     InfoMessage( "<Build> indicate the Build version to use. Release per default.")
-	InfoMessage( "<Tfm> indicate the Target Framework. Net46, Net80 or Net46+Net80. Net46+Net80 per default.")
+	InfoMessage( "<Tfm> indicate the Target Framework. Net47, Net80 or Net47+Net80. Net47+Net80 per default.")
 	InfoMessage( "<SourceFolder> indicate the Path where files are stored. Artifacts\<Build>\<Tfm> per default")
 	InfoMessage( "   For a single Tfm, indicate one source. For 2 Tfm, indicate two folders separated with a '+' sign. Artifacts\<Build>\<Tfm1>+Artifacts\<Build>\<Tfm2>")
 	InfoMessage( "<OutputFolder> indicate the Path where the packages are generated. Artifacts\Packages\<Build> per default")

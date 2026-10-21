@@ -55,8 +55,8 @@ entity              : namespace_
                     | event_
                     | enum_
                     | globalAttributes          // Assembly attributes, Module attributes etc.
-                    | {IsVO}? vostruct          // VO Compatibility (unsafe) structure
-                    | {IsVO}? vounion           // VO Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | vostruct                  // VO Compatibility (unsafe) structure
+                    | vounion                   // VO Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     // members of the functions class
                     | funcproc                  // This will become part of the 'Globals' class
                     | using_                    // Using Namespace
@@ -252,6 +252,7 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
 class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (C=CLASS | R=RECORD | R=RECORD C=CLASS) (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
+                      (ParamList=parameterList)?
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
@@ -289,6 +290,7 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (R=RECORD)? S=STRUCTURE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
+                      (ParamList=parameterList)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
@@ -489,7 +491,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
-                    | {IsVO}? Member=vodllmethod                    #clsvodllmethod   //  old style declaration of methods inside external DLL
+                    | Member=vodllmethod                            #clsvodllmethod   //  old style declaration of methods inside external DLL
                     | eos                                           #clseos// Blank Lines between entities
                     ;
 
@@ -695,7 +697,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // validExpressionStmt check  for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
-	                ;
+                  ;
 
 blockTokens          : Token=(SCOPE|CHECKED|UNCHECKED|UNSAFE)
                      ;
@@ -874,11 +876,11 @@ localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
+expression          : Expr=expression Op=(DOT|COLON|DOTCOLON) Name=simpleName          #accessMember           // member access.
                     | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
-                    | Left=expression Op=(DOT|COLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
+                    | Left=expression Op=(DOT|COLON|DOTCOLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
                     // Latebound member access with a ampersand and a name or an expression that evaluates to a string
-                    | Left=expression Op=(DOT|COLON) AMP
+                    | Left=expression Op=(DOT|COLON|DOTCOLON) AMP
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
@@ -1212,8 +1214,8 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier          : ID            // No rule names, we use the Start property to access the token
                     | keywordsoft
-                    | {!IsCoreVO}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
-                    | {!IsCoreVO}? nativeType    // VO, Vulcan and Core allow TYPE(something)
+                    | {!AllowTypeAsNumber}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
+                    | {!AllowTypeAsNumber}? nativeType    // VO, Vulcan and Core allow TYPE(something)
                     ;
 
 identifierString    : ID            // No rule names, we use the Start property to access the token

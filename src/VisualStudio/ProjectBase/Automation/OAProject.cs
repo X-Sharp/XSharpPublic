@@ -324,11 +324,18 @@ namespace Microsoft.VisualStudio.Project.Automation
 
 
                         object configurationManagerAsObject;
-                        ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project, VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
-
-                        Utilities.CheckNotNull(configurationManagerAsObject);
-                        this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
+                        try
+                        {
+                            ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project, VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
+                            Utilities.CheckNotNull(configurationManagerAsObject);
+                            this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Exception(e, $"Could not get ConfigurationManager for project {this.project.Caption}");
+                        }
                     }
+
 
                     return this.configurationManager;
                 });

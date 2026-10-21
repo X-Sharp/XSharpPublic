@@ -3,8 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#define IMAGE
 using Community.VisualStudio.Toolkit;
-using CVT=Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -38,6 +39,7 @@ using XSharp.VisualStudio.Project;
 
 using XSharpModel;
 
+using CVT=Community.VisualStudio.Toolkit;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
@@ -77,12 +79,15 @@ namespace XSharp.Project
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
-            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            dependencies.Add(".designer.prg", ".prg");
-            dependencies.Add(".xaml.prg", ".xaml");
-            dependencies.Add(".vh", ".prg");
-            dependencies.Add(".xh", ".prg");
-            dependencies.Add(".resx", ".prg");
+            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { ".designer.prg", ".prg" },
+                { ".xaml.prg", ".xaml" },
+                { ".vh", ".prg" },
+                { ".xh", ".prg" },
+                { ".resx", ".prg" }
+            };
+#if IMAGE
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
@@ -90,6 +95,7 @@ namespace XSharp.Project
             catch (Exception)
             {
             }
+#endif
             _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
@@ -101,7 +107,9 @@ namespace XSharp.Project
 
         #region Fields
         private XSharpProjectPackage package;
+#if IMAGE
         private static ImageList imageList;
+#endif
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
         XSharpModel.XProject projectModel;
@@ -109,7 +117,7 @@ namespace XSharp.Project
 
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
-        #endregion
+#endregion
 
         #region Constructors
 
@@ -122,7 +130,9 @@ namespace XSharp.Project
             this.package = package;
             _cachedProjectProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
+#if IMAGE
             InitializeImageList();
+#endif
             InitializeCATIDs();
 
             // Used by (at least) the AddFromTemplate in order (for eg) to have Form1.Designer.Prg depending on Form1.prg
@@ -248,11 +258,12 @@ namespace XSharp.Project
             AddCATIDMapping(typeof(XSharpDialectPropertyPage), typeof(XSharpDialectPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
-        #endregion
+#endregion
 
         #region Properties
 
         internal bool IsLoading => isLoading;
+#if IMAGE
         /// <summary>
         /// Gets or sets the image list.
         /// </summary>
@@ -268,7 +279,7 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
-
+#endif
         /// <summary>
         /// Gets the XSharpPackage instance for this project.
         /// </summary>
@@ -311,7 +322,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
         #region Overriden implementation
 
@@ -500,15 +511,20 @@ namespace XSharp.Project
         }
         public override object GetProperty(int propId)
         {
+
+            object result = null;
             switch (propId)
             {
                 case unchecked((int)VSConstants.VSITEMID_ROOT):
-                    return this;
+                    result = this;
+                    break;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
-                    return this.RootNameSpace;
+                    result = this.RootNameSpace;
+                    break;
 
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
-                    return (uint)GetOutPutType();
+                    result  = (uint)GetOutPutType();
+                    break;
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
                 case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
                 case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
@@ -516,17 +532,21 @@ namespace XSharp.Project
                 case (int)__VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
                 case (int)__VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
                 case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
-                    return true;
+                    result =  true;
+                    break;
                 case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
-                    return "XSharp.ProjectSystem";
+                    result =  "XSharp.ProjectSystem";
+                    break;
                 //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
                 //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
                 //    return "X#";
                 case (int)__VSHPROPID7.VSHPROPID_CanBuildQuickCheck:
                 case (int)__VSHPROPID7.VSHPROPID_CanDebugLaunchQuickCheck:
-                    return _VSQuickCheckAnswer.QCA_Always;
+                    result = _VSQuickCheckAnswer.QCA_Always;
+                    break;
                 case (int)__VSHPROPID5.VSHPROPID_ReferenceManagerUser:
-                    return this.VsReferenceManager;
+                    result = this.VsReferenceManager;
+                    break;
 
                 // Added for NuGet Support
                 case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
@@ -534,12 +554,18 @@ namespace XSharp.Project
                     {
                         _checker = new XSharpProjectCapabilitiesPresenceChecker();
                     }
-                    return _checker;
+                    result = _checker;
+                    break;
 
-                // Test ?
-                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformIdentifier:
-                    return "Windows";
             }
+            if (result != null)
+            {
+#if DEBUG
+                DebugGetProperty(propId, result);
+#endif
+                return result;
+            }
+
             return base.GetProperty(propId);
         }
         static private XSharpProjectCapabilitiesPresenceChecker _checker;
@@ -639,7 +665,11 @@ namespace XSharp.Project
             if (IsCodeFile(include) && item.ItemName == "Compile")
                 newNode.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider),
                     new XSharpVSMDProvider(newNode), false);
-            if (newNode.FileType == XFileType.ManagedResource)
+            // Only clear the generator when there is one to clear. Assigning it unconditionally is not free:
+            // for an item that comes from a wildcard in an imported file (which is every .resx in an SDK
+            // project) the setter has to materialize an Update item, and that forces a complete MSBuild
+            // re-evaluation of the project - once per dependent .resx node.
+            if (newNode.FileType == XFileType.ManagedResource && !string.IsNullOrEmpty(newNode.Generator))
             {
                 newNode.Generator = null;
             }
@@ -660,7 +690,6 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-                typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
@@ -1170,6 +1199,7 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Allowdot, "true");
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox1);
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox2);
+                    RemoveProjectProperty(XSharpProjectFileConstants.Fox3);
                     RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
                     break;
                 case XDialect.FoxPro:
@@ -1178,6 +1208,8 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Vo15, "true");
                     AddProjectProperty(XSharpProjectFileConstants.Vo9, "true");
                     AddProjectProperty(XSharpProjectFileConstants.Fox1, "true");
+                    AddProjectProperty(XSharpProjectFileConstants.Fox2, "true");
+                    AddProjectProperty(XSharpProjectFileConstants.Fox3, "true");
                     AddProjectProperty(XSharpProjectFileConstants.InitLocals, "true");
                     AddProjectProperty(XSharpProjectFileConstants.NamedArgs, "false");
                     RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
@@ -1188,6 +1220,7 @@ namespace XSharp.Project
                     AddProjectProperty(XSharpProjectFileConstants.Allowdot, "false");
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox1);
                     RemoveProjectProperty(XSharpProjectFileConstants.Fox2);
+                    RemoveProjectProperty(XSharpProjectFileConstants.Fox3);
                     if (dialect != XDialect.XPP)
                     {
                         RemoveProjectProperty(XSharpProjectFileConstants.Xpp1);
@@ -1234,7 +1267,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
 
         public override bool IsProjectItemType(MSBuild.ProjectItem item)
@@ -1261,7 +1294,7 @@ namespace XSharp.Project
         }
 
 
-        #region PackageReferences
+#region PackageReferences
 
 
         protected override void ProcessReferences()
@@ -1395,12 +1428,12 @@ namespace XSharp.Project
 
         public virtual XSharpPackageReferenceNode CreatePackageReferenceNode(string name)
         {
-            ProjectElement item = CreateMsBuildFileItem(name, "PackageReference");
+            ProjectElement item = CreateMsBuildFileItem(name, ProjectFileConstants.PackageReference);
             return new XSharpPackageReferenceNode(this, item);
         }
-        #endregion
+#endregion
 
-        #region References Management Events
+#region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
         {
@@ -1428,10 +1461,10 @@ namespace XSharp.Project
                     ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
-        #endregion
+#endregion
 
 
-        #region Private implementation
+#region Private implementation
 
         private void CreateListManagers()
         {
@@ -1445,7 +1478,7 @@ namespace XSharp.Project
             }
         }
 
-
+#if IMAGE
         private void InitializeImageList()
         {
             imageOffset = this.ImageHandler.ImageList.Images.Count;
@@ -1455,6 +1488,7 @@ namespace XSharp.Project
                 this.ImageHandler.AddImage(img);
             }
         }
+#endif
         /// <summary>
         /// Factory method for reference container node
         /// </summary>
@@ -1463,67 +1497,6 @@ namespace XSharp.Project
         {
             return new XSharpReferenceContainerNode(this);
         }
-
-        internal bool HasIncompleteReferences = false;
-
-#if DEV17
-        internal bool FixReferences()
-        {
-            var found = true;
-            var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
-            if (container == null)
-                return false;
-            foreach (var child in container.EnumReferences())
-            {
-                if (child is XSharpSDKProjectReferenceNode sdkref)
-                {
-
-                    var element = child.ItemNode;
-
-                    var path = element.Item.EvaluatedInclude;
-                    var completePath = Path.Combine(this.ProjectFolder, path);
-                    completePath = Path.GetFullPath(completePath);
-                    var refnode = FindProject(completePath);
-                    Guid refnodeGuid = Guid.Empty;
-                    string refnodeName = child.Caption;
-                    if (refnode == null)
-                    {
-                        // this must be a foreign project reference
-                        var projectInfo = ProjectInfo.GetProjectInfo(completePath);
-                        if (projectInfo == null)
-                        {
-                            if (this.GetProjectGuid(completePath, out refnodeGuid))
-                            {
-                                projectInfo = new ProjectInfo(refnodeGuid, completePath);
-                                element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
-                            }
-                        }
-                        else
-                        {
-                            refnodeGuid = projectInfo.Id;
-                        }
-                    }
-                    if (refnodeGuid != Guid.Empty)
-                    {
-                        element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
-                        element.SetMetadata(ProjectFileConstants.Name, refnodeName);
-                    }
-                    else
-                    {
-                        found = false;
-                    }
-                    if (found)
-                    {
-                        sdkref.SaveProperties();
-                    }
-                }
-
-                HasIncompleteReferences = !found;
-            }
-            this.SetProjectFileDirty(false);
-            return found;
-        }
-#endif
 
         internal bool GetProjectGuid(string url, out  Guid guid)
         {
@@ -1604,7 +1577,7 @@ namespace XSharp.Project
         {
             return new XSharpProjectNodeProperties(this);
         }
-        #endregion
+#endregion
 
 
         public XSharpModel.XProject ProjectModel
@@ -1904,7 +1877,6 @@ namespace XSharp.Project
             }
             RemoveEmptyProperty(projectInstance, XSharpProjectFileConstants.PreBuildEvent);
             RemoveEmptyProperty(projectInstance, XSharpProjectFileConstants.PostBuildEvent);
-			projectInstance.SetProperty("ProvideCommandLineArgs", "true");
             if (designTime)
             {
                 projectInstance.SetProperty("SkipCompilerExecution", "true");
@@ -1913,6 +1885,8 @@ namespace XSharp.Project
             var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
             return result;
         }
+
+        protected List<string> _commandLineArguments = new List<string>();
 
         private string ResponseFilePath
         {
@@ -1934,6 +1908,7 @@ namespace XSharp.Project
                 response = response.Replace("\r", "");
                 response = response.Replace("\n", "");
                 var lines = response.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var args = new List<string>();
                 foreach (var line in lines)
                 {
                     if (line.StartsWith("reference:"))
@@ -1944,11 +1919,18 @@ namespace XSharp.Project
                         references.Add(reffile);
 
                     }
+                    else
+                    {
+                        args.Add("/"+line);
+                    }
                 }
+                _commandLineArguments = args;
                 ProjectModel.RefreshReferences(references);
+                var options = this.GetProjectOptions(CurrentConfig.ConfigCanonicalName);
             }
             return references;
         }
+
 
 
 
@@ -1958,7 +1940,7 @@ namespace XSharp.Project
 
         }
 
-        internal void BuildEnded(bool didCompile)
+        internal virtual void BuildEnded(bool didCompile)
         {
             if (didCompile)
             {
@@ -1968,7 +1950,24 @@ namespace XSharp.Project
 
 
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
+
+        public void AddIntellisenseError(XError error)
+        {
+            if (_errorListManager != null)
+            {
+                _errorListManager.AddIntellisenseError(error);
+            }
+        }
+
+        public List<IXErrorPosition> GetIntellisenseErrors(string fileName)
+        {
+            if (_errorListManager != null)
+            {
+                return _errorListManager.GetIntellisenseErrors(fileName);
+            }
+            return new List<IXErrorPosition>();
+        }
 
         public string DisplayName => this.Caption;
 
@@ -1979,7 +1978,7 @@ namespace XSharp.Project
             {
                 if (this.BuildProject != null)
                 {
-                    var result = this.BuildProject.GetPropertyValue("IntermediateOutputPath");
+                    var result = this.BuildProject.GetPropertyValue(XProjectFileConstants.IntermediateOutputPath);
                     if (!Path.IsPathRooted(result))
                         result = Path.Combine(this.ProjectFolder, result);
                     return result;
@@ -2018,9 +2017,10 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
-        internal void Unload()
+
+        internal virtual void Unload()
         {
             this.BeforeSave();
             this.BuildProject.Save();
@@ -2066,7 +2066,7 @@ namespace XSharp.Project
             base.Reload();
             CreateListManagers();
             this.CreateIncludeFileFolder();
-            if (ResetDependencies() && !this.IsSdkProject)
+            if (ResetDependencies())
             {
                 this.BeforeSave();
                 this.BuildProject.Save();
@@ -2101,25 +2101,6 @@ namespace XSharp.Project
                 }
             }
         }
-#if DEV17
-        internal IList<XSharpSDKProjectReferenceNode> GetSdkProjectReferences()
-        {
-            var nodes = new List<XSharpSDKProjectReferenceNode>();
-            var container = this.GetReferenceContainer() as ReferenceContainerNode;
-            if (container != null)
-                container.FindNodesOfType(nodes);
-            return nodes;
-        }
-        internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
-        {
-            var nodes = GetSdkProjectReferences();
-            foreach (var node in nodes)
-            {
-                node.RemoveProperties();
-            }
-            return nodes;
-        }
-#endif
 #if DEV17
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
@@ -2183,7 +2164,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IProjectTypeHelper
+#region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -2230,8 +2211,8 @@ namespace XSharp.Project
         }
 
 
-        #endregion
-        #region IVsSingleFileGeneratorFactory
+#endregion
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -2286,9 +2267,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
-        #region IVsDesignTimeAssemblyResolution
+#region IVsDesignTimeAssemblyResolution
 
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", XSharpProjectFileConstants.AnyCPU);
 
@@ -2308,8 +2289,8 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
-        #region TableManager
+#endregion
+#region TableManager
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
 
@@ -2346,7 +2327,7 @@ namespace XSharp.Project
             _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);
         }
 
-        #endregion
+#endregion
 
 
         public void AddFileNode(string strFileName)
@@ -2448,7 +2429,6 @@ namespace XSharp.Project
                 xoptions.BuildCommandLine();
             }
         }
-        public virtual bool IsSdkProject => false;
         internal XParseOptions CachedOptions;
         public XParseOptions ParseOptions
         {
@@ -2575,11 +2555,6 @@ namespace XSharp.Project
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
-            // do not touch SDK style projects !
-            if (str.IndexOf("<Project Sdk=", StringComparison.OrdinalIgnoreCase) > 0)
-            {
-                return VSConstants.S_OK;
-            }
             var str2 = str.ReplaceEx(XSharpProjectFileConstants.AnyCPU, XSharpProjectFileConstants.AnyCPU, StringComparison.OrdinalIgnoreCase);
             if (str2 != str)
             {
@@ -3082,7 +3057,7 @@ namespace XSharp.Project
 
 
 
-        #region IVsProject5
+#region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -3117,7 +3092,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        #endregion
+#endregion
 
     }
 
@@ -3192,10 +3167,12 @@ namespace XSharp.Project
                     return true;
                 case PackageReferences:
                     return false;
+                case CPS:
+                    return false;
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
-                case CPS:
+
                 case DependenciesTree:
                 case DependencyPackageManagement:
                 case DNX:

@@ -1,5 +1,4 @@
 ﻿{
   "this.": "thisObject.",
-  "Parent.": "_Parent.",
-  "Click()": "_Click()"
+  "Parent.": "_Parent."
 }

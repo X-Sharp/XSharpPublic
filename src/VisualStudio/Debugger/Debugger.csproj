@@ -43,7 +43,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>1762;NU1603</NoWarn>
+    <NoWarn>1762;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <VsdConfigFile>$(OutputPath)\XSharp.Debugger.vsdconfig</VsdConfigFile>
@@ -121,7 +121,7 @@
   <ItemGroup>
     <Reference Include="XSharp.CodeAnalysis">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\..\Artifacts\Shared\Release\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Evaluator">
       <SpecificVersion>False</SpecificVersion>

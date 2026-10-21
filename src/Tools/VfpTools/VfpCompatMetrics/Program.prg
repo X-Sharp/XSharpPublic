@@ -161,7 +161,7 @@ BEGIN NAMESPACE VfpCompatMetrics
 
 
                 // 3. Warnings and Debt
-                IF item:Status == "Full" && !String.IsNullOrWhiteSpace(item:Notes)
+                IF item:Status == "Full" && !String.IsNullOrWhiteSpace(item:Notes) && item:Notes != "X# Extension"
                     issues:Add(ValidationIssue{}{ Level := "WARNING", FunctionName := item:Name, Message := "State is 'Full' but contains limitation notes." })
                 ENDIF
 
@@ -464,7 +464,9 @@ BEGIN NAMESPACE VfpCompatMetrics
                 Console.WriteLine("Extracting runtime metadata...")
                 VAR metadataList := MetadataExtractor.Extract(asm)
 
-                Console.Clear()
+                IF !Console.IsOutputRedirected
+                    Console.Clear()
+                ENDIF
 
                 if isInventoryMode
                     ReportPrinter.PrintInventory(metadataList)

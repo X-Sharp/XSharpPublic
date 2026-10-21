@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING System.Linq
 USING System.Reflection
 USING System.Globalization
 USING System.Collections.Generic
@@ -47,7 +48,8 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
             XSharp.RuntimeState.MacroResolver := DefaultMacroAmbigousMatchResolver
         ENDIF
         LOCAL oResult AS XSharp._Codeblock
-        VAR cMacro := cString // MPrepare(cString)
+        LOCAL cMacro as STRING
+        cMacro := cString
         IF oMC IS IMacroCompilerUsual VAR oMCU
             oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)
         ELSE
@@ -58,34 +60,6 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         RETURN oResult
     ENDIF
     RETURN NULL_OBJECT
-
-    //INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
-    //
-    //INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
-    //    // Replace ".or." and other strings when they are part of the macro
-    //    VAR pos := cMacro:IndexOf(c'.')
-    //    IF pos < 0
-    //        RETURN cMacro
-    //    ENDIF
-    //    // This is probably too much but it works
-    //    // and it does not fix MiXeD cased NaMeS
-    //    IF macroTokens == NULL
-    //        macroTokens := Dictionary<STRING, STRING>{}
-    //        macroTokens:Add("\.or\.", " .or. ")
-    //        macroTokens:Add("\.and\.", " .and. ")
-    //        macroTokens:Add("\.not\.", " .not. ")
-    //        macroTokens:Add("\.xor\.", " .xor. ")
-    //        macroTokens:Add("\.t\.", " .t. ")
-    //        macroTokens:Add("\.f\.", " .f. ")
-    //        macroTokens:Add("\.n\.", " .n. ")
-    //        macroTokens:Add("\.y\.", " .y. ")
-    //    ENDIF
-    //    VAR result := cMacro
-    //
-    //    FOREACH VAR replace IN macroTokens
-    //        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
-    //    NEXT
-    //    RETURN result
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />

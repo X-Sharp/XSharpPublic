@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -100,7 +100,28 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
         public const int IDM_VS_CTXT_XPROJ_PROJITEM = 0x0417;
 
-        public const int IDM_VS_CTXT_PACKAGEREFERENCE = 1187;
-        public const int IDM_VS_CTXT_PACKAGEREFERENCE_GROUP = 1186;
+
+        public const int IDM_VS_CTXT_REFERENCE_GROUP = 0x04A1;
+        public const int IDM_VS_CTXT_PACKAGEREFERENCE_GROUP = 0x04A2;
+        public const int IDM_VS_CTXT_PACKAGEREFERENCE = 0x04A3;
+        public const int IDM_VS_CTXT_COMREFERENCE_GROUP = 0x04A4;
+        public const int IDM_VS_CTXT_COMREFERENCE = 0x04A5;
+        public const int IDM_VS_CTXT_PROJECTREFERENCE_GROUP = 0x04A6;
+        public const int IDM_VS_CTXT_PROJECTREFERENCE = 0x04A7;
+        public const int IDM_VS_CTXT_SHAREDPROJECTREFERENCE = 0x04A8;
+        public const int IDM_VS_CTXT_FRAMEWORKREFERENCE_GROUP = 0x04A9;
+        public const int IDM_VS_CTXT_FRAMEWORKREFERENCE = 0x04AA;
+        public const int IDM_VS_CTXT_ANALYZERREFERENCE_GROUP = 0x04AB;
+        public const int IDM_VS_CTXT_ANALYZERREFERENCE = 0x04AC;
+        public const int IDM_VS_CTXT_SDKREFERENCE_GROUP = 0x04AD;
+        public const int IDM_VS_CTXT_SDKREFERENCE = 0x04AE;
+        public const int IDM_VS_CTXT_DEPENDENCYTARGET = 0x04A0;
+        public const int IDM_VS_CTXT_DEPENDENCY_TRANSITIVE_ITEM = 0x04B0;
+        public const int IDM_VS_CTXT_TRANSITIVE_ASSEMBLY_REFERENCE = 0x04B1;
+        public const int IDM_VS_CTXT_TRANSITIVE_PACKAGE_REFERENCE = 0x04B2;
+        public const int IDM_VS_CTXT_TRANSITIVE_PROJECT_REFERENCE = 0x04B3;
+
+
+
     }
 }

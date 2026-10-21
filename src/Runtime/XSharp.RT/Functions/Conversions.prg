@@ -28,7 +28,8 @@ internal static class XSharp.ConversionHelpers
     static internal usCulture as CultureInfo
     static private formatStrings as ConcurrentDictionary<int, string>
     static constructor
-        usCulture := CultureInfo{"en-US"}
+        // useUserOverride false: a changed Windows decimal/group symbol must not leak into this reference culture
+        usCulture := CultureInfo{"en-US", false}
         formatStrings := ConcurrentDictionary<int, string>{}
 
     static method GetFormatString(nLen as int, nDec as int) as string
@@ -45,7 +46,15 @@ internal static class XSharp.ConversionHelpers
             cFormat := "0"
         endif
         cFormat := cFormat:PadLeft(nLen, c'#')
-        cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
+
+#ifdef NET6_0_OR_GREATER
+        // 3 sections: positive;negative;zero. A negative value that rounds to zero uses the zero section,
+        // otherwise .NET Core 3.0+ returns "-0.00" (.NET Framework / VO return "0.00")
+        cFormat := "{0," + nLen:ToString()+":"+cFormat+";-"+cFormat+";"+cFormat+"}"
+        #else
+                cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
+
+#endif
         formatStrings:TryAdd(nKey, cFormat)
         return cFormat
 

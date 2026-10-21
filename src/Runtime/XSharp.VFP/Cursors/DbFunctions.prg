@@ -8,6 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD
+USING XSharp.Internal
 
 INTERNAL FUNCTION _DoInArea<T>(uArea as Usual, action as @@Func<T>, defaultValue as T, cFunction as STRING, nArg as DWORD) as T
     IF IsNil(uArea)
@@ -47,7 +48,7 @@ FUNCTION Descending( uIndex, uArea) AS USUAL CLIPPER
 [FoxProFunction("FIELD", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Field( uField , uArea, nFlag) AS STRING CLIPPER
     LOCAL nInfo as LONG
-    @@Default(@nFlag, 0)
+    Default( REF nFlag, 0)
     IF nFlag == 1
         nInfo := DBS_CAPTION
     ELSE
@@ -287,7 +288,7 @@ FUNCTION SetFldState(uField, nFieldState, uArea) AS LOGIC CLIPPER
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
 [FoxProFunction("INDEXSEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
-    @@Default(@lMovePointer, FALSE)
+    Default(REF lMovePointer, FALSE)
 
     LOCAL nArea := _AreaFromParam(uArea) AS DWORD
     IF nArea == 0
@@ -348,7 +349,7 @@ INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
     IF IsNil(uArea)
         RETURN RuntimeState.CurrentWorkarea
     ELSEIF IsString(uArea)
-        RETURN RuntimeState.Workareas.FindAlias((STRING) uArea)
+        RETURN RuntimeState.Workareas:FindAlias((STRING) uArea)
     ELSEIF IsNumeric(uArea)
         RETURN (DWORD) uArea
     ENDIF
@@ -564,3 +565,141 @@ FUNCTION CursorGetProp(cProperty, uArea) AS USUAL CLIPPER
     FINALLY
         RuntimeState.CurrentWorkarea := nOldArea
     END TRY
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/keymatch/*" />
+[FoxProFunction("KEYMATCH", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC CLIPPER
+    RETURN _DoInArea(uArea, { =>
+        VAR nOldRec := RecNo()
+        VAR cOldOrder := ""
+        VAR cOldBag := ""
+        VAR lResult := FALSE
+
+        IF !IsNil(nIndexNumber)
+            cOldOrder := OrdName()
+            cOldBag := OrdBagName()
+            OrdSetFocus(nIndexNumber)
+        ENDIF
+
+        DbSeek(eIndexKey)
+        lResult := Found()
+
+        IF !IsNil(nIndexNumber)
+            OrdSetFocus(cOldOrder, cOldBag)
+        ENDIF
+        DbGoto(nOldRec)
+
+        RETURN lResult
+    }, false, __FUNCTION__, 3)
+END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/lookup/*" />
+[FoxProFunction("LOOKUP", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION Lookup( ReturnField, eSearchExpression, SearchedField , cTagName) AS USUAL CLIPPER
+    IF !IsNil(cTagName)
+        OrdSetFocus(cTagName)
+    ENDIF
+
+    DbSeek(eSearchExpression)
+
+    IF Found()
+        IF IsString(ReturnField)
+            RETURN FieldGet(FieldPos(ReturnField))
+        ELSEIF IsNumeric(ReturnField)
+            RETURN FieldGet((DWORD)ReturnField)
+        ENDIF
+    ENDIF
+
+    RETURN NIL
+END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/ataginfo/*" />
+[FoxArrayInputParameter(1)];
+[FoxProFunction("ATAGINFO", FoxFunctionCategory.Database, FoxEngine.WorkArea, ;
+    FoxFunctionStatus.Partial, FoxCriticality.High, ;
+    "PRIMARY tags are reported as CANDIDATE and BINARY tags as REGULAR: the first lives in the DBC and the second in the tag " + ;
+    "signature byte, and the RDD exposes neither")];
+FUNCTION ATagInfo (ArrayName AS USUAL, cCDXName := NIL AS USUAL, uArea := NIL AS USUAL) AS INT
+    LOCAL aFoxArray AS __FoxArray
+    LOCAL nArea AS DWORD
+    LOCAL cBag AS STRING
+    IF ArrayName IS __FoxArray VAR aFox
+        aFoxArray := aFox
+    ELSE
+        VAR cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
+
+    cBag := IIF(IsString(cCDXName), (STRING) cCDXName, "")
+    nArea := _AreaFromParam(uArea)
+    IF nArea == 0 .OR. !(nArea)->(Used())
+        RETURN 0
+    ENDIF
+
+    RETURN (nArea)->(FoxTagInfo.Fill(aFoxArray, cBag))
+
+/// <summary>Builds the ATAGINFO() array for the current work area.</summary>
+INTERNAL STATIC CLASS FoxTagInfo
+    INTERNAL CONST Columns := 6 AS DWORD
+
+    INTERNAL STATIC METHOD Fill(aResult AS __FoxArray, cBagFilter as STRING) AS INT
+        LOCAL nTags AS LONG
+        LOCAL nRow AS INT
+        LOCAL cTag AS STRING
+        LOCAL cFilter AS STRING
+        LOCAL i AS LONG
+        nTags := (LONG) DbOrderInfo(DBOI_ORDERCOUNT)
+        IF nTags == 0
+            RETURN 0
+        ENDIF
+        cFilter := BagKey(cBagFilter)
+        VAR aTags := List<STRING>{}
+        FOR i := 1 TO nTags
+            cTag := Text(DbOrderInfo(DBOI_NAME, NIL, i))
+            // DBOI_BAGNAME with a number is the bag number, not the tag number:
+            // ask by tag name to get the file that holds this tag
+            IF cFilter:Length > 0 .AND. BagKey(Text(DbOrderInfo(DBOI_BAGNAME, NIL, cTag))) != cFilter
+                LOOP
+            ENDIF
+            aTags:Add(cTag)
+        NEXT
+        IF aTags:Count == 0
+            RETURN 0
+        ENDIF
+        aResult:ReDim((DWORD) aTags:Count, Columns)
+        nRow := 1
+        FOREACH cName AS STRING IN aTags
+            aResult[nRow, 1] := cName:ToUpper()
+            aResult[nRow, 2] := TypeName(cName)
+            aResult[nRow, 3] := Text(DbOrderInfo(DBOI_EXPRESSION, NIL, cName)):ToUpper()
+            aResult[nRow, 4] := Text(DbOrderInfo(DBOI_CONDITION, NIL, cName))
+            aResult[nRow, 5] := IIF((LOGIC) DbOrderInfo(DBOI_ISDESC, NIL, cName), "DESCENDING", "ASCENDING")
+            aResult[nRow, 6] := Collation(cName)
+            nRow++
+        NEXT
+        RETURN aTags:Count
+
+    INTERNAL STATIC METHOD TypeName(cTag AS STRING) AS STRING
+        IF (LOGIC) DbOrderInfo(DBOI_CUSTOM, NIL, cTag)
+            RETURN "CANDIDATE"
+        ENDIF
+        IF (LOGIC) DbOrderInfo(DBOI_UNIQUE, NIL, cTag)
+            RETURN "UNIQUE"
+        ENDIF
+
+        RETURN "REGULAR"
+
+    INTERNAL STATIC METHOD Collation(cTag AS STRING) AS STRING
+        VAR cName := Text(DbOrderInfo(DBOI_COLLATION, NIL, cTag))
+        RETURN IIF(cName:Length == 0, "MACHINE", cName:ToUpper())
+
+    INTERNAL STATIC METHOD BagKey(cFile AS STRING) AS STRING
+        IF String.IsNullOrEmpty(cFile)
+            RETURN ""
+        ENDIF
+
+        RETURN System.IO.Path.GetFileNameWithoutExtension(cFile):ToUpper()
+
+    INTERNAL STATIC METHOD Text(uValue AS USUAL) AS STRING
+        RETURN IIF(IsString(uValue), (STRING)uValue, "")
+END CLASS

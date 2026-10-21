@@ -27,6 +27,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         // Do not make any changes to the public interface without making the corresponding change
         // to the VB version.
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#if XSHARP
+        internal bool IsImported;
+#endif
 
         // Only the compiler can create new instances.
         internal NamespaceOrTypeSymbol()

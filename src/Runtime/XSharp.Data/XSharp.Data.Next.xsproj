@@ -3,14 +3,15 @@
   <PropertyGroup>
     <RootNamespace>XSharp.Data</RootNamespace>
     <AssemblyName>XSharp.Data</AssemblyName>
-    <Dialect>VO</Dialect>
+    <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
     <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

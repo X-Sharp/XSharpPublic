@@ -1,4 +1,4 @@
-# FabVFPXPorter
+# VFPXPorter
 ## VFP XPorter
 The goal is to ease the move of your VFP Application in .NET, using a language you already know.
 1. Minimum changes to your code during export
@@ -25,18 +25,40 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
 6. Export Menu definitions
     - Menu Event are exported in Menu code (Needs to be tested, I'm looking for samples here)
 7. First Report reading and Backup
-    - No real export by now (Maybe export to ReportPro ??)
+    - No export, Reports will be handled by XSharp in the future (or another tool)
 
+
+#### Export folder layout (GUI)
+When you pick a `.pjx` file, the **Output** field is auto-filled as
+`<OutputDir from Settings>\<ProjectName>` — this combined path is the *main* folder, and
+it is always where the generated `.sln` is written.
+- If **"Place solution and project in the same directory"** is checked, the project's own
+  files (`.xsproj`, source, `Forms`/`Libs`/... subfolders) are written directly into that
+  same main folder, alongside the `.sln`.
+- If unchecked (default), the project's own files go one level further down, in a
+  subfolder named after the project/solution name.
+
+Example: output dir `C:\Temp`, project/solution name `Test` →
+- Main folder (and `.sln` location): `C:\Temp\Test`
+- Checked: project files in `C:\Temp\Test\Test.xsproj`
+- Unchecked: project files in `C:\Temp\Test\Test\Test.xsproj`
+
+Both the main folder and (when applicable) the project subfolder are created automatically
+if they don't already exist. This layout is currently GUI-only; see
+**Source\VFPXPorterCmd\README.md** for the CLI's simpler single-folder behavior.
 
 We will also have to take care of Menu definition.
 
-What about Reports ? We may/will have to consider another tool; or introduce here
+What about Reports ? XSharp will handle them in the future, so we will just backup the Report definition for now.
 
 During 1. step, the Form definition is exported in ~~JSON~~ XML format and source code file (.PRG) is created
 
 Don't forget to have a deep look at the **ExportAdvices.md** document, as some modification cannot be done.
 
 If you want to change the way the Application is doing some transporting, don't forget to have a look at **DocumentationAndRules.md**
+
+For a tab-by-tab explanation of every setting in the Exporter Settings dialog and its actual
+impact on the export process, see **SettingsReference.md**.
 
 
 #### Todo

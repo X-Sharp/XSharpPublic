@@ -809,7 +809,8 @@ namespace XSharp.CodeDom
             {
                 this.GenerateExpression(e.TargetObject);
                 // If we have a Type, we must use a dot as a selector
-                if (e.TargetObject.GetType() == typeof(CodeTypeReferenceExpression))
+                // (also for XCodeTypeReferenceExpression, which the parser creates, like in GeneratePropertyReferenceExpression)
+                if (e.TargetObject is CodeTypeReferenceExpression)
                 {
                     base.Output.Write(this.staticSelector);
                 }
@@ -1745,6 +1746,26 @@ namespace XSharp.CodeDom
             }
             else
             {
+                if (e.Value is System.Single fl)
+                {
+                    GenerateSingleFloatValue(fl);
+                    Output.Write("s");
+                    return;
+
+                }
+                else if (e.Value is System.Double db)
+                {
+                    GenerateDoubleValue(db);
+                    Output.Write("d");
+                    return;
+                }
+                else if (e.Value is System.Decimal dec)
+                {
+                    GenerateDecimalValue(dec);
+                    Output.Write("m");
+                    return;
+                }
+                else
                 if (e.Value is uint || e.Value is ulong)
                 {
                     var tmp = Convert.ToDouble(e.Value);

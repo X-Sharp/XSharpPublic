@@ -167,13 +167,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression isFromEnd;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Index__get_IsFromEnd) as MethodSymbol;
-                isFromEnd = new BoundCall(syntax, left, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                isFromEnd = new BoundCall(syntax, left, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             BoundExpression leftValue;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Index__get_Value) as MethodSymbol;
-                leftValue = new BoundCall(syntax, left, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                leftValue = new BoundCall(syntax, left, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             var opKind = BinaryOperatorKind.IntSubtraction;
@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var sig = this.Compilation.BuiltInOperators.GetSignature(opKind);
             BoundExpression whenFalse = new BoundBinaryOperator(syntax, opKind, leftValue, right, resultConstant, sig.Method, null,
                 resultKind: LookupResultKind.Viable,
-                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                originalUserDefinedOperatorsOpt: [],
                 type: int32type,
                 hasErrors: false)
             { WasCompilerGenerated = true };
@@ -245,13 +245,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression start;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Range__get_Start) as MethodSymbol;
-                start = new BoundCall(syntax, range, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                start = new BoundCall(syntax, range, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             BoundExpression end;
             {
                 var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Range__get_End) as MethodSymbol;
-                end = new BoundCall(syntax, range, ThreeState.False, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
+                end = new BoundCall(syntax, range, ThreeState.False, symbol, [], default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             start = SubtractSystemIndex(start, diagnostics, checkZero: true);
@@ -311,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 sig.Method,
                 null,
                 resultKind: LookupResultKind.Viable,
-                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                originalUserDefinedOperatorsOpt: [],
                 type: expr.Type,
                 hasErrors: false)
             { WasCompilerGenerated = true };
@@ -485,7 +485,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 creationSyntax: null,
                                 initSyntax: initSyntax,
                                 type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, tint32),
-                                sizes: ImmutableArray<BoundExpression>.Empty,
+                                sizes: [],
                                 boundInitExprOpt: args));
                             args = argsBuilder.ToImmutableAndFree();
                         }
@@ -668,6 +668,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isObject = leftType.IsObjectType() && !isSuper;
                     bool isUsual = false;
                     bool isArray = false;
+                    bool isFox3 = false;
                     NamedTypeSymbol usualType = Compilation.UsualType();
                     NamedTypeSymbol arrayType = Compilation.ArrayType();
                     if (!isObject)
@@ -676,10 +677,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             isUsual = nts.ConstructedFrom.IsUsualType();
                             isArray = nts.ConstructedFrom.IsArrayType();
+                            if (node.Parent is not InvocationExpressionSyntax)
+                                isFox3 = (boundLeft is BoundLocal  || boundLeft is BoundParameter)
+                                    && Compilation.Options.HasOption(CompilerOption.FoxCursorSupport, node);
                         }
                     }
-                    // Late bound will only work for OBJECT or USUAL
-                    if (isObject || isUsual || isArray)
+                    // Late bound will only work for OBJECT or USUAL or for /fox3 also for typed locals
+                    if (isObject || isUsual || isArray || isFox3)
                     {
                         var returnType = Compilation.UsualType();
                         if (isArray)
@@ -774,21 +778,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (expr.Kind != BoundKind.BadExpression)
                         {
                             newDiag.Clear();
-                            foreach (var error in diagnostics.DiagnosticBag?.AsEnumerable())
+                            // diagnostics has no DiagnosticBag when a public SemanticModel query binds
+                            if (diagnostics.AccumulatesDiagnostics)
                             {
-                                bool suppress = false;
-                                var loc = error.Location;
-                                if (loc.IsInSource)
+                                foreach (var error in diagnostics.DiagnosticBag.AsEnumerable())
                                 {
-                                    var start = loc.GetLineSpan().StartLinePosition;
-                                    var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
-                                    suppress = (start.Line == curLine.Line && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
+                                    bool suppress = false;
+                                    var loc = error.Location;
+                                    if (loc.IsInSource)
+                                    {
+                                        var start = loc.GetLineSpan().StartLinePosition;
+                                        var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
+                                        suppress = (start.Line == curLine.Line && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
+                                    }
+                                    if (!suppress)
+                                        newDiag.Add(error);
                                 }
-                                if (!suppress)
-                                    newDiag.Add(error);
+                                diagnostics.Clear();
+                                diagnostics.AddRange(newDiag.DiagnosticBag);
                             }
-                            diagnostics.Clear();
-                            diagnostics.AddRange(newDiag.DiagnosticBag);
                         }
                     }
                 }
@@ -1025,7 +1033,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var name = node.Identifier.ValueText;
             var useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
-            var memvarorfield = name.IndexOf("->") > 0;
+            var memvarorfield = name.IndexOf("->", StringComparison.Ordinal) > 0;
             // no need to look for our special names
             if (!memvarorfield)
             {
@@ -1179,7 +1187,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     xnode1 = xnode1.Parent as XSharpParserRuleContext;
                 }
-                if (xnode1 is AccessMemberContext amc && amc.IsFox)
+                if (xnode1 is AccessMemberContext amc && amc.IsFox && amc.IsDotExpression)
                 {
                     isFoxMemberAccess = true;
                     if (amc.HasMPrefix)
@@ -1199,7 +1207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     xnode = xnode.Parent as XSharpParserRuleContext;
                 }
-                if (xnode is AccessMemberContext amc && amc.IsFox)
+                if (xnode is AccessMemberContext amc && amc.IsFox && amc.IsDotExpression)
                 {
                     isFoxMemberAccess = true;
                     if (amc.HasMPrefix)
@@ -1230,6 +1238,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                     get = GetCandidateMembers(type, ReservedNames.VarGetSafe, LookupOptions.MustNotBeInstance, this);
                 }
                 var set = GetCandidateMembers(type, ReservedNames.VarPut, LookupOptions.MustNotBeInstance, this);
+                if (!memvarorfield)
+                {
+                    // see if we can find the field in the current member. If so get its full name
+                    var member = node.XRuleContext?.GetCurrentMember();
+                    if (member != null)
+                    {
+                        var fieldinfo = member?.Data.GetField(name);
+                        if (fieldinfo == null)
+                        {
+                            var root = node.SyntaxTree.GetRoot(new System.Threading.CancellationToken());
+                            if (root is CompilationUnitSyntax cus)
+                            {
+                                var publics = cus.FileWidePublics;
+                                if (publics != null)
+                                {
+                                    publics.TryGetValue(name, out fieldinfo);
+                                }
+                            }
+                        }
+                        if (fieldinfo != null)
+                        {
+                            if (!fieldinfo.IsLocal)
+                            {
+                                memvarorfield = true;
+                                name = fieldinfo.FullName;
+                            }
+                        }
+                    }
+                }
                 if (memvarorfield)
                 {
                     // this is either:
@@ -1269,6 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
                 var warning = ErrorCode.WRN_UndeclaredVariable;
+
                 var undeclaredMemVar = Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node);
                 if (isFoxMemberAccess)
                 {

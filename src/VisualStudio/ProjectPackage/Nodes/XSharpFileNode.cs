@@ -18,12 +18,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
+using XSharp.CodeDom;
 using XSharpModel;
+using XSharp.Settings;
 
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+#if DEV17
+using XSharp.Imaging;
+#endif
 namespace XSharp.Project
 {
     /// <summary>
@@ -99,7 +105,7 @@ namespace XSharp.Project
                 //return base.SupportsIconMonikers || !File.Exists(this.Url);
                 if (!File.Exists(this.Url))
                     return true;
-                return false;
+                return true;
 #else
                 return base.SupportsIconMonikers;
 #endif
@@ -116,8 +122,10 @@ namespace XSharp.Project
 #if DEV17
             if (!File.Exists(this.Url))
                 return KnownMonikers.MissingFile;
-#endif
+            return XSharpImages.DocumentImg;
+#else
             return base.GetIconMoniker(open);
+#endif
 
         }
 
@@ -162,26 +170,6 @@ namespace XSharp.Project
         {
             int result = base.IncludeInProject();
 
-            if (((XSharpProjectNode)this.ProjectMgr).IsSdkProject)
-            {
-                var buildProject = this.ProjectMgr.BuildProject;
-                var filename = ProjectMgr.GetRelativePath(this.Url);
-                foreach (var xmlItem in buildProject.Xml.Items)
-                {
-                    if (xmlItem.ItemType == ItemNode.ItemName && MyStringEquals(xmlItem.Remove, filename))
-                    {
-                        xmlItem.Parent.RemoveChild(xmlItem);
-                        buildProject.RemoveItem(this.ItemNode.Item);
-                        buildProject.MarkDirty();
-                        ProjectMgr.SetProjectFileDirty(true);
-                        buildProject.ReevaluateIfNecessary();
-                        break;
-                    }
-                }
-            }
-            // we could be including a file that was removed earlier
-
-
             DetermineSubType();
             if (this.ProjectMgr is XSharpProjectNode prjNode)
             {
@@ -223,7 +211,7 @@ namespace XSharp.Project
          });
         }
 
-        private static string TypeNameToSubtype(string typeName)
+        internal static string TypeNameToSubtype(string typeName)
         {
             switch (typeName.ToLower())
             {
@@ -327,7 +315,9 @@ namespace XSharp.Project
 
         public void UpdateHasDesigner()
         {
-            HasDesigner = XSharpFileType.HasDesigner(this.Url, SubType);
+            string subType = SubType;
+            bool hasDesigner = XSharpFileType.HasDesigner(this.Url, subType);
+            HasDesigner = hasDesigner;
         }
 
         #region Dependent Items
@@ -562,8 +552,11 @@ namespace XSharp.Project
         private bool HasSubType(string value)
         {
             string result = SubType;
-            return !String.IsNullOrEmpty(result) && MyStringEquals(result, value);
-
+            if (!String.IsNullOrEmpty(result))
+            {
+                return MyStringEquals(result, value);
+            }
+            return false;
         }
         public bool IsXAML
         {
@@ -725,7 +718,13 @@ namespace XSharp.Project
         bool ItemHasValue(string itemName, string value)
         {
             if (!ItemNode.Item.HasMetadata(itemName))
-                return false;
+            {
+                // A missing metadata value means the same as an empty one, so assigning null or "" is not a
+                // change. Reporting a change here makes the callers write the metadata anyway, and for an item
+                // that comes from a wildcard in an imported file that means creating an Update item plus a
+                // complete MSBuild re-evaluation - for no actual change.
+                return string.IsNullOrEmpty(value);
+            }
             var current = ItemNode.GetMetadata(itemName);
             if (current != null)
             {
@@ -975,13 +974,6 @@ namespace XSharp.Project
             base.Remove(removeFromStorage);
             project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
-            if (project.IsSdkProject)
-            {
-                // we have to do this after the file was deleted to make sure
-                // that Msbuild cannot find it anymore
-                project.BuildProject.MarkDirty();
-            }
-
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {
@@ -1000,9 +992,9 @@ namespace XSharp.Project
             return result;
         }
 
-        #endregion
+#endregion
 
-        #region Private implementation
+#region Private implementation
         internal OleServiceProvider.ServiceCreatorCallback ServiceCreator
         {
             get { return new OleServiceProvider.ServiceCreatorCallback(this.CreateServices); }
@@ -1018,9 +1010,9 @@ namespace XSharp.Project
             return service;
         }
 
-        #endregion
+#endregion
 
-        #region Operate on Open Files
+#region Operate on Open Files
         private IVsTextLines TextLines
         {
             get
@@ -1038,6 +1030,6 @@ namespace XSharp.Project
             }
         }
 
-        #endregion
+#endregion
     }
 }

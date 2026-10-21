@@ -140,9 +140,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         boundValue = binder.BindValue(es, diagnostics, Binder.BindValueKind.RValue);
                         constantValue = boundValue.ConstantValueOpt;
                     }
-
-                    if ((boundValue as BoundFieldAccess)?.FieldSymbol.Type.SpecialType == SpecialType.System_IntPtr && 
-                        ((boundValue as BoundFieldAccess)?.FieldSymbol.Name == "Zero" || (boundValue as BoundFieldAccess)?.FieldSymbol.IsConst == true))
+                    var bfa = boundValue as BoundFieldAccess;
+                    if (bfa != null && bfa.FieldSymbol.Type.SpecialType == SpecialType.System_IntPtr &&
+                        (bfa.FieldSymbol.Name == "Zero" || bfa.FieldSymbol.IsConst == true))
                     {
                         constantValue = ConstantValue.Create(0);
                     }

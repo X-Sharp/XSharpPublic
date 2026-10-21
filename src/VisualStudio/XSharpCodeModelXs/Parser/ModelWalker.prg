@@ -220,6 +220,10 @@ PRIVATE STATIC METHOD WalkSource() AS VOID
                     XDatabase.DeleteFile(fileName)
                 endif
             next
+            // Collect the include file orphans left behind by this walk. This used to run
+            // once per file inside the database lock, which is far too often for a full
+            // anti join over the whole table.
+            XDatabase.DeleteOrphanIncludeFiles()
             if _currentProject != null
                 _currentProject:ProjectWalkComplete?:Invoke(_currentProject)
             endif

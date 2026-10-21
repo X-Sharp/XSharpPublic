@@ -818,7 +818,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.AccessMode/*" />
-	PROPERTY AccessMode                             AS LONG GET SQL_MODE_READ_WRITE
+	PROPERTY AccessMode                             AS LONG GET (LONG) SQL_MODE_READ_WRITE
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.NetConn/*" />

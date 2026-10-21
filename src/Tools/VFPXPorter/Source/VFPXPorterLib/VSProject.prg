@@ -62,6 +62,7 @@ CLASS VSProject
     /// reference the project file using a stable relative path.
     /// </remarks>
     PROPERTY RelativePath AS STRING AUTO
+    PROPERTY ProjectFileNameFullPath AS STRING AUTO
 
     PROPERTY FrameworkVersion AS STRING AUTO
     PROPERTY XmlDoc as XmlDocument AUTO
@@ -128,6 +129,11 @@ CLASS VSProject
     PUBLIC METHOD AddReference( refer AS Reference ) AS VOID
         SELF:ReferenceList:Add( refer )
 
+    /// <summary>
+    /// Save the XML document to the given path, using the project name and the standard definitions
+    /// </summary>
+    /// <param name="projectFileNameFullPath">The full path to the project file.</param>
+    /// <param name="stdDef">The standard definitions to use.</param>
     PUBLIC METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
         XmlDoc := XmlDocument{}
         //
@@ -184,7 +190,9 @@ CLASS VSProject
             FOREACH prj AS VSProject IN SELF:ProjectReferenceList
                 import := SELF:CreateElement( libs, "ProjectReference" )
                 configAttr := XmlDoc:CreateAttribute( "Include" )
-                configAttr:Value := prj:Name + ".xsproj"
+                // Compute relative path from this project's folder to the referenced project file,
+                // so references work correctly when projects live in different subfolders.
+                configAttr:Value := GetRelativePath( Path.GetDirectoryName(projectFileNameFullPath), prj:ProjectFileNameFullPath )
                 import:Attributes:Append( configAttr )
                 SELF:CreateElement(import, "Name", prj:Name)
                 SELF:CreateElement(import, "Project", prj:GUID)
@@ -193,6 +201,7 @@ CLASS VSProject
             NEXT
         ENDIF
         //
+        SELF:ProjectFileNameFullPath := projectFileNameFullPath
         SELF:XmlDoc:Save( projectFileNameFullPath )
         RETURN
 

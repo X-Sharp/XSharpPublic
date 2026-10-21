@@ -95,7 +95,7 @@ FUNCTION VFPImageFromFile( filename AS STRING ) AS System.Drawing.Image
 /// </summary>
 /// <returns></returns>
 FUNCTION VPFIsInDesignMode() AS LOGIC
-    if (System.Windows.Forms.Application.ExecutablePath.IndexOf("devenv.exe", StringComparison.OrdinalIgnoreCase) > -1)
+    if (System.Windows.Forms.Application.ExecutablePath:IndexOf("devenv.exe", StringComparison.OrdinalIgnoreCase) > -1)
         return true
     ENDIF
     return false

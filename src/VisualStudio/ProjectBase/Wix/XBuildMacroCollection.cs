@@ -52,6 +52,7 @@ namespace Microsoft.VisualStudio.Project
                 "TargetFileName",
                 "TargetName",
                 "TargetPath",
+                "TargetFramework"
             };
 
         private SortedList<string, string> list = new SortedList<string, string>(macroNames.Length, StringComparer.OrdinalIgnoreCase);

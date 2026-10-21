@@ -7,7 +7,7 @@
 
 USING XSharp.Internal
 USING System.Collections
-
+USING System.Reflection
 /// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     RETURN RuntimeState.StringCompare(strLHS, strRHS)
@@ -88,14 +88,121 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     ENDIF
     RETURN FieldGetSelect(area,fieldName)
 
+ INTERNAL FUNCTION IsMemberAccessible(mem as MemberInfo, isSelf as LOGIC, lAssembly as LOGIC) AS LOGIC
+    local nFrame := 0 as long
+    var memType  := mem:DeclaringType
+    // find first frame that is not in our runtime
+    var st := System.Diagnostics.StackTrace{FALSE}
+    for var i := 0 to st:FrameCount - 1
+        var frame := st:GetFrame(i)
+        var m := frame:GetMethod()
+        if !m:DeclaringType:Assembly:FullName:StartsWith("XSharp.")
+            nFrame := i
+            exit
+        endif
+    next
+    if nFrame == 0
+        return false
+    endif
+    var callingFrame := st:GetFrame(nFrame)
+    var type := callingFrame:GetMethod():DeclaringType
+    if isSelf
+        return type == memType
+    elseif lAssembly
+        return type:Assembly == memType:Assembly
+    endif
+    return memType:IsAssignableFrom(type)
 /// <exclude />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGIC) AS USUAL
     LOCAL nArea := VoDbGetSelect(wa) AS DWORD
-    IF nArea != 0 .OR. ! lAllowUndeclared
+    LOCAL err := NULL as Error
+    IF nArea != 0
         RETURN __FieldGetWa(wa, fldName)
     ENDIF
-    LOCAL uObject := __MemVarGet(wa) AS USUAL
-    RETURN IVarGet(uObject, fldName)
+    IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
+        return IVarGet(uLocal, fldName)
+    ENDIF
+    local ok as LOGIC
+    local ex := NULL as Exception
+    IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
+        local oLocal := uLocal as object
+        try
+            var ivar := (OBJECT) IVarGet(oLocal, wa)
+            // we do not use IVarGet because we also want to support static fields and properties
+            var res := _GetValue(ivar:GetType(), ivar)
+            if ok
+                return res
+            endif
+            err := Error{EG_NOVAR, nameof(fldName), ErrString(EG_NOVAR) + ": " + fldName}
+            err:FuncSym := __function__
+            err:ArgNum := 2
+            err:Args := <OBJECT>{wa, fldName}
+            THROW err
+
+        catch e as Exception
+            ex := e
+        end try
+    ENDIF
+    if (lAllowUndeclared)
+        if XSharp.MemVar.TryGet(wa, out var value)
+            return IVarGet(value, fldName)
+        endif
+    endif
+    local type := OOPHelpers.FindClass(wa,false) as System.Type
+    if type != null
+        var res := _GetValue(type, null)
+        if ok
+            return res
+        endif
+        var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})
+        oError:Description := oError:Message + i": '{fldName}'"
+        throw oError
+    endif
+    IF Globals.Get(wa, OUT var uGlobal)
+        return IVarGet(uGlobal, fldName)
+    ENDIF
+    if ex != null
+        throw ex
+    endif
+
+    err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
+    err:FuncSym := __function__
+    err:ArgNum := 2
+    err:Args := <OBJECT>{wa, fldName}
+    THROW err
+    LOCAL FUNCTION _GetValue(oType as System.Type, oObject as object) as USUAL
+        ok := TRUE
+        if oObject is IDynamicProperties var oDynamic
+            try
+                return oDynamic:NoIvarGet(fldName)
+            CATCH as Exception
+                ok := FALSE
+                RETURN NIL
+            end try
+        endif
+
+        var mem := OOPHelpers.GetFieldOrProperty(oType, fldName)
+        if mem is FieldInfo var fld
+            if ! fld:IsPublic
+                if ! IsMemberAccessible(fld, fld:IsPrivate, fld:IsFamilyOrAssembly)
+                    ok := FALSE
+                    return NIL
+                endif
+            endif
+            return fld:GetValue(oObject)
+        elseif mem is PropertyInfo var prop .and. prop:CanRead
+            if ! prop:GetMethod:IsPublic
+                if ! IsMemberAccessible(prop, prop:GetMethod:IsPrivate, prop:GetMethod:IsFamilyOrAssembly)
+                    ok := FALSE
+                    return NIL
+                endif
+            endif
+            return prop:GetValue(oObject)
+        endif
+        ok := FALSE
+        RETURN NIL
+    END FUNCTION
 
 /// <exclude />
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
@@ -125,14 +232,110 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
 
 
 /// <exclude />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUndeclared AS LOGIC) AS USUAL
     LOCAL nArea := VoDbGetSelect(wa) AS DWORD
-    IF nArea != 0 .OR. ! lAllowUndeclared
-        RETURN __FieldSetWa(wa, fldName,uValue)
-    ENDIF
-    LOCAL uObject := __MemVarGet(wa) AS USUAL
-    RETURN IVarPut(uObject, fldName, uValue)
+    LOCAL err := NULL as Error
+    IF nArea != 0
+        LOCAL nOldArea := RuntimeState.CurrentWorkarea AS DWORD
+        TRY
+            IF nArea != nOldArea
+                VoDbSetSelect((INT)nArea)
+            ENDIF
+            var isLocked := DbRecordInfo(DBRI_LOCKED)
+            IF ! isLocked
+                DbAutoLock()
+            ENDIF
+            var result := __FieldSet(fldName,uValue)
+            IF ! isLocked
+                DbAutoUnLock()
+            ENDIF
+            RETURN result
+        Finally
+            IF nArea != nOldArea
+                VoDbSetSelect((INT)nOldArea)
+            ENDIF
+        END TRY
 
+    ENDIF
+    IF XSharp.MemVar.LocalFind(wa, out var uLocal, out var _)
+        return IVarPut(uLocal, fldName, uValue)
+    ENDIF
+    IF XSharp.MemVar.LocalFind("SELF", out uLocal, out var _)
+        local oLocal := uLocal as object
+        // we do not use IVarPut because we also want to support static fields and properties
+        try
+            // if the field is not found, we will get an exception and we will continue to the next check
+            var ivar := (OBJECT) IVarGet(oLocal, wa)
+            IF _SetValue(ivar:GetType(), ivar, uValue)
+                return uValue
+            ENDIF
+        catch as Exception
+            nop
+        end try
+        err := Error{EG_NOVAR, nameof(fldName), ErrString(EG_NOVAR) + ": " + fldName}
+        err:FuncSym := __function__
+        err:ArgNum := 2
+        err:Args := <OBJECT>{wa, fldName}
+        THROW err
+
+
+
+    ENDIF
+    if (lAllowUndeclared)
+        if XSharp.MemVar.TryGet(wa, out var value)
+            return IVarPut(value, fldName, uValue)
+        endif
+    endif
+    local type := OOPHelpers.FindClass(wa,false) as System.Type
+    if type != null
+        IF _SetValue(type, NULL, uValue)
+            return uValue
+        endif
+        var oError :=  XSharp.Error.VOError( EG_NOVARMETHOD, __function__, nameof(fldName), 2, <object>{wa, fldName})
+        oError:Description := oError:Message + i": '{fldName}'"
+        throw oError
+    endif
+    IF Globals.Get(wa, OUT var uGlobal)
+        return IVarPut(uGlobal, fldName, uValue)
+    ENDIF
+    err := Error{EG_NOVAR, nameof(wa), ErrString(EG_NOVAR) + ": " + wa}
+    err:FuncSym := __function__
+    err:ArgNum := 2
+    err:Args := <OBJECT>{wa, fldName}
+    THROW err
+    LOCAL FUNCTION _SetValue(oType as System.Type, oObject as object, uValue as USUAL) as LOGIC
+        if oObject is IDynamicProperties var oDynamic
+            TRY
+                oDynamic:NoIvarPut(fldName, uValue)
+                return true
+            CATCH as Exception
+                return false
+            END TRY
+        endif
+        var mem := OOPHelpers.GetFieldOrProperty(oType, fldName)
+        if mem is FieldInfo var fld
+            var oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
+            if ! fld:IsPublic
+                if ! IsMemberAccessible(fld, fld:IsPrivate, fld:IsFamilyOrAssembly)
+                    return FALSE
+                endif
+            endif
+
+            fld:SetValue(oObject, oValue)
+            return TRUE
+        elseif mem is PropertyInfo var prop .and. prop:CanWrite
+            if ! prop:SetMethod:IsPublic
+                if ! IsMemberAccessible(prop, prop:SetMethod:IsPrivate, prop:SetMethod:IsFamilyOrAssembly)
+                    return FALSE
+                endif
+            endif
+            var oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
+            prop:SetValue(oObject, oValue)
+            return TRUE
+        endif
+        RETURN FALSE
+    END FUNCTION
 
 /// <exclude />
 FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS T
@@ -269,6 +472,10 @@ FUNCTION __MemVarInit() AS INT STRICT
 FUNCTION __MemVarInit(lFromRuntime AS LOGIC) AS INT STRICT
     RETURN XSharp.MemVar.InitPrivates(lFromRuntime)
 
+/// <exclude />
+FUNCTION __MemVarInit(oOwner as OBJECT) AS INT STRICT
+    RETURN XSharp.MemVar.InitPrivates(oOwner)
+
 
 /// <exclude />
 FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT
@@ -292,10 +499,18 @@ FUNCTION __LocalPut(name AS STRING, uValue IN USUAL) AS VOID STRICT
 FUNCTION __LocalsClear() AS VOID STRICT
     XSharp.MemVar.ClearLocals()
 
+/// <exclude />
+FUNCTION __LocalsClear(hadLocals as LOGIC) AS VOID STRICT
+    IF ! hadLocals
+        XSharp.MemVar.ClearLocals()
+    ENDIF
 
 /// <exclude />
 FUNCTION __LocalsUpdated() AS LOGIC STRICT
     RETURN XSharp.MemVar.LocalsUpdated()
+
+FUNCTION __HasLocals() as LOGIC STRICT
+    RETURN XSharp.MemVar.HasLocals()
 
 /// <exclude />
 FUNCTION __LocalGet(name AS STRING) AS USUAL STRICT

@@ -4,13 +4,12 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Collections.Generic;
-using System.Linq;
-using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -491,7 +490,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXFunctionExpression([NotNull] XSharpParser.XFunctionExpressionContext context)
         {
-            NotInCore(context, context.XFunc.GetText().ToUpper() + " function");
+            NotInCore(context, context.XFunc.GetText().ToUpperInvariant() + " function");
         }
 
         public override void ExitFoxclsctor([NotNull] XSharpParser.FoxclsctorContext context)
@@ -552,7 +551,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Constructor"));
                 }
             }
-            if (context.isInInterface())
+            if (context.isInInterface() && context.Modifiers?.STATIC().Length == 0)
             {
                 _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
@@ -616,7 +615,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.CharSet != null)
             {
-                var text = context.CharSet.Text.ToUpper();
+                var text = context.CharSet.Text.ToUpperInvariant();
                 if (text != "AUTO" && text != "ANSI" && text != "UNICODE")
                 {
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnExpectedExpected, context.CharSet.Text, "AUTO', 'ANSI' or 'UNICODE"));
@@ -728,8 +727,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //}
             if (isInInterface && _options.VoInitAxitMethods)
             {
-                var name = context.Sig.Id.GetText().ToLower();
-                if (name == "init" || name == "axit")
+                var name = context.Sig.Id.GetText();
+                if (string.Equals(name, "init", System.StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(name, "axit", System.StringComparison.OrdinalIgnoreCase))
                 {
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
                 }
@@ -871,7 +871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
         {
-            if (_options.Dialect != XSharpDialect.VO && _options.Dialect != XSharpDialect.Vulcan)
+            if (!_options.Dialect.LikeVO())
             {
                 NotInDialect(context, "VOSTRUCT");
             }
@@ -879,7 +879,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
         {
-            if (_options.Dialect != XSharpDialect.VO && _options.Dialect != XSharpDialect.Vulcan)
+            if (!_options.Dialect.LikeVO())
             {
                 NotInDialect(context, "UNION");
             }

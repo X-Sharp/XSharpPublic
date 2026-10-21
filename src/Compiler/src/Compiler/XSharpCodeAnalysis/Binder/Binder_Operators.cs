@@ -759,10 +759,28 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return opType;
         }
-        private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, BindingDiagnosticBag diagnostics)
+        private void AdjustVOBinaryOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, BindingDiagnosticBag diagnostics)
         {
             if (!Compilation.Options.HasRuntime)
                 return;
+
+            if (left is not null && right is not null)
+            {
+                if (left?.Type is PointerTypeSymbol && right?.Type?.SpecialType == SpecialType.System_IntPtr)
+                {
+                    right = CreateConversion(right, left.Type, diagnostics);
+                    return;
+                }
+                if (right?.Type is PointerTypeSymbol && left?.Type?.SpecialType == SpecialType.System_IntPtr)
+                {
+                    left = CreateConversion(left, right.Type, diagnostics);
+                    return;
+                }
+            }
+            else
+            {
+                ;
+            }
             XSharpParser.BinaryExpressionContext xnode = null;
             if (node.XNode is XSharpParser.BinaryExpressionContext)
             {

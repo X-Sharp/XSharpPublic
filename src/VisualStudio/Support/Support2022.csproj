@@ -19,11 +19,13 @@
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
+    <NoWarn>;NU1903</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
@@ -50,7 +52,7 @@
       <Version>17.0.551</Version>
     </PackageReference>
     <PackageReference Include="MessagePack">
-      <Version>2.5.192</Version>
+      <Version>2.5.307</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Debug">
       <Version>2.0.0</Version>

@@ -87,6 +87,7 @@ namespace XSharp.Project
         FoxPro,
         //dBase,
         XPP,
+        XBaseNet,
     }
 
     public class DialectConverter : EnumConverter
@@ -126,6 +127,9 @@ namespace XSharp.Project
                     case "xpp":
                     case "xbase++":
                         return Dialect.XPP;
+                    case "xbasenet":
+                    case "xbase.net":
+                        return Dialect.XBaseNet;
                     case "core":
                     default:
                         break;
@@ -166,6 +170,9 @@ namespace XSharp.Project
                         case Dialect.XPP:
                             result = XSharpProjectFileConstants.DialectXPP;
                             break;
+                        case Dialect.XBaseNet:
+                            result = XSharpProjectFileConstants.DialectXBaseNet;
+                            break;
                         default:
                             result = ((Dialect)value).ToString();
                             break;
@@ -189,7 +196,7 @@ namespace XSharp.Project
 
         public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour,Dialect.XPP, Dialect.FoxPro});
+            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour,Dialect.XPP, Dialect.FoxPro, Dialect.XBaseNet});
         }
     }
 

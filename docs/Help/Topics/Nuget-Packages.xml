@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-04T12:45:15.910Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-20T13:44:23.203Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Nuget Packages</title>
   <body>
     <header>
       <para styleclass="Heading1">Nuget Packages</para>
     </header>
-    <para styleclass="Normal">XSharp 3 comes with nuget packages for the runtime.<br/>These packages contain assemblies and support files for both .Net Framework 4.6 and .Net 8.0</para>
+    <para styleclass="Normal">XSharp 3 comes with nuget packages for the runtime.<br/>These packages contain assemblies and support files for both .Net Framework 4.7 and .Net 8.0</para>
     <para styleclass="Normal">There are the following packages:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="3">
@@ -90,7 +90,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">XSharp.VOSDK<br/><text style="font-weight:bold;">For .Net framework 4.6</text></para>
+          <para styleclass="Body Text">XSharp.VOSDK<br/><text style="font-weight:bold;">For .Net framework 4.7</text></para>
         </td>
         <td>
           <para styleclass="Normal">VOConsoleClasses.dll<br/>VOSystemClasses.dll</para>

@@ -43,7 +43,22 @@ partial class SQLRDD
             selectedBag := self:FindOrderBag(bagName)
         endif
         order := null
-        if orderInfo:Order is long var iOrder
+        // A tag number can arrive as any integer type, not just LONG - VO code commonly passes
+        // it as DWORD (e.g. from IndexCount()/DBOI_ORDERCOUNT, both DWORD-typed), and ADS/DBF
+        // accepts that without complaint. Checking only "is long" made SetOrder(<a DWORD>)
+        // silently fail here (falls through both branches, order stays null) even though the
+        // tag genuinely exists - a real ADS-compatibility gap, not a missing/misconfigured tag.
+        var lHasNumericOrder := false
+        var iOrder := 0
+        if orderInfo:Order != null
+            try
+                iOrder := Convert.ToInt32(orderInfo:Order)
+                lHasNumericOrder := true
+            catch
+                lHasNumericOrder := false
+            end try
+        endif
+        if lHasNumericOrder
             if selectedBag != null
                 order := selectedBag:FindTag(iOrder)
             else
@@ -150,6 +165,17 @@ partial class SQLRDD
         return result
     end method
 
+    /// <summary>The column metadata of the underlying table, used to determine the
+    /// declared (maximum) width of the columns that make up an index key expression.</summary>
+    internal property TableColumns as IList<SqlDbColumnDef> get _oTd:Columns
+
+    /// <summary>Whether string field values returned by GetValue() are right-trimmed
+    /// (TRUE) or padded to the declared column width (FALSE). Exposed so that
+    /// SqlDbOrder can temporarily disable trimming while probing the maximum
+    /// length of an index key expression.</summary>
+    internal property TrimValues as logic get _trimValues set _trimValues := value
+
+
 	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the order to select.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -157,14 +183,51 @@ partial class SQLRDD
         local result := false as logic
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
-            self:_CloseCursor()
-            SELF:CurrentOrder := self:FindOrder(orderInfo)
-            result := CurrentOrder != null
-            IF result
-                SELF:CurrentOrder:ClearCache()
-                SELF:CurrentOrder:CalculateKeyLength()
+            // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
+            // possibly tearing down the cursor further down. This must run even when the
+            // requested order turns out to already be the active one (see the short-circuits
+            // below) - GoCold() is cheap when nothing is dirty, so it is always safe to call
+            // first. Skipping it in the "nothing to do" case would silently lose pending writes:
+            // SetOrder()/RestDB() around a write is a standard "write outside the active
+            // index/order" pattern used throughout the app, and it must keep flushing even when
+            // the order doesn't actually change.
+            SELF:GoCold()
+            if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
+               (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
+                // Order 0 (or an empty order name) means: switch back to the natural/physical
+                // record order, i.e. no order at all. There is no "tag zero" to look up, so
+                // this must always succeed - matching VO, which returns TRUE for SetOrder(0).
+                if !(SELF:CurrentOrder == null .and. self:_hasData)
+                    // Only reset the cursor when the order is actually changing, or when this
+                    // is the table's first activation (no data loaded yet - _hasData false).
+                    // _CloseCursor() forces the GoTo() below to pay for a full requery/recount
+                    // via _ForceOpen(). Application code commonly calls SetOrder(0) defensively
+                    // ("just in case") without checking the current order first - harmless under
+                    // DBF, expensive here, and skipping the reset when nothing actually changes
+                    // is safe: GoTo()/CalculateKeyLength() below still run unconditionally (see
+                    // comment further down) so nothing is silently left stale.
+                    self:_CloseCursor()
+                endif
+                SELF:CurrentOrder := null
                 self:GoTo(currentRecord)
-            ENDIF
+                result := true
+            else
+                var newOrder := self:FindOrder(orderInfo)
+                if !(newOrder != null .and. newOrder == SELF:CurrentOrder .and. self:_hasData)
+                    self:_CloseCursor()
+                endif
+                SELF:CurrentOrder := newOrder
+                result := CurrentOrder != null
+                IF result
+                    SELF:CurrentOrder:ClearCache()
+                    // Position on a record BEFORE calculating the key length: CalculateKeyLength()
+                    // evaluates the key expression against the current record, which requires a
+                    // loaded row. _CloseCursor() above cleared it, so without this GoTo there would
+                    // be nothing to evaluate.
+                    self:GoTo(currentRecord)
+                    SELF:CurrentOrder:CalculateKeyLength()
+                ENDIF
+            endif
         else
             if orderInfo:Order != null
                 if orderInfo:Order is long var nOrder .and. nOrder == 0
@@ -376,8 +439,15 @@ partial class SQLRDD
         case DBOI_SCOPETOPCLEAR
         case DBOI_SCOPEBOTTOMCLEAR
             if workOrder != null
-                workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
-                self:_CloseCursor()
+                var alreadyClear := (nOrdinal == DBOI_SCOPETOPCLEAR    .and. workOrder:TopScope    == null) .or. ;
+                                     (nOrdinal == DBOI_SCOPEBOTTOMCLEAR .and. workOrder:BottomScope == null)
+                if !alreadyClear
+                    // Only reset the cursor when there was actually a scope to clear - re-clearing
+                    // an already-clear scope (a common defensive pattern) would otherwise pay for a
+                    // cursor reset for nothing under SqlRDD, unlike DBF where this is free.
+                    workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                    self:_CloseCursor()
+                endif
             endif
             info:Result := null
         case DBOI_SCOPETOP
@@ -391,11 +461,15 @@ partial class SQLRDD
                 else
                     oldValue := DBNull.Value
                 endif
-                if info:Result != null
+                if info:Result != null .and. !Object.Equals(oldValue, info:Result)
+                    // Only touch the cursor when the scope value actually changes - re-applying
+                    // the same scope value (a common defensive pattern, e.g. re-scoping on every
+                    // keystroke when the underlying value hasn't changed) would otherwise pay for
+                    // a cursor reset for nothing under SqlRDD, unlike DBF where this is free.
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                    self:_CloseCursor()
                 endif
                 info:Result := oldValue
-                self:_CloseCursor()
             else
                 info:Result := DBNull.Value
             endif
@@ -416,7 +490,15 @@ partial class SQLRDD
             self:_ForceOpen()
             info:Result := self:OrderKeyCount
         case DBOI_POSITION
-            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            // OrdKeyNo()/DBOI_POSITION reports the record's position within the current order.
+            // When the cursor sits on a record outside the order (see GoTo()/_outsideOrder),
+            // RowNumber/_currentPageNo just reflect the ad-hoc single-row buffer we loaded for
+            // it, not a real position - matching DBF, that must report 0, not a bogus row number.
+            if self:_outsideOrder
+                info:Result := 0
+            else
+                info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            endif
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
@@ -452,15 +534,22 @@ partial class SQLRDD
             return false
         endif
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+
         SELF:_ClearTable()
         SELF:_currentPageNo := 1
-        // save PageSize
-        var nPageSize := SELF:_oTd:PageSize
-        SELF:_oTd:PageSize := 1
+        // Fetch a normal, full-size page here - NOT a single-row buffer. _FetchPage()'s
+        // paging math ((CurrentPage-1) * PageSize) assumes every page, including this first
+        // one, holds a full PageSize worth of rows; a caller that finds a match and then
+        // walks forward with Skip() past this buffer (the common "seek to the first record
+        // of a key, then Skip() while the key still matches" idiom) would otherwise jump
+        // straight to absolute offset PageSize on the next fetch instead of to row 2,
+        // silently skipping every other row that shares this seek's key.
         self:_OpenTable(cSeekWhere)
-        SELF:_oTd:PageSize := nPageSize
 
-        IF SELF:DataTable:Rows:Count = 0 .and. !seekInfo.SoftSeek
+        // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
+        // null instead of an empty table - treat that the same as "no rows found" instead of
+        // crashing on DataTable:Rows below, same fix as GoTo()/_ClearTable() already got.
+        IF (SELF:DataTable == null .or. SELF:DataTable:Rows:Count = 0) .and. !seekInfo.SoftSeek
             SELF:GoTo(0)
             SELF:_Found := false
             SELF:_SetEOF(true)

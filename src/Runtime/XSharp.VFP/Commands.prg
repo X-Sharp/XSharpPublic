@@ -163,3 +163,116 @@ FUNCTION __VfpDir(cCommand AS STRING) AS VOID
         NOP
     ENDIF
 RETURN
+
+FUNCTION __VfpWait(uMsg AS USUAL, lWindow AS LOGIC, uRow AS USUAL, uCol AS USUAL, ;
+    lNoWait AS LOGIC, lNoClear AS LOGIC, uTimeout AS USUAL) AS STRING
+
+    LOCAL cMsg AS STRING
+
+    IF !Environment.UserInteractive
+        RETURN ""
+    ENDIF
+
+    IF IsNil(uMsg)
+        cMsg := IIF(lWindow, "", "Press any key to continue...")
+    ELSE
+        cMsg := AsString(uMsg)
+    ENDIF
+
+    IF Win32.GetConsoleWindow() != IntPtr.Zero
+        IF !String.IsNullOrEmpty(cMsg)
+            Console.WriteLine()
+            Console.Write(cMsg)
+        ENDIF
+        IF lNoWait
+            RETURN ""
+        ENDIF
+        RETURN __VfpWaitForKey(uTimeout)
+    ENDIF
+
+    IF lNoWait
+        RETURN ""
+    ENDIF
+    LOCAL nMsTimeout AS LONG
+    nMsTimeout := IIF(IsNil(uTimeout), 0, (LONG)((REAL8) uTimeout * 1000))
+    VfpUIService.Provider:ShowMessageBox(cMsg, 0, "Wait", nMsTimeout)
+    RETURN ""
+
+FUNCTION __VfpWaitForKey(uTimeout AS USUAL) AS STRING
+    LOCAL info AS ConsoleKeyInfo
+
+    TRY
+        IF IsNil(uTimeout)
+            info := Console.ReadKey(TRUE)
+            Console.WriteLine()
+            RETURN info:KeyChar:ToString()
+        ENDIF
+
+        VAR nEndTicks := Environment.TickCount + (INT)((REAL8) uTimeout * 1000)
+        DO WHILE Environment.TickCount < nEndTicks
+            IF Console.KeyAvailable
+                info := Console.ReadKey(TRUE)
+                Console.WriteLine()
+                RETURN info:KeyChar:ToString()
+            ENDIF
+            System.Threading.Thread.Sleep(50)
+        ENDDO
+        RETURN ""
+    CATCH AS System.InvalidOperationException
+        RETURN ""
+    END TRY
+
+function __VfpWaitClear() as void
+    return
+
+/// <exclude/>
+FUNCTION __VfpCount(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
+    DbEval({||TRUE}, cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    _TALLY := RuntimeState.Tally
+    RETURN _TALLY
+
+/// <exclude/>
+FUNCTION __VfpDelete(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
+    LOCAL nCount := 0 AS LONG
+    // _TALLY counts the records actually deleted: a record that was already
+    // deleted is visited but not counted, so RuntimeState.Tally (which counts
+    // every record matching the scope) cannot be used here
+    DbEval({|| nCount += IIF(Deleted(), 0, 1), __DbDelete()}, ;
+           cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    _TALLY := nCount
+    RETURN nCount
+
+/// <exclude/>
+FUNCTION __VfpDeleteRecord() AS LOGIC
+    IF Deleted()
+        _TALLY := 0
+    ELSE
+        _TALLY := 1
+    ENDIF
+    RETURN __DbDelete()
+
+/// <exclude/>
+FUNCTION __VfpRecall(cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt) AS LONG CLIPPER
+    LOCAL nCount := 0 AS LONG
+    LOCAL lOldDeleted AS LOGIC
+    // RECALL has to visit the deleted records, which DbEval() skips when
+    // SET DELETED is ON. Only the scan is affected: the caller has already
+    // positioned the cursor, and VFP does honour SET DELETED for that
+    lOldDeleted := SetDeleted(FALSE)
+    TRY
+        DbEval({|| nCount += IIF(Deleted(), 1, 0), __DbRecall()}, ;
+               cbFor, cbWhile, nNext, nRecord, lRest, lNoOpt)
+    FINALLY
+        SetDeleted(lOldDeleted)
+    END TRY
+    _TALLY := nCount
+    RETURN nCount
+
+/// <exclude/>
+FUNCTION __VfpRecallRecord() AS LOGIC
+    IF Deleted()
+        _TALLY := 1
+    ELSE
+        _TALLY := 0
+    ENDIF
+    RETURN __DbRecall()

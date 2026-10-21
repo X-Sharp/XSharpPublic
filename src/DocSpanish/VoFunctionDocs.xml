@@ -21336,14 +21336,14 @@
       Determine the number of a work area.
     </summary>
 
-    <param name="uWorkArea">
+    <param name="sWorkArea">
       A value that identifies the work area.<br/>
       This can be the number of the work area or its alias, specified either as a symbol or a string.<br/>
-      If <paramref name="uWorkArea" /> is not specified, the current work area number is returned.<br/>
+      If <paramref name="sWorkArea" /> is not specified, the current work area number is returned.<br/>
       Therefore, Select() is the same as DBGetSelect().
     </param>
     <returns>
-      A number from 0 to 4096.  0 is returned if <paramref name="uWorkArea" /> does not identify a valid work area or does not correspond to a valid alias.
+      A number from 0 to 4096.  0 is returned if <paramref name="sWorkArea" /> does not identify a valid work area or does not correspond to a valid alias.
     </returns>
     <remarks>
       The Select() function and SELECT command specified with an extended expression argument look somewhat alike.

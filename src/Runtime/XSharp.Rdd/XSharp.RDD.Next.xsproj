@@ -11,9 +11,15 @@
     <Unsafe>True</Unsafe>
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="VfpCollations.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

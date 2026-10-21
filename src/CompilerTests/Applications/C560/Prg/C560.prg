@@ -4,25 +4,25 @@
 // problem is the same in vulcan of course
 
 // this gets emitted as XSharp.Namespace.TestClass, due to the /ns: option
-CLASS TestClass
+CLASS TestClassC560
 END CLASS
 
-CLASS TestNS.AnotherClass
+CLASS TestNS.AnotherClassC560
 END CLASS
 
 BEGIN NAMESPACE AnotherNS
-	CLASS ThirdClass
+	CLASS ThirdClassC560
 	END CLASS
 	
 	BEGIN NAMESPACE NestedNS
-		CLASS FourthClass
+		CLASS FourthClassC560
 		END CLASS
 	END NAMESPACE
 END NAMESPACE
 
 FUNCTION Start() AS VOID
-? CreateInstance(#TestClass)
-? CreateInstance(#AnotherClass)
-? CreateInstance(#ThirdClass)
-? CreateInstance(#FourthClass)
+? CreateInstance(#TestClassC560)
+? CreateInstance(#AnotherClassC560)
+? CreateInstance(#ThirdClassC560)
+? CreateInstance(#FourthClassC560)
 RETURN

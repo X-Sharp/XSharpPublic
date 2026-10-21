@@ -13,27 +13,146 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
     {
-        private bool IsFoxAccessMember(BoundExpression loweredReceiver, IXParseTree xNode, out string areaName)
+        private bool IsFoxAccessMember(BoundExpression loweredReceiver, IXParseTree xNode, out string areaName, out bool self)
         {
             areaName = null;
+            self = false;
             if (_compilation.Options.Dialect == XSharpDialect.FoxPro)
             {
                 // only do this when not bound to a field/property in the current type
                 // in that case BoundCall is usually a VarGet()
-                if (loweredReceiver is BoundCall bc && bc.ReceiverOpt == null)
+                //if (loweredReceiver is BoundCall bc && bc.ReceiverOpt == null)
+                //{
+                if (xNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
                 {
-                    if (xNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
+                    self = amc.HasThisReference;
+                    if (amc.Expr is XSharpParser.PrimaryExpressionContext pc
+                        && pc.Expr is XSharpParser.NameExpressionContext)
                     {
-                        if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
-                            && pc.Expr is XSharpParser.NameExpressionContext)
-                        {
-                            areaName = amc.AreaName;
-                            return true;
-                        }
+                        areaName = amc.AreaName;
+                        return true;
                     }
                 }
+                //}
             }
             return false;
+        }
+
+
+        BoundLocal CreateHasLocalVar(NamedTypeSymbol rtType, ImmutableArray<LocalSymbol>.Builder locals, ImmutableArray<BoundExpression>.Builder exprs)
+        {
+
+            var hasLocalSym = _factory.SynthesizedLocal(_compilation.GetSpecialType(SpecialType.System_Boolean));
+            locals.Add(hasLocalSym);
+            var hasLocalvar = _factory.Local(hasLocalSym);
+            var callHasLocal = _factory.StaticCall(rtType, ReservedNames.HasLocals);
+            var ass = _factory.AssignmentExpression(hasLocalvar, callHasLocal);
+            exprs.Add(ass);
+            return hasLocalvar;
+        }
+        BoundExpression CreateLocalsClear(NamedTypeSymbol rtType, BoundLocal hasLocalvar)
+        {
+            return _factory.StaticCall(rtType, ReservedNames.LocalsClear, hasLocalvar);
+        }
+
+
+        /// <summary>
+        /// Adjust the code to add a __LocalPut and __LocalClear around a function call
+        /// that uses a local or parameter symbol
+        /// </summary>
+        /// <param name="expr">expression to wrap</param>
+        /// <param name="var">BoundLocal or BoundParameter</param>
+        /// <param name="rtType">The XSharp.RT.Functions class</param>
+        /// <param name="self">Indicates if the symbol represents SELF or THIS</param>
+        /// <returns>Sequence with wrapped expression or original expression</returns>
+        private BoundExpression HandleLocalSymbol(BoundExpression expr, BoundExpression var, NamedTypeSymbol rtType, bool self)
+        {
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            string name = "";
+            if (self)
+            {
+                name = "SELF";
+            }
+            else if (var is BoundLocal loc)
+            {
+                name = loc.LocalSymbol.Name;
+            }
+            else if (var is BoundParameter parameter)
+            {
+                name = parameter.ParameterSymbol.Name;
+            }
+            else if (var is BoundFieldAccess field)
+            {
+                name = field.FieldSymbol.Name;
+            }
+            else
+                return expr;
+
+
+            // Save the current 'HasLocals' state so we will not clear inside a recursive loop
+            // $hasLocal := __HasLocals()
+
+
+
+            var locals = ImmutableArray.CreateBuilder<Symbols.LocalSymbol>();
+
+            var hasLocalvar = CreateHasLocalVar(rtType, locals, exprs);
+
+            var usual = _compilation.UsualType();
+            var tempSym = _factory.SynthesizedLocal(usual);
+            locals.Add(tempSym);
+            var tempLocal = _factory.Local(tempSym);
+            var value = MakeConversionNode(var, usual, false);
+            value.WasCompilerGenerated = true;
+            var localname = _factory.Literal(name);
+            var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+            exprs.Add(VisitExpression(mcall));
+            var assign = _factory.AssignmentExpression(tempLocal, expr);
+            exprs.Add(assign);
+            var clear = CreateLocalsClear(rtType, hasLocalvar);
+            exprs.Add(clear);
+            var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(),tempLocal);
+            return seq;
+
+        }
+        /// <summary>
+        /// Adjust the code to add a __LocalPut("SELF") and __LocalClear() around a method call
+        /// when called from within an instance method.
+        /// </summary>
+        /// <param name="expr">expression to wrap</param>
+        /// <param name="amc">The Member access expression</param>
+        /// <param name="rtType">The XSharp.RT.Functions class</param>
+        /// <returns>Sequence with wrapped expression or original expression</returns>
+
+        private BoundExpression HandleSelf(BoundExpression expr, XSharpParser.AccessMemberContext amc, NamedTypeSymbol rtType)
+        {
+            var function = _factory.CurrentFunction;
+            if (function == null || function.IsStatic || function is LambdaSymbol)
+            {
+                return expr;
+            }
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var usual = _compilation.UsualType();
+            var thisRef = _factory.This();
+            var locals = ImmutableArray.CreateBuilder<Symbols.LocalSymbol>();
+
+            var hasLocalvar = CreateHasLocalVar(rtType, locals, exprs);
+
+            var tempSym = _factory.SynthesizedLocal(usual);
+            locals.Add(tempSym);
+            var tempLocal = _factory.Local(tempSym);
+            var value = MakeConversionNode(thisRef, usual, false);
+            value.WasCompilerGenerated = true;
+            var localname = _factory.Literal("SELF");
+            var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+            exprs.Add(VisitExpression(mcall));
+            var assign = _factory.AssignmentExpression(tempLocal, expr);
+            exprs.Add(assign);
+            var clear = CreateLocalsClear(rtType, hasLocalvar);
+            exprs.Add(clear);
+            var seq = _factory.Sequence(locals.ToImmutable(), exprs.ToImmutable(), tempLocal);
+            return seq;
+
         }
 
         public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, BoundDynamicMemberAccess node)
@@ -46,12 +165,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             _factory.Syntax = syntax;
             var nameExpr = _factory.Literal(name);
-            if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName))
+            if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName, out var self))
             {
                 string method = ReservedNames.FieldGetWaUndeclared;
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _factory.Literal(areaName);
-                var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
+                var rtType = _compilation.RuntimeFunctionsType();
+                var expr = _factory.StaticCall(rtType, method, areaExpr, nameExpr, exprUndeclared);
+                if (loweredReceiver is BoundLocal || loweredReceiver is BoundParameter ||
+                    loweredReceiver is BoundFieldAccess || self)
+                {
+                    expr = HandleLocalSymbol(expr, loweredReceiver, rtType, self);
+                }
+                else if (node.Syntax.XNode is XSharpParser.AccessMemberContext amc)
+                {
+                    expr = HandleSelf(expr, amc, rtType);
+                }
                 return expr;
             }
             var constructedFrom = ((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom;
@@ -97,12 +226,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             var value = loweredValue.Type is null ? new BoundDefaultExpression(syntax, usualType)
                 : MakeConversionNode(loweredValue, usualType, false);
             var nameExpr = _factory.Literal(name);
-            if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName))
+            if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName, out var self))
             {
                 string method = ReservedNames.FieldSetWaUndeclared;
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _factory.Literal(areaName);
-                var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, value, exprUndeclared);
+                var rtType = _compilation.RuntimeFunctionsType();
+                var expr = _factory.StaticCall(rtType, method, areaExpr, nameExpr, value, exprUndeclared);
+                if (loweredReceiver is BoundLocal || loweredReceiver is BoundParameter ||
+                    loweredReceiver is BoundFieldAccess || self)
+                {
+                    expr = HandleLocalSymbol(expr, loweredReceiver, rtType, self);
+                }
+                else if (node.Syntax.XNode is XSharpParser.AccessMemberContext amc)
+                {
+                    expr = HandleSelf(expr, amc, rtType);
+                }
                 return expr;
             }
 

@@ -29,17 +29,25 @@ PRIVATE METHOD InitializeComponent() AS VOID STRICT
 
 	SELF:ResumeLayout( FALSE )
 
-PUBLIC CONSTRUCTOR( InitParamsList ) CLIPPER
+PUBLIC CONSTRUCTOR( InitParamsList PARAMS USUAL[] )
 	SUPER( InitParamsList )
 	//
-	PreInitializeComponent()
+    PreInitializeComponent()
+	SetDataEnvironment()
+
 	InitializeComponent()
 	InitContainers()
-	SetDataEnvironment()
-	<@userdefProps@>
+	InitGrids()
+    <@userdefProps@>
+
+    // If DataEnv has been Set, we will generate a DoBindings()
+    <@DoBindings@>
 
 METHOD InitContainers() AS Void
 	<@InitContainers@>
+
+METHOD InitGrids() AS VOID
+	<@InitGrids@>
 
 	<@EventHandlers@>
 

@@ -3,15 +3,22 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using Microsoft.VisualStudio.Shell.TableManager;
 using Microsoft.VisualStudio.Shell;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using XSharpModel;
-using System.Collections.Concurrent;
-using XSharp.Settings;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell.TableManager;
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
+using System.Windows.Shapes;
+
+using XSharp.Settings;
+
+using XSharpModel;
+
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 namespace XSharp.Project
 {
 
@@ -133,6 +140,13 @@ namespace XSharp.Project
             this.AddItem(item);
         }
 
+
+        internal void AddIntellisenseError( XError error)
+        {
+            var item = this.CreateItem(error.Path, error.Span.Line, error.Span.Column, 1, error.ErrCode, error.Message, (__VSERRORCATEGORY) error.Severity, ErrorSource.Other, Project.Caption);
+            this.AddItem(item);
+        }
+
         internal void AddIntellisenseError(string file, int line, int column, int length, string errCode,
             string message, __VSERRORCATEGORY sev)
         {
@@ -208,7 +222,7 @@ namespace XSharp.Project
             }
         }
 
-        internal List<IXErrorPosition> GetIntellisenseErrorPos(string fileName)
+        internal List<IXErrorPosition> GetIntellisenseErrors(string fileName)
         {
             // dedupe errors based on filename, row, column,
             List<IXErrorPosition> errorPos = new List<XSharpModel.IXErrorPosition>();
@@ -216,11 +230,14 @@ namespace XSharp.Project
 
             if (_errorList.AreOtherErrorSourceEntriesShown)
             {
-                var intellisenseErrors = IntellisenseErrors;
+
+                var errors = new List<IErrorListItem>();
+                errors.AddRange(BuildErrors);
+                errors.AddRange(IntellisenseErrors);
                 Dictionary<string, bool> filenames = new Dictionary<string, bool>();
                 fileName = fileName.ToLower();
 
-                foreach (var item in intellisenseErrors)
+                foreach (var item in errors)
                 {
                     string key = item.Key;
                     string file = item.Filename.ToLower();

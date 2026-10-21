@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             FillArray(a)
             Assert.True( a[1] == 1 ,__LINE__:ToString())
             Assert.True( a[2] == 2,__LINE__:ToString())
-            a:Redim(5,2)
+            m->a:Redim(5,2)
             Assert.True( a[1,1] == 1 ,__LINE__:ToString())
             Assert.True( a[1,2] == 2,__LINE__:ToString())
             Assert.True( a[2,1] == 3,__LINE__:ToString())

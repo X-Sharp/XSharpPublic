@@ -47,6 +47,7 @@
 #command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
 #command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)
 #command  SET DATE [TO] <x:BRITISH,FRENCH,DMY>  =>  SetDateCountry(DateCountry.British)
+#command  SET DATE [TO] FRENCH                  =>  SetDateCountry(DateCountry.French)
 #command  SET DATE [TO] GERMAN                  =>  SetDateCountry(DateCountry.German)
 #command  SET DATE [TO] <x:ITALIAN,DUTCH>       =>  SetDateCountry(DateCountry.Italian)
 #command  SET DATE [TO] <x:JAPANESE,TAIWAN,YMD> =>  SetDateCountry(DateCountry.Japanese)

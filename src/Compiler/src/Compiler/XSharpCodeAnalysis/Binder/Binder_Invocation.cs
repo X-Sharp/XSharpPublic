@@ -190,8 +190,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // have a diagnostics object without a DiagnosticBag, so we need to check for that as well
                             if (diagnostics.DiagnosticBag?.HasAnyErrors() is true)
                             {
-                                var errors = diagnostics.DiagnosticBag.AsEnumerable().Where(d => d.Code != (int)ErrorCode.ERR_RefProperty);
-                                diagnostics.Clear();
+                                var errors = new List<Diagnostic>();
+                                foreach (var error in diagnostics.DiagnosticBag.AsEnumerable())
+                                {
+                                    if (error.Code != (int)ErrorCode.ERR_RefProperty)
+                                    {
+                                        errors.Add(error);
+                                    }
+                                }
+                                diagnostics.DiagnosticBag.Clear();
                                 diagnostics.DiagnosticBag.AddRange(errors);
                             }
                         }

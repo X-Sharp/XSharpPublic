@@ -99,5 +99,30 @@ BEGIN NAMESPACE VFPXPorterLib
 
 #endregion
 
+        /// <summary>
+        /// Extracts all placeholder names from a template string.
+        /// Delegates to TemplateHelper.ExtractPlaceholders for the actual work.
+        /// </summary>
+        PROTECTED METHOD ExtractPlaceholders(template AS STRING) AS HashSet<STRING>
+            RETURN TemplateHelper.ExtractPlaceholders(template)
+
+        /// <summary>
+        /// Validates that all required placeholders exist in a template.
+        /// Delegates to TemplateHelper.ValidateTemplate for the actual work.
+        /// </summary>
+        PROTECTED METHOD ValidateTemplate(template AS STRING, templateName AS STRING, ;
+            requiredPlaceholders AS IEnumerable<STRING>) AS VOID
+            TemplateHelper.ValidateTemplate(template, templateName, requiredPlaceholders)
+
+        /// <summary>
+        /// Replaces all placeholders in a template and validates that all placeholders were replaced.
+        /// Delegates to TemplateHelper.ReplaceAndValidate for the actual work.
+        /// </summary>
+        PROTECTED METHOD ReplaceAndValidate(template AS STRING, templateName AS STRING, ;
+            replacements AS Dictionary<STRING, STRING>) AS STRING
+            RETURN TemplateHelper.ReplaceAndValidate(template, templateName, replacements)
+
+
+
     END CLASS
 END NAMESPACE // VFPXPorterLib

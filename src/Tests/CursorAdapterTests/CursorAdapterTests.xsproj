@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>CursorAdapterTests</RootNamespace>
     <AssemblyName>CursorAdapterTests</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <Name>CursorAdapterTests</Name>
     <Dialect>FoxPro</Dialect>
     <Allowdot>True</Allowdot>

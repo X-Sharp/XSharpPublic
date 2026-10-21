@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null, false));
             var oldbody = statement as BoundBlock;
-            var newbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
+            var newbody = oldbody.Update(oldbody.Locals, [], oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
             return newbody;
         }
 
@@ -254,6 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     XSharpSpecialNames.RTCompilerOptionVO13,
                                     XSharpSpecialNames.RTCompilerOptionVO14,
                                     XSharpSpecialNames.RTCompilerOptionFox2,
+                                    XSharpSpecialNames.RTCompilerOptionFox3,
                                     XSharpSpecialNames.RTDialect,
                     };
                     object[] values = {
@@ -269,6 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         comp.Options.HasOption(CompilerOption.Vo13,null),
                                         comp.Options.HasOption(CompilerOption.Vo14,null),
                                         comp.Options.HasOption(CompilerOption.Fox2,null),
+                                        comp.Options.HasOption(CompilerOption.Fox3,null),
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {
@@ -283,7 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement, false);
             newstatements.AddRange(initstmts);
-            tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, tryblock.HasUnsafeModifier, tryblock.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
+            tryblock = tryblock.Update(tryblock.Locals, [], tryblock.HasUnsafeModifier, tryblock.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
             tryblock.WasCompilerGenerated = true;
             trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.FinallyLabelOpt, trystmt.PreferFaultHandler);
             trystmt.WasCompilerGenerated = true;
@@ -296,7 +298,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     newstatements.Add(stmt);
                 ++i;
             }
-            oldbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
+            oldbody = oldbody.Update(oldbody.Locals, [], oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
             oldbody.WasCompilerGenerated = true;
             return oldbody;
         }
@@ -382,7 +384,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement, true);
             newstatements.AddRange(initstmts);
             newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null, false) { WasCompilerGenerated = true });
-            oldbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
+            oldbody = oldbody.Update(oldbody.Locals, [], oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
             oldbody.WasCompilerGenerated = true;
             return oldbody;
         }

@@ -9,8 +9,8 @@ USING System.IO
 USING VFPXPorterLib
 
 BEGIN NAMESPACE VFPXPorter
-	PUBLIC PARTIAL CLASS SettingsDialog	;
-		INHERIT System.Windows.Forms.Form
+	PUBLIC PARTIAL CLASS SettingsDialog ;
+        INHERIT System.Windows.Forms.Form
 		PRIVATE iniSettings AS ExporterSettings
 
 		PUBLIC CONSTRUCTOR( ini AS ExporterSettings ) STRICT //SettingsDialog
@@ -35,11 +35,13 @@ BEGIN NAMESPACE VFPXPorter
 			//SELF:iniSettings:WriteValue( "Items", "SeparateFile", SELF:checkItemAsFile:Checked )
 			SELF:iniSettings:LibInSubFolder := SELF:checkLibraryAsSubFolder:Checked
 			SELF:iniSettings:AddLibraryNamespace := SELF:checkAddLibraryNamespace:Checked
+			SELF:iniSettings:TypedThisFormSet := SELF:checkTypedThisFormSet:Checked
 			SELF:iniSettings:IgnoreErrors := SELF:checkIgnoreExportError:Checked
 			SELF:iniSettings:StoreInFolders := SELF:checkStoreInFolders:Checked
+			SELF:iniSettings:KeepFolderStructure := SELF:checkKeepFolderStructure:Checked
 			SELF:iniSettings:EmptyFolder := SELF:checkEmptyFolder:Checked
-			SELF:iniSettings:ConvertHandlers := SELF:checkConvertHandlers:Checked
-			SELF:iniSettings:ConvertUserDef := SELF:checkConvertUserDef:Checked
+			// SELF:iniSettings:ConvertHandlers := SELF:checkConvertHandlers:Checked
+			// SELF:iniSettings:ConvertUserDef := SELF:checkConvertUserDef:Checked
 			SELF:iniSettings:ConvertThisObject := SELF:checkConvertThisObject:Checked
 			SELF:iniSettings:ConvertStatement := SELF:checkStatement:Checked
 			SELF:iniSettings:ConvertStatementOnlyIfLast := SELF:checkStatementLast:Checked
@@ -51,7 +53,12 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:PrefixEvent := SELF:checkPrefixEventInForm:Checked
 			SELF:iniSettings:KeepFoxProEventName := SELF:checkKeepFoxProEventName:Checked
 			SELF:iniSettings:RessourcesFolder := SELF:ressourcesTextBox:Text
-			SELF:iniSettings:GenerateOnlyHandledEvent := SELF:checkGenerateOnlyHandledEvent:Checked
+            SELF:iniSettings:GenerateOnlyHandledEvent := SELF:checkGenerateOnlyHandledEvent:Checked
+            SELF:iniSettings:ExpandWithEndWith := SELF:checkExpandWithEndWith:Checked
+
+            SELF:iniSettings:SeparateLibraryProjects := SELF:checkLibraryAsProject:Checked
+            SELF:iniSettings:PlaceSolutionInSameDirectory := SELF:checkSlnWithProject:Checked
+            SELF:iniSettings:ClassNamePrefix := SELF:classNamePrefixTextBox:Text
 			//
 			VAR defFolders := ""
 			FOREACH lvi AS ListViewItem IN SELF:listFolders:Items
@@ -77,12 +84,15 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:ressourcesTextBox:Text := SELF:iniSettings:RessourcesFolder
             SELF:checkLibraryAsSubFolder:Checked := SELF:iniSettings:LibInSubFolder
             SELF:checkAddLibraryNamespace:Checked := SELF:iniSettings:AddLibraryNamespace
+            SELF:checkTypedThisFormSet:Checked := SELF:iniSettings:TypedThisFormSet
 			//SELF:checkItemAsFile:Checked := SELF:iniSettings:ReadValue( "Items", "SeparateFile", FALSE )
 			SELF:checkIgnoreExportError:Checked := SELF:iniSettings:IgnoreErrors
 			SELF:checkStoreInFolders:Checked := SELF:iniSettings:StoreInFolders
+			SELF:checkKeepFolderStructure:Checked := SELF:iniSettings:KeepFolderStructure
+			SELF:UpdateFolderStructureControlsState()
 			SELF:checkEmptyFolder:Checked := SELF:iniSettings:EmptyFolder
-			SELF:checkConvertHandlers:Checked := SELF:iniSettings:ConvertHandlers
-			SELF:checkConvertUserDef:Checked := SELF:iniSettings:ConvertUserDef
+			// SELF:checkConvertHandlers:Checked := SELF:iniSettings:ConvertHandlers
+			// SELF:checkConvertUserDef:Checked := SELF:iniSettings:ConvertUserDef
 			SELF:checkConvertThisObject:Checked := SELF:iniSettings:ConvertThisObject
 			SELF:checkStatement:Checked := SELF:iniSettings:ConvertStatement
 			SELF:checkStatementLast:Checked := SELF:iniSettings:ConvertStatementOnlyIfLast
@@ -93,7 +103,12 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:checkSetEvent:Checked := SELF:iniSettings:RemoveSet
 			SELF:checkPrefixEventInForm:Checked := SELF:iniSettings:PrefixEvent
 			SELF:checkKeepFoxProEventName:Checked := SELF:iniSettings:KeepFoxProEventName
-			SELF:checkGenerateOnlyHandledEvent:Checked := SELF:iniSettings:GenerateOnlyHandledEvent
+            SELF:checkGenerateOnlyHandledEvent:Checked := SELF:iniSettings:GenerateOnlyHandledEvent
+            SELF:checkExpandWithEndWith:Checked := SELF:iniSettings:ExpandWithEndWith
+
+            SELF:checkLibraryAsProject:Checked := SELF:iniSettings:SeparateLibraryProjects
+            SELF:checkSlnWithProject:Checked := SELF:iniSettings:PlaceSolutionInSameDirectory
+            SELF:classNamePrefixTextBox:Text := SELF:iniSettings:ClassNamePrefix
 			// Fill Folders Name
 			// The order is : "Forms,Libs,Menus,Code,Databases,FreeTables,Others"
 			VAR defFolders := SELF:iniSettings:DefaultFolders
@@ -140,20 +155,20 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:itemsButton:Text := "<<"
 			RETURN
 		PRIVATE METHOD checkConvertHandlers_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-			IF SELF:checkConvertHandlers:Checked
-				SELF:checkConvertThisObject.Checked := false
-			ENDIf
+			// IF SELF:checkConvertHandlers:Checked
+				// SELF:checkConvertThisObject.Checked := false
+			// ENDIf
 			RETURN
 		PRIVATE METHOD checkConvertThisObject_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-			if SELF:checkConvertThisObject.Checked
-				SELF:checkConvertHandlers:Checked := false
-				self:checkConvertUserDef:Checked := false
-			ENDIf
+			// if SELF:checkConvertThisObject.Checked
+				// SELF:checkConvertHandlers:Checked := false
+				// self:checkConvertUserDef:Checked := false
+			// ENDIf
 			RETURN
 		PRIVATE METHOD checkConvertUserDef_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-			IF SELF:checkConvertUserDef:Checked
-				SELF:checkConvertThisObject.Checked := false
-			ENDIf
+			// IF SELF:checkConvertUserDef:Checked
+				// SELF:checkConvertThisObject.Checked := false
+			// ENDIf
 			RETURN
 		PRIVATE METHOD editButton_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			VAR statementsFile := Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), XPorterSettings.StatementsFile )
@@ -189,6 +204,22 @@ BEGIN NAMESPACE VFPXPorter
 PRIVATE METHOD checkKeepFoxProEventName_CheckedChanged(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			RETURN
 		END METHOD
+		PRIVATE METHOD checkKeepFolderStructure_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
+			SELF:UpdateFolderStructureControlsState()
+			RETURN
+		END METHOD
+		// StoreInFolders/LibInSubFolder/the folder-name editor are only meaningful when
+		// the original VFP folder structure is NOT being preserved.
+		PRIVATE METHOD UpdateFolderStructureControlsState() AS VOID
+			VAR enableSubOptions := !SELF:checkKeepFolderStructure:Checked
+			SELF:checkStoreInFolders:Enabled := enableSubOptions
+			SELF:checkLibraryAsSubFolder:Enabled := enableSubOptions
+			SELF:itemsButton:Enabled := enableSubOptions
+			IF !enableSubOptions
+				SELF:listFolders:Visible := FALSE
+				SELF:itemsButton:Text := ">>"
+			ENDIF
+            RETURN
 
 	END CLASS
 END NAMESPACE

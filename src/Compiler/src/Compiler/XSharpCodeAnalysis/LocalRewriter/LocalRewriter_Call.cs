@@ -5,14 +5,11 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Linq.Expressions;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -23,7 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public static BoundExpression StaticCall(this SyntheticBoundNodeFactory factory, NamedTypeSymbol type, string name, params BoundExpression[] arguments)
         {
-            var method = type.GetMembers(name).OfType<MethodSymbol>().FirstOrDefault();
+            var method = type.GetMembers(name).OfType<MethodSymbol>().Where(m => m.GetParameterCount() == arguments.Length).FirstOrDefault();
             if (method is null)
                 throw new InvalidOperationException($"Method {name} not found in type {type.Name}");
             return factory.Call(factory.Type(type), method, arguments);
@@ -41,62 +38,74 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (root is null)
                 return expression;
 
-            // find the current member to see if we have a local SELF or THIS
-            var parent = expression.Syntax.Parent;
-            while (parent != null && !(parent is MemberDeclarationSyntax))
-            {
-                parent = parent.Parent;
-            }
-            bool isStatic = false;
-            if (parent is MemberDeclarationSyntax mds)
-            {
-                var mods = mds.Modifiers;
-                isStatic = mods.Any(SyntaxKind.StaticKeyword);
-            }
+            bool isStatic = _factory.CurrentFunction != null && _factory.CurrentFunction.IsStatic;
 
-            // check for the FoxArrayParameter Attribute
-            if (expression is BoundCall bc && bc.Method.HasFoxArrayParameter(out var attr))
+            if (expression is BoundCall bc)
             {
-                // get the attribute and retrieve the parameter index
-                if (attr.ConstructorArguments.Count() > 0)
+                if (bc.Method?.Name == ReservedNames.MemVarInit && _compilation.Options.HasOption(CompilerOption.Fox3, expression.Syntax))
                 {
-                    var oIndex = attr.ConstructorArguments.First().Value;
-                    if (oIndex is not null)
+                    if (!isStatic)
                     {
-                        var index = (int)oIndex;
-                        var args = bc.Arguments;
-
-                        if (index > 0 && index <= args.Length)
+                        // For /fox3 find the __MemVarInit() call that has an object parameter
+                        // and call it with Self, so that the runtime can switch the DataSession inside the method
+                        var arg = _factory.This();
+                        var rtType = _compilation.RuntimeFunctionsType();
+                        var methods = rtType.GetMembers(ReservedNames.MemVarInit);
+                        foreach (MethodSymbol m in methods)
                         {
-                            var arg = args[index - 1]; // index is 1 based
-
-                            BoundExpression argToCheck = arg;
-                            while (argToCheck is BoundConversion bconv)
+                            if (m.ParameterCount == 1 && m.Parameters[0].Type?.SpecialType == SpecialType.System_Object)
                             {
-                                argToCheck = bconv.Operand;
+                                var newCall = _factory.Call(null, m, arg);
+                                return newCall;
                             }
+                        }
+                    }
+                }
 
-                            if (argToCheck is BoundCall bc2)
+                // check for the FoxArrayParameter Attribute
+                if (bc.Method != null && bc.Method.HasFoxArrayParameter(out var attr))
+                {
+                    // get the attribute and retrieve the parameter index
+                    if (attr.ConstructorArguments.Count() > 0)
+                    {
+                        var oIndex = attr.ConstructorArguments.First().Value;
+                        if (oIndex is not null)
+                        {
+                            var index = (int)oIndex;
+                            var args = bc.Arguments;
+
+                            if (index > 0 && index <= args.Length)
                             {
-                                var method2 = bc2.Method;
-                                if (method2.Name == ReservedNames.VarGet)
+                                var arg = args[index - 1]; // index is 1 based
+
+                                BoundExpression argToCheck = arg;
+                                while (argToCheck is BoundConversion bconv)
                                 {
-                                    var margs = bc2.Arguments;
-                                    var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
-                                    var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
-                                    if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
+                                    argToCheck = bconv.Operand;
+                                }
+
+                                if (argToCheck is BoundCall bc2)
+                                {
+                                    var method2 = bc2.Method;
+                                    if (method2.Name == ReservedNames.VarGet)
                                     {
-                                        var newCall = _factory.StaticCall(symMethod, margs);
-
-                                        BoundExpression finalArg = newCall;
-                                        if (arg is BoundConversion originalConv)
+                                        var margs = bc2.Arguments;
+                                        var vfpRuntimeType = _compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
+                                        var funcs = vfpRuntimeType.GetMembers(ReservedNames.VarGetOrCreateFoxArray);
+                                        if (funcs.Length == 1 && funcs[0] is MethodSymbol symMethod)
                                         {
-                                            finalArg = MakeConversionNode(newCall, originalConv.Type, originalConv.Checked);
-                                        }
+                                            var newCall = _factory.StaticCall(symMethod, margs);
 
-                                        var newArgs = args.ToBuilder();
-                                        newArgs[index - 1] = finalArg;
-                                        newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                                            BoundExpression finalArg = newCall;
+                                            if (arg is BoundConversion originalConv)
+                                            {
+                                                finalArg = MakeConversionNode(newCall, originalConv.Type, originalConv.Checked);
+                                            }
+
+                                            var newArgs = args.ToBuilder();
+                                            newArgs[index - 1] = finalArg;
+                                            newExpression = _factory.Call(bc.ReceiverOpt, bc.Method, newArgs.ToImmutable());
+                                        }
                                     }
                                 }
                             }
@@ -114,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 int count = 0;
                 foreach (var sym in localsymbols)
                 {
-                    if (sym.Name.IndexOf("$") == -1)
+                    if (sym.Name.IndexOf('$') == -1)
                         count++;
                 }
                 if (count == 0 && isStatic)
@@ -125,8 +134,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var rtType = _compilation.RuntimeFunctionsType();
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
                 var block = ImmutableArray.CreateBuilder<BoundExpression>();
+                // we need an array of the local symbols for the sequence
+                var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+
                 var usual = _compilation.UsualType();
                 _factory.Syntax = expression.Syntax;
+
+                // Save the current 'HasLocals' state so we will not clear inside a recursive loop
+                // $hasLocal := __HasLocals()
+                var hasLocalvar = CreateHasLocalVar(rtType, locals, exprs);
 
                 if (!isStatic)
                 {
@@ -134,14 +150,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     value = MakeConversionNode(value, usual, false);
                     var localname = _factory.Literal("_THIS");
                     var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
-                    mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
                 }
 
                 foreach (var symbol in localsymbols)
                 {
                     var name = symbol.Name;
-                    if (name.IndexOf("$") >= 0)
+                    if (name.IndexOf('$') >= 0)
                         continue;
                     BoundExpression? localvar = null;
                     if (symbol is LocalSymbol ls)
@@ -163,21 +178,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var value = MakeConversionNode(localvar, usual, false);
                     value.WasCompilerGenerated = true;
                     var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
-                    mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
 
                     // create assignment expression for inside the block that is executed when locals are updated
                     // LocalVar := (CorrectType) __LocalGet("name")
                     mcall = _factory.StaticCall(rtType, ReservedNames.LocalGet, localname);
-                    mcall.WasCompilerGenerated = true;
                     value = MakeConversionNode(mcall, localvar.Type!, false);
                     value.WasCompilerGenerated = true;
-                    var ass = _factory.AssignmentExpression(localvar, value);
-                    ass.WasCompilerGenerated = true;
-                    block.Add(ass);
+                    var ass2 = _factory.AssignmentExpression(localvar, value);
+                    block.Add(ass2);
                 }
-                // we need an array of the local symbols for the sequence
-                var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
                 var type = expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object);
                 var isVoid = type.SpecialType == SpecialType.System_Void;
                 var tempSym = _factory.SynthesizedLocal(isVoid ? usual : type);
@@ -198,20 +208,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
                     var t = _factory.Literal(true);
                     var f = _factory.Literal(false);
-                    cond.WasCompilerGenerated = true;
                     // create a sequence with the assignment expressions, return true (because the conditional expression needs a value)
                     var assignmentsequence = _factory.Sequence(block.ToArray(), t);
-                    assignmentsequence.WasCompilerGenerated = true;
                     // iif ( __localupdated(), <assignmentsequence>, false)
                     var condexpr = _factory.Conditional(cond, assignmentsequence, f, _compilation.GetSpecialType(SpecialType.System_Boolean));
-                    condexpr.WasCompilerGenerated = true;
                     exprs.Add(condexpr);
                 }
                 if (count > 0)
                 {
-                    // __LocalsClear()
-                    var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
-                    exprs.Add(VisitExpression(clear));
+                    // __LocalsClear($hasLocal)
+                    var clear = CreateLocalsClear(rtType, hasLocalvar);
+                    exprs.Add(clear);
                 }
 
                 // create a sequence that returns the temp var.

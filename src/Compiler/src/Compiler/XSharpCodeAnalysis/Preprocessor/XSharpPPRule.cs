@@ -49,17 +49,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (udc.Type)
             {
                 case XSharpLexer.PP_COMMAND:
-                    if (udc.Text.ToLower() == "#command")
+                    if (udc.Text.StartsWith("#co", StringComparison.OrdinalIgnoreCase))
                         _type = PPUDCType.Command;
-                    else if (udc.Text.ToLower() == "#xcommand")
+                    else if (udc.Text.StartsWith("#xc", StringComparison.OrdinalIgnoreCase))
                         _type = PPUDCType.XCommand;
                     else
                         _type = PPUDCType.YCommand;
                     break;
                 case XSharpLexer.PP_TRANSLATE:
-                    if (udc.Text.ToLower().StartsWith("#trans"))
+                    if (udc.Text.StartsWith("#t", StringComparison.OrdinalIgnoreCase))
                         _type = PPUDCType.Translate;
-                    else if (udc.Text.ToLower() == "#xtranslate")
+                    else if (udc.Text.StartsWith("#xt", StringComparison.OrdinalIgnoreCase))
                         _type = PPUDCType.XTranslate;
                     else
                         _type = PPUDCType.YTranslate;
@@ -268,7 +268,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         void checkForRepeat(XSharpToken udc)
         {
-            var keys = new List<string>();
+            var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var flattened = new List<PPResultToken>();
             foreach (var restoken in _resulttokens)
             {
@@ -279,27 +279,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (!child.IsToken && !child.IsOptional)
                         {
                             flattened.Add(child);
-                            if (!keys.Contains(child.Token.Text.ToLower()))
-                            {
-                                keys.Add(child.Token.Text.ToLower());
-                            }
+                            keys.Add(child.Token.Text);
                         }
                     }
                 }
                 if (!restoken.IsToken && !restoken.IsOptional)
                 {
                     flattened.Add(restoken);
-                    if (!keys.Contains(restoken.Token.Text.ToLower()))
-                        keys.Add(restoken.Token.Text.ToLower());
+                    keys.Add(restoken.Token.Text);
                 }
             }
             foreach (var restoken in flattened)
             {
-                var tokenName = restoken.Token.Text.ToLower();
+                var tokenName = restoken.Token.Text.ToLowerInvariant();
                 foreach (string name in keys)
                 {
 
-                    if (tokenName != name && isRepeatToken(tokenName, name))
+                    if (String.Compare(tokenName, name, StringComparison.OrdinalIgnoreCase) != 0
+                        && isRepeatToken(tokenName, name))
                     {
                         if (tokenName.EndsWith("n", StringComparison.OrdinalIgnoreCase))
                         {
@@ -428,7 +425,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (element.Token.IsName() || element.Token.Type == XSharpLexer.SYMBOL_CONST || element.IsWholeUDC)
             {
-                string name = element.Key.ToLower();
+                string name = element.Key.ToLowerInvariant();
                 if (name == "udc" && !element.IsWholeUDC)
                 {
                     addErrorMessage(element.Token, $"The Match marker name '{element.Key}' is reserved");

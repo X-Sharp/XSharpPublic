@@ -231,7 +231,7 @@ namespace XSharp.Build
         private static string stripMultiLineComments(string contents)
         {
             var sb = new StringBuilder();
-            int index = contents.IndexOf("/*");
+            int index = contents.IndexOf("/*", StringComparison.OrdinalIgnoreCase);
             while (index >= 0 && contents.Length > 0)
             {
                 if (index > 0)
@@ -239,12 +239,12 @@ namespace XSharp.Build
                     sb.Append(contents.Substring(0, index - 1));
                 }
                 contents = contents.Substring(index + 2);
-                index = contents.IndexOf("*/");
+                index = contents.IndexOf("*/", StringComparison.OrdinalIgnoreCase);
                 if (index >= 0)
                 {
                     contents = contents.Substring(index + 2);
                 }
-                index = contents.IndexOf("/*");
+                index = contents.IndexOf("/*", StringComparison.OrdinalIgnoreCase);
             }
             return sb.ToString();
         }

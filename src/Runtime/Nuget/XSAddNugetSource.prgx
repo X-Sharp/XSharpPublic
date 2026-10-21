@@ -32,12 +32,8 @@ IF existingMappings != null
     // Mappings exist: only update or add "XSharp.*" -> XSharp Offline Packages
     GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
 ELSE
-    // No mappings: create "*" -> nuget.org and "XSharp.*" -> XSharp Offline Packages
-    IF !SearchPackageSource(packageSources, "nuget.org")
-        GetSetPackageSource( packageSources, "nuget.org", "https://api.nuget.org/v3/index.json" )
-    ENDIF
-    GetSetSourceMapping( configElement, "nuget.org", "*" )
-    GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
+    // Do not add package source mappings
+    NOP
 ENDIF
 
 doc:Save(nugetConfigPath)

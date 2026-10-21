@@ -12,20 +12,22 @@ using System.Diagnostics
 
 begin namespace XSharp.VFP
 
-    class Custom inherit XSharp.VFP.Abstract
+    class Custom inherit XSharp.VFP.Abstract IMPLEMENTS IDataSession
         protected _Controls as VFP.Collection
         property Top        as long auto
         property Left       as long auto
         property Height     as long auto
         property Width      as long auto
         property Controls as VFP.Collection GET _Controls
+        PROPERTY DataSession as XSharp.RDD.DataSession AUTO
 
         PROTECTED OVERRIDE METHOD _InitProperties AS VOID
             SELF:Top := 0
             SELF:Left := 0
             SELF:Height := 0
             SELF:Width := 0
-             SELF:_Controls    := VFP.Collection{}
+            SELF:_Controls    := VFP.Collection{}
+            SELF:DataSession := RuntimeState.DataSession
 
         RETURN
         constructor() clipper

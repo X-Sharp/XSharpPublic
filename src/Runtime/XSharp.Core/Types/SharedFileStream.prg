@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -11,6 +11,75 @@ USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.IO
     /// <include file="XSharp.Core.Docs.xml" path="doc/XsWin32FileStream/*" />
+#ifdef NET6_0_OR_GREATER
+    // .Net 6 and later. FileStream reads and writes at an explicit offset and does not cache the length
+    // of a file that others may write to, so it reports the truth for shared access by itself. The hand
+    // written Win32 layer below is not only unnecessary there, it is broken: it never overrode Position,
+    // and the .Net 6 rewrite removed the re-verification of the OS position that used to paper over that.
+    /// <remarks>
+    /// This class used to do all of its IO with the Win32 API (ReadFile, WriteFile, SetFilePointerEx,
+    /// LockFile) on the raw file handle of the base class, because the FileStream of that time cached the
+    /// file position and the file length, which is wrong for a file that other processes may change.
+    /// <br/>
+    /// It does not do that anymore. The .Net FileStream reads and writes at an explicit offset and does not
+    /// cache the length of a file that others may write to, so it reports the truth for shared access by
+    /// itself, on every platform. What is left here is the one thing that is special about a shared stream:
+    /// it must not buffer, and Flush() must commit to disk.
+    /// <br/>
+    /// The name is kept because this class is public and is handed to user code through DBI_FILESTREAM.
+    /// </remarks>
+    CLASS XsWin32FileStream INHERIT XsFileStream
+        INTERNAL CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
+            // bufferSize 1 means unbuffered. A buffer would hand out bytes that another process has already
+            // changed, and would hold back bytes that another process is waiting for, so the bufferSize of
+            // the caller is deliberately ignored: for shared access there is no good buffer size but none.
+            SUPER(path, mode, faccess, share, 1, options)
+        RETURN
+
+        /// <inheritdoc />
+        /// <remarks>A shared file stream commits to disk, so that other processes see the change.</remarks>
+        PUBLIC OVERRIDE METHOD Flush() AS VOID
+            SELF:Flush(TRUE)
+            RETURN
+
+        /// <inheritdoc />
+        PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64) AS VOID
+            TRY
+                SUPER:Lock(position, length)
+            CATCH e AS Exception
+                SELF:__SetLockError()
+                THROW e
+            END TRY
+            RETURN
+
+        /// <inheritdoc />
+        PUBLIC OVERRIDE METHOD Unlock(position AS INT64, length AS INT64) AS VOID
+            TRY
+                SUPER:Unlock(position, length)
+            CATCH e AS Exception
+                SELF:__SetLockError()
+                THROW e
+            END TRY
+            RETURN
+
+        // A failed lock on a shared file is what NetErr() reports in the xBase world. The base class has
+        // already recorded the exception through SetErrorState(), but that only sets NetErr for a sharing
+        // violation (32) and a lock violation is 33. The Win32 implementation used below .Net 6 sets NetErr
+        // itself, so it has to happen here as well - and only here, so that exclusive streams keep behaving
+        // exactly like they always did.
+        PRIVATE METHOD __SetLockError() AS VOID
+            IF RuntimeState.FileError == 0
+                FError(33) // DOS lock violation
+            ENDIF
+            NetErr(TRUE)
+        RETURN
+
+    END CLASS
+#else
+    // Before .Net 6, unchanged. FileStream of that time cached the file position and the file length,
+    // which is wrong for a file that other processes may change, so the IO is done with the Win32 API.
+    // Position is not overridden here on purpose: until .Net 5 FileStream re-verified the OS position on
+    // every access once the SafeFileHandle had been exposed, which keeps this correct.
     CLASS XsWin32FileStream INHERIT XsFileStream
         PRIVATE hFile AS IntPtr
         PRIVATE smallBuff AS BYTE[]
@@ -185,6 +254,6 @@ BEGIN NAMESPACE XSharp.IO
 #endregion
         
     END CLASS
-    
-    
+#endif
+
 END NAMESPACE

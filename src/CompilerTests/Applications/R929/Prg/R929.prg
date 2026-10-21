@@ -8,6 +8,17 @@ end class
 
 function Start() as void strict
 	var x := Test.TestMethodWorking()
+	xAssert(x == 0)
 	x := Test.TestMethodNotWorking() // crashing also in debugger with breakpoint in line before...never reached this line
-    ? x
+	xAssert(x == 0)
+
 	return
+
+PROC xAssert(l AS LOGIC)
+IF l
+	? "Assertion passed"
+ELSE
+	? "Assertion FAILED"
+	THROW Exception{"Incorrect result"}
+END IF
+RETURN

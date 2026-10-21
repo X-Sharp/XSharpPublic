@@ -41,12 +41,12 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList IN USUAL, lIncludeMemo as LOGIC) A
             RETURN selected
         ENDIF
     ENDIF
-    LOCAL fCount as DWORD
-    fCount := FCount()
-    FOR VAR nFld := 1u to fCount
+    LOCAL ffCount as DWORD
+    ffCount := FCount()
+    FOR VAR nFld := 1u to ffCount
         LOCAL lInclude AS LOGIC
         LOCAL cType := NIL as USUAL
-        VoDb.FieldInfo(DBS_TYPE, nFld,@cType)
+        VoDb.FieldInfo(DBS_TYPE, nFld,REF cType)
         SWITCH (STRING) cType
         CASE "M"
         CASE "G"
@@ -71,8 +71,8 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList IN USUAL, lIncludeMemo as LOGIC) A
 
 
 FUNCTION __ScatterMemVar(aFieldList, lBlank,lMemo) AS LOGIC CLIPPER
-    EnforceType(@lBlank, __UsualType.Logic)
-    EnforceType(@lMemo, __UsualType.Logic)
+    EnforceType(REF lBlank, __UsualType.Logic)
+    EnforceType(REF lMemo, __UsualType.Logic)
 
     VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     FOREACH var oField in aFields
@@ -92,8 +92,8 @@ FUNCTION __GatherMemVar(aFieldList, lMemo) AS LOGIC CLIPPER
 
 [FoxArrayInputParameter(1)];
 FUNCTION __ScatterArray(uSource, aFieldList, lBlank, lMemo) AS ARRAY CLIPPER
-    EnforceType(@lBlank, __UsualType.Logic)
-    EnforceType(@lMemo, __UsualType.Logic)
+    EnforceType(REF lBlank, __UsualType.Logic)
+    EnforceType(REF lMemo, __UsualType.Logic)
     VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     VAR nLen    := (DWORD) aFields:Length
 
@@ -141,9 +141,9 @@ FUNCTION __GatherArray(uSource, aFieldList, lMemo) AS LOGIC CLIPPER
     [NeedsAccessToLocals(FALSE)];
 FUNCTION __ScatterObject(aFieldList, lBlank, cObject, lAdditive, lMemo) AS OBJECT CLIPPER
     LOCAL oResult := NULL_OBJECT as OBJECT
-    EnforceType(@lBlank, __UsualType.Logic)
-    EnforceType(@lBlank, __UsualType.Logic)
-    EnforceType(@lMemo, __UsualType.Logic)
+    EnforceType(REF lBlank, __UsualType.Logic)
+    EnforceType(REF lBlank, __UsualType.Logic)
+    EnforceType(REF lMemo, __UsualType.Logic)
     VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     IF IsArray(aFieldList)
         aFields := aFieldList

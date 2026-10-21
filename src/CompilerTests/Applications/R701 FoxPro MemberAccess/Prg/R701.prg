@@ -1,4 +1,5 @@
 #pragma warnings(9093, off) // undeclared, assume it is cursor
+#pragma options("fox3", on)
 FUNCTION Start( ) AS VOID
 	local aStruct as array
 	try
@@ -19,7 +20,7 @@ FUNCTION Start( ) AS VOID
 		Test.LastName  = "Pyrgas"
 		xAssert(Test.FirstName = "Chris")
 		xAssert(Test.LastName = "Pyrgas")
-		DbCLoseArea()
+		DbCloseArea()
 	catch e as Exception
 		? e:ToString()
 		XAssert(FALSE)

@@ -37,21 +37,7 @@ namespace XSharp.Project
             path = Path.GetFullPath(path);
             var refnode = XSharpProjectNode.FindProject(path);
             bool changed = false;
-            if (parent.IsSdkProject)
-            {
-                // already handled in the DependenciesContainer
-                name = System.IO.Path.GetFileNameWithoutExtension(path);
-                if (refnode != null)
-                {
-                    guid = refnode.ProjectIDGuid.ToString("B");
-                }
-                else
-                {
-                    guid = null;
-                    parent.HasIncompleteReferences = true;
-                }
-            }
-            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
             {
                 // No guid, so it is probably an old style project reference
                 // In that case we need to get the guid from the project file
@@ -62,10 +48,6 @@ namespace XSharp.Project
                     element.SetMetadata(ProjectFileConstants.Project, guid);
                     element.SetMetadata(ProjectFileConstants.Name, name);
                     changed = true;
-                }
-                else
-                {
-                    parent.HasIncompleteReferences = true;
                 }
                 if (refnode != null)
                 {
@@ -84,7 +66,17 @@ namespace XSharp.Project
                 parent.BuildProject.Save();
             }
 
-            var node = (XSharpProjectReferenceNode) Activator.CreateInstance(ProjectReferenceType,this.ProjectMgr, element);
+            XSharpProjectReferenceNode node = null;
+            try
+            {
+                node = (XSharpProjectReferenceNode)Activator.CreateInstance(ProjectReferenceType, this.ProjectMgr, element);
+            }
+            catch (Exception e)
+            {
+                // Do not let this bubble up: ReferenceContainerNode.CreateReferenceNode() swallows the
+                // exception without logging it and the reference would disappear from the hierarchy.
+                Logger.Exception(e, "CreateProjectReferenceNode");
+            }
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {

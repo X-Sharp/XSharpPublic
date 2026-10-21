@@ -240,6 +240,11 @@ namespace XSharp.Build
             get { return _store.GetOrDefault(nameof(FOX2), false); }
         }
 
+        public bool FOX3
+        {
+            set { _store[nameof(FOX3)] = value; }
+            get { return _store.GetOrDefault(nameof(FOX3), false); }
+        }
         public string CompilerPath
         {
             set { _store[nameof(CompilerPath)] = value; }
@@ -815,7 +820,7 @@ namespace XSharp.Build
 
                     finalDefineConstants.Append(singleIdentifier);
                 }
-             
+
             }
 
             if (finalDefineConstants.Length > 0)
@@ -856,7 +861,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitchAlways("/ins", _store, nameof(INS));
             commandline.AppendPlusOrMinusSwitchAlways("/lb", _store, nameof(LB));
             commandline.AppendPlusOrMinusSwitchAlways("/namedarguments", _store, nameof(NamedArgs));
-            if (Dialect.ToLower() != "core" && Dialect.ToLower() != "vulcan")
+            if (Dialect.ToLowerInvariant() != "core" && Dialect.ToLowerInvariant() != "vulcan")
             {
                 commandline.AppendPlusOrMinusSwitchAlways("/memvar", _store, nameof(MemVar));
                 commandline.AppendPlusOrMinusSwitchAlways("/undeclared", _store, nameof(Undeclared));
@@ -884,14 +889,15 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitchAlways("/vo15", _store, nameof(VO15));
             commandline.AppendPlusOrMinusSwitchAlways("/vo16", _store, nameof(VO16));
             commandline.AppendPlusOrMinusSwitchAlways("/vo17", _store, nameof(VO17));
-            if (Dialect.ToLower() == "xpp")
+            if (Dialect.ToLowerInvariant() == "xpp")
             {
                 commandline.AppendPlusOrMinusSwitchAlways("/xpp1", _store, nameof(XPP1));
             }
-            if (Dialect.ToLower() == "foxpro")
+            if (Dialect.ToLowerInvariant() == "foxpro")
             {
                 commandline.AppendPlusOrMinusSwitchAlways("/fox1", _store, nameof(FOX1));
                 commandline.AppendPlusOrMinusSwitchAlways("/fox2", _store, nameof(FOX2));
+                commandline.AppendPlusOrMinusSwitchAlways("/fox3", _store, nameof(FOX3));
             }
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)

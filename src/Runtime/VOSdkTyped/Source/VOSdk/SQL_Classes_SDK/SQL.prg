@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -139,11 +139,11 @@ DEFINE SQL_FETCH_ABSOLUTE	:=	5
 DEFINE SQL_FETCH_RELATIVE	:=	6
 DEFINE SQL_COMMIT	:=	0
 DEFINE SQL_ROLLBACK	:=	1
-DEFINE SQL_NULL_HENV	:=	NULL_PTR
-DEFINE SQL_NULL_HDBC	:=	NULL_PTR
-DEFINE SQL_NULL_HSTMT	:=	NULL_PTR
-DEFINE SQL_NULL_HDESC	:=	NULL_PTR
-DEFINE SQL_NULL_HANDLE	:=	NULL_PTR
+DEFINE SQL_NULL_HENV	:=	IntPtr.Zero
+DEFINE SQL_NULL_HDBC	:=	IntPtr.Zero
+DEFINE SQL_NULL_HSTMT	:=	IntPtr.Zero
+DEFINE SQL_NULL_HDESC	:=	IntPtr.Zero
+DEFINE SQL_NULL_HANDLE	:=	IntPtr.Zero
 DEFINE SQL_SCOPE_CURROW	:=	0
 DEFINE SQL_SCOPE_TRANSACTION	:=	1
 DEFINE SQL_SCOPE_SESSION	:=	2

@@ -123,5 +123,10 @@
     "System.Windows.Forms.ToolStripSeparator",
     "false",
     "false"
+  ],
+  "reportlistener": [
+    "ReportListener",
+    "false",
+    "false"
   ]
 }

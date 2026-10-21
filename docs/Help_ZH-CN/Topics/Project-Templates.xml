@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:58:19.116+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-20T13:49:26.982Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>项目模板</title>
   <keywords>
     <keyword>ClassLibrary</keyword>
@@ -314,7 +314,7 @@
           <para styleclass="Normal">使用 VO 方言创建 VO MDI 应用程序的项目模板</para>
         </td>
         <td style="width:96px;">
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
         <td style="width:80px;">
           <para styleclass="Normal">Visual Objects</para>
@@ -335,7 +335,7 @@
           <para styleclass="Normal">使用 VO 方言创建 VO SDI 应用程序的项目模板</para>
         </td>
         <td style="width:96px;">
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
         <td style="width:80px;">
           <para styleclass="Normal">Visual Objects</para>

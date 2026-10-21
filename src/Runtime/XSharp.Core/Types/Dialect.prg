@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Harbour  := 3
         MEMBER FoxPro   := 4
         MEMBER XPP      := 5
-        MEMBER dBase    := 6
+        MEMBER XBaseNet := 6
         MEMBER Last     := 6
     END ENUM
 

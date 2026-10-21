@@ -158,9 +158,115 @@
 
 #command DIR <*any*>       => __VfpDir( <"any"> )
 #command DIRECTORY <*any*> => __VfpDir( <"any"> )
-
+#command CLEAR => __VfpUnsupported(<"udc">)
 #command DIR               => __VfpDir( "" )
 #command DIRECTORY         => __VfpDir( "" )
+
+// COUNT — the VO rule in dbcmd.xh requires the TO clause (it expands to
+// "<xvar> := 0", which leaves a dangling ":=" when TO is omitted) and never
+// updates _TALLY. VFP accepts the TO clause both right after COUNT and at the
+// end, so both orders need their own rule: an optional clause cannot be matched
+// across a mandatory one.
+#command COUNT                                                          ;
+         [ALL]                                                          ;
+         [<REST:REST>]                                                  ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+      => __VfpCount( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+#command COUNT TO <xvar>                                                ;
+         [ALL]                                                          ;
+         [<REST:REST>]                                                  ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+      => <xvar> := __VfpCount( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+#command COUNT                                                          ;
+         [ALL]                                                          ;
+         [<REST:REST>]                                                  ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         TO <xvar>                                                      ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+      => <xvar> := __VfpCount( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+// SUM / AVERAGE — the VO rules in dbcmd.xh never update _TALLY. Copied here
+// because a UDC cannot wrap another one; the only change is the last line.
+#command SUM  <x1> [, <xn>]                                             ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<REST:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         TO  <v1> [, <vN>]                                              ;
+                                                                        ;
+      => <v1> := [ <vN> := ] 0                                          ;
+       ; DbEval(                                                        ;
+               {|| <v1> += <x1> [, <vN> += <xn> ]},                     ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               )                                                        ;
+       ; _TALLY := RuntimeState.Tally
+
+// The rule in dbcmd.xh wraps the whole command in one optional group, which
+// never matches: AVERAGE <x> TO <v> does not even translate today. Declared
+// here with the same shape as SUM, so the command works and updates _TALLY.
+#command AVERAGE  <x1> [, <xn>]                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<REST:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         TO  <v1> [, <vN>]                                              ;
+                                                                        ;
+      => M->__Avg := <v1> := [ <vN> := ] 0                              ;
+                                                                        ;
+       ; DbEval(                                                        ;
+               {|| M->__Avg += 1,                                       ;
+               <v1> += <x1> [, <vN> += <xn>] },                         ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               )                                                        ;
+                                                                        ;
+       ; <v1> /= M->__Avg [; <vN> /= M->__Avg ]                         ;
+       ; _TALLY := RuntimeState.Tally
+
+// WAIT
+#xcommand WAIT <msg> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT <msg> TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW <msg> [AT <nRow>, <nCol>] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(<msg>, TRUE, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW <msg> TO <v> [AT <nRow>, <nCol>] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, TRUE, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW <msg> AT <nRow>, <nCol> TO <v> [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(<msg>, TRUE, <nRow>, <nCol>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT WINDOW TO <v> [AT <nRow>, <nCol>] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(NIL, TRUE, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT TO <v> [<win:WINDOW> [AT <nRow>, <nCol>]] [<now:NOWAIT>] [<nclr:NOCLEAR>] [TIMEOUT <secs>] ;
+    => <v> := __VfpWait(NIL, <.win.>, <!nRow!>, <!nCol!>, <.now.>, <.nclr.>, <!secs!>)
+
+#xcommand WAIT CLEAR => __VfpWaitClear()
 
 // Commands with IN clause, commands without are defined in DBCMD.XH
 
@@ -173,14 +279,14 @@
 #command COMMIT            IN  <(a)>                    => (<(a)>) -> (DbCommit())
 #command UNLOCK [RECORD <rcd>] IN  <(a)>    => (<(a)>) -> (DbUnLock(<rcd>))
 
-#command GOTO <n>  		   IN <(a)>     => (<a>)->(DbGoto(<n>))
-#command GO [RECORD] <n>   IN <(a)>     => (<a>)->(DbGoto(<n>))
-#command GOTO TOP  		   IN <(a)>     => (<a>)->(DbGoTop())
-#command GO TOP   		   IN <(a)>     => (<a>)->(DbGoTop())
-#command GOTO BOTTOM 	   IN <(a)>     => (<a>)->(DbGoBottom())
-#command GO BOTTOM  	      IN <(a)>     => (<a>)->(DbGoBottom())
-#command SKIP 			      IN <(a)>     => (<a>)->(DbSkip(1))
-#command SKIP <n> 		   IN <(a)>     => (<a>)->(DbSkip(<n>))
+#command GOTO <n>  		   IN <(a)>     => (<(a)>)->(DbGoto(<n>))
+#command GO [RECORD] <n>   IN <(a)>     => (<(a)>)->(DbGoto(<n>))
+#command GOTO TOP  		   IN <(a)>     => (<(a)>)->(DbGoTop())
+#command GO TOP   		   IN <(a)>     => (<(a)>)->(DbGoTop())
+#command GOTO BOTTOM 	   IN <(a)>     => (<(a)>)->(DbGoBottom())
+#command GO BOTTOM  	      IN <(a)>     => (<(a)>)->(DbGoBottom())
+#command SKIP 			      IN <(a)>     => (<(a)>)->(DbSkip(1))
+#command SKIP <n> 		   IN <(a)>     => (<(a)>)->(DbSkip(<n>))
 
 #command SET FILTER TO     IN  <(a)>        => (<(a)>) -> (DbClearFilter())
 #command SET FILTER TO <xpr>  IN  <(a)>   => (<(a)>) -> (DbSetFilter( <{xpr}>, <"xpr"> ))
@@ -207,39 +313,75 @@
       => (<(a)>)->(DbEval(                                              ;
                  {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               ))
+               )); _TALLY := RuntimeState.Tally
 
 // This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
 #command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
 
-#command COPY MEMO <field> TO <(file)> <add:ADDITIVE> [AS <nCP>]  ;
-        => DbCopyMemo( <"field">, <(file)>, <ADD>[, <nCP>] )
+#command COPY MEMO <field> TO <(file)> [<add:ADDITIVE>]           ;
+        => DbCopyMemo( <"field">, <(file)>, <.add.>, 0 )
 
-// REPLACE ... [ADDITIVE] — without IN clause
-#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
-                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+#command COPY MEMO <field> TO <(file)> [<add:ADDITIVE>] AS <nCP>  ;
+        => DbCopyMemo( <"field">, <(file)>, <.add.>, <nCP> )
+
+// Scoped REPLACE — without IN clause
+// Note: no nested optional ADDITIVE inside the repeated clause: the preprocessor
+// drops the whole output repetition when the nested marker has no matches
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                        ;
            [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
            [<REST:REST>] [<noopt:NOOPTIMIZE>] [all]                           ;
         => DbEval(                                                             ;
                {|| DbAutoLock(),                                               ;
-                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
-                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   __FieldSet(<(f1)>, <x1>)                                   ;
+                   [, __FieldSet(<(fn)>, <xn>)],                              ;
                    DbAutoUnLock() },                                          ;
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
-             )
+             ); _TALLY := RuntimeState.Tally
 
-// REPLACE ... [ADDITIVE] IN workarea — defined LAST, tried FIRST
-#command REPLACE <(f1)> WITH <x1> [<add1:ADDITIVE>]                         ;
-                   [, <(fn)> WITH <xn> [<addn:ADDITIVE>]]                     ;
+// Scoped REPLACE, single field with ADDITIVE — without IN clause
+#command REPLACE <(f1)> WITH <x1> ADDITIVE                                    ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] [<noopt:NOOPTIMIZE>] [ALL]                           ;
+        => DbEval(                                                             ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSetAdd(<(f1)>, <x1>, .T.),                          ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             ); _TALLY := RuntimeState.Tally
+
+// Single record REPLACE — no scope clauses: current record only (VFP default)
+// Note: no nested optional ADDITIVE inside the repeated clause: the preprocessor
+// drops the whole output repetition when the nested marker has no matches
+#command REPLACE <(f1)> WITH <v1> [, <(fn)> WITH <vN>]                     ;
+      => DbAutoLock(); __FieldSet(<(f1)>, <v1>)                            ;
+         [; __FieldSet(<(fn)>, <vN>)]; DbAutoUnLock(); _TALLY := 1
+
+// Single record, single field with ADDITIVE — current record only
+#command REPLACE <(f1)> WITH <v1> ADDITIVE                                 ;
+      => DbAutoLock(); __FieldSetAdd(<(f1)>, <v1>, .T.); DbAutoUnLock(); _TALLY := 1
+
+// Scoped REPLACE IN workarea
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                        ;
+           [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
+           [<REST:REST>] IN <(a)> [<noopt:NOOPTIMIZE>] [ALL]                ;
+        => (<(a)>)->(DbEval(                                              ;
+               {|| DbAutoLock(),                                               ;
+                   __FieldSet(<(f1)>, <x1>)                                   ;
+                   [, __FieldSet(<(fn)>, <xn>)],                              ;
+                   DbAutoUnLock() },                                          ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
+             )); _TALLY := RuntimeState.Tally
+
+// Scoped REPLACE, single field with ADDITIVE, IN workarea
+#command REPLACE <(f1)> WITH <x1> ADDITIVE                                    ;
            [FOR <lfor>] [WHILE <lwhile>] [NEXT <nnext>] [RECORD <rec>]        ;
            [<REST:REST>] IN <(a)> [<noopt:NOOPTIMIZE>] [all]                ;
         => (<(a)>)->(DbEval(                                              ;
                {|| DbAutoLock(),                                               ;
-                   __FieldSetAdd(<(f1)>, <x1>, <.add1.>)                     ;
-                   [, __FieldSetAdd(<(fn)>, <xn>, <.addn.>)],                ;
+                   __FieldSetAdd(<(f1)>, <x1>, .T.),                          ;
                    DbAutoUnLock() },                                          ;
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>     ;
-             ))
+             )); _TALLY := RuntimeState.Tally
 
 
 #command DELETE                                                         ;
@@ -247,15 +389,21 @@
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
+         [<REST:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+      => __VfpDelete( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+#command DELETE                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<REST:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
          IN <(a)>                                                       ;
-                                                                        ;
-      => (<(a)>)->(DbEval(                                              ;
-                 {|| __DbDelete()},                                       ;
-                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               ))
+      => (<(a)>)->(__VfpDelete( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ))
 
 
 #command RECALL                                                         ;
@@ -263,17 +411,21 @@
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
+         [<REST:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+      => __VfpRecall( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+#command RECALL                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<REST:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
          IN <(a)>                                                       ;
-                                                                        ;
-         => BEGIN SCOPE ; VAR __saveDeleted := SetDeleted();            ;
-         IF RuntimeState.Dialect == XSharpDialect.FoxPro; SetDeleted(FALSE); ENDIF ;;
-            (<(a)>)->(DbEval(                                              ;
-                 {|| __DbRecall()},                                     ;
-                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               )) ;SetDeleted(__saveDeleted); END SCOPE
+      => (<(a)>)->(__VfpRecall( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ))
 
 
 #command LOCATE                                                         ;
@@ -288,17 +440,31 @@
                                                                         ;
       => (<(a)>)->(DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ))
 
-#command CONTINUE  IN  <(a)>   => (a)->(DbContinue())
+#command CONTINUE  IN  <(a)>   => (<(a)>)->(DbContinue())
 
 
 // Single record operations with IN Clause
 #command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                 ;
           IN  <(a)>                                             ;
-         => DbAutoLockArea(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fn)>,<vN>)], DbAutoUnLockArea(<(a)>)
+         => DbAutoLockArea(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fn)>,<vN>)], DbAutoUnLockArea(<(a)>); _TALLY := 1
 
-#command DELETE   IN  <(a)> =>  (<(a)>)->(__DbDelete())
+// Single record REPLACE IN workarea — current record only (VFP default)
+#command REPLACE <(f1)> WITH <v1> [, <(fn)> WITH <vN>] IN <(a)>            ;
+      => DbAutoLockArea(<(a)>),                                            ;
+         (<(a)>)->(__FieldSet(<(f1)>, <v1>) [, __FieldSet(<(fn)>, <vN>)]), ;
+         DbAutoUnLockArea(<(a)>); _TALLY := 1
 
-#command RECALL   IN  <(a)> =>  (a)->(__DbRecall())
+// Single record, single field with ADDITIVE, IN workarea — current record only
+#command REPLACE <(f1)> WITH <v1> ADDITIVE IN <(a)>                        ;
+      => DbAutoLockArea(<(a)>),                                            ;
+         (<(a)>)->(__FieldSetAdd(<(f1)>, <v1>, .T.)),                      ;
+         DbAutoUnLockArea(<(a)>); _TALLY := 1
+
+#command DELETE IN <(a)> => (<(a)>)->(__VfpDeleteRecord())
+#command DELETE => __VfpDeleteRecord()
+
+#command RECALL IN <(a)> => (<(a)>)->(__VfpRecallRecord())
+#command RECALL => __VfpRecallRecord()
 
 
 // Set Relation command with IN clause
@@ -650,17 +816,17 @@
 #command RD <(dir)>    => _cmdDirRemove (<(dir)>)
 #command RMDIR <(dir)> => _cmdDirRemove (<(dir)>)
 
-// CAST AS Expression
-// types in the order of the FoxPro docs!
+// CAST AS Expression  -->  CAST( eExpr AS cType [(nWidth[,nPrec])] [NULL | NOT NULL] )
+// cType: single-letter code, full type name, or a parenthesized expression that yields the type
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> ( <width> , <dec> ) [NOT] [NULL] )  => __FoxCast( <expression>, <(type)>, <width>, <dec> )
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> ( <width> ) [NOT] [NULL] )         => __FoxCast( <expression>, <(type)>, <width>, -1 )
+#translate CAST ( <expression> AS <type:W,BLOB,C,CHAR,CHARACTER,Y,CURRENCY,D,DATE,T,DATETIME,B,DOUBLE,F,FLOAT,G,GENERAL,I,INT,INTEGER,L,LOGICAL,M,MEMO,N,NUM,NUMERIC,Q,VARBINARY,V,VARCHAR> [NOT] [NULL] )                       => __FoxCast( <expression>, <(type)>, -1, -1 )
+#translate CAST ( <expression> AS ( <typeExpr> ) [NOT] [NULL] )                                                                                                                                                              => __FoxCast( <expression>, <typeExpr>, -1, -1 )
 
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>)                   => __FoxCast(<expression>,<(type)>, -1, -1)
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
-#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
-
-#command LABEL <*any*> => __VfpUnsupported("LABEL")
+#command LABEL <*any*> => __VfpUnsupported(<"udc">)
 
 #command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
-         => #error This command is not supported: <(udc)>
+         => __VfpUnsupported(<"udc">)
 
 // supported CREATE commands in FoxProSql.xh
 // CREATE CURSOR
@@ -669,7 +835,7 @@
 // CREATE [SQL] VIEW
 
 #command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
-            => #error This command is not supported: <(udc)>
+            => __VfpUnsupported(<"udc">)
 
 #ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
@@ -680,6 +846,11 @@
 #translate VARTYPE(<v>,<1>)  => __VfpVarType( {|| <v> }, <1> )
 
 #include "FoxProSql.xh"
+
+#command CLEAR <*any*> => __VfpUnsupported(<"udc">)
+
+#command RELEASE <cmd:BAR,CLASSLIB,LIBRARY,MODULE,MENUS,PAD,POPUPS,PROCEDURE,WINDOWS> [<*any*>] => __VfpUnsupported(<"udc">)
+
 #endif
 
 // EOF

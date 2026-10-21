@@ -69,12 +69,21 @@ namespace XSharp.Project
             if (string.IsNullOrEmpty(defines))
             {
                 defines = "";
-                if (DefinedPreprocessorSymbols != null)
+            }
+            else
+                        {
+                defines = defines + ";";
+            }
+            if (DefinedPreprocessorSymbols != null)
+            {
+                foreach (var d in DefinedPreprocessorSymbols)
                 {
-                    foreach (var d in DefinedPreprocessorSymbols)
+                    var def = d + ";";
+                    if (defines.IndexOf(def, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        defines = defines + d + ";";
+                        continue;
                     }
+                    defines = defines + def;
                 }
             }
             if (!string.IsNullOrEmpty(defines))
@@ -122,6 +131,8 @@ namespace XSharp.Project
                 XSharpProjectFileConstants.Unsafe,
                 XSharpProjectFileConstants.Xpp1,
                 XSharpProjectFileConstants.Fox1,
+                XSharpProjectFileConstants.Fox2,
+                XSharpProjectFileConstants.Fox3,
                 XSharpProjectFileConstants.Allowdot,
                 XSharpProjectFileConstants.EnforceSelf,
                 XSharpProjectFileConstants.EnforceOverride,

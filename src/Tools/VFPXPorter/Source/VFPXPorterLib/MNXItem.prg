@@ -4,7 +4,7 @@ USING System.Text
 USING System.Xml.Serialization
 
 BEGIN NAMESPACE VFPXPorterLib
-	
+
 	ENUM MenuObjType
 		// Init code for the Menu : Contains procedure, setup and cleanup
 		// It seems value 5 is the same ?
@@ -15,34 +15,34 @@ BEGIN NAMESPACE VFPXPorterLib
 		MEMBER SdiMenu := 5
 		//
 		MEMBER Info2 := 0
-		
+
 	END ENUM
-	
+
 	ENUM MenuObjCode
 		MEMBER Info := 0
 		MEMBER SysMenu := 1
 		MEMBER Init := 22
-		
+
 		MEMBER Command := 67
 		MEMBER SubMenu := 77
 		MEMBER SystemBar := 78
 		MEMBER Procedure  := 80
-		
+
 	END ENUM
-	
+
 	/// <summary>
 	/// The MenuItem class.
 	/// </summary>
 	CLASS MNXItem
-		
+
 		PROPERTY Childs AS List<MNXItem> AUTO
 		PROPERTY SubItemsToAdd AS INT AUTO
-		PROPERTY ParentName AS STRING AUTO	
-		
+		PROPERTY ParentName AS STRING AUTO
+
 		CONSTRUCTOR()
 			SELF:ParentName := ""
-			SELF:Childs := List<MNXItem>{}		
-		
+			SELF:Childs := List<MNXItem>{}
+
 		CONSTRUCTOR( lFillWithDB AS LOGIC )
 			SELF:ParentName := ""
 			SELF:Childs := List<MNXItem>{}
@@ -70,11 +70,11 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:COMMENT := FieldGet(FieldPos("COMMENT"))
 				SELF:LOCATION := FieldGet(FieldPos("LOCATION"))
 				SELF:SCHEME := FieldGet(FieldPos("SCHEME"))
-				SELF:SYSRES := FieldGet(FieldPos("SYSRES"))
-				SELF:ResName := FieldGet(FieldPos("RESNAME"))				
+				// SELF:SYSRES := FieldGet(FieldPos("SYSRES"))
+				// SELF:ResName := FieldGet(FieldPos("RESNAME"))
 			ENDIF
-		
-		CONSTRUCTOR( itemToCopy AS MNXItem ) 
+
+		CONSTRUCTOR( itemToCopy AS MNXItem )
 			// Copy all Attributes
 			SELF:OBJTYPE := itemToCopy:OBJTYPE
 			SELF:OBJCODE := itemToCopy:OBJCODE
@@ -99,22 +99,22 @@ BEGIN NAMESPACE VFPXPorterLib
 			SELF:COMMENT := itemToCopy:COMMENT
 			SELF:LOCATION := itemToCopy:LOCATION
 			SELF:SCHEME := itemToCopy:SCHEME
-			SELF:SYSRES := itemToCopy:SYSRES
-			SELF:ResName := itemToCopy:ResName			
-			
+			// SELF:SYSRES := itemToCopy:SYSRES
+			// SELF:ResName := itemToCopy:ResName
+
 			// And don't forget Childs....
 			SELF:Childs := List<MNXItem>{}
 			FOREACH VAR child IN itemToCopy:Childs
 				SELF:Childs:Add( MNXItem{ child } )
 			NEXT
 			SELF:ParentName := itemToCopy:ParentName
-			
+
 			RETURN
-		
-		
+
+
 		[XmlIgnore];
-		PROPERTY _Name AS STRING AUTO GET PRIVATE SET			
-		
+		PROPERTY _Name AS STRING AUTO GET PRIVATE SET
+
 		PROPERTY Name AS STRING
 			GET
 				IF String.IsNullOrEmpty( SELF:_Name )
@@ -127,16 +127,13 @@ BEGIN NAMESPACE VFPXPorterLib
 				SELF:_Name := VALUE
 			END SET
 		END PROPERTY
-		
+
 		[XmlIgnore];
-		PROPERTY GeneratedName AS STRING GET SELF:ParentName + "Item" + SELF:ITEMNUM:Trim()			
-		
-		
-		/// <summary>
-		/// Resource Name/FilePath
-		/// </summary>			
-		PROPERTY ResName AS STRING AUTO
-		
+		PROPERTY GeneratedName AS STRING GET SELF:ParentName + "Item" + SELF:ITEMNUM:Trim()
+
+
+
+
 		// OBJTYPE,N,2,0
 		PROPERTY OBJTYPE AS INT AUTO
 		// OBJCODE,N,2,0
@@ -184,12 +181,15 @@ BEGIN NAMESPACE VFPXPorterLib
 		// SCHEME,N,2,0
 		PROPERTY SCHEME AS INT AUTO
 		// SYSRES,N,1,0
-		PROPERTY SYSRES AS INT AUTO
-		// RESNAME,M,4,0
-		//PROPERTY RESNAME AS STRING AUTO		
-		
-		
+		// PROPERTY SYSRES AS INT AUTO
+		// // RESNAME,M,4,0
+		// //PROPERTY RESNAME AS STRING AUTO
+        		/// <summary>
+		/// Resource Name/FilePath
+		/// </summary>
+
+
 	END CLASS
-	
-	
+
+
 END NAMESPACE // VFPXPorterLib

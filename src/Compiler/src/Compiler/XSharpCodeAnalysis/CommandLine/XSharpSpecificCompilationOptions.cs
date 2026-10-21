@@ -82,6 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ModernSyntax { get; internal set; } = false;
         public bool NoClipCall { get; internal set; } = false;
         public bool NoStdDef { get; internal set; } = false;
+        public bool NoThisForm { get; internal set; } = false;
         public string NameSpace { get; set; } = string.Empty;
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
@@ -115,6 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Xpp1 { get; internal set; } = false;
         //public bool Fox1 { get; internal set; } = false;
         public bool Fox2 { get; internal set; } = false;
+        public bool Fox3 { get; internal set; } = false;
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
         public bool XSharpVOIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpVFPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVFP);
@@ -157,8 +159,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Fox1:
                     //Fox1 = value;
                     break;
-                case CompilerOption.Fox2:
+                case CompilerOption.FoxArraySupport:
                     Fox2 = value;
+                    break;
+                case CompilerOption.FoxCursorSupport:
+                    Fox3 = value;
                     break;
                 case CompilerOption.ImplicitNamespace:
                     ImplicitNameSpace = value;
@@ -245,7 +250,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public void SetOptionFromReference(string filename)
         {
-            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
+            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLowerInvariant())
             {
                 case XSharpAssemblyNames.SdkDefines:
                     this.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
@@ -299,17 +304,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "system":
                     if (!this.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
                     {
-                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
+                        var filenameLower = filename.ToLowerInvariant();
+                        if (filenameLower.Contains("\\v2") || filenameLower.Contains("\\2."))
                         {
                             this.ExplicitOptions |= CompilerOption.ClrVersion;
                             this.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
+                        else if (filenameLower.Contains("\\v3") || filenameLower.Contains("\\3."))
                         {
                             this.ExplicitOptions |= CompilerOption.ClrVersion;
                             this.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
+                        else if (filenameLower.Contains("\\v4") || filenameLower.Contains("\\4."))
                         {
                             this.ExplicitOptions |= CompilerOption.ClrVersion;
                             this.ClrVersion = 4;
@@ -437,6 +443,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         EnforceOverride = 1L << 31,
         AllowOldStyleAssignments = 1L << 32,
         ModernSyntax = 1L << 33,
+        Fox3 = 1L << 34,
+        FoxCursorSupport = Fox3,
+        NoThisForm = 1L << 35,
         All = -1,       // used for Push/Pop
     }
 
@@ -469,6 +478,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo17: // CompatibleBeginSequence:
                 //case CompilerOption.Fox1:
                 case CompilerOption.Fox2:
+                case CompilerOption.Fox3:
                 case CompilerOption.MemVars:
                 case CompilerOption.UndeclaredMemVars:
                 case CompilerOption.Xpp1:
@@ -486,6 +496,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.None:
                 case CompilerOption.Overflow:
                 case CompilerOption.ModernSyntax:
+                case CompilerOption.NoThisForm:
                     return false;
                 default:
                     break;
@@ -511,7 +522,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //case CompilerOption.Fox1:
                 //    return "All Classes inherit from unknown";
                 case CompilerOption.Fox2:
-                    return "Compatible Array Handling";
+                    return "FoxPro Compatible Array Handling";
+                case CompilerOption.Fox3:
+                    return "FoxPro Compatible Cursor Handling";
                 case CompilerOption.ImplicitNamespace:
                     return "Enable Implicit Namespace lookups";
                 case CompilerOption.InitLocals:
@@ -564,6 +577,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "VO Compatible BEGIN SEQUENCE .. END ";
                 case CompilerOption.Xpp1:
                     return "All classes inherit from XPP.Abstract";
+                case CompilerOption.NoThisForm:
+                    return "Do not translate THISFORM to special code";
                 case CompilerOption.None:
                     return "";
             }
@@ -572,7 +587,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static CompilerOption Decode(string option)
         {
             // options sorted in alphabetical order
-            switch (option.ToLower())
+            switch (option.ToLowerInvariant())
             {
                 case "allowoldstyleassignments":
                     return CompilerOption.AllowOldStyleAssignments;
@@ -590,6 +605,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Fox1;
                 case "fox2":
                     return CompilerOption.Fox2;
+                case "fox3":
+                    return CompilerOption.Fox3;
                 case "initlocals":
                     return CompilerOption.InitLocals;
                 case "ins":
@@ -644,6 +661,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Vo17;
                 case "xpp1":
                     return CompilerOption.Xpp1;
+                case "nothisform":
+                    return CompilerOption.NoThisForm;
                 default:
                     break;
             }

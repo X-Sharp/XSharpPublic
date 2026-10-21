@@ -6,7 +6,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Bgraphic</RootNamespace>
     <AssemblyName>BgraphicTyped</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <Name>Bgraphic</Name>
     <Dialect>VO</Dialect>
     <LB>true</LB>

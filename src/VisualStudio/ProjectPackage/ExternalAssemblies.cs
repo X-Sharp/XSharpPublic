@@ -8,6 +8,9 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.ProjectBase2022")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.Debugger2022")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.Support2022")]
+// CPS project system: also needed by the image library, which loads the assembly by name for the pack URIs of
+// XSharp.ProjectSystemCPS.imagemanifest when it builds its cache at startup (before a CPS project has loaded it)
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.ProjectSystemCPS")]
 #else
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.AppDesigner")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.LanguageService")]

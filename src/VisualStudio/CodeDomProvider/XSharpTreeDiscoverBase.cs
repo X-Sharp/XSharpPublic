@@ -131,7 +131,7 @@ namespace XSharp.CodeDom
                     }
                 }
             }
-            else
+            else if (type != null)
             {
                 // not in our class, maybe in a parent class
                 var parentType = findParentType(type);
@@ -1346,7 +1346,7 @@ namespace XSharp.CodeDom
                 {
                     if (asm.GetName().Name == designerDLL)
                     {
-                        designType = asm.GetType(designerdataClassname); 
+                        designType = asm.GetType(designerdataClassname);
                         break;
                     }
                 }
@@ -1557,15 +1557,32 @@ namespace XSharp.CodeDom
             }
             else
             {
+                var suffix = "";
                 if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||      // money
                     value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||      // single
                     value.EndsWith("d", StringComparison.OrdinalIgnoreCase))        // double
                 {
+                    suffix = value.Substring(value.Length - 1);
                     value = value.Substring(0, value.Length - 1);
                 }
                 try
                 {
-                    ret = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                    switch (suffix)
+                    {
+                        case "s":
+                        case "S":
+                            ret = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "m":
+                        case "M":
+                            ret = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "d":
+                        case "D":
+                        default:
+                            ret = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                    }
                 }
                 catch (Exception)
                 {
@@ -1724,6 +1741,8 @@ namespace XSharp.CodeDom
 
         protected IXTypeSymbol findInCache(string typeName)
         {
+            if (typeName == null)
+                return null;
             if (_types.ContainsKey(typeName))
             {
                 return _types[typeName];

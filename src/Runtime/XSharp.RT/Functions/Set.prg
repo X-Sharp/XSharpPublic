@@ -214,6 +214,23 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 END TRY
             ENDIF
         ENDIF
+
+        // FoxPro returns the country keyword ?SET("DATE")
+        IF cOriginalDefine == "DATE"
+            VAR eCountry := (XSharp.DateCountry) RuntimeState.DateCountry
+            SWITCH eCountry
+            CASE XSharp.DateCountry.Japanese
+                // VFP returns JAPAN
+                oOld := "JAPAN"
+            CASE XSharp.DateCountry.System
+                oOld := "SHORT"
+            CASE XSharp.DateCountry.Italian
+                oOld := "ITALIAN"
+            OTHERWISE
+                oOld := Enum.GetName(typeof(XSharp.DateCountry), eCountry):ToUpperInvariant()
+            END SWITCH
+        ENDIF
+
     ENDIF
 
     RETURN oOld

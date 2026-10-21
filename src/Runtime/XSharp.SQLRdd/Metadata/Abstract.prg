@@ -81,6 +81,8 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
             _connection:AllowUpdates        := SELF:GetLogic(oPar,  SqlRDDEventReason.AllowUpdates, _connection:AllowUpdates)
             _connection:PageSize            := SELF:GetInt(oPar,    SqlRDDEventReason.PageSize, _connection:PageSize)
             _connection:BufferSize          := SELF:GetInt(oPar,    SqlRDDEventReason.BufferSize, _connection:BufferSize)
+            _connection:LockRefreshInterval := SELF:GetInt(oPar,    SqlRDDEventReason.LockRefreshInterval, _connection:LockRefreshInterval)
+            _connection:LockStaleThreshold  := SELF:GetInt(oPar,    SqlRDDEventReason.LockStaleThreshold, _connection:LockStaleThreshold)
             _connection:RecnoColumn         := SELF:GetString(oPar, SqlRDDEventReason.RecnoColumn, _connection:RecnoColumn)
             _connection:DeletedColumn       := SELF:GetString(oPar, SqlRDDEventReason.DeletedColumn, _connection:DeletedColumn)
             _connection:CompareMemo         := SELF:GetLogic(oPar,  SqlRDDEventReason.CompareMemo, _connection:CompareMemo)

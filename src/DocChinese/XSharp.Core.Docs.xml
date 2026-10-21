@@ -3894,7 +3894,11 @@
       <seealso cref="Set.AutoOrder"/>
       <include file="CoreComments.xml" path="Comments/PerThread/*"/>
     </RuntimeState.AutoOrder>
-    <RuntimeState.AutoShareMode>
+  <RuntimeState.Tally>
+    <summary>Gets/Set the tally result for latest bulk operation.</summary>
+  </RuntimeState.Tally>
+
+  <RuntimeState.AutoShareMode>
       <summary>The current AutoShareMode setting (used by the RDD system).</summary>
       <seealso cref="AutoOpen"/>
       <seealso cref="AutoOrder"/>

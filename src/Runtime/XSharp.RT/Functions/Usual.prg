@@ -205,7 +205,7 @@ FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
     CASE __UsualType.Logic
         result := USUAL{FALSE}
     CASE __UsualType.Ptr
-        result := USUAL{NULL_PTR}
+        result := USUAL{IntPtr.Zero}
     CASE __UsualType.Psz
         result := USUAL{NULL_PSZ}
     CASE __UsualType.Symbol

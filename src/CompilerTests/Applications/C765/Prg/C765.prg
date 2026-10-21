@@ -22,6 +22,8 @@ FUNCTION Start() AS VOID
 	? aDim1[10]
 	xAssert(aDim1[1] == 1)
 	xAssert(aDim1[10] == "10")
+	xAssert(aDim1(1) == 1)
+	xAssert(aDim1(10) == "10")
 
 
 	DIMENSION aDim2[3,4]
@@ -29,22 +31,27 @@ FUNCTION Start() AS VOID
 	aDim2[3,4] := 34
 	xAssert(aDim2[1,1] == 11)
 	xAssert(aDim2[3,4] == 34)
-    IF XSharp.RuntimeState.CompilerOptionFox2
-	    TestFox2_on()
-	ELSE
-	?
-	TestFox2_off()
-	ENDIF
+
+	aDim2(3,4) = 43
+	xAssert(aDim2(1,1) == 11)
+	xAssert(aDim2(3,4) == 43)
+
+    TestFox2_on()
+
+	#warning Disabled off test, because enabling fox2 with a pragma is not supported currently
+// 	TestFox2_off()
 RETURN
 
-//#pragma options ("fox2" , on)
-
+#pragma options ("fox2" , enable)
 PROCEDURE TestFox2_on()
 ? "Fox2+, LOCAL:"
 LOCAL lon
 DIMENSION lon[100]
 lon = 123
-? lon
+
+? lon[10] // System.NullReferenceException
+? lon(10) // Variable 'lon' is not an array
+
 ? IsArray(lon) // TRUE
 xAssert(IsArray(lon))
 xAssert(lon[10] == 123)
@@ -52,7 +59,15 @@ xAssert(lon[10] == 123)
 ? "Fox2+, PUBLIC:"
 PUBLIC pon
 DIMENSION pon[100]
+
+? pon[10] // System.NullReferenceException
+? pon(10) // Variable 'lon' is not an array
+
 pon = 123
+
+? pon[10] // System.NullReferenceException
+? pon(10) // Variable 'lon' is not an array
+
 ? pon
 ? IsArray(pon) // TRUE
 xAssert(IsArray(pon))
@@ -60,13 +75,22 @@ xAssert(pon[20] == 123)
 
 
 
+#pragma options ("fox2" , disable)
 PROCEDURE TestFox2_off()
 ? "Fox2-, LOCAL:"
 LOCAL loff // works ok
 DIMENSION loff[100]
+
+loff[10] := 500
+? loff[10]
+xAssert( loff[10] == 500 )
+
 loff = 123
+
 ? loff
+xAssert( loff == 123 )
 ? IsArray(loff) // TRUE, with PUBLIC it is FALSE <---
+
 xAssert(.not. IsArray(loff))
 xAssert(loff == 123)
 
@@ -74,6 +98,7 @@ xAssert(loff == 123)
 PUBLIC poff
 DIMENSION poff[100]
 poff = 123
+
 ? poff
 ? IsArray(poff) // FALSE, with LOCAL it is TRUE <---
 xAssert(.not. IsArray(poff))

@@ -24,9 +24,13 @@ namespace Microsoft.CodeAnalysis.CSharp
     public class CSharpCommandLineParser : CommandLineParser
 #endif
     {
+#if XSHARP
+        public static CSharpCommandLineParser Default => new CSharpCommandLineParser();
+        public static CSharpCommandLineParser Script => new CSharpCommandLineParser(isScriptCommandLineParser: true);
+#else
         public static CSharpCommandLineParser Default { get; } = new CSharpCommandLineParser();
         public static CSharpCommandLineParser Script { get; } = new CSharpCommandLineParser(isScriptCommandLineParser: true);
-
+#endif
         private static readonly char[] s_quoteOrEquals = new[] { '"', '=' };
         private static readonly char[] s_warningSeparators = new char[] { ',', ';', ' ' };
 
@@ -212,8 +216,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     valueMemory = new ReadOnlyMemory<char>(v.AsArray());
 #endif
 
-                // The main 'switch' for argument handling forces an allocation of the option name field. For the most 
-                // common options we special case the handling below to avoid this allocation as it can contribute significantly 
+                // The main 'switch' for argument handling forces an allocation of the option name field. For the most
+                // common options we special case the handling below to avoid this allocation as it can contribute significantly
                 // to parsing allocations.
                 //
                 // When we allow for switching on Span<char> this can be undone as the name 'switch' will be allocation free
@@ -1055,12 +1059,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // NOTE: Dev11/VB also clears "keycontainer", see also:
                             //
-                            // MSDN: In case both /keyfile and /keycontainer are specified (either by command line option or by 
-                            // MSDN: custom attribute) in the same compilation, the compiler will first try the key container. 
-                            // MSDN: If that succeeds, then the assembly is signed with the information in the key container. 
-                            // MSDN: If the compiler does not find the key container, it will try the file specified with /keyfile. 
-                            // MSDN: If that succeeds, the assembly is signed with the information in the key file and the key 
-                            // MSDN: information will be installed in the key container (similar to sn -i) so that on the next 
+                            // MSDN: In case both /keyfile and /keycontainer are specified (either by command line option or by
+                            // MSDN: custom attribute) in the same compilation, the compiler will first try the key container.
+                            // MSDN: If that succeeds, then the assembly is signed with the information in the key container.
+                            // MSDN: If the compiler does not find the key container, it will try the file specified with /keyfile.
+                            // MSDN: If that succeeds, the assembly is signed with the information in the key file and the key
+                            // MSDN: information will be installed in the key container (similar to sn -i) so that on the next
                             // MSDN: compilation, the key container will be valid.
                             continue;
 
@@ -1076,12 +1080,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // NOTE: Dev11/VB also clears "keyfile", see also:
                             //
-                            // MSDN: In case both /keyfile and /keycontainer are specified (either by command line option or by 
-                            // MSDN: custom attribute) in the same compilation, the compiler will first try the key container. 
-                            // MSDN: If that succeeds, then the assembly is signed with the information in the key container. 
-                            // MSDN: If the compiler does not find the key container, it will try the file specified with /keyfile. 
-                            // MSDN: If that succeeds, the assembly is signed with the information in the key file and the key 
-                            // MSDN: information will be installed in the key container (similar to sn -i) so that on the next 
+                            // MSDN: In case both /keyfile and /keycontainer are specified (either by command line option or by
+                            // MSDN: custom attribute) in the same compilation, the compiler will first try the key container.
+                            // MSDN: If that succeeds, then the assembly is signed with the information in the key container.
+                            // MSDN: If the compiler does not find the key container, it will try the file specified with /keyfile.
+                            // MSDN: If that succeeds, the assembly is signed with the information in the key file and the key
+                            // MSDN: information will be installed in the key container (similar to sn -i) so that on the next
                             // MSDN: compilation, the key container will be valid.
                             continue;
 
@@ -1174,8 +1178,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         case "m":
                         case "main":
-                            // Remove any quotes for consistent behavior as MSBuild can return quoted or 
-                            // unquoted main.    
+                            // Remove any quotes for consistent behavior as MSBuild can return quoted or
+                            // unquoted main.
                             unquoted = RemoveQuotesAndSlashes(valueMemory);
                             if (string.IsNullOrEmpty(unquoted))
                             {
@@ -1699,7 +1703,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (outputFileName == null)
             {
                 // In C#, if the output file name isn't specified explicitly, then executables take their
-                // names from the files containing their entrypoints and libraries derive their names from 
+                // names from the files containing their entrypoints and libraries derive their names from
                 // their first input files.
 
                 if (!IsScriptCommandLineParser && !sourceFilesSpecified)
@@ -2160,7 +2164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // Previous versions of the compiler used to report a warning (CS1691)
-                    // whenever an unrecognized warning code was supplied in /nowarn or 
+                    // whenever an unrecognized warning code was supplied in /nowarn or
                     // /warnaserror. We no longer generate a warning in such cases.
                     // Instead we assume that the unrecognized id refers to a custom diagnostic.
                     ids.Add(id);

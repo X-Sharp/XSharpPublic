@@ -5,6 +5,9 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
@@ -102,7 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // default value (null, zero, false, default(T) ...)
         //
         // NOTE: This method is a very shallow check.
-        //       It does not make any assumptions about what this node could become 
+        //       It does not make any assumptions about what this node could become
         //       after some folding/propagation/algebraic transformations.
         public static bool IsDefaultValue(this BoundExpression node)
         {
@@ -170,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (node.Kind)
             {
                 case BoundKind.MethodGroup:
-                    // Special case: if we are looking for info on "M" in "new Action(M)" in the context of a parent 
+                    // Special case: if we are looking for info on "M" in "new Action(M)" in the context of a parent
                     // then we want to get the symbol that overload resolution chose for M, not on the whole method group M.
                     var delegateCreation = parent as BoundDelegateCreationExpression;
                     if (delegateCreation != null && delegateCreation.MethodOpt is { })

@@ -27,7 +27,7 @@
     <StandardDefs />
     <MemVar>true</MemVar>
     <Undeclared>false</Undeclared>
-    <InitLocals>false</InitLocals>
+    <InitLocals>True</InitLocals>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Allowdot>True</Allowdot>
     <Fox2>True</Fox2>
@@ -92,15 +92,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AMembersTests.prg" />
+    <Compile Include="ATagInfoTests.prg" />
     <Compile Include="AUsedTests.prg" />
+    <Compile Include="CastTests.prg" />
     <Compile Include="CommandTests.prg" />
     <Compile Include="CompObjTests.prg" />
     <Compile Include="CopyToTests.prg" />
+    <Compile Include="CursorToXmlTests.prg" />
     <Compile Include="FileVersionTests.prg" />
     <Compile Include="FinancialTests.prg" />
+    <Compile Include="InClauseAliasTests.prg" />
     <Compile Include="IndexOnTrimTests.prg" />
+    <Compile Include="IntrospectionTests.prg" />
+    <Compile Include="KeyMatchLookupTests.prg" />
+    <Compile Include="OOPTests.prg" />
+    <Compile Include="ReplaceScopeTests.prg" />
+    <Compile Include="SetDateCommandTests.prg" />
     <Compile Include="SQLStatementTests.prg" />
     <Compile Include="StrConvTests.prg" />
+    <Compile Include="TallyTests.prg" />
     <Compile Include="TypeTests.prg" />
     <Compile Include="EmptyTests.prg" />
     <Compile Include="FoxArraytests.prg" />
@@ -110,8 +120,11 @@
     <Compile Include="OtherTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="StringTests.prg" />
+    <Compile Include="UdcCommandFixTests.prg" />
     <Compile Include="VfpStringFunctionsTests.prg" />
+    <Compile Include="WaitCommandTests.prg" />
     <Compile Include="WrappedStubsTests.prg" />
+    <Compile Include="XmlToCursorTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

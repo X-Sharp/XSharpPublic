@@ -2062,6 +2062,15 @@
   <Set.TextMerge>
     <summary>FoxPro: 是否启用文本合并。</summary>
   </Set.TextMerge>
+  <Set.Hours>
+    <summary>FoxPro：设置工作时间。</summary>
+  </Set.Hours>
+  <Set.Seconds>
+    <summary>FoxPro：设置秒数。</summary>
+  </Set.Seconds>
+  <Set.Tally>
+    <summary>存储最近一次批量操作的计数结果。</summary>
+  </Set.Tally>
   <Set.ThousandSep>
     <summary>指定在显示格式化的数值或货币值时小数点左侧每组三位数字分隔的字符。</summary>
   </Set.ThousandSep>

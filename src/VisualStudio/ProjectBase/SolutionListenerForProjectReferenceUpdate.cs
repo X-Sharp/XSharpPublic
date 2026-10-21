@@ -44,6 +44,9 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             Logger.Information($"OnBeforeCloseProject: Project {hierarchy} is being closed. Is it being removed from the solution? {(removed != 0 ? "Yes" : "No")}");
 
+            // This also fires for projects that are not ours, which never run through ProjectNode.Close()
+            ProjectInfo.ClearHierarchy(hierarchy);
+
             if (removed != 0)
             {
                 List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(hierarchy);
@@ -70,6 +73,9 @@ namespace Microsoft.VisualStudio.Project
         public override int OnAfterLoadProject(IVsHierarchy stubHierarchy, IVsHierarchy realHierarchy)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            // The stub is replaced by realHierarchy, so anything cached for it is stale now
+            ProjectInfo.ClearHierarchy(stubHierarchy);
 
             List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(realHierarchy);
             Logger.Information($"OnAfterLoadProject:Project {realHierarchy} is being loaded. Updating {projectReferences.Count} project references that point to it.");
@@ -145,9 +151,20 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
+        public override int OnAfterCloseSolution(object reserved)
+        {
+            // Nothing that was cached while the solution was open can be trusted anymore
+            ProjectInfo.ClearHierarchies();
+            return VSConstants.S_OK;
+        }
+
+
         public override int OnBeforeUnloadProject(IVsHierarchy realHierarchy, IVsHierarchy stubHierarchy)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            // realHierarchy is going away, and this also fires for projects that are not ours
+            ProjectInfo.ClearHierarchy(realHierarchy);
 
             List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(realHierarchy);
 

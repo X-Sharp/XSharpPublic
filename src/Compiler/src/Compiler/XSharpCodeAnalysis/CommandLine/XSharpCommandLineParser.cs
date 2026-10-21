@@ -13,8 +13,20 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public partial class CSharpCommandLineParser : CommandLineParser
     {
-        private XSharpSpecificCompilationOptions options;
-        // Vulcan Assembly Names
+        // The parser state below must not be shared between concurrent compilations.
+        // CSharpCommandLineParser.Default is a process-wide singleton and, with the shared
+        // compiler server (/shared), several compilations are parsed concurrently through it.
+        // Keeping this per-parse state thread-static isolates each parse so that one request's
+        // ResetXSharpCommandlineOptions() cannot discard the half-built options of another.
+        // See https://github.com/X-Sharp/XSharpPublic/issues/2076
+        [ThreadStatic]
+        private static XSharpSpecificCompilationOptions t_options;
+        private XSharpSpecificCompilationOptions options
+        {
+            get { if (t_options == null) t_options = new XSharpSpecificCompilationOptions(); return t_options; }
+            set => t_options = value;
+        }
+
 
         public XSharpSpecificCompilationOptions XSharpSpecificCompilationOptions
         {
@@ -42,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 name = name.Substring(0, name.Length - 1);
             }
-            switch (name.ToLower())
+            switch (name.ToLowerInvariant())
             {
                 case "allowoldstyleassignments":
                     options.AllowOldStyleAssignments = positive;
@@ -144,6 +156,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.NoStdDef = positive;
                     break;
 
+                case "nothisform":
+                    options.NoThisForm = positive;
+                    break;
                 case "ns":
                     if (value == null)
                     {
@@ -196,7 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         value = value.Trim();
                         if (value.StartsWith("\"") && value.EndsWith("\""))
                             value = value.Substring(1, value.Length - 2);
-                        string fn = System.IO.Path.GetFileName(value).ToLower();
+                        string fn = System.IO.Path.GetFileName(value).ToLowerInvariant();
                         fn = System.IO.Path.GetFileNameWithoutExtension(fn);
                         switch (fn)
                         {
@@ -287,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             value = value.Substring(1, value.Length - 2);
                         }
                         string filename = value;
-                        if (value.IndexOf(";") != -1)
+                        if (value.IndexOf(';') != -1)
                         {
                             foreach (var fname in ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {
@@ -421,6 +436,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox2 = positive;
                     encode = true;
                     break;
+                case "fox3":       // Ambiguos DOT operator
+                    options.Fox3 = positive;
+                    encode = true;
+                    break;
                 case "unsafe":
                     options.AllowUnsafe = positive;
                     handled = false;    // there is also an 'unsafe' option in Roslyn
@@ -474,9 +493,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #else
                     return true;
 #endif
-                case "dbase":
-                    dialect = XSharpDialect.dBase;
-                    return true;
 
                 case "foxpro":
                 case "foxbase":
@@ -493,6 +509,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "xbasepp":
                 case "xpp":
                     dialect = XSharpDialect.XPP;
+                    return true;
+                case "xbasenet":
+                    dialect = XSharpDialect.XBaseNet;
                     return true;
                 default:
                     dialect = XSharpDialect.Core;
@@ -543,6 +562,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (options.Dialect == XSharpDialect.XPP ||
                         options.Dialect == XSharpDialect.FoxPro ||
+                        options.Dialect == XSharpDialect.XBaseNet ||
                         options.Dialect == XSharpDialect.Harbour)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
@@ -623,6 +643,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (options.Fox2)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 is only valid for the FoxPro dialect");
+                    }
+                    if (options.Fox3)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox3 is only valid for the FoxPro dialect");
                     }
                 }
             }

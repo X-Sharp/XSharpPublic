@@ -1,0 +1,13 @@
+- Build Compiler in all configurations
+- Build VSIntegration2022 in VS 2022 release config
+- Build VSIntegration in VS 2019 release config
+- Build Runtime in VS2022 all configs
+- Build RuntimeNet8 in VS2022 all configs
+
+When docs are needed
+- Build RuntimeDocs.sln
+- Build CHM and HTML with SandcastleBuilderUI
+- Build Help with HalpandManual
+
+- Build .Net Core templates
+- Build Nuget packages

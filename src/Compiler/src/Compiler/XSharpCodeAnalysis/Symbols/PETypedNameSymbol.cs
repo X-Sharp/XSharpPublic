@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     var getMethods = GetSimpleNonTypeMembers(ReservedNames.GetElement);
                     var setMethods = GetSimpleNonTypeMembers(ReservedNames.SetElement);
 
-                    if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
+                    if (getMethods != [] && setMethods != [])
                     {
                         var getOne = (from PEMethodSymbol m in getMethods where !m.Parameters[0].Type.IsArray() select m).FirstOrDefault();
                         var setOne = (from PEMethodSymbol m in setMethods where !m.Parameters[1].Type.IsArray() select m).FirstOrDefault();
@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     var getMethods = GetSimpleNonTypeMembers(ReservedNames.GetElement);
                     var setMethods = GetSimpleNonTypeMembers(ReservedNames.SetElement);
 
-                    if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
+                    if (getMethods != [] && setMethods != [])
                     {
                         var getMany = (from PEMethodSymbol m in getMethods where m.Parameters[0].Type.IsArray() select m).FirstOrDefault();
                         var setMany = (from PEMethodSymbol m in setMethods where m.Parameters[1].Type.IsArray() select m).FirstOrDefault();

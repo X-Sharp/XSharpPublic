@@ -89,125 +89,31 @@
       <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
     </Project>
   </Folder>
-  <Folder Name="/Net46/" />
-  <Folder Name="/Net46/Runtime/">
-    <Project Path="Compiler/src/Compiler/XSFullMacroCompiler/FullMacroCompiler.xsproj" Id="5dc40adc-f250-4611-ad89-b67b150bbc8e">
-      <BuildDependency Project="Runtime/XSharp.Core/XSharp.Core.xsproj" />
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/MacroCompiler/MacroCompiler.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Id="535dff14-efb7-43f5-a4e1-71c1c4280040">
-      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
-      <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.Data/XSharp.Data.xsproj" Id="db9ad987-ebd9-4f0c-8604-608a9028585c">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.xsproj" Id="eaee04e4-d7f6-46ac-b65a-e1b416b8d635">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.xsproj" Id="e83c6c8c-773f-4b01-a597-3d38398a9362">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.xsproj" Id="770e6ebb-804f-415a-a9ca-e5b0383105f0">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.RT/XSharp.RT.xsproj" Id="ef8d2bf2-e81a-479a-ba4f-294c4c348b66">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.xsproj" Id="3a771f0e-9400-4a19-8663-c71567ebfa29">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.VO/XSharp.VO.xsproj" Id="06099c3d-1697-4eb1-9f53-8a9a50b9eacd">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.xsproj" Id="c5d7be20-038e-4b42-a90a-b13bab83d8e5">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-  </Folder>
-  <Folder Name="/Net46/VFPSDK/">
-    <Project Path="Runtime/XSharp.VFP.UI/XSharp.VFP.UI.xsproj" Id="7e2cbef6-9945-42c4-a7df-f9b8e2e68d44" />
-    <Project Path="Tests/XSharp.VFP.UI_Test/XSharp.VFP.UI_Test.xsproj" Id="b4f3862c-82bc-407f-8a84-5241f7321f9f" />
-  </Folder>
-  <Folder Name="/Net46/VODSK-Typed/">
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.xsproj" Id="0ee10ced-b863-4b5e-8ac2-443b2cc6eb7a">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.xsproj">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.xsproj" Id="223be288-7390-48c2-8c3d-6742287962dc">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.xsproj" Id="91816960-eb2d-4e4a-ae67-4edc5bd38940">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.xsproj" Id="5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea">
-      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
-      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-  </Folder>
-  <Folder Name="/Net46/VOSDK/">
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.xsproj" Id="d0a5da23-00b5-41fd-8564-96246b1e222f">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" Id="0bce49e2-3597-4e32-aa3c-c465130c05c8">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Internet_SDK/VOInternetClasses.xsproj" Id="a62ef59e-7473-4c55-bed8-63ca0d896995">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.xsproj" Id="d7079298-1712-4b03-ad76-4ec53bfe8356">
-      <BuildDependency Project="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" />
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Report_Classes_SDK/VOReportClasses.xsproj" Id="65d766d9-e113-4372-960b-01732b65d27d">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/SQL_Classes_SDK/VOSQLClasses.xsproj" Id="86da1b42-fbf9-432b-a2d2-67a4f357f019">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.xsproj" Id="ac2aebff-69ff-405d-b7d9-6e5cb1db914c">
-      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
-      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Win32_API_Library_SDK/VOWin32APILibrary.xsproj" Id="6c93866f-1894-4e82-9aca-55927cae914a">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
-  </Folder>
-  <Folder Name="/Net80/" />
-  <Folder Name="/Net80/Runtime/">
-    <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.Next.xsproj" />
+  <Folder Name="/Runtime/" />
+  <Folder Name="/Runtime/Runtime/">
+    <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
     <Project Path="Runtime/MacroCompiler/XSharp.MacroCompiler.Next.csproj" />
-    <Project Path="Runtime/XSharp.Core/XSharp.Core.Next.xsproj">
-      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
-      <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
-    </Project>
-    <Project Path="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" />
-    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.Next.xsproj" />
-    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.Next.xsproj" />
-    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.Next.xsproj" />
-    <Project Path="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" />
-    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" />
-    <Project Path="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" />
-    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.Next.xsproj" />
+    <Project Path="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.XPP/XSharp.XPP.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
   </Folder>
-  <Folder Name="/Net80/VOSDK/">
-    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" />
+  <Folder Name="/Runtime/VOSDK/">
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
   </Folder>
-  <Folder Name="/Net80/VOSDKTyped/">
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.Next.xsproj" />
+  <Folder Name="/Runtime/VOSDKTyped/">
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/Console_Classes_SDK/XSharp.VO.ConsoleClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/GUI_Classes_SDK/XSharp.VO.GUIClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/RDD_Classes_SDK/XSharp.VO.RDDClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Common/BuildNumber.h" />
@@ -226,7 +132,6 @@
     <File Path="Common/NativeResourceDefines.xh" />
     <File Path="Common/README.md" />
     <File Path="Common/set.xh" />
-    <File Path="Common/version.Targets" />
     <File Path="Common/version.xh" />
     <File Path="Common/VFPProperties.xh" />
     <File Path="Common/XbasePPCmd.xh" />
@@ -243,6 +148,9 @@
     <File Path="VisualStudio/README.md" />    
   </Folder>
   <Folder Name="/Tools/">
+    <Project Path="Tools/Convert2SDKProject/Converter.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
     <Project Path="Tools/DeployMsBuildSupport/DeployMsBuildSupport.xsproj" Id="f6dea3ea-186c-4868-859a-c2ebbee0d981">
       <BuildType Solution="Public|*" Project="Release" />
     </Project>
@@ -283,7 +191,6 @@
   <Folder Name="/Tools/VOXporter/">
     <Project Path="Tools/VOXporter/Fab_VO_Entities.xsproj" Id="73c0dca6-bfe5-40cb-9240-3db1c37f5b34" />
     <Project Path="Tools/VOXporter/VOXPorter.xsproj" Id="939b111b-6ebd-490f-a7f4-ce923d758a3b" />
-
   </Folder>
   <Folder Name="/VisualStudio/" />
   <Folder Name="/VisualStudio/Common/">
@@ -294,6 +201,29 @@
     <Project Path="VisualStudio/XSharpCodeModelXs/CodeModel.xsproj" Id="eed6843b-b727-4f08-aa32-ca0f48fdde3f" />
     <Project Path="VisualStudio/XSharpVoEditors/VoEditors.xsproj" Id="7619db88-6286-4ef1-8273-2a08cc8ac70e" />
   </Folder>
+  <Folder Name="/VisualStudio/VS2019/">
+    <Project Path="VisualStudio/AppDesigner/AppDesigner.csproj" Id="4484939e-dda8-4033-8b1c-e8f60a2bafe0">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+    <Project Path="VisualStudio/Debugger.UI/Debugger.UI.csproj" Id="8070a9bf-b528-4b4d-a1ca-5af47c326e85">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+    <Project Path="VisualStudio/Debugger/Debugger.csproj" Id="16272550-75e6-4b9d-91e3-653bd141c755">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+    <Project Path="VisualStudio/LanguageService/LanguageService.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7395">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+    <Project Path="VisualStudio/ProjectBase/ProjectBase.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c695">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+    <Project Path="VisualStudio/ProjectPackage/ProjectPackage.csproj" Id="f4adebdb-cd20-4532-b4e3-fe7424f5369c">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+    <Project Path="VisualStudio/Support/Support.csproj" Id="494eb703-143e-4440-ac3b-c8aa1aa3dd21">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
+  </Folder>
   <Folder Name="/VisualStudio/Vs2022/">
     <Project Path="VisualStudio/AppDesigner/AppDesigner2022.csproj" Id="4484939e-dda8-4033-8b1c-e8f60a2bafe1" />
     <Project Path="VisualStudio/Debugger.UI/Debugger.UI2022.csproj" Id="960714e8-ff93-4a42-b9ba-610b0f2014db" />
@@ -301,15 +231,7 @@
     <Project Path="VisualStudio/LanguageService/LanguageService2022.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7396" />
     <Project Path="VisualStudio/ProjectBase/ProjectBase2022.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c696" />
     <Project Path="VisualStudio/ProjectPackage/ProjectPackage2022.csproj" Id="f4adebdb-cd20-4532-b4e3-fe7424f5369d" />
+    <Project Path="VisualStudio/ProjectSystemCPS/ProjectSystemCPS.csproj" Id="99708d46-58a9-46b6-b77f-003adaf15ff6" />
     <Project Path="VisualStudio/Support/Support2022.csproj" Id="fb387be5-a620-46ea-a7a6-1ccb9177f7c1" />
-  </Folder>
-  <Folder Name="/VisualStudio/Vs2019/">
-    <Project Path="VisualStudio/AppDesigner/AppDesigner.csproj" Id="4484939e-dda8-4033-8b1c-e8f60a2bafe0" />
-    <Project Path="VisualStudio/Debugger.UI/Debugger.UI.csproj" Id="8070a9bf-b528-4b4d-a1ca-5af47c326e85" />
-    <Project Path="VisualStudio/Debugger/Debugger.csproj" Id="16272550-75e6-4b9d-91e3-653bd141c755" />
-    <Project Path="VisualStudio/LanguageService/LanguageService.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7395" />
-    <Project Path="VisualStudio/ProjectBase/ProjectBase.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c695" />
-    <Project Path="VisualStudio/ProjectPackage/ProjectPackage.csproj" Id="f4adebdb-cd20-4532-b4e3-fe7424f5369c" />
-    <Project Path="VisualStudio/Support/Support.csproj" Id="494eb703-143e-4440-ac3b-c8aa1aa3dd21" />
   </Folder>
 </Solution>

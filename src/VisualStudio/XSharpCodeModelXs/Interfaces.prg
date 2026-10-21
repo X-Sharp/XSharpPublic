@@ -10,6 +10,9 @@ NAMESPACE XSharpModel
 INTERFACE IXSharpProject
     METHOD AddFileNode(fileName AS STRING) AS VOID
     METHOD DeleteFileNode(fileName AS STRING) AS VOID
+    METHOD ClearIntellisenseErrors(fileName AS STRING) AS VOID
+    METHOD GetIntellisenseErrors(filename as string) as List<IXErrorPosition>
+    METHOD AddIntellisenseError(error as XError) AS VOID
     /// <summary>
     /// Return the EnvDte project for a url
     /// </summary>

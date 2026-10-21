@@ -646,9 +646,10 @@ partial class SQLRDD
                 SELF:_hasEOF := true
             endif
             // A fresh fetch always means a (potentially) different row count - force a real
-            // requery here rather than trusting whatever was cached before this WHERE clause.
+            // requery rather than trusting whatever was cached before this WHERE clause. The
+            // count itself is only run when RecCount is actually asked for: a Seek() does not
+            // need it, and counting a large order on every Seek() is expensive.
             self:_serverReccountValid := false
-            self:_GetRecCount()
         catch as Exception
             return false
         end try
@@ -1053,26 +1054,70 @@ partial class SQLRDD
         RETURN TRUE
 
     PRIVATE METHOD _GotoRecordOutsideOrder(nRec as DWORD) AS LOGIC
+        if !SELF:_LoadSingleRecord(nRec)
+            // Does not exist even physically.
+            return false
+        endif
+        SELF:_outsideOrder := true
+        return true
+
+    /// <summary>
+    /// Replace the buffer with just record nRec, fetched by its recno (a primary key lookup),
+    /// without determining its position in the current order. The buffer is marked as not
+    /// contiguous, so the position is only looked up once something actually needs it
+    /// (Skip(), OrderKeyNo, ...).
+    /// </summary>
+    PRIVATE METHOD _LoadSingleRecord(nRec as DWORD) AS LOGIC
         try
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
             var oTable := SELF:_command:GetDataTable(SELF:Alias)
             if oTable == null .or. oTable:Rows:Count == 0
-                // Does not exist even physically.
                 return false
             endif
             SELF:_ClearTable()
             SELF:DataTable := oTable
             SELF:RowNumber := 1
-            SELF:_outsideOrder := true
+            SELF:_outsideOrder := false
             SELF:_hasEOF := false
             SELF:_anchorWhere := ""
             SELF:_bufferStart := 0
             SELF:_bufferContiguous := false
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
             return true
         catch as Exception
             return false
         end try
+
+    /// <summary>
+    /// After the order changed (and the cursor was reset), stay on record nRec like DBF does,
+    /// without paying for its position in the new order up front.
+    /// </summary>
+    /// <remarks>
+    /// Code that switches orders around a lookup (SetOrder(n) / Seek() / SetOrder(m)) is common,
+    /// and under DBF/ADS the order switches are free. Positioning eagerly here meant a
+    /// ROW_NUMBER() over the whole order plus a page fetch at a large OFFSET for every switch.
+    /// </remarks>
+    PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC) AS VOID
+        if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1 .or. lWasEof
+            SELF:GoTo(iif(lWasEof, 0, nRec))
+        elseif !SELF:_LoadSingleRecord(nRec)
+            SELF:GoTo(nRec)
+        endif
+        return
+
+    /// <summary>
+    /// When the buffer only holds records whose position in the current order is unknown
+    /// (see _LoadSingleRecord()), look that position up for the current record now.
+    /// Sets _outsideOrder when the record is not part of the order at all.
+    /// </summary>
+    PRIVATE METHOD _EnsurePositioned() AS VOID
+        if SELF:_tableMode == TableMode.Table .and. !SELF:_bufferContiguous .and. !SELF:_outsideOrder ;
+            .and. !SELF:_EoF .and. SELF:RowCount > 0 .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+            SELF:_GotoRecord(Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo]))
+        endif
+        return
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE

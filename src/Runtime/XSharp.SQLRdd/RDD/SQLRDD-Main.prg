@@ -479,13 +479,12 @@ partial class SQLRDD inherit Workarea
         next
         _autoLockedRecNos:Clear()
         // An insert, a delete or an update of a column the count depends on may have changed
-        // the true row count: requery it. Other updates keep it valid - e.g. a loop that
-        // locks, updates and unlocks record by record would otherwise run a COUNT(*) for every
-        // single record, since RLock() checks the record against RecCount.
+        // the true row count: the next RecCount requeries it. Other updates keep it valid -
+        // e.g. a loop that locks, updates and unlocks record by record would otherwise run a
+        // COUNT(*) for every single record, since RLock() checks the record against RecCount.
         if self:_countMayHaveChanged
             self:_serverReccountValid := false
             self:_countMayHaveChanged := false
-            self:_GetRecCount()
         endif
         return lOk
     end method
@@ -808,6 +807,10 @@ partial class SQLRDD inherit Workarea
     /// <inheritdoc />
     override property RecCount as dword
         get
+            // Counted on demand: a reposition (Seek(), order change, ...) only invalidates it.
+            if self:_tableMode == TableMode.Table .and. !self:_serverReccountValid .and. self:_builder != null
+                self:_GetRecCount()
+            endif
             return Self:_serverReccount
         end get
     end property
@@ -820,6 +823,10 @@ partial class SQLRDD inherit Workarea
         SELF:_ForceOpen()
         SELF:_Top := FALSE
         SELF:_Bottom := FALSE
+        IF nToSkip != 0
+            // e.g. right after SetOrder(): the record's position in the order is still unknown
+            SELF:_EnsurePositioned()
+        ENDIF
         IF nToSkip == 0
             result := SELF:GoCold()
         ELSEIF SELF:_outsideOrder

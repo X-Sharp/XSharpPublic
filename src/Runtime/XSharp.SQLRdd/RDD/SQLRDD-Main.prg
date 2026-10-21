@@ -311,6 +311,22 @@ partial class SQLRDD inherit Workarea
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
+    /// <summary>Convert a decimal column value to what the field type returns under DBF/ADS.</summary>
+    /// <remarks>
+    /// The DBF and ADS RDDs return a numeric field as a DbFloat that carries the field's length
+    /// and decimals, and code that formats values for display (browsers, FieldSpec pictures)
+    /// relies on those. A bare System.Decimal carries no such information, so e.g. a N(8,2)
+    /// value showed up as "745,6000000000".
+    /// </remarks>
+    private method _DecimalToFieldValue(decValue as Decimal, col as RddFieldInfo) as object
+        if col:Decimals == 0
+            return Convert.ToInt64(decValue)
+        endif
+        if col:FieldType == DbFieldType.Number
+            return DbFloat{(real8) decValue, col:Length, col:Decimals}
+        endif
+        return decValue
+
     override method GetValue(nFldPos as int) as object
         if self:CurrentRow == null
             return null
@@ -339,9 +355,7 @@ partial class SQLRDD inherit Workarea
                 endif
             endif
             if result is Decimal var decValue
-                if col:Decimals == 0
-                    result := Convert.ToInt64(decValue)
-                endif
+                result := SELF:_DecimalToFieldValue(decValue, col)
             endif
             if result == DBNull.Value
                 // A DBF-style field has no notion of a per-cell SQL NULL, only "blank" - and
@@ -356,6 +370,8 @@ partial class SQLRDD inherit Workarea
                 result := _phantomRow[nFldPos]
                 if result is DateTime .and. self:_Fields[nFldPos]:FieldType == DbFieldType.Date
                     result := DbDate{0,0,0}
+                elseif result is Decimal var decBlank
+                    result := SELF:_DecimalToFieldValue(decBlank, col)
                 endif
             elseif _creatingIndex .and. result is string var strResult
                 result := strResult:PadRight(_Fields[nFldPos]:Length,' ')

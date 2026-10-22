@@ -27,8 +27,30 @@ partial class SQLRDD
     private _tableMode      as TableMode
     private _hasData        as logic
     private _hasEOF         as logic
-    private _currentPageNo  as long
-    private _firstPageNo    as long
+    /// <summary>
+    /// 0 based offset of the first buffered row within the result set described by _anchorWhere.
+    /// The buffer always holds a contiguous slice of that result set (see _bufferContiguous),
+    /// so the row at RowNumber n sits at offset _bufferStart + n - 1.
+    /// </summary>
+    private _bufferStart    as long
+    /// <summary>
+    /// Extra condition that defines the coordinate system for _bufferStart. Empty means the
+    /// whole current order/scope (absolute positions). After a Seek() this holds the soft-seek
+    /// condition for the seek value, so paging forward from the found record stays an index
+    /// seek plus a small OFFSET instead of requiring the record's absolute position first.
+    /// </summary>
+    private _anchorWhere    as string
+    /// <summary>
+    /// FALSE when the buffer holds rows that are not a contiguous slice of the anchored result
+    /// set (e.g. a freshly appended row, or a record outside the current order). Paging past
+    /// the buffer edges then has to re-locate the current record first.
+    /// </summary>
+    private _bufferContiguous as logic
+    /// <summary>
+    /// TRUE after GoTo(0) positioned on the phantom record while the buffer does not end at the
+    /// last record of the order: a backward Skip() then has to start from GoBottom().
+    /// </summary>
+    private _eofPending     as logic
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
     private _builder        as SqlDbTableCommandBuilder
@@ -40,6 +62,15 @@ partial class SQLRDD
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRecNos  as List<int>
+    /// <summary>Recnos that _UpdateRow() had to lock itself because the caller held no lock.</summary>
+    private _autoLockedRecNos as List<int>
+    /// <summary>
+    /// Recnos this work area currently holds a lock on (0 = file lock). Lets Lock() and
+    /// _UpdateRow() skip asking the lock table about locks we placed ourselves.
+    /// </summary>
+    private _ownLocks         as HashSet<int>
+    /// <summary>TRUE when a write since the last count may have changed RecCount.</summary>
+    private _countMayHaveChanged as logic
     /// <summary>Recnos of rows marked for deletion via Delete() when there is no DeletedColumn on the table.
     /// Workarea.Deleted is a hardcoded stub (always FALSE), so this state cannot be tracked in the base class.</summary>
     private _deletedRowIds  as HashSet<int>
@@ -66,7 +97,7 @@ partial class SQLRDD
     /// <summary>
     /// TRUE when the cursor is positioned (via GoTo()) on a record that physically exists but
     /// does not satisfy the current order's FOR-condition/scope, i.e. OrderKeyNo is 0. Skip()
-    /// needs this because RowNumber/_currentPageNo no longer correspond to any real position in
+    /// needs this because RowNumber/_bufferStart no longer correspond to any real position in
     /// the order's sequence, so the normal relative-skip logic cannot be used from here.
     /// </summary>
     private _outsideOrder as logic
@@ -76,7 +107,18 @@ partial class SQLRDD
     internal property Provider       as ISqlDbProvider get _connection?:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
-    internal property CurrentPage    as int => _currentPageNo
+    internal property RecnoColumnName as string
+        get
+            // The production index is parsed inside FetchInfo(), before _oTd is assigned.
+            var oTable := _oTd ?? _builder?:TableInfo
+            if !String.IsNullOrEmpty(oTable?:RecnoColumn)
+                return oTable:RecnoColumn
+            endif
+            return _connection?:RecnoColumn
+        end get
+    end property
+    /// <summary>Maximum number of rows kept in the local buffer.</summary>
+    private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
     internal property DataTable      as DataTable
         get
             return _table
@@ -138,10 +180,13 @@ partial class SQLRDD
         SELF:_builder          := null
         SELF:_deletedColumnNo  := -1
         SELF:_recnoColumNo     := -1
-        SELF:_currentPageNo    := 1
-        SELF:_firstPageNo      := 1
+        SELF:_bufferStart      := 0
+        SELF:_anchorWhere      := ""
+        SELF:_bufferContiguous := true
         self:_trimValues       := true // trim String Valuess
         SELF:_updatedRecNos    := List<int>{}
+        SELF:_autoLockedRecNos := List<int>{}
+        SELF:_ownLocks         := HashSet<int>{}
         SELF:_deletedRowIds    := HashSet<int>{}
         SELF:_keyColumns       := List<RddFieldInfo>{}
         SELF:_updatableColumns := List<RddFieldInfo>{}
@@ -282,6 +327,7 @@ partial class SQLRDD
 
 
     private method _ExecuteInsertStatement(row as DataRow) as logic
+        SELF:_countMayHaveChanged := true
         var sbColumns  := StringBuilder{}
         var sbValues   := StringBuilder{}
         local iCounter := 1 as long
@@ -370,15 +416,23 @@ partial class SQLRDD
             if !self:_oTd:UpdateAllColumns
                 // only update columns that are changed
                 local isEqual := true as Logic
-                if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
-                    isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
+                var oOriginal := row[c, DataRowVersion.Original]
+                var oCurrent  := row[c, DataRowVersion.Current]
+                if oOriginal is string var strOriginal .and. oCurrent is string var strCurrent
+                    isEqual := strOriginal:Trim():Equals(strCurrent:Trim())
                 else
-                    isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
+                    // Compare by value, not by text: decimal 1.00 read from the server and the
+                    // 1 that a FLOAT written back converts to are equal, but "1.00" <> "1" -
+                    // which made every unchanged numeric field look modified and be written.
+                    isEqual := Object.Equals(oOriginal, oCurrent)
                 endif
                 if isEqual
                     loop
                 endif
                 lColumnChanged := true
+            endif
+            if !SELF:_countMayHaveChanged .and. SELF:_ColumnAffectsCount(c:ColumnName)
+                SELF:_countMayHaveChanged := true
             endif
             var name    := i"@p{iCounter}"
             if sbColumns:Length > 0
@@ -409,6 +463,7 @@ partial class SQLRDD
         _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
         var res := _command:ExecuteScalar()
         if (hasRowCount)
+            SELF:_ThrowIfStatementFailed(res)
             var i64 := (int64) Convert.ChangeType(res, typeof(int64))
             IF i64 == 1
                 return true
@@ -421,21 +476,63 @@ partial class SQLRDD
 
     private method _HandleNullDate(oValue as object, oCol as DataColumn) as object
         if oValue is DateTime var dt .and. dt == DateTime.MinValue
-            return DBNull.Value
+            return SELF:_EmptyDateValue(oCol)
         elseif oValue is IDate var d
             if d:IsEmpty
-                return DBNull.Value
+                return SELF:_EmptyDateValue(oCol)
             else
                 return DateTime{d:Year, d:Month, d:Day}
             endif
-        elseif oValue is null .and. oCol:DataType == typeof(DateTime)
-            return DBNull.Value
+        elseif (oValue is null .or. oValue == DBNull.Value) .and. oCol:DataType == typeof(DateTime)
+            return SELF:_EmptyDateValue(oCol)
         endif
         return oValue
     end method
 
+    /// <summary>The value stored for an empty date.</summary>
+    /// <remarks>
+    /// With UseNulls (the default) that is NULL. Without it - "empty values instead of NULLs" -
+    /// a DBF "D" field gets DateTime.MinValue (0001-01-01, valid for a SQL `date` column), the
+    /// value GetValue() already reads back as an empty date. Writing NULL there broke every
+    /// save of a record with an empty date into a NOT NULL date column ("Cannot insert the
+    /// value NULL ..."), which is how DBF-migrated tables typically store empty dates.
+    /// </remarks>
+    private method _EmptyDateValue(oCol as DataColumn) as object
+        if !SELF:Connection:UseNulls .and. oCol:Ordinal < SELF:_Fields:Length ;
+            .and. SELF:_Fields[oCol:Ordinal]:FieldType == DbFieldType.Date
+            return DateTime.MinValue
+        endif
+        return DBNull.Value
+
+    /// <summary>
+    /// Can changing column cColumn change RecCount? RecCount counts the rows of the current
+    /// order (its FOR condition and scope) or of the table, both subject to the server filter.
+    /// Updating any other column - the common case, e.g. recalculating a balance - leaves the
+    /// count as it is, so it does not have to be requeried.
+    /// </summary>
+    private method _ColumnAffectsCount(cColumn as string) as logic
+        local pattern := "\b" + System.Text.RegularExpressions.Regex.Escape(cColumn) + "\b" as string
+        local options := System.Text.RegularExpressions.RegexOptions.IgnoreCase as System.Text.RegularExpressions.RegexOptions
+        if cColumn == SELF:_oTd:DeletedColumn
+            return true
+        endif
+        if SELF:_oTd:HasServerFilter .and. System.Text.RegularExpressions.Regex.IsMatch(SELF:_oTd:ServerFilter, pattern, options)
+            return true
+        endif
+        var order := SELF:CurrentOrder
+        if order != null
+            if order:Conditional .and. System.Text.RegularExpressions.Regex.IsMatch(order:Condition, pattern, options)
+                return true
+            endif
+            if order:HasScopes .and. System.Text.RegularExpressions.Regex.IsMatch(order:Expression, pattern, options)
+                return true
+            endif
+        endif
+        return false
+
     private method _ExecuteDeleteStatement(row as DataRow) as logic
         // TODO: check config if logic or physical delete
+        SELF:_countMayHaveChanged := true
         _command:ClearParameters()
         var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
@@ -451,17 +548,34 @@ partial class SQLRDD
         _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
         var res := _command:ExecuteScalar()
         if (hasRowCount)
+            SELF:_ThrowIfStatementFailed(res)
             return res is int var i .and. i == 1
         endif
         return true
     end method
 
     /// <summary>
+    /// The UPDATE/DELETE statements end with a row count query, so a NULL result means the
+    /// statement itself failed: SqlDbCommand:ExecuteScalar() swallows the provider exception
+    /// into Connection:LastException. Rethrow that, so callers report the database's own
+    /// message (e.g. a NOT NULL violation) instead of a follow-up conversion error.
+    /// </summary>
+    private method _ThrowIfStatementFailed(res as object) as void
+        if res == null .or. res == DBNull.Value
+            var ex := SELF:Connection:LastException
+            if ex != null
+                throw ex
+            endif
+            throw Exception{"The statement did not return a row count: "+_command:CommandText}
+        endif
+        return
+
+    /// <summary>
     /// Fetch the last page of the current order/scope/filter directly, without going through
     /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
     /// </summary>
     /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
-    private method _FetchLastPage(nPage as int) as logic
+    private method _FetchLastPage(nTotalRows as long) as logic
         try
             SELF:_command:CommandText := _builder:BuildLastPageStatement()
             SELF:_command:ClearParameters()
@@ -479,8 +593,9 @@ partial class SQLRDD
                 SELF:DataTable:Rows:InsertAt(newRow, 0)
                 newRow:AcceptChanges()
             next
-            SELF:_currentPageNo := nPage
-            SELF:_firstPageNo := nPage
+            SELF:_anchorWhere := ""
+            SELF:_bufferContiguous := true
+            SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
             // This IS the last page by definition - without this, a Skip(1) right after
             // GoBottom() (e.g. GoTo(0)'s GoBottom()+Skip(1)) would not know it's already at
             // the end, and would fall through to fetching "the next page" via the normal
@@ -502,12 +617,12 @@ partial class SQLRDD
         if self:_hasData
             return true
         endif
-        return self:_OpenTable("")
+        return self:_OpenTable("", "")
     end method
 
-    private method _ReadTable(sWhereClause as string) as DataTable
+    private method _ReadTable(sWhereClause as string, nOffset as long, nCount as long) as DataTable
         try
-            _command:CommandText := self:_BuildSqlStatement(sWhereClause)
+            _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount)
             _command:ClearParameters()
             var oDataTable := _command:GetDataTable(self:Alias)
             return oDataTable
@@ -515,16 +630,24 @@ partial class SQLRDD
             return null
         end try
 
-    private method _OpenTable(sWhereClause as string) as logic
+    /// <summary>
+    /// Load the first page of rows matching sLoadWhere into a fresh buffer.
+    /// </summary>
+    /// <param name="sLoadWhere">Condition for the rows to load (e.g. a hard seek).</param>
+    /// <param name="sAnchorWhere">Condition that defines the coordinate system for later paging
+    /// (see _anchorWhere). The rows matching sLoadWhere must be the leading rows of the rows
+    /// matching sAnchorWhere, in order - a hard seek and its soft counterpart satisfy that.</param>
+    private method _OpenTable(sLoadWhere as string, sAnchorWhere as string) as logic
         try
-            SELF:_currentPageNo := 1
-            SELF:_firstPageNo := 1
+            SELF:_bufferStart := 0
+            SELF:_anchorWhere := sAnchorWhere
+            SELF:_bufferContiguous := true
             // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
             // rows" flag left over from whatever this buffer was doing before - otherwise
             // Skip() refuses to fetch the next page and reports EOF even though the new
             // WHERE clause has plenty more rows past the first page.
             SELF:_hasEOF := false
-            SELF:DataTable := self:_ReadTable(sWhereClause)
+            SELF:DataTable := self:_ReadTable(sLoadWhere, 0, _oTd:PageSize)
             if SELF:DataTable == null
                 // _ReadTable() -> Command:GetDataTable()/ExecuteReader() swallow the real
                 // ADO.NET exception into Connection:LastException instead of throwing it.
@@ -534,10 +657,14 @@ partial class SQLRDD
                 self:_dbfError(self:Connection:LastException, Subcodes.EDB_USE, Gencode.EG_OPEN, "SQLRDD._OpenTable", FALSE)
                 return false
             endif
+            if sLoadWhere == sAnchorWhere .and. SELF:RowCount < _oTd:PageSize
+                SELF:_hasEOF := true
+            endif
             // A fresh fetch always means a (potentially) different row count - force a real
-            // requery here rather than trusting whatever was cached before this WHERE clause.
+            // requery rather than trusting whatever was cached before this WHERE clause. The
+            // count itself is only run when RecCount is actually asked for: a Seek() does not
+            // need it, and counting a large order on every Seek() is expensive.
             self:_serverReccountValid := false
-            self:_GetRecCount()
         catch as Exception
             return false
         end try
@@ -545,10 +672,10 @@ partial class SQLRDD
     end method
 
 
-    private method _BuildSqlStatement(sWhereClause as string) as string
+    private method _BuildSqlStatement(sWhereClause as string, nOffset as long, nCount as long) as string
         local query as string
         if self:_tableMode == TableMode.Table
-            query := _builder:BuildSqlStatement(sWhereClause)
+            query := _builder:BuildSqlStatement(sWhereClause, (int) nOffset, (int) nCount)
         else
             query := self:_oTd:SelectStatement
         endif
@@ -613,9 +740,26 @@ partial class SQLRDD
         return fields:ToArray()
     end method
 
+    /// <summary>Position on the phantom record (EOF) without reading anything.</summary>
+    private method _GoToPhantom() as void
+        SELF:_Found := FALSE
+        SELF:_outsideOrder := FALSE
+        SELF:RowNumber := SELF:RowCount + 1
+        SELF:_SetEOF(TRUE)
+        // BOF too only for an empty table (an empty buffer alone does not mean that)
+        SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:RecCount == 0)
+        // When the buffer already ends at the last record, a backward Skip() from the phantom
+        // row naturally lands on it; otherwise remember to go to the bottom first.
+        SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
+        return
+
     private method _CloseCursor() as void
+        self:_eofPending    := FALSE
         self:_hasData       := FALSE
         self:_table         := null
+        self:_bufferStart   := 0
+        self:_anchorWhere   := ""
+        self:_bufferContiguous := true
         // Whatever the cached count reflected (a prior WHERE clause, order or scope) no longer
         // applies once the cursor is torn down - force the next _GetRecCount() to requery.
         self:_serverReccountValid := false
@@ -643,130 +787,366 @@ partial class SQLRDD
         self:_serverReccountValid := true
     end method
 
-    private method _FetchPage(nNewPageNo as int ) as logic
+    /// <summary>
+    /// Append the next page of the anchored result set to the end of the buffer, evicting rows
+    /// from the start when the buffer would grow beyond _MaxBufferRows. RowNumber keeps pointing
+    /// at the same row. Returns the number of rows fetched (0 = nothing left, or an error).
+    /// </summary>
+    private method _FetchForward() as long
         if self:_tableMode != TableMode.Table
-            // Exception?
+            return 0
+        endif
+        var nOffset  := SELF:_bufferStart + SELF:RowCount
+        var newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, _oTd:PageSize)
+        if newTable == null
+            return 0
+        endif
+        var nRows := newTable:Rows:Count
+        foreach row as DataRow in newTable:Rows
+            var newRow := SELF:DataTable:NewRow()
+            newRow:ItemArray := row:ItemArray
+            SELF:DataTable:Rows:Add(newRow)
+            newRow:AcceptChanges()
+        next
+        // A short page always means EOF. But when the total record count is an exact
+        // multiple of PageSize, the last page comes back FULL - "short page" never fires,
+        // so also check whether this page's absolute record range already reaches the
+        // known total. Without this, sequential forward paging (unlike GoBottom(), which
+        // jumps straight to the last page and marks it via _FetchLastPage) never sets
+        // _hasEOF on that exactly-full last page: the next Skip() then fetches a
+        // nonexistent page past it, landing on a bogus RowNumber instead of staying put.
+        if nRows < _oTd:PageSize
+            SELF:_hasEOF := true
+        elseif String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:_serverReccountValid .and. ;
+            nOffset + nRows >= SELF:_serverReccount
+            SELF:_hasEOF := true
+        endif
+        var nRemove := SELF:RowCount - SELF:_MaxBufferRows
+        if nRemove > 0
+            for var i := 1 upto nRemove
+                SELF:DataTable:Rows:RemoveAt(0)
+            next
+            SELF:_bufferStart += nRemove
+            SELF:RowNumber    -= nRemove
+        endif
+        return nRows
+
+    /// <summary>
+    /// Insert the page of the anchored result set that precedes the buffer at the start of the
+    /// buffer, evicting rows from the end when the buffer would grow beyond _MaxBufferRows.
+    /// RowNumber keeps pointing at the same row. Returns the number of rows fetched.
+    /// </summary>
+    private method _FetchBackward() as long
+        if self:_tableMode != TableMode.Table .or. SELF:_bufferStart <= 0
+            return 0
+        endif
+        var nStart   := Math.Max(0, SELF:_bufferStart - _oTd:PageSize)
+        var newTable := SELF:_ReadTable(SELF:_anchorWhere, nStart, SELF:_bufferStart - nStart)
+        if newTable == null
+            return 0
+        endif
+        var nRows := newTable:Rows:Count
+        for var nRow := nRows-1 downto 0
+            var row := newTable:Rows[nRow]
+            var newRow := SELF:DataTable:NewRow()
+            newRow:ItemArray := row:ItemArray
+            SELF:DataTable:Rows:InsertAt(newRow, 0)
+            newRow:AcceptChanges()
+        next
+        SELF:_bufferStart := nStart
+        SELF:RowNumber    += nRows
+        var nRemove := SELF:RowCount - SELF:_MaxBufferRows
+        if nRemove > 0
+            for var i := 1 upto nRemove
+                SELF:DataTable:Rows:RemoveAt(SELF:DataTable:Rows:Count-1)
+            next
+            SELF:_hasEOF := false
+        endif
+        return nRows
+
+    /// <summary>
+    /// Replace the buffer with up to one page of the anchored result set starting at nOffset.
+    /// </summary>
+    private method _LoadBufferAt(nOffset as long) as long
+        SELF:_ClearTable()
+        SELF:_bufferStart := Math.Max(0, nOffset)
+        SELF:_bufferContiguous := true
+        SELF:_hasEOF := false
+        SELF:RowNumber := 1
+        return SELF:_FetchForward()
+
+    /// <summary>
+    /// Move nToSkip rows relative to the current row, paging the buffer as needed.
+    /// Past the last row this positions on the phantom row (RowCount+1) with EOF set, before
+    /// the first row it stays on row 1 with BOF set.
+    /// </summary>
+    private method _SkipInBuffer(nToSkip as long) as logic
+        local nNewRow := SELF:RowNumber + nToSkip as long
+        local nTarget as long
+        if nNewRow >= 1 .and. nNewRow <= SELF:RowCount
+            SELF:RowNumber := nNewRow
+            SELF:_SetEOF(FALSE)
             return true
         endif
-        var maxTableSize := _oTd:PageSize * _oTd:BufferSize
-        var sizeBefore   := maxTableSize - _oTd:PageSize
-        var lForward     := nNewPageNo >= _currentPageNo
-        if self:RowCount + _oTd:PageSize > maxTableSize
-            // We must delete rows
-            if lForward
-                // delete rows at the start
-                DO WHILE self:RowCount > sizeBefore
-                    self:DataTable:Rows:RemoveAt(0)
-                ENDDO
-                SELF:_firstPageNo += 1
-            else
-                // delete rows at the end
-                DO WHILE self:RowCount > sizeBefore
-                    self:DataTable:Rows:RemoveAt(DataTable:Rows:Count-1)
-                ENDDO
-                IF SELF:_firstPageNo > 1
-                    SELF:_firstPageNo -= 1
-                ELSE
-                    SELF:_firstPageNo := 1
+        if SELF:_tableMode == TableMode.Table .and. !SELF:_bufferContiguous .and. !SELF:_EoF .and. SELF:RowCount > 0
+            // The buffer is not a contiguous slice of the order (e.g. after Append()), so its
+            // edges say nothing about the neighbouring rows: re-locate the current record first.
+            var nRec := Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo])
+            if !SELF:_GotoRecord(nRec) .or. !SELF:_bufferContiguous
+                return SELF:GoTop()
+            endif
+            nNewRow := SELF:RowNumber + nToSkip
+        endif
+        // Forward, past the end of the buffer
+        do while nNewRow > SELF:RowCount
+            if SELF:_hasEOF .or. SELF:_tableMode != TableMode.Table
+                SELF:RowNumber := SELF:RowCount + 1
+                SELF:_SetEOF(TRUE)
+                return true
+            endif
+            nTarget := SELF:_bufferStart + nNewRow - 1
+            if nNewRow - SELF:RowCount > _oTd:PageSize
+                // Far jump: load the target page directly instead of paging through
+                // everything in between.
+                if SELF:_LoadBufferAt(nTarget) == 0
+                    SELF:GoBottom()
+                    SELF:RowNumber := SELF:RowCount + 1
+                    SELF:_SetEOF(TRUE)
+                    return true
                 endif
+                nNewRow := 1
+                exit
             endif
-        endif
-        _currentPageNo := nNewPageNo
-        SELF:_hasEOF := false
-        var newTable := SELF:_ReadTable("")
-        var result := (newTable != null)
-        if result
-            if lForward
-                SELF:RowNumber := SELF:DataTable:Rows:Count + 1
-
-                foreach row as DataRow in newTable:Rows
-                    var newRow := SELF:DataTable:NewRow()
-                    newRow:ItemArray := row:ItemArray
-                    SELF:DataTable:Rows:Add(newRow)
-                    newRow:AcceptChanges()
-                next
-            else
-                SELF:RowNumber := newTable:Rows:Count
-
-                for var nRow := newTable:Rows:Count-1 downto 0
-                    var row := newTable:Rows[nRow]
-                    var newRow := SELF:DataTable:NewRow()
-                    newRow:ItemArray := row:ItemArray
-                    SELF:DataTable:Rows:InsertAt(newRow, 0)
-                    newRow:AcceptChanges()
-                next
-            endif
-            // A short page always means EOF. But when the total record count is an exact
-            // multiple of PageSize, the last page comes back FULL - "short page" never fires,
-            // so also check whether this page's absolute record range already reaches the
-            // known total. Without this, sequential forward paging (unlike GoBottom(), which
-            // jumps straight to the last page and marks it via _FetchLastPage) never sets
-            // _hasEOF on that exactly-full last page: the next Skip() then fetches a
-            // nonexistent page past it, landing on a bogus RowNumber instead of staying put.
-            var nAbsoluteRowsSeen := ((nNewPageNo - 1) * _oTd:PageSize) + newTable:Rows:Count
-            if lForward .and. (newTable:Rows:Count < _oTd:PageSize .or. nAbsoluteRowsSeen >= SELF:_serverReccount)
+            if SELF:_FetchForward() == 0
                 SELF:_hasEOF := true
-            else
-                _currentPageNo := nNewPageNo
             endif
-        endif
-        return result
+            nNewRow := nTarget - SELF:_bufferStart + 1
+        enddo
+        // Backward, before the start of the buffer
+        do while nNewRow < 1
+            if SELF:_tableMode != TableMode.Table
+                SELF:RowNumber := 1
+                SELF:_SetBOF(TRUE)
+                return true
+            endif
+            if !String.IsNullOrEmpty(SELF:_anchorWhere)
+                // Seek-anchored buffer: the rows before the anchor are not part of the anchored
+                // result set, so switch to absolute positions first.
+                if !SELF:_ConvertToAbsolute()
+                    var nRemaining := nNewRow - SELF:RowNumber
+                    var nRec := Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo])
+                    if !SELF:_GotoRecord(nRec)
+                        return SELF:GoTop()
+                    endif
+                    nNewRow := SELF:RowNumber + nRemaining
+                endif
+                loop
+            endif
+            if SELF:_bufferStart <= 0
+                // Before the first record
+                SELF:RowNumber := 1
+                SELF:_SetBOF(TRUE)
+                if SELF:RowCount == 0
+                    SELF:_SetEOF(TRUE)
+                endif
+                return true
+            endif
+            nTarget := SELF:_bufferStart + nNewRow - 1
+            if 1 - nNewRow > _oTd:PageSize
+                SELF:_LoadBufferAt(nTarget)
+                if nTarget < 0
+                    SELF:RowNumber := 1
+                    SELF:_SetBOF(TRUE)
+                    return true
+                endif
+                nNewRow := 1
+                exit
+            endif
+            if SELF:_FetchBackward() == 0
+                SELF:RowNumber := 1
+                SELF:_SetBOF(TRUE)
+                return true
+            endif
+            nNewRow := nTarget - SELF:_bufferStart + 1
+        enddo
+        SELF:RowNumber := nNewRow
+        SELF:_SetEOF(FALSE)
+        return true
 
-    PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
-        // GoTo() only calls _GotoRecord() after it already established that nRec is NOT in
-        // the currently loaded buffer. Whether that buffer happens to be empty or merely
-        // contains the wrong rows makes no difference - either way we must locate and load
-        // the page that actually contains nRec, so this brute walk must always run.
+    /// <summary>The 1 based position of the current row within the current order/scope.</summary>
+    private method _AbsolutePosition() as long
+        if SELF:_tableMode == TableMode.Table .and. (!SELF:_bufferContiguous .or. !SELF:_ConvertToAbsolute())
+            // Buffer offsets can't be trusted - ask the server for this record's position.
+            if SELF:_EoF .or. SELF:RowCount == 0
+                return 0
+            endif
+            return SELF:_GetAbsoluteOffset(Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo])) + 1
+        endif
+        return SELF:_bufferStart + SELF:RowNumber
+
+    /// <summary>The 0 based offset of the first row of the last page, for nTotal rows.</summary>
+    private method _LastPageStart(nTotal as long) as long
+        if nTotal <= 0
+            return 0
+        endif
+        return ((nTotal - 1) / _oTd:PageSize) * _oTd:PageSize
+
+    /// <summary>Return the 1 based buffer row that holds nRec, or 0 when it is not buffered.</summary>
+    private method _FindRowInBuffer(nRec as DWORD) as long
+        if SELF:DataTable == null
+            return 0
+        endif
+        var rowIndex := 1
+        foreach oRow as DataRow in SELF:DataTable:Rows
+            if Convert.ToUInt32(oRow[self:_recnoColumNo]) == nRec
+                return rowIndex
+            endif
+            rowIndex++
+        next
+        return 0
+
+    /// <summary>
+    /// The 0 based offset of nRec within the current order/scope (absolute coordinates),
+    /// or -1 when the record does not satisfy the order's condition/scope or does not exist.
+    /// </summary>
+    /// <remarks>This needs a ROW_NUMBER() over the order, so its cost grows with the position.</remarks>
+    private method _GetAbsoluteOffset(nRec as DWORD) as long
         SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
         var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
         if result == null .or. result == DBNull.Value
+            return -1
+        endif
+        return Convert.ToInt32(result) - 1
+
+    /// <summary>
+    /// Switch the buffer from seek-anchored coordinates (see _anchorWhere) to absolute
+    /// coordinates, keeping its contents. Needed before paging backwards past the seek anchor
+    /// and to report an absolute position.
+    /// </summary>
+    private method _ConvertToAbsolute() as logic
+        if String.IsNullOrEmpty(SELF:_anchorWhere)
+            return true
+        endif
+        if SELF:RowCount == 0 .or. !SELF:_bufferContiguous
+            return false
+        endif
+        var nOffset := SELF:_GetAbsoluteOffset(Convert.ToUInt32(SELF:DataTable:Rows[0][self:_recnoColumNo]))
+        if nOffset < 0
+            return false
+        endif
+        SELF:_anchorWhere := ""
+        SELF:_bufferStart := nOffset
+        return true
+
+    PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
+        // GoTo() only calls _GotoRecord() after it already established that nRec is NOT in
+        // the currently loaded buffer, so its position in the order must be looked up.
+        var nOffset := SELF:_GetAbsoluteOffset(nRec)
+        if nOffset < 0
             // nRec does not satisfy the current order's FOR-condition/scope. DBF's GoTo() is a
             // physical positioning operation, independent of the active order: it must still
             // succeed when the record exists at all - Found/OrderKeyNo separately reflect that
             // it has no valid position in this order.
             return SELF:_GotoRecordOutsideOrder(nRec)
         endif
-        var iResult := Convert.ToInt64(result)
-
-        // determine correct page
-        SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
-        // This is a freshly loaded page - whether it happens to be the last one needs to be
-        // re-determined from here, not inherited from whatever a previous, unrelated GoBottom()
-        // (e.g. on a completely different page) left behind. Without this, a stale _hasEOF=true
-        // makes every subsequent forward Skip() from this page falsely believe it's already at
-        // the end and never fetch the next page.
-        SELF:_hasEOF := false
-        SELF:_ClearTable()
-        SELF:DataTable := SELF:_ReadTable("")
-
-        // locate the row in the page
-        SELF:RowNumber := 1
-        DO WHILE SELF:RowNumber <= SELF:DataTable:Rows:Count
-            IF SELF:RecNo == nRec
-                RETURN TRUE
-            ENDIF
-            SELF:RowNumber+= 1
-        ENDDO
-        RETURN FALSE
+        if SELF:_tableMode != TableMode.Table
+            SELF:_ClearTable()
+            SELF:DataTable := SELF:_ReadTable("", 0, 0)
+        else
+            // When the record sits right next to the buffered slice, extend the buffer instead
+            // of replacing it. A browse that repaints rows on both sides of a page boundary
+            // (e.g. GoTo(row) / GoTo(current) for every visible row) otherwise throws away the
+            // other page on every single call and has to fetch it again on the next one.
+            local lLoaded := false as logic
+            if SELF:_bufferContiguous .and. String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:RowCount > 0
+                var nBufferEnd := SELF:_bufferStart + SELF:RowCount
+                if nOffset >= nBufferEnd .and. nOffset < nBufferEnd + _oTd:PageSize .and. !SELF:_hasEOF
+                    lLoaded := SELF:_FetchForward() > 0
+                elseif nOffset < SELF:_bufferStart .and. nOffset >= SELF:_bufferStart - _oTd:PageSize
+                    lLoaded := SELF:_FetchBackward() > 0
+                endif
+            endif
+            if !lLoaded
+                // Center the record in the new page, so that its neighbours on either side
+                // are buffered as well.
+                SELF:_anchorWhere := ""
+                SELF:_LoadBufferAt(nOffset - _oTd:PageSize / 2)
+            endif
+        endif
+        var nRow := SELF:_FindRowInBuffer(nRec)
+        if nRow == 0
+            RETURN FALSE
+        endif
+        SELF:RowNumber := nRow
+        SELF:_SetEOF(FALSE)
+        SELF:_SetBOF(FALSE)
+        RETURN TRUE
 
     PRIVATE METHOD _GotoRecordOutsideOrder(nRec as DWORD) AS LOGIC
+        if !SELF:_LoadSingleRecord(nRec)
+            // Does not exist even physically.
+            return false
+        endif
+        SELF:_outsideOrder := true
+        return true
+
+    /// <summary>
+    /// Replace the buffer with just record nRec, fetched by its recno (a primary key lookup),
+    /// without determining its position in the current order. The buffer is marked as not
+    /// contiguous, so the position is only looked up once something actually needs it
+    /// (Skip(), OrderKeyNo, ...).
+    /// </summary>
+    PRIVATE METHOD _LoadSingleRecord(nRec as DWORD) AS LOGIC
         try
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
             var oTable := SELF:_command:GetDataTable(SELF:Alias)
             if oTable == null .or. oTable:Rows:Count == 0
-                // Does not exist even physically.
                 return false
             endif
             SELF:_ClearTable()
             SELF:DataTable := oTable
             SELF:RowNumber := 1
-            SELF:_outsideOrder := true
+            SELF:_outsideOrder := false
             SELF:_hasEOF := false
+            SELF:_anchorWhere := ""
+            SELF:_bufferStart := 0
+            SELF:_bufferContiguous := false
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
             return true
         catch as Exception
             return false
         end try
+
+    /// <summary>
+    /// After the order changed (and the cursor was reset), stay on record nRec like DBF does,
+    /// without paying for its position in the new order up front.
+    /// </summary>
+    /// <remarks>
+    /// Code that switches orders around a lookup (SetOrder(n) / Seek() / SetOrder(m)) is common,
+    /// and under DBF/ADS the order switches are free. Positioning eagerly here meant a
+    /// ROW_NUMBER() over the whole order plus a page fetch at a large OFFSET for every switch.
+    /// </remarks>
+    PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC) AS VOID
+        if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1 .or. lWasEof
+            SELF:GoTo(iif(lWasEof, 0, nRec))
+        elseif !SELF:_LoadSingleRecord(nRec)
+            SELF:GoTo(nRec)
+        endif
+        return
+
+    /// <summary>
+    /// When the buffer only holds records whose position in the current order is unknown
+    /// (see _LoadSingleRecord()), look that position up for the current record now.
+    /// Sets _outsideOrder when the record is not part of the order at all.
+    /// </summary>
+    PRIVATE METHOD _EnsurePositioned() AS VOID
+        if SELF:_tableMode == TableMode.Table .and. !SELF:_bufferContiguous .and. !SELF:_outsideOrder ;
+            .and. !SELF:_EoF .and. SELF:RowCount > 0 .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+            SELF:_GotoRecord(Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo]))
+        endif
+        return
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE
@@ -815,18 +1195,22 @@ partial class SQLRDD
                 return false
             endif
 
-            // Check row lock
-            var dbLockInfo := DbLockInfo{}
-            dbLockInfo:RecId := row[_oTd:RecnoColumn]
-            var myLock := false
-            var otherLock := false
-            SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
-            if otherLock
-                return false
-            endif
+            // Check row lock - unless we hold it (or the file lock) ourselves: our lock row in
+            // the lock table already keeps everybody else out, so there is nothing to ask.
+            if SELF:Connection:UseLocks .and. !SELF:_ownLocks:Contains(nRecNo) .and. !SELF:_ownLocks:Contains(0)
+                var dbLockInfo := DbLockInfo{}
+                dbLockInfo:RecId := row[_oTd:RecnoColumn]
+                var myLock := false
+                var otherLock := false
+                SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+                if otherLock
+                    return false
+                endif
 
-            if !myLock
-                SELF:Lock(ref dbLockInfo)
+                if !myLock .and. SELF:Lock(ref dbLockInfo)
+                    // Locked only for this write - GoCold() releases it again afterwards.
+                    SELF:_autoLockedRecNos:Add(nRecNo)
+                endif
             endif
 
             lOk := true

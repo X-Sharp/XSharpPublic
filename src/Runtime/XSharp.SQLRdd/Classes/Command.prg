@@ -291,6 +291,9 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
         end try
     end method
 
+    /// <summary>Lowest value of the legacy SQL `datetime` type.</summary>
+    static internal initonly MinLegacyDateTime := DateTime{1753, 1, 1} as DateTime
+
     /// <summary>
     /// Bind the parameters to the underlying DbCommand object
     /// </summary>
@@ -305,6 +308,13 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
                     var dbParam := Provider:CreateParameter()
                     dbParam:Direction := oParam:Direction
                     dbParam:Value     := oParam:Value
+                    if oParam:Value is DateTime var dtValue .and. dtValue < SqlDbCommand.MinLegacyDateTime
+                        // A DateTime parameter is inferred as the legacy `datetime` type, which
+                        // starts at 1753-01-01 - so DateTime.MinValue, the value an empty DBF date
+                        // is stored as in a NOT NULL `date` column, overflowed. datetime2 covers
+                        // the full range and converts to `date` on the server.
+                        dbParam:DbType := DbType.DateTime2
+                    endif
                     if oParam:Ordinal == -1
                         dbParam:ParameterName := oParam:Name
                     endif

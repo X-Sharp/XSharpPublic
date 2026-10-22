@@ -26,6 +26,7 @@ internal class SqlDbTableCommandBuilder
     property Provider           as ISqlDbProvider   get Connection:Provider
     Property MetadataProvider   as ISqlMetadataProvider get Connection:MetadataProvider
     property OrderBagList       as List<SqlDbOrderBag> get _oRdd:OrderBagList
+    internal property TableInfo as SqlDbTableInfo get _oTable
 
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
@@ -71,7 +72,11 @@ internal class SqlDbTableCommandBuilder
                     oBag:Add(oTag)
                 next
                 SELF:OrderBagList:Add(oBag)
-                oBag:Save()
+                // The production index is rebuilt from the metadata on every open, so it is not
+                // written to an .SDX file: nothing reads that file back, and writing it through
+                // WritePrivateProfileString (which rewrites the whole file for every single key)
+                // cost ~20-30ms per table open - the bulk of Open() for code that opens and
+                // closes tables frequently.
             endif
         endif
 
@@ -141,7 +146,11 @@ internal class SqlDbTableCommandBuilder
         next
         return strResult
 
-    method BuildSqlStatement(sWhereClause as string) as string
+    /// <summary>
+    /// Build a fetch of nCount rows of the current order/scope/filter (further restricted by
+    /// sWhereClause), starting at the 0-based row offset nOffset within that result.
+    /// </summary>
+    method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -196,10 +205,8 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
 
         sb:Append(Provider:PagingClause)
-        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:PageSize:ToString())
-        // start of next page = (CurrentPage-1) * MaxRecords
-        var nStartRec := (_oRdd:CurrentPage-1) * _oTable:PageSize
-        sb:Replace(SqlDbProvider.StartRecMacro, nStartRec:ToString())
+        sb:Replace(SqlDbProvider.PagesizeMacro, nCount:ToString())
+        sb:Replace(SqlDbProvider.StartRecMacro, nOffset:ToString())
 
         return sb:ToString()
 

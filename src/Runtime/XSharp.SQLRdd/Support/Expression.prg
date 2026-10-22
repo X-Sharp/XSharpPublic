@@ -405,6 +405,9 @@ internal class SqlDbExpression inherit SqlDbObject
                 if token:Name:StartsWith("DESCEND",StringComparison.OrdinalIgnoreCase)
                     token:SQLName := "(%1%)"
                     token:Descend := true
+                elseif token:Name:StartsWith("RECNO(",StringComparison.OrdinalIgnoreCase) .and. !String.IsNullOrEmpty(self:Owner:RDD:RecnoColumnName)
+                    // No SQL function for this: RecNo() is the table's recno column.
+                    token:SQLName := _provider:QuoteIdentifier(self:Owner:RDD:RecnoColumnName)
                 else
                     token:SQLName := _provider:GetFunction(token:Name:ToUpper())
                 endif

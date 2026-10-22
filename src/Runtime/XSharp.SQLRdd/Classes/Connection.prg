@@ -97,6 +97,20 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <summary>Should the phantom record have Null values or empty values?</summary>
     property UseNulls           as logic auto
 
+    /// <summary>
+    /// Should record and file locks (RLock/FLock) be emulated through the lock table? (default TRUE)
+    /// </summary>
+    /// <remarks>
+    /// Every emulated lock and unlock is a statement against the lock table, so code that locks
+    /// and unlocks record by record pays a database round trip for each. With UseLocks FALSE,
+    /// RLock()/FLock() always succeed and UnLock() only writes pending changes, without touching
+    /// the lock table: each UPDATE is still atomic on the server, and only the changed columns
+    /// are written, but nothing keeps two users from editing the same record at the same time
+    /// (the last write wins), and code that relies on RLock() failing for a record somebody
+    /// else is editing no longer sees that.
+    /// </remarks>
+    property UseLocks           as logic auto
+
     /// <summary>Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
     /// <summary>Quoted Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
@@ -206,6 +220,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
                 self:UseNulls := isTrue
+            case "uselocks"
+                self:UseLocks := isTrue
             otherwise
                 builder:Add(key, strValue)
             end switch
@@ -271,6 +287,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         Provider         := SqlDbProvider.Current
         LegacyFieldTypes   := DEFAULT_LEGACYFIELDTYPES
         UseNulls           := DEFAULT_USENULLS
+        UseLocks           := DEFAULT_USELOCKS
         LongFieldNames     := DEFAULT_LONGFIELDNAMES
         TrimTrailingSpaces := DEFAULT_TRIMTRAILINGSPACES
         PageSize           := DEFAULT_PAGESIZE
@@ -554,6 +571,41 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="TableName">Name of the table that will be used</param>
     /// <param name="longFieldNames">Should long field names be returned</param>
     /// <returns>Object with Table Information or NULL when an error occurs</returns>
+    /// <summary>
+    /// Describe a decimal/numeric column as a DBF "N" field with the column's own scale.
+    /// </summary>
+    /// <remarks>
+    /// SQLHelpers.GetColumnInfo() maps every System.Decimal column to Currency ("Y") and derives
+    /// its decimals from the precision (Math.Min(precision, 4)), so e.g. a decimal(7,2) column
+    /// reports 4 decimals and browses show "758,0300" instead of "758,03". decimal/numeric is
+    /// also what DBF "N" fields with decimals are stored as (both by Create() and by typical
+    /// DBF-to-SQL migrations), so they would not even round-trip to "N". Only the real currency
+    /// types (money, smallmoney) stay "Y". The length leaves room for the decimal point, as in
+    /// DBF: decimal(7,2) becomes N(8,2).
+    /// </remarks>
+    private method _AdjustDecimalColumn(row as DataRow, colInfo as DbColumnInfo) as void
+        var columns := row:Table:Columns
+        if columns:Contains("DataTypeName") .and. row["DataTypeName"] is string var cTypeName ;
+            .and. cTypeName:IndexOf("money", StringComparison.OrdinalIgnoreCase) >= 0
+            return
+        endif
+        if !columns:Contains("NumericPrecision") .or. !columns:Contains("NumericScale") ;
+            .or. row["NumericPrecision"] == DBNull.Value .or. row["NumericScale"] == DBNull.Value
+            return
+        endif
+        var nPrecision := Convert.ToInt32(row["NumericPrecision"])
+        var nScale     := Convert.ToInt32(row["NumericScale"])
+        // 255 is the "not applicable" sentinel some providers report
+        if nPrecision <= 0 .or. nPrecision >= 255 .or. nScale < 0 .or. nScale >= 255 .or. nScale > nPrecision
+            return
+        endif
+        colInfo:FieldType        := DbFieldType.Number
+        colInfo:Length           := nPrecision + iif(nScale > 0, 1, 0)
+        colInfo:Decimals         := nScale
+        colInfo:NumericPrecision := nPrecision
+        colInfo:NumericScale     := nScale
+        return
+
     method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableInfo
          try
             cQuery := SELF:RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
@@ -583,6 +635,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                         colInfo:FieldType := DbFieldType.Date
                         colInfo:Length := 8
                     endif
+                elseif colInfo:FieldType == DbFieldType.Currency
+                    SELF:_AdjustDecimalColumn(row, colInfo)
                 endif
                 if SELF:LegacyFieldTypes
                     // Map back to the old field types
@@ -838,11 +892,15 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_LEGACYFIELDTYPES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_LONGFIELDNAMES := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_PAGESIZE := 100 AS INT
-    INTERNAL CONST DEFAULT_BUFFERSIZE := 1 AS INT
+    // Number of pages kept in the local buffer. At least 2 are needed so that a browse whose
+    // visible rows straddle a page boundary keeps both pages, instead of refetching one of
+    // them on every repaint; the extra pages leave room for scrolling back and forth.
+    INTERNAL CONST DEFAULT_BUFFERSIZE := 4 AS INT
     INTERNAL CONST DEFAULT_RECNOCOLUMN := "" AS STRING
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_USELOCKS := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_MAXRECNOASRECCOUNT := FALSE AS LOGIC
     #region Events
     /// <summary>

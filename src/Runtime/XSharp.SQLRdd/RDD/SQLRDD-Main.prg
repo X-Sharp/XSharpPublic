@@ -743,7 +743,7 @@ partial class SQLRDD inherit Workarea
 
 
     OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
-	    LOCAL result AS LOGIC
+	    LOCAL result := FALSE AS LOGIC
 		TRY
             VAR nRec := Convert.ToUInt32( oRec )
             // CurrentRow is null when the table has never been successfully opened (the
@@ -839,8 +839,6 @@ partial class SQLRDD inherit Workarea
     /// <inheritdoc />
     override method Skip(nToSkip as long) as logic
         LOCAL result := FALSE AS LOGIC
-        LOCAL oldRow   := SELF:RowNumber as int
-        LOCAL oldRecNo := SELF:RecNo as dword
         SELF:_ForceOpen()
         SELF:_Top := FALSE
         SELF:_Bottom := FALSE
@@ -974,7 +972,7 @@ partial class SQLRDD inherit Workarea
         endif
         var sb := StringBuilder{}
         var messageLocked := StringBuilder{}
-        var nLockRecNo := SELF:LockRecNo(lockInfo)
+        var nLockRecNo := SELF:LockRecNo(REF lockInfo)
         if SELF:_ownLocks:Contains(nLockRecNo)
             // Already locked by this work area - no need to ask the lock table again.
             lockInfo:Result := true
@@ -1015,7 +1013,7 @@ partial class SQLRDD inherit Workarea
             cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p4", (int)super:Area)
             cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p5", System.Threading.Thread.CurrentThread.ManagedThreadId)
             cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p6", _oTd:RealName ?? String.Empty)
-            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p7", SELF:LockRecNo(lockInfo))
+            cmdInsertLock:AddParameter(self:Provider:ParameterPrefix+"p7", SELF:LockRecNo(REF lockInfo))
 
             if !cmdInsertLock:ExecuteNonQuery()
                 messageLocked:AppendLine("Could not create lock")

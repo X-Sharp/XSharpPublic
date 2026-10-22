@@ -1176,7 +1176,7 @@ partial class SQLRDD
         RETURN TRUE
 
     PRIVATE METHOD _UpdateRow(nRecNo AS INT) AS LOGIC
-        local row as DataRow
+        local row := NULL as DataRow
         local lOk := TRUE as logic
         // Reachable via UnLock() -> Close(), which never checks _ForceOpen()/DataTable itself -
         // if the buffer was already torn down (_CloseCursor()) there is nothing left to persist.
@@ -1202,7 +1202,7 @@ partial class SQLRDD
                 dbLockInfo:RecId := row[_oTd:RecnoColumn]
                 var myLock := false
                 var otherLock := false
-                SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+                SELF:CheckLock(dbLockInfo, StringBuilder{}, REF myLock, REF otherLock)
                 if otherLock
                     return false
                 endif
@@ -1308,7 +1308,7 @@ partial class SQLRDD
                     workarea = (int)super:Area .and. ;
                     threadId = System.Threading.Thread.CurrentThread.ManagedThreadId)
                 if (lockInfo:Method = XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = 0) .or. ;
-                    (lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = SELF:LockRecNo(lockInfo))
+                    (lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = SELF:LockRecNo(REF lockInfo))
                         myLock := true
                 endif
             else

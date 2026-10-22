@@ -107,6 +107,16 @@ partial class SQLRDD
     internal property Provider       as ISqlDbProvider get _connection?:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
+    internal property RecnoColumnName as string
+        get
+            // The production index is parsed inside FetchInfo(), before _oTd is assigned.
+            var oTable := _oTd ?? _builder?:TableInfo
+            if !String.IsNullOrEmpty(oTable?:RecnoColumn)
+                return oTable:RecnoColumn
+            endif
+            return _connection?:RecnoColumn
+        end get
+    end property
     /// <summary>Maximum number of rows kept in the local buffer.</summary>
     private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
     internal property DataTable      as DataTable

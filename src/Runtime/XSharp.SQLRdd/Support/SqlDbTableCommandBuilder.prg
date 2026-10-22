@@ -26,6 +26,7 @@ internal class SqlDbTableCommandBuilder
     property Provider           as ISqlDbProvider   get Connection:Provider
     Property MetadataProvider   as ISqlMetadataProvider get Connection:MetadataProvider
     property OrderBagList       as List<SqlDbOrderBag> get _oRdd:OrderBagList
+    internal property TableInfo as SqlDbTableInfo get _oTable
 
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable

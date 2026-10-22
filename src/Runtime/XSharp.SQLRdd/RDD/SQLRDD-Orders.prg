@@ -183,6 +183,7 @@ partial class SQLRDD
         local result := false as logic
         if self:_tableMode == TableMode.Table
             var currentRecord := SELF:RecNo
+            var lWasEof       := SELF:_EoF
             // Flush any pending field changes on the CURRENTLY loaded row/order BEFORE
             // possibly tearing down the cursor further down. This must run even when the
             // requested order turns out to already be the active one (see the short-circuits
@@ -197,23 +198,27 @@ partial class SQLRDD
                 // Order 0 (or an empty order name) means: switch back to the natural/physical
                 // record order, i.e. no order at all. There is no "tag zero" to look up, so
                 // this must always succeed - matching VO, which returns TRUE for SetOrder(0).
-                if !(SELF:CurrentOrder == null .and. self:_hasData)
+                local lReset := !(SELF:CurrentOrder == null .and. self:_hasData) as logic
+                if lReset
                     // Only reset the cursor when the order is actually changing, or when this
                     // is the table's first activation (no data loaded yet - _hasData false).
-                    // _CloseCursor() forces the GoTo() below to pay for a full requery/recount
-                    // via _ForceOpen(). Application code commonly calls SetOrder(0) defensively
-                    // ("just in case") without checking the current order first - harmless under
-                    // DBF, expensive here, and skipping the reset when nothing actually changes
-                    // is safe: GoTo()/CalculateKeyLength() below still run unconditionally (see
-                    // comment further down) so nothing is silently left stale.
+                    // Application code commonly calls SetOrder(0) defensively ("just in case")
+                    // without checking the current order first - harmless under DBF, and
+                    // skipping the reset when nothing actually changes is safe: the
+                    // repositioning below still runs unconditionally, so nothing is left stale.
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := null
-                self:GoTo(currentRecord)
+                if lReset
+                    self:_RepositionAfterOrderChange(currentRecord, lWasEof)
+                else
+                    self:GoTo(currentRecord)
+                endif
                 result := true
             else
                 var newOrder := self:FindOrder(orderInfo)
-                if !(newOrder != null .and. newOrder == SELF:CurrentOrder .and. self:_hasData)
+                local lReset := !(newOrder != null .and. newOrder == SELF:CurrentOrder .and. self:_hasData) as logic
+                if lReset
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := newOrder
@@ -222,9 +227,13 @@ partial class SQLRDD
                     SELF:CurrentOrder:ClearCache()
                     // Position on a record BEFORE calculating the key length: CalculateKeyLength()
                     // evaluates the key expression against the current record, which requires a
-                    // loaded row. _CloseCursor() above cleared it, so without this GoTo there would
+                    // loaded row. _CloseCursor() above cleared it, so without this there would
                     // be nothing to evaluate.
-                    self:GoTo(currentRecord)
+                    if lReset
+                        self:_RepositionAfterOrderChange(currentRecord, lWasEof)
+                    else
+                        self:GoTo(currentRecord)
+                    endif
                     SELF:CurrentOrder:CalculateKeyLength()
                 ENDIF
             endif
@@ -492,16 +501,16 @@ partial class SQLRDD
         case DBOI_POSITION
             // OrdKeyNo()/DBOI_POSITION reports the record's position within the current order.
             // When the cursor sits on a record outside the order (see GoTo()/_outsideOrder),
-            // RowNumber/_currentPageNo just reflect the ad-hoc single-row buffer we loaded for
-            // it, not a real position - matching DBF, that must report 0, not a bogus row number.
+            // RowNumber just reflects the ad-hoc single-row buffer we loaded for it, not a real
+            // position - matching DBF, that must report 0, not a bogus row number.
             if self:_outsideOrder
                 info:Result := 0
             else
-                info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+                info:Result := self:_AbsolutePosition()
             endif
         case DBOI_RECNO
             // our position is the row number in the local cursor
-            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
+            info:Result := self:_AbsolutePosition()
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch
@@ -521,6 +530,7 @@ partial class SQLRDD
         // In that case we can search in the local buffer
         SELF:_Found := FALSE
         SELF:_SetEOF(FALSE)
+        SELF:_eofPending := FALSE
         oKey := seekInfo:Value
         if oKey == null         // Seek NIL
             if seekInfo:Last
@@ -534,17 +544,18 @@ partial class SQLRDD
             return false
         endif
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+        // The buffer is anchored at the soft-seek condition for the same value: the rows a
+        // hard seek returns are exactly the leading rows of that result, so paging forward past
+        // them (the common "seek to the first record of a key, then Skip() while the key still
+        // matches" idiom) continues with the next rows in the order - via an index seek plus a
+        // small OFFSET, without first having to determine the record's absolute position.
+        var softInfo := seekInfo
+        softInfo:SoftSeek := TRUE
+        softInfo:Last     := FALSE
+        var cAnchorWhere := CurrentOrder:SeekExpression(softInfo)
 
         SELF:_ClearTable()
-        SELF:_currentPageNo := 1
-        // Fetch a normal, full-size page here - NOT a single-row buffer. _FetchPage()'s
-        // paging math ((CurrentPage-1) * PageSize) assumes every page, including this first
-        // one, holds a full PageSize worth of rows; a caller that finds a match and then
-        // walks forward with Skip() past this buffer (the common "seek to the first record
-        // of a key, then Skip() while the key still matches" idiom) would otherwise jump
-        // straight to absolute offset PageSize on the next fetch instead of to row 2,
-        // silently skipping every other row that shares this seek's key.
-        self:_OpenTable(cSeekWhere)
+        self:_OpenTable(cSeekWhere, cAnchorWhere)
 
         // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
         // null instead of an empty table - treat that the same as "no rows found" instead of

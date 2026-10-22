@@ -646,6 +646,8 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
+        SELF:GoCold()
         SELF:_outsideOrder := FALSE
         SELF:_eofPending := FALSE
         SELF:_anchorWhere := ""
@@ -672,6 +674,8 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
+        SELF:GoCold()
         SELF:_outsideOrder := FALSE
         SELF:_eofPending := FALSE
         SELF:_ClearTable()

@@ -91,6 +91,8 @@ partial class SQLRDD
     override method OrderCreate(orderInfo as DbOrderCreateInfo ) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
+            // _CloseCursor() below discards pending FieldPut()s, so write them first.
+            SELF:GoCold()
             var bagName     := orderInfo:BagName
             var tagName     := (string) orderInfo:Order
             if String.IsNullOrEmpty(bagName)
@@ -454,6 +456,7 @@ partial class SQLRDD
                     // Only reset the cursor when there was actually a scope to clear - re-clearing
                     // an already-clear scope (a common defensive pattern) would otherwise pay for a
                     // cursor reset for nothing under SqlRDD, unlike DBF where this is free.
+                    SELF:GoCold()
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     self:_CloseCursor()
                 endif
@@ -475,6 +478,7 @@ partial class SQLRDD
                     // the same scope value (a common defensive pattern, e.g. re-scoping on every
                     // keystroke when the underlying value hasn't changed) would otherwise pay for
                     // a cursor reset for nothing under SqlRDD, unlike DBF where this is free.
+                    SELF:GoCold()
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     self:_CloseCursor()
                 endif
@@ -528,6 +532,8 @@ partial class SQLRDD
         local oKey as object
         // change behavior when all rows are read.
         // In that case we can search in the local buffer
+        // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
+        SELF:GoCold()
         SELF:_Found := FALSE
         SELF:_SetEOF(FALSE)
         SELF:_eofPending := FALSE

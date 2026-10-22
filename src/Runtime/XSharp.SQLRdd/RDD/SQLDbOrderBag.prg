@@ -24,11 +24,12 @@ internal class SqlDbOrderBag INHERIT BaseIndex
     /// </summary>
     property LogicalName      as string auto
     /// <summary>
-    /// The Production index is the index with the same name as the table. Its tags are filled by the Metadata provider.
-    /// The production index file is saved when the tags are loaded.
-    /// When the index is closed, the production index file is deleted.
+    /// The Production index is the index with the same name as the table. Its tags are filled by the Metadata provider
+    /// every time the table is opened, so it is not written to an index file.
     /// </summary>
     property ProductionIndex  as logic auto
+    /// <summary>TRUE when Save() wrote this bag to FullPath.</summary>
+    private _savedToFile := false as logic
     /// <summary>
     /// Reference to the RDD
     /// </summary>
@@ -79,12 +80,14 @@ internal class SqlDbOrderBag INHERIT BaseIndex
         self:Tags:Add(oOrder)
         return
     /// <summary>
-    /// Close the orderbag. The generated production index file is deleted.
+    /// Close the orderbag. A production index file that this bag wrote is deleted.
     /// </summary>
     /// <returns></returns>
     method Close() as logic
         self:Tags:Clear()
-        if self:ProductionIndex
+        // Only delete a file this bag actually wrote: the production index normally is never
+        // saved, and an .SDX with the same name may belong to someone else.
+        if self:ProductionIndex .and. self:_savedToFile
             System.IO.File.Delete(self:FullPath)
         endif
         return true
@@ -186,6 +189,7 @@ internal class SqlDbOrderBag INHERIT BaseIndex
             oIni:WriteString(cPreFix+tag:Name, DESCEND, tag:Descending:ToString())
         next
         oIni:WriteString(INDEXPREFIX+SELF:LogicalName, TAGS,cTags)
+        self:_savedToFile := true
         return
     end method
 

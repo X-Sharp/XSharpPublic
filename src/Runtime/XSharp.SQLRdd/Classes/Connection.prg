@@ -554,6 +554,41 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <param name="TableName">Name of the table that will be used</param>
     /// <param name="longFieldNames">Should long field names be returned</param>
     /// <returns>Object with Table Information or NULL when an error occurs</returns>
+    /// <summary>
+    /// Describe a decimal/numeric column as a DBF "N" field with the column's own scale.
+    /// </summary>
+    /// <remarks>
+    /// SQLHelpers.GetColumnInfo() maps every System.Decimal column to Currency ("Y") and derives
+    /// its decimals from the precision (Math.Min(precision, 4)), so e.g. a decimal(7,2) column
+    /// reports 4 decimals and browses show "758,0300" instead of "758,03". decimal/numeric is
+    /// also what DBF "N" fields with decimals are stored as (both by Create() and by typical
+    /// DBF-to-SQL migrations), so they would not even round-trip to "N". Only the real currency
+    /// types (money, smallmoney) stay "Y". The length leaves room for the decimal point, as in
+    /// DBF: decimal(7,2) becomes N(8,2).
+    /// </remarks>
+    private method _AdjustDecimalColumn(row as DataRow, colInfo as DbColumnInfo) as void
+        var columns := row:Table:Columns
+        if columns:Contains("DataTypeName") .and. row["DataTypeName"] is string var cTypeName ;
+            .and. cTypeName:IndexOf("money", StringComparison.OrdinalIgnoreCase) >= 0
+            return
+        endif
+        if !columns:Contains("NumericPrecision") .or. !columns:Contains("NumericScale") ;
+            .or. row["NumericPrecision"] == DBNull.Value .or. row["NumericScale"] == DBNull.Value
+            return
+        endif
+        var nPrecision := Convert.ToInt32(row["NumericPrecision"])
+        var nScale     := Convert.ToInt32(row["NumericScale"])
+        // 255 is the "not applicable" sentinel some providers report
+        if nPrecision <= 0 .or. nPrecision >= 255 .or. nScale < 0 .or. nScale >= 255 .or. nScale > nPrecision
+            return
+        endif
+        colInfo:FieldType        := DbFieldType.Number
+        colInfo:Length           := nPrecision + iif(nScale > 0, 1, 0)
+        colInfo:Decimals         := nScale
+        colInfo:NumericPrecision := nPrecision
+        colInfo:NumericScale     := nScale
+        return
+
     method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableInfo
          try
             cQuery := SELF:RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
@@ -583,6 +618,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                         colInfo:FieldType := DbFieldType.Date
                         colInfo:Length := 8
                     endif
+                elseif colInfo:FieldType == DbFieldType.Currency
+                    SELF:_AdjustDecimalColumn(row, colInfo)
                 endif
                 if SELF:LegacyFieldTypes
                     // Map back to the old field types

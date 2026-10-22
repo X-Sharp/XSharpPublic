@@ -65,7 +65,7 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
                         {"STR(%1%,%2%,%3%)"			,"STR(%1%,%2%,%3%)"},;
                         {"STR(%1%,%2%)"				,"STR(%1%,%2%,0)"},;
                         {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%2%,%3%)"},;
-                        {"DTOS(%1%)"				,"CONVERT(char(8), %1%,11)"},;
+                        {"DTOS(%1%)"				,"CONVERT(char(8), %1%,112)"},;
                         {"IIF(%1%,%2%,%3%)"			,"CASE WHEN %1% THEN %2% ELSE %3% END"},;
                         {"TODAY()"					,"GETDATE()"},;
                         {"CHR(%1%)"					,"CHAR(%1%)"},;

@@ -1,4 +1,34 @@
-﻿using static XSharp.RT.Functions;
+﻿using System;
+using System.ComponentModel;
+using static XSharp.RT.Functions;
+
+namespace XSharp.MacroCompiler
+{
+    /// <summary>
+    /// Placeholder for a nested codeblock that uses locals of its enclosing macro or codeblock.
+    /// It is never evaluated itself: every evaluation of the codeblock literal creates a new
+    /// codeblock that is bound to the boxes of the captured locals.
+    /// </summary>
+    internal class ClosureTemplate : _Codeblock
+    {
+        internal readonly Func<object[], XSharp.Codeblock> Factory;
+        internal ClosureTemplate(Func<object[], XSharp.Codeblock> factory, int pCount, string source) :
+            base(new UsualMacro.NestedCodeblock(pCount), source, true, false)
+        {
+            Factory = factory;
+        }
+        public override __Usual Eval(params __Usual[] args) => throw new InternalError();
+    }
+
+    /// <summary>
+    /// Called from macro compiled code. Not intended to be used directly.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static class MacroClosure
+    {
+        public static XSharp.Codeblock Bind(XSharp.Codeblock template, object[] env) => ((ClosureTemplate)template).Factory(env);
+    }
+}
 
 namespace XSharp.MacroCompiler.ObjectMacro
 {

@@ -228,6 +228,10 @@ namespace XSharp.MacroCompiler
         internal int Index = -1;
         internal bool IsParam { get; set; }
         internal bool IsAuto { get; set; }
+        // Set when a nested codeblock uses this local: its value then lives in a StrongBox<T>
+        // that is shared with the codeblock instead of in an IL local
+        internal bool IsCaptured { get; set; }
+        internal virtual bool CanBeCaptured => !string.IsNullOrEmpty(Name) && Type?.Type != null && !Type.Type.IsPointer && !Type.Type.IsByRef;
         internal bool IsConst => !HasSetAccess;
         internal LocalSymbol(string name, TypeSymbol type) : base(AccessMode.All) { Name = name; Type = type; }
         internal LocalSymbol(TypeSymbol type, int index) : this(null, type) { Index = index; }
@@ -238,20 +242,42 @@ namespace XSharp.MacroCompiler
     internal partial class ArgumentSymbol : LocalSymbol
     {
         internal ArgumentSymbol(string name, TypeSymbol type, int index) : base(name, type) { Index = index; }
+        internal override bool CanBeCaptured => false;
     }
     internal partial class VariableSymbol : LocalSymbol
     {
         internal VariableSymbol(string name, TypeSymbol type) : base(name, type) { }
+        internal override bool CanBeCaptured => false;
     }
     internal partial class MemvarSymbol : LocalSymbol
     {
         internal MemvarSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
+        internal override bool CanBeCaptured => false;
     }
     internal partial class FieldAliasSymbol : LocalSymbol
     {
         internal string WorkArea = null;
         internal FieldAliasSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
         internal FieldAliasSymbol(string name, string wa) : this(name) { WorkArea = wa; }
+        internal override bool CanBeCaptured => false;
+    }
+    /// <summary>
+    /// A local of an enclosing macro or codeblock that is used inside a nested codeblock.
+    /// Index is the slot in the closure environment array that holds the StrongBox of the local.
+    /// </summary>
+    internal partial class CapturedLocalSymbol : LocalSymbol
+    {
+        internal LocalSymbol Source;
+        internal ArgumentSymbol Env;
+        internal CapturedLocalSymbol(LocalSymbol source, ArgumentSymbol env, int index) : base(source.Name, source.Type)
+        {
+            Source = source;
+            Env = env;
+            Index = index;
+            IsCaptured = true;
+            if (source.IsConst)
+                SetConst();
+        }
     }
     internal partial class DynamicSymbol : TypedSymbol
     {

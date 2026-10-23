@@ -312,6 +312,31 @@ FUNCTION ScriptTests AS VOID
         " a := {1,2,3,4,5}",;
         " n := 3",;
         " nPos := ascan(a,{|x|x=n})",;
+        "nPos"}), Args(), 3, typeof(int))
+
+    // AEval() with a codeblock literal: XSharp.Codeblock must convert to the ICodeblock parameter
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3,4}",;
+        "private nSum",;
+        "nSum := 0",;
+        "aeval(a, {|x| nSum += x})",;
+        "return nSum"}), Args(), 10, typeof(int))
+    TestMacroU(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3,4}",;
+        "private nSum",;
+        "nSum := 0",;
+        "aeval(a, {|x| nSum += x})",;
+        "return nSum"}), ArgsU(), 10, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3,4}",;
+        "private nSum",;
+        "nSum := 0",;
+        "aeval(a, {|x| nSum += x}, 2, 2)",;
+        "return nSum"}), Args(), 5, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3}",;
+        "aevala(a, {|x| x * 2})",;
+        "return a[3]"}), Args(), 6, typeof(int))
         "nPos"}), Args(), 3, typeof(dword))
     // Nested codeblock that assigns a captured local
     TestMacro(sc, String.Join(e"\n",<STRING>{;

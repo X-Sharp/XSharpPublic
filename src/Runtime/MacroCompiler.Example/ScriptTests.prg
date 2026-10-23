@@ -304,9 +304,8 @@ FUNCTION ScriptTests AS VOID
         " __LocalsClear()",;
         "nPos"}), Args(), 3, typeof(int))
     // Nested codeblock and local variable
-    // This fails
-#ifdef FAIL
-    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    // The local is captured by the nested codeblock
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
         " local n as dword",;
         " local a	as array",;
         " local nPos	as dword",;
@@ -314,7 +313,7 @@ FUNCTION ScriptTests AS VOID
         " n := 3",;
         " nPos := ascan(a,{|x|x=n})",;
         "nPos"}), Args(), 3, typeof(int))
-#endif
+
     // AEval() with a codeblock literal: XSharp.Codeblock must convert to the ICodeblock parameter
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "local a := {1,2,3,4}",;
@@ -338,6 +337,23 @@ FUNCTION ScriptTests AS VOID
         "local a := {1,2,3}",;
         "aevala(a, {|x| x * 2})",;
         "return a[3]"}), Args(), 6, typeof(int))
+        "nPos"}), Args(), 3, typeof(dword))
+    // Nested codeblock that assigns a captured local
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        " local n := 1",;
+        " Eval({|| n := n + 10})",;
+        "n"}), Args(), 11, typeof(int))
+    // Codeblock parameter captured by a codeblock nested two levels deep
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        " local r",;
+        " r := Eval({|x, y| Eval({|| x + y})}, 40, 2)",;
+        "r"}), Args(), 42, typeof(int))
+    // The codeblock shares the local, it does not copy its value
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        " local n := 1",;
+        " local cb := {|| n}",;
+        " n := 99",;
+        "Eval(cb)"}), Args(), 99, typeof(int))
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "LPARAMETERS a, b, c",;

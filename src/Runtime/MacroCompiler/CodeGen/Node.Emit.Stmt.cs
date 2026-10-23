@@ -216,7 +216,7 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 FinallyClauses.Add(() => {
                     var loc = IterDecl.Symbol as LocalSymbol;
-                    ilg.Emit(OpCodes.Ldloc, loc.Index);
+                    loc.EmitGet(ilg);
                     ilg.Emit(OpCodes.Isinst, Compilation.Get(WellKnownTypes.System_IDisposable).Type);
                     ilg.Emit(OpCodes.Callvirt, (Compilation.Get(WellKnownMembers.System_IDisposable_Dispose) as MethodSymbol).Method);
                 });
@@ -455,10 +455,11 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg)
         {
-            ExVar.Declare(ilg);
             ilg.BeginCatchBlock(ExVar.Type.Type);
             ilg.Emit(OpCodes.Isinst, ExVar.Type.Type);
-            ilg.Emit(OpCodes.Stloc, ExVar.Index);
+            // Declare inside the catch block, a captured variable allocates its box here
+            ExVar.Declare(ilg);
+            ExVar.EmitSet(ilg);
             Stmt.Emit(ilg);
         }
     }

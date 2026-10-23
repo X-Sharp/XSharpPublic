@@ -221,15 +221,17 @@ internal class SqlDbOrder inherit SqlDbObject
             seekInfo:SoftSeek  := false
             return self:SeekExpression(seekInfo)
         else
+            // Scopes are key value bounds - top the smallest, bottom the largest key - for
+            // descending orders too, like DBFCDX (which swaps them for descending tags) and ADS.
             local cFirst := null, cLast := null as string
             if self:TopScope != null
-                cFirst := self:RangeExpression(self:TopScope, false)
+                cFirst := self:KeyBound(self:TopScope, false)
             endif
             if self:BottomScope != null
                 // The bottom scope is an upper bound: keys up to (and starting with) the
                 // bottom value. Building it like a soft seek used to produce a second lower
                 // bound instead, so a range scope selected everything from the bottom value on.
-                cLast := self:RangeExpression(self:BottomScope, true)
+                cLast := self:KeyBound(self:BottomScope, true)
             endif
             if String.IsNullOrEmpty(cFirst)
                 return cLast
@@ -251,12 +253,16 @@ internal class SqlDbOrder inherit SqlDbObject
     /// <summary>
     /// Condition for all keys on one side of oValue in the order's direction (a key that
     /// starts with oValue counts as matching). The lower bound (lUpper FALSE) is what a soft
-    /// seek and a top scope need, the upper bound is what a bottom scope needs.
+    /// seek needs.
     /// </summary>
     method RangeExpression(oValue as object, lUpper as logic) as string
         // For a descending order the "lower" end in order sense holds the larger keys.
-        local cComp := iif(lUpper != self:Descending, " <= ", " >= ") as string
-        return self:KeyCondition(oValue, true, cComp)
+        return self:KeyBound(oValue, lUpper != self:Descending)
+    end method
+
+    /// <summary>Keys up to (lUpperBound) or from oValue on by key value, ignoring the order's direction.</summary>
+    private method KeyBound(oValue as object, lUpperBound as logic) as string
+        return self:KeyCondition(oValue, true, iif(lUpperBound, " <= ", " >= "))
     end method
 
     private method KeyCondition(oValue as object, lSoftSeek as logic, cComp as string) as string

@@ -301,6 +301,9 @@ partial class SQLRDD inherit Workarea
             _updatedRecNos:Add((int)row[self:_recnoColumNo])
             SELF:RowNumber := SELF:DataTable:Rows:Count
             self:_serverReccount += 1
+            if self:_tableReccountValid
+                self:_tableReccount := Math.Max(self:_tableReccount, key)
+            endif
             SELF:_SetBOF(FALSE)
             SELF:_SetEOF(FALSE)
             self:GoHot()
@@ -828,9 +831,12 @@ partial class SQLRDD inherit Workarea
     /// <inheritdoc />
     override property RecCount as dword
         get
-            // Counted on demand: a reposition (Seek(), order change, ...) only invalidates it.
-            if self:_tableMode == TableMode.Table .and. !self:_serverReccountValid .and. self:_builder != null
-                self:_GetRecCount()
+            // Counted on demand: a reposition (order change, Zap(), ...) only invalidates it.
+            if self:_tableMode == TableMode.Table .and. self:_builder != null
+                if !self:_tableReccountValid
+                    self:_GetTableRecCount()
+                endif
+                return self:_tableReccount
             endif
             return Self:_serverReccount
         end get

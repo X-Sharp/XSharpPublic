@@ -95,6 +95,13 @@ partial class SQLRDD
     /// actually changes (_CloseCursor(), a fresh _OpenTable() fetch, or a write in GoCold()).</summary>
     private _serverReccountValid as logic
     /// <summary>
+    /// RecCount/LastRec() like DBF: the highest record number of the whole table (the row count
+    /// without a recno column), independent of the current order's condition and scope.
+    /// </summary>
+    private _tableReccount as dword
+    /// <summary>TRUE when _tableReccount does not need to be requeried.</summary>
+    private _tableReccountValid as logic
+    /// <summary>
     /// TRUE when the cursor is positioned (via GoTo()) on a record that physically exists but
     /// does not satisfy the current order's FOR-condition/scope, i.e. OrderKeyNo is 0. Skip()
     /// needs this because RowNumber/_bufferStart no longer correspond to any real position in
@@ -505,7 +512,7 @@ partial class SQLRDD
         return DBNull.Value
 
     /// <summary>
-    /// Can changing column cColumn change RecCount? RecCount counts the rows of the current
+    /// Can changing column cColumn change the cached row count? It counts the rows of the current
     /// order (its FOR condition and scope) or of the table, both subject to the server filter.
     /// Updating any other column - the common case, e.g. recalculating a balance - leaves the
     /// count as it is, so it does not have to be requeried.
@@ -747,7 +754,7 @@ partial class SQLRDD
         SELF:RowNumber := SELF:RowCount + 1
         SELF:_SetEOF(TRUE)
         // BOF too only for an empty table (an empty buffer alone does not mean that)
-        SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:RecCount == 0)
+        SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:_OrderRowCount() == 0)
         // When the buffer already ends at the last record, a backward Skip() from the phantom
         // row naturally lands on it; otherwise remember to go to the bottom first.
         SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
@@ -763,7 +770,29 @@ partial class SQLRDD
         // Whatever the cached count reflected (a prior WHERE clause, order or scope) no longer
         // applies once the cursor is torn down - force the next _GetRecCount() to requery.
         self:_serverReccountValid := false
+        self:_tableReccountValid  := false
         return
+
+    /// <summary>Number of rows in the current order (condition, scope) or table, counted on demand.</summary>
+    private method _OrderRowCount() as dword
+        if self:_tableMode == TableMode.Table .and. !self:_serverReccountValid .and. self:_builder != null
+            self:_GetRecCount()
+        endif
+        return self:_serverReccount
+    end method
+
+    private method _GetTableRecCount() as void
+        // DBF's LastRec() is the highest record number, whatever order or filter is active.
+        // Using the order's row count instead made RecNo at EOF (LastRec+1) collide with a real
+        // record of a conditional order, and code that treats RecNo > LastRec as EOF (browsers)
+        // stopped before the records with the highest numbers.
+        if self:_oTd:HasRecnoColumn
+            self:_tableReccount := self:_builder:GetMaxRecno()
+        else
+            self:_tableReccount := self:_builder:GetRecCount()
+        endif
+        self:_tableReccountValid := true
+    end method
 
     private method _GetRecCount() as void
         // Skip the round trip entirely when nothing has changed since the last real count.

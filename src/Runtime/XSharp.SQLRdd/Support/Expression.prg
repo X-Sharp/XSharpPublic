@@ -132,6 +132,9 @@ internal class SqlDbExpression inherit SqlDbObject
 
     protect method GetExpression(nLevel as dword) as string
         local cKey	 as string
+        // Parenthesized groups opened at this level: their closing EoExpr belongs to them and
+        // must not end the expression, or everything after e.g. "!(A=='') .AND. B" is dropped.
+        local nParens := 0 as int
         cKey := ""
         if ! self:Translated
             return ""
@@ -140,9 +143,18 @@ internal class SqlDbExpression inherit SqlDbObject
             var oToken := self:GetToken()
             var done := false
             switch oToken:Type
+            case TokenType.BoExpr
+                cKey += oToken:SQLName
+                if oToken:SQLName == "("
+                    nParens++
+                endif
             case TokenType.EoExpr
                 cKey += oToken:SQLName
-                done := true
+                if nParens > 0 .and. oToken:SQLName == ")"
+                    nParens--
+                else
+                    done := true
+                endif
             case TokenType.EoFunc
                 // doe niets
             case TokenType.Delimiter
@@ -286,10 +298,34 @@ internal class SqlDbExpression inherit SqlDbObject
         self:CurToken := 1
         local cSqlKey as string
         cSqlKey 	:= self:GetExpression(1):Trim()
-        if cSqlKey:StartsWith("(") .and. cSqlKey:EndsWith(")")
+        if cSqlKey:StartsWith("(") .and. cSqlKey:EndsWith(")") .and. IsEnclosed(cSqlKey)
             cSqlKey := cSqlKey:Substring(1, cSqlKey:Length-2)
         endif
         return cSqlKey
+
+    /// <summary>TRUE when the opening parenthesis at the start closes only at the very end,
+    /// so "(A AND B)" is enclosed but "(A) AND (B)" is not.</summary>
+    static method IsEnclosed(cExpr as string) as logic
+        local nDepth := 0 as int
+        local cQuote := '\0' as char
+        for var i := 0 to cExpr:Length-1
+            var c := cExpr[i]
+            if cQuote != '\0'
+                if c == cQuote
+                    cQuote := '\0'
+                endif
+            elseif c == c'\'' .or. c == c'"'
+                cQuote := c
+            elseif c == c'('
+                nDepth++
+            elseif c == c')'
+                nDepth--
+                if nDepth == 0 .and. i < cExpr:Length-1
+                    return false
+                endif
+            endif
+        next
+        return nDepth == 0
     method AddTokenWhenNotEmpty(token as StringBuilder, symType as TokenType) as void
         if token:Length >0
             self:AddToken(symType, token)

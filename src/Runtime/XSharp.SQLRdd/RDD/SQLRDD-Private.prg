@@ -54,6 +54,8 @@ partial class SQLRDD
     /// seeks and then skips while the key matches mostly reads only a few records.
     /// </summary>
     private _readAheadRows := 0 as long
+    /// <summary>Rows to fetch with the next backward page (0 = PageSize), grows like _readAheadRows.</summary>
+    private _readBackRows := 0 as long
     /// <summary>TRUE when the single buffered record was loaded by GoTo() without its position.</summary>
     private _lazyGoto as logic
     /// <summary>
@@ -644,6 +646,8 @@ partial class SQLRDD
             SELF:_anchorWhere := ""
             SELF:_bufferContiguous := true
             SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
+            // reading backwards from the bottom starts small as well
+            SELF:_readBackRows := SELF:_SmallPageRows
             // This IS the last page by definition - without this, a Skip(1) right after
             // GoBottom() (e.g. GoTo(0)'s GoBottom()+Skip(1)) would not know it's already at
             // the end, and would fall through to fetching "the next page" via the normal
@@ -668,9 +672,9 @@ partial class SQLRDD
         return self:_OpenTable("", "")
     end method
 
-    private method _ReadTable(sWhereClause as string, nOffset as long, nCount as long) as DataTable
+    private method _ReadTable(sWhereClause as string, nOffset as long, nCount as long, lReverse := false as logic) as DataTable
         try
-            _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount)
+            _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount, lReverse)
             _command:ClearParameters()
             var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate)
             return oDataTable
@@ -692,6 +696,7 @@ partial class SQLRDD
             SELF:_bufferContiguous := true
             // a hard seek (sLoadWhere narrower than the anchor) mostly continues with a few records
             SELF:_readAheadRows := iif(sLoadWhere != sAnchorWhere .and. !String.IsNullOrEmpty(sAnchorWhere), SELF:_SmallPageRows, 0)
+            SELF:_readBackRows := 0
             // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
             // rows" flag left over from whatever this buffer was doing before - otherwise
             // Skip() refuses to fetch the next page and reports EOF even though the new
@@ -722,10 +727,10 @@ partial class SQLRDD
     end method
 
 
-    private method _BuildSqlStatement(sWhereClause as string, nOffset as long, nCount as long) as string
+    private method _BuildSqlStatement(sWhereClause as string, nOffset as long, nCount as long, lReverse := false as logic) as string
         local query as string
         if self:_tableMode == TableMode.Table
-            query := _builder:BuildSqlStatement(sWhereClause, (int) nOffset, (int) nCount)
+            query := _builder:BuildSqlStatement(sWhereClause, (int) nOffset, (int) nCount, lReverse)
         else
             query := self:_oTd:SelectStatement
         endif
@@ -867,22 +872,36 @@ partial class SQLRDD
     /// Condition for the rows that follow the last buffered row in the current order (keyset
     /// paging), or NULL when that cannot be expressed and the caller must page with OFFSET.
     /// </summary>
+    private method _KeysetAfterLastRow() as string
+        if SELF:RowCount == 0 .or. !SELF:_bufferContiguous
+            return null
+        endif
+        return SELF:_KeysetCondition(SELF:DataTable:Rows[SELF:RowCount-1], FALSE, FALSE)
+    end method
+
+    /// <summary>
+    /// Condition for the rows that come after oRow (lBefore FALSE) or before it (lBefore TRUE) in
+    /// the current order, including oRow itself when lInclusive is TRUE. NULL when that cannot be
+    /// expressed and the caller must use row offsets instead.
+    /// </summary>
     /// <remarks>
     /// The order is the ORDER BY list of the current order plus the recno column, exactly as
     /// SqlDbTableCommandBuilder.BuildSqlStatement() sorts. Every item is compared with its value
-    /// for the last row, read by a subquery on that row's recno, so the comparison uses the same
-    /// expressions and collation as the ORDER BY (also for keys with functions):
+    /// for oRow (see _KeysetLiteral(), otherwise read by a subquery on the row's recno, so the
+    /// comparison uses the same expressions and collation as the ORDER BY, also for keys with
+    /// functions; lLiteralOnly returns NULL instead, see _KeysetLiteral() for the cost). For the
+    /// rows after oRow:
     ///   k1 >= v1 AND ( k1 > v1 OR (k1 = v1 AND k2 > v2) OR ... OR (k1 = v1 AND ... AND recno > n) )
-    /// The leading bound lets the server seek in an index on k1. A descending item compares with
-    /// "<" and also accepts NULL, which sorts after all values in descending order. When the last
-    /// row has NULL in one of the key columns its position cannot be expressed this way.
+    /// The leading bound lets the server seek in an index on k1. Where the order goes towards
+    /// lower values (a descending item after oRow, an ascending one before it) the comparison is
+    /// "<" and also accepts NULL, which sorts below all values. When oRow has NULL in one of the
+    /// key columns its position cannot be expressed this way.
     /// </remarks>
-    private method _KeysetAfterLastRow() as string
-        if !SELF:_oTd:HasRecnoColumn .or. SELF:RowCount == 0 .or. !SELF:_bufferContiguous .or. SELF:_recnoColumNo < 0
+    private method _KeysetCondition(oRow as DataRow, lBefore as logic, lInclusive as logic, lLiteralOnly := false as logic) as string
+        if !SELF:_oTd:HasRecnoColumn .or. SELF:_recnoColumNo < 0
             return null
         endif
-        var lastRow := SELF:DataTable:Rows[SELF:RowCount-1]
-        var oRecno  := lastRow[(int) SELF:_recnoColumNo]
+        var oRecno  := oRow[(int) SELF:_recnoColumNo]
         if oRecno == null .or. oRecno == DBNull.Value
             return null
         endif
@@ -895,7 +914,7 @@ partial class SQLRDD
         if oOrder != null
             foreach var cCol in oOrder:ColumnList
                 var nCol := SELF:DataTable:Columns:IndexOf(cCol:Trim(<char>{'[',']','"','`'}))
-                if nCol < 0 .or. lastRow[nCol] == DBNull.Value
+                if nCol < 0 .or. oRow[nCol] == DBNull.Value
                     return null
                 endif
             next
@@ -913,22 +932,26 @@ partial class SQLRDD
             if cExpr == cRecno
                 aValue:Add(nRecno:ToString())
             else
-                var cLiteral := SELF:_KeysetLiteral(lastRow, cExpr)
+                var cLiteral := SELF:_KeysetLiteral(oRow, cExpr)
                 if cLiteral == null
+                    if lLiteralOnly
+                        return null
+                    endif
                     cLiteral := "(SELECT " + cExpr + " FROM " + cTable + " WHERE " + cRecno + " = " + nRecno:ToString() + ")"
                 endif
                 aValue:Add(cLiteral)
             endif
         next
 
+        var nLast := aExpr:Count - 1
         var sb := StringBuilder{}
         sb:Append("(")
         if aExpr:Count > 1
-            sb:Append(SELF:_KeysetCompare(aExpr[0], aDesc[0], aValue[0], TRUE))
+            sb:Append(SELF:_KeysetCompare(aExpr[0], aDesc[0] != lBefore, aValue[0], TRUE))
             sb:Append(SqlDbProvider.AndClause)
         endif
         sb:Append("(")
-        for var i := 0 upto aExpr:Count-1
+        for var i := 0 upto nLast
             if i > 0
                 sb:Append(SqlDbProvider.OrClause)
             endif
@@ -936,7 +959,7 @@ partial class SQLRDD
             for var j := 0 upto i-1
                 sb:Append(aExpr[j] + " = " + aValue[j] + SqlDbProvider.AndClause)
             next
-            sb:Append(SELF:_KeysetCompare(aExpr[i], aDesc[i], aValue[i], FALSE))
+            sb:Append(SELF:_KeysetCompare(aExpr[i], aDesc[i] != lBefore, aValue[i], lInclusive .and. i == nLast))
             sb:Append(")")
         next
         sb:Append("))")
@@ -980,9 +1003,9 @@ partial class SQLRDD
         return null
     end method
 
-    private method _KeysetCompare(cExpr as string, lDesc as logic, cValue as string, lInclusive as logic) as string
-        var cComp := iif(lDesc, " <", " >") + iif(lInclusive, "= ", " ")
-        if lDesc
+    private method _KeysetCompare(cExpr as string, lLower as logic, cValue as string, lInclusive as logic) as string
+        var cComp := iif(lLower, " <", " >") + iif(lInclusive, "= ", " ")
+        if lLower
             return "(" + cExpr + cComp + cValue + SqlDbProvider.OrClause + cExpr + " IS NULL)"
         endif
         return cExpr + cComp + cValue
@@ -1060,12 +1083,17 @@ partial class SQLRDD
     /// buffer, evicting rows from the end when the buffer would grow beyond _MaxBufferRows.
     /// RowNumber keeps pointing at the same row. Returns the number of rows fetched.
     /// </summary>
-    private method _FetchBackward() as long
+    /// <param name="nNeeded">Rows that must at least be read (when there are that many).</param>
+    private method _FetchBackward(nNeeded := 0 as long) as long
         SELF:_readAheadRows := 0
         if self:_tableMode != TableMode.Table .or. SELF:_bufferStart <= 0
             return 0
         endif
-        var nStart   := Math.Max(0, SELF:_bufferStart - _oTd:PageSize)
+        var nKeyset := SELF:_FetchBackwardKeyset(nNeeded)
+        if nKeyset >= 0
+            return nKeyset
+        endif
+        var nStart   := Math.Max(0, SELF:_bufferStart - Math.Max(_oTd:PageSize, nNeeded))
         var newTable := SELF:_ReadTable(SELF:_anchorWhere, nStart, SELF:_bufferStart - nStart)
         if newTable == null
             return 0
@@ -1080,6 +1108,63 @@ partial class SQLRDD
         next
         SELF:_bufferStart := nStart
         SELF:RowNumber    += nRows
+        SELF:_TrimBufferEnd()
+        return nRows
+
+    /// <summary>
+    /// Like _FetchBackward(), but finds the rows before the buffer by the key of its first row
+    /// (sorted in reverse) instead of by their offset, which makes the server read through all
+    /// rows before them. Works on a seek-anchored buffer too, which is then anchored at its new
+    /// first row. Returns -1 when the key cannot be expressed (see _KeysetCondition()).
+    /// </summary>
+    private method _FetchBackwardKeyset(nNeeded as long) as long
+        if self:_tableMode != TableMode.Table .or. SELF:RowCount == 0 .or. !SELF:_bufferContiguous
+            return -1
+        endif
+        var cBefore := SELF:_KeysetCondition(SELF:DataTable:Rows[0], TRUE, FALSE, TRUE)
+        if cBefore == null
+            return -1
+        endif
+        local nCount := iif(SELF:_readBackRows > 0, SELF:_readBackRows, _oTd:PageSize) as long
+        nCount := Math.Max(nCount, nNeeded)
+        var newTable := SELF:_ReadTable(cBefore, 0, nCount, TRUE)
+        if newTable == null
+            return -1
+        endif
+        var nRows := newTable:Rows:Count
+        local cAnchor := "" as string
+        if nRows == nCount .and. !String.IsNullOrEmpty(SELF:_anchorWhere)
+            // The rows before the anchor are not part of the anchored result set.
+            cAnchor := SELF:_KeysetCondition(newTable:Rows[nRows-1], FALSE, TRUE, TRUE)
+            if cAnchor == null
+                return -1
+            endif
+        endif
+        // The rows come nearest first.
+        for var nRow := 0 upto nRows-1
+            var newRow := SELF:DataTable:NewRow()
+            newRow:ItemArray := newTable:Rows[nRow]:ItemArray
+            SELF:DataTable:Rows:InsertAt(newRow, 0)
+            newRow:AcceptChanges()
+        next
+        SELF:RowNumber    += nRows
+        SELF:_readAheadRows := 0
+        SELF:_readBackRows := iif(nRows < nCount, 0, Math.Min(nCount * 2, SELF:_MaxBufferRows))
+        if nRows < nCount
+            // the buffer now starts at the first row of the order
+            SELF:_anchorWhere := ""
+            SELF:_bufferStart := 0
+        elseif !String.IsNullOrEmpty(SELF:_anchorWhere)
+            SELF:_anchorWhere := cAnchor
+            SELF:_bufferStart := 0
+        else
+            SELF:_bufferStart := Math.Max(0, SELF:_bufferStart - nRows)
+        endif
+        SELF:_TrimBufferEnd()
+        return nRows
+
+    /// <summary>Evict rows from the end when the buffer grew beyond _MaxBufferRows.</summary>
+    private method _TrimBufferEnd() as void
         var nRemove := SELF:RowCount - SELF:_MaxBufferRows
         if nRemove > 0
             for var i := 1 upto nRemove
@@ -1087,7 +1172,7 @@ partial class SQLRDD
             next
             SELF:_hasEOF := false
         endif
-        return nRows
+        return
 
     /// <summary>
     /// Replace the buffer with up to one page of the anchored result set starting at nOffset.
@@ -1095,6 +1180,7 @@ partial class SQLRDD
     /// <param name="nRows">Rows to read, 0 = PageSize.</param>
     private method _LoadBufferAt(nOffset as long, nRows := 0 as long) as long
         SELF:_readAheadRows := nRows
+        SELF:_readBackRows := nRows
         SELF:_ClearTable()
         SELF:_bufferStart := Math.Max(0, nOffset)
         SELF:_bufferContiguous := true
@@ -1160,6 +1246,18 @@ partial class SQLRDD
                 SELF:_SetBOF(TRUE)
                 return true
             endif
+            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= _oTd:PageSize
+                // Read the rows before an anchored buffer by key, without looking up its position.
+                var nFetched := SELF:_FetchBackwardKeyset(1 - nNewRow)
+                if nFetched == 0
+                    SELF:RowNumber := 1
+                    SELF:_SetBOF(TRUE)
+                    return true
+                elseif nFetched > 0
+                    nNewRow += nFetched
+                    loop
+                endif
+            endif
             if !String.IsNullOrEmpty(SELF:_anchorWhere)
                 // Seek-anchored buffer: the rows before the anchor are not part of the anchored
                 // result set, so switch to absolute positions first.
@@ -1193,12 +1291,13 @@ partial class SQLRDD
                 nNewRow := 1
                 exit
             endif
-            if SELF:_FetchBackward() == 0
+            var nRows := SELF:_FetchBackward(1 - nNewRow)
+            if nRows == 0
                 SELF:RowNumber := 1
                 SELF:_SetBOF(TRUE)
                 return true
             endif
-            nNewRow := nTarget - SELF:_bufferStart + 1
+            nNewRow += nRows
         enddo
         SELF:RowNumber := nNewRow
         SELF:_SetEOF(FALSE)
@@ -1270,6 +1369,13 @@ partial class SQLRDD
         return true
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
+        if SELF:_tableMode == TableMode.Table .and. ;
+            !(SELF:_bufferContiguous .and. String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:RowCount > 0) ;
+            .and. SELF:_LoadWindowAt(nRec, -1)
+            // Nothing that could be extended: the buffer now starts at the record, anchored at its
+            // key, and its position in the order is only looked up when needed.
+            RETURN TRUE
+        endif
         // GoTo() only calls _GotoRecord() after it already established that nRec is NOT in
         // the currently loaded buffer, so its position in the order must be looked up.
         var nOffset := SELF:_GetAbsoluteOffset(nRec)
@@ -1298,14 +1404,12 @@ partial class SQLRDD
                     endif
                     lLoaded := SELF:_FetchForward() > 0
                 elseif nOffset < SELF:_bufferStart .and. nOffset >= SELF:_bufferStart - _oTd:PageSize
-                    lLoaded := SELF:_FetchBackward() > 0
+                    lLoaded := SELF:_FetchBackward(SELF:_bufferStart - nOffset) > 0
                 endif
             endif
-            if !lLoaded
+            if !lLoaded .and. !SELF:_LoadWindowAt(nRec, nOffset)
                 // Center the record in a small page, so that its neighbours on either side are
-                // buffered as well. Code that goes to a record mostly reads only it and the next
-                // or previous one (a full page of a wide table costs about 10 ms); reading on makes
-                // the pages grow.
+                // buffered as well.
                 SELF:_anchorWhere := ""
                 SELF:_LoadBufferAt(nOffset - SELF:_SmallPageRows / 2, SELF:_SmallPageRows)
             endif
@@ -1318,6 +1422,70 @@ partial class SQLRDD
         SELF:_SetEOF(FALSE)
         SELF:_SetBOF(FALSE)
         RETURN TRUE
+
+    /// <summary>
+    /// Replace the buffer with a small page that starts at record nRec, found by its key in the
+    /// current order (see _KeysetCondition()) instead of its offset: with OFFSET the server reads
+    /// through all rows before it (10 ms for a 10 row page at offset 500 of a 1000 row table, 2 ms
+    /// by key). Code that goes to a record mostly reads only it and the next or previous one;
+    /// reading on makes the pages grow, in both directions.
+    /// </summary>
+    /// <param name="nOffset">The record's 0 based offset in the order when known, otherwise -1:
+    /// the buffer is then anchored at the record.</param>
+    /// <returns>FALSE when the key cannot be expressed or the record is not part of the order.</returns>
+    PRIVATE METHOD _LoadWindowAt(nRec as DWORD, nOffset as long) AS LOGIC
+        local oRow as DataRow
+        if SELF:CurrentOrder != null
+            // only orders on plain columns, a key expression has no literal value
+            foreach var cItem in SELF:CurrentOrder:OrderList
+                var cExpr := iif(cItem:EndsWith(" DESC", StringComparison.OrdinalIgnoreCase), cItem:Substring(0, cItem:Length - 5), cItem)
+                if SELF:DataTable == null .or. SELF:DataTable:Columns:IndexOf(cExpr:Trim():Trim(<char>{'[',']','"','`'})) < 0
+                    return false
+                endif
+            next
+        endif
+        var nRow := SELF:_FindRowInBuffer(nRec)
+        if nRow > 0
+            oRow := SELF:DataTable:Rows[nRow-1]
+        else
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
+            SELF:_command:ClearParameters()
+            var oRecTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
+            if oRecTable == null .or. oRecTable:Rows:Count == 0
+                return false
+            endif
+            oRow := oRecTable:Rows[0]
+        endif
+        var cFrom := SELF:_KeysetCondition(oRow, FALSE, TRUE, TRUE)
+        if cFrom == null
+            return false
+        endif
+        var nCount   := SELF:_SmallPageRows
+        var newTable := SELF:_ReadTable(cFrom, 0, nCount)
+        if newTable == null .or. newTable:Rows:Count == 0 .or. Convert.ToUInt32(newTable:Rows[0][self:_recnoColumNo]) != nRec
+            // not part of the order (FOR condition, scope)
+            return false
+        endif
+        var nRows := newTable:Rows:Count
+        SELF:_lazyGoto := FALSE
+        SELF:_ClearTable()
+        SELF:DataTable := newTable
+        SELF:RowNumber := 1
+        SELF:_outsideOrder := false
+        SELF:_bufferContiguous := true
+        if nOffset >= 0
+            SELF:_anchorWhere := ""
+            SELF:_bufferStart := nOffset
+        else
+            SELF:_anchorWhere := cFrom
+            SELF:_bufferStart := 0
+        endif
+        SELF:_hasEOF := nRows < nCount
+        SELF:_readAheadRows := iif(nRows < nCount, 0, nCount * 2)
+        SELF:_readBackRows := nCount
+        SELF:_SetEOF(FALSE)
+        SELF:_SetBOF(FALSE)
+        return true
 
     PRIVATE METHOD _GotoRecordOutsideOrder(nRec as DWORD) AS LOGIC
         if !SELF:_LoadSingleRecord(nRec)
@@ -1412,6 +1580,7 @@ partial class SQLRDD
         SELF:_bufferStart := 0
         SELF:_bufferContiguous := true
         SELF:_readAheadRows := 0
+        SELF:_readBackRows := 0
         SELF:_serverReccountValid := false
         SELF:_SetEOF(oTable:Rows:Count == 0)
         SELF:_SetBOF(FALSE)

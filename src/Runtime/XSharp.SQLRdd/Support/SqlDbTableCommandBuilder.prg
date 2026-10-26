@@ -150,7 +150,8 @@ internal class SqlDbTableCommandBuilder
     /// Build a fetch of nCount rows of the current order/scope/filter (further restricted by
     /// sWhereClause), starting at the 0-based row offset nOffset within that result.
     /// </summary>
-    method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int) as string
+    /// <param name="lReverse">TRUE to sort in reverse, for reading the rows before a given one.</param>
+    method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int, lReverse := false as logic) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -197,9 +198,27 @@ internal class SqlDbTableCommandBuilder
                     cOrderby += " DESC"
                 endif
             endif
+            if lReverse
+                // per item, the items can be expressions with commas
+                var aItems := List<string>{}
+                foreach var cItem in CurrentOrder:OrderList
+                    if cItem:EndsWith(" DESC", StringComparison.OrdinalIgnoreCase)
+                        aItems:Add(cItem:Substring(0, cItem:Length - 5):TrimEnd())
+                    else
+                        aItems:Add(cItem + " DESC")
+                    endif
+                next
+                if SELF:_oTable:HasRecnoColumn .and. !Functions.List2String(CurrentOrder:OrderList):Contains(Provider:QuoteIdentifier(self:_oTable:RecnoColumn))
+                    aItems:Add(Provider:QuoteIdentifier(self:_oTable:RecnoColumn) + iif(CurrentOrder:Descending, "", " DESC"))
+                endif
+                cOrderby := Functions.List2String(aItems)
+            endif
         elseif SELF:_oTable:HasRecnoColumn
             sb:Append(Provider:OrderByClause)
             cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+            if lReverse
+                cOrderby += " DESC"
+            endif
         endif
         cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)

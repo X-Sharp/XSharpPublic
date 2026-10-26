@@ -199,6 +199,13 @@ PRIVATE STATIC METHOD WalkSource() AS VOID
             CATCH e AS Exception
                 XSettings.Exception(e)
             END TRY
+            IF MustAbort
+                // Stop() (the solution closes): walkOneFile skipped the remaining files, so the project
+                // was not walked completely. Do not finish it as if it was.
+                _currentProject := NULL
+                XSolution.SetStatusBarAnimation(FALSE, 3)
+                RETURN
+            ENDIF
             BEGIN LOCK _gate
                 _projectsForTypeResolution:Enqueue(project)
             END LOCK

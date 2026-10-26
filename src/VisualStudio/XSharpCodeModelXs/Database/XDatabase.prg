@@ -686,6 +686,11 @@ STATIC METHOD DeleteOrphanFiles() AS List<STRING>
             cmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
             cmd:ExecuteScalar()
 
+            // Assemblies that no project references any more, with their types and globals (cascade).
+            // Only here: no XAssembly has read its Id from the database yet.
+            cmd:CommandText := "Delete from Assemblies where Id not in (select IdAssembly from AssembliesPerProject)"
+            cmd:ExecuteScalar()
+
         CATCH e AS Exception
             Log("Error deleting orphaned files")
             XSettings.Exception(e)
@@ -968,9 +973,10 @@ STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
                 NEXT
                 cmd:CommandText := "delete from AssembliesPerProject where idProject = "+oProject:Id:ToString() + " and idAssembly not in ("+sIds+")"
                 cmd:ExecuteNonQuery()
-                // Remove non referenced assemblies and their types and globals
-                cmd:CommandText := "delete from Assemblies where id not in (select IdAssembly from AssembliesPerProject)"
-                cmd:ExecuteNonQuery()
+                // Assemblies that no project references any more are deleted in DeleteOrphanFiles, when the
+                // database is opened. Not here: the projects resolve their references on many threads, and an
+                // assembly another project has just read is not linked to it yet. Deleting it here removed its
+                // types, and every later save of the references of every project failed (FOREIGN KEY) on it.
             CATCH e as Exception
                 Log("Error updating project assembly references for "+oProject:Name)
                 XSettings.Exception(e)

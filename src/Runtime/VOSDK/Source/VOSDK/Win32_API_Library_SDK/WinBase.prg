@@ -1,3 +1,10 @@
+/// <exclude />
+INTERNAL FUNCTION MyMAKELANGID( p AS WORD, s AS WORD ) AS WORD
+	RETURN (WORD) ( ( s << 10 ) | p )
+
+/// <exclude />
+INTERNAL FUNCTION MyMAKELCID( lgid AS WORD, srtid AS WORD ) AS DWORD
+	RETURN (DWORD) ( ( ( (DWORD)(srtid) ) << 16) | ( (INT)(DWORD) lgid ) )
 VOSTRUCT _WINOVERLAPPED
 	MEMBER Internal AS DWORD
 	MEMBER InternalHigh AS DWORD
@@ -1144,7 +1151,7 @@ FUNCTION GetSystemMessage(dwId AS DWORD) AS STRING
 
 	pMsg := MemAlloc(512)
 	FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwId, ;
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),  ; // Default language
+		MyMAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),  ; // Default language
 		pMsg, 512, NULL )
 	cReturn := Psz2String(PSZ(_CAST,PTR(_CAST,pMsg)))
 	MemFree(pMsg)

@@ -1,101 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <ProjectGuid>06099C3D-1697-4EB1-9F53-8A9A50B9EACD</ProjectGuid>
+    <OutputType>Library</OutputType>
     <RootNamespace>XSharp.VO</RootNamespace>
     <AssemblyName>XSharp.VO</AssemblyName>
-    <Name>XSharp.VO</Name>
+    <UseWindowsForms>true</UseWindowsForms>
     <Dialect>VO</Dialect>
-    <OutputName>XSharp.VO</OutputName>
-    <CS>true</CS>
-    <Unsafe>true</Unsafe>
-    <NS>false</NS>
-    <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <IncludePaths>$(CommonInclude)</IncludePaths>
-    <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <StartupObject />
-    <EnforceSelf>True</EnforceSelf>
-    <Allowdot>false</Allowdot>
+    <Unsafe>True</Unsafe>
+    <NamedArgs>True</NamedArgs>
+    <Cs>true</Cs>
+    <StartupObject /> 
+    <Vo15>true</Vo15> 
+    <ActiveTargetFramework>net47</ActiveTargetFramework> 
+    <TargetFrameworks>net47;net8.0-windows</TargetFrameworks>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>constants.prg</Link>
-    </Compile>
-    <Compile Include="Functions\General.prg" />
-    <Compile Include="Functions\International.prg" />
-    <Compile Include="Functions\International2.prg" />
-    <Compile Include="Functions\Obsolete.prg" />
-    <Compile Include="Functions\Registry.prg" />
-    <Compile Include="Functions\String.prg" />
-    <Compile Include="Functions\unsafe.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="Types\ErrorDialog.prg" />
-    <Compile Include="Types\NamedArg.prg" />
-    <Compile Include="Types\OleAutoObject.prg" />
-    <Compile Include="Types\OleAutoObjectFromFile.prg" />
-    <Compile Include="Types\OleDateTime.prg" />
-    <Compile Include="Types\VObject.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Functions\" />
-    <Folder Include="Types" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Data</Name>
-      <AssemblyName>System.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

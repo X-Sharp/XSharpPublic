@@ -58,9 +58,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+    <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.csproj">
+      <Name>XSharp.MacroCompiler</Name>
+      <Project>{31954ca2-6e78-92b8-6031-39d53a91f33f}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">

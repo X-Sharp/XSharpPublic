@@ -1,207 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <ProjectGuid>3a771f0e-9400-4a19-8663-c71567ebfa29</ProjectGuid>
     <RootNamespace>XSharp.VFP</RootNamespace>
     <AssemblyName>XSharp.VFP</AssemblyName>
-    <Name>XSharp.VFP</Name>
     <Dialect>XBaseNet</Dialect>
-    <OutputName>XSharp.VFP</OutputName>
     <CS>true</CS>
-    <Unsafe>False</Unsafe>
     <NS>true</NS>
     <vo15>False</vo15>
-    <VulcanCompatibleResources>True</VulcanCompatibleResources>
+    <VulcanCompatibleResources>true</VulcanCompatibleResources>
     <IncludePaths>$(ProjectDir)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <StartupObject />
-   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+    <EnforceSelf>true</EnforceSelf>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <ActiveTargetFramework>net47</ActiveTargetFramework>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Data</Name>
-      <AssemblyName>System.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Xml</Name>
-      <AssemblyName>System.Xml.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <PackageReference Include="System.Management">
+      <Version>10.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Resources.Extensions">
+      <Version>10.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>constants.prg</Link>
-    </Compile>
-    <Compile Include="ArrayFunctions.prg" />
-    <Compile Include="Classes\Collection.prg" />
-    <Compile Include="Classes\Empty.prg" />
-    <Compile Include="Classes\Custom.prg" />
-    <Compile Include="Classes\Abstract.prg" />
-    <Compile Include="Classes\FoxArray.prg" />
-    <Compile Include="Classes\PropertyContainer.prg" />
-    <Compile Include="ClassFunctions.prg" />
-    <Compile Include="BitFunctions.prg" />
-    <Compile Include="Commands.prg" />
-    <Compile Include="Cursors\Xml.prg" />
-    <Compile Include="LanguageCoreWrappers.prg" />
-    <Compile Include="Cursors\DbFunctions.prg" />
-    <Compile Include="Database\DbFunctions.prg" />
-    <Compile Include="Database\DatabaseCommands.prg" />
-    <Compile Include="DebugFunctions.prg" />
-    <Compile Include="Defines.prg" />
-    <Compile Include="FileFunctions.prg" />
-    <Compile Include="FinancialFunctions.prg" />
-    <Compile Include="FoxCompilerSupport.prg" />
-    <Compile Include="GatherScatter.prg" />
-    <Compile Include="GetWord.prg" />
-    <Compile Include="Keyboard.prg" />
-    <Compile Include="MacroWrappers.prg" />
-    <Compile Include="NotSupported.prg" />
-    <Compile Include="PrinterFunctions.prg" />
-    <Compile Include="RuntimeCoreWrappers.prg" />
-    <Compile Include="SQL\EmbeddedSql.prg" />
-    <Compile Include="SQL\SQLFunctions.prg" />
-    <Compile Include="SystemFunctions.prg" />
-    <Compile Include="ToDo-TUVWX.prg" />
-    <Compile Include="ToDo-S.prg" />
-    <Compile Include="ToDo-QR.prg" />
-    <Compile Include="ToDo-NOP.prg" />
-    <Compile Include="ToDo-KLM.prg" />
-    <Compile Include="MiscFunctions.prg" />
-    <Compile Include="ToDo-HI.prg" />
-    <Compile Include="ToDo-G.prg" />
-    <Compile Include="ToDo-EF.prg" />
-    <Compile Include="DateFunctions.prg" />
-    <Compile Include="ToDo-D.prg" />
-    <Compile Include="ToDo-C.prg" />
-    <Compile Include="Enums.prg" />
-    <Compile Include="Functions.prg" />
-    <Compile Include="ToDo-A.prg" />
-    <Compile Include="NumericFunctions.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="StringFunctions.prg" />
-    <Compile Include="SystemVariables.prg" />
-    <Compile Include="TextOutPut.prg" />
-    <Compile Include="Types\Attributes.prg" />
-    <Compile Include="UIFunctions.prg" />
-    <Compile Include="UI\Assert.prg" />
-    <Compile Include="UI\Dialogs.prg" />
-    <Compile Include="UI\UIAndWindows.prg" />
-    <Compile Include="UI\VfpUIService.prg" />
-    <Compile Include="Win32.prg" />
-    <Compile Include="WindowFunctions.prg" />
-    <Compile Include="WorkAreaWrappers.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes" />
-    <Folder Include="Cursors" />
-    <Folder Include="Database" />
-    <Folder Include="Types" />
-    <Folder Include="TestData\" />
-    <Folder Include="UI" />
-    <Folder Include="SQL" />
-    <Folder Include="Properties\" />
-    <Folder Include="VFPFileStructures\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj">
-      <Name>XSharp.Data</Name>
-      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Credits.txt" />
-    <None Include="functionsToImplement.txt" />
-    <None Include="TestData\Categories.CDX" />
-    <None Include="TestData\categories.dbf" />
-    <None Include="TestData\categories.fpt" />
-    <None Include="TestData\customercustomerdemo.cdx" />
-    <None Include="TestData\customercustomerdemo.dbf" />
-    <None Include="TestData\customerdemographics.cdx" />
-    <None Include="TestData\customerdemographics.dbf" />
-    <None Include="TestData\customerdemographics.fpt" />
-    <None Include="TestData\Customers.CDX" />
-    <None Include="TestData\customers.dbf" />
-    <None Include="TestData\employees.cdx" />
-    <None Include="TestData\employees.dbf" />
-    <None Include="TestData\employees.fpt" />
-    <None Include="TestData\employeeterritories.cdx" />
-    <None Include="TestData\employeeterritories.dbf" />
-    <None Include="TestData\northwind.dbc" />
-    <None Include="TestData\northwind.dct" />
-    <None Include="TestData\northwind.dcx" />
-    <None Include="TestData\orderdetails.cdx" />
-    <None Include="TestData\orderdetails.dbf" />
-    <None Include="TestData\orders.cdx" />
-    <None Include="TestData\orders.dbf" />
-    <None Include="TestData\products.cdx" />
-    <None Include="TestData\products.dbf" />
-    <None Include="TestData\region.cdx" />
-    <None Include="TestData\region.dbf" />
-    <None Include="TestData\shippers.cdx" />
-    <None Include="TestData\shippers.dbf" />
-    <None Include="TestData\suppliers.cdx" />
-    <None Include="TestData\suppliers.dbf" />
-    <None Include="TestData\suppliers.fpt" />
-    <None Include="TestData\territories.cdx" />
-    <None Include="TestData\territories.dbf" />
-    <None Include="VFPFileStructures\VFP26Form-2.pdf" />
-    <None Include="VFPFileStructures\VFP26Form.pdf" />
-    <None Include="VFPFileStructures\VFP26Menu.pdf" />
-    <None Include="VFPFileStructures\VFP26Project-2.pdf" />
-    <None Include="VFPFileStructures\VFP26Project.pdf" />
-    <None Include="VFPFileStructures\VFP26Report-2.pdf" />
-    <None Include="VFPFileStructures\VFP26Report.pdf" />
-    <None Include="VFPFileStructures\VFP60Dbc2.pdf" />
-    <None Include="VFPFileStructures\VFP6Dbc.pdf" />
-    <None Include="VFPFileStructures\VFP6Form.pdf" />
-    <None Include="VFPFileStructures\VFP6Form2.pdf" />
-    <None Include="VFPFileStructures\VFP6Menu.pdf" />
-    <None Include="VFPFileStructures\VFP6Project.pdf" />
-    <None Include="VFPFileStructures\VFP6Project2.pdf" />
-    <None Include="VFPFileStructures\VFP6Report.pdf" />
-    <None Include="VFPFileStructures\VFP6Report2.pdf" />
-    <None Include="VFPProperties.xh" />
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

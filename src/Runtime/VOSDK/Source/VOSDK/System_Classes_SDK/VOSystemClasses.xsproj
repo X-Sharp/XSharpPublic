@@ -1,64 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Props" />
-  <!-- Please note that most important settings are read from VOSDK.Props -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
-    <ProjectGuid>AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C</ProjectGuid>
     <AssemblyName>VOSystemClasses</AssemblyName>
-    <Name>VOSystemClasses</Name>
-    <OutputName>VOSystemClasses</OutputName> 
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <VO4>false</VO4>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO14>false</VO14>
-    <NamedArgs>False</NamedArgs>
+    <cs>True</cs>
     <EnforceSelf>True</EnforceSelf>
-    <Allowdot>false</Allowdot>
-    <WarningLevel>4</WarningLevel>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <Dialect>XbaseNet</Dialect>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
-      <Link>SDKAssemblyinfo.prg</Link>
-    </Compile>
-    <Compile Include="**\*.prg" />    
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties" />
-  </ItemGroup>
-  <Import Project="..\VOSDKDocs.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

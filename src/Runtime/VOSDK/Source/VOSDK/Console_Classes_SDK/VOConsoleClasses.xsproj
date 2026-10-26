@@ -1,61 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Props" />
-  <!-- Please note that many properties are read from VOSDK.Props -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
-    <ProjectGuid>d0a5da23-00b5-41fd-8564-96246b1e222f</ProjectGuid>
     <AssemblyName>VOConsoleClasses</AssemblyName>
-    <Name>VOConsoleClasses</Name>
-    <OutputName>VOConsoleClasses</OutputName>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <VO15>false</VO15>
-    <VO14>false</VO14>
-    <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO2>false</VO2>
-    <VO4>false</VO4>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <StartupObject />
-    <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
-    <Allowdot>false</Allowdot>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <Dialect>XbaseNet</Dialect>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
-      <Link>SDKAssemblyinfo.prg</Link>
-    </Compile>
-    <Compile Include="**\*.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties" />
-  </ItemGroup>
-  <Import Project="..\VOSDKDocs.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />  </ItemGroup>
 </Project>

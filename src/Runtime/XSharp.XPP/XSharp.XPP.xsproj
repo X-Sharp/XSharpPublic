@@ -1,164 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <ProjectGuid>c5d7be20-038e-4b42-a90a-b13bab83d8e5</ProjectGuid>
     <RootNamespace>XSharp.XPP</RootNamespace>
     <AssemblyName>XSharp.XPP</AssemblyName>
-    <Name>XSharp.XPP</Name>
     <Dialect>XBaseNet</Dialect>
-    <OutputName>XSharp.XPP</OutputName>
     <CS>true</CS>
-    <Unsafe>true</Unsafe>
+    <Unsafe>True</Unsafe>
     <NS>true</NS>
     <vo15>true</vo15>
-    <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StartupObject />
-    <ApplicationIcon />
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <StandardDefs />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <ActiveTargetFramework>net47</ActiveTargetFramework>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>constants.prg</Link>
-    </Compile>
-    <Compile Include="DbFunctions.prg" />
-    <Compile Include="RuntimeClasses.prg" />
-    <Compile Include="Types\Abstract.prg" />
-    <Compile Include="Types\ClassObject.prg" />
-    <Compile Include="Types\Collations.prg" />
-    <Compile Include="Types\StaticClassObject.prg" />
-    <Compile Include="Types\DataObject.prg" />
-    <Compile Include="Types\RuntimeClasses.prg" />
-    <Compile Include="Types\XAction.prg" />
-    <Compile Include="Types\XError.prg" />
-    <Compile Include="Types\XDocument.prg" />
-    <Compile Include="Types\WrappedObject.prg" />
-    <Compile Include="XPPCollations.Designer.prg">
-      <DependentUpon>XPPCollations.resx</DependentUpon>
-    </Compile>
-    <Compile Include="International.prg" />
-    <Compile Include="Defines.prg" />
-    <Compile Include="Defines\AppEvent_CH.prg" />
-    <Compile Include="Defines\asxml_ch.prg" />
-    <Compile Include="Defines\Class_CH.prg" />
-    <Compile Include="Defines\Collat_ch.prg" />
-    <Compile Include="Defines\dll_ch.prg" />
-    <Compile Include="Defines\dmlb_ch.prg" />
-    <Compile Include="OOPFunctions.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="StringFunctions.prg" />
-    <Compile Include="XMLFunctions.prg" />
-    <Compile Include="_StartupCode.prg" />
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Defines" />
-    <Folder Include="Collations" />
-    <Folder Include="Types" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Collations\AnsiSystem.collation" />
-    <None Include="Collations\Ascii.collation" />
-    <None Include="Collations\British.collation" />
-    <None Include="Collations\Danish.collation" />
-    <None Include="Collations\Dutch.collation" />
-    <None Include="Collations\Finish.collation" />
-    <None Include="Collations\French.collation" />
-    <None Include="Collations\German.collation" />
-    <None Include="Collations\Greek437.collation" />
-    <None Include="Collations\Greek851.collation" />
-    <None Include="Collations\Icelandic850.collation" />
-    <None Include="Collations\Icelandic861.collation" />
-    <None Include="Collations\Italian.collation" />
-    <None Include="Collations\Norwegian.collation" />
-    <None Include="Collations\OemSystem.collation" />
-    <None Include="Collations\Portuguese.collation" />
-    <None Include="Collations\Spanish.collation" />
-    <None Include="Collations\Swedish.collation" />
-    <None Include="Collations\User.collation" />
-    <None Include="WhatToDoWith.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="XPPCollations.resx">
+    <EmbeddedResource Update="XPPCollations.resx">
+      <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Data</Name>
-      <AssemblyName>System.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Xml</Name>
-      <AssemblyName>System.Xml.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
   <Import Project="..\XmlDoc.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DefineConstants>DEBUG;TRACE;RUNTIME;DOC</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU' ">
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DefineConstants>DEBUG;TRACE;RUNTIME;DOC</DefineConstants>
-  </PropertyGroup>
 </Project>

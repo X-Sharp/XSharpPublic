@@ -498,7 +498,7 @@ FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
         CASE c'"'
             c := c'^'
         CASE c'>'
-            c := ')'
+            c := c')'
         CASE c'<'
             c := c'('
         CASE c'|'

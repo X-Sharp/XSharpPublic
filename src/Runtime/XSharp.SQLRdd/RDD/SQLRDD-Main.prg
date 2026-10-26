@@ -616,6 +616,11 @@ partial class SQLRDD inherit Workarea
         if Connection?:Provider is null .or. !self:Connection:IsOpen .or. _oTd == null
             return recNos:ToArray()
         endif
+        if !self:Connection:UseLocks
+            // No lock table entries are ever written without UseLocks. Code that asks for the
+            // lock list after every movement (RLockList/IsLocked()) paid a query each time.
+            return recNos:ToArray()
+        endif
         try
             var sb := StringBuilder{}
             sb:AppendLine("select recno from " + SqlDbConnection.LockTableName)
@@ -804,7 +809,24 @@ partial class SQLRDD inherit Workarea
             next
         endif
 
-        var found := SELF:_GotoRecord(nRec)
+        // Code that saves the record number, seeks elsewhere and goes back (or follows a
+        // relation) mostly just reads the record's fields afterwards. Its position in the order
+        // is only needed when something moves from it (Skip(), OrderKeyNo ...), see
+        // _EnsurePositioned(): load just the record by its recno. Looking the position up right
+        // away cost a ROW_NUMBER() over the order plus a whole page around the record.
+        // When the buffer already is such a single record (the previous GoTo() was lazy too, or
+        // an order change), position fully: a browse that calls GoTo() for every row it paints
+        // then gets a page with the neighbouring rows instead of one query per row.
+        local found as logic
+        if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
+            .and. (SELF:_bufferContiguous .or. SELF:RowCount > 1)
+            found := SELF:_LoadSingleRecord(nRec)
+            if !found
+                found := SELF:_GotoRecord(nRec)
+            endif
+        else
+            found := SELF:_GotoRecord(nRec)
+        endif
         SELF:_CheckEofBof()
         RETURN found
     end method

@@ -127,7 +127,6 @@ CLASS TextControl INHERIT Control
 
 /// <include file="Gui.xml" path="doc/TextControl.ControlFont/*" />
 	ACCESS ControlFont as Font
-		LOCAL oControl AS TextControl
 		if (self:oFont == null_object)
 			if IsAccess(oParent, #Font)
 				oFont := IVarGet(oParent,#Font)

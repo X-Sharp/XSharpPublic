@@ -183,11 +183,6 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Runtime\VOSdkTyped\Source\VOSdk\GUI_Classes_SDK\XSharp.VO.GUIClasses.xsproj">
       <Name>XSharp.VO.GUIClasses</Name>
       <Project>{051d166b-3886-43fb-a3c6-6c6846ea6df1}</Project>

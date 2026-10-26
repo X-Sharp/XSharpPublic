@@ -57,8 +57,13 @@
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.SDK.Props" />
     <File Path="Runtime/VOSDK/Source/VOSDK/VOSDKDocs.Props" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/Console_Classes_SDK/VOConsoleClasses.Next.xsproj" />
-    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/GUI_Classes_SDK/VOGUIClasses.xsproj" Id="0bce49e2-3597-4e32-aa3c-c465130c05c8" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Internet_SDK/VOInternetClasses.xsproj" Id="a62ef59e-7473-4c55-bed8-63ca0d896995" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/RDD_Classes_SDK/VORDDClasses.Next.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0">
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Report_Classes_SDK/VOReportClasses.xsproj" Id="65d766d9-e113-4372-960b-01732b65d27d" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/SQL_Classes_SDK/VOSQLClasses.xsproj" Id="86da1b42-fbf9-432b-a2d2-67a4f357f019" />
     <Project Path="Runtime/VOSDK/Source/VOSDK/System_Classes_SDK/VOSystemClasses.Next.xsproj" />
+    <Project Path="Runtime/VOSDK/Source/VOSDK/Win32_API_Library_SDK/VOWin32APILibrary.xsproj" Id="6c93866f-1894-4e82-9aca-55927cae914a" />
   </Folder>
   <Folder Name="/VOSDKTyped/">
     <File Path="Runtime/VOSdkTyped/Source/VOSdk/version.Props" />

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-10-20T15:27:34.264Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-25T14:31:40.775Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -64,9 +64,15 @@
       <li styleclass="List1">修复了在支持动态属性的对象中，__FieldGetWa2 中的字段和成员查找问题，并改进了变量无法找到时抛出的错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2092" target="_blank">#2092</link>)</li>
       <li styleclass="List1">修复了转换中使用的 usCulture，使其忽略 Windows 用户的覆盖设置；这解决了当用户自定义了小数符号或数字分组时，Val()、Str() 和 Transform() 方法出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2100" target="_blank">#2100</link>)</li>
     </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">修复了新版本 .NET 中对微小负数（-0.0）进行四舍五入时出现的问题 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2104" target="_blank">#2104</link></li>
+      <li styleclass="List1">修复了 FindClass 处理尚未加载的类型时出现的问题 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2109" target="_blank">#2109</link></li>
+      <li styleclass="List1">宏脚本中的嵌套代码块现在可以访问周围代码中的局部变量 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2113" target="_blank">#2113</link></li>
+      <li styleclass="List1">允许在宏中进行隐式接口转换 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2114" target="_blank">#2114)</link></li>
+    </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">（实验性）为 SDK 风格项目新增了 WinForms 设计器影子项目桥接功能，包括保存时的自动同步以及项目关闭时的清理操作。此功能将用于针对 .NET 8 及更高版本的项目。 对于 .NET 4，将使用内部设计器。IDE 将创建一个具有相同引用项的 C# 项目，并将 X# 代码交叉编译为 C#，以便进行设计。表单中的更改将交叉编译回 X#，双击事件处理程序将打开相应的 X# 源文件。</li>
       <li styleclass="List1">在 IDE 中添加了 SDK 风格项目的引用管理功能，包括“添加程序集引用”、“添加项目引用”以及与“依赖项”节点的集成（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2041" target="_blank">#2041</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2048" target="_blank">#2048</link>）</li>
       <li styleclass="List1">在面向现代 .NET 目标的 SDK 风格项目属性页面中，增加了对目标操作系统和运行时标识符的支持</li>
@@ -78,7 +84,7 @@
       <li styleclass="List1">项目“属性”页面现在基于“MsBuild Rules”文件夹中的 XAML 文件</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了打开解决方案或解析引用时出现的死锁和挂起问题，包括启动和从命令行打开的情况，以及 UI 线程引用解析（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2046" target="_blank">#2046</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2066" target="_blank">#2066</link>）</li>
       <li styleclass="List1">减少了 UI 线程的 marshalling 和代码模型数据库的锁争用，从而提高了响应速度和 SDK 风格项目的加载性能（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2084" target="_blank">#2084</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2043" target="_blank">#2043</link>）</li>
       <li styleclass="List1">修复了针对带有嵌入式平台标识符（如 net8-windows）的目标框架的 SDK 风格 NuGet 恢复和属性页处理 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2085" target="_blank">#2085</link>)</li>
@@ -86,7 +92,7 @@
     </list>
     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">新增了 KeepFolderStructure 选项，以便导出的项目能够保留原始的 VFP 文件夹结构</li>
       <li styleclass="List1">新增了将导出项目保存为 XIDE 格式的支持</li>
       <li styleclass="List1">新增选项，可将每个 VFP 库作为独立项目导出，并按依赖关系排序，同时新增了基本函数、窗体和菜单起点的生成功能</li>
@@ -96,7 +102,7 @@
       <li styleclass="List1">通过规范化旧版 =&lt; 和 =&gt; 运算符、处理别名/类型冲突、将 EXTERNAL 和 DLL DECLARE 语句注释掉，以及增加对 VFP、菜单和报表 UDC 的额外支持，扩展了代码转换以及菜单和报表的支持</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了导出的 VFP 宇宙元数据，使其包含 FNAME() 和 FATTRIB() (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2015" target="_blank">#2015</link>)</li>
       <li styleclass="List1">修复了 SET SKIP 转换，并改进了导出过程中的换行和注释处理</li>
       <li styleclass="List1">修复了输出文件夹处理、目标文件夹清理、文件删除提示信息以及 ColorProperties.json 部署缺失的问题</li>
@@ -108,7 +114,7 @@
     <para styleclass="Normal">X# 3 包含一些破坏性变更，因此您应花时间重新编译并测试所有现有项目和解决方案。</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">编译器不再支持“自带运行时”（Bring Your Own Runtime）。若需使用 VO 或 Vulcan 方言进行编译，您必须引用 XSharp.Core 和 XSharp.RT。<br/>这并不意味着您无法将程序链接至 Vulcan 运行时 DLL，但我们不再将 Xbase 类型映射至这些 DLL 中的类型。 因此，USUAL 将不会被映射为 Vulcan.__Usual。您仍然可以使用这些 DLL 中的类型、函数和类，但它们将不再受到特殊处理。如果您想调用 Vulcan 运行时中的函数，则必须使用静态方法的语法</li>
       <li styleclass="List1">GLOBAL USING</li>
       <li styleclass="List1">我们已添加了全文件范围的 NAMESPACE 支持</li>
@@ -117,7 +123,7 @@
       <li styleclass="List1">我们已添加代码以检查新的 [FoxArrayResultAttribute]，该属性用于标记可能返回数组的 VFP 函数（例如 AMembers()、APrinters() 和 AUsed()）。当使用未声明的变量调用该函数时，系统会为结果创建一个新的私有变量。（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1903" target="_blank">#1903</link>）</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">当一个成员有两个重载，其中一个是无参重载，另一个使用 Clipper 调用约定时，已抑制了错误的歧义警告；现在编译器会静默地选择无参重载</li>
       <li styleclass="List1">修复了从包含文件中读取 cref 属性时出现的问题</li>
       <li styleclass="List1">修复了当启用“allowdot”编译器选项时，代码中包含“UnnamedType.Property”或“UnnamedType.Method()”形式的表达式所导致的“无法生成模块”错误。</li>
@@ -136,7 +142,7 @@
     </list>
     <para styleclass="Heading2">构建系统</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">构建系统现在支持新的 SDK 风格项目</li>
       <li styleclass="List1">我们添加了一个任务，用于为项目文件中声明的 GLOBAL USING 值生成源代码。 </li>
       <li styleclass="List1">MsBuild 文件夹中 Rules 子文件夹中的 XAML 文件不再使用，并已被删除。此外，.props 和 .targets 文件中对这些文件的引用也已删除</li>
@@ -145,7 +151,7 @@
       <li styleclass="List1">上次构建的响应文件现将以 &lt;OutputFileName&gt;.rsp 的名称写入项目的中间输出文件夹。该文件的副本也会以 LastXSharpResponseFile.Rsp 的名称写入临时文件夹 </li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">用于编译本机资源的 Build 任务现在会检查 rc 和 include 文件中的字节序标记 (BOM)。若发现此类 BOM，则会生成警告 </li>
       <li styleclass="List1">本机资源生成任务的警告编号现以 XS9xxx 开头，不再以 MSB 开头……</li>
       <li styleclass="List1">对于 SDK 项目，当 Foo.xh 和 Foo.prg 文件位于同一文件夹时，Foo.xh 默认依赖于 Foo.prg</li>
@@ -161,7 +167,7 @@
     <para styleclass="Normal">X# 3 随附了适用于 .NET 4.7 和 .NET 8 的运行时 DLL。并非所有 VOSDK DLL 都已移植到 .NET 8，因为其中包含在 AnyCPU 环境下无法运行的代码。</para>
     <para styleclass="Normal">运行时 NuGet 包包含英文和中文的 XML 文档。</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们现在提供了大部分运行时 DLL 的 .Net 8 版本。</li>
       <li styleclass="List1">运行时现在以 DLL 格式和 NuGet 包的形式提供。有关这些包和 DLL 的描述，请参阅此帮助文件中关于运行时的单独主题</li>
       <li styleclass="List1">RDD 操作中的记录编号现为 DWORD 类型，不再是 LONG 类型。DBF 文件中的最大记录编号现为 2^32 - 1 </li>
@@ -170,7 +176,7 @@
       <li styleclass="List1">添加了 Transform @N 格式函数</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了 OpenADS 返回的 DBF 文件“最后更新”日期为 Null_date 时可能出现的问题</li>
       <li styleclass="List1">修复了 .Net 8 宏编译器中的一个问题</li>
       <li styleclass="List1">修复了 Memo 函数中的一个问题</li>
@@ -189,14 +195,14 @@
       <li styleclass="List1"></li>
     </list>
     <para styleclass="Heading3">XPP 方言</para>
-    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">添加了 NLS_ 定义以及 SetLocale() 函数的初始实现</li>
       <li styleclass="List1">修复了一个延迟绑定问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1836" target="_blank">#1836</link>）</li>
       <li styleclass="List1">修复了一个 UDC 中的错误</li>
       <li styleclass="List1">添加了对 Break() 函数的支持 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1961" target="_blank">#1961</link>)</li>
     </list>
     <para styleclass="Heading3">FoxPro 方言的新功能。</para>
-    <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">XSharp.VFP 程序集现在包含 VFP 中所有函数的定义，甚至包括那些存在于 XSharp.Core 和 XSharp.RT 中的函数。这些函数将把工作委托给其他程序集中的实现。</li>
       <li styleclass="List1">添加了 AUsed() 函数（VFP）的实现</li>
       <li styleclass="List1">若干 UI 相关函数（如 MessageBox()）的实现已从 XSharp.VFP 移至 XSharp.VFP.UI。当无法找到 XSharp.VFP.UI 时，<br/>这些函数将输出到控制台窗口。</li>
@@ -247,7 +253,7 @@
     <para styleclass="Normal">我们不再支持 Visual Studio 2017。</para>
     <para styleclass="Normal">我们仍支持 Visual Studio 2019，但并非所有新功能都会在此版本的 VS 中实现。</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们现已支持 SDK 风格的项目。为此，我们在 Visual Studio 支持代码的各个部分进行了大量修改</li>
       <li styleclass="List1">语言服务现已支持新命令，例如 GLOBAL USING、NAMESPACE、RECORD 等。</li>
       <li styleclass="List1">新增对 VS 文档大纲窗口的支持</li>
@@ -257,7 +263,7 @@
       <li styleclass="List1">在 SDK 风格的 X# 项目的“构建”菜单中添加了“发布”和“打包”命令；通过对话框可配置目标操作系统、自包含部署以及单文件输出 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1939" target="_blank">#1939</link>)</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Visual Studio 的“输出”窗口有时无法显示进度。此问题已修复</li>
       <li styleclass="List1">针对 SDK 项目自动添加的程序集，现在在属性窗口中显示更多属性。</li>
       <li styleclass="List1">提高了 SDK 项目的加载速度。</li>
@@ -288,27 +294,27 @@
     </list>
     <para styleclass="Heading2">调试器</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">工作区窗口现在还会显示索引信息和表结构</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了调试器无法正确显示 Usuals 中的符号值的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1804" target="_blank">#1804</link>)</li>
       <li styleclass="List1">修复了调试器中 USUAL 值格式显示不正确的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1809" target="_blank">#1809</link>)</li>
       <li styleclass="List1">修复了调试器中断点条件和监视表达式无法正常工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1810" target="_blank">#1810</link>)</li>
     </list>
     <para styleclass="Heading2">VOSDK</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">名为 FIELDGET 和 FIELDPUT（大写）的方法现已更名为 FieldGet 和 FieldPut，以与其他方法的大小写保持一致。</li>
     </list>
     <para styleclass="Heading2">类型化 VOSDK</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="22" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">菜单和工具栏类现在在内部使用 Windows Forms 中的 MenuStrip 和 ToolStrip 类，因为以前使用的类在较新版本的 .Net 中已不再受支持。</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Typed AnyCPU GUI 类不再使用 MainMenu 和 ToolBar 类，而是使用 MenuStrip 和 ToolStrip 类。 </li>
     </list>
   </body>

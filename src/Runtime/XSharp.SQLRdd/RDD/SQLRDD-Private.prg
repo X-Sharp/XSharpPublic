@@ -788,13 +788,17 @@ partial class SQLRDD
     end method
 
     /// <summary>Position on the phantom record (EOF) without reading anything.</summary>
-    private method _GoToPhantom() as void
+    /// <param name="lSetBof">FALSE when the caller sets BOF itself, which saves counting the
+    /// order for an empty buffer (e.g. a seek that found nothing).</param>
+    private method _GoToPhantom(lSetBof as logic) as void
         SELF:_Found := FALSE
         SELF:_outsideOrder := FALSE
         SELF:RowNumber := SELF:RowCount + 1
         SELF:_SetEOF(TRUE)
         // BOF too only for an empty table (an empty buffer alone does not mean that)
-        SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:_OrderRowCount() == 0)
+        if lSetBof
+            SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:_OrderRowCount() == 0)
+        endif
         // When the buffer already ends at the last record, a backward Skip() from the phantom
         // row naturally lands on it; otherwise remember to go to the bottom first.
         SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
@@ -1304,24 +1308,56 @@ partial class SQLRDD
     /// and under DBF/ADS the order switches are free. Positioning eagerly here meant a
     /// ROW_NUMBER() over the whole order plus a page fetch at a large OFFSET for every switch.
     /// </remarks>
-    PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC) AS VOID
+    PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC, aCurrentRow as object[]) AS VOID
         if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1
             SELF:GoTo(iif(lWasEof, 0, nRec))
         elseif lWasEof
             // EOF stays EOF (e.g. switching back to the previous order after a seek that found
             // nothing, before going back to the saved record). GoTo(0) would first load the
-            // first page of the new order; an empty result is enough to stand on the phantom
+            // first page of the new order; an empty buffer is enough to stand on the phantom
             // record. _GoToPhantom() marks the EOF as pending (the empty buffer does not end at
             // the last record), so Skip(1) stays at EOF and Skip(-1) goes to the bottom.
-            if SELF:_OpenTable("1=0", "")
-                SELF:_GoToPhantom()
+            if SELF:_SetBufferRows(null) .or. SELF:_OpenTable("1=0", "")
+                SELF:_GoToPhantom(TRUE)
             else
                 SELF:GoTo(0)
             endif
+        elseif aCurrentRow != null .and. SELF:_SetBufferRows(aCurrentRow)
+            // The record we stand on was in the buffer a moment ago (written by GoCold() before the
+            // order change): keep it instead of reading it again. Its position in the new order is
+            // looked up when needed, as after _LoadSingleRecord().
+            SELF:_bufferContiguous := false
         elseif !SELF:_LoadSingleRecord(nRec)
             SELF:GoTo(nRec)
         endif
         return
+
+    /// <summary>
+    /// Replace the buffer with an empty table (aRow NULL) or one row, built from the structure of
+    /// the previous buffer without a query. FALSE when that structure is not known yet.
+    /// </summary>
+    PRIVATE METHOD _SetBufferRows(aRow as object[]) AS LOGIC
+        if SELF:_tableTemplate == null
+            return false
+        endif
+        var oTable := SELF:_tableTemplate:Clone()
+        if aRow != null
+            oTable:LoadDataRow(aRow, true)
+        endif
+        SELF:_lazyGoto := FALSE
+        SELF:_ClearTable()
+        SELF:DataTable := oTable
+        SELF:RowNumber := 1
+        SELF:_outsideOrder := false
+        SELF:_hasEOF := false
+        SELF:_anchorWhere := ""
+        SELF:_bufferStart := 0
+        SELF:_bufferContiguous := true
+        SELF:_readAheadRows := 0
+        SELF:_serverReccountValid := false
+        SELF:_SetEOF(oTable:Rows:Count == 0)
+        SELF:_SetBOF(FALSE)
+        return true
 
     /// <summary>
     /// When the buffer only holds records whose position in the current order is unknown

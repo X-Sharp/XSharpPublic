@@ -781,7 +781,7 @@ partial class SQLRDD inherit Workarea
         IF nRec == 0
             // DBF semantics: GoTo(0) positions on the phantom record (EOF) without any I/O.
             // Browsers do this for every empty row they paint, so it must not cost a query.
-            SELF:_GoToPhantom()
+            SELF:_GoToPhantom(TRUE)
             RETURN TRUE
         ENDIF
         SELF:_eofPending := FALSE

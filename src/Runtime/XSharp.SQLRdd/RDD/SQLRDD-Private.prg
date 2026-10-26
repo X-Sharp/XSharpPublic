@@ -136,6 +136,9 @@ partial class SQLRDD
     end property
     /// <summary>Maximum number of rows kept in the local buffer.</summary>
     private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
+    /// <summary>Rows for a first read where only a few records are expected to be needed (after a seek,
+    /// GoBottom(), looking up the position of a record). Reading on makes the pages grow again.</summary>
+    private property _SmallPageRows  as long => Math.Max(1, _oTd:PageSize / 10)
     internal property DataTable      as DataTable
         get
             return _table
@@ -622,7 +625,7 @@ partial class SQLRDD
     /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
     private method _FetchLastPage(nTotalRows as long) as logic
         try
-            SELF:_command:CommandText := _builder:BuildLastPageStatement()
+            SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
             SELF:_command:ClearParameters()
             var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
             if newTable == null
@@ -688,7 +691,7 @@ partial class SQLRDD
             SELF:_anchorWhere := sAnchorWhere
             SELF:_bufferContiguous := true
             // a hard seek (sLoadWhere narrower than the anchor) mostly continues with a few records
-            SELF:_readAheadRows := iif(sLoadWhere != sAnchorWhere .and. !String.IsNullOrEmpty(sAnchorWhere), Math.Max(1, _oTd:PageSize / 10), 0)
+            SELF:_readAheadRows := iif(sLoadWhere != sAnchorWhere .and. !String.IsNullOrEmpty(sAnchorWhere), SELF:_SmallPageRows, 0)
             // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
             // rows" flag left over from whatever this buffer was doing before - otherwise
             // Skip() refuses to fetch the next page and reports EOF even though the new
@@ -910,7 +913,11 @@ partial class SQLRDD
             if cExpr == cRecno
                 aValue:Add(nRecno:ToString())
             else
-                aValue:Add("(SELECT " + cExpr + " FROM " + cTable + " WHERE " + cRecno + " = " + nRecno:ToString() + ")")
+                var cLiteral := SELF:_KeysetLiteral(lastRow, cExpr)
+                if cLiteral == null
+                    cLiteral := "(SELECT " + cExpr + " FROM " + cTable + " WHERE " + cRecno + " = " + nRecno:ToString() + ")"
+                endif
+                aValue:Add(cLiteral)
             endif
         next
 
@@ -934,6 +941,43 @@ partial class SQLRDD
         next
         sb:Append("))")
         return sb:ToString()
+    end method
+
+    /// <summary>
+    /// The value of the order item cExpr in oRow as a SQL literal, or NULL when the subquery must
+    /// be used: cExpr is not a plain column, or the value cannot be written as a literal that
+    /// compares exactly like the stored value.
+    /// </summary>
+    /// <remarks>
+    /// Every subquery has to be optimized by the server: with one per item, compiling the keyset
+    /// condition of a two column key took 30-45 ms, executing it 3 ms. Since the text changes with
+    /// every page the plan is never reused. The buffer holds the values as read from the server, so
+    /// a literal is exact for strings (ASCII only, so no code page conversion can change them) and
+    /// integers/decimals.
+    /// </remarks>
+    private method _KeysetLiteral(oRow as DataRow, cExpr as string) as string
+        var nCol := SELF:DataTable:Columns:IndexOf(cExpr:Trim(<char>{'[',']','"','`'}))
+        if nCol < 0
+            return null
+        endif
+        switch oRow[nCol]
+        case cValue as string
+            foreach var c in cValue
+                if c > (char) 127
+                    return null
+                endif
+            next
+            return Functions.XsValueToSqlValue(cValue)
+        case nValue as long
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case nValue as int64
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case nValue as short
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case nValue as decimal
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        end switch
+        return null
     end method
 
     private method _KeysetCompare(cExpr as string, lDesc as logic, cValue as string, lInclusive as logic) as string
@@ -972,6 +1016,9 @@ partial class SQLRDD
             nCount := iif(nWanted <= nCount, nWanted, Math.Max(nCount, Math.Min(nWanted, nMax)))
             newTable := SELF:_ReadTable(cWhere, 0, nCount)
         else
+            if SELF:_readAheadRows > 0 .and. SELF:_readAheadRows < nCount
+                nCount := SELF:_readAheadRows
+            endif
             newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, nCount)
         endif
         if newTable == null
@@ -1045,8 +1092,9 @@ partial class SQLRDD
     /// <summary>
     /// Replace the buffer with up to one page of the anchored result set starting at nOffset.
     /// </summary>
-    private method _LoadBufferAt(nOffset as long) as long
-        SELF:_readAheadRows := 0
+    /// <param name="nRows">Rows to read, 0 = PageSize.</param>
+    private method _LoadBufferAt(nOffset as long, nRows := 0 as long) as long
+        SELF:_readAheadRows := nRows
         SELF:_ClearTable()
         SELF:_bufferStart := Math.Max(0, nOffset)
         SELF:_bufferContiguous := true
@@ -1095,6 +1143,10 @@ partial class SQLRDD
                 endif
                 nNewRow := 1
                 exit
+            endif
+            // a read-ahead that started small must still reach the target in one page
+            if SELF:_readAheadRows > 0 .and. SELF:_readAheadRows < nNewRow - SELF:RowCount
+                SELF:_readAheadRows := nNewRow - SELF:RowCount
             endif
             if SELF:_FetchForward() == 0
                 SELF:_hasEOF := true
@@ -1240,16 +1292,22 @@ partial class SQLRDD
             if SELF:_bufferContiguous .and. String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:RowCount > 0
                 var nBufferEnd := SELF:_bufferStart + SELF:RowCount
                 if nOffset >= nBufferEnd .and. nOffset < nBufferEnd + _oTd:PageSize .and. !SELF:_hasEOF
+                    // the page must reach the record, a smaller read-ahead would stop short of it
+                    if SELF:_readAheadRows > 0 .and. SELF:_readAheadRows <= nOffset - nBufferEnd
+                        SELF:_readAheadRows := 0
+                    endif
                     lLoaded := SELF:_FetchForward() > 0
                 elseif nOffset < SELF:_bufferStart .and. nOffset >= SELF:_bufferStart - _oTd:PageSize
                     lLoaded := SELF:_FetchBackward() > 0
                 endif
             endif
             if !lLoaded
-                // Center the record in the new page, so that its neighbours on either side
-                // are buffered as well.
+                // Center the record in a small page, so that its neighbours on either side are
+                // buffered as well. Code that goes to a record mostly reads only it and the next
+                // or previous one (a full page of a wide table costs about 10 ms); reading on makes
+                // the pages grow.
                 SELF:_anchorWhere := ""
-                SELF:_LoadBufferAt(nOffset - _oTd:PageSize / 2)
+                SELF:_LoadBufferAt(nOffset - SELF:_SmallPageRows / 2, SELF:_SmallPageRows)
             endif
         endif
         var nRow := SELF:_FindRowInBuffer(nRec)

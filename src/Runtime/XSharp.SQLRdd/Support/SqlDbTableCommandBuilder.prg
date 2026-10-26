@@ -223,7 +223,7 @@ internal class SqlDbTableCommandBuilder
     /// OFFSET 0 is always cheap regardless of table size; the caller is responsible for
     /// reversing the returned rows back into ascending order.
     /// </remarks>
-    method BuildLastPageStatement() as string
+    method BuildLastPageStatement(nRows := 0 as long) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -277,7 +277,7 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
 
         sb:Append(Provider:PagingClause)
-        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:PageSize:ToString())
+        sb:Replace(SqlDbProvider.PagesizeMacro, iif(nRows > 0, nRows, _oTable:PageSize):ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, "0")
 
         return sb:ToString()

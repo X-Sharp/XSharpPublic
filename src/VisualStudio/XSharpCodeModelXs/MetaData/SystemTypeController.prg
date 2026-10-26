@@ -16,11 +16,13 @@ NAMESPACE XSharpModel
 CLASS SystemTypeController
 	#region fields
 	STATIC PRIVATE assemblies  AS ConcurrentDictionary<STRING, XAssembly>
+	STATIC PRIVATE loadLocks   AS ConcurrentDictionary<STRING, OBJECT>     // one per file name, see LoadAssembly
 	STATIC PRIVATE _mscorlib 	AS XAssembly
 	#endregion
 
 	STATIC CONSTRUCTOR
 		assemblies := ConcurrentDictionary<STRING, XAssembly>{StringComparer.OrdinalIgnoreCase}
+		loadLocks  := ConcurrentDictionary<STRING, OBJECT>{StringComparer.OrdinalIgnoreCase}
 		_mscorlib := NULL
 		RETURN
 
@@ -177,13 +179,16 @@ CLASS SystemTypeController
 		//
 		//WriteOutputMessage("<<-- LoadAssembly(string) "+cFileName)
 		lastWriteTime := File.GetLastWriteTime(cFileName)
-		IF assemblies:ContainsKey(cFileName)
-			info := assemblies:Item[cFileName]
-			//WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
-		ELSE
-			info := XAssembly{cFileName, System.DateTime.MinValue}
-			assemblies:TryAdd(cFileName, info)
-		ENDIF
+		// The projects of a solution resolve their references on many threads at once, and creating an
+		// XAssembly reads the whole assembly. Without the lock every thread that asked for the same file
+		// at the same time read it again and kept its own instance (30 reads of one file in the logs).
+		// One lock per file name, so different assemblies still load in parallel.
+		BEGIN LOCK loadLocks:GetOrAdd(cFileName, { k => OBJECT{} })
+			IF ! assemblies:TryGetValue(cFileName, OUT info)
+				info := XAssembly{cFileName, System.DateTime.MinValue}
+				assemblies:TryAdd(cFileName, info)
+			ENDIF
+		END LOCK
 		IF cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase)
 			mscorlib := XAssembly{cFileName, System.DateTime.MinValue}
 		ENDIF

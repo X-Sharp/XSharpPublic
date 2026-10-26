@@ -190,7 +190,8 @@ CLASS XProject
         END GET
     END PROPERTY
 
-    PROPERTY RootNamespace as STRING GET _projectNode:RootNameSpace
+    // Close() clears _projectNode while a background parse of the project may still resolve types
+    PROPERTY RootNamespace as STRING GET _projectNode?:RootNameSpace DEFAULT ""
 #endregion
 
     CONSTRUCTOR(project AS IXSharpProject)

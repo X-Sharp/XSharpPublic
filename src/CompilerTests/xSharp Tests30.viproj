@@ -145948,8 +145948,8 @@ FileType = Code
 CopyToBin = 0
 [R933 - Assign Var with Clipper Calling convention and Var is not used References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [R933 - Assign Var with Clipper Calling convention and Var is not used Resources]
 [R933 - Assign Var with Clipper Calling convention and Var is not used Native Resources]
 [R933 - Assign Var with Clipper Calling convention and Var is not used License files]
@@ -146072,8 +146072,8 @@ FileType = Code
 CopyToBin = 0
 [R932 - RECORD Class VO DIalect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [R932 - RECORD Class VO DIalect Resources]
 [R932 - RECORD Class VO DIalect Native Resources]
 [R932 - RECORD Class VO DIalect License files]
@@ -146319,9 +146319,9 @@ FileType = Code
 CopyToBin = 0
 [R935 - Chain constructor to call Init() for FoxClasses References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VFP.dll,1,1
 [R935 - Chain constructor to call Init() for FoxClasses Resources]
 [R935 - Chain constructor to call Init() for FoxClasses Native Resources]
 [R935 - Chain constructor to call Init() for FoxClasses License files]
@@ -147190,8 +147190,8 @@ FileGUID = 9227A54F-8502-4066-ABFC-EDFF787144D9
 FileType = Code
 CopyToBin = 0
 [RuntimeTestsNetCore References]
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\RuntimeNet8\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\RuntimeNet8\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [RuntimeTestsNetCore Resources]
 [RuntimeTestsNetCore Native Resources]
 [RuntimeTestsNetCore License files]
@@ -147440,8 +147440,8 @@ CopyToBin = 0
 [D005 - Primary and clipper constructor References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = C:\Program Files (x86)\XSharp\Redist\net46\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\Program Files (x86)\XSharp\Redist\net46\XSharp.RT.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 [D005 - Primary and clipper constructor Resources]
 [D005 - Primary and clipper constructor Native Resources]
 [D005 - Primary and clipper constructor License files]

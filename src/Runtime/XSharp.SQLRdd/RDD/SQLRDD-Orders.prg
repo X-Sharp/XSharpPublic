@@ -343,14 +343,16 @@ partial class SQLRDD
         case DBOI_DEFBAGEXT
             info:Result := SqlDbOrderBag.BAG_EXTENSION
         case DBOI_CONDITION
+            // A tag without FOR condition has no Condition (null); DBF/ADS report "" there,
+            // and callers pass the result straight to string functions such as StrTran().
             if workOrder != null
-                info:Result := workOrder:Condition
+                info:Result := workOrder:Condition ?? ""
             else
                 info:Result := ""
             endif
         case DBOI_EXPRESSION
             if workOrder != null
-                info:Result := workOrder:Expression
+                info:Result := workOrder:Expression ?? ""
             else
                 info:Result := ""
             endif

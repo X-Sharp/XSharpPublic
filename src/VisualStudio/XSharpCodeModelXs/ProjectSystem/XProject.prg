@@ -366,7 +366,8 @@ CLASS XProject
     PRIVATE METHOD SaveAssemblyReferencesToDatabase() as VOID
         if _unprocessedAssemblyReferences:Count == 0
             // Save Assembly-Project References to the Database
-            XDatabase.SaveProjectAssemblyReferences(SELF, SELF:AssemblyReferences)
+            // Use the field: the AssemblyReferences property calls ResolveReferences(), which may re-read assemblies
+            XDatabase.SaveProjectAssemblyReferences(SELF, SELF:_AssemblyReferences)
         endif
     PROPERTY RefCheckTimeOut as LOGIC
         GET

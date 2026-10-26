@@ -190,12 +190,15 @@ BEGIN NAMESPACE XSharpModel
             ModelWalker.Stop()
             XDatabase.CloseDatabase(_sqldb)
 
-            FOREACH VAR pair IN _projects:ToArray()
-                var project := (XProject) pair:Value
-                project:UnLoad()
+            // Empty the project list before closing the projects. XProject:Close() calls XSolution.Remove(),
+            // which then returns immediately instead of removing the project from every other project's
+            // references. That cleanup is useless when the whole solution goes away, and each removed
+            // assembly reference re-resolved the references of that project, which took minutes in large solutions.
+            VAR projects := _projects:Values:ToArray()
+            _projects:Clear()
+            FOREACH VAR project IN projects
                 project:Close()
             NEXT
-            _projects:Clear()
             SystemTypeController.Clear()
             _orphanedFilesProject := NULL
             _fileName  := NULL

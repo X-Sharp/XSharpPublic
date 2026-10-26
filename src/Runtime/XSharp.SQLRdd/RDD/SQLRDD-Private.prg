@@ -46,6 +46,8 @@ partial class SQLRDD
     /// the buffer edges then has to re-locate the current record first.
     /// </summary>
     private _bufferContiguous as logic
+    /// <summary>Empty table with the buffer's columns, to load further query results into.</summary>
+    private _tableTemplate as DataTable
     /// <summary>
     /// Rows to fetch with the next forward page (0 = PageSize): doubles with every full page read
     /// on in a row (up to BufferSize pages). After a seek it starts small, because code that
@@ -177,6 +179,11 @@ partial class SQLRDD
                 endif
                 dbColumn:Flags := DBFFieldFlags.None
             next
+            if SELF:_tableTemplate == null
+                // the structure for all further queries of this work area (same column list),
+                // see SqlDbCommand.GetDataTable(cTable, oTemplate)
+                SELF:_tableTemplate := _table:Clone()
+            endif
             SELF:RowNumber  := 1
             SELF:_CheckEofBof()
         end set
@@ -615,7 +622,7 @@ partial class SQLRDD
         try
             SELF:_command:CommandText := _builder:BuildLastPageStatement()
             SELF:_command:ClearParameters()
-            var newTable := SELF:_command:GetDataTable(SELF:Alias)
+            var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
             if newTable == null
                 return false
             endif
@@ -660,7 +667,7 @@ partial class SQLRDD
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount)
             _command:ClearParameters()
-            var oDataTable := _command:GetDataTable(self:Alias)
+            var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate)
             return oDataTable
         catch as Exception
             return null
@@ -1266,7 +1273,7 @@ partial class SQLRDD
         try
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
-            var oTable := SELF:_command:GetDataTable(SELF:Alias)
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
             if oTable == null .or. oTable:Rows:Count == 0
                 return false
             endif

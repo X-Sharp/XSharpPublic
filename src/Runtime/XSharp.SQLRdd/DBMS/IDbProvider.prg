@@ -173,6 +173,14 @@ interface ISqlDbProvider
     /// <returns>The translation of the function.</returns>
     method GetFunction(sFunction as string) as string
 
+    /// <summary>
+    /// Build the right hand side of a LIKE condition that matches all values starting with
+    /// cPrefix, taken literally: wildcard characters in it are escaped.
+    /// </summary>
+    /// <param name="cPrefix">Literal prefix</param>
+    /// <returns>Quoted pattern, followed by an ESCAPE clause when something was escaped.</returns>
+    method LikePattern(cPrefix as string) as string
+
     /// <summary>Synchronize the case of an identifier with the case of the database</summary>
     /// <param name="cIdentifier">String to Synchronize</param>
     /// <returns>String with the correct case</returns>

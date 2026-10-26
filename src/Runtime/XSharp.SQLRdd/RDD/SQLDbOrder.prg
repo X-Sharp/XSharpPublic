@@ -274,9 +274,7 @@ internal class SqlDbOrder inherit SqlDbObject
                 // use a normal index to seek into this - it has to compute the concatenation for
                 // every row - so prefer the column-aware path above whenever possible.
                 if (! lSoftSeek)
-                    cComp := " like "
-                    strValue += "%"
-                    cWhereClause := self:SQLKey
+                    return self:SQLKey + " like " + Provider:LikePattern(strValue)
                 else
                     cWhereClause := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
                     cWhereClause := cWhereClause:Replace("%1%", self:SQLKey)
@@ -357,7 +355,7 @@ internal class SqlDbOrder inherit SqlDbObject
                 if parts[i]:Length >= widths[i]
                     sb:Append(columns[i] + " = " + Functions.XsValueToSqlValue(parts[i]))
                 else
-                    sb:Append(columns[i] + " like " + Functions.XsValueToSqlValue(parts[i] + "%"))
+                    sb:Append(columns[i] + " like " + Provider:LikePattern(parts[i]))
                 endif
             next
         else

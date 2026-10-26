@@ -817,6 +817,90 @@ partial class SQLRDD
     end method
 
     /// <summary>
+    /// Condition for the rows that follow the last buffered row in the current order (keyset
+    /// paging), or NULL when that cannot be expressed and the caller must page with OFFSET.
+    /// </summary>
+    /// <remarks>
+    /// The order is the ORDER BY list of the current order plus the recno column, exactly as
+    /// SqlDbTableCommandBuilder.BuildSqlStatement() sorts. Every item is compared with its value
+    /// for the last row, read by a subquery on that row's recno, so the comparison uses the same
+    /// expressions and collation as the ORDER BY (also for keys with functions):
+    ///   k1 >= v1 AND ( k1 > v1 OR (k1 = v1 AND k2 > v2) OR ... OR (k1 = v1 AND ... AND recno > n) )
+    /// The leading bound lets the server seek in an index on k1. A descending item compares with
+    /// "<" and also accepts NULL, which sorts after all values in descending order. When the last
+    /// row has NULL in one of the key columns its position cannot be expressed this way.
+    /// </remarks>
+    private method _KeysetAfterLastRow() as string
+        if !SELF:_oTd:HasRecnoColumn .or. SELF:RowCount == 0 .or. !SELF:_bufferContiguous .or. SELF:_recnoColumNo < 0
+            return null
+        endif
+        var lastRow := SELF:DataTable:Rows[SELF:RowCount-1]
+        var oRecno  := lastRow[(int) SELF:_recnoColumNo]
+        if oRecno == null .or. oRecno == DBNull.Value
+            return null
+        endif
+        var nRecno  := Convert.ToInt64(oRecno)
+        var cRecno  := SELF:Provider:QuoteIdentifier(SELF:_oTd:RecnoColumn)
+        var cTable  := SELF:Provider:QuoteIdentifier(SELF:_oTd:RealName)
+        var aExpr   := List<string>{}
+        var aDesc   := List<logic>{}
+        var oOrder  := SELF:CurrentOrder
+        if oOrder != null
+            foreach var cCol in oOrder:ColumnList
+                var nCol := SELF:DataTable:Columns:IndexOf(cCol:Trim(<char>{'[',']','"','`'}))
+                if nCol < 0 .or. lastRow[nCol] == DBNull.Value
+                    return null
+                endif
+            next
+            foreach var cItem in oOrder:OrderList
+                var lDesc := cItem:EndsWith(" DESC", StringComparison.OrdinalIgnoreCase)
+                aExpr:Add(iif(lDesc, cItem:Substring(0, cItem:Length - 5), cItem):Trim())
+                aDesc:Add(lDesc)
+            next
+        endif
+        aExpr:Add(cRecno)
+        aDesc:Add(oOrder != null .and. oOrder:Descending)
+
+        var aValue := List<string>{}
+        foreach var cExpr in aExpr
+            if cExpr == cRecno
+                aValue:Add(nRecno:ToString())
+            else
+                aValue:Add("(SELECT " + cExpr + " FROM " + cTable + " WHERE " + cRecno + " = " + nRecno:ToString() + ")")
+            endif
+        next
+
+        var sb := StringBuilder{}
+        sb:Append("(")
+        if aExpr:Count > 1
+            sb:Append(SELF:_KeysetCompare(aExpr[0], aDesc[0], aValue[0], TRUE))
+            sb:Append(SqlDbProvider.AndClause)
+        endif
+        sb:Append("(")
+        for var i := 0 upto aExpr:Count-1
+            if i > 0
+                sb:Append(SqlDbProvider.OrClause)
+            endif
+            sb:Append("(")
+            for var j := 0 upto i-1
+                sb:Append(aExpr[j] + " = " + aValue[j] + SqlDbProvider.AndClause)
+            next
+            sb:Append(SELF:_KeysetCompare(aExpr[i], aDesc[i], aValue[i], FALSE))
+            sb:Append(")")
+        next
+        sb:Append("))")
+        return sb:ToString()
+    end method
+
+    private method _KeysetCompare(cExpr as string, lDesc as logic, cValue as string, lInclusive as logic) as string
+        var cComp := iif(lDesc, " <", " >") + iif(lInclusive, "= ", " ")
+        if lDesc
+            return "(" + cExpr + cComp + cValue + SqlDbProvider.OrClause + cExpr + " IS NULL)"
+        endif
+        return cExpr + cComp + cValue
+    end method
+
+    /// <summary>
     /// Append the next page of the anchored result set to the end of the buffer, evicting rows
     /// from the start when the buffer would grow beyond _MaxBufferRows. RowNumber keeps pointing
     /// at the same row. Returns the number of rows fetched (0 = nothing left, or an error).
@@ -826,7 +910,20 @@ partial class SQLRDD
             return 0
         endif
         var nOffset  := SELF:_bufferStart + SELF:RowCount
-        var newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, _oTd:PageSize)
+        local newTable as DataTable
+        var cAfterLast := SELF:_KeysetAfterLastRow()
+        if cAfterLast != null
+            // Same rows as OFFSET nOffset, but found by an index seek behind the last buffered row
+            // instead of skipping nOffset rows on the server for every page (a full sequential
+            // read was quadratic: 52.000 rows = 521 pages with OFFSET up to 52.000).
+            var cWhere := cAfterLast
+            if !String.IsNullOrEmpty(SELF:_anchorWhere)
+                cWhere := "(" + SELF:_anchorWhere + ")" + SqlDbProvider.AndClause + cWhere
+            endif
+            newTable := SELF:_ReadTable(cWhere, 0, _oTd:PageSize)
+        else
+            newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, _oTd:PageSize)
+        endif
         if newTable == null
             return 0
         endif

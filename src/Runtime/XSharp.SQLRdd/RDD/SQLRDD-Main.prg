@@ -423,6 +423,7 @@ partial class SQLRDD inherit Workarea
                     _updatedRecNos:Add((int)row[self:_recnoColumNo])
                 endif
 
+                oValue := SELF:_FixedWidthValue(nFldPos-1, oValue)
                 row[nFldPos-1] := SELF:_HandleNullDate(oValue,self:DataTable:Columns[nFldPos-1])
                 result := true
                 SELF:GoHot()

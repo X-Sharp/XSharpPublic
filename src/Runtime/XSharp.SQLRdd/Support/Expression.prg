@@ -26,6 +26,11 @@ internal class SqlDbExpression inherit SqlDbObject
     property ColumnList as List<string> auto
     property Translated as logic auto
     property Segments	as IList<SqlDbSegment> auto
+    /// <summary>
+    /// The parts of a key that is a plain concatenation of columns and DTOS(column), e.g.
+    /// REF_NR+DTOS(DATUM)+BEL_NR, in key order. NULL for any other expression.
+    /// </summary>
+    property KeyTerms   as List<SqlDbKeyTerm> auto
     private _provider   as ISqlDbProvider
 
     property OrderListStr as string => SELF:List2String(self:OrderList)
@@ -47,6 +52,9 @@ internal class SqlDbExpression inherit SqlDbObject
         _provider := oOwner:Provider
         self:ParseXsKey()
         self:TranslateFunctions()
+        if self:Segments:Count == 1
+            self:KeyTerms := self:GetKeyTerms(self:XsKey)
+        endif
         if self:Segments:Count > 1
             foreach var oSeg in self:Segments
                 var oExp 			:= SqlDbExpression{oOwner, oSeg:Key}
@@ -279,10 +287,19 @@ internal class SqlDbExpression inherit SqlDbObject
             next
         else
             var oSeg := self:Segments:First()
-            if self:HasFunctions
-                aList := List<string>{} {self:SQLKey}
-            else
+            if !self:HasFunctions
                 aList := self:ColumnList:ToList()
+            elseif self:KeyTerms != null
+                // REF_NR+DTOS(DATUM): DTOS() keeps the order of the date and all other parts are
+                // fixed-width columns, so sorting by the raw columns gives the same order as sorting
+                // by the concatenated text - and the server can read it from an index on
+                // (REF_NR, DATUM) instead of computing and sorting the text for every row.
+                aList := List<string>{}
+                foreach var oTerm in self:KeyTerms
+                    aList:Add(oTerm:Column)
+                next
+            else
+                aList := List<string>{} {self:SQLKey}
             endif
             for var i := 0 to aList:Count-1
                 if oSeg:Descending
@@ -509,6 +526,46 @@ internal class SqlDbExpression inherit SqlDbObject
         endif
         return cK
 
+    /// <summary>
+    /// Split a key into its parts when it only concatenates columns and DTOS(column), else NULL.
+    /// </summary>
+    private method GetKeyTerms(cKey as string) as List<SqlDbKeyTerm>
+        var aTerms := List<SqlDbKeyTerm>{}
+        var cDtos  := _provider:GetFunction("DTOS(%1%)")
+        foreach var cPart in cKey:Split(<char>{c'+'})
+            var cTerm := cPart:Trim()
+            if IsValidToken(cTerm) .and. cTerm:Length > 0
+                var cCol := _provider:QuoteIdentifier(cTerm)
+                aTerms:Add(SqlDbKeyTerm{cCol, cCol, false})
+            elseif cTerm:StartsWith("DTOS(", StringComparison.OrdinalIgnoreCase) .and. cTerm:EndsWith(")")
+                var cName := cTerm:Substring(5, cTerm:Length - 6):Trim()
+                // a provider without a DTOS() translation cannot compare the date part at all
+                if !IsValidToken(cName) .or. cName:Length == 0 .or. String.Equals(cDtos, "DTOS(%1%)", StringComparison.OrdinalIgnoreCase)
+                    return null
+                endif
+                var cCol := _provider:QuoteIdentifier(cName)
+                aTerms:Add(SqlDbKeyTerm{cCol, cDtos:Replace("%1%", cCol), true})
+            else
+                return null
+            endif
+        next
+        return iif(aTerms:Count > 0, aTerms, null)
+
+end class
+
+/// <summary>One part of a concatenated key, see SqlDbExpression.KeyTerms.</summary>
+internal class SqlDbKeyTerm
+    /// <summary>Quoted column name</summary>
+    property Column  as string auto get private set
+    /// <summary>SQL for the part as it appears in the key text (the column, or DTOS of it)</summary>
+    property SqlExpr as string auto get private set
+    /// <summary>TRUE for DTOS(column): always 8 characters (yyyymmdd)</summary>
+    property IsDate  as logic auto get private set
+    constructor(cColumn as string, cSqlExpr as string, lDate as logic)
+        self:Column  := cColumn
+        self:SqlExpr := cSqlExpr
+        self:IsDate  := lDate
+        return
 end class
 end namespace // XSharp.RDD.SqlRDD
 

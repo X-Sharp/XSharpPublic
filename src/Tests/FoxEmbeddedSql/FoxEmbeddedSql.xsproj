@@ -16,6 +16,8 @@
     <Fox1>true</Fox1>
     <InitLocals>true</InitLocals>
     <AssemblyName>FoxEmbeddedSql</AssemblyName>
+    <Undeclared>True</Undeclared>
+    <LB>True</LB>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Runtime\MacroCompiler\XSharp.MacroCompiler.csproj" />
@@ -28,7 +30,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <PPO>True</PPO>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

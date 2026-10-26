@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Runtime.props" />
-
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <RootNamespace>XSharp.Runtime.VFP.Tests</RootNamespace>
     <Name>XSharp.VFP.Tests</Name>
     <Dialect>FoxPro</Dialect>

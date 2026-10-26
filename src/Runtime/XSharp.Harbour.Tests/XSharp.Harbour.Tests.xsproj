@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <RootNamespace>XSharp.Harbour.Tests</RootNamespace>
     <Name>XSharp.Harbour.Tests</Name>
     <Dialect>Harbour</Dialect>

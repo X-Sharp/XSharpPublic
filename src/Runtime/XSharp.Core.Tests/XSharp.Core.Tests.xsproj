@@ -4,7 +4,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.Core.Tests</RootNamespace>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <Name>XSharp.Core.Tests</Name>
     <Dialect>Core</Dialect>
     <AZ>false</AZ>

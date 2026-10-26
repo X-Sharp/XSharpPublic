@@ -3,7 +3,7 @@
   <Import Project="..\Runtime.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <RootNamespace>XSharp.Runtime.XPP.Tests</RootNamespace>
     <Name>XSharp.XPP.Tests</Name>
     <Dialect>XPP</Dialect>

@@ -3,7 +3,7 @@
   <Import Project="..\Runtime.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-	<TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <RootNamespace>XSharp.Runtime.VO.Tests</RootNamespace>
     <Name>XSharp.VO.Tests</Name>
     <Dialect>Vulcan</Dialect>

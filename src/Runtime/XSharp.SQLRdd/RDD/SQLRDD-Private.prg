@@ -1302,8 +1302,19 @@ partial class SQLRDD
     /// ROW_NUMBER() over the whole order plus a page fetch at a large OFFSET for every switch.
     /// </remarks>
     PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC) AS VOID
-        if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1 .or. lWasEof
+        if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1
             SELF:GoTo(iif(lWasEof, 0, nRec))
+        elseif lWasEof
+            // EOF stays EOF (e.g. switching back to the previous order after a seek that found
+            // nothing, before going back to the saved record). GoTo(0) would first load the
+            // first page of the new order; an empty result is enough to stand on the phantom
+            // record. _GoToPhantom() marks the EOF as pending (the empty buffer does not end at
+            // the last record), so Skip(1) stays at EOF and Skip(-1) goes to the bottom.
+            if SELF:_OpenTable("1=0", "")
+                SELF:_GoToPhantom()
+            else
+                SELF:GoTo(0)
+            endif
         elseif !SELF:_LoadSingleRecord(nRec)
             SELF:GoTo(nRec)
         endif

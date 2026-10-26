@@ -54,6 +54,8 @@ partial class SQLRDD
     /// seeks and then skips while the key matches mostly reads only a few records.
     /// </summary>
     private _readAheadRows := 0 as long
+    /// <summary>TRUE when the single buffered record was loaded by GoTo() without its position.</summary>
+    private _lazyGoto as logic
     /// <summary>
     /// TRUE after GoTo(0) positioned on the phantom record while the buffer does not end at the
     /// last record of the order: a backward Skip() then has to start from GoBottom().
@@ -1271,6 +1273,7 @@ partial class SQLRDD
     /// </summary>
     PRIVATE METHOD _LoadSingleRecord(nRec as DWORD) AS LOGIC
         try
+            SELF:_lazyGoto := FALSE
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
             var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)

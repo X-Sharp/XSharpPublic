@@ -814,14 +814,17 @@ partial class SQLRDD inherit Workarea
         // is only needed when something moves from it (Skip(), OrderKeyNo ...), see
         // _EnsurePositioned(): load just the record by its recno. Looking the position up right
         // away cost a ROW_NUMBER() over the order plus a whole page around the record.
-        // When the buffer already is such a single record (the previous GoTo() was lazy too, or
-        // an order change), position fully: a browse that calls GoTo() for every row it paints
-        // then gets a page with the neighbouring rows instead of one query per row.
+        // When the previous GoTo() already loaded just one record this way, position fully: a
+        // browse that calls GoTo() for every row it paints then gets a page with the neighbouring
+        // rows instead of one query per row. (A single record left by an order change does not
+        // count - SetOrder() followed by GoTo(saved record) is the usual restore pattern.)
         local found as logic
         if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
-            .and. (SELF:_bufferContiguous .or. SELF:RowCount > 1)
+            .and. !(SELF:_lazyGoto .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
             found := SELF:_LoadSingleRecord(nRec)
-            if !found
+            if found
+                SELF:_lazyGoto := TRUE
+            else
                 found := SELF:_GotoRecord(nRec)
             endif
         else

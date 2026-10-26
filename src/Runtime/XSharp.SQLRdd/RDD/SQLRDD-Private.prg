@@ -47,6 +47,11 @@ partial class SQLRDD
     /// </summary>
     private _bufferContiguous as logic
     /// <summary>
+    /// Pages to fetch with the next forward page: doubles with every full page read on in a row
+    /// (up to BufferSize), back to 1 after any other repositioning.
+    /// </summary>
+    private _readAheadPages := 1 as long
+    /// <summary>
     /// TRUE after GoTo(0) positioned on the phantom record while the buffer does not end at the
     /// last record of the order: a backward Skip() then has to start from GoBottom().
     /// </summary>
@@ -649,6 +654,7 @@ partial class SQLRDD
             SELF:_bufferStart := 0
             SELF:_anchorWhere := sAnchorWhere
             SELF:_bufferContiguous := true
+            SELF:_readAheadPages := 1
             // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
             // rows" flag left over from whatever this buffer was doing before - otherwise
             // Skip() refuses to fetch the next page and reports EOF even though the new
@@ -911,6 +917,7 @@ partial class SQLRDD
         endif
         var nOffset  := SELF:_bufferStart + SELF:RowCount
         local newTable as DataTable
+        local nCount := _oTd:PageSize as long
         var cAfterLast := SELF:_KeysetAfterLastRow()
         if cAfterLast != null
             // Same rows as OFFSET nOffset, but found by an index seek behind the last buffered row
@@ -920,13 +927,18 @@ partial class SQLRDD
             if !String.IsNullOrEmpty(SELF:_anchorWhere)
                 cWhere := "(" + SELF:_anchorWhere + ")" + SqlDbProvider.AndClause + cWhere
             endif
-            newTable := SELF:_ReadTable(cWhere, 0, _oTd:PageSize)
+            // Reading on page by page (DbEval(), a report, a count): fetch more rows per query, up
+            // to what the buffer holds without evicting the current row.
+            var nMax := SELF:_MaxBufferRows - (SELF:RowCount - SELF:RowNumber) - 1
+            nCount := Math.Max(nCount, Math.Min(nCount * SELF:_readAheadPages, nMax))
+            newTable := SELF:_ReadTable(cWhere, 0, nCount)
         else
-            newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, _oTd:PageSize)
+            newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, nCount)
         endif
         if newTable == null
             return 0
         endif
+        SELF:_readAheadPages := iif(newTable:Rows:Count < nCount, 1, Math.Min(SELF:_readAheadPages * 2, Math.Max(_oTd:BufferSize, 1)))
         var nRows := newTable:Rows:Count
         foreach row as DataRow in newTable:Rows
             var newRow := SELF:DataTable:NewRow()
@@ -941,7 +953,7 @@ partial class SQLRDD
         // jumps straight to the last page and marks it via _FetchLastPage) never sets
         // _hasEOF on that exactly-full last page: the next Skip() then fetches a
         // nonexistent page past it, landing on a bogus RowNumber instead of staying put.
-        if nRows < _oTd:PageSize
+        if nRows < nCount
             SELF:_hasEOF := true
         elseif String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:_serverReccountValid .and. ;
             nOffset + nRows >= SELF:_serverReccount
@@ -963,6 +975,7 @@ partial class SQLRDD
     /// RowNumber keeps pointing at the same row. Returns the number of rows fetched.
     /// </summary>
     private method _FetchBackward() as long
+        SELF:_readAheadPages := 1
         if self:_tableMode != TableMode.Table .or. SELF:_bufferStart <= 0
             return 0
         endif
@@ -994,6 +1007,7 @@ partial class SQLRDD
     /// Replace the buffer with up to one page of the anchored result set starting at nOffset.
     /// </summary>
     private method _LoadBufferAt(nOffset as long) as long
+        SELF:_readAheadPages := 1
         SELF:_ClearTable()
         SELF:_bufferStart := Math.Max(0, nOffset)
         SELF:_bufferContiguous := true

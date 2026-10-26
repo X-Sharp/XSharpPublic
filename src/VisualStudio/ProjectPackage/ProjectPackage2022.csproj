@@ -85,7 +85,7 @@
     </Reference>
     <Reference Include="XSharp.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Artifacts\Debug\XSharp.Core.dll</HintPath>
+      <HintPath>..\..\..\Artifacts\$(Configuration)\net47\XSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Evaluator">
       <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>

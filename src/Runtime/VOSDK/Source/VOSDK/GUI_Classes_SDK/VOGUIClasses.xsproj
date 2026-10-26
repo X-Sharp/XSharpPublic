@@ -38,9 +38,9 @@
       <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj">
-      <Name>VOSystemClasses</Name>
-      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.Next.xsproj">
+      <Name>VOSystemClasses.Next</Name>
+      <Project>{bd7ca537-1db2-7d48-26c1-6b546597e74e}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
@@ -69,7 +69,6 @@
       <Name>System</Name>
       <AssemblyName>System.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Core</Name>

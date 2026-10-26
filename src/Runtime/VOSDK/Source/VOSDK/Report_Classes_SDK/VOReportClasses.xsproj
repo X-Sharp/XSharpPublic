@@ -40,9 +40,9 @@
       <Project>{0bce49e2-3597-4e32-aa3c-c465130c05c8}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj">
-      <Name>VOSystemClasses</Name>
-      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.Next.xsproj">
+      <Name>VOSystemClasses.Next</Name>
+      <Project>{bd7ca537-1db2-7d48-26c1-6b546597e74e}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">

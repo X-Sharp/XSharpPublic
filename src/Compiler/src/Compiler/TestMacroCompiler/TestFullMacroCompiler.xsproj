@@ -100,10 +100,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.Core.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.RT.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.VFP.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.VO.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\$(Configuration)\net47\XSharp.Core.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\$(Configuration)\net47\XSharp.RT.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\$(Configuration)\net47\XSharp.VFP.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\$(Configuration)\net47\XSharp.VO.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">

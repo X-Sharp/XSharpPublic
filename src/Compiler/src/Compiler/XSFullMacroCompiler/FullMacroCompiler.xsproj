@@ -6,7 +6,7 @@
     <StrongNameKeyId />
     <CommonDir>$(Solutiondir)Common\</CommonDir>
     <ArtifactsDir>$(SolutionDir)..\Artifacts\</ArtifactsDir>
-    <RtOutPutDir>$(ArtifactsDir)$(Config)\net46\</RtOutPutDir>
+    <RtOutPutDir>$(ArtifactsDir)$(Config)\net47\</RtOutPutDir>
     <XsiDir>$(ArtifactsDir)bin\xsi\$(Config)\net472\</XsiDir>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\XSharp.snk</AssemblyOriginatorKeyFile>
     <PublicKeyToken>ed555a0467764586</PublicKeyToken>
@@ -97,28 +97,28 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.Core.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.RT.dll" />
+    <Reference Include="$(RtOutputDir)\XSharp.Core.dll" />
+    <Reference Include="$(RtOutputDir)\XSharp.RT.dll" />
     <Reference Include="System.Collections.Immutable, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Collections.Immutable</Name>
       <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Debug\net472\System.Collections.Immutable.dll</HintPath>
+      <HintPath>$(Xsidir)System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.CodeAnalysis, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.CodeAnalysis</Name>
       <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Debug\net472\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>$(Xsidir)XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Scripting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Scripting</Name>
       <AssemblyName>XSharp.Scripting.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Debug\net472\XSharp.Scripting.dll</HintPath>
+      <HintPath>$(Xsidir)XSharp.Scripting.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">

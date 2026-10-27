@@ -423,6 +423,7 @@ partial class SQLRDD inherit Workarea
                     _updatedRecNos:Add((int)row[self:_recnoColumNo])
                 endif
 
+                oValue := SELF:_FixedWidthValue(nFldPos-1, oValue)
                 row[nFldPos-1] := SELF:_HandleNullDate(oValue,self:DataTable:Columns[nFldPos-1])
                 result := true
                 SELF:GoHot()
@@ -615,6 +616,11 @@ partial class SQLRDD inherit Workarea
         if Connection?:Provider is null .or. !self:Connection:IsOpen .or. _oTd == null
             return recNos:ToArray()
         endif
+        if !self:Connection:UseLocks
+            // No lock table entries are ever written without UseLocks. Code that asks for the
+            // lock list after every movement (RLockList/IsLocked()) paid a query each time.
+            return recNos:ToArray()
+        endif
         try
             var sb := StringBuilder{}
             sb:AppendLine("select recno from " + SqlDbConnection.LockTableName)
@@ -775,7 +781,7 @@ partial class SQLRDD inherit Workarea
         IF nRec == 0
             // DBF semantics: GoTo(0) positions on the phantom record (EOF) without any I/O.
             // Browsers do this for every empty row they paint, so it must not cost a query.
-            SELF:_GoToPhantom()
+            SELF:_GoToPhantom(TRUE)
             RETURN TRUE
         ENDIF
         SELF:_eofPending := FALSE
@@ -803,7 +809,27 @@ partial class SQLRDD inherit Workarea
             next
         endif
 
-        var found := SELF:_GotoRecord(nRec)
+        // Code that saves the record number, seeks elsewhere and goes back (or follows a
+        // relation) mostly just reads the record's fields afterwards. Its position in the order
+        // is only needed when something moves from it (Skip(), OrderKeyNo ...), see
+        // _EnsurePositioned(): load just the record by its recno. Looking the position up right
+        // away cost a ROW_NUMBER() over the order plus a whole page around the record.
+        // When the previous GoTo() already loaded just one record this way, position fully: a
+        // browse that calls GoTo() for every row it paints then gets a page with the neighbouring
+        // rows instead of one query per row. (A single record left by an order change does not
+        // count - SetOrder() followed by GoTo(saved record) is the usual restore pattern.)
+        local found as logic
+        if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
+            .and. !(SELF:_lazyGoto .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
+            found := SELF:_LoadSingleRecord(nRec)
+            if found
+                SELF:_lazyGoto := TRUE
+            else
+                found := SELF:_GotoRecord(nRec)
+            endif
+        else
+            found := SELF:_GotoRecord(nRec)
+        endif
         SELF:_CheckEofBof()
         RETURN found
     end method

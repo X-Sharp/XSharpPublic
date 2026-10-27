@@ -55,6 +55,9 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
         return
     end constructor
 
+    /// <summary>SQL Server also reads [...] in a LIKE pattern as a character class.</summary>
+    override property LikeWildcards as string => "%_["
+
     private static aFuncs := null as Dictionary<string, string>
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>

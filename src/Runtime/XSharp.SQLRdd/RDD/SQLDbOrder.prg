@@ -263,20 +263,20 @@ internal class SqlDbOrder inherit SqlDbObject
         local cWhereClause as string
         if oValue is string var strValue
             var strLen := strValue:Length
+            // Also for a value of the full key length: e.g. a relation seek on REF_NR+DTOS(DATUM)
+            // as [REF_NR] = ... AND <date part> = ... is an index seek, the concatenation is not.
+            var cColumnCondition := SELF:BuildColumnAwareCondition(strValue, lSoftSeek, cComp)
+            if cColumnCondition != null
+                return cColumnCondition
+            endif
             if strLen < self:KeyLength
-                var cColumnCondition := SELF:BuildColumnAwareCondition(strValue, lSoftSeek, cComp)
-                if cColumnCondition != null
-                    return cColumnCondition
-                endif
                 // Fallback for keys we can't map onto individual columns (functions in the key
                 // expression, unknown column metadata, ...): the original, always-correct
                 // condition against the fully concatenated SQLKey expression. SQL Server cannot
                 // use a normal index to seek into this - it has to compute the concatenation for
                 // every row - so prefer the column-aware path above whenever possible.
                 if (! lSoftSeek)
-                    cComp := " like "
-                    strValue += "%"
-                    cWhereClause := self:SQLKey
+                    return self:SQLKey + " like " + Provider:LikePattern(strValue)
                 else
                     cWhereClause := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
                     cWhereClause := cWhereClause:Replace("%1%", self:SQLKey)
@@ -307,21 +307,26 @@ internal class SqlDbOrder inherit SqlDbObject
     /// determined - callers must fall back to the concatenation-based condition in that case.
     /// </remarks>
     private method BuildColumnAwareCondition(strValue as string, lSoftSeek as logic, cRangeComp as string) as string
-        if self:HasFunctions
+        // The parts of a key that concatenates columns and DTOS(column); a DTOS() part is
+        // compared as its yyyymmdd text, which is what the key holds at that position.
+        var terms := self:DbExpression:KeyTerms
+        if terms == null .or. terms:Count == 0
             return null
         endif
-        var columns := self:ColumnList
-        if columns == null .or. columns:Count == 0
-            return null
-        endif
-        var widths := List<int>{}
-        foreach var cCol in columns
-            var cName := cCol:Trim(<char>{'[',']','"','`'})
-            var oCol := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
-            if oCol == null
-                return null
+        var columns := List<string>{}
+        var widths  := List<int>{}
+        foreach var oTerm in terms
+            if oTerm:IsDate
+                widths:Add(8)
+            else
+                var cName := oTerm:Column:Trim(<char>{'[',']','"','`'})
+                var oCol := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
+                if oCol == null
+                    return null
+                endif
+                widths:Add((int) oCol:Length)
             endif
-            widths:Add((int) oCol:Length)
+            columns:Add(oTerm:SqlExpr)
         next
 
         // Split the value over the key columns: every column the value fully covers gets its
@@ -341,7 +346,8 @@ internal class SqlDbOrder inherit SqlDbObject
                 cRemaining := ""
             endif
         next
-        if parts:Count == 0
+        if parts:Count == 0 .or. cRemaining:Length > 0
+            // longer than the key: leave it to the condition on the whole key text
             return null
         endif
 
@@ -357,7 +363,7 @@ internal class SqlDbOrder inherit SqlDbObject
                 if parts[i]:Length >= widths[i]
                     sb:Append(columns[i] + " = " + Functions.XsValueToSqlValue(parts[i]))
                 else
-                    sb:Append(columns[i] + " like " + Functions.XsValueToSqlValue(parts[i] + "%"))
+                    sb:Append(columns[i] + " like " + Provider:LikePattern(parts[i]))
                 endif
             next
         else

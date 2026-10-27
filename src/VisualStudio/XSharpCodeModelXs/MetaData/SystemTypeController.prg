@@ -190,7 +190,8 @@ CLASS SystemTypeController
 			ENDIF
 		END LOCK
 		IF cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase)
-			mscorlib := XAssembly{cFileName, System.DateTime.MinValue}
+			// The cached instance: a new XAssembly read all of mscorlib again for every project
+			mscorlib := info
 		ENDIF
 		IF Path.GetFileName(cFileName):ToLower() == "system.dll"
 			key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")

@@ -195,6 +195,13 @@ partial class SQLRDD
             // index/order" pattern used throughout the app, and it must keep flushing even when
             // the order doesn't actually change.
             SELF:GoCold()
+            // The record we stand on (just written by GoCold()) is kept across the order change
+            // instead of being read again, and LastRec() does not change with the order.
+            local aCurrentRow := null as object[]
+            if !lWasEof .and. SELF:_hasData .and. SELF:DataTable != null .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+                aCurrentRow := SELF:CurrentRow:ItemArray
+            endif
+            var lTableCountValid := SELF:_tableReccountValid
             if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
                (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
                 // Order 0 (or an empty order name) means: switch back to the natural/physical
@@ -211,8 +218,9 @@ partial class SQLRDD
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := null
+                self:_tableReccountValid := lTableCountValid
                 if lReset
-                    self:_RepositionAfterOrderChange(currentRecord, lWasEof)
+                    self:_RepositionAfterOrderChange(currentRecord, lWasEof, aCurrentRow)
                 else
                     self:GoTo(currentRecord)
                 endif
@@ -224,6 +232,7 @@ partial class SQLRDD
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := newOrder
+                self:_tableReccountValid := lTableCountValid
                 result := CurrentOrder != null
                 IF result
                     SELF:CurrentOrder:ClearCache()
@@ -232,7 +241,7 @@ partial class SQLRDD
                     // loaded row. _CloseCursor() above cleared it, so without this there would
                     // be nothing to evaluate.
                     if lReset
-                        self:_RepositionAfterOrderChange(currentRecord, lWasEof)
+                        self:_RepositionAfterOrderChange(currentRecord, lWasEof, aCurrentRow)
                     else
                         self:GoTo(currentRecord)
                     endif
@@ -569,7 +578,12 @@ partial class SQLRDD
         // null instead of an empty table - treat that the same as "no rows found" instead of
         // crashing on DataTable:Rows below, same fix as GoTo()/_ClearTable() already got.
         IF (SELF:DataTable == null .or. SELF:DataTable:Rows:Count = 0) .and. !seekInfo.SoftSeek
-            SELF:GoTo(0)
+            // BOF is set below, so no need to count the order for it (GoTo(0) would)
+            IF SELF:DataTable == null
+                SELF:GoTo(0)
+            ELSE
+                SELF:_GoToPhantom(FALSE)
+            ENDIF
             SELF:_Found := false
             SELF:_SetEOF(true)
             SELF:_SetBOF(false)

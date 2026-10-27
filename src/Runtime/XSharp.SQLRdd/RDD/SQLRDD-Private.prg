@@ -425,8 +425,12 @@ partial class SQLRDD
                 _command:ExecuteNonQuery()
             endif
             _command:Connection:CommitTrans()
-        catch
+        catch e as Exception
+            // Reporting success here made a failed insert look like a new record whose changes
+            // then went nowhere.
             _command:Connection:RollBackTrans()
+            self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:Append", e:Message, FALSE)
+            return false
         end try
         return true
     end method

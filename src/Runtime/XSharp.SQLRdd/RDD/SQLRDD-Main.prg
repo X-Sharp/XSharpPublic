@@ -280,7 +280,9 @@ partial class SQLRDD inherit Workarea
         var lResult := SELF:GoCold()
         if lResult
             self:_eofPending := false
-            var key := (dword) self:_builder:GetNextKey()
+            // With a recno column the insert below returns the new record number; asking the server
+            // for MAX(recno) first only cost a round trip per Append().
+            var key := iif(self:_recnoColumNo != -1, 0U, (dword) self:_builder:GetNextKey())
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
             // The new row does not belong at the end of the buffered slice of the order.
@@ -296,9 +298,16 @@ partial class SQLRDD inherit Workarea
                     row[c] := SELF:_HandleNullDate(values[c:Ordinal],c)
                 endif
             next
-            self:_ExecuteInsertStatement(row)
+            if !self:_ExecuteInsertStatement(row)
+                // the error is reported, stay where we were
+                self:DataTable:Rows:Remove(row)
+                return false
+            endif
             row:AcceptChanges()
-            _updatedRecNos:Add((int)row[self:_recnoColumNo])
+            if self:_recnoColumNo != -1
+                key := Convert.ToUInt32(row[self:_recnoColumNo])
+            endif
+            _updatedRecNos:Add((int) key)
             SELF:RowNumber := SELF:DataTable:Rows:Count
             self:_serverReccount += 1
             if self:_tableReccountValid

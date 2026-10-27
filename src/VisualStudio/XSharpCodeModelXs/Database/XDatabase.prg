@@ -26,6 +26,8 @@ STATIC CLASS XDatabase
     // that passed CHECKIFOPEN before that would then lock NULL or run its command without a connection.
     // Every method checks IsDbOpen again once it holds the lock.
     STATIC PRIVATE INITONLY dbLock := OBJECT{} AS OBJECT
+    // Ids of the projects that an XProject has read since the database was opened. Under dbLock.
+    STATIC PRIVATE projectsInSession := HashSet<INT64>{} AS HashSet<INT64>
 
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
     STATIC PRIVATE backupRunning := 0 AS LONG          // guards against overlapping backups
@@ -94,6 +96,9 @@ STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
     LOCAL oDiskDb AS DbConnection
     Log(i"CreateOrOpen {cFileName}")
     currentFile := cFileName
+    BEGIN LOCK dbLock
+        projectsInSession:Clear()
+    END LOCK
     IF File.Exists(cFileName)
         Log(i"File {cFileName} exists")
         BEGIN USING oDiskDb := OpenFile(cFileName)
@@ -686,6 +691,11 @@ STATIC METHOD DeleteOrphanFiles() AS List<STRING>
             cmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
             cmd:ExecuteScalar()
 
+            // Assemblies that no project references any more, with their types and globals (cascade).
+            // Only here: no XAssembly has read its Id from the database yet.
+            cmd:CommandText := "Delete from Assemblies where Id not in (select IdAssembly from AssembliesPerProject)"
+            cmd:ExecuteScalar()
+
         CATCH e AS Exception
             Log("Error deleting orphaned files")
             XSettings.Exception(e)
@@ -811,6 +821,7 @@ STATIC METHOD Read(oProject AS XProject) AS VOID
                 oProject:Id := Id
                 lUpdated := TRUE
             ENDIF
+            projectsInSession:Add(oProject:Id)
             if (! String.IsNullOrEmpty(framework))
                 cmd:CommandText := "DELETE FROM Projects where ProjectFileName = $file and FrameWork = ''"
                 cmd:ExecuteNonQuery()
@@ -905,6 +916,8 @@ STATIC METHOD GetProjectIncludeFiles(oProject AS XProject) AS List<STRING>
 
 STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
     CHECKIFOPEN
+    // Not when the solution is opened: the code models of CPS projects (one per TargetFramework) are created
+    // after AfterOpen(), so this deleted their files and types on every load. See DeleteProjectsNotInSession.
     // IF String.IsNullOrEmpty(cFileName)
         // Log("Empty cFilename")
         // RETURN
@@ -929,6 +942,30 @@ STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
         // END TRY
     // END LOCK
     // CommitWhenNeeded()
+
+/// <summary>
+/// Deletes the projects that no XProject has read since the database was opened, with their files, types
+/// and assembly references (cascade): projects removed from the solution and TargetFrameworks that are
+/// no longer used. Call when the solution closes, before the database is saved.
+/// </summary>
+STATIC METHOD DeleteProjectsNotInSession() AS VOID
+    CHECKIFOPEN
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
+        IF projectsInSession:Count == 0
+            // Nothing was read: deleting would empty the database
+            RETURN
+        ENDIF
+        TRY
+            VAR sIds := String.Join(",", projectsInSession)
+            USING VAR cmd := CreateCommand("Delete from Projects where Id not in ("+sIds+")", oConn)
+            VAR deleted := cmd:ExecuteNonQuery()
+            Log(i"Deleted {deleted} projects that were not used in this session")
+        CATCH e AS Exception
+            Log("Error deleting projects that were not used in this session")
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
 
     STATIC METHOD SaveProjectAssemblyReferences(oProject as XProject, Assemblies as List<XAssembly>) AS VOID
         CHECKIFOPEN
@@ -968,9 +1005,10 @@ STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
                 NEXT
                 cmd:CommandText := "delete from AssembliesPerProject where idProject = "+oProject:Id:ToString() + " and idAssembly not in ("+sIds+")"
                 cmd:ExecuteNonQuery()
-                // Remove non referenced assemblies and their types and globals
-                cmd:CommandText := "delete from Assemblies where id not in (select IdAssembly from AssembliesPerProject)"
-                cmd:ExecuteNonQuery()
+                // Assemblies that no project references any more are deleted in DeleteOrphanFiles, when the
+                // database is opened. Not here: the projects resolve their references on many threads, and an
+                // assembly another project has just read is not linked to it yet. Deleting it here removed its
+                // types, and every later save of the references of every project failed (FOREIGN KEY) on it.
             CATCH e as Exception
                 Log("Error updating project assembly references for "+oProject:Name)
                 XSettings.Exception(e)

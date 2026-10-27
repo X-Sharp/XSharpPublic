@@ -88,6 +88,9 @@ namespace XSharp.ProjectSystem.LanguageService
         // Null for the target frameworks of a cross targeting project until the configuration group has arrived.
         private XProject model;
         private string primaryTargetFramework;
+        // The TargetFrameworks that get a code model: from the project file in LoadAsync, then from the configuration
+        // group. Until all of them have one, the X# solution deletes no projects when it closes (UpdateModelsPending).
+        private List<string> expectedTargets = new List<string>();
 
         private List<IDisposable> links;
         private IntellisenseErrorList errorList;
@@ -183,21 +186,19 @@ namespace XSharp.ProjectSystem.LanguageService
                     //    models[framework] = null;
                     //}
                     newModel = CreateModel(first);
+                    expectedTargets = frameworksArray.Select(f => f.Trim()).Where(f => f.Length > 0).ToList();
                 }
                 else
                 {
                     newModel = CreateModel(SingleTarget);
+                    expectedTargets = new List<string> { SingleTarget };
                 }
+                // CreateModel has subscribed to the walk events of the model
                 lock (gate)
                 {
                     model = newModel;
                 }
-                newModel.ProjectWalkComplete += OnProjectWalkComplete;
-                newModel.FileWalkComplete += OnFileWalkComplete;
-                lock (gate)
-                {
-                    model = newModel;
-                }
+                UpdateModelsPending();
             }
             XSettings.Information("XSharpProjectAdapter: created code model for " + project.FullPath);
             // Forms added with "Add New Item" open in the shadow designer instead of the code editor
@@ -286,6 +287,17 @@ namespace XSharp.ProjectSystem.LanguageService
                 all.Add(model);
             return all;
         }
+        /// <summary>
+        /// Tells the X# solution whether code models of this project are still to be created. Until they all exist,
+        /// it does not delete the projects that were not used in this session from its database when it closes:
+        /// a TargetFramework whose model does not exist yet would be deleted with its files and types.
+        /// </summary>
+        /// <remarks>Call under <see cref="modelGate"/>.</remarks>
+        private void UpdateModelsPending()
+        {
+            var pending = model != null && expectedTargets.Any(t => !models.ContainsKey(t));
+            XSolution.SetModelsPending(project.FullPath, pending);
+        }
         public Task UnloadAsync()
         {
             List<XProject> oldModels;
@@ -321,6 +333,8 @@ namespace XSharp.ProjectSystem.LanguageService
                 taskList?.Dispose();
                 taskList = null;
                 projectReferences.Clear();
+                expectedTargets.Clear();
+                UpdateModelsPending();
             }
             foreach (var old in oldModels)
                 old?.Close();
@@ -621,6 +635,13 @@ namespace XSharp.ProjectSystem.LanguageService
                 var wanted = new Dictionary<string, ProjectConfiguration>(StringComparer.OrdinalIgnoreCase);
                 foreach (var configuration in configurations)
                     wanted[GetTargetFramework(configuration)] = configuration;
+                lock (modelGate)
+                {
+                    // Not the first group of a cross targeting project, which has no TargetFramework dimension yet
+                    var noTargetsYet = wanted.Count == 1 && wanted.ContainsKey(SingleTarget) && expectedTargets.Any(IsCrossTargeting);
+                    if (wanted.Count > 0 && !noTargetsYet)
+                        expectedTargets = wanted.Keys.ToList();
+                }
 
                 // The group fires more than once: the first time often for the configuration without a
                 // TargetFramework dimension (key SingleTarget), only afterwards for the real target frameworks of a
@@ -645,8 +666,7 @@ namespace XSharp.ProjectSystem.LanguageService
                         commandLines.Remove(target);
                         // The primary model is closed in UnloadAsync, never here
                         if (!ReferenceEquals(old, model))
-                            closing.Add(DetachModel(old)); closing.Add(DetachModel(old));
-
+                            closing.Add(DetachModel(old));
                     }
                 }
                 foreach (var link in obsolete)
@@ -678,17 +698,14 @@ namespace XSharp.ProjectSystem.LanguageService
                     bool keep;
                     lock (modelGate)
                     {
-                        keep = model != null && !targetLinks.ContainsKey(targetFramework);
-                        lock (modelGate)
+                        // LoadConfiguredProjectAsync may complete while the solution closes: no new models then
+                        keep = model != null && CodeModelIsAvailable && !targetLinks.ContainsKey(targetFramework);
+                        if (keep)
                         {
-                            // LoadConfiguredProjectAsync may complete while the solution closes: no new models then
-                            keep = model != null && CodeModelIsAvailable && !targetLinks.ContainsKey(targetFramework);
-                            if (keep)
-                            {
-                                targetLinks[targetFramework] = link;
-                                if (!models.ContainsKey(targetFramework))
-                                    CreateModel(targetFramework);
-                            }
+                            targetLinks[targetFramework] = link;
+                            if (!models.ContainsKey(targetFramework))
+                                CreateModel(targetFramework);
+                            UpdateModelsPending();
                         }
                     }
                     if (!keep)
@@ -698,6 +715,14 @@ namespace XSharp.ProjectSystem.LanguageService
             catch (Exception e)
             {
                 XSettings.Exception(e);
+            }
+            finally
+            {
+                // Also after RekeyPrimaryModel and the targets that were dropped
+                lock (modelGate)
+                {
+                    UpdateModelsPending();
+                }
             }
         }
         /// <summary>

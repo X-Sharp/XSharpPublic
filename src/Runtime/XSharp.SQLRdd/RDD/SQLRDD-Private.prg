@@ -994,7 +994,7 @@ partial class SQLRDD
         switch oRow[nCol]
         case cValue as string
             foreach var c in cValue
-                if c > (char) 127
+                if c > (char) 127 .or. c == (char) 92
                     return null
                 endif
             next

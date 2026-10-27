@@ -151,6 +151,58 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     end method
 
     /// <summary>
+    /// Execute the command and return the rows in a copy of oTemplate's structure.
+    /// </summary>
+    /// <param name="cTable">The name of the DataTable (when the template cannot be used)</param>
+    /// <param name="oTemplate">An empty table with the columns the command returns, or NULL</param>
+    /// <remarks>
+    /// Building the structure from the reader's schema (DataTable.Load()) is the expensive part of
+    /// a query that returns one or a few rows of a wide table: 1.5 ms against 0.5 ms for 178
+    /// columns. The RDD runs every query of a work area with the same column list, so it passes
+    /// the structure of its buffer. When the reader's columns do not match the template, the
+    /// rows are loaded as by GetDataTable(cTable).
+    /// </remarks>
+    method GetDataTable(cTable as string, oTemplate as DataTable) as DataTable
+        if oTemplate == null
+            return SELF:GetDataTable(cTable)
+        endif
+        try
+            using var reader := SELF:ExecuteReader(cTable)
+            if reader == null
+                return null
+            endif
+            var lMatch := reader:FieldCount == oTemplate:Columns:Count
+            for var i := 0 to reader:FieldCount-1
+                if !lMatch
+                    exit
+                endif
+                lMatch := String.Equals(reader:GetName(i), oTemplate:Columns[i]:ColumnName, StringComparison.OrdinalIgnoreCase)
+            next
+            local oDataTable as DataTable
+            if lMatch
+                oDataTable := oTemplate:Clone()
+                var aValues := object[]{reader:FieldCount}
+                oDataTable:BeginLoadData()
+                do while reader:Read()
+                    reader:GetValues(aValues)
+                    oDataTable:LoadDataRow(aValues, true)
+                enddo
+                oDataTable:EndLoadData()
+            else
+                oDataTable := DataTable{iif(String.IsNullOrEmpty(cTable), SELF:Name, cTable)}
+                var oDataSet := DataSet{}
+                oDataSet:EnforceConstraints := false
+                oDataSet:Tables:Add(oDataTable)
+                oDataTable:Load(reader)
+            endif
+            return oDataTable
+        catch e as Exception
+            Connection:LastException := e
+            return null
+        end try
+    end method
+
+    /// <summary>
     /// Execute a scalar command
     /// </summary>
     /// <param name="cTable">Table name to display for Event Handler</param>

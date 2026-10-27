@@ -285,6 +285,29 @@ partial class SQLRDD
         return true
     end method
 
+    /// <summary>
+    /// A Character field holds exactly its declared width, as in DBF: shorter values are padded
+    /// with spaces, longer ones truncated.
+    /// </summary>
+    /// <remarks>
+    /// Only when trailing spaces are not trimmed (DBF-like storage). Otherwise rows written by
+    /// the RDD had trimmed values next to the padded ones of the existing data, and a key
+    /// expression concatenated on the server (e.g. TYP+UPPER(KATEGORIE)+UPPER(BEZEICH))
+    /// shifted the following parts of such a row, so seeks on the key prefix missed it.
+    /// </remarks>
+    private method _FixedWidthValue(nIndex as int, oValue as object) as object
+        if !SELF:_trimValues .and. oValue is string var strValue .and. nIndex < SELF:_Fields:Length
+            var oField := SELF:_Fields[nIndex]
+            if oField:FieldType == DbFieldType.Character .and. oField:Length > 0
+                if strValue:Length < oField:Length
+                    return strValue:PadRight(oField:Length, ' ')
+                elseif strValue:Length > oField:Length
+                    return strValue:Substring(0, oField:Length)
+                endif
+            endif
+        endif
+        return oValue
+    end method
 
     private method _GetEmptyValues() as logic
         var values := List<object>{}
@@ -295,7 +318,7 @@ partial class SQLRDD
             endif
             switch Type.GetTypeCode(col.DataType)
             case TypeCode.String
-                values.Add("")
+                values.Add(SELF:_FixedWidthValue(col:Ordinal, ""))
             case TypeCode.Byte
             case TypeCode.Char
             case TypeCode.Double

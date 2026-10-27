@@ -22,6 +22,10 @@ STATIC CLASS XDatabase
     STATIC PRIVATE oFact   as DbProviderFactory
     internal static UseMicrosoftSQLite   as logic
     STATIC PRIVATE oConn   AS DbConnection     // In memory database !
+    // Serializes all access to oConn. Not oConn itself: CloseDatabase sets that to NULL, and a thread
+    // that passed CHECKIFOPEN before that would then lock NULL or run its command without a connection.
+    // Every method checks IsDbOpen again once it holds the lock.
+    STATIC PRIVATE INITONLY dbLock := OBJECT{} AS OBJECT
 
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
     STATIC PRIVATE backupRunning := 0 AS LONG          // guards against overlapping backups
@@ -140,9 +144,16 @@ STATIC METHOD CloseDatabase(cFile AS STRING) AS LOGIC
         Log(i"Delete database {cFile} because there are no X# projects in the solution")
         SafeFileDelete(cFile)
     ENDIF
-    oConn:Close()
-    lResult := TRUE
-    oConn := NULL
+    // Background threads (design-time builds, the ModelWalker) may still use the database while
+    // the solution closes: close it under the lock, so they either finish first or find it closed.
+    // Only the close itself: SaveToDisk takes the lock for the backup, and holding it for the
+    // VACUUM as well kept every other thread waiting for seconds.
+    BEGIN LOCK dbLock
+        CHECKIFOPEN FALSE
+        oConn:Close()
+        lResult := TRUE
+        oConn := NULL
+    END LOCK
     RETURN lResult
 
 STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
@@ -198,14 +209,15 @@ STATIC METHOD SaveToDisk(oConn AS DbConnection, cFile AS STRING) AS VOID
     CHECKIFOPEN
     // Only the BackupDatabase call below touches the in memory connection. Deleting
     // the old file, opening the disk database and vacuuming it all work on the disk
-    // side, so they must stay outside the lock on oConn: that lock serializes the
+    // side, so they must stay outside dbLock: that lock serializes the
     // whole code model, and holding it for a full backup plus a VACUUM blocked every
     // parse and every lookup for seconds at a time.
     Log(i"SafeDelete file {cFile}")
     SafeFileDelete(cFile)
     USING VAR diskdb := OpenFile(cFile)
     Log(i"Save DB to disk {cFile}")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         oConn:BackupDatabase(diskdb, "main")
     END LOCK
     USING VAR oCmd := CreateCommand("VACUUM", diskdb)
@@ -249,7 +261,7 @@ STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS
     TRY
         CHECKIFOPEN
         Log(i"Starting backup to {currentFile}")
-        // SaveToDisk takes the lock on oConn itself, and only around the part that
+        // SaveToDisk takes dbLock itself, and only around the part that
         // actually needs it.
         SaveToDisk(oConn, currentFile )
     CATCH e AS Exception
@@ -644,7 +656,8 @@ STATIC METHOD DeleteOrphanIncludeFiles() AS VOID
     // until they are cleaned up - nothing reads them, and UpdateIncludeFiles reuses a row
     // when the include comes back - so once per project walk is enough.
     CHECKIFOPEN
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             Log("Delete orphan include files")
             USING VAR cmd := CreateCommand("Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)", oConn)
@@ -660,7 +673,8 @@ STATIC METHOD DeleteOrphanFiles() AS List<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
     Log("Delete Orphan files")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             var project := XSolution.OrphanedFilesProject
             Read(project)
@@ -685,7 +699,8 @@ STATIC METHOD GetOpenDesignerFiles() AS List<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
     Log("Get Open Designer files")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR cmd := CreateCommand("SELECT FullName from OpenDesignerFiles", oConn)
             USING VAR rdr := cmd:ExecuteReader()
@@ -704,7 +719,8 @@ STATIC METHOD SaveOpenDesignerFiles(Files AS List<STRING>) AS LOGIC
     VAR result := TRUE
     CHECKIFOPEN result
     Log("Start Save")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR cmd := CreateCommand("DELETE from OpenDesignerFiles", oConn)
             cmd:ExecuteNonQuery()
@@ -726,7 +742,8 @@ STATIC METHOD GetProjectsPerFile(File as XFile) AS List<Int64>
     VAR result := List<INT64>{}
     CHECKIFOPEN result
     Log("Get Projects for file: "+File:FullPath)
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR cmd := CreateCommand("SELECT DISTINCT IdProject from FilesPerProject where IdFile = $file", oConn)
             cmd:Parameters:AddWithValue("$file",File:Id)
@@ -745,7 +762,8 @@ STATIC METHOD GetProjectsPerFile(File as XFile) AS List<Int64>
 STATIC METHOD GetProjectFileNames() AS List<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR cmd := CreateCommand("SELECT DISTINCT ProjectFileName, Framework from Projects", oConn)
             USING VAR rdr := cmd:ExecuteReader()
@@ -773,7 +791,8 @@ STATIC METHOD Read(oProject AS XProject) AS VOID
     var framework   := oProject:Framework
     VAR lUpdated := FALSE
     Log(i"Read Project info for project {file}")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file and Framework = $framework"
@@ -808,7 +827,8 @@ STATIC METHOD Read(oProject AS XProject) AS VOID
 STATIC METHOD SaveStartuprojects(Projects as List<String>) as VOID
     CHECKIFOPEN
     Log("Update startup projects")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         USING var cmd := CreateCommand("Update projects set Startup = 0", oConn)
         cmd:ExecuteNonQuery()
         foreach var proj in Projects
@@ -823,7 +843,8 @@ STATIC METHOD GetStartupProjects() as List<string>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
     Log("Load startup projects")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING var cmd := CreateCommand("Select ProjectFileName from projects where Startup = 1", oConn)
             USING VAR rdr := cmd:ExecuteReader()
@@ -843,7 +864,8 @@ STATIC METHOD GetFileNames(oProject AS XProject) AS List<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
     Log("Get File Names for "+oProject:Name)
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR cmd := CreateCommand("SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn)
             USING VAR rdr := cmd:ExecuteReader()
@@ -865,7 +887,8 @@ STATIC METHOD GetProjectIncludeFiles(oProject AS XProject) AS List<STRING>
     CHECKIFOPEN result
     Log("Get Includes for "+oProject:Name)
     TRY
-        BEGIN LOCK oConn
+        BEGIN LOCK dbLock
+            CHECKIFOPEN result
             USING VAR cmd := CreateCommand("SELECT FileName from ProjectIncludeFiles where idProject = "+oProject:Id:ToString(), oConn)
             USING VAR rdr := cmd:ExecuteReader()
             DO WHILE rdr:Read()
@@ -914,7 +937,8 @@ STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
             RETURN
         endif
         Log(i"Update Assembly References for Project {oProject:Name}")
-        BEGIN LOCK oConn
+        BEGIN LOCK dbLock
+            CHECKIFOPEN
             TRY
                 USING VAR cmd := CreateCommand("", oConn)
                 var current := List<Int64>{}
@@ -966,7 +990,8 @@ STATIC METHOD DeleteFile(cFileName AS STRING) AS VOID
         RETURN
     ENDIF
     Log(i"Delete File {cFileName}")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "DELETE FROM Files WHERE FileName = $file"
@@ -982,7 +1007,8 @@ STATIC METHOD DeleteFile(cFileName AS STRING) AS VOID
 STATIC METHOD GetFilename(idFile as Int64) AS STRING
     local result := "" as string
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "SELECT FileName from Files where id = "+idFile:ToString()
@@ -1023,7 +1049,8 @@ STATIC METHOD Read(oFile AS XFile) AS VOID
 
     */
     LOCAL lUpdated := FALSE AS LOGIC
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "SELECT Id, LastChanged, Size FROM Files WHERE FileName = $file"
@@ -1075,7 +1102,8 @@ STATIC PRIVATE METHOD UpdateFileData(oFile AS XFile) AS VOID
     CHECKIFOPEN
     Log(i"Update File info for file {oFile.FullPath}")
 
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             IF File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
                 USING VAR oCmd := CreateCommand("SELECT 1", oConn)
@@ -1383,7 +1411,8 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
     NEXT
     Log(i"Start Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
     LOCAL lInTransaction := FALSE AS LOGIC
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             // One transaction for the whole file. Without it every statement below is its
             // own implicit transaction, and AddTypes/AddMembers issue one INSERT per type
@@ -1478,7 +1507,8 @@ STATIC METHOD Read(oAssembly AS XAssembly) AS VOID
     VAR File    := oAssembly:FileName
     VAR name    := oAssembly:FullName
     VAR lUpdated := FALSE
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "SELECT Id, Name, AssemblyFileName, LastChanged, Size from Assemblies where  AssemblyFileName = $file"
@@ -1517,7 +1547,8 @@ STATIC METHOD Delete(oAssembly as XAssembly) AS VOID
         Log("Empty assemblyname")
         RETURN
     ENDIF
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             USING VAR oCmd := CreateCommand("Delete From Assemblies where Id = "+oAssembly:Id:ToString(), oConn)
             oCmd:ExecuteNonQuery()
@@ -1537,7 +1568,8 @@ STATIC METHOD Update(oAssembly AS XAssembly) AS VOID
         RETURN
     ENDIF
     Log(i"Update Assembly info for assembly {oAssembly.FileName}")
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
         TRY
             USING VAR oCmd := CreateCommand("SELECT 1", oConn)
             LOCAL globalType := NULL as XPETypeSymbol
@@ -1628,7 +1660,8 @@ PRIVATE STATIC METHOD _FindFunctionWorker(sName AS STRING, sProjectIds AS STRING
     VAR result := List<XDbResult>{}
     VAR sLike := sName
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand("SELECT 1", oConn)
             var crit := "name = $name"
@@ -1684,7 +1717,8 @@ STATIC METHOD _FindGlobalOrDefineWorker(sName AS STRING, sProjectIds AS STRING, 
     VAR result := List<XDbResult>{}
     VAR sLike  := sName
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand("SELECT 1", oConn)
             var crit := "name = $name"
@@ -1722,7 +1756,8 @@ STATIC METHOD GetProjectGlobalUsings(nProjectId as INT64) AS IList<XDbResult>
 
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand("SELECT 1", oConn)
             oCmd:CommandText := "SELECT Name, Attributes, ReturnType FROM ProjectGlobalUsings WHERE IdProject = "+nProjectId:ToString()
@@ -1756,7 +1791,8 @@ STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind
     VAR result := List<XDbResult>{}
     VAR sLike  := sName
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             IF like .and. ! sLike:EndsWith("%")
                 sLike += "%"
@@ -1800,7 +1836,8 @@ STATIC METHOD GetProjectTypes(sName AS STRING, sProjectIds AS STRING) AS IList<X
     VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sName)
@@ -1820,7 +1857,8 @@ STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS ILi
     CHECKIFOPEN result
     var sLike := sName + "%"
     VAR stmt := "Select * from ProjectTypes where name like $name or namespace like $name AND IdProject in ("+sProjectIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sLike)
@@ -1842,7 +1880,8 @@ STATIC METHOD GetProjectTypesInNamespace(sName AS STRING, sProjectIds AS STRING)
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     VAR stmt := "Select * from ProjectTypes where namespace = $name AND idProject in ("+sProjectIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sName)
@@ -1863,7 +1902,8 @@ STATIC METHOD GetAssemblyTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     VAR stmt := "Select * from AssemblyTypes where name = $name or fullname = $name AND IdAssembly in ("+sAssemblyIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sName)
@@ -1882,7 +1922,8 @@ STATIC METHOD GetAssemblyTypesLike(sName AS STRING, sAssemblyIds AS STRING) AS I
     CHECKIFOPEN result
     var sLike := sName + "%"
     VAR stmt := "Select * from AssemblyTypes where name like $name or fullname like $name AND IdAssembly in ("+sAssemblyIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sLike)
@@ -1903,7 +1944,8 @@ STATIC METHOD GetAssemblyTypesInNamespace(sName AS STRING, sAssemblyIds AS STRIN
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     VAR stmt := "Select * from AssemblyTypes where namespace = $name AND idAssembly in ("+sAssemblyIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sName)
@@ -1929,7 +1971,8 @@ STATIC METHOD GetCommentTasks(sProjectIds AS STRING) AS IList<XDbResult>
     CHECKIFOPEN result
     VAR stmt := "Select Line, Column, Priority, Comment, FileName from " + ;
         " ProjectCommentTasks where IdProject in ("+sProjectIds+") Order BY IdProject, IdFile "
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -1947,7 +1990,8 @@ STATIC METHOD GetFilesOfType(type as XFileType, sProjectIds as STRING) AS IList<
     VAR result := List<String>{}
     CHECKIFOPEN result
     VAR stmt := "Select distinct FileName from ProjectFiles where FileType = $type AND IdProject in ("+sProjectIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$type",(INT) type)
@@ -1965,7 +2009,8 @@ STATIC METHOD GetProjectNamespaces(sProjectIds AS STRING) AS IList<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
     VAR stmt := "Select distinct Namespace from ProjectTypes where IdProject in ("+sProjectIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -1987,7 +2032,8 @@ STATIC METHOD GetAssemblyNamespaces(sAssemblyIds AS STRING) AS IList<STRING>
     VAR result := List<STRING>{}
     CHECKIFOPEN result
     VAR stmt := "Select distinct Namespace from AssemblyNamespaces where IdAssembly in ("+sAssemblyIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2011,7 +2057,8 @@ STATIC METHOD GetAssembliesContainingNamespace(sNamespace as string, sAssemblyId
     CHECKIFOPEN result
     VAR stmt := "Select distinct AssemblyFileName from AssemblyNamespaces where Namespace='"+sNamespace+;
         "' and idAssembly in ("+sAssemblyIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2034,7 +2081,8 @@ STATIC METHOD GetNamespacesInFile(sFileId AS STRING, keepEmptyName AS LOGIC ) AS
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace != '' and IdFile = "+sFileId
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2061,7 +2109,8 @@ STATIC METHOD GetTypesInFile(XFile AS XFile) AS IList<XDbResult>
     VAR stmt := "Select * from ProjectTypes where IdFile = "+XFile:Id:ToString()+" and IdProject = "+XFile:Project:Id:ToString()
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2080,7 +2129,8 @@ STATIC METHOD GetExtensionMethods (sProjectIds AS STRING, TypeName as STRING) AS
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     VAR stmt := "Select * from ProjectExtensionMethods where idProject IN ("+sProjectIds+") AND fullName = '"+TypeName+"'"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2100,7 +2150,8 @@ STATIC METHOD GetMembers(idType AS INT64, idProject as INT64) AS IList<XDbResult
     CHECKIFOPEN result
     VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()+" and IdProject = "+idProject:ToString()
     stmt     += " order by idFile, idType"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2118,7 +2169,8 @@ STATIC METHOD GetMembers(idType AS INT64, idProject as INT64) AS IList<XDbResult
 
 STATIC METHOD HasRCFiles(projectFile as string) AS LOGIC
     CHECKIFOPEN FALSE
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN FALSE
         TRY
             var fileType := (Int) XFileType.NativeResource
             var stmt := "select count(*) from ProjectFiles where fileType = "+fileType:ToString()+" and ProjectFileName like '%" +projectFile+"'"
@@ -2134,7 +2186,8 @@ STATIC METHOD HasRCFiles(projectFile as string) AS LOGIC
 STATIC METHOD GetStartupClasses(projectFile as string) AS List<String>
     var result := List<String>{}
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             var stmt := "select distinct TypeName, Name, Attributes, Kind from ProjectMembers where Name like 'Start%' and ProjectFileName like '%" +projectFile+"'"
             USING VAR oCmd := CreateCommand(stmt, oConn)
@@ -2159,7 +2212,8 @@ STATIC METHOD GetMembers(idTypes AS STRING) AS IList<XDbResult>
     CHECKIFOPEN result
     VAR stmt := "Select distinct * from ProjectMembers where IdType IN ("+idTypes+") "
     stmt     += " order by idFile, idType"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             USING VAR rdr := oCmd:ExecuteReader()
@@ -2180,7 +2234,8 @@ STATIC METHOD GetProjectMembersLike(sName AS STRING, sProjectIds AS STRING) AS I
     CHECKIFOPEN result
     var sLike := sName + "%"
     VAR stmt := "Select * from ProjectMembers where name like $name AND typeName != $globalname AND IdProject in ("+sProjectIds+")"
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand(stmt, oConn)
             oCmd:Parameters:AddWithValue("$name", sLike)
@@ -2202,7 +2257,8 @@ STATIC METHOD GetProjectMembersLike(sName AS STRING, sProjectIds AS STRING) AS I
 STATIC METHOD GetFunctions( nFileId AS Int64, nProjectId as Int64) AS IList<XDbResult>
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
-    BEGIN LOCK oConn
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
         TRY
             USING VAR oCmd := CreateCommand("SELECT 1", oConn)
             oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND IdProject = $idproject and TypeName = $typename " + ;
@@ -2335,7 +2391,13 @@ STATIC METHOD DbToInt(oValue AS OBJECT) AS LONG
     RETURN 0
 
 
-STATIC PROPERTY IsDbOpen AS LOGIC GET oConn != NULL_OBJECT .AND.  oConn:State == ConnectionState.Open
+STATIC PROPERTY IsDbOpen AS LOGIC
+    GET
+        // Read the field once: CloseDatabase may set it to NULL on another thread
+        VAR conn := oConn
+        RETURN conn != NULL_OBJECT .AND. conn:State == ConnectionState.Open
+    END GET
+END PROPERTY
 STATIC PROPERTY Connection as DbConnection GET oConn
 
 END CLASS

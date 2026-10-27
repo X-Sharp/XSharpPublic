@@ -8,6 +8,8 @@ using XSharpModel;
 using File = System.IO.File;
 using XSharp.Settings;
 using XSharp.Support;
+using System.Collections;
+using System.Collections.Generic;
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
@@ -54,6 +56,29 @@ namespace XSharp.LanguageService
                 var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();
+                // make sure that files that are included more than once because of multi targetting
+                // are deduplicated
+                IList<IXSymbol> deduped = new List<IXSymbol>();
+                HashSet<string> files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var item in result)
+                {
+                    if (item is XSourceEntity source)
+                    {
+                        var file = source.File?.FullPath;
+                        var line = source.Range.StartLine;
+                        var key = file + ":" + line.ToString();
+                        if (!files.Contains(key))
+                        {
+                            files.Add(key);
+                            deduped.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        deduped.Add(item);
+                    }
+                }
+                result = deduped;
                 if (result.Count == 1)
                 {
                     Goto(result[0], TextView, state);

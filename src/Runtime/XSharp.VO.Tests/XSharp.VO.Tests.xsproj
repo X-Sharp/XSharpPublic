@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.props" />
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net47</TargetFrameworks>
@@ -20,7 +20,7 @@
     <Nostandarddefs>true</Nostandarddefs>
     <Allowdot>false</Allowdot>
     <NamedArgs>False</NamedArgs>
-    <AssemblyName>XSharp.Runtime.VO.Tests</AssemblyName>
+    <AssemblyName>XSharp.VO.Tests</AssemblyName>
   </PropertyGroup>
    <ItemGroup>
     <Compile Include="..\XSharp.Core.Tests\Support.prg">

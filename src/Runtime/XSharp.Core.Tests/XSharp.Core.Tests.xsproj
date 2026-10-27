@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.props" />
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.Core.Tests</RootNamespace>

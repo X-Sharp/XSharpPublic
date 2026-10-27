@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.props" />
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net47</TargetFrameworks>
@@ -29,7 +29,7 @@
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <AssemblyName>XSharp.Runtime.VFP.Tests</AssemblyName>
+    <AssemblyName>XSharp.VFP.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.props" />
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net47</TargetFrameworks>
@@ -11,6 +11,7 @@
     <Allowdot>True</Allowdot>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <AssemblyName>XSharp.RDD.Tests</AssemblyName>
+    <cs>false</cs>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\XSharp.Core.Tests\Support.prg">
@@ -37,6 +38,11 @@
     <Content Update="customer.dbf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="customer.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>

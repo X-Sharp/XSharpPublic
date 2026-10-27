@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Runtime.props" />
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net47</TargetFrameworks>
@@ -8,6 +8,7 @@
     <Name>XSharp.XPP.Tests</Name>
     <Dialect>XPP</Dialect>
     <Unsafe>true</Unsafe>
+    <cs>false</cs>
     <NS>false</NS>
     <VO13>true</VO13>
     <VO14>true</VO14>
@@ -16,7 +17,7 @@
     <LB>True</LB>
     <Xpp1>True</Xpp1>
     <Allowdot>false</Allowdot>
-    <AssemblyName>XSharp.Runtime.XPP.Tests</AssemblyName>
+    <AssemblyName>XSharp.XPP.Tests</AssemblyName>
   </PropertyGroup>
  <ItemGroup>
     <Compile Include="..\XSharp.Core.Tests\Support.prg">

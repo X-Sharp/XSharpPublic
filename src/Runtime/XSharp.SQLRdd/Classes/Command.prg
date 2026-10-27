@@ -134,6 +134,14 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
                 return null
             endif
             oDataTable := DataTable{cTable}
+            // Load() takes NOT NULL etc. from the reader's schema and checks the constraints when
+            // it finishes, which builds a sort index for every non-nullable column. Those indexes
+            // stay attached to the table and are maintained for every row added or removed later
+            // (the RDD's buffer is such a table): with 154 NOT NULL columns paging was dominated by
+            // index maintenance. A DataSet that does not enforce constraints skips that check.
+            var oDataSet := DataSet{}
+            oDataSet:EnforceConstraints := false
+            oDataSet:Tables:Add(oDataTable)
             oDataTable:Load(reader)
             return oDataTable
         catch e as Exception

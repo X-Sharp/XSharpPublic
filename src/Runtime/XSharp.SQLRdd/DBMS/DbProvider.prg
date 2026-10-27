@@ -201,6 +201,36 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return cFunction
     end method
 
+    /// <summary>Escape character used by LikePattern()</summary>
+    public const LikeEscapeChar := c'!' as char
+
+    /// <summary>
+    /// Characters that have a special meaning inside a LIKE pattern of this database.
+    /// The default implementation returns the standard wildcards % and _.
+    /// </summary>
+    virtual property LikeWildcards as string => "%_"
+
+    /// <inheritdoc/>
+    virtual method LikePattern(cPrefix as string) as string
+        // Seek and scope values are literal key prefixes: a value like "[AKTUELL]" or "A_B"
+        // must not be read as a character class or a single character wildcard.
+        var sb := StringBuilder{cPrefix:Length + 4}
+        var lEscaped := false
+        foreach var c in cPrefix
+            if c == LikeEscapeChar .or. SELF:LikeWildcards:IndexOf(c) >= 0
+                sb:Append(LikeEscapeChar)
+                lEscaped := true
+            endif
+            sb:Append(c)
+        next
+        sb:Append('%')
+        var cPattern := Functions.XsValueToSqlValue(sb:ToString())
+        if lEscaped
+            cPattern += " escape '" + LikeEscapeChar:ToString() + "'"
+        endif
+        return cPattern
+    end method
+
     /// <summary>
     /// Create a new SqlDbProvider object
     /// </summary>

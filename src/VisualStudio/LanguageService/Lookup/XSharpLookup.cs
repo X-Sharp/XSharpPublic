@@ -99,7 +99,8 @@ namespace XSharp.LanguageService
                         variable.ResolvedType = types.FirstOrDefault();
                         if (variable.ResolvedType != null && variable.ResolvedType.FullName != KnownTypes.SystemArray)
                         {
-                            variable.TypeName = variable.ResolvedType.FullName;
+                            // keep the type arguments of the declaration: List<Customer> must not become List<T>
+                            variable.TypeName = WithTypeArguments(variable.ResolvedType.FullName, variable.TypeName);
                         }
                     }
                 }
@@ -137,7 +138,11 @@ namespace XSharp.LanguageService
                         var type = ResolveImpliedType(location, xVar, currentType, visibility);
                         if (type != null)
                         {
-                            xVar.TypeName = type.FullName.GetXSharpTypeName();
+                            var typeName = type.FullName.GetXSharpTypeName();
+                            // ResolveImpliedCollection stores the element type with its type arguments, e.g. KeyValuePair<STRING,Customer>
+                            if (xVar.ImpliedKind == ImpliedKind.InCollection && type.IsGeneric)
+                                typeName = WithTypeArguments(typeName, xVar.TypeName);
+                            xVar.TypeName = typeName;
                         }
                     }
                 }
@@ -380,12 +385,97 @@ namespace XSharp.LanguageService
             var elementType = GetTypeNameFromSymbol(location, element);
             if (elementType.EndsWith("[]"))
             {
-                return GetArrayType(location, elementType.Substring(0, elementType.Length - 2));
+                // the loop variable has the type of the array element, not the array type
+                return SearchType(location, elementType.Substring(0, elementType.Length - 2)).FirstOrDefault();
             }
             var type = GetTypeFromSymbol(location, element);
+            var enumType = GetEnumerableElementTypeName(type, elementType);
+            if (enumType != null)
+            {
+                var ftype = SearchType(location, enumType).FirstOrDefault();
+                if (ftype != null)
+                {
+                    xVar.TypeName = enumType;
+                    return ftype;
+                }
+            }
             var etype = getElementType(type, location, element);
 
             return etype;
+        }
+
+        private static string GetEnumerableElementTypeName(IXTypeSymbol type, string collectionTypeName)
+        {
+            // For a generic collection the loop variable has the type argument of IEnumerable<T>, with the
+            // type arguments of the collection filled in: Dictionary<STRING,Customer> -> KeyValuePair<STRING,Customer>
+            // The indexer is no good here: Dictionary<TKey,TValue>[TKey] returns TValue
+            if (type is XPETypeSymbol peType && peType.IsGeneric && peType.TypeDef != null)
+            {
+                var typeParams = peType.TypeParameters;
+                var typeArgs = GetTypeArguments(collectionTypeName);
+                if (typeArgs.Count != typeParams.Count)
+                    return null;
+                const string enumerable = "System.Collections.Generic.IEnumerable`1";
+                if (peType.TypeDef.FullName == enumerable)
+                    return typeArgs[0];
+                foreach (var impl in peType.TypeDef.Interfaces)
+                {
+                    if (impl.InterfaceType is Mono.Cecil.GenericInstanceType git && git.ElementType.FullName == enumerable)
+                    {
+                        var name = git.GenericArguments[0].FullName.GetXSharpTypeName();
+                        return System.Text.RegularExpressions.Regex.Replace(name, @"\w+", m =>
+                        {
+                            var index = typeParams.IndexOf(m.Value);
+                            return index >= 0 ? typeArgs[index] : m.Value;
+                        });
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static IList<string> GetTypeArguments(string typeName)
+        {
+            // List<Customer> -> Customer, Dictionary<STRING, List<INT>> -> STRING, List<INT>
+            var result = new List<string>();
+            var pos = typeName?.IndexOf('<') ?? -1;
+            if (pos <= 0 || !typeName.EndsWith(">"))
+                return result;
+            int level = 0;
+            int start = pos + 1;
+            for (int i = start; i < typeName.Length - 1; i++)
+            {
+                switch (typeName[i])
+                {
+                    case '<':
+                        level += 1;
+                        break;
+                    case '>':
+                        level -= 1;
+                        break;
+                    case ',':
+                        if (level == 0)
+                        {
+                            result.Add(typeName.Substring(start, i - start).Trim());
+                            start = i + 1;
+                        }
+                        break;
+                }
+            }
+            result.Add(typeName.Substring(start, typeName.Length - 1 - start).Trim());
+            return result;
+        }
+
+        private static string WithTypeArguments(string resolvedName, string declaredName)
+        {
+            // System.Collections.Generic.List<T> + List<Customer> -> System.Collections.Generic.List<Customer>
+            var typeArgs = GetTypeArguments(declaredName);
+            if (typeArgs.Count == 0)
+                return resolvedName;
+            var pos = resolvedName.IndexOf('<');
+            if (pos > 0)
+                resolvedName = resolvedName.Substring(0, pos);
+            return resolvedName + "<" + string.Join(",", typeArgs) + ">";
         }
 
         private static IXTypeSymbol getElementType(IXTypeSymbol type, XSharpSearchLocation location, IXSymbol element)
@@ -1166,7 +1256,13 @@ namespace XSharp.LanguageService
                     if (xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
                     {
                         result.Clear();
-                        result.Add(AdjustGenericMember(xmember, symbols.Peek()));
+                        var adjusted = AdjustGenericMember(xmember, symbols.Peek());
+                        if (adjusted.TypeName != xmember.TypeName)
+                        {
+                            // the clone still has the type of the type parameter (TValue), completion needs the real type
+                            adjusted.ResolvedType = SearchType(location, adjusted.TypeName).FirstOrDefault();
+                        }
+                        result.Add(adjusted);
                     }
                     else
                     {

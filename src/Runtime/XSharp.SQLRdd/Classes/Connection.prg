@@ -1045,32 +1045,49 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         _lockTimer:Enabled := true
     return
 
+    /// <remarks>
+    /// The timer runs on a thread pool thread, while the application uses the connection on its own
+    /// thread. An ADO.NET connection must not be used by two threads at once: a refresh that came
+    /// during a longer statement (e.g. CREATE INDEX on a big table) made one of them fail with
+    /// "requires an open and available Connection". So the refresh uses a connection of its own.
+    /// </remarks>
     method LockTimerElapsedEvent(sender as object, e as System.Timers.ElapsedEventArgs) as void
-        var parameterName1 := SELF:Provider:ParameterPrefix + "p1"
-
-        // Refresh my Locks
-        using var cmdRefresh := SqlDbCommand{"RefreshLockTable", SELF, false}
-        if !cmdRefresh:Connection:IsOpen
-            cmdRefresh:Connection:ForceOpen()
+        if !SELF:UseLocks
+            // nothing is written to the lock table
+            return
         endif
-        var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
-        updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
-        updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
-        cmdRefresh:Parameters := List<SqlDbParameter>{}
-        cmdRefresh:Parameters:Add(SqlDbParameter{parameterName1, SELF:ConnectionId:ToString()})
-        cmdRefresh:CommandText := updateStatement
-        cmdRefresh:ExecuteNonQuery()
+        try
+            var parameterName1 := SELF:Provider:ParameterPrefix + "p1"
+            using var oConn := SELF:Provider:CreateConnection()
+            oConn:ConnectionString := SELF:ConnectionString
+            oConn:Open()
 
-        // Clear all old locks
-        using var cmdClear := SqlDbCommand{"ClearLockTable", SELF, false}
-        if !cmdClear:Connection:IsOpen
-            cmdClear:Connection:ForceOpen()
-        endif
-        cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
-        cmdClear:Parameters := List<SqlDbParameter>{}
-        cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-SELF:LockStaleThreshold)})
-        cmdClear:ExecuteNonQuery()
+            // Refresh my Locks
+            using var cmdRefresh := oConn:CreateCommand()
+            var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
+            updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
+            updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
+            cmdRefresh:CommandText := updateStatement
+            SELF:_AddParameter(cmdRefresh, parameterName1, SELF:ConnectionId:ToString())
+            cmdRefresh:ExecuteNonQuery()
+
+            // Clear all old locks
+            using var cmdClear := oConn:CreateCommand()
+            cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
+            SELF:_AddParameter(cmdClear, parameterName1, DateTime.Now.AddSeconds(-SELF:LockStaleThreshold))
+            cmdClear:ExecuteNonQuery()
+        catch ex as Exception
+            // a failed refresh must not take the application down; the next tick tries again
+            System.Diagnostics.Debug.WriteLine("SQLRDD lock table refresh: " + ex:Message)
+        end try
     return
+
+    private method _AddParameter(oCmd as DbCommand, cName as string, oValue as object) as void
+        var oParam := SELF:Provider:CreateParameter()
+        oParam:ParameterName := cName
+        oParam:Value := oValue
+        oCmd:Parameters:Add(oParam)
+        return
 
     #endregion
 

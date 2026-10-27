@@ -33,8 +33,44 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     property Provider       as ISqlDbProvider get iif(Connection == null, null, Connection:Provider)
     /// <summary>The text of the Command object.</summary>
     property CommandText    as string get iif(DbCommand == null, "", DbCommand:CommandText) set DbCommand:CommandText := value
+    /// <summary>The table the RDD reads with this command: its read statements may be answered from the
+    /// connection's result cache (see SqlDbConnection.ResultCacheMs). NULL = never.</summary>
+    internal property CacheTable as string auto
 
 #endregion
+
+    /// <summary>The statement as cache key, or NULL when its result may not be reused: no cache, not an RDD
+    /// read (CacheTable), parameters, or not a single SELECT.</summary>
+    private method _CacheKey() as string
+        if String.IsNullOrEmpty(SELF:CacheTable) .or. SELF:Connection:ResultCache == null .or. SELF:Parameters?:Count > 0
+            return null
+        endif
+        var cText := SELF:CommandText
+        if cText == null .or. cText:IndexOf(';') >= 0 .or. !cText:TrimStart():StartsWith("select", StringComparison.OrdinalIgnoreCase)
+            return null
+        endif
+        return cText
+    end method
+
+    /// <summary>Before a statement that is not a SELECT runs: drop the cached results it may change, those of
+    /// CacheTable for a write of the RDD, all of them for a statement of somebody else.</summary>
+    private method _InvalidateCache() as void
+        var oCache := SELF:Connection:ResultCache
+        if oCache == null
+            return
+        endif
+        var cText := SELF:CommandText
+        if cText == null .or. cText:TrimStart():StartsWith("select", StringComparison.OrdinalIgnoreCase) .and. cText:IndexOf(';') < 0
+            return
+        endif
+        if !String.IsNullOrEmpty(SELF:CacheTable)
+            oCache:Invalidate(SELF:CacheTable)
+        elseif cText:IndexOf(SqlDbConnection.LockTableName, StringComparison.OrdinalIgnoreCase) < 0
+            // the lock table refresh runs on a timer and changes no data
+            oCache:Clear()
+        endif
+        return
+    end method
 
     private withEvents  as LOGIC
 
@@ -169,6 +205,18 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             return SELF:GetDataTable(cTable)
         endif
         try
+            local oCached as SqlDbResultCacheEntry
+            var cKey := SELF:_CacheKey()
+            if cKey != null .and. SELF:Connection:ResultCache:TryGet(cKey, out oCached) .and. !oCached:IsScalar ;
+                .and. oCached:Columns == oTemplate:Columns:Count
+                var oResult := iif(oTarget != null, oTarget, oTemplate:Clone())
+                oResult:BeginLoadData()
+                foreach var aRow in oCached:Rows
+                    oResult:LoadDataRow(aRow, true)
+                next
+                oResult:EndLoadData()
+                return oResult
+            endif
             using var reader := SELF:ExecuteReader(cTable)
             if reader == null
                 return null
@@ -184,12 +232,24 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             if lMatch
                 oDataTable := iif(oTarget != null, oTarget, oTemplate:Clone())
                 var aValues := object[]{reader:FieldCount}
+                var aRows := iif(cKey != null, List<object[]>{}, null)
                 oDataTable:BeginLoadData()
                 do while reader:Read()
                     reader:GetValues(aValues)
                     oDataTable:LoadDataRow(aValues, true)
+                    if aRows != null
+                        if aRows:Count < SqlDbResultCache.MaxRows
+                            aRows:Add((object[]) aValues:Clone())
+                        else
+                            aRows := null
+                            cKey  := null
+                        endif
+                    endif
                 enddo
                 oDataTable:EndLoadData()
+                if aRows != null
+                    SELF:Connection:ResultCache:Put(cKey, SqlDbResultCacheEntry{}{Table := SELF:CacheTable, Rows := aRows, Columns := reader:FieldCount})
+                endif
             else
                 oDataTable := DataTable{iif(String.IsNullOrEmpty(cTable), SELF:Name, cTable)}
                 var oDataSet := DataSet{}
@@ -214,6 +274,12 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     method ExecuteScalar(cTable := "" as string) as object
         try
             self:Connection:ForceOpen()
+            local oCached as SqlDbResultCacheEntry
+            var cKey := SELF:_CacheKey()
+            if cKey != null .and. SELF:Connection:ResultCache:TryGet(cKey, out oCached) .and. oCached:IsScalar
+                return oCached:Scalar
+            endif
+            SELF:_InvalidateCache()
             if String.IsNullOrEmpty(cTable)
                 cTable := SELF:Name
             endif
@@ -224,7 +290,11 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             if ! SELF:_TryBindParameters()
                 return null
             endif
-            return self:DbCommand:ExecuteScalar()
+            var oResult := self:DbCommand:ExecuteScalar()
+            if cKey != null
+                SELF:Connection:ResultCache:Put(cKey, SqlDbResultCacheEntry{}{Table := SELF:CacheTable, Scalar := oResult, IsScalar := TRUE})
+            endif
+            return oResult
         catch e as Exception
             Connection:LastException := e
             return null
@@ -241,6 +311,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     method ExecuteReader(cTable := "" as string) as DbDataReader
         try
             self:Connection:ForceOpen()
+            SELF:_InvalidateCache()
             if String.IsNullOrEmpty(cTable)
                 cTable := SELF:Name
             endif
@@ -268,6 +339,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     method ExecuteNonQuery(cTable := "" as string) as LOGIC
         try
             self:Connection:ForceOpen()
+            SELF:_InvalidateCache()
             if String.IsNullOrEmpty(cTable)
                 cTable := SELF:Name
             endif

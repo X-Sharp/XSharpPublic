@@ -150,6 +150,8 @@ partial class SQLRDD inherit Workarea
             if !self:_oTd:HasRecnoColumn
                 throw Exception{"RecnoColumn is required for table " + info:FileName}
             endif
+            // its read statements may be answered from the result cache (SqlDbConnection.ResultCacheMs)
+            _command:CacheTable := self:_oTd:RealName
         endif
         local aUpdatableColumns := null as HashSet<string>
         if _oTd:HasUpdatableColumns
@@ -1035,6 +1037,10 @@ partial class SQLRDD inherit Workarea
         if Connection?:Provider is null .or. !self:Connection:IsOpen
             lockInfo:Result := false
             return false
+        endif
+        // Read fresh after a lock: the record may be written next.
+        if self:_oTd != null
+            self:Connection:ResultCache?:Invalidate(self:_oTd:RealName)
         endif
         if !self:Connection:UseLocks
             // Locking switched off for this connection (see SqlDbConnection.UseLocks).

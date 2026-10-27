@@ -4,8 +4,6 @@
   <PropertyGroup>
     <Description>XSharp Typed VO Console Classes</Description>
     <AssemblyName>XSharp.VOConsoleClasses</AssemblyName>
-    <Name>XSharp.VO.ConsoleClasses</Name>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <EnforceSelf>True</EnforceSelf>
@@ -13,8 +11,8 @@
     <TargetFrameworks>net47;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj"/>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj"/>
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.prg" />

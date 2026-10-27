@@ -5,7 +5,6 @@
     <Description>XSharp Typed VO GUI Classes</Description>
     <Dialect>Vulcan</Dialect>
     <UseWindowsForms>true</UseWindowsForms>
-    <Name>XSharp.VO.VOGUIClasses</Name>
     <NS>true</NS>
     <Ins>true</Ins>
     <VO7>True</VO7>
@@ -25,9 +24,9 @@
     <Compile Remove="Properties\AssemblyInfo.prg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.VO\XSharp.VO.xsproj" />
     <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Props" />

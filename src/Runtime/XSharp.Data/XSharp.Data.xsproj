@@ -6,8 +6,6 @@
     <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <TargetFrameworks>net47;net8.0</TargetFrameworks>
@@ -17,7 +15,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\constants.prg">
+    <Compile Include="$(Solutiondir)Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
   </ItemGroup>

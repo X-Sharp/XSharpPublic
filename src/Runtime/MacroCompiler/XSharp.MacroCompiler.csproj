@@ -8,7 +8,7 @@
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(Solutiondir)Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>
   </ItemGroup>
@@ -24,7 +24,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\Common\StandardHeaders.resx">
+    <EmbeddedResource Include="$(Solutiondir)Common\StandardHeaders.resx">
       <Link>Preprocessor\StandardHeaders.resx</Link>
       <SubType>Designer</SubType>
     </EmbeddedResource>

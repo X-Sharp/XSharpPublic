@@ -3,50 +3,25 @@
   <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
     <AssemblyName>VOInternetClasses</AssemblyName>
-    <Name>VOInternetClasses</Name>
-    <NamedArgs>False</NamedArgs>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <AssemblyName>VOInternetClasses</AssemblyName>
     <TargetFramework>net47</TargetFramework>
     <Dialect>Vo</Dialect>
     <VO15>true</VO15>
     <unsafe>True</unsafe>
     <ins>true</ins>
-
     <VO3>True</VO3>
-
     <VO9>True</VO9>
-
     <Ns>True</Ns>
-
     <CS>False</CS>
   </PropertyGroup>
  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{293aa07e-2af0-6a62-e882-fd50beceae2c}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{1301f399-2246-d65c-44f3-77264c6fbc31}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{5932e143-e278-74e1-da80-4dfab6468ca9}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj">
-      <Name>VOSystemClasses</Name>
-      <Project>{bd7ca537-1db2-7d48-26c1-6b546597e74e}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
-      <Name>VOWin32APILibrary</Name>
-      <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj"/>
+
+    <ProjectReference Include="$(RuntimeDir)XSharp.VO\XSharp.VO.xsproj" />
+    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj" />
+
+    <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Props" />
 </Project>

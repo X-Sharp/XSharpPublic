@@ -1,7 +1,7 @@
 # XSharp VO-SDK Package
 
 This package contains the needed DLLs used to build a VO-Compatible XSharp application.  
-The DLLs marked with * are installed for .Net Framework 4.6 only and NOT for .Net 8.0
+The DLLs marked with * are installed for .Net Framework 4.7 only and NOT for .Net 8.0
 
 - VOConsoleClasses.dll
 - VORDDClasses.dll 	   

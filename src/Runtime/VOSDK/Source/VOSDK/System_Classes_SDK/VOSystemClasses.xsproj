@@ -6,9 +6,12 @@
     <EnforceSelf>True</EnforceSelf>
     <TargetFrameworks>net47;net8.0</TargetFrameworks>
     <Dialect>XbaseNet</Dialect>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
+    <Import Project="..\VOSDKDocs.Props" />
+
 </Project>

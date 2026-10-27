@@ -4,7 +4,6 @@
   <PropertyGroup>
     <Description>XSharp Typed VO SQL Classes</Description>
     <AssemblyName>XSharp.VOSQLClasses</AssemblyName>
-    <Name>XSharp.VO.VOSQLClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <EnforceSelf>True</EnforceSelf>
@@ -15,9 +14,9 @@
     <InitLocals>True</InitLocals>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Data\XSharp.Data.xsproj" />
     <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj" />
   </ItemGroup>
   <ItemGroup>

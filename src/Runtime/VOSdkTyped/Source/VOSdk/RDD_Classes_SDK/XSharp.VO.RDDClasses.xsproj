@@ -4,7 +4,6 @@
   <PropertyGroup>
     <Description>XSharp Typed VO RDD Classes</Description>
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
-    <Name>XSharp.VO.VORDDClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <VO3>True</VO3>
     <VO4>true</VO4>
@@ -16,8 +15,8 @@
     <Dialect>XBaseNet</Dialect>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj" />
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
     <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj" />
   </ItemGroup>
   <ItemGroup>

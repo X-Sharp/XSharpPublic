@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Import Project="..\..\..\..\Shared.Props" />
+  <Import Project="$(Solutiondir)Shared.Props" />
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 	<VOSdkDir>$(MSBuildThisFileDirectory)</VOSdkDir>

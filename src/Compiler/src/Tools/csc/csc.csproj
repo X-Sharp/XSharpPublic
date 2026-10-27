@@ -11,12 +11,12 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <UseAppHost>false</UseAppHost>
     <IsSymbolPublishingPackage>true</IsSymbolPublishingPackage>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);XSHARPPRE;NET46;</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);XSHARPPRE;NET472</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' != 'net472'">$(DefineConstants);XSHARPPRE;</DefineConstants>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\CSCompiler\CSCompiler.csproj" />
+    <!--<ProjectReference Include="..\CSCompiler\CSCompiler.csproj" />-->
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <ItemGroup>

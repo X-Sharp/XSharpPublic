@@ -61,8 +61,10 @@ STATIC CLASS XSettings
         CASE System.Runtime.InteropServices.Architecture.Arm
         CASE System.Runtime.InteropServices.Architecture.Arm64
             IsArm := TRUE
+            UseMicrosoftSQLite := TRUE
         OTHERWISE
             IsArm := FALSE
+            UseMicrosoftSQLite := (int)Constants.GetSetting(nameof(UseMicrosoftSQLite), 0) != 0
         END SWITCH
 
     PUBLIC STATIC METHOD EnableAll() AS VOID

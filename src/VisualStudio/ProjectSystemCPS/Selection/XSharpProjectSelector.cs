@@ -6,6 +6,9 @@
 
 using System;
 using System.Runtime.InteropServices;
+
+using Community.VisualStudio.Toolkit;
+
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.Settings;
 
@@ -32,14 +35,25 @@ namespace XSharp.ProjectSystem.Selection
     [Guid(XSharpConstants.guidProjectSelectorString)]
     internal sealed class XSharpProjectSelector : IVsProjectSelector
     {
+        static bool errorShown = false;
         public void GetProjectFactoryGuid(Guid guidProjectType, string pszFilename, out Guid guidProjectFactory)
         {
             guidProjectFactory = XSharpConstants.guidXSharpProjectFactory;
             try
             {
-                if (SdkProjectFile.IsSdkProject(pszFilename) && XSharpMsBuildSupport.SupportsCps)
+                if (SdkProjectFile.IsSdkProject(pszFilename))
                 {
-                    guidProjectFactory = XSharpConstants.guidCpsProjectType;
+                    if (XSharpMsBuildSupport.SupportsCps)
+                        guidProjectFactory = XSharpConstants.guidCpsProjectType;
+                    else
+                    {
+                        if (! errorShown)
+                        {
+                            errorShown = true;
+                            VS.MessageBox.ShowError("The X# CPS project system is not supported by the installed X# MSBuild support files. " +
+                                "Please install the latest X# MSBuild support files to load SDK-style projects.");
+                        }
+                    }
                 }
             }
             catch (Exception e)

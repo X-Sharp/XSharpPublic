@@ -214,6 +214,10 @@
       <Link>%(RecursiveDir)\%(Filename)%(Extension)</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="$(Outdir)**\SQLitePCLRaw*.dll">
+      <Link>%(RecursiveDir)\%(Filename)%(Extension)</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.vstemplate" />

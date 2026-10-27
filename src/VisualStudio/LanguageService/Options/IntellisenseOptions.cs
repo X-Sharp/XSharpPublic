@@ -97,7 +97,7 @@ namespace XSharp.LanguageService
             XEditorSettings.NavigationIncludeFields = IncludeFieldsInNavigationBars;
             XEditorSettings.NavigationMembersOfCurrentTypeOnly = ShowMembersOfCurrentTypeOnly;
             XEditorSettings.NavigationExcludeMembersFromOtherFiles = ExcludeMembersFromOtherFiles;
-
+            Constants.WriteSetting(nameof(UseMicrosoftSQLite), UseMicrosoftSQLite ? 1 : 0);
         }
 
     }

@@ -843,14 +843,22 @@ partial class SQLRDD inherit Workarea
             elseif nFetched == 0
                 // The record does not exist (e.g. LastRec()+1, saved at EOF and restored): EOF without
                 // looking it up again in the order. ADS sets BOF as well (DBFCDX only for an empty file).
+                // TRUE as in DBF: positioning on the phantom record succeeded. FALSE made the VO
+                // DbServer:GoTo() build and throw an error object every time.
                 SELF:_GoToPhantom()
                 SELF:_SetBOF(TRUE)
-                RETURN FALSE
+                RETURN TRUE
             else
                 found := SELF:_GotoRecord(nRec)
             endif
         else
             found := SELF:_GotoRecord(nRec)
+        endif
+        if !found .and. SELF:_tableMode == TableMode.Table
+            // does not exist, as above
+            SELF:_GoToPhantom()
+            SELF:_SetBOF(TRUE)
+            RETURN TRUE
         endif
         SELF:_CheckEofBof()
         RETURN found

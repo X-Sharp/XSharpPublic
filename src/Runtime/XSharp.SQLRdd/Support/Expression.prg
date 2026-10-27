@@ -459,9 +459,10 @@ internal class SqlDbExpression inherit SqlDbObject
                 token:SQLName := _provider.QuoteIdentifier(token:Name)
             case TokenType.String
                 if lastToken != null .and. lastToken:Name:Trim() == "="
-                    // This is a string literal after a single equals, so we need to quote it as well
+                    // A single equals compares like a prefix in xBase (SET EXACT OFF): field = 'A'
+                    // is TRUE for 'AB'. The literal (without its quotes) is matched literally.
                     lastToken:SQLName := "like"
-                    token:SQLName := Left(token:Name, (DWORD)token:Name:Length-1) + "%" + Right(token:Name, 1)
+                    token:SQLName := _provider:LikePattern(token:Name:Substring(1, token:Name:Length-2))
                 else
                     token:SQLName := token:Name
                 endif

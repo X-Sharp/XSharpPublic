@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC PRIVATE _fileName   AS STRING
     STATIC PRIVATE _sqldb      AS STRING
     STATIC PRIVATE _commentTokens AS List<XCommentToken>
+    STATIC PRIVATE _afterOpenDone AS LOGIC      // AfterOpen() ran for the open solution, see Close()
     STATIC PROPERTY IsClosing  AS LOGIC AUTO
     STATIC PROPERTY IsShuttingDown  AS LOGIC AUTO
 
@@ -117,6 +118,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             Close()
         ENDIF
+        _afterOpenDone := FALSE
         _fileName := cFile
         var folder := Path.GetDirectoryName(_fileName)
         folder     := Path.Combine(folder, ".vs")
@@ -157,6 +159,7 @@ BEGIN NAMESPACE XSharpModel
                 XDatabase.DeleteProject(dbproject)
             NEXT
         endif
+        _afterOpenDone := TRUE
         ModelWalker.Start()
 	END METHOD
 
@@ -188,6 +191,12 @@ BEGIN NAMESPACE XSharpModel
         IF IsOpen
             XSettings.Information("XModel.Solution.CloseSolution()" + _fileName)
             ModelWalker.Stop()
+            IF _afterOpenDone
+                // Projects removed from the solution and TargetFrameworks that are no longer used. Not when the
+                // solution closes while it is still loading: then projects that are still part of it were not read yet.
+                XDatabase.DeleteProjectsNotInSession()
+            ENDIF
+            _afterOpenDone := FALSE
             XDatabase.CloseDatabase(_sqldb)
 
             // Empty the project list before closing the projects. XProject:Close() calls XSolution.Remove(),

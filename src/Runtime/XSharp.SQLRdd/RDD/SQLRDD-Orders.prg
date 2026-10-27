@@ -202,6 +202,8 @@ partial class SQLRDD
                 aCurrentRow := SELF:CurrentRow:ItemArray
             endif
             var lTableCountValid := SELF:_tableReccountValid
+            // ADS keeps BOF as it was when the order changes at EOF
+            var lWasBof := SELF:_BoF
             if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
                (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
                 // Order 0 (or an empty order name) means: switch back to the natural/physical
@@ -221,7 +223,8 @@ partial class SQLRDD
                 self:_tableReccountValid := lTableCountValid
                 if lReset
                     self:_RepositionAfterOrderChange(currentRecord, lWasEof, aCurrentRow)
-                else
+                    self:_RestoreBofAtEof(lWasEof, lWasBof)
+                elseif !lWasEof
                     self:GoTo(currentRecord)
                 endif
                 result := true
@@ -242,7 +245,9 @@ partial class SQLRDD
                     // be nothing to evaluate.
                     if lReset
                         self:_RepositionAfterOrderChange(currentRecord, lWasEof, aCurrentRow)
-                    else
+                        self:_RestoreBofAtEof(lWasEof, lWasBof)
+                    elseif !lWasEof
+                        // same order: at EOF stay there (GoTo(LastRec()+1) looked the record up again)
                         self:GoTo(currentRecord)
                     endif
                     SELF:CurrentOrder:CalculateKeyLength()
@@ -582,7 +587,7 @@ partial class SQLRDD
             IF SELF:DataTable == null
                 SELF:GoTo(0)
             ELSE
-                SELF:_GoToPhantom(FALSE)
+                SELF:_GoToPhantom()
             ENDIF
             SELF:_Found := false
             SELF:_SetEOF(true)

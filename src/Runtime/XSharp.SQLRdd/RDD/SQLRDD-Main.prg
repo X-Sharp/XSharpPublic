@@ -664,6 +664,8 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        // VO resets FOUND to FALSE after a record movement
+        SELF:_Found := FALSE
         // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
         SELF:GoCold()
         SELF:_outsideOrder := FALSE
@@ -692,6 +694,7 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_Found := FALSE
         // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
         SELF:GoCold()
         SELF:_outsideOrder := FALSE
@@ -741,11 +744,12 @@ partial class SQLRDD inherit Workarea
         SELF:GoCold()
         IF nToSkip != 0 .AND. SELF:_eofPending
             // On the phantom record after GoTo(0), with a buffer that does not end at the last
-            // record: moving forward stays at EOF, moving backward starts from the last record.
-            SELF:_eofPending := FALSE
+            // record: moving forward stays at EOF (still pending, so a second Skip(1) does not read on
+            // behind the buffer), moving backward starts from the last record.
             IF nToSkip > 0
                 RETURN TRUE
             ENDIF
+            SELF:_eofPending := FALSE
             isOK := SELF:GoBottom()
             IF isOK .AND. nToSkip < -1
                 isOK := SELF:_SkipInBuffer(nToSkip + 1)
@@ -768,7 +772,8 @@ partial class SQLRDD inherit Workarea
             // phantom row is only built once a SELECT actually loaded a schema - see the
             // DataTable setter) - same case GetValue() already guards against above.
             if self:CurrentRow == null .or. oRec != self:CurrentRow[self:_recnoColumNo]
-                result := SELF:GoTo( (DWORD) nRec )
+                // GoTo() sets EOF/BOF itself (at the phantom record BOF as ADS does)
+                return SELF:GoTo( (DWORD) nRec )
             endif
 		CATCH ex AS Exception
 			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "SQLRDD.GoToId",FALSE)
@@ -790,7 +795,9 @@ partial class SQLRDD inherit Workarea
         IF nRec == 0
             // DBF semantics: GoTo(0) positions on the phantom record (EOF) without any I/O.
             // Browsers do this for every empty row they paint, so it must not cost a query.
-            SELF:_GoToPhantom(TRUE)
+            // ADS sets BOF as well, as for any record number that does not exist.
+            SELF:_GoToPhantom()
+            SELF:_SetBOF(TRUE)
             RETURN TRUE
         ENDIF
         SELF:_eofPending := FALSE
@@ -811,7 +818,6 @@ partial class SQLRDD inherit Workarea
                     SELF:RowNumber := rowIndex
                     SELF:_SetEOF(FALSE)
                     SELF:_SetBOF(FALSE)
-                    SELF:_Found := TRUE
                     return true
                 endif
                 rowIndex++
@@ -830,9 +836,16 @@ partial class SQLRDD inherit Workarea
         local found as logic
         if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
             .and. !(SELF:_lazyGoto .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
-            found := SELF:_LoadSingleRecord(nRec)
+            var nFetched := SELF:_FetchSingleRecord(nRec)
+            found := nFetched == 1
             if found
                 SELF:_lazyGoto := TRUE
+            elseif nFetched == 0
+                // The record does not exist (e.g. LastRec()+1, saved at EOF and restored): EOF without
+                // looking it up again in the order. ADS sets BOF as well (DBFCDX only for an empty file).
+                SELF:_GoToPhantom()
+                SELF:_SetBOF(TRUE)
+                RETURN FALSE
             else
                 found := SELF:_GotoRecord(nRec)
             endif
@@ -881,6 +894,9 @@ partial class SQLRDD inherit Workarea
     override method Skip(nToSkip as long) as logic
         LOCAL result := FALSE AS LOGIC
         SELF:_ForceOpen()
+        IF nToSkip != 0
+            SELF:_Found := FALSE
+        ENDIF
         SELF:_Top := FALSE
         SELF:_Bottom := FALSE
         IF nToSkip != 0
@@ -889,6 +905,12 @@ partial class SQLRDD inherit Workarea
         ENDIF
         IF nToSkip == 0
             result := SELF:GoCold()
+        ELSEIF nToSkip < 0 .AND. SELF:_EoF .AND. SELF:_BoF
+            // EOF and BOF at once (e.g. after GoTo() to a record that does not exist): ADS lands on
+            // the first record and keeps BOF, as for any backward skip at BOF.
+            SELF:GoCold()
+            result := SELF:GoTop()
+            SELF:BoF := TRUE
         ELSEIF SELF:_outsideOrder
             // Positioned (via GoTo()) on a record outside the current order (OrderKeyNo 0).
             // RowNumber/_bufferStart do not correspond to any real position in the order's

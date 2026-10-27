@@ -799,18 +799,16 @@ partial class SQLRDD
         return fields:ToArray()
     end method
 
-    /// <summary>Position on the phantom record (EOF) without reading anything.</summary>
-    /// <param name="lSetBof">FALSE when the caller sets BOF itself, which saves counting the
-    /// order for an empty buffer (e.g. a seek that found nothing).</param>
-    private method _GoToPhantom(lSetBof as logic) as void
+    /// <summary>
+    /// Position on the phantom record (EOF) without reading anything. BOF is left to the caller:
+    /// GoTo() to a record that does not exist sets it (as ADS does), an order change at EOF and a
+    /// failed seek keep or clear it. Computing it here meant counting the order for an empty buffer.
+    /// </summary>
+    private method _GoToPhantom() as void
         SELF:_Found := FALSE
         SELF:_outsideOrder := FALSE
         SELF:RowNumber := SELF:RowCount + 1
         SELF:_SetEOF(TRUE)
-        // BOF too only for an empty table (an empty buffer alone does not mean that)
-        if lSetBof
-            SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:_OrderRowCount() == 0)
-        endif
         // When the buffer already ends at the last record, a backward Skip() from the phantom
         // row naturally lands on it; otherwise remember to go to the bottom first.
         SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
@@ -1506,13 +1504,19 @@ partial class SQLRDD
     /// (Skip(), OrderKeyNo, ...).
     /// </summary>
     PRIVATE METHOD _LoadSingleRecord(nRec as DWORD) AS LOGIC
+        return SELF:_FetchSingleRecord(nRec) == 1
+
+    /// <summary>Like _LoadSingleRecord(): 1 = loaded, 0 = the record does not exist, -1 = error.</summary>
+    PRIVATE METHOD _FetchSingleRecord(nRec as DWORD) AS LONG
         try
             SELF:_lazyGoto := FALSE
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
             var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
-            if oTable == null .or. oTable:Rows:Count == 0
-                return false
+            if oTable == null
+                return -1
+            elseif oTable:Rows:Count == 0
+                return 0
             endif
             SELF:_ClearTable()
             SELF:DataTable := oTable
@@ -1524,9 +1528,9 @@ partial class SQLRDD
             SELF:_bufferContiguous := false
             SELF:_SetEOF(FALSE)
             SELF:_SetBOF(FALSE)
-            return true
+            return 1
         catch as Exception
-            return false
+            return -1
         end try
 
     /// <summary>
@@ -1548,7 +1552,8 @@ partial class SQLRDD
             // record. _GoToPhantom() marks the EOF as pending (the empty buffer does not end at
             // the last record), so Skip(1) stays at EOF and Skip(-1) goes to the bottom.
             if SELF:_SetBufferRows(null) .or. SELF:_OpenTable("1=0", "")
-                SELF:_GoToPhantom(TRUE)
+                // BOF stays as it was, see OrderListFocus()
+                SELF:_GoToPhantom()
             else
                 SELF:GoTo(0)
             endif
@@ -1559,6 +1564,13 @@ partial class SQLRDD
             SELF:_bufferContiguous := false
         elseif !SELF:_LoadSingleRecord(nRec)
             SELF:GoTo(nRec)
+        endif
+        return
+
+    /// <summary>After an order change at EOF keep BOF as it was before, as ADS does.</summary>
+    PRIVATE METHOD _RestoreBofAtEof(lWasEof as logic, lWasBof as logic) AS VOID
+        if lWasEof .and. SELF:_EoF
+            SELF:_SetBOF(lWasBof)
         endif
         return
 

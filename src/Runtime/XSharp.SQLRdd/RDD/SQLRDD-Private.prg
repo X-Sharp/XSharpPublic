@@ -48,6 +48,9 @@ partial class SQLRDD
     private _bufferContiguous as logic
     /// <summary>Empty table with the buffer's columns, to load further query results into.</summary>
     private _tableTemplate as DataTable
+    /// <summary>An empty table with the buffer's structure (the last replaced buffer or a page already copied
+    /// into it) to load the next query result into, instead of copying _tableTemplate again.</summary>
+    private _spareTable as DataTable
     /// <summary>
     /// Rows to fetch with the next forward page (0 = PageSize): doubles with every full page read
     /// on in a row (up to BufferSize pages). After a seek it starts small, because code that
@@ -155,7 +158,9 @@ partial class SQLRDD
                 _table:Rows:Clear()
                 return
             endif
+            var oOld := _table
             _table := value
+            SELF:_ReturnSpareTable(oOld)
             if _table is NULL
                 SELF:_hasData := FALSE
                 return
@@ -633,7 +638,7 @@ partial class SQLRDD
         try
             SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
             SELF:_command:ClearParameters()
-            var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
+            var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if newTable == null
                 return false
             endif
@@ -647,6 +652,7 @@ partial class SQLRDD
                 SELF:DataTable:Rows:InsertAt(newRow, 0)
                 newRow:AcceptChanges()
             next
+            SELF:_ReturnSpareTable(newTable)
             SELF:_anchorWhere := ""
             SELF:_bufferContiguous := true
             SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
@@ -680,7 +686,7 @@ partial class SQLRDD
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount, lReverse)
             _command:ClearParameters()
-            var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate)
+            var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             return oDataTable
         catch as Exception
             return null
@@ -1057,6 +1063,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:Add(newRow)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         // A short page always means EOF. But when the total record count is an exact
         // multiple of PageSize, the last page comes back FULL - "short page" never fires,
         // so also check whether this page's absolute record range already reaches the
@@ -1108,6 +1115,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:InsertAt(newRow, 0)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         SELF:_bufferStart := nStart
         SELF:RowNumber    += nRows
         SELF:_TrimBufferEnd()
@@ -1149,6 +1157,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:InsertAt(newRow, 0)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         SELF:RowNumber    += nRows
         SELF:_readAheadRows := 0
         SELF:_readBackRows := iif(nRows < nCount, 0, Math.Min(nCount * 2, SELF:_MaxBufferRows))
@@ -1452,13 +1461,18 @@ partial class SQLRDD
         else
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
-            var oRecTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
+            var oRecTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if oRecTable == null .or. oRecTable:Rows:Count == 0
+                SELF:_ReturnSpareTable(oRecTable)
                 return false
             endif
             oRow := oRecTable:Rows[0]
         endif
         var cFrom := SELF:_KeysetCondition(oRow, FALSE, TRUE, TRUE)
+        if oRow:Table != SELF:DataTable
+            // the record was read only for its key
+            SELF:_ReturnSpareTable(oRow:Table)
+        endif
         if cFrom == null
             return false
         endif
@@ -1512,10 +1526,11 @@ partial class SQLRDD
             SELF:_lazyGoto := FALSE
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
-            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if oTable == null
                 return -1
             elseif oTable:Rows:Count == 0
+                SELF:_ReturnSpareTable(oTable)
                 return 0
             endif
             SELF:_ClearTable()
@@ -1574,6 +1589,22 @@ partial class SQLRDD
         endif
         return
 
+    /// <summary>An empty table with the buffer's structure to load a query result into, or NULL.</summary>
+    PRIVATE METHOD _TakeSpareTable() AS DataTable
+        var oTable := SELF:_spareTable
+        SELF:_spareTable := null
+        return oTable
+
+    /// <summary>Keep a table that is no longer used (a replaced buffer, a page whose rows were copied into
+    /// the buffer) for the next query, see _TakeSpareTable().</summary>
+    PRIVATE METHOD _ReturnSpareTable(oTable as DataTable) AS VOID
+        if oTable != null .and. oTable != SELF:_table .and. SELF:_tableTemplate != null ;
+            .and. oTable:Columns:Count == SELF:_tableTemplate:Columns:Count
+            oTable:Rows:Clear()
+            SELF:_spareTable := oTable
+        endif
+        return
+
     /// <summary>
     /// Replace the buffer with an empty table (aRow NULL) or one row, built from the structure of
     /// the previous buffer without a query. FALSE when that structure is not known yet.
@@ -1582,7 +1613,10 @@ partial class SQLRDD
         if SELF:_tableTemplate == null
             return false
         endif
-        var oTable := SELF:_tableTemplate:Clone()
+        var oTable := SELF:_TakeSpareTable()
+        if oTable == null
+            oTable := SELF:_tableTemplate:Clone()
+        endif
         if aRow != null
             oTable:LoadDataRow(aRow, true)
         endif

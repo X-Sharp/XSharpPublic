@@ -155,6 +155,8 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// </summary>
     /// <param name="cTable">The name of the DataTable (when the template cannot be used)</param>
     /// <param name="oTemplate">An empty table with the columns the command returns, or NULL</param>
+    /// <param name="oTarget">An empty table with the structure of oTemplate to load the rows into instead
+    /// of a copy of oTemplate (copying the structure of a wide table is not free), or NULL.</param>
     /// <remarks>
     /// Building the structure from the reader's schema (DataTable.Load()) is the expensive part of
     /// a query that returns one or a few rows of a wide table: 1.5 ms against 0.5 ms for 178
@@ -162,7 +164,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// the structure of its buffer. When the reader's columns do not match the template, the
     /// rows are loaded as by GetDataTable(cTable).
     /// </remarks>
-    method GetDataTable(cTable as string, oTemplate as DataTable) as DataTable
+    method GetDataTable(cTable as string, oTemplate as DataTable, oTarget := null as DataTable) as DataTable
         if oTemplate == null
             return SELF:GetDataTable(cTable)
         endif
@@ -180,7 +182,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             next
             local oDataTable as DataTable
             if lMatch
-                oDataTable := oTemplate:Clone()
+                oDataTable := iif(oTarget != null, oTarget, oTemplate:Clone())
                 var aValues := object[]{reader:FieldCount}
                 oDataTable:BeginLoadData()
                 do while reader:Read()

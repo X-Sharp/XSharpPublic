@@ -193,12 +193,7 @@ namespace XSharp.ProjectSystem.LanguageService
                     newModel = CreateModel(SingleTarget);
                     expectedTargets = new List<string> { SingleTarget };
                 }
-                lock (gate)
-                {
-                    model = newModel;
-                }
-                newModel.ProjectWalkComplete += OnProjectWalkComplete;
-                newModel.FileWalkComplete += OnFileWalkComplete;
+                // CreateModel has subscribed to the walk events of the model
                 lock (gate)
                 {
                     model = newModel;
@@ -671,8 +666,7 @@ namespace XSharp.ProjectSystem.LanguageService
                         commandLines.Remove(target);
                         // The primary model is closed in UnloadAsync, never here
                         if (!ReferenceEquals(old, model))
-                            closing.Add(DetachModel(old)); closing.Add(DetachModel(old));
-
+                            closing.Add(DetachModel(old));
                     }
                 }
                 foreach (var link in obsolete)
@@ -704,18 +698,14 @@ namespace XSharp.ProjectSystem.LanguageService
                     bool keep;
                     lock (modelGate)
                     {
-                        keep = model != null && !targetLinks.ContainsKey(targetFramework);
-                        lock (modelGate)
+                        // LoadConfiguredProjectAsync may complete while the solution closes: no new models then
+                        keep = model != null && CodeModelIsAvailable && !targetLinks.ContainsKey(targetFramework);
+                        if (keep)
                         {
-                            // LoadConfiguredProjectAsync may complete while the solution closes: no new models then
-                            keep = model != null && CodeModelIsAvailable && !targetLinks.ContainsKey(targetFramework);
-                            if (keep)
-                            {
-                                targetLinks[targetFramework] = link;
-                                if (!models.ContainsKey(targetFramework))
-                                    CreateModel(targetFramework);
-                                UpdateModelsPending();
-                            }
+                            targetLinks[targetFramework] = link;
+                            if (!models.ContainsKey(targetFramework))
+                                CreateModel(targetFramework);
+                            UpdateModelsPending();
                         }
                     }
                     if (!keep)

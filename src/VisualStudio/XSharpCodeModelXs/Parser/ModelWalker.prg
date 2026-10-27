@@ -221,6 +221,9 @@ PRIVATE STATIC METHOD WalkSource(generation AS LONG) AS VOID
                 ENDIF
                 RETURN
             ENDIF
+            // Before the lock: the walk ends here when Stop() was called in the meantime
+            XSolution.SetStatusBarText("")
+            XSolution.SetStatusBarAnimation(FALSE, 3)
             BEGIN LOCK _gate
                 // Stop() takes the lock too: after this check the project goes into the queue of this walk
                 IF IsAborted(generation)
@@ -228,8 +231,6 @@ PRIVATE STATIC METHOD WalkSource(generation AS LONG) AS VOID
                 ENDIF
                 _projectsForTypeResolution:Enqueue(project)
             END LOCK
-            XSolution.SetStatusBarText("")
-            XSolution.SetStatusBarAnimation(FALSE, 3)
             XDatabase.Read(project)
             WriteOutputMessage("<<-- Walker("+project.Name+")")
             aFiles := project:OtherFiles:ToArray()

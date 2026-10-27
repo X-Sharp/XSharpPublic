@@ -143,25 +143,14 @@ BEGIN NAMESPACE XSharpModel
 	END METHOD
 
     STATIC METHOD AfterOpen() AS VOID
-        VAR dbprojectList := XDatabase.GetProjectFileNames()
+        // Projects that are no longer part of the solution are deleted when it closes, see Close()
         FOREACH var project in _projects:Values
             XDatabase.Read(project)
             ModelWalker.AddProject(project)
-            FOREACH VAR dbproject  in dbprojectList
-                if String.Compare(dbproject, project:FileName+"|"+project:Framework, StringComparison.OrdinalIgnoreCase) == 0
-                    dbprojectList:Remove(dbproject)
-                    EXIT
-                ENDIF
-            NEXT
             IF System.IO.File.Exists(BuiltInFunctions)
                 project:AddFile(BuiltInFunctions)
             ENDIF
         NEXT
-        if dbprojectList:Count > 0
-            FOREACH var dbproject in dbprojectList
-                XDatabase.DeleteProject(dbproject)
-            NEXT
-        endif
         _afterOpenDone := TRUE
         ModelWalker.Start()
 	END METHOD

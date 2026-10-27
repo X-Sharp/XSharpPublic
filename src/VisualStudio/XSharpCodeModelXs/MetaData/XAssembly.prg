@@ -11,6 +11,7 @@ NAMESPACE XSharpModel
 // Fields
 PRIVATE _projects             AS List<XProject>
 PRIVATE _wasRead              AS LOGIC
+PRIVATE INITONLY _readLock    := OBJECT{} AS OBJECT
 
 PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
 PROPERTY Types                AS XDictionary<STRING, XPETypeSymbol> AUTO
@@ -66,19 +67,36 @@ METHOD Initialize() AS VOID
     _wasRead             := FALSE
 
 METHOD Read() AS LOGIC
-    IF !SELF:Exists
-        RETURN FALSE
-    ENDIF
-    VAR reader := AssemblyReader{FileName}
-    SELF:Initialize()
-    reader:Read(SELF)
-    XDatabase.Read(SELF)
-    VAR fi := FileInfo{FileName}
-    IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
-        // update assembly info and type names in the database
-        XDatabase.Update(SELF)
-    ENDIF
-    SELF:_wasRead := TRUE
+    // Several projects reference the same assembly, and their references are resolved on different
+    // threads (design-time builds, the ModelWalker). Read() rebuilds the type dictionaries, so two reads
+    // of the same assembly at the same time corrupted them (NullReferenceException in AssemblyReader.AddType).
+    BEGIN LOCK _readLock
+        IF !SELF:Exists
+            RETURN FALSE
+        ENDIF
+        // Another thread may have read the assembly while this one waited for the lock
+        IF SELF:_wasRead .AND. ! SELF:IsModifiedOnDisk
+            RETURN SELF:Loaded
+        ENDIF
+        VAR reader := AssemblyReader{FileName}
+        SELF:Initialize()
+        reader:Read(SELF)
+        XDatabase.Read(SELF)
+        VAR fi := FileInfo{FileName}
+        IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
+            // update assembly info and type names in the database
+            XDatabase.Update(SELF)
+            IF ! XDatabase.IsDbOpen
+                // The solution is closing. The types in memory are those of the file on disk, so do not
+                // let IsModifiedOnDisk read the assembly again on every type lookup.
+                // Not when Update failed with an open database: then reading again recreates the
+                // database row of the assembly.
+                SELF:LastChanged := fi:LastWriteTime
+                SELF:Size        := fi:Length
+            ENDIF
+        ENDIF
+        SELF:_wasRead := TRUE
+    END LOCK
     RETURN SELF:Loaded
 
 

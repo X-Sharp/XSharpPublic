@@ -376,10 +376,20 @@ namespace XSharp.ProjectSystem.LanguageService
         #endregion
 
         #region Subscriptions
+        /// <summary>
+        /// False while the solution closes and after it has closed. CPS keeps delivering design-time builds, item
+        /// changes and configured projects until the projects are unloaded, which happens after XSolution.Close():
+        /// resolving references, adding files or creating models then works for a code model that goes away,
+        /// against a database that is closed.
+        /// </summary>
+        private static bool CodeModelIsAvailable => XSolution.IsOpen && !XSolution.IsClosing;
+
         private void OnDesignTimeBuildChanged(IProjectVersionedValue<IProjectSubscriptionUpdate> update)
         {
             try
             {
+                if (!CodeModelIsAvailable)
+                    return;
                 lock (modelGate)
                 {
                     // Served by the per-configuration subscription (OnTargetDesignTimeBuildChanged) as soon as it exists
@@ -406,6 +416,9 @@ namespace XSharp.ProjectSystem.LanguageService
                     foreach (var reference in projectReferences)
                         current.AddProjectReference(reference);
                 }
+                // The solution may have started closing in the meantime
+                if (!CodeModelIsAvailable)
+                    return;
                 // Loads the referenced assemblies: outside the locks. XProject guards it itself (_resolvingReferences),
                 // and the ModelWalker and the type lookups call it without these locks as well.
                 current.ResolveReferences();
@@ -422,6 +435,8 @@ namespace XSharp.ProjectSystem.LanguageService
         {
             try
             {
+                if (!CodeModelIsAvailable)
+                    return;
                 var added = new List<string>();
                 var removed = new List<string>();
                 lock (modelGate)
@@ -506,6 +521,8 @@ namespace XSharp.ProjectSystem.LanguageService
         {
             try
             {
+                if (!CodeModelIsAvailable)
+                    return;
                 var commandLine = ParseCommandLine(update);
                 if (commandLine == null)
                     return;
@@ -527,6 +544,9 @@ namespace XSharp.ProjectSystem.LanguageService
                     foreach (var reference in projectReferences)
                         target.AddProjectReference(reference);
                 }
+                // The solution may have started closing in the meantime
+                if (!CodeModelIsAvailable)
+                    return;
                 // Loads the referenced assemblies: outside the locks. XProject guards it itself (_resolvingReferences).
                 target.ResolveReferences();
                 XSettings.Information($"XSharpProjectAdapter: {project.FullPath}" +
@@ -661,7 +681,8 @@ namespace XSharp.ProjectSystem.LanguageService
                         keep = model != null && !targetLinks.ContainsKey(targetFramework);
                         lock (modelGate)
                         {
-                            keep = model != null && !targetLinks.ContainsKey(targetFramework);
+                            // LoadConfiguredProjectAsync may complete while the solution closes: no new models then
+                            keep = model != null && CodeModelIsAvailable && !targetLinks.ContainsKey(targetFramework);
                             if (keep)
                             {
                                 targetLinks[targetFramework] = link;

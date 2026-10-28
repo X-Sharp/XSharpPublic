@@ -3,6 +3,7 @@
       OverrideMode="Extend"
       xmlns="http://schemas.microsoft.com/build/2009/properties">
 
+
   <!-- The managed definition with the X# persistence "XSharpDefineConstants" (XSharpDefineConstantsPropertiesProvider in
        XSharp.ProjectSystemCPS): the managed "ProjectFileWithInterception" converts the list editor's value only for
        C#/F#, for X# it wrote "MYSYM=False" and lost the implicit DEBUG/TRACE. -->
@@ -27,6 +28,26 @@
     </StringProperty.ValueEditors>
   </StringProperty>
 
+
+  <BoolProperty   Category="Output"
+        Name="AppendTargetFrameworkToOutputPath"
+        DisplayName="Append Target Framework and Target OS to OutputPath"
+        Visible="True"
+        Default = "True"
+        Description="Append the targetframework (for example net47) and and Target OS (for example Windows) to the output path ">
+	<BoolProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </BoolProperty.DataSource>
+		
+	<BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(not (has-evaluated-value "Application" "TargetMultipleFrameworks" true))</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="SearchTerms" Value="TFM" />
+      <NameValuePair Name="DependsOn" Value="Application::TargetMultipleFrameworks" />
+    </BoolProperty.Metadata>
+   </BoolProperty>
+  
   <StringProperty Name="CommandLineOption"
                 DisplayName="Other flags"
                 Description="Additional compiler flags. Separate flags with whitespace."

@@ -294,9 +294,11 @@ internal class SqlDbExpression inherit SqlDbObject
                 // fixed-width columns, so sorting by the raw columns gives the same order as sorting
                 // by the concatenated text - and the server can read it from an index on
                 // (REF_NR, DATUM) instead of computing and sorting the text for every row.
+                // ART_NR+LISTE+STR(MENGE,5,0) the same way, with the STR() part as it is: the order
+                // of the text, and the leading columns still come from an index.
                 aList := List<string>{}
                 foreach var oTerm in self:KeyTerms
-                    aList:Add(oTerm:Column)
+                    aList:Add(oTerm:OrderExpr)
                 next
             else
                 aList := List<string>{} {self:SQLKey}
@@ -544,7 +546,8 @@ internal class SqlDbExpression inherit SqlDbObject
         return cK
 
     /// <summary>
-    /// Split a key into its parts when it only concatenates columns and DTOS(column), else NULL.
+    /// Split a key into its parts when it only concatenates columns, DTOS(column) and
+    /// STR(column, n[, d]), else NULL.
     /// </summary>
     private method GetKeyTerms(cKey as string) as List<SqlDbKeyTerm>
         var aTerms := List<SqlDbKeyTerm>{}
@@ -562,6 +565,21 @@ internal class SqlDbExpression inherit SqlDbObject
                 endif
                 var cCol := _provider:QuoteIdentifier(cName)
                 aTerms:Add(SqlDbKeyTerm{cCol, cDtos:Replace("%1%", cCol), true})
+            elseif cTerm:StartsWith("STR(", StringComparison.OrdinalIgnoreCase) .and. cTerm:EndsWith(")")
+                // STR(MENGE,5,0): a part of fixed width n. Unlike DTOS() its text does not sort like
+                // the number (negative values), so the order keeps the expression for this part.
+                var aArgs := cTerm:Substring(4, cTerm:Length - 5):Split(<char>{c','})
+                var cName := aArgs[0]:Trim()
+                local nLen := 10 as long
+                local nDec := 0 as long
+                if aArgs:Length > 3 .or. !IsValidToken(cName) .or. cName:Length == 0 ;
+                    .or. (aArgs:Length > 1 .and. !Int32.TryParse(aArgs[1]:Trim(), out nLen)) ;
+                    .or. (aArgs:Length > 2 .and. !Int32.TryParse(aArgs[2]:Trim(), out nDec)) .or. nLen <= 0 .or. nDec < 0
+                    return null
+                endif
+                var cCol := _provider:QuoteIdentifier(cName)
+                var cStr := _provider:GetFunction("STR(%1%,%2%,%3%)"):Replace("%1%", cCol):Replace("%2%", nLen:ToString()):Replace("%3%", nDec:ToString())
+                aTerms:Add(SqlDbKeyTerm{cCol, cStr, false, nLen})
             else
                 return null
             endif
@@ -578,10 +596,15 @@ internal class SqlDbKeyTerm
     property SqlExpr as string auto get private set
     /// <summary>TRUE for DTOS(column): always 8 characters (yyyymmdd)</summary>
     property IsDate  as logic auto get private set
-    constructor(cColumn as string, cSqlExpr as string, lDate as logic)
+    /// <summary>Width of a STR(column, n) part, 0 for the other parts</summary>
+    property Width   as long auto get private set
+    /// <summary>What the part is sorted by: the column, except for STR() (see GetKeyTerms())</summary>
+    property OrderExpr as string get iif(SELF:Width > 0, SELF:SqlExpr, SELF:Column)
+    constructor(cColumn as string, cSqlExpr as string, lDate as logic, nWidth := 0 as long)
         self:Column  := cColumn
         self:SqlExpr := cSqlExpr
         self:IsDate  := lDate
+        self:Width   := nWidth
         return
 end class
 end namespace // XSharp.RDD.SqlRDD

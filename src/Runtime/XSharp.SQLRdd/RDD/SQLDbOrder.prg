@@ -318,6 +318,8 @@ internal class SqlDbOrder inherit SqlDbObject
         foreach var oTerm in terms
             if oTerm:IsDate
                 widths:Add(8)
+            elseif oTerm:Width > 0
+                widths:Add((int) oTerm:Width)
             else
                 var cName := oTerm:Column:Trim(<char>{'[',']','"','`'})
                 var oCol := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })

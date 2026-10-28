@@ -41,31 +41,29 @@ STATIC CLASS XSettings
     PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
     PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
-    PUBLIC STATIC PROPERTY Logger                           AS XSharpModel.ILogger AUTO := DummyLogger{}
+    PUBLIC STATIC PROPERTY Logger                           AS XSharpModel.ILogger AUTO 
     PUBLIC STATIC PROPERTY CodeDomProviderClass             AS System.Type AUTO
-
-    PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
-    PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
-    PUBLIC STATIC PROPERTY Version AS Version AUTO := Version{}
-    PUBLIC STATIC PROPERTY UseMicrosoftSQLite AS LOGIC AUTO := false
-
-    PUBLIC STATIC PROPERTY IsVs15 AS LOGIC => Version:Major == 15
-    PUBLIC STATIC PROPERTY IsVs16 AS LOGIC => Version:Major == 16
-    PUBLIC STATIC PROPERTY IsVs17 AS LOGIC => Version:Major == 17
-    PUBLIC STATIC PROPERTY IsVs18 AS LOGIC => Version:Major == 18
-    PUBLIC STATIC PROPERTY IsVs19 AS LOGIC => Version:Major == 19
-    PUBLIC STATIC PROPERTY IsArm  AS LOGIC AUTO GET PRIVATE SET
+    PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO
+    PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO
+    PUBLIC STATIC PROPERTY UseMicrosoftSQLite AS LOGIC AUTO
+    PUBLIC STATIC PROPERTY IsArm  AS LOGIC
+        GET
+            var arch := System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+            RETURN arch == System.Runtime.InteropServices.Architecture.Arm .or. ;
+                   arch == System.Runtime.InteropServices.Architecture.Arm64
+        END GET
+    END PROPERTY
 
     STATIC CONSTRUCTOR
-        SWITCH System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-        CASE System.Runtime.InteropServices.Architecture.Arm
-        CASE System.Runtime.InteropServices.Architecture.Arm64
-            IsArm := TRUE
+		Logger := DummyLogger{}
+        HideIncludes := FALSE
+        Disassembler := ""
+        IF IsArm
             UseMicrosoftSQLite := TRUE
-        OTHERWISE
-            IsArm := FALSE
+        ELSE
             UseMicrosoftSQLite := (int)Constants.GetSetting(nameof(UseMicrosoftSQLite), 0) != 0
-        END SWITCH
+        ENDIF
+        RETURN
 
     PUBLIC STATIC METHOD EnableAll() AS VOID
         EnableBraceMatchLog           := TRUE

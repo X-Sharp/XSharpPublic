@@ -36,7 +36,7 @@ STATIC CLASS XDatabase
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
     // 3.9: added Types_File / Types_Project indexes
     // 3.10: fixed typo in view ProjectExtensionMethods
-    PRIVATE CONST CurrentDbVersion := 3.10 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.11 AS System.Double
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -96,6 +96,7 @@ STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
     LOCAL oDiskDb AS DbConnection
     Log(i"CreateOrOpen {cFileName}")
     currentFile := cFileName
+    DeleteOnClose := FALSE
     BEGIN LOCK dbLock
         projectsInSession:Clear()
     END LOCK
@@ -591,15 +592,17 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
 
 #region Table DB_Version
             stmt  	:= 	"CREATE TABLE Db_Version ("
-            stmt	   += 	" Id integer NOT NULL PRIMARY KEY, Version REAL"
+            stmt	   += 	" Id integer NOT NULL PRIMARY KEY, Version REAL not null,"
+            stmt	   += 	" MsSqlite integer NOT NULL"
             stmt	   +=  ")"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt	:=  "INSERT INTO Db_Version(Version) values ($version)"
+            stmt	:=  "INSERT INTO Db_Version(Version, MsSqlite) values ($version, $mssqlite)"
             cmd:CommandText := stmt
             cmd:Parameters:Clear()
             cmd:Parameters:AddWithValue("$version",CurrentDbVersion)
+            cmd:Parameters:AddWithValue("$mssqlite",iif(UseMicrosoftSQLite, 1,0))
             cmd:ExecuteNonQuery()
 #endregion
         CATCH e as Exception
@@ -641,6 +644,16 @@ STATIC METHOD ValidateSchema( Connection AS DbConnection) AS LOGIC
                 END TRY
                 IF vers != CurrentDbVersion
                     lOk := FALSE
+                ENDIF
+                IF lOk
+                    cmd:CommandText := "SELECT Max(MsSqlite) from Db_version"
+                    var useMs := (Int64) 0
+                    useMs := (Int64) cmd:ExecuteScalar()
+                    if UseMicrosoftSQLite
+                        lOk := useMs != 0
+                    else
+                        lOk := useMs == 0
+                    endif
                 ENDIF
             ENDIF
             EXIT

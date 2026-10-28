@@ -152,7 +152,6 @@ internal class SqlDbTableCommandBuilder
     /// </summary>
     /// <param name="lReverse">TRUE to sort in reverse, for reading the rows before a given one.</param>
     method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int, lReverse := false as logic) as string
-        var sCallerWhere := sWhereClause
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -227,14 +226,27 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:PagingClause)
         sb:Replace(SqlDbProvider.PagesizeMacro, nCount:ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, nOffset:ToString())
-        // the caller's condition, e.g. the keyset condition of a page (see SqlDbProvider.OrQueryHint)
-        if !String.IsNullOrEmpty(sCallerWhere) .and. sCallerWhere:IndexOf(SqlDbProvider.OrClause, StringComparison.OrdinalIgnoreCase) >= 0 ;
-            .and. Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:OrQueryHint) ;
-            .and. _connection:ApproximateRows(self:_oTable:RealName) >= oProvider:OrQueryHintMinRows
-            sb:Append(oProvider:OrQueryHint)
-        endif
+        sb:Append(SELF:_QueryHint(sWhereClause))
 
         return sb:ToString()
+
+    private static _rangeCondition := System.Text.RegularExpressions.Regex{"\s(or|like|<|>|<=|>=)\s", ;
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
+
+    /// <summary>
+    /// The provider's hint for a query with this condition (see SqlDbProvider.RangeQueryHint): when it has
+    /// OR, LIKE or range terms (a keyset condition, a soft seek, a scope, a prefix seek) and the table is
+    /// large. A condition of equalities only keeps the plan from the cache, it is a seek for any value.
+    /// </summary>
+    private method _QueryHint(sWhereClause as string) as string
+        if String.IsNullOrEmpty(sWhereClause) .or. !_rangeCondition:IsMatch(sWhereClause)
+            return ""
+        endif
+        if Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:RangeQueryHint) ;
+            .and. _connection:ApproximateRows(self:_oTable:RealName) >= oProvider:RangeQueryHintMinRows
+            return oProvider:RangeQueryHint
+        endif
+        return ""
 
     /// <summary>
     /// Build a fetch of the last page of the current order/scope/filter, without the classic
@@ -305,6 +317,7 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:PagingClause)
         sb:Replace(SqlDbProvider.PagesizeMacro, iif(nRows > 0, nRows, _oTable:PageSize):ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, "0")
+        sb:Append(SELF:_QueryHint(sWhereClause))
 
         return sb:ToString()
 

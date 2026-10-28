@@ -72,10 +72,14 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
     /// plan from the cache) it does not: it seeks on k1 alone and reads all rows of v1 before the
     /// position. Paging the lines of an order near the end of a table with 5.4 million rows read
     /// 6,641 pages (860 ms CPU) for 10 rows, with OPTION (RECOMPILE) 54 pages (2 ms to compile).
-    /// On small tables that read is cheap and compiling every page costs more: navigation tests on
-    /// tables with 1,000 to 50,000 rows took 1.5 to 2 times as long, hence OrQueryHintMinRows.
+    /// A range is at risk as well: a plan from the cache for TYP = @0 AND KURZNAME >= @1 ORDER BY
+    /// KURZNAME, made for the 1.1 million customers (TYP 'K'), read the short name index in order and
+    /// looked up TYP for every row. For a soft seek among the 488 suppliers (TYP 'L') near the end of
+    /// the names it read 720,398 pages (107 s) to find nothing; recompiled, 418 pages (6 ms).
+    /// On small tables these reads are cheap and compiling every query costs more: navigation tests on
+    /// tables with 1,000 to 50,000 rows took 1.5 to 2 times as long, hence RangeQueryHintMinRows.
     /// </remarks>
-    override property OrQueryHint as string => " OPTION (RECOMPILE)"
+    override property RangeQueryHint as string => " OPTION (RECOMPILE)"
 
     /// <inheritdoc />
     /// <remarks>A varchar literal takes the default collation of the database.</remarks>

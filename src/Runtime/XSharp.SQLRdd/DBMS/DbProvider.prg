@@ -242,11 +242,11 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     end method
 
     /// <summary>
-    /// Appended to a query of the RDD whose condition has OR terms, such as the keyset condition of a
-    /// page, on a table with at least OrQueryHintMinRows rows. The default implementation returns an
-    /// empty string.
+    /// Appended to a query of the RDD whose condition has OR, LIKE or range terms (the keyset condition
+    /// of a page, a soft seek, a scope), on a table with at least RangeQueryHintMinRows rows. The default
+    /// implementation returns an empty string.
     /// </summary>
-    virtual property OrQueryHint as string => ""
+    virtual property RangeQueryHint as string => ""
 
     /// <summary>
     /// Statement that returns the code page in which the database stores the string literals of a
@@ -255,8 +255,8 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// </summary>
     virtual property CodePageStatement as string => ""
 
-    /// <summary>Minimum number of rows of a table (see TableRowsStatement) for OrQueryHint.</summary>
-    virtual property OrQueryHintMinRows as long => 100000
+    /// <summary>Minimum number of rows of a table (see TableRowsStatement) for RangeQueryHint.</summary>
+    virtual property RangeQueryHintMinRows as long => 100000
 
     /// <summary>
     /// Statement that returns the approximate number of rows of the table TableNameMacro from the

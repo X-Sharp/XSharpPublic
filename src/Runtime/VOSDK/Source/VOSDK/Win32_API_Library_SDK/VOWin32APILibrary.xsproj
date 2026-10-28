@@ -6,7 +6,7 @@
     <TargetFramework>net47</TargetFramework>
     <Dialect>Vulcan</Dialect>
     <cs>false</cs>
-    <ns>false</ns>
+    <ns>true</ns>
     <Unsafe>true</Unsafe>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>

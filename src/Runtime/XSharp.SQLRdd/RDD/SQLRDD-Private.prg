@@ -139,6 +139,19 @@ partial class SQLRDD
             return _connection?:RecnoColumn
         end get
     end property
+    /// <summary>Length of the character column cName, -1 when it is no character column or unknown.
+    /// Also while the production index is parsed: the fields of the work area are not there yet.</summary>
+    internal method _CharColumnLength(cName as string) as long
+        var oTable := _oTd ?? _builder?:TableInfo
+        if oTable?:Columns != null
+            foreach var oCol in oTable:Columns
+                if String.Equals(oCol:Name, cName, StringComparison.OrdinalIgnoreCase)
+                    return iif(oCol:ColumnInfo:FieldType == DbFieldType.Character, oCol:Length, -1)
+                endif
+            next
+        endif
+        return -1
+    end method
     /// <summary>Maximum number of rows kept in the local buffer.</summary>
     private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
     /// <summary>Rows for a first read where only a few records are expected to be needed (after a seek,

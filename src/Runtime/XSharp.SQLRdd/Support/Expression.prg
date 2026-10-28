@@ -450,8 +450,18 @@ internal class SqlDbExpression inherit SqlDbObject
         return
     access SegmentCount as long
         return self:Segments:Count
+    /// <summary>TRUE when oField is a character column of the table that cLiteral covers completely.</summary>
+    private method _CoversField(oField as SqlDbToken, cLiteral as string) as logic
+        if oField == null .or. oField:Type != TokenType.Token .or. SELF:Owner == null .or. SELF:Owner:RDD == null
+            return false
+        endif
+        var nLen := SELF:Owner:RDD:_CharColumnLength(oField:Name)
+        return nLen > 0 .and. cLiteral:Length >= nLen
+    end method
+
     method TranslateFunctions() as void
         local lastToken := null as SqlDbToken
+        local prevToken := null as SqlDbToken
         foreach var token in self:Tokens
             switch token:Type
             case TokenType.BoFunc
@@ -475,15 +485,21 @@ internal class SqlDbExpression inherit SqlDbObject
             case TokenType.Token
                 token:SQLName := _provider.QuoteIdentifier(token:Name)
             case TokenType.String
-                if lastToken != null .and. lastToken:Name:Trim() == "="
+                if lastToken != null .and. lastToken:Name:Trim() == "=" .and. ;
+                    !SELF:_CoversField(prevToken, token:Name:Substring(1, token:Name:Length-2))
                     // A single equals compares like a prefix in xBase (SET EXACT OFF): field = 'A'
                     // is TRUE for 'AB'. The literal (without its quotes) is matched literally.
                     lastToken:SQLName := "like"
                     token:SQLName := _provider:LikePattern(token:Name:Substring(1, token:Name:Length-2))
                 else
+                    // A literal as long as the field compares the whole field: the prefix compare
+                    // is an equality. LIKE is a range for the server: with TYP = 'L' (TYP C(1)) as
+                    // FOR condition of ART_NR+REF_NR, it sorted all 477,757 rows of type L for the
+                    // first page instead of reading them in the order of the index.
                     token:SQLName := token:Name
                 endif
             end switch
+            prevToken := lastToken
             lastToken := token
         next
         self:Translated := true

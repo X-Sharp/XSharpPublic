@@ -363,7 +363,7 @@ internal class SqlDbOrder inherit SqlDbObject
                     sb:Append(SqlDbProvider.AndClause)
                 endif
                 if parts[i]:Length >= widths[i]
-                    sb:Append(columns[i] + " = " + Functions.XsValueToSqlValue(parts[i]))
+                    sb:Append(SELF:_PartCompare(terms[i], columns[i], " = ", parts[i]))
                 else
                     sb:Append(columns[i] + " like " + Provider:LikePattern(parts[i]))
                 endif
@@ -381,7 +381,7 @@ internal class SqlDbOrder inherit SqlDbObject
                 endif
                 sb:Append("(")
                 for var j := 0 upto i-1
-                    sb:Append(columns[j] + " = " + Functions.XsValueToSqlValue(parts[j]))
+                    sb:Append(SELF:_PartCompare(terms[j], columns[j], " = ", parts[j]))
                     sb:Append(SqlDbProvider.AndClause)
                 next
                 var cComp := iif(i == parts:Count-1, cRangeComp, cStrictComp)
@@ -399,7 +399,7 @@ internal class SqlDbOrder inherit SqlDbObject
                             SqlDbProvider.OrClause + columns[i] + " like " + Provider:LikePattern(parts[i]) + ")")
                     endif
                 else
-                    sb:Append(columns[i] + cComp + Functions.XsValueToSqlValue(parts[i]))
+                    sb:Append(SELF:_PartCompare(terms[i], columns[i], cComp, parts[i]))
                 endif
                 sb:Append(")")
             next
@@ -409,6 +409,20 @@ internal class SqlDbOrder inherit SqlDbObject
             endif
         endif
         return sb:ToString()
+    end method
+
+    /// <summary>
+    /// cExpr cComp cValue for a key part the value covers completely. A STR() part compares the number,
+    /// it is sorted by the number (see SqlDbExpression.GetKeyTerms()): [MENGE] = 1 instead of
+    /// STR([MENGE],5,0) = '    1', which also lets the server seek on an index with MENGE.
+    /// </summary>
+    private method _PartCompare(oTerm as SqlDbKeyTerm, cExpr as string, cComp as string, cValue as string) as string
+        local nValue as decimal
+        if oTerm:Width > 0 .and. Decimal.TryParse(cValue:Trim(), System.Globalization.NumberStyles.AllowLeadingSign | System.Globalization.NumberStyles.AllowDecimalPoint, ;
+            System.Globalization.CultureInfo.InvariantCulture, out nValue)
+            return oTerm:Column + cComp + nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        endif
+        return cExpr + cComp + Functions.XsValueToSqlValue(cValue)
     end method
 
 end class

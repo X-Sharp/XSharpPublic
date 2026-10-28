@@ -294,11 +294,10 @@ internal class SqlDbExpression inherit SqlDbObject
                 // fixed-width columns, so sorting by the raw columns gives the same order as sorting
                 // by the concatenated text - and the server can read it from an index on
                 // (REF_NR, DATUM) instead of computing and sorting the text for every row.
-                // ART_NR+LISTE+STR(MENGE,5,0) the same way, with the STR() part as it is: the order
-                // of the text, and the leading columns still come from an index.
+                // ART_NR+LISTE+STR(MENGE,5,0) the same way, see GetKeyTerms() for the STR() part.
                 aList := List<string>{}
                 foreach var oTerm in self:KeyTerms
-                    aList:Add(oTerm:OrderExpr)
+                    aList:Add(oTerm:Column)
                 next
             else
                 aList := List<string>{} {self:SQLKey}
@@ -566,8 +565,11 @@ internal class SqlDbExpression inherit SqlDbObject
                 var cCol := _provider:QuoteIdentifier(cName)
                 aTerms:Add(SqlDbKeyTerm{cCol, cDtos:Replace("%1%", cCol), true})
             elseif cTerm:StartsWith("STR(", StringComparison.OrdinalIgnoreCase) .and. cTerm:EndsWith(")")
-                // STR(MENGE,5,0): a part of fixed width n. Unlike DTOS() its text does not sort like
-                // the number (negative values), so the order keeps the expression for this part.
+                // STR(MENGE,5,0): a part of fixed width n, sorted by the number. Only then an index on
+                // (ART_NR, LISTE, MENGE) gives the order: sorted by the text, the server sorted all
+                // rows behind a position before it could return the next page (118,278 reads against
+                // 43). The text sorts like the number for values from 0 to the width; unlike DBF,
+                // negative values come before 0 and values wider than n ('*****') at the end.
                 var aArgs := cTerm:Substring(4, cTerm:Length - 5):Split(<char>{c','})
                 var cName := aArgs[0]:Trim()
                 local nLen := 10 as long
@@ -598,8 +600,6 @@ internal class SqlDbKeyTerm
     property IsDate  as logic auto get private set
     /// <summary>Width of a STR(column, n) part, 0 for the other parts</summary>
     property Width   as long auto get private set
-    /// <summary>What the part is sorted by: the column, except for STR() (see GetKeyTerms())</summary>
-    property OrderExpr as string get iif(SELF:Width > 0, SELF:SqlExpr, SELF:Column)
     constructor(cColumn as string, cSqlExpr as string, lDate as logic, nWidth := 0 as long)
         self:Column  := cColumn
         self:SqlExpr := cSqlExpr

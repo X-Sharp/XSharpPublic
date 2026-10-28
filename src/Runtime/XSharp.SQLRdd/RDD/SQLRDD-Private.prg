@@ -1043,7 +1043,7 @@ partial class SQLRDD
     private method _KeysetLiteral(oRow as DataRow, cExpr as string) as string
         var nCol := SELF:DataTable:Columns:IndexOf(cExpr:Trim(<char>{'[',']','"','`'}))
         if nCol < 0
-            return SELF:_KeysetStrLiteral(oRow, cExpr)
+            return null
         endif
         switch oRow[nCol]
         case cValue as string
@@ -1069,42 +1069,6 @@ partial class SQLRDD
             endif
         end switch
         return null
-    end method
-
-    private static _strItem := System.Text.RegularExpressions.Regex{ ;
-        "^STR\(\s*\[?([A-Za-z_][A-Za-z0-9_]*)\]?\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*\)$", ;
-        System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
-
-    /// <summary>
-    /// The value of an order item STR(column, n, d) (see SqlDbExpression.GetKeyTerms()) as a string
-    /// literal, or NULL. Only when the value has no more than d decimals and fits into n characters:
-    /// then it is exactly the right aligned text STR() returns, without rounding.
-    /// </summary>
-    private method _KeysetStrLiteral(oRow as DataRow, cExpr as string) as string
-        var oMatch := _strItem:Match(cExpr:Trim())
-        if !oMatch:Success
-            return null
-        endif
-        var nCol := SELF:DataTable:Columns:IndexOf(oMatch:Groups[1]:Value)
-        if nCol < 0 .or. oRow[nCol] == DBNull.Value
-            return null
-        endif
-        var nLen := Int32.Parse(oMatch:Groups[2]:Value)
-        var nDec := Int32.Parse(oMatch:Groups[3]:Value)
-        local nValue as decimal
-        try
-            nValue := Convert.ToDecimal(oRow[nCol], System.Globalization.CultureInfo.InvariantCulture)
-        catch
-            return null
-        end try
-        if nDec > 10 .or. Math.Round(nValue, nDec) != nValue
-            return null
-        endif
-        var cText := nValue:ToString("F" + nDec:ToString(), System.Globalization.CultureInfo.InvariantCulture)
-        if cText:Length > nLen
-            return null
-        endif
-        return "'" + cText:PadLeft(nLen) + "'"
     end method
 
     private method _KeysetCompare(cExpr as string, lLower as logic, cValue as string, lInclusive as logic) as string

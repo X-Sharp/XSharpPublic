@@ -58,6 +58,13 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
     /// <summary>SQL Server also reads [...] in a LIKE pattern as a character class.</summary>
     override property LikeWildcards as string => "%_["
 
+    /// <inheritdoc />
+    /// <remarks>'yyyyMMdd' is read the same way for date, datetime, datetime2 and smalldatetime,
+    /// whatever the language and DATEFORMAT of the session.</remarks>
+    override method DateLiteral(dValue as DateTime) as string
+        return "'" + dValue:ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture) + "'"
+    end method
+
     private static aFuncs := null as Dictionary<string, string>
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>

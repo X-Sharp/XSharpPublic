@@ -232,6 +232,16 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     end method
 
     /// <summary>
+    /// A date without a time of day as a SQL literal that compares exactly like the stored value, or
+    /// NULL when there is no such literal (the RDD then reads the value with a subquery).
+    /// The default implementation returns NULL: how a string converts to a date depends on the
+    /// database and the settings of the session.
+    /// </summary>
+    virtual method DateLiteral(dValue as DateTime) as string
+        return null
+    end method
+
+    /// <summary>
     /// Create a new SqlDbProvider object
     /// </summary>
     /// <param name="cName">Name of the object</param>

@@ -996,8 +996,10 @@ partial class SQLRDD
     /// Every subquery has to be optimized by the server: with one per item, compiling the keyset
     /// condition of a two column key took 30-45 ms, executing it 3 ms. Since the text changes with
     /// every page the plan is never reused. The buffer holds the values as read from the server, so
-    /// a literal is exact for strings (ASCII only, so no code page conversion can change them) and
-    /// integers/decimals.
+    /// a literal is exact for strings (ASCII only, so no code page conversion can change them),
+    /// integers/decimals, and dates without a time of day when the provider has a literal for them
+    /// (SqlDbProvider.DateLiteral()). With a subquery for a date, SQL Server could not seek on the
+    /// index: every page of a 3.8 million row table read all of it (665,762 pages against 1,941).
     /// </remarks>
     private method _KeysetLiteral(oRow as DataRow, cExpr as string) as string
         var nCol := SELF:DataTable:Columns:IndexOf(cExpr:Trim(<char>{'[',']','"','`'}))
@@ -1020,6 +1022,11 @@ partial class SQLRDD
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
         case nValue as decimal
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case dValue as DateTime
+            // a time of day would need the precision of the column type
+            if dValue:TimeOfDay == TimeSpan.Zero .and. SELF:Provider is SqlDbProvider var oProvider
+                return oProvider:DateLiteral(dValue)
+            endif
         end switch
         return null
     end method

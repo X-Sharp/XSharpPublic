@@ -411,7 +411,7 @@ partial class SQLRDD
             hasGetIdentity := true
         endif
         try
-            _command:Connection:BeginTrans()
+            var lOwnTrans := _command:Connection:BeginTrans()
             _command:BindParameters()
             local lInsertWithGetIdentity := false as LOGIC
             if hasGetIdentity .and. ! String.IsNullOrEmpty(Provider:GetIdentity)
@@ -420,16 +420,29 @@ partial class SQLRDD
                 lInsertWithGetIdentity := TRUE
             endif
             _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+            // The command methods report a failure through their result and LastException, they
+            // do not throw.
+            local lOk as logic
+            _command:Connection:LastException := null
             if lInsertWithGetIdentity
                 var result := _command:ExecuteScalar()
-                row[_recnoColumNo] := result
-            elseif hasGetIdentity
-                _command:ExecuteScalar()
-                row[_recnoColumNo] := _builder:GetMaxRecno()
+                lOk := result != null .and. result != DBNull.Value
+                if lOk
+                    row[_recnoColumNo] := result
+                endif
             else
-                _command:ExecuteNonQuery()
+                lOk := _command:ExecuteNonQuery()
+                if lOk .and. hasGetIdentity
+                    row[_recnoColumNo] := _builder:GetMaxRecno()
+                endif
             endif
-            _command:Connection:CommitTrans()
+            if lOk
+                lOk := _command:Connection:CommitTrans() .or. !lOwnTrans
+            endif
+            if !lOk
+                var oError := _command:Connection:LastException
+                throw iif(oError != null, oError, Exception{"The insert returned no record number"})
+            endif
         catch e as Exception
             // Reporting success here made a failed insert look like a new record whose changes
             // then went nowhere.

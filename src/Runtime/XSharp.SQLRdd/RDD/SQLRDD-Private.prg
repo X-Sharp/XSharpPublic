@@ -669,7 +669,12 @@ partial class SQLRDD
     /// </remarks>
     private method _FetchLastPage() as logic
         try
-            SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            // A descending order is reversed item by item, like the backward keyset reads do.
+            if SELF:CurrentOrder != null .and. SELF:CurrentOrder:Descending
+                SELF:_command:CommandText := SELF:_BuildSqlStatement("", 0, SELF:_SmallPageRows, TRUE)
+            else
+                SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            endif
             SELF:_command:ClearParameters()
             var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if newTable == null
@@ -1311,8 +1316,11 @@ partial class SQLRDD
                 SELF:_SetBOF(TRUE)
                 return true
             endif
-            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= _oTd:PageSize
+            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= SELF:_MaxBufferRows
                 // Read the rows before an anchored buffer by key, without looking up its position.
+                // Also for more than a page: the position of a buffer near the end of a large order
+                // is far down, and the page by position needs an OFFSET of millions of rows (two
+                // minutes for 150 rows back from the end of 3.8 million orders).
                 var nFetched := SELF:_FetchBackwardKeyset(1 - nNewRow)
                 if nFetched == 0
                     SELF:RowNumber := 1
@@ -1346,7 +1354,8 @@ partial class SQLRDD
                 return true
             endif
             nTarget := SELF:_bufferStart + nNewRow - 1
-            if 1 - nNewRow > _oTd:PageSize
+            // up to what the buffer holds _FetchBackward() reads by key (see above), beyond that by position
+            if 1 - nNewRow > SELF:_MaxBufferRows
                 SELF:_LoadBufferAt(nTarget)
                 if nTarget < 0
                     SELF:RowNumber := 1

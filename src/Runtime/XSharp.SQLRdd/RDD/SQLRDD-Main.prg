@@ -703,20 +703,14 @@ partial class SQLRDD inherit Workarea
         SELF:_eofPending := FALSE
         SELF:_ClearTable()
         SELF:_anchorWhere := ""
-        // For a large table, fetching the last page via the normal ascending, OFFSET-based
-        // query forces the server to walk/skip almost the entire ordered result -
-        // the further from the top, the worse. _FetchLastPage avoids that by sorting in
-        // reverse and asking for OFFSET 0 instead, which is always cheap. Only safe when the
-        // order isn't already descending (that would invert the reversal); falls back to the
-        // original approach for natural order, descending orders, or if it fails outright.
+        // For a large table, fetching the last page via the normal OFFSET-based query forces
+        // the server to walk/skip almost the entire ordered result - the further from the top,
+        // the worse: OFFSET 3768900 in a descending order of 3.8 million orders did not finish
+        // within 30 seconds. _FetchLastPage avoids that by sorting in reverse and asking for
+        // OFFSET 0 instead, which is always cheap. Falls back to the OFFSET only if it fails.
         // The count is only needed for the OFFSET (see _FetchLastPage()); it goes through the
         // cached count - GoBottom() can be called many times in a row against unchanged data.
-        if self:CurrentOrder == null .or. !self:CurrentOrder:Descending
-            if !SELF:_FetchLastPage()
-                self:_GetRecCount()
-                SELF:_LoadBufferAt(SELF:_LastPageStart((long) self:_serverReccount))
-            endif
-        else
+        if !SELF:_FetchLastPage()
             self:_GetRecCount()
             SELF:_LoadBufferAt(SELF:_LastPageStart((long) self:_serverReccount))
         endif

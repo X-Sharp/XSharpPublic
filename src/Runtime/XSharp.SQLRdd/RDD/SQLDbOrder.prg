@@ -382,14 +382,23 @@ internal class SqlDbOrder inherit SqlDbObject
                     sb:Append(columns[j] + " = " + Functions.XsValueToSqlValue(parts[j]))
                     sb:Append(SqlDbProvider.AndClause)
                 next
-                var cColExpr := columns[i]
-                if parts[i]:Length < widths[i]
-                    // Compare only the prefix of the column that the value actually covers.
-                    var cSubstr := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
-                    cColExpr := cSubstr:Replace("%1%", cColExpr):Replace("%2%","1"):Replace("%3%", parts[i]:Length:ToString())
-                endif
                 var cComp := iif(i == parts:Count-1, cRangeComp, cStrictComp)
-                sb:Append(cColExpr + cComp + Functions.XsValueToSqlValue(parts[i]))
+                if parts[i]:Length < widths[i]
+                    // Compare only the prefix of the column that the value actually covers (only
+                    // the last part can be shorter, so this is the inclusive bound). SUBSTRING(c,1,n)
+                    // would keep the server from seeking on the index: a soft seek in a descending
+                    // order of 3.8 million orders took 0.7 to 1.7 seconds. The same conditions:
+                    //   SUBSTRING(c,1,n) >= v   is   c >= v
+                    //   SUBSTRING(c,1,n) <= v   is   c < v OR c LIKE 'v%'
+                    if cRangeComp:Contains(">")
+                        sb:Append(columns[i] + " >= " + Functions.XsValueToSqlValue(parts[i]))
+                    else
+                        sb:Append("(" + columns[i] + " < " + Functions.XsValueToSqlValue(parts[i]) + ;
+                            SqlDbProvider.OrClause + columns[i] + " like " + Provider:LikePattern(parts[i]) + ")")
+                    endif
+                else
+                    sb:Append(columns[i] + cComp + Functions.XsValueToSqlValue(parts[i]))
+                endif
                 sb:Append(")")
             next
             if parts:Count > 1

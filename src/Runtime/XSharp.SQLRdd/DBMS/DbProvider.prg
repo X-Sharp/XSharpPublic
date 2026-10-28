@@ -242,6 +242,23 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     end method
 
     /// <summary>
+    /// Appended to a query of the RDD whose condition has OR terms, such as the keyset condition of a
+    /// page, on a table with at least OrQueryHintMinRows rows. The default implementation returns an
+    /// empty string.
+    /// </summary>
+    virtual property OrQueryHint as string => ""
+
+    /// <summary>Minimum number of rows of a table (see TableRowsStatement) for OrQueryHint.</summary>
+    virtual property OrQueryHintMinRows as long => 100000
+
+    /// <summary>
+    /// Statement that returns the approximate number of rows of the table TableNameMacro from the
+    /// statistics of the database, without counting them. The default implementation returns an
+    /// empty string (unknown).
+    /// </summary>
+    virtual property TableRowsStatement as string => ""
+
+    /// <summary>
     /// Create a new SqlDbProvider object
     /// </summary>
     /// <param name="cName">Name of the object</param>

@@ -539,6 +539,28 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         return result
     end method
 
+    private _tableRows := Dictionary<string, int64>{StringComparer.OrdinalIgnoreCase} as Dictionary<string, int64>
+    /// <summary>Approximate number of rows of a table from the statistics of the database (see
+    /// SqlDbProvider.TableRowsStatement), read once per connection; -1 when unknown.</summary>
+    internal method ApproximateRows(cTable as string) as int64
+        local nRows as int64
+        if String.IsNullOrEmpty(cTable)
+            return -1
+        endif
+        if _tableRows:TryGetValue(cTable, out nRows)
+            return nRows
+        endif
+        nRows := -1
+        if SELF:Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:TableRowsStatement)
+            var oResult := SELF:ExecuteScalar(oProvider:TableRowsStatement:Replace(SqlDbProvider.TableNameMacro, cTable:Replace("'", "''")), cTable)
+            if oResult != null .and. oResult != DBNull.Value
+                nRows := Convert.ToInt64(oResult)
+            endif
+        endif
+        _tableRows[cTable] := nRows
+        return nRows
+    end method
+
    /// <summary>
    /// Execute a SQL command
    /// </summary>

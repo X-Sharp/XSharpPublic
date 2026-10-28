@@ -152,6 +152,7 @@ internal class SqlDbTableCommandBuilder
     /// </summary>
     /// <param name="lReverse">TRUE to sort in reverse, for reading the rows before a given one.</param>
     method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int, lReverse := false as logic) as string
+        var sCallerWhere := sWhereClause
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -226,6 +227,12 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:PagingClause)
         sb:Replace(SqlDbProvider.PagesizeMacro, nCount:ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, nOffset:ToString())
+        // the caller's condition, e.g. the keyset condition of a page (see SqlDbProvider.OrQueryHint)
+        if !String.IsNullOrEmpty(sCallerWhere) .and. sCallerWhere:IndexOf(SqlDbProvider.OrClause, StringComparison.OrdinalIgnoreCase) >= 0 ;
+            .and. Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:OrQueryHint) ;
+            .and. _connection:ApproximateRows(self:_oTable:RealName) >= oProvider:OrQueryHintMinRows
+            sb:Append(oProvider:OrQueryHint)
+        endif
 
         return sb:ToString()
 

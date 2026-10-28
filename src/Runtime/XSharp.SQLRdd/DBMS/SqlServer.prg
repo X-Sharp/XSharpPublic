@@ -65,6 +65,22 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
         return "'" + dValue:ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture) + "'"
     end method
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// A keyset condition k1 >= v1 AND (k1 > v1 OR (k1 = v1 AND k2 > v2) OR ...) can only be turned
+    /// into seeks on the index when the server knows the values. With PARAMETERIZATION FORCED (or a
+    /// plan from the cache) it does not: it seeks on k1 alone and reads all rows of v1 before the
+    /// position. Paging the lines of an order near the end of a table with 5.4 million rows read
+    /// 6,641 pages (860 ms CPU) for 10 rows, with OPTION (RECOMPILE) 54 pages (2 ms to compile).
+    /// On small tables that read is cheap and compiling every page costs more: navigation tests on
+    /// tables with 1,000 to 50,000 rows took 1.5 to 2 times as long, hence OrQueryHintMinRows.
+    /// </remarks>
+    override property OrQueryHint as string => " OPTION (RECOMPILE)"
+
+    /// <inheritdoc />
+    override property TableRowsStatement as string => ;
+        "SELECT SUM(rows) FROM sys.partitions WHERE object_id = OBJECT_ID(N'" + TableNameMacro + "') AND index_id IN (0, 1)"
+
     private static aFuncs := null as Dictionary<string, string>
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>

@@ -659,8 +659,15 @@ partial class SQLRDD
     /// Fetch the last page of the current order/scope/filter directly, without going through
     /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
     /// </summary>
-    /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
-    private method _FetchLastPage(nTotalRows as long) as logic
+    /// <remarks>
+    /// See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.
+    /// The position of the page in the order is only known from a count of the order. When no valid
+    /// count is cached, the page is anchored at its first row instead (as after GoTo(), see
+    /// _anchorWhere), and the position is looked up when something needs it. A list of the lines of
+    /// an order in our ERP calls GoBottom() on every move to another order: each one counted the
+    /// order of a table with 5.4 million rows first (46 ms), 72 times while paging through orders.
+    /// </remarks>
+    private method _FetchLastPage() as logic
         try
             SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
             SELF:_command:ClearParameters()
@@ -681,7 +688,21 @@ partial class SQLRDD
             SELF:_ReturnSpareTable(newTable)
             SELF:_anchorWhere := ""
             SELF:_bufferContiguous := true
-            SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
+            if SELF:_serverReccountValid
+                SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+            elseif SELF:RowCount < SELF:_SmallPageRows
+                // fewer rows than asked for: the whole order
+                SELF:_bufferStart := 0
+            else
+                var cAnchor := SELF:_KeysetCondition(SELF:DataTable:Rows[0], FALSE, TRUE, TRUE)
+                if cAnchor != null
+                    SELF:_anchorWhere := cAnchor
+                    SELF:_bufferStart := 0
+                else
+                    SELF:_GetRecCount()
+                    SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+                endif
+            endif
             // reading backwards from the bottom starts small as well
             SELF:_readBackRows := SELF:_SmallPageRows
             // This IS the last page by definition - without this, a Skip(1) right after

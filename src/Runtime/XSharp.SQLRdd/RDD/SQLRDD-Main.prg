@@ -702,12 +702,6 @@ partial class SQLRDD inherit Workarea
         SELF:_outsideOrder := FALSE
         SELF:_eofPending := FALSE
         SELF:_ClearTable()
-        // Route through the cached count instead of always querying directly - GoBottom() can
-        // be called many times in a row against unchanged data (e.g. Lister construction
-        // retrying GoTo(0) when it can't establish a valid position), and each direct query
-        // here used to pay for a fresh COUNT(*) every single time.
-        self:_GetRecCount()
-        local nTotal := (long) self:_serverReccount as long
         SELF:_anchorWhere := ""
         // For a large table, fetching the last page via the normal ascending, OFFSET-based
         // query forces the server to walk/skip almost the entire ordered result -
@@ -715,12 +709,16 @@ partial class SQLRDD inherit Workarea
         // reverse and asking for OFFSET 0 instead, which is always cheap. Only safe when the
         // order isn't already descending (that would invert the reversal); falls back to the
         // original approach for natural order, descending orders, or if it fails outright.
+        // The count is only needed for the OFFSET (see _FetchLastPage()); it goes through the
+        // cached count - GoBottom() can be called many times in a row against unchanged data.
         if self:CurrentOrder == null .or. !self:CurrentOrder:Descending
-            if !SELF:_FetchLastPage(nTotal)
-                SELF:_LoadBufferAt(SELF:_LastPageStart(nTotal))
+            if !SELF:_FetchLastPage()
+                self:_GetRecCount()
+                SELF:_LoadBufferAt(SELF:_LastPageStart((long) self:_serverReccount))
             endif
         else
-            SELF:_LoadBufferAt(SELF:_LastPageStart(nTotal))
+            self:_GetRecCount()
+            SELF:_LoadBufferAt(SELF:_LastPageStart((long) self:_serverReccount))
         endif
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE

@@ -281,14 +281,11 @@ partial class SQLRDD inherit Workarea
         endif
         var lResult := SELF:GoCold()
         if lResult
-            self:_eofPending := false
             // With a recno column the insert below returns the new record number; asking the server
             // for MAX(recno) first only cost a round trip per Append().
             var key := iif(self:_recnoColumNo != -1, 0U, (dword) self:_builder:GetNextKey())
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
-            // The new row does not belong at the end of the buffered slice of the order.
-            self:_bufferContiguous := false
             if _emptyValues == null
                 self:_GetEmptyValues()
             endif
@@ -301,10 +298,13 @@ partial class SQLRDD inherit Workarea
                 endif
             next
             if !self:_ExecuteInsertStatement(row)
-                // the error is reported, stay where we were
+                // the error is reported, stay where we were (buffer and EOF state unchanged)
                 self:DataTable:Rows:Remove(row)
                 return false
             endif
+            self:_eofPending := false
+            // The new row does not belong at the end of the buffered slice of the order.
+            self:_bufferContiguous := false
             row:AcceptChanges()
             if self:_recnoColumNo != -1
                 key := Convert.ToUInt32(row[self:_recnoColumNo])

@@ -1640,13 +1640,19 @@ partial class SQLRDD
     /// When the buffer only holds records whose position in the current order is unknown
     /// (see _LoadSingleRecord()), look that position up for the current record now.
     /// Sets _outsideOrder when the record is not part of the order at all.
+    /// Returns FALSE when pending changes could not be written.
     /// </summary>
-    PRIVATE METHOD _EnsurePositioned() AS VOID
+    PRIVATE METHOD _EnsurePositioned() AS LOGIC
         if SELF:_tableMode == TableMode.Table .and. !SELF:_bufferContiguous .and. !SELF:_outsideOrder ;
             .and. !SELF:_EoF .and. SELF:RowCount > 0 .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+            // Loading the window replaces the buffer: write the changes of the record first, or
+            // GoTo(n), FieldPut(), Skip() would lose them.
+            if !SELF:GoCold()
+                return false
+            endif
             SELF:_GotoRecord(Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo]))
         endif
-        return
+        return true
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE

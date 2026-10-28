@@ -911,7 +911,9 @@ partial class SQLRDD inherit Workarea
         SELF:_Bottom := FALSE
         IF nToSkip != 0
             // e.g. right after SetOrder(): the record's position in the order is still unknown
-            SELF:_EnsurePositioned()
+            IF !SELF:_EnsurePositioned()
+                RETURN FALSE
+            ENDIF
         ENDIF
         IF nToSkip == 0
             result := SELF:GoCold()

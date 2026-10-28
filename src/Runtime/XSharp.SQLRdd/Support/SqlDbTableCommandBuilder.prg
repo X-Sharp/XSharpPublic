@@ -226,8 +226,27 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:PagingClause)
         sb:Replace(SqlDbProvider.PagesizeMacro, nCount:ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, nOffset:ToString())
+        sb:Append(SELF:_QueryHint(sWhereClause))
 
         return sb:ToString()
+
+    private static _rangeCondition := System.Text.RegularExpressions.Regex{"\s(or|like|<|>|<=|>=)\s", ;
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
+
+    /// <summary>
+    /// The provider's hint for a query with this condition (see SqlDbProvider.RangeQueryHint): when it has
+    /// OR, LIKE or range terms (a keyset condition, a soft seek, a scope, a prefix seek) and the table is
+    /// large. A condition of equalities only keeps the plan from the cache, it is a seek for any value.
+    /// </summary>
+    private method _QueryHint(sWhereClause as string) as string
+        if String.IsNullOrEmpty(sWhereClause) .or. !_rangeCondition:IsMatch(sWhereClause)
+            return ""
+        endif
+        if Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:RangeQueryHint) ;
+            .and. _connection:ApproximateRows(self:_oTable:RealName) >= oProvider:RangeQueryHintMinRows
+            return oProvider:RangeQueryHint
+        endif
+        return ""
 
     /// <summary>
     /// Build a fetch of the last page of the current order/scope/filter, without the classic
@@ -298,6 +317,7 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:PagingClause)
         sb:Replace(SqlDbProvider.PagesizeMacro, iif(nRows > 0, nRows, _oTable:PageSize):ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, "0")
+        sb:Append(SELF:_QueryHint(sWhereClause))
 
         return sb:ToString()
 

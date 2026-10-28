@@ -318,6 +318,8 @@ internal class SqlDbOrder inherit SqlDbObject
         foreach var oTerm in terms
             if oTerm:IsDate
                 widths:Add(8)
+            elseif oTerm:Width > 0
+                widths:Add((int) oTerm:Width)
             else
                 var cName := oTerm:Column:Trim(<char>{'[',']','"','`'})
                 var oCol := self:RDD:TableColumns:FirstOrDefault({ c => String.Compare(c:Name, cName, true) == 0 })
@@ -361,7 +363,7 @@ internal class SqlDbOrder inherit SqlDbObject
                     sb:Append(SqlDbProvider.AndClause)
                 endif
                 if parts[i]:Length >= widths[i]
-                    sb:Append(columns[i] + " = " + Functions.XsValueToSqlValue(parts[i]))
+                    sb:Append(SELF:_PartCompare(terms[i], columns[i], " = ", parts[i]))
                 else
                     sb:Append(columns[i] + " like " + Provider:LikePattern(parts[i]))
                 endif
@@ -379,17 +381,26 @@ internal class SqlDbOrder inherit SqlDbObject
                 endif
                 sb:Append("(")
                 for var j := 0 upto i-1
-                    sb:Append(columns[j] + " = " + Functions.XsValueToSqlValue(parts[j]))
+                    sb:Append(SELF:_PartCompare(terms[j], columns[j], " = ", parts[j]))
                     sb:Append(SqlDbProvider.AndClause)
                 next
-                var cColExpr := columns[i]
-                if parts[i]:Length < widths[i]
-                    // Compare only the prefix of the column that the value actually covers.
-                    var cSubstr := Provider:GetFunction("SUBSTR(%1%,%2%,%3%)")
-                    cColExpr := cSubstr:Replace("%1%", cColExpr):Replace("%2%","1"):Replace("%3%", parts[i]:Length:ToString())
-                endif
                 var cComp := iif(i == parts:Count-1, cRangeComp, cStrictComp)
-                sb:Append(cColExpr + cComp + Functions.XsValueToSqlValue(parts[i]))
+                if parts[i]:Length < widths[i]
+                    // Compare only the prefix of the column that the value actually covers (only
+                    // the last part can be shorter, so this is the inclusive bound). SUBSTRING(c,1,n)
+                    // would keep the server from seeking on the index: a soft seek in a descending
+                    // order of 3.8 million orders took 0.7 to 1.7 seconds. The same conditions:
+                    //   SUBSTRING(c,1,n) >= v   is   c >= v
+                    //   SUBSTRING(c,1,n) <= v   is   c < v OR c LIKE 'v%'
+                    if cRangeComp:Contains(">")
+                        sb:Append(columns[i] + " >= " + Functions.XsValueToSqlValue(parts[i]))
+                    else
+                        sb:Append("(" + columns[i] + " < " + Functions.XsValueToSqlValue(parts[i]) + ;
+                            SqlDbProvider.OrClause + columns[i] + " like " + Provider:LikePattern(parts[i]) + ")")
+                    endif
+                else
+                    sb:Append(SELF:_PartCompare(terms[i], columns[i], cComp, parts[i]))
+                endif
                 sb:Append(")")
             next
             if parts:Count > 1
@@ -398,6 +409,20 @@ internal class SqlDbOrder inherit SqlDbObject
             endif
         endif
         return sb:ToString()
+    end method
+
+    /// <summary>
+    /// cExpr cComp cValue for a key part the value covers completely. A STR() part compares the number,
+    /// it is sorted by the number (see SqlDbExpression.GetKeyTerms()): [MENGE] = 1 instead of
+    /// STR([MENGE],5,0) = '    1', which also lets the server seek on an index with MENGE.
+    /// </summary>
+    private method _PartCompare(oTerm as SqlDbKeyTerm, cExpr as string, cComp as string, cValue as string) as string
+        local nValue as decimal
+        if oTerm:Width > 0 .and. Decimal.TryParse(cValue:Trim(), System.Globalization.NumberStyles.AllowLeadingSign | System.Globalization.NumberStyles.AllowDecimalPoint, ;
+            System.Globalization.CultureInfo.InvariantCulture, out nValue)
+            return oTerm:Column + cComp + nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        endif
+        return cExpr + cComp + Functions.XsValueToSqlValue(cValue)
     end method
 
 end class

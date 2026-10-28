@@ -139,6 +139,19 @@ partial class SQLRDD
             return _connection?:RecnoColumn
         end get
     end property
+    /// <summary>Length of the character column cName, -1 when it is no character column or unknown.
+    /// Also while the production index is parsed: the fields of the work area are not there yet.</summary>
+    internal method _CharColumnLength(cName as string) as long
+        var oTable := _oTd ?? _builder?:TableInfo
+        if oTable?:Columns != null
+            foreach var oCol in oTable:Columns
+                if String.Equals(oCol:Name, cName, StringComparison.OrdinalIgnoreCase)
+                    return iif(oCol:ColumnInfo:FieldType == DbFieldType.Character, oCol:Length, -1)
+                endif
+            next
+        endif
+        return -1
+    end method
     /// <summary>Maximum number of rows kept in the local buffer.</summary>
     private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
     /// <summary>Rows for a first read where only a few records are expected to be needed (after a seek,
@@ -646,10 +659,22 @@ partial class SQLRDD
     /// Fetch the last page of the current order/scope/filter directly, without going through
     /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
     /// </summary>
-    /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
-    private method _FetchLastPage(nTotalRows as long) as logic
+    /// <remarks>
+    /// See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.
+    /// The position of the page in the order is only known from a count of the order. When no valid
+    /// count is cached, the page is anchored at its first row instead (as after GoTo(), see
+    /// _anchorWhere), and the position is looked up when something needs it. A list of the lines of
+    /// an order in our ERP calls GoBottom() on every move to another order: each one counted the
+    /// order of a table with 5.4 million rows first (46 ms), 72 times while paging through orders.
+    /// </remarks>
+    private method _FetchLastPage() as logic
         try
-            SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            // A descending order is reversed item by item, like the backward keyset reads do.
+            if SELF:CurrentOrder != null .and. SELF:CurrentOrder:Descending
+                SELF:_command:CommandText := SELF:_BuildSqlStatement("", 0, SELF:_SmallPageRows, TRUE)
+            else
+                SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            endif
             SELF:_command:ClearParameters()
             var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if newTable == null
@@ -668,7 +693,21 @@ partial class SQLRDD
             SELF:_ReturnSpareTable(newTable)
             SELF:_anchorWhere := ""
             SELF:_bufferContiguous := true
-            SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
+            if SELF:_serverReccountValid
+                SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+            elseif SELF:RowCount < SELF:_SmallPageRows
+                // fewer rows than asked for: the whole order
+                SELF:_bufferStart := 0
+            else
+                var cAnchor := SELF:_KeysetCondition(SELF:DataTable:Rows[0], FALSE, TRUE, TRUE)
+                if cAnchor != null
+                    SELF:_anchorWhere := cAnchor
+                    SELF:_bufferStart := 0
+                else
+                    SELF:_GetRecCount()
+                    SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+                endif
+            endif
             // reading backwards from the bottom starts small as well
             SELF:_readBackRows := SELF:_SmallPageRows
             // This IS the last page by definition - without this, a Skip(1) right after
@@ -996,8 +1035,10 @@ partial class SQLRDD
     /// Every subquery has to be optimized by the server: with one per item, compiling the keyset
     /// condition of a two column key took 30-45 ms, executing it 3 ms. Since the text changes with
     /// every page the plan is never reused. The buffer holds the values as read from the server, so
-    /// a literal is exact for strings (ASCII only, so no code page conversion can change them) and
-    /// integers/decimals.
+    /// a literal is exact for strings (ASCII only, so no code page conversion can change them),
+    /// integers/decimals, and dates without a time of day when the provider has a literal for them
+    /// (SqlDbProvider.DateLiteral()). With a subquery for a date, SQL Server could not seek on the
+    /// index: every page of a 3.8 million row table read all of it (665,762 pages against 1,941).
     /// </remarks>
     private method _KeysetLiteral(oRow as DataRow, cExpr as string) as string
         var nCol := SELF:DataTable:Columns:IndexOf(cExpr:Trim(<char>{'[',']','"','`'}))
@@ -1006,11 +1047,12 @@ partial class SQLRDD
         endif
         switch oRow[nCol]
         case cValue as string
-            foreach var c in cValue
-                if c > (char) 127 .or. c == (char) 92
-                    return null
-                endif
-            next
+            // Non-ASCII characters only when the database stores them unchanged in a literal: a key
+            // like 'GÜNTHER' fell back to the position of the record, an OFFSET of 323,815 rows in
+            // the list of 1.1 million addresses (more than a minute).
+            if cValue:IndexOf((char) 92) >= 0 .or. !SELF:Connection:IsExactStringLiteral(cValue)
+                return null
+            endif
             return Functions.XsValueToSqlValue(cValue)
         case nValue as long
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
@@ -1020,6 +1062,11 @@ partial class SQLRDD
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
         case nValue as decimal
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case dValue as DateTime
+            // a time of day would need the precision of the column type
+            if dValue:TimeOfDay == TimeSpan.Zero .and. SELF:Provider is SqlDbProvider var oProvider
+                return oProvider:DateLiteral(dValue)
+            endif
         end switch
         return null
     end method
@@ -1270,8 +1317,11 @@ partial class SQLRDD
                 SELF:_SetBOF(TRUE)
                 return true
             endif
-            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= _oTd:PageSize
+            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= SELF:_MaxBufferRows
                 // Read the rows before an anchored buffer by key, without looking up its position.
+                // Also for more than a page: the position of a buffer near the end of a large order
+                // is far down, and the page by position needs an OFFSET of millions of rows (two
+                // minutes for 150 rows back from the end of 3.8 million orders).
                 var nFetched := SELF:_FetchBackwardKeyset(1 - nNewRow)
                 if nFetched == 0
                     SELF:RowNumber := 1
@@ -1305,7 +1355,8 @@ partial class SQLRDD
                 return true
             endif
             nTarget := SELF:_bufferStart + nNewRow - 1
-            if 1 - nNewRow > _oTd:PageSize
+            // up to what the buffer holds _FetchBackward() reads by key (see above), beyond that by position
+            if 1 - nNewRow > SELF:_MaxBufferRows
                 SELF:_LoadBufferAt(nTarget)
                 if nTarget < 0
                     SELF:RowNumber := 1

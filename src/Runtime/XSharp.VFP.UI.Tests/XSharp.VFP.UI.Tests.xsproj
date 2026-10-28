@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.props" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net47</TargetFrameworks>
+    <RootNamespace>XSharp.Runtime.VFP.UI.Tests</RootNamespace>
+    <Name>XSharp.VFP.UI.Tests</Name>
+    <Dialect>FoxPro</Dialect>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>true</LB>
+    <OVF>false</OVF>
+    <Unsafe>true</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <VO13>true</VO13>
+    <VO14>true</VO14>
+    <VO15>true</VO15>
+    <VO16>false</VO16>
+    <Nostandarddefs>False</Nostandarddefs>
+    <NamedArgs>false</NamedArgs>
+    <MemVar>true</MemVar>
+    <Undeclared>false</Undeclared>
+    <InitLocals>True</InitLocals>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <Allowdot>True</Allowdot>
+    <Fox2>True</Fox2>
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AssemblyName>XSharp.VFP.UI.Tests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj" />
+    <ProjectReference Include="..\XSharp.VFP.UI\XSharp.VFP.UI.xsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="xunit">
+      <Version>2.4.2</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <Version>2.4.3</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE;NOASSERT</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DefineConstants>TRACE;NOASSERT</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE;NOASSERT</DefineConstants>
+  </PropertyGroup>
+</Project>

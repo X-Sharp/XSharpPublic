@@ -1047,11 +1047,12 @@ partial class SQLRDD
         endif
         switch oRow[nCol]
         case cValue as string
-            foreach var c in cValue
-                if c > (char) 127 .or. c == (char) 92
-                    return null
-                endif
-            next
+            // Non-ASCII characters only when the database stores them unchanged in a literal: a key
+            // like 'GÜNTHER' fell back to the position of the record, an OFFSET of 323,815 rows in
+            // the list of 1.1 million addresses (more than a minute).
+            if cValue:IndexOf((char) 92) >= 0 .or. !SELF:Connection:IsExactStringLiteral(cValue)
+                return null
+            endif
             return Functions.XsValueToSqlValue(cValue)
         case nValue as long
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)

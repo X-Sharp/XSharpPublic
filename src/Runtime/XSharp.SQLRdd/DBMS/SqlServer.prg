@@ -78,6 +78,11 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
     override property OrQueryHint as string => " OPTION (RECOMPILE)"
 
     /// <inheritdoc />
+    /// <remarks>A varchar literal takes the default collation of the database.</remarks>
+    override property CodePageStatement as string => ;
+        "SELECT COLLATIONPROPERTY(CONVERT(sysname, DATABASEPROPERTYEX(DB_NAME(), 'Collation')), 'CodePage')"
+
+    /// <inheritdoc />
     override property TableRowsStatement as string => ;
         "SELECT SUM(rows) FROM sys.partitions WHERE object_id = OBJECT_ID(N'" + TableNameMacro + "') AND index_id IN (0, 1)"
 

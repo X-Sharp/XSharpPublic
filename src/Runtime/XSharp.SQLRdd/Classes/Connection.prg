@@ -539,6 +539,48 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         return result
     end method
 
+    private _literalEncoding as System.Text.Encoding
+    private _literalEncodingRead as logic
+    /// <summary>
+    /// TRUE when cValue can be written as a string literal without a character being changed: ASCII,
+    /// or all characters in the code page of the database (see SqlDbProvider.CodePageStatement, read
+    /// once per connection).
+    /// </summary>
+    internal method IsExactStringLiteral(cValue as string) as logic
+        local lAscii := true as logic
+        foreach var c in cValue
+            if c > (char) 127
+                lAscii := false
+                exit
+            endif
+        next
+        if lAscii
+            return true
+        endif
+        if !_literalEncodingRead
+            _literalEncodingRead := true
+            if SELF:Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:CodePageStatement)
+                try
+                    var oResult := SELF:ExecuteScalar(oProvider:CodePageStatement)
+                    var nCodePage := iif(oResult == null .or. oResult == DBNull.Value, 0, Convert.ToInt32(oResult))
+                    if nCodePage > 0
+                        _literalEncoding := System.Text.Encoding.GetEncoding(nCodePage, System.Text.EncoderFallback.ExceptionFallback, System.Text.DecoderFallback.ExceptionFallback)
+                    endif
+                catch
+                    _literalEncoding := null
+                end try
+            endif
+        endif
+        if _literalEncoding == null
+            return false
+        endif
+        try
+            return _literalEncoding:GetString(_literalEncoding:GetBytes(cValue)) == cValue
+        catch
+            return false
+        end try
+    end method
+
     private _tableRows := Dictionary<string, int64>{StringComparer.OrdinalIgnoreCase} as Dictionary<string, int64>
     /// <summary>Approximate number of rows of a table from the statistics of the database (see
     /// SqlDbProvider.TableRowsStatement), read once per connection; -1 when unknown.</summary>

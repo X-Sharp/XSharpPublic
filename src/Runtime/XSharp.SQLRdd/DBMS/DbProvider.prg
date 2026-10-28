@@ -248,6 +248,13 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// </summary>
     virtual property OrQueryHint as string => ""
 
+    /// <summary>
+    /// Statement that returns the code page in which the database stores the string literals of a
+    /// statement (characters outside it are changed). The default implementation returns an empty
+    /// string (unknown: the RDD only writes ASCII strings as literals).
+    /// </summary>
+    virtual property CodePageStatement as string => ""
+
     /// <summary>Minimum number of rows of a table (see TableRowsStatement) for OrQueryHint.</summary>
     virtual property OrQueryHintMinRows as long => 100000
 

@@ -151,6 +151,14 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         end get
     end property
 
+    /// <summary>
+    /// Time in seconds a statement may run before it is cancelled (0 = no limit, default -1 = the
+    /// ADO.NET provider's default, 30 seconds for SQL Server).
+    /// </summary>
+    /// <remarks>A count or an index on a table with millions of rows can take longer than the default. A
+    /// statement that times out is reported like any other error, which for a read means no rows.</remarks>
+    property CommandTimeout     as long auto
+
     /// <summary>Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
     /// <summary>Quoted Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
@@ -266,6 +274,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 if Int32.TryParse(strValue, out var cacheMs)
                     self:ResultCacheMs := cacheMs
                 endif
+            case "commandtimeout"
+                if Int32.TryParse(strValue, out var timeout)
+                    self:CommandTimeout := timeout
+                endif
             otherwise
                 builder:Add(key, strValue)
             end switch
@@ -332,6 +344,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         LegacyFieldTypes   := DEFAULT_LEGACYFIELDTYPES
         UseNulls           := DEFAULT_USENULLS
         UseLocks           := DEFAULT_USELOCKS
+        CommandTimeout     := -1
         LongFieldNames     := DEFAULT_LONGFIELDNAMES
         TrimTrailingSpaces := DEFAULT_TRIMTRAILINGSPACES
         PageSize           := DEFAULT_PAGESIZE

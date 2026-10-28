@@ -128,6 +128,13 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
         return
     end constructor
 
+    /// <summary>Apply the connection's CommandTimeout (when set) to the command.</summary>
+    private method _ApplyTimeout() as VOID
+        if SELF:Connection:CommandTimeout >= 0 .and. SELF:DbCommand != null
+            SELF:DbCommand:CommandTimeout := SELF:Connection:CommandTimeout
+        endif
+        RETURN
+
     private method CallBack(cTable as STRING) as VOID
         if withEvents
             self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
@@ -158,6 +165,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     method GetSchemaTable() as DataTable
         try
             self:Connection:ForceOpen()
+            SELF:_ApplyTimeout()
             if ! SELF:_TryBindParameters()
                 return null
             endif
@@ -310,6 +318,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
+            SELF:_ApplyTimeout()
             if ! SELF:_TryBindParameters()
                 return null
             endif
@@ -348,6 +357,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
+            SELF:_ApplyTimeout()
             if ! SELF:_TryBindParameters()
                 return null
             endif
@@ -376,6 +386,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
+            SELF:_ApplyTimeout()
             if ! SELF:_TryBindParameters()
                 return false
             endif

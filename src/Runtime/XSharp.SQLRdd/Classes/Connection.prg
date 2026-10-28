@@ -111,6 +111,46 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// </remarks>
     property UseLocks           as logic auto
 
+    /// <summary>
+    /// How long (milliseconds) the RDD may reuse the result of an identical read statement (default 0 = never).
+    /// </summary>
+    /// <remarks>
+    /// Code written for DBF/ADS repeats the same lookups again and again, a round trip each against a
+    /// server. With a value > 0 the RDD answers a read statement it sent within that time from its
+    /// result. A table's results are dropped as soon as this connection writes to it or locks one of its
+    /// records, and all of them when a transaction is rolled back or a statement not sent by the RDD
+    /// writes. Changes of other users are seen at the latest after that time.
+    /// </remarks>
+    property ResultCacheMs      as long
+        get
+            return _resultCacheMs
+        end get
+        set
+            _resultCacheMs := value
+            // While it is off nothing is invalidated: results from before must not come back
+            // when it is switched on again.
+            if value <= 0
+                _resultCache := null
+            endif
+        end set
+    end property
+
+    private _resultCacheMs as long
+    private _resultCache as SqlDbResultCache
+    /// <summary>The cache for ResultCacheMs, NULL when it is off.</summary>
+    internal property ResultCache as SqlDbResultCache
+        get
+            if SELF:ResultCacheMs <= 0
+                return null
+            endif
+            if _resultCache == null
+                _resultCache := SqlDbResultCache{SELF:ResultCacheMs}
+            endif
+            _resultCache:MaxAge := SELF:ResultCacheMs
+            return _resultCache
+        end get
+    end property
+
     /// <summary>Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
     /// <summary>Quoted Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
@@ -222,6 +262,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:UseNulls := isTrue
             case "uselocks"
                 self:UseLocks := isTrue
+            case "resultcachems"
+                if Int32.TryParse(strValue, out var cacheMs)
+                    self:ResultCacheMs := cacheMs
+                endif
             otherwise
                 builder:Add(key, strValue)
             end switch
@@ -461,6 +505,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <seealso cref="LastException"/>
     method RollBackTrans as logic
         if self:DbTransaction != null
+            // results read inside the transaction may show changes that are now undone
+            self:_resultCache?:Clear()
             try
                 self:DbTransaction:Rollback()
                 self:DbTransaction := null

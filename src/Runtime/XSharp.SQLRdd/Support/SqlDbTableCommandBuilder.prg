@@ -376,7 +376,20 @@ internal class SqlDbTableCommandBuilder
         return sb:ToString()
 
 
+    /// <summary>The quoted column list of the table, recno and deleted column last.</summary>
+    /// <remarks>Built once: every statement of the work area uses it, and for a table with 178 columns
+    /// building it took a noticeable part of a seek on the client.</remarks>
     method ColumnList() as string
+        if _columnList == null .or. _columnListCount != _oTable:Columns:Count
+            _columnList := SELF:_BuildColumnList()
+            _columnListCount := _oTable:Columns:Count
+        endif
+        return _columnList
+
+    private _columnList as string
+    private _columnListCount as long
+
+    private method _BuildColumnList() as string
         var sb := StringBuilder{}
         var List  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
         var newColumns     := List<SqlDbColumnDef>{}

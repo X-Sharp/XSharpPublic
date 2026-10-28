@@ -121,8 +121,21 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// records, and all of them when a transaction is rolled back or a statement not sent by the RDD
     /// writes. Changes of other users are seen at the latest after that time.
     /// </remarks>
-    property ResultCacheMs      as long auto
+    property ResultCacheMs      as long
+        get
+            return _resultCacheMs
+        end get
+        set
+            _resultCacheMs := value
+            // While it is off nothing is invalidated: results from before must not come back
+            // when it is switched on again.
+            if value <= 0
+                _resultCache := null
+            endif
+        end set
+    end property
 
+    private _resultCacheMs as long
     private _resultCache as SqlDbResultCache
     /// <summary>The cache for ResultCacheMs, NULL when it is off.</summary>
     internal property ResultCache as SqlDbResultCache

@@ -836,6 +836,7 @@ partial class SQLRDD inherit Workarea
         // rows instead of one query per row. (A single record left by an order change does not
         // count - SetOrder() followed by GoTo(saved record) is the usual restore pattern.)
         local found as logic
+        var oLastError := SELF:Connection:LastException
         if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
             .and. !(SELF:_lazyGoto .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
             var nFetched := SELF:_FetchSingleRecord(nRec)
@@ -857,6 +858,12 @@ partial class SQLRDD inherit Workarea
             found := SELF:_GotoRecord(nRec)
         endif
         if !found .and. SELF:_tableMode == TableMode.Table
+            // A failed query does not mean that the record does not exist (timeout, no permission ...)
+            var oError := SELF:Connection:LastException
+            if oError != null .and. oError != oLastError
+                SELF:_dbfError(ERDD.READ, XSharp.Gencode.EG_READ, "SqlRDD:GoTo", oError:Message, FALSE)
+                RETURN FALSE
+            endif
             // does not exist, as above
             SELF:_GoToPhantom()
             SELF:_SetBOF(TRUE)

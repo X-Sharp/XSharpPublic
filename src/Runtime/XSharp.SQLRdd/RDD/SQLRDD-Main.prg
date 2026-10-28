@@ -1052,7 +1052,8 @@ partial class SQLRDD inherit Workarea
             self:Connection:ResultCache?:Invalidate(self:_oTd:RealName)
         endif
         if !self:Connection:UseLocks
-            // Locking switched off for this connection (see SqlDbConnection.UseLocks).
+            // Locking switched off for this connection (see SqlDbConnection.UseLocks). Nothing is
+            // locked, so the record is not read again either (see _RefreshLockedRow()).
             lockInfo:Result := true
             return true
         endif
@@ -1078,6 +1079,7 @@ partial class SQLRDD inherit Workarea
 
             if myLock
                 SELF:_ownLocks:Add(nLockRecNo)
+                SELF:_RefreshLockedRow(nLockRecNo)
                 lockInfo:Result := true
                 return true
             endif
@@ -1115,6 +1117,7 @@ partial class SQLRDD inherit Workarea
         end try
 
         SELF:_ownLocks:Add(nLockRecNo)
+        SELF:_RefreshLockedRow(nLockRecNo)
         lockInfo:Result := true
         return true
     end method

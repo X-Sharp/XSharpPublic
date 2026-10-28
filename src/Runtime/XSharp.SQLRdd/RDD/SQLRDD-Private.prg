@@ -1608,6 +1608,48 @@ partial class SQLRDD
         SELF:_spareTable := null
         return oTable
 
+    /// <summary>
+    /// After a new record lock: read the locked record again when the work area stands on it and has
+    /// no pending changes, as ADS does.
+    /// </summary>
+    /// <remarks>
+    /// Code written for DBF/ADS locks a record, reads it and writes it back. A value read before the
+    /// lock (from the buffer or the result cache) could overwrite a change another user committed in
+    /// the meantime. Only the values of the row are replaced, the buffer and the position stay.
+    /// </remarks>
+    PRIVATE METHOD _RefreshLockedRow(nRecNo as int) AS VOID
+        var row := SELF:CurrentRow
+        if nRecNo <= 0 .or. SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo < 0 .or. SELF:_EoF ;
+            .or. row == null .or. row == SELF:_phantomRow .or. row:RowState != DataRowState.Unchanged .or. SELF:_updatedRecNos:Count > 0
+            return
+        endif
+        if Convert.ToInt32(row[SELF:_recnoColumNo]) != nRecNo
+            return
+        endif
+        try
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement((DWORD) nRecNo)
+            SELF:_command:ClearParameters()
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
+            if oTable != null
+                if oTable:Rows:Count == 1
+                    var oNew := oTable:Rows[0]
+                    // column by column: the recno column is read only (ItemArray would stop there
+                    // and leave the row in edit mode)
+                    foreach oColumn as DataColumn in row:Table:Columns
+                        if !oColumn:ReadOnly
+                            row[oColumn] := oNew[oColumn:Ordinal]
+                        endif
+                    next
+                    row:AcceptChanges()
+                endif
+                SELF:_ReturnSpareTable(oTable)
+            endif
+        catch as Exception
+            // keep the values read before
+            row:RejectChanges()
+        end try
+        return
+
     /// <summary>Keep a table that is no longer used (a replaced buffer, a page whose rows were copied into
     /// the buffer) for the next query, see _TakeSpareTable().</summary>
     PRIVATE METHOD _ReturnSpareTable(oTable as DataTable) AS VOID

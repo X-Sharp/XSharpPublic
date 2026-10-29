@@ -15,6 +15,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Xml;
 
 using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -685,8 +686,19 @@ namespace XSharp.ProjectSystem.LanguageService
                     }
                     // Loading the ConfiguredProject and subscribing to its build rule source is what makes CPS
                     // schedule a design-time build for this configuration.
-                    var configured = await project.LoadConfiguredProjectAsync(pair.Value).ConfigureAwait(false);
-                    var buildSource = configured?.Services.ProjectSubscription?.ProjectBuildRuleSource;
+                    IProjectValueDataSource<IProjectSubscriptionUpdate> buildSource = null;
+                    try
+                    {
+                        // This may fail when the solution closes while the configuration group
+                        // is still delivering updates. project is then already disposed,
+                        // and LoadConfiguredProjectAsync throws "The project has been unloaded or is not loaded".
+                        var configured = await project.LoadConfiguredProjectAsync(pair.Value).ConfigureAwait(false);
+                        buildSource = configured?.Services.ProjectSubscription?.ProjectBuildRuleSource;
+                    }
+                    catch (Exception e)
+                    {
+                        XSettings.Exception(e);
+                    }
                     if (buildSource == null)
                         continue;
                     var targetFramework = pair.Key;

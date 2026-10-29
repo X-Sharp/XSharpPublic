@@ -1,0 +1,29 @@
+<!--
+***********************************************************************************************
+XSharp.TargetPlatform.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Hooked up by XSharp.props through $(BeforeTargetFrameworkInferenceTargets) for SDK-style projects.
+That hook is evaluated after the project body, so $(TargetFramework) is known here, and before
+the SDK and NuGet derive the target platform from it.
+
+Copyright (C) XSharp BV. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- A hook that was set before XSharp.props took it over -->
+  <Import Project="$(XSharpBeforeTargetFrameworkInferenceTargets)" Condition="'$(XSharpBeforeTargetFrameworkInferenceTargets)' != ''" />
+
+  <!-- WinForms and WPF need the Windows platform (NETSDK1136), but the X# templates create projects with a
+       platform-neutral TFM (net8.0, net9.0, ...). Add the platform to the TargetFramework itself, so TFM,
+       target platform and the NuGet assets file stay consistent (setting only TargetPlatformIdentifier
+       causes NETSDK1005, see https://github.com/X-Sharp/XSharpPublic/issues/2051).
+       A TargetFramework passed as global property (inner builds of multi-targeted projects, -f) cannot be changed. -->
+  <PropertyGroup Condition="('$(UseWindowsForms)' == 'true' or '$(UseWPF)' == 'true') and $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net\d+\.\d+$'))">
+    <_XSharpTargetFrameworkMajor>$([System.Text.RegularExpressions.Regex]::Replace('$(TargetFramework)', '^net(\d+)\.\d+$', '$1'))</_XSharpTargetFrameworkMajor>
+    <TargetFramework Condition="$(_XSharpTargetFrameworkMajor) &gt;= 5">$(TargetFramework)-windows</TargetFramework>
+  </PropertyGroup>
+</Project>

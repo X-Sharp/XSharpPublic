@@ -112,6 +112,9 @@
     <None Include="XSharp.GenerateGlobalUsings.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="XSharp.TargetPlatform.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Xsharp.Net.Sdk.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

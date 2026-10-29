@@ -52,7 +52,10 @@ Copyright (C) XSharp BV. All rights reserved.
     <TargetPlatformVersion></TargetPlatformVersion>
     <SupportedOSPlatformVersion></SupportedOSPlatformVersion>
     <_EnableDefaultWindowsPlatform>false</_EnableDefaultWindowsPlatform>
-  </PropertyGroup>  
+    <!-- WinForms/WPF with a platform-neutral TFM: add -windows to the TFM (see XSharp.TargetPlatform.targets) -->
+    <XSharpBeforeTargetFrameworkInferenceTargets>$(BeforeTargetFrameworkInferenceTargets)</XSharpBeforeTargetFrameworkInferenceTargets>
+    <BeforeTargetFrameworkInferenceTargets>$(MSBuildThisFileDirectory)XSharp.TargetPlatform.targets</BeforeTargetFrameworkInferenceTargets>
+  </PropertyGroup>
 
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

@@ -39,7 +39,7 @@ CLASS ProjectConversion
     PRIVATE externalDlls     AS List<STRING>
 
     PRIVATE moveToNuget      AS Dictionary<STRING, List<STRING>>
-    PRIVATE propertiesToKeep AS List<STRING>
+    PRIVATE propertiesToKeep AS HashSet<STRING>
 
     PRIVATE orgFileName      AS STRING
 
@@ -56,6 +56,7 @@ METHOD DoConvert( prjFile AS STRING ) AS VOID
         RETURN
     ENDIF
     //
+    var strFileContents := File.ReadAllText(prjFile)
     orgFileName := prjFile
     //
     LOCAL doc AS XDocument
@@ -133,6 +134,19 @@ METHOD DoConvert( prjFile AS STRING ) AS VOID
         ENDIF
     NEXT
 
+
+
+    VAR projectreferences := doc:Root;
+        :Elements(ns + "ItemGroup");
+        :Elements(ns + "ProjectReference");
+        :ToList()
+
+
+    VAR packetreferences := doc:Root;
+        :Elements(ns + "ItemGroup");
+        :Elements(ns + "PackageReference");
+        :ToList()
+
     // Process properties to keep only those we want
     properties := FilterAndProcessProperties( properties )
 
@@ -148,9 +162,15 @@ METHOD DoConvert( prjFile AS STRING ) AS VOID
             newPropertyGroup:Add( XElement{prop:Key, prop:Value} )
         NEXT
     ENDIF
-    IF (!String.IsNullOrEmpty(assemblyName))
+    IF !String.IsNullOrEmpty(assemblyName)
         newPropertyGroup:Add( XElement{"AssemblyName", assemblyName})
     ENDIF
+
+    if strFileContents:ToLower():Contains("windows.forms.dll")
+        newPropertyGroup:Add( XElement{"UseWindowsForms", "true"})
+    endif
+
+
     newProject:Add(newPropertyGroup)
 
     // --- Add PackageReference entries ---
@@ -165,6 +185,36 @@ METHOD DoConvert( prjFile AS STRING ) AS VOID
         NEXT
         newProject:Add(packageGroup)
     ENDIF
+
+    if projectReferences:Any()
+        VAR dllGroup :=  XElement{"ItemGroup"}
+        FOREACH VAR project IN projectReferences
+            VAR dll := project:Attribute("Include")?:Value
+            dllGroup:Add(;
+                XElement{"ProjectReference",;
+                XAttribute{"Include", dll};
+                };
+                )
+        NEXT
+        newProject:Add(dllGroup)
+    endif
+
+    if packetreferences:Any()
+        VAR dllGroup :=  XElement{"ItemGroup"}
+        FOREACH VAR packet IN packetreferences
+            VAR name := packet:Attribute("Include")?:Value
+            var node := XElement{"PackageReference",;
+                XAttribute{"Include", name};
+                }
+            foreach element as XElement in packet:Elements()
+                var child := XELement{element:Name:LocalName, element:Value}
+                node:Add(child)
+            next
+            dllGroup:Add(node)
+        NEXT
+        newProject:Add(dllGroup)
+    endif
+
 
     // --- Add external DLL references ---
     IF (externalDlls:Any())
@@ -183,13 +233,13 @@ METHOD DoConvert( prjFile AS STRING ) AS VOID
     VAR groups := doc:Root:Elements(ns + "PropertyGroup"):ToList()
     //InfoMessage(groups:Count:ToString())
     VAR dict := Dictionary<STRING, XElement>{StringComparer.OrdinalIgnoreCase}
-    FOREACH VAR group IN groups
-        IF ! GROUP:HasAttributes
+    FOREACH VAR oGroup IN groups
+        IF ! oGroup:HasAttributes
             LOOP
         ENDIF
-        VAR attr := GROUP:Attribute("Condition")
+        VAR attr := oGroup:Attribute("Condition")
 
-        VAR list := GROUP:Elements():ToList() // tous les sous-éléments
+        VAR list := oGroup:Elements():ToList()
         VAR props := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
         FOREACH VAR prop IN list
             props[prop:Name:LocalName] := prop:Value
@@ -265,15 +315,15 @@ PRIVATE METHOD LoadNugetMapping() AS VOID
 END METHOD
 
 PRIVATE METHOD LoadPropertiesToKeep() AS VOID
-    propertiesToKeep := List<STRING>{}
-    propertiesToKeep:AddRange( <STRING>{ ;
-        "Allowdot", "ApplicationIcon", "AssemblyName", "AZ", ;
-        "Comments", "Configuration", "CS", "DefineConstants", ;
+    propertiesToKeep := HashSet<STRING>{StringComparer.OrdinalIgnoreCase}
+    propertiesToKeep:UnionWith( <STRING>{ ;
+        "Allowdot", "AllowOldStyleAssignments","ApplicationIcon", "AZ", ;
+        "Comments", "CS", "DebuggerCommandArguments","DefineConstants", ;
         "Dialect", "DisabledWarnings", "FOVF", "FOX1", "FOX2", ;
-        "FOX3", "GenerateFullPaths", "IncludePaths", "InitLocals", ;
-        "INS", "LB", "Memvar", "Name", "NamedArgs", "Nologo", ;
+        "FOX3", "IncludePaths", "InitLocals", ;
+        "INS", "LB", "Memvar", "Name", "NamedArgs", ;
         "NoStandardDefs", "NoWarn", "NoWin32Manifest", "NS", ;
-        "OutputType", "OVF", "PlatformTarget", "PreBuildEvent", ;
+        "OutputType", "OVF", "PlatformTarget", "PPO","Prefer32Bit","PreBuildEvent", ;
         "PostBuildEvent", "RootNamespace", "RunPostBuildEvent", ;
         "StandardDefs", "StartupObject", "TargetFrameworkVersion", ;
         "TreatWarningsAsErrors", "Undeclared", "UnSafe", ;
@@ -286,7 +336,7 @@ END METHOD
 PRIVATE METHOD FilterAndProcessProperties( properties AS Dictionary<STRING, STRING> ) AS Dictionary<STRING, STRING>
     VAR result := Dictionary<STRING, STRING>{}
     FOREACH VAR prop IN properties
-        IF propertiesToKeep:Contains( prop:Key )
+        IF propertiesToKeep:Contains( prop:Key ) .and. !String.IsNullOrEmpty( prop:Value )
             // Convert TargetFrameworkVersion format
             IF prop:Key == "TargetFrameworkVersion"
                 VAR pValue := prop:Value

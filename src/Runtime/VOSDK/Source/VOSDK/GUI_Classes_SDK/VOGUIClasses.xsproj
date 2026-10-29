@@ -1,104 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Props" />
-  <!-- Please note that many properties are read from VOSDK.Props -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
-    <ProjectGuid>0BCE49E2-3597-4E32-AA3C-C465130C05C8</ProjectGuid>
-    <AssemblyName>VOGUIClasses</AssemblyName>
-    <Name>VOGUIClasses</Name>
-    <OutputName>VOGUIClasses</OutputName>
-    <LB>true</LB>
-    <NamedArgs>False</NamedArgs>
+    <AssemblyName>VOGuiClasses</AssemblyName>
     <EnforceSelf>True</EnforceSelf>
-    <Allowdot>false</Allowdot>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <EmitDebugInformation>True</EmitDebugInformation>
+    <TargetFramework>net47</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Lb>true</Lb>
+    <Dialect>Vulcan</Dialect>
+    <cs>false</cs>
+    <ns>true</ns>
+    <Unsafe>true</Unsafe>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Folder Include="Properties\" />
-    <Folder Include="Redist\" />
-    <Folder Include="Resources\" />
-    <Folder Include="VOWinForm\" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.VO\XSharp.VO.xsproj" />
+    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj" />
+    <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj">
-      <Name>VOSystemClasses</Name>
-      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
-      <Name>VOWin32APILibrary</Name>
-      <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
-      <Link>SDKAssemblyinfo.prg</Link>
-    </Compile>
-    <Compile Include="**\*.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(Runtimedir)\VoRedist\*.dll">
-      <Link>Redist\%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\*.BMP" />
-    <None Include="Resources\*.CUR" />
-    <None Include="Resources\*.ICO" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <NativeResource Include="Resources\*.rc" />
-  </ItemGroup>
-  <Import Project="..\VOSDKDocs.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
+    <Import Project="..\VOSDKDocs.Props" />
+
 </Project>

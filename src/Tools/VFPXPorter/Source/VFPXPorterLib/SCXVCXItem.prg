@@ -111,7 +111,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ELSE
 				ConversionList:Add( "_currentobject_", "SELF:" + SELF:Name )
 			ENDIF
-        CATCH 
+        CATCH
             XPorterLogger.Instance:Verbose("AddSpecialProperties: '_currentobject_' property already exists in conversion list for item: " + SELF:Name)
 		END TRY
 
@@ -731,7 +731,7 @@ BEGIN NAMESPACE VFPXPorterLib
 					// and set with "System.EventHandler"
 					cdeBlock:EventType := "System.EventHandler"
 					// If we have a "(" in the Event Name, this is a METHOD call instead of an Event
-					VAR pos := cdeBlock:EventName:IndexOf("(")
+					//VAR pos := cdeBlock:EventName:IndexOf("(")
 					// Not in a FORM .OR. PrefixEvent is True
 					IF !formEvent .OR. settings:PrefixEvent
 						cdeBlock:EventHandler := cdeBlock:Owner:Name + "_"

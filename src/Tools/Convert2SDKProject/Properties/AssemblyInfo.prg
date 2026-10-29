@@ -6,6 +6,5 @@
 ////////////////////////////////////////////////////////////////////////////////
 USING System.Reflection
 using System.Runtime.InteropServices
-[assembly: AssemblyTitleAttribute( "XSharp.LegacyToSdkConverter" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp.LegacyToSdkConverter" )]
 

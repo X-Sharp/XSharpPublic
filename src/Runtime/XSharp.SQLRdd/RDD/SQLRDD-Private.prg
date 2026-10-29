@@ -48,6 +48,9 @@ partial class SQLRDD
     private _bufferContiguous as logic
     /// <summary>Empty table with the buffer's columns, to load further query results into.</summary>
     private _tableTemplate as DataTable
+    /// <summary>An empty table with the buffer's structure (the last replaced buffer or a page already copied
+    /// into it) to load the next query result into, instead of copying _tableTemplate again.</summary>
+    private _spareTable as DataTable
     /// <summary>
     /// Rows to fetch with the next forward page (0 = PageSize): doubles with every full page read
     /// on in a row (up to BufferSize pages). After a seek it starts small, because code that
@@ -136,6 +139,19 @@ partial class SQLRDD
             return _connection?:RecnoColumn
         end get
     end property
+    /// <summary>Length of the character column cName, -1 when it is no character column or unknown.
+    /// Also while the production index is parsed: the fields of the work area are not there yet.</summary>
+    internal method _CharColumnLength(cName as string) as long
+        var oTable := _oTd ?? _builder?:TableInfo
+        if oTable?:Columns != null
+            foreach var oCol in oTable:Columns
+                if String.Equals(oCol:Name, cName, StringComparison.OrdinalIgnoreCase)
+                    return iif(oCol:ColumnInfo:FieldType == DbFieldType.Character, oCol:Length, -1)
+                endif
+            next
+        endif
+        return -1
+    end method
     /// <summary>Maximum number of rows kept in the local buffer.</summary>
     private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
     /// <summary>Rows for a first read where only a few records are expected to be needed (after a seek,
@@ -155,7 +171,9 @@ partial class SQLRDD
                 _table:Rows:Clear()
                 return
             endif
+            var oOld := _table
             _table := value
+            SELF:_ReturnSpareTable(oOld)
             if _table is NULL
                 SELF:_hasData := FALSE
                 return
@@ -406,7 +424,7 @@ partial class SQLRDD
             hasGetIdentity := true
         endif
         try
-            _command:Connection:BeginTrans()
+            var lOwnTrans := _command:Connection:BeginTrans()
             _command:BindParameters()
             local lInsertWithGetIdentity := false as LOGIC
             if hasGetIdentity .and. ! String.IsNullOrEmpty(Provider:GetIdentity)
@@ -415,18 +433,35 @@ partial class SQLRDD
                 lInsertWithGetIdentity := TRUE
             endif
             _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+            // The command methods report a failure through their result and LastException, they
+            // do not throw.
+            local lOk as logic
+            _command:Connection:LastException := null
             if lInsertWithGetIdentity
                 var result := _command:ExecuteScalar()
-                row[_recnoColumNo] := result
-            elseif hasGetIdentity
-                _command:ExecuteScalar()
-                row[_recnoColumNo] := _builder:GetMaxRecno()
+                lOk := result != null .and. result != DBNull.Value
+                if lOk
+                    row[_recnoColumNo] := result
+                endif
             else
-                _command:ExecuteNonQuery()
+                lOk := _command:ExecuteNonQuery()
+                if lOk .and. hasGetIdentity
+                    row[_recnoColumNo] := _builder:GetMaxRecno()
+                endif
             endif
-            _command:Connection:CommitTrans()
-        catch
+            if lOk
+                lOk := _command:Connection:CommitTrans() .or. !lOwnTrans
+            endif
+            if !lOk
+                var oError := _command:Connection:LastException
+                throw iif(oError != null, oError, Exception{"The insert returned no record number"})
+            endif
+        catch e as Exception
+            // Reporting success here made a failed insert look like a new record whose changes
+            // then went nowhere.
             _command:Connection:RollBackTrans()
+            self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:Append", e:Message, FALSE)
+            return false
         end try
         return true
     end method
@@ -624,12 +659,24 @@ partial class SQLRDD
     /// Fetch the last page of the current order/scope/filter directly, without going through
     /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
     /// </summary>
-    /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
-    private method _FetchLastPage(nTotalRows as long) as logic
+    /// <remarks>
+    /// See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.
+    /// The position of the page in the order is only known from a count of the order. When no valid
+    /// count is cached, the page is anchored at its first row instead (as after GoTo(), see
+    /// _anchorWhere), and the position is looked up when something needs it. A list of the lines of
+    /// an order in our ERP calls GoBottom() on every move to another order: each one counted the
+    /// order of a table with 5.4 million rows first (46 ms), 72 times while paging through orders.
+    /// </remarks>
+    private method _FetchLastPage() as logic
         try
-            SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            // A descending order is reversed item by item, like the backward keyset reads do.
+            if SELF:CurrentOrder != null .and. SELF:CurrentOrder:Descending
+                SELF:_command:CommandText := SELF:_BuildSqlStatement("", 0, SELF:_SmallPageRows, TRUE)
+            else
+                SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            endif
             SELF:_command:ClearParameters()
-            var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
+            var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if newTable == null
                 return false
             endif
@@ -643,9 +690,24 @@ partial class SQLRDD
                 SELF:DataTable:Rows:InsertAt(newRow, 0)
                 newRow:AcceptChanges()
             next
+            SELF:_ReturnSpareTable(newTable)
             SELF:_anchorWhere := ""
             SELF:_bufferContiguous := true
-            SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
+            if SELF:_serverReccountValid
+                SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+            elseif SELF:RowCount < SELF:_SmallPageRows
+                // fewer rows than asked for: the whole order
+                SELF:_bufferStart := 0
+            else
+                var cAnchor := SELF:_KeysetCondition(SELF:DataTable:Rows[0], FALSE, TRUE, TRUE)
+                if cAnchor != null
+                    SELF:_anchorWhere := cAnchor
+                    SELF:_bufferStart := 0
+                else
+                    SELF:_GetRecCount()
+                    SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+                endif
+            endif
             // reading backwards from the bottom starts small as well
             SELF:_readBackRows := SELF:_SmallPageRows
             // This IS the last page by definition - without this, a Skip(1) right after
@@ -676,7 +738,7 @@ partial class SQLRDD
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount, lReverse)
             _command:ClearParameters()
-            var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate)
+            var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             return oDataTable
         catch as Exception
             return null
@@ -795,18 +857,16 @@ partial class SQLRDD
         return fields:ToArray()
     end method
 
-    /// <summary>Position on the phantom record (EOF) without reading anything.</summary>
-    /// <param name="lSetBof">FALSE when the caller sets BOF itself, which saves counting the
-    /// order for an empty buffer (e.g. a seek that found nothing).</param>
-    private method _GoToPhantom(lSetBof as logic) as void
+    /// <summary>
+    /// Position on the phantom record (EOF) without reading anything. BOF is left to the caller:
+    /// GoTo() to a record that does not exist sets it (as ADS does), an order change at EOF and a
+    /// failed seek keep or clear it. Computing it here meant counting the order for an empty buffer.
+    /// </summary>
+    private method _GoToPhantom() as void
         SELF:_Found := FALSE
         SELF:_outsideOrder := FALSE
         SELF:RowNumber := SELF:RowCount + 1
         SELF:_SetEOF(TRUE)
-        // BOF too only for an empty table (an empty buffer alone does not mean that)
-        if lSetBof
-            SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:_OrderRowCount() == 0)
-        endif
         // When the buffer already ends at the last record, a backward Skip() from the phantom
         // row naturally lands on it; otherwise remember to go to the bottom first.
         SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
@@ -975,8 +1035,10 @@ partial class SQLRDD
     /// Every subquery has to be optimized by the server: with one per item, compiling the keyset
     /// condition of a two column key took 30-45 ms, executing it 3 ms. Since the text changes with
     /// every page the plan is never reused. The buffer holds the values as read from the server, so
-    /// a literal is exact for strings (ASCII only, so no code page conversion can change them) and
-    /// integers/decimals.
+    /// a literal is exact for strings (ASCII only, so no code page conversion can change them),
+    /// integers/decimals, and dates without a time of day when the provider has a literal for them
+    /// (SqlDbProvider.DateLiteral()). With a subquery for a date, SQL Server could not seek on the
+    /// index: every page of a 3.8 million row table read all of it (665,762 pages against 1,941).
     /// </remarks>
     private method _KeysetLiteral(oRow as DataRow, cExpr as string) as string
         var nCol := SELF:DataTable:Columns:IndexOf(cExpr:Trim(<char>{'[',']','"','`'}))
@@ -985,11 +1047,12 @@ partial class SQLRDD
         endif
         switch oRow[nCol]
         case cValue as string
-            foreach var c in cValue
-                if c > (char) 127
-                    return null
-                endif
-            next
+            // Non-ASCII characters only when the database stores them unchanged in a literal: a key
+            // like 'GÜNTHER' fell back to the position of the record, an OFFSET of 323,815 rows in
+            // the list of 1.1 million addresses (more than a minute).
+            if cValue:IndexOf((char) 92) >= 0 .or. !SELF:Connection:IsExactStringLiteral(cValue)
+                return null
+            endif
             return Functions.XsValueToSqlValue(cValue)
         case nValue as long
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
@@ -999,6 +1062,11 @@ partial class SQLRDD
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
         case nValue as decimal
             return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case dValue as DateTime
+            // a time of day would need the precision of the column type
+            if dValue:TimeOfDay == TimeSpan.Zero .and. SELF:Provider is SqlDbProvider var oProvider
+                return oProvider:DateLiteral(dValue)
+            endif
         end switch
         return null
     end method
@@ -1055,6 +1123,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:Add(newRow)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         // A short page always means EOF. But when the total record count is an exact
         // multiple of PageSize, the last page comes back FULL - "short page" never fires,
         // so also check whether this page's absolute record range already reaches the
@@ -1106,6 +1175,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:InsertAt(newRow, 0)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         SELF:_bufferStart := nStart
         SELF:RowNumber    += nRows
         SELF:_TrimBufferEnd()
@@ -1147,6 +1217,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:InsertAt(newRow, 0)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         SELF:RowNumber    += nRows
         SELF:_readAheadRows := 0
         SELF:_readBackRows := iif(nRows < nCount, 0, Math.Min(nCount * 2, SELF:_MaxBufferRows))
@@ -1246,8 +1317,11 @@ partial class SQLRDD
                 SELF:_SetBOF(TRUE)
                 return true
             endif
-            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= _oTd:PageSize
+            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= SELF:_MaxBufferRows
                 // Read the rows before an anchored buffer by key, without looking up its position.
+                // Also for more than a page: the position of a buffer near the end of a large order
+                // is far down, and the page by position needs an OFFSET of millions of rows (two
+                // minutes for 150 rows back from the end of 3.8 million orders).
                 var nFetched := SELF:_FetchBackwardKeyset(1 - nNewRow)
                 if nFetched == 0
                     SELF:RowNumber := 1
@@ -1281,7 +1355,8 @@ partial class SQLRDD
                 return true
             endif
             nTarget := SELF:_bufferStart + nNewRow - 1
-            if 1 - nNewRow > _oTd:PageSize
+            // up to what the buffer holds _FetchBackward() reads by key (see above), beyond that by position
+            if 1 - nNewRow > SELF:_MaxBufferRows
                 SELF:_LoadBufferAt(nTarget)
                 if nTarget < 0
                     SELF:RowNumber := 1
@@ -1450,13 +1525,18 @@ partial class SQLRDD
         else
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
-            var oRecTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
+            var oRecTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if oRecTable == null .or. oRecTable:Rows:Count == 0
+                SELF:_ReturnSpareTable(oRecTable)
                 return false
             endif
             oRow := oRecTable:Rows[0]
         endif
         var cFrom := SELF:_KeysetCondition(oRow, FALSE, TRUE, TRUE)
+        if oRow:Table != SELF:DataTable
+            // the record was read only for its key
+            SELF:_ReturnSpareTable(oRow:Table)
+        endif
         if cFrom == null
             return false
         endif
@@ -1502,13 +1582,20 @@ partial class SQLRDD
     /// (Skip(), OrderKeyNo, ...).
     /// </summary>
     PRIVATE METHOD _LoadSingleRecord(nRec as DWORD) AS LOGIC
+        return SELF:_FetchSingleRecord(nRec) == 1
+
+    /// <summary>Like _LoadSingleRecord(): 1 = loaded, 0 = the record does not exist, -1 = error.</summary>
+    PRIVATE METHOD _FetchSingleRecord(nRec as DWORD) AS LONG
         try
             SELF:_lazyGoto := FALSE
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
-            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate)
-            if oTable == null .or. oTable:Rows:Count == 0
-                return false
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
+            if oTable == null
+                return -1
+            elseif oTable:Rows:Count == 0
+                SELF:_ReturnSpareTable(oTable)
+                return 0
             endif
             SELF:_ClearTable()
             SELF:DataTable := oTable
@@ -1520,9 +1607,9 @@ partial class SQLRDD
             SELF:_bufferContiguous := false
             SELF:_SetEOF(FALSE)
             SELF:_SetBOF(FALSE)
-            return true
+            return 1
         catch as Exception
-            return false
+            return -1
         end try
 
     /// <summary>
@@ -1544,7 +1631,8 @@ partial class SQLRDD
             // record. _GoToPhantom() marks the EOF as pending (the empty buffer does not end at
             // the last record), so Skip(1) stays at EOF and Skip(-1) goes to the bottom.
             if SELF:_SetBufferRows(null) .or. SELF:_OpenTable("1=0", "")
-                SELF:_GoToPhantom(TRUE)
+                // BOF stays as it was, see OrderListFocus()
+                SELF:_GoToPhantom()
             else
                 SELF:GoTo(0)
             endif
@@ -1558,6 +1646,71 @@ partial class SQLRDD
         endif
         return
 
+    /// <summary>After an order change at EOF keep BOF as it was before, as ADS does.</summary>
+    PRIVATE METHOD _RestoreBofAtEof(lWasEof as logic, lWasBof as logic) AS VOID
+        if lWasEof .and. SELF:_EoF
+            SELF:_SetBOF(lWasBof)
+        endif
+        return
+
+    /// <summary>An empty table with the buffer's structure to load a query result into, or NULL.</summary>
+    PRIVATE METHOD _TakeSpareTable() AS DataTable
+        var oTable := SELF:_spareTable
+        SELF:_spareTable := null
+        return oTable
+
+    /// <summary>
+    /// After a new record lock: read the locked record again when the work area stands on it and has
+    /// no pending changes, as ADS does.
+    /// </summary>
+    /// <remarks>
+    /// Code written for DBF/ADS locks a record, reads it and writes it back. A value read before the
+    /// lock (from the buffer or the result cache) could overwrite a change another user committed in
+    /// the meantime. Only the values of the row are replaced, the buffer and the position stay.
+    /// </remarks>
+    PRIVATE METHOD _RefreshLockedRow(nRecNo as int) AS VOID
+        var row := SELF:CurrentRow
+        if nRecNo <= 0 .or. SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo < 0 .or. SELF:_EoF ;
+            .or. row == null .or. row == SELF:_phantomRow .or. row:RowState != DataRowState.Unchanged .or. SELF:_updatedRecNos:Count > 0
+            return
+        endif
+        if Convert.ToInt32(row[SELF:_recnoColumNo]) != nRecNo
+            return
+        endif
+        try
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement((DWORD) nRecNo)
+            SELF:_command:ClearParameters()
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
+            if oTable != null
+                if oTable:Rows:Count == 1
+                    var oNew := oTable:Rows[0]
+                    // column by column: the recno column is read only (ItemArray would stop there
+                    // and leave the row in edit mode)
+                    foreach oColumn as DataColumn in row:Table:Columns
+                        if !oColumn:ReadOnly
+                            row[oColumn] := oNew[oColumn:Ordinal]
+                        endif
+                    next
+                    row:AcceptChanges()
+                endif
+                SELF:_ReturnSpareTable(oTable)
+            endif
+        catch as Exception
+            // keep the values read before
+            row:RejectChanges()
+        end try
+        return
+
+    /// <summary>Keep a table that is no longer used (a replaced buffer, a page whose rows were copied into
+    /// the buffer) for the next query, see _TakeSpareTable().</summary>
+    PRIVATE METHOD _ReturnSpareTable(oTable as DataTable) AS VOID
+        if oTable != null .and. oTable != SELF:_table .and. SELF:_tableTemplate != null ;
+            .and. oTable:Columns:Count == SELF:_tableTemplate:Columns:Count
+            oTable:Rows:Clear()
+            SELF:_spareTable := oTable
+        endif
+        return
+
     /// <summary>
     /// Replace the buffer with an empty table (aRow NULL) or one row, built from the structure of
     /// the previous buffer without a query. FALSE when that structure is not known yet.
@@ -1566,7 +1719,10 @@ partial class SQLRDD
         if SELF:_tableTemplate == null
             return false
         endif
-        var oTable := SELF:_tableTemplate:Clone()
+        var oTable := SELF:_TakeSpareTable()
+        if oTable == null
+            oTable := SELF:_tableTemplate:Clone()
+        endif
         if aRow != null
             oTable:LoadDataRow(aRow, true)
         endif
@@ -1590,13 +1746,19 @@ partial class SQLRDD
     /// When the buffer only holds records whose position in the current order is unknown
     /// (see _LoadSingleRecord()), look that position up for the current record now.
     /// Sets _outsideOrder when the record is not part of the order at all.
+    /// Returns FALSE when pending changes could not be written.
     /// </summary>
-    PRIVATE METHOD _EnsurePositioned() AS VOID
+    PRIVATE METHOD _EnsurePositioned() AS LOGIC
         if SELF:_tableMode == TableMode.Table .and. !SELF:_bufferContiguous .and. !SELF:_outsideOrder ;
             .and. !SELF:_EoF .and. SELF:RowCount > 0 .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+            // Loading the window replaces the buffer: write the changes of the record first, or
+            // GoTo(n), FieldPut(), Skip() would lose them.
+            if !SELF:GoCold()
+                return false
+            endif
             SELF:_GotoRecord(Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo]))
         endif
-        return
+        return true
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE

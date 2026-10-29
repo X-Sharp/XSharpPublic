@@ -20,7 +20,7 @@
     #define VERSION_NUMBER     FILEVERSION_NUMBER
 #endif
 
-    #define INFORMATIONAL_NUMBER  e"XSharp Empordà 3.1 Release"
+    #define INFORMATIONAL_NUMBER  e"XSharp Empordà 3.1"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

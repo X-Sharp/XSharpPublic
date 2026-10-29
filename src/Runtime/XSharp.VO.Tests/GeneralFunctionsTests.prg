@@ -34,6 +34,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
             // Should return the previously set object
             Assert.Equal(oTest, SysObject())
+            Assert.NotEqual(oNew, NULL_OBJECT)
 
             // Restore original
             SysObject(oOld)

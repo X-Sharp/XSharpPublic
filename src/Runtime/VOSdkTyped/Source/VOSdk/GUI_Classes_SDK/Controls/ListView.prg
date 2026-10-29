@@ -1275,7 +1275,6 @@ CLASS ListViewColumn INHERIT VObject
 
     /// <include file="Gui.xml" path="doc/ListViewColumn.GetPixWidth/*" />
     METHOD GetPixWidth() AS LONG
-        LOCAL iCol 		AS DWORD
         LOCAL iPixWidth	AS LONG
         iPixWidth := LVWin32.GetColumnWidth( oOwner:Handle(), SELF:Index)
         RETURN iPixWidth

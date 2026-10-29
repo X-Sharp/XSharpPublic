@@ -167,9 +167,12 @@ STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
             Log("Set the pragmas for the database")
             USING VAR oCmd := CreateCommand("PRAGMA foreign_keys = ON", oConn)
             oCmd:ExecuteNonQuery()
+            // Register the collation before the VACUUM: the VACUUM rebuilds the NOCASE indexes with the collation
+            // that is registered at that moment. With the built-in NOCASE the indexes no longer match the custom
+            // NOCASE of Microsoft.Data.Sqlite, lookups miss rows and SQLite reports "database disk image is malformed".
+            oConn:SetCollation()
             oCmd:CommandText := "VACUUM"
             oCmd:ExecuteNonQuery()
-            oConn:SetCollation()
         CATCH e AS Exception
             Log("Error setting pragmas")
             XSettings.Exception(e)

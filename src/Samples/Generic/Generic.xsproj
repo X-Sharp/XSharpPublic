@@ -13,7 +13,6 @@
     <Name>Generic</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>false</GenerateFullPaths>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.0</TargetFrameworkMoniker>
     <StartupObject />
     <TargetFrameworkProfile />
   </PropertyGroup>

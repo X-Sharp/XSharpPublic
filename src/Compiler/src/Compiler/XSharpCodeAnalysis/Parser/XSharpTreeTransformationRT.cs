@@ -989,7 +989,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var amc = context.Parent.Parent as XP.AccessMemberContext;
                 var staticCall = amc?.Op.Type == XP.DOTCOLON;
                 var methodCall = amc?.Parent is MethodCallContext;
-                if (fieldInfo != null && !staticCall && !methodCall && !context.IsInLambdaOrCodeBlock())
+                if (fieldInfo != null && !staticCall && !methodCall) //  && !context.IsInLambdaOrCodeBlock())
                 {
                     // for code that looks like this we do not want to change the expression
                     // Foo(1,2)

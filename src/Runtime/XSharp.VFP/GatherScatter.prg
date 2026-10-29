@@ -91,22 +91,25 @@ FUNCTION __GatherMemVar(aFieldList, lMemo) AS LOGIC CLIPPER
 
 
 [FoxArrayInputParameter(1)];
-FUNCTION __ScatterArray(uSource, aFieldList, lBlank, lMemo) AS ARRAY CLIPPER
+FUNCTION __ScatterArray(uSource, aFieldList, lBlank, lMemo) AS __FoxArray CLIPPER
     EnforceType(REF lBlank, __UsualType.Logic)
     EnforceType(REF lMemo, __UsualType.Logic)
     VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     VAR nLen    := (DWORD) aFields:Length
 
-    LOCAL aResult AS ARRAY
+    LOCAL aResult AS __FoxArray
     LOCAL aSource := NULL_ARRAY as ARRAY
     IF IsArray(uSource)
         aSource := uSource
         if aSource IS __FoxArray VAR aFox
             nLen := Min(ALen(aFox, 0), nLen)
+            aResult := aFox
         ELSE
             nLen := Min(ALen(aSource), nLen)
+            // Convert aSource to a FoxArray
+            aResult := __FoxArray{aSource}
         ENDIF
-        aResult := aSource
+
     ELSE
         aResult := __FoxArray{(DWORD) nLen}
     ENDIF

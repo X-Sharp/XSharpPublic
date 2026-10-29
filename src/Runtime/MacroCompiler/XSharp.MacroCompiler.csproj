@@ -8,23 +8,23 @@
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(Solutiondir)Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.Harbour\XSharp.Harbour.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
+    <ProjectReference Include="..\XSharp.Harbour\XSharp.Harbour.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\Common\StandardHeaders.resx">
+    <EmbeddedResource Include="$(Solutiondir)Common\StandardHeaders.resx">
       <Link>Preprocessor\StandardHeaders.resx</Link>
       <SubType>Designer</SubType>
     </EmbeddedResource>

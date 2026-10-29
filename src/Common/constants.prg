@@ -21,6 +21,27 @@ BEGIN NAMESPACE XSharp
         INTERNAL CONST RegistryKey := "Software\" + RegCompany + "\" + Product			AS STRING
         INTERNAL CONST RegistryKey64 := "Software\WOW6432Node\" + RegCompany + "\" + Product AS STRING
         INTERNAL CONST RegistryValue := "XSharpPath"											AS STRING
+
+
+        static method GetSetting(name as string, defvalue as object) as object
+            var result := defvalue
+            try
+                var key := Microsoft.Win32.Registry.CurrentUser
+                var subkey := key:OpenSubKey(Constants.RegistryKey, true)
+                if (subkey == null)
+                    subkey := key:CreateSubKey(Constants.RegistryKey, true)
+                endif
+                result := subkey:GetValue(name)
+                if (result == null)
+                    subkey:SetValue(name, defvalue)
+                    result := defvalue
+                endif
+            catch
+                result := defvalue
+            end try
+            return result
+        end method
+
     END CLASS
 
 END NAMESPACE

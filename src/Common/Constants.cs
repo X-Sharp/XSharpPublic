@@ -19,7 +19,7 @@ namespace XSharp
         internal const string Version = FileVersion;
 #endif
         internal const string FileVersion = "3.1.0.0";
-        internal const string ProductVersion = "XSharp Empordà 3.1 Release";
+        internal const string ProductVersion = "XSharp Empordà 3.1";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2026";
 

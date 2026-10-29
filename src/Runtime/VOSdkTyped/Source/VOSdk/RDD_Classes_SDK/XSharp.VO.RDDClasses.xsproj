@@ -1,69 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Props" />
-  <!-- Please note that many properties are read from VOSDK.Props -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\VOSDK.SDK.Props" />
+  <!-- Please note that most important settings are read from VOSDK.Props -->
   <PropertyGroup>
-    <ProjectGuid>223BE288-7390-48C2-8C3D-6742287962DC</ProjectGuid>
+    <Description>XSharp Typed VO RDD Classes</Description>
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
-    <Name>XSharp.VO.RDDClasses</Name>
-    <OutputName>XSharp.VO.RDDClasses</OutputName>
     <Includepaths>$(Solutiondir)Common</Includepaths>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Unsafe>false</Unsafe>
-    <VO6>false</VO6>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO14>false</VO14>
-    <VO7>false</VO7>
+    <VO3>True</VO3>
+    <VO4>true</VO4>
+    <VO5>False</VO5>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <VO5>false</VO5>
     <cs>true</cs>
-    <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
-    <Allowdot>false</Allowdot>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
     <Dialect>XBaseNet</Dialect>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
-      <Link>SDKAssemblyinfo.prg</Link>
-    </Compile>
-    <Compile Include="**\*.prg" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj">
-      <Name>XSharp.VO.SystemClasses</Name>
-      <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <Compile Remove="Properties\AssemblyInfo.prg" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
-    <DocumentationFile>XSharp.VORDDClasses.Xml</DocumentationFile>
-  </PropertyGroup>
 </Project>

@@ -1,33 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Tools.props" />
+  <Import Project="$(Solutiondir)Common\Version.props" />
   <PropertyGroup>
     <Name>XsLegacyConverter</Name>
     <TargetFramework>net47</TargetFramework>
-    <RootNamespace>XsLegacyConverter</RootNamespace>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>True</NoStandardDefs>
     <OutputType>Exe</OutputType>
-    <StartupObject />
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
-    <NoWin32Manifest>false</NoWin32Manifest>
-    <VulcanCompatibleResources>false</VulcanCompatibleResources>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="$(CommonDir)commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="$(CommonDir)constants.prg">
-      <Link>Properties\constants.prg</Link>
-    </Compile>
-  </ItemGroup>
 </Project>

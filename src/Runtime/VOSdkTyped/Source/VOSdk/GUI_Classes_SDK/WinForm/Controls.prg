@@ -381,7 +381,6 @@ class VOHScrollBar inherit SWF.HScrollBar  implements  IVOControlProperties
 		SELF:SetVisualStyle()
 
     PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
-	    LOCAL oWindow AS Window
 		LOCAL oEvent AS ScrollEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)
@@ -404,7 +403,6 @@ class VOHSpinner inherit SWF.HScrollBar  implements  IVOControlProperties
 		SELF:SetVisualStyle()
 
     PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
-	    LOCAL oWindow AS Window
 		LOCAL oEvent AS SpinnerEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)
@@ -429,7 +427,6 @@ class VOVScrollBar inherit SWF.VScrollBar  implements  IVOControlProperties
 		SELF:SetVisualStyle()
 
     protected method OnValueChanged (e as EventArgs) as void
-	    LOCAL oWindow AS Window
 		LOCAL oEvent AS ScrollEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)
@@ -455,7 +452,6 @@ class VOVSpinner inherit SWF.NumericUpDown  implements  IVOControlProperties
 
 
     PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
-	    LOCAL oWindow AS Window
 		LOCAL oEvent AS SpinnerEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)
@@ -480,7 +476,6 @@ class VOSlider inherit SWF.TrackBar  implements IVOControlProperties
 		SELF:SetVisualStyle()
 
     protected method OnValueChanged (e as EventArgs) as void
-	    LOCAL oWindow AS Window
 		LOCAL oEvent AS SliderEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)

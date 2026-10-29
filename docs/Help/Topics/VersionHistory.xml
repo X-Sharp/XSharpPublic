@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-10-20T15:19:48.928Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-27T15:39:52.913Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
+    <keyword>#2127</keyword>
     <keyword>Changes</keyword>
     <keyword>Runtime chapter</keyword>
     <keyword>String Literals</keyword>
@@ -63,6 +64,10 @@
       <li styleclass="List1">Fixed wrong file offsets during shared file access on .NET 6 and later (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2082" target="_blank">#2082</link>)</li>
       <li styleclass="List1">Fixed field and member lookup in __FieldGetWa2 for objects that support dynamic properties, and improved the error that is thrown when a variable cannot be found (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2092" target="_blank">#2092</link>)</li>
       <li styleclass="List1">Fixed the usCulture used for conversions so it ignores Windows user overrides; this fixes Val(), Str() and Transform() when the user has a custom decimal symbol or digit grouping (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2100" target="_blank">#2100</link>)</li>
+      <li styleclass="List1">Fixed an &#160;issue with rounding small negative numbers (-0.0) with new .Net versions <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2104" target="_blank">#2104</link></li>
+      <li styleclass="List1">Fixed an issue with FindClass for types that are not yet loaded <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2109" target="_blank">#2109</link></li>
+      <li styleclass="List1">Nested codeblocks in macro scripts can now access locals from the surroundng code <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2113" target="_blank">#2113</link></li>
+      <li styleclass="List1">Allow implicit interface conversions in macros (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2114" target="_blank">#2114)</link></li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">New Features</para>
@@ -83,6 +88,8 @@
       <li styleclass="List1">Reduced UI-thread marshalling and code-model database lock contention, which improves responsiveness and SDK-style project load performance (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2084" target="_blank">#2084</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2043" target="_blank">#2043</link>)</li>
       <li styleclass="List1">Improved handling of missing project files and prevented several exceptions and hierarchy hangs in the project system and designer support</li>
       <li styleclass="List1">Fixed the completion &quot;Max Entries&quot; option resetting to 25 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2088" target="_blank">#2088</link>)</li>
+      <li styleclass="List1">Fixed threading issues in the VS Projectsystem (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2124" target="_blank">#2124</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2125" target="_blank">#2125</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2127" target="_blank">#2127</link>)</li>
+      <li styleclass="List1">Fixed an issue with the type lookup for the loop variables of a FOREACH loop (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2129" target="_blank">#2129</link>)</li>
     </list>
     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">New Features</para>

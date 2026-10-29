@@ -1,128 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <ProjectGuid>cea6079a-eff1-4ae7-acdc-ebafc1555b02</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MacroCompilerTest</RootNamespace>
     <AssemblyName>MacroCompilerTest</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <Name>MacroCompiler.Example</Name>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>true</GenerateFullPaths>
+    <Name>MacroCompiler.Example.Next</Name>
     <Dialect>VO</Dialect>
-    <OutputName>MacroCompilerTest</OutputName>
-    <StartupObject />
-    <ApplicationIcon />
-    <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <TargetFrameworkProfile />
-    <AZ>false</AZ>
-    <CS>false</CS>
     <LB>true</LB>
-    <NamedArgs>false</NamedArgs>
-    <OVF>false</OVF>
-    <Unsafe>True</Unsafe>
-    <INS>false</INS>
-    <NS>false</NS>
-    <VO1>false</VO1>
-    <VO2>false</VO2>
-    <VO3>False</VO3>
-    <VO4>false</VO4>
-    <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO11>false</VO11>
-    <VO12>false</VO12>
-    <VO13>false</VO13>
-    <VO14>false</VO14>
     <VO15>true</VO15>
-    <VO16>false</VO16>
-    <Includepaths />
-    <Nostandarddefs>false</Nostandarddefs>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <Memvar>True</Memvar>
-    <Undeclared>False</Undeclared>
-    <Allowdot>false</Allowdot>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <Memvar>true</Memvar>
+    <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
+    <NoStandardDefs>false</NoStandardDefs>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <!--The following is needed because XSharp.VO uses Windows.Forms-->
+    <NoWarn>Nu1702;$(NoWarn)</NoWarn>
+    <Unsafe>true</Unsafe>
+    <CS>False</CS>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.CSharp</Name>
-      <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FoxTests.prg" />
-    <Compile Include="Helpers.prg" />
-    <Compile Include="ParserTests.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Program.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ScriptTests.prg" />
-    <Compile Include="TestData.prg" />
-    <Compile Include="VoTests.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.csproj" />
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj" />
+    <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj" />
   </ItemGroup>
 </Project>

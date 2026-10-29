@@ -150,6 +150,8 @@ partial class SQLRDD inherit Workarea
             if !self:_oTd:HasRecnoColumn
                 throw Exception{"RecnoColumn is required for table " + info:FileName}
             endif
+            // its read statements may be answered from the result cache (SqlDbConnection.ResultCacheMs)
+            _command:CacheTable := self:_oTd:RealName
         endif
         local aUpdatableColumns := null as HashSet<string>
         if _oTd:HasUpdatableColumns
@@ -279,12 +281,11 @@ partial class SQLRDD inherit Workarea
         endif
         var lResult := SELF:GoCold()
         if lResult
-            self:_eofPending := false
-            var key := (dword) self:_builder:GetNextKey()
+            // With a recno column the insert below returns the new record number; asking the server
+            // for MAX(recno) first only cost a round trip per Append().
+            var key := iif(self:_recnoColumNo != -1, 0U, (dword) self:_builder:GetNextKey())
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
-            // The new row does not belong at the end of the buffered slice of the order.
-            self:_bufferContiguous := false
             if _emptyValues == null
                 self:_GetEmptyValues()
             endif
@@ -296,9 +297,19 @@ partial class SQLRDD inherit Workarea
                     row[c] := SELF:_HandleNullDate(values[c:Ordinal],c)
                 endif
             next
-            self:_ExecuteInsertStatement(row)
+            if !self:_ExecuteInsertStatement(row)
+                // the error is reported, stay where we were (buffer and EOF state unchanged)
+                self:DataTable:Rows:Remove(row)
+                return false
+            endif
+            self:_eofPending := false
+            // The new row does not belong at the end of the buffered slice of the order.
+            self:_bufferContiguous := false
             row:AcceptChanges()
-            _updatedRecNos:Add((int)row[self:_recnoColumNo])
+            if self:_recnoColumNo != -1
+                key := Convert.ToUInt32(row[self:_recnoColumNo])
+            endif
+            _updatedRecNos:Add((int) key)
             SELF:RowNumber := SELF:DataTable:Rows:Count
             self:_serverReccount += 1
             if self:_tableReccountValid
@@ -655,6 +666,8 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        // VO resets FOUND to FALSE after a record movement
+        SELF:_Found := FALSE
         // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
         SELF:GoCold()
         SELF:_outsideOrder := FALSE
@@ -683,30 +696,23 @@ partial class SQLRDD inherit Workarea
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_Found := FALSE
         // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
         SELF:GoCold()
         SELF:_outsideOrder := FALSE
         SELF:_eofPending := FALSE
         SELF:_ClearTable()
-        // Route through the cached count instead of always querying directly - GoBottom() can
-        // be called many times in a row against unchanged data (e.g. Lister construction
-        // retrying GoTo(0) when it can't establish a valid position), and each direct query
-        // here used to pay for a fresh COUNT(*) every single time.
-        self:_GetRecCount()
-        local nTotal := (long) self:_serverReccount as long
         SELF:_anchorWhere := ""
-        // For a large table, fetching the last page via the normal ascending, OFFSET-based
-        // query forces the server to walk/skip almost the entire ordered result -
-        // the further from the top, the worse. _FetchLastPage avoids that by sorting in
-        // reverse and asking for OFFSET 0 instead, which is always cheap. Only safe when the
-        // order isn't already descending (that would invert the reversal); falls back to the
-        // original approach for natural order, descending orders, or if it fails outright.
-        if self:CurrentOrder == null .or. !self:CurrentOrder:Descending
-            if !SELF:_FetchLastPage(nTotal)
-                SELF:_LoadBufferAt(SELF:_LastPageStart(nTotal))
-            endif
-        else
-            SELF:_LoadBufferAt(SELF:_LastPageStart(nTotal))
+        // For a large table, fetching the last page via the normal OFFSET-based query forces
+        // the server to walk/skip almost the entire ordered result - the further from the top,
+        // the worse: OFFSET 3768900 in a descending order of 3.8 million orders did not finish
+        // within 30 seconds. _FetchLastPage avoids that by sorting in reverse and asking for
+        // OFFSET 0 instead, which is always cheap. Falls back to the OFFSET only if it fails.
+        // The count is only needed for the OFFSET (see _FetchLastPage()); it goes through the
+        // cached count - GoBottom() can be called many times in a row against unchanged data.
+        if !SELF:_FetchLastPage()
+            self:_GetRecCount()
+            SELF:_LoadBufferAt(SELF:_LastPageStart((long) self:_serverReccount))
         endif
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
@@ -732,11 +738,12 @@ partial class SQLRDD inherit Workarea
         SELF:GoCold()
         IF nToSkip != 0 .AND. SELF:_eofPending
             // On the phantom record after GoTo(0), with a buffer that does not end at the last
-            // record: moving forward stays at EOF, moving backward starts from the last record.
-            SELF:_eofPending := FALSE
+            // record: moving forward stays at EOF (still pending, so a second Skip(1) does not read on
+            // behind the buffer), moving backward starts from the last record.
             IF nToSkip > 0
                 RETURN TRUE
             ENDIF
+            SELF:_eofPending := FALSE
             isOK := SELF:GoBottom()
             IF isOK .AND. nToSkip < -1
                 isOK := SELF:_SkipInBuffer(nToSkip + 1)
@@ -759,7 +766,8 @@ partial class SQLRDD inherit Workarea
             // phantom row is only built once a SELECT actually loaded a schema - see the
             // DataTable setter) - same case GetValue() already guards against above.
             if self:CurrentRow == null .or. oRec != self:CurrentRow[self:_recnoColumNo]
-                result := SELF:GoTo( (DWORD) nRec )
+                // GoTo() sets EOF/BOF itself (at the phantom record BOF as ADS does)
+                return SELF:GoTo( (DWORD) nRec )
             endif
 		CATCH ex AS Exception
 			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "SQLRDD.GoToId",FALSE)
@@ -781,7 +789,9 @@ partial class SQLRDD inherit Workarea
         IF nRec == 0
             // DBF semantics: GoTo(0) positions on the phantom record (EOF) without any I/O.
             // Browsers do this for every empty row they paint, so it must not cost a query.
-            SELF:_GoToPhantom(TRUE)
+            // ADS sets BOF as well, as for any record number that does not exist.
+            SELF:_GoToPhantom()
+            SELF:_SetBOF(TRUE)
             RETURN TRUE
         ENDIF
         SELF:_eofPending := FALSE
@@ -802,7 +812,6 @@ partial class SQLRDD inherit Workarea
                     SELF:RowNumber := rowIndex
                     SELF:_SetEOF(FALSE)
                     SELF:_SetBOF(FALSE)
-                    SELF:_Found := TRUE
                     return true
                 endif
                 rowIndex++
@@ -819,16 +828,38 @@ partial class SQLRDD inherit Workarea
         // rows instead of one query per row. (A single record left by an order change does not
         // count - SetOrder() followed by GoTo(saved record) is the usual restore pattern.)
         local found as logic
+        var oLastError := SELF:Connection:LastException
         if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
             .and. !(SELF:_lazyGoto .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
-            found := SELF:_LoadSingleRecord(nRec)
+            var nFetched := SELF:_FetchSingleRecord(nRec)
+            found := nFetched == 1
             if found
                 SELF:_lazyGoto := TRUE
+            elseif nFetched == 0
+                // The record does not exist (e.g. LastRec()+1, saved at EOF and restored): EOF without
+                // looking it up again in the order. ADS sets BOF as well (DBFCDX only for an empty file).
+                // TRUE as in DBF: positioning on the phantom record succeeded. FALSE made the VO
+                // DbServer:GoTo() build and throw an error object every time.
+                SELF:_GoToPhantom()
+                SELF:_SetBOF(TRUE)
+                RETURN TRUE
             else
                 found := SELF:_GotoRecord(nRec)
             endif
         else
             found := SELF:_GotoRecord(nRec)
+        endif
+        if !found .and. SELF:_tableMode == TableMode.Table
+            // A failed query does not mean that the record does not exist (timeout, no permission ...)
+            var oError := SELF:Connection:LastException
+            if oError != null .and. oError != oLastError
+                SELF:_dbfError(ERDD.READ, XSharp.Gencode.EG_READ, "SqlRDD:GoTo", oError:Message, FALSE)
+                RETURN FALSE
+            endif
+            // does not exist, as above
+            SELF:_GoToPhantom()
+            SELF:_SetBOF(TRUE)
+            RETURN TRUE
         endif
         SELF:_CheckEofBof()
         RETURN found
@@ -872,14 +903,25 @@ partial class SQLRDD inherit Workarea
     override method Skip(nToSkip as long) as logic
         LOCAL result := FALSE AS LOGIC
         SELF:_ForceOpen()
+        IF nToSkip != 0
+            SELF:_Found := FALSE
+        ENDIF
         SELF:_Top := FALSE
         SELF:_Bottom := FALSE
         IF nToSkip != 0
             // e.g. right after SetOrder(): the record's position in the order is still unknown
-            SELF:_EnsurePositioned()
+            IF !SELF:_EnsurePositioned()
+                RETURN FALSE
+            ENDIF
         ENDIF
         IF nToSkip == 0
             result := SELF:GoCold()
+        ELSEIF nToSkip < 0 .AND. SELF:_EoF .AND. SELF:_BoF
+            // EOF and BOF at once (e.g. after GoTo() to a record that does not exist): ADS lands on
+            // the first record and keeps BOF, as for any backward skip at BOF.
+            SELF:GoCold()
+            result := SELF:GoTop()
+            SELF:BoF := TRUE
         ELSEIF SELF:_outsideOrder
             // Positioned (via GoTo()) on a record outside the current order (OrderKeyNo 0).
             // RowNumber/_bufferStart do not correspond to any real position in the order's
@@ -997,8 +1039,13 @@ partial class SQLRDD inherit Workarea
             lockInfo:Result := false
             return false
         endif
+        // Read fresh after a lock: the record may be written next.
+        if self:_oTd != null
+            self:Connection:ResultCache?:Invalidate(self:_oTd:RealName)
+        endif
         if !self:Connection:UseLocks
-            // Locking switched off for this connection (see SqlDbConnection.UseLocks).
+            // Locking switched off for this connection (see SqlDbConnection.UseLocks). Nothing is
+            // locked, so the record is not read again either (see _RefreshLockedRow()).
             lockInfo:Result := true
             return true
         endif
@@ -1024,6 +1071,7 @@ partial class SQLRDD inherit Workarea
 
             if myLock
                 SELF:_ownLocks:Add(nLockRecNo)
+                SELF:_RefreshLockedRow(nLockRecNo)
                 lockInfo:Result := true
                 return true
             endif
@@ -1061,6 +1109,7 @@ partial class SQLRDD inherit Workarea
         end try
 
         SELF:_ownLocks:Add(nLockRecNo)
+        SELF:_RefreshLockedRow(nLockRecNo)
         lockInfo:Result := true
         return true
     end method

@@ -232,6 +232,40 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     end method
 
     /// <summary>
+    /// A date without a time of day as a SQL literal that compares exactly like the stored value, or
+    /// NULL when there is no such literal (the RDD then reads the value with a subquery).
+    /// The default implementation returns NULL: how a string converts to a date depends on the
+    /// database and the settings of the session.
+    /// </summary>
+    virtual method DateLiteral(dValue as DateTime) as string
+        return null
+    end method
+
+    /// <summary>
+    /// Appended to a query of the RDD whose condition has OR, LIKE or range terms (the keyset condition
+    /// of a page, a soft seek, a scope), on a table with at least RangeQueryHintMinRows rows. The default
+    /// implementation returns an empty string.
+    /// </summary>
+    virtual property RangeQueryHint as string => ""
+
+    /// <summary>
+    /// Statement that returns the code page in which the database stores the string literals of a
+    /// statement (characters outside it are changed). The default implementation returns an empty
+    /// string (unknown: the RDD only writes ASCII strings as literals).
+    /// </summary>
+    virtual property CodePageStatement as string => ""
+
+    /// <summary>Minimum number of rows of a table (see TableRowsStatement) for RangeQueryHint.</summary>
+    virtual property RangeQueryHintMinRows as long => 100000
+
+    /// <summary>
+    /// Statement that returns the approximate number of rows of the table TableNameMacro from the
+    /// statistics of the database, without counting them. The default implementation returns an
+    /// empty string (unknown).
+    /// </summary>
+    virtual property TableRowsStatement as string => ""
+
+    /// <summary>
     /// Create a new SqlDbProvider object
     /// </summary>
     /// <param name="cName">Name of the object</param>

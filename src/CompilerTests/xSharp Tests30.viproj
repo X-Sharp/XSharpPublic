@@ -47953,7 +47953,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,3.0.0.0
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VORDDClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOSystemClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOWin32APILibrary,1,0,3.0.0.0
@@ -57166,7 +57166,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,3.0.0.0
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -61793,7 +61793,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,3.0.0.0
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VORDDClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOSystemClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOWin32APILibrary,1,0,3.0.0.0
@@ -67896,7 +67896,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,3.0.0.0
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VORDDClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOSystemClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOWin32APILibrary,1,0,3.0.0.0
@@ -101647,7 +101647,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOSystemClasses,1,0,3.0.0.0
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VO.dll,1,0
 [C760 - Problem overriding METHOD with PROPERTY (version with /vo3 disabled) Resources]
@@ -101775,7 +101775,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VO.dll,1,0
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 [C761 - Problem overriding METHOD with PROPERTY (version with /vo3+ enabled) Resources]
 [C761 - Problem overriding METHOD with PROPERTY (version with /vo3+ enabled) Native Resources]
 [C761 - Problem overriding METHOD with PROPERTY (version with /vo3+ enabled) License files]
@@ -144193,7 +144193,7 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,3.0.0.0
-ReferenceGAC = CLR4,VOGUIClasses,1,0,3.0.0.0
+ReferenceGAC = CLR4,VOGuiClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VORDDClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOSystemClasses,1,0,3.0.0.0
 ReferenceGAC = CLR4,VOWin32APILibrary,1,0,3.0.0.0
@@ -149413,7 +149413,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = NetCore
-NetVersion = 8.0.31
+NetVersion = 8.0.33
 Dialect = VO
 Folder = %ProjectPath%\Applications\C983\
 PrgSubFolder = \Prg
@@ -150336,7 +150336,7 @@ ReferenceGAC = CLR4,XSharp.RT,1,0,3.0.0.0
 [C990 Native Resources]
 [C990 License files]
 [C990 General Options]
-Switches=/analyzer:Bin\Analyzers\XSharpTestAnalyzer.dll /analyzerconfig:Applications\C990\.editorconfig
+Switches=/analyzer:Bin\Analyzers\XSharpTestAnalyzer.dll /analyzerconfig:.editorconfig
 IgnoreWarnings=
 ZeroArrays=0
 CaseSensitive=0

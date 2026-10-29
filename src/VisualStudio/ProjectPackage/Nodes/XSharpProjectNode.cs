@@ -2532,6 +2532,7 @@ namespace XSharp.Project
             int result;
             bool dialectVO = false;
             bool ok = true;
+            bool adjustTarget = false;
             ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             if (ChangedProjectFiles.ContainsKey(this.Url))
@@ -2621,6 +2622,22 @@ namespace XSharp.Project
                         ok = false;
                 }
             }
+            var vers = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.TargetFrameworkVersion);
+            if (vers != null)
+            {
+                if (vers.StartsWith("v4", StringComparison.OrdinalIgnoreCase) && Dialect != XDialect.Core)
+                {
+                    vers = vers.ToLower().Substring(3);
+                    double.TryParse(vers, out double dvers);
+                    if (dvers < 7.0)
+                    {
+                        ok = false;
+                        adjustTarget = true;
+                    }
+
+                }
+            }
+
             if (str.IndexOf("XSharp.VO", StringComparison.OrdinalIgnoreCase) >= 0 && str.IndexOf("XSharp.RT", StringComparison.OrdinalIgnoreCase) == -1)
             {
                 switch (this.Dialect)
@@ -2640,7 +2657,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    FixProjectFile(BuildProject.FullPath, dialectVO);
+                    FixProjectFile(BuildProject.FullPath, dialectVO, adjustTarget);
                     base.UpgradeProject(grfUpgradeFlags);
                     result = VSConstants.S_OK;
                 }
@@ -2689,7 +2706,7 @@ namespace XSharp.Project
             this.RemoveProjectProperty(XSharpProjectVersion);
             this.RemoveProjectProperty(ProjectFileConstants.TargetPath);
         }
-        private void FixProjectFile(string filename, bool dialectVO)
+        private void FixProjectFile(string filename, bool dialectVO, bool adjustTarget)
         {
             bool changed = false;
             var xml = BuildProject.Xml;
@@ -2800,6 +2817,10 @@ namespace XSharp.Project
             {
                 if (UpdateDocumentationFile(group))
                     changed = true;
+            }
+            if (adjustTarget)
+            {
+                BuildProject.SetProperty(XSharpProjectFileConstants.TargetFrameworkVersion, "v4.7");
             }
             // Add ProjectVersion and IncludePaths & NoStandardDefs to first Propertygroup without condition.
             var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();

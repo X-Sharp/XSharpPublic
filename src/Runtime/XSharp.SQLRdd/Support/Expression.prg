@@ -294,6 +294,7 @@ internal class SqlDbExpression inherit SqlDbObject
                 // fixed-width columns, so sorting by the raw columns gives the same order as sorting
                 // by the concatenated text - and the server can read it from an index on
                 // (REF_NR, DATUM) instead of computing and sorting the text for every row.
+                // ART_NR+LISTE+STR(MENGE,5,0) the same way, see GetKeyTerms() for the STR() part.
                 aList := List<string>{}
                 foreach var oTerm in self:KeyTerms
                     aList:Add(oTerm:Column)
@@ -450,8 +451,18 @@ internal class SqlDbExpression inherit SqlDbObject
         return
     access SegmentCount as long
         return self:Segments:Count
+    /// <summary>TRUE when oField is a character column of the table that cLiteral covers completely.</summary>
+    private method _CoversField(oField as SqlDbToken, cLiteral as string) as logic
+        if oField == null .or. oField:Type != TokenType.Token .or. SELF:Owner == null .or. SELF:Owner:RDD == null
+            return false
+        endif
+        var nLen := SELF:Owner:RDD:_CharColumnLength(oField:Name)
+        return nLen > 0 .and. cLiteral:Length >= nLen
+    end method
+
     method TranslateFunctions() as void
         local lastToken := null as SqlDbToken
+        local prevToken := null as SqlDbToken
         foreach var token in self:Tokens
             switch token:Type
             case TokenType.BoFunc
@@ -475,15 +486,21 @@ internal class SqlDbExpression inherit SqlDbObject
             case TokenType.Token
                 token:SQLName := _provider.QuoteIdentifier(token:Name)
             case TokenType.String
-                if lastToken != null .and. lastToken:Name:Trim() == "="
+                if lastToken != null .and. lastToken:Name:Trim() == "=" .and. ;
+                    !SELF:_CoversField(prevToken, token:Name:Substring(1, token:Name:Length-2))
                     // A single equals compares like a prefix in xBase (SET EXACT OFF): field = 'A'
                     // is TRUE for 'AB'. The literal (without its quotes) is matched literally.
                     lastToken:SQLName := "like"
                     token:SQLName := _provider:LikePattern(token:Name:Substring(1, token:Name:Length-2))
                 else
+                    // A literal as long as the field compares the whole field: the prefix compare
+                    // is an equality. LIKE is a range for the server: with TYP = 'L' (TYP C(1)) as
+                    // FOR condition of ART_NR+REF_NR, it sorted all 477,757 rows of type L for the
+                    // first page instead of reading them in the order of the index.
                     token:SQLName := token:Name
                 endif
             end switch
+            prevToken := lastToken
             lastToken := token
         next
         self:Translated := true
@@ -528,7 +545,8 @@ internal class SqlDbExpression inherit SqlDbObject
         return cK
 
     /// <summary>
-    /// Split a key into its parts when it only concatenates columns and DTOS(column), else NULL.
+    /// Split a key into its parts when it only concatenates columns, DTOS(column) and
+    /// STR(column, n[, d]), else NULL.
     /// </summary>
     private method GetKeyTerms(cKey as string) as List<SqlDbKeyTerm>
         var aTerms := List<SqlDbKeyTerm>{}
@@ -546,6 +564,24 @@ internal class SqlDbExpression inherit SqlDbObject
                 endif
                 var cCol := _provider:QuoteIdentifier(cName)
                 aTerms:Add(SqlDbKeyTerm{cCol, cDtos:Replace("%1%", cCol), true})
+            elseif cTerm:StartsWith("STR(", StringComparison.OrdinalIgnoreCase) .and. cTerm:EndsWith(")")
+                // STR(MENGE,5,0): a part of fixed width n, sorted by the number. Only then an index on
+                // (ART_NR, LISTE, MENGE) gives the order: sorted by the text, the server sorted all
+                // rows behind a position before it could return the next page (118,278 reads against
+                // 43). The text sorts like the number for values from 0 to the width; unlike DBF,
+                // negative values come before 0 and values wider than n ('*****') at the end.
+                var aArgs := cTerm:Substring(4, cTerm:Length - 5):Split(<char>{c','})
+                var cName := aArgs[0]:Trim()
+                local nLen := 10 as long
+                local nDec := 0 as long
+                if aArgs:Length > 3 .or. !IsValidToken(cName) .or. cName:Length == 0 ;
+                    .or. (aArgs:Length > 1 .and. !Int32.TryParse(aArgs[1]:Trim(), out nLen)) ;
+                    .or. (aArgs:Length > 2 .and. !Int32.TryParse(aArgs[2]:Trim(), out nDec)) .or. nLen <= 0 .or. nDec < 0
+                    return null
+                endif
+                var cCol := _provider:QuoteIdentifier(cName)
+                var cStr := _provider:GetFunction("STR(%1%,%2%,%3%)"):Replace("%1%", cCol):Replace("%2%", nLen:ToString()):Replace("%3%", nDec:ToString())
+                aTerms:Add(SqlDbKeyTerm{cCol, cStr, false, nLen})
             else
                 return null
             endif
@@ -562,10 +598,13 @@ internal class SqlDbKeyTerm
     property SqlExpr as string auto get private set
     /// <summary>TRUE for DTOS(column): always 8 characters (yyyymmdd)</summary>
     property IsDate  as logic auto get private set
-    constructor(cColumn as string, cSqlExpr as string, lDate as logic)
+    /// <summary>Width of a STR(column, n) part, 0 for the other parts</summary>
+    property Width   as long auto get private set
+    constructor(cColumn as string, cSqlExpr as string, lDate as logic, nWidth := 0 as long)
         self:Column  := cColumn
         self:SqlExpr := cSqlExpr
         self:IsDate  := lDate
+        self:Width   := nWidth
         return
 end class
 end namespace // XSharp.RDD.SqlRDD

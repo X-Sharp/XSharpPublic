@@ -566,6 +566,9 @@ partial class SQLRDD
             return false
         endif
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+        if seekInfo:Last .and. SELF:_SeekLastDirect(seekInfo)
+            return true
+        endif
         // The buffer is anchored at the soft-seek condition for the same value: the rows a
         // hard seek returns are exactly the leading rows of that result, so paging forward past
         // them (the common "seek to the first record of a key, then Skip() while the key still
@@ -649,6 +652,42 @@ partial class SQLRDD
         ENDIF
 
         // See above: the outcome is in Found, the return value only reports success.
+        return true
+    end method
+
+    /// <summary>
+    /// SeekLast: read the last record of the key directly, with the order reversed, and position
+    /// on it. FALSE when that is not possible (filter, no recno column) or the key has no record:
+    /// the caller then continues as before (soft seek, not found).
+    /// </summary>
+    /// <remarks>
+    /// Seek() found the first record of the key and skipped from there to the last one. That reads
+    /// every record of the key, page by page: BelegHdr:GoTop() in our ERP seeks the newest order of
+    /// a type with SeekLast on BEL_ART+DTOS(DAT_HINZU)+BEL_NR, and with 3.8 million orders it had
+    /// not arrived after 80 seconds and 310,000 records. The position of the record in the order is
+    /// looked up when something moves from it, as after GoTo().
+    /// </remarks>
+    PRIVATE METHOD _SeekLastDirect(seekInfo as DbSeekInfo) AS LOGIC
+        if SELF:_FilterInfo:Active .or. SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo < 0
+            return false
+        endif
+        // the records of the key also for a soft seek: it only differs when the key has none
+        var hardInfo := seekInfo
+        hardInfo:SoftSeek := FALSE
+        hardInfo:Last     := FALSE
+        var oLast := SELF:_ReadTable(SELF:CurrentOrder:SeekExpression(hardInfo), 0, 1, TRUE)
+        if oLast == null .or. oLast:Rows:Count == 0
+            SELF:_ReturnSpareTable(oLast)
+            return false
+        endif
+        var nRec := Convert.ToUInt32(oLast:Rows[0][SELF:_recnoColumNo])
+        SELF:_ReturnSpareTable(oLast)
+        if !SELF:GoTo(nRec) .or. SELF:_EoF
+            return false
+        endif
+        SELF:_SetEOF(FALSE)
+        SELF:_SetBOF(FALSE)
+        SELF:Found := TRUE
         return true
     end method
 

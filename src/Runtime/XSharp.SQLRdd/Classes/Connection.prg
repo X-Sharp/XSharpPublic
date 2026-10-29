@@ -151,6 +151,14 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         end get
     end property
 
+    /// <summary>
+    /// Time in seconds a statement may run before it is cancelled (0 = no limit, default -1 = the
+    /// ADO.NET provider's default, 30 seconds for SQL Server).
+    /// </summary>
+    /// <remarks>A count or an index on a table with millions of rows can take longer than the default. A
+    /// statement that times out is reported like any other error, which for a read means no rows.</remarks>
+    property CommandTimeout     as long auto
+
     /// <summary>Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
     /// <summary>Quoted Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
@@ -266,6 +274,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 if Int32.TryParse(strValue, out var cacheMs)
                     self:ResultCacheMs := cacheMs
                 endif
+            case "commandtimeout"
+                if Int32.TryParse(strValue, out var timeout)
+                    self:CommandTimeout := timeout
+                endif
             otherwise
                 builder:Add(key, strValue)
             end switch
@@ -332,6 +344,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         LegacyFieldTypes   := DEFAULT_LEGACYFIELDTYPES
         UseNulls           := DEFAULT_USENULLS
         UseLocks           := DEFAULT_USELOCKS
+        CommandTimeout     := -1
         LongFieldNames     := DEFAULT_LONGFIELDNAMES
         TrimTrailingSpaces := DEFAULT_TRIMTRAILINGSPACES
         PageSize           := DEFAULT_PAGESIZE
@@ -537,6 +550,70 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             result := null
         end try
         return result
+    end method
+
+    private _literalEncoding as System.Text.Encoding
+    private _literalEncodingRead as logic
+    /// <summary>
+    /// TRUE when cValue can be written as a string literal without a character being changed: ASCII,
+    /// or all characters in the code page of the database (see SqlDbProvider.CodePageStatement, read
+    /// once per connection).
+    /// </summary>
+    internal method IsExactStringLiteral(cValue as string) as logic
+        local lAscii := true as logic
+        foreach var c in cValue
+            if c > (char) 127
+                lAscii := false
+                exit
+            endif
+        next
+        if lAscii
+            return true
+        endif
+        if !_literalEncodingRead
+            _literalEncodingRead := true
+            if SELF:Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:CodePageStatement)
+                try
+                    var oResult := SELF:ExecuteScalar(oProvider:CodePageStatement)
+                    var nCodePage := iif(oResult == null .or. oResult == DBNull.Value, 0, Convert.ToInt32(oResult))
+                    if nCodePage > 0
+                        _literalEncoding := System.Text.Encoding.GetEncoding(nCodePage, System.Text.EncoderFallback.ExceptionFallback, System.Text.DecoderFallback.ExceptionFallback)
+                    endif
+                catch
+                    _literalEncoding := null
+                end try
+            endif
+        endif
+        if _literalEncoding == null
+            return false
+        endif
+        try
+            return _literalEncoding:GetString(_literalEncoding:GetBytes(cValue)) == cValue
+        catch
+            return false
+        end try
+    end method
+
+    private _tableRows := Dictionary<string, int64>{StringComparer.OrdinalIgnoreCase} as Dictionary<string, int64>
+    /// <summary>Approximate number of rows of a table from the statistics of the database (see
+    /// SqlDbProvider.TableRowsStatement), read once per connection; -1 when unknown.</summary>
+    internal method ApproximateRows(cTable as string) as int64
+        local nRows as int64
+        if String.IsNullOrEmpty(cTable)
+            return -1
+        endif
+        if _tableRows:TryGetValue(cTable, out nRows)
+            return nRows
+        endif
+        nRows := -1
+        if SELF:Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:TableRowsStatement)
+            var oResult := SELF:ExecuteScalar(oProvider:TableRowsStatement:Replace(SqlDbProvider.TableNameMacro, cTable:Replace("'", "''")), cTable)
+            if oResult != null .and. oResult != DBNull.Value
+                nRows := Convert.ToInt64(oResult)
+            endif
+        endif
+        _tableRows[cTable] := nRows
+        return nRows
     end method
 
    /// <summary>
@@ -1045,32 +1122,49 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         _lockTimer:Enabled := true
     return
 
+    /// <remarks>
+    /// The timer runs on a thread pool thread, while the application uses the connection on its own
+    /// thread. An ADO.NET connection must not be used by two threads at once: a refresh that came
+    /// during a longer statement (e.g. CREATE INDEX on a big table) made one of them fail with
+    /// "requires an open and available Connection". So the refresh uses a connection of its own.
+    /// </remarks>
     method LockTimerElapsedEvent(sender as object, e as System.Timers.ElapsedEventArgs) as void
-        var parameterName1 := SELF:Provider:ParameterPrefix + "p1"
-
-        // Refresh my Locks
-        using var cmdRefresh := SqlDbCommand{"RefreshLockTable", SELF, false}
-        if !cmdRefresh:Connection:IsOpen
-            cmdRefresh:Connection:ForceOpen()
+        if !SELF:UseLocks
+            // nothing is written to the lock table
+            return
         endif
-        var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
-        updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
-        updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
-        cmdRefresh:Parameters := List<SqlDbParameter>{}
-        cmdRefresh:Parameters:Add(SqlDbParameter{parameterName1, SELF:ConnectionId:ToString()})
-        cmdRefresh:CommandText := updateStatement
-        cmdRefresh:ExecuteNonQuery()
+        try
+            var parameterName1 := SELF:Provider:ParameterPrefix + "p1"
+            using var oConn := SELF:Provider:CreateConnection()
+            oConn:ConnectionString := SELF:ConnectionString
+            oConn:Open()
 
-        // Clear all old locks
-        using var cmdClear := SqlDbCommand{"ClearLockTable", SELF, false}
-        if !cmdClear:Connection:IsOpen
-            cmdClear:Connection:ForceOpen()
-        endif
-        cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
-        cmdClear:Parameters := List<SqlDbParameter>{}
-        cmdClear:Parameters:Add(SqlDbParameter{parameterName1, DateTime.Now.AddSeconds(-SELF:LockStaleThreshold)})
-        cmdClear:ExecuteNonQuery()
+            // Refresh my Locks
+            using var cmdRefresh := oConn:CreateCommand()
+            var updateStatement := SELF:Provider:UpdateStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName)
+            updateStatement := updateStatement:Replace(SqlDbProvider.ColumnsMacro, "lockdatetime = " + SELF:Provider:CurrentDateTime)
+            updateStatement := updateStatement:Replace(SqlDbProvider.WhereMacro, "connectionid = " + parameterName1)
+            cmdRefresh:CommandText := updateStatement
+            SELF:_AddParameter(cmdRefresh, parameterName1, SELF:ConnectionId:ToString())
+            cmdRefresh:ExecuteNonQuery()
+
+            // Clear all old locks
+            using var cmdClear := oConn:CreateCommand()
+            cmdClear:CommandText := SELF:Provider:DeleteStatement:Replace(SqlDbProvider.TableNameMacro, LockTableName):Replace(SqlDbProvider.WhereMacro, "LockDateTime < " + parameterName1)
+            SELF:_AddParameter(cmdClear, parameterName1, DateTime.Now.AddSeconds(-SELF:LockStaleThreshold))
+            cmdClear:ExecuteNonQuery()
+        catch ex as Exception
+            // a failed refresh must not take the application down; the next tick tries again
+            System.Diagnostics.Debug.WriteLine("SQLRDD lock table refresh: " + ex:Message)
+        end try
     return
+
+    private method _AddParameter(oCmd as DbCommand, cName as string, oValue as object) as void
+        var oParam := SELF:Provider:CreateParameter()
+        oParam:ParameterName := cName
+        oParam:Value := oValue
+        oCmd:Parameters:Add(oParam)
+        return
 
     #endregion
 

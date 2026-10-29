@@ -459,6 +459,25 @@ internal class SqlDbOrder inherit SqlDbObject
             System.Globalization.CultureInfo.InvariantCulture, out nValue)
             return oTerm:Column + cComp + nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
         endif
+        if oTerm:IsDate .and. String.IsNullOrWhiteSpace(cValue)
+            // DTOS() of an empty date is blank in the key, but the server has NULL or (without
+            // UseNulls) 0001-01-01 (see _EmptyDateValue()), whose yyyymmdd text never equals the blanks:
+            // a seek on a key with an empty date part found nothing. Both sort first, like the blanks.
+            if !SELF:RDD:Connection:UseNulls
+                return cExpr + cComp + "'00010101'"
+            endif
+            switch cComp:Trim()
+            case "="
+            case "<="
+                return oTerm:Column + " IS NULL"
+            case ">"
+                return oTerm:Column + " IS NOT NULL"
+            case "<"
+                return "1 = 0"
+            otherwise
+                return "1 = 1"
+            end switch
+        endif
         return cExpr + cComp + Functions.XsValueToSqlValue(cValue)
     end method
 

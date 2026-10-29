@@ -565,6 +565,8 @@ partial class SQLRDD
             self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER, "SQLRDD:Seek","No current Order" )
             return false
         endif
+        // a value longer than the key counts with the key length, also for Found and SeekLast
+        seekInfo:Value := CurrentOrder:SeekValue(oKey)
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
         if seekInfo:Last .and. SELF:_SeekLastDirect(seekInfo)
             return true

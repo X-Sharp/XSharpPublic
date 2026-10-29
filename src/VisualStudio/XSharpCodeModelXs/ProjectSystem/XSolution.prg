@@ -197,33 +197,47 @@ BEGIN NAMESPACE XSharpModel
     STATIC METHOD Close() AS VOID
         IF IsOpen
             XSettings.Information("XModel.Solution.CloseSolution()" + _fileName)
-            ModelWalker.Stop()
-            // Projects removed from the solution and TargetFrameworks that are no longer used. Not when the
-            // solution closes while it is still loading: then projects that are still part of it were not read yet.
-            IF ! _afterOpenDone
-                XSettings.Information("XModel.Solution.CloseSolution() still loading, no projects deleted")
-            ELSEIF ! _pendingModels:IsEmpty
-                XSettings.Information("XModel.Solution.CloseSolution() code models still pending for " + ;
-                    String.Join(", ", _pendingModels:Keys) + ", no projects deleted")
-            ELSE
-                XDatabase.DeleteProjectsNotInSession()
-            ENDIF
-            _afterOpenDone := FALSE
-            _pendingModels:Clear()
-            XDatabase.CloseDatabase(_sqldb)
+            // VS ignores exceptions from the close events without logging them. An exception here used to leave
+            // the solution half closed: the database closed but IsOpen still TRUE, so opening the same solution
+            // again did not open the database. Log every exception and always reset the solution state.
+            TRY
+                ModelWalker.Stop()
+                // Projects removed from the solution and TargetFrameworks that are no longer used. Not when the
+                // solution closes while it is still loading: then projects that are still part of it were not read yet.
+                IF ! _afterOpenDone
+                    XSettings.Information("XModel.Solution.CloseSolution() still loading, no projects deleted")
+                ELSEIF ! _pendingModels:IsEmpty
+                    XSettings.Information("XModel.Solution.CloseSolution() code models still pending for " + ;
+                        String.Join(", ", _pendingModels:Keys) + ", no projects deleted")
+                ELSE
+                    XDatabase.DeleteProjectsNotInSession()
+                ENDIF
+                XDatabase.CloseDatabase(_sqldb)
 
-            // Empty the project list before closing the projects. XProject:Close() calls XSolution.Remove(),
-            // which then returns immediately instead of removing the project from every other project's
-            // references. That cleanup is useless when the whole solution goes away, and each removed
-            // assembly reference re-resolved the references of that project, which took minutes in large solutions.
-            VAR projects := _projects:Values:ToArray()
-            _projects:Clear()
-            FOREACH VAR project IN projects
-                project:Close()
-            NEXT
-            SystemTypeController.Clear()
-            _orphanedFilesProject := NULL
-            _fileName  := NULL
+                // Empty the project list before closing the projects. XProject:Close() calls XSolution.Remove(),
+                // which then returns immediately instead of removing the project from every other project's
+                // references. That cleanup is useless when the whole solution goes away, and each removed
+                // assembly reference re-resolved the references of that project, which took minutes in large solutions.
+                VAR projects := _projects:Values:ToArray()
+                _projects:Clear()
+                FOREACH VAR project IN projects
+                    // One project that fails to close must not keep the others open
+                    TRY
+                        project:Close()
+                    CATCH e AS Exception
+                        XSettings.Information("XModel.Solution.CloseSolution() failed to close project " + project:Name)
+                        XSettings.Exception(e)
+                    END TRY
+                NEXT
+            CATCH e AS Exception
+                XSettings.Exception(e)
+            FINALLY
+                _afterOpenDone := FALSE
+                _pendingModels:Clear()
+                SystemTypeController.Clear()
+                _orphanedFilesProject := NULL
+                _fileName  := NULL
+            END TRY
         ENDIF
 	END METHOD
 

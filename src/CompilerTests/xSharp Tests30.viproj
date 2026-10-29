@@ -147766,7 +147766,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R936 - FoxPro DOT
 
-ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C970 - Problems with the /fox3 option - static vars *************
 Application = C970 - Problems with the /fox3 option - static vars
 IDEVersion = 1.06
@@ -148773,7 +148773,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C977 - DataSession implementation [#2033]
 
-ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C978 - Problems with the /fox3 option - codeblocks #2054 *************
 Application = C978 - Problems with the /fox3 option - codeblocks #2054
 IDEVersion = 1.06
@@ -148827,7 +148827,7 @@ ReferenceGAC = CLR4,XSharp.VFP,1,0,3.0.0.0
 [C978 - Problems with the /fox3 option - codeblocks #2054 Native Resources]
 [C978 - Problems with the /fox3 option - codeblocks #2054 License files]
 [C978 - Problems with the /fox3 option - codeblocks #2054 General Options]
-Switches=
+Switches=/ppo
 IgnoreWarnings=
 ZeroArrays=0
 CaseSensitive=0
@@ -148899,7 +148899,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C978 - Problems with the /fox3 option - codeblocks #2054
 
-ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C979 - Problems with the /fox3 option - static vars.instance method *************
 Application = C979 - Problems with the /fox3 option - static vars.instance method
 IDEVersion = 1.06
@@ -149904,7 +149904,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C986 - Missing compiler error on overriding property (implementing interface) that is not virtual #2028
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C987 - Problem with /fox3 and ENUMs *************
 Application = C987 - Problem with /fox3 and ENUMs
 IDEVersion = 1.06
@@ -150030,7 +150030,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C987 - Problem with /fox3 and ENUMs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 61836030-A334-4343-8288-FCFDE6361FD6
 ; ************** APPLICATION C988 - Problem with /fox3 and custom properties *************
 Application = C988 - Problem with /fox3 and custom properties
 IDEVersion = 1.06

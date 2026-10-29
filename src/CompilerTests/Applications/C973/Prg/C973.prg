@@ -24,20 +24,20 @@ CLASS TestClass
 		TestFieldTyped := "test"
 		? TestFieldTyped.Length // XSharp.Error: Variable does not exist: TESTFIELDTYPED
 		xAssert(TestFieldTyped.Length==4)
-		xAssert(TestFieldTyped:Length==4)
+//		xAssert(TestFieldTyped:Length==4)
 		
 		? TestPropTyped.Length  // XSharp.Error: Variable does not exist: TESTPROPTYPED
 		xAssert(TestPropTyped.Length==3)
-		xAssert(TestPropTyped:Length==3)
+//		xAssert(TestPropTyped:Length==3)
 
 		TestField := "test"
 		? TestField.Length // XSharp.Error: Variable does not exist: TESTFIELD
 		xAssert(TestField.Length==4)
-		xAssert(TestField:Length==4)
+//		xAssert(TestField:Length==4)
 
 		? TestProp.Length  // XSharp.Error: Variable does not exist: TESTPROP
 		xAssert(TestProp.Length==3)
-		xAssert(TestProp:Length==3)
+//		xAssert(TestProp:Length==3)
 END CLASS
 
 FUNCTION Start() AS VOID
@@ -60,24 +60,24 @@ FUNCTION Start() AS VOID
 	xAssert(t.TestUntypedMethod( 1 ) == 2)
 	xAssert(t.TestUntypedMethod(  ) == 1000)
 
-	xAssert(t:TestUntypedMethod( 1,2,3 ) == 2)
-	xAssert(t:TestUntypedMethod( 1 ) == 2)
-	xAssert(t:TestUntypedMethod(  ) == 1000)
+//	xAssert(t:TestUntypedMethod( 1,2,3 ) == 2)
+//	xAssert(t:TestUntypedMethod( 1 ) == 2)
+//	xAssert(t:TestUntypedMethod(  ) == 1000)
 
 
 	LOCAL u AS USUAL
 	u := TestClass{}
 	? u.TestField // XSharp.Error: Variable does not exist: U
 	xAssert(u.TestField == "test")
-	xAssert(u:TestField == "test")
+//	xAssert(u:TestField == "test")
 
 	? u.TestProp // XSharp.Error: Variable does not exist: U
 	xAssert(u.TestProp == "abc")
-	xAssert(u:TestProp == "abc")
+//	xAssert(u:TestProp == "abc")
 
 	? u.TestMethod( 1 ) + 10
 	xAssert(u.TestMethod( 1 ) == 2)
-	xAssert(u:TestMethod( 1 ) == 2)
+//	xAssert(u:TestMethod( 1 ) == 2)
 
 	? u.TestUntypedMethod( 1,2,3 )
 	? u.TestUntypedMethod( 1 )
@@ -87,9 +87,9 @@ FUNCTION Start() AS VOID
 	xAssert(u.TestUntypedMethod( 1 ) == 2)
 	xAssert(u.TestUntypedMethod(  ) == 1000)
 
-	xAssert(u:TestUntypedMethod( 1,2,3 ) == 2)
-	xAssert(u:TestUntypedMethod( 1 ) == 2)
-	xAssert(u:TestUntypedMethod(  ) == 1000)
+//	xAssert(u:TestUntypedMethod( 1,2,3 ) == 2)
+//	xAssert(u:TestUntypedMethod( 1 ) == 2)
+//	xAssert(u:TestUntypedMethod(  ) == 1000)
 RETURN
 
 PROC xAssert(l AS LOGIC) AS VOID

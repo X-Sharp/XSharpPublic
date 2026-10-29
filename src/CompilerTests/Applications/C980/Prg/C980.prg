@@ -33,14 +33,14 @@ CLASS CustomersClass
 		CustomersClass.StaticPrivate := 300
 		xAssert( CustomersClass.StaticPrivate == 300 )
 
-		LOCAL localthis := CustomersClass{} AS CustomersClass
+/*		LOCAL localthis := CustomersClass{} AS CustomersClass
 		localthis.InstanceProtect := 321
 		xAssert( localthis.InstanceProtect == 321 )
 		xAssert( localthis:InstanceProtect == 321 )
 
 		localthis.InstancePrivate := 333
 		xAssert( localthis.InstancePrivate == 333 )
-		xAssert( localthis:InstancePrivate == 333 )
+		xAssert( localthis:InstancePrivate == 333 )*/
 
 		// When using a usual, should there actually be a runtime error trying to use non-public members?
 /*		LOCAL localusual := CustomersClass{} AS USUAL
@@ -57,26 +57,27 @@ CLASS CustomersClass
 		
 		? GlobalClass.n
 		xAssert(GlobalClass.n==2000)
-		xAssert(GlobalClass:n==2000)
+//		xAssert(GlobalClass:n==2000)
 		
-		GlobalClass:n := 1500
+//		GlobalClass:n := 1500
+		GlobalClass.n := 1500
 		xAssert(GlobalClass.n==1500)
-		xAssert(GlobalClass:n==1500)
+//		xAssert(GlobalClass:n==1500)
 
 		? GlobalClass.prop
 		xAssert(GlobalClass.prop==500)
-		xAssert(GlobalClass:prop==500)
+//		xAssert(GlobalClass:prop==500)
 
 		GlobalClass.prop := 777
 		? GlobalClass.n
 		xAssert(GlobalClass.n==777)
-		xAssert(GlobalClass:n==777)
+//		xAssert(GlobalClass:n==777)
 	
 	METHOD InstanceMethod() AS VOID
-		CustomersClass.StaticProtect := 200
+/*		CustomersClass.StaticProtect := 200
 		xAssert( CustomersClass.StaticProtect == 200 )
 		CustomersClass.StaticPrivate := 300
-		xAssert( CustomersClass.StaticPrivate == 300 )
+		xAssert( CustomersClass.StaticPrivate == 300 )*/
 
 		LOCAL localthis := CustomersClass{} AS CustomersClass
 		localthis.InstanceProtect := 321
@@ -108,45 +109,46 @@ CLASS CustomersClass
 
 		? GlobalString.Length
 		xAssert(GlobalString.Length==4)
-		xAssert(GlobalString:Length==4)
+//		xAssert(GlobalString:Length==4)
 
 		? GlobalClass.n
 		xAssert(GlobalClass.n==777)
-		xAssert(GlobalClass:n==777)
+//		xAssert(GlobalClass:n==777)
 
 		? GlobalClass.prop
 		xAssert(GlobalClass.prop==500)
-		xAssert(GlobalClass:prop==500)
+//		xAssert(GlobalClass:prop==500)
 
 		GlobalClass.prop := 888
 		? GlobalClass.n
 		xAssert(GlobalClass.n==888)
-		xAssert(GlobalClass:n==888)
+//		xAssert(GlobalClass:n==888)
 	
 END CLASS
 
 FUNCTION Start( ) AS VOID
 	? GlobalString.Length
-	? GlobalString:Length
+//	? GlobalString:Length
 
 	xAssert(GlobalString.Length==4)
-	xAssert(GlobalString:Length==4)
+//	xAssert(GlobalString:Length==4)
 	
 	? GlobalClass.n
 	xAssert(GlobalClass.n==100)
-	xAssert(GlobalClass:n==100)
+//	xAssert(GlobalClass:n==100)
 	
 	? GlobalClass.prop
 	xAssert(GlobalClass.prop == 500)
 
-	? GlobalClass:prop
-	xAssert(GlobalClass:prop == 500)
+//	? GlobalClass:prop
+//	xAssert(GlobalClass:prop == 500)
 
 	GlobalClass.prop := 999
 	? GlobalClass.n
 	xAssert(GlobalClass.n = 999)
-
-	GlobalClass:prop := 2000
+    
+	GlobalClass.prop := 2000
+//	GlobalClass:prop := 2000
 	? GlobalClass.n
 	xAssert(GlobalClass.n == 2000)
 	

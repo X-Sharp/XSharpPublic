@@ -59,8 +59,8 @@ partial class SQLRDD
     private _readAheadRows := 0 as long
     /// <summary>Rows to fetch with the next backward page (0 = PageSize), grows like _readAheadRows.</summary>
     private _readBackRows := 0 as long
-    /// <summary>TRUE when the single buffered record was loaded by GoTo() without its position.</summary>
-    private _lazyGoto as logic
+    /// <summary>How many GoTo() calls in a row loaded the single buffered record without its position.</summary>
+    private _lazyGotos as long
     /// <summary>
     /// TRUE after GoTo(0) positioned on the phantom record while the buffer does not end at the
     /// last record of the order: a backward Skip() then has to start from GoBottom().
@@ -1547,7 +1547,7 @@ partial class SQLRDD
             return false
         endif
         var nRows := newTable:Rows:Count
-        SELF:_lazyGoto := FALSE
+        SELF:_lazyGotos := 0
         SELF:_ClearTable()
         SELF:DataTable := newTable
         SELF:RowNumber := 1
@@ -1587,7 +1587,7 @@ partial class SQLRDD
     /// <summary>Like _LoadSingleRecord(): 1 = loaded, 0 = the record does not exist, -1 = error.</summary>
     PRIVATE METHOD _FetchSingleRecord(nRec as DWORD) AS LONG
         try
-            SELF:_lazyGoto := FALSE
+            SELF:_lazyGotos := 0
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
             var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
@@ -1726,7 +1726,7 @@ partial class SQLRDD
         if aRow != null
             oTable:LoadDataRow(aRow, true)
         endif
-        SELF:_lazyGoto := FALSE
+        SELF:_lazyGotos := 0
         SELF:_ClearTable()
         SELF:DataTable := oTable
         SELF:RowNumber := 1

@@ -23,7 +23,34 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/directory/*" />
 [FoxProFunction("DIRECTORY", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Directory(cDirectoryName AS STRING, nFlags := 0 AS INT) AS LOGIC
-    RETURN XSharp.RT.Functions.ALen(XSharp.RT.Functions.Directory(cDirectoryName)) > 0
+    LOCAL lFound := FALSE AS LOGIC
+    LOCAL cFullPath AS STRING
+    LOCAL oAttributes AS System.IO.FileAttributes
+
+    IF String.IsNullOrWhiteSpace(cDirectoryName)
+        RETURN FALSE
+    ENDIF
+
+    TRY
+        // SET DEFAULT syncs the process directory in the FoxPro dialect, so a
+        // relative name resolves against the VFP default directory
+        cFullPath := System.IO.Path.GetFullPath(cDirectoryName)
+        IF System.IO.Directory.Exists(cFullPath)
+            // only nFlags 1 ignores the attributes, and Windows marks a drive
+            // root Hidden and System while VFP still reports it
+            IF nFlags == 1 .OR. String.Compare(cFullPath, System.IO.Path.GetPathRoot(cFullPath), TRUE) == 0
+                lFound := TRUE
+            ELSE
+                oAttributes := System.IO.File.GetAttributes(cFullPath)
+                lFound := ! (oAttributes:HasFlag(System.IO.FileAttributes.Hidden) .OR. ;
+                             oAttributes:HasFlag(System.IO.FileAttributes.System))
+            ENDIF
+        ENDIF
+    CATCH
+        lFound := FALSE
+    END TRY
+
+    RETURN lFound
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getenv/*" />
 [FoxProFunction("GETENV", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];

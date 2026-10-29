@@ -62,6 +62,7 @@
     <Project Path="Runtime/XSharp.Rdd.Tests/XSharp.RDD.Tests.xsproj" Id="d77877a7-f7cf-4dad-be6f-ae7a3bc9b942" />
     <Project Path="Runtime/XSharp.RT.Tests/XSharp.RT.Tests.xsproj" Id="16d523f2-b871-4bdc-94ef-33b3db7ae617" />
     <Project Path="Runtime/XSharp.VFP.Tests/XSharp.VFP.Tests.xsproj" Id="1f9d1d4f-4cde-4331-9ef8-d6a1d413cc6d" />
+    <Project Path="Runtime/XSharp.VFP.UI.Tests/XSharp.VFP.UI.Tests.xsproj" Id="27a3392e-0e6b-40d5-b8fb-fc5db9f0a0ab" />
     <Project Path="Runtime/XSharp.VO.Tests/XSharp.VO.Tests.xsproj" Id="16d523f2-b871-4bdc-94ef-33b3db7ae618" />
     <Project Path="Runtime/XSharp.XPP.Tests/XSharp.XPP.Tests.xsproj" Id="940ad5b6-6ccf-4bf5-936b-9366a87ba77b" />
   </Folder>

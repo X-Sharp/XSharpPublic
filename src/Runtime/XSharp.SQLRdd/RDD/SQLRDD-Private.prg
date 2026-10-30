@@ -1661,19 +1661,18 @@ partial class SQLRDD
         System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
 
     /// <summary>
-    /// The filter expression as SQL condition for the server, or NULL when it cannot be translated
-    /// without risk. The filter is still evaluated on the client as well.
+    /// The filter expression as SQL condition for the server, or NULL when no part of it can be
+    /// translated without risk. The filter is still evaluated on the client as well.
     /// </summary>
     /// <remarks>
     /// SetFilter() only evaluated the filter on the client: every row of the order came over the
     /// wire to be tested (our ERP's demand planning read 449,531 articles for the 3,832 that pass).
     /// The SQL condition may let more rows through than the filter, the client test removes them,
-    /// but never fewer. So it is not used with UseNulls, when the filter calls a function, uses a
-    /// variable, an alias, .T./.F. or #, when strings are compared other than as character field =
-    /// 'literal' (a prefix compare, LIKE) or == 'literal' (the collations differ for &lt; &gt; and
-    /// the like), or when a string comparison is negated (the server compares without case, so the
-    /// negation would drop rows the client keeps). A logical field without comparison becomes
-    /// FIELD == 1, FIELD $ 'abc' on a one-character field an OR of equalities.
+    /// but never fewer. Of a filter whose parts are joined with .AND. on the top level, the parts
+    /// that can be translated go to the server and the others stay on the client: the article
+    /// selection of our ERP combines a product group with "active only" (AKTIV = .T.) or
+    /// EMPTY(SCANCODE), and one such part kept the whole filter on the client. See
+    /// _FilterPartToSql() for what a part may contain.
     /// </remarks>
     private method _FilterToSql(cFilter as string) as string
         if String.IsNullOrWhiteSpace(cFilter) .or. SELF:_tableMode != TableMode.Table .or. SELF:Connection:UseNulls
@@ -1706,18 +1705,112 @@ partial class SQLRDD
         if nPos != cFilter:Length .or. aTokens:Count == 0
             return null
         endif
+        // parentheses around the whole filter
+        while aTokens:Count >= 2 .and. aTokens[0] == "(" .and. _ClosingParen(aTokens, 0) == aTokens:Count-1
+            aTokens:RemoveAt(aTokens:Count-1)
+            aTokens:RemoveAt(0)
+        enddo
+        // the parts joined with .AND. on the top level; with .OR. on the top level the filter is one part
+        var aParts := List<List<string>>{}
+        var aPart  := List<string>{}
+        local nDepth := 0 as long
+        local lOr := false as logic
+        foreach var cToken in aTokens
+            if cToken == "("
+                nDepth++
+            elseif cToken == ")"
+                nDepth--
+            endif
+            if nDepth == 0 .and. cToken:ToUpper() == ".OR."
+                lOr := true
+            endif
+            if nDepth == 0 .and. cToken:ToUpper() == ".AND."
+                aParts:Add(aPart)
+                aPart := List<string>{}
+            else
+                aPart:Add(cToken)
+            endif
+        next
+        aParts:Add(aPart)
+        if lOr .or. nDepth != 0
+            aParts := List<List<string>>{} {aTokens}
+        endif
+        var aSql := List<string>{}
+        foreach var aTerm in aParts
+            var cPart := SELF:_FilterPartToSql(aTerm, oOrder)
+            if cPart != null
+                aSql:Add("(" + cPart + ")")
+            endif
+        next
+        if aSql:Count == 0
+            return null
+        endif
+        var cSql := String.Join(SqlDbProvider.AndClause, aSql)
+        try
+            // a condition the server rejects stays on the client
+            var oLast := SELF:Connection:LastException
+            var oCount := SELF:Connection:ExecuteScalar(SqlDbProvider.SelectClause + "count(*)" + SqlDbProvider.FromClause + ;
+                Provider:QuoteIdentifier(SELF:_oTd:RealName) + SqlDbProvider.WhereClause + "1=0" + SqlDbProvider.AndClause + "(" + cSql + ")", SELF:_cTable)
+            if oCount == null .or. SELF:Connection:LastException != oLast
+                return null
+            endif
+            return cSql
+        catch as Exception
+            return null
+        end try
+    end method
+
+    /// <summary>Index of the ")" that closes the "(" at nOpen, -1 when there is none.</summary>
+    private static method _ClosingParen(aTokens as List<string>, nOpen as long) as long
+        local nDepth := 0 as long
+        for var i := nOpen upto aTokens:Count-1
+            if aTokens[i] == "("
+                nDepth++
+            elseif aTokens[i] == ")"
+                nDepth--
+                if nDepth == 0
+                    return i
+                endif
+            endif
+        next
+        return -1
+
+    /// <summary>
+    /// One part of a filter (see _FilterToSql()) as SQL condition, or NULL when it cannot be
+    /// translated so that it lets through at least the records the filter accepts.
+    /// </summary>
+    /// <remarks>
+    /// Not translated: a function call (except CTOD()/STOD() of a literal), a variable, an alias,
+    /// #, a string compared other than as character field = 'literal' (a prefix compare, LIKE) or
+    /// == 'literal' (the collations differ for &lt; &gt; and the like), a negated string comparison
+    /// (the server compares without case, so the negation would drop rows the client keeps).
+    /// A logical field without comparison becomes FIELD == 1, compared with .T. or .F. FIELD == 1 or
+    /// 0, FIELD $ 'abc' on a one-character field an OR of equalities. CTOD('...') and STOD('...')
+    /// are evaluated when the filter is set, as the client evaluates them (date format, epoch).
+    /// </remarks>
+    private method _FilterPartToSql(aTokens as List<string>, oOrder as SqlDbOrder) as string
+        if aTokens:Count == 0
+            return null
+        endif
         // the xBase expression for the translator, and per token what it is:
         // 0 other, 1 character field, 2 string literal, 3 string comparison (see _StringCompareSql())
         var aOut  := List<string>{}
         var aKind := List<long>{}
-        // the string comparisons as SQL, in the expression as placeholder columns the translator keeps
+        // SQL the translator cannot write, in the expression as placeholder columns it keeps
         var aParts := List<string>{}
         for var i := 0 upto aTokens:Count-1
             var cToken := aTokens[i]
             var cUpper := cToken:ToUpper()
             var cNext  := iif(i+1 < aTokens:Count, aTokens[i+1], "")
             var cPrev  := iif(i > 0, aTokens[i-1], "")
-            if cUpper == ".T." .or. cUpper == ".F." .or. cToken == "#" .or. cToken == "," .or. cToken == "->" .or. cToken == "$"
+            if cUpper == ".T." .or. cUpper == ".F."
+                // a logical literal compared with something else than a logical field (see below)
+                if _IsComparison(cPrev) .or. _IsComparison(cNext)
+                    return null
+                endif
+                aOut:Add(iif(cUpper == ".T.", "(1==1)", "(1==0)"))
+                aKind:Add(0)
+            elseif cToken == "#" .or. cToken == "," .or. cToken == "->" .or. cToken == "$"
                 return null
             elseif cUpper == ".NOT."
                 aOut:Add("!")
@@ -1734,18 +1827,38 @@ partial class SQLRDD
                 endif
                 aOut:Add("'" + cToken:Substring(1, cToken:Length-2) + "'")
                 aKind:Add(2)
+            elseif (cUpper == "CTOD" .or. cUpper == "STOD") .and. cNext == "(" .and. i+3 < aTokens:Count ;
+                .and. (aTokens[i+2]:StartsWith("'") .or. aTokens[i+2]:StartsWith(e"\"")) .and. aTokens[i+3] == ")"
+                var cDate := SELF:_DateLiteralSql(cUpper + "(" + aTokens[i+2] + ")")
+                if cDate == null
+                    return null
+                endif
+                aParts:Add(cDate)
+                aOut:Add(_FilterPlaceholder(aParts:Count))
+                aKind:Add(0)
+                i += 3
             elseif Char.IsLetter(cToken[0]) .or. cToken[0] == c'_'
                 var nField := SELF:FieldIndex(cToken)
                 if nField <= 0 .or. cNext == "(" .or. cNext == "->"
                     return null
                 endif
                 var oField := SELF:_Fields[nField-1]
-                if oField:FieldType == DbFieldType.Logic
-                    if _IsComparison(cPrev) .or. _IsComparison(cNext)
+                if oField:FieldType == DbFieldType.DateTime
+                    return null
+                elseif oField:FieldType == DbFieldType.Logic
+                    var cLit := iif(i+2 < aTokens:Count, aTokens[i+2]:ToUpper(), "")
+                    if (cNext == "=" .or. cNext == "==" .or. cNext == "<>" .or. cNext == "!=" .or. cNext == "#") .and. (cLit == ".T." .or. cLit == ".F.")
+                        // FIELD = .T. is FIELD == 1, FIELD <> .T. is FIELD == 0
+                        var lTrue := (cLit == ".T.") == (cNext == "=" .or. cNext == "==")
+                        aOut:Add(iif(lTrue, "(" + cToken + "==1)", "(" + cToken + "==0)"))
+                        aKind:Add(0)
+                        i += 2
+                    elseif _IsComparison(cPrev) .or. _IsComparison(cNext)
                         return null
+                    else
+                        aOut:Add("(" + cToken + "==1)")
+                        aKind:Add(0)
                     endif
-                    aOut:Add("(" + cToken + "==1)")
-                    aKind:Add(0)
                 elseif cNext == "$"
                     if oField:FieldType != DbFieldType.Character .or. oField:Length != 1 .or. i+2 >= aTokens:Count .or. !aTokens[i+2]:StartsWith("'")
                         return null
@@ -1851,14 +1964,32 @@ partial class SQLRDD
                 endif
                 cSql := cSql:Replace(cHolder, "(" + aParts[n-1] + ")")
             next
-            // a condition the server rejects stays on the client
-            var oLast := SELF:Connection:LastException
-            var oCount := SELF:Connection:ExecuteScalar(SqlDbProvider.SelectClause + "count(*)" + SqlDbProvider.FromClause + ;
-                Provider:QuoteIdentifier(SELF:_oTd:RealName) + SqlDbProvider.WhereClause + "1=0" + SqlDbProvider.AndClause + "(" + cSql + ")", SELF:_cTable)
-            if oCount == null .or. SELF:Connection:LastException != oLast
+            return cSql
+        catch as Exception
+            return null
+        end try
+    end method
+
+    /// <summary>
+    /// The date of an expression like CTOD('01.10.2026') as SQL literal, evaluated as the client
+    /// evaluates the filter; NULL when it does not give a date or the provider has no date literal.
+    /// An empty date is the value stored for it without UseNulls (see _EmptyDateValue()).
+    /// </summary>
+    private method _DateLiteralSql(cExpr as string) as string
+        try
+            var oValue := SELF:EvalBlock(SELF:Compile(cExpr))
+            local dValue as DateTime
+            if oValue is IDate var oDate
+                dValue := iif(oDate:IsEmpty, DateTime.MinValue, DateTime{oDate:Year, oDate:Month, oDate:Day})
+            elseif oValue is DateTime var dt
+                dValue := dt:Date
+            else
                 return null
             endif
-            return cSql
+            if SELF:Provider is SqlDbProvider var oProvider
+                return oProvider:DateLiteral(dValue)
+            endif
+            return null
         catch as Exception
             return null
         end try

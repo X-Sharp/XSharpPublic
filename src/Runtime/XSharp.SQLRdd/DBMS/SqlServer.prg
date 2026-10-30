@@ -82,6 +82,9 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
     override property RangeQueryHint as string => " OPTION (RECOMPILE)"
 
     /// <inheritdoc />
+    override property BinaryCollation as string => " COLLATE Latin1_General_BIN2"
+
+    /// <inheritdoc />
     /// <remarks>A varchar literal takes the default collation of the database.</remarks>
     override property CodePageStatement as string => ;
         "SELECT COLLATIONPROPERTY(CONVERT(sysname, DATABASEPROPERTYEX(DB_NAME(), 'Collation')), 'CodePage')"

@@ -249,6 +249,13 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     virtual property RangeQueryHint as string => ""
 
     /// <summary>
+    /// Appended to a column to compare it with a string by its characters, with case and accents, as
+    /// the runtime compares strings (used for filters sent to the server). The default implementation
+    /// returns an empty string: the database's own comparison is used, which may let more rows through.
+    /// </summary>
+    virtual property BinaryCollation as string => ""
+
+    /// <summary>
     /// Statement that returns the code page in which the database stores the string literals of a
     /// statement (characters outside it are changed). The default implementation returns an empty
     /// string (unknown: the RDD only writes ASCII strings as literals).

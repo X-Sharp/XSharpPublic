@@ -1707,9 +1707,11 @@ partial class SQLRDD
             return null
         endif
         // the xBase expression for the translator, and per token what it is:
-        // 0 other, 1 character field, 2 string literal, 3 group that compares strings ($)
+        // 0 other, 1 character field, 2 string literal, 3 string comparison (see _StringCompareSql())
         var aOut  := List<string>{}
         var aKind := List<long>{}
+        // the string comparisons as SQL, in the expression as placeholder columns the translator keeps
+        var aParts := List<string>{}
         for var i := 0 upto aTokens:Count-1
             var cToken := aTokens[i]
             var cUpper := cToken:ToUpper()
@@ -1749,15 +1751,16 @@ partial class SQLRDD
                         return null
                     endif
                     var cChars := aTokens[i+2]:Substring(1, aTokens[i+2]:Length-2)
-                    var sb := StringBuilder{"("}
+                    var sb := StringBuilder{}
                     foreach var c in cChars
-                        if c == c'\''
+                        var cPart := SELF:_StringCompareSql(cToken, "==", c:ToString())
+                        if cPart == null
                             return null
                         endif
-                        sb:Append(iif(sb:Length > 1, " .OR. ", "") + cToken + "=='" + c:ToString() + "'")
+                        sb:Append(iif(sb:Length > 0, " OR ", "") + "(" + cPart + ")")
                     next
-                    sb:Append(iif(sb:Length > 1, ")", "1==0)"))
-                    aOut:Add(sb:ToString())
+                    aParts:Add(iif(sb:Length > 0, sb:ToString(), "1=0"))
+                    aOut:Add(_FilterPlaceholder(aParts:Count))
                     aKind:Add(3)
                     i += 2
                 else
@@ -1788,6 +1791,17 @@ partial class SQLRDD
                     if !(cOp == "=" .or. cOp == "==") .or. aKind[i-1] != 1 .or. aKind[i+1] != 2
                         return null
                     endif
+                    var cPart := SELF:_StringCompareSql(aOut[i-1], cOp, aOut[i+1]:Substring(1, aOut[i+1]:Length-2))
+                    if cPart == null
+                        return null
+                    endif
+                    aParts:Add(cPart)
+                    aOut[i-1] := _FilterPlaceholder(aParts:Count)
+                    aKind[i-1] := 3
+                    aOut[i] := ""
+                    aKind[i] := 0
+                    aOut[i+1] := ""
+                    aKind[i+1] := 0
                 endif
             endif
         next
@@ -1830,6 +1844,13 @@ partial class SQLRDD
             if String.IsNullOrWhiteSpace(cSql)
                 return null
             endif
+            for var n := 1 upto aParts:Count
+                var cHolder := Provider:QuoteIdentifier(_FilterPlaceholder(n))
+                if cSql:IndexOf(cHolder, StringComparison.OrdinalIgnoreCase) < 0
+                    return null
+                endif
+                cSql := cSql:Replace(cHolder, "(" + aParts[n-1] + ")")
+            next
             // a condition the server rejects stays on the client
             var oLast := SELF:Connection:LastException
             var oCount := SELF:Connection:ExecuteScalar(SqlDbProvider.SelectClause + "count(*)" + SqlDbProvider.FromClause + ;
@@ -1842,6 +1863,49 @@ partial class SQLRDD
             return null
         end try
     end method
+
+    private static method _FilterPlaceholder(n as long) as string
+        return "XSFILTERPART" + n:ToString() + "X"
+
+    /// <summary>
+    /// SQL for a filter's string comparison cField = cLiteral (prefix, SET EXACT OFF) or cField ==
+    /// cLiteral, NULL when it cannot be expressed so that it lets through at least the records the
+    /// runtime accepts.
+    /// </summary>
+    /// <remarks>
+    /// The database compares without case (and ignores trailing blanks), the runtime by the
+    /// characters. The first term finds the rows by an index on the column, the second with the
+    /// provider's BinaryCollation keeps only those the runtime accepts, so the condition counts like
+    /// the filter. == compares the value as the work area returns it: padded to the field length
+    /// (or trimmed with TrimTrailingSpaces), so a literal of another length never matches.
+    /// </remarks>
+    private method _StringCompareSql(cField as string, cOp as string, cLiteral as string) as string
+        var nField := SELF:FieldIndex(cField)
+        if nField <= 0 .or. !SELF:Connection:IsExactStringLiteral(cLiteral)
+            return null
+        endif
+        var nLen := SELF:_Fields[nField-1]:Length
+        var cCol := Provider:QuoteIdentifier(cField)
+        local cBin := "" as string
+        if Provider is SqlDbProvider var oProvider
+            cBin := oProvider:BinaryCollation
+        endif
+        if cOp == "=="
+            if iif(SELF:_trimValues, cLiteral:EndsWith(" "), cLiteral:Length != nLen)
+                return "1=0"
+            endif
+            var cValue := Functions.XsValueToSqlValue(cLiteral)
+            return cCol + " = " + cValue + iif(String.IsNullOrEmpty(cBin), "", " AND " + cCol + cBin + " = " + cValue)
+        endif
+        // a blank at the end of the prefix does not match a value stored without it, but the padded value
+        if cLiteral:EndsWith(" ")
+            return null
+        endif
+        if cLiteral:Length == 0
+            return "1=1"
+        endif
+        var cPattern := Provider:LikePattern(cLiteral)
+        return cCol + " like " + cPattern + iif(String.IsNullOrEmpty(cBin), "", " AND " + cCol + cBin + " like " + cPattern)
 
     private static method _IsComparison(cToken as string) as logic
         return cToken == "=" .or. cToken == "==" .or. cToken == "<" .or. cToken == ">" .or. cToken == "<=" ;

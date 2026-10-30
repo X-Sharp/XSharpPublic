@@ -581,8 +581,18 @@ partial class SQLRDD
         softInfo:Last     := FALSE
         var cAnchorWhere := CurrentOrder:SeekExpression(softInfo)
 
+        // A hard seek on records the buffer already holds keeps the buffer, see _SeekInBuffer().
+        local oRows := null as DataTable
+        if !seekInfo:SoftSeek .and. !seekInfo:Last .and. !SELF:_FilterInfo:Active .and. SELF:_tableMode == TableMode.Table ;
+            .and. SELF:_recnoColumNo >= 0 .and. SELF:RowCount > 0 .and. SELF:_bufferContiguous .and. !SELF:_outsideOrder
+            oRows := SELF:_ReadTable(cSeekWhere, 0, _oTd:PageSize)
+            if SELF:_SeekInBuffer(oRows)
+                return true
+            endif
+        endif
+
         SELF:_ClearTable()
-        self:_OpenTable(cSeekWhere, cAnchorWhere)
+        self:_OpenTable(cSeekWhere, cAnchorWhere, oRows)
 
         // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
         // null instead of an empty table - treat that the same as "no rows found" instead of
@@ -654,6 +664,69 @@ partial class SQLRDD
         ENDIF
 
         // See above: the outcome is in Found, the return value only reports success.
+        return true
+    end method
+
+    /// <summary>
+    /// Position on the records a hard seek returned (oRows) when the buffer already holds them as
+    /// consecutive rows: the buffer, its place in the order and the read-ahead stay. FALSE when
+    /// they are not there; the caller then starts a new buffer with oRows.
+    /// </summary>
+    /// <remarks>
+    /// Code that walks an order and, for some records, seeks the record it stands on through the
+    /// same work area (our ERP's demand planning: Skip() through 450,000 articles, Seek() on the
+    /// article for each of 3,800) started a new buffer with the one found record each time. The
+    /// next Skip() then read pages of 10, 20, 40 ... rows again: 7,928 queries instead of 1,129.
+    /// The found records are taken from oRows, so they are as current as after a new buffer. When
+    /// the key may have more records than oRows holds, the buffer ends after them and the next
+    /// Skip() reads the rest from the server.
+    /// </remarks>
+    PRIVATE METHOD _SeekInBuffer(oRows as DataTable) AS LOGIC
+        if oRows == null .or. oRows:Rows:Count == 0
+            return false
+        endif
+        var nFirst := Convert.ToInt32(oRows:Rows[0][SELF:_recnoColumNo])
+        // mostly the record the work area stands on
+        local nStart := -1 as long
+        var nCurrent := SELF:RowNumber - 1
+        if nCurrent >= 0 .and. nCurrent < SELF:RowCount .and. Convert.ToInt32(SELF:DataTable:Rows[nCurrent][SELF:_recnoColumNo]) == nFirst
+            nStart := nCurrent
+        else
+            for var nRow := 0 upto SELF:RowCount-1
+                if Convert.ToInt32(SELF:DataTable:Rows[nRow][SELF:_recnoColumNo]) == nFirst
+                    nStart := nRow
+                    exit
+                endif
+            next
+        endif
+        if nStart < 0
+            return false
+        endif
+        var nMatched := Math.Min(oRows:Rows:Count, SELF:RowCount - nStart)
+        for var nRow := 1 upto nMatched-1
+            if Convert.ToInt32(SELF:DataTable:Rows[nStart + nRow][SELF:_recnoColumNo]) != Convert.ToInt32(oRows:Rows[nRow][SELF:_recnoColumNo])
+                return false
+            endif
+        next
+        for var nRow := 0 upto nMatched-1
+            var oRow := SELF:DataTable:Rows[nStart + nRow]
+            oRow:ItemArray := oRows:Rows[nRow]:ItemArray
+            oRow:AcceptChanges()
+        next
+        if oRows:Rows:Count >= _oTd:PageSize
+            // the key may have more records: read them from the server, not from the buffer
+            while SELF:RowCount > nStart + nMatched
+                SELF:DataTable:Rows:RemoveAt(SELF:RowCount - 1)
+            enddo
+            SELF:_hasEOF := false
+        endif
+        SELF:_ReturnSpareTable(oRows)
+        SELF:RowNumber := nStart + 1
+        SELF:_outsideOrder := false
+        SELF:_eofPending := false
+        SELF:_SetEOF(false)
+        SELF:_SetBOF(false)
+        SELF:Found := true
         return true
     end method
 

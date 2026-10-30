@@ -751,7 +751,8 @@ partial class SQLRDD
     /// <param name="sAnchorWhere">Condition that defines the coordinate system for later paging
     /// (see _anchorWhere). The rows matching sLoadWhere must be the leading rows of the rows
     /// matching sAnchorWhere, in order - a hard seek and its soft counterpart satisfy that.</param>
-    private method _OpenTable(sLoadWhere as string, sAnchorWhere as string) as logic
+    /// <param name="oLoaded">The rows matching sLoadWhere when they were already read (first page), else NULL.</param>
+    private method _OpenTable(sLoadWhere as string, sAnchorWhere as string, oLoaded := null as DataTable) as logic
         try
             SELF:_bufferStart := 0
             SELF:_anchorWhere := sAnchorWhere
@@ -764,7 +765,7 @@ partial class SQLRDD
             // Skip() refuses to fetch the next page and reports EOF even though the new
             // WHERE clause has plenty more rows past the first page.
             SELF:_hasEOF := false
-            SELF:DataTable := self:_ReadTable(sLoadWhere, 0, _oTd:PageSize)
+            SELF:DataTable := oLoaded ?? self:_ReadTable(sLoadWhere, 0, _oTd:PageSize)
             if SELF:DataTable == null
                 // _ReadTable() -> Command:GetDataTable()/ExecuteReader() swallow the real
                 // ADO.NET exception into Connection:LastException instead of throwing it.

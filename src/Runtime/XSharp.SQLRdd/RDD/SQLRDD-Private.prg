@@ -123,8 +123,14 @@ partial class SQLRDD
     /// the order's sequence, so the normal relative-skip logic cannot be used from here.
     /// </summary>
     private _outsideOrder as logic
+    /// <summary>The work area's filter as SQL condition for the server, "" when there is none (see _FilterToSql()).</summary>
+    private _serverFilterWhere := "" as string
+    /// <summary>TRUE while SetFilter() runs: its ClearFilter() must not reload the buffer, SetFilter() does.</summary>
+    private _settingFilter as logic
 
 #region Properties
+    /// <summary>The work area's filter as SQL condition, "" when it is only evaluated on the client.</summary>
+    internal property ServerFilterWhere as string get _serverFilterWhere
     internal property Connection     as SqlDbConnection get _connection
     internal property Provider       as ISqlDbProvider get _connection?:Provider
     internal property Command        as SqlDbCommand get _command
@@ -602,6 +608,9 @@ partial class SQLRDD
             return true
         endif
         if SELF:_oTd:HasServerFilter .and. System.Text.RegularExpressions.Regex.IsMatch(SELF:_oTd:ServerFilter, pattern, options)
+            return true
+        endif
+        if !String.IsNullOrEmpty(SELF:_serverFilterWhere) .and. System.Text.RegularExpressions.Regex.IsMatch(SELF:_serverFilterWhere, pattern, options)
             return true
         endif
         var order := SELF:CurrentOrder
@@ -1644,6 +1653,228 @@ partial class SQLRDD
             SELF:_bufferContiguous := false
         elseif !SELF:_LoadSingleRecord(nRec)
             SELF:GoTo(nRec)
+        endif
+        return
+
+    private static _filterTokens := System.Text.RegularExpressions.Regex{ ;
+        e"\\s+|'[^']*'|\"[^\"]*\"|\\.(AND|OR|NOT|T|F)\\.|[A-Za-z_][A-Za-z0-9_]*|\\d+(\\.\\d+)?|==|!=|<>|>=|<=|->|[=<>$!#()+\\-*/,]", ;
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
+
+    /// <summary>
+    /// The filter expression as SQL condition for the server, or NULL when it cannot be translated
+    /// without risk. The filter is still evaluated on the client as well.
+    /// </summary>
+    /// <remarks>
+    /// SetFilter() only evaluated the filter on the client: every row of the order came over the
+    /// wire to be tested (our ERP's demand planning read 449,531 articles for the 3,832 that pass).
+    /// The SQL condition may let more rows through than the filter, the client test removes them,
+    /// but never fewer. So it is not used with UseNulls, when the filter calls a function, uses a
+    /// variable, an alias, .T./.F. or #, when strings are compared other than as character field =
+    /// 'literal' (a prefix compare, LIKE) or == 'literal' (the collations differ for &lt; &gt; and
+    /// the like), or when a string comparison is negated (the server compares without case, so the
+    /// negation would drop rows the client keeps). A logical field without comparison becomes
+    /// FIELD == 1, FIELD $ 'abc' on a one-character field an OR of equalities.
+    /// </remarks>
+    private method _FilterToSql(cFilter as string) as string
+        if String.IsNullOrWhiteSpace(cFilter) .or. SELF:_tableMode != TableMode.Table .or. SELF:Connection:UseNulls
+            return null
+        endif
+        // the translator needs an order for its provider, any order of the table does
+        var oOrder := SELF:CurrentOrder
+        if oOrder == null
+            foreach var oBag in SELF:_orderBagList
+                if oBag:Tags:Count > 0
+                    oOrder := oBag:Tags[0]
+                    exit
+                endif
+            next
+        endif
+        if oOrder == null
+            return null
+        endif
+        var aTokens := List<string>{}
+        local nPos := 0 as long
+        foreach oMatch as System.Text.RegularExpressions.Match in _filterTokens:Matches(cFilter)
+            if oMatch:Index != nPos
+                return null
+            endif
+            nPos += oMatch:Length
+            if !String.IsNullOrWhiteSpace(oMatch:Value)
+                aTokens:Add(oMatch:Value)
+            endif
+        next
+        if nPos != cFilter:Length .or. aTokens:Count == 0
+            return null
+        endif
+        // the xBase expression for the translator, and per token what it is:
+        // 0 other, 1 character field, 2 string literal, 3 group that compares strings ($)
+        var aOut  := List<string>{}
+        var aKind := List<long>{}
+        for var i := 0 upto aTokens:Count-1
+            var cToken := aTokens[i]
+            var cUpper := cToken:ToUpper()
+            var cNext  := iif(i+1 < aTokens:Count, aTokens[i+1], "")
+            var cPrev  := iif(i > 0, aTokens[i-1], "")
+            if cUpper == ".T." .or. cUpper == ".F." .or. cToken == "#" .or. cToken == "," .or. cToken == "->" .or. cToken == "$"
+                return null
+            elseif cUpper == ".NOT."
+                aOut:Add("!")
+                aKind:Add(0)
+            elseif cUpper == ".AND." .or. cUpper == ".OR."
+                aOut:Add(cUpper)
+                aKind:Add(0)
+            elseif cToken:StartsWith("'")
+                aOut:Add(cToken)
+                aKind:Add(2)
+            elseif cToken:StartsWith(e"\"")
+                if cToken:Contains("'")
+                    return null
+                endif
+                aOut:Add("'" + cToken:Substring(1, cToken:Length-2) + "'")
+                aKind:Add(2)
+            elseif Char.IsLetter(cToken[0]) .or. cToken[0] == c'_'
+                var nField := SELF:FieldIndex(cToken)
+                if nField <= 0 .or. cNext == "(" .or. cNext == "->"
+                    return null
+                endif
+                var oField := SELF:_Fields[nField-1]
+                if oField:FieldType == DbFieldType.Logic
+                    if _IsComparison(cPrev) .or. _IsComparison(cNext)
+                        return null
+                    endif
+                    aOut:Add("(" + cToken + "==1)")
+                    aKind:Add(0)
+                elseif cNext == "$"
+                    if oField:FieldType != DbFieldType.Character .or. oField:Length != 1 .or. i+2 >= aTokens:Count .or. !aTokens[i+2]:StartsWith("'")
+                        return null
+                    endif
+                    var cChars := aTokens[i+2]:Substring(1, aTokens[i+2]:Length-2)
+                    var sb := StringBuilder{"("}
+                    foreach var c in cChars
+                        if c == c'\''
+                            return null
+                        endif
+                        sb:Append(iif(sb:Length > 1, " .OR. ", "") + cToken + "=='" + c:ToString() + "'")
+                    next
+                    sb:Append(iif(sb:Length > 1, ")", "1==0)"))
+                    aOut:Add(sb:ToString())
+                    aKind:Add(3)
+                    i += 2
+                else
+                    aOut:Add(cToken)
+                    aKind:Add(iif(oField:FieldType == DbFieldType.Character, 1, 0))
+                endif
+            else
+                aOut:Add(iif(cToken == "!=", "<>", cToken))
+                aKind:Add(0)
+            endif
+        next
+        local lString := false as logic
+        foreach var nKind in aKind
+            lString := lString .or. nKind > 0
+        next
+        for var i := 0 upto aOut:Count-1
+            var cOp := aOut[i]
+            if cOp == "=" .or. cOp == "==" .or. cOp == "<" .or. cOp == ">" .or. cOp == "<=" .or. cOp == ">=" .or. cOp == "<>"
+                if i == 0 .or. i == aOut:Count-1
+                    return null
+                endif
+                // an operand in parentheses or with arithmetic: its type is not known here
+                if lString .and. (aOut[i-1] == ")" .or. aOut[i+1] == "(" .or. aOut[i+1] == "-" .or. aOut[i+1] == "+")
+                    return null
+                endif
+                if aKind[i-1] > 0 .or. aKind[i+1] > 0
+                    // strings only as character field = 'literal' or == 'literal', see remarks
+                    if !(cOp == "=" .or. cOp == "==") .or. aKind[i-1] != 1 .or. aKind[i+1] != 2
+                        return null
+                    endif
+                endif
+            endif
+        next
+        // a negated string comparison (see remarks)
+        for var i := 0 upto aOut:Count-1
+            if aOut[i] == "!"
+                local nEnd := i+1 as long
+                if nEnd < aOut:Count .and. aOut[nEnd] == "("
+                    local nDepth := 0 as long
+                    for var j := nEnd upto aOut:Count-1
+                        if aOut[j] == "("
+                            nDepth++
+                        elseif aOut[j] == ")"
+                            nDepth--
+                            if nDepth == 0
+                                nEnd := j
+                                exit
+                            endif
+                        endif
+                    next
+                endif
+                for var j := i+1 upto Math.Min(nEnd, aOut:Count-1)
+                    if aKind[j] > 0
+                        return null
+                    endif
+                next
+            endif
+        next
+        // without blanks: the translator turns field='x' into a prefix compare (LIKE) only then
+        var sbExpr := StringBuilder{}
+        foreach var cOut in aOut
+            sbExpr:Append(iif(cOut == ".AND." .or. cOut == ".OR.", " " + cOut + " ", cOut))
+        next
+        try
+            var oExp := SqlDbExpression{oOrder, sbExpr:ToString()}
+            if oExp:HasFunctions
+                return null
+            endif
+            var cSql := oExp:SQLKey
+            if String.IsNullOrWhiteSpace(cSql)
+                return null
+            endif
+            // a condition the server rejects stays on the client
+            var oLast := SELF:Connection:LastException
+            var oCount := SELF:Connection:ExecuteScalar(SqlDbProvider.SelectClause + "count(*)" + SqlDbProvider.FromClause + ;
+                Provider:QuoteIdentifier(SELF:_oTd:RealName) + SqlDbProvider.WhereClause + "1=0" + SqlDbProvider.AndClause + "(" + cSql + ")", SELF:_cTable)
+            if oCount == null .or. SELF:Connection:LastException != oLast
+                return null
+            endif
+            return cSql
+        catch as Exception
+            return null
+        end try
+    end method
+
+    private static method _IsComparison(cToken as string) as logic
+        return cToken == "=" .or. cToken == "==" .or. cToken == "<" .or. cToken == ">" .or. cToken == "<=" ;
+            .or. cToken == ">=" .or. cToken == "<>" .or. cToken == "!=" .or. cToken == "#" .or. cToken == "$"
+
+    /// <summary>
+    /// Use cSql as the server condition of the filter: the buffer is read again with it, the work
+    /// area stays on its record, as after an order change.
+    /// </summary>
+    private method _ApplyServerFilter(cSql as string) as void
+        cSql := cSql ?? ""
+        if cSql == SELF:_serverFilterWhere
+            return
+        endif
+        SELF:GoCold()
+        var lHadData := SELF:_hasData .and. SELF:DataTable != null
+        local nRec := 0 as dword
+        var lWasEof := SELF:_EoF
+        var lWasBof := SELF:_BoF
+        local aCurrentRow := null as object[]
+        if lHadData
+            nRec := SELF:RecNo
+            if !lWasEof .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+                aCurrentRow := SELF:CurrentRow:ItemArray
+            endif
+        endif
+        var lTableCountValid := SELF:_tableReccountValid
+        SELF:_CloseCursor()
+        SELF:_serverFilterWhere := cSql
+        SELF:_tableReccountValid := lTableCountValid
+        if lHadData
+            SELF:_RepositionAfterOrderChange(nRec, lWasEof, aCurrentRow)
+            SELF:_RestoreBofAtEof(lWasEof, lWasBof)
         endif
         return
 

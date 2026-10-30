@@ -1027,7 +1027,24 @@ partial class SQLRDD inherit Workarea
                 return false
             end try
         endif
-        RETURN SUPER:SetFilter(info)
+        SELF:_settingFilter := TRUE
+        local lOk as logic
+        try
+            lOk := SUPER:SetFilter(info)
+        finally
+            SELF:_settingFilter := FALSE
+        end try
+        // the server only sends the rows the filter can let through, see _FilterToSql()
+        SELF:_ApplyServerFilter(iif(lOk .and. SELF:_FilterInfo:Active, SELF:_FilterToSql(info:FilterText), null))
+        RETURN lOk
+    end method
+
+    OVERRIDE METHOD ClearFilter() AS LOGIC
+        var lOk := SUPER:ClearFilter()
+        if !SELF:_settingFilter
+            SELF:_ApplyServerFilter(null)
+        endif
+        RETURN lOk
     end method
 
     public override method Flush() as logic

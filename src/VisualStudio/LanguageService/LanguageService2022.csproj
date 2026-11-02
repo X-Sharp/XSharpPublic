@@ -145,6 +145,8 @@
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\FindReferencesEngine.cs" />
+    <Compile Include="FindReferences\ReferencesTableDataSource.cs" />
+    <Compile Include="FindReferences\ReferencesTableNavigator.cs" />
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="Generic\DropDownClient.cs" />

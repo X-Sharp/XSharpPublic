@@ -12,6 +12,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
@@ -43,19 +44,28 @@ namespace XSharp.LanguageService.Commands
                     return;
                 }
                 var documents = await CreateDocumentSourceAsync();
+                // a new search cancels the running one
                 _cancellation?.Cancel();
                 var cancellation = new CancellationTokenSource();
                 _cancellation = cancellation;
-                var sink = new LogReferenceSink();
+                var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
+                var window = service.StartSearch($"'{target.Name}' references");
+                var source = new ReferencesTableDataSource(target);
+                window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
+                window.Closed += (s, e) => cancellation.Cancel();
                 _ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
                 {
                     try
                     {
-                        await FindReferencesEngine.FindAsync(target, location, documents, sink, cancellation.Token);
+                        await FindReferencesEngine.FindAsync(target, location, documents, source, cancellation.Token);
                     }
                     catch (OperationCanceledException)
                     {
-                        Logger.Information($"FindReferences '{target.FullName}' cancelled");
+                        Logger.Information($"FindReferences '{target.Name}' cancelled");
+                    }
+                    finally
+                    {
+                        source.Complete();
                     }
                 });
             });
@@ -79,18 +89,6 @@ namespace XSharp.LanguageService.Commands
             }
             return new ReferenceDocumentSource(componentModel.GetService<ITextBufferFactoryService>(),
                 componentModel.GetService<IContentTypeRegistryService>(), openBuffers);
-        }
-
-        /// <summary>Temporary sink until the Find All References window is wired up.</summary>
-        private sealed class LogReferenceSink : IReferenceSink
-        {
-            public void Add(IReadOnlyList<ReferenceHit> batch)
-            {
-                foreach (var hit in batch)
-                {
-                    Logger.Information($"FindReferences hit {(hit.IsDefinition ? "def" : "ref")} {System.IO.Path.GetFileName(hit.FilePath)}:{hit.Line + 1}:{hit.Column + 1} {hit.LineText.Trim()}");
-                }
-            }
         }
     }
 }

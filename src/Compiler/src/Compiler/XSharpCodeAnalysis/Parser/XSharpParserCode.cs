@@ -1534,6 +1534,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         [Flags]
         enum FieldFlags : byte
         {
+            None = 0,
             IsFileWidePublic,
             IsCreated,
             IsParameter,
@@ -1552,7 +1553,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     var name = Name.Substring(0, Name.IndexOf(':'));
                     return Alias + "->" + name;
                 }
-                if (Alias != null)
+                if (Alias != null && _fieldType != MemvarType.Unknown)
                 {
                     return Alias + "->" + Name;
                 }

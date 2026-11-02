@@ -137,6 +137,7 @@
     <Compile Include="Completion\XSharpCompletionSource.cs" />
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FindReferences\ReferenceCandidateScanner.cs" />
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="Generic\DropDownClient.cs" />

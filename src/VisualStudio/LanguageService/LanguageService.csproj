@@ -61,6 +61,7 @@
     <Compile Include="Commands\CommentCommand.cs" />
     <Compile Include="Commands\DocumentOutlineCommand.cs" />
     <Compile Include="Commands\FormattingCommand.cs" />
+    <Compile Include="Commands\FindReferencesCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
     <Compile Include="Controls\GotoDefinitionResultsWindow.xaml.cs">
@@ -142,6 +143,8 @@
     <Compile Include="FindReferences\SymbolResolver.cs" />
     <Compile Include="FindReferences\XDocumentIndexer.cs" />
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
+    <Compile Include="FindReferences\ReferenceHit.cs" />
+    <Compile Include="FindReferences\FindReferencesEngine.cs" />
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="Generic\DropDownClient.cs" />

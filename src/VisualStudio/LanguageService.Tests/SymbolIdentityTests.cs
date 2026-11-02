@@ -60,6 +60,26 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void MemberWithoutFileMatchesByTypeAndSignature()
+        {
+            var type = Type("Foo", FileA, 0, "Ns");
+            var declared = Member(type, "Close", Kind.Method, 50);
+            var fromDatabase = new XSourceMemberSymbol("CLOSE", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "USUAL", null);
+            Type("foo", null, 0, "ns").AddMember(fromDatabase);
+            Assert.True(SymbolIdentity.IsSame(fromDatabase, declared));
+            Assert.True(SymbolIdentity.IsSame(declared, fromDatabase));
+        }
+
+        [Fact]
+        public void MemberWithoutFileInOtherTypeIsNotSame()
+        {
+            var declared = Member(Type("Bar", FileA, 0), "Close", Kind.Method, 50);
+            var fromDatabase = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "USUAL", null);
+            Type("Foo", null, 0).AddMember(fromDatabase);
+            Assert.False(SymbolIdentity.IsSame(fromDatabase, declared));
+        }
+
+        [Fact]
         public void LocalShadowingFieldIsNotSame()
         {
             var type = Type("Foo", FileA, 0);

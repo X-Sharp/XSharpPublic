@@ -33,6 +33,15 @@ namespace XSharp.LanguageService.FindReferences
             }
             if (target is XSourceSymbol targetSource && candidate is XSourceSymbol candidateSource)
             {
+                // members read from the database have no file: compare type, name and signature
+                if ((targetSource.File == null || candidateSource.File == null) &&
+                    target is IXMemberSymbol targetMember2 && candidate is IXMemberSymbol candidateMember2)
+                {
+                    return target.Kind == candidate.Kind &&
+                        NameEquals(target.Name, candidate.Name) &&
+                        NameEquals(targetMember2.ParentType?.FullName, candidateMember2.ParentType?.FullName) &&
+                        string.Equals(targetMember2.ParameterList ?? "", candidateMember2.ParameterList ?? "", StringComparison.OrdinalIgnoreCase);
+                }
                 return target.Kind == candidate.Kind &&
                     NameEquals(target.Name, candidate.Name) &&
                     targetSource.Interval.Start == candidateSource.Interval.Start &&

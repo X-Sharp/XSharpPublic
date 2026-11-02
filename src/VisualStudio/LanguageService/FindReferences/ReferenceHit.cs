@@ -34,11 +34,13 @@ namespace XSharp.LanguageService.FindReferences
         internal int Resolved { get; set; }
         internal int Unresolved { get; set; }
         internal int Hits { get; set; }
+        /// <summary>Files (or other items) that could not be searched</summary>
+        internal int Failed { get; set; }
         internal TimeSpan Elapsed { get; set; }
 
         public override string ToString()
         {
-            return $"files in scope {FilesInScope}, lexed {FilesLexed}, candidates {Candidates}, resolved {Resolved}, unresolved {Unresolved}, hits {Hits}, {Elapsed.TotalMilliseconds:F0} ms";
+            return $"files in scope {FilesInScope}, lexed {FilesLexed}, candidates {Candidates}, resolved {Resolved}, unresolved {Unresolved}, hits {Hits}, failed {Failed}, {Elapsed.TotalMilliseconds:F0} ms";
         }
     }
 }

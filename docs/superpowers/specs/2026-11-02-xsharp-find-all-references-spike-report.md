@@ -67,6 +67,10 @@ and are correctly excluded.
   click did not move the caret, and driving the real desktop was stopped. The navigator logs
   `FindReferences navigator attached` / `FindReferences navigate to …` for a manual check.
 - FAR while projects are still loading was only tried on the 2-project test solution, where loading had finished.
+- Overloads are merged: `XSharpLookup.SearchMethod` returns every overload of a name without argument matching, so
+  FAR on one overload also lists calls to the others, and FAR from a call site may take the wrong overload as target.
+  Needs argument-count filtering in the resolver (review finding, not fixed in the spike).
+- Overrides are not cascaded (FAR on `Base.Close` does not list `Sub.Close`); C# does. Design question.
 - Constructors (`Init` ↔ `Foo{}`), symbols from referenced assemblies, VS 2019 runtime (it builds).
 - Each hit is also written to the intellisense log (spike aid; remove before a PR).
 - `XDocumentIndexer` duplicates three index rules of `XSharpClassifier` (kept separate on purpose; may drift).

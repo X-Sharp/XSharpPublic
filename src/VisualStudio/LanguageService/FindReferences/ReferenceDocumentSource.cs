@@ -16,8 +16,8 @@ using XSharpModel;
 namespace XSharp.LanguageService.FindReferences
 {
     /// <summary>
-    /// Provides an XDocument for every file of the search: the classifier's document of an open buffer when it is
-    /// current, otherwise a document on a scratch buffer with the buffer text (open file) or the disk text (closed file).
+    /// Provides an XDocument for every file of the search, on a scratch buffer with one snapshot of the editor text
+    /// (open file) or the disk text (closed file).
     /// </summary>
     internal sealed class ReferenceDocumentSource
     {
@@ -33,33 +33,19 @@ namespace XSharp.LanguageService.FindReferences
             _openBuffers = openBuffers;
         }
 
-        /// <summary>The current text of the file: the editor text when the file is open, else the disk text.</summary>
-        internal string GetText(XFile file)
+        /// <summary>The text of the file, read once: the editor text when the file is open, else the disk text.</summary>
+        internal string ReadText(XFile file)
         {
             if (_openBuffers.TryGetValue(file.FullPath, out var buffer))
                 return buffer.CurrentSnapshot.GetText();
             return File.ReadAllText(file.FullPath);
         }
 
-        internal XDocument GetDocument(XFile file)
-        {
-            string text;
-            if (_openBuffers.TryGetValue(file.FullPath, out var openBuffer))
-            {
-                var snapshot = openBuffer.CurrentSnapshot;
-                var current = openBuffer.GetDocument();
-                if (current != null && current.SnapShot == snapshot && current.TokensPerLine.Count > 0)
-                    return current;
-                text = snapshot.GetText();
-            }
-            else
-            {
-                text = File.ReadAllText(file.FullPath);
-            }
-            return CreateDocument(file, text);
-        }
-
-        private XDocument CreateDocument(XFile file, string text)
+        /// <summary>
+        /// A private document for <paramref name="text"/>. Never the classifier's document of an open buffer:
+        /// the classifier rebuilds that one in place while the user types.
+        /// </summary>
+        internal XDocument CreateDocument(XFile file, string text)
         {
             var buffer = _bufferFactory.CreateTextBuffer(text, _contentType);
             buffer.Properties.AddProperty(typeof(XFile), file);

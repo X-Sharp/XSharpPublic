@@ -57,7 +57,9 @@ namespace XSharp.LanguageService.Commands
                 {
                     try
                     {
-                        await FindReferencesEngine.FindAsync(target, location, documents, source, cancellation.Token);
+                        var stats = await FindReferencesEngine.FindAsync(target, location, documents, source, cancellation.Token);
+                        if (stats.Failed > 0)
+                            await VS.StatusBar.ShowMessageAsync($"Find References: {stats.Failed} file(s) could not be searched, see the X# log");
                     }
                     catch (OperationCanceledException)
                     {

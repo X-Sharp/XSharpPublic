@@ -43,17 +43,17 @@ namespace XSharp.LanguageService.FindReferences
                     // locals and parameters: only inside their member
                     if (variable.Parent is XSourceEntity owner)
                         limit = owner.Interval;
-                    files = new[] { variable.File ?? origin.File };
+                    // the XFile of a local belongs to the open editor: search a private copy, parsing it here
+                    // would replace the editor's entities from a background thread
+                    var editorFile = variable.File ?? origin.File;
+                    files = new[] { editorFile?.Project?.FindXFile(editorFile.FullPath) };
                 }
                 else
                 {
                     files = FilesInScope(target);
                 }
-                foreach (var file in files)
+                SearchEach(files.Where(f => f != null), file =>
                 {
-                    ct.ThrowIfCancellationRequested();
-                    if (file == null)
-                        continue;
                     stats.FilesInScope++;
                     var hits = SearchFile(target, name, file, limit, documents, stats, ct);
                     if (hits.Count > 0)
@@ -61,7 +61,7 @@ namespace XSharp.LanguageService.FindReferences
                         stats.Hits += hits.Count;
                         sink.Add(hits);
                     }
-                }
+                }, stats, ct);
             }
             catch (OperationCanceledException)
             {
@@ -78,6 +78,31 @@ namespace XSharp.LanguageService.FindReferences
                 Logger.Information($"FindReferences {target.Kind} '{target.Name}' ({target.FullName}): {stats}");
             }
             return stats;
+        }
+
+        /// <summary>
+        /// Runs the search for every item. A failing item (missing or locked file, lookup exception) is logged and
+        /// counted in <see cref="FindReferencesStats.Failed"/>, and the search goes on; cancellation ends it.
+        /// </summary>
+        internal static void SearchEach<T>(IEnumerable<T> items, Action<T> search, FindReferencesStats stats, CancellationToken ct)
+        {
+            foreach (var item in items)
+            {
+                ct.ThrowIfCancellationRequested();
+                try
+                {
+                    search(item);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    stats.Failed++;
+                    Logger.Exception(ex, $"FindReferences: search failed for {item}");
+                }
+            }
         }
 
         private static IEnumerable<XFile> FilesInScope(IXSymbol target)
@@ -111,10 +136,11 @@ namespace XSharp.LanguageService.FindReferences
             ReferenceDocumentSource documents, FindReferencesStats stats, CancellationToken ct)
         {
             var hits = new List<ReferenceHit>();
-            var text = documents.GetText(file);
+            // one text for filter, tokens and entities: an open buffer can change while we search
+            var text = documents.ReadText(file);
             if (!ReferenceCandidateScanner.MayContain(text, name))
                 return hits;
-            var document = documents.GetDocument(file);
+            var document = documents.CreateDocument(file, text);
             ParseEntities(file, text);
             stats.FilesLexed++;
             var snapshot = document.SnapShot;

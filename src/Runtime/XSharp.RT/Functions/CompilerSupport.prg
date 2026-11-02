@@ -273,13 +273,6 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
         catch as Exception
             nop
         end try
-        err := Error{EG_NOVAR, nameof(fldName), ErrString(EG_NOVAR) + ": " + fldName}
-        err:FuncSym := __function__
-        err:ArgNum := 2
-        err:Args := <OBJECT>{wa, fldName}
-        THROW err
-
-
 
     ENDIF
     if (lAllowUndeclared)

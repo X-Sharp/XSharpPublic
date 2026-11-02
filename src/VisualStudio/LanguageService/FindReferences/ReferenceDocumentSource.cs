@@ -1,0 +1,93 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using System;
+using System.Collections.Generic;
+using System.IO;
+using LanguageService.CodeAnalysis.Text;
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Utilities;
+using XSharpModel;
+
+namespace XSharp.LanguageService.FindReferences
+{
+    /// <summary>
+    /// Provides an XDocument for every file of the search: the classifier's document of an open buffer when it is
+    /// current, otherwise a document on a scratch buffer with the buffer text (open file) or the disk text (closed file).
+    /// </summary>
+    internal sealed class ReferenceDocumentSource
+    {
+        private readonly ITextBufferFactoryService _bufferFactory;
+        private readonly IContentType _contentType;
+        private readonly IReadOnlyDictionary<string, ITextBuffer> _openBuffers;
+
+        internal ReferenceDocumentSource(ITextBufferFactoryService bufferFactory, IContentTypeRegistryService contentTypes,
+            IReadOnlyDictionary<string, ITextBuffer> openBuffers)
+        {
+            _bufferFactory = bufferFactory;
+            _contentType = contentTypes.GetContentType("text");
+            _openBuffers = openBuffers;
+        }
+
+        /// <summary>The current text of the file: the editor text when the file is open, else the disk text.</summary>
+        internal string GetText(XFile file)
+        {
+            if (_openBuffers.TryGetValue(file.FullPath, out var buffer))
+                return buffer.CurrentSnapshot.GetText();
+            return File.ReadAllText(file.FullPath);
+        }
+
+        internal XDocument GetDocument(XFile file)
+        {
+            string text;
+            if (_openBuffers.TryGetValue(file.FullPath, out var openBuffer))
+            {
+                var snapshot = openBuffer.CurrentSnapshot;
+                var current = openBuffer.GetDocument();
+                if (current != null && current.SnapShot == snapshot && current.TokensPerLine.Count > 0)
+                    return current;
+                text = snapshot.GetText();
+            }
+            else
+            {
+                text = File.ReadAllText(file.FullPath);
+            }
+            return CreateDocument(file, text);
+        }
+
+        private XDocument CreateDocument(XFile file, string text)
+        {
+            var buffer = _bufferFactory.CreateTextBuffer(text, _contentType);
+            buffer.Properties.AddProperty(typeof(XFile), file);
+            var snapshot = buffer.CurrentSnapshot;
+            var tokens = Lex(file, text);
+            var document = new XDocument(buffer, tokens, snapshot);
+            XDocumentIndexer.BuildIndexes(tokens, out var lineTokens, out var identifiers, out var lineState);
+            document.SetTokens(lineTokens);
+            document.SetIdentifiers(identifiers);
+            document.SetState(lineState, snapshot);
+            buffer.Properties.AddProperty(typeof(XDocument), document);
+            return document;
+        }
+
+        private static IList<IToken> Lex(XFile file, string text)
+        {
+            var options = file.Project?.ParseOptions ?? XParseOptions.Default;
+            XSharp.Parser.VsParser.Lex(text, file.FullPath, (XSharpParseOptions)options, new NullErrorListener(), out ITokenStream stream, out _);
+            var tokens = new List<IToken>();
+            if (stream is BufferedTokenStream buffered)
+                tokens.AddRange(buffered.GetTokens());
+            return tokens;
+        }
+
+        private sealed class NullErrorListener : XSharp.Parser.VsParser.IErrorListener
+        {
+            public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args) { }
+            public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args) { }
+        }
+    }
+}

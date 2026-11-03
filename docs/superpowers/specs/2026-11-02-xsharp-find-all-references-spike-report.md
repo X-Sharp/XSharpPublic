@@ -63,9 +63,9 @@ and are correctly excluded.
 
 ## Known gaps
 
-- Navigation from the FAR window (double click / Enter) is **not verified**: automated Enter and a synthetic double
-  click did not move the caret, and driving the real desktop was stopped. The navigator logs
-  `FindReferences navigator attached` / `FindReferences navigate to …` for a manual check.
+- Navigation from the FAR window (double click) was verified manually on 2026-11-03 (test solution, closed file
+  `Bar.prg`). Each double click logs `navigate to` twice; not investigated. Entry rows are taller than the group
+  rows; the Text column is plain string content, while C# supplies a TextBlock with the hit highlighted.
 - FAR while projects are still loading was only tried on the 2-project test solution, where loading had finished.
 - Overloads are merged: `XSharpLookup.SearchMethod` returns every overload of a name without argument matching, so
   FAR on one overload also lists calls to the others, and FAR from a call site may take the wrong overload as target.

@@ -52,6 +52,23 @@ namespace XSharp.LanguageService.FindReferences
             return target.Kind == candidate.Kind && NameEquals(target.FullName, candidate.FullName);
         }
 
+        /// <summary>
+        /// Does a symbol resolved at a candidate token refer to the target? <c>Foo{...}</c> resolves to a
+        /// constructor, and that is also a reference to the class.
+        /// </summary>
+        internal static bool IsReferenceTo(IXSymbol target, IXSymbol candidate)
+        {
+            if (IsSame(target, candidate))
+                return true;
+            if (target is IXTypeSymbol type && candidate is IXMemberSymbol member && candidate.Kind == Kind.Constructor)
+            {
+                return member.ParentType != null
+                    ? IsSame(type, member.ParentType)
+                    : NameEquals(type.FullName, member.DeclaringType);
+            }
+            return false;
+        }
+
         internal static bool IsPropertyLike(Kind kind)
         {
             return kind == Kind.Property || kind == Kind.Access || kind == Kind.Assign;

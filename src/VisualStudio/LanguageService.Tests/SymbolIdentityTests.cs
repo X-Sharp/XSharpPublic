@@ -80,6 +80,32 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void ConstructorRefersToItsClass()
+        {
+            var type = Type("Foo", FileA, 0, "LibA");
+            var ctor = Member(type, ".ctor", Kind.Constructor, 50);
+            var otherPart = Type("Foo", FileB, 0, "LibA");
+            Assert.True(SymbolIdentity.IsReferenceTo(type, ctor));
+            Assert.True(SymbolIdentity.IsReferenceTo(otherPart, ctor));
+        }
+
+        [Fact]
+        public void ConstructorOfSameNamedClassElsewhereDoesNotReferToTheClass()
+        {
+            var type = Type("Foo", FileA, 0, "LibA");
+            var ctor = Member(Type("Foo", FileB, 0, "Other"), ".ctor", Kind.Constructor, 50);
+            Assert.False(SymbolIdentity.IsReferenceTo(type, ctor));
+        }
+
+        [Fact]
+        public void MethodDoesNotReferToItsClass()
+        {
+            var type = Type("Foo", FileA, 0, "LibA");
+            Assert.False(SymbolIdentity.IsReferenceTo(type, Member(type, "Run", Kind.Method, 50)));
+            Assert.True(SymbolIdentity.IsReferenceTo(type, type));
+        }
+
+        [Fact]
         public void LocalShadowingFieldIsNotSame()
         {
             var type = Type("Foo", FileA, 0);

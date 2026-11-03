@@ -389,13 +389,9 @@ namespace XSharp.Project
             base.options = xoptions;
             if (projectModel != null)
                 projectModel.ResetParseOptions(null);
-            var constants = (string)LastBuildResult?.GetPropertyValue("DefineConstants");
-            if (constants != null)
+            foreach (string s in _buildAddedDefines)
             {
-                foreach (string s in constants.Replace(" \t\r\n", "").Split(';'))
-                {
-                    options.DefinedPreprocessorSymbols.Add(s);
-                }
+                options.DefinedPreprocessorSymbols.Add(s);
             }
             return options;
         }
@@ -1541,11 +1537,23 @@ namespace XSharp.Project
 
             return service;
         }
-        ProjectInstance LastBuildResult = null;
+        // Defines that the targets of the last build added to the evaluated DefineConstants (e.g. the implicit
+        // framework defines of an SDK project). The evaluated defines themselves are not kept: after a change
+        // on the property page they would be stale until the next build.
+        List<string> _buildAddedDefines = new List<string>();
+        static string[] SplitDefines(string defines)
+        {
+            return defines.Split(new char[] { ';', ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
         protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target, out ProjectInstance projectInstance)
         {
             var result = base.InvokeMsBuild(target, out projectInstance);
-            LastBuildResult = projectInstance;
+            var buildDefines = projectInstance?.GetPropertyValue(XSharpProjectFileConstants.DefineConstants);
+            if (buildDefines != null)
+            {
+                var evaluated = new HashSet<string>(SplitDefines(BuildProject.GetPropertyValue(XSharpProjectFileConstants.DefineConstants)), StringComparer.OrdinalIgnoreCase);
+                _buildAddedDefines = SplitDefines(buildDefines).Where(d => !evaluated.Contains(d)).ToList();
+            }
             // Find Items from NuGet packages
             foreach (var item in projectInstance.Items)
             {

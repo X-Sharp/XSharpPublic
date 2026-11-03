@@ -22,13 +22,14 @@ namespace XSharp.LanguageService.FindReferences
     /// </summary>
     internal static class FindReferencesEngine
     {
-        internal static Task<FindReferencesStats> FindAsync(IXSymbol target, XSharpSearchLocation origin,
+        /// <summary>Create the <paramref name="family"/> on the UI thread: it reads the target's (editor) types.</summary>
+        internal static Task<FindReferencesStats> FindAsync(IXSymbol target, OverrideFamily family, XSharpSearchLocation origin,
             ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
         {
-            return Task.Run(() => Find(target, origin, documents, sink, ct), ct);
+            return Task.Run(() => Find(target, family, origin, documents, sink, ct), ct);
         }
 
-        private static FindReferencesStats Find(IXSymbol target, XSharpSearchLocation origin,
+        private static FindReferencesStats Find(IXSymbol target, OverrideFamily family, XSharpSearchLocation origin,
             ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
         {
             var stats = new FindReferencesStats();
@@ -53,12 +54,12 @@ namespace XSharp.LanguageService.FindReferences
                 {
                     // an override family is searched from its topmost member: its callers may live in any project
                     // that sees the base class
-                    files = FilesInScope(target is IXMemberSymbol member ? OverrideFamily.Root(member) : target);
+                    files = FilesInScope(family.TargetRoot ?? target);
                 }
                 SearchEach(files.Where(f => f != null), file =>
                 {
                     stats.FilesInScope++;
-                    var hits = SearchFile(target, name, file, limit, documents, stats, ct);
+                    var hits = SearchFile(target, family, name, file, limit, documents, stats, ct);
                     if (hits.Count > 0)
                     {
                         stats.Hits += hits.Count;
@@ -149,8 +150,8 @@ namespace XSharp.LanguageService.FindReferences
             return result;
         }
 
-        private static List<ReferenceHit> SearchFile(IXSymbol target, string name, XFile file, TextInterval? limit,
-            ReferenceDocumentSource documents, FindReferencesStats stats, CancellationToken ct)
+        private static List<ReferenceHit> SearchFile(IXSymbol target, OverrideFamily family, string name, XFile file,
+            TextInterval? limit, ReferenceDocumentSource documents, FindReferencesStats stats, CancellationToken ct)
         {
             var hits = new List<ReferenceHit>();
             // one text for filter, tokens and entities: an open buffer can change while we search
@@ -158,12 +159,15 @@ namespace XSharp.LanguageService.FindReferences
             if (!ReferenceCandidateScanner.MayContain(text, name))
                 return hits;
             var document = documents.CreateDocument(file, text);
-            ParseEntities(file, text);
             stats.FilesLexed++;
-            var snapshot = document.SnapShot;
             var candidates = target.Kind == Kind.Constructor
                 ? ReferenceCandidateScanner.FindConstructorTokens(document.Tokens, name)
                 : ReferenceCandidateScanner.FindIdentifierTokens(document.Tokens, name);
+            // the name only in a comment, a string or a longer word: no need to parse the file
+            if (candidates.Count == 0)
+                return hits;
+            ParseEntities(file, text);
+            var snapshot = document.SnapShot;
             var declarationLines = new HashSet<int>();
             foreach (var token in candidates)
             {
@@ -175,7 +179,7 @@ namespace XSharp.LanguageService.FindReferences
                 // the name in a declaration: of the target (all parts of a partial type), or of something else
                 var declared = DeclaredEntity(file.EntityList, token);
                 bool isDefinition = declared != null &&
-                    (SymbolIdentity.IsSame(target, declared) || OverrideFamily.Contains(target, declared));
+                    (SymbolIdentity.IsSame(target, declared) || family.Contains(declared));
                 IXSymbol group = declared;
                 bool isReference = false;
                 if (declared == null)
@@ -198,7 +202,7 @@ namespace XSharp.LanguageService.FindReferences
                     if (match == null)
                     {
                         // a call that reaches an override of the target, or the member the target overrides
-                        match = symbols.FirstOrDefault(s => OverrideFamily.Contains(target, s));
+                        match = symbols.FirstOrDefault(s => family.Contains(s));
                         group = match;
                     }
                     isReference = match != null;
@@ -252,9 +256,10 @@ namespace XSharp.LanguageService.FindReferences
         /// <summary>The group header of a hit in the window: the declaration it belongs to.</summary>
         internal static string GroupOf(IXSymbol symbol)
         {
-            return $"{symbol.KindKeyword} {symbol.FullName}".Trim();
+            // ACCESS, ASSIGN and PROPERTY with one name are one property
+            var keyword = SymbolIdentity.IsPropertyLike(symbol.Kind) ? "PROPERTY" : symbol.KindKeyword;
+            return $"{keyword} {symbol.FullName}".Trim();
         }
-
         /// <summary>The name a file must contain: for a constructor (named .ctor) the name of its class.</summary>
         internal static string SearchName(IXSymbol target)
         {

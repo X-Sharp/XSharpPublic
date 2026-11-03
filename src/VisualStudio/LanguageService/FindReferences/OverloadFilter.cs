@@ -19,12 +19,6 @@ namespace XSharp.LanguageService.FindReferences
     /// </summary>
     internal static class OverloadFilter
     {
-        /// <summary>The number of arguments when the name is followed by an argument list, otherwise null.</summary>
-        internal static int? ArgumentCount(IList<IToken> tokens, IToken name)
-        {
-            return Arguments(tokens, name)?.Count;
-        }
-
         /// <summary>
         /// The tokens of each argument when the name is followed by an argument list <c>(...)</c> or, for a
         /// creation, <c>{...}</c>, otherwise null. An omitted argument (<c>Foo(1,,3)</c>) is an empty list.
@@ -84,12 +78,6 @@ namespace XSharp.LanguageService.FindReferences
                 current.Add(token);
             }
             return null;
-        }
-
-        /// <summary>The argument count for the identifier at (or just before) the caret position.</summary>
-        internal static int? ArgumentCountAt(IList<IToken> tokens, int position)
-        {
-            return ArgumentsAt(tokens, position)?.Count;
         }
 
         /// <summary>The arguments for the identifier at (or just before) the caret position.</summary>

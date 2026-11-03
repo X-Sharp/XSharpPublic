@@ -13,7 +13,7 @@ namespace XSharp.LanguageService.Tests
             var tokens = TestLexer.Lex(text);
             var position = text.IndexOf(marker);
             var token = tokens.First(t => t.StartIndex == position);
-            return OverloadFilter.ArgumentCount(tokens, token);
+            return OverloadFilter.Arguments(tokens, token)?.Count;
         }
 
         [Fact]
@@ -37,9 +37,9 @@ namespace XSharp.LanguageService.Tests
         {
             var text = "x := o:Foo(1, 2)\n";
             var tokens = TestLexer.Lex(text);
-            Assert.Equal(2, OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("Foo") + 1));
-            Assert.Equal(2, OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("Foo") + 3));
-            Assert.Null(OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("1")));
+            Assert.Equal(2, OverloadFilter.ArgumentsAt(tokens, text.IndexOf("Foo") + 1)?.Count);
+            Assert.Equal(2, OverloadFilter.ArgumentsAt(tokens, text.IndexOf("Foo") + 3)?.Count);
+            Assert.Null(OverloadFilter.ArgumentsAt(tokens, text.IndexOf("1"))?.Count);
         }
 
         [Fact]
@@ -56,8 +56,8 @@ namespace XSharp.LanguageService.Tests
             var text = "CONSTRUCTOR(n AS INT)\n    SUPER(n, 1)\n    SELF()\n";
             var tokens = TestLexer.Lex(text);
             Assert.Equal("CONSTRUCTOR", OverloadFilter.NameAt(tokens, text.IndexOf("CONSTRUCTOR") + 2)?.Text);
-            Assert.Equal(2, OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("SUPER") + 1));
-            Assert.Equal(0, OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("SELF") + 1));
+            Assert.Equal(2, OverloadFilter.ArgumentsAt(tokens, text.IndexOf("SUPER") + 1)?.Count);
+            Assert.Equal(0, OverloadFilter.ArgumentsAt(tokens, text.IndexOf("SELF") + 1)?.Count);
         }
 
         [Fact]

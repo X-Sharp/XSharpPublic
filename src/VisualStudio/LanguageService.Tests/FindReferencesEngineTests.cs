@@ -114,6 +114,12 @@ namespace XSharp.LanguageService.Tests
             bar.AddMember(barClose);
             Assert.Contains("Test.Foo.Close", FindReferencesEngine.GroupOf(fooClose));
             Assert.NotEqual(FindReferencesEngine.GroupOf(fooClose), FindReferencesEngine.GroupOf(barClose));
+            // ACCESS, ASSIGN and PROPERTY with one name are one property: one group
+            var access = new XSourceMemberSymbol("Name", Kind.Access, Modifiers.Public, new TextRange(4, 1, 5, 1), new TextInterval(70, 80), "", null);
+            foo.AddMember(access);
+            var assign = new XSourceMemberSymbol("Name", Kind.Assign, Modifiers.Public, new TextRange(6, 1, 7, 1), new TextInterval(85, 95), "", null);
+            foo.AddMember(assign);
+            Assert.Equal(FindReferencesEngine.GroupOf(access), FindReferencesEngine.GroupOf(assign));
         }
 
         [Fact]

@@ -112,7 +112,7 @@ namespace XSharp.LanguageService.FindReferences
             }
         }
 
-        /// <summary>The group header: one per search, all hits belong to it.</summary>
+        /// <summary>The group header: one per declaration (the target and the members of its override family).</summary>
         private sealed class XSharpDefinitionBucket : DefinitionBucket
         {
             private readonly string _text;

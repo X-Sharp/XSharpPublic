@@ -30,6 +30,8 @@ namespace XSharp.LanguageService.Commands
         private static CancellationTokenSource _cancellation;
         private static ReferencesTableDataSource _source;
         private static Microsoft.VisualStudio.Shell.TableManager.ITableManager _sourceManager;
+        private static IFindAllReferencesWindow _window;
+        private static EventHandler _windowClosed;
 
         public static async Task InitializeAsync()
         {
@@ -42,13 +44,36 @@ namespace XSharp.LanguageService.Commands
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var symbols = doc.TextView.GetSymbolUnderCursor(out _, out var location, out _);
-                // on a declaration: the declared overload; on a call site: the overload that takes these arguments
-                var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
-                var declared = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
-                var target = declared != null ? declared : location == null ? null :
-                    OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
-                        OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
-                        id => SymbolResolver.TypeOf(location, id)).FirstOrDefault();
+                IXSymbol target = null;
+                int candidates = 0;
+                OverrideFamily family = null;
+                try
+                {
+                    // on a declaration: the declared overload; on a call site: the overload that takes these arguments
+                    var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
+                    target = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
+                    if (target == null && location != null)
+                    {
+                        var matches = OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
+                            OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
+                            id => SymbolResolver.TypeOf(location, id));
+                        target = matches.FirstOrDefault();
+                        candidates = matches.Count;
+                    }
+                    // Foo{} of a class without constructors: the lookup makes one up, search the class instead
+                    if (target != null && target.Kind == Kind.Constructor && target is IXMemberSymbol ctor &&
+                        ctor.ParentType != null && ctor.ParentType.GetConstructors().Length == 0)
+                    {
+                        target = ctor.ParentType;
+                    }
+                    if (target != null)
+                        family = new OverrideFamily(target);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Exception(ex, "FindReferences: cannot determine the symbol under the cursor");
+                    target = null;
+                }
                 if (target == null || location == null)
                 {
                     await VS.StatusBar.ShowMessageAsync("No X# symbol under the cursor");
@@ -58,12 +83,6 @@ namespace XSharp.LanguageService.Commands
                 {
                     await VS.StatusBar.ShowMessageAsync($"Find References: '{target.FullName}' is not declared in the X# source of this solution");
                     return;
-                }
-                // Foo{} of a class without constructors: the lookup makes one up, search the class instead
-                if (target.Kind == Kind.Constructor && target is IXMemberSymbol ctor && ctor.ParentType != null &&
-                    ctor.ParentType.GetConstructors().Length == 0)
-                {
-                    target = ctor.ParentType;
                 }
                 var title = target.Kind == Kind.Constructor ? FindReferencesEngine.SearchName(target) + "{}" : target.Name;
                 var documents = await CreateDocumentSourceAsync();
@@ -80,12 +99,22 @@ namespace XSharp.LanguageService.Commands
                 window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
                 _source = source;
                 _sourceManager = window.Manager;
-                window.Closed += (s, e) => cancellation.Cancel();
+                // the window is reused: one Closed handler, for the running search
+                if (_window != null)
+                    _window.Closed -= _windowClosed;
+                _window = window;
+                _windowClosed = (s, e) => cancellation.Cancel();
+                window.Closed += _windowClosed;
+                if (candidates > 1 && target is IXMemberSymbol overload)
+                {
+                    // the arguments do not tell the overloads apart
+                    await VS.StatusBar.ShowMessageAsync($"Find References: {candidates} overloads of '{target.Name}' fit these arguments, listing {target.Name}({overload.ParameterList})");
+                }
                 _ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
                 {
                     try
                     {
-                        var stats = await FindReferencesEngine.FindAsync(target, location, documents, source, cancellation.Token);
+                        var stats = await FindReferencesEngine.FindAsync(target, family, location, documents, source, cancellation.Token);
                         if (stats.Failed > 0)
                             await VS.StatusBar.ShowMessageAsync($"Find References: {stats.Failed} file(s) could not be searched, see the X# log");
                     }

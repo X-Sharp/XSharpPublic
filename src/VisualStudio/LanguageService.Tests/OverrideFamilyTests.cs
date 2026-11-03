@@ -12,7 +12,15 @@ namespace XSharp.LanguageService.Tests
         private readonly Dictionary<IXTypeSymbol, IXTypeSymbol> _bases = new Dictionary<IXTypeSymbol, IXTypeSymbol>();
         private int _next;
 
-        private IXTypeSymbol BaseOf(IXTypeSymbol type) => _bases.TryGetValue(type, out var result) ? result : null;
+        private int _baseLookups;
+
+        private IXTypeSymbol BaseOf(IXTypeSymbol type)
+        {
+            _baseLookups++;
+            return _bases.TryGetValue(type, out var result) ? result : null;
+        }
+
+        private OverrideFamily Family(IXSymbol target) => new OverrideFamily(target, BaseOf);
 
         private XSourceTypeSymbol Type(string name, XSourceTypeSymbol baseType = null)
         {
@@ -43,9 +51,9 @@ namespace XSharp.LanguageService.Tests
             var sub = Type("Sub", baseType);
             var baseClose = Member(baseType, "Close");
             var subClose = Member(sub, "Close");
-            Assert.Same(baseClose, OverrideFamily.Root(subClose, BaseOf));
-            Assert.True(OverrideFamily.Contains(baseClose, subClose, BaseOf));
-            Assert.True(OverrideFamily.Contains(subClose, baseClose, BaseOf));
+            Assert.Same(baseClose, Family(subClose).Root(subClose));
+            Assert.True(Family(baseClose).Contains(subClose));
+            Assert.True(Family(subClose).Contains(baseClose));
         }
 
         [Fact]
@@ -55,7 +63,7 @@ namespace XSharp.LanguageService.Tests
             Member(baseType, "Close");
             var first = Member(Type("First", baseType), "Close");
             var second = Member(Type("Second", baseType), "Close");
-            Assert.True(OverrideFamily.Contains(first, second, BaseOf));
+            Assert.True(Family(first).Contains(second));
         }
 
         [Fact]
@@ -65,7 +73,7 @@ namespace XSharp.LanguageService.Tests
             var baseClose = Member(baseType, "Close");
             var middle = Type("Middle", baseType);
             var leafClose = Member(Type("Leaf", middle), "Close");
-            Assert.Same(baseClose, OverrideFamily.Root(leafClose, BaseOf));
+            Assert.Same(baseClose, Family(leafClose).Root(leafClose));
         }
 
         [Fact]
@@ -74,8 +82,8 @@ namespace XSharp.LanguageService.Tests
             var baseType = Type("Base");
             var baseRun = Member(baseType, "Run", Kind.Method, "INT");
             var subRun = Member(Type("Sub", baseType), "Run", Kind.Method, "STRING");
-            Assert.Same(subRun, OverrideFamily.Root(subRun, BaseOf));
-            Assert.False(OverrideFamily.Contains(baseRun, subRun, BaseOf));
+            Assert.Same(subRun, Family(subRun).Root(subRun));
+            Assert.False(Family(baseRun).Contains(subRun));
         }
 
         [Fact]
@@ -83,7 +91,7 @@ namespace XSharp.LanguageService.Tests
         {
             var one = Member(Type("One"), "Close");
             var two = Member(Type("Two"), "Close");
-            Assert.False(OverrideFamily.Contains(one, two, BaseOf));
+            Assert.False(Family(one).Contains(two));
         }
 
         [Fact]
@@ -92,7 +100,7 @@ namespace XSharp.LanguageService.Tests
             var baseType = Type("Base");
             var access = Member(baseType, "Name", Kind.Access);
             var property = Member(Type("Sub", baseType), "Name", Kind.Property);
-            Assert.True(OverrideFamily.Contains(access, property, BaseOf));
+            Assert.True(Family(access).Contains(property));
         }
 
         [Fact]
@@ -103,9 +111,22 @@ namespace XSharp.LanguageService.Tests
             _bases[a] = b;
             var close = Member(b, "Close");
             Member(a, "Close");
-            Assert.NotNull(OverrideFamily.Root(close, BaseOf));
+            Assert.NotNull(Family(close).Root(close));
             var lonely = Member(Type("Lonely"), "Close");
-            Assert.Same(lonely, OverrideFamily.Root(lonely, BaseOf));
+            Assert.Same(lonely, Family(lonely).Root(lonely));
+        }
+
+        [Fact]
+        public void BaseClassesAreLookedUpOncePerSearch()
+        {
+            var baseType = Type("Base");
+            var baseClose = Member(baseType, "Close");
+            var sub = Type("Sub", baseType);
+            var family = Family(baseClose);
+            for (int i = 0; i < 10; i++)
+                Assert.True(family.Contains(Member(sub, "Close")));
+            // Base (for the target) and Sub (for the candidates), once each
+            Assert.Equal(2, _baseLookups);
         }
 
         [Fact]
@@ -113,8 +134,9 @@ namespace XSharp.LanguageService.Tests
         {
             var type = Type("Base");
             var close = Member(type, "Close");
-            Assert.False(OverrideFamily.Contains(type, close, BaseOf));
-            Assert.False(OverrideFamily.Contains(close, type, BaseOf));
+            Assert.False(Family(type).Contains(close));
+            Assert.False(Family(close).Contains(type));
+            Assert.Null(Family(type).TargetRoot);
         }
     }
 }

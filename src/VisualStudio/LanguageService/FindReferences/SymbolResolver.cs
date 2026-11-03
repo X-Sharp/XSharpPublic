@@ -45,7 +45,9 @@ namespace XSharp.LanguageService.FindReferences
         {
             if (name == null || tokens == null || !(symbols.FirstOrDefault() is IXTypeSymbol type))
                 return symbols;
-            var index = tokens.IndexOf(name);
+            var index = name.TokenIndex >= 0 && name.TokenIndex < tokens.Count && tokens[name.TokenIndex] == name
+                ? name.TokenIndex
+                : tokens.IndexOf(name);
             var next = tokens.Skip(index + 1).FirstOrDefault(t => t.Channel == XSharpLexer.DefaultTokenChannel);
             if (index < 0 || next?.Type != XSharpLexer.LCURLY)
                 return symbols;

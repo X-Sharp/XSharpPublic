@@ -597,7 +597,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 ENDIF
                 SELF:_recordMarkRow := nPos
             ENDIF
-            IF SELF:_VFPRefresh != NULL .AND. !SELF:_vfpRefresh:InCall
+            IF SELF:_VFPRefresh != NULL .AND. !SELF:_VFPRefresh:InCall
                 SELF:_VFPRefresh:Call()
             ENDIF
             SUPER:Refresh()
@@ -703,10 +703,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
         METHOD ActivateCell( nRow AS INT, nCol AS INT ) AS VOID
             //
             IF ( nRow <= SELF:Rows:Count )
-                //dgView.rows[0].cells[0].selected = true,
+                //dgView.rows[0].Cells[0].selected = true,
                 VAR oneRow := SELF:Rows[ nRow - 1]
-                IF ( nCol < oneRow:cells:Count )
-                    oneRow:cells[ nCol - 1 ]:Selected := TRUE
+                IF ( nCol < oneRow:Cells:Count )
+                    oneRow:Cells[ nCol - 1 ]:Selected := TRUE
                 ENDIF
             ENDIF
         END METHOD
@@ -828,7 +828,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY Value AS USUAL
             GET
                 IF SELF:CurrentCell != NULL
-                    RETURN (USUAL) SELF:CurrentCell:Value
+                    RETURN SELF:CurrentCell:Value
                 ENDIF
                 RETURN NIL
             END GET

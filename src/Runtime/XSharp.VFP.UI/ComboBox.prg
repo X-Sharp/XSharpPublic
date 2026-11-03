@@ -276,9 +276,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY Value AS USUAL
 			GET
 				IF SELF:SelectedItem != NULL
-					RETURN (USUAL) SELF:SelectedItem:ToString()
+					RETURN SELF:SelectedItem:ToString()
 				ENDIF
-				RETURN (USUAL) SELF:Text
+				RETURN SELF:Text
 			END GET
 			SET
 				LOCAL cVal AS STRING
@@ -301,9 +301,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY DisplayValue AS USUAL
 			GET
 				IF SELF:SelectedItem != NULL
-					RETURN (USUAL) SELF:SelectedItem:ToString()
+					RETURN SELF:SelectedItem:ToString()
 				ENDIF
-				RETURN (USUAL) SELF:Text
+				RETURN SELF:Text
 			END GET
 			SET
 				SELF:Value := VALUE

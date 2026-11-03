@@ -1,5 +1,6 @@
 USING System
 USING System.Windows.Forms
+USING SWF := System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
@@ -425,7 +426,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 LOCAL msg AS STRING
                 msg := IIF(!String.IsNullOrEmpty(SELF:RangeMessage), SELF:RangeMessage, ;
                            "Value must be in range " + Str(SELF:RangeMin) + " to " + Str(SELF:RangeMax))
-                MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(msg, "", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Warning)
             ENDIF
             RETURN ok
         END METHOD
@@ -472,7 +473,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 ELSE
                     msg := "Date must be on or before " + DToC((DATE) SELF:RangeMax)
                 ENDIF
-                MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(msg, "", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Warning)
             ENDIF
             RETURN ok
         END METHOD
@@ -498,7 +499,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             IF DateTime.TryParseExact(displayVal, fmt2, culture, styles, OUT NULL)
                 RETURN TRUE
             ENDIF
-            MessageBox.Show("** Invalid date **", "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            MessageBox.Show("** Invalid date **", "", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Warning)
             RETURN FALSE
         END METHOD
 

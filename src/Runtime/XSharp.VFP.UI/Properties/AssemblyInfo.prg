@@ -11,7 +11,9 @@ using System.Runtime.CompilerServices
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+#ifndef NETNEXT
 [Assembly: AssemblyTitle("XSharp.VFP.UI")]
+#endif
 [Assembly: AssemblyDescription("XSharp UI Components for the (Visual) FoxPro dialect")]
 [Assembly: ImplicitNamespace("XSharp.VFP.UI")]
 

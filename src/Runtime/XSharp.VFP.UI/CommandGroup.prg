@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROTECTED OVERRIDE METHOD OnPaint(e AS PaintEventArgs) AS VOID
 			SUPER:OnPaint(e)
 			IF SELF:_borderColor != System.Drawing.Color.Empty
-				VAR pen := Pen{_borderColor, (SINGLE)1}
+				VAR pen := Pen{_borderColor, (Single)1}
 				e:Graphics:DrawRectangle(pen, 0, 0, SELF:ClientSize:Width - 1, SELF:ClientSize:Height - 1)
 				pen:Dispose()
 			ENDIF

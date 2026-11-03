@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 			SET
 				SELF:_picture := VALUE
-				IF !STRING.IsNullOrEmpty(VALUE)
+				IF !String.IsNullOrEmpty(VALUE)
 					SELF:Image := VFPTools.ImageFromFile( VALUE )
 					IF SELF:_rotateFlip != 0 .AND. SELF:Image != NULL
 						SELF:Image:RotateFlip((System.Drawing.RotateFlipType) SELF:_rotateFlip)
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET
 				_rotateFlip := VALUE
 				// Reload from source to avoid stacking transforms on the existing image
-				IF !STRING.IsNullOrEmpty(SELF:_picture)
+				IF !String.IsNullOrEmpty(SELF:_picture)
 					SELF:Image := VFPTools.ImageFromFile(SELF:_picture)
 					IF VALUE != 0 .AND. SELF:Image != NULL
 						SELF:Image:RotateFlip((System.Drawing.RotateFlipType) VALUE)

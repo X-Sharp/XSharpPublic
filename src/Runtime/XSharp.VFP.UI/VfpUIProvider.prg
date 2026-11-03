@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                 cTitleBarText, ;
                 (DWORD)nDialogBoxType, ;
                 0, ;
-                dwTimeout)
+                dwTimeOut)
 
             sw:Stop()
 

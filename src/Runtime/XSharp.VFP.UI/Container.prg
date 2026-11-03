@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             // draws its own border when BorderStyle=1 is set on the UserControl.
             IF SELF:BorderStyle == 0 .AND. SELF:_borderColor != System.Drawing.Color.Empty
                 VAR pw := 1
-                VAR pen := Pen{ _borderColor, (SINGLE) pw }
+                VAR pen := Pen{ _borderColor, (Single) pw }
                 e:Graphics:DrawRectangle( pen, 0, 0, SELF:ClientSize:Width - 1, SELF:ClientSize:Height - 1 )
                 pen:Dispose()
             ENDIF

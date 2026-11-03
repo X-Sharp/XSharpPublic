@@ -76,5 +76,5 @@ METHOD BINDEVENT( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL
     // 0 => Error
     RETURN 0
 
-INTERNAL METHOD BINDEVENT2( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
+INTERNAL METHOD BindEvent2( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
     RETURN 0

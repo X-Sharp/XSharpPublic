@@ -11,11 +11,11 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Runtime.InteropServices
 
-INTERNAL _DLL FUNCTION SetForegroundWindow(hwnd AS PTR) AS LOGIC PASCAL:USER32.SetForegroundWindow
-INTERNAL _DLL FUNCTION FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS PTR PASCAL:USER32.FindWindowA
-INTERNAL _DLL FUNCTION SetActiveWindow( hwnd AS PTR) AS PTR PASCAL:USER32.SetActiveWindow
-INTERNAL _DLL FUNCTION IsWindowVisible(hwnd AS PTR) AS LOGIC PASCAL:USER32.IsWindowVisible
-INTERNAL _DLL FUNCTION ShowWindow(hwnd AS PTR, nCmdShow AS INT) AS LOGIC PASCAL:USER32.ShowWindow
+INTERNAL _DLL FUNCTION SetForegroundWindow(hwnd AS IntPtr) AS LOGIC PASCAL:USER32.SetForegroundWindow
+INTERNAL _DLL FUNCTION FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS IntPtr PASCAL:USER32.FindWindowA
+INTERNAL _DLL FUNCTION SetActiveWindow( hwnd AS IntPtr) AS IntPtr PASCAL:USER32.SetActiveWindow
+INTERNAL _DLL FUNCTION IsWindowVisible(hwnd AS IntPtr) AS LOGIC PASCAL:USER32.IsWindowVisible
+INTERNAL _DLL FUNCTION ShowWindow(hwnd AS IntPtr, nCmdShow AS INT) AS LOGIC PASCAL:USER32.ShowWindow
 DEFINE SW_HIDE                       := 0
 DEFINE SW_NORMAL                     := 1
 

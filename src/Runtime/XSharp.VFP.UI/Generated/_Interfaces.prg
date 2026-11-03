@@ -32,14 +32,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
     /// Interface for most objects that can contain a picture
     /// </summary>
 
-    INTERFACE IVfPGraphics
+    INTERFACE IVFPGraphics
 		PROPERTY Picture AS STRING GET SET
 	END INTERFACE
 
     /// <summary>
     /// Interface for most objects that can contain an image
     /// </summary>
-	INTERFACE IVFPImage INHERIT IVfPGraphics, IVFPText
+	INTERFACE IVFPImage INHERIT IVFPGraphics, IVFPText
 		PROPERTY DisabledPicture AS STRING GET SET
 		PROPERTY DownPicture AS STRING  GET SET
 		PROPERTY PictureMargin AS LONG GET SET

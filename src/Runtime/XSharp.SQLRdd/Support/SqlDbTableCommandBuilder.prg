@@ -126,6 +126,16 @@ internal class SqlDbTableCommandBuilder
         endif
         return false
 
+    /// <summary>The table's server filter and the work area's filter condition (see SQLRDD._FilterToSql()).</summary>
+    private method _AddFilters(whereClauses as List<String>) as void
+        if SELF:_oTable:HasServerFilter
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+        if !String.IsNullOrEmpty(_oRdd:ServerFilterWhere)
+            whereClauses:Add(_oRdd:ServerFilterWhere)
+        endif
+        return
+
     method CombineWhereClauses(whereList as List<String>) as string
         if whereList:Count == 0
             return ""
@@ -173,9 +183,7 @@ internal class SqlDbTableCommandBuilder
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         sWhereClause := self:CombineWhereClauses(whereClauses)
         sWhereClause :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
         if ! String.IsNullOrEmpty(sWhereClause)
@@ -279,9 +287,7 @@ internal class SqlDbTableCommandBuilder
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         var sWhereClause := self:CombineWhereClauses(whereClauses)
         sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
         if ! String.IsNullOrEmpty(sWhereClause)
@@ -328,9 +334,7 @@ internal class SqlDbTableCommandBuilder
         // to calculate the correct pagenumber !
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         if currentOrder != null
             var sWhere := currentOrder:GetScopeClause()
             if !String.IsNullOrEmpty(sWhere)
@@ -490,9 +494,11 @@ internal class SqlDbTableCommandBuilder
         sb:Append("count(*)")
         sb:Append(SqlDbProvider.FromClause)
         sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
-        if _oTable:HasServerFilter
+        var whereClauses := List<String>{}
+        SELF:_AddFilters(whereClauses)
+        if whereClauses:Count > 0
             sb:Append(SqlDbProvider.WhereClause)
-            sb:Append(_oTable:ServerFilter)
+            sb:Append(SELF:CombineWhereClauses(whereClauses))
         endif
         var stmt := sb:ToString()
         var result := _connection:ExecuteScalar(stmt, _cTable)
@@ -507,9 +513,7 @@ internal class SqlDbTableCommandBuilder
 
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         if currentOrder != null
             var sWhere := currentOrder:GetScopeClause()
             if !String.IsNullOrEmpty(sWhere)

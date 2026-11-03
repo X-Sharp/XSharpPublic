@@ -681,7 +681,12 @@ partial class SQLRDD inherit Workarea
         SELF:_SetBOF(FALSE)
         // Apply Filter and SetDeleted
         VAR result := SELF:SkipFilter(1)
+        // the filter hides every record: keep BOF as SkipFilter() set it, as DBF does
+        var lHidden := SELF:_EoF .and. SELF:_BoF
         SELF:_CheckEofBof()
+        if lHidden
+            SELF:_SetBOF(TRUE)
+        endif
         #ifdef TRACERDD
         System.Diagnostics.Debug.WriteLine("GoTop Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _serverReccount, RecNo, RowNumber, EoF, BoF)
         #endif
@@ -717,9 +722,22 @@ partial class SQLRDD inherit Workarea
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
         SELF:_Bottom    := TRUE
+        // SkipFilter() only moves while EOF and BOF are off: after a Skip() past the end, GoBottom()
+        // stayed on the last record of the order even when the filter hides it (GoTop() resets them too).
+        if SELF:RowCount > 0
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
+        endif
         // Apply Filter and SetDeleted
         VAR result := SELF:SkipFilter(-1)
-        SELF:_CheckEofBof()
+        if SELF:_EoF .and. SELF:_BoF
+            // the filter hides every record: EOF and BOF as in DBF, on the phantom record
+            // (_CheckEofBof() saw the first row and cleared both)
+            SELF:_GoToPhantom()
+            SELF:_SetBOF(TRUE)
+        else
+            SELF:_CheckEofBof()
+        endif
         #ifdef TRACERDD
         System.Diagnostics.Debug.WriteLine("GoBottom Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _serverReccount, RecNo, RowNumber, EoF, BoF)
         #endif
@@ -1027,7 +1045,24 @@ partial class SQLRDD inherit Workarea
                 return false
             end try
         endif
-        RETURN SUPER:SetFilter(info)
+        SELF:_settingFilter := TRUE
+        local lOk as logic
+        try
+            lOk := SUPER:SetFilter(info)
+        finally
+            SELF:_settingFilter := FALSE
+        end try
+        // the server only sends the rows the filter can let through, see _FilterToSql()
+        SELF:_ApplyServerFilter(iif(lOk .and. SELF:_FilterInfo:Active, SELF:_FilterToSql(info:FilterText), null))
+        RETURN lOk
+    end method
+
+    OVERRIDE METHOD ClearFilter() AS LOGIC
+        var lOk := SUPER:ClearFilter()
+        if !SELF:_settingFilter
+            SELF:_ApplyServerFilter(null)
+        endif
+        RETURN lOk
     end method
 
     public override method Flush() as logic

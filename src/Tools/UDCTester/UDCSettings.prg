@@ -1,7 +1,7 @@
 ﻿// UDCSettings.prg
 // Created by    : robert
 // Creation Date : 9/22/2021 2:49:19 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : NYX
 
 
@@ -57,8 +57,8 @@ BEGIN NAMESPACE UDCTesterApp
             SELF:HideWhiteSpace   := SELF:ReadSetting(DEF_HIDEWS, IIF(SELF:HideWhiteSpace,1,0)) != 0
             SELF:DefaultNoStdDefs := SELF:ReadSetting(DEF_DIALECT, IIF(SELF:DefaultNoStdDefs,1,0)) != 0
             SELF:DefaultDialect := (String) SELF:ReadSetting(DEF_DIALECT, SELF:DefaultDialect)
-            
-            
+
+
         METHOD WriteSettings() AS VOID
             SELF:WriteSetting(DEF_OUTPUTPATH, SELF:OutPutPath)
             SELF:WriteSetting(DEF_PPO, IIF(SELF:WritePPO,1,0))
@@ -72,11 +72,11 @@ BEGIN NAMESPACE UDCTesterApp
         internal METHOD WriteSetting<T>(name as string, newvalue as T) AS LOGIC
 
             try
-    
+
                 var key := Microsoft.Win32.Registry.CurrentUser
                 var subkey := key:OpenSubKey(RegistryKey, true)
                 if subkey == null
-                
+
                     subkey := key:CreateSubKey(RegistryKey, true)
                 endif
                 subkey:SetValue(name, newvalue)
@@ -86,9 +86,9 @@ BEGIN NAMESPACE UDCTesterApp
             end try
             return false
 
-                
+
             internal method ReadSetting(name as string,  defvalue as int) as int
-            
+
                 local result := defvalue as int
                 try
                     var key := Microsoft.Win32.Registry.CurrentUser
@@ -96,20 +96,20 @@ BEGIN NAMESPACE UDCTesterApp
                     if (subkey == null)
                         subkey := key:CreateSubKey(RegistryKey, true)
                     endif
-                    var temp := subkey.GetValue(name)
+                    var temp := subkey:GetValue(name)
                     if temp == null
                         subkey:SetValue(name, defvalue)
                         result := defvalue
                     else
                         result := (int) temp
-                    endif                
+                    endif
                 catch
                     result := defvalue
                 end try
                 return result
-                
+
             internal method ReadSetting(name as string,  defvalue as string) as string
-            
+
                 local result := defvalue as string
                 try
                     var key := Microsoft.Win32.Registry.CurrentUser
@@ -117,18 +117,18 @@ BEGIN NAMESPACE UDCTesterApp
                     if (subkey == null)
                         subkey := key:CreateSubKey(RegistryKey, true)
                     endif
-                    var temp := subkey.GetValue(name)
+                    var temp := subkey:GetValue(name)
                     if temp == null
                         subkey:SetValue(name, defvalue)
                         result := defvalue
                     else
                         result := (string) temp
-                    endif                
+                    endif
                 catch
                     result := defvalue
                 end try
                 return result
-            
+
 
 
 	END CLASS

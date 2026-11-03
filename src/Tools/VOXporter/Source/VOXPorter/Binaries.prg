@@ -1,7 +1,7 @@
 // Note: The code here is much as possible 1:1 copied from very old original code in XIDE, in order to avoid introducing problems
 // Please do not adjust it to make it more readable/efficient, at least until we have made absolutely sure everything works as expected
 
-USING System.Windows.Forms
+
 USING System.Text
 USING System.Collections.Generic
 USING System.Collections

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Tools.props" />
-  <Import Project="$(Solutiondir)Common\Version.props" />
   <PropertyGroup>
     <Name>XsLegacyConverter</Name>
     <TargetFramework>net47</TargetFramework>

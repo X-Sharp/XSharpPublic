@@ -10,6 +10,6 @@
 USING System.Reflection
 using System.Runtime.InteropServices
 
-[assembly: AssemblyTitleAttribute( "RegisterProvider" )]
+
 [assembly: AssemblyDescriptionAttribute( "RegisterProvider" )]
 

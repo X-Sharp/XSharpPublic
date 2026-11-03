@@ -22,6 +22,20 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <XSharpBuildAssemblyFile Condition=" '$(XSharpBuildAssemblyFile)' =='' ">$(MSBuildThisFileDirectory)XSharp.Build.dll</XSharpBuildAssemblyFile>
   </PropertyGroup>
 
+  <!-- Extension points, equivalent to the ones in Microsoft.CSharp.CurrentVersion.targets -->
+  <PropertyGroup>
+    <ImportByWildcardBeforeXSharpTargets Condition="'$(ImportByWildcardBeforeXSharpTargets)' == ''">true</ImportByWildcardBeforeXSharpTargets>
+    <ImportByWildcardAfterXSharpTargets Condition="'$(ImportByWildcardAfterXSharpTargets)' == ''">true</ImportByWildcardAfterXSharpTargets>
+    <ImportUserLocationsByWildcardBeforeXSharpTargets Condition="'$(ImportUserLocationsByWildcardBeforeXSharpTargets)' == ''">true</ImportUserLocationsByWildcardBeforeXSharpTargets>
+    <ImportUserLocationsByWildcardAfterXSharpTargets Condition="'$(ImportUserLocationsByWildcardAfterXSharpTargets)' == ''">true</ImportUserLocationsByWildcardAfterXSharpTargets>
+  </PropertyGroup>
+  <Import Project="$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore\*" Condition="'$(ImportUserLocationsByWildcardBeforeXSharpTargets)' == 'true' and exists('$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore')"/>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore\*" Condition="'$(ImportByWildcardBeforeXSharpTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore')"/>
+  <PropertyGroup>
+    <CustomBeforeXSharpTargets Condition="'$(CustomBeforeXSharpTargets)' == ''">$(MSBuildExtensionsPath)\v$(MSBuildToolsVersion)\Custom.Before.XSharp.targets</CustomBeforeXSharpTargets>
+    <CustomAfterXSharpTargets Condition="'$(CustomAfterXSharpTargets)' == ''">$(MSBuildExtensionsPath)\v$(MSBuildToolsVersion)\Custom.After.XSharp.targets</CustomAfterXSharpTargets>
+  </PropertyGroup>
+  <Import Project="$(CustomBeforeXSharpTargets)" Condition="'$(CustomBeforeXSharpTargets)' != '' and Exists('$(CustomBeforeXSharpTargets)')" />
 
   <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpBuildAssemblyFile)" />
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpBuildAssemblyFile)" />
@@ -436,5 +450,9 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       -->
     <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
   </ItemGroup>
+
+  <Import Project="$(CustomAfterXSharpTargets)" Condition="'$(CustomAfterXSharpTargets)' != '' and Exists('$(CustomAfterXSharpTargets)')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter\*" Condition="'$(ImportByWildcardAfterXSharpTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter')"/>
+  <Import Project="$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter\*" Condition="'$(ImportUserLocationsByWildcardAfterXSharpTargets)' == 'true' and exists('$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter')"/>
 
 </Project>

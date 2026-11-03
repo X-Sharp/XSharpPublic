@@ -115,6 +115,82 @@ namespace XSharp.Project
             RemoveDuplicateBuildItems();
         }
 
+        /// <summary>
+        /// Items that have no explicit DependentUpon metadata are nested below the file they belong to
+        /// by naming convention (Form1.designer.prg below Form1.prg, Form1.xaml.prg below Form1.xaml etc).
+        /// The result is a file name without path, relative to the folder of the item.
+        /// </summary>
+        protected internal override string GetDependentUpon(MSBuild.ProjectItem item)
+        {
+            var result = base.GetDependentUpon(item);
+            if (!string.IsNullOrEmpty(result))
+                return result;
+            var include = item.EvaluatedInclude;
+            if (string.IsNullOrEmpty(include))
+                return result;
+            var name = Path.GetFileName(include);
+            var ext = Path.GetExtension(name);
+            var folder = Path.GetDirectoryName(Path.Combine(this.ProjectFolder, include));
+            var itemType = item.ItemType;
+
+            bool Exists(string parent) => File.Exists(Path.Combine(folder, parent));
+            // Form1.VOForm.xsfrm -> Form1.prg
+            string StripLastTwo(string newExt)
+            {
+                var noExt = Path.GetFileNameWithoutExtension(name);
+                var dot = noExt.LastIndexOf('.');
+                return dot > 0 ? noExt.Substring(0, dot) + newExt : null;
+            }
+            string parent = null;
+            if (string.Equals(itemType, "VOBinary", StringComparison.OrdinalIgnoreCase)
+                || (string.Equals(itemType, "NativeResource", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(ext, ".rc", StringComparison.OrdinalIgnoreCase)))
+            {
+                parent = StripLastTwo(".prg");
+                if (parent != null && !Exists(parent))
+                    parent = null;
+            }
+            else if (string.Equals(itemType, "Compile", StringComparison.OrdinalIgnoreCase)
+                && name.EndsWith(".xaml.prg", StringComparison.OrdinalIgnoreCase))
+            {
+                parent = name.Substring(0, name.Length - ".prg".Length);
+                if (!Exists(parent))
+                    parent = null;
+            }
+            else if (string.Equals(itemType, "Compile", StringComparison.OrdinalIgnoreCase)
+                && name.EndsWith(".designer.prg", StringComparison.OrdinalIgnoreCase))
+            {
+                var baseName = name.Substring(0, name.Length - ".designer.prg".Length);
+                // the same precedence as the MSBuild rules: settings, then resx, then prg
+                foreach (var candidate in new[] { baseName + ".settings", baseName + ".resx", baseName + ".prg" })
+                {
+                    if (Exists(candidate))
+                    {
+                        parent = candidate;
+                        break;
+                    }
+                }
+            }
+            else if (string.Equals(itemType, "EmbeddedResource", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(ext, ".resx", StringComparison.OrdinalIgnoreCase))
+            {
+                parent = Path.ChangeExtension(name, ".prg");
+                if (!Exists(parent))
+                    parent = null;
+            }
+            else if (string.Equals(itemType, "None", StringComparison.OrdinalIgnoreCase)
+                && (string.Equals(ext, ".vh", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(ext, ".xh", StringComparison.OrdinalIgnoreCase)))
+            {
+                parent = Path.ChangeExtension(name, ".prg");
+                if (!Exists(parent))
+                    parent = null;
+            }
+            if (parent != null && !string.Equals(parent, name, StringComparison.OrdinalIgnoreCase))
+                return parent;
+            return result;
+        }
+
         public override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             var wasLoading = this.IsLoading;

@@ -2514,7 +2514,7 @@ namespace Microsoft.VisualStudio.Project
             HierarchyNode newNode;
             HierarchyNode parent = null;
 
-            string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
+            string dependentOf = this.GetDependentUpon(item);
             // Note the C# project system does not include a subfolder prefix, and we don't do that too.
             // If the current item is in a subfolder, then the item it depends on should be in the same folder
             Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
@@ -4403,7 +4403,7 @@ namespace Microsoft.VisualStudio.Project
                 // Make sure that we do not want to add the item, dependent, or independent twice to the ui hierarchy
                 items.Add(key, item);
 
-                string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
+                string dependentOf = this.GetDependentUpon(item);
 
                 if (!this.CanFileNodesHaveChilds || String.IsNullOrEmpty(dependentOf))
                 {
@@ -4455,6 +4455,15 @@ namespace Microsoft.VisualStudio.Project
                 ProcessDependentFileNodes(subitemsKeys, subitems);
             }
 
+        }
+
+        /// <summary>
+        /// Returns the file the item depends on (used to nest items below other items in the hierarchy).
+        /// By default this is the DependentUpon metadata of the item.
+        /// </summary>
+        protected internal virtual string GetDependentUpon(MSBuild.ProjectItem item)
+        {
+            return item.GetMetadataValue(ProjectFileConstants.DependentUpon);
         }
 
         /// <summary>

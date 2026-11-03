@@ -41,39 +41,13 @@ Copyright (C) XSharp BV. All rights reserved.
     <ApplicationDefinition Include="$(AppXamlFiles)" Exclude="$(XSharpDefaultItemExcludes)">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
-    <VOBinary Include="$(VOBinaryFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
-    </VOBinary>
-    <NativeResource Include="**/*.rc" Exclude="$(XSharpDefaultItemExcludes)" >
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
-    </NativeResource >
-	<Compile Include="**/*.xaml.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
-	   <!-- .xaml.prg can depend on xaml -->
-      <ParentXamlName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.xaml.prg$', '.xaml', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentXamlName>
-      <DependentUpon Condition="Exists('%(ParentXamlName)')">%(ParentXamlName)</DependentUpon>
-	</Compile>
-    <Compile Include="**/*.designer.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
-      <!-- Designer.prg can depend on prg, resx or settings -->
-      <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
-      <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
-      <ParentSettingsName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.settings', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentSettingsName>
-      <DependentUpon Condition="Exists('%(ParentPrgName)')">%(ParentPrgName)</DependentUpon>
-      <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
-      <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="**/*.resx" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
-      <!-- This handles .resx that depends on a prg -->
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
-    </EmbeddedResource>
-    <None Include="$(HeaderFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
-      <!-- This handles header files that depend on a prg -->
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
-    </None>
+    <!-- Add our own definitions for the items owned by X#. The DependentUpon nesting in Solution Explorer is done by the project system (XSharpSdkProjectNode.GetDependentUpon) -->
+    <VOBinary Include="$(VOBinaryFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false"/>
+    <NativeResource Include="**/*.rc" Exclude="$(XSharpDefaultItemExcludes)"/>
+	<Compile Include="**/*.xaml.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false"/>
+    <Compile Include="**/*.designer.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false"/>
+    <EmbeddedResource Include="**/*.resx" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false"/>
+    <None Include="$(HeaderFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false"/>
   </ItemGroup>
   <!-- Implicit imports -->
   <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">

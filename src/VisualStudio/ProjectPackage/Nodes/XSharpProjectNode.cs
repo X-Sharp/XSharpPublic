@@ -920,7 +920,7 @@ namespace XSharp.Project
             HierarchyNode newNode;
             HierarchyNode parent = null;
             bool inSameFolder = true;
-            string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
+            string dependentOf = this.GetDependentUpon(item);
             // strip path when it is available
             if (dependentOf.IndexOf(System.IO.Path.DirectorySeparatorChar) >= 0)
             {

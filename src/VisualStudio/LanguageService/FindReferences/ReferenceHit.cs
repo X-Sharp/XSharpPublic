@@ -18,7 +18,25 @@ namespace XSharp.LanguageService.FindReferences
         internal int Column { get; set; }
         internal int Length { get; set; }
         internal string LineText { get; set; }
+        /// <summary>Editor classifications of the line, relative to the line start</summary>
+        internal IReadOnlyList<ClassifiedRange> Classifications { get; set; }
         internal bool IsDefinition { get; set; }
+    }
+
+    internal readonly struct ClassifiedRange
+    {
+        internal ClassifiedRange(int start, int length, string classification)
+        {
+            Start = start;
+            Length = length;
+            Classification = classification;
+        }
+        internal int Start { get; }
+        internal int Length { get; }
+        /// <summary>Name of the classification type, e.g. "keyword"</summary>
+        internal string Classification { get; }
+
+        public override string ToString() => $"{Start},{Length},{Classification}";
     }
 
     internal interface IReferenceSink

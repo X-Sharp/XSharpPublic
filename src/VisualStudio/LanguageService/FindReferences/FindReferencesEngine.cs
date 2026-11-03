@@ -188,6 +188,7 @@ namespace XSharp.LanguageService.FindReferences
                         Column = token.StartIndex - textLine.Start.Position,
                         Length = token.StopIndex - token.StartIndex + 1,
                         LineText = textLine.GetText(),
+                        Classifications = ReferenceLineText.Classify(document.Tokens, textLine.Start.Position, textLine.End.Position),
                         IsDefinition = isDefinition
                     });
                 }

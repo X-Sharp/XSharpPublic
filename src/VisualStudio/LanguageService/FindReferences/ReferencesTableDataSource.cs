@@ -37,12 +37,14 @@ namespace XSharp.LanguageService.FindReferences
         private readonly object _gate = new object();
         private readonly List<ITableEntry> _entries = new List<ITableEntry>();
         private readonly XSharpDefinitionBucket _bucket;
+        private readonly ReferenceTextFormat _format;
         private ITableDataSink _sink;
         private bool _completed;
 
-        internal ReferencesTableDataSource(IXSymbol target)
+        internal ReferencesTableDataSource(IXSymbol target, ReferenceTextFormat format)
         {
             _bucket = new XSharpDefinitionBucket($"{target.KindKeyword} {target.FullName}".Trim());
+            _format = format;
         }
 
         public string SourceTypeIdentifier => SourceType;
@@ -68,7 +70,7 @@ namespace XSharp.LanguageService.FindReferences
                 // spike: the hits are also logged so that test runs can check them without the UI
                 Logger.Information($"FindReferences hit {(hit.IsDefinition ? "def" : "ref")} {Path.GetFileName(hit.FilePath)}:{hit.Line + 1}:{hit.Column + 1} {hit.LineText.Trim()}");
             }
-            var entries = batch.Select(hit => (ITableEntry)new ReferenceTableEntry(hit, _bucket)).ToList();
+            var entries = batch.Select(hit => (ITableEntry)new ReferenceTableEntry(hit, _bucket, _format)).ToList();
             lock (_gate)
             {
                 _entries.AddRange(entries);
@@ -124,11 +126,13 @@ namespace XSharp.LanguageService.FindReferences
         {
             private readonly ReferenceHit _hit;
             private readonly XSharpDefinitionBucket _bucket;
+            private readonly ReferenceTextFormat _format;
 
-            internal ReferenceTableEntry(ReferenceHit hit, XSharpDefinitionBucket bucket)
+            internal ReferenceTableEntry(ReferenceHit hit, XSharpDefinitionBucket bucket, ReferenceTextFormat format)
             {
                 _hit = hit;
                 _bucket = bucket;
+                _format = format;
             }
 
             public override object Identity => _hit;
@@ -137,7 +141,7 @@ namespace XSharp.LanguageService.FindReferences
             {
                 if (columnName == StandardTableColumnDefinitions.Text)
                 {
-                    content = ReferenceLineText.CreateTextBlock(_hit.LineText, _hit.Column, _hit.Length);
+                    content = ReferenceLineText.CreateTextBlock(_hit, _format);
                     return true;
                 }
                 content = null;

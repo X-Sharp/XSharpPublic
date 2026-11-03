@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Windows.Media;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
@@ -14,6 +15,7 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
 using XSharp.LanguageService.FindReferences;
@@ -50,7 +52,7 @@ namespace XSharp.LanguageService.Commands
                 _cancellation = cancellation;
                 var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
                 var window = service.StartSearch($"'{target.Name}' references");
-                var source = new ReferencesTableDataSource(target);
+                var source = new ReferencesTableDataSource(target, await CreateTextFormatAsync());
                 window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
                 window.Closed += (s, e) => cancellation.Cancel();
                 _ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
@@ -71,6 +73,18 @@ namespace XSharp.LanguageService.Commands
                     }
                 });
             });
+        }
+
+        /// <summary>The editor colors for the Text column, and the reference highlight that C# uses for the hit.</summary>
+        private static async System.Threading.Tasks.Task<ReferenceTextFormat> CreateTextFormatAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var componentModel = await VS.Services.GetComponentModelAsync();
+            var formatMap = componentModel.GetService<IClassificationFormatMapService>().GetClassificationFormatMap("text");
+            var editorFormatMap = componentModel.GetService<IEditorFormatMapService>().GetEditorFormatMap("text");
+            var highlight = editorFormatMap.GetProperties("MarkerFormatDefinition/HighlightedReference");
+            var hitBackground = highlight?[EditorFormatDefinition.BackgroundBrushId] as Brush;
+            return new ReferenceTextFormat(formatMap, componentModel.GetService<IClassificationTypeRegistryService>(), hitBackground);
         }
 
         /// <summary>Collects the open X# buffers on the UI thread; the search itself runs in the background.</summary>

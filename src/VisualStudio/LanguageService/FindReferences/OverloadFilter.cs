@@ -26,8 +26,8 @@ namespace XSharp.LanguageService.FindReferences
         }
 
         /// <summary>
-        /// The tokens of each argument when the name is followed by an argument list, otherwise null.
-        /// An omitted argument (<c>Foo(1,,3)</c>) is an empty list.
+        /// The tokens of each argument when the name is followed by an argument list <c>(...)</c> or, for a
+        /// creation, <c>{...}</c>, otherwise null. An omitted argument (<c>Foo(1,,3)</c>) is an empty list.
         /// </summary>
         internal static IList<IList<IToken>> Arguments(IList<IToken> tokens, IToken name)
         {
@@ -46,7 +46,7 @@ namespace XSharp.LanguageService.FindReferences
                     continue;
                 if (depth == 0)
                 {
-                    if (token.Type != XSharpLexer.LPAREN)
+                    if (token.Type != XSharpLexer.LPAREN && token.Type != XSharpLexer.LCURLY)
                         return null;
                     depth = 1;
                     continue;
@@ -99,10 +99,27 @@ namespace XSharp.LanguageService.FindReferences
             return name == null ? null : Arguments(tokens, name);
         }
 
-        /// <summary>The identifier at (or just before) the caret position.</summary>
+        /// <summary>
+        /// The identifier at (or just before) the caret position, or the keyword that names a constructor
+        /// (<c>SUPER</c>, <c>SELF</c>, <c>CONSTRUCTOR</c>).
+        /// </summary>
         internal static IToken NameAt(IList<IToken> tokens, int position)
         {
-            return tokens?.FirstOrDefault(t => t.Type == XSharpLexer.ID && t.StartIndex <= position && position <= t.StopIndex + 1);
+            return tokens?.FirstOrDefault(t => IsName(t) && t.StartIndex <= position && position <= t.StopIndex + 1);
+        }
+
+        private static bool IsName(IToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpLexer.ID:
+                case XSharpLexer.SUPER:
+                case XSharpLexer.SELF:
+                case XSharpLexer.CONSTRUCTOR:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>

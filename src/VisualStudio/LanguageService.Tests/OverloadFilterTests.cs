@@ -43,6 +43,24 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void CurlyArgumentListOfACreation()
+        {
+            Assert.Equal(2, CountAt("x := Foo{1, \"a\"}\n", "Foo"));
+            Assert.Equal(0, CountAt("x := Foo{}\n", "Foo"));
+            Assert.Equal(1, CountAt("x := Foo{Bar(1, 2)}\n", "Foo"));
+        }
+
+        [Fact]
+        public void NameAtFindsChainsAndTheConstructorKeyword()
+        {
+            var text = "CONSTRUCTOR(n AS INT)\n    SUPER(n, 1)\n    SELF()\n";
+            var tokens = TestLexer.Lex(text);
+            Assert.Equal("CONSTRUCTOR", OverloadFilter.NameAt(tokens, text.IndexOf("CONSTRUCTOR") + 2)?.Text);
+            Assert.Equal(2, OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("SUPER") + 1));
+            Assert.Equal(0, OverloadFilter.ArgumentCountAt(tokens, text.IndexOf("SELF") + 1));
+        }
+
+        [Fact]
         public void CallWithCommentBeforeParenthesis()
         {
             Assert.Equal(2, CountAt("x := o:Foo /* c */ (1, 2)\n", "Foo"));

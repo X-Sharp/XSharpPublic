@@ -35,5 +35,47 @@ namespace XSharp.LanguageService.FindReferences
             }
             return result;
         }
+
+        /// <summary>
+        /// The tokens that may refer to a constructor of the type: creations <c>Foo{...}</c>, the chains
+        /// <c>SUPER(...)</c> and <c>SELF(...)</c>, and the <c>CONSTRUCTOR</c> keyword of a declaration.
+        /// </summary>
+        internal static IList<IToken> FindConstructorTokens(IList<IToken> tokens, string typeName)
+        {
+            var result = new List<IToken>();
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var token = tokens[i];
+                if (token.Channel != XSharpLexer.DefaultTokenChannel)
+                    continue;
+                switch (token.Type)
+                {
+                    case XSharpLexer.CONSTRUCTOR:
+                        result.Add(token);
+                        break;
+                    case XSharpLexer.SUPER:
+                    case XSharpLexer.SELF:
+                        if (NextType(tokens, i) == XSharpLexer.LPAREN)
+                            result.Add(token);
+                        break;
+                    case XSharpLexer.ID:
+                        if (NextType(tokens, i) == XSharpLexer.LCURLY &&
+                            string.Equals(token.Text, typeName, StringComparison.OrdinalIgnoreCase))
+                            result.Add(token);
+                        break;
+                }
+            }
+            return result;
+        }
+
+        private static int NextType(IList<IToken> tokens, int index)
+        {
+            for (int i = index + 1; i < tokens.Count; i++)
+            {
+                if (tokens[i].Channel == XSharpLexer.DefaultTokenChannel)
+                    return tokens[i].Type;
+            }
+            return XSharpLexer.Eof;
+        }
     }
 }

@@ -46,6 +46,15 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void ConstructorCandidatesAreCreationsChainsAndDeclarations()
+        {
+            var text = "CLASS Sub INHERIT Foo\nCONSTRUCTOR(n AS INT)\n    SUPER(n)\n    SUPER:Bar()\n" +
+                "CONSTRUCTOR()\n    SELF(2)\n    SELF:Bar()\n    LOCAL o AS Foo\n    o := foo{1}\n";
+            var hits = ReferenceCandidateScanner.FindConstructorTokens(TestLexer.Lex(text), "Foo");
+            Assert.Equal(new[] { "CONSTRUCTOR", "SUPER", "CONSTRUCTOR", "SELF", "foo" }, hits.Select(t => t.Text).ToArray());
+        }
+
+        [Fact]
         public void MayContainIsCaseInsensitive()
         {
             Assert.True(ReferenceCandidateScanner.MayContain("x := FOO", "foo"));

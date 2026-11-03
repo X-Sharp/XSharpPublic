@@ -84,7 +84,9 @@
   <Folder Name="/Runtime/Runtime/">
     <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
     <Project Path="Runtime/MacroCompiler/XSharp.MacroCompiler.csproj" />
-    <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
+    <Project Path="Runtime/XSharp.Core/XSharp.Core.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+    </Project>
     <Project Path="Runtime/XSharp.Data/XSharp.Data.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
     <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />
     <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" />

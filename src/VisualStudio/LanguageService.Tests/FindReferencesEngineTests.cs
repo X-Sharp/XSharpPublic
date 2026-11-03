@@ -84,6 +84,24 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void CreationResolvesToTheConstructors()
+        {
+            var text = "x := Shape{1}\ny := Shape\nz := Plain{}\n";
+            var tokens = TestLexer.Lex(text);
+            var shape = new XSourceTypeSymbol("Shape", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            shape.AddMember(ctor);
+            var plain = new XSourceTypeSymbol("Plain", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(200, 300), null, null);
+            var creation = tokens.First(t => t.StartIndex == text.IndexOf("Shape{"));
+            var typeOnly = tokens.First(t => t.StartIndex == text.IndexOf("Shape\n"));
+            var plainCreation = tokens.First(t => t.StartIndex == text.IndexOf("Plain{"));
+            Assert.Equal(new IXSymbol[] { ctor }, SymbolResolver.ForCreation(new IXSymbol[] { shape }, tokens, creation));
+            Assert.Equal(new IXSymbol[] { shape }, SymbolResolver.ForCreation(new IXSymbol[] { shape }, tokens, typeOnly));
+            // no declared constructor: the class itself
+            Assert.Equal(new IXSymbol[] { plain }, SymbolResolver.ForCreation(new IXSymbol[] { plain }, tokens, plainCreation));
+        }
+
+        [Fact]
         public void SearchNameOfAConstructorIsItsClass()
         {
             var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);

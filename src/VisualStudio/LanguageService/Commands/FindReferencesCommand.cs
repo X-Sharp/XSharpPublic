@@ -44,7 +44,8 @@ namespace XSharp.LanguageService.Commands
                 var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
                 var declared = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
                 var target = declared != null ? declared : location == null ? null :
-                    OverloadFilter.Filter(symbols, OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
+                    OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
+                        OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
                         id => SymbolResolver.TypeOf(location, id)).FirstOrDefault();
                 if (target == null || location == null)
                 {

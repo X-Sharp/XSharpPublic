@@ -37,6 +37,22 @@ namespace XSharp.LanguageService.FindReferences
             return result;
         }
 
+        /// <summary>
+        /// The lookup resolves the name in <c>Foo{...}</c> to the type. A creation calls a constructor: return the
+        /// constructors of the type, or the type when it declares none.
+        /// </summary>
+        internal static IList<IXSymbol> ForCreation(IList<IXSymbol> symbols, IList<IToken> tokens, IToken name)
+        {
+            if (name == null || tokens == null || !(symbols.FirstOrDefault() is IXTypeSymbol type))
+                return symbols;
+            var index = tokens.IndexOf(name);
+            var next = tokens.Skip(index + 1).FirstOrDefault(t => t.Channel == XSharpLexer.DefaultTokenChannel);
+            if (index < 0 || next?.Type != XSharpLexer.LCURLY)
+                return symbols;
+            var ctors = type.GetConstructors();
+            return ctors.Length == 0 ? symbols : ctors.Cast<IXSymbol>().ToList();
+        }
+
         /// <summary>The declared type of the local, parameter, field or property that the identifier names, otherwise null.</summary>
         internal static string TypeOf(XSharpSearchLocation context, IToken identifier)
         {

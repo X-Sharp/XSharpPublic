@@ -139,7 +139,8 @@ namespace XSharp.LanguageService.FindReferences
 
             public bool TryCreateColumnContent(string columnName, bool singleColumnView, out FrameworkElement content)
             {
-                if (columnName == StandardTableColumnDefinitions.Text)
+                // the Code column of the window is LineText
+                if (columnName == StandardTableColumnDefinitions.Text || columnName == StandardTableColumnDefinitions2.LineText)
                 {
                     content = ReferenceLineText.CreateTextBlock(_hit, _format);
                     return true;

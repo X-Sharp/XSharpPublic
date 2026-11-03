@@ -22,7 +22,7 @@ namespace XSharp.LanguageService.FindReferences
         {
             if (member == null || !CanOverride(member.Kind) || member.ParentType == null)
                 return member;
-            baseOf = baseOf ?? (t => t.BaseType);
+            baseOf = baseOf ?? BaseOf;
             var root = member;
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { member.ParentType.FullName ?? "" };
             for (var type = baseOf(member.ParentType); type is XSourceTypeSymbol && seen.Add(type.FullName ?? ""); type = baseOf(type))
@@ -41,6 +41,25 @@ namespace XSharp.LanguageService.FindReferences
                 !CanOverride(target.Kind) || !SameSlot(targetMember, candidateMember))
                 return false;
             return SymbolIdentity.IsSame(Root(targetMember, baseOf), Root(candidateMember, baseOf));
+        }
+
+        /// <summary>
+        /// BaseType is only set once ForceComplete has run, and that looks the base class up with the USINGs of the
+        /// file alone: INHERIT Animal inside BEGIN NAMESPACE FarTest is not found. Also try the type's namespace.
+        /// </summary>
+        private static IXTypeSymbol BaseOf(IXTypeSymbol type)
+        {
+            if (!(type is XSourceTypeSymbol source))
+                return type.BaseType;
+            if (source.BaseType == null)
+                source.ForceComplete();
+            var project = source.File?.Project;
+            if (source.BaseType != null || string.IsNullOrEmpty(source.BaseTypeName) || project == null)
+                return source.BaseType;
+            var usings = new List<string>(source.File.Usings);
+            if (!string.IsNullOrEmpty(source.Namespace))
+                usings.Add(source.Namespace);
+            return project.FindType(source.BaseTypeName, usings);
         }
 
         private static bool CanOverride(Kind kind)

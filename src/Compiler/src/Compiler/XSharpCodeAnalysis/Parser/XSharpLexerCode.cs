@@ -2013,9 +2013,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     findKeyWord(token, lastType);
                 }
                 // Identifier tokens before a DOT are never Keyword but always a type or field/property
-                if (token.Type == DOT)
+                if (token.Type == DOT && !Options.AllowDotForInstanceMembers)
                 {
-                    if (last != null && _isValidIdentifier(last))
+                    if (last != null && _isValidIdentifier(last) && last.Type != SELF)
                     {
                         last.Type = ID;
                     }

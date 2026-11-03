@@ -1780,7 +1780,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (lasttoken != null)
                 {
-                    if (token.IsKeyword())
+                    bool self = token != null && token.Type == XSharpLexer.SELF;
+                    if (token.IsKeyword() && !self)
                     {
                         if (XSharpLexer.IsMemberOperator(lasttoken.type))
                         {

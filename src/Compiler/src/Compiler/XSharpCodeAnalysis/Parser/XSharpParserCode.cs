@@ -1534,12 +1534,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         [Flags]
         enum FieldFlags : byte
         {
-            None = 0,
-            IsFileWidePublic,
-            IsCreated,
-            IsParameter,
-            IsWritten,
-            IsPublic
+            None = 0x00,
+            IsFileWidePublic = 0x01,
+            IsCreated = 0x02,
+            IsParameter = 0x04,
+            IsWritten = 0x08,
+            IsPublic = 0x10
         }
         private readonly MemvarType _fieldType;
         public string Name { get; private set; }
@@ -1564,7 +1564,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        private FieldFlags _flags;
+        private FieldFlags _flags = FieldFlags.None;
         private FieldFlags SetFlag(FieldFlags newFlag, bool set)
         {
             if (set)

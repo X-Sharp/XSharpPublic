@@ -261,6 +261,7 @@ internal class SqlDbOrder inherit SqlDbObject
 
     private method KeyCondition(oValue as object, lSoftSeek as logic, cComp as string) as string
         local cWhereClause as string
+        oValue := SELF:SeekValue(oValue)
         if oValue is string var strValue
             var strLen := strValue:Length
             // Also for a value of the full key length: e.g. a relation seek on REF_NR+DTOS(DATUM)
@@ -306,14 +307,15 @@ internal class SqlDbOrder inherit SqlDbObject
     /// Returns NULL when the key has functions in it, or column metadata/widths can't be
     /// determined - callers must fall back to the concatenation-based condition in that case.
     /// </remarks>
-    private method BuildColumnAwareCondition(strValue as string, lSoftSeek as logic, cRangeComp as string) as string
-        // The parts of a key that concatenates columns and DTOS(column); a DTOS() part is
-        // compared as its yyyymmdd text, which is what the key holds at that position.
+    /// <summary>
+    /// The widths of the parts of a key that concatenates columns, DTOS() and STR() parts (see
+    /// SqlDbExpression.GetKeyTerms()), NULL for other keys or when a column is not known.
+    /// </summary>
+    private method _KeyPartWidths() as List<int>
         var terms := self:DbExpression:KeyTerms
         if terms == null .or. terms:Count == 0
             return null
         endif
-        var columns := List<string>{}
         var widths  := List<int>{}
         foreach var oTerm in terms
             if oTerm:IsDate
@@ -328,6 +330,41 @@ internal class SqlDbOrder inherit SqlDbObject
                 endif
                 widths:Add((int) oCol:Length)
             endif
+        next
+        return widths
+    end method
+
+    /// <summary>
+    /// A seek or scope value as DBFCDX and ADS compare it: a string longer than the key is cut to
+    /// the key length.
+    /// </summary>
+    /// <remarks>
+    /// ERP code builds seek values from the field lengths: for a key with STR(MENGE,5,0) and an
+    /// N(8,0) field (or an int column, reported with 10 digits) the value is longer than the key.
+    /// Compared as the whole key text, such a seek read every row of the tag (29,000 pages of a
+    /// price table per seek), and a soft seek or SeekLast missed keys that DBFCDX finds. Only for keys
+    /// whose part widths are known and agree with the key length evaluated on a record.
+    /// </remarks>
+    method SeekValue(oValue as object) as object
+        if oValue is string var strValue .and. self:KeyLength > 0 .and. strValue:Length > self:KeyLength
+            var widths := SELF:_KeyPartWidths()
+            if widths != null .and. widths:Sum() == self:KeyLength
+                return strValue:Substring(0, self:KeyLength)
+            endif
+        endif
+        return oValue
+    end method
+
+    private method BuildColumnAwareCondition(strValue as string, lSoftSeek as logic, cRangeComp as string) as string
+        // The parts of a key that concatenates columns and DTOS(column); a DTOS() part is
+        // compared as its yyyymmdd text, which is what the key holds at that position.
+        var terms := self:DbExpression:KeyTerms
+        var widths := SELF:_KeyPartWidths()
+        if widths == null
+            return null
+        endif
+        var columns := List<string>{}
+        foreach var oTerm in terms
             columns:Add(oTerm:SqlExpr)
         next
 
@@ -421,6 +458,25 @@ internal class SqlDbOrder inherit SqlDbObject
         if oTerm:Width > 0 .and. Decimal.TryParse(cValue:Trim(), System.Globalization.NumberStyles.AllowLeadingSign | System.Globalization.NumberStyles.AllowDecimalPoint, ;
             System.Globalization.CultureInfo.InvariantCulture, out nValue)
             return oTerm:Column + cComp + nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        endif
+        if oTerm:IsDate .and. String.IsNullOrWhiteSpace(cValue)
+            // DTOS() of an empty date is blank in the key, but the server has NULL or (without
+            // UseNulls) 0001-01-01 (see _EmptyDateValue()), whose yyyymmdd text never equals the blanks:
+            // a seek on a key with an empty date part found nothing. Both sort first, like the blanks.
+            if !SELF:RDD:Connection:UseNulls
+                return cExpr + cComp + "'00010101'"
+            endif
+            switch cComp:Trim()
+            case "="
+            case "<="
+                return oTerm:Column + " IS NULL"
+            case ">"
+                return oTerm:Column + " IS NOT NULL"
+            case "<"
+                return "1 = 0"
+            otherwise
+                return "1 = 1"
+            end switch
         endif
         return cExpr + cComp + Functions.XsValueToSqlValue(cValue)
     end method

@@ -31,6 +31,24 @@ FUNCTION MkDir(cPath AS STRING) AS INT
     END IF
     RETURN nRet
 
+// VFP writes a Blob verbatim, so these overloads take the value as it comes and
+// send a binary to the file as raw bytes instead of its 0h... representation
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
+FUNCTION StrToFile (uExpression AS USUAL, cFileName AS STRING) AS INT
+    RETURN StrToFile(uExpression, cFileName, S2F_FLAG_OVERWRITE)
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
+FUNCTION StrToFile (uExpression AS USUAL, cFileName AS STRING, lAdditive AS Boolean) AS INT
+    RETURN StrToFile(uExpression, cFileName, IIF(lAdditive, S2F_FLAG_APPEND, S2F_FLAG_OVERWRITE))
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
+FUNCTION StrToFile (uExpression AS USUAL, cFileName AS STRING, nFlags AS INT) AS INT
+    IF IsBinary(uExpression)
+        RETURN FileHelpers.WriteBytes((BINARY) uExpression, cFileName, nFlags)
+    ENDIF
+    RETURN StrToFile((STRING) uExpression, cFileName, nFlags)
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
 [FoxProFunction("STRTOFILE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING) AS INT
@@ -347,3 +365,49 @@ FUNCTION DisplayPath( cFileName AS STRING, nMaxLength AS INT) AS STRING
     NEXT
 
     RETURN cRoot + "..." + System.IO.Path.DirectorySeparatorChar:ToString() + cFoldersToDisplay + cFile
+
+
+INTERNAL STATIC CLASS FileHelpers
+
+    // Writes a prepared buffer to a file and returns the number of bytes written,
+    // which is what VFP does with a Blob: the bytes go to disk as they are. The
+    // flags work like they do for a string, except for the Unicode text extension,
+    // which does not apply because a binary is already the buffer.
+    INTERNAL STATIC METHOD WriteBytes(aBytes AS BYTE[], cFileName AS STRING, nFlags AS INT) AS INT
+        LOCAL aBom := NULL AS BYTE[]
+        LOCAL oMode := FileMode.Create AS FileMode
+        LOCAL Result := 0 AS INT
+
+        SWITCH nFlags
+        CASE S2F_FLAG_OVERWRITE
+            oMode := FileMode.Create
+
+        CASE S2F_FLAG_APPEND
+            oMode := FileMode.Append
+
+        CASE S2F_FLAG_UNICODE_LE
+            aBom := <BYTE>{0xFF, 0xFE}
+
+        CASE S2F_FLAG_UTF8
+            aBom := <BYTE>{0xEF, 0xBB, 0xBF}
+
+        CASE S2F_FLAG_UNICODE_BE
+            aBom := <BYTE>{0xFE, 0xFF}
+
+        OTHERWISE
+            THROW ArgumentException{"Incorrect Parameter", nameof(nFlags)}
+
+        END SWITCH
+
+        USING VAR oStream := FileStream{cFileName, oMode, FileAccess.Write, FileShare.Read}
+        IF aBom != NULL
+            oStream:Write(aBom, 0, aBom:Length)
+            Result += aBom:Length
+        ENDIF
+        oStream:Write(aBytes, 0, aBytes:Length)
+        Result += aBytes:Length
+
+        RETURN Result
+    END METHOD
+
+END CLASS

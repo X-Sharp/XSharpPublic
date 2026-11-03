@@ -823,18 +823,21 @@ partial class SQLRDD inherit Workarea
         // is only needed when something moves from it (Skip(), OrderKeyNo ...), see
         // _EnsurePositioned(): load just the record by its recno. Looking the position up right
         // away cost a ROW_NUMBER() over the order plus a whole page around the record.
-        // When the previous GoTo() already loaded just one record this way, position fully: a
-        // browse that calls GoTo() for every row it paints then gets a page with the neighbouring
+        // When the previous two GoTo() calls already loaded just one record this way, position fully:
+        // a browse that calls GoTo() for every row it paints then gets a page with the neighbouring
         // rows instead of one query per row. (A single record left by an order change does not
-        // count - SetOrder() followed by GoTo(saved record) is the usual restore pattern.)
+        // count - SetOrder() followed by GoTo(saved record) is the usual restore pattern.) Not after
+        // one: restoring a state and going to another record (SetOrder(), GoTo(saved), GoTo(new))
+        // is common in ERP code and cost a ROW_NUMBER() over the order each time.
         local found as logic
         var oLastError := SELF:Connection:LastException
         if SELF:_tableMode == TableMode.Table .and. SELF:_recnoColumNo >= 0 .and. SELF:DataTable != null ;
-            .and. !(SELF:_lazyGoto .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
+            .and. !(SELF:_lazyGotos >= 2 .and. !SELF:_bufferContiguous .and. SELF:RowCount <= 1)
+            var nLazy := SELF:_lazyGotos
             var nFetched := SELF:_FetchSingleRecord(nRec)
             found := nFetched == 1
             if found
-                SELF:_lazyGoto := TRUE
+                SELF:_lazyGotos := nLazy + 1
             elseif nFetched == 0
                 // The record does not exist (e.g. LastRec()+1, saved at EOF and restored): EOF without
                 // looking it up again in the order. ADS sets BOF as well (DBFCDX only for an empty file).

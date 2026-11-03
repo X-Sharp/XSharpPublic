@@ -39,7 +39,9 @@ namespace XSharp.LanguageService.Commands
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var symbols = doc.TextView.GetSymbolUnderCursor(out _, out var location, out _);
-                var target = symbols.FirstOrDefault();
+                // on a call site: the overload that takes the number of arguments
+                var target = location == null ? null :
+                    OverloadFilter.Filter(symbols, OverloadFilter.ArgumentCountAt(location.Document?.Tokens, location.Position)).FirstOrDefault();
                 if (target == null || location == null)
                 {
                     await VS.StatusBar.ShowMessageAsync("No X# symbol under the cursor");

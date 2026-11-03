@@ -64,12 +64,19 @@ and are correctly excluded.
 ## Known gaps
 
 - Navigation from the FAR window (double click) was verified manually on 2026-11-03 (test solution, closed file
-  `Bar.prg`). Each double click logs `navigate to` twice; not investigated. Entry rows are taller than the group
-  rows; the Text column is plain string content, while C# supplies a TextBlock with the hit highlighted.
+  `Bar.prg`). Each double click logs `navigate to` twice; not investigated.
+- The Code column (`linetext`, not `text`) shows the line in the editor colors with the hit in the reference
+  highlight, like C#. The colors come from a token-type mapping that follows the classifier's lexer rules without its
+  extra keywords and its bracketed-string rule.
 - FAR while projects are still loading was only tried on the 2-project test solution, where loading had finished.
-- Overloads are merged: `XSharpLookup.SearchMethod` returns every overload of a name without argument matching, so
-  FAR on one overload also lists calls to the others, and FAR from a call site may take the wrong overload as target.
-  Needs argument-count filtering in the resolver (review finding, not fixed in the spike).
+- Overloads: `XSharpLookup.SearchMethod` returns every overload of a name. Since 2026-11-03 FAR keeps only the
+  overloads whose parameter count accepts the number of arguments at the call site (`OverloadFilter`; defaults,
+  PARAMS arrays, CLIPPER methods and extension methods considered), both for the hits and for the target picked at a
+  call site. Verified in the Exp instance with three `Run` overloads, also with the declaring file closed (members
+  from the database carry their parameters). Overloads with the same parameter count and different types are still
+  merged; when no overload accepts the count, all are kept. Go To Definition is unchanged.
+- The first search right after adding files to a project left calls unresolved (the code model had not caught up);
+  the same search a minute later was complete.
 - Overrides are not cascaded (FAR on `Base.Close` does not list `Sub.Close`); C# does. Design question.
 - Constructors (`Init` ↔ `Foo{}`), symbols from referenced assemblies, VS 2019 runtime (it builds).
 - Each hit is also written to the intellisense log (spike aid; remove before a PR).

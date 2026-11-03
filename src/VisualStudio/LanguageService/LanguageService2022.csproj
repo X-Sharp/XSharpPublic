@@ -143,6 +143,7 @@
     <Compile Include="FindReferences\SymbolResolver.cs" />
     <Compile Include="FindReferences\XDocumentIndexer.cs" />
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
+    <Compile Include="FindReferences\OverloadFilter.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\ReferenceLineText.cs" />
     <Compile Include="FindReferences\FindReferencesEngine.cs" />

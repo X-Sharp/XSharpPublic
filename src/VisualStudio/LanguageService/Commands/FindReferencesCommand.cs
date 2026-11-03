@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
 using XSharp.LanguageService.FindReferences;
 using XSharp.Support;
+using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService.Commands
@@ -50,13 +51,20 @@ namespace XSharp.LanguageService.Commands
                     await VS.StatusBar.ShowMessageAsync("No X# symbol under the cursor");
                     return;
                 }
+                // Foo{} of a class without constructors: the lookup makes one up, search the class instead
+                if (target.Kind == Kind.Constructor && target is IXMemberSymbol ctor && ctor.ParentType != null &&
+                    ctor.ParentType.GetConstructors().Length == 0)
+                {
+                    target = ctor.ParentType;
+                }
+                var title = target.Kind == Kind.Constructor ? FindReferencesEngine.SearchName(target) + "{}" : target.Name;
                 var documents = await CreateDocumentSourceAsync();
                 // a new search cancels the running one
                 _cancellation?.Cancel();
                 var cancellation = new CancellationTokenSource();
                 _cancellation = cancellation;
                 var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
-                var window = service.StartSearch($"'{target.Name}' references");
+                var window = service.StartSearch($"'{title}' references");
                 var source = new ReferencesTableDataSource(target, await CreateTextFormatAsync());
                 window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
                 window.Closed += (s, e) => cancellation.Cancel();

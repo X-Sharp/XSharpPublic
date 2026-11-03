@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using XSharp.Support;
 using XSharpModel;
@@ -35,7 +36,7 @@ namespace XSharp.LanguageService.FindReferences
             ModelWalker.Suspend();
             try
             {
-                var name = target.Name;
+                var name = SearchName(target);
                 TextInterval? limit = null;
                 IEnumerable<XFile> files;
                 if (target is XSourceVariableSymbol variable)
@@ -144,7 +145,9 @@ namespace XSharp.LanguageService.FindReferences
             ParseEntities(file, text);
             stats.FilesLexed++;
             var snapshot = document.SnapShot;
-            var candidates = ReferenceCandidateScanner.FindIdentifierTokens(document.Tokens, name);
+            var candidates = target.Kind == Kind.Constructor
+                ? ReferenceCandidateScanner.FindConstructorTokens(document.Tokens, name)
+                : ReferenceCandidateScanner.FindIdentifierTokens(document.Tokens, name);
             var declarationLines = new HashSet<int>();
             foreach (var token in candidates)
             {
@@ -171,7 +174,7 @@ namespace XSharp.LanguageService.FindReferences
                         continue;
                     }
                     stats.Resolved++;
-                    var match = symbols.FirstOrDefault(s => SymbolIdentity.IsSame(target, s));
+                    var match = symbols.FirstOrDefault(s => SymbolIdentity.IsReferenceTo(target, s));
                     isReference = match != null;
                     // locals and parameters: the first occurrence on their declaration line is the declaration
                     if (match is XSourceVariableSymbol local && local.Range.StartLine == line &&
@@ -209,9 +212,26 @@ namespace XSharp.LanguageService.FindReferences
             // the innermost entity that starts on the token's line
             var entity = entities?.LastOrDefault(e => e.IncludesPosition(token.StartIndex) &&
                 e.Interval.Start <= token.StartIndex && LineOf(e) == token.Line);
-            if (entity == null || !string.Equals(entity.Name, token.Text, StringComparison.OrdinalIgnoreCase))
+            if (entity == null)
+                return null;
+            // a constructor is named by its keyword
+            if (token.Type == XSharpLexer.CONSTRUCTOR)
+                return entity.Kind == Kind.Constructor ? entity : null;
+            if (!string.Equals(entity.Name, token.Text, StringComparison.OrdinalIgnoreCase))
                 return null;
             return entity;
+        }
+
+        /// <summary>The name a file must contain: for a constructor (named .ctor) the name of its class.</summary>
+        internal static string SearchName(IXSymbol target)
+        {
+            if (target.Kind == Kind.Constructor && target is IXMemberSymbol ctor)
+            {
+                var typeName = ctor.ParentType?.Name ?? ctor.DeclaringType;
+                if (!string.IsNullOrEmpty(typeName))
+                    return typeName.Substring(typeName.LastIndexOf('.') + 1);
+            }
+            return target.Name;
         }
 
         /// <summary>1 based start line of an entity, comparable with IToken.Line (Range lines are 0 based).</summary>

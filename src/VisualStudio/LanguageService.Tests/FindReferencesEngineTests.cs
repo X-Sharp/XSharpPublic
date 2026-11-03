@@ -63,5 +63,37 @@ namespace XSharp.LanguageService.Tests
             Assert.Same(name, FindReferencesEngine.DeclaredEntity(entities, declarationOfString));
             Assert.Null(FindReferencesEngine.DeclaredEntity(entities, call));
         }
+
+        private static XSourceMemberSymbol Constructor(string text, string declaration)
+        {
+            var member = Member(text, declaration);
+            return new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, member.Range, member.Interval, "", null);
+        }
+
+        [Fact]
+        public void DeclaredEntityOfTheConstructorKeyword()
+        {
+            var text = "CLASS Foo\nCONSTRUCTOR(n AS INT)\n    x := Foo{}\nCLASS Bar\nCONSTRUCTOR()\n    RETURN\n";
+            var foo = Constructor(text, "CONSTRUCTOR(n");
+            var bar = Constructor(text, "CONSTRUCTOR()");
+            var entities = new List<XSourceEntity> { foo, bar };
+            var tokens = TestLexer.Lex(text);
+            Assert.Same(foo, FindReferencesEngine.DeclaredEntity(entities, tokens.First(t => t.StartIndex == text.IndexOf("CONSTRUCTOR(n"))));
+            Assert.Same(bar, FindReferencesEngine.DeclaredEntity(entities, tokens.First(t => t.StartIndex == text.IndexOf("CONSTRUCTOR()"))));
+            Assert.Null(FindReferencesEngine.DeclaredEntity(entities, tokens.First(t => t.StartIndex == text.IndexOf("Foo{"))));
+        }
+
+        [Fact]
+        public void SearchNameOfAConstructorIsItsClass()
+        {
+            var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            type.AddMember(ctor);
+            var run = new XSourceMemberSymbol("Run", Kind.Method, Modifiers.Public, new TextRange(4, 1, 5, 1), new TextInterval(70, 80), "", null);
+            type.AddMember(run);
+            Assert.Equal("Foo", FindReferencesEngine.SearchName(ctor));
+            Assert.Equal("Run", FindReferencesEngine.SearchName(run));
+            Assert.Equal("Foo", FindReferencesEngine.SearchName(type));
+        }
     }
 }

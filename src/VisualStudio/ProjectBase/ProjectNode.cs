@@ -656,12 +656,46 @@ namespace Microsoft.VisualStudio.Project
                     EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
                     if (automationObject != null)
                     {
-                        var platform = Utilities.GetActivePlatformName(automationObject);
-                        var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+                        var name = GetActiveConfigCanonicalName(automationObject);
                         return new ProjectConfig(this, name);
                     }
                     return null;
                 });
+            }
+        }
+
+        private bool activeConfigFallbackLogged;
+        /// <summary>
+        /// Gets the name of the active configuration of this project.
+        /// When the solution configuration maps the project to a configuration that the project does not have
+        /// (for example "Debug|AnyCPU" instead of "Debug|Any CPU" in a hand written .sln file), the
+        /// ConfigurationManager throws E_INVALIDARG. We then fall back to the configuration that MSBuild
+        /// evaluates the project with, so callers (such as the parse options) get the project's real settings.
+        /// </summary>
+        protected ConfigCanonicalName GetActiveConfigCanonicalName(EnvDTE.Project automationObject)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            try
+            {
+                var platform = Utilities.GetActivePlatformName(automationObject);
+                return new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+            }
+            catch (ArgumentException e)
+            {
+                var configName = this.buildProject?.GetPropertyValue(ProjectFileConstants.Configuration);
+                var platform = this.buildProject?.GetPropertyValue(ProjectFileConstants.Platform);
+                if (string.IsNullOrEmpty(configName))
+                    configName = "Debug";
+                if (string.IsNullOrEmpty(platform))
+                    platform = ProjectConfig.AnyCPU;
+                var name = new ConfigCanonicalName(configName, platform);
+                if (!activeConfigFallbackLogged)
+                {
+                    activeConfigFallbackLogged = true;
+                    Logger.Information($"Project {this.Url}: cannot retrieve the active configuration ({e.Message}). " +
+                        $"Check the project configuration mapping in the solution file. Using '{name.ConfigName}|{name.Platform}'.");
+                }
+                return name;
             }
         }
 

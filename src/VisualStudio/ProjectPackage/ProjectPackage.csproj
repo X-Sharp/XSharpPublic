@@ -840,4 +840,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+<ItemGroup>
+    <Reference Remove="Microsoft.Diagnostics.Tracing.EventSource"/>
+  </ItemGroup>
+  
 </Project>

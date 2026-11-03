@@ -235,4 +235,8 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+<ItemGroup>
+    <Reference Remove="Microsoft.Diagnostics.Tracing.EventSource"/>
+  </ItemGroup>
+  
 </Project>

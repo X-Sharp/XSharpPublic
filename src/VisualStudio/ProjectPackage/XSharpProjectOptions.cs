@@ -86,6 +86,7 @@ namespace XSharp.Project
                     defines = defines + def;
                 }
             }
+            Logger.Debug("ProjectOptions: defines " + defines);
             if (!string.IsNullOrEmpty(defines))
             {
                 options.Add("d:" + defines);

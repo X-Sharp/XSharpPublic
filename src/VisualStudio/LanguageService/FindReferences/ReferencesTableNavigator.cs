@@ -24,7 +24,6 @@ namespace XSharp.LanguageService.FindReferences
     {
         public ITableControlEventProcessor GetAssociatedEventProcessor(IWpfTableControl tableControl)
         {
-            Logger.Information("FindReferences navigator attached to a table control");
             return new ReferencesTableNavigator();
         }
     }
@@ -41,7 +40,6 @@ namespace XSharp.LanguageService.FindReferences
                 Logger.Information("FindReferences navigate: entry without document/line/column");
                 return;
             }
-            Logger.Information($"FindReferences navigate to {path}:{line + 1}:{column + 1}");
             e.Handled = true;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {

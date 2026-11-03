@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
-using XSharp.Support;
 using XSharpModel;
 
 namespace XSharp.LanguageService.FindReferences
@@ -81,11 +80,6 @@ namespace XSharp.LanguageService.FindReferences
 
         public void Add(IReadOnlyList<ReferenceHit> batch)
         {
-            foreach (var hit in batch)
-            {
-                // spike: the hits are also logged so that test runs can check them without the UI
-                Logger.Information($"FindReferences hit {(hit.IsDefinition ? "def" : "ref")} {Path.GetFileName(hit.FilePath)}:{hit.Line + 1}:{hit.Column + 1} {hit.LineText.Trim()} [{hit.Group}]");
-            }
             var entries = batch.Select(hit => (ITableEntry)new ReferenceTableEntry(hit, BucketOf(hit), _format)).ToList();
             lock (_gate)
             {

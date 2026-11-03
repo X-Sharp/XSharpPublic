@@ -100,5 +100,11 @@ and are correctly excluded.
   first constructor search, the others ≤ 82 ms). Not covered: `METHOD Init`/`SUPER:Init()` with `/vo1` (user: not
   needed), static constructors.
 - Symbols from referenced assemblies, VS 2019 runtime (it builds).
-- Each hit is also written to the intellisense log (spike aid; remove before a PR).
+- The per-hit and navigation log lines (spike aid) were removed on 2026-11-03; one summary line per search stays.
+  FAR on a symbol from a referenced assembly shows a status bar message instead of an empty window, and a new search
+  removes the previous one's source from the window.
+- Not addressed (spike review minors): `ModelWalker.Suspend/Resume` count with `++`/`--`, not `Interlocked` (existing
+  code model, now also called from the search thread); a running search is not cancelled when the solution closes;
+  right after an edit above a declaration its interval can be stale and hide hits in that file; DEFINEs in `.vh`
+  headers get no definition row; identifiers inside interpolated strings and `@@`-escaped names are never candidates.
 - `XDocumentIndexer` duplicates three index rules of `XSharpClassifier` (kept separate on purpose; may drift).

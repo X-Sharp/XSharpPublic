@@ -108,13 +108,27 @@ namespace XSharp.LanguageService.FindReferences
             }
         }
 
-        private static IEnumerable<XFile> FilesInScope(IXSymbol target)
+        /// <summary>
+        /// Only symbols declared in the solution's source can be searched; types and members of referenced
+        /// assemblies cannot.
+        /// </summary>
+        internal static bool IsInSource(IXSymbol target)
+        {
+            return target is XSourceVariableSymbol || SourceFileOf(target) != null;
+        }
+
+        private static XFile SourceFileOf(IXSymbol target)
         {
             // members read from the database have no file: use the file of their type
-            var targetFile = (target as XSourceSymbol)?.File;
-            if (targetFile == null && target is IXMemberSymbol member)
-                targetFile = (member.ParentType as XSourceSymbol)?.File;
-            var project = targetFile?.Project;
+            var file = (target as XSourceSymbol)?.File;
+            if (file == null && target is IXMemberSymbol member)
+                file = (member.ParentType as XSourceSymbol)?.File;
+            return file;
+        }
+
+        private static IEnumerable<XFile> FilesInScope(IXSymbol target)
+        {
+            var project = SourceFileOf(target)?.Project;
             if (project == null)
                 return Enumerable.Empty<XFile>();
             var projects = XSolution.Projects.Where(p => p == project || p.ReferencedProjects.Contains(project));

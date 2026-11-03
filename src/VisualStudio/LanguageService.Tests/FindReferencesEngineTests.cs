@@ -117,6 +117,20 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void OnlySourceSymbolsCanBeSearched()
+        {
+            var file = new XFile(@"C:\Test\A.prg", null);
+            var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), file, null);
+            var close = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            type.AddMember(close);
+            var orphan = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            Assert.True(FindReferencesEngine.IsInSource(type));
+            Assert.True(FindReferencesEngine.IsInSource(close));
+            Assert.False(FindReferencesEngine.IsInSource(orphan));
+            Assert.False(FindReferencesEngine.IsInSource(new XKeywordSymbol("IF")));
+        }
+
+        [Fact]
         public void SearchNameOfAConstructorIsItsClass()
         {
             var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);

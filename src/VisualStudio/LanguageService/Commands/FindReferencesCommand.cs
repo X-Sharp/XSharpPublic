@@ -28,6 +28,8 @@ namespace XSharp.LanguageService.Commands
     internal class FindReferencesCommand : AbstractCommand
     {
         private static CancellationTokenSource _cancellation;
+        private static ReferencesTableDataSource _source;
+        private static Microsoft.VisualStudio.Shell.TableManager.ITableManager _sourceManager;
 
         public static async Task InitializeAsync()
         {
@@ -52,6 +54,11 @@ namespace XSharp.LanguageService.Commands
                     await VS.StatusBar.ShowMessageAsync("No X# symbol under the cursor");
                     return;
                 }
+                if (!FindReferencesEngine.IsInSource(target))
+                {
+                    await VS.StatusBar.ShowMessageAsync($"Find References: '{target.FullName}' is not declared in the X# source of this solution");
+                    return;
+                }
                 // Foo{} of a class without constructors: the lookup makes one up, search the class instead
                 if (target.Kind == Kind.Constructor && target is IXMemberSymbol ctor && ctor.ParentType != null &&
                     ctor.ParentType.GetConstructors().Length == 0)
@@ -67,7 +74,12 @@ namespace XSharp.LanguageService.Commands
                 var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
                 var window = service.StartSearch($"'{title}' references");
                 var source = new ReferencesTableDataSource(target, await CreateTextFormatAsync());
+                // the window keeps every source it was given: drop the previous search
+                if (_source != null)
+                    _sourceManager?.RemoveSource(_source);
                 window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
+                _source = source;
+                _sourceManager = window.Manager;
                 window.Closed += (s, e) => cancellation.Cancel();
                 _ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
                 {

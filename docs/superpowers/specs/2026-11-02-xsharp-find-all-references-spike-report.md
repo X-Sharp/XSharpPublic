@@ -85,6 +85,14 @@ and are correctly excluded.
 - The first search right after adding files to a project left calls unresolved (the code model had not caught up);
   the same search a minute later was complete.
 - Overrides are not cascaded (FAR on `Base.Close` does not list `Sub.Close`); C# does. Design question.
-- Constructors (`Init` ↔ `Foo{}`), symbols from referenced assemblies, VS 2019 runtime (it builds).
+- Constructors (2026-11-03, design `2026-11-03-far-constructors-design.md`): FAR on `CONSTRUCTOR(...)`, on `Foo{...}`,
+  `SUPER(...)` or `SELF(...)` lists the creations, the chains in derived classes and in the same class, and the
+  declaration; overloads are narrowed by the `{...}`/`(...)` arguments. FAR on a class also lists `Foo{...}`; on
+  `Foo{}` of a class without constructors it searches the class. The lookup resolves the name in `Foo{...}` to the
+  class (as Go To Definition does), so FAR maps it to the constructors itself. Verified in the Exp instance with two
+  constructors, a subclass `SUPER(r)` and `SELF(0)` across two projects (one DTE round trip of 1.17 s during the
+  first constructor search, the others ≤ 82 ms). Not covered: `METHOD Init`/`SUPER:Init()` with `/vo1` (user: not
+  needed), static constructors.
+- Symbols from referenced assemblies, VS 2019 runtime (it builds).
 - Each hit is also written to the intellisense log (spike aid; remove before a PR).
 - `XDocumentIndexer` duplicates three index rules of `XSharpClassifier` (kept separate on purpose; may drift).

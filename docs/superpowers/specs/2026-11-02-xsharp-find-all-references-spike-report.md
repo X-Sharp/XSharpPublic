@@ -84,7 +84,13 @@ and are correctly excluded.
   arguments). Verified in the Exp instance with `Run()`, `Run(INT)`, `Run(STRING)`, `Run(INT, INT)`.
 - The first search right after adding files to a project left calls unresolved (the code model had not caught up);
   the same search a minute later was complete.
-- Overrides are not cascaded (FAR on `Base.Close` does not list `Sub.Close`); C# does. Design question.
+- Overrides (2026-11-03, design `2026-11-03-far-overrides-design.md`): FAR on a method or property lists its whole
+  override family as in C#, both directions, siblings included, one window group per declaration. Same name, kind
+  and parameter list count as an override (`VIRTUAL`/`OVERRIDE` not checked); property-like members by name; only
+  source types; the scope starts at the topmost member. `XSourceTypeSymbol.BaseType` is only set by `ForceComplete`
+  and that looks the base class up with the file's USINGs alone (not the enclosing `BEGIN NAMESPACE`), so FAR
+  resolves the base class itself. Verified in the Exp instance: `Animal`/`Dog`/`Cat` `Speak` family from three start
+  points, an overload `Speak(n)` and an unrelated `Car.Speak` stay separate; round trips ≤ 136 ms.
 - Constructors (2026-11-03, design `2026-11-03-far-constructors-design.md`): FAR on `CONSTRUCTOR(...)`, on `Foo{...}`,
   `SUPER(...)` or `SELF(...)` lists the creations, the chains in derived classes and in the same class, and the
   declaration; overloads are narrowed by the `{...}`/`(...)` arguments. FAR on a class also lists `Foo{...}`; on

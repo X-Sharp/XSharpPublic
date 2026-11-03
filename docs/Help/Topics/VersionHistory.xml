@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-10-27T15:39:52.913Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-03T14:11:43.652Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>#2127</keyword>
@@ -68,6 +68,9 @@
       <li styleclass="List1">Fixed an issue with FindClass for types that are not yet loaded <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2109" target="_blank">#2109</link></li>
       <li styleclass="List1">Nested codeblocks in macro scripts can now access locals from the surroundng code <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2113" target="_blank">#2113</link></li>
       <li styleclass="List1">Allow implicit interface conversions in macros (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2114" target="_blank">#2114)</link></li>
+      <li styleclass="List1">Fixed an issue with the FoxPro directory function (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2137" target="_blank">#2137)</link></li>
+      <li styleclass="List1">Fixed an issue with late bound assigns to class properties in the FoxPro dialect</li>
+      <li styleclass="List1">Changed the return type of the internal function that is called for the SCATTER ARRAY command from Array to FoxPro compatible array (__FoxArray)</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">New Features</para>
@@ -90,6 +93,11 @@
       <li styleclass="List1">Fixed the completion &quot;Max Entries&quot; option resetting to 25 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2088" target="_blank">#2088</link>)</li>
       <li styleclass="List1">Fixed threading issues in the VS Projectsystem (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2124" target="_blank">#2124</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2125" target="_blank">#2125</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2127" target="_blank">#2127</link>)</li>
       <li styleclass="List1">Fixed an issue with the type lookup for the loop variables of a FOREACH loop (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2129" target="_blank">#2129</link>)</li>
+      <li styleclass="List1">Fixed an issue when closing a solution (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2138" target="_blank">#2138)</link></li>
+      <li styleclass="List1">Fixed an issue with the navigation bar in the source code editor (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2144" target="_blank">#2144</link>)</li>
+      <li styleclass="List1">Fixed an issue when a project file contains an invalid configuration (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2145" target="_blank">#2145</link>)</li>
+      <li styleclass="List1">For multi-targeting projects Goto Definition could show the same definition twice. This has been solved</li>
+      <li styleclass="List1">Fixed some issues when switching between Sqlite databases engines for the intellisense database. We now delete the database after changing the engine, so it will be rebuilt when the solution is reloaded.</li>
     </list>
     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">New Features</para>

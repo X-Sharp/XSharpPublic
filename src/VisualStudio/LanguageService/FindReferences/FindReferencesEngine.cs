@@ -153,9 +153,11 @@ namespace XSharp.LanguageService.FindReferences
                     continue;
                 stats.Candidates++;
                 var line = token.Line - 1;
-                bool isDefinition = IsDeclaration(target, token, line, file);
+                // the name in a declaration: of the target (all parts of a partial type), or of something else
+                var declared = DeclaredEntity(file.EntityList, token);
+                bool isDefinition = declared != null && SymbolIdentity.IsSame(target, declared);
                 bool isReference = false;
-                if (!isDefinition)
+                if (declared == null)
                 {
                     var member = XSharpLookup.FindMemberAtPosition(token.StartIndex, file);
                     var ns = XSharpTokenTools.FindNamespace(token.StartIndex, file);
@@ -198,21 +200,22 @@ namespace XSharp.LanguageService.FindReferences
             return hits;
         }
 
-        /// <summary>The token is the name in a declaration of the target (all parts of a partial type).</summary>
-        private static bool IsDeclaration(IXSymbol target, IToken token, int line, XFile file)
+        /// <summary>
+        /// The entity whose name the token is in its declaration, otherwise null. A declaration is not a call:
+        /// its parameter list must not be read as arguments.
+        /// </summary>
+        internal static XSourceEntity DeclaredEntity(IList<XSourceEntity> entities, IToken token)
         {
             // the innermost entity that starts on the token's line
-            var entity = file.EntityList.LastOrDefault(e => e.IncludesPosition(token.StartIndex) &&
-                e.Interval.Start <= token.StartIndex && LineOf(file, e) == token.Line);
-            if (entity == null)
-                return false;
-            if (!string.Equals(entity.Name, token.Text, StringComparison.OrdinalIgnoreCase))
-                return false;
-            return SymbolIdentity.IsSame(target, entity);
+            var entity = entities?.LastOrDefault(e => e.IncludesPosition(token.StartIndex) &&
+                e.Interval.Start <= token.StartIndex && LineOf(e) == token.Line);
+            if (entity == null || !string.Equals(entity.Name, token.Text, StringComparison.OrdinalIgnoreCase))
+                return null;
+            return entity;
         }
 
         /// <summary>1 based start line of an entity, comparable with IToken.Line (Range lines are 0 based).</summary>
-        private static int LineOf(XFile file, XSourceEntity entity)
+        private static int LineOf(XSourceEntity entity)
         {
             return entity.Range.StartLine + 1;
         }

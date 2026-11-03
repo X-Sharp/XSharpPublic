@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using XSharp.LanguageService.FindReferences;
+using XSharpModel;
 using Xunit;
 
 namespace XSharp.LanguageService.Tests
@@ -37,6 +39,29 @@ namespace XSharp.LanguageService.Tests
                     }, stats, cts.Token));
             }
             Assert.Equal(0, stats.Failed);
+        }
+
+        private static XSourceMemberSymbol Member(string text, string declaration)
+        {
+            int start = text.IndexOf(declaration);
+            int stop = text.IndexOf('\n', start);
+            int line = text.Substring(0, start).Count(c => c == '\n');
+            return new XSourceMemberSymbol("Run", Kind.Method, Modifiers.Public, new TextRange(line, 0, line + 1, 0),
+                new TextInterval(start, stop + 20 > text.Length ? text.Length - 1 : stop + 20), "VOID", null);
+        }
+
+        [Fact]
+        public void DeclaredEntityIsTheEntityWhoseNameTheTokenIs()
+        {
+            var text = "CLASS Over\nMETHOD Run(n AS INT) AS VOID\n    SELF:Run(\"a\")\nMETHOD Run(s AS STRING) AS VOID\n    RETURN\n";
+            var number = Member(text, "METHOD Run(n");
+            var name = Member(text, "METHOD Run(s");
+            var entities = new List<XSourceEntity> { number, name };
+            var tokens = TestLexer.Lex(text);
+            var declarationOfString = tokens.First(t => t.StartIndex == text.IndexOf("Run(s"));
+            var call = tokens.First(t => t.StartIndex == text.IndexOf("Run(\"a\")"));
+            Assert.Same(name, FindReferencesEngine.DeclaredEntity(entities, declarationOfString));
+            Assert.Null(FindReferencesEngine.DeclaredEntity(entities, call));
         }
     }
 }

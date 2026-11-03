@@ -39,8 +39,10 @@ namespace XSharp.LanguageService.Commands
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var symbols = doc.TextView.GetSymbolUnderCursor(out _, out var location, out _);
-                // on a call site: the overload that takes these arguments
-                var target = location == null ? null :
+                // on a declaration: the declared overload; on a call site: the overload that takes these arguments
+                var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
+                var declared = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
+                var target = declared != null ? declared : location == null ? null :
                     OverloadFilter.Filter(symbols, OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
                         id => SymbolResolver.TypeOf(location, id)).FirstOrDefault();
                 if (target == null || location == null)

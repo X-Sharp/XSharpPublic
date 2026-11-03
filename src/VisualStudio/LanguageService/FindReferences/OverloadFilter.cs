@@ -95,8 +95,14 @@ namespace XSharp.LanguageService.FindReferences
         /// <summary>The arguments for the identifier at (or just before) the caret position.</summary>
         internal static IList<IList<IToken>> ArgumentsAt(IList<IToken> tokens, int position)
         {
-            var name = tokens?.FirstOrDefault(t => t.Type == XSharpLexer.ID && t.StartIndex <= position && position <= t.StopIndex + 1);
+            var name = NameAt(tokens, position);
             return name == null ? null : Arguments(tokens, name);
+        }
+
+        /// <summary>The identifier at (or just before) the caret position.</summary>
+        internal static IToken NameAt(IList<IToken> tokens, int position)
+        {
+            return tokens?.FirstOrDefault(t => t.Type == XSharpLexer.ID && t.StartIndex <= position && position <= t.StopIndex + 1);
         }
 
         /// <summary>

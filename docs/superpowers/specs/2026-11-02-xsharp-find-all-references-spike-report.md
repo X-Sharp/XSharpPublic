@@ -73,8 +73,15 @@ and are correctly excluded.
   overloads whose parameter count accepts the number of arguments at the call site (`OverloadFilter`; defaults,
   PARAMS arrays, CLIPPER methods and extension methods considered), both for the hits and for the target picked at a
   call site. Verified in the Exp instance with three `Run` overloads, also with the declaring file closed (members
-  from the database carry their parameters). Overloads with the same parameter count and different types are still
-  merged; when no overload accepts the count, all are kept. Go To Definition is unchanged.
+  from the database carry their parameters). When no overload accepts the count, all are kept. Go To Definition is
+  unchanged.
+- Overloads with the same count are narrowed by argument type (2026-11-03) where the type is obvious from the tokens:
+  literals, `Foo{...}`, and single identifiers typed by the lookup (locals, parameters, fields, properties). Only
+  built-in types of different kinds (string vs. number vs. date …) rule an overload out; integers widen to floating
+  point, USUAL/OBJECT accept anything, class types are never ruled out (inheritance unknown); among the rest the most
+  exact matches win. Expressions and method calls as arguments stay unknown, so `Run((1 + 2))` is listed for both
+  `Run(INT)` and `Run(STRING)`. Declaration names are no longer resolved as calls (their parameter list was read as
+  arguments). Verified in the Exp instance with `Run()`, `Run(INT)`, `Run(STRING)`, `Run(INT, INT)`.
 - The first search right after adding files to a project left calls unresolved (the code model had not caught up);
   the same search a minute later was complete.
 - Overrides are not cascaded (FAR on `Base.Close` does not list `Sub.Close`); C# does. Design question.

@@ -380,8 +380,7 @@ namespace Microsoft.VisualStudio.Project
                     EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
                     if (automationObject != null)
                     {
-                        var platform = Utilities.GetActivePlatformName(automationObject);
-                        var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+                        var name = GetActiveConfigCanonicalName(automationObject);
                         return new XProjectConfig(this, name);
                     }
                     return null;

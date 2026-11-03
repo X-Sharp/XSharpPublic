@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
@@ -118,7 +120,7 @@ namespace XSharp.LanguageService.FindReferences
             }
         }
 
-        private sealed class ReferenceTableEntry : TableEntryBase
+        private sealed class ReferenceTableEntry : TableEntryBase, IWpfTableEntry
         {
             private readonly ReferenceHit _hit;
             private readonly XSharpDefinitionBucket _bucket;
@@ -130,6 +132,49 @@ namespace XSharp.LanguageService.FindReferences
             }
 
             public override object Identity => _hit;
+
+            public bool TryCreateColumnContent(string columnName, bool singleColumnView, out FrameworkElement content)
+            {
+                if (columnName == StandardTableColumnDefinitions.Text)
+                {
+                    content = ReferenceLineText.CreateTextBlock(_hit.LineText, _hit.Column, _hit.Length);
+                    return true;
+                }
+                content = null;
+                return false;
+            }
+
+            public bool TryCreateImageContent(string columnName, bool singleColumnView, out ImageMoniker content)
+            {
+                content = default;
+                return false;
+            }
+
+            public bool TryCreateStringContent(string columnName, bool truncatedText, bool singleColumnView, out string content)
+            {
+                content = null;
+                return false;
+            }
+
+            public bool TryCreateToolTip(string columnName, out object toolTip)
+            {
+                toolTip = null;
+                return false;
+            }
+
+            public bool CanCreateDetailsContent() => false;
+
+            public bool TryCreateDetailsContent(out FrameworkElement expandedContent)
+            {
+                expandedContent = null;
+                return false;
+            }
+
+            public bool TryCreateDetailsStringContent(out string content)
+            {
+                content = null;
+                return false;
+            }
 
             public override bool TryGetValue(string keyName, out object content)
             {

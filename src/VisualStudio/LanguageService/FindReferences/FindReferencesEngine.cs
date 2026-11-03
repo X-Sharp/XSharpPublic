@@ -51,7 +51,9 @@ namespace XSharp.LanguageService.FindReferences
                 }
                 else
                 {
-                    files = FilesInScope(target);
+                    // an override family is searched from its topmost member: its callers may live in any project
+                    // that sees the base class
+                    files = FilesInScope(target is IXMemberSymbol member ? OverrideFamily.Root(member) : target);
                 }
                 SearchEach(files.Where(f => f != null), file =>
                 {
@@ -158,7 +160,9 @@ namespace XSharp.LanguageService.FindReferences
                 var line = token.Line - 1;
                 // the name in a declaration: of the target (all parts of a partial type), or of something else
                 var declared = DeclaredEntity(file.EntityList, token);
-                bool isDefinition = declared != null && SymbolIdentity.IsSame(target, declared);
+                bool isDefinition = declared != null &&
+                    (SymbolIdentity.IsSame(target, declared) || OverrideFamily.Contains(target, declared));
+                IXSymbol group = declared;
                 bool isReference = false;
                 if (declared == null)
                 {
@@ -176,6 +180,13 @@ namespace XSharp.LanguageService.FindReferences
                     }
                     stats.Resolved++;
                     var match = symbols.FirstOrDefault(s => SymbolIdentity.IsReferenceTo(target, s));
+                    group = target;
+                    if (match == null)
+                    {
+                        // a call that reaches an override of the target, or the member the target overrides
+                        match = symbols.FirstOrDefault(s => OverrideFamily.Contains(target, s));
+                        group = match;
+                    }
                     isReference = match != null;
                     // locals and parameters: the first occurrence on their declaration line is the declaration
                     if (match is XSourceVariableSymbol local && local.Range.StartLine == line &&
@@ -197,7 +208,8 @@ namespace XSharp.LanguageService.FindReferences
                         Length = token.StopIndex - token.StartIndex + 1,
                         LineText = textLine.GetText(),
                         Classifications = ReferenceLineText.Classify(document.Tokens, textLine.Start.Position, textLine.End.Position),
-                        IsDefinition = isDefinition
+                        IsDefinition = isDefinition,
+                        Group = GroupOf(group ?? target)
                     });
                 }
             }
@@ -221,6 +233,12 @@ namespace XSharp.LanguageService.FindReferences
             if (!string.Equals(entity.Name, token.Text, StringComparison.OrdinalIgnoreCase))
                 return null;
             return entity;
+        }
+
+        /// <summary>The group header of a hit in the window: the declaration it belongs to.</summary>
+        internal static string GroupOf(IXSymbol symbol)
+        {
+            return $"{symbol.KindKeyword} {symbol.FullName}".Trim();
         }
 
         /// <summary>The name a file must contain: for a constructor (named .ctor) the name of its class.</summary>

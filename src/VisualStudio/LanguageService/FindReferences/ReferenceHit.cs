@@ -21,6 +21,8 @@ namespace XSharp.LanguageService.FindReferences
         /// <summary>Editor classifications of the line, relative to the line start</summary>
         internal IReadOnlyList<ClassifiedRange> Classifications { get; set; }
         internal bool IsDefinition { get; set; }
+        /// <summary>The declaration the hit belongs to: the target or a member of its override family</summary>
+        internal string Group { get; set; }
     }
 
     internal readonly struct ClassifiedRange

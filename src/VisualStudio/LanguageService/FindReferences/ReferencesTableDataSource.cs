@@ -36,15 +36,31 @@ namespace XSharp.LanguageService.FindReferences
 
         private readonly object _gate = new object();
         private readonly List<ITableEntry> _entries = new List<ITableEntry>();
-        private readonly XSharpDefinitionBucket _bucket;
+        // one group per declaration: the target and the members of its override family
+        private readonly Dictionary<string, XSharpDefinitionBucket> _buckets = new Dictionary<string, XSharpDefinitionBucket>(StringComparer.OrdinalIgnoreCase);
+        private readonly string _targetGroup;
         private readonly ReferenceTextFormat _format;
         private ITableDataSink _sink;
         private bool _completed;
 
         internal ReferencesTableDataSource(IXSymbol target, ReferenceTextFormat format)
         {
-            _bucket = new XSharpDefinitionBucket($"{target.KindKeyword} {target.FullName}".Trim());
+            _targetGroup = FindReferencesEngine.GroupOf(target);
             _format = format;
+        }
+
+        private XSharpDefinitionBucket BucketOf(ReferenceHit hit)
+        {
+            var group = hit.Group ?? _targetGroup;
+            lock (_gate)
+            {
+                if (!_buckets.TryGetValue(group, out var bucket))
+                {
+                    bucket = new XSharpDefinitionBucket(group);
+                    _buckets.Add(group, bucket);
+                }
+                return bucket;
+            }
         }
 
         public string SourceTypeIdentifier => SourceType;
@@ -68,9 +84,9 @@ namespace XSharp.LanguageService.FindReferences
             foreach (var hit in batch)
             {
                 // spike: the hits are also logged so that test runs can check them without the UI
-                Logger.Information($"FindReferences hit {(hit.IsDefinition ? "def" : "ref")} {Path.GetFileName(hit.FilePath)}:{hit.Line + 1}:{hit.Column + 1} {hit.LineText.Trim()}");
+                Logger.Information($"FindReferences hit {(hit.IsDefinition ? "def" : "ref")} {Path.GetFileName(hit.FilePath)}:{hit.Line + 1}:{hit.Column + 1} {hit.LineText.Trim()} [{hit.Group}]");
             }
-            var entries = batch.Select(hit => (ITableEntry)new ReferenceTableEntry(hit, _bucket, _format)).ToList();
+            var entries = batch.Select(hit => (ITableEntry)new ReferenceTableEntry(hit, BucketOf(hit), _format)).ToList();
             lock (_gate)
             {
                 _entries.AddRange(entries);

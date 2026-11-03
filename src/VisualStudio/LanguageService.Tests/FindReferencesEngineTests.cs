@@ -102,6 +102,21 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void GroupOfAMemberIsItsDeclaration()
+        {
+            var foo = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            foo.Namespace = "Test";
+            var bar = new XSourceTypeSymbol("Bar", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(200, 300), null, null);
+            bar.Namespace = "Test";
+            var fooClose = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            foo.AddMember(fooClose);
+            var barClose = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(250, 260), "", null);
+            bar.AddMember(barClose);
+            Assert.Contains("Test.Foo.Close", FindReferencesEngine.GroupOf(fooClose));
+            Assert.NotEqual(FindReferencesEngine.GroupOf(fooClose), FindReferencesEngine.GroupOf(barClose));
+        }
+
+        [Fact]
         public void SearchNameOfAConstructorIsItsClass()
         {
             var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);

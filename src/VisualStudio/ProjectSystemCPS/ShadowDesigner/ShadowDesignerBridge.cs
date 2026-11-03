@@ -106,6 +106,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // and a re-evaluation. Opening the designer before that fails with "... is not contained within a
                 // project that supports code" -- wait until the project contains the files.
                 await WaitForCompanionFilesAsync(location);
+                if (!await WaitForCompanionRestoreAsync(location))
+                {
+                    return (false, $"The companion project {location.CompanionCsprojPath} was not restored.");
+                }
                 var dte = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SDTE)) as DTE2;
                 if (dte == null)
                 {
@@ -180,6 +184,69 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 }
                 await Task.Delay(200);
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            }
+        }
+
+        // How long to wait for the NuGet restore of a freshly created companion project
+        private static readonly TimeSpan CompanionRestoreTimeout = TimeSpan.FromSeconds(60);
+
+        private static string GetCompanionAssetsFile(string companionDir) =>
+            Path.Combine(companionDir, "obj", "project.assets.json");
+
+        /// <summary>
+        /// True when the companion project of <paramref name="xProject"/> exists and has been restored. Lets the
+        /// command handler decide to open the designer in the background, since waiting for the restore must not
+        /// block the UI thread.
+        /// </summary>
+        public static bool IsCompanionRestored(XProject xProject) =>
+            File.Exists(GetCompanionAssetsFile(CompanionProjectWriter.ComputeCompanionDir(xProject.FileName)));
+
+        /// <remarks>
+        /// Verified in VS: when the designer is opened before the companion is restored, the out-of-process designer
+        /// fails ("OutputGroupService didn't return output group DesignerRuntimeImplementationProjectOutputGroup",
+        /// then "Designer load encountered an error. Please ensure that the project can be built successfully.") and
+        /// keeps that failed session until VS is restarted: closing the solution or a later restore does not help.
+        /// So the designer is only opened once the restore has written project.assets.json. When it never comes
+        /// (e.g. NuGet package restore disabled in the NuGet options), the user gets an explanation instead.
+        /// </remarks>
+        private static async Task<bool> WaitForCompanionRestoreAsync(CompanionLocation location)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            string assetsFile = GetCompanionAssetsFile(Path.GetDirectoryName(location.CompanionCsprojPath));
+            if (File.Exists(assetsFile))
+            {
+                return true;
+            }
+            Logger.Information($"ShadowDesignerBridge: waiting for the restore of {location.CompanionCsprojPath}");
+            var statusBar = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+            statusBar?.SetText("X# WinForms Designer: waiting for the NuGet restore of " + Path.GetFileNameWithoutExtension(location.CompanionCsprojPath) + "...");
+            try
+            {
+                var deadline = DateTime.UtcNow + CompanionRestoreTimeout;
+                while (!File.Exists(assetsFile))
+                {
+                    if (DateTime.UtcNow >= deadline)
+                    {
+                        Logger.Error($"ShadowDesignerBridge: {location.CompanionCsprojPath} was not restored after {CompanionRestoreTimeout.TotalSeconds} s");
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        VsShellUtilities.ShowMessageBox(ServiceProvider.GlobalProvider,
+                            "The Windows Forms Designer needs the generated project " + Path.GetFileName(location.CompanionCsprojPath) +
+                            ", but NuGet has not restored it.\n\n" +
+                            "Check that NuGet package restore is enabled (Tools > Options > NuGet Package Manager > " +
+                            "'Allow NuGet to download missing packages'), restore the solution, then open the designer again.",
+                            "X# WinForms Designer",
+                            OLEMSGICON.OLEMSGICON_WARNING, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                        return false;
+                    }
+                    await Task.Delay(250);
+                }
+                Logger.Information($"ShadowDesignerBridge: {location.CompanionCsprojPath} restored");
+                return true;
+            }
+            finally
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                statusBar?.SetText("");
             }
         }
 

@@ -160,8 +160,9 @@ namespace XSharp.LanguageService.FindReferences
                     var member = XSharpLookup.FindMemberAtPosition(token.StartIndex, file);
                     var ns = XSharpTokenTools.FindNamespace(token.StartIndex, file);
                     var location = new XSharpSearchLocation(document, file, member, snapshot, line, token.StartIndex, ns?.FullName ?? "");
+                    var context = location;
                     var symbols = OverloadFilter.Filter(SymbolResolver.ResolveAt(ref location, out _, out _),
-                        OverloadFilter.ArgumentCount(document.Tokens, token));
+                        OverloadFilter.Arguments(document.Tokens, token), id => SymbolResolver.TypeOf(context, id));
                     if (symbols.Count == 0)
                     {
                         stats.Unresolved++;

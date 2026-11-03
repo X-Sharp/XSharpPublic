@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System.Collections.Generic;
+using System.Linq;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using XSharpModel;
@@ -34,6 +35,16 @@ namespace XSharp.LanguageService.FindReferences
                 }
             }
             return result;
+        }
+
+        /// <summary>The declared type of the local, parameter, field or property that the identifier names, otherwise null.</summary>
+        internal static string TypeOf(XSharpSearchLocation context, IToken identifier)
+        {
+            var location = context.With(identifier.Line - 1, identifier.StartIndex);
+            var symbol = ResolveAt(ref location, out _, out _).FirstOrDefault();
+            if (symbol is IXVariableSymbol || (symbol is IXMemberSymbol && (symbol.Kind.IsField() || symbol.Kind.IsProperty())))
+                return symbol.TypeName;
+            return null;
         }
     }
 }

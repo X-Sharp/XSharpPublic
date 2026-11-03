@@ -103,5 +103,89 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(symbols, OverloadFilter.Filter(symbols, null));
             Assert.Equal(symbols, OverloadFilter.Filter(symbols, 5));
         }
+
+        private static IList<string> TypesAt(string text, string marker, System.Func<string, string> identifierType = null)
+        {
+            var tokens = TestLexer.Lex(text);
+            var position = text.IndexOf(marker);
+            var token = tokens.First(t => t.StartIndex == position);
+            var arguments = OverloadFilter.Arguments(tokens, token);
+            return arguments.Select(a => OverloadFilter.ArgumentType(a, t => identifierType?.Invoke(t.Text))).ToList();
+        }
+
+        [Fact]
+        public void TypesOfLiteralArguments()
+        {
+            Assert.Equal(new[] { "System.Int32", "System.String", "System.Boolean", "System.Double", "XSharp.__Date", "XSharp.__Symbol" },
+                TypesAt("x := o:Foo(1, \"a\", TRUE, 1.5, 2020.01.01, #sym)\n", "Foo"));
+        }
+
+        [Fact]
+        public void TypesOfIdentifierAndConstructorArguments()
+        {
+            Assert.Equal(new[] { "System.String", "Bar", null, null },
+                TypesAt("x := o:Foo(s, Bar{1, 2}, a + 1, )\n", "Foo", n => n == "s" ? "STRING" : null));
+        }
+
+        [Fact]
+        public void TypesKeepTheMatchingOverload()
+        {
+            var number = Method("Run", CallingConvention.None, ("n", "INT", null, ParamType.As));
+            var text = Method("Run", CallingConvention.None, ("s", "STRING", null, ParamType.As));
+            var symbols = new List<IXSymbol> { number, text };
+            Assert.Equal(new IXSymbol[] { number }, OverloadFilter.FilterByTypes(symbols, new[] { "System.Int32" }));
+            Assert.Equal(new IXSymbol[] { text }, OverloadFilter.FilterByTypes(symbols, new[] { "System.String" }));
+            Assert.Equal(symbols, OverloadFilter.FilterByTypes(symbols, new string[] { null }));
+        }
+
+        [Fact]
+        public void IntegerArgumentWidensToFloatingPoint()
+        {
+            var real = Method("Run", CallingConvention.None, ("n", "REAL8", null, ParamType.As));
+            var text = Method("Run", CallingConvention.None, ("s", "STRING", null, ParamType.As));
+            var number = Method("Run", CallingConvention.None, ("n", "INT", null, ParamType.As));
+            Assert.Equal(new IXSymbol[] { real }, OverloadFilter.FilterByTypes(new List<IXSymbol> { real, text }, new[] { "System.Int32" }));
+            // the exact match wins over the widening
+            Assert.Equal(new IXSymbol[] { number }, OverloadFilter.FilterByTypes(new List<IXSymbol> { real, number }, new[] { "System.Int32" }));
+        }
+
+        [Fact]
+        public void UsualAcceptsAnythingButExactMatchWins()
+        {
+            var usual = Method("Run", CallingConvention.None, ("u", "USUAL", null, ParamType.As));
+            var text = Method("Run", CallingConvention.None, ("s", "STRING", null, ParamType.As));
+            var symbols = new List<IXSymbol> { usual, text };
+            Assert.Equal(new IXSymbol[] { text }, OverloadFilter.FilterByTypes(symbols, new[] { "System.String" }));
+            Assert.Equal(new IXSymbol[] { usual }, OverloadFilter.FilterByTypes(symbols, new[] { "System.Int32" }));
+        }
+
+        [Fact]
+        public void ClassTypesMatchByNameOtherwiseKept()
+        {
+            var foo = Method("Run", CallingConvention.None, ("f", "LibA.Foo", null, ParamType.As));
+            var bar = Method("Run", CallingConvention.None, ("b", "Bar", null, ParamType.As));
+            var symbols = new List<IXSymbol> { foo, bar };
+            Assert.Equal(new IXSymbol[] { foo }, OverloadFilter.FilterByTypes(symbols, new[] { "Foo" }));
+            // the inheritance is unknown: a subclass could be passed to either
+            Assert.Equal(symbols, OverloadFilter.FilterByTypes(symbols, new[] { "SubFoo" }));
+        }
+
+        [Fact]
+        public void NoCompatibleOverloadKeepsAll()
+        {
+            var number = Method("Run", CallingConvention.None, ("n", "INT", null, ParamType.As));
+            var date = Method("Run", CallingConvention.None, ("d", "DATE", null, ParamType.As));
+            var symbols = new List<IXSymbol> { number, date };
+            Assert.Equal(symbols, OverloadFilter.FilterByTypes(symbols, new[] { "System.String" }));
+        }
+
+        [Fact]
+        public void ParamArrayElementsUseTheElementType()
+        {
+            var numbers = Method("Run", CallingConvention.None, ("n", "INT[]", null, ParamType.Params));
+            var texts = Method("Run", CallingConvention.None, ("s", "STRING[]", null, ParamType.Params));
+            var symbols = new List<IXSymbol> { numbers, texts };
+            Assert.Equal(new IXSymbol[] { texts }, OverloadFilter.FilterByTypes(symbols, new[] { "System.String", "System.String" }));
+        }
     }
 }

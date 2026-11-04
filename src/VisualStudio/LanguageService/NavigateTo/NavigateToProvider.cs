@@ -17,8 +17,16 @@ using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService.NavigateTo
 {
-    /// <summary>Go To All (Ctrl+T) for the X# types, members, functions, DEFINEs and GLOBALs of the solution.</summary>
+    /// <summary>
+    /// The classic Go To window (Ctrl+T) for the X# types, members, functions, DEFINEs and GLOBALs of the solution.
+    /// Only there: the Code Search of VS 2022 17.6+ uses XSharpSearchItemsSourceProvider (separate assembly), because
+    /// it asks INavigateToItemProviders only for the first query of a session (OperationCanceledException in
+    /// CodeSearchItemsSource.StopSearch).
+    /// </summary>
     [Export(typeof(INavigateToItemProviderFactory))]
+#if DEV17
+    [OnlyNavigateToSupport]
+#endif
     internal sealed class NavigateToProviderFactory : INavigateToItemProviderFactory
     {
         public bool TryCreateNavigateToItemProvider(IServiceProvider serviceProvider, out INavigateToItemProvider provider)
@@ -62,6 +70,9 @@ namespace XSharp.LanguageService.NavigateTo
         private static async Task SearchAsync(INavigateToCallback callback, string searchValue, ISet<string> kinds,
             bool currentDocumentOnly, CancellationToken ct)
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            int found = 0, total = 0;
+            string outcome = "done";
             try
             {
                 string currentDocument = null;
@@ -72,6 +83,7 @@ namespace XSharp.LanguageService.NavigateTo
                         return;
                 }
                 var entries = await NavigateToSnapshot.Current.GetAsync(ct).ConfigureAwait(false);
+                total = entries.Count;
                 for (int i = 0; i < entries.Count; i++)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -88,19 +100,24 @@ namespace XSharp.LanguageService.NavigateTo
                         continue;
                     callback.AddItem(new NavigateToItem(entry.Name, kind, Language, entry.Container, entry,
                         MatchKindOf(match), NavigateToDisplayFactory.Instance));
+                    found++;
                 }
                 callback.ReportProgress(entries.Count, entries.Count);
             }
             catch (OperationCanceledException)
             {
+                outcome = "cancelled";
             }
             catch (Exception ex)
             {
+                outcome = "failed";
                 Logger.Exception(ex, "Navigate To: search failed");
             }
             finally
             {
                 callback.Done();
+                var filters = (kinds != null && kinds.Count > 0 ? " kinds " + string.Join(",", kinds) : "") + (currentDocumentOnly ? " current document" : "");
+                Logger.Information($"Navigate To '{searchValue}'{filters}: {found} of {total} entries, {outcome}, {watch.ElapsedMilliseconds} ms");
             }
         }
 

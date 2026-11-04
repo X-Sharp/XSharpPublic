@@ -138,5 +138,39 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(Kind.Access, entries.Single(e => e.Name == "Name").Kind);
             Assert.Equal(6, entries.Count);
         }
+
+        [Fact]
+        public void FromRowsLeavesOutTheBuiltInFunctions()
+        {
+            var saved = XSolution.BuiltInFunctions;
+            XSolution.BuiltInFunctions = @"C:\Temp\XSharp.Intellisense\BuiltInFunctions.prg";
+            try
+            {
+                var members = new[]
+                {
+                    Member(XLiterals.GlobalName, "NameOf", Kind.Function, @"c:\temp\xsharp.intellisense\builtinfunctions.prg", 1, "App.xsproj"),
+                    Member(XLiterals.GlobalName, "Start", Kind.Function, "funcs.prg", 3),
+                };
+                var entries = NavigateToEntry.FromRows(Array.Empty<XDbResult>(), members);
+                Assert.Equal(new[] { "Start" }, entries.Select(e => e.Name).ToArray());
+            }
+            finally
+            {
+                XSolution.BuiltInFunctions = saved;
+            }
+        }
+
+        [Theory]
+        [InlineData("Class", true, false, true)]
+        [InlineData("Method", true, false, false)]
+        [InlineData("Class", false, true, false)]
+        [InlineData("VODefine", false, true, true)]
+        [InlineData("Class", true, true, true)]
+        [InlineData("Method", false, false, true)]
+        public void TypeAndMemberFiltersLikeCSharp(string kind, bool typesOnly, bool membersOnly, bool expected)
+        {
+            var entry = new NavigateToEntry { Name = "X", Kind = (Kind)Enum.Parse(typeof(Kind), kind) };
+            Assert.Equal(expected, entry.PassesFilter(typesOnly, membersOnly));
+        }
     }
 }

@@ -24,6 +24,20 @@ namespace XSharp.LanguageService.NavigateTo
         internal int Line { get; set; }
         internal int Column { get; set; }
 
+        /// <summary>A type (class, structure, interface, delegate, enum), not a member</summary>
+        internal bool IsType => _typeKinds.Contains(Kind);
+
+        /// <summary>
+        /// The "types" and "members" filters of Go To All: one of them alone keeps only that group; both or none keep
+        /// everything.
+        /// </summary>
+        internal bool PassesFilter(bool typesOnly, bool membersOnly)
+        {
+            if (typesOnly == membersOnly)
+                return true;
+            return typesOnly == IsType;
+        }
+
         private static readonly HashSet<Kind> _typeKinds = new HashSet<Kind>
         {
             Kind.Class, Kind.Structure, Kind.Interface, Kind.Delegate, Kind.Enum, Kind.VOStruct, Kind.Union
@@ -45,15 +59,18 @@ namespace XSharp.LanguageService.NavigateTo
         {
             var result = new List<NavigateToEntry>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            // the functions of the runtime that the code model writes to a temporary file are not in the solution
+            var builtIn = XSolution.BuiltInFunctions;
+            bool IsBuiltIn(XDbResult row) => !string.IsNullOrEmpty(builtIn) && string.Equals(row.FileName, builtIn, StringComparison.OrdinalIgnoreCase);
             foreach (var row in types)
             {
-                if (!_typeKinds.Contains(row.Kind) || row.TypeName == XLiterals.GlobalName)
+                if (!_typeKinds.Contains(row.Kind) || row.TypeName == XLiterals.GlobalName || IsBuiltIn(row))
                     continue;
                 Add(row, row.TypeName, row.Namespace);
             }
             foreach (var row in members)
             {
-                if (!_memberKinds.Contains(row.Kind))
+                if (!_memberKinds.Contains(row.Kind) || IsBuiltIn(row))
                     continue;
                 var container = row.TypeName == XLiterals.GlobalName ? "" : row.TypeName;
                 if (row.Kind == Kind.Access || row.Kind == Kind.Assign)

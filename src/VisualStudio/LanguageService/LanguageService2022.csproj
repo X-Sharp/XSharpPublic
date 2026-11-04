@@ -62,6 +62,7 @@
     <Compile Include="Commands\DocumentOutlineCommand.cs" />
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\FindReferencesCommand.cs" />
+    <Compile Include="Commands\RenameCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
     <Compile Include="Controls\GotoDefinitionResultsWindow.xaml.cs">
@@ -147,8 +148,10 @@
     <Compile Include="FindReferences\OverrideFamily.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\ReferenceSearchOptions.cs" />
+    <Compile Include="FindReferences\ReferencesWindow.cs" />
     <Compile Include="Rename\RenameApplier.cs" />
     <Compile Include="Rename\RenameConflicts.cs" />
+    <Compile Include="Rename\RenameDialog.cs" />
     <Compile Include="Rename\RenameGuard.cs" />
     <Compile Include="Rename\RenameName.cs" />
     <Compile Include="Rename\RenamePlan.cs" />

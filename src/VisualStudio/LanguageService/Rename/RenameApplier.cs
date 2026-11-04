@@ -152,6 +152,7 @@ namespace XSharp.LanguageService.Rename
 
         private static ClosedFile Load(IVsInvisibleEditorManager manager, IVsEditorAdaptersFactoryService adapters, string file)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var kept = _keptFiles.FirstOrDefault(k => SameFile(k.Path, file));
             if (kept != null)
                 return kept;
@@ -174,6 +175,7 @@ namespace XSharp.LanguageService.Rename
 
         private static void Save(ClosedFile closed)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (closed.DocData == null)
                 throw new InvalidOperationException($"'{closed.Path}' cannot be saved");
             ErrorHandler.ThrowOnFailure(closed.DocData.SaveDocData(VSSAVEFLAGS.VSSAVE_SilentSave, out _, out var cancelled));
@@ -190,6 +192,7 @@ namespace XSharp.LanguageService.Rename
             closed.SaveOnChange = true;
             closed.Buffer.PostChanged += (s, e) =>
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (!closed.SaveOnChange)
                     return;
                 try

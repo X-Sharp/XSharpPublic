@@ -25,8 +25,11 @@ namespace XSharp.LanguageService.Rename
     /// </summary>
     internal static class RenamePreview
     {
-        /// <summary>The plan without the unchecked changes, or null when the user cancels. UI thread.</summary>
-        internal static RenamePlan Show(RenamePlan plan, string oldName, string newName)
+        /// <summary>
+        /// The plan without the unchecked changes, or null when the user cancels. UI thread.
+        /// <paramref name="readText"/> returns the current text of a file (the editor text when it is open).
+        /// </summary>
+        internal static RenamePlan Show(RenamePlan plan, string oldName, string newName, Func<string, string> readText)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var service = Package.GetGlobalService(typeof(SVsPreviewChangesService)) as IVsPreviewChangesService;
@@ -34,7 +37,7 @@ namespace XSharp.LanguageService.Rename
             var oleServices = Package.GetGlobalService(typeof(IOleServiceProvider)) as IOleServiceProvider;
             if (service == null || componentModel == null)
                 return plan;
-            var engine = new Engine(plan, oldName, newName, componentModel.GetService<IVsEditorAdaptersFactoryService>(), oleServices);
+            var engine = new Engine(plan, oldName, newName, componentModel.GetService<IVsEditorAdaptersFactoryService>(), oleServices, readText);
             ErrorHandler.ThrowOnFailure(service.PreviewChanges(engine));
             if (!engine.Applied)
                 return null;
@@ -61,9 +64,12 @@ namespace XSharp.LanguageService.Rename
             private readonly IVsEditorAdaptersFactoryService _adapters;
             private readonly IOleServiceProvider _services;
             private readonly Dictionary<string, string> _texts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            private readonly Func<string, string> _readText;
 
-            internal Engine(RenamePlan plan, string oldName, string newName, IVsEditorAdaptersFactoryService adapters, IOleServiceProvider services)
+            internal Engine(RenamePlan plan, string oldName, string newName, IVsEditorAdaptersFactoryService adapters, IOleServiceProvider services,
+                Func<string, string> readText)
             {
+                _readText = readText;
                 _oldName = oldName;
                 _newName = newName;
                 _adapters = adapters;
@@ -102,7 +108,7 @@ namespace XSharp.LanguageService.Rename
                 var fileNode = node.Hit == null ? node : node.Parent;
                 if (!_texts.TryGetValue(fileNode.FilePath, out var original))
                 {
-                    original = File.Exists(fileNode.FilePath) ? File.ReadAllText(fileNode.FilePath) : "";
+                    original = _readText?.Invoke(fileNode.FilePath) ?? "";
                     _texts[fileNode.FilePath] = original;
                 }
                 var text = new StringBuilder(original);

@@ -67,6 +67,9 @@ namespace XSharp.LanguageService.FindReferences
             return SymbolIdentity.IsSame(TargetRoot, Root(member));
         }
 
+        /// <summary>The base class of a type, resolved within the type's namespace and cached for this search.</summary>
+        internal IXTypeSymbol BaseTypeOf(IXTypeSymbol type) => type == null ? null : BaseOf(type);
+
         private IXTypeSymbol BaseOf(IXTypeSymbol type)
         {
             var key = type.FullName ?? "";

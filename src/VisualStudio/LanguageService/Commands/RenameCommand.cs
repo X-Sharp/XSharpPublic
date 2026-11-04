@@ -44,6 +44,21 @@ namespace XSharp.LanguageService.Commands
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                try
+                {
+                    await RenameAsync(doc);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Exception(ex, "Rename failed");
+                    await VS.MessageBox.ShowErrorAsync("Rename", $"Rename failed: {ex.Message}");
+                }
+            });
+        }
+
+        private static async Task RenameAsync(DocumentView doc)
+        {
+            {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var selection = FindReferencesCommand.SelectTarget(doc.TextView, "Rename");
                 if (selection.Message != null)
@@ -71,9 +86,11 @@ namespace XSharp.LanguageService.Commands
                 var documents = await FindReferencesCommand.CreateDocumentSourceAsync();
                 var dialog = new RenameDialog(oldName, target.KindKeyword, canRenameFile, name => Validate(oldName, name, file));
 
-                // the search runs while the dialog is open, again when the comment/string options change
+                // the search runs while the dialog is open, again when the comment/string options change; a new
+                // search cancels the running one and waits for it: they would share files and lookups
                 RenamePlan plan = null;
                 CancellationTokenSource running = null;
+                var oneSearch = new SemaphoreSlim(1, 1);
                 async Task SearchAsync()
                 {
                     running?.Cancel();
@@ -81,11 +98,15 @@ namespace XSharp.LanguageService.Commands
                     running = cancellation;
                     plan = null;
                     dialog.ShowSearching();
-                    var hits = new HitList();
+                    await oneSearch.WaitAsync();
                     try
                     {
-                        await FindReferencesEngine.FindAsync(target, family, ReferenceSearchOptions.ForRename(dialog.Comments, dialog.Strings),
-                            location, documents, hits, cancellation.Token);
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        if (cancellation.IsCancellationRequested)
+                            return;
+                        var hits = new HitList();
+                        await FindReferencesEngine.FindAsync(target, new OverrideFamily(target),
+                            ReferenceSearchOptions.ForRename(dialog.Comments, dialog.Strings), location, documents, hits, cancellation.Token);
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         if (cancellation.IsCancellationRequested)
                             return;
@@ -100,6 +121,10 @@ namespace XSharp.LanguageService.Commands
                         Logger.Exception(ex, "Rename: search failed");
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         dialog.ShowError($"The search failed: {ex.Message}");
+                    }
+                    finally
+                    {
+                        oneSearch.Release();
                     }
                 }
                 // WPF events cannot await; SearchAsync handles its own errors
@@ -142,10 +167,15 @@ namespace XSharp.LanguageService.Commands
                     await VS.MessageBox.ShowErrorAsync("Rename", result.Error);
                     return;
                 }
-                if (dialog.RenameFile && typeFile != null)
-                    await RenameApplier.RenameFileAsync(typeFile, newName.StartsWith("@@") ? newName.Substring(2) : newName);
+                // the file follows its class only when the declaration in it was renamed
+                if (dialog.RenameFile && typeFile != null &&
+                    plan.Changes.Any(h => h.IsDefinition && string.Equals(h.FilePath, typeFile, StringComparison.OrdinalIgnoreCase)) &&
+                    !await RenameApplier.RenameFileAsync(typeFile, newName.StartsWith("@@") ? newName.Substring(2) : newName))
+                {
+                    await VS.MessageBox.ShowWarningAsync("Rename", $"'{Path.GetFileName(typeFile)}' could not be renamed.");
+                }
                 await ReportAsync(target, oldName, newName, result, plan);
-            });
+            }
         }
 
         private static string Validate(string oldName, string newName, XFile file)

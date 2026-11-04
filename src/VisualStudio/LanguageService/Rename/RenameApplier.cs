@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharp.LanguageService.FindReferences;
 using XSharp.Support;
@@ -31,10 +32,10 @@ namespace XSharp.LanguageService.Rename
     }
 
     /// <summary>
-    /// Applies a <see cref="RenamePlan"/> through editor buffers, in one global linked undo transaction. Open files
-    /// are changed in their buffer and stay unsaved. Closed files are loaded in an invisible editor, changed and
-    /// saved; the invisible editors are kept until the solution closes so that Ctrl+Z reaches them, and a file that
-    /// such an undo changes is saved again.
+    /// Applies a <see cref="RenamePlan"/> through editor buffers, in one global linked undo transaction. Files shown
+    /// in an editor window are changed in their buffer and stay unsaved. All other files are loaded in an invisible
+    /// editor, changed and saved; the invisible editors are kept until the solution closes so that Ctrl+Z reaches
+    /// them, and a file that such an undo (or redo) changes is saved again, until it is opened in a window.
     /// </summary>
     internal static class RenameApplier
     {
@@ -59,38 +60,63 @@ namespace XSharp.LanguageService.Rename
             var undo = await VS.GetRequiredServiceAsync<SVsLinkedUndoTransactionManager, IVsLinkedUndoTransactionManager>();
             var rdt = new RunningDocumentTable(ServiceProvider.GlobalProvider);
             HookSolutionEvents();
+            _undoHistories = componentModel.GetService<ITextUndoHistoryRegistry>();
 
-            // 1. a buffer per file, and the old name still at every place
-            var buffers = new List<(string File, ITextBuffer Buffer, ClosedFile Closed)>();
+            // 1. open (in a window) or closed; closed files must exist and be writable before anything is loaded
+            var openFiles = new HashSet<string>(plan.Files.Where(HasWindow), StringComparer.OrdinalIgnoreCase);
+            foreach (var file in plan.Files.Where(f => !openFiles.Contains(f)))
+            {
+                if (!File.Exists(file))
+                    return new RenameResult { Error = $"'{file}' does not exist. Nothing was renamed." };
+                if ((File.GetAttributes(file) & FileAttributes.ReadOnly) != 0)
+                    return new RenameResult { Error = $"'{file}' is read-only. Nothing was renamed." };
+            }
+
+            // 2. a buffer per file, and the old name still at every place
+            var buffers = new List<(string File, ITextBuffer Buffer, ClosedFile Closed, string Original)>();
+            var loaded = new List<ClosedFile>();
+            string error = null;
             foreach (var file in plan.Files)
             {
                 ITextBuffer buffer = null;
                 ClosedFile closed = null;
-                if (rdt.FindDocument(file) is IVsTextBuffer open)
+                if (openFiles.Contains(file))
                 {
-                    buffer = adapters.GetDocumentBuffer(open);
+                    if (rdt.FindDocument(file) is IVsTextBuffer open)
+                        buffer = adapters.GetDocumentBuffer(open);
                 }
                 else
                 {
-                    if ((File.GetAttributes(file) & FileAttributes.ReadOnly) != 0)
-                        return new RenameResult { Error = $"'{file}' is read-only. Nothing was renamed." };
                     closed = Load(invisibleEditors, adapters, file);
+                    if (closed != null && !_keptFiles.Contains(closed))
+                        loaded.Add(closed);
                     buffer = closed?.Buffer;
                 }
                 if (buffer == null)
-                    return new RenameResult { Error = $"'{file}' cannot be opened. Nothing was renamed." };
+                {
+                    error = $"'{file}' cannot be opened. Nothing was renamed.";
+                    break;
+                }
                 var text = buffer.CurrentSnapshot.GetText();
                 if (plan.Changes.Any(h => SameFile(h.FilePath, file) && !RenamePlanner.StillMatches(text, h, oldName)))
-                    return new RenameResult { Error = $"'{file}' changed since the search. Nothing was renamed." };
-                buffers.Add((file, buffer, closed));
+                {
+                    error = $"'{file}' changed since the search. Nothing was renamed.";
+                    break;
+                }
+                buffers.Add((file, buffer, closed, text));
+            }
+            if (error != null)
+            {
+                Release(loaded);
+                return new RenameResult { Error = error };
             }
 
-            // 2. all changes in one undo step; closed files are saved only when every edit succeeded
+            // 3. all changes in one undo step; closed files are saved only when every edit succeeded
             var saved = new List<ClosedFile>();
             ErrorHandler.ThrowOnFailure(undo.OpenLinkedUndo((uint)LinkedTransactionFlags2.mdtGlobal, $"Rename '{oldName}' to '{newName}'"));
             try
             {
-                foreach (var (file, buffer, _) in buffers)
+                foreach (var (file, buffer, _, _) in buffers)
                 {
                     using (var edit = buffer.CreateEdit())
                     {
@@ -110,22 +136,69 @@ namespace XSharp.LanguageService.Rename
             {
                 Logger.Exception(ex, "Rename failed");
                 undo.AbortLinkedUndo();
-                // the aborted edits are gone from the buffers: write the old text back where it was saved already
+                // do not rely on the abort alone: every buffer must hold its old text again
+                foreach (var (file, buffer, _, original) in buffers)
+                {
+                    try
+                    {
+                        if (buffer.CurrentSnapshot.GetText() != original)
+                        {
+                            using (var edit = buffer.CreateEdit())
+                            {
+                                edit.Replace(new Span(0, buffer.CurrentSnapshot.Length), original);
+                                edit.Apply();
+                            }
+                        }
+                    }
+                    catch (Exception inner)
+                    {
+                        Logger.Exception(inner, $"Rename: restoring {file} failed");
+                    }
+                }
+                // files saved with the new name before the failure get the old text back on disk
                 foreach (var closed in saved)
                 {
                     try { Save(closed); } catch (Exception inner) { Logger.Exception(inner, $"Rename: restoring {closed.Path} failed"); }
                 }
+                Release(loaded);
                 return new RenameResult { Error = $"Rename failed: {ex.Message}. Nothing was renamed." };
             }
 
-            // 3. keep the invisible editors for undo, and let the code model see the new name in the closed files
+            // 4. keep the invisible editors for undo, and let the code model see the new name in the closed files
             foreach (var closed in buffers.Select(b => b.Closed).Where(c => c != null))
             {
                 Keep(closed);
                 var xfile = XSolution.FindFile(closed.Path);
                 xfile?.Project?.WalkFile(xfile);
             }
+            Logger.Information($"Rename '{oldName}' to '{newName}': {plan.Changes.Count} changes in {plan.Files.Count} files ({openFiles.Count} open)");
             return new RenameResult { Changed = plan.Changes.Count, Files = plan.Files };
+        }
+
+        private static ITextUndoHistoryRegistry _undoHistories;
+
+        /// <summary>Is the file shown in an editor window? Documents without a window are changed like closed files.</summary>
+        private static bool HasWindow(string file)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return VsShellUtilities.IsDocumentOpen(ServiceProvider.GlobalProvider, file, Guid.Empty, out _, out _, out var frame) && frame != null;
+        }
+
+        /// <summary>Gives back the invisible editors of a rename that did not happen.</summary>
+        private static void Release(IEnumerable<ClosedFile> files)
+        {
+            foreach (var closed in files)
+            {
+                try
+                {
+                    if (closed.Editor != null && Marshal.IsComObject(closed.Editor))
+                        Marshal.ReleaseComObject(closed.Editor);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Exception(ex, $"Rename: releasing {closed.Path} failed");
+                }
+            }
         }
 
         /// <summary>Renames a file in its project, so that the project file and open windows follow.</summary>
@@ -190,10 +263,21 @@ namespace XSharp.LanguageService.Rename
                 return;
             _keptFiles.Add(closed);
             closed.SaveOnChange = true;
+            ITextUndoHistory history = null;
+            _undoHistories?.TryGetHistory(closed.Buffer, out history);
             closed.Buffer.PostChanged += (s, e) =>
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (!closed.SaveOnChange)
+                    return;
+                // opened in an editor: from now on the user saves it, as any other file
+                if (HasWindow(closed.Path))
+                {
+                    closed.SaveOnChange = false;
+                    return;
+                }
+                // only the undo or redo of the rename, never another edit of the hidden buffer
+                if (history != null && history.State == TextUndoHistoryState.Idle)
                     return;
                 try
                 {

@@ -214,6 +214,7 @@ namespace XSharp.LanguageService.Rename
                 if (item == null)
                     return false;
                 item.Name = newFileNameWithoutExtension + Path.GetExtension(filePath);
+                await ParseOpenBufferAsync(Path.Combine(Path.GetDirectoryName(filePath), item.Name));
                 return true;
             }
             catch (Exception ex)
@@ -221,6 +222,28 @@ namespace XSharp.LanguageService.Rename
                 Logger.Exception(ex, $"Rename: renaming {filePath} failed");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// The project reads a renamed file from disk. An open file keeps the rename unsaved, so the code model
+        /// would still see the old name under the new path: parse the editor text instead. The editor (classifier,
+        /// outlining, error tags) keeps the XFile of the old path: move that object to the new path.
+        /// </summary>
+        private static async Task ParseOpenBufferAsync(string filePath)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var rdt = new RunningDocumentTable(ServiceProvider.GlobalProvider);
+            if (!(rdt.FindDocument(filePath) is IVsTextBuffer open))
+                return;
+            var componentModel = await VS.Services.GetComponentModelAsync();
+            var buffer = componentModel.GetService<IVsEditorAdaptersFactoryService>().GetDocumentBuffer(open);
+            if (buffer == null)
+                return;
+            var xfile = buffer.GetFile();
+            if (xfile != null && !SameFile(xfile.FullPath, filePath))
+                xfile.Rename(filePath);
+            xfile = xfile ?? XSolution.FindFile(filePath);
+            xfile?.ParseContents(buffer.CurrentSnapshot.GetText());
         }
 
         private static bool SameFile(string a, string b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);

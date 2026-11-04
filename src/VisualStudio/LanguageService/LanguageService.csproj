@@ -147,6 +147,7 @@
     <Compile Include="FindReferences\OverrideFamily.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\ReferenceSearchOptions.cs" />
+    <Compile Include="Rename\RenameName.cs" />
     <Compile Include="FindReferences\ReferenceLineText.cs" />
     <Compile Include="FindReferences\FindReferencesEngine.cs" />
     <Compile Include="FindReferences\ReferencesTableDataSource.cs" />

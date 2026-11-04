@@ -2,12 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Tools.props" />
   <PropertyGroup>
-    <Name>XsLegacyConverter</Name>
-    <TargetFramework>net47</TargetFramework>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>True</NoStandardDefs>
-    <OutputType>Exe</OutputType>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
 </Project>

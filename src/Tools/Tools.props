@@ -4,7 +4,13 @@
   <Import Project="..\VisualStudio\Common.props" />
   <Import Project="$(Commondir)Version.props" />
   <PropertyGroup>
-  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <OutputType>Exe</OutputType>
+    <Ns>true</Ns>
+    <ApplicationIcon>$(Commondir)XSharp.ico</ApplicationIcon>
+    <TargetFramework>net47</TargetFramework>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 </Project>

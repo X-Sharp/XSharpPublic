@@ -2,14 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Tools.props" />
   <PropertyGroup>
-    <Name>XPorter</Name>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>XPorter</RootNamespace>
-    <TargetFramework>net47</TargetFramework>
-    <Dialect>Core</Dialect>
-    <NamedArgs>True</NamedArgs>
+    <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <AssemblyName>XPorter</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="$(CommonDir)constants.prg">

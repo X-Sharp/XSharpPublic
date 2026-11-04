@@ -188,7 +188,9 @@
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="NavigateTo\NameMatcher.cs" />
+    <Compile Include="NavigateTo\NavigateToDisplay.cs" />
     <Compile Include="NavigateTo\NavigateToEntry.cs" />
+    <Compile Include="NavigateTo\NavigateToProvider.cs" />
     <Compile Include="NavigateTo\NavigateToSnapshot.cs" />
     <Compile Include="Options\CompletionOptions.cs" />
     <Compile Include="Options\FormattingOptions.cs" />

@@ -36,7 +36,7 @@ STATIC CLASS XDatabase
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
     // 3.9: added Types_File / Types_Project indexes
     // 3.10: fixed typo in view ProjectExtensionMethods
-    PRIVATE CONST CurrentDbVersion := 3.11 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.12 AS System.Double
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -561,7 +561,8 @@ STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
             cmd:ExecuteNonQuery()
 
             stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, pf.IdProject, pf.FileName, pf.ProjectFileName, pf.Framework " +;
-                " FROM TypeMembers m  JOIN ProjectFiles pf ON m.IdFile = pf.IdFile "
+                " FROM TypeMembers m  JOIN ProjectFiles pf ON m.IdFile = pf.IdFile " + ;
+                " JOIN ProjectTypes pt ON pf.IdProject = pt.IdProject and m.IdType = pt.Id "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
@@ -1723,7 +1724,7 @@ PRIVATE STATIC METHOD _FindFunctionWorker(sName AS STRING, sProjectIds AS STRING
                 sLike += "%"
                 crit := "name like $name"
             ENDIF
-            oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE " + crit +  ;
+            oCmd:CommandText := "SELECT DISTINCT * FROM ProjectMembers WHERE " + crit +  ;
                 " and typeName = $typename AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+") "+ ;
                 " Order by FileName"
             oCmd:Parameters:AddWithValue("$name", sLike)

@@ -110,7 +110,7 @@ namespace XSharp.LanguageService.Commands
                     // the arguments do not tell the overloads apart
                     await VS.StatusBar.ShowMessageAsync($"Find References: {candidates} overloads of '{target.Name}' fit these arguments, listing {target.Name}({overload.ParameterList})");
                 }
-                _ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
+                await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
                 {
                     try
                     {

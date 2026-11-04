@@ -21,9 +21,20 @@ namespace XSharp.LanguageService.NavigateTo
         internal static readonly TimeSpan ReloadInterval = TimeSpan.FromSeconds(2);
 
         internal static NavigateToSnapshot Current { get; } = new NavigateToSnapshot(
-            () => NavigateToEntry.FromRows(XDatabase.GetAllProjectTypes(), XDatabase.GetAllProjectMembers()),
+            LoadFromDatabase,
             () => XDatabase.ChangeCounter,
             () => DateTime.UtcNow);
+
+        private static IReadOnlyList<NavigateToEntry> LoadFromDatabase()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var types = XDatabase.GetAllProjectTypes();
+            var members = XDatabase.GetAllProjectMembers();
+            var read = watch.ElapsedMilliseconds;
+            var entries = NavigateToEntry.FromRows(types, members);
+            XSharp.Support.Logger.Information($"Navigate To: snapshot of {entries.Count} entries from {types.Count + members.Count} rows, read {read} ms, total {watch.ElapsedMilliseconds} ms");
+            return entries;
+        }
 
         private readonly Func<IReadOnlyList<NavigateToEntry>> _load;
         private readonly Func<long> _counter;

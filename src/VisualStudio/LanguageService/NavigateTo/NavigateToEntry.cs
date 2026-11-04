@@ -38,6 +38,19 @@ namespace XSharp.LanguageService.NavigateTo
             return typesOnly == IsType;
         }
 
+        /// <summary>
+        /// The scope of the search: only the current document (its path), or only the current project (its name);
+        /// null means no limit.
+        /// </summary>
+        internal bool InScope(string documentPath, string projectName)
+        {
+            if (documentPath != null && !string.Equals(FilePath, documentPath, StringComparison.OrdinalIgnoreCase))
+                return false;
+            if (projectName != null && !string.Equals(ProjectName, projectName, StringComparison.OrdinalIgnoreCase))
+                return false;
+            return true;
+        }
+
         private static readonly HashSet<Kind> _typeKinds = new HashSet<Kind>
         {
             Kind.Class, Kind.Structure, Kind.Interface, Kind.Delegate, Kind.Enum, Kind.VOStruct, Kind.Union
@@ -59,6 +72,7 @@ namespace XSharp.LanguageService.NavigateTo
         {
             var result = new List<NavigateToEntry>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var strings = new Dictionary<string, string>(StringComparer.Ordinal);
             // the functions of the runtime that the code model writes to a temporary file are not in the solution
             var builtIn = XSolution.BuiltInFunctions;
             bool IsBuiltIn(XDbResult row) => !string.IsNullOrEmpty(builtIn) && string.Equals(row.FileName, builtIn, StringComparison.OrdinalIgnoreCase);
@@ -90,14 +104,25 @@ namespace XSharp.LanguageService.NavigateTo
                 result.Add(new NavigateToEntry
                 {
                     Name = name,
-                    Container = container ?? "",
+                    Container = Shared(container ?? ""),
                     Kind = row.Kind,
                     Visibility = row.Visibility,
-                    FilePath = row.FileName,
-                    ProjectName = ProjectNameOf(row.Project),
+                    FilePath = Shared(row.FileName),
+                    ProjectName = Shared(ProjectNameOf(row.Project)),
                     Line = row.StartLine,
                     Column = row.StartColumn
                 });
+            }
+
+            // every row brings its own copy of the file, project and type name: keep one per distinct value
+            string Shared(string value)
+            {
+                if (value == null)
+                    return null;
+                if (strings.TryGetValue(value, out var shared))
+                    return shared;
+                strings.Add(value, value);
+                return value;
             }
         }
 

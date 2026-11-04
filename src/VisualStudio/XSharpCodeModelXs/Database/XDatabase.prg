@@ -2324,17 +2324,27 @@ STATIC METHOD GetProjectMembersLike(sName AS STRING, sProjectIds AS STRING) AS I
     Log(i"GetProjectMembersLike '{sName}' returns {result.Count} matches")
     RETURN result
 
-/// <summary>Every type of every project, for Navigate To. A file in several projects gives a row per project.</summary>
+/// <summary>Every type of every project, for Navigate To: only name, kind, place and project (the load holds dbLock).
+/// A file in several projects gives a row per project.</summary>
 STATIC METHOD GetAllProjectTypes() AS IList<XDbResult>
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     BEGIN LOCK dbLock
         CHECKIFOPEN result
         TRY
-            USING VAR oCmd := CreateCommand("Select * from ProjectTypes", oConn)
+            USING VAR oCmd := CreateCommand("Select Name, Namespace, Kind, Attributes, FileName, ProjectFileName, StartLine, StartColumn from ProjectTypes", oConn)
             USING VAR rdr := oCmd:ExecuteReader()
             DO WHILE rdr:Read()
-                result:Add(CreateTypeInfo(rdr))
+                VAR res := XDbResult{}
+                res:TypeName     := DbToString(rdr[0])
+                res:Namespace    := DbToString(rdr[1])
+                res:Kind         := (Kind) (INT64) rdr[2]
+                res:Attributes   := (Modifiers) (INT64) rdr[3]
+                res:FileName     := DbToString(rdr[4])
+                res:Project      := DbToString(rdr[5])
+                res:StartLine    := DbToInt(rdr[6])
+                res:StartColumn  := DbToInt(rdr[7])
+                result:Add(res)
             ENDDO
         CATCH e AS Exception
             XSettings.Exception(e)
@@ -2343,17 +2353,27 @@ STATIC METHOD GetAllProjectTypes() AS IList<XDbResult>
     Log(i"GetAllProjectTypes returns {result.Count} rows")
     RETURN result
 
-/// <summary>Every member of every project (also of the global type), for Navigate To.</summary>
+/// <summary>Every member of every project (also of the global type), for Navigate To: only name, kind, type, place
+/// and project (the load holds dbLock).</summary>
 STATIC METHOD GetAllProjectMembers() AS IList<XDbResult>
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
     BEGIN LOCK dbLock
         CHECKIFOPEN result
         TRY
-            USING VAR oCmd := CreateCommand("Select * from ProjectMembers", oConn)
+            USING VAR oCmd := CreateCommand("Select Name, TypeName, Kind, Attributes, FileName, ProjectFileName, StartLine, StartColumn from ProjectMembers", oConn)
             USING VAR rdr := oCmd:ExecuteReader()
             DO WHILE rdr:Read()
-                result:Add(CreateMemberInfo(rdr))
+                VAR res := XDbResult{}
+                res:MemberName   := DbToString(rdr[0])
+                res:TypeName     := DbToString(rdr[1])
+                res:Kind         := (Kind) (INT64) rdr[2]
+                res:Attributes   := (Modifiers) (INT64) rdr[3]
+                res:FileName     := DbToString(rdr[4])
+                res:Project      := DbToString(rdr[5])
+                res:StartLine    := DbToInt(rdr[6])
+                res:StartColumn  := DbToInt(rdr[7])
+                result:Add(res)
             ENDDO
         CATCH e AS Exception
             XSettings.Exception(e)

@@ -160,6 +160,33 @@ namespace XSharp.LanguageService.Tests
             }
         }
 
+        [Fact]
+        public void FromRowsSharesPathsProjectsAndContainers()
+        {
+            // rows read from the database bring their own copy of every string
+            var members = new[]
+            {
+                Member(new string("Part".ToCharArray()), "Walk", Kind.Method, new string(@"c:\lib\part.prg".ToCharArray()), 3, new string("Lib.xsproj".ToCharArray())),
+                Member(new string("Part".ToCharArray()), "Run", Kind.Method, new string(@"c:\lib\part.prg".ToCharArray()), 5, new string("Lib.xsproj".ToCharArray())),
+            };
+            var entries = NavigateToEntry.FromRows(Array.Empty<XDbResult>(), members);
+            Assert.Same(entries[0].FilePath, entries[1].FilePath);
+            Assert.Same(entries[0].ProjectName, entries[1].ProjectName);
+            Assert.Same(entries[0].Container, entries[1].Container);
+        }
+
+        [Theory]
+        [InlineData(null, null, true)]
+        [InlineData(@"C:\LIB\PART.PRG", null, true)]
+        [InlineData(@"c:\lib\other.prg", null, false)]
+        [InlineData(null, "lib", true)]
+        [InlineData(null, "App", false)]
+        public void ScopeLimitsToTheCurrentDocumentOrProject(string document, string project, bool expected)
+        {
+            var entry = new NavigateToEntry { Name = "Walk", FilePath = @"c:\lib\part.prg", ProjectName = "Lib" };
+            Assert.Equal(expected, entry.InScope(document, project));
+        }
+
         [Theory]
         [InlineData("Class", true, false, true)]
         [InlineData("Method", true, false, false)]

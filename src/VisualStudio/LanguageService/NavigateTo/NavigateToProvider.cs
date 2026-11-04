@@ -24,9 +24,8 @@ namespace XSharp.LanguageService.NavigateTo
     /// CodeSearchItemsSource.StopSearch).
     /// </summary>
     [Export(typeof(INavigateToItemProviderFactory))]
-#if DEV17
-    [OnlyNavigateToSupport]
-#endif
+    // the metadata of [OnlyNavigateToSupport] without the attribute type: that type is missing in early VS 2022 versions
+    [ExportMetadata("OnlyNavigateToSupport", true)]
     internal sealed class NavigateToProviderFactory : INavigateToItemProviderFactory
     {
         public bool TryCreateNavigateToItemProvider(IServiceProvider serviceProvider, out INavigateToItemProvider provider)
@@ -78,7 +77,7 @@ namespace XSharp.LanguageService.NavigateTo
                 string currentDocument = null;
                 if (currentDocumentOnly)
                 {
-                    currentDocument = (await VS.Documents.GetActiveDocumentViewAsync())?.FilePath;
+                    currentDocument = (await ActiveDocumentAsync()).Path;
                     if (currentDocument == null)
                         return;
                 }
@@ -90,7 +89,7 @@ namespace XSharp.LanguageService.NavigateTo
                     if (i % ProgressStep == 0)
                         callback.ReportProgress(i, entries.Count);
                     var entry = entries[i];
-                    if (currentDocument != null && !string.Equals(entry.FilePath, currentDocument, StringComparison.OrdinalIgnoreCase))
+                    if (!entry.InScope(currentDocument, null))
                         continue;
                     var kind = ItemKind(entry.Kind);
                     if (kinds != null && kinds.Count > 0 && !kinds.Contains(kind))
@@ -119,6 +118,16 @@ namespace XSharp.LanguageService.NavigateTo
                 var filters = (kinds != null && kinds.Count > 0 ? " kinds " + string.Join(",", kinds) : "") + (currentDocumentOnly ? " current document" : "");
                 Logger.Information($"Navigate To '{searchValue}'{filters}: {found} of {total} entries, {outcome}, {watch.ElapsedMilliseconds} ms");
             }
+        }
+
+        /// <summary>The file of the active document and the name of its X# project (as NavigateToEntry.ProjectName).</summary>
+        internal static async Task<(string Path, string Project)> ActiveDocumentAsync()
+        {
+            var path = (await VS.Documents.GetActiveDocumentViewAsync())?.FilePath;
+            if (path == null)
+                return (null, null);
+            var projectFile = XSolution.FindFile(path)?.Project?.FileName;
+            return (path, string.IsNullOrEmpty(projectFile) ? null : System.IO.Path.GetFileNameWithoutExtension(projectFile));
         }
 
         public void StopSearch()

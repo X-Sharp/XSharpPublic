@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Search.Data;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using XSharp.Settings;
 using XSharp.Support;
@@ -75,12 +76,27 @@ namespace XSharp.LanguageService.NavigateTo
                     return;
                 bool types = searchQuery.FiltersStates.TryGetValue("Types", out var t) && t == "True";
                 bool members = searchQuery.FiltersStates.TryGetValue("Members", out var m) && m == "True";
+                // "current document" / "current project", as Roslyn reads the scope
+                string document = null, project = null;
+                var scope = (searchQuery as ICodeSearchQuery)?.Scope ?? SearchScopes.EntireSolution;
+                if (scope == SearchScopes.CurrentDocument || scope == SearchScopes.CurrentProject)
+                {
+                    var active = await NavigateToProvider.ActiveDocumentAsync().ConfigureAwait(false);
+                    if (active.Path == null || (scope == SearchScopes.CurrentProject && active.Project == null))
+                        return;
+                    if (scope == SearchScopes.CurrentDocument)
+                        document = active.Path;
+                    else
+                        project = active.Project;
+                }
+                // never match on the thread that asked: the snapshot may be ready and the loop would run there
+                await TaskScheduler.Default;
                 var entries = await NavigateToSnapshot.Current.GetAsync(cancellationToken).ConfigureAwait(false);
                 total = entries.Count;
                 foreach (var entry in entries)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (!entry.PassesFilter(types, members))
+                    if (!entry.PassesFilter(types, members) || !entry.InScope(document, project))
                         continue;
                     var match = NameMatcher.Match(searchValue, entry.Name);
                     if (match == NameMatch.None)

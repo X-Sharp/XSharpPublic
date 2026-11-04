@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using XSharp.LanguageService.FindReferences;
 using XSharp.Support;
@@ -86,22 +87,24 @@ namespace XSharp.LanguageService.Commands
                 }
                 var title = target.Kind == Kind.Constructor ? FindReferencesEngine.SearchName(target) + "{}" : target.Name;
                 var documents = await CreateDocumentSourceAsync();
-                // a new search cancels the running one
-                _cancellation?.Cancel();
-                var cancellation = new CancellationTokenSource();
-                _cancellation = cancellation;
                 var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
                 var window = service.StartSearch($"'{title}' references");
                 var source = new ReferencesTableDataSource(target, await CreateTextFormatAsync());
-                // the window keeps every source it was given: drop the previous search
-                if (_source != null)
-                    _sourceManager?.RemoveSource(_source);
+                // After "Keep Results" StartSearch opens a new window. The kept window keeps its results,
+                // its running search and its Closed handler; only a reused window gives up the previous search.
+                if (_sourceManager != null && window.Manager == _sourceManager)
+                {
+                    _cancellation?.Cancel();
+                    if (_source != null)
+                        _sourceManager.RemoveSource(_source);
+                    if (_window != null)
+                        _window.Closed -= _windowClosed;
+                }
+                var cancellation = new CancellationTokenSource();
+                _cancellation = cancellation;
                 window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
                 _source = source;
                 _sourceManager = window.Manager;
-                // the window is reused: one Closed handler, for the running search
-                if (_window != null)
-                    _window.Closed -= _windowClosed;
                 _window = window;
                 _windowClosed = (s, e) => cancellation.Cancel();
                 window.Closed += _windowClosed;
@@ -110,8 +113,15 @@ namespace XSharp.LanguageService.Commands
                     // the arguments do not tell the overloads apart
                     await VS.StatusBar.ShowMessageAsync($"Find References: {candidates} overloads of '{target.Name}' fit these arguments, listing {target.Name}({overload.ParameterList})");
                 }
-                await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
+                // Do not await the search: the command runs inside JoinableTaskFactory.Run on the UI thread,
+                // so awaiting would block Visual Studio until the whole solution has been searched.
+                // The package's factory tracks the task, so VS waits for it on shutdown (VSSDK007).
+                var package = XSharpLanguagePackage.Instance;
+                var factory = package?.JoinableTaskFactory ?? ThreadHelper.JoinableTaskFactory;
+                factory.RunAsync(async delegate
                 {
+                    // shutting down VS cancels the search instead of waiting for it
+                    var shutdown = package?.DisposalToken.Register(cancellation.Cancel);
                     try
                     {
                         var stats = await FindReferencesEngine.FindAsync(target, family, FindReferencesEngine.IncludeLateBound,
@@ -125,9 +135,10 @@ namespace XSharp.LanguageService.Commands
                     }
                     finally
                     {
+                        shutdown?.Dispose();
                         source.Complete();
                     }
-                });
+                }).Task.Forget();
             });
         }
 

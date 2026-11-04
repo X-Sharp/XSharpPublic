@@ -1328,9 +1328,15 @@ CLASS XProject
                             if aFiles:ContainsKey(melement:IdFile)
                                 xmember:File         := aFiles[melement:IdFile]
                             ELSE
-                                File := SELF:GetFileById(melement:IdFile)
-                                aFiles:Add(melement:IdFile, File)
-                                xmember:File         := File
+                                // the file belongs to the project of the type, not to the project that looks it up
+                                VAR memberFile := project:GetFileById(melement:IdFile)
+                                IF memberFile == NULL
+                                    memberFile := project:FindXFile(melement:FileName)
+                                ENDIF
+                                IF memberFile != NULL
+                                    aFiles:Add(melement:IdFile, memberFile)
+                                ENDIF
+                                xmember:File         := memberFile
                             ENDIF
                         ELSE
                             NOP

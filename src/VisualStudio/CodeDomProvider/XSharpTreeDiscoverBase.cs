@@ -1281,9 +1281,10 @@ namespace XSharp.CodeDom
                     // According to MSDN, The absence of the Final flag makes a member virtual in C#, same for us
                     modifiers &= ~MemberAttributes.Final;
                 }
-                else
+                else if ((modifiers & MemberAttributes.ScopeMask) == 0)
                 {
-                    // Other cases = FINAL
+                    // Other cases = FINAL. The ScopeMask values are an enumeration, not flags:
+                    // adding Final to Override (4) or Abstract (1) gives an undefined value or Static (3)
                     modifiers |= MemberAttributes.Final;
                 }
             }

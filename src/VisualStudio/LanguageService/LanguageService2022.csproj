@@ -147,6 +147,7 @@
     <Compile Include="FindReferences\OverrideFamily.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\ReferenceSearchOptions.cs" />
+    <Compile Include="Rename\RenameApplier.cs" />
     <Compile Include="Rename\RenameConflicts.cs" />
     <Compile Include="Rename\RenameGuard.cs" />
     <Compile Include="Rename\RenameName.cs" />

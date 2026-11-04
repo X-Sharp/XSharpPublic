@@ -39,8 +39,11 @@ namespace XSharp.LanguageService.Rename
                         return $"'{member.Name}' implements a member of interface '{iface.Name}'. Renaming it is not supported.";
                 }
             }
+            // a class without INHERIT inherits System.Object: ToString, Equals and GetHashCode are overrides too
+            IXTypeSymbol BaseOrObject(IXTypeSymbol t) =>
+                baseOf(t) ?? (t.Kind == Kind.Class && isSource(t) ? findType("System.Object") : null);
             var seen = new HashSet<IXTypeSymbol>();
-            for (var type = baseOf(parent); type != null && seen.Add(type); type = baseOf(type))
+            for (var type = BaseOrObject(parent); type != null && seen.Add(type); type = BaseOrObject(type))
             {
                 if (isSource(type))
                     continue;

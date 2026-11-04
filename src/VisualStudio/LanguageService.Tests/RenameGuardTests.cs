@@ -98,6 +98,17 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void OverridesOfObjectInAClassWithoutBaseAreRefused()
+        {
+            var obj = _f.Type("System.Object");
+            _f.Member(obj, "ToString");
+            var car = _f.Type("Car");
+            var toString = _f.Member(car, "ToString");
+            Assert.Equal("'ToString' overrides a member of 'System.Object' from a referenced assembly and cannot be renamed.", Refusal(toString, obj));
+            Assert.Null(Refusal(_f.Member(car, "Drive"), obj));
+        }
+
+        [Fact]
         public void PlainMembersAndTypesMayBeRenamed()
         {
             var ext = _f.Type("Ext");

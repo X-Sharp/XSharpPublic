@@ -32,7 +32,7 @@ namespace XSharp.LanguageService.Rename
     }
 
     /// <summary>
-    /// Applies a <see cref="RenamePlan"/> through editor buffers, in one global linked undo transaction. Files shown
+    /// Applies a <see cref="RenamePlan"/> through editor buffers, in one linked undo transaction. Files shown
     /// in an editor window are changed in their buffer and stay unsaved. All other files are loaded in an invisible
     /// editor, changed and saved; the invisible editors are kept until the solution closes so that Ctrl+Z reaches
     /// them, and a file that such an undo (or redo) changes is saved again, until it is opened in a window.
@@ -113,7 +113,9 @@ namespace XSharp.LanguageService.Rename
 
             // 3. all changes in one undo step; closed files are saved only when every edit succeeded
             var saved = new List<ClosedFile>();
-            ErrorHandler.ThrowOnFailure(undo.OpenLinkedUndo((uint)LinkedTransactionFlags2.mdtGlobal, $"Rename '{oldName}' to '{newName}'"));
+            // not mdtGlobal: VS saves every document of a global transaction, also the open ones; the linked undo
+            // reaches the hidden buffers of the closed files from any open file that took part (the origin always does)
+            ErrorHandler.ThrowOnFailure(undo.OpenLinkedUndo((uint)LinkedTransactionFlags.mdtDefault, $"Rename '{oldName}' to '{newName}'"));
             try
             {
                 foreach (var (file, buffer, _, _) in buffers)

@@ -131,21 +131,7 @@ namespace XSharp.LanguageService
             {
                 ModelWalker.Suspend();
                 location = TextView.FindLocation();
-                tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
-                string currentNS = TextView.FindNamespace();
-                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
-                if (result.Count == 0 && tokenList.Count > 1)
-                {
-                    // try again with just the last element in the list
-                    var token = tokenList[tokenList.Count - 1];
-                    if (token.Type == XSharpLexer.ID)
-                    {
-                        tokenList.Clear();
-                        tokenList.Add(token);
-                        location = location.With(currentNS);
-                        result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
-                    }
-                }
+                result.AddRange(FindReferences.SymbolResolver.ResolveAt(ref location, out state, out tokenList));
                 return result;
             }
             catch (Exception ex)

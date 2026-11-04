@@ -37,6 +37,7 @@ namespace XSharp.LanguageService
         public bool EnableTypelookupLog { get; set; }
         public bool EnableReferenceInfoLog { get; set; }
         public bool UseMicrosoftSQLite { get; set; }
+        public bool FindReferencesLateBound { get; set; }
 
         #endregion
         public IntellisenseOptions()
@@ -66,6 +67,7 @@ namespace XSharp.LanguageService
             EnableTypelookupLog = false;
             EnableReferenceInfoLog = false;
             UseMicrosoftSQLite = XSettings.IsArm;
+            FindReferencesLateBound = true;
          }
 
         public override void WriteToSettings()
@@ -98,6 +100,7 @@ namespace XSharp.LanguageService
             XEditorSettings.NavigationMembersOfCurrentTypeOnly = ShowMembersOfCurrentTypeOnly;
             XEditorSettings.NavigationExcludeMembersFromOtherFiles = ExcludeMembersFromOtherFiles;
             Constants.WriteSetting(nameof(UseMicrosoftSQLite), UseMicrosoftSQLite ? 1 : 0);
+            FindReferences.FindReferencesEngine.IncludeLateBound = FindReferencesLateBound;
         }
 
     }

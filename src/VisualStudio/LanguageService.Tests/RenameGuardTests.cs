@@ -75,6 +75,19 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void OverridesOfAnInterfaceImplementationAreRefused()
+        {
+            var iface = _f.Type("IFoo", kind: Kind.Interface);
+            _f.Member(iface, "Run");
+            var baseType = _f.Type("Base");
+            baseType.AddInterface("IFoo");
+            _f.Member(baseType, "Run");
+            var derived = _f.Type("Derived", baseType);
+            var run = _f.Member(derived, "Run");
+            Assert.Equal("'Run' implements a member of interface 'IFoo'. Renaming it is not supported.", Refusal(run));
+        }
+
+        [Fact]
         public void OverridesOfAssemblyMembersAreRefused()
         {
             var ext = _f.Type("Ext");

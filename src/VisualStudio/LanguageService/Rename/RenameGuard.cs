@@ -27,11 +27,17 @@ namespace XSharp.LanguageService.Rename
             var parent = member.ParentType;
             if (parent.Kind == Kind.Interface)
                 return $"'{member.Name}' belongs to an interface. Renaming interface members is not supported.";
-            foreach (var name in parent.Interfaces ?? Array.Empty<string>())
+            // the type and its source base types: an override of a member that implements an interface member
+            // implements it too; a partial type lists its interfaces in any of its parts
+            var visited = new HashSet<IXTypeSymbol>();
+            for (var type = parent; type != null && isSource(type) && visited.Add(type); type = baseOf(type))
             {
-                var iface = findType(name);
-                if (iface != null && iface.Members.Any(m => FindReferences.OverrideFamily.SameSlot(member, m)))
-                    return $"'{member.Name}' implements a member of interface '{iface.Name}'. Renaming it is not supported.";
+                foreach (var name in InterfacesOf(type))
+                {
+                    var iface = findType(name);
+                    if (iface != null && iface.Members.Any(m => FindReferences.OverrideFamily.SameSlot(member, m)))
+                        return $"'{member.Name}' implements a member of interface '{iface.Name}'. Renaming it is not supported.";
+                }
             }
             var seen = new HashSet<IXTypeSymbol>();
             for (var type = baseOf(parent); type != null && seen.Add(type); type = baseOf(type))
@@ -44,6 +50,14 @@ namespace XSharp.LanguageService.Rename
                 break;
             }
             return null;
+        }
+
+        private static IEnumerable<string> InterfacesOf(IXTypeSymbol type)
+        {
+            // the merged type of a partial class knows the IMPLEMENTS of every part
+            if (type is XSourceTypeSymbol source && source.IsPartial && source.File?.Project != null)
+                return source.Clone?.Interfaces ?? source.Interfaces ?? Array.Empty<string>();
+            return type.Interfaces ?? (IEnumerable<string>)Array.Empty<string>();
         }
 
         private static bool CanOverride(Kind kind)

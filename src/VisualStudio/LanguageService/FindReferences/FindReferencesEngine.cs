@@ -220,7 +220,8 @@ namespace XSharp.LanguageService.FindReferences
             var allowDot = file.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var interpolated = ReferenceCandidateScanner.FindInterpolatedTokens(document.Tokens, name,
                 expression => ReferenceDocumentSource.Lex(file, expression), allowDot);
-            var symbolLiterals = lateBound ? ReferenceCandidateScanner.FindSymbolTokens(document.Tokens, name) : Array.Empty<IToken>();
+            var symbolLiterals = CollectsSymbolLiterals(target, options)
+                ? ReferenceCandidateScanner.FindSymbolTokens(document.Tokens, name) : Array.Empty<IToken>();
             var textKinds = options.IncludeText | (uncertain ? TextTokenKinds.InactiveCode : TextTokenKinds.None);
             var inText = ReferenceCandidateScanner.FindWordInText(document.Tokens, name, textKinds);
             // the name only in a comment, a string or a longer word: no need to parse the file
@@ -401,6 +402,17 @@ namespace XSharp.LanguageService.FindReferences
             var keyword = SymbolIdentity.IsPropertyLike(symbol.Kind) ? "PROPERTY" : symbol.KindKeyword;
             return $"{keyword} {symbol.FullName}".Trim();
         }
+        /// <summary>
+        /// Symbols #Name name members (Send, IVarGet) and, in VO code, classes and functions (CreateInstance(#Foo)).
+        /// Find All References lists them for members when asked; a rename reports them for every named symbol.
+        /// </summary>
+        internal static bool CollectsSymbolLiterals(IXSymbol target, ReferenceSearchOptions options)
+        {
+            if (CanBeLateBound(target))
+                return options.IncludeLateBound || options.IncludeUncertain;
+            return options.IncludeUncertain && !(target is IXVariableSymbol);
+        }
+
         /// <summary>Methods, properties and fields can be called late bound: <c>o:Name</c>, <c>#Name</c>.</summary>
         internal static bool CanBeLateBound(IXSymbol target)
         {

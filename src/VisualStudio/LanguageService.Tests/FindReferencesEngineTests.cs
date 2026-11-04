@@ -64,6 +64,22 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void SymbolLiteralsAreCollectedForTypesAndFunctionsWhenRenaming()
+        {
+            var foo = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var close = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            foo.AddMember(close);
+            var start = new XSourceMemberSymbol("Start", Kind.Function, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            var rename = ReferenceSearchOptions.ForRename(false, false);
+            Assert.True(FindReferencesEngine.CollectsSymbolLiterals(foo, rename));      // CreateInstance(#Foo)
+            Assert.True(FindReferencesEngine.CollectsSymbolLiterals(start, rename));
+            Assert.True(FindReferencesEngine.CollectsSymbolLiterals(close, rename));
+            Assert.False(FindReferencesEngine.CollectsSymbolLiterals(foo, ReferenceSearchOptions.ForFindReferences(true)));
+            Assert.True(FindReferencesEngine.CollectsSymbolLiterals(close, ReferenceSearchOptions.ForFindReferences(true)));
+            Assert.False(FindReferencesEngine.CollectsSymbolLiterals(close, ReferenceSearchOptions.ForFindReferences(false)));
+        }
+
+        [Fact]
         public void OptionsForRenameIncludeEverythingUncertain()
         {
             var o = ReferenceSearchOptions.ForRename(comments: true, strings: false);

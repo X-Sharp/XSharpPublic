@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\VOSDK.SDK.Props" />
   <PropertyGroup>
-    <AssemblyName>VOGuiClasses</AssemblyName>
+    <AssemblyName>VOGUIClasses</AssemblyName>
     <EnforceSelf>True</EnforceSelf>
     <TargetFramework>net47</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>

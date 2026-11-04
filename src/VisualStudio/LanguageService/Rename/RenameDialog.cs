@@ -58,8 +58,12 @@ namespace XSharp.LanguageService.Rename
             panel.Children.Add(buttons);
             Content = panel;
 
-            _comments.Click += (s, e) => SearchOptionsChanged?.Invoke(this, EventArgs.Empty);
-            _strings.Click += (s, e) => SearchOptionsChanged?.Invoke(this, EventArgs.Empty);
+            // Checked/Unchecked, not Click: the state can also change through UI automation (accessibility tools)
+            RoutedEventHandler optionsChanged = (s, e) => SearchOptionsChanged?.Invoke(this, EventArgs.Empty);
+            _comments.Checked += optionsChanged;
+            _comments.Unchecked += optionsChanged;
+            _strings.Checked += optionsChanged;
+            _strings.Unchecked += optionsChanged;
             _apply.Click += (s, e) =>
             {
                 var error = validate?.Invoke(NewName);

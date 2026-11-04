@@ -26,6 +26,58 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void FailedItemsAreReported()
+        {
+            var stats = new FindReferencesStats();
+            var failed = new List<string>();
+            FindReferencesEngine.SearchEach(new[] { "a", "missing", "c" }, item =>
+            {
+                if (item == "missing")
+                    throw new System.IO.IOException(item);
+            }, stats, CancellationToken.None, failed.Add);
+            Assert.Equal(new[] { "missing" }, failed);
+            Assert.Equal(1, stats.Failed);
+        }
+
+        // A; B refs A; C refs B; D refs nothing
+        private static readonly string[] Projects = { "A", "B", "C", "D" };
+        private static IEnumerable<string> RefsOf(string project)
+        {
+            switch (project)
+            {
+                case "B": return new[] { "A" };
+                case "C": return new[] { "B" };
+                default: return Array.Empty<string>();
+            }
+        }
+
+        [Fact]
+        public void ScopeFollowsDirectReferences()
+        {
+            Assert.Equal(new[] { "A", "B" }, FindReferencesEngine.ProjectsInScope("A", Projects, RefsOf, false));
+        }
+
+        [Fact]
+        public void ScopeFollowsTransitiveReferences()
+        {
+            Assert.Equal(new[] { "A", "B", "C" }, FindReferencesEngine.ProjectsInScope("A", Projects, RefsOf, true));
+        }
+
+        [Fact]
+        public void OptionsForRenameIncludeEverythingUncertain()
+        {
+            var o = ReferenceSearchOptions.ForRename(comments: true, strings: false);
+            Assert.True(o.IncludeUncertain);
+            Assert.True(o.TransitiveProjects);
+            Assert.Equal(TextTokenKinds.Comments, o.IncludeText);
+            var far = ReferenceSearchOptions.ForFindReferences(true);
+            Assert.False(far.IncludeUncertain);
+            Assert.True(far.IncludeLateBound);
+            Assert.False(far.TransitiveProjects);
+            Assert.Equal(TextTokenKinds.None, far.IncludeText);
+        }
+
+        [Fact]
         public void CancellationStillEndsTheSearch()
         {
             var stats = new FindReferencesStats();

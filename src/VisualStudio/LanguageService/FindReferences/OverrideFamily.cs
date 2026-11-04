@@ -106,7 +106,7 @@ namespace XSharp.LanguageService.FindReferences
         }
 
         /// <summary>Same name and, for methods, the same kind and parameter list.</summary>
-        private static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
+        internal static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
         {
             if (!string.Equals(member.Name, other.Name, StringComparison.OrdinalIgnoreCase))
                 return false;

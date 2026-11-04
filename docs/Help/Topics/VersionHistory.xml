@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-03T14:11:43.652Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-04T14:49:47.280Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>#2127</keyword>
@@ -84,6 +84,7 @@
       <li styleclass="List1">Added support for primary constructors and static interface constructors</li>
       <li styleclass="List1">Implemented the Project context menu option &quot;Convert to SDK format&quot; for projects in the legacy format. The old project file is saved with a .BAK extension.</li>
       <li styleclass="List1">The project Property pages are now based on the XAML files in the MsBuild Rules folder</li>
+      <li styleclass="List1">Added support for <text style="font-weight:bold;">Find All References </text>in the source code editor (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2148" target="_blank">#2148</link>)</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -98,6 +99,7 @@
       <li styleclass="List1">Fixed an issue when a project file contains an invalid configuration (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2145" target="_blank">#2145</link>)</li>
       <li styleclass="List1">For multi-targeting projects Goto Definition could show the same definition twice. This has been solved</li>
       <li styleclass="List1">Fixed some issues when switching between Sqlite databases engines for the intellisense database. We now delete the database after changing the engine, so it will be rebuilt when the solution is reloaded.</li>
+      <li styleclass="List1">Fixed an issue with Goto Definition for partial classes in other projects (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2110" target="_blank">#2110</link>)</li>
     </list>
     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">New Features</para>

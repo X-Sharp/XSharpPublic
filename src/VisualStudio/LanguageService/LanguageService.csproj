@@ -188,6 +188,7 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="NavigateTo\NameMatcher.cs" />
     <Compile Include="Options\CompletionOptions.cs" />
     <Compile Include="Options\FormattingOptions.cs" />
     <Compile Include="Options\IntellisenseOptions.cs" />

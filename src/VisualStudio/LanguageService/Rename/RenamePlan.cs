@@ -31,21 +31,51 @@ namespace XSharp.LanguageService.Rename
     {
         /// <summary>
         /// Splits the hits of a search: sure places become changes (a file that two projects share yields the same
-        /// place twice: changed once), everything uncertain is only reported.
+        /// place twice: changed once), everything uncertain is only reported. With <paramref name="includeLateBound"/>
+        /// late-bound sends (<c>o:Name</c>) and symbols (<c>#Name</c>) are changed too, as Find All References lists them.
         /// </summary>
-        internal static RenamePlan Build(IReadOnlyList<ReferenceHit> hits)
+        internal static RenamePlan Build(IReadOnlyList<ReferenceHit> hits, bool includeLateBound = false)
         {
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var changes = new List<ReferenceHit>();
             var notChanged = new List<ReferenceHit>();
-            foreach (var hit in hits)
+            foreach (var found in hits)
             {
-                if (hit.Uncertainty != ReferenceUncertainty.None)
+                var hit = found;
+                bool lateBound = hit.Uncertainty == ReferenceUncertainty.LateBound || hit.Uncertainty == ReferenceUncertainty.Symbol;
+                if (hit.Uncertainty != ReferenceUncertainty.None && !(includeLateBound && lateBound))
+                {
                     notChanged.Add(hit);
-                else if (seen.Add(hit.FilePath + "|" + hit.Start))
+                    continue;
+                }
+                if (hit.Uncertainty == ReferenceUncertainty.Symbol)
+                    hit = WithoutHash(hit);
+                if (seen.Add(hit.FilePath + "|" + hit.Start))
                     changes.Add(hit);
             }
             return Create(changes, notChanged);
+        }
+
+        /// <summary>A #Name hit covers the hash: the change is the name behind it.</summary>
+        private static ReferenceHit WithoutHash(ReferenceHit hit)
+        {
+            if (hit.Length < 2)
+                return hit;
+            return new ReferenceHit
+            {
+                FilePath = hit.FilePath,
+                ProjectName = hit.ProjectName,
+                Line = hit.Line,
+                Column = hit.Column + 1,
+                Length = hit.Length - 1,
+                LineText = hit.LineText,
+                Classifications = hit.Classifications,
+                IsDefinition = hit.IsDefinition,
+                Group = hit.Group,
+                Start = hit.Start + 1,
+                Uncertainty = hit.Uncertainty,
+                InText = hit.InText
+            };
         }
 
         /// <summary>The plan without the changes the user unchecked in the preview.</summary>

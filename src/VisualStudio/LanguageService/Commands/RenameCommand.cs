@@ -84,7 +84,8 @@ namespace XSharp.LanguageService.Commands
                 bool canRenameFile = typeFile != null &&
                     string.Equals(Path.GetFileNameWithoutExtension(typeFile), oldName, StringComparison.OrdinalIgnoreCase);
                 var documents = await FindReferencesCommand.CreateDocumentSourceAsync();
-                var dialog = new RenameDialog(oldName, target.KindKeyword, canRenameFile, name => Validate(oldName, name, file));
+                var dialog = new RenameDialog(oldName, target.KindKeyword, canRenameFile, FindReferencesEngine.CanBeLateBound(target),
+                    name => Validate(oldName, name, file));
 
                 // the search runs while the dialog is open, again when the comment/string options change; a new
                 // search cancels the running one and waits for it: they would share files and lookups
@@ -110,7 +111,7 @@ namespace XSharp.LanguageService.Commands
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         if (cancellation.IsCancellationRequested)
                             return;
-                        plan = RenamePlanner.Build(hits.Hits);
+                        plan = RenamePlanner.Build(hits.Hits, dialog.LateBound);
                         dialog.ShowSearchResult(plan.Changes.Count, plan.Files.Count, plan.NotChanged.Count);
                     }
                     catch (OperationCanceledException)

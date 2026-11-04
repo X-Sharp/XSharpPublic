@@ -25,13 +25,15 @@ namespace XSharp.LanguageService.Rename
         private readonly TextBox _name;
         private readonly CheckBox _comments;
         private readonly CheckBox _strings;
+        private readonly CheckBox _lateBound;
         private readonly CheckBox _preview;
         private readonly CheckBox _renameFile;
         private readonly TextBlock _status;
         private readonly Button _apply;
 
+        /// <param name="canBeLateBound">Offer to change late-bound sends and symbols (members only); never checked at the start</param>
         /// <param name="validate">The error for a new name, or null when it may be used</param>
-        internal RenameDialog(string oldName, string kind, bool canRenameFile, Func<string, string> validate)
+        internal RenameDialog(string oldName, string kind, bool canRenameFile, bool canBeLateBound, Func<string, string> validate)
         {
             Title = $"Rename {kind} '{oldName}'";
             SizeToContent = SizeToContent.WidthAndHeight;
@@ -45,6 +47,8 @@ namespace XSharp.LanguageService.Rename
             panel.Children.Add(_name);
             _comments = AddOption(panel, "Include _comments", _lastComments);
             _strings = AddOption(panel, "Include _strings", _lastStrings);
+            _lateBound = AddOption(panel, $"Include _late-bound calls and symbols (:{oldName}, #{oldName})", false);
+            _lateBound.Visibility = canBeLateBound ? Visibility.Visible : Visibility.Collapsed;
             _preview = AddOption(panel, "_Preview changes", _lastPreview);
             _renameFile = AddOption(panel, "Rename _file", _lastRenameFile);
             _renameFile.Visibility = canRenameFile ? Visibility.Visible : Visibility.Collapsed;
@@ -64,6 +68,8 @@ namespace XSharp.LanguageService.Rename
             _comments.Unchecked += optionsChanged;
             _strings.Checked += optionsChanged;
             _strings.Unchecked += optionsChanged;
+            _lateBound.Checked += optionsChanged;
+            _lateBound.Unchecked += optionsChanged;
             _apply.Click += (s, e) =>
             {
                 var error = validate?.Invoke(NewName);
@@ -87,12 +93,13 @@ namespace XSharp.LanguageService.Rename
             };
         }
 
-        /// <summary>"Include comments" or "Include strings" changed: the search must run again.</summary>
+        /// <summary>"Include comments", "Include strings" or "Include late-bound" changed: the search must run again.</summary>
         internal event EventHandler SearchOptionsChanged;
 
         internal string NewName => _name.Text.Trim();
         internal bool Comments => _comments.IsChecked == true;
         internal bool Strings => _strings.IsChecked == true;
+        internal bool LateBound => _lateBound.Visibility == Visibility.Visible && _lateBound.IsChecked == true;
         internal bool Preview => _preview.IsChecked == true;
         internal bool RenameFile => _renameFile.Visibility == Visibility.Visible && _renameFile.IsChecked == true;
 
@@ -107,7 +114,7 @@ namespace XSharp.LanguageService.Rename
         {
             var text = $"{changes} change(s) in {files} file(s).";
             if (notChanged > 0)
-                text += $" {notChanged} place(s) will not be changed (late bound, unresolved, ambiguous or inactive code); they are listed afterwards.";
+                text += $" {notChanged} place(s) will not be changed (late bound, unresolved, ambiguous or inactive code); after Apply they are listed in the Find All References window.";
             _status.Text = text;
             _apply.IsEnabled = changes > 0;
         }

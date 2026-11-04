@@ -26,6 +26,29 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void LateBoundSendsAndSymbolsAreChangedWhenAsked()
+        {
+            var sure = Hit("a.prg", 10);
+            var lateBound = Hit("a.prg", 20, ReferenceUncertainty.LateBound);
+            var symbol = Hit("a.prg", 30, ReferenceUncertainty.Symbol);
+            var unresolved = Hit("a.prg", 40, ReferenceUncertainty.Unresolved);
+            var plan = RenamePlanner.Build(new[] { sure, lateBound, symbol, unresolved }, includeLateBound: true);
+            Assert.Equal(new[] { 31, 20, 10 }, plan.Changes.Select(h => h.Start).ToArray());
+            Assert.Equal(new[] { unresolved }, plan.NotChanged);
+        }
+
+        [Fact]
+        public void ASymbolIsChangedWithoutItsHash()
+        {
+            var symbol = new ReferenceHit { FilePath = "a.prg", Start = 8, Column = 8, Length = 6, Uncertainty = ReferenceUncertainty.Symbol };
+            var change = RenamePlanner.Build(new[] { symbol }, includeLateBound: true).Changes.Single();
+            Assert.Equal(9, change.Start);
+            Assert.Equal(9, change.Column);
+            Assert.Equal(5, change.Length);
+            Assert.True(RenamePlanner.StillMatches("Send(u, #Speak)", change, "Speak"));
+        }
+
+        [Fact]
         public void DuplicateHitsAreChangedOnce()
         {
             var plan = RenamePlanner.Build(new[] { Hit("a.prg", 10), Hit("A.PRG", 10) });

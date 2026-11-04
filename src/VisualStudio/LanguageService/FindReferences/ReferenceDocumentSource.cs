@@ -47,10 +47,19 @@ namespace XSharp.LanguageService.FindReferences
         /// </summary>
         internal XDocument CreateDocument(XFile file, string text)
         {
+            return CreateDocument(file, text, Lex(file, text));
+        }
+
+        /// <summary>
+        /// A private document for <paramref name="text"/> with the given tokens, e.g. with an interpolated string
+        /// replaced by the tokens of one of its expressions. The lookup finds a document through its buffer, so
+        /// every document gets a buffer of its own.
+        /// </summary>
+        internal XDocument CreateDocument(XFile file, string text, IList<IToken> tokens)
+        {
             var buffer = _bufferFactory.CreateTextBuffer(text, _contentType);
             buffer.Properties.AddProperty(typeof(XFile), file);
             var snapshot = buffer.CurrentSnapshot;
-            var tokens = Lex(file, text);
             var document = new XDocument(buffer, tokens, snapshot);
             XDocumentIndexer.BuildIndexes(tokens, out var lineTokens, out var identifiers, out var lineState);
             document.SetTokens(lineTokens);
@@ -60,7 +69,7 @@ namespace XSharp.LanguageService.FindReferences
             return document;
         }
 
-        private static IList<IToken> Lex(XFile file, string text)
+        internal static IList<IToken> Lex(XFile file, string text)
         {
             var options = file.Project?.ParseOptions ?? XParseOptions.Default;
             XSharp.Parser.VsParser.Lex(text, file.FullPath, (XSharpParseOptions)options, new NullErrorListener(), out ITokenStream stream, out _);

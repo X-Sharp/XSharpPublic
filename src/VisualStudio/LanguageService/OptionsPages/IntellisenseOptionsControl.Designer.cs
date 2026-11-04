@@ -39,6 +39,8 @@
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.chkExcludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
             this.chkUseMicrosoftSQLite = new System.Windows.Forms.CheckBox();
+            this.chkFindReferencesLateBound = new System.Windows.Forms.CheckBox();
+            this.grpFindReferences = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
@@ -49,6 +51,7 @@
             this.panel1.SuspendLayout();
             this.grpNavigationBars.SuspendLayout();
             this.grpCompletionListTabs.SuspendLayout();
+            this.grpFindReferences.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -144,23 +147,46 @@
             this.chkUseMicrosoftSQLite.Text = "Use the Microsoft.Data.SQLite engine for the intellisense database";
             this.toolTip1.SetToolTip(this.chkUseMicrosoftSQLite, resources.GetString("chkUseMicrosoftSQLite.ToolTip"));
             this.chkUseMicrosoftSQLite.UseVisualStyleBackColor = true;
-            // 
+            //
+            // chkFindReferencesLateBound
+            //
+            this.chkFindReferencesLateBound.AutoSize = true;
+            this.chkFindReferencesLateBound.Location = new System.Drawing.Point(13, 18);
+            this.chkFindReferencesLateBound.Name = "chkFindReferencesLateBound";
+            this.chkFindReferencesLateBound.Size = new System.Drawing.Size(309, 17);
+            this.chkFindReferencesLateBound.TabIndex = 0;
+            this.chkFindReferencesLateBound.Text = "Also list late-bound sends (o:Name) and symbols (#Name)";
+            this.toolTip1.SetToolTip(this.chkFindReferencesLateBound, "Find All References on a method, property or field also lists the sends o:Name " +
+        "that cannot be resolved (USUAL, OBJECT, unknown type) and the symbols #Name, in a group of their own.");
+            this.chkFindReferencesLateBound.UseVisualStyleBackColor = true;
+            //
+            // grpFindReferences
+            //
+            this.grpFindReferences.Controls.Add(this.chkFindReferencesLateBound);
+            this.grpFindReferences.Location = new System.Drawing.Point(5, 249);
+            this.grpFindReferences.Name = "grpFindReferences";
+            this.grpFindReferences.Size = new System.Drawing.Size(373, 45);
+            this.grpFindReferences.TabIndex = 2;
+            this.grpFindReferences.TabStop = false;
+            this.grpFindReferences.Text = "Find All References";
+            //
             // panel1
-            // 
+            //
+            this.panel1.Controls.Add(this.grpFindReferences);
             this.panel1.Controls.Add(this.btnShowMeTheMagic);
             this.panel1.Controls.Add(this.grpNavigationBars);
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 282);
+            this.panel1.Size = new System.Drawing.Size(381, 333);
             this.panel1.TabIndex = 0;
-            // 
+            //
             // btnShowMeTheMagic
-            // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 249);
+            //
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 300);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
-            this.btnShowMeTheMagic.TabIndex = 2;
+            this.btnShowMeTheMagic.TabIndex = 3;
             this.btnShowMeTheMagic.Text = "Open Sesame";
             this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
             this.btnShowMeTheMagic.Click += new System.EventHandler(this.btnShowMeTheMagic_Click);
@@ -217,12 +243,14 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(388, 293);
+            this.Size = new System.Drawing.Size(388, 344);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
+            this.grpFindReferences.ResumeLayout(false);
+            this.grpFindReferences.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -242,5 +270,7 @@
         private System.Windows.Forms.CheckBox chkExcludeMembersFromOtherfiles;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.CheckBox chkUseMicrosoftSQLite;
+        private System.Windows.Forms.GroupBox grpFindReferences;
+        private System.Windows.Forms.CheckBox chkFindReferencesLateBound;
     }
 }

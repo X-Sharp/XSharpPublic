@@ -22,14 +22,21 @@ namespace XSharp.LanguageService.FindReferences
     /// </summary>
     internal static class FindReferencesEngine
     {
-        /// <summary>Create the <paramref name="family"/> on the UI thread: it reads the target's (editor) types.</summary>
-        internal static Task<FindReferencesStats> FindAsync(IXSymbol target, OverrideFamily family, XSharpSearchLocation origin,
-            ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
+        /// <summary>The option "list late-bound sends and symbols" (Tools > Options > X# > Intellisense).</summary>
+        internal static bool IncludeLateBound { get; set; } = true;
+
+        /// <summary>
+        /// Create the <paramref name="family"/> on the UI thread: it reads the target's (editor) types.
+        /// <paramref name="includeLateBound"/> adds the sends <c>o:Name</c> that the lookup cannot resolve and the
+        /// symbols <c>#Name</c> in a group of their own.
+        /// </summary>
+        internal static Task<FindReferencesStats> FindAsync(IXSymbol target, OverrideFamily family, bool includeLateBound,
+            XSharpSearchLocation origin, ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
         {
-            return Task.Run(() => Find(target, family, origin, documents, sink, ct), ct);
+            return Task.Run(() => Find(target, family, includeLateBound && CanBeLateBound(target), origin, documents, sink, ct), ct);
         }
 
-        private static FindReferencesStats Find(IXSymbol target, OverrideFamily family, XSharpSearchLocation origin,
+        private static FindReferencesStats Find(IXSymbol target, OverrideFamily family, bool lateBound, XSharpSearchLocation origin,
             ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
         {
             var stats = new FindReferencesStats();
@@ -59,7 +66,7 @@ namespace XSharp.LanguageService.FindReferences
                 SearchEach(files.Where(f => f != null), file =>
                 {
                     stats.FilesInScope++;
-                    var hits = SearchFile(target, family, name, file, limit, documents, stats, ct);
+                    var hits = SearchFile(target, family, lateBound, name, file, limit, documents, stats, ct);
                     if (hits.Count > 0)
                     {
                         stats.Hits += hits.Count;
@@ -150,7 +157,7 @@ namespace XSharp.LanguageService.FindReferences
             return result;
         }
 
-        private static List<ReferenceHit> SearchFile(IXSymbol target, OverrideFamily family, string name, XFile file,
+        private static List<ReferenceHit> SearchFile(IXSymbol target, OverrideFamily family, bool lateBound, string name, XFile file,
             TextInterval? limit, ReferenceDocumentSource documents, FindReferencesStats stats, CancellationToken ct)
         {
             var hits = new List<ReferenceHit>();
@@ -163,13 +170,40 @@ namespace XSharp.LanguageService.FindReferences
             var candidates = target.Kind == Kind.Constructor
                 ? ReferenceCandidateScanner.FindConstructorTokens(document.Tokens, name)
                 : ReferenceCandidateScanner.FindIdentifierTokens(document.Tokens, name);
+            // names inside the expressions of interpolated strings: resolved on the tokens of their expression
+            var allowDot = file.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
+            var interpolated = ReferenceCandidateScanner.FindInterpolatedTokens(document.Tokens, name,
+                expression => ReferenceDocumentSource.Lex(file, expression), allowDot);
+            var symbolLiterals = lateBound ? ReferenceCandidateScanner.FindSymbolTokens(document.Tokens, name) : Array.Empty<IToken>();
             // the name only in a comment, a string or a longer word: no need to parse the file
-            if (candidates.Count == 0)
+            if (candidates.Count == 0 && interpolated.Count == 0 && symbolLiterals.Count == 0)
                 return hits;
             ParseEntities(file, text);
             var snapshot = document.SnapShot;
             var declarationLines = new HashSet<int>();
-            foreach (var token in candidates)
+            var lateBoundGroup = LateBoundGroup(target);
+            void AddHit(IToken token, bool isDefinition, string group)
+            {
+                var textLine = snapshot.GetLineFromLineNumber(token.Line - 1);
+                hits.Add(new ReferenceHit
+                {
+                    FilePath = file.FullPath,
+                    ProjectName = file.Project?.Name,
+                    Line = token.Line - 1,
+                    Column = token.StartIndex - textLine.Start.Position,
+                    Length = token.StopIndex - token.StartIndex + 1,
+                    LineText = textLine.GetText(),
+                    Classifications = ReferenceLineText.Classify(document.Tokens, textLine.Start.Position, textLine.End.Position),
+                    IsDefinition = isDefinition,
+                    Group = group
+                });
+            }
+            // one document per interpolated string, with the string replaced by the expression
+            var expressionDocuments = new Dictionary<IList<IToken>, XDocument>();
+            var all = candidates.Select(t => (Token: t, Hole: (InterpolatedCandidate)null))
+                .Concat(interpolated.Select(c => (Token: c.Token, Hole: c)))
+                .OrderBy(c => c.Token.StartIndex);
+            foreach (var (token, hole) in all)
             {
                 ct.ThrowIfCancellationRequested();
                 if (limit.HasValue && !limit.Value.ContainsInclusive(token.StartIndex))
@@ -177,23 +211,33 @@ namespace XSharp.LanguageService.FindReferences
                 stats.Candidates++;
                 var line = token.Line - 1;
                 // the name in a declaration: of the target (all parts of a partial type), or of something else
-                var declared = DeclaredEntity(file.EntityList, token);
+                var declared = hole == null ? DeclaredEntity(file.EntityList, token) : null;
                 bool isDefinition = declared != null &&
                     (SymbolIdentity.IsSame(target, declared) || family.Contains(declared));
                 IXSymbol group = declared;
                 bool isReference = false;
                 if (declared == null)
                 {
+                    var searchDocument = document;
+                    if (hole != null && !expressionDocuments.TryGetValue(hole.Tokens, out searchDocument))
+                    {
+                        searchDocument = documents.CreateDocument(file, text, ReferenceCandidateScanner.Splice(document.Tokens, hole));
+                        expressionDocuments.Add(hole.Tokens, searchDocument);
+                    }
+                    var tokens = searchDocument.Tokens;
                     var member = XSharpLookup.FindMemberAtPosition(token.StartIndex, file);
                     var ns = XSharpTokenTools.FindNamespace(token.StartIndex, file);
-                    var location = new XSharpSearchLocation(document, file, member, snapshot, line, token.StartIndex, ns?.FullName ?? "");
+                    var location = new XSharpSearchLocation(searchDocument, file, member, searchDocument.SnapShot, line, token.StartIndex, ns?.FullName ?? "");
                     var context = location;
-                    var resolved = SymbolResolver.ForCreation(SymbolResolver.ResolveAt(ref location, out _, out _), document.Tokens, token);
-                    var symbols = OverloadFilter.Filter(resolved, OverloadFilter.Arguments(document.Tokens, token),
+                    var resolved = SymbolResolver.ForCreation(SymbolResolver.ResolveAt(ref location, out _, out _), tokens, token);
+                    var symbols = OverloadFilter.Filter(resolved, OverloadFilter.Arguments(tokens, token),
                         id => SymbolResolver.TypeOf(context, id));
                     if (symbols.Count == 0)
                     {
                         stats.Unresolved++;
+                        // o:Name on a USUAL, an OBJECT or an unknown type: may reach the target at runtime
+                        if (lateBound && ReferenceCandidateScanner.IsSend(tokens, token))
+                            AddHit(token, false, lateBoundGroup);
                         continue;
                     }
                     stats.Resolved++;
@@ -215,22 +259,11 @@ namespace XSharp.LanguageService.FindReferences
                     }
                 }
                 if (isDefinition || isReference)
-                {
-                    var textLine = snapshot.GetLineFromLineNumber(line);
-                    hits.Add(new ReferenceHit
-                    {
-                        FilePath = file.FullPath,
-                        ProjectName = file.Project?.Name,
-                        Line = line,
-                        Column = token.StartIndex - textLine.Start.Position,
-                        Length = token.StopIndex - token.StartIndex + 1,
-                        LineText = textLine.GetText(),
-                        Classifications = ReferenceLineText.Classify(document.Tokens, textLine.Start.Position, textLine.End.Position),
-                        IsDefinition = isDefinition,
-                        Group = GroupOf(group ?? target)
-                    });
-                }
+                    AddHit(token, isDefinition, GroupOf(group ?? target));
             }
+            // Send(o, #Name), IVarGet(o, #Name): the symbol names the member
+            foreach (var token in symbolLiterals)
+                AddHit(token, false, lateBoundGroup);
             return hits;
         }
 
@@ -260,6 +293,19 @@ namespace XSharp.LanguageService.FindReferences
             var keyword = SymbolIdentity.IsPropertyLike(symbol.Kind) ? "PROPERTY" : symbol.KindKeyword;
             return $"{keyword} {symbol.FullName}".Trim();
         }
+        /// <summary>Methods, properties and fields can be called late bound: <c>o:Name</c>, <c>#Name</c>.</summary>
+        internal static bool CanBeLateBound(IXSymbol target)
+        {
+            return target is IXMemberSymbol &&
+                (target.Kind == Kind.Method || target.Kind == Kind.Field || SymbolIdentity.IsPropertyLike(target.Kind));
+        }
+
+        /// <summary>The group of the sends and symbols that may reach the target at runtime.</summary>
+        internal static string LateBoundGroup(IXSymbol target)
+        {
+            return $"Late bound :{target.Name} / #{target.Name}";
+        }
+
         /// <summary>The name a file must contain: for a constructor (named .ctor) the name of its class.</summary>
         internal static string SearchName(IXSymbol target)
         {

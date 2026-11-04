@@ -148,5 +148,39 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal("Run", FindReferencesEngine.SearchName(run));
             Assert.Equal("Foo", FindReferencesEngine.SearchName(type));
         }
+
+        [Fact]
+        public void MembersCanBeReachedLateBound()
+        {
+            var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            XSourceMemberSymbol Add(string name, Kind kind)
+            {
+                var member = new XSourceMemberSymbol(name, kind, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+                type.AddMember(member);
+                return member;
+            }
+            Assert.True(FindReferencesEngine.CanBeLateBound(Add("Close", Kind.Method)));
+            Assert.True(FindReferencesEngine.CanBeLateBound(Add("Name", Kind.Access)));
+            Assert.True(FindReferencesEngine.CanBeLateBound(Add("Name", Kind.Assign)));
+            Assert.True(FindReferencesEngine.CanBeLateBound(Add("Size", Kind.Property)));
+            Assert.True(FindReferencesEngine.CanBeLateBound(Add("nCount", Kind.Field)));
+            Assert.False(FindReferencesEngine.CanBeLateBound(Add(".ctor", Kind.Constructor)));
+            Assert.False(FindReferencesEngine.CanBeLateBound(Add("gnCount", Kind.VOGlobal)));
+            Assert.False(FindReferencesEngine.CanBeLateBound(Add("MAX_SIZE", Kind.VODefine)));
+            Assert.False(FindReferencesEngine.CanBeLateBound(type));
+            Assert.False(FindReferencesEngine.CanBeLateBound(new XSourceMemberSymbol("Start", Kind.Function, Modifiers.Public,
+                new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null)));
+        }
+
+        [Fact]
+        public void LateBoundHitsHaveTheirOwnGroup()
+        {
+            var type = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var close = new XSourceMemberSymbol("Close", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            type.AddMember(close);
+            var group = FindReferencesEngine.LateBoundGroup(close);
+            Assert.Contains("Close", group);
+            Assert.NotEqual(FindReferencesEngine.GroupOf(close), group);
+        }
     }
 }

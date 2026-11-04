@@ -20,6 +20,7 @@ namespace XSharp.LanguageService.OptionsPages
             commitChars.Tag = nameof(IntellisenseOptions.CommitChars);
             chkExcludeMembersFromOtherfiles.Tag = nameof(IntellisenseOptions.ExcludeMembersFromOtherFiles);
             chkUseMicrosoftSQLite.Tag = nameof(IntellisenseOptions.UseMicrosoftSQLite);
+            chkFindReferencesLateBound.Tag = nameof(IntellisenseOptions.FindReferencesLateBound);
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))
             {
                 this.btnShowMeTheMagic.Visible = false;

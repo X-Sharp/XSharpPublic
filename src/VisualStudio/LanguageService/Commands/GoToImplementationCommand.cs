@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Threading;
 using XSharp.LanguageService.FindReferences;
 using XSharp.LanguageService.GoToImplementation;
+using XSharp.Settings;
 using XSharp.Support;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
@@ -97,7 +98,7 @@ namespace XSharp.LanguageService.Commands
                     results = Array.Empty<IXSymbol>();
                 }
                 Logger.Information($"{command} '{target.FullName}': {results.Count} of {hierarchy.Candidates} candidates, {watch.ElapsedMilliseconds} ms");
-                await ShowAsync(command, down, target, results, textView, state);
+                await ShowAsync(command, down, target, results, hierarchy, textView, state);
             }).Task.Forget();
         }
 
@@ -126,21 +127,11 @@ namespace XSharp.LanguageService.Commands
         {
             if (target is IXTypeSymbol type)
                 return TypeHierarchy.BaseTypes(type, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<IXSymbol>().ToList();
-            var member = (IXMemberSymbol)target;
-            var result = new List<IXSymbol>();
-            var overridden = TypeHierarchy.OverriddenMember(member, hierarchy.BaseOf);
-            if (overridden != null)
-                result.Add(overridden);
-            // interfaces of the class and of its base classes
-            var interfaces = new List<IXTypeSymbol>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            for (var parent = member.ParentType; parent != null && seen.Add(parent.FullName ?? ""); parent = hierarchy.BaseOf(parent))
-                interfaces.AddRange(hierarchy.InterfacesOf(parent));
-            result.AddRange(TypeHierarchy.ImplementedMembers(member, interfaces));
-            return result;
+            return TypeHierarchy.BaseMembers((IXMemberSymbol)target, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<IXSymbol>().ToList();
         }
 
-        private static async Task ShowAsync(string command, bool down, IXSymbol target, IReadOnlyList<IXSymbol> results, ITextView textView, CompletionState state)
+        private static async Task ShowAsync(string command, bool down, IXSymbol target, IReadOnlyList<IXSymbol> results, SourceHierarchy hierarchy,
+            ITextView textView, CompletionState state)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (results.Count == 0)
@@ -152,10 +143,10 @@ namespace XSharp.LanguageService.Commands
             }
             if (results.Count == 1)
             {
-                Navigate(results[0], textView, state);
+                Navigate(results[0], hierarchy, textView, state);
                 return;
             }
-            var hits = results.Select(Hit).Where(h => h != null).ToList();
+            var hits = results.Select(r => Hit(r, hierarchy)).Where(h => h != null).ToList();
             var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
             var window = service.StartSearch(down ? $"'{target.Name}' implementations" : $"'{target.Name}' base types");
             var source = new ReferencesTableDataSource(target, await FindReferencesCommand.CreateTextFormatAsync());
@@ -164,17 +155,27 @@ namespace XSharp.LanguageService.Commands
             source.Complete();
         }
 
-        private static void Navigate(IXSymbol symbol, ITextView textView, CompletionState state)
+        private static void Navigate(IXSymbol symbol, SourceHierarchy hierarchy, ITextView textView, CompletionState state)
         {
-            if (symbol is XSourceEntity entity)
+            // a partial class: the part with INHERIT / IMPLEMENTS
+            var part = hierarchy.DeclarationOf(symbol as IXTypeSymbol);
+            if (part != null)
+                XDocuments.Open(part.FileName, part.StartLine, part.StartColumn, false);
+            else if (symbol is XSourceEntity entity)
                 entity.OpenEditor();
             else
                 XSharpGotoDefinition.Goto(symbol, textView, state);
         }
 
         /// <summary>One row: the declaration of the symbol, for a DLL symbol in the generated source F12 opens.</summary>
-        private static ReferenceHit Hit(IXSymbol symbol)
+        private static ReferenceHit Hit(IXSymbol symbol, SourceHierarchy hierarchy)
         {
+            var part = hierarchy.DeclarationOf(symbol as IXTypeSymbol);
+            if (part != null)
+            {
+                return DeclarationHit.Create(part.FileName, XSolution.FindFile(part.FileName)?.Project?.Name, part.StartLine, part.StartColumn,
+                    part.SourceCode, symbol.Name, symbol.FullName);
+            }
             var entity = symbol as XSourceEntity;
             if (entity == null && symbol is XPETypeSymbol peType)
                 entity = XSharpGotoDefinition.FindSystemElement(peType, peType);
@@ -183,21 +184,8 @@ namespace XSharp.LanguageService.Commands
             if (entity?.File == null)
                 return null;
             var sourceCode = (entity as XSourceTypeSymbol)?.SourceCode ?? (entity as XSourceMemberSymbol)?.SourceCode;
-            var declaration = (sourceCode ?? entity.Name).Split('\r', '\n')[0];
-            var column = entity.Range.StartColumn;
-            var nameAt = declaration.IndexOf(entity.Name, StringComparison.OrdinalIgnoreCase);
-            return new ReferenceHit
-            {
-                FilePath = entity.File.FullPath,
-                ProjectName = entity.File.Project?.Name,
-                Line = entity.Range.StartLine,
-                Column = nameAt >= 0 ? column + nameAt : column,
-                Length = nameAt >= 0 ? entity.Name.Length : 0,
-                // the declaration at its column, so that Column points into this text
-                LineText = new string(' ', Math.Max(column, 0)) + declaration,
-                IsDefinition = true,
-                Group = (entity as IXMemberSymbol)?.ParentType?.FullName ?? entity.FullName,
-            };
+            return DeclarationHit.Create(entity.File.FullPath, entity.File.Project?.Name, entity.Range.StartLine, entity.Range.StartColumn,
+                sourceCode, entity.Name, (entity as IXMemberSymbol)?.ParentType?.FullName ?? entity.FullName);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace XSharp.LanguageService.GoToImplementation
         private readonly Dictionary<string, IXTypeSymbol> _types = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, IXTypeSymbol> _bases = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, IReadOnlyList<IXTypeSymbol>> _interfaces = new Dictionary<string, IReadOnlyList<IXTypeSymbol>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<IXTypeSymbol, XDbResult> _parts = new Dictionary<IXTypeSymbol, XDbResult>();
 
         /// <summary>Database rows looked at (before resolving), for the log line.</summary>
         internal int Candidates { get; private set; }
@@ -40,17 +41,43 @@ namespace XSharp.LanguageService.GoToImplementation
             return ToTypes(rows.ToList());
         }
 
+        /// <summary>
+        /// The row of the part a candidate type is shown at (partial classes: the part with INHERIT or IMPLEMENTS),
+        /// null for types that did not come from the database queries.
+        /// </summary>
+        internal XDbResult DeclarationOf(IXTypeSymbol type)
+        {
+            return type != null && _parts.TryGetValue(type, out var row) ? row : null;
+        }
+
+        /// <summary>
+        /// The resolved base class. For a candidate the INHERIT clause of its declaring part is resolved with the
+        /// USINGs of that part's file (the merged partial class carries the first part's file).
+        /// </summary>
         internal IXTypeSymbol BaseOf(IXTypeSymbol type)
         {
             if (type == null)
                 return null;
-            var key = type.FullName ?? "";
+            var key = TypeHierarchy.KeyOf(type);
             if (!_bases.TryGetValue(key, out var result))
             {
-                result = OverrideFamily.ResolveBase(type);
+                var row = DeclarationOf(type);
+                var file = row == null || string.IsNullOrEmpty(row.BaseTypeName) ? null : XSolution.FindFile(row.FileName);
+                if (file?.Project != null)
+                    result = file.Project.FindType(row.BaseTypeName, UsingsOf(file, type.Namespace));
+                else
+                    result = OverrideFamily.ResolveBase(type);
                 _bases[key] = result;
             }
             return result;
+        }
+
+        private static List<string> UsingsOf(XFile file, string typeNamespace)
+        {
+            var usings = new List<string>(file.Usings);
+            if (!string.IsNullOrEmpty(typeNamespace))
+                usings.Add(typeNamespace);
+            return usings;
         }
 
         /// <summary>
@@ -61,7 +88,7 @@ namespace XSharp.LanguageService.GoToImplementation
         {
             if (!(type is XSourceTypeSymbol source))
                 return Array.Empty<IXTypeSymbol>();
-            var key = type.FullName ?? "";
+            var key = TypeHierarchy.KeyOf(type);
             if (_interfaces.TryGetValue(key, out var cached))
                 return cached;
             var names = new List<string>();
@@ -69,13 +96,16 @@ namespace XSharp.LanguageService.GoToImplementation
             names.AddRange(TypeHierarchy.DeclaredInterfaceNames(source.SourceCode));
             if (source.IsPartial && source.Clone != null)
                 names.AddRange(source.Clone.Interfaces ?? Array.Empty<string>());
+            var row = DeclarationOf(type);
+            if (row != null)
+                names.AddRange(TypeHierarchy.DeclaredInterfaceNames(row.SourceCode));
             var result = new List<IXTypeSymbol>();
-            var project = source.File?.Project;
+            // the IMPLEMENTS clause belongs to the declaring part: resolve with the USINGs of that file
+            var file = (row == null ? null : XSolution.FindFile(row.FileName)) ?? source.File;
+            var project = file?.Project;
             if (project != null)
             {
-                var usings = new List<string>(source.File.Usings);
-                if (!string.IsNullOrEmpty(source.Namespace))
-                    usings.Add(source.Namespace);
+                var usings = UsingsOf(file, source.Namespace);
                 foreach (var name in names.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
                     var resolved = project.FindType(name, usings);
@@ -105,7 +135,8 @@ namespace XSharp.LanguageService.GoToImplementation
         {
             Candidates += rows.Count;
             var result = new List<IXTypeSymbol>();
-            foreach (var group in rows.GroupBy(TypeFullName, StringComparer.OrdinalIgnoreCase))
+            // one type per project and full name: in VO solutions two projects may declare a class of the same name
+            foreach (var group in rows.GroupBy(row => row.Project + "|" + TypeFullName(row), StringComparer.OrdinalIgnoreCase))
             {
                 var type = ToType(group.Key, DeclaringPart(group));
                 if (type != null)
@@ -114,13 +145,15 @@ namespace XSharp.LanguageService.GoToImplementation
             return result;
         }
 
-        private IXTypeSymbol ToType(string fullName, XDbResult row)
+        private IXTypeSymbol ToType(string key, XDbResult row)
         {
-            if (_types.TryGetValue(fullName, out var cached))
+            if (_types.TryGetValue(key, out var cached))
                 return cached;
             var project = XSolution.FindFile(row.FileName)?.Project;
-            var type = project?.Lookup(fullName);
-            _types[fullName] = type;
+            var type = project?.Lookup(TypeFullName(row));
+            _types[key] = type;
+            if (type != null)
+                _parts[type] = row;
             return type;
         }
     }

@@ -76,12 +76,23 @@ namespace XSharp.LanguageService.GoToImplementation
             return result;
         }
 
+        /// <summary>
+        /// Identity of a type in the solution: project and full name. In VO solutions many classes have no namespace,
+        /// so two projects can each declare a class with the same name.
+        /// </summary>
+        internal static string KeyOf(IXTypeSymbol type)
+        {
+            var project = (type as XSourceTypeSymbol)?.File?.Project?.FileName;
+            return string.IsNullOrEmpty(project) ? type.FullName ?? "" : project + "|" + type.FullName;
+        }
+
         /// <summary>All classes deriving from the target, all levels, breadth-first; the target itself never.</summary>
         internal static IReadOnlyList<IXTypeSymbol> DerivedTypes(IXTypeSymbol target, Func<string, IEnumerable<IXTypeSymbol>> byBaseShortName,
-            Func<IXTypeSymbol, IXTypeSymbol> baseOf)
+            Func<IXTypeSymbol, IXTypeSymbol> baseOf, Func<IXTypeSymbol, string> keyOf = null)
         {
+            keyOf = keyOf ?? KeyOf;
             var result = new List<IXTypeSymbol>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { target.FullName ?? "" };
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { keyOf(target) };
             var queue = new Queue<IXTypeSymbol>();
             queue.Enqueue(target);
             while (queue.Count > 0)
@@ -89,7 +100,7 @@ namespace XSharp.LanguageService.GoToImplementation
                 var current = queue.Dequeue();
                 foreach (var candidate in byBaseShortName(ShortName(current.Name)) ?? Enumerable.Empty<IXTypeSymbol>())
                 {
-                    if (candidate == null || !SameType(baseOf(candidate), current) || !seen.Add(candidate.FullName ?? ""))
+                    if (candidate == null || !SameType(baseOf(candidate), current) || !seen.Add(keyOf(candidate)))
                         continue;
                     result.Add(candidate);
                     queue.Enqueue(candidate);
@@ -103,10 +114,11 @@ namespace XSharp.LanguageService.GoToImplementation
         /// Derived interfaces are searched, not listed.
         /// </summary>
         internal static IReadOnlyList<IXTypeSymbol> Implementers(IXTypeSymbol iface, Func<string, IEnumerable<IXTypeSymbol>> byInterfaceShortName,
-            Func<IXTypeSymbol, IEnumerable<IXTypeSymbol>> interfacesOf)
+            Func<IXTypeSymbol, IEnumerable<IXTypeSymbol>> interfacesOf, Func<IXTypeSymbol, string> keyOf = null)
         {
+            keyOf = keyOf ?? KeyOf;
             var result = new List<IXTypeSymbol>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { iface.FullName ?? "" };
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { keyOf(iface) };
             var queue = new Queue<IXTypeSymbol>();
             queue.Enqueue(iface);
             while (queue.Count > 0)
@@ -116,7 +128,7 @@ namespace XSharp.LanguageService.GoToImplementation
                 {
                     if (candidate == null || !(interfacesOf(candidate) ?? Enumerable.Empty<IXTypeSymbol>()).Any(i => SameType(i, current)))
                         continue;
-                    if (!seen.Add(candidate.FullName ?? ""))
+                    if (!seen.Add(keyOf(candidate)))
                         continue;
                     if (candidate.Kind == Kind.Interface)
                         queue.Enqueue(candidate);
@@ -163,6 +175,36 @@ namespace XSharp.LanguageService.GoToImplementation
                     return match;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Go To Base on a member: the overridden member, then the interface members it implements (interfaces of its
+        /// class and of the base classes); every declaration once.
+        /// </summary>
+        internal static IReadOnlyList<IXMemberSymbol> BaseMembers(IXMemberSymbol member, Func<IXTypeSymbol, IXTypeSymbol> baseOf,
+            Func<IXTypeSymbol, IEnumerable<IXTypeSymbol>> interfacesOf)
+        {
+            var result = new List<IXMemberSymbol>();
+            var overridden = OverriddenMember(member, baseOf);
+            if (overridden != null)
+                result.Add(overridden);
+            var interfaces = new List<IXTypeSymbol>();
+            var seenTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var seenInterfaces = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            for (var parent = member.ParentType; parent != null && seenTypes.Add(KeyOf(parent)); parent = baseOf(parent))
+            {
+                foreach (var iface in interfacesOf(parent) ?? Enumerable.Empty<IXTypeSymbol>())
+                {
+                    if (iface != null && seenInterfaces.Add(KeyOf(iface)))
+                        interfaces.Add(iface);
+                }
+            }
+            foreach (var implemented in ImplementedMembers(member, interfaces))
+            {
+                if (!result.Any(r => ReferenceEquals(r, implemented)))
+                    result.Add(implemented);
+            }
+            return result;
         }
 
         /// <summary>The interface members the member implements.</summary>

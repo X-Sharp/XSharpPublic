@@ -196,6 +196,52 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void SameNamedTypesInDifferentProjectsAreBothListed()
+        {
+            // VO solutions: two projects each declare CLASS HelpAbout INHERIT DialogWindow, without namespace
+            var dialog = Type("DialogWindow", ns: "");
+            var one = Type("HelpAbout", dialog, ns: "");
+            var two = Type("HelpAbout", dialog, ns: "");
+            var project = new Dictionary<IXTypeSymbol, string> { [one] = "P1", [two] = "P2" };
+            string Key(IXTypeSymbol t) => (project.TryGetValue(t, out var p) ? p : "") + "|" + t.FullName;
+            var result = TypeHierarchy.DerivedTypes(dialog, ByBaseShortName, BaseOf, Key);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void BaseMembersListsEachDeclarationOnce()
+        {
+            // IFoo INHERIT IA: IA is the base and an interface of IFoo
+            var ia = Interface("IA");
+            var iaBar = Member(ia, "Bar");
+            var ifoo = Interface("IFoo", ia);
+            _bases[ifoo] = ia;
+            var fooBar = Member(ifoo, "Bar");
+            Assert.Equal(new IXMemberSymbol[] { iaBar }, TypeHierarchy.BaseMembers(fooBar, BaseOf, InterfacesOf));
+            // Animal and Dog both implement ISpeaker
+            var speaker = Interface("ISpeaker");
+            var speak = Member(speaker, "Speak");
+            var animal = Type("Animal", null, "Test", Kind.Class, speaker);
+            var animalSpeak = Member(animal, "Speak");
+            var dog = Type("Dog", animal, "Test", Kind.Class, speaker);
+            var dogSpeak = Member(dog, "Speak");
+            Assert.Equal(new IXMemberSymbol[] { animalSpeak, speak }, TypeHierarchy.BaseMembers(dogSpeak, BaseOf, InterfacesOf));
+        }
+
+        [Theory]
+        [InlineData("CLASS Cat INHERIT Animal", "Cat", 0, 6)]
+        [InlineData("CLASS Cl", "Cl", 4, 10)]
+        [InlineData("METHOD Speak() AS STRING", "Speak", 4, 11)]
+        public void DeclarationHitPointsAtTheName(string declaration, string name, int startColumn, int expectedColumn)
+        {
+            var hit = DeclarationHit.Create(@"C:\Test\H.prg", "Lib", 3, startColumn, declaration, name, "Group");
+            Assert.Equal(expectedColumn, hit.Column);
+            Assert.Equal(name.Length, hit.Length);
+            Assert.Equal(name, hit.LineText.Substring(hit.Column, hit.Length));
+            Assert.Equal(3, hit.Line);
+        }
+
+        [Fact]
         public void ImplementedMembersMatchesInterfaceMember()
         {
             var ia = Interface("IA");

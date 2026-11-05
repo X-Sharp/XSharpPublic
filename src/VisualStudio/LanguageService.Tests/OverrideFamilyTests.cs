@@ -96,6 +96,29 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void QualifiedAndShortTypeNamesAreTheSameType()
+        {
+            // a DLL member carries full type names, the source what was written
+            var baseType = Type("Base");
+            var basePaint = MemberWith(baseType, "OnPaint", P("e", "System.Windows.Forms.PaintEventArgs"));
+            var subPaint = MemberWith(Type("Sub", baseType), "OnPaint", P("e", "PaintEventArgs"));
+            Assert.Same(basePaint, Family(subPaint).Root(subPaint));
+            var baseSize = MemberWith(baseType, "Size", P("n", "System.Int32"));
+            var subSize = MemberWith(Type("Sub2", baseType), "Size", P("n", "INT"));
+            Assert.Same(baseSize, Family(subSize).Root(subSize));
+        }
+
+        [Fact]
+        public void ExplicitUsualParameterIsTyped()
+        {
+            // x AS USUAL is written with AS: a typed method, not CLIPPER
+            var baseType = Type("Base");
+            var baseAdd = MemberWith(baseType, "Add", P("a", "STRING"), P("b", "USUAL"));
+            var subAdd = MemberWith(Type("Sub", baseType), "Add", P("a", "INT"), P("b", "USUAL"));
+            Assert.False(Family(baseAdd).Contains(subAdd));
+        }
+
+        [Fact]
         public void RefParameterIsADifferentSlot()
         {
             var baseType = Type("Base");

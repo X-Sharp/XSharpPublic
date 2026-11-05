@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XSharp.Settings;
 using XSharpModel;
 
 namespace XSharp.LanguageService.FindReferences
@@ -128,7 +129,7 @@ namespace XSharp.LanguageService.FindReferences
             for (int i = 0; i < mine.Count; i++)
             {
                 if (IsByReference(mine[i]) != IsByReference(theirs[i]) ||
-                    !string.Equals(mine[i].TypeName ?? "", theirs[i].TypeName ?? "", StringComparison.OrdinalIgnoreCase))
+                    !string.Equals(NormalizedType(mine[i].TypeName), NormalizedType(theirs[i].TypeName), StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
@@ -137,14 +138,32 @@ namespace XSharp.LanguageService.FindReferences
         }
 
         /// <summary>
-        /// CLIPPER calling convention, or a parameter without type; in the VO dialect the parser types such a parameter
-        /// as USUAL, so USUAL counts as untyped too.
+        /// CLIPPER calling convention, or a parameter written without AS: in the VO dialect the parser gives it the type
+        /// USUAL but no parameter kind. x AS USUAL is typed.
         /// </summary>
         private static bool IsUntyped(IXMemberSymbol member, IList<IXParameterSymbol> parameters)
         {
             if (member.CallingConvention == CallingConvention.Clipper)
                 return true;
-            return parameters.Any(p => string.IsNullOrEmpty(p.TypeName) || string.Equals(p.TypeName, "USUAL", StringComparison.OrdinalIgnoreCase));
+            return parameters.Any(p => string.IsNullOrEmpty(p.TypeName) ||
+                (p.ParamType == 0 && string.Equals(p.TypeName, "USUAL", StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>
+        /// A DLL member carries full type names (System.Windows.Forms.PaintEventArgs, System.Int32), the source what was
+        /// written (PaintEventArgs, INT): compare the system name without its namespace, type arguments kept.
+        /// </summary>
+        private static string NormalizedType(string typeName)
+        {
+            if (string.IsNullOrEmpty(typeName))
+                return "";
+            var name = typeName.Trim().GetSystemTypeName(true) ?? typeName;
+            var generic = name.IndexOf('<');
+            var outer = generic >= 0 ? name.Substring(0, generic) : name;
+            var dot = outer.LastIndexOf('.');
+            if (dot >= 0)
+                outer = outer.Substring(dot + 1);
+            return generic >= 0 ? outer + name.Substring(generic) : outer;
         }
 
         private static bool IsByReference(IXParameterSymbol parameter)

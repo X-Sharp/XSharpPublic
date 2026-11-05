@@ -6,15 +6,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
     public abstract partial class TypeSyntax
     {
-#if XSHARP	
+#if XSHARP
         public bool IsVar
         {
             get
             {
 
                 var ts = this.Green as InternalSyntax.IdentifierNameSyntax;
-                if (ts != null )
-                { 
+                if (ts != null && ts.XNode != null)
+                {
                     return ts.Identifier.ToString() == XSharpSpecialNames.ImpliedTypeName;
                 }
                 return ((InternalSyntax.TypeSyntax)this.Green).IsVar;

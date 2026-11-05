@@ -1377,8 +1377,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             // BackCompat.  The compiler would previously suppress reporting errors for pointers in generic types.  This
             // was intended so you would get a specific error in CheckBasicConstraints.CheckBasicConstraints for a type
             // like (like `List<int*>`). i.e. you would get the error about an unsafe type not being a legal type argument,
-            // but not the error about not being in an unsafe context.  This had the unfortunate consequence though of 
-            // preventing the latter check for something like `List<int*[]>`.  Here, this is a legal generic type, but we 
+            // but not the error about not being in an unsafe context.  This had the unfortunate consequence though of
+            // preventing the latter check for something like `List<int*[]>`.  Here, this is a legal generic type, but we
             // still want to report the error that you need to be in an unsafe context.  So, to maintain compat, we only
             // do the suppression if you're on C# 11 and prior.  In later versions we do the correct check.
             var binder = !Compilation.IsFeatureEnabled(MessageID.IDS_FeatureUsingTypeAlias)
@@ -1753,7 +1753,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // No need to track assemblies used by special members or types. They are coming from core library, which 
+            // No need to track assemblies used by special members or types. They are coming from core library, which
             // doesn't have any dependencies.
             return true;
         }
@@ -2087,7 +2087,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // https://github.com/dotnet/roslyn/issues/62331
                             // some "single symbol" diagnostics are missed here for similar reasons
                             // that make us miss diagnostics when reporting WRN_SameFullNameThisAggAgg.
-                            // 
+                            //
                             return first;
                         }
 
@@ -2670,7 +2670,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if ((where as IdentifierNameSyntax)?.Identifier.Text == XSharpSpecialNames.ImpliedTypeName && !options.IsAttributeTypeLookup())
+            bool isImplied = false;
+            if (where is IdentifierNameSyntax ins)
+            {
+                isImplied = ins.Identifier.Text == XSharpSpecialNames.ImpliedTypeName;
+
+                if (!isImplied)
+                {
+                    var root = where.SyntaxTree.GetRoot();
+                    if (root?.XNode == null)
+                    {
+                        isImplied = ins.Identifier.Text == "var";
+                    }
+                }
+            }
+            if (isImplied && !options.IsAttributeTypeLookup())
 #else
             if ((where as IdentifierNameSyntax)?.Identifier.Text == "var" && !options.IsAttributeTypeLookup())
 #endif

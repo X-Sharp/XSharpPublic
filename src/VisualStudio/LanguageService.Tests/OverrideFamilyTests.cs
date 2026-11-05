@@ -44,6 +44,67 @@ namespace XSharp.LanguageService.Tests
             return member;
         }
 
+        /// <summary>A method with named parameters; type null = untyped, value = default value.</summary>
+        private XSourceMemberSymbol MemberWith(XSourceTypeSymbol parent, string name, params (string Name, string Type, ParamType Kind, string Value)[] parameters)
+        {
+            _next += 10;
+            var member = new XSourceMemberSymbol(name, Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(_next, _next + 5), "VOID", null);
+            member.File = File;
+            foreach (var p in parameters)
+            {
+                var parameter = new XSourceParameterSymbol(member, p.Name, new TextRange(2, 1, 2, 1), new TextInterval(_next, _next + 1), p.Type);
+                if (p.Kind != 0)
+                    parameter.ParamType = p.Kind;
+                parameter.Value = p.Value;
+                member.AddParameter(parameter);
+            }
+            parent.AddMember(member);
+            return member;
+        }
+
+        private static (string, string, ParamType, string) P(string name, string type, ParamType kind = ParamType.As, string value = null) => (name, type, kind, value);
+
+        [Fact]
+        public void ParameterNamesDoNotSeparateOverrides()
+        {
+            var baseType = Type("Base");
+            var baseMember = MemberWith(baseType, "FocusChange", P("oFocusChangeEvent", "FocusChangeEvent"));
+            var subMember = MemberWith(Type("Sub", baseType), "FocusChange", P("oEvent", "FocusChangeEvent"));
+            Assert.Same(baseMember, Family(subMember).Root(subMember));
+            Assert.True(Family(baseMember).Contains(subMember));
+        }
+
+        [Fact]
+        public void DefaultValuesDoNotSeparateOverrides()
+        {
+            var baseType = Type("Base");
+            var baseMember = MemberWith(baseType, "Show", P("nMode", "INT", ParamType.As, "1"));
+            var subMember = MemberWith(Type("Sub", baseType), "Show", P("nMode", "INT"));
+            Assert.Same(baseMember, Family(subMember).Root(subMember));
+        }
+
+        [Fact]
+        public void UntypedMethodsAreOneSlotWhateverTheParameters()
+        {
+            var baseType = Type("Base");
+            var baseClose = MemberWith(baseType, "Close", P("oEvent", null, 0));
+            var subClose = MemberWith(Type("Sub", baseType), "Close");
+            Assert.Same(baseClose, Family(subClose).Root(subClose));
+            // VO dialect: the parser types an untyped parameter as USUAL
+            var otherClose = MemberWith(Type("Other", baseType), "Close", P("oEvent", "USUAL", 0), P("lForce", "USUAL", 0));
+            Assert.Same(baseClose, Family(otherClose).Root(otherClose));
+        }
+
+        [Fact]
+        public void RefParameterIsADifferentSlot()
+        {
+            var baseType = Type("Base");
+            var baseRun = MemberWith(baseType, "Run", P("x", "INT"));
+            var subRun = MemberWith(Type("Sub", baseType), "Run", P("x", "INT", ParamType.Ref));
+            Assert.Same(subRun, Family(subRun).Root(subRun));
+            Assert.False(Family(baseRun).Contains(subRun));
+        }
+
         [Fact]
         public void OverrideBelongsToTheBaseMembersFamily()
         {

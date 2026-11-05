@@ -83,7 +83,7 @@ namespace XSharp.LanguageService.FindReferences
         /// base class up with the USINGs of the file alone: INHERIT Animal inside BEGIN NAMESPACE FarTest is not
         /// found. Look it up here, with the type's namespace too.
         /// </summary>
-        private static IXTypeSymbol ResolveBase(IXTypeSymbol type)
+        internal static IXTypeSymbol ResolveBase(IXTypeSymbol type)
         {
             if (!(type is XSourceTypeSymbol source) || source.BaseType != null)
                 return type.BaseType;
@@ -105,15 +105,51 @@ namespace XSharp.LanguageService.FindReferences
             return kind == Kind.Method || SymbolIdentity.IsPropertyLike(kind);
         }
 
-        /// <summary>Same name and, for methods, the same kind and parameter list.</summary>
-        private static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
+        /// <summary>
+        /// Same name and, for methods, the same kind and the same parameter types (by value or by reference);
+        /// parameter names and default values do not count. Untyped (CLIPPER) methods of the same name are one slot:
+        /// Close() overrides Close(oEvent).
+        /// </summary>
+        internal static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
         {
             if (!string.Equals(member.Name, other.Name, StringComparison.OrdinalIgnoreCase))
                 return false;
             if (SymbolIdentity.IsPropertyLike(member.Kind) && SymbolIdentity.IsPropertyLike(other.Kind))
                 return true;
-            return member.Kind == other.Kind &&
-                string.Equals(member.ParameterList ?? "", other.ParameterList ?? "", StringComparison.OrdinalIgnoreCase);
+            if (member.Kind != other.Kind)
+                return false;
+            var mine = member.Parameters ?? (IList<IXParameterSymbol>)Array.Empty<IXParameterSymbol>();
+            var theirs = other.Parameters ?? (IList<IXParameterSymbol>)Array.Empty<IXParameterSymbol>();
+            bool myUntyped = IsUntyped(member, mine), theirUntyped = IsUntyped(other, theirs);
+            if ((myUntyped && (theirUntyped || theirs.Count == 0)) || (theirUntyped && mine.Count == 0))
+                return true;
+            if (myUntyped || theirUntyped || mine.Count != theirs.Count)
+                return false;
+            for (int i = 0; i < mine.Count; i++)
+            {
+                if (IsByReference(mine[i]) != IsByReference(theirs[i]) ||
+                    !string.Equals(mine[i].TypeName ?? "", theirs[i].TypeName ?? "", StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// CLIPPER calling convention, or a parameter without type; in the VO dialect the parser types such a parameter
+        /// as USUAL, so USUAL counts as untyped too.
+        /// </summary>
+        private static bool IsUntyped(IXMemberSymbol member, IList<IXParameterSymbol> parameters)
+        {
+            if (member.CallingConvention == CallingConvention.Clipper)
+                return true;
+            return parameters.Any(p => string.IsNullOrEmpty(p.TypeName) || string.Equals(p.TypeName, "USUAL", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsByReference(IXParameterSymbol parameter)
+        {
+            return parameter.ParamType == ParamType.Ref || parameter.ParamType == ParamType.Out;
         }
     }
 }

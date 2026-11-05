@@ -145,6 +145,7 @@
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
     <Compile Include="FindReferences\OverloadFilter.cs" />
     <Compile Include="FindReferences\OverrideFamily.cs" />
+    <Compile Include="GoToImplementation\SourceHierarchy.cs" />
     <Compile Include="GoToImplementation\TypeHierarchy.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\ReferenceLineText.cs" />

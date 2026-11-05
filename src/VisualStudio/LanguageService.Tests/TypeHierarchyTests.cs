@@ -164,6 +164,37 @@ namespace XSharp.LanguageService.Tests
             Assert.Null(TypeHierarchy.OverriddenMember(baseSpeak, BaseOf));
         }
 
+        private static XDbResult Part(string file, string baseTypeName, string sourceCode) =>
+            new XDbResult { TypeName = "Part", Namespace = "Test", FileName = file, BaseTypeName = baseTypeName, SourceCode = sourceCode };
+
+        [Fact]
+        public void DeclaringPartPrefersThePartWithInherit()
+        {
+            var parts = new[]
+            {
+                Part("a.prg", "", "PARTIAL CLASS Part"),
+                Part("b.prg", "Animal", "PARTIAL CLASS Part INHERIT Animal"),
+                Part("c.prg", "", "PARTIAL CLASS Part"),
+            };
+            Assert.Equal("b.prg", SourceHierarchy.DeclaringPart(parts).FileName);
+            var implementing = new[] { Part("a.prg", "", "PARTIAL CLASS Part"), Part("b.prg", "", "PARTIAL CLASS Part IMPLEMENTS IAnimal") };
+            Assert.Equal("b.prg", SourceHierarchy.DeclaringPart(implementing).FileName);
+        }
+
+        [Fact]
+        public void DeclaringPartFallsBackToTheFirst()
+        {
+            var parts = new[] { Part("a.prg", "", "PARTIAL CLASS Part"), Part("b.prg", "", "PARTIAL CLASS Part") };
+            Assert.Equal("a.prg", SourceHierarchy.DeclaringPart(parts).FileName);
+        }
+
+        [Fact]
+        public void TypeFullNameOfARowIsNamespaceAndName()
+        {
+            Assert.Equal("Test.Part", SourceHierarchy.TypeFullName(Part("a.prg", "", "")));
+            Assert.Equal("Part", SourceHierarchy.TypeFullName(new XDbResult { TypeName = "Part", Namespace = "" }));
+        }
+
         [Fact]
         public void ImplementedMembersMatchesInterfaceMember()
         {

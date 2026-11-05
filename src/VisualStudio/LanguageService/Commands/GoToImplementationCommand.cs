@@ -85,7 +85,7 @@ namespace XSharp.LanguageService.Commands
             factory.RunAsync(async delegate
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                IReadOnlyList<IXSymbol> results;
+                IReadOnlyList<object> results;
                 var hierarchy = new SourceHierarchy();
                 try
                 {
@@ -95,7 +95,7 @@ namespace XSharp.LanguageService.Commands
                 catch (Exception ex)
                 {
                     Logger.Exception(ex, $"{command} '{target.Name}' failed");
-                    results = Array.Empty<IXSymbol>();
+                    results = Array.Empty<object>();
                 }
                 Logger.Information($"{command} '{target.FullName}': {results.Count} of {hierarchy.Candidates} candidates, {watch.ElapsedMilliseconds} ms");
                 await ShowAsync(command, down, target, results, hierarchy, textView, state);
@@ -107,30 +107,36 @@ namespace XSharp.LanguageService.Commands
             return member.Kind == Kind.Method || SymbolIdentity.IsPropertyLike(member.Kind);
         }
 
-        /// <summary>Derived classes, implementers, overrides and implementing members.</summary>
-        private static IReadOnlyList<IXSymbol> Down(IXSymbol target, SourceHierarchy hierarchy)
+        /// <summary>
+        /// Derived classes and implementers (as TypeNodes, straight from the database rows), or overrides and
+        /// implementing members: only the types that declare a member of that name are loaded for the slot check.
+        /// </summary>
+        private static IReadOnlyList<object> Down(IXSymbol target, SourceHierarchy hierarchy)
         {
             if (target is IXTypeSymbol type)
-                return Types(type).Cast<IXSymbol>().ToList();
+                return Types(SourceHierarchy.NodeOf(type)).Cast<object>().ToList();
             var member = (IXMemberSymbol)target;
             if (member.ParentType == null)
-                return Array.Empty<IXSymbol>();
-            return TypeHierarchy.Overrides(member, Types(member.ParentType)).Cast<IXSymbol>().ToList();
+                return Array.Empty<object>();
+            var nodes = Types(SourceHierarchy.NodeOf(member.ParentType));
+            var withMember = hierarchy.TypesWithMember(member.Name);
+            var types = nodes.Where(n => withMember.Contains(n.Key)).Select(hierarchy.SymbolOf).Where(t => t != null);
+            return TypeHierarchy.Overrides(member, types).Cast<object>().ToList();
 
-            IReadOnlyList<IXTypeSymbol> Types(IXTypeSymbol parent) => parent.Kind == Kind.Interface
-                ? TypeHierarchy.Implementers(parent, hierarchy.ByInterfaceShortName, hierarchy.InterfacesOf)
-                : TypeHierarchy.DerivedTypes(parent, hierarchy.ByBaseShortName, hierarchy.BaseOf);
+            IReadOnlyList<TypeNode> Types(TypeNode parent) => parent.Kind == Kind.Interface
+                ? hierarchy.Implementers(parent)
+                : hierarchy.DerivedTypes(parent);
         }
 
         /// <summary>The base class and interfaces, or the overridden member and the implemented interface members.</summary>
-        private static IReadOnlyList<IXSymbol> Up(IXSymbol target, SourceHierarchy hierarchy)
+        private static IReadOnlyList<object> Up(IXSymbol target, SourceHierarchy hierarchy)
         {
             if (target is IXTypeSymbol type)
-                return TypeHierarchy.BaseTypes(type, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<IXSymbol>().ToList();
-            return TypeHierarchy.BaseMembers((IXMemberSymbol)target, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<IXSymbol>().ToList();
+                return TypeHierarchy.BaseTypes(type, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<object>().ToList();
+            return TypeHierarchy.BaseMembers((IXMemberSymbol)target, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<object>().ToList();
         }
 
-        private static async Task ShowAsync(string command, bool down, IXSymbol target, IReadOnlyList<IXSymbol> results, SourceHierarchy hierarchy,
+        private static async Task ShowAsync(string command, bool down, IXSymbol target, IReadOnlyList<object> results, SourceHierarchy hierarchy,
             ITextView textView, CompletionState state)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -155,27 +161,27 @@ namespace XSharp.LanguageService.Commands
             source.Complete();
         }
 
-        private static void Navigate(IXSymbol symbol, SourceHierarchy hierarchy, ITextView textView, CompletionState state)
+        private static void Navigate(object result, SourceHierarchy hierarchy, ITextView textView, CompletionState state)
         {
-            // a partial class: the part with INHERIT / IMPLEMENTS
-            var part = hierarchy.DeclarationOf(symbol as IXTypeSymbol);
-            if (part != null)
-                XDocuments.Open(part.FileName, part.StartLine, part.StartColumn, false);
-            else if (symbol is XSourceEntity entity)
+            // a type found in the database: its declaring part (partial classes: the one with INHERIT / IMPLEMENTS)
+            if (result is TypeNode node && node.Row != null)
+                XDocuments.Open(node.Row.FileName, node.Row.StartLine, node.Row.StartColumn, false);
+            else if (result is XSourceEntity entity)
                 entity.OpenEditor();
-            else
+            else if (result is IXSymbol symbol)
                 XSharpGotoDefinition.Goto(symbol, textView, state);
         }
 
-        /// <summary>One row: the declaration of the symbol, for a DLL symbol in the generated source F12 opens.</summary>
-        private static ReferenceHit Hit(IXSymbol symbol, SourceHierarchy hierarchy)
+        /// <summary>One row: the declaration, for a DLL symbol in the generated source F12 opens.</summary>
+        private static ReferenceHit Hit(object result, SourceHierarchy hierarchy)
         {
-            var part = hierarchy.DeclarationOf(symbol as IXTypeSymbol);
-            if (part != null)
+            if (result is TypeNode node)
             {
-                return DeclarationHit.Create(part.FileName, XSolution.FindFile(part.FileName)?.Project?.Name, part.StartLine, part.StartColumn,
-                    part.SourceCode, symbol.Name, symbol.FullName);
+                var row = node.Row;
+                return row == null ? null : DeclarationHit.Create(row.FileName, System.IO.Path.GetFileNameWithoutExtension(row.Project),
+                    row.StartLine, row.StartColumn, row.SourceCode, node.Name, node.FullName);
             }
+            var symbol = result as IXSymbol;
             var entity = symbol as XSourceEntity;
             if (entity == null && symbol is XPETypeSymbol peType)
                 entity = XSharpGotoDefinition.FindSystemElement(peType, peType);

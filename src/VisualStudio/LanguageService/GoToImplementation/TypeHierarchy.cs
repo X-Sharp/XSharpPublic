@@ -86,27 +86,37 @@ namespace XSharp.LanguageService.GoToImplementation
             return string.IsNullOrEmpty(project) ? type.FullName ?? "" : project + "|" + type.FullName;
         }
 
+        /// <summary>
+        /// Breadth-first walk from the root: every node once (by key), the root never, cycles end the walk.
+        /// <paramref name="children"/> returns the verified children of a node.
+        /// </summary>
+        internal static IReadOnlyList<T> Descendants<T>(T root, Func<T, IEnumerable<T>> children, Func<T, string> keyOf)
+        {
+            var result = new List<T>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { keyOf(root) };
+            var queue = new Queue<T>();
+            queue.Enqueue(root);
+            while (queue.Count > 0)
+            {
+                foreach (var child in children(queue.Dequeue()) ?? Enumerable.Empty<T>())
+                {
+                    if (child == null || !seen.Add(keyOf(child)))
+                        continue;
+                    result.Add(child);
+                    queue.Enqueue(child);
+                }
+            }
+            return result;
+        }
+
         /// <summary>All classes deriving from the target, all levels, breadth-first; the target itself never.</summary>
         internal static IReadOnlyList<IXTypeSymbol> DerivedTypes(IXTypeSymbol target, Func<string, IEnumerable<IXTypeSymbol>> byBaseShortName,
             Func<IXTypeSymbol, IXTypeSymbol> baseOf, Func<IXTypeSymbol, string> keyOf = null)
         {
-            keyOf = keyOf ?? KeyOf;
-            var result = new List<IXTypeSymbol>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { keyOf(target) };
-            var queue = new Queue<IXTypeSymbol>();
-            queue.Enqueue(target);
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                foreach (var candidate in byBaseShortName(ShortName(current.Name)) ?? Enumerable.Empty<IXTypeSymbol>())
-                {
-                    if (candidate == null || !SameType(baseOf(candidate), current) || !seen.Add(keyOf(candidate)))
-                        continue;
-                    result.Add(candidate);
-                    queue.Enqueue(candidate);
-                }
-            }
-            return result;
+            return Descendants(target,
+                current => (byBaseShortName(ShortName(current.Name)) ?? Enumerable.Empty<IXTypeSymbol>())
+                    .Where(candidate => candidate != null && SameType(baseOf(candidate), current)),
+                keyOf ?? KeyOf);
         }
 
         /// <summary>
@@ -116,27 +126,12 @@ namespace XSharp.LanguageService.GoToImplementation
         internal static IReadOnlyList<IXTypeSymbol> Implementers(IXTypeSymbol iface, Func<string, IEnumerable<IXTypeSymbol>> byInterfaceShortName,
             Func<IXTypeSymbol, IEnumerable<IXTypeSymbol>> interfacesOf, Func<IXTypeSymbol, string> keyOf = null)
         {
-            keyOf = keyOf ?? KeyOf;
-            var result = new List<IXTypeSymbol>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { keyOf(iface) };
-            var queue = new Queue<IXTypeSymbol>();
-            queue.Enqueue(iface);
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                foreach (var candidate in byInterfaceShortName(ShortName(current.Name)) ?? Enumerable.Empty<IXTypeSymbol>())
-                {
-                    if (candidate == null || !(interfacesOf(candidate) ?? Enumerable.Empty<IXTypeSymbol>()).Any(i => SameType(i, current)))
-                        continue;
-                    if (!seen.Add(keyOf(candidate)))
-                        continue;
-                    if (candidate.Kind == Kind.Interface)
-                        queue.Enqueue(candidate);
-                    else
-                        result.Add(candidate);
-                }
-            }
-            return result;
+            return Descendants(iface,
+                current => current.Kind != Kind.Interface ? Enumerable.Empty<IXTypeSymbol>()
+                    : (byInterfaceShortName(ShortName(current.Name)) ?? Enumerable.Empty<IXTypeSymbol>())
+                        .Where(candidate => candidate != null && (interfacesOf(candidate) ?? Enumerable.Empty<IXTypeSymbol>()).Any(i => SameType(i, current))),
+                keyOf ?? KeyOf)
+                .Where(type => type.Kind != Kind.Interface).ToList();
         }
 
         /// <summary>The base class (if any) first, then the interfaces.</summary>

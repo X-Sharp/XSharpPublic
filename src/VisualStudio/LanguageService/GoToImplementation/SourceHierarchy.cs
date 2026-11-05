@@ -11,49 +11,184 @@ using XSharpModel;
 
 namespace XSharp.LanguageService.GoToImplementation
 {
+    /// <summary>A type in the hierarchy: a database row (candidates) or a code model symbol (the target).</summary>
+    internal sealed class TypeNode
+    {
+        internal TypeNode(string name, string fullName, Kind kind, string project, XDbResult row, IXTypeSymbol symbol)
+        {
+            Name = name;
+            FullName = fullName;
+            Kind = kind;
+            Project = project ?? "";
+            Row = row;
+            Symbol = symbol;
+        }
+
+        internal string Name { get; }
+        internal string FullName { get; }
+        internal Kind Kind { get; }
+        internal string Project { get; }
+        /// <summary>The declaring part (partial classes: the one with INHERIT / IMPLEMENTS); null for the target.</summary>
+        internal XDbResult Row { get; }
+        internal IXTypeSymbol Symbol { get; set; }
+        internal string Key => Project + "|" + FullName;
+    }
+
     /// <summary>
-    /// The lookups TypeHierarchy needs, served from the code model of the open solution: candidates from the
-    /// database, every type and interface resolved the way OverrideFamily resolves a base class (namespace + USINGs,
-    /// partial classes). One instance per command run: lookups are cached.
+    /// The code model side of Go To Implementation / Go To Base. Down: the derived-class tree is built in memory from
+    /// one query of all types with a base class; each INHERIT / IMPLEMENTS name is resolved with the USINGs of its
+    /// file (cached per project, USINGs and name), so candidates are never loaded as symbols. Only the types that
+    /// declare a member of the searched name are loaded, for the slot check. Up: resolved as OverrideFamily does.
+    /// One instance per command run.
     /// </summary>
     internal sealed class SourceHierarchy
     {
-        private readonly Dictionary<string, IXTypeSymbol> _types = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, List<XDbResult>> _byBase;
+        private readonly Dictionary<string, string> _resolved = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, (XProject Project, List<string> Usings, string UsingsKey)> _files =
+            new Dictionary<string, (XProject, List<string>, string)>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, IXTypeSymbol> _bases = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, IReadOnlyList<IXTypeSymbol>> _interfaces = new Dictionary<string, IReadOnlyList<IXTypeSymbol>>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<IXTypeSymbol, XDbResult> _parts = new Dictionary<IXTypeSymbol, XDbResult>();
 
-        /// <summary>Database rows looked at (before resolving), for the log line.</summary>
+        /// <summary>Database rows looked at, for the log line.</summary>
         internal int Candidates { get; private set; }
 
-        /// <summary>The types whose base class is written with this short name.</summary>
-        internal IEnumerable<IXTypeSymbol> ByBaseShortName(string shortName)
+        /// <summary>The node of a code model type (the starting symbol).</summary>
+        internal static TypeNode NodeOf(IXTypeSymbol type)
         {
-            return ToTypes(XDatabase.GetProjectTypesByBaseName(shortName));
+            var project = (type as XSourceTypeSymbol)?.File?.Project?.FileName;
+            return new TypeNode(type.Name, type.FullName, type.Kind, project, null, type);
         }
 
-        /// <summary>The types whose IMPLEMENTS list (or, for interfaces, INHERIT list) names an interface with this short name.</summary>
-        internal IEnumerable<IXTypeSymbol> ByInterfaceShortName(string shortName)
+        /// <summary>The rows indexed by the short name of their base class (Ns.List&lt;Dog&gt; → List), case-insensitive.</summary>
+        internal static Dictionary<string, List<XDbResult>> BaseIndex(IEnumerable<XDbResult> rows)
         {
-            var rows = XDatabase.GetProjectTypesMentioning(shortName)
-                .Where(row => TypeHierarchy.DeclaredInterfaceNames(row.SourceCode)
-                    .Any(name => string.Equals(TypeHierarchy.ShortName(name), shortName, StringComparison.OrdinalIgnoreCase)));
-            return ToTypes(rows.ToList());
+            var index = new Dictionary<string, List<XDbResult>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var row in rows)
+            {
+                var key = TypeHierarchy.ShortName(row.BaseTypeName);
+                if (key.Length == 0)
+                    continue;
+                if (!index.TryGetValue(key, out var list))
+                    index[key] = list = new List<XDbResult>();
+                list.Add(row);
+            }
+            return index;
+        }
+
+        /// <summary>All classes deriving from the type, all levels.</summary>
+        internal IReadOnlyList<TypeNode> DerivedTypes(TypeNode target)
+        {
+            if (_byBase == null)
+            {
+                var rows = XDatabase.GetProjectTypesWithBase();
+                Candidates += rows.Count;
+                _byBase = BaseIndex(rows);
+            }
+            return TypeHierarchy.Descendants(target, ChildrenByBase, n => n.Key);
+        }
+
+        /// <summary>The classes and structures implementing the interface, also through derived interfaces.</summary>
+        internal IReadOnlyList<TypeNode> Implementers(TypeNode iface)
+        {
+            return TypeHierarchy.Descendants(iface, n => n.Kind == Kind.Interface ? ChildrenByInterface(n) : Enumerable.Empty<TypeNode>(), n => n.Key)
+                .Where(n => n.Kind != Kind.Interface).ToList();
+        }
+
+        /// <summary>The keys (project|full name) of the types that declare a member with this name.</summary>
+        internal HashSet<string> TypesWithMember(string name)
+        {
+            var rows = XDatabase.GetProjectTypesWithMember(name);
+            Candidates += rows.Count;
+            return new HashSet<string>(rows.Select(r => r.Project + "|" + TypeFullName(r)), StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>The code model type of a node, loaded on demand.</summary>
+        internal IXTypeSymbol SymbolOf(TypeNode node)
+        {
+            if (node.Symbol == null && node.Row != null)
+                node.Symbol = FileInfo(node.Row.FileName).Project?.Lookup(node.FullName);
+            return node.Symbol;
+        }
+
+        private IEnumerable<TypeNode> ChildrenByBase(TypeNode node)
+        {
+            if (!_byBase.TryGetValue(TypeHierarchy.ShortName(node.Name), out var rows))
+                yield break;
+            foreach (var group in rows.GroupBy(row => row.Project + "|" + TypeFullName(row), StringComparer.OrdinalIgnoreCase))
+            {
+                var part = DeclaringPart(group);
+                if (string.Equals(Resolve(part, part.BaseTypeName), node.FullName, StringComparison.OrdinalIgnoreCase))
+                    yield return new TypeNode(part.TypeName, TypeFullName(part), part.Kind, part.Project, part, null);
+            }
+        }
+
+        private IEnumerable<TypeNode> ChildrenByInterface(TypeNode node)
+        {
+            var shortName = TypeHierarchy.ShortName(node.Name);
+            var rows = XDatabase.GetProjectTypesMentioning(shortName);
+            Candidates += rows.Count;
+            foreach (var group in rows.GroupBy(row => row.Project + "|" + TypeFullName(row), StringComparer.OrdinalIgnoreCase))
+            {
+                var part = DeclaringPart(group);
+                var names = TypeHierarchy.DeclaredInterfaceNames(part.SourceCode)
+                    .Where(n => string.Equals(TypeHierarchy.ShortName(n), shortName, StringComparison.OrdinalIgnoreCase));
+                if (names.Any(n => string.Equals(Resolve(part, n), node.FullName, StringComparison.OrdinalIgnoreCase)))
+                    yield return new TypeNode(part.TypeName, TypeFullName(part), part.Kind, part.Project, part, null);
+            }
+        }
+
+        /// <summary>The full name a type name written in the row's file resolves to ("" if not found).</summary>
+        private string Resolve(XDbResult row, string typeName)
+        {
+            if (string.IsNullOrEmpty(typeName))
+                return "";
+            var file = FileInfo(row.FileName);
+            if (file.Project == null)
+                return "";
+            var key = file.Project.FileName + "|" + row.Namespace + "|" + file.UsingsKey + "|" + typeName;
+            if (!_resolved.TryGetValue(key, out var result))
+            {
+                var usings = new List<string>(file.Usings);
+                if (!string.IsNullOrEmpty(row.Namespace))
+                    usings.Add(row.Namespace);
+                result = ResolveName(file.Project, typeName, usings);
+                _resolved[key] = result;
+            }
+            return result;
         }
 
         /// <summary>
-        /// The row of the part a candidate type is shown at (partial classes: the part with INHERIT or IMPLEMENTS),
-        /// null for types that did not come from the database queries.
+        /// The full name of a type name as XProject.FindType resolves it (source types of this and the referenced
+        /// projects first, then DLL types), without building the type with its members: only the name is compared.
         /// </summary>
-        internal XDbResult DeclarationOf(IXTypeSymbol type)
+        private static string ResolveName(XProject project, string typeName, List<string> usings)
         {
-            return type != null && _parts.TryGetValue(type, out var row) ? row : null;
+            var name = typeName.Trim();
+            var generic = name.IndexOf('<');
+            if (generic > 0)
+                name = name.Substring(0, generic);
+            var rows = XDatabase.GetProjectTypes(TypeHierarchy.ShortName(name), project.DependentProjectList);
+            var match = project.FilterUsings(rows, usings, name, false)
+                .FirstOrDefault(r => !name.Contains(".") || string.Equals(TypeFullName(r), name, StringComparison.OrdinalIgnoreCase));
+            if (match != null)
+                return TypeFullName(match);
+            return project.FindSystemType(typeName, usings)?.FullName ?? "";
         }
 
-        /// <summary>
-        /// The resolved base class. For a candidate the INHERIT clause of its declaring part is resolved with the
-        /// USINGs of that part's file (the merged partial class carries the first part's file).
-        /// </summary>
+        private (XProject Project, List<string> Usings, string UsingsKey) FileInfo(string fileName)
+        {
+            if (!_files.TryGetValue(fileName ?? "", out var info))
+            {
+                var file = XSolution.FindFile(fileName);
+                var usings = file == null ? new List<string>() : new List<string>(file.Usings);
+                info = (file?.Project, usings, string.Join(",", usings.OrderBy(u => u, StringComparer.OrdinalIgnoreCase)));
+                _files[fileName ?? ""] = info;
+            }
+            return info;
+        }
+
+        /// <summary>The resolved base class (Go To Base), as OverrideFamily resolves it.</summary>
         internal IXTypeSymbol BaseOf(IXTypeSymbol type)
         {
             if (type == null)
@@ -61,23 +196,10 @@ namespace XSharp.LanguageService.GoToImplementation
             var key = TypeHierarchy.KeyOf(type);
             if (!_bases.TryGetValue(key, out var result))
             {
-                var row = DeclarationOf(type);
-                var file = row == null || string.IsNullOrEmpty(row.BaseTypeName) ? null : XSolution.FindFile(row.FileName);
-                if (file?.Project != null)
-                    result = file.Project.FindType(row.BaseTypeName, UsingsOf(file, type.Namespace));
-                else
-                    result = OverrideFamily.ResolveBase(type);
+                result = OverrideFamily.ResolveBase(type);
                 _bases[key] = result;
             }
             return result;
-        }
-
-        private static List<string> UsingsOf(XFile file, string typeNamespace)
-        {
-            var usings = new List<string>(file.Usings);
-            if (!string.IsNullOrEmpty(typeNamespace))
-                usings.Add(typeNamespace);
-            return usings;
         }
 
         /// <summary>
@@ -96,16 +218,13 @@ namespace XSharp.LanguageService.GoToImplementation
             names.AddRange(TypeHierarchy.DeclaredInterfaceNames(source.SourceCode));
             if (source.IsPartial && source.Clone != null)
                 names.AddRange(source.Clone.Interfaces ?? Array.Empty<string>());
-            var row = DeclarationOf(type);
-            if (row != null)
-                names.AddRange(TypeHierarchy.DeclaredInterfaceNames(row.SourceCode));
             var result = new List<IXTypeSymbol>();
-            // the IMPLEMENTS clause belongs to the declaring part: resolve with the USINGs of that file
-            var file = (row == null ? null : XSolution.FindFile(row.FileName)) ?? source.File;
-            var project = file?.Project;
+            var project = source.File?.Project;
             if (project != null)
             {
-                var usings = UsingsOf(file, source.Namespace);
+                var usings = new List<string>(source.File.Usings);
+                if (!string.IsNullOrEmpty(source.Namespace))
+                    usings.Add(source.Namespace);
                 foreach (var name in names.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
                     var resolved = project.FindType(name, usings);
@@ -129,32 +248,6 @@ namespace XSharp.LanguageService.GoToImplementation
         internal static string TypeFullName(XDbResult row)
         {
             return string.IsNullOrEmpty(row.Namespace) ? row.TypeName : row.Namespace + "." + row.TypeName;
-        }
-
-        private IEnumerable<IXTypeSymbol> ToTypes(IList<XDbResult> rows)
-        {
-            Candidates += rows.Count;
-            var result = new List<IXTypeSymbol>();
-            // one type per project and full name: in VO solutions two projects may declare a class of the same name
-            foreach (var group in rows.GroupBy(row => row.Project + "|" + TypeFullName(row), StringComparer.OrdinalIgnoreCase))
-            {
-                var type = ToType(group.Key, DeclaringPart(group));
-                if (type != null)
-                    result.Add(type);
-            }
-            return result;
-        }
-
-        private IXTypeSymbol ToType(string key, XDbResult row)
-        {
-            if (_types.TryGetValue(key, out var cached))
-                return cached;
-            var project = XSolution.FindFile(row.FileName)?.Project;
-            var type = project?.Lookup(TypeFullName(row));
-            _types[key] = type;
-            if (type != null)
-                _parts[type] = row;
-            return type;
         }
     }
 }

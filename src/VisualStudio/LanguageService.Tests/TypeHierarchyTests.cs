@@ -242,6 +242,30 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void DescendantsWalksBreadthFirstWithoutTheRootOrRepeats()
+        {
+            var children = new Dictionary<string, string[]>
+            {
+                ["Base"] = new[] { "Mid", "Other" },
+                ["Mid"] = new[] { "Leaf", "Base" },     // a cycle back to the root
+                ["Other"] = new[] { "Leaf" },           // reached twice
+            };
+            var result = TypeHierarchy.Descendants("Base", n => children.TryGetValue(n, out var c) ? c : new string[0], n => n.ToLowerInvariant());
+            Assert.Equal(new[] { "Mid", "Other", "Leaf" }, result);
+        }
+
+        [Theory]
+        [InlineData("Ns.List<Dog>", "list")]
+        [InlineData("tabStdAbstract", "TABSTDABSTRACT")]
+        public void BaseIndexUsesTheShortName(string baseTypeName, string lookup)
+        {
+            var row = new XDbResult { TypeName = "Sub", Namespace = "", BaseTypeName = baseTypeName };
+            var index = SourceHierarchy.BaseIndex(new[] { row });
+            Assert.True(index.TryGetValue(lookup, out var rows));
+            Assert.Same(row, rows.Single());
+        }
+
+        [Fact]
         public void ImplementedMembersMatchesInterfaceMember()
         {
             var ia = Interface("IA");

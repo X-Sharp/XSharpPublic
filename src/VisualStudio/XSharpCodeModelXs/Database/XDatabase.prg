@@ -1931,6 +1931,56 @@ STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS ILi
     Log(i"GetProjectTypesLike '{sName}' returns {result.Count} matches")
     RETURN result
 
+/// <summary>
+/// The types whose base class is written with this short name (Foo, Ns.Foo, Foo&lt;T&gt;), in all projects. Only a
+/// prefilter for Go To Implementation: the caller resolves each base class.
+/// </summary>
+STATIC METHOD GetProjectTypesByBaseName(sShortName AS STRING) AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select * from ProjectTypes where BaseTypeName = $name or BaseTypeName like '%.' || $name " + ;
+        "or BaseTypeName like $name || '<%' or BaseTypeName like '%.' || $name || '<%'"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            oCmd:Parameters:AddWithValue("$name", sShortName)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                result:Add(CreateTypeInfo(rdr))
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesByBaseName '{sShortName}' returns {result.Count} matches")
+    RETURN result
+
+/// <summary>
+/// The classes, structures and interfaces whose declaration line mentions this name, in all projects. Only a
+/// prefilter for Go To Implementation: the caller reads the IMPLEMENTS list and resolves each interface.
+/// </summary>
+STATIC METHOD GetProjectTypesMentioning(sShortName AS STRING) AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select * from ProjectTypes where Sourcecode like '%' || $name || '%' and Kind in (" + ;
+        ((INT) Kind.Class):ToString() + ", " + ((INT) Kind.Structure):ToString() + ", " + ((INT) Kind.Interface):ToString() + ")"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            oCmd:Parameters:AddWithValue("$name", sShortName)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                result:Add(CreateTypeInfo(rdr))
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesMentioning '{sShortName}' returns {result.Count} matches")
+    RETURN result
+
 STATIC METHOD GetProjectTypesInNamespace(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result

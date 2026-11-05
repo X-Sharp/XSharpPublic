@@ -2670,21 +2670,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            bool isImplied = false;
-            if (where is IdentifierNameSyntax ins)
-            {
-                isImplied = ins.Identifier.Text == XSharpSpecialNames.ImpliedTypeName;
-
-                if (!isImplied)
-                {
-                    var root = where.SyntaxTree.GetRoot();
-                    if (root?.XNode == null)
-                    {
-                        isImplied = ins.Identifier.Text == "var";
-                    }
-                }
-            }
-            if (isImplied && !options.IsAttributeTypeLookup())
+            if ((IsIdentifierName(where, XSharpSpecialNames.ImpliedTypeName) || IsIdentifierName(where, "var")) && !options.IsAttributeTypeLookup())
 #else
             if ((where as IdentifierNameSyntax)?.Identifier.Text == "var" && !options.IsAttributeTypeLookup())
 #endif
@@ -2704,7 +2690,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return diagnostics.Add(ErrorCode.ERR_SingleTypeNameNotFound, location, whereText);
         }
-
+#if XSHARP
+        private bool IsIdentifierName(object where, string id) => where is IdentifierNameSyntax name && name.Identifier.ToString() == id;
+#endif
         protected virtual AssemblySymbol GetForwardedToAssemblyInUsingNamespaces(string metadataName, ref NamespaceOrTypeSymbol qualifierOpt, BindingDiagnosticBag diagnostics, Location location)
         {
             return Next?.GetForwardedToAssemblyInUsingNamespaces(metadataName, ref qualifierOpt, diagnostics, location);

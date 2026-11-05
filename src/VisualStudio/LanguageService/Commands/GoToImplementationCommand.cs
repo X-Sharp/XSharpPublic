@@ -1,0 +1,203 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.FindAllReferences;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Threading;
+using XSharp.LanguageService.FindReferences;
+using XSharp.LanguageService.GoToImplementation;
+using XSharp.Support;
+using XSharpModel;
+using Task = System.Threading.Tasks.Task;
+
+namespace XSharp.LanguageService.Commands
+{
+    /// <summary>
+    /// Go To Implementation (Ctrl+F12) and Go To Base (Alt+Home) for X#: down to derived classes, implementers and
+    /// overrides, up to the base class, interfaces and the overridden member. The starting symbol may come from a
+    /// DLL; results come from the X# source (Go To Base may also reach a DLL type). One result: jump there; several:
+    /// the Find All References window.
+    /// </summary>
+    internal class GoToImplementationCommand : AbstractCommand
+    {
+        public static async Task InitializeAsync()
+        {
+            var implementation = await VS.Commands.FindCommandAsync("Edit.GoToImplementation");
+            var goToBase = await VS.Commands.FindCommandAsync("Edit.GoToBase");
+            if (implementation != null)
+                await VS.Commands.InterceptAsync(implementation, () => Execute(GoToImplementation));
+            // Ctrl+F12 is bound to Go To Implementation only in the C# and VB editors; elsewhere it is Go To Declaration
+            await VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.GotoDecl, () => Execute(GoToImplementation));
+            if (goToBase != null)
+                await VS.Commands.InterceptAsync(goToBase, () => Execute(GoToBase));
+            else
+                Logger.Information("Go To Base: the command Edit.GoToBase does not exist in this Visual Studio");
+        }
+
+        private static void GoToImplementation(DocumentView doc)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Run(doc, true);
+        }
+
+        private static void GoToBase(DocumentView doc)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Run(doc, false);
+        }
+
+        private static void Run(DocumentView doc, bool down)
+        {
+            var command = down ? "Go To Implementation" : "Go To Base";
+            ThreadHelper.ThrowIfNotOnUIThread();
+            IXSymbol target;
+            CompletionState state;
+            try
+            {
+                target = TargetUnderCursor.Resolve(doc.TextView, out _, out state, out _);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, $"{command}: cannot determine the symbol under the cursor");
+                target = null;
+                state = default;
+            }
+            if (!(target is IXTypeSymbol) && !(target is IXMemberSymbol member && IsMethodOrProperty(member)))
+            {
+                VS.StatusBar.ShowMessageAsync(target == null ? "No X# symbol under the cursor"
+                    : $"{command}: '{target.Name}' is no class, interface, method or property").FireAndForget();
+                return;
+            }
+            var textView = doc.TextView;
+            // Do not wait for the search on the UI thread: Find References does the same (see there)
+            var package = XSharpLanguagePackage.Instance;
+            var factory = package?.JoinableTaskFactory ?? ThreadHelper.JoinableTaskFactory;
+            factory.RunAsync(async delegate
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                IReadOnlyList<IXSymbol> results;
+                var hierarchy = new SourceHierarchy();
+                try
+                {
+                    await TaskScheduler.Default;
+                    results = down ? Down(target, hierarchy) : Up(target, hierarchy);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Exception(ex, $"{command} '{target.Name}' failed");
+                    results = Array.Empty<IXSymbol>();
+                }
+                Logger.Information($"{command} '{target.FullName}': {results.Count} of {hierarchy.Candidates} candidates, {watch.ElapsedMilliseconds} ms");
+                await ShowAsync(command, down, target, results, textView, state);
+            }).Task.Forget();
+        }
+
+        private static bool IsMethodOrProperty(IXMemberSymbol member)
+        {
+            return member.Kind == Kind.Method || SymbolIdentity.IsPropertyLike(member.Kind);
+        }
+
+        /// <summary>Derived classes, implementers, overrides and implementing members.</summary>
+        private static IReadOnlyList<IXSymbol> Down(IXSymbol target, SourceHierarchy hierarchy)
+        {
+            if (target is IXTypeSymbol type)
+                return Types(type).Cast<IXSymbol>().ToList();
+            var member = (IXMemberSymbol)target;
+            if (member.ParentType == null)
+                return Array.Empty<IXSymbol>();
+            return TypeHierarchy.Overrides(member, Types(member.ParentType)).Cast<IXSymbol>().ToList();
+
+            IReadOnlyList<IXTypeSymbol> Types(IXTypeSymbol parent) => parent.Kind == Kind.Interface
+                ? TypeHierarchy.Implementers(parent, hierarchy.ByInterfaceShortName, hierarchy.InterfacesOf)
+                : TypeHierarchy.DerivedTypes(parent, hierarchy.ByBaseShortName, hierarchy.BaseOf);
+        }
+
+        /// <summary>The base class and interfaces, or the overridden member and the implemented interface members.</summary>
+        private static IReadOnlyList<IXSymbol> Up(IXSymbol target, SourceHierarchy hierarchy)
+        {
+            if (target is IXTypeSymbol type)
+                return TypeHierarchy.BaseTypes(type, hierarchy.BaseOf, hierarchy.InterfacesOf).Cast<IXSymbol>().ToList();
+            var member = (IXMemberSymbol)target;
+            var result = new List<IXSymbol>();
+            var overridden = TypeHierarchy.OverriddenMember(member, hierarchy.BaseOf);
+            if (overridden != null)
+                result.Add(overridden);
+            // interfaces of the class and of its base classes
+            var interfaces = new List<IXTypeSymbol>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            for (var parent = member.ParentType; parent != null && seen.Add(parent.FullName ?? ""); parent = hierarchy.BaseOf(parent))
+                interfaces.AddRange(hierarchy.InterfacesOf(parent));
+            result.AddRange(TypeHierarchy.ImplementedMembers(member, interfaces));
+            return result;
+        }
+
+        private static async Task ShowAsync(string command, bool down, IXSymbol target, IReadOnlyList<IXSymbol> results, ITextView textView, CompletionState state)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (results.Count == 0)
+            {
+                await VS.StatusBar.ShowMessageAsync(down
+                    ? $"{command}: no implementations of '{target.Name}' in the X# source"
+                    : $"{command}: '{target.Name}' has no base in the X# source");
+                return;
+            }
+            if (results.Count == 1)
+            {
+                Navigate(results[0], textView, state);
+                return;
+            }
+            var hits = results.Select(Hit).Where(h => h != null).ToList();
+            var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
+            var window = service.StartSearch(down ? $"'{target.Name}' implementations" : $"'{target.Name}' base types");
+            var source = new ReferencesTableDataSource(target, await FindReferencesCommand.CreateTextFormatAsync());
+            window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
+            source.Add(hits);
+            source.Complete();
+        }
+
+        private static void Navigate(IXSymbol symbol, ITextView textView, CompletionState state)
+        {
+            if (symbol is XSourceEntity entity)
+                entity.OpenEditor();
+            else
+                XSharpGotoDefinition.Goto(symbol, textView, state);
+        }
+
+        /// <summary>One row: the declaration of the symbol, for a DLL symbol in the generated source F12 opens.</summary>
+        private static ReferenceHit Hit(IXSymbol symbol)
+        {
+            var entity = symbol as XSourceEntity;
+            if (entity == null && symbol is XPETypeSymbol peType)
+                entity = XSharpGotoDefinition.FindSystemElement(peType, peType);
+            else if (entity == null && symbol is XPEMemberSymbol peMember && peMember.Parent is XPETypeSymbol parent)
+                entity = XSharpGotoDefinition.FindSystemElement(parent, peMember);
+            if (entity?.File == null)
+                return null;
+            var sourceCode = (entity as XSourceTypeSymbol)?.SourceCode ?? (entity as XSourceMemberSymbol)?.SourceCode;
+            var declaration = (sourceCode ?? entity.Name).Split('\r', '\n')[0];
+            var column = entity.Range.StartColumn;
+            var nameAt = declaration.IndexOf(entity.Name, StringComparison.OrdinalIgnoreCase);
+            return new ReferenceHit
+            {
+                FilePath = entity.File.FullPath,
+                ProjectName = entity.File.Project?.Name,
+                Line = entity.Range.StartLine,
+                Column = nameAt >= 0 ? column + nameAt : column,
+                Length = nameAt >= 0 ? entity.Name.Length : 0,
+                // the declaration at its column, so that Column points into this text
+                LineText = new string(' ', Math.Max(column, 0)) + declaration,
+                IsDefinition = true,
+                Group = (entity as IXMemberSymbol)?.ParentType?.FullName ?? entity.FullName,
+            };
+        }
+    }
+}

@@ -44,29 +44,13 @@ namespace XSharp.LanguageService.Commands
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var symbols = doc.TextView.GetSymbolUnderCursor(out _, out var location, out _);
                 IXSymbol target = null;
+                XSharpSearchLocation location = null;
                 int candidates = 0;
                 OverrideFamily family = null;
                 try
                 {
-                    // on a declaration: the declared overload; on a call site: the overload that takes these arguments
-                    var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
-                    target = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
-                    if (target == null && location != null)
-                    {
-                        var matches = OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
-                            OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
-                            id => SymbolResolver.TypeOf(location, id));
-                        target = matches.FirstOrDefault();
-                        candidates = matches.Count;
-                    }
-                    // Foo{} of a class without constructors: the lookup makes one up, search the class instead
-                    if (target != null && target.Kind == Kind.Constructor && target is IXMemberSymbol ctor &&
-                        ctor.ParentType != null && ctor.ParentType.GetConstructors().Length == 0)
-                    {
-                        target = ctor.ParentType;
-                    }
+                    target = TargetUnderCursor.Resolve(doc.TextView, out location, out _, out candidates);
                     if (target != null)
                         family = new OverrideFamily(target);
                 }
@@ -143,7 +127,7 @@ namespace XSharp.LanguageService.Commands
         }
 
         /// <summary>The editor colors for the Text column, and the reference highlight that C# uses for the hit.</summary>
-        private static async System.Threading.Tasks.Task<ReferenceTextFormat> CreateTextFormatAsync()
+        internal static async System.Threading.Tasks.Task<ReferenceTextFormat> CreateTextFormatAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var componentModel = await VS.Services.GetComponentModelAsync();

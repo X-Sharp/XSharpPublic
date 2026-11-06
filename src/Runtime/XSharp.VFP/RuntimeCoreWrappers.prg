@@ -311,7 +311,39 @@ FUNCTION DiskSpace(cDriveName := "" AS STRING, nSpaceType := 1 AS INT) AS REAL8
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/curdir/*" />
 [FoxProFunction("CURDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION CurDir(cDrive := "" AS STRING) AS STRING
-    RETURN XSharp.Core.Functions.CurDir(cDrive)
+    // VFP returns the folder in upper case between backslashes: \FOLDER\SUB\, and just \ for a root.
+    // With a drive it returns the current folder of that drive, or an empty string when the drive does not exist.
+    LOCAL cDir AS STRING
+    LOCAL nIndex AS INT
+    IF String.IsNullOrWhiteSpace(cDrive)
+        cDir := System.Environment.CurrentDirectory
+    ELSE
+        cDrive := cDrive:Trim():Substring(0, 1) + ":"
+        TRY
+            // Windows keeps a current folder per drive, and GetFullPath("C:") resolves to it
+            cDir := System.IO.Path.GetFullPath(cDrive)
+        CATCH
+            RETURN ""
+        END TRY
+        IF ! System.IO.Directory.Exists(cDir)
+            RETURN ""
+        ENDIF
+    ENDIF
+    IF cDir:StartsWith("\\")
+        // a UNC path has no drive to strip, we leave it as it is
+        RETURN cDir
+    ENDIF
+    nIndex := cDir:IndexOf(System.IO.Path.VolumeSeparatorChar)
+    IF nIndex >= 0
+        cDir := cDir:Substring(nIndex + 1)
+    ENDIF
+    IF ! cDir:StartsWith("\")
+        cDir := "\" + cDir
+    ENDIF
+    IF ! cDir:EndsWith("\")
+        cDir += "\"
+    ENDIF
+    RETURN cDir:ToUpperInvariant()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/os/*" />
 [FoxProFunction("OS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];

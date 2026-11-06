@@ -160,6 +160,8 @@
     <Compile Include="LightBulb\QuickActions\CodeStyle.cs" />
     <Compile Include="LightBulb\QuickActions\GenerateMethodRule.cs" />
     <Compile Include="LightBulb\QuickActions\MethodSkeleton.cs" />
+    <Compile Include="LightBulb\QuickActions\OverrideCandidates.cs" />
+    <Compile Include="LightBulb\QuickActions\OverrideSkeleton.cs" />
     <Compile Include="LightBulb\QuickActions\UsingCandidates.cs" />
     <Compile Include="LightBulb\QuickActions\UsingInserter.cs" />
     <Compile Include="OptionsPages\CompletionOptionsControl.cs">

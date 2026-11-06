@@ -120,6 +120,51 @@ namespace XSharp.LanguageService.Tests.QuickActions
         }
 
         [Fact]
+        public void FinalizeIsNotOffered()
+        {
+            var obj = Type("Object");
+            obj.Namespace = "System";
+            Member(obj, "Finalize", modifiers: Modifiers.Protected | Modifiers.Virtual, returnType: "VOID");
+            Member(obj, "ToString", modifiers: Modifiers.Public | Modifiers.Virtual, returnType: "STRING");
+            Assert.Equal(new[] { "ToString" }, Names(Type("Derived", obj)));
+        }
+
+        [Fact]
+        public void QualifiedDllParameterTypesMatchSourceOverride()
+        {
+            var form = Type("Form");
+            Member(form, "OnPaint", modifiers: Modifiers.Protected | Modifiers.Virtual, returnType: "VOID",
+                parameters: ("e", "System.Windows.Forms.PaintEventArgs"));
+            var derived = Type("MyForm", form);
+            Member(derived, "OnPaint", modifiers: Modifiers.Protected | Modifiers.Override, returnType: "VOID", parameters: ("e", "PaintEventArgs"));
+            Assert.Empty(Names(derived));
+        }
+
+        [Fact]
+        public void BasePropertyMatchesAccessInDerived()
+        {
+            var basis = Type("Basis");
+            Member(basis, "Caption", Kind.Property, Modifiers.Public | Modifiers.Virtual, "STRING");
+            var derived = Type("Derived", basis);
+            Member(derived, "Caption", Kind.Access, returnType: "STRING");
+            Assert.Empty(Names(derived));
+        }
+
+        [Fact]
+        public void ObjectMembersAloneAreNotWorthOffering()
+        {
+            var obj = Type("Object");
+            obj.Namespace = "System";
+            Member(obj, "ToString", modifiers: Modifiers.Public | Modifiers.Virtual, returnType: "STRING");
+            var plain = Type("Plain", obj);
+            Assert.False(OverrideCandidates.WorthOffering(OverrideCandidates.For(plain, BaseOf, t => VoClasses.Contains(t), false)));
+            var window = Type("Window", obj, vo: true);
+            Member(window, "Show");
+            var derived = Type("MyWindow", window, vo: true);
+            Assert.True(OverrideCandidates.WorthOffering(OverrideCandidates.For(derived, BaseOf, t => VoClasses.Contains(t), false)));
+        }
+
+        [Fact]
         public void PropertiesAccessAndAssignAreCandidates()
         {
             var basis = Type("Basis", vo: true);
@@ -166,6 +211,30 @@ namespace XSharp.LanguageService.Tests.QuickActions
             var foo = Member(null, "Foo", parameters: new[] { ("a", ""), ("b", "") });
             var text = OverrideSkeleton.Build(foo, "", false, Style());
             Assert.Equal("\r\nMETHOD Foo(a, b) CLIPPER\r\n    RETURN SUPER:Foo(_Args())\r\n", text);
+        }
+
+        [Fact]
+        public void ClipperWithoutParametersKeepsClipperAndType()
+        {
+            var destroy = Member(null, "Destroy", returnType: "USUAL");
+            destroy.CallingConvention = CallingConvention.Clipper;
+            Assert.Equal("\r\nMETHOD Destroy() AS USUAL CLIPPER\r\n    RETURN SUPER:Destroy(_Args())\r\n", OverrideSkeleton.Build(destroy, "", false, Style()));
+        }
+
+        [Fact]
+        public void AbstractMethodThrows()
+        {
+            var foo = Member(null, "Foo", modifiers: Modifiers.Public | Modifiers.Abstract, returnType: "LOGIC");
+            var text = OverrideSkeleton.Build(foo, "", true, Style(XDialect.Core));
+            Assert.Equal("\r\nOVERRIDE METHOD Foo() AS LOGIC\r\n    THROW NotImplementedException{}\r\n", text);
+        }
+
+        [Fact]
+        public void AbstractPropertyThrows()
+        {
+            var prop = Member(null, "Text", Kind.Property, Modifiers.Public | Modifiers.Abstract, "STRING");
+            var text = OverrideSkeleton.Build(prop, "", true, Style(XDialect.Core));
+            Assert.Equal("\r\nOVERRIDE PROPERTY Text AS STRING GET THROW NotImplementedException{} SET THROW NotImplementedException{}\r\n", text);
         }
 
         [Fact]

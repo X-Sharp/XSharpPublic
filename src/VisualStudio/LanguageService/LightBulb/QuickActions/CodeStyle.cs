@@ -38,13 +38,17 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     /// <summary>Text to insert at the start of a 0-based line.</summary>
     internal struct TextInsertion
     {
-        internal TextInsertion(int line, string text)
+        internal TextInsertion(int line, string text, int caret = -1)
         {
             Line = line;
             Text = text;
+            Caret = caret;
         }
 
         internal int Line { get; }
         internal string Text { get; }
+
+        /// <summary>Where the caret goes after the insertion, as an offset in <see cref="Text"/>; -1 for no move.</summary>
+        internal int Caret { get; }
     }
 }

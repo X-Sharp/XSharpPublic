@@ -64,8 +64,29 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 header.Append(' ').Append(style.Kw("AS VOID"));
             if (!target.HasEndClass)
                 header.Append(' ').Append(style.Kw("CLASS")).Append(' ').Append(target.Name);
-            var text = style.NewLine + header + style.NewLine + target.MemberIndent + style.IndentUnit + style.NewLine;
-            return new TextInsertion(target.InsertLine, text);
+            var body = target.MemberIndent + style.IndentUnit;
+            var text = style.NewLine + header + style.NewLine + body;
+            var caret = text.Length;
+            text += style.NewLine;
+            // an untyped method returns USUAL: without /vo9 it needs its RETURN
+            if (style.HasUsual)
+                text += body + style.Kw("RETURN NIL") + style.NewLine;
+            return new TextInsertion(target.InsertLine, text, caret);
+        }
+
+        /// <summary>Does the line close a class block (END CLASS, ENDCLASS, END DEFINE, ENDDEFINE)?</summary>
+        internal static bool IsEndClassLine(string line)
+        {
+            var words = (line ?? "").Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 0)
+                return false;
+            var first = words[0].ToUpperInvariant();
+            if (first == "ENDCLASS" || first == "ENDDEFINE")
+                return true;
+            if (first != "END" || words.Length < 2)
+                return false;
+            var second = words[1].ToUpperInvariant();
+            return second == "CLASS" || second == "DEFINE";
         }
 
         /// <summary>The argument's variable name, else p1, p2, ...; a name already taken gets 2, 3, ... appended.</summary>

@@ -30,6 +30,13 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     {
         private const int MaxDepth = 20;
 
+        /// <summary>Pseudo functions of the compiler: lexed as identifiers, never found as runtime functions.</summary>
+        private static readonly HashSet<string> Intrinsics = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "PCount", "ArgCount", "_GetInst", "PCall", "PCallNative", "DoDefault", "_Args",
+            "_GetMParam", "_GetFParam", "AltD", "SLen", "String2Psz", "Cast2Psz", "_SizeOf", "_TypeOf",
+        };
+
         /// <summary>
         /// The source class to generate method <paramref name="name"/> into, or null. Offered for <c>SELF:Foo()</c>
         /// and bare calls in a class method (into the enclosing class) and for <c>oVar:Foo()</c> on a variable typed
@@ -39,9 +46,10 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         /// define of that name.
         /// </summary>
         internal static IXTypeSymbol Target(ReceiverKind kind, IXTypeSymbol receiverType, IXTypeSymbol enclosingClass,
-            bool isCall, string name, Func<string, bool> isKnownGlobal, Func<IXTypeSymbol, IXTypeSymbol> baseOf, bool caseSensitive)
+            bool isCall, bool resolved, string name, Func<string, bool> isKnownGlobal, Func<IXTypeSymbol, IXTypeSymbol> baseOf, bool caseSensitive)
         {
-            if (!isCall || string.IsNullOrEmpty(name))
+            // a name the lookup resolves (extension methods, delegates, ...) exists already
+            if (!isCall || resolved || string.IsNullOrEmpty(name))
                 return null;
             IXTypeSymbol target;
             switch (kind)
@@ -50,7 +58,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                     target = enclosingClass;
                     break;
                 case ReceiverKind.None:
-                    if (enclosingClass == null || isKnownGlobal(name))
+                    if (enclosingClass == null || Intrinsics.Contains(name) || isKnownGlobal(name))
                         return null;
                     target = enclosingClass;
                     break;

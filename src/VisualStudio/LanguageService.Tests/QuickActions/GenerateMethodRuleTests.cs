@@ -30,9 +30,30 @@ namespace XSharp.LanguageService.Tests.QuickActions
             parent.AddMember(member);
         }
 
-        private IXTypeSymbol Target(ReceiverKind kind, IXTypeSymbol receiver, IXTypeSymbol enclosing, bool isCall = true, bool knownGlobal = false)
+        private IXTypeSymbol Target(ReceiverKind kind, IXTypeSymbol receiver, IXTypeSymbol enclosing, bool isCall = true, bool knownGlobal = false,
+            bool resolved = false, string name = "Foo")
         {
-            return GenerateMethodRule.Target(kind, receiver, enclosing, isCall, "Foo", _ => knownGlobal, BaseOf, false);
+            return GenerateMethodRule.Target(kind, receiver, enclosing, isCall, resolved, name, _ => knownGlobal, BaseOf, false);
+        }
+
+        [Fact]
+        public void ResolvedNameIsNotOffered()
+        {
+            // e.g. an extension method: not among the members of the class, but the lookup finds it
+            Assert.Null(Target(ReceiverKind.Self, null, Type("Bar"), resolved: true));
+        }
+
+        [Theory]
+        [InlineData("PCount")]
+        [InlineData("pcount")]
+        [InlineData("ArgCount")]
+        [InlineData("_GetInst")]
+        [InlineData("PCall")]
+        [InlineData("DoDefault")]
+        [InlineData("_Args")]
+        public void BareCallToIntrinsicIsNotOffered(string name)
+        {
+            Assert.Null(Target(ReceiverKind.None, null, Type("Bar"), name: name));
         }
 
         [Fact]

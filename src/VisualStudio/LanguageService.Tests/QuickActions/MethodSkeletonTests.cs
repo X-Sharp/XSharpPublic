@@ -20,7 +20,15 @@ namespace XSharp.LanguageService.Tests.QuickActions
             var result = MethodSkeleton.Build("Foo", new[] { Arg("oItem", "Customer"), Arg(null, null) },
                 new TargetClass("Bar", true, 10, "    "), Style());
             Assert.Equal(10, result.Line);
-            Assert.Equal("\r\n    METHOD Foo(oItem AS Customer, p2 AS USUAL)\r\n        \r\n", result.Text);
+            // without /vo9 an untyped VO method needs its RETURN
+            Assert.Equal("\r\n    METHOD Foo(oItem AS Customer, p2 AS USUAL)\r\n        \r\n        RETURN NIL\r\n", result.Text);
+        }
+
+        [Fact]
+        public void CaretGoesOnTheEmptyBodyLine()
+        {
+            var result = MethodSkeleton.Build("Foo", new CallArgument[0], new TargetClass("Bar", true, 10, "    "), Style());
+            Assert.Equal("\r\n    METHOD Foo()\r\n        ".Length, result.Caret);
         }
 
         [Fact]
@@ -28,14 +36,29 @@ namespace XSharp.LanguageService.Tests.QuickActions
         {
             var result = MethodSkeleton.Build("Foo", new[] { Arg("n", "INT") }, new TargetClass("Bar", false, 20, ""), Style());
             Assert.Equal(20, result.Line);
-            Assert.Equal("\r\nMETHOD Foo(n AS INT) CLASS Bar\r\n    \r\n", result.Text);
+            Assert.Equal("\r\nMETHOD Foo(n AS INT) CLASS Bar\r\n    \r\n    RETURN NIL\r\n", result.Text);
         }
 
         [Fact]
         public void CoreUsesObjectAndVoid()
         {
             var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null) }, new TargetClass("Bar", true, 3, "    "), Style(XDialect.Core));
-            Assert.Contains("METHOD Foo(p1 AS OBJECT) AS VOID\r\n", result.Text);
+            Assert.Equal("\r\n    METHOD Foo(p1 AS OBJECT) AS VOID\r\n        \r\n", result.Text);
+        }
+
+        [Theory]
+        [InlineData("END CLASS", true)]
+        [InlineData("   ENDCLASS", true)]
+        [InlineData("end class // Bar", true)]
+        [InlineData("ENDDEFINE", true)]
+        [InlineData("END DEFINE", true)]
+        [InlineData("END METHOD", false)]
+        [InlineData("END FUNCTION", false)]
+        [InlineData("ENDIF", false)]
+        [InlineData("RETURN NIL", false)]
+        public void EndClassLine(string line, bool expected)
+        {
+            Assert.Equal(expected, MethodSkeleton.IsEndClassLine(line));
         }
 
         [Fact]

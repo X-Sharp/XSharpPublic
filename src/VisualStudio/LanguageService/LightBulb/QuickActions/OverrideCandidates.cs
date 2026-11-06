@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using XSharpModel;
 
 namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
@@ -35,15 +36,32 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                     bool virtualClass = allVirtual(current);
                     foreach (var member in members.OrderBy(m => m.Name, StringComparer.OrdinalIgnoreCase))
                     {
-                        if (!declared.Contains(Signature(member, caseSensitive)) && IsOverridable(member, virtualClass))
+                        if (!IsFinalize(member) && !Keys(member, caseSensitive).Any(declared.Contains) && IsOverridable(member, virtualClass))
                             result.Add(member);
                     }
                 }
                 foreach (var member in members)
-                    declared.Add(Signature(member, caseSensitive));
+                    declared.UnionWith(Keys(member, caseSensitive));
                 first = false;
             }
             return result;
+        }
+
+        /// <summary>
+        /// False when the only candidates are the virtual members of System.Object (ToString, Equals, GetHashCode):
+        /// every class has them, so the light bulb would be lit everywhere for them alone.
+        /// </summary>
+        internal static bool WorthOffering(IReadOnlyList<IXMemberSymbol> candidates)
+        {
+            return candidates.Any(m => !string.Equals((m.Parent as IXTypeSymbol)?.FullName ?? m.ParentType?.FullName,
+                "System.Object", StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>Overriding Finalize is an error (a destructor is written instead).</summary>
+        private static bool IsFinalize(IXMemberSymbol member)
+        {
+            return member.Kind == Kind.Method && string.Equals(member.Name, "Finalize", StringComparison.OrdinalIgnoreCase) &&
+                   (member.Parameters == null || member.Parameters.Count == 0);
         }
 
         private static bool IsOverridable(IXMemberSymbol member, bool virtualClass)
@@ -68,11 +86,31 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             }
         }
 
-        private static string Signature(IXMemberSymbol member, bool caseSensitive)
+        /// <summary>
+        /// What a member declares, as keys: a method its name and parameter types (simple names – a DLL reports
+        /// System.Windows.Forms.PaintEventArgs where the source says PaintEventArgs); an ACCESS the getter, an ASSIGN
+        /// the setter, a PROPERTY both (a VO ACCESS compiled into a DLL is a property).
+        /// </summary>
+        private static IEnumerable<string> Keys(IXMemberSymbol member, bool caseSensitive)
         {
-            string Norm(string s) => caseSensitive ? (s ?? "") : (s ?? "").ToLowerInvariant();
-            var types = member.Parameters?.Select(p => Norm(p.TypeName)) ?? Enumerable.Empty<string>();
-            return Category(member.Kind) + "|" + Norm(member.Name) + "(" + string.Join(",", types) + ")";
+            var name = caseSensitive ? member.Name ?? "" : (member.Name ?? "").ToLowerInvariant();
+            switch (member.Kind)
+            {
+                case Kind.Access:
+                    return new[] { "get|" + name };
+                case Kind.Assign:
+                    return new[] { "set|" + name };
+                case Kind.Property:
+                    return new[] { "get|" + name, "set|" + name };
+                default:
+                    var types = member.Parameters?.Select(p => SimpleType(p.TypeName)) ?? Enumerable.Empty<string>();
+                    return new[] { "method|" + name + "(" + string.Join(",", types) + ")" };
+            }
+        }
+
+        private static string SimpleType(string type)
+        {
+            return Regex.Replace(type ?? "", @"(\w+\.)+", "").ToLowerInvariant();
         }
     }
 }

@@ -36,6 +36,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var returnType = member.IsTyped ? member.TypeName ?? "" : "";
             var asType = returnType.Length > 0 ? " " + style.Kw("AS") + " " + returnType : "";
             var parameters = member.Parameters ?? new List<IXParameterSymbol>();
+            var isAbstract = (member.Modifiers & Modifiers.Abstract) != 0;
             switch (member.Kind)
             {
                 case Kind.Access:
@@ -48,24 +49,37 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                     return nl + prefix + style.Kw("ASSIGN") + " " + name + "(" + value + valueType + ")" + clause + nl +
                            body + style.Kw("SUPER") + ":" + name + " := " + value + nl;
                 case Kind.Property:
-                    return nl + prefix + style.Kw("PROPERTY") + " " + name + asType + " " +
-                           style.Kw("GET") + " " + style.Kw("SUPER") + ":" + name + " " +
-                           style.Kw("SET") + " " + style.Kw("SUPER") + ":" + name + " := " + style.Kw("VALUE") + nl;
+                    var text = nl + prefix + style.Kw("PROPERTY") + " " + name + asType;
+                    if (HasAccessor(member, AccessorKind.Get))
+                        text += " " + style.Kw("GET") + " " + (isAbstract ? Throw(style) : style.Kw("SUPER") + ":" + name);
+                    if (HasAccessor(member, AccessorKind.Set))
+                        text += " " + style.Kw("SET") + " " + (isAbstract ? Throw(style) : style.Kw("SUPER") + ":" + name + " := " + style.Kw("VALUE"));
+                    return text + nl;
             }
             var call = style.Kw("SUPER") + ":" + name;
             if (IsClipper(member))
             {
                 var names = string.Join(", ", parameters.Select(p => p.Name));
-                return nl + prefix + style.Kw("METHOD") + " " + name + "(" + names + ")" +
-                       (parameters.Count > 0 ? " " + style.Kw("CLIPPER") : "") + clause + nl +
+                return nl + prefix + style.Kw("METHOD") + " " + name + "(" + names + ")" + asType + " " + style.Kw("CLIPPER") + clause + nl +
                        body + style.Kw("RETURN") + " " + call + "(_Args())" + nl;
             }
             var declared = string.Join(", ", parameters.Select(p => Declaration(p, style)));
             var passed = string.Join(", ", parameters.Select(p => Argument(p, style)));
             var header = nl + prefix + style.Kw("METHOD") + " " + name + "(" + declared + ")" + asType + clause + nl;
+            // an abstract base member has no body to call
+            if (isAbstract)
+                return header + body + Throw(style) + nl;
             if (string.Equals(returnType, "VOID", StringComparison.OrdinalIgnoreCase))
                 return header + body + call + "(" + passed + ")" + nl + body + style.Kw("RETURN") + nl;
             return header + body + style.Kw("RETURN") + " " + call + "(" + passed + ")" + nl;
+        }
+
+        private static string Throw(CodeStyle style) => style.Kw("THROW") + " NotImplementedException{}";
+
+        /// <summary>The accessors a DLL property has; a source property is taken to have both.</summary>
+        private static bool HasAccessor(IXMemberSymbol member, AccessorKind kind)
+        {
+            return !(member is XPEPropertySymbol property) || property.Accessors.HasFlag(kind);
         }
 
         /// <summary>CLIPPER calling convention, or a source method whose parameters are all untyped.</summary>

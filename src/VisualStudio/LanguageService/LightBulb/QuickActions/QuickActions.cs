@@ -90,8 +90,8 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var file = view.TextBuffer.GetFile();
             var part = PartIn(file, type) ?? type;
             var endLine = Math.Max(0, Math.Min(part.Range.EndLine, snapshot.LineCount - 1));
-            bool hasEnd = snapshot.GetLineFromLineNumber(endLine).GetText().TrimStart()
-                .StartsWith("END", StringComparison.OrdinalIgnoreCase);
+            // a class without END CLASS ends where the next type starts: its last line may be END METHOD etc.
+            bool hasEnd = MethodSkeleton.IsEndClassLine(snapshot.GetLineFromLineNumber(endLine).GetText());
             var members = file?.EntityList.OfType<XSourceMemberSymbol>()
                 .Where(m => m.ParentType != null && string.Equals(m.ParentType.FullName, part.FullName, StringComparison.OrdinalIgnoreCase))
                 .ToList() ?? new List<XSourceMemberSymbol>();
@@ -193,8 +193,8 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var placement = Placement(view, _target, style);
             var insertion = MethodSkeleton.Build(Context.Name.Text, Context.Arguments, placement, style);
             var position = Insert(view.TextBuffer, insertion.Line, insertion.Text);
-            if (position >= 0)
-                MoveCaret(view, position + insertion.Text.Length - style.NewLine.Length);
+            if (position >= 0 && insertion.Caret >= 0)
+                MoveCaret(view, position + insertion.Caret);
         }
     }
 

@@ -132,10 +132,14 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 if (context.Name != null)
                 {
                     offers.MethodTarget = GenerateMethodRule.Target(context.Receiver, context.ReceiverType, context.EnclosingClass,
-                        context.IsCall, context.Name.Text, n => IsKnownGlobal(project, n), BaseOf, context.CaseSensitive) as XSourceTypeSymbol;
+                        context.IsCall, context.Symbols.Count > 0, context.Name.Text, n => IsKnownGlobal(project, n), BaseOf, context.CaseSensitive) as XSourceTypeSymbol;
                 }
                 if (context.EnclosingClass != null)
-                    offers.Overrides = OverrideCandidates.For(context.EnclosingClass, BaseOf, AllVirtual, context.CaseSensitive);
+                {
+                    var candidates = OverrideCandidates.For(context.EnclosingClass, BaseOf, AllVirtual, context.CaseSensitive);
+                    if (OverrideCandidates.WorthOffering(candidates))
+                        offers.Overrides = candidates;
+                }
             }
             finally
             {

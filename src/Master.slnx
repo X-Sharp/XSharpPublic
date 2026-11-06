@@ -255,6 +255,7 @@
     <Project Path="VisualStudio/LanguageService/LanguageService2022.csproj" Id="ffa0338a-27ed-42ba-b801-ec5ad32a7396">
       <BuildDependency Project="VisualStudio/LanguageService/LanguageService.csproj" />
     </Project>
+    <Project Path="VisualStudio/LanguageService.Search/LanguageService2022.Search.csproj" Id="6c2e1f4a-8b3d-4e57-9a61-2f0d7c8b5e13" />
     <Project Path="VisualStudio/ProjectBase/ProjectBase2022.csproj" Id="cacb60a9-1e76-4f92-8831-b134a658c696">
       <BuildDependency Project="VisualStudio/ProjectBase/ProjectBase.csproj" />
       <BuildType Solution="Public|*" Project="Release" />

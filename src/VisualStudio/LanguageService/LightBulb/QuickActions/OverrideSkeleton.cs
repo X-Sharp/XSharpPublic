@@ -16,10 +16,13 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     {
         /// <summary>
         /// The member text, starting with a blank line and ending with a line break. <paramref name="writeOverride"/>
-        /// prefixes OVERRIDE (the caller decides from the base member and the project options).
+        /// prefixes OVERRIDE (the caller decides from the base member and the project options). With
+        /// <paramref name="className"/> the header gets a CLASS clause (VO-style classes without END CLASS); properties,
+        /// which VO-style classes do not declare outside the class block, do not.
         /// </summary>
-        internal static string Build(IXMemberSymbol member, string memberIndent, bool writeOverride, CodeStyle style)
+        internal static string Build(IXMemberSymbol member, string memberIndent, bool writeOverride, CodeStyle style, string className = null)
         {
+            var clause = string.IsNullOrEmpty(className) ? "" : " " + style.Kw("CLASS") + " " + className;
             memberIndent = memberIndent ?? "";
             var body = memberIndent + style.IndentUnit;
             var nl = style.NewLine;
@@ -36,13 +39,13 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             switch (member.Kind)
             {
                 case Kind.Access:
-                    return nl + prefix + style.Kw("ACCESS") + " " + name + asType + nl +
+                    return nl + prefix + style.Kw("ACCESS") + " " + name + asType + clause + nl +
                            body + style.Kw("RETURN") + " " + style.Kw("SUPER") + ":" + name + nl;
                 case Kind.Assign:
                     var value = parameters.Count > 0 ? parameters[0].Name : "uValue";
                     var valueType = parameters.Count > 0 && parameters[0].IsTyped
                         ? " " + style.Kw("AS") + " " + parameters[0].TypeName : "";
-                    return nl + prefix + style.Kw("ASSIGN") + " " + name + "(" + value + valueType + ")" + nl +
+                    return nl + prefix + style.Kw("ASSIGN") + " " + name + "(" + value + valueType + ")" + clause + nl +
                            body + style.Kw("SUPER") + ":" + name + " := " + value + nl;
                 case Kind.Property:
                     return nl + prefix + style.Kw("PROPERTY") + " " + name + asType + " " +
@@ -54,12 +57,12 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             {
                 var names = string.Join(", ", parameters.Select(p => p.Name));
                 return nl + prefix + style.Kw("METHOD") + " " + name + "(" + names + ")" +
-                       (parameters.Count > 0 ? " " + style.Kw("CLIPPER") : "") + nl +
+                       (parameters.Count > 0 ? " " + style.Kw("CLIPPER") : "") + clause + nl +
                        body + style.Kw("RETURN") + " " + call + "(_Args())" + nl;
             }
             var declared = string.Join(", ", parameters.Select(p => Declaration(p, style)));
             var passed = string.Join(", ", parameters.Select(p => Argument(p, style)));
-            var header = nl + prefix + style.Kw("METHOD") + " " + name + "(" + declared + ")" + asType + nl;
+            var header = nl + prefix + style.Kw("METHOD") + " " + name + "(" + declared + ")" + asType + clause + nl;
             if (string.Equals(returnType, "VOID", StringComparison.OrdinalIgnoreCase))
                 return header + body + call + "(" + passed + ")" + nl + body + style.Kw("RETURN") + nl;
             return header + body + style.Kw("RETURN") + " " + call + "(" + passed + ")" + nl;

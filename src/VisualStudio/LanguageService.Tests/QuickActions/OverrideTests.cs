@@ -203,6 +203,19 @@ namespace XSharp.LanguageService.Tests.QuickActions
         }
 
         [Fact]
+        public void VoStyleClassGetsClassClause()
+        {
+            var foo = Member(null, "Foo", parameters: ("n", "INT"));
+            Assert.Equal("\r\nMETHOD Foo(n AS INT) CLASS Bar\r\n    RETURN SUPER:Foo(n)\r\n", OverrideSkeleton.Build(foo, "", false, Style(), "Bar"));
+            var clipper = Member(null, "Run", parameters: ("a", ""));
+            Assert.StartsWith("\r\nMETHOD Run(a) CLIPPER CLASS Bar\r\n", OverrideSkeleton.Build(clipper, "", false, Style(), "Bar"));
+            var access = Member(null, "Caption", Kind.Access, returnType: "STRING");
+            Assert.StartsWith("\r\nACCESS Caption AS STRING CLASS Bar\r\n", OverrideSkeleton.Build(access, "", false, Style(), "Bar"));
+            var assign = Member(null, "Caption", Kind.Assign, parameters: ("cValue", "STRING"));
+            Assert.StartsWith("\r\nASSIGN Caption(cValue AS STRING) CLASS Bar\r\n", OverrideSkeleton.Build(assign, "", false, Style(), "Bar"));
+        }
+
+        [Fact]
         public void ProtectedVisibilityIsKept()
         {
             var foo = Member(null, "Foo", modifiers: Modifiers.Protected | Modifiers.Virtual, returnType: "VOID");

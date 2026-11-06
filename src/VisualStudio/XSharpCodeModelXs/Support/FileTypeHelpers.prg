@@ -6,6 +6,7 @@
 
 USING System
 using XSharp.Settings
+using XSharp
 NAMESPACE XSharpModel
 
 STATIC CLASS XFileTypeHelpers
@@ -48,15 +49,15 @@ STATIC CLASS XFileTypeHelpers
 
         VAR ext := System.IO.Path.GetExtension(filename):ToLower()
         SWITCH ext
-        CASE ".prg"
+        CASE Constants.SourceFileExtension
         CASE ".prgx"
         CASE ".xs"
             RETURN XFileType.SourceCode
-        CASE ".ppo"
+        CASE Constants.PPOExtension
             RETURN XFileType.PreprocessorOutput
-        CASE ".vh"
-        CASE ".xh"
-        CASE ".ch"
+        CASE Constants.XHExtension
+        CASE Constants.VHExtension
+        CASE Constants.CHExtension
             RETURN XFileType.Header
         CASE ".xsfrm"
         CASE ".vnfrm"

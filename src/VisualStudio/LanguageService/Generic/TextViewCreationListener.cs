@@ -42,7 +42,7 @@ namespace XSharp.LanguageService
         internal static Dictionary<string, List<IWpfTextView>> _textViews = new Dictionary<string, List<IWpfTextView>>(StringComparer.OrdinalIgnoreCase);
 
         private XSharpDropDownClient dropdown;
-  
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IWpfTextView textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
@@ -73,7 +73,7 @@ namespace XSharp.LanguageService
                             XSolution.OrphanedFilesProject.AddFile(fileName);
                             file = XSolution.FindFile(fileName);
                         }
-                        
+
                     }
                     if (file != null)
                     {
@@ -159,15 +159,17 @@ namespace XSharp.LanguageService
                 if (textView.Properties.TryGetProperty<XFile>(typeof(XFile), out var xFile))
                 {
                     var fileName = xFile.FullPath;
-                    var list = _textViews[fileName];
-                    if (list.Contains(textView))
+                    if (_textViews.TryGetValue(fileName, out var list))
                     {
-                        list.Remove(textView);
-                    }
-                    if (list.Count == 0)
-                    {
-                        _textViews.Remove(fileName);
-                        _dropDowns.Remove(fileName);
+                        if (list.Contains(textView))
+                        {
+                            list.Remove(textView);
+                        }
+                        if (list.Count == 0)
+                        {
+                            _textViews.Remove(fileName);
+                            _dropDowns.Remove(fileName);
+                        }
                     }
                 }
             }

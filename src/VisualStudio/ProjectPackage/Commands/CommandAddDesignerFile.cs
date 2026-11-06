@@ -45,7 +45,7 @@ namespace XSharp.Project
                         currentFile = file;
                         foreach (var child in file.Children)
                         {
-                            if (child.FullPath.ToLower().EndsWith(".designer.prg"))
+                            if (child.FullPath.ToLower().EndsWith(Constants.DesignerExtension))
                             {
                                 visible = false;
                                 currentFile = null;
@@ -70,8 +70,8 @@ namespace XSharp.Project
 
         private static bool IsXSharpSourceFile(PhysicalFile file)
         {
-            return string.Equals(Path.GetExtension(file.FullPath), ".prg", StringComparison.OrdinalIgnoreCase) &&
-                !file.FullPath.EndsWith(".designer.prg", StringComparison.OrdinalIgnoreCase) &&
+            return string.Equals(Path.GetExtension(file.FullPath), Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase) &&
+                !file.FullPath.EndsWith(Constants.DesignerExtension, StringComparison.OrdinalIgnoreCase) &&
                 file.ContainingProject.IsXSharp();
         }
 
@@ -124,7 +124,7 @@ namespace XSharp.Project
         {
             if (currentFile != null)
             {
-                var newfile = System.IO.Path.ChangeExtension(currentFile.FullPath, ".designer.prg");
+                var newfile = System.IO.Path.ChangeExtension(currentFile.FullPath, Constants.DesignerExtension);
                 var project = currentFile.ContainingProject;
                 var xproject = project != null ? XSolution.FindProjectByFileName(project.FullPath) : null;
                 if (xproject != null)

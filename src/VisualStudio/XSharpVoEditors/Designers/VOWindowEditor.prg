@@ -1842,14 +1842,14 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             IF nAt != -1 // strip out window name
                 cFileName := cFileName:Substring(0 , nAt)
             ENDIF
-            cPrgFileName := cBaseDir + "\" + cFileName + ".prg"
-            cVhFileName := cBaseDir + "\" + cFileName + ".vh"
-            cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
+            cPrgFileName := cBaseDir + "\" + cFileName + Constants.SourceFileExtension
+            cVhFileName := cBaseDir + "\" + cFileName + Constants.VHExtension
+            cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + Constants.SourceFileExtension
             IF !File.Exists(cPrgFileName) .AND. File.Exists(cAlternative)
                 cPrgFileName := cAlternative
-                cVhFileName := oBaseDir:Parent:FullName + "\" + cFileName + ".vh"
+                cVhFileName := oBaseDir:Parent:FullName + "\" + cFileName + Constants.VHExtension
             ENDIF
-            cVhName := cFileName + ".vh"
+            cVhName := cFileName + Constants.VHExtension
             //			MessageBox.Show(cVNFrmFileName + Chr(13)+ Chr(13) + cRCFileName + Chr(13)+ Chr(13) + cPrgFileName , (File.Exists(cVNFrmFileName) .and. File.Exists(cRCFileName) .and. File.Exists(cPrgFileName)):ToString())
 
             lError := FALSE

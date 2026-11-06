@@ -99,7 +99,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
         TRY
 
-            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cSrvFileName) + ".prg"
+            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cSrvFileName) + Constants.SourceFileExtension
             lError := FALSE
             IF !lVnfrmOnly
                 IF !File.Exists(cPrgFileName)

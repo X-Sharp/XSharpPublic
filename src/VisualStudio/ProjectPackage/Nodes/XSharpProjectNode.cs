@@ -81,11 +81,12 @@ namespace XSharp.Project
             // first the extension to look for, second the extension that can be the parent
             dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                { ".designer.prg", ".prg" },
+                { Constants.DesignerExtension, Constants.SourceFileExtension },
                 { ".xaml.prg", ".xaml" },
-                { ".vh", ".prg" },
-                { ".xh", ".prg" },
-                { ".resx", ".prg" }
+                { Constants.VHExtension, Constants.SourceFileExtension },
+                { Constants.XHExtension, Constants.SourceFileExtension },
+                { Constants.CHExtension, Constants.SourceFileExtension },
+                { ".resx", Constants.SourceFileExtension }
             };
 #if IMAGE
             try
@@ -1031,7 +1032,7 @@ namespace XSharp.Project
             }
             var parentFile = fileName.Substring(0, fileName.Length - extension.Length);
             parentFile = Path.Combine(path, parentFile);
-            var parentExtension = ".prg";
+            var parentExtension = Constants.SourceFileExtension;
             if (dependencies.ContainsKey(extension))
             {
                 parentExtension = dependencies[extension];

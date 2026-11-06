@@ -118,7 +118,7 @@ namespace XSharp.LanguageService
         {
             // may be called from the save as dialog
             string ext = System.IO.Path.GetExtension(bstrFileName).ToLower();
-            if (ext == ".prg")
+            if (ext == Constants.SourceFileExtension)
                 pdwExtnIndex = 0;
             else
                 pdwExtnIndex = 1;

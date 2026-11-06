@@ -186,6 +186,11 @@ NAMESPACE XSharpModel
             SELF:ParseContents(cSource)
         ENDIF
 
+    /// <Summary>The file was renamed on disk: from now on this object (an open editor keeps it) stands for the new path.</Summary>
+    METHOD Rename(newPath AS STRING) AS VOID
+        SELF:FullPath := newPath
+        XDatabase.Read(SELF)
+
     METHOD ParseContents(cSource := "" AS STRING) AS VOID
         //
         IF SELF:HasCode

@@ -141,6 +141,28 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void AmbiguousWhenAnotherOverloadAlsoFits()
+        {
+            var foo = Type("Foo");
+            var runInt = Member(foo, "Run", Kind.Method, "INT");
+            var runString = Member(foo, "Run", Kind.Method, "STRING");
+            var family = Family(runInt);
+            Assert.True(FindReferencesEngine.IsAmbiguous(runInt, family, new IXSymbol[] { runInt, runString }));
+            Assert.False(FindReferencesEngine.IsAmbiguous(runInt, family, new IXSymbol[] { runInt }));
+            Assert.False(FindReferencesEngine.IsAmbiguous(runInt, family, new IXSymbol[] { runString }));
+        }
+
+        [Fact]
+        public void OverridesAreNotAmbiguous()
+        {
+            var baseType = Type("Base");
+            var derived = Type("Derived", baseType);
+            var baseRun = Member(baseType, "Run");
+            var derivedRun = Member(derived, "Run");
+            Assert.False(FindReferencesEngine.IsAmbiguous(baseRun, Family(baseRun), new IXSymbol[] { baseRun, derivedRun }));
+        }
+
+        [Fact]
         public void SiblingOverridesShareTheFamily()
         {
             var baseType = Type("Base");

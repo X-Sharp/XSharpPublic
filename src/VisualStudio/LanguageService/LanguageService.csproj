@@ -160,12 +160,14 @@
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
     <Compile Include="LightBulb\QuickActions\AccessorBody.cs" />
     <Compile Include="LightBulb\QuickActions\CodeStyle.cs" />
+    <Compile Include="LightBulb\QuickActions\ConvertToPropertyAction.cs" />
     <Compile Include="LightBulb\QuickActions\GenerateMethodRule.cs" />
     <Compile Include="LightBulb\QuickActions\MethodSkeleton.cs" />
     <Compile Include="LightBulb\QuickActions\OverrideCandidates.cs" />
     <Compile Include="LightBulb\QuickActions\OverrideSkeleton.cs" />
     <Compile Include="LightBulb\QuickActions\OverrideTrigger.cs" />
     <Compile Include="LightBulb\QuickActions\PropertyConverter.cs" />
+    <Compile Include="LightBulb\QuickActions\PropertyEdit.cs" />
     <Compile Include="LightBulb\QuickActions\PropertyRule.cs" />
     <Compile Include="LightBulb\QuickActions\OverridesDlg.cs">
       <SubType>Form</SubType>

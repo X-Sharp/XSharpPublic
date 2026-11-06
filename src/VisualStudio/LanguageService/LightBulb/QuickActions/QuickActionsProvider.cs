@@ -39,7 +39,11 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         internal IReadOnlyList<string> UsingNamespaces { get; set; } = new string[0];
         internal XSourceTypeSymbol MethodTarget { get; set; }
         internal IReadOnlyList<IXMemberSymbol> Overrides { get; set; } = new IXMemberSymbol[0];
-        internal bool Any => UsingNamespaces.Count > 0 || MethodTarget != null || Overrides.Count > 0;
+
+        /// <summary>The ACCESS/ASSIGN pair whose header holds the caret, and all convertible pairs of its class.</summary>
+        internal AccessAssignPair PropertyPair { get; set; }
+        internal IReadOnlyList<AccessAssignPair> PropertyPairs { get; set; } = new AccessAssignPair[0];
+        internal bool Any => UsingNamespaces.Count > 0 || MethodTarget != null || Overrides.Count > 0 || PropertyPair != null;
     }
 
     internal sealed class QuickActionsSource : ISuggestedActionsSource
@@ -121,6 +125,19 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             if (offers.Overrides.Count > 0)
                 sets.Add(new SuggestedActionSet(PredefinedSuggestedActionCategoryNames.Refactoring,
                     new ISuggestedAction[] { new GenerateOverridesAction(_view, offers.Context, offers.Overrides) }));
+            if (offers.PropertyPair != null)
+            {
+                var actions = new List<ISuggestedAction>
+                {
+                    new ConvertToPropertyAction(_view, offers.Context, new[] { offers.PropertyPair }, "Convert to property"),
+                };
+                if (offers.PropertyPairs.Count > 1)
+                {
+                    actions.Add(new ConvertToPropertyAction(_view, offers.Context, offers.PropertyPairs,
+                        $"Convert all ACCESS/ASSIGN in class '{offers.Context.EnclosingClass.Name}' to properties"));
+                }
+                sets.Add(new SuggestedActionSet(PredefinedSuggestedActionCategoryNames.Refactoring, actions));
+            }
             return sets;
         }
 
@@ -191,12 +208,33 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                     if (OverrideCandidates.WorthOffering(candidates))
                         offers.Overrides = candidates;
                 }
+                if (context.EnclosingClass != null)
+                    OfferProperties(context, offers);
             }
             finally
             {
                 ModelWalker.Resume();
             }
             return offers;
+        }
+
+        /// <summary>"Convert to property" when the caret is on the header of an ACCESS or ASSIGN of the class.</summary>
+        private static void OfferProperties(QuickActionContext context, QuickActionOffers offers)
+        {
+            var snapshot = context.Snapshot;
+            var caretLine = snapshot.GetLineNumberFromPosition(context.Position);
+            var part = context.EnclosingPart ?? context.EnclosingClass;
+            var members = context.File.EntityList.OfType<XSourceMemberSymbol>()
+                .Where(m => m.ParentType != null && string.Equals(m.ParentType.FullName, part.FullName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (!members.Any(m => (m.Kind == Kind.Access || m.Kind == Kind.Assign) && m.Range.StartLine == caretLine))
+                return;
+            var endLine = part.Range.EndLine;
+            var hasEndClass = endLine >= 0 && endLine < snapshot.LineCount && MethodSkeleton.IsEndClassLine(snapshot.GetLineFromLineNumber(endLine).GetText());
+            var pairs = PropertyRule.Pairs(context.EnclosingClass, members, i => snapshot.GetLineFromLineNumber(i).GetText(), hasEndClass,
+                BaseOfIn(context), context.CaseSensitive);
+            offers.PropertyPair = PropertyRule.At(pairs, caretLine);
+            offers.PropertyPairs = pairs;
         }
 
         /// <summary>

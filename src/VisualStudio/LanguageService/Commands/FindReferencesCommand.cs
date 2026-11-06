@@ -58,9 +58,18 @@ namespace XSharp.LanguageService.Commands
             IXSymbol target = null;
             try
             {
-                var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
-                target = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
-                if (target == null && location != null)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                IXSymbol target = null;
+                XSharpSearchLocation location = null;
+                int candidates = 0;
+                OverrideFamily family = null;
+                try
+                {
+                    target = TargetUnderCursor.Resolve(doc.TextView, out location, out _, out candidates);
+                    if (target != null)
+                        family = new OverrideFamily(target);
+                }
+                catch (Exception ex)
                 {
                     var matches = OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
                         OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),

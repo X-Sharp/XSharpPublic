@@ -146,6 +146,11 @@
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
     <Compile Include="FindReferences\OverloadFilter.cs" />
     <Compile Include="FindReferences\OverrideFamily.cs" />
+    <Compile Include="Commands\GoToImplementationCommand.cs" />
+    <Compile Include="Commands\TargetUnderCursor.cs" />
+    <Compile Include="GoToImplementation\DeclarationHit.cs" />
+    <Compile Include="GoToImplementation\SourceHierarchy.cs" />
+    <Compile Include="GoToImplementation\TypeHierarchy.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
     <Compile Include="FindReferences\ReferenceSearchOptions.cs" />
     <Compile Include="FindReferences\ReferencesWindow.cs" />

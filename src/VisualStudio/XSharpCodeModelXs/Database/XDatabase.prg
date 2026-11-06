@@ -1946,6 +1946,79 @@ STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS ILi
     Log(i"GetProjectTypesLike '{sName}' returns {result.Count} matches")
     RETURN result
 
+/// <summary>
+/// The classes, structures and interfaces whose declaration line mentions this name, in all projects. Only a
+/// prefilter for Go To Implementation: the caller reads the IMPLEMENTS list and resolves each interface.
+/// </summary>
+STATIC METHOD GetProjectTypesMentioning(sShortName AS STRING) AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select * from ProjectTypes where Sourcecode like '%' || $name || '%' and Kind in (" + ;
+        ((INT) Kind.Class):ToString() + ", " + ((INT) Kind.Structure):ToString() + ", " + ((INT) Kind.Interface):ToString() + ")"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            oCmd:Parameters:AddWithValue("$name", sShortName)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                result:Add(CreateTypeInfo(rdr))
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesMentioning '{sShortName}' returns {result.Count} matches")
+    RETURN result
+
+/// <summary>
+/// All types with a base class, in all projects, in one query: Go To Implementation builds the derived-class tree in
+/// memory from these rows instead of querying per level.
+/// </summary>
+STATIC METHOD GetProjectTypesWithBase() AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select * from ProjectTypes where BaseTypeName is not null and BaseTypeName <> ''"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                result:Add(CreateTypeInfo(rdr))
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesWithBase returns {result.Count} matches")
+    RETURN result
+
+/// <summary>The types (name, namespace, project file) that declare a member with this name, in all projects.</summary>
+STATIC METHOD GetProjectTypesWithMember(sName AS STRING) AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select distinct TypeName, Namespace, ProjectFileName from ProjectMembers where Name = $name"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            oCmd:Parameters:AddWithValue("$name", sName)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                VAR res := XDbResult{}
+                res:TypeName  := DbToString(rdr["TypeName"])
+                res:Namespace := DbToString(rdr["Namespace"])
+                res:Project   := DbToString(rdr["ProjectFileName"])
+                result:Add(res)
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesWithMember '{sName}' returns {result.Count} matches")
+    RETURN result
+
 STATIC METHOD GetProjectTypesInNamespace(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result

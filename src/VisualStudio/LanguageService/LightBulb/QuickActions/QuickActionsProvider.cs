@@ -111,12 +111,16 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             if (offers == null || !offers.Any)
                 return Enumerable.Empty<SuggestedActionSet>();
             var sets = new List<SuggestedActionSet>();
+            // USING and Generate method repair code that does not compile: light bulb; overrides are a refactoring: screwdriver
             if (offers.UsingNamespaces.Count > 0)
-                sets.Add(new SuggestedActionSet(offers.UsingNamespaces.Select(ns => (ISuggestedAction)new AddUsingAction(_view, offers.Context, ns)).ToArray()));
+                sets.Add(new SuggestedActionSet(PredefinedSuggestedActionCategoryNames.CodeFix,
+                    offers.UsingNamespaces.Select(ns => (ISuggestedAction)new AddUsingAction(_view, offers.Context, ns)).ToArray()));
             if (offers.MethodTarget != null)
-                sets.Add(new SuggestedActionSet(new ISuggestedAction[] { new GenerateMethodAction(_view, offers.Context, offers.MethodTarget) }));
+                sets.Add(new SuggestedActionSet(PredefinedSuggestedActionCategoryNames.CodeFix,
+                    new ISuggestedAction[] { new GenerateMethodAction(_view, offers.Context, offers.MethodTarget) }));
             if (offers.Overrides.Count > 0)
-                sets.Add(new SuggestedActionSet(new ISuggestedAction[] { new GenerateOverridesAction(_view, offers.Context, offers.Overrides) }));
+                sets.Add(new SuggestedActionSet(PredefinedSuggestedActionCategoryNames.Refactoring,
+                    new ISuggestedAction[] { new GenerateOverridesAction(_view, offers.Context, offers.Overrides) }));
             return sets;
         }
 
@@ -181,7 +185,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                     offers.MethodTarget = GenerateMethodRule.Target(context.Receiver, context.ReceiverType, context.EnclosingClass,
                         context.IsCall, GenerateMethodRule.IsResolved(context.Symbols), context.Name.Text, n => IsKnownGlobal(project, n), BaseOfIn(context), context.CaseSensitive) as XSourceTypeSymbol;
                 }
-                if (context.EnclosingClass != null)
+                if (context.EnclosingClass != null && OverridesOfferedAt(context))
                 {
                     var candidates = OverrideCandidates.For(context.EnclosingClass, BaseOfIn(context), AllVirtual, context.CaseSensitive);
                     if (OverrideCandidates.WorthOffering(candidates))
@@ -193,6 +197,22 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 ModelWalker.Resume();
             }
             return offers;
+        }
+
+        /// <summary>
+        /// Like C#: on the class header or on a blank line before a member, a type, END CLASS or the end of the file
+        /// (VO-style classes have their methods after the class block).
+        /// </summary>
+        private static bool OverridesOfferedAt(QuickActionContext context)
+        {
+            var snapshot = context.Snapshot;
+            var part = context.EnclosingPart ?? context.EnclosingClass;
+            var declarations = new HashSet<int>(context.File.EntityList.Select(e => e.Range.StartLine));
+            var endLine = part.Range.EndLine;
+            if (endLine >= 0 && endLine < snapshot.LineCount && MethodSkeleton.IsEndClassLine(snapshot.GetLineFromLineNumber(endLine).GetText()))
+                declarations.Add(endLine);
+            return OverrideTrigger.Applies(i => snapshot.GetLineFromLineNumber(i).GetText(), snapshot.LineCount,
+                snapshot.GetLineNumberFromPosition(context.Position), part.Range.StartLine, declarations);
         }
 
         /// <summary>

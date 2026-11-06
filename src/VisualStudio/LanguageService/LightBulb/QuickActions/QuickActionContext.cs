@@ -25,6 +25,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     {
         internal int Version { get; private set; }
         internal int Position { get; private set; }
+        internal ITextSnapshot Snapshot { get; private set; }
         internal XFile File { get; private set; }
         internal XProject Project => File?.Project;
         internal string CurrentNamespace { get; private set; } = "";
@@ -60,7 +61,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var tokens = document.Tokens;
             if (tokens == null)
                 return null;
-            var result = new QuickActionContext { Version = snapshot.Version.VersionNumber, Position = position, File = file };
+            var result = new QuickActionContext { Version = snapshot.Version.VersionNumber, Position = position, Snapshot = snapshot, File = file };
             ModelWalker.Suspend();
             try
             {
@@ -111,7 +112,10 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         private static XSourceTypeSymbol EnclosingClassOf(XFile file, XSourceMemberSymbol member, int position, out XSourceTypeSymbol part)
         {
             part = null;
-            var type = member?.ParentType as XSourceTypeSymbol;
+            // only a member that holds the caret tells the class (on a class header the lookup returns the member before it)
+            var type = member != null && member.Interval.Start <= position && position <= member.Interval.Stop
+                ? member.ParentType as XSourceTypeSymbol
+                : null;
             if (type == null || type.IsGlobal)
             {
                 type = file.EntityList.OfType<XSourceTypeSymbol>()

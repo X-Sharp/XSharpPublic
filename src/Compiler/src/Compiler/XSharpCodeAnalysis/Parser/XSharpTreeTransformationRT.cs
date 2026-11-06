@@ -3032,7 +3032,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var newParam = _syntaxFactory.Parameter(
                             attributeLists: GetActualArgs(),
                             modifiers: p.Modifiers,
-                            type: IntPtrType,
+                            type: StringType,
                             identifier: p.Identifier,
                             @default: p.Default
                             );

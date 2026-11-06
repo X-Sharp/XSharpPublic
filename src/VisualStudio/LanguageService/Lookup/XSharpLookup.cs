@@ -2124,7 +2124,7 @@ namespace XSharp.LanguageService
             }
             return result;
         }
-        private static IList<IXMemberSymbol> SearchFunction(XSharpSearchLocation location, string name)
+        internal static IList<IXMemberSymbol> SearchFunction(XSharpSearchLocation location, string name)
         {
 
             var result = new List<IXMemberSymbol>();

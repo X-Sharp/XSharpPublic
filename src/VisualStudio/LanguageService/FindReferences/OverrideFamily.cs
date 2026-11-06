@@ -67,6 +67,9 @@ namespace XSharp.LanguageService.FindReferences
             return SymbolIdentity.IsSame(TargetRoot, Root(member));
         }
 
+        /// <summary>The base class of a type, resolved within the type's namespace and cached for this search.</summary>
+        internal IXTypeSymbol BaseTypeOf(IXTypeSymbol type) => type == null ? null : BaseOf(type);
+
         private IXTypeSymbol BaseOf(IXTypeSymbol type)
         {
             var key = type.FullName ?? "";
@@ -106,7 +109,7 @@ namespace XSharp.LanguageService.FindReferences
         }
 
         /// <summary>Same name and, for methods, the same kind and parameter list.</summary>
-        private static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
+        internal static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
         {
             if (!string.Equals(member.Name, other.Name, StringComparison.OrdinalIgnoreCase))
                 return false;

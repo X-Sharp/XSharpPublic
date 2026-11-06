@@ -69,6 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowOldStyleAssignments { get; internal set; } = false;
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
+        public bool Net5orHigher { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
         public static string DefaultIncludeDir { get; } = s_defaultIncludeDir;
         public XSharpDialect Dialect { get; internal set; } = XSharpDialect.Core;

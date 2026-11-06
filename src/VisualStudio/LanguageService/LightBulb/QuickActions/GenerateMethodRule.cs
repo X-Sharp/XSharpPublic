@@ -80,6 +80,12 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             return target;
         }
 
+        /// <summary>Did the lookup find the name? In VO an unknown name comes back as an undeclared variable.</summary>
+        internal static bool IsResolved(IList<IXSymbol> symbols)
+        {
+            return symbols != null && symbols.Any(s => s.Kind != Kind.Undeclared);
+        }
+
         /// <summary>The type and its base types, nearest first; stops at cycles and after 20 levels.</summary>
         internal static IEnumerable<IXTypeSymbol> SelfAndBases(IXTypeSymbol type, Func<IXTypeSymbol, IXTypeSymbol> baseOf)
         {

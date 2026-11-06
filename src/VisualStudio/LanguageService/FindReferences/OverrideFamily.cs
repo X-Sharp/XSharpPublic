@@ -83,7 +83,7 @@ namespace XSharp.LanguageService.FindReferences
         /// base class up with the USINGs of the file alone: INHERIT Animal inside BEGIN NAMESPACE FarTest is not
         /// found. Look it up here, with the type's namespace too.
         /// </summary>
-        private static IXTypeSymbol ResolveBase(IXTypeSymbol type)
+        internal static IXTypeSymbol ResolveBase(IXTypeSymbol type)
         {
             if (!(type is XSourceTypeSymbol source) || source.BaseType != null)
                 return type.BaseType;

@@ -13,6 +13,17 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     internal static class UsingCandidates
     {
         /// <summary>
+        /// "Add USING" is offered for a bare name (no receiver: <c>SELF:Missing</c> is no type) that the lookup does
+        /// not resolve, or resolves to types only – the code model finds types without their USING, the compiler does
+        /// not; <see cref="Namespaces"/> drops the namespaces already in use.
+        /// </summary>
+        internal static bool Applies(ReceiverKind receiver, IList<XSharpModel.IXSymbol> symbols)
+        {
+            return receiver == ReceiverKind.None &&
+                   (symbols == null || symbols.All(s => s is XSharpModel.IXTypeSymbol || s.Kind == XSharpModel.Kind.Undeclared));
+        }
+
+        /// <summary>
         /// The namespaces of the <paramref name="types"/> named <paramref name="name"/>, without global types, without
         /// the namespaces the file already uses and without <paramref name="currentNamespace"/> and its parents (their
         /// types are visible anyway). Distinct and sorted.

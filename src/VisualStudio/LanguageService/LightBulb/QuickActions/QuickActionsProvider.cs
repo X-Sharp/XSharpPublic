@@ -48,6 +48,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         private readonly ITextBuffer _buffer;
         private readonly object _lock = new object();
         private QuickActionOffers _last;
+        private SnapshotPoint? _caret;
 
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -57,6 +58,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         {
             _view = view;
             _buffer = buffer;
+            RememberCaret(view.Caret.Position);
+            view.Caret.PositionChanged += CaretPositionChanged;
+            view.Closed += ViewClosed;
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
@@ -64,6 +68,39 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             if (XEditorSettings.DisableLightBulb)
                 return Task.FromResult(false);
             return Task.Run(() => Offers(range, cancellationToken)?.Any ?? false, cancellationToken);
+        }
+
+        /// <summary>
+        /// VS passes the extent of the caret line as range, not the caret, and calls the source off the UI thread,
+        /// where the caret cannot be read. So the caret is remembered from its PositionChanged event (UI thread).
+        /// </summary>
+        private void RememberCaret(CaretPosition position)
+        {
+            var caret = position.Point.GetPoint(_buffer, position.Affinity);
+            lock (_lock)
+            {
+                _caret = caret;
+            }
+        }
+
+        private void CaretPositionChanged(object sender, CaretPositionChangedEventArgs e) => RememberCaret(e.NewPosition);
+
+        private void ViewClosed(object sender, EventArgs e)
+        {
+            _view.Caret.PositionChanged -= CaretPositionChanged;
+            _view.Closed -= ViewClosed;
+        }
+
+        /// <summary>The remembered caret when it lies in <paramref name="range"/>, else the start of the range.</summary>
+        private int PositionIn(SnapshotSpan range)
+        {
+            lock (_lock)
+            {
+                if (_caret.HasValue && _caret.Value.Snapshot == range.Snapshot &&
+                    _caret.Value.Position >= range.Start.Position && _caret.Value.Position <= range.End.Position)
+                    return _caret.Value.Position;
+            }
+            return range.Start.Position;
         }
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
@@ -87,7 +124,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         private QuickActionOffers Offers(SnapshotSpan range, CancellationToken ct)
         {
             var snapshot = range.Snapshot;
-            var position = range.Start.Position;
+            var position = PositionIn(range);
             lock (_lock)
             {
                 if (_last != null && _last.Context.Version == snapshot.Version.VersionNumber && _last.Context.Position == position)
@@ -97,8 +134,18 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             {
                 var context = QuickActionContext.Compute(_buffer, snapshot, position, ct);
                 if (context == null || ct.IsCancellationRequested)
+                {
+                    if (XSettings.EnableLogging)
+                        XSharp.Support.Logger.Information($"Quick actions: no context at {position} (document not parsed for version {snapshot.Version.VersionNumber}, or cancelled)");
                     return null;
+                }
                 var offers = Compute(context);
+                if (XSettings.EnableLogging)
+                {
+                    XSharp.Support.Logger.Information($"Quick actions: range {range.Start.Position}-{range.End.Position}, caret {position}, name '{context.Name?.Text}', " +
+                        $"receiver {context.Receiver}, symbols {context.Symbols.Count} [{string.Join(",", context.Symbols.Select(sym => sym.GetType().Name + ":" + sym.Kind))}], class '{context.EnclosingClass?.FullName}', " +
+                        $"usings {offers.UsingNamespaces.Count}, method target '{offers.MethodTarget?.Name}', overrides {offers.Overrides.Count}");
+                }
                 lock (_lock)
                 {
                     _last = offers;
@@ -123,7 +170,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             ModelWalker.Suspend();
             try
             {
-                if (context.Name != null && context.Symbols.Count == 0)
+                if (context.Name != null && UsingCandidates.Applies(context.Receiver, context.Symbols))
                 {
                     var name = context.Name.Text;
                     offers.UsingNamespaces = UsingCandidates.Namespaces(TypesNamed(project, name), name,
@@ -132,11 +179,11 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 if (context.Name != null)
                 {
                     offers.MethodTarget = GenerateMethodRule.Target(context.Receiver, context.ReceiverType, context.EnclosingClass,
-                        context.IsCall, context.Symbols.Count > 0, context.Name.Text, n => IsKnownGlobal(project, n), BaseOf, context.CaseSensitive) as XSourceTypeSymbol;
+                        context.IsCall, GenerateMethodRule.IsResolved(context.Symbols), context.Name.Text, n => IsKnownGlobal(project, n), BaseOfIn(context), context.CaseSensitive) as XSourceTypeSymbol;
                 }
                 if (context.EnclosingClass != null)
                 {
-                    var candidates = OverrideCandidates.For(context.EnclosingClass, BaseOf, AllVirtual, context.CaseSensitive);
+                    var candidates = OverrideCandidates.For(context.EnclosingClass, BaseOfIn(context), AllVirtual, context.CaseSensitive);
                     if (OverrideCandidates.WorthOffering(candidates))
                         offers.Overrides = candidates;
                 }
@@ -148,7 +195,23 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             return offers;
         }
 
-        internal static IXTypeSymbol BaseOf(IXTypeSymbol type) => type?.BaseType;
+        /// <summary>
+        /// The base of the enclosing class from its part in this file when the merged type cannot resolve it (the
+        /// merged type comes from the database without the USINGs of the file).
+        /// </summary>
+        private static Func<IXTypeSymbol, IXTypeSymbol> BaseOfIn(QuickActionContext context)
+        {
+            return type =>
+            {
+                var result = BaseOf(type);
+                if (result == null && type == context.EnclosingClass && context.EnclosingPart != null && context.EnclosingPart != type)
+                    result = BaseOf(context.EnclosingPart);
+                return result;
+            };
+        }
+
+        /// <summary>BaseType is only set by ForceComplete (UI thread): resolve it like Find References does.</summary>
+        internal static IXTypeSymbol BaseOf(IXTypeSymbol type) => type == null ? null : FindReferences.OverrideFamily.ResolveBase(type);
 
         /// <summary>Every method of a source class in a dialect with VO semantics is overridable.</summary>
         internal static bool AllVirtual(IXTypeSymbol type)
@@ -158,8 +221,22 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
 
         private static bool IsKnownGlobal(XProject project, string name)
         {
-            return project.FindFunction(name) != null || project.FindGlobalOrDefine(name) != null ||
-                   project.FindFunctionsInAssemblyReferences(name).Count > 0 || project.FindGlobalsInAssemblyReferences(name).Count > 0;
+            // the lookups throw instead of returning null when nothing is found
+            return Found(() => project.FindFunction(name) != null) || Found(() => project.FindGlobalOrDefine(name) != null) ||
+                   Found(() => project.FindFunctionsInAssemblyReferences(name)?.Count > 0) ||
+                   Found(() => project.FindGlobalsInAssemblyReferences(name)?.Count > 0);
+        }
+
+        private static bool Found(Func<bool> lookup)
+        {
+            try
+            {
+                return lookup();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>The (namespace, name) of the types named <paramref name="name"/> in the project, the projects it references and its assemblies.</summary>
@@ -185,6 +262,8 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
 
         public void Dispose()
         {
+            _view.Caret.PositionChanged -= CaretPositionChanged;
+            _view.Closed -= ViewClosed;
         }
 
         public bool TryGetTelemetryId(out Guid telemetryId)

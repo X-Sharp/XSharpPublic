@@ -37,6 +37,15 @@ namespace XSharp.LanguageService.Tests.QuickActions
         }
 
         [Fact]
+        public void UndeclaredVariableCountsAsUnresolved()
+        {
+            var member = new XSourceMemberSymbol("Test", Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(0, 5), "VOID", null);
+            var symbols = new IXSymbol[] { new XSourceUndeclaredVariableSymbol(member, "LoadData", new TextRange(2, 1, 2, 9), new TextInterval(0, 8)) };
+            Assert.False(GenerateMethodRule.IsResolved(symbols));
+            Assert.True(GenerateMethodRule.IsResolved(new IXSymbol[] { member }));
+        }
+
+        [Fact]
         public void ResolvedNameIsNotOffered()
         {
             // e.g. an extension method: not among the members of the class, but the lookup finds it

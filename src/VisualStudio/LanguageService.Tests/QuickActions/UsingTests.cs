@@ -40,6 +40,24 @@ namespace XSharp.LanguageService.Tests.QuickActions
         }
 
         [Fact]
+        public void AppliesOnlyToBareNamesThatAreUnresolvedOrTypes()
+        {
+            var file = new XFile(@"C:\Test\A.prg", null);
+            var type = new XSourceTypeSymbol("Helper", Kind.Class, Modifiers.Public, new TextRange(1, 1, 2, 1), new TextInterval(0, 10), file, null);
+            var method = new XSourceMemberSymbol("Help", Kind.Method, Modifiers.Public, new TextRange(1, 1, 2, 1), new TextInterval(0, 10), "VOID", null);
+            Assert.True(UsingCandidates.Applies(ReceiverKind.None, new IXSymbol[0]));
+            // the code model finds types without their USING; the namespace filter decides
+            Assert.True(UsingCandidates.Applies(ReceiverKind.None, new IXSymbol[] { type }));
+            Assert.False(UsingCandidates.Applies(ReceiverKind.None, new IXSymbol[] { method }));
+            // in VO an unknown name comes back as an undeclared variable
+            var undeclared = new XSourceUndeclaredVariableSymbol(method, "Helper", new TextRange(1, 1, 1, 7), new TextInterval(0, 6));
+            Assert.True(UsingCandidates.Applies(ReceiverKind.None, new IXSymbol[] { undeclared }));
+            // SELF:Missing must not offer USING System.Reflection
+            Assert.False(UsingCandidates.Applies(ReceiverKind.Self, new IXSymbol[0]));
+            Assert.False(UsingCandidates.Applies(ReceiverKind.Variable, new IXSymbol[0]));
+        }
+
+        [Fact]
         public void NameIsComparedLikeTheProject()
         {
             Assert.Equal(new[] { "A.B", "C" }, UsingCandidates.Namespaces(Types, "foo", new string[0], "", false));

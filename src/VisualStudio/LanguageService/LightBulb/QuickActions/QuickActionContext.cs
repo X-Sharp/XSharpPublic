@@ -11,6 +11,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using XSharp.LanguageService.FindReferences;
+using XSharp.Settings;
 using XSharpModel;
 
 namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
@@ -31,6 +32,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
 
         /// <summary>The source class the caret is in (the merged type when the model has one), or null.</summary>
         internal XSourceTypeSymbol EnclosingClass { get; private set; }
+
+        /// <summary>The part of <see cref="EnclosingClass"/> in this file: its file knows the USINGs to resolve the base class.</summary>
+        internal XSourceTypeSymbol EnclosingPart { get; private set; }
 
         /// <summary>The identifier under the caret, or null.</summary>
         internal IToken Name { get; private set; }
@@ -63,7 +67,8 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 var ns = XSharpTokenTools.FindNamespace(position, file);
                 result.CurrentNamespace = ns?.FullName ?? "";
                 var member = XSharpLookup.FindMemberAtPosition(position, file);
-                result.EnclosingClass = EnclosingClassOf(file, member, position);
+                result.EnclosingClass = EnclosingClassOf(file, member, position, out var part);
+                result.EnclosingPart = part;
                 ct.ThrowIfCancellationRequested();
                 var name = tokens.FirstOrDefault(t => t.Type == XSharpLexer.ID && t.Channel == XSharpLexer.DefaultTokenChannel &&
                                                       t.StartIndex <= position && position <= t.StopIndex + 1);
@@ -103,8 +108,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         }
 
         /// <summary>The class of the member at the caret (VO-style members too), else the innermost class whose text holds the caret.</summary>
-        private static XSourceTypeSymbol EnclosingClassOf(XFile file, XSourceMemberSymbol member, int position)
+        private static XSourceTypeSymbol EnclosingClassOf(XFile file, XSourceMemberSymbol member, int position, out XSourceTypeSymbol part)
         {
+            part = null;
             var type = member?.ParentType as XSourceTypeSymbol;
             if (type == null || type.IsGlobal)
             {
@@ -115,6 +121,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             }
             if (type == null || type.IsGlobal || type.Kind != Kind.Class)
                 return null;
+            part = type;
             // the merged type knows the members of all parts
             return file.FindType(type.FullName) as XSourceTypeSymbol ?? type;
         }
@@ -125,7 +132,8 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             if (tokens.Count == 1 && tokens[0].Type == XSharpLexer.ID)
             {
                 var type = SymbolResolver.TypeOf(context, tokens[0]);
-                return new CallArgument(tokens[0].Text, string.IsNullOrEmpty(type) ? null : type);
+                // the lookup reports System.Int32 where the source says INT
+                return new CallArgument(tokens[0].Text, string.IsNullOrEmpty(type) ? null : type.GetXSharpTypeName());
             }
             return new CallArgument(null, null);
         }

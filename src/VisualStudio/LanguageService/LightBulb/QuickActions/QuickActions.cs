@@ -98,7 +98,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             int insertLine = hasEnd ? endLine : (members.Count > 0 ? members.Max(m => m.Range.EndLine) : endLine) + 1;
             insertLine = Math.Min(insertLine, snapshot.LineCount);
             var classIndent = Indent(snapshot, part.Range.StartLine);
-            var indent = members.Count > 0 ? Indent(snapshot, members[0].Range.StartLine) : (hasEnd ? classIndent + style.IndentUnit : classIndent);
+            // the indentation of the methods: fields (EXPORT ...) of a VO-style class are indented, its methods are not
+            var model = members.FirstOrDefault(m => m.Kind.HasBody()) ?? members.FirstOrDefault();
+            var indent = model != null ? Indent(snapshot, model.Range.StartLine) : (hasEnd ? classIndent + style.IndentUnit : classIndent);
             return new TargetClass(part.Name, hasEnd, insertLine, indent);
         }
 

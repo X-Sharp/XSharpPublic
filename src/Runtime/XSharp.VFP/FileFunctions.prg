@@ -122,30 +122,10 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
 
         IF VFPBehavior
 
-            // open an existing file, or create if it does not exists
-            FHandle := FOpen(cFileName, FO_READWRITE + FO_SHARED)
-            IF FHandle != F_ERROR
-                //try to move to the end of the file
-                FSeek3(FHandle, 0, FS_END)
-                // and write the contents of the buffer
-                IF FError() == 0
-                    Result := FWrite(FHandle, cExpression, (DWORD) cExpression:Length)
-                ENDIF
-                // if everything went ok, close the file handle
-                IF FError() == 0
-                    FClose(FHandle)
-                    IF FError() != 0
-                        THROW FException()
-                    ENDIF
-                    // if not, before throwing the exception...
-                ELSE
-                    IOError := FException()
-                    FClose(FHandle)         // ... try to close the handle, anyway
-                    THROW IOError
-                ENDIF
-            ELSE
-                THROW FException()
-            ENDIF
+            // VFP appends the buffer as it is and creates the file when it does not exist.
+            // The bytes are the same ones FWrite() would produce for the string.
+            Result := (DWORD) FileHelpers.WriteBytes(String2Bytes(cExpression), cFileName, S2F_FLAG_APPEND)
+
         ELSE
             // in non-VFP behavior, just append the Unicode string to an existing file
             TRY

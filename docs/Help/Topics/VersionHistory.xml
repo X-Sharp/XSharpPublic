@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-04T14:49:47.280Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-06T09:09:26.958Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>#2127</keyword>
@@ -71,6 +71,9 @@
       <li styleclass="List1">Fixed an issue with the FoxPro directory function (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2137" target="_blank">#2137)</link></li>
       <li styleclass="List1">Fixed an issue with late bound assigns to class properties in the FoxPro dialect</li>
       <li styleclass="List1">Changed the return type of the internal function that is called for the SCATTER ARRAY command from Array to FoxPro compatible array (__FoxArray)</li>
+      <li styleclass="List1">SET EXACT ON in the VFP Dialect now ignores trailing blanks (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160)</link></li>
+      <li styleclass="List1">CURDIR() in the VFP dialect returns the directory formatted as in VFP (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160)</link></li>
+      <li styleclass="List1">Fixed STRTOFILE() additive clause for files that do not exist &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160)</link></li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">New Features</para>

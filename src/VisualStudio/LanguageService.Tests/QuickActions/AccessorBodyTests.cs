@@ -25,6 +25,29 @@ namespace XSharp.LanguageService.Tests.QuickActions
         }
 
         [Fact]
+        public void MemberAccessIsNotRenamed()
+        {
+            // VO: the parameter is often named like the instance variable
+            Assert.Equal("SELF:oOwner := VALUE\r\n? oOther:oOwner, oOther.oOwner, _FIELD->oOwner",
+                Rename("SELF:oOwner := oOwner\r\n? oOther:oOwner, oOther.oOwner, _FIELD->oOwner", "oOwner"));
+        }
+
+        [Fact]
+        public void ReturnFieldIsDropped() => Assert.Equal("    RETURN", Returns("    RETURN SELF:_c"));
+
+        [Fact]
+        public void ReturnNegativeLiteralIsDropped() => Assert.Equal("    RETURN", Returns("    RETURN -1"));
+
+        [Fact]
+        public void ReturnCallIsKept() => Assert.Equal("    SELF:Changed()\r\n    RETURN", Returns("    RETURN SELF:Changed()"));
+
+        [Fact]
+        public void ReturnMixedIsRefused() => Assert.Null(Returns("    RETURN a + SELF:Foo()"));
+
+        [Fact]
+        public void ReturnAfterSemicolonOnTheLineIsRefused() => Assert.Null(Returns("    IF c != NIL ; RETURN SELF:_c := c ; ENDIF"));
+
+        [Fact]
         public void RenameIgnoresCase()
         {
             Assert.Equal("SELF:_c := VALUE", Rename("SELF:_c := CVALUE"));

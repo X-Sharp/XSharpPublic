@@ -86,8 +86,34 @@ namespace XSharp.LanguageService.Tests.QuickActions
             Assert.False(PropertyEdit.NonOverlapping(all.Concat(new[] { new LineReplacement(3, 9, "") }).ToList()));
         }
 
+        [Fact]
+        public void PreprocessorLineBeforeTheNextMemberStaysOutside()
+        {
+            var lines = new[] { "    ASSIGN Name(c)", "        _c := c", "    #endregion", "", "    METHOD Foo()" };
+            var range = PropertyEdit.MemberLines(i => lines[i], lines.Length, 0, 4);
+            Assert.Equal(1, range.EndLine);
+        }
+
+        [Fact]
+        public void PreprocessorLineInsideTheRangeIsFound()
+        {
+            var lines = new[] { "    ACCESS Name", "    #ifdef DEBUG", "        RETURN 1", "    #endif", "        RETURN 2", "    METHOD Foo()" };
+            var range = PropertyEdit.MemberLines(i => lines[i], lines.Length, 0, 5);
+            Assert.True(PropertyEdit.HasPreprocessorLine(i => lines[i], range));
+            Assert.False(PropertyEdit.HasPreprocessorLine(i => Lines[i], PropertyEdit.MemberLines(Line, Lines.Length, 2, 5)));
+        }
+
+        [Fact]
+        public void BlockCommentAboveIsNotMoved()
+        {
+            var lines = new[] { "    METHOD A()", "        RETURN", "    /*", "     * doc", "    */", "    ACCESS Name", "        RETURN 1", "END CLASS" };
+            Assert.Equal(5, PropertyEdit.MemberLines(i => lines[i], lines.Length, 5, 7).StartLine);
+        }
+
         [Theory]
         [InlineData("    ACCESS Name AS STRING", "", true)]
+        [InlineData("    ACCESS Name CLASS Foo", "", false)]
+        [InlineData("    ASSIGN Item(c, ;", "", false)]
         [InlineData("    PROTECTED ACCESS Name AS STRING", "PROTECTED", true)]
         [InlineData("    protected internal assign Name(c)", "PROTECTED INTERNAL", true)]
         [InlineData("    STATIC ACCESS Name", "", false)]

@@ -15,8 +15,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     /// <summary>An ACCESS or ASSIGN to convert: its body (the lines after the header) and its signature.</summary>
     internal sealed class AccessorSource
     {
-        internal AccessorSource(string body, string parameterName, IList<string> indexParameters, string visibility)
+        internal AccessorSource(string body, string parameterName, IList<string> indexParameters, string visibility, IList<string> indexNames = null)
         {
+            IndexNames = indexNames ?? new string[0];
             Body = body ?? "";
             ParameterName = parameterName;
             IndexParameters = indexParameters ?? new string[0];
@@ -33,6 +34,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
 
         /// <summary>The visibility keyword(s) written on the member, empty for the default.</summary>
         internal string Visibility { get; }
+
+        /// <summary>The names of the index parameters (the ASSIGN's are renamed to the ACCESS's).</summary>
+        internal IList<string> IndexNames { get; }
     }
 
     /// <summary>The PROPERTY that replaces an ACCESS/ASSIGN pair.</summary>
@@ -53,7 +57,11 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             {
                 setBody = assign.ParameterName == null ? assign.Body
                     : AccessorBody.RenameParameter(assign.Body, lex(assign.Body), assign.ParameterName, style.Kw("VALUE"));
-                setBody = DropFinalReturn(AccessorBody.RewriteReturns(setBody, lex(setBody), style), lex);
+                setBody = MapIndexNames(setBody, assign.IndexNames, access?.IndexNames, lex);
+                setBody = AccessorBody.RewriteReturns(setBody, lex(setBody), style);
+                if (setBody == null)
+                    return null;
+                setBody = DropFinalReturn(setBody, lex);
             }
             var (propertyVisibility, getVisibility, setVisibility) = Visibilities(access?.Visibility, assign?.Visibility);
             var index = (access ?? assign).IndexParameters;
@@ -114,10 +122,32 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             return lines.Select(l => l.Trim().Length == 0 ? "" : indent + l.Substring(Math.Min(common, l.Length)));
         }
 
+        /// <summary>
+        /// The property's index parameters are the ACCESS's: the ASSIGN's index names are renamed to them (through
+        /// placeholders, so that swapped names do not collide).
+        /// </summary>
+        private static string MapIndexNames(string body, IList<string> from, IList<string> to, Func<string, IList<IToken>> lex)
+        {
+            if (from == null || to == null || from.Count == 0 || from.Count != to.Count)
+                return body;
+            var placeholders = from.Select((n, i) => "Xs$Index" + i).ToList();
+            for (int i = 0; i < from.Count; i++)
+            {
+                if (!string.Equals(from[i], to[i], StringComparison.OrdinalIgnoreCase))
+                    body = AccessorBody.RenameParameter(body, lex(body), from[i], placeholders[i]);
+            }
+            for (int i = 0; i < from.Count; i++)
+                body = body.Replace(placeholders[i], to[i]);
+            return body;
+        }
+
         /// <summary>The expression of a body that is exactly <c>RETURN expr</c> on one line, else null.</summary>
         private static string SingleReturnExpression(string body, Func<string, IList<IToken>> lex)
         {
-            var code = Code(lex(body));
+            var tokens = lex(body);
+            if (HasComment(tokens))
+                return null;
+            var code = Code(tokens);
             if (code.Count < 2 || code[0].Type != XSharpLexer.RETURN || !OneStatementOnOneLine(code))
                 return null;
             return body.Substring(code[1].StartIndex, code[code.Count - 1].StopIndex - code[1].StartIndex + 1);
@@ -126,13 +156,22 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         /// <summary>The text of a body that is exactly one expression statement on one line, else null.</summary>
         private static string SingleExpression(string body, Func<string, IList<IToken>> lex)
         {
-            var code = Code(lex(body));
+            var tokens = lex(body);
+            if (HasComment(tokens))
+                return null;
+            var code = Code(tokens);
             if (code.Count == 0 || !OneStatementOnOneLine(code))
                 return null;
             var first = code[0].Type;
             if (first != XSharpLexer.ID && first != XSharpLexer.SELF && first != XSharpLexer.SUPER)
                 return null;
             return body.Substring(code[0].StartIndex, code[code.Count - 1].StopIndex - code[0].StartIndex + 1);
+        }
+
+        /// <summary>Comments would get lost in the one-line form.</summary>
+        private static bool HasComment(IList<IToken> tokens)
+        {
+            return tokens.Any(t => t.Type == XSharpLexer.SL_COMMENT || t.Type == XSharpLexer.ML_COMMENT || t.Type == XSharpLexer.DOC_COMMENT);
         }
 
         /// <summary>Default-channel tokens without EOS/EOF at the end.</summary>
@@ -156,10 +195,14 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             if (code.Count == 0 || code[code.Count - 1].Type != XSharpLexer.RETURN)
                 return body;
             var last = code[code.Count - 1];
-            if (code.Count > 1 && code[code.Count - 2].Type != XSharpLexer.EOS)
+            if (code.Count == 1)
+                return body.Substring(last.StopIndex + 1).Trim().Length == 0 ? "" : body;
+            var separator = code[code.Count - 2];
+            if (separator.Type != XSharpLexer.EOS)
                 return body;
-            var lineStart = body.LastIndexOf('\n', Math.Max(0, last.StartIndex - 1)) + 1;
-            return body.Substring(0, lineStart).TrimEnd('\r', '\n') + body.Substring(last.StopIndex + 1);
+            // cut from the end of the statement before: "x := c ; RETURN" keeps "x := c"
+            var cut = code.Count > 2 ? code[code.Count - 3].StopIndex + 1 : separator.StartIndex;
+            return body.Substring(0, cut) + body.Substring(last.StopIndex + 1);
         }
 
         /// <summary>The visibility of the property and of each accessor: the wider one on the property, the narrower on its accessor.</summary>

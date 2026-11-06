@@ -224,8 +224,10 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var snapshot = context.Snapshot;
             var caretLine = snapshot.GetLineNumberFromPosition(context.Position);
             var part = context.EnclosingPart ?? context.EnclosingClass;
+            // only members inside the class block: a member after END CLASS with a CLASS clause cannot become a property
             var members = context.File.EntityList.OfType<XSourceMemberSymbol>()
-                .Where(m => m.ParentType != null && string.Equals(m.ParentType.FullName, part.FullName, StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.ParentType != null && string.Equals(m.ParentType.FullName, part.FullName, StringComparison.OrdinalIgnoreCase) &&
+                            m.Range.StartLine > part.Range.StartLine && m.Range.StartLine < part.Range.EndLine)
                 .ToList();
             if (!members.Any(m => (m.Kind == Kind.Access || m.Kind == Kind.Assign) && m.Range.StartLine == caretLine))
                 return;

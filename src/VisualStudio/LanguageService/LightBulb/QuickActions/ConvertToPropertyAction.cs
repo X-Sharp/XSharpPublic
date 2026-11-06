@@ -80,12 +80,16 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var assign = Source(pair.Assign, true, lineText, lineCount, boundaries, out var assignLines);
             if ((pair.Access != null && access == null) || (pair.Assign != null && assign == null))
                 return null;
+            // #region/#ifdef inside a member would be unbalanced by moving or removing it
+            if ((accessLines.HasValue && PropertyEdit.HasPreprocessorLine(lineText, accessLines.Value)) ||
+                (assignLines.HasValue && PropertyEdit.HasPreprocessorLine(lineText, assignLines.Value)))
+                return null;
             var place = pair.Access != null ? accessLines.Value : assignLines.Value;
             var removed = pair.Access != null ? assignLines : null;
             var header = lineText(place.HeaderLine);
             var indent = header.Substring(0, header.Length - header.TrimStart().Length);
             var text = PropertyConverter.Build(pair.Name, TypeOf(pair), access, assign, indent, style, lex);
-            return PropertyEdit.Replacements(lineText, place, removed, text);
+            return text == null ? null : PropertyEdit.Replacements(lineText, place, removed, text);
         }
 
         private static AccessorSource Source(XSourceMemberSymbol member, bool isAssign, Func<int, string> lineText, int lineCount,
@@ -102,8 +106,10 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             lines = range;
             var body = string.Join("\r\n", Enumerable.Range(headerLine + 1, Math.Max(0, range.EndLine - headerLine)).Select(lineText));
             var parameters = member.Parameters ?? new List<IXParameterSymbol>();
-            var index = (isAssign ? parameters.Skip(1) : parameters).Select(p => p.IsTyped ? p.Name + " AS " + p.TypeName : p.Name).ToList();
-            return new AccessorSource(body, isAssign && parameters.Count > 0 ? parameters[0].Name : null, index, visibility);
+            var indexParameters = (isAssign ? parameters.Skip(1) : parameters).ToList();
+            var index = indexParameters.Select(p => p.IsTyped ? p.Name + " AS " + p.TypeName : p.Name).ToList();
+            return new AccessorSource(body, isAssign && parameters.Count > 0 ? parameters[0].Name : null, index, visibility,
+                indexParameters.Select(p => p.Name).ToList());
         }
 
         private static string TypeOf(AccessAssignPair pair)

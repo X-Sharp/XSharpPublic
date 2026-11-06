@@ -7,9 +7,37 @@ namespace XSharp.LanguageService.Tests.QuickActions
 {
     public class PropertyConverterTests
     {
-        private static AccessorSource Source(string body, string parameter = null, string[] index = null, string visibility = "")
+        private static AccessorSource Source(string body, string parameter = null, string[] index = null, string visibility = "", string[] indexNames = null)
         {
-            return new AccessorSource(body, parameter, index ?? new string[0], visibility);
+            return new AccessorSource(body, parameter, index ?? new string[0], visibility, indexNames);
+        }
+
+        [Fact]
+        public void FinalReturnAfterSemicolonKeepsTheAssignment()
+        {
+            Assert.Equal("    PROPERTY Name AS STRING SET SELF:_c := VALUE\r\n", Build(null, Source("        SELF:_c := cValue ; RETURN", "cValue")));
+        }
+
+        [Fact]
+        public void OneLineWithCommentUsesBlocks()
+        {
+            var text = Build(Source("        RETURN SELF:_c // cached"), null);
+            Assert.Contains("// cached", text);
+            Assert.EndsWith("    END PROPERTY\r\n", text);
+        }
+
+        [Fact]
+        public void IndexNamesAreMapped()
+        {
+            var text = Build(Source("        RETURN SELF:aItems[nIndex]", index: new[] { "nIndex AS INT" }, indexNames: new[] { "nIndex" }),
+                Source("        SELF:aItems[n] := c", "c", new[] { "n AS INT" }, indexNames: new[] { "n" }), "Item");
+            Assert.Equal("    PROPERTY Item[nIndex AS INT] AS STRING GET SELF:aItems[nIndex] SET SELF:aItems[nIndex] := VALUE\r\n", text);
+        }
+
+        [Fact]
+        public void BodyThatCannotBeRewrittenGivesNull()
+        {
+            Assert.Null(Build(Source("        RETURN SELF:_c"), Source("        RETURN a + SELF:Foo()", "c")));
         }
 
         private static CodeStyle Style(Func<string, string> keyword = null)

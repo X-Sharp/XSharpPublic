@@ -59,12 +59,24 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             while (start > 0 && IsComment(lineText(start - 1)))
                 start--;
             var end = Math.Min(nextEntityLine, lineCount) - 1;
-            while (end > headerLine && IsComment(lineText(end)))
-                end--;
-            while (end > headerLine && lineText(end).Trim().Length == 0)
+            // #endregion, #endif ... and the comments of the next member stay where they are
+            while (end > headerLine && (IsComment(lineText(end)) || IsPreprocessor(lineText(end)) || lineText(end).Trim().Length == 0))
                 end--;
             return new MemberLines(start, headerLine, Math.Max(end, headerLine));
         }
+
+        /// <summary>A preprocessor line inside the member: removing or moving the member would unbalance #region/#ifdef.</summary>
+        internal static bool HasPreprocessorLine(Func<int, string> lineText, MemberLines range)
+        {
+            for (int line = range.StartLine; line <= range.EndLine; line++)
+            {
+                if (IsPreprocessor(lineText(line)))
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsPreprocessor(string line) => line.TrimStart().StartsWith("#");
 
         /// <summary>
         /// The property replaces <paramref name="place"/> (comments of both members above it, those of
@@ -113,7 +125,13 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         internal static bool HeaderVisibility(string header, out string visibility)
         {
             visibility = "";
-            var words = (header ?? "").Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            var trimmed = (header ?? "").Trim();
+            // a header continued on the next line, or a VO-style member with a CLASS clause (outside the class block)
+            if (trimmed.EndsWith(";"))
+                return false;
+            var words = trimmed.Split(new[] { ' ', '\t', '(' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Any(w => string.Equals(w, "CLASS", StringComparison.OrdinalIgnoreCase)))
+                return false;
             var found = new List<string>();
             foreach (var word in words)
             {
@@ -129,10 +147,11 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             return false;
         }
 
+        /// <summary>A line comment. Block comments (/* */, and * lines inside them) are never moved or cut.</summary>
         private static bool IsComment(string line)
         {
             var text = line.Trim();
-            return text.StartsWith("//") || text.StartsWith("*") || text.StartsWith("&&") || text.StartsWith("/*");
+            return text.StartsWith("//") || text.StartsWith("&&");
         }
     }
 }

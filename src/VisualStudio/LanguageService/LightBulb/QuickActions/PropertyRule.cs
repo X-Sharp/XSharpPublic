@@ -61,6 +61,14 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 var pair = new AccessAssignPair(group.First().Name, access.FirstOrDefault(), assign.FirstOrDefault());
                 if (HasAttribute(pair.Access, lineText) || HasAttribute(pair.Assign, lineText))
                     continue;
+                // other modifiers than the visibility, a continued header or a CLASS clause: the property could not repeat them
+                string accessVisibility = "", assignVisibility = "";
+                if ((pair.Access != null && !PropertyEdit.HeaderVisibility(lineText(pair.Access.Range.StartLine), out accessVisibility)) ||
+                    (pair.Assign != null && !PropertyEdit.HeaderVisibility(lineText(pair.Assign.Range.StartLine), out assignVisibility)))
+                    continue;
+                // INTERNAL and PROTECTED: neither is wider, the property has no visibility to take
+                if (Incomparable(accessVisibility, assignVisibility))
+                    continue;
                 if (pair.Access != null && pair.Assign != null && !Match(pair.Access, pair.Assign))
                     continue;
                 result.Add(pair);
@@ -91,6 +99,11 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                     return false;
             }
             return (access.Modifiers & ~Modifiers.VisibilityMask) == (assign.Modifiers & ~Modifiers.VisibilityMask);
+        }
+
+        private static bool Incomparable(string a, string b)
+        {
+            return (a == "INTERNAL" && b == "PROTECTED") || (a == "PROTECTED" && b == "INTERNAL");
         }
 
         private static string TypeOf(bool isTyped, string typeName)

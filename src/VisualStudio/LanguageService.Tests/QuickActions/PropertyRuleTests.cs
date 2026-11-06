@@ -26,10 +26,16 @@ namespace XSharp.LanguageService.Tests.QuickActions
         private XSourceMemberSymbol Member(XSourceTypeSymbol parent, Kind kind, string name, string type = "STRING", Modifiers modifiers = Modifiers.Public,
             string attribute = null, params (string Name, string Type)[] parameters)
         {
+            return MemberWith("", parent, kind, name, type, modifiers, attribute, parameters);
+        }
+
+        private XSourceMemberSymbol MemberWith(string prefix, XSourceTypeSymbol parent, Kind kind, string name, string type = "STRING",
+            Modifiers modifiers = Modifiers.Public, string attribute = null, params (string Name, string Type)[] parameters)
+        {
             if (attribute != null)
                 _lines[_line++] = "    " + attribute;
             var header = _line;
-            _lines[header] = "    " + kind.ToString().ToUpperInvariant() + " " + name;
+            _lines[header] = "    " + prefix + kind.ToString().ToUpperInvariant() + " " + name;
             _line += 3;
             var member = new XSourceMemberSymbol(name, kind, modifiers, new TextRange(header, 1, header + 2, 1), new TextInterval(header * 10, header * 10 + 25), type, null);
             member.File = File;
@@ -127,6 +133,25 @@ namespace XSharp.LanguageService.Tests.QuickActions
             var type = Type("Customer");
             Member(type, Kind.Access, "Item", parameters: ("n", "INT"));
             Member(type, Kind.Assign, "Item", "", parameters: new[] { ("c", "STRING"), ("n", "STRING") });
+            Assert.Empty(Pairs(type));
+        }
+
+        [Fact]
+        public void OtherModifiersInTheHeaderAreNotOffered()
+        {
+            var type = Type("Customer");
+            MemberWith("STATIC ", type, Kind.Access, "Name", modifiers: Modifiers.Public | Modifiers.Static);
+            Member(type, Kind.Access, "City");
+            Assert.Equal(new[] { "City" }, Pairs(type).Select(p => p.Name));
+        }
+
+        [Fact]
+        public void InternalAndProtectedAreNotOffered()
+        {
+            // neither is wider than the other: no visibility for the property
+            var type = Type("Customer");
+            MemberWith("INTERNAL ", type, Kind.Access, "Name", modifiers: Modifiers.Internal);
+            MemberWith("PROTECTED ", type, Kind.Assign, "Name", "", Modifiers.Protected, parameters: ("cValue", "STRING"));
             Assert.Empty(Pairs(type));
         }
 

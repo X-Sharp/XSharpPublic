@@ -16,6 +16,67 @@ namespace XSharp.LanguageService.FindReferences
     /// </summary>
     internal static class ReferenceCandidateScanner
     {
+        /// <summary>
+        /// The name as a whole word (case-insensitive) in comments, string literals or excluded #ifdef code. In an
+        /// interpolated string only the text outside its expressions counts: those are code.
+        /// </summary>
+        internal static IList<TextOccurrence> FindWordInText(IList<IToken> tokens, string name, TextTokenKinds kinds)
+        {
+            var result = new List<TextOccurrence>();
+            if (kinds == TextTokenKinds.None || string.IsNullOrEmpty(name))
+                return result;
+            foreach (var token in tokens)
+            {
+                var kind = TextKindOf(token);
+                if ((kind & kinds) == 0)
+                    continue;
+                var text = token.Text;
+                var holes = token.Type == XSharpLexer.INTERPOLATED_STRING_CONST
+                    ? InterpolationHoles(text, false)
+                    : Array.Empty<(int Start, int Length)>();
+                for (int pos = text.IndexOf(name, StringComparison.OrdinalIgnoreCase); pos >= 0;
+                    pos = text.IndexOf(name, pos + name.Length, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!IsWordAt(text, pos, name.Length))
+                        continue;
+                    bool inHole = false;
+                    foreach (var (start, length) in holes)
+                        inHole |= pos >= start && pos < start + length;
+                    if (!inHole)
+                        result.Add(new TextOccurrence(token, token.StartIndex + pos, name.Length, kind));
+                }
+            }
+            return result;
+        }
+
+        private static TextTokenKinds TextKindOf(IToken token)
+        {
+            if (token.Channel == XSharpLexer.DEFOUTCHANNEL)
+                return TextTokenKinds.InactiveCode;
+            switch (token.Type)
+            {
+                case XSharpLexer.SL_COMMENT:
+                case XSharpLexer.ML_COMMENT:
+                case XSharpLexer.DOC_COMMENT:
+                    return TextTokenKinds.Comments;
+                case XSharpLexer.STRING_CONST:
+                case XSharpLexer.ESCAPED_STRING_CONST:
+                case XSharpLexer.BRACKETED_STRING_CONST:
+                case XSharpLexer.TEXT_STRING_CONST:
+                case XSharpLexer.CHAR_CONST:
+                case XSharpLexer.INTERPOLATED_STRING_CONST:
+                    return TextTokenKinds.Strings;
+            }
+            return TextTokenKinds.None;
+        }
+
+        private static bool IsWordAt(string text, int start, int length)
+        {
+            bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
+            return (start == 0 || !IsWordChar(text[start - 1])) &&
+                (start + length >= text.Length || !IsWordChar(text[start + length]));
+        }
+
         internal static bool MayContain(string text, string name)
         {
             return text.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -237,5 +298,33 @@ namespace XSharp.LanguageService.FindReferences
         internal IToken String { get; set; }
         /// <summary>The tokens of the expression around the name, at their place in the file.</summary>
         internal IList<IToken> Tokens { get; set; }
+    }
+
+    /// <summary>Where <see cref="ReferenceCandidateScanner.FindWordInText"/> looks for a name.</summary>
+    [Flags]
+    internal enum TextTokenKinds
+    {
+        None = 0,
+        Comments = 1,
+        Strings = 2,
+        /// <summary>Code in an excluded #ifdef block</summary>
+        InactiveCode = 4
+    }
+
+    /// <summary>The name as a whole word inside a comment, a string or inactive code.</summary>
+    internal readonly struct TextOccurrence
+    {
+        internal TextOccurrence(IToken token, int start, int length, TextTokenKinds kind)
+        {
+            Token = token;
+            Start = start;
+            Length = length;
+            Kind = kind;
+        }
+        internal IToken Token { get; }
+        /// <summary>Position in the file text</summary>
+        internal int Start { get; }
+        internal int Length { get; }
+        internal TextTokenKinds Kind { get; }
     }
 }

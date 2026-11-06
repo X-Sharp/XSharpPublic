@@ -27,16 +27,16 @@ namespace XSharp.LanguageService.FindReferences
 
         /// <summary>
         /// Create the <paramref name="family"/> on the UI thread: it reads the target's (editor) types.
-        /// <paramref name="includeLateBound"/> adds the sends <c>o:Name</c> that the lookup cannot resolve and the
-        /// symbols <c>#Name</c> in a group of their own.
+        /// <paramref name="options"/> says what is returned besides the sure places (late-bound sends and symbols,
+        /// uncertain places, names in comments and strings) and how far the search reaches.
         /// </summary>
-        internal static Task<FindReferencesStats> FindAsync(IXSymbol target, OverrideFamily family, bool includeLateBound,
+        internal static Task<FindReferencesStats> FindAsync(IXSymbol target, OverrideFamily family, ReferenceSearchOptions options,
             XSharpSearchLocation origin, ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
         {
-            return Task.Run(() => Find(target, family, includeLateBound && CanBeLateBound(target), origin, documents, sink, ct), ct);
+            return Task.Run(() => Find(target, family, options, origin, documents, sink, ct), ct);
         }
 
-        private static FindReferencesStats Find(IXSymbol target, OverrideFamily family, bool lateBound, XSharpSearchLocation origin,
+        private static FindReferencesStats Find(IXSymbol target, OverrideFamily family, ReferenceSearchOptions options, XSharpSearchLocation origin,
             ReferenceDocumentSource documents, IReferenceSink sink, CancellationToken ct)
         {
             var stats = new FindReferencesStats();
@@ -61,18 +61,33 @@ namespace XSharp.LanguageService.FindReferences
                 {
                     // an override family is searched from its topmost member: its callers may live in any project
                     // that sees the base class
-                    files = FilesInScope(family.TargetRoot ?? target);
+                    files = FilesInScope(family.TargetRoot ?? target, options.TransitiveProjects);
+                }
+                Action<XFile> failed = null;
+                if (options.IncludeUncertain)
+                {
+                    failed = file => sink.Add(new[]
+                    {
+                        new ReferenceHit
+                        {
+                            FilePath = file.FullPath,
+                            ProjectName = file.Project?.Name,
+                            LineText = "",
+                            Uncertainty = ReferenceUncertainty.FileNotRead,
+                            Group = UncertainGroup(ReferenceUncertainty.FileNotRead, target)
+                        }
+                    });
                 }
                 SearchEach(files.Where(f => f != null), file =>
                 {
                     stats.FilesInScope++;
-                    var hits = SearchFile(target, family, lateBound, name, file, limit, documents, stats, ct);
+                    var hits = SearchFile(target, family, options, name, file, limit, documents, stats, ct);
                     if (hits.Count > 0)
                     {
                         stats.Hits += hits.Count;
                         sink.Add(hits);
                     }
-                }, stats, ct);
+                }, stats, ct, failed);
             }
             catch (OperationCanceledException)
             {
@@ -93,9 +108,11 @@ namespace XSharp.LanguageService.FindReferences
 
         /// <summary>
         /// Runs the search for every item. A failing item (missing or locked file, lookup exception) is logged and
-        /// counted in <see cref="FindReferencesStats.Failed"/>, and the search goes on; cancellation ends it.
+        /// counted in <see cref="FindReferencesStats.Failed"/>, passed to <paramref name="failed"/>, and the search goes
+        /// on; cancellation ends it.
         /// </summary>
-        internal static void SearchEach<T>(IEnumerable<T> items, Action<T> search, FindReferencesStats stats, CancellationToken ct)
+        internal static void SearchEach<T>(IEnumerable<T> items, Action<T> search, FindReferencesStats stats, CancellationToken ct,
+            Action<T> failed = null)
         {
             foreach (var item in items)
             {
@@ -112,6 +129,7 @@ namespace XSharp.LanguageService.FindReferences
                 {
                     stats.Failed++;
                     Logger.Exception(ex, $"FindReferences: search failed for {item}");
+                    failed?.Invoke(item);
                 }
             }
         }
@@ -134,12 +152,38 @@ namespace XSharp.LanguageService.FindReferences
             return file;
         }
 
-        private static IEnumerable<XFile> FilesInScope(IXSymbol target)
+        /// <summary>
+        /// The root and the projects that reference it; with <paramref name="transitive"/> also the projects that
+        /// reference it through other projects. Each project once, the root first.
+        /// </summary>
+        internal static IList<T> ProjectsInScope<T>(T root, IEnumerable<T> all, Func<T, IEnumerable<T>> referencedProjects, bool transitive)
+        {
+            var result = new List<T> { root };
+            var candidates = all.Where(p => !Equals(p, root)).ToList();
+            bool added = true;
+            while (added)
+            {
+                added = false;
+                foreach (var project in candidates.ToList())
+                {
+                    var references = referencedProjects(project);
+                    if (transitive ? references.Any(r => result.Contains(r)) : references.Contains(root))
+                    {
+                        result.Add(project);
+                        candidates.Remove(project);
+                        added = transitive;
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static IEnumerable<XFile> FilesInScope(IXSymbol target, bool transitive)
         {
             var project = SourceFileOf(target)?.Project;
             if (project == null)
                 return Enumerable.Empty<XFile>();
-            var projects = XSolution.Projects.Where(p => p == project || p.ReferencedProjects.Contains(project));
+            var projects = ProjectsInScope(project, XSolution.Projects, p => p.ReferencedProjects, transitive);
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var result = new List<XFile>();
             foreach (var p in projects)
@@ -157,9 +201,11 @@ namespace XSharp.LanguageService.FindReferences
             return result;
         }
 
-        private static List<ReferenceHit> SearchFile(IXSymbol target, OverrideFamily family, bool lateBound, string name, XFile file,
+        private static List<ReferenceHit> SearchFile(IXSymbol target, OverrideFamily family, ReferenceSearchOptions options, string name, XFile file,
             TextInterval? limit, ReferenceDocumentSource documents, FindReferencesStats stats, CancellationToken ct)
         {
+            var lateBound = (options.IncludeLateBound || options.IncludeUncertain) && CanBeLateBound(target);
+            var uncertain = options.IncludeUncertain;
             var hits = new List<ReferenceHit>();
             // one text for filter, tokens and entities: an open buffer can change while we search
             var text = documents.ReadText(file);
@@ -174,29 +220,41 @@ namespace XSharp.LanguageService.FindReferences
             var allowDot = file.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var interpolated = ReferenceCandidateScanner.FindInterpolatedTokens(document.Tokens, name,
                 expression => ReferenceDocumentSource.Lex(file, expression), allowDot);
-            var symbolLiterals = lateBound ? ReferenceCandidateScanner.FindSymbolTokens(document.Tokens, name) : Array.Empty<IToken>();
+            var symbolLiterals = CollectsSymbolLiterals(target, options)
+                ? ReferenceCandidateScanner.FindSymbolTokens(document.Tokens, name) : Array.Empty<IToken>();
+            var textKinds = options.IncludeText | (uncertain ? TextTokenKinds.InactiveCode : TextTokenKinds.None);
+            var inText = ReferenceCandidateScanner.FindWordInText(document.Tokens, name, textKinds);
             // the name only in a comment, a string or a longer word: no need to parse the file
-            if (candidates.Count == 0 && interpolated.Count == 0 && symbolLiterals.Count == 0)
+            if (candidates.Count == 0 && interpolated.Count == 0 && symbolLiterals.Count == 0 && inText.Count == 0)
                 return hits;
-            ParseEntities(file, text);
+            if (candidates.Count > 0 || interpolated.Count > 0)
+                ParseEntities(file, text);
             var snapshot = document.SnapShot;
             var declarationLines = new HashSet<int>();
             var lateBoundGroup = LateBoundGroup(target);
-            void AddHit(IToken token, bool isDefinition, string group)
+            void AddAt(int start, int length, bool isDefinition, string group,
+                ReferenceUncertainty uncertainty = ReferenceUncertainty.None, TextTokenKinds textKind = TextTokenKinds.None)
             {
-                var textLine = snapshot.GetLineFromLineNumber(token.Line - 1);
+                var textLine = snapshot.GetLineFromPosition(start);
                 hits.Add(new ReferenceHit
                 {
                     FilePath = file.FullPath,
                     ProjectName = file.Project?.Name,
-                    Line = token.Line - 1,
-                    Column = token.StartIndex - textLine.Start.Position,
-                    Length = token.StopIndex - token.StartIndex + 1,
+                    Line = textLine.LineNumber,
+                    Column = start - textLine.Start.Position,
+                    Length = length,
                     LineText = textLine.GetText(),
                     Classifications = ReferenceLineText.Classify(document.Tokens, textLine.Start.Position, textLine.End.Position),
                     IsDefinition = isDefinition,
-                    Group = group
+                    Group = group,
+                    Start = start,
+                    Uncertainty = uncertainty,
+                    InText = textKind
                 });
+            }
+            void AddHit(IToken token, bool isDefinition, string group, ReferenceUncertainty uncertainty = ReferenceUncertainty.None)
+            {
+                AddAt(token.StartIndex, token.StopIndex - token.StartIndex + 1, isDefinition, group, uncertainty);
             }
             // one document per interpolated string, with the string replaced by the expression
             var expressionDocuments = new Dictionary<IList<IToken>, XDocument>();
@@ -237,10 +295,17 @@ namespace XSharp.LanguageService.FindReferences
                         stats.Unresolved++;
                         // o:Name on a USUAL, an OBJECT or an unknown type: may reach the target at runtime
                         if (lateBound && ReferenceCandidateScanner.IsSend(tokens, token))
-                            AddHit(token, false, lateBoundGroup);
+                            AddHit(token, false, lateBoundGroup, ReferenceUncertainty.LateBound);
+                        else if (uncertain)
+                            AddHit(token, false, UncertainGroup(ReferenceUncertainty.Unresolved, target), ReferenceUncertainty.Unresolved);
                         continue;
                     }
                     stats.Resolved++;
+                    if (uncertain && IsAmbiguous(target, family, symbols))
+                    {
+                        AddHit(token, false, UncertainGroup(ReferenceUncertainty.AmbiguousOverload, target), ReferenceUncertainty.AmbiguousOverload);
+                        continue;
+                    }
                     var match = symbols.FirstOrDefault(s => SymbolIdentity.IsReferenceTo(target, s));
                     group = target;
                     if (match == null)
@@ -263,8 +328,52 @@ namespace XSharp.LanguageService.FindReferences
             }
             // Send(o, #Name), IVarGet(o, #Name): the symbol names the member
             foreach (var token in symbolLiterals)
-                AddHit(token, false, lateBoundGroup);
+                AddHit(token, false, lateBoundGroup, ReferenceUncertainty.Symbol);
+            // the name in comments and strings (asked for), and in excluded #ifdef code (never sure)
+            foreach (var occurrence in inText)
+            {
+                if (limit.HasValue && !limit.Value.ContainsInclusive(occurrence.Start))
+                    continue;
+                if (occurrence.Kind == TextTokenKinds.InactiveCode)
+                    AddAt(occurrence.Start, occurrence.Length, false, UncertainGroup(ReferenceUncertainty.InactiveCode, target),
+                        ReferenceUncertainty.InactiveCode);
+                else
+                    AddAt(occurrence.Start, occurrence.Length, false, GroupOf(target), ReferenceUncertainty.None, occurrence.Kind);
+            }
             return hits;
+        }
+
+        /// <summary>
+        /// The arguments do not tell which overload is called: the target (or a member of its family) fits, and so
+        /// does another member with the same name.
+        /// </summary>
+        internal static bool IsAmbiguous(IXSymbol target, OverrideFamily family, IList<IXSymbol> symbols)
+        {
+            bool Belongs(IXSymbol s) => SymbolIdentity.IsReferenceTo(target, s) || family.Contains(s);
+            if (!symbols.Any(Belongs))
+                return false;
+            return symbols.OfType<IXMemberSymbol>().Any(m => !Belongs(m) &&
+                string.Equals(m.Name, target.Name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>The group of the places that may refer to the target but are never changed by a rename.</summary>
+        internal static string UncertainGroup(ReferenceUncertainty uncertainty, IXSymbol target)
+        {
+            switch (uncertainty)
+            {
+                case ReferenceUncertainty.LateBound:
+                case ReferenceUncertainty.Symbol:
+                    return LateBoundGroup(target);
+                case ReferenceUncertainty.Unresolved:
+                    return "Not changed: not resolved";
+                case ReferenceUncertainty.AmbiguousOverload:
+                    return "Not changed: ambiguous overload";
+                case ReferenceUncertainty.InactiveCode:
+                    return "Not changed: inactive code";
+                case ReferenceUncertainty.FileNotRead:
+                    return "Not changed: file not read";
+            }
+            return GroupOf(target);
         }
 
         /// <summary>
@@ -293,6 +402,17 @@ namespace XSharp.LanguageService.FindReferences
             var keyword = SymbolIdentity.IsPropertyLike(symbol.Kind) ? "PROPERTY" : symbol.KindKeyword;
             return $"{keyword} {symbol.FullName}".Trim();
         }
+        /// <summary>
+        /// Symbols #Name name members (Send, IVarGet) and, in VO code, classes and functions (CreateInstance(#Foo)).
+        /// Find All References lists them for members when asked; a rename reports them for every named symbol.
+        /// </summary>
+        internal static bool CollectsSymbolLiterals(IXSymbol target, ReferenceSearchOptions options)
+        {
+            if (CanBeLateBound(target))
+                return options.IncludeLateBound || options.IncludeUncertain;
+            return options.IncludeUncertain && !(target is IXVariableSymbol);
+        }
+
         /// <summary>Methods, properties and fields can be called late bound: <c>o:Name</c>, <c>#Name</c>.</summary>
         internal static bool CanBeLateBound(IXSymbol target)
         {

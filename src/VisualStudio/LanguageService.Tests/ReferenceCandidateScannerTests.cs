@@ -130,6 +130,40 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void WordsInCommentsAreFound()
+        {
+            var text = "// Close the file\n/* close */ x := 1\n/// <summary>Close</summary>\n// CloseAll\n";
+            var hits = ReferenceCandidateScanner.FindWordInText(TestLexer.Lex(text), "Close", TextTokenKinds.Comments);
+            Assert.Equal(new[] { text.IndexOf("Close the"), text.IndexOf("close */"), text.IndexOf("Close</") }, hits.Select(h => h.Start).ToArray());
+            Assert.All(hits, h => Assert.Equal(5, h.Length));
+            Assert.All(hits, h => Assert.Equal(TextTokenKinds.Comments, h.Kind));
+        }
+
+        [Fact]
+        public void WordsInStringsAreFoundOutsideInterpolationHoles()
+        {
+            var text = "? \"Close it\", i\"Close {Close()}\", \"CloseAll\"\n";
+            var hits = ReferenceCandidateScanner.FindWordInText(TestLexer.Lex(text), "Close", TextTokenKinds.Strings);
+            Assert.Equal(new[] { text.IndexOf("Close it"), text.IndexOf("Close {") }, hits.Select(h => h.Start).ToArray());
+        }
+
+        [Fact]
+        public void WordsInInactiveCodeAreFound()
+        {
+            var text = "#ifdef NOTDEFINED\nFoo()\n#endif\nFoo()\n";
+            var hits = ReferenceCandidateScanner.FindWordInText(TestLexer.Lex(text), "Foo", TextTokenKinds.InactiveCode);
+            Assert.Equal(new[] { text.IndexOf("Foo()") }, hits.Select(h => h.Start).ToArray());
+        }
+
+        [Fact]
+        public void KindsSelectWhatIsSearched()
+        {
+            var text = "// Foo\n? \"Foo\"\n";
+            Assert.Single(ReferenceCandidateScanner.FindWordInText(TestLexer.Lex(text), "Foo", TextTokenKinds.Comments));
+            Assert.Empty(ReferenceCandidateScanner.FindWordInText(TestLexer.Lex(text), "Foo", TextTokenKinds.None));
+        }
+
+        [Fact]
         public void MayContainIsCaseInsensitive()
         {
             Assert.True(ReferenceCandidateScanner.MayContain("x := FOO", "foo"));

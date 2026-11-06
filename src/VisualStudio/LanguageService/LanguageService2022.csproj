@@ -164,6 +164,7 @@
     <Compile Include="LightBulb\QuickActions\OverrideCandidates.cs" />
     <Compile Include="LightBulb\QuickActions\OverrideSkeleton.cs" />
     <Compile Include="LightBulb\QuickActions\OverrideTrigger.cs" />
+    <Compile Include="LightBulb\QuickActions\PropertyConverter.cs" />
     <Compile Include="LightBulb\QuickActions\OverridesDlg.cs">
       <SubType>Form</SubType>
     </Compile>

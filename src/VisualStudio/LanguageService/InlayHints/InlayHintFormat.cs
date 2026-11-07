@@ -22,7 +22,29 @@ namespace XSharp.LanguageService.InlayHints
         {
             DisplayName = FormatName;
             ForegroundColor = Color.FromRgb(0x80, 0x80, 0x80);
-            BackgroundColor = Color.FromArgb(0x28, 0x80, 0x80, 0x80);
+            BackgroundColor = Color.FromArgb(InlayHintColors.BackgroundAlpha, 0x80, 0x80, 0x80);
+        }
+    }
+
+    /// <summary>
+    /// Fonts and Colors stores colours without alpha, so the background comes back opaque, as grey as the text.
+    /// An opaque background is drawn translucent; the colour itself stays the user's choice.
+    /// </summary>
+    internal static class InlayHintColors
+    {
+        internal const byte BackgroundAlpha = 0x28;
+
+        internal static byte DrawnAlpha(byte storedAlpha) => storedAlpha == 0xFF ? BackgroundAlpha : storedAlpha;
+
+        internal static Brush Background(Brush stored)
+        {
+            if (!(stored is SolidColorBrush solid))
+                return stored ?? Brushes.Transparent;
+            var color = solid.Color;
+            color.A = DrawnAlpha(color.A);
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace XSharp.LanguageService.InlayHints
                 text.FontSize = line.FontRenderingEmSize * 0.9;
             }
             Child = text;
-            Background = properties[EditorFormatDefinition.BackgroundBrushId] as Brush ?? Brushes.Transparent;
+            Background = InlayHintColors.Background(properties[EditorFormatDefinition.BackgroundBrushId] as Brush);
             CornerRadius = new CornerRadius(2);
             Padding = new Thickness(1, 0, 1, 0);
             VerticalAlignment = VerticalAlignment.Center;

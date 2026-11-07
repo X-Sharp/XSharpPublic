@@ -145,6 +145,7 @@
     <Compile Include="InlayHints\HintCandidates.cs" />
     <Compile Include="InlayHints\HintRules.cs" />
     <Compile Include="InlayHints\InlayHint.cs" />
+    <Compile Include="InlayHints\TypeRewrite.cs" />
     <Compile Include="FindReferences\XDocumentIndexer.cs" />
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
     <Compile Include="FindReferences\OverloadFilter.cs" />

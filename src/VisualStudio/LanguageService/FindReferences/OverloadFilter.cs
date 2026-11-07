@@ -372,6 +372,9 @@ namespace XSharp.LanguageService.FindReferences
             if (member.CallingConvention == CallingConvention.Clipper)
                 return true;
             var parameters = member.Parameters ?? new IXParameterSymbol[0];
+            // untyped parameters (no AS/REF/OUT/PARAMS, ParamType left at 0) make an implicit CLIPPER method
+            if (parameters.Count > 0 && parameters.All(p => p.ParamType == 0))
+                return true;
             int total = parameters.Count;
             int required = parameters.Count(p => p.ParamType != ParamType.Params && string.IsNullOrEmpty(p.Value));
             bool hasParamArray = parameters.Any(p => p.ParamType == ParamType.Params);

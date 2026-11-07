@@ -113,6 +113,18 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void UntypedParametersMakeAClipperMethod()
+        {
+            // VO: METHOD Open(cName, lShared) - no AS, so the parser leaves ParamType unset (0)
+            var untyped = Method("Open", CallingConvention.None, ("cName", "USUAL", null, 0), ("lShared", "USUAL", null, 0));
+            var typedUsual = Method("Open", CallingConvention.None, ("cName", "USUAL", null, ParamType.As), ("lShared", "USUAL", null, ParamType.As));
+            Assert.True(OverloadFilter.Accepts(untyped, 1));
+            Assert.True(OverloadFilter.Accepts(untyped, 3));
+            Assert.False(OverloadFilter.Accepts(typedUsual, 1));
+            Assert.False(OverloadFilter.Accepts(typedUsual, 3));
+        }
+
+        [Fact]
         public void NoCountOrNoMatchKeepsAll()
         {
             var one = Method("Foo", CallingConvention.None, ("a", "INT", null, ParamType.As));

@@ -345,6 +345,7 @@ namespace XSharp.LanguageService
                 }
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                ParseCompleted?.Invoke(snapshot);
             }
             Logger.Information("<<-- XSharpClassifier.ParseAsync()");
             return true;
@@ -955,6 +956,8 @@ namespace XSharp.LanguageService
         /// </remarks>
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
         public event EventHandler<EventArgs> LineStateChanged;
+        /// <summary>The entities of this snapshot are known (raised in the background after each parse).</summary>
+        internal event Action<ITextSnapshot> ParseCompleted;
 
 #pragma warning restore 67
 

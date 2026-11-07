@@ -16,6 +16,8 @@ namespace XSharp.LanguageService.InlayHints
     {
         internal IToken Name { get; set; }
         internal bool IsCreation { get; set; }
+        /// <summary>Called on an instance (<c>o:Name(...)</c>, <c>o.Name(...)</c>): an extension method gets no argument for its first parameter.</summary>
+        internal bool IsMemberAccess { get; set; }
         /// <summary>The tokens of each argument; an omitted argument is an empty list.</summary>
         internal IList<IList<IToken>> Arguments { get; set; }
     }
@@ -62,7 +64,14 @@ namespace XSharp.LanguageService.InlayHints
                 var arguments = OverloadFilter.Arguments(tokens, name);
                 if (arguments == null || arguments.Count == 0)
                     continue;
-                result.Add(new CallCandidate { Name = name, IsCreation = next == XSharpLexer.LCURLY, Arguments = arguments });
+                var before = i > 0 ? code[i - 1].Type : XSharpLexer.EOS;
+                result.Add(new CallCandidate
+                {
+                    Name = name,
+                    IsCreation = next == XSharpLexer.LCURLY,
+                    IsMemberAccess = before == XSharpLexer.COLON || before == XSharpLexer.DOT,
+                    Arguments = arguments
+                });
             }
             return result;
         }

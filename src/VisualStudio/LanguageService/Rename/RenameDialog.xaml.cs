@@ -5,16 +5,15 @@
 //
 using System;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace XSharp.LanguageService.Rename
 {
     /// <summary>
     /// The rename dialog: the new name and the options C# offers. The search runs while the dialog is open;
-    /// "Apply" is enabled when its result is shown. Built in code (no XAML), so both VSIX projects can include it.
+    /// "Apply" is enabled when its result is shown.
     /// </summary>
-    internal sealed class RenameDialog : DialogWindow
+    internal sealed partial class RenameDialog : DialogWindow
     {
         // the options of the last rename, for the next one (this VS session)
         private static bool _lastComments;
@@ -22,45 +21,21 @@ namespace XSharp.LanguageService.Rename
         private static bool _lastPreview;
         private static bool _lastRenameFile = true;
 
-        private readonly TextBox _name;
-        private readonly CheckBox _comments;
-        private readonly CheckBox _strings;
-        private readonly CheckBox _lateBound;
-        private readonly CheckBox _preview;
-        private readonly CheckBox _renameFile;
-        private readonly TextBlock _status;
-        private readonly Button _apply;
-
         /// <param name="canBeLateBound">Offer to change late-bound sends and symbols (members only); never checked at the start</param>
         /// <param name="validate">The error for a new name, or null when it may be used</param>
         internal RenameDialog(string oldName, string kind, bool canRenameFile, bool canBeLateBound, Func<string, string> validate)
         {
+            InitializeComponent();
             Title = $"Rename {kind} '{oldName}'";
-            SizeToContent = SizeToContent.WidthAndHeight;
-            ResizeMode = ResizeMode.NoResize;
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            HasMinimizeButton = false;
-            HasMaximizeButton = false;
-            var panel = new StackPanel { Margin = new Thickness(12), MinWidth = 360 };
-            panel.Children.Add(new Label { Content = "_New name:", Padding = new Thickness(0, 0, 0, 4) });
-            _name = new TextBox { Text = oldName, Margin = new Thickness(0, 0, 0, 10) };
-            panel.Children.Add(_name);
-            _comments = AddOption(panel, "Include _comments", _lastComments);
-            _strings = AddOption(panel, "Include _strings", _lastStrings);
-            _lateBound = AddOption(panel, $"Include _late-bound calls and symbols (:{oldName}, #{oldName})", false);
+            _name.Text = oldName;
+            _comments.IsChecked = _lastComments;
+            _strings.IsChecked = _lastStrings;
+            _lateBound.Content = $"Include _late-bound calls and symbols (:{oldName}, #{oldName})";
+            _lateBound.IsChecked = false;
             _lateBound.Visibility = canBeLateBound ? Visibility.Visible : Visibility.Collapsed;
-            _preview = AddOption(panel, "_Preview changes", _lastPreview);
-            _renameFile = AddOption(panel, "Rename _file", _lastRenameFile);
+            _preview.IsChecked = _lastPreview;
+            _renameFile.IsChecked = _lastRenameFile;
             _renameFile.Visibility = canRenameFile ? Visibility.Visible : Visibility.Collapsed;
-            _status = new TextBlock { Text = "Searching...", Margin = new Thickness(0, 8, 0, 8), TextWrapping = TextWrapping.Wrap, MaxWidth = 420 };
-            panel.Children.Add(_status);
-            var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-            _apply = new Button { Content = "_Apply", IsDefault = true, IsEnabled = false, MinWidth = 75, Margin = new Thickness(0, 0, 8, 0) };
-            var cancel = new Button { Content = "Cancel", IsCancel = true, MinWidth = 75 };
-            buttons.Children.Add(_apply);
-            buttons.Children.Add(cancel);
-            panel.Children.Add(buttons);
-            Content = panel;
 
             // Checked/Unchecked, not Click: the state can also change through UI automation (accessibility tools)
             RoutedEventHandler optionsChanged = (s, e) => SearchOptionsChanged?.Invoke(this, EventArgs.Empty);
@@ -123,13 +98,6 @@ namespace XSharp.LanguageService.Rename
         {
             _status.Text = message;
             _apply.IsEnabled = false;
-        }
-
-        private static CheckBox AddOption(Panel panel, string text, bool isChecked)
-        {
-            var box = new CheckBox { Content = text, IsChecked = isChecked, Margin = new Thickness(0, 2, 0, 2) };
-            panel.Children.Add(box);
-            return box;
         }
     }
 }

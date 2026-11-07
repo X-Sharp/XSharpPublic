@@ -53,36 +53,13 @@ namespace XSharp.LanguageService.Commands
         internal static TargetSelection SelectTarget(ITextView view, string commandName)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var symbols = view.GetSymbolUnderCursor(out _, out var location, out _);
-            var selection = new TargetSelection { Location = location };
+            var selection = new TargetSelection();
+            XSharpSearchLocation location = null;
             IXSymbol target = null;
             try
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                IXSymbol target = null;
-                XSharpSearchLocation location = null;
-                int candidates = 0;
-                OverrideFamily family = null;
-                try
-                {
-                    target = TargetUnderCursor.Resolve(doc.TextView, out location, out _, out candidates);
-                    if (target != null)
-                        family = new OverrideFamily(target);
-                }
-                catch (Exception ex)
-                {
-                    var matches = OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
-                        OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
-                        id => SymbolResolver.TypeOf(location, id));
-                    target = matches.FirstOrDefault();
-                    selection.Candidates = matches.Count;
-                }
-                // Foo{} of a class without constructors: the lookup makes one up, use the class instead
-                if (target != null && target.Kind == Kind.Constructor && target is IXMemberSymbol ctor &&
-                    ctor.ParentType != null && ctor.ParentType.GetConstructors().Length == 0)
-                {
-                    target = ctor.ParentType;
-                }
+                target = TargetUnderCursor.Resolve(view, out location, out _, out var candidates);
+                selection.Candidates = candidates;
                 if (target != null)
                     selection.Family = new OverrideFamily(target);
             }
@@ -96,6 +73,7 @@ namespace XSharp.LanguageService.Commands
             else if (!FindReferencesEngine.IsInSource(target))
                 selection.Message = $"{commandName}: '{target.FullName}' is not declared in the X# source of this solution";
             selection.Target = target;
+            selection.Location = location;
             return selection;
         }
 

@@ -25,22 +25,25 @@ namespace XSharp.LanguageService
                 return true;
             return false;
         }
-        static readonly List<string> nestedSearches = new List<string>();
+        // per thread: lookups also run in the background (inlay hints, Find References) next to QuickInfo
+        [ThreadStatic]
+        static List<string> _nestedSearches;
+        internal static List<string> NestedSearches => _nestedSearches ?? (_nestedSearches = new List<string>());
         static public IList<IXSymbol> FindIdentifier(XSharpSearchLocation location, string name, IXTypeSymbol currentType, Modifiers visibility)
         {
             if (name != null && name.EndsWith("."))
                 name = name.Substring(0, name.Length - 1);
 
             var result = new List<IXSymbol>();
-            if (nestedSearches.Contains(name, StringComparer.OrdinalIgnoreCase)
+            if (NestedSearches.Contains(name, StringComparer.OrdinalIgnoreCase)
                 || location?.Member == null)
             {
                 return result;
             }
-            int nestedLevel = nestedSearches.Count();
+            int nestedLevel = NestedSearches.Count();
             try
             {
-                nestedSearches.Add(name);
+                NestedSearches.Add(name);
                 if (currentType == null)
                 {
                     currentType = location.Member.ParentType;
@@ -153,9 +156,9 @@ namespace XSharp.LanguageService
             }
             finally
             {
-                while (nestedSearches.Count > nestedLevel)
+                while (NestedSearches.Count > nestedLevel)
                 {
-                    nestedSearches.Remove(nestedSearches.Last());
+                    NestedSearches.Remove(NestedSearches.Last());
                 }
             }
             DumpResults(result, $"--> FindIdentifier in {currentType?.FullName}, '{name}'");

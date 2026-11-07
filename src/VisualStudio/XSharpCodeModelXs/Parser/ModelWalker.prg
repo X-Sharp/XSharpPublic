@@ -127,7 +127,8 @@ STATIC METHOD Start  AS VOID
     ENDIF
 
 STATIC METHOD Resume() AS VOID
-    ModelWalker.suspendLevel--
+    // Suspend/Resume come from several threads (UI and background lookups)
+    Interlocked.Decrement(REF suspendLevel)
 
 STATIC METHOD Stop AS VOID
     BEGIN LOCK _gate
@@ -147,7 +148,7 @@ PRIVATE STATIC METHOD IsAborted(generation AS LONG) AS LOGIC
 
 
 STATIC METHOD Suspend() AS VOID
-    ModelWalker.suspendLevel++
+    Interlocked.Increment(REF suspendLevel)
     IF (_projects:Count > 0)
         IF _projects:TryPeek(OUT VAR _)
             XSolution.SetStatusBarText("")

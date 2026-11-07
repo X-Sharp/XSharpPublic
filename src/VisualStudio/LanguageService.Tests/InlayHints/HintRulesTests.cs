@@ -134,6 +134,21 @@ namespace XSharp.LanguageService.Tests.InlayHints
         }
 
         [Theory]
+        // the parser stores the initializer text as type name; it stays when the lookup cannot resolve it
+        [InlineData("FOREACH VAR d IN <DbFile>{o}\nNEXT\n", "<DbFile>{o}", false)]
+        [InlineData("VAR x := Foo( 1 )\n", "Foo(1)", false)]
+        [InlineData("VAR x := y\n", "y", false)]
+        [InlineData("VAR x := y\n", "$VAR$", false)]
+        [InlineData("VAR x := y\n", "", false)]
+        [InlineData("VAR x := o:Child()\n", "DbFile", true)]
+        [InlineData("VAR x := y\n", "List<Customer>", true)]
+        public void UnresolvedTypeNameCases(string source, string typeName, bool resolved)
+        {
+            var decl = HintCandidates.Declarations(TestLexer.Lex(source)).Single();
+            Assert.Equal(resolved, HintRules.IsResolvedTypeName(typeName, decl.Initializer));
+        }
+
+        [Theory]
         [InlineData("System.Collections.Generic.List<MyApp.Customer>", "List<Customer>")]
         [InlineData("MyApp.Data.Customer", "Customer")]
         [InlineData("STRING", "STRING")]

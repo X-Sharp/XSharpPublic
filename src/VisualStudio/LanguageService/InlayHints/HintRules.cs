@@ -88,6 +88,22 @@ namespace XSharp.LanguageService.InlayHints
             return false;
         }
 
+        /// <summary>
+        /// False when the lookup did not resolve the type: the parser stores VAR or the initializer text as type
+        /// name, and that stays when the lookup fails (<c>FOREACH VAR d IN &lt;DbFile&gt;{o}</c> gives "&lt;DbFile&gt;{o}").
+        /// </summary>
+        internal static bool IsResolvedTypeName(string typeName, IList<IToken> initializer)
+        {
+            if (string.IsNullOrWhiteSpace(typeName) || string.Equals(typeName, XLiterals.VarType, System.StringComparison.OrdinalIgnoreCase))
+                return false;
+            if (initializer == null || initializer.Count == 0)
+                return true;
+            var text = string.Concat(initializer.Select(t => t.Text));
+            return !string.Equals(WithoutSpaces(typeName), WithoutSpaces(text), System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string WithoutSpaces(string text) => Regex.Replace(text, @"\s+", "");
+
         private static readonly Regex Namespaces = new Regex(@"\b(?:\w+\.)+(\w+)", RegexOptions.Compiled);
 
         /// <summary>The type name without namespaces, also inside generic arguments.</summary>

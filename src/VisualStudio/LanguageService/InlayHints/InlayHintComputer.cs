@@ -101,7 +101,7 @@ namespace XSharp.LanguageService.InlayHints
             if (!(symbols.FirstOrDefault() is IXVariableSymbol variable))
                 return null;
             var typeName = variable.TypeName;
-            if (string.IsNullOrEmpty(typeName) || string.Equals(typeName, XLiterals.VarType, StringComparison.OrdinalIgnoreCase))
+            if (!HintRules.IsResolvedTypeName(typeName, decl.Initializer))
                 return null;
             var shown = HintRules.ShortTypeName(typeName);
             return new InlayHint

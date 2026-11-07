@@ -30,8 +30,10 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyName>XSharp.VFP.UI.Tests</AssemblyName>
+    <IncludePaths>$(IncludePaths);$(ProjectDir)..\XSharp.VFP.UI\Headers</IncludePaths>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
     <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj" />

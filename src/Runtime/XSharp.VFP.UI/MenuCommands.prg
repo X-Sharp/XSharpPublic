@@ -418,12 +418,12 @@ FUNCTION __VFPShowPopup( cName AS STRING ) AS VOID
 /// Implements RELEASE MENUS [&lt;list&gt;] [EXTENDED].
 /// aNames = NULL releases all registered menus.
 /// </summary>
-FUNCTION __VFPReleaseMenus( aNames AS USUAL[], lExtended AS LOGIC ) AS VOID
-    IF aNames == NULL .OR. aNames:Length == 0
+FUNCTION __VFPReleaseMenus( aNames AS ARRAY, lExtended AS LOGIC ) AS VOID
+    IF aNames == NULL .OR. ALen( aNames ) == 0
         Menu.ReleaseAll()
     ELSE
         LOCAL i AS INT
-        FOR i := 0 TO aNames:Length - 1
+        FOR i := 1 TO ALen( aNames )
             LOCAL oMenu AS Menu
             oMenu := Menu.Find( (STRING) aNames[i] )
             IF oMenu != NULL_OBJECT
@@ -436,13 +436,13 @@ FUNCTION __VFPReleaseMenus( aNames AS USUAL[], lExtended AS LOGIC ) AS VOID
 /// Implements RELEASE POPUPS [&lt;list&gt;] [EXTENDED].
 /// aNames = NULL releases all registered popups.
 /// </summary>
-FUNCTION __VFPReleasePopups( aNames AS USUAL[], lExtended AS LOGIC ) AS VOID
-    IF aNames == NULL .OR. aNames:Length == 0
+FUNCTION __VFPReleasePopups( aNames AS ARRAY, lExtended AS LOGIC ) AS VOID
+    IF aNames == NULL .OR. ALen( aNames ) == 0
         Popup.ReleaseAll()
         ContextMenu.ReleaseAll()
     ELSE
         LOCAL i AS INT
-        FOR i := 0 TO aNames:Length - 1
+        FOR i := 1 TO ALen( aNames )
             LOCAL oPopup AS IVfpPopupContainer
             oPopup := __VFPFindPopupContainer( (STRING) aNames[i] )
             IF oPopup != NULL_OBJECT

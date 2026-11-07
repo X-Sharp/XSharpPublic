@@ -48,12 +48,19 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				RETURN SELF:_popup
 			END GET
 			SET
+				IF SELF:_popup != NULL .AND. SELF:_popup != VALUE
+					SELF:_popup:OwnerPad := NULL
+				ENDIF
 				SELF:_popup   := VALUE
 				SELF:DropDown := VALUE
-				// Store a direct back-reference so Bar.FindDispatchTarget can reach the
-				// owning Menu without relying on the fragile OwnerItem chain.
-				IF VALUE != NULL .AND. SELF:Owner IS Menu VAR mnu
-					VALUE:OwnerMenu := mnu
+				// Store direct back-references so Bar can reach the owning Pad and Menu
+				// without relying on the OwnerItem chain, which WinForms only fills
+				// once the dropdown has been shown.
+				IF VALUE != NULL
+					VALUE:OwnerPad := SELF
+					IF SELF:Owner IS Menu VAR mnu
+						VALUE:OwnerMenu := mnu
+					ENDIF
 				ENDIF
 			END SET
 		END PROPERTY

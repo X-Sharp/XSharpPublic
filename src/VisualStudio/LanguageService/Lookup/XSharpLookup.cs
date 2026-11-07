@@ -141,11 +141,8 @@ namespace XSharp.LanguageService
                         var type = ResolveImpliedType(location, xVar, currentType, visibility);
                         if (type != null)
                         {
-                            var typeName = type.FullName.GetXSharpTypeName();
-                            // ResolveImpliedCollection stores the element type with its type arguments, e.g. KeyValuePair<STRING,Customer>
-                            if (xVar.ImpliedKind == ImpliedKind.InCollection && type.IsGeneric)
-                                typeName = WithTypeArguments(typeName, xVar.TypeName);
-                            xVar.TypeName = typeName;
+                            // the Resolve methods store the declared type with its type arguments, e.g. KeyValuePair<STRING,Customer>
+                            xVar.TypeName = ImpliedTypeName(type.FullName.GetXSharpTypeName(), type.IsGeneric, xVar.ImpliedKind, xVar.TypeName);
                         }
                     }
                 }
@@ -380,6 +377,13 @@ namespace XSharp.LanguageService
         {
             // Resolve the VAR type of an element in a collection
             var tokenList = xVar.Expression;
+            var arrayElement = TypedArrayElementType(tokenList);
+            if (arrayElement != null)
+            {
+                // FOREACH VAR x IN <T>{...}
+                xVar.TypeName = arrayElement;
+                return SearchType(location, arrayElement).FirstOrDefault();
+            }
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
             if (element == null)
@@ -479,6 +483,91 @@ namespace XSharp.LanguageService
             if (pos > 0)
                 resolvedName = resolvedName.Substring(0, pos);
             return resolvedName + "<" + string.Join(",", typeArgs) + ">";
+        }
+
+        /// <summary>
+        /// The type name to store for an implied variable: a generic type keeps the type arguments of its
+        /// declaration (List&lt;T&gt; + List&lt;STRING&gt; -> List&lt;STRING&gt;), otherwise the resolved name.
+        /// </summary>
+        internal static string ImpliedTypeName(string resolvedName, bool isGeneric, ImpliedKind kind, string declaredName)
+        {
+            if (!isGeneric)
+                return resolvedName;
+            switch (kind)
+            {
+                case ImpliedKind.Assignment:
+                case ImpliedKind.Using:
+                case ImpliedKind.InCollection:
+                    return WithTypeArguments(resolvedName, declaredName);
+                default:
+                    return resolvedName;
+            }
+        }
+
+        /// <summary>The element type of a typed array literal <c>&lt;T&gt;{...}</c> that is the whole expression, otherwise null.</summary>
+        internal static string TypedArrayElementType(IList<IToken> expression)
+        {
+            if (expression == null || expression.Count < 4 || expression[0].Type != XSharpLexer.LT)
+                return null;
+            var name = new System.Text.StringBuilder();
+            int depth = 1;
+            int i = 1;
+            for (; i < expression.Count && depth > 0; i++)
+            {
+                var text = expression[i].Text;
+                if (text.Length > 0 && text.All(c => c == '<' || c == '>'))
+                {
+                    // a closing token can be lexed as one '>>'
+                    foreach (var c in text)
+                    {
+                        depth += c == '<' ? 1 : -1;
+                        if (depth == 0)
+                            break;
+                        name.Append(c);
+                    }
+                }
+                else
+                    name.Append(text);
+            }
+            if (depth != 0 || name.Length == 0 || i >= expression.Count || expression[i].Type != XSharpLexer.LCURLY)
+                return null;
+            return ClosesAtEnd(expression, i) ? name.ToString() : null;
+        }
+
+        /// <summary>The type name of a creation <c>Name&lt;Args&gt;{...}</c> that is the whole expression, otherwise null.</summary>
+        internal static string CreatedTypeName(IList<IToken> expression)
+        {
+            if (expression == null || expression.Count < 3)
+                return null;
+            var first = expression[0].Type;
+            if (first != XSharpLexer.ID && !XSharpLexer.IsType(first))
+                return null;
+            var name = new System.Text.StringBuilder();
+            int i = 0;
+            for (; i < expression.Count && expression[i].Type != XSharpLexer.LCURLY; i++)
+            {
+                var type = expression[i].Type;
+                if (type == XSharpLexer.LPAREN || type == XSharpLexer.COLON || type == XSharpLexer.LCURLY)
+                    return null;
+                name.Append(expression[i].Text);
+            }
+            if (i >= expression.Count || !ClosesAtEnd(expression, i))
+                return null;
+            return name.ToString();
+        }
+
+        /// <summary>True when the curly brace at <paramref name="open"/> is closed by the last token.</summary>
+        private static bool ClosesAtEnd(IList<IToken> expression, int open)
+        {
+            int depth = 0;
+            for (int j = open; j < expression.Count; j++)
+            {
+                if (expression[j].Type == XSharpLexer.LCURLY)
+                    depth++;
+                else if (expression[j].Type == XSharpLexer.RCURLY && --depth == 0)
+                    return j == expression.Count - 1;
+            }
+            return false;
         }
 
         private static IXTypeSymbol getElementType(IXTypeSymbol type, XSharpSearchLocation location, IXSymbol element)
@@ -591,6 +680,8 @@ namespace XSharp.LanguageService
         {
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
+            // read before the typecast handling below changes the token list
+            var createdName = CreatedTypeName(tokenList);
             // delete tokens between {} and other operators so we get the return type of the outer construct
             if (tokenList.First().Type == XSharpLexer.LPAREN)
             {
@@ -613,7 +704,15 @@ namespace XSharp.LanguageService
             tokenList = DeleteNestedTokens(tokenList);
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
-            return GetTypeFromSymbol(location, element);
+            var type = GetTypeFromSymbol(location, element);
+            if (type != null && type.IsGeneric)
+            {
+                // the declared name keeps the type arguments: s:Load() AS List<STRING>, List<STRING>{}
+                var declared = element is IXMemberSymbol mem && mem.Kind == Kind.Constructor ? createdName : GetTypeNameFromSymbol(location, element);
+                if (declared != null)
+                    xVar.TypeName = declared;
+            }
+            return type;
         }
         private static IXTypeSymbol ResolveImpliedType(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {

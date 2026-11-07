@@ -1,0 +1,101 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using LanguageService.SyntaxTree;
+using XSharp.LanguageService.InlayHints;
+using Xunit;
+
+namespace XSharp.LanguageService.Tests.InlayHints
+{
+    public class HintCandidatesTests
+    {
+        private static IReadOnlyList<CallCandidate> Calls(string text) => HintCandidates.Calls(TestLexer.Lex(text));
+
+        private static IReadOnlyList<DeclarationCandidate> Declarations(string text) => HintCandidates.Declarations(TestLexer.Lex(text));
+
+        private static string Text(IList<IToken> tokens) => string.Join(" ", tokens.Select(t => t.Text));
+
+        [Fact]
+        public void FindsMethodAndFunctionCalls()
+        {
+            var calls = Calls("o:Open(1, TRUE)\nFoo(\"a\")\n");
+            Assert.Equal(new[] { "Open", "Foo" }, calls.Select(c => c.Name.Text));
+            Assert.Equal(2, calls[0].Arguments.Count);
+            Assert.Single(calls[1].Arguments);
+            Assert.False(calls[0].IsCreation);
+        }
+
+        [Fact]
+        public void FindsConstructorCall()
+        {
+            var call = Assert.Single(Calls("x := Customer{1}\n"));
+            Assert.Equal("Customer", call.Name.Text);
+            Assert.True(call.IsCreation);
+        }
+
+        [Fact]
+        public void NestedCallsAreBothFound()
+        {
+            var calls = Calls("Foo(Bar(1), 2)\n");
+            Assert.Equal(new[] { "Foo", "Bar" }, calls.Select(c => c.Name.Text));
+            Assert.Equal(2, calls[0].Arguments.Count);
+            Assert.Single(calls[1].Arguments);
+        }
+
+        [Fact]
+        public void ArgumentOnContinuedLineKeepsItsToken()
+        {
+            var call = Assert.Single(Calls("Foo(1, ;\n   TRUE)\n"));
+            var first = call.Arguments[1].First();
+            Assert.Equal("TRUE", first.Text);
+            Assert.Equal(2, first.Line);
+        }
+
+        [Fact]
+        public void EmptyArgumentIsKept()
+        {
+            var call = Assert.Single(Calls("Foo(1,,3)\n"));
+            Assert.Equal(3, call.Arguments.Count);
+            Assert.Empty(call.Arguments[1]);
+        }
+
+        [Fact]
+        public void NoArgumentsNoCandidate()
+        {
+            Assert.Empty(Calls("Foo()\n"));
+        }
+
+        [Fact]
+        public void DeclarationIsNotACall()
+        {
+            Assert.Empty(Calls("FUNCTION Foo(n := 1 AS INT) AS VOID\n"));
+            Assert.Empty(Calls("CLASS C\nMETHOD Bar(a, b) CLIPPER\nEND CLASS\n"));
+        }
+
+        [Fact]
+        public void FindsImpliedDeclarations()
+        {
+            var decls = Declarations("VAR a := 1\nLOCAL IMPLIED b := 2\nFOREACH VAR c IN list\nNEXT\nFOR VAR i := 1 TO 3\nNEXT\nUSING VAR s := x\n");
+            Assert.Equal(new[] { ImpliedDeclarationKind.Var, ImpliedDeclarationKind.LocalImplied, ImpliedDeclarationKind.ForEach,
+                ImpliedDeclarationKind.For, ImpliedDeclarationKind.Using }, decls.Select(d => d.Kind));
+            Assert.Equal(new[] { "a", "b", "c", "i", "s" }, decls.Select(d => d.Name.Text));
+            Assert.Equal("list", Text(decls[2].Initializer));
+            Assert.Equal("1", Text(decls[3].Initializer));
+        }
+
+        [Fact]
+        public void SeveralDeclaratorsAreSplit()
+        {
+            var decls = Declarations("VAR a := 1, b := Foo(2, 3)\n");
+            Assert.Equal(new[] { "a", "b" }, decls.Select(d => d.Name.Text));
+            Assert.All(decls, d => Assert.Equal(2, d.DeclaratorCount));
+            Assert.Equal("Foo ( 2 , 3 )", Text(decls[1].Initializer));
+            Assert.Equal("1", Text(decls[0].Initializer));
+        }
+
+        [Fact]
+        public void OutVarIsNotACandidate()
+        {
+            Assert.Empty(Declarations("Foo(OUT VAR x)\n"));
+        }
+    }
+}

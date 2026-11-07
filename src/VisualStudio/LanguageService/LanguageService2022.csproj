@@ -142,6 +142,7 @@
     <Compile Include="FindReferences\ReferenceCandidateScanner.cs" />
     <Compile Include="FindReferences\SymbolIdentity.cs" />
     <Compile Include="FindReferences\SymbolResolver.cs" />
+    <Compile Include="InlayHints\HintCandidates.cs" />
     <Compile Include="FindReferences\XDocumentIndexer.cs" />
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
     <Compile Include="FindReferences\OverloadFilter.cs" />

@@ -145,8 +145,12 @@
     <Compile Include="InlayHints\HintCandidates.cs" />
     <Compile Include="InlayHints\HintRules.cs" />
     <Compile Include="InlayHints\InlayHint.cs" />
+    <Compile Include="InlayHints\InlayHintAdornment.cs" />
     <Compile Include="InlayHints\InlayHintComputer.cs" />
+    <Compile Include="InlayHints\InlayHintFormat.cs" />
     <Compile Include="InlayHints\InlayHintQueue.cs" />
+    <Compile Include="InlayHints\InlayHintTagger.cs" />
+    <Compile Include="InlayHints\InlayHintTriggers.cs" />
     <Compile Include="InlayHints\TypeRewrite.cs" />
     <Compile Include="FindReferences\XDocumentIndexer.cs" />
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />

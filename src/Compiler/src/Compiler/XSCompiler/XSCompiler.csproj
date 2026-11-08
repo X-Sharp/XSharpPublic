@@ -45,6 +45,6 @@
   </ItemGroup>
   <Import Project="VBCSCompilerCommandLine.projitems" Label="Shared" />
   <PropertyGroup>
-    <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
+    <PreBuildEvent Condition="'$(UseSharedCompilation)' == 'true'">taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
 </PropertyGroup>
 </Project>

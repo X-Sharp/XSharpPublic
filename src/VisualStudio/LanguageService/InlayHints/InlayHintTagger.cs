@@ -58,6 +58,11 @@ namespace XSharp.LanguageService.InlayHints
         private readonly Dictionary<InlayHint, UIElement> _adornments = new Dictionary<InlayHint, UIElement>();
         private InlayHintSet _current;
         private bool _closed;
+        // the visible lines of the last layout; -1 before the first one
+        private volatile int _firstVisible = -1;
+        private volatile int _lastVisible = -1;
+        /// <summary>The lines computed before the view has a layout.</summary>
+        private const int InitialLines = 100;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -76,6 +81,7 @@ namespace XSharp.LanguageService.InlayHints
             InlayHintSettings.HeldChanged += OnHeldChanged;
             _formatMap.FormatMappingChanged += OnFormatMappingChanged;
             _view.Closed += OnClosed;
+            _view.LayoutChanged += OnLayoutChanged;
             InlayHintTriggers.Register(this);
             // the first parse may be done before the view opened
             var snapshot = buffer.GetDocument()?.SnapShot;
@@ -117,7 +123,47 @@ namespace XSharp.LanguageService.InlayHints
             InlayHintSettings.HeldChanged -= OnHeldChanged;
             _formatMap.FormatMappingChanged -= OnFormatMappingChanged;
             _view.Closed -= OnClosed;
+            _view.LayoutChanged -= OnLayoutChanged;
             InlayHintTriggers.Unregister(this);
+        }
+
+        /// <summary>Scrolled to lines without hints computed: compute them once the scrolling stops.</summary>
+        private void OnLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
+        {
+            if (_closed)
+                return;
+            var lines = _view.TextViewLines;
+            if (lines == null || lines.Count == 0)
+                return;
+            _firstVisible = lines.FirstVisibleLine.Start.GetContainingLine().LineNumber;
+            _lastVisible = lines.LastVisibleLine.Start.GetContainingLine().LineNumber;
+            var set = _current;
+            var snapshot = _buffer.GetDocument()?.SnapShot;
+            // a new snapshot gets its own computation from the parse
+            if (set == null || snapshot == null || set.Snapshot != snapshot)
+                return;
+            var first = Math.Min(_firstVisible, snapshot.LineCount - 1);
+            var last = Math.Min(_lastVisible, snapshot.LineCount - 1);
+            var start = snapshot.GetLineFromLineNumber(first).Start.Position;
+            var end = snapshot.GetLineFromLineNumber(last).EndIncludingLineBreak.Position;
+            if (!InlayHintRange.IsCovered(set.Covered, start, end))
+                RequestDebounced(ScrollDelay);
+        }
+
+        private const int ScrollDelay = 250;
+
+        /// <summary>The buffer range to compute: the visible lines and one screen above and below.</summary>
+        private (int Start, int End) WantedRange(ITextSnapshot snapshot)
+        {
+            int firstVisible = _firstVisible, lastVisible = _lastVisible;
+            if (firstVisible < 0)
+            {
+                firstVisible = 0;
+                lastVisible = InitialLines;
+            }
+            var lineCount = snapshot.LineCount;
+            var (first, last) = InlayHintRange.Lines(Math.Min(firstVisible, lineCount - 1), Math.Min(lastVisible, lineCount - 1), lineCount);
+            return (snapshot.GetLineFromLineNumber(first).Start.Position, snapshot.GetLineFromLineNumber(last).EndIncludingLineBreak.Position);
         }
 
         private void Request(ITextSnapshot snapshot)
@@ -128,11 +174,13 @@ namespace XSharp.LanguageService.InlayHints
         }
 
         /// <summary>Recompute the current snapshot after a quiet second (walker done, another file saved, options).</summary>
-        internal void RequestDebounced()
+        internal void RequestDebounced() => RequestDebounced(1000);
+
+        private void RequestDebounced(int delayMs)
         {
             if (_closed)
                 return;
-            InlayHintQueue.Instance.RequestDebounced(this, ct => ComputeAsync(_buffer.GetDocument()?.SnapShot, ct));
+            InlayHintQueue.Instance.RequestDebounced(this, ct => ComputeAsync(_buffer.GetDocument()?.SnapShot, ct), delayMs);
         }
 
         private async Task ComputeAsync(ITextSnapshot snapshot, CancellationToken ct)
@@ -141,9 +189,10 @@ namespace XSharp.LanguageService.InlayHints
                 return;
             var parameters = InlayHintSettings.ShowParameters;
             var types = InlayHintSettings.ShowTypes;
+            var (start, end) = WantedRange(snapshot);
             var set = parameters || types
-                ? InlayHintComputer.Compute(_buffer.GetDocument(), File, snapshot, parameters, types, ct)
-                : new InlayHintSet { Snapshot = snapshot, Hints = Array.Empty<InlayHint>() };
+                ? InlayHintComputer.Compute(_buffer.GetDocument(), File, snapshot, parameters, types, start, end, ct)
+                : new InlayHintSet { Snapshot = snapshot, Hints = Array.Empty<InlayHint>(), Covered = new[] { (0, snapshot.Length) } };
             if (set == null)
                 return;
             set.Parameters = parameters;
@@ -152,6 +201,14 @@ namespace XSharp.LanguageService.InlayHints
             // publish only the hints of the snapshot the document is at
             if (_closed || _buffer.GetDocument()?.SnapShot != set.Snapshot)
                 return;
+            var old = _current;
+            // scrolled within the same snapshot: keep what was computed before
+            if (old != null && old.Snapshot == set.Snapshot && old.Parameters == set.Parameters && old.Types == set.Types)
+            {
+                set.Hints = InlayHintRange.Merge(old.Hints, set.Hints);
+                foreach (var span in old.Covered)
+                    set.Covered = InlayHintRange.AddCovered(set.Covered, span.Start, span.End);
+            }
             _current = set;
             _adornments.Clear();
             RaiseTagsChanged();

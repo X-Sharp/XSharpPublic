@@ -26,13 +26,18 @@ namespace XSharp.LanguageService.InlayHints
         /// <summary>The kinds that were computed (the options, or Alt+F1 held).</summary>
         internal bool Parameters { get; set; }
         internal bool Types { get; set; }
+        /// <summary>The buffer ranges [Start, End) whose candidates were computed.</summary>
+        internal IReadOnlyList<(int Start, int End)> Covered { get; set; } = Array.Empty<(int, int)>();
     }
 
     /// <summary>Resolves the candidates of a whole document against the code model. Runs in the background.</summary>
     internal static class InlayHintComputer
     {
-        /// <summary>The hints for <paramref name="snapshot"/>, or null when the document has moved on.</summary>
-        internal static InlayHintSet Compute(XDocument doc, XFile file, ITextSnapshot snapshot, bool parameters, bool types, CancellationToken ct)
+        /// <summary>
+        /// The hints for the candidates whose name starts in [<paramref name="start"/>, <paramref name="end"/>) of
+        /// <paramref name="snapshot"/>, or null when the document has moved on.
+        /// </summary>
+        internal static InlayHintSet Compute(XDocument doc, XFile file, ITextSnapshot snapshot, bool parameters, bool types, int start, int end, CancellationToken ct)
         {
             if (doc == null || file == null || snapshot == null || (!parameters && !types))
                 return null;
@@ -57,6 +62,8 @@ namespace XSharp.LanguageService.InlayHints
                 foreach (var call in HintCandidates.Calls(tokens))
                 {
                     ct.ThrowIfCancellationRequested();
+                    if (!InRange(call.Name, start, end))
+                        continue;
                     // only calls that could show a hint are worth a lookup
                     if (!call.Arguments.Any(HintRules.SaysNothing))
                         continue;
@@ -71,6 +78,8 @@ namespace XSharp.LanguageService.InlayHints
                 foreach (var decl in HintCandidates.Declarations(tokens))
                 {
                     ct.ThrowIfCancellationRequested();
+                    if (!InRange(decl.Name, start, end))
+                        continue;
                     if (HintRules.TypeIsVisible(decl.Initializer))
                         continue;
                     declarations++;
@@ -79,9 +88,16 @@ namespace XSharp.LanguageService.InlayHints
                         hints.Add(hint);
                 }
             }
-            Logger.Information($"Inlay hints {file.FullPath}: {calls} calls, {declarations} declarations, {hints.Count} hints, {watch.ElapsedMilliseconds} ms");
-            return new InlayHintSet { Snapshot = snapshot, Hints = hints.OrderBy(h => h.Position).ToList() };
+            Logger.Information($"Inlay hints {file.FullPath} [{start}..{end}): {calls} calls, {declarations} declarations, {hints.Count} hints, {watch.ElapsedMilliseconds} ms");
+            return new InlayHintSet
+            {
+                Snapshot = snapshot,
+                Hints = hints.OrderBy(h => h.Position).ToList(),
+                Covered = new[] { (start, end) }
+            };
         }
+
+        private static bool InRange(IToken name, int start, int end) => start <= name.StartIndex && name.StartIndex < end;
 
         private static InlayHint TypeHint(XDocument document, XFile file, IList<IToken> tokens, DeclarationCandidate decl)
         {

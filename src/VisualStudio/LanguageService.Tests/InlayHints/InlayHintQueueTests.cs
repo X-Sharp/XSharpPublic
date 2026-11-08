@@ -116,5 +116,59 @@ namespace XSharp.LanguageService.Tests.InlayHints
             Thread.Sleep(100);
             Assert.Equal(1, runs);
         }
+
+        [Fact]
+        public void ARequestCancelsAPendingDebounceOfTheSameKey()
+        {
+            // the debounced work was asked for an older state; it would run once more after the newer request
+            var delays = new List<(TaskCompletionSource<bool> Delay, CancellationToken Token)>();
+            var queue = new InlayHintQueue((ms, ct) =>
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                ct.Register(() => tcs.TrySetCanceled());
+                lock (delays)
+                    delays.Add((tcs, ct));
+                return tcs.Task;
+            });
+            var ran = new ConcurrentQueue<string>();
+            var done = new TaskCompletionSource<bool>();
+            queue.RequestDebounced("a", ct => { ran.Enqueue("debounced"); return Task.CompletedTask; });
+            queue.Request("a", ct => { ran.Enqueue("now"); done.TrySetResult(true); return Task.CompletedTask; });
+            Wait(done.Task);
+            lock (delays)
+            {
+                Assert.True(delays[0].Token.IsCancellationRequested);
+                delays[0].Delay.TrySetResult(true);
+            }
+            Thread.Sleep(100);
+            Assert.Equal(new[] { "now" }, ran);
+        }
+
+        [Fact]
+        public void DebounceTokensAreDisposed()
+        {
+            var tokens = new List<CancellationToken>();
+            var delays = new List<TaskCompletionSource<bool>>();
+            var queue = new InlayHintQueue((ms, ct) =>
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                ct.Register(() => tcs.TrySetCanceled());
+                lock (delays)
+                {
+                    delays.Add(tcs);
+                    tokens.Add(ct);
+                }
+                return tcs.Task;
+            });
+            var done = new TaskCompletionSource<bool>();
+            queue.RequestDebounced("a", ct => Task.CompletedTask);
+            queue.RequestDebounced("a", ct => { done.TrySetResult(true); return Task.CompletedTask; });
+            lock (delays)
+                delays[1].SetResult(true);
+            Wait(done.Task);
+            Thread.Sleep(100);
+            // the WaitHandle of a token whose source is disposed throws
+            Assert.All(tokens, t => Assert.Throws<ObjectDisposedException>(() => t.WaitHandle));
+        }
     }
 }

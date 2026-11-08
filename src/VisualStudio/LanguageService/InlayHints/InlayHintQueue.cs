@@ -37,6 +37,12 @@ namespace XSharp.LanguageService.InlayHints
         {
             lock (_gate)
             {
+                // a debounced request for the same key was asked for an older state
+                if (_debounce.TryGetValue(key, out var debounced))
+                {
+                    _debounce.Remove(key);
+                    debounced.Cancel();
+                }
                 _pending.RemoveAll(p => Equals(p.Key, key));
                 if (_running != null && Equals(_runningKey, key))
                     _running.Cancel();
@@ -62,12 +68,16 @@ namespace XSharp.LanguageService.InlayHints
             }
             _ = _delay(delayMs, cts.Token).ContinueWith(t =>
             {
+                bool run;
                 lock (_gate)
                 {
                     if (_debounce.TryGetValue(key, out var current) && current == cts)
                         _debounce.Remove(key);
+                    // only cancelled while it is in _debounce, under the lock: no Cancel after the Dispose
+                    run = t.Status == TaskStatus.RanToCompletion && !cts.IsCancellationRequested;
                 }
-                if (t.Status == TaskStatus.RanToCompletion && !cts.IsCancellationRequested)
+                cts.Dispose();
+                if (run)
                     Request(key, work);
             }, TaskScheduler.Default);
         }

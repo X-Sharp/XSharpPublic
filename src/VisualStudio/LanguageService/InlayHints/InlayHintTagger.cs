@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -31,12 +32,15 @@ namespace XSharp.LanguageService.InlayHints
         [Import]
         internal IEditorFormatMapService FormatMapService { get; set; }
 
+        [Import]
+        internal IToolTipService ToolTipService { get; set; }
+
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
             if (!(textView is IWpfTextView view) || buffer != textView.TextBuffer || !DocumentFactory.IsXSharpDocument(buffer))
                 return null;
             return view.Properties.GetOrCreateSingletonProperty(typeof(InlayHintTagger),
-                () => new InlayHintTagger(view, buffer, FormatMapService.GetEditorFormatMap(view))) as ITagger<T>;
+                () => new InlayHintTagger(view, buffer, FormatMapService.GetEditorFormatMap(view), ToolTipService)) as ITagger<T>;
         }
     }
 
@@ -49,6 +53,7 @@ namespace XSharp.LanguageService.InlayHints
         private readonly IWpfTextView _view;
         private readonly ITextBuffer _buffer;
         private readonly IEditorFormatMap _formatMap;
+        private readonly IToolTipService _toolTips;
         private readonly XSharpClassifier _classifier;
         private readonly Dictionary<InlayHint, UIElement> _adornments = new Dictionary<InlayHint, UIElement>();
         private InlayHintSet _current;
@@ -58,11 +63,12 @@ namespace XSharp.LanguageService.InlayHints
 
         internal XFile File => _buffer.GetFile();
 
-        internal InlayHintTagger(IWpfTextView view, ITextBuffer buffer, IEditorFormatMap formatMap)
+        internal InlayHintTagger(IWpfTextView view, ITextBuffer buffer, IEditorFormatMap formatMap, IToolTipService toolTips)
         {
             _view = view;
             _buffer = buffer;
             _formatMap = formatMap;
+            _toolTips = toolTips;
             _classifier = buffer.GetClassifier();
             if (_classifier != null)
                 _classifier.ParseCompleted += OnParseCompleted;
@@ -158,7 +164,7 @@ namespace XSharp.LanguageService.InlayHints
                     continue;
                 if (!_adornments.TryGetValue(hint, out var adornment))
                 {
-                    adornment = new InlayHintAdornment(hint, set.Snapshot, _view, _formatMap, project);
+                    adornment = new InlayHintAdornment(hint, set.Snapshot, _view, _formatMap, project, _toolTips);
                     _adornments[hint] = adornment;
                 }
                 yield return new TagSpan<IntraTextAdornmentTag>(new SnapshotSpan(after, 0),

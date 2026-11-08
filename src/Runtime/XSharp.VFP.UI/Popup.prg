@@ -24,6 +24,36 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// so FindDispatchTarget can reach the menu without relying on OwnerItem chain-walking.
 		INTERNAL PROPERTY OwnerMenu AS Menu AUTO
 
+		// The pad or bar this popup was attached to with ON PAD / ON BAR. WinForms
+		// fills OwnerItem too, but only once the dropdown has been shown, and
+		// BAR(), PAD() and MENU() must also work for a selection made from code.
+		INTERNAL PROPERTY OwnerPad AS Pad AUTO
+		INTERNAL PROPERTY OwnerBar AS Bar AUTO
+
+		// The pad this popup hangs from, through any nested popups.
+		INTERNAL METHOD FindOwnerPad() AS Pad
+			LOCAL oPopup := SELF AS Popup
+			LOCAL nDepth := 0 AS INT
+			DO WHILE oPopup != NULL .AND. nDepth < 32
+				IF oPopup:OwnerPad != NULL
+					RETURN oPopup:OwnerPad
+				ENDIF
+				IF oPopup:OwnerItem IS Pad VAR oPad
+					RETURN oPad
+				ENDIF
+				LOCAL oBar AS Bar
+				oBar := oPopup:OwnerBar
+				IF oBar == NULL .AND. oPopup:OwnerItem IS Bar VAR oItem
+					oBar := oItem
+				ENDIF
+				IF oBar == NULL
+					EXIT
+				ENDIF
+				oPopup := oBar:Owner ASTYPE Popup
+				nDepth++
+			ENDDO
+			RETURN NULL
+
 		CONSTRUCTOR() STRICT
 			SUPER()
 			SELF:_bars := List<Bar>{}
@@ -39,7 +69,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SUPER:Name := VALUE
 				IF !String.IsNullOrEmpty(VALUE)
 					IF _registry == NULL
-						_registry := Dictionary<STRING, Popup>{}
+						_registry := Dictionary<STRING, Popup>{ System.StringComparer.OrdinalIgnoreCase }
 					ENDIF
 					_registry[VALUE] := SELF
 				ENDIF

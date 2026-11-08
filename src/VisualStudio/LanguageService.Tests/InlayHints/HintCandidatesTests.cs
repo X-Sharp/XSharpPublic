@@ -97,5 +97,21 @@ namespace XSharp.LanguageService.Tests.InlayHints
         {
             Assert.Empty(Declarations("Foo(OUT VAR x)\n"));
         }
+
+        [Fact]
+        public void ALargeFileIsScannedInLinearTime()
+        {
+            // in the editor the token index does not always match the position in the list; a lookup of each
+            // call name in the list made the scan of a large file take seconds
+            var tokens = TestLexer.Lex(string.Concat(Enumerable.Repeat("Foo(1, 2)\n", 20000)));
+            foreach (var token in tokens.OfType<CommonToken>())
+                token.TokenIndex = -1;
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var calls = HintCandidates.Calls(tokens);
+            watch.Stop();
+            Assert.Equal(20000, calls.Count);
+            Assert.Equal(2, calls[19999].Arguments.Count);
+            Assert.True(watch.ElapsedMilliseconds < 1000, $"{watch.ElapsedMilliseconds} ms");
+        }
     }
 }

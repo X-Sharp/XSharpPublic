@@ -28,6 +28,12 @@ namespace XSharp.LanguageService.FindReferences
             var index = name.TokenIndex >= 0 && name.TokenIndex < tokens.Count && tokens[name.TokenIndex] == name
                 ? name.TokenIndex
                 : tokens.IndexOf(name);
+            return Arguments(tokens, index);
+        }
+
+        /// <summary>As <see cref="Arguments(IList{IToken}, IToken)"/>, for the name at <paramref name="index"/> in the list.</summary>
+        internal static IList<IList<IToken>> Arguments(IList<IToken> tokens, int index)
+        {
             if (index < 0)
                 return null;
             var arguments = new List<IList<IToken>>();

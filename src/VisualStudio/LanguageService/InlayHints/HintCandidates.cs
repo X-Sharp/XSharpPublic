@@ -61,7 +61,8 @@ namespace XSharp.LanguageService.InlayHints
                     continue;
                 if (i > 0 && IsDeclarationKeyword(code[i - 1].Type))
                     continue;
-                var arguments = OverloadFilter.Arguments(tokens, name);
+                // by position: looking the name up in the list made a large file quadratic
+                var arguments = OverloadFilter.Arguments(code, i);
                 if (arguments == null || arguments.Count == 0)
                     continue;
                 var before = i > 0 ? code[i - 1].Type : XSharpLexer.EOS;

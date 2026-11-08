@@ -47,40 +47,34 @@ namespace XSharp.LanguageService.InlayHints
             var document = PrivateDocument(doc.Buffer, tokens, snapshot, lineState);
             var hints = new List<InlayHint>();
             int calls = 0, declarations = 0;
-            ModelWalker.Suspend();
-            try
+            // No ModelWalker.Suspend() here: this runs after every parse, and a suspend makes the walker drop the
+            // rest of its project and start it again. The hints are recomputed when the walk completes.
+            if (parameters)
             {
-                if (parameters)
+                foreach (var call in HintCandidates.Calls(tokens))
                 {
-                    foreach (var call in HintCandidates.Calls(tokens))
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        // only calls that could show a hint are worth a lookup
-                        if (!call.Arguments.Any(HintRules.SaysNothing))
-                            continue;
-                        calls++;
-                        var member = HintRules.SingleFit(Resolve(document, file, tokens, call.Name, out _), call.Arguments.Count);
-                        if (member != null)
-                            hints.AddRange(HintRules.ParameterHints(call, member));
-                    }
-                }
-                if (types)
-                {
-                    foreach (var decl in HintCandidates.Declarations(tokens))
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        if (HintRules.TypeIsVisible(decl.Initializer))
-                            continue;
-                        declarations++;
-                        var hint = TypeHint(document, file, tokens, decl);
-                        if (hint != null)
-                            hints.Add(hint);
-                    }
+                    ct.ThrowIfCancellationRequested();
+                    // only calls that could show a hint are worth a lookup
+                    if (!call.Arguments.Any(HintRules.SaysNothing))
+                        continue;
+                    calls++;
+                    var member = HintRules.SingleFit(Resolve(document, file, tokens, call.Name, out _, out _), call.Arguments.Count);
+                    if (member != null)
+                        hints.AddRange(HintRules.ParameterHints(call, member));
                 }
             }
-            finally
+            if (types)
             {
-                ModelWalker.Resume();
+                foreach (var decl in HintCandidates.Declarations(tokens))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    if (HintRules.TypeIsVisible(decl.Initializer))
+                        continue;
+                    declarations++;
+                    var hint = TypeHint(document, file, tokens, decl);
+                    if (hint != null)
+                        hints.Add(hint);
+                }
             }
             Logger.Information($"Inlay hints {file.FullPath}: {calls} calls, {declarations} declarations, {hints.Count} hints, {watch.ElapsedMilliseconds} ms");
             return new InlayHintSet { Snapshot = snapshot, Hints = hints.OrderBy(h => h.Position).ToList() };
@@ -93,26 +87,39 @@ namespace XSharp.LanguageService.InlayHints
             if (callName != null)
             {
                 var arguments = OverloadFilter.Arguments(decl.Initializer, callName);
-                var filtered = Resolve(document, file, tokens, callName, out _);
+                var filtered = Resolve(document, file, tokens, callName, out _, out var candidates);
                 if (filtered.Count != 1 || (filtered[0] is IXMemberSymbol m && !OverloadFilter.Accepts(m, arguments?.Count ?? 0)))
                     return null;
+                if (!HintRules.OverloadsAgreeOnType(candidates))
+                    return null;
             }
-            var symbols = Resolve(document, file, tokens, decl.Name, out var location);
+            var symbols = Resolve(document, file, tokens, decl.Name, out var location, out _);
             if (!(symbols.FirstOrDefault() is IXVariableSymbol variable))
                 return null;
             var typeName = variable.TypeName;
             if (!HintRules.IsResolvedTypeName(typeName, decl.Initializer))
                 return null;
+            if (location == null || HintRules.HasOpenTypeArgument(typeName, name => ResolvesToType(location, name)))
+                return null;
             var shown = HintRules.ShortTypeName(typeName);
+            var written = HintRules.EditTypeName(typeName, location.Usings);
             return new InlayHint
             {
                 Kind = InlayHintKind.Type,
                 Position = decl.Name.StopIndex + 1,
                 Text = " AS " + shown,
                 TypeName = shown,
-                Type = location?.FindType(typeName),
-                Edit = TypeRewrite.For(decl, tokens, shown, XLiterals.FormatKeyword)
+                Type = location.FindType(typeName),
+                Edit = TypeRewrite.For(decl, tokens, written, XLiterals.FormatKeyword)
             };
+        }
+
+        /// <summary>True when the name (also a keyword type such as STRING) is a type in the context of the location.</summary>
+        private static bool ResolvesToType(XSharpSearchLocation location, string name)
+        {
+            if (location.Project == null)
+                return false;
+            return location.FindType(name.GetSystemTypeName(location.Project.ParseOptions.XSharpRuntime)) != null;
         }
 
         /// <summary>The name of the call that the initializer ends with (<c>o:Foo(1)</c>, <c>Bar{}</c>), otherwise null.</summary>
@@ -150,9 +157,10 @@ namespace XSharp.LanguageService.InlayHints
         }
 
         /// <summary>The symbols the name resolves to, narrowed by the arguments of its call.</summary>
-        private static IList<IXSymbol> Resolve(XDocument document, XFile file, IList<IToken> tokens, IToken name, out XSharpSearchLocation context)
+        private static IList<IXSymbol> Resolve(XDocument document, XFile file, IList<IToken> tokens, IToken name, out XSharpSearchLocation context, out IList<IXSymbol> candidates)
         {
             context = null;
+            candidates = new List<IXSymbol>();
             try
             {
                 var member = XSharpLookup.FindMemberAtPosition(name.StartIndex, file);
@@ -161,6 +169,7 @@ namespace XSharp.LanguageService.InlayHints
                 var searchContext = location;
                 context = location;
                 var resolved = SymbolResolver.ForCreation(SymbolResolver.ResolveAt(ref location, out _, out _), tokens, name);
+                candidates = resolved;
                 var arguments = OverloadFilter.Arguments(tokens, name);
                 if (arguments == null)
                     return resolved;

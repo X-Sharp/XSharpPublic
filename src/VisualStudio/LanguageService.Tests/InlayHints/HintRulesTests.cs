@@ -148,6 +148,53 @@ namespace XSharp.LanguageService.Tests.InlayHints
             Assert.Equal(resolved, HintRules.IsResolvedTypeName(typeName, decl.Initializer));
         }
 
+        private static XSourceMemberSymbol Returning(string name, string type)
+        {
+            return new XSourceMemberSymbol(name, Kind.Method, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(0, 10), type, null);
+        }
+
+        [Fact]
+        public void OverloadsWithDifferentReturnTypesDisagree()
+        {
+            // the lookup behind the variable type takes the first overload: Math.Max(1, 2) would say BYTE
+            Assert.False(HintRules.OverloadsAgreeOnType(new List<IXSymbol> { Returning("Max", "BYTE"), Returning("Max", "INT") }));
+        }
+
+        [Fact]
+        public void OverloadsWithTheSameReturnTypeAgree()
+        {
+            Assert.True(HintRules.OverloadsAgreeOnType(new List<IXSymbol> { Returning("Sub", "STRING"), Returning("Sub", "string") }));
+            Assert.True(HintRules.OverloadsAgreeOnType(new List<IXSymbol> { Returning("Sub", "STRING") }));
+            Assert.True(HintRules.OverloadsAgreeOnType(new List<IXSymbol>()));
+        }
+
+        [Theory]
+        [InlineData("System.Collections.Generic.List<TSource>", true)]
+        [InlineData("List<T>", true)]
+        [InlineData("Dictionary<STRING,List<TValue>>", true)]
+        [InlineData("List<T[]>", true)]
+        [InlineData("System.Collections.Generic.List<STRING>", false)]
+        [InlineData("Dictionary<STRING, List<Customer>>", false)]
+        [InlineData("Customer", false)]
+        public void OpenTypeArgumentCases(string typeName, bool open)
+        {
+            var known = new HashSet<string>(new[] { "STRING", "Customer" }, System.StringComparer.OrdinalIgnoreCase);
+            Assert.Equal(open, HintRules.HasOpenTypeArgument(typeName, known.Contains));
+        }
+
+        [Theory]
+        // the double-click edit must compile: a short name only where a USING (or the namespace) brings it in
+        [InlineData("System.Text.StringBuilder", "System.Text", "StringBuilder")]
+        [InlineData("System.Text.StringBuilder", "System.IO", "System.Text.StringBuilder")]
+        [InlineData("System.Collections.Generic.List<MyApp.Customer>", "System.Collections.Generic", "List<MyApp.Customer>")]
+        [InlineData("System.Collections.Generic.List<MyApp.Customer>", "System.Collections.Generic;MyApp", "List<Customer>")]
+        [InlineData("MyApp.Outer.Inner", "MyApp", "MyApp.Outer.Inner")]
+        [InlineData("STRING", "", "STRING")]
+        public void EditTypeNameCases(string full, string usings, string expected)
+        {
+            Assert.Equal(expected, HintRules.EditTypeName(full, usings.Split(new[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries)));
+        }
+
         [Theory]
         [InlineData("System.Collections.Generic.List<MyApp.Customer>", "List<Customer>")]
         [InlineData("MyApp.Data.Customer", "Customer")]

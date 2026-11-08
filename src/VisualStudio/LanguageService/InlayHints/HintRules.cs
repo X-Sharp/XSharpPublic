@@ -104,6 +104,86 @@ namespace XSharp.LanguageService.InlayHints
 
         private static string WithoutSpaces(string text) => Regex.Replace(text, @"\s+", "");
 
+        /// <summary>
+        /// True when all overloads of the call return the same type. The lookup behind the variable type takes the
+        /// first overload, not the one the arguments pick (<c>Math.Max(1, 2)</c> would say BYTE).
+        /// </summary>
+        internal static bool OverloadsAgreeOnType(IList<IXSymbol> candidates)
+        {
+            var types = (candidates ?? new List<IXSymbol>()).OfType<IXMemberSymbol>().Select(m => m.TypeName ?? "");
+            return types.Distinct(System.StringComparer.OrdinalIgnoreCase).Count() <= 1;
+        }
+
+        /// <summary>
+        /// True when a type argument does not resolve: a type parameter that the lookup did not substitute
+        /// (<c>List&lt;TSource&gt;</c> from <c>ToList()</c>, <c>List&lt;T&gt;</c> from a member of a generic class).
+        /// </summary>
+        internal static bool HasOpenTypeArgument(string typeName, System.Func<string, bool> resolves)
+        {
+            foreach (var argument in TypeArguments(typeName))
+            {
+                if (argument.Contains("<"))
+                {
+                    if (HasOpenTypeArgument(argument, resolves))
+                        return true;
+                    continue;
+                }
+                var name = argument;
+                while (name.EndsWith("[]"))
+                    name = name.Substring(0, name.Length - 2);
+                if (!resolves(name))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>The top level type arguments of <c>Name&lt;A, B&lt;C&gt;&gt;</c>: "A" and "B&lt;C&gt;".</summary>
+        private static IEnumerable<string> TypeArguments(string typeName)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrEmpty(typeName))
+                return result;
+            int open = typeName.IndexOf('<');
+            int close = typeName.LastIndexOf('>');
+            if (open < 0 || close < open)
+                return result;
+            int depth = 0, start = open + 1;
+            for (int i = start; i < close; i++)
+            {
+                var c = typeName[i];
+                if (c == '<')
+                    depth++;
+                else if (c == '>')
+                    depth--;
+                else if (c == ',' && depth == 0)
+                {
+                    result.Add(typeName.Substring(start, i - start).Trim());
+                    start = i + 1;
+                }
+            }
+            result.Add(typeName.Substring(start, close - start).Trim());
+            return result.Where(a => a.Length > 0);
+        }
+
+        /// <summary>
+        /// The type name the double-click edit writes. It must compile: a namespace is left out only where a USING
+        /// or the enclosing namespace brings it in; otherwise the full name stays (also for nested types).
+        /// </summary>
+        internal static string EditTypeName(string fullName, IEnumerable<string> usings)
+        {
+            if (string.IsNullOrEmpty(fullName))
+                return fullName;
+            var known = new HashSet<string>(usings ?? Enumerable.Empty<string>(), System.StringComparer.OrdinalIgnoreCase);
+            return QualifiedNames.Replace(fullName, m =>
+            {
+                var name = m.Value;
+                int dot = name.LastIndexOf('.');
+                return known.Contains(name.Substring(0, dot)) ? name.Substring(dot + 1) : name;
+            });
+        }
+
+        private static readonly Regex QualifiedNames = new Regex(@"\b(?:\w+\.)+\w+", RegexOptions.Compiled);
+
         private static readonly Regex Namespaces = new Regex(@"\b(?:\w+\.)+(\w+)", RegexOptions.Compiled);
 
         /// <summary>The type name without namespaces, also inside generic arguments.</summary>

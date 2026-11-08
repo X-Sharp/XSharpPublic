@@ -282,7 +282,8 @@ namespace XSharp.LanguageService
             return oType;
         }
 
-        static Dictionary<string, IXTypeSymbol> arrayTypes = new Dictionary<string, IXTypeSymbol>();
+        // the lookup runs on the UI thread and in the background (inlay hints) at the same time
+        static readonly System.Collections.Concurrent.ConcurrentDictionary<string, IXTypeSymbol> arrayTypes = new System.Collections.Concurrent.ConcurrentDictionary<string, IXTypeSymbol>(StringComparer.Ordinal);
 
         private static IXTypeSymbol GetTypeFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
         {
@@ -295,11 +296,7 @@ namespace XSharp.LanguageService
             if (name.EndsWith("[]"))
             {
                 name = name.Substring(0, name.Length - 2);
-                if (!arrayTypes.TryGetValue(name, out oType))
-                {
-                    oType = GetArrayType(location, name);
-                    arrayTypes.Add(name, oType);
-                }
+                oType = arrayTypes.GetOrAdd(name, n => GetArrayType(location, n));
             }
             else
             {

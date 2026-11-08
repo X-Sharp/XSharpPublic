@@ -23,6 +23,7 @@ namespace XSharp.LanguageService.OptionsPages
             chkFindReferencesLateBound.Tag = nameof(IntellisenseOptions.FindReferencesLateBound);
             chkShowParameterHints.Tag = nameof(IntellisenseOptions.ShowParameterHints);
             chkShowTypeHints.Tag = nameof(IntellisenseOptions.ShowTypeHints);
+            chkShowHintsWhileAltF1.Tag = nameof(IntellisenseOptions.ShowHintsWhileAltF1);
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))
             {
                 this.btnShowMeTheMagic.Visible = false;

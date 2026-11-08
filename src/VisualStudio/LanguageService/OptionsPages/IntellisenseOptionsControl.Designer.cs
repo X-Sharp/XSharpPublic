@@ -43,6 +43,7 @@
             this.grpFindReferences = new System.Windows.Forms.GroupBox();
             this.chkShowParameterHints = new System.Windows.Forms.CheckBox();
             this.chkShowTypeHints = new System.Windows.Forms.CheckBox();
+            this.chkShowHintsWhileAltF1 = new System.Windows.Forms.CheckBox();
             this.grpInlayHints = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
@@ -198,13 +199,25 @@
         "hint to write the type into the code.");
             this.chkShowTypeHints.UseVisualStyleBackColor = true;
             //
+            // chkShowHintsWhileAltF1
+            //
+            this.chkShowHintsWhileAltF1.AutoSize = true;
+            this.chkShowHintsWhileAltF1.Location = new System.Drawing.Point(13, 60);
+            this.chkShowHintsWhileAltF1.Name = "chkShowHintsWhileAltF1";
+            this.chkShowHintsWhileAltF1.Size = new System.Drawing.Size(212, 17);
+            this.chkShowHintsWhileAltF1.TabIndex = 2;
+            this.chkShowHintsWhileAltF1.Text = "Show all hints while pressing Alt+F1";
+            this.toolTip1.SetToolTip(this.chkShowHintsWhileAltF1, "Shows the switched off hints while Alt+F1 is held down in an X# editor.");
+            this.chkShowHintsWhileAltF1.UseVisualStyleBackColor = true;
+            //
             // grpInlayHints
             //
             this.grpInlayHints.Controls.Add(this.chkShowParameterHints);
             this.grpInlayHints.Controls.Add(this.chkShowTypeHints);
+            this.grpInlayHints.Controls.Add(this.chkShowHintsWhileAltF1);
             this.grpInlayHints.Location = new System.Drawing.Point(5, 300);
             this.grpInlayHints.Name = "grpInlayHints";
-            this.grpInlayHints.Size = new System.Drawing.Size(373, 64);
+            this.grpInlayHints.Size = new System.Drawing.Size(373, 85);
             this.grpInlayHints.TabIndex = 3;
             this.grpInlayHints.TabStop = false;
             this.grpInlayHints.Text = "Inlay Hints";
@@ -218,12 +231,12 @@
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 403);
+            this.panel1.Size = new System.Drawing.Size(381, 424);
             this.panel1.TabIndex = 0;
             //
             // btnShowMeTheMagic
             //
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 370);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 391);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
             this.btnShowMeTheMagic.TabIndex = 4;
@@ -283,7 +296,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(388, 414);
+            this.Size = new System.Drawing.Size(388, 435);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
@@ -317,5 +330,6 @@
         private System.Windows.Forms.GroupBox grpInlayHints;
         private System.Windows.Forms.CheckBox chkShowParameterHints;
         private System.Windows.Forms.CheckBox chkShowTypeHints;
+        private System.Windows.Forms.CheckBox chkShowHintsWhileAltF1;
     }
 }

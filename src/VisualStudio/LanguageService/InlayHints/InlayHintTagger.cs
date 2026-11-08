@@ -73,6 +73,7 @@ namespace XSharp.LanguageService.InlayHints
             if (_classifier != null)
                 _classifier.ParseCompleted += OnParseCompleted;
             InlayHintSettings.Changed += OnSettingsChanged;
+            InlayHintSettings.HeldChanged += OnHeldChanged;
             _formatMap.FormatMappingChanged += OnFormatMappingChanged;
             _view.Closed += OnClosed;
             InlayHintTriggers.Register(this);
@@ -86,6 +87,21 @@ namespace XSharp.LanguageService.InlayHints
 
         private void OnSettingsChanged() => RequestDebounced();
 
+        /// <summary>Alt+F1 pressed or released: hide or show at once, compute the missing kinds without delay.</summary>
+        private void OnHeldChanged()
+        {
+            if (_closed)
+                return;
+            var set = _current;
+            RaiseTagsChanged();
+            if (set == null || (InlayHintSettings.ShowParameters && !set.Parameters) || (InlayHintSettings.ShowTypes && !set.Types))
+            {
+                var snapshot = _buffer.GetDocument()?.SnapShot;
+                if (snapshot != null)
+                    Request(snapshot);
+            }
+        }
+
         private void OnFormatMappingChanged(object sender, FormatItemsEventArgs e)
         {
             _adornments.Clear();
@@ -98,6 +114,7 @@ namespace XSharp.LanguageService.InlayHints
             if (_classifier != null)
                 _classifier.ParseCompleted -= OnParseCompleted;
             InlayHintSettings.Changed -= OnSettingsChanged;
+            InlayHintSettings.HeldChanged -= OnHeldChanged;
             _formatMap.FormatMappingChanged -= OnFormatMappingChanged;
             _view.Closed -= OnClosed;
             InlayHintTriggers.Unregister(this);
@@ -122,13 +139,15 @@ namespace XSharp.LanguageService.InlayHints
         {
             if (snapshot == null || _closed)
                 return;
-            var parameters = InlayHintSettings.Parameters;
-            var types = InlayHintSettings.Types;
+            var parameters = InlayHintSettings.ShowParameters;
+            var types = InlayHintSettings.ShowTypes;
             var set = parameters || types
                 ? InlayHintComputer.Compute(_buffer.GetDocument(), File, snapshot, parameters, types, ct)
                 : new InlayHintSet { Snapshot = snapshot, Hints = Array.Empty<InlayHint>() };
             if (set == null)
                 return;
+            set.Parameters = parameters;
+            set.Types = types;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
             // publish only the hints of the snapshot the document is at
             if (_closed || _buffer.GetDocument()?.SnapShot != set.Snapshot)
@@ -153,8 +172,13 @@ namespace XSharp.LanguageService.InlayHints
             if (snapshot.TextBuffer != set.Snapshot.TextBuffer)
                 yield break;
             var project = File?.Project;
+            var parameters = InlayHintSettings.ShowParameters;
+            var types = InlayHintSettings.ShowTypes;
             foreach (var hint in set.Hints)
             {
+                // released Alt+F1: the kinds that are switched off disappear before the next computation
+                if (!(hint.Kind == InlayHintKind.Parameter ? parameters : types))
+                    continue;
                 var point = new SnapshotPoint(set.Snapshot, hint.Position);
                 var after = point.TranslateTo(snapshot, PointTrackingMode.Positive);
                 // the text at the hint was edited: drop the hint until the next result

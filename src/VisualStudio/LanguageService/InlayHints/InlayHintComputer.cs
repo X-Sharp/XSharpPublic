@@ -23,6 +23,9 @@ namespace XSharp.LanguageService.InlayHints
     {
         internal ITextSnapshot Snapshot { get; set; }
         internal IReadOnlyList<InlayHint> Hints { get; set; }
+        /// <summary>The kinds that were computed (the options, or Alt+F1 held).</summary>
+        internal bool Parameters { get; set; }
+        internal bool Types { get; set; }
     }
 
     /// <summary>Resolves the candidates of a whole document against the code model. Runs in the background.</summary>

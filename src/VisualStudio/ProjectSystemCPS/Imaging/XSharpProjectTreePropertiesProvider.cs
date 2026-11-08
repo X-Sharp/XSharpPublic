@@ -200,6 +200,9 @@ namespace XSharp.Imaging
         {
             try
             {
+                // While a file is renamed the tree can still ask for the old path: no exception for a missing file
+                if (!File.Exists(path))
+                    return null;
                 var stamp = File.GetLastWriteTimeUtc(path);
                 if (inferredSubTypes.TryGetValue(path, out var cached) && cached.Stamp == stamp)
                     return cached.SubType;

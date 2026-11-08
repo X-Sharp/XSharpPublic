@@ -15,97 +15,99 @@
 #ifndef VFPMENUSUPPORT_XH
 #define VFPMENUSUPPORT_XH
 
+// The preprocessor tries the last rule defined first, so the general form of a
+// command comes first and the specific one (SHORTCUT, SKIP FOR, DO, AT) after it.
+// [<*rest*>] takes the clauses we accept and ignore, and also matches nothing:
+// a bare <*rest*> needs at least one token and the plain form of the command
+// would not expand.
+
 // ── DEFINE MENU ──────────────────────────────────────────────────────────────
 // DEFINE MENU <name> [BAR] [AT LINE <nRow>] [IN WINDOW <w> | IN SCREEN] [...]
 // Position/window clauses are accepted and silently ignored.
-#command DEFINE MENU <menuName> [BAR] [AT LINE <nRow>] ;
-    [IN [WINDOW] <winName>] [IN SCREEN] <*rest*> ;
-    => __VFPDefineMenu(#<menuName>)
-
-#command DEFINE MENU <menuName> [BAR] <*rest*> ;
+#command DEFINE MENU <menuName> [<*rest*>] ;
     => __VFPDefineMenu(#<menuName>)
 
 // ── DEFINE PAD ───────────────────────────────────────────────────────────────
 // DEFINE PAD <padName> OF <menuName> PROMPT <caption>
 //   [SKIP FOR <expr>] [SKIP] [AT <r>,<c>] [MESSAGE <msg>] [...]
-#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> ;
-    [SKIP FOR <lSkipExpr>] <*rest*> ;
-    => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>) ;
-    [; __VFPSetSkipOfPad(#<padName>, #<menuName>, <lSkipExpr>)]
-
-#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> [SKIP] <*rest*> ;
+#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> [<*rest*>] ;
     => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>)
+
+#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> ;
+    SKIP FOR <lSkipExpr> [<*rest*>] ;
+    => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>) ;
+     ; __VFPSetSkipOfPad(#<padName>, #<menuName>, <lSkipExpr>)
 
 // ── DEFINE POPUP ─────────────────────────────────────────────────────────────
 // DEFINE POPUP <name> [SHORTCUT] [...]
 // SHORTCUT maps to a ContextMenu (right-click); standard maps to Popup.
-#command DEFINE POPUP <popupName> <sc:SHORTCUT> <*rest*> ;
-    => __VFPDefineContextMenu(#<popupName>)
-
-#command DEFINE POPUP <popupName> <*rest*> ;
+#command DEFINE POPUP <popupName> [<*rest*>] ;
     => __VFPDefinePopup(#<popupName>)
+
+#command DEFINE POPUP <popupName> SHORTCUT [<*rest*>] ;
+    => __VFPDefineContextMenu(#<popupName>)
 
 // ── DEFINE BAR ───────────────────────────────────────────────────────────────
 // DEFINE BAR <n> OF <popupName> PROMPT <caption>
 //   [SKIP FOR <expr>] [SKIP] [MESSAGE <msg>] [PICTURE <img>] [...]
 // Bar number is stored as the bar's Name for later lookup by ON SELECTION BAR.
 // A PROMPT of "\-" inserts a separator.
-#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> ;
-    [SKIP FOR <lSkipExpr>] <*rest*> ;
-    => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>) ;
-    [; __VFPSetSkipOfBar(<nBar>, #<popupName>, <lSkipExpr>)]
-
-#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> [SKIP] <*rest*> ;
+#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> [<*rest*>] ;
     => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>)
+
+#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> ;
+    SKIP FOR <lSkipExpr> [<*rest*>] ;
+    => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>) ;
+     ; __VFPSetSkipOfBar(<nBar>, #<popupName>, <lSkipExpr>)
 
 // ── ON PAD ───────────────────────────────────────────────────────────────────
 // ON PAD <padName> OF <menuName> ACTIVATE POPUP <popupName>  — attach dropdown
 // ON PAD <padName> OF <menuName>                             — detach dropdown
-#command ON PAD <padName> OF <menuName> ACTIVATE POPUP <popupName> ;
-    => __VFPOnPad(#<padName>, #<menuName>, #<popupName>)
-
 #command ON PAD <padName> OF <menuName> ;
     => __VFPOnPad(#<padName>, #<menuName>, "")
+
+#command ON PAD <padName> OF <menuName> ACTIVATE POPUP <popupName> ;
+    => __VFPOnPad(#<padName>, #<menuName>, #<popupName>)
 
 // ── ON BAR ───────────────────────────────────────────────────────────────────
 // ON BAR <n> OF <popupName> ACTIVATE POPUP <subPopupName>  — cascading submenu
 // ON BAR <n> OF <popupName>                                — remove submenu
-#command ON BAR <nBar> OF <popupName> ACTIVATE POPUP <subPopupName> ;
-    => __VFPOnBar(<nBar>, #<popupName>, #<subPopupName>)
-
 #command ON BAR <nBar> OF <popupName> ;
     => __VFPOnBar(<nBar>, #<popupName>, "")
 
-// ── ON SELECTION PAD ─────────────────────────────────────────────────────────
-// DO <procName> form — stores the procedure name as a string-based vfpClick.
-// General <*cmd*> form — wraps arbitrary code in a codeblock via SetClickAction.
-// The DO form must appear first so it takes priority over the general form.
-#command ON SELECTION PAD <padName> OF <menuName> DO <procName> ;
-    => __VFPOnSelectionPad(#<padName>, #<menuName>, #<procName>)
+#command ON BAR <nBar> OF <popupName> ACTIVATE POPUP <subPopupName> ;
+    => __VFPOnBar(<nBar>, #<popupName>, #<subPopupName>)
 
+// ── ON SELECTION PAD ─────────────────────────────────────────────────────────
+// General <*cmd*> form — wraps arbitrary code in a codeblock via SetClickAction.
+// DO <procName> form — stores the procedure name as a string-based vfpClick.
+// The DO form is defined last so it is tried before the general form.
 #command ON SELECTION PAD <padName> OF <menuName> <*cmd*> ;
     => __VFPOnSelectionPadCmd(#<padName>, #<menuName>, {|| <cmd>})
 
-// ── ON SELECTION BAR ─────────────────────────────────────────────────────────
-#command ON SELECTION BAR <nBar> OF <popupName> DO <procName> ;
-    => __VFPOnSelectionBar(<nBar>, #<popupName>, #<procName>)
+#command ON SELECTION PAD <padName> OF <menuName> DO <procName> ;
+    => __VFPOnSelectionPad(#<padName>, #<menuName>, #<procName>)
 
+// ── ON SELECTION BAR ─────────────────────────────────────────────────────────
 #command ON SELECTION BAR <nBar> OF <popupName> <*cmd*> ;
     => __VFPOnSelectionBarCmd(<nBar>, #<popupName>, {|| <cmd>})
 
+#command ON SELECTION BAR <nBar> OF <popupName> DO <procName> ;
+    => __VFPOnSelectionBar(<nBar>, #<popupName>, #<procName>)
+
 // ── ON SELECTION POPUP ───────────────────────────────────────────────────────
 // Fires for every bar in the named popup (or ALL popups).
-#command ON SELECTION POPUP ALL DO <procName> ;
-    => __VFPOnSelectionPopup("*", #<procName>)
-
-#command ON SELECTION POPUP ALL <*cmd*> ;
-    => __VFPOnSelectionPopupCmd("*", {|| <cmd>})
+#command ON SELECTION POPUP <popupName> <*cmd*> ;
+    => __VFPOnSelectionPopupCmd(#<popupName>, {|| <cmd>})
 
 #command ON SELECTION POPUP <popupName> DO <procName> ;
     => __VFPOnSelectionPopup(#<popupName>, #<procName>)
 
-#command ON SELECTION POPUP <popupName> <*cmd*> ;
-    => __VFPOnSelectionPopupCmd(#<popupName>, {|| <cmd>})
+#command ON SELECTION POPUP ALL <*cmd*> ;
+    => __VFPOnSelectionPopupCmd("*", {|| <cmd>})
+
+#command ON SELECTION POPUP ALL DO <procName> ;
+    => __VFPOnSelectionPopup("*", #<procName>)
 
 // ── ACTIVATE MENU ────────────────────────────────────────────────────────────
 // Attaches the named menu to _Screen (MainWindow).
@@ -115,11 +117,11 @@
 // ── ACTIVATE POPUP ───────────────────────────────────────────────────────────
 // AT <row>,<col> positions the popup; omit for default position.
 // BAR, NOWAIT, REST clauses are accepted and silently ignored.
-#command ACTIVATE POPUP <popupName> AT <nRow>, <nCol> <*rest*> ;
-    => __VFPActivatePopup(#<popupName>, <nRow>, <nCol>)
-
-#command ACTIVATE POPUP <popupName> <*rest*> ;
+#command ACTIVATE POPUP <popupName> [<*rest*>] ;
     => __VFPActivatePopup(#<popupName>, 0, 0)
+
+#command ACTIVATE POPUP <popupName> AT <nRow>, <nCol> [<*rest*>] ;
+    => __VFPActivatePopup(#<popupName>, <nRow>, <nCol>)
 
 // ── DEACTIVATE MENU ──────────────────────────────────────────────────────────
 #command DEACTIVATE MENU <menuName> ;

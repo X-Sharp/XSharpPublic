@@ -49,9 +49,11 @@ FUNCTION MENU() AS STRING
 /// </summary>
 [FoxProFunction("MRKBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MRKBAR( cPopupName AS STRING, nBar AS INT ) AS LOGIC
-	LOCAL oPopup := Popup.Find(cPopupName) AS Popup
-	IF oPopup != NULL .AND. nBar >= 1 .AND. nBar <= oPopup:BarCount
-		RETURN oPopup:Bars[nBar]:Checked
+	// nBar is the number given in DEFINE BAR, not the position: a separator or a gap
+	// in the numbering must not shift the result
+	LOCAL oBar := __VFPFindBarByNumber( __VFPFindPopupContainer( cPopupName ), nBar ) AS Bar
+	IF oBar != NULL
+		RETURN oBar:Checked
 	ENDIF
 	RETURN FALSE
 
@@ -78,9 +80,9 @@ FUNCTION MRKPAD( cMenuName AS STRING, cPadName AS STRING ) AS LOGIC
 /// </summary>
 [FoxProFunction("PRMBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PRMBAR( cPopupName AS STRING, nBar AS INT ) AS STRING
-	LOCAL oPopup := Popup.Find(cPopupName) AS Popup
-	IF oPopup != NULL .AND. nBar >= 1 .AND. nBar <= oPopup:BarCount
-		RETURN oPopup:Bars[nBar]:Caption
+	LOCAL oBar := __VFPFindBarByNumber( __VFPFindPopupContainer( cPopupName ), nBar ) AS Bar
+	IF oBar != NULL
+		RETURN MenuPrompt.WithoutHotkey( oBar:Caption )
 	ENDIF
 	RETURN ""
 
@@ -95,8 +97,23 @@ FUNCTION PRMPAD( cMenuName AS STRING, cPadName AS STRING ) AS STRING
 		LOCAL i AS INT
 		FOR i := 1 TO oMenu:PadCount
 			IF String.Compare( oMenu:Pads[i]:Name, cPadName, TRUE ) == 0
-				RETURN oMenu:Pads[i]:Caption
+				RETURN MenuPrompt.WithoutHotkey( oMenu:Pads[i]:Caption )
 			ENDIF
 		NEXT
 	ENDIF
 	RETURN ""
+
+
+/// <summary>The prompt of a bar or pad the way PRMBAR() and PRMPAD() report it.</summary>
+INTERNAL STATIC CLASS MenuPrompt
+
+	// VFP keeps the caption with its \< hotkey marker, but PRMBAR() and PRMPAD() return
+	// the text without it, so "\<Open" comes back as "Open".
+	INTERNAL STATIC METHOD WithoutHotkey( cCaption AS STRING ) AS STRING
+		IF String.IsNullOrEmpty( cCaption )
+			RETURN ""
+		ENDIF
+		RETURN cCaption:Replace( "\<", "" )
+	END METHOD
+
+END CLASS

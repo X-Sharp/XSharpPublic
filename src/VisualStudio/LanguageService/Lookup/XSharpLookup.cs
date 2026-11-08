@@ -374,12 +374,12 @@ namespace XSharp.LanguageService
         {
             // Resolve the VAR type of an element in a collection
             var tokenList = xVar.Expression;
-            var arrayElement = TypedArrayElementType(tokenList);
-            if (arrayElement != null)
+            if (TypedArrayElement(tokenList, name => SearchType(location, name).FirstOrDefault(), out var arrayType, out var arrayElement))
             {
                 // FOREACH VAR x IN <T>{...}
-                xVar.TypeName = arrayElement;
-                return SearchType(location, arrayElement).FirstOrDefault();
+                if (arrayElement != null)
+                    xVar.TypeName = arrayElement;
+                return arrayType;
             }
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
@@ -499,6 +499,23 @@ namespace XSharp.LanguageService
                 default:
                     return resolvedName;
             }
+        }
+
+        /// <summary>
+        /// True when the expression is a typed array literal <c>&lt;T&gt;{...}</c>. The type and its name are only
+        /// set when T resolves: an unresolved name would show as the type of the variable.
+        /// </summary>
+        internal static bool TypedArrayElement(IList<IToken> expression, Func<string, IXTypeSymbol> search, out IXTypeSymbol type, out string typeName)
+        {
+            type = null;
+            typeName = null;
+            var name = TypedArrayElementType(expression);
+            if (name == null)
+                return false;
+            type = search(name);
+            if (type != null)
+                typeName = name;
+            return true;
         }
 
         /// <summary>The element type of a typed array literal <c>&lt;T&gt;{...}</c> that is the whole expression, otherwise null.</summary>

@@ -25,6 +25,36 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(expected, XSharpLookup.TypedArrayElementType(Expression(expression)));
         }
 
+        [Fact]
+        public void AResolvedElementTypeNamesTheVariable()
+        {
+            var fixture = new RenameFixture();
+            var dbFile = fixture.Type("DbFile");
+            Assert.True(XSharpLookup.TypedArrayElement(Expression("<DbFile>{o}"), fixture.FindType, out var type, out var typeName));
+            Assert.Same(dbFile, type);
+            Assert.Equal("DbFile", typeName);
+        }
+
+        [Fact]
+        public void AnUnresolvedElementTypeLeavesTheVariableUnnamed()
+        {
+            // the variable keeps the name the parser gave it, so no hint shows a type that does not exist
+            var fixture = new RenameFixture();
+            Assert.True(XSharpLookup.TypedArrayElement(Expression("<Unknown>{o}"), fixture.FindType, out var type, out var typeName));
+            Assert.Null(type);
+            Assert.Null(typeName);
+        }
+
+        [Fact]
+        public void NoTypedArrayLiteralNoElement()
+        {
+            var fixture = new RenameFixture();
+            fixture.Type("list");
+            Assert.False(XSharpLookup.TypedArrayElement(Expression("list"), fixture.FindType, out var type, out var typeName));
+            Assert.Null(type);
+            Assert.Null(typeName);
+        }
+
         [Theory]
         // VAR list := s:Load() where Load returns List<STRING>: keep the type arguments of the declaration
         [InlineData(ImpliedKind.Assignment, "System.Collections.Generic.List<T>", "List<STRING>", "System.Collections.Generic.List<STRING>")]

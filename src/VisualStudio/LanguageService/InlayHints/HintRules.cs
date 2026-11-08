@@ -199,13 +199,17 @@ namespace XSharp.LanguageService.InlayHints
             return type == XSharpLexer.ID || type == XSharpLexer.DOT || XSharpLexer.IsType(type);
         }
 
-        /// <summary><c>Name{...}</c> or <c>Ns.Name{...}</c> covering the whole argument.</summary>
+        /// <summary><c>Name{...}</c>, <c>Ns.Name{...}</c> or <c>Name&lt;Args&gt;{...}</c> covering the whole argument.</summary>
         private static bool IsConstructor(IList<IToken> tokens)
         {
             int i = 0;
             while (i < tokens.Count && (tokens[i].Type == XSharpLexer.ID || tokens[i].Type == XSharpLexer.DOT))
                 i++;
-            if (i == 0 || i >= tokens.Count || tokens[i].Type != XSharpLexer.LCURLY)
+            if (i == 0)
+                return false;
+            if (tokens[i].Type == XSharpLexer.LT)
+                i = HintCandidates.AfterTypeArguments(tokens, i);
+            if (i < 0 || i >= tokens.Count || tokens[i].Type != XSharpLexer.LCURLY)
                 return false;
             int depth = 0;
             for (; i < tokens.Count; i++)

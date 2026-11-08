@@ -122,6 +122,10 @@ namespace XSharp.LanguageService.Tests.InlayHints
 
         [Theory]
         [InlineData("Customer{}", true)]
+        [InlineData("List<STRING>{}", true)]
+        [InlineData("System.Collections.Generic.Dictionary<STRING, List<INT>>{}", true)]
+        [InlineData("List<STRING>{}:Count", false)]
+        [InlineData("a < b", false)]
         [InlineData("\"a\"", true)]
         [InlineData("42", true)]
         [InlineData("(Customer) o", true)]

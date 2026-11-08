@@ -92,6 +92,27 @@ namespace XSharp.LanguageService.Tests.InlayHints
             Assert.Equal("1", Text(decls[0].Initializer));
         }
 
+        [Theory]
+        // the comma between type arguments does not end the declarator: the double-click edit put AS in the middle
+        [InlineData("VAR d := Dictionary<STRING, INT>{}\n", "Dictionary < STRING , INT > { }")]
+        [InlineData("VAR d := System.Collections.Generic.Dictionary<STRING, List<INT>>{}\n", "System . Collections . Generic . Dictionary < STRING , List < INT > > { }")]
+        [InlineData("VAR a := <Dictionary<STRING, INT>>{}\n", "< Dictionary < STRING , INT > > { }")]
+        [InlineData("VAR p := Pair<STRING, INT>(\"a\", 1)\n", "Pair < STRING , INT > ( \"a\" , 1 )")]
+        public void TypeArgumentsStayInTheInitializer(string source, string initializer)
+        {
+            var decl = Assert.Single(Declarations(source));
+            Assert.Equal(1, decl.DeclaratorCount);
+            Assert.Equal(initializer, Text(decl.Initializer));
+        }
+
+        [Fact]
+        public void AComparisonBeforeACommaIsNoTypeArgument()
+        {
+            var decls = Declarations("VAR a := x < y, b := 2\n");
+            Assert.Equal(new[] { "a", "b" }, decls.Select(d => d.Name.Text));
+            Assert.Equal("x < y", Text(decls[0].Initializer));
+        }
+
         [Fact]
         public void OutVarIsNotACandidate()
         {

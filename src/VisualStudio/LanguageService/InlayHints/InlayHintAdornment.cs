@@ -39,11 +39,15 @@ namespace XSharp.LanguageService.InlayHints
             _snapshot = snapshot;
             _view = view;
             _project = project;
-            var properties = formatMap.GetProperties(InlayHintFormat.FormatName);
+            var csharp = formatMap.GetProperties(InlayHintColors.CSharpFormatName);
+            var xsharp = formatMap.GetProperties(InlayHintFormat.FormatName);
+            var (foreground, background) = InlayHintColors.Pick(
+                csharp[EditorFormatDefinition.ForegroundBrushId] as Brush, csharp[EditorFormatDefinition.BackgroundBrushId] as Brush,
+                xsharp[EditorFormatDefinition.ForegroundBrushId] as Brush, xsharp[EditorFormatDefinition.BackgroundBrushId] as Brush);
             var text = new TextBlock
             {
                 Text = hint.Text,
-                Foreground = properties[EditorFormatDefinition.ForegroundBrushId] as Brush ?? Brushes.Gray,
+                Foreground = foreground,
             };
             var line = view.FormattedLineSource?.DefaultTextProperties;
             if (line != null)
@@ -52,7 +56,7 @@ namespace XSharp.LanguageService.InlayHints
                 text.FontSize = line.FontRenderingEmSize * 0.9;
             }
             Child = text;
-            Background = InlayHintColors.Background(properties[EditorFormatDefinition.BackgroundBrushId] as Brush);
+            Background = background;
             CornerRadius = new CornerRadius(2);
             Padding = new Thickness(1, 0, 1, 0);
             VerticalAlignment = VerticalAlignment.Center;

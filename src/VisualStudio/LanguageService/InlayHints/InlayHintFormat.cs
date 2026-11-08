@@ -10,10 +10,13 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace XSharp.LanguageService.InlayHints
 {
-    /// <summary>The colours of the hints; changeable in Tools - Options - Fonts and Colors.</summary>
+    /// <summary>
+    /// The colours of the hints when the C# "inline hints" item is missing (no Roslyn): the C# defaults.
+    /// Not shown in Fonts and Colors: with C# present the item would change nothing.
+    /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [Name(FormatName)]
-    [UserVisible(true)]
+    [UserVisible(false)]
     internal sealed class InlayHintFormat : EditorFormatDefinition
     {
         internal const string FormatName = "X# Inlay Hint";
@@ -21,30 +24,25 @@ namespace XSharp.LanguageService.InlayHints
         public InlayHintFormat()
         {
             DisplayName = FormatName;
-            ForegroundColor = Color.FromRgb(0x80, 0x80, 0x80);
-            BackgroundColor = Color.FromArgb(InlayHintColors.BackgroundAlpha, 0x80, 0x80, 0x80);
+            ForegroundColor = Color.FromRgb(0x68, 0x68, 0x68);
+            BackgroundColor = Color.FromRgb(0xE6, 0xE6, 0xE6);
         }
     }
 
-    /// <summary>
-    /// Fonts and Colors stores colours without alpha, so the background comes back opaque, as grey as the text.
-    /// An opaque background is drawn translucent; the colour itself stays the user's choice.
-    /// </summary>
     internal static class InlayHintColors
     {
-        internal const byte BackgroundAlpha = 0x28;
+        /// <summary>The Fonts and Colors item of the C# inline hints (Roslyn), which the Visual Studio themes colour.</summary>
+        internal const string CSharpFormatName = "inline hints";
 
-        internal static byte DrawnAlpha(byte storedAlpha) => storedAlpha == 0xFF ? BackgroundAlpha : storedAlpha;
-
-        internal static Brush Background(Brush stored)
+        /// <summary>
+        /// The hints look like the C# inline hints: their colours follow the theme and the user's choice for C#.
+        /// Without the C# item the X# item is used.
+        /// </summary>
+        internal static (Brush Foreground, Brush Background) Pick(Brush csharpText, Brush csharpBack, Brush xsharpText, Brush xsharpBack)
         {
-            if (!(stored is SolidColorBrush solid))
-                return stored ?? Brushes.Transparent;
-            var color = solid.Color;
-            color.A = DrawnAlpha(color.A);
-            var brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
+            if (csharpText != null)
+                return (csharpText, csharpBack ?? Brushes.Transparent);
+            return (xsharpText ?? Brushes.Gray, xsharpBack ?? Brushes.Transparent);
         }
     }
 }

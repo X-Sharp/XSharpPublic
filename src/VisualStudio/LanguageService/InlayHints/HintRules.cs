@@ -208,7 +208,7 @@ namespace XSharp.LanguageService.InlayHints
             if (i == 0)
                 return false;
             if (tokens[i].Type == XSharpLexer.LT)
-                i = HintCandidates.AfterTypeArguments(tokens, i);
+                i = OverloadFilter.AfterTypeArguments(tokens, i);
             if (i < 0 || i >= tokens.Count || tokens[i].Type != XSharpLexer.LCURLY)
                 return false;
             int depth = 0;

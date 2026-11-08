@@ -51,6 +51,21 @@ namespace XSharp.LanguageService.FindReferences
                     depth = 1;
                     continue;
                 }
+                // Dictionary<STRING, INT>{} and Bar<A, B>(...): the commas between type arguments stay in the argument
+                if (token.Type == XSharpLexer.LT)
+                {
+                    var after = AfterGenericName(tokens, i, current.Count == 0 ? -1 : current[current.Count - 1].Type);
+                    if (after > 0)
+                    {
+                        for (; i < after; i++)
+                        {
+                            if (tokens[i].Channel == XSharpLexer.DefaultTokenChannel)
+                                current.Add(tokens[i]);
+                        }
+                        i--;
+                        continue;
+                    }
+                }
                 switch (token.Type)
                 {
                     case XSharpLexer.LPAREN:
@@ -84,6 +99,63 @@ namespace XSharp.LanguageService.FindReferences
                 current.Add(token);
             }
             return null;
+        }
+
+        /// <summary>
+        /// The index after the type arguments of <c>Name&lt;A, B&gt;{...}</c>, <c>Name&lt;A, B&gt;(...)</c> or
+        /// <c>&lt;T&gt;{...}</c> when the LT at <paramref name="index"/> starts them, otherwise -1.
+        /// <paramref name="previous"/> is the type of the code token before the LT, or -1 when the LT starts the expression.
+        /// </summary>
+        internal static int AfterGenericName(IList<IToken> tokens, int index, int previous)
+        {
+            if (tokens[index].Type != XSharpLexer.LT)
+                return -1;
+            if (previous != -1 && previous != XSharpLexer.ID && !XSharpLexer.IsType(previous))
+                return -1;
+            var after = AfterTypeArguments(tokens, index);
+            if (after < 0)
+                return -1;
+            for (int i = after; i < tokens.Count; i++)
+            {
+                if (tokens[i].Channel != XSharpLexer.DefaultTokenChannel)
+                    continue;
+                return tokens[i].Type == XSharpLexer.LCURLY || tokens[i].Type == XSharpLexer.LPAREN ? after : -1;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// The index after the type arguments <c>&lt;...&gt;</c> that start at <paramref name="index"/> (an LT), or
+        /// -1 when no type arguments start there: an unclosed bracket, or a token that is no part of a type name
+        /// (<c>x &lt; y, b := 2</c>). A closing <c>&gt;&gt;</c> can be one token; tokens off the default channel are skipped.
+        /// </summary>
+        internal static int AfterTypeArguments(IList<IToken> tokens, int index)
+        {
+            int depth = 0;
+            for (int i = index; i < tokens.Count; i++)
+            {
+                if (tokens[i].Channel != XSharpLexer.DefaultTokenChannel)
+                    continue;
+                var text = tokens[i].Text;
+                if (text.Length > 0 && text.All(c => c == '<' || c == '>'))
+                {
+                    foreach (var c in text)
+                        depth += c == '<' ? 1 : -1;
+                    if (depth == 0)
+                        return i + 1;
+                    if (depth < 0)
+                        return -1;
+                }
+                else if (!IsTypeArgumentPart(tokens[i].Type))
+                    return -1;
+            }
+            return -1;
+        }
+
+        private static bool IsTypeArgumentPart(int type)
+        {
+            return type == XSharpLexer.ID || type == XSharpLexer.DOT || type == XSharpLexer.COMMA
+                || type == XSharpLexer.LBRKT || type == XSharpLexer.RBRKT || XSharpLexer.IsType(type);
         }
 
         /// <summary>The arguments for the identifier at (or just before) the caret position.</summary>

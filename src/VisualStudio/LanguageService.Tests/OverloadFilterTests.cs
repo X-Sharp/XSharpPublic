@@ -25,6 +25,24 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(3, CountAt("x := o:Foo(1,,3)\n", "Foo"));
         }
 
+        [Theory]
+        [InlineData("x := o:Foo(Dictionary<STRING, INT>{}, 1)\n", 2)]
+        [InlineData("x := o:Foo(Dictionary<STRING, List<INT>>{}, 1)\n", 2)]
+        [InlineData("x := o:Foo(Bar<STRING, INT>(1, 2))\n", 1)]
+        [InlineData("x := o:Foo(<INT>{1, 2}, 3)\n", 2)]
+        [InlineData("x := Foo{Dictionary<STRING, INT>{}}\n", 1)]
+        public void TypeArgumentCommasDoNotSplitArguments(string text, int expected)
+        {
+            Assert.Equal(expected, CountAt(text, "Foo"));
+        }
+
+        [Fact]
+        public void AComparisonIsNoTypeArgumentList()
+        {
+            Assert.Equal(3, CountAt("x := o:Foo(a < b, c > d, e)\n", "Foo"));
+            Assert.Equal(2, CountAt("x := o:Foo(a < b, c)\n", "Foo"));
+        }
+
         [Fact]
         public void NoCallGivesNoCount()
         {

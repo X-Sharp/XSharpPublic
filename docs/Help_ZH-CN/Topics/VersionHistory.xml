@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-04T15:24:48.144Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-06T16:17:28.467Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -34,8 +34,12 @@
       <li styleclass="List1">修复了在复合赋值中进行语义模型查询时出现的 NullReferenceException 异常（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2096" target="_blank">#2096</link>）</li>
       <li styleclass="List1">修复了在使用分析器和 .editorconfig 文件时编译器中出现的 IndexOutOfRangeException 异常（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2098" target="_blank">#2098</link>）</li>
     </list>
-    <para styleclass="Heading2">构建系统</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">修复了 .NET 5 及更高版本中带 PSZ 参数的 _DLL FUNCTION 相关问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2097" target="_blank">#2097</link>）</li>
+      <li styleclass="List1">修复了在 X# 源文件中包含 C# 文件时出现的两个问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2151" target="_blank">#2151</link> 和 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2153" target="_blank">#2153</link>）</li>
+    </list>
+    <para styleclass="Heading2">构建系统</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">新增对 /fox3 编译器选项的支持</li>
       <li styleclass="List1">Directory.Build.Props 中为 DefaultItemExcludes 设置的值现在得以保留</li>
       <li styleclass="List1">输出文件夹现已从默认通配符中排除</li>
@@ -44,7 +48,7 @@
     </list>
     <para styleclass="Heading2">运行时</para>
     <para styleclass="Heading3">新功能</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">X# 运行时的目标框架现为 <text style="font-weight:bold; text-decoration:underline;">.NET Framework 4.7</text></li>
       <li styleclass="List1">新增了 GETPRINTER()、PUTFILE()、LOCFILE() 和 INPUTBOX() 函数，并完成了对 WAIT WINDOW 的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1997" target="_blank">#1997</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1996" target="_blank">#1996</link>）</li>
       <li styleclass="List1">添加了 VFP 自检函数，并通过整合对 CLEAR 和 RELEASE 的支持，提高了命令覆盖率（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1999" target="_blank">#1999</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2001" target="_blank">#2001</link>）</li>
@@ -54,7 +58,7 @@
       <li styleclass="List1">扩展了 XSharp.VFP.UI，支持 ON KEY LABEL、FormSet 构造函数、额外的控件属性、动态颜色，以及更广泛的网格（Grid）和菜单（Menu）支持</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了 CAST()、REPLACE 默认作用域、SET DATE、SET SECONDS、COPY MEMO、IN 子句解析、WAIT WINDOW 消息排序以及 SYSMETRIC() 中的 VFP 命令兼容性问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2013" target="_blank">#2013</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2008" target="_blank">#2008</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2038" target="_blank">#2038</link>、 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2030" target="_blank">#2030</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2017" target="_blank">#2017</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2029" target="_blank">#2029</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2053" target="_blank">#2053</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2065" target="_blank">#2065</link>）</li>
       <li styleclass="List1">修复了与重新连接、分页和 EOF 处理、删除和刷新行为、NULL 与可为空 ADS 兼容性、标签查找、索引创建、Date 和 DateTime 检测以及 null-DataTable 处理相关的 SQLRDD 崩溃和数据完整性问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2035" target="_blank">#2035</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2044" target="_blank">#2044</link>、 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2050" target="_blank">#2050</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2058" target="_blank">#2058</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1984" target="_blank">#1984</link>)</li>
       <li styleclass="List1">修复了涉及受保护、私有和静态成员、限定静态引用以及 NEWOBJECT() 初始化参数的 FoxPro 成员访问和宏编译器问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2056" target="_blank">#2056</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2057" target="_blank">#2057</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2039" target="_blank">#2039</link>）</li>
@@ -63,17 +67,18 @@
       <li styleclass="List1">修复了在 .NET 6 及更高版本上访问共享文件时文件偏移量错误的问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2082" target="_blank">#2082</link>）</li>
       <li styleclass="List1">修复了在支持动态属性的对象中，__FieldGetWa2 中的字段和成员查找问题，并改进了变量无法找到时抛出的错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2092" target="_blank">#2092</link>)</li>
       <li styleclass="List1">修复了转换中使用的 usCulture，使其忽略 Windows 用户的覆盖设置；这解决了当用户自定义了小数符号或数字分组时，Val()、Str() 和 Transform() 方法出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2100" target="_blank">#2100</link>)</li>
-    </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了新版本 .NET 中对微小负数（-0.0）进行四舍五入时出现的问题 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2104" target="_blank">#2104</link></li>
       <li styleclass="List1">修复了 FindClass 处理尚未加载的类型时出现的问题 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2109" target="_blank">#2109</link></li>
       <li styleclass="List1">宏脚本中的嵌套代码块现在可以访问周围代码中的局部变量 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2113" target="_blank">#2113</link></li>
       <li styleclass="List1">允许在宏中进行隐式接口转换 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2114" target="_blank">#2114)</link></li>
-    </list>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了 FoxPro 目录函数的相关问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2137" target="_blank">#2137）</link></li>
       <li styleclass="List1">修复了 FoxPro 方言中类属性的晚绑定赋值问题</li>
       <li styleclass="List1">将 SCATTER ARRAY 命令所调用的内部函数的返回类型从 Array 更改为与 FoxPro 兼容的数组（__FoxArray）</li>
+    </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">VFP 方言中的 SET EXACT ON 现在会忽略尾随空格（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160）</link></li>
+      <li styleclass="List1">VFP 方言中的 CURDIR() 函数返回的目录格式与 VFP 一致 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160)</link></li>
+      <li styleclass="List1">修复了针对不存在的文件的 STRTOFILE() 附加子句（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160）</link></li>
     </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">新功能</para>
@@ -89,7 +94,13 @@
       <li styleclass="List1">项目“属性”页面现在基于“MsBuild Rules”文件夹中的 XAML 文件</li>
     </list>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">在源代码编辑器中添加了对<text style="font-weight:bold;">“查找所有引用”</text>功能的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2148" target="_blank">#2148</link>）</li>
+      <li styleclass="List1">新增了对几项新 IntelliSense 功能的支持，这些功能由我们的其中一位客户提供（感谢 HansJoerg）</li>
+      <list id="8" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="List1">在源代码编辑器中新增了<text style="font-weight:bold;">查找所有引用</text>功能（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2148" target="_blank">#2148</link>）</li>
+        <li styleclass="List1">新增对<text style="font-weight:bold;">重命名类型</text>和成员的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2154" target="_blank">#2154</link>）</li>
+        <li styleclass="List1">新增对类型和成员的<text style="font-weight:bold;">转到（Ctrl-T）</text>功能的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2155" target="_blank">#2155</link>）（仅限 VS2022 及更高版本）</li>
+        <li styleclass="List1">新增对<text style="font-weight:bold;">类型</text>和成员的<text style="font-weight:bold;">转到实现功能</text>的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2156" target="_blank">#2156</link>）</li>
+      </list>
     </list>
     <para styleclass="Heading3">错误修复</para>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -160,6 +160,9 @@
     <Compile Include="Commands\GoToImplementationCommand.cs" />
     <Compile Include="Commands\TargetUnderCursor.cs" />
     <Compile Include="GoToImplementation\DeclarationHit.cs" />
+    <Compile Include="ForeignSource\ForeignLocation.cs" />
+    <Compile Include="ForeignSource\ForeignSymbolKey.cs" />
+    <Compile Include="ForeignSource\ForeignSymbolResolver.cs" />
     <Compile Include="GoToImplementation\SourceHierarchy.cs" />
     <Compile Include="GoToImplementation\TypeHierarchy.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
@@ -330,6 +333,7 @@
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
       <Version>17.0.551</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.8.0" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="editorconfig">
       <Version>0.15.0</Version>
     </PackageReference>

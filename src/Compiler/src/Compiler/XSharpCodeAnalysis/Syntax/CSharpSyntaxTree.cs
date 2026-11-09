@@ -170,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = node.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(file))
                     {
-                        file = (node.XNode.SourceSymbol as XSharpToken).SourceName;
+                        file = node.XNode.SourceSymbol.SourceName;
                     }
                 }
                 if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out var ntext))

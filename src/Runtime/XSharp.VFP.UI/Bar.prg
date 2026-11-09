@@ -71,27 +71,31 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END SET
 		END PROPERTY
 
+		// ── Number ────────────────────────────────────────────────────────────
+		// The number BAR() reports: the one given in DEFINE BAR, which the UDC
+		// stores as the Name. A bar created from code without a numeric name
+		// falls back to its position in the popup, separators not counted.
+		INTERNAL PROPERTY Number AS INT
+			GET
+				LOCAL nNumber AS INT
+				IF Int32.TryParse( SELF:Name, OUT nNumber )
+					RETURN nNumber
+				ENDIF
+				IF SELF:Owner IS Popup VAR oPopup
+					RETURN oPopup:IndexOf( SELF )
+				ELSEIF SELF:Owner IS ContextMenu VAR oCtx
+					RETURN oCtx:IndexOf( SELF )
+				ENDIF
+				RETURN 0
+			END GET
+		END PROPERTY
+
 		METHOD Set_Click( methodCall AS VFPOverride ) AS VOID
 			SELF:Click += System.EventHandler{ SELF, @OnVFPClick() }
 			SELF:_vfpClick := methodCall
 
 		PRIVATE METHOD OnVFPClick( sender AS OBJECT, e AS System.EventArgs ) AS VOID
-			// Update global menu state so BAR(), PAD(), POPUP(), MENU() work in handlers
-			IF SELF:Owner IS Popup VAR oParentPopup
-				MenuState.LastBar   := oParentPopup:IndexOf( SELF )
-				MenuState.LastPopup := oParentPopup:Name
-				IF oParentPopup:OwnerItem IS Pad VAR oPadOwner
-					MenuState.LastPad := oPadOwner:Name
-					IF oPadOwner:Owner IS Menu VAR oMenuOwner
-						MenuState.LastMenu := oMenuOwner:Name
-					ENDIF
-				ENDIF
-			ELSEIF SELF:Owner IS ContextMenu VAR oCtx
-				MenuState.LastBar   := oCtx:IndexOf( SELF )
-				MenuState.LastPopup := oCtx:Name
-				MenuState.LastPad   := ""
-				MenuState.LastMenu  := ""
-			ENDIF
+			SELF:UpdateMenuState()
 			IF SELF:_vfpClick != NULL
 				LOCAL sMethod AS STRING
 				sMethod := SELF:_vfpClick:SendTo
@@ -104,6 +108,30 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					oTarget := SELF:FindDispatchTarget()
 					IF oTarget != NULL_OBJECT .AND. IsMethod( oTarget, sMethod )
 						Send( oTarget, sMethod )
+					ENDIF
+				ENDIF
+			ENDIF
+
+		// Fill MenuState so BAR(), POPUP(), PAD() and MENU() describe this selection,
+		// inside the handler and after it. BAR() is the number from DEFINE BAR.
+		PRIVATE METHOD UpdateMenuState() AS VOID
+			MenuState.LastBar   := SELF:Number
+			MenuState.LastPopup := ""
+			MenuState.LastPad   := ""
+			MenuState.LastMenu  := ""
+			IF SELF:Owner IS ContextMenu VAR oCtx
+				MenuState.LastPopup := oCtx:Name
+				RETURN
+			ENDIF
+			IF SELF:Owner IS Popup VAR oPopup
+				MenuState.LastPopup := oPopup:Name
+				LOCAL oPad := oPopup:FindOwnerPad() AS Pad
+				IF oPad != NULL
+					MenuState.LastPad := oPad:Name
+					IF oPad:Owner IS Menu VAR oMenu
+						MenuState.LastMenu := oMenu:Name
+					ELSEIF oPopup:OwnerMenu != NULL
+						MenuState.LastMenu := oPopup:OwnerMenu:Name
 					ENDIF
 				ENDIF
 			ENDIF
@@ -140,6 +168,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			END GET
 			SET
 				SELF:DropDown := VALUE
+				IF VALUE != NULL
+					VALUE:OwnerBar := SELF
+				ENDIF
 			END SET
 		END PROPERTY
 
@@ -152,22 +183,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:_clickBlock := block
 
 		PRIVATE METHOD OnBlockClick( sender AS OBJECT, e AS System.EventArgs ) AS VOID
-			// Populate MenuState the same way OnVFPClick does.
-			IF SELF:Owner IS Popup VAR oParentPopup
-				MenuState.LastBar   := oParentPopup:IndexOf( SELF )
-				MenuState.LastPopup := oParentPopup:Name
-				IF oParentPopup:OwnerItem IS Pad VAR oPadOwner
-					MenuState.LastPad := oPadOwner:Name
-					IF oPadOwner:Owner IS Menu VAR oMenuOwner
-						MenuState.LastMenu := oMenuOwner:Name
-					ENDIF
-				ENDIF
-			ELSEIF SELF:Owner IS ContextMenu VAR oCtx
-				MenuState.LastBar   := oCtx:IndexOf( SELF )
-				MenuState.LastPopup := oCtx:Name
-				MenuState.LastPad   := ""
-				MenuState.LastMenu  := ""
-			ENDIF
+			SELF:UpdateMenuState()
 			IF SELF:_clickBlock != NIL
 				Eval( SELF:_clickBlock )
 			ENDIF

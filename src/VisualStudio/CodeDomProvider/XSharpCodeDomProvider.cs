@@ -31,7 +31,7 @@ namespace XSharp.CodeDom
             this.xsGenerator = new XSharpCodeGenerator();
         }
 
-        public override string FileExtension => ".prg";
+        public override string FileExtension => Constants.SourceFileExtension;
 
         [Obsolete]
         public override ICodeCompiler CreateCompiler() => this.xsGenerator;

@@ -27,7 +27,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
         oFile := XSharpModel.XSolution.FindFile(cFileName)
         IF oFile == NULL_OBJECT
             LOCAL cPrgFileName AS STRING
-            cPrgFileName := XFuncs.GetModuleFilenameFromBinary(cFileName)+".PRG"
+            cPrgFileName := XFuncs.GetModuleFilenameFromBinary(cFileName)+Constants.SourceFileExtension
             oFile := XSharpModel.XSolution.FindFile(cPrgFileName)
             IF (oFile != NULL_OBJECT)
                 oXProject := oFile:Project
@@ -133,7 +133,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
         END IF
 
         TRY
-            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNfsFileName) + ".prg"
+            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNfsFileName) + Constants.SourceFileExtension
 
             lError := FALSE
             IF !lVnfrmOnly

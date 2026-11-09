@@ -7,7 +7,7 @@
 USING System.Collections.Generic
 USING System.IO
 USING FabToolsNS
-STATIC DEFINE CRLF := e"\r\n"
+
 BEGIN NAMESPACE Fab_VO_Entities
 
     CLASS FabPRGFile 	INHERIT	FabModuleBase
@@ -24,7 +24,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 	PROTECT cBTime			AS	STRING
 	// StringList with source code
 	PROTECT	oSource			AS	List<STRING>
-
+    CONST CRLF := e"\r\n" AS STRING
 	DESTRUCTOR()
 	    SELF:Close()
     RETURN

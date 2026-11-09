@@ -1817,7 +1817,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
         TRY
 
-            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNFrmFileName) + ".prg"
+            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNFrmFileName) + Constants.SourceFileExtension
             lError := FALSE
             IF !lVnfrmOnly
                 IF !File.Exists(cPrgFileName)

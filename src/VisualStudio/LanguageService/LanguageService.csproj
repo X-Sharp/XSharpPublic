@@ -167,7 +167,10 @@
     <Compile Include="FindReferences\ReferencesWindow.cs" />
     <Compile Include="Rename\RenameApplier.cs" />
     <Compile Include="Rename\RenameConflicts.cs" />
-    <Compile Include="Rename\RenameDialog.cs" />
+    <Compile Include="Rename\RenameDialog.xaml.cs">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rename\RenameGuard.cs" />
     <Compile Include="Rename\RenameName.cs" />
     <Compile Include="Rename\RenamePlan.cs" />
@@ -402,6 +405,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\GotoDefinitionResultsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Rename\RenameDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

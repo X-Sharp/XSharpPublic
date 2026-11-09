@@ -268,7 +268,7 @@ namespace XSharp.LanguageService
             {
                 fileName = fileName.Replace(c, '_');
             }
-            var temp = Path.Combine(nspath, fileName) + ".prg";
+            var temp = Path.Combine(nspath, fileName) + Constants.SourceFileExtension;
             var fi = new FileInfo(temp);
             mustCreate = !fi.Exists || fi.Length < 10;
             if (mustCreate)

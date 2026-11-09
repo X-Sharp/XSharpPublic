@@ -2,28 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Tools.props" />
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>DeployMsBuildSupport</RootNamespace>
-    <TargetFramework>net47</TargetFramework>
-    <Name>DeployMsBuildSupport</Name>
-    <Dialect>Core</Dialect>
-    <NoStandardDefs>true</NoStandardDefs>
-    <AssemblyName>DeployMsBuildSupport</AssemblyName>
+  <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="$(CommonDir)constants.prg">
       <Link>constants.prg</Link>
     </Compile>
   </ItemGroup>
- 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <Prefer32Bit>False</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <Prefer32Bit>False</Prefer32Bit>
-  </PropertyGroup>
 </Project>

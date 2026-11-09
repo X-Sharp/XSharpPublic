@@ -84,7 +84,7 @@ namespace XSharp.Imaging
                 {
                     foreach (var item in rule.Items.Keys)
                     {
-                        if (item.EndsWith(".designer.prg", StringComparison.OrdinalIgnoreCase))
+                        if (item.EndsWith(Constants.DesignerExtension, StringComparison.OrdinalIgnoreCase))
                             builder.Add(item);
                     }
                 }

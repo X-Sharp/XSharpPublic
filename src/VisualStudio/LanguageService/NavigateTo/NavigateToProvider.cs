@@ -63,7 +63,9 @@ namespace XSharp.LanguageService.NavigateTo
             Interlocked.Exchange(ref _cancellation, cancellation)?.Cancel();
             var kinds = filter?.Kinds;
             var currentDocumentOnly = (callback.Options as INavigateToOptions2)?.SearchCurrentDocument == true;
+#pragma warning disable VSTHRD110 // Observe the awaitable result of this method call by awaiting it, assigning to a variable, or passing it to
             Task.Run(() => SearchAsync(callback, searchValue, kinds, currentDocumentOnly, cancellation.Token));
+#pragma warning restore VSTHRD110 // Observe the awaitable result of this method call by awaiting it, assigning to a variable, or passing it to
         }
 
         private static async Task SearchAsync(INavigateToCallback callback, string searchValue, ISet<string> kinds,

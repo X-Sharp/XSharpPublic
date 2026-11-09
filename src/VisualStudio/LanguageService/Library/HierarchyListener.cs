@@ -245,7 +245,7 @@ namespace XSharp.LanguageService
             // Find out if this item is a physical file.
             canonicalName = getItemName(itemId);
             string extension = System.IO.Path.GetExtension(canonicalName);
-            return (0 == string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase));
+            return (0 == string.Compare(extension, Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase));
         }
 
         private string getItemName(uint itemId)

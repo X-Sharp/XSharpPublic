@@ -54,8 +54,8 @@ namespace XSharp.LanguageService.Commands
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var selection = new TargetSelection();
-            XSharpSearchLocation location = null;
             IXSymbol target = null;
+            XSharpSearchLocation location = null;
             try
             {
                 target = TargetUnderCursor.Resolve(view, out location, out _, out var candidates);

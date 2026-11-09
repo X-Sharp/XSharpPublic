@@ -115,14 +115,14 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// </summary>
         private static string GetMainPrg(string moniker)
         {
-            if (string.IsNullOrEmpty(moniker) || !moniker.EndsWith(".prg", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(moniker) || !moniker.EndsWith(Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
-            const string designerSuffix = ".designer.prg";
+            const string designerSuffix = Constants.DesignerExtension;
             if (moniker.EndsWith(designerSuffix, StringComparison.OrdinalIgnoreCase))
             {
-                return moniker.Substring(0, moniker.Length - designerSuffix.Length) + ".prg";
+                return moniker.Substring(0, moniker.Length - designerSuffix.Length) + Constants.SourceFileExtension;
             }
             return moniker;
         }

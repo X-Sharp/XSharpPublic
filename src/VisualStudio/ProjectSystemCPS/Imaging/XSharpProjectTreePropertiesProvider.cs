@@ -38,7 +38,7 @@ namespace XSharp.Imaging
         private static readonly Dictionary<string, ProjectImageMoniker> ExtensionIcons =
             new Dictionary<string, ProjectImageMoniker>(StringComparer.OrdinalIgnoreCase)
             {
-                { ".prg", XSharpImages.Document },
+                { Constants.SourceFileExtension, XSharpImages.Document },
                 { ".prgx", XSharpImages.Document },
                 { ".xs", XSharpImages.Document },
                 { ".xsfrm", Known(KnownImageIds.FormInstance) },
@@ -111,7 +111,7 @@ namespace XSharp.Imaging
             var extension = Path.GetExtension(propertyContext.ItemName);
             if (!ExtensionIcons.TryGetValue(extension, out var icon))
                 return;
-            if (string.Equals(extension, ".prg", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(extension, Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase))
             {
                 switch (GetDesignerSubType(propertyContext))
                 {
@@ -152,8 +152,8 @@ namespace XSharp.Imaging
         {
             try
             {
-                if (!string.Equals(Path.GetExtension(prgPath), ".prg", StringComparison.OrdinalIgnoreCase) ||
-                    prgPath.EndsWith(".designer.prg", StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(Path.GetExtension(prgPath), Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase) ||
+                    prgPath.EndsWith(Constants.DesignerExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
@@ -200,6 +200,9 @@ namespace XSharp.Imaging
         {
             try
             {
+                // While a file is renamed the tree can still ask for the old path: no exception for a missing file
+                if (!File.Exists(path))
+                    return null;
                 var stamp = File.GetLastWriteTimeUtc(path);
                 if (inferredSubTypes.TryGetValue(path, out var cached) && cached.Stamp == stamp)
                     return cached.SubType;
@@ -231,6 +234,13 @@ namespace XSharp.Imaging
         /// </summary>
         private static Match FindClassDeclaration(string path)
         {
+            if (!File.Exists(path))
+            {
+                // This may happen when we rename the file. Sometimes the original file is still in the tree
+                // when the new file is added, and the provider runs for both files before the tree update
+                // removes the original file.
+                return null;
+            }
             var text = new StringBuilder();
             var buffer = new char[4096];
             using (var reader = new StreamReader(path, detectEncodingFromByteOrderMarks: true))

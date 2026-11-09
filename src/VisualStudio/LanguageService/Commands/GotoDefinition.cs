@@ -10,6 +10,7 @@ using XSharp.Settings;
 using XSharp.Support;
 using System.Collections;
 using System.Collections.Generic;
+using XSharp.LanguageService.ForeignSource;
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
@@ -33,13 +34,14 @@ namespace XSharp.LanguageService
             }
             else if (element is XPETypeSymbol petype)
             {
-                GotoSystemType(TextView, petype, petype);
-
+                if (!GotoForeignSource(petype, petype))
+                    GotoSystemType(TextView, petype, petype);
             }
             else if (element is XPEMemberSymbol pemember)
             {
                 var petype2 = pemember.Parent as XPETypeSymbol;
-                GotoSystemType(TextView, petype2, pemember);
+                if (!GotoForeignSource(petype2, pemember))
+                    GotoSystemType(TextView, petype2, pemember);
             }
             else
             {
@@ -48,6 +50,22 @@ namespace XSharp.LanguageService
                     buttons: OLEMSGBUTTON.OLEMSGBUTTON_OK);
             }
         }
+        /// <summary>
+        /// A DLL symbol from a C# or VB project of the solution: open its source. False when it is not one, or its
+        /// source cannot be found; the caller then shows the generated header.
+        /// </summary>
+        private static bool GotoForeignSource(XPETypeSymbol petype, XPESymbol element)
+        {
+            var found = ForeignNavigator.Find(petype, element);
+            if (found.Count == 0)
+                return false;
+            if (found.Count == 1)
+                ForeignNavigator.Open(found[0]);
+            else
+                ForeignNavigator.Present(found, element, $"'{element.Name}' definitions");
+            return true;
+        }
+
         internal static void GotoDefn(ITextView TextView)
         {
             try

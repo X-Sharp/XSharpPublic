@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using XSharpModel;
+
 namespace XSharp.LanguageService.ForeignSource
 {
     /// <summary>What to look for in a C# or VB compilation: a type, or a member of that type.</summary>
@@ -23,5 +25,18 @@ namespace XSharp.LanguageService.ForeignSource
         /// <summary>The member name as X# spells it (<c>.ctor</c> for a constructor); used when the doc ID does not resolve.</summary>
         internal string MemberName { get; }
         internal int ParameterCount { get; }
+
+        /// <summary>The key for a type, or a member of that type, read from a DLL.</summary>
+        internal static ForeignSymbolKey From(XPETypeSymbol type, XPESymbol element)
+        {
+            if (element is XPEMemberSymbol member)
+            {
+                // an extension method is declared in its static class, not in the type it extends
+                if (member.IsExtension && member.DeclaringTypeSym != null)
+                    type = member.DeclaringTypeSym;
+                return new ForeignSymbolKey(type.XMLSignature, member.XMLSignature, member.Name, member.Parameters.Count);
+            }
+            return new ForeignSymbolKey(type.XMLSignature, null, null, 0);
+        }
     }
 }

@@ -161,6 +161,7 @@
     <Compile Include="Commands\TargetUnderCursor.cs" />
     <Compile Include="GoToImplementation\DeclarationHit.cs" />
     <Compile Include="ForeignSource\ForeignLocation.cs" />
+    <Compile Include="ForeignSource\ForeignNavigator.cs" />
     <Compile Include="ForeignSource\ForeignProjects.cs" />
     <Compile Include="ForeignSource\ForeignSymbolKey.cs" />
     <Compile Include="ForeignSource\ForeignSymbolResolver.cs" />

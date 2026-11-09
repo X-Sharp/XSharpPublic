@@ -382,49 +382,20 @@ namespace XSharp.Project
                 }
             });
         }
+
         internal static async Task<CVT.Project> GetStartupProjectAsync()
         {
-            EnvDTE.DTE dte = null;
-            EnvDTE100.Solution4 sol4 = null;
-            EnvDTE.SolutionBuild build = null;
-            object startupprojects = null;
-            await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                dte = await VS.GetRequiredServiceAsync<EnvDTE.DTE, EnvDTE.DTE>();
-                if (dte != null)
-                    sol4 = dte.Solution as EnvDTE100.Solution4;
-                if (sol4 != null)
-                    build = sol4.SolutionBuild;
-                if (build != null)
-                {
-                    startupprojects = build.StartupProjects;
-                }
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            });
+            var sbm = await VS.GetRequiredServiceAsync<SVsSolutionBuildManager, IVsSolutionBuildManager>();
+            if (sbm.get_StartupProject(out IVsHierarchy hier) != VSConstants.S_OK || hier == null)
+                return null;
 
-            if (startupprojects != null)
-            {
-                var projects = await VS.Solutions.GetAllProjectsAsync();
-                var projectList = startupprojects as Array;
-                foreach (string prjName in projectList)
-                {
-                    string prjFileName = Path.GetFileName(prjName);
-                    foreach (var prj in projects)
-                    {
-                        var fileName = Path.GetFileName(prj.FullPath);
-                        if (fileName.Equals(prjFileName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return prj;
-                        }
-                    }
-                }
-            }
-            return null;
-
+            var item = await SolutionItem.FromHierarchyAsync(hier, VSConstants.VSITEMID_ROOT);
+            return item as CVT.Project;
         }
-#endregion
-#region DocumentEvents
+        #endregion
+        #region DocumentEvents
         private void DocumentEvents_Closed(string document)
         {
             // Remove document from OrphanedFilesProject

@@ -50,11 +50,14 @@ namespace XSharp.LanguageService.InlayHints
             return result;
         }
 
-        /// <summary>The old hints and the fresh ones of the same snapshot; at the same place and kind the fresh one wins.</summary>
-        internal static IReadOnlyList<InlayHint> Merge(IReadOnlyList<InlayHint> old, IReadOnlyList<InlayHint> fresh)
+        /// <summary>
+        /// The old hints and the fresh ones of the same snapshot. Inside the range the fresh computation covered only its
+        /// hints count (a call that became ambiguous loses its hint); outside it the old ones stay.
+        /// </summary>
+        internal static IReadOnlyList<InlayHint> Merge(IReadOnlyList<InlayHint> old, IReadOnlyList<InlayHint> fresh, IReadOnlyList<(int Start, int End)> freshCovered)
         {
             var taken = new HashSet<(InlayHintKind, int)>(fresh.Select(h => (h.Kind, h.Position)));
-            return old.Where(h => !taken.Contains((h.Kind, h.Position)))
+            return old.Where(h => !taken.Contains((h.Kind, h.Position)) && !IsCovered(freshCovered, h.Position, h.Position + 1))
                 .Concat(fresh)
                 .OrderBy(h => h.Position)
                 .ThenBy(h => h.Kind)

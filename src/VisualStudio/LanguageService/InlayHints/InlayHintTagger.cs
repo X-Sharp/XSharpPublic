@@ -205,7 +205,7 @@ namespace XSharp.LanguageService.InlayHints
             // scrolled within the same snapshot: keep what was computed before
             if (old != null && old.Snapshot == set.Snapshot && old.Parameters == set.Parameters && old.Types == set.Types)
             {
-                set.Hints = InlayHintRange.Merge(old.Hints, set.Hints);
+                set.Hints = InlayHintRange.Merge(old.Hints, set.Hints, set.Covered);
                 foreach (var span in old.Covered)
                     set.Covered = InlayHintRange.AddCovered(set.Covered, span.Start, span.End);
             }

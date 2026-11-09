@@ -59,9 +59,22 @@ namespace XSharp.LanguageService.Tests.InlayHints
             var old = new[] { Hint(InlayHintKind.Parameter, 5, "a:"), Hint(InlayHintKind.Parameter, 50, "old:") };
             var fresh = new[] { Hint(InlayHintKind.Parameter, 50, "new:"), Hint(InlayHintKind.Type, 50, " AS INT"), Hint(InlayHintKind.Type, 60, " AS STRING") };
 
-            var merged = InlayHintRange.Merge(old, fresh);
+            var merged = InlayHintRange.Merge(old, fresh, new[] { (40, 100) });
 
             Assert.Equal(new[] { "a:", "new:", " AS INT", " AS STRING" }, merged.Select(h => h.Text));
+        }
+
+        [Fact]
+        public void MergeDropsOldHintsTheFreshRangeNoLongerHas()
+        {
+            // recomputed 40..100 after the walker finished: the call at 70 became ambiguous, its hint is gone
+            // the range is [40, 100): a hint at 100 lies after it and stays
+            var old = new[] { Hint(InlayHintKind.Parameter, 5, "a:"), Hint(InlayHintKind.Parameter, 70, "stale:"), Hint(InlayHintKind.Parameter, 100, "next:"), Hint(InlayHintKind.Type, 150, " AS INT") };
+            var fresh = new[] { Hint(InlayHintKind.Parameter, 50, "new:") };
+
+            var merged = InlayHintRange.Merge(old, fresh, new[] { (40, 100) });
+
+            Assert.Equal(new[] { "a:", "new:", "next:", " AS INT" }, merged.Select(h => h.Text));
         }
 
         private static InlayHint Hint(InlayHintKind kind, int position, string text)

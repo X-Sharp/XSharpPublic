@@ -38,15 +38,21 @@ namespace XSharp.LanguageService.ForeignSource
             return result;
         }
 
+        /// <summary>Doc IDs separate nested types with '.'; the metadata names X# reads use '/' (Cecil) or '+' (reflection).</summary>
+        private static string DocId(string id)
+        {
+            return id?.Replace('/', '.').Replace('+', '.');
+        }
+
         private static IEnumerable<ISymbol> Find(Compilation compilation, ForeignSymbolKey key)
         {
             if (key.MemberDocId != null)
             {
-                var members = InSource(DocumentationCommentId.GetSymbolsForDeclarationId(key.MemberDocId, compilation));
+                var members = InSource(DocumentationCommentId.GetSymbolsForDeclarationId(DocId(key.MemberDocId), compilation));
                 if (members.Count > 0)
                     return members;
             }
-            var type = DocumentationCommentId.GetFirstSymbolForDeclarationId(key.TypeDocId, compilation) as INamedTypeSymbol;
+            var type = DocumentationCommentId.GetFirstSymbolForDeclarationId(DocId(key.TypeDocId), compilation) as INamedTypeSymbol;
             if (type == null)
                 return Enumerable.Empty<ISymbol>();
             if (key.MemberDocId != null)

@@ -79,6 +79,14 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void NestedTypeInMetadataSpellingResolves()
+        {
+            // X# takes the type name from Mono.Cecil, which separates nested types with '/' (reflection: '+')
+            AssertSingle(Resolve(Type("T:Lib.Crate/Lid")), 7);
+            AssertSingle(Resolve(Type("T:Lib.Crate+Lid")), 7);
+        }
+
+        [Fact]
         public void InterfaceAndEnumResolve()
         {
             AssertSingle(Resolve(Type("T:Lib.IBox")), 9);

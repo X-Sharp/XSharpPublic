@@ -57,10 +57,15 @@ namespace XSharp.LanguageService.InlayHints
                 if (!IsName(name.Type))
                     continue;
                 var next = code[i + 1].Type;
-                if (next != XSharpLexer.LPAREN && next != XSharpLexer.LCURLY)
+                if (next != XSharpLexer.LPAREN && next != XSharpLexer.LCURLY && next != XSharpLexer.LT)
                     continue;
                 if (i > 0 && IsDeclarationKeyword(code[i - 1].Type))
                     continue;
+                // Name(...), Name{...}, also after type arguments: Name<T>{...}
+                var open = OverloadFilter.ListAfterName(code, i);
+                if (open < 0)
+                    continue;
+                next = code[open].Type;
                 // by position: looking the name up in the list made a large file quadratic
                 var arguments = OverloadFilter.Arguments(code, i);
                 if (arguments == null || arguments.Count == 0)

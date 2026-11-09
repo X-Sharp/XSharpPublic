@@ -170,6 +170,20 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void GenericCreationResolvesToTheConstructors()
+        {
+            var text = "x := Shape<INT>{1}\ny := Shape<INT>.Default\n";
+            var tokens = TestLexer.Lex(text);
+            var shape = new XSourceTypeSymbol("Shape", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            shape.AddMember(ctor);
+            var creation = tokens.First(t => t.StartIndex == text.IndexOf("Shape<INT>{"));
+            var typeOnly = tokens.First(t => t.StartIndex == text.IndexOf("Shape<INT>."));
+            Assert.Equal(new IXSymbol[] { ctor }, SymbolResolver.ForCreation(new IXSymbol[] { shape }, tokens, creation));
+            Assert.Equal(new IXSymbol[] { shape }, SymbolResolver.ForCreation(new IXSymbol[] { shape }, tokens, typeOnly));
+        }
+
+        [Fact]
         public void GroupOfAMemberIsItsDeclaration()
         {
             var foo = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);

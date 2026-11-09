@@ -33,6 +33,18 @@ namespace XSharp.LanguageService.Tests.InlayHints
         }
 
         [Fact]
+        public void FindsGenericConstructorAndMethodCalls()
+        {
+            var calls = Calls("x := List<STRING>{10}\no:Foo<INT>(1, 2)\n");
+            Assert.Equal(new[] { "List", "Foo" }, calls.Select(c => c.Name.Text));
+            Assert.True(calls[0].IsCreation);
+            Assert.Single(calls[0].Arguments);
+            Assert.False(calls[1].IsCreation);
+            Assert.True(calls[1].IsMemberAccess);
+            Assert.Equal(2, calls[1].Arguments.Count);
+        }
+
+        [Fact]
         public void NestedCallsAreBothFound()
         {
             var calls = Calls("Foo(Bar(1), 2)\n");

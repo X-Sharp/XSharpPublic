@@ -36,6 +36,23 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(expected, CountAt(text, "Foo"));
         }
 
+        [Theory]
+        [InlineData("x := List<STRING>{10}\n", "List", 1)]
+        [InlineData("x := Dictionary<STRING, List<INT>>{}\n", "Dictionary", 0)]
+        [InlineData("x := o:Foo<INT>(1, 2)\n", "Foo", 2)]
+        [InlineData("x := o:Foo< INT, STRING >(1)\n", "Foo", 1)]
+        public void TypeArgumentsBetweenNameAndArguments(string text, string name, int expected)
+        {
+            Assert.Equal(expected, CountAt(text, name));
+        }
+
+        [Fact]
+        public void AComparisonAfterTheNameIsNoCall()
+        {
+            Assert.Null(CountAt("x := Foo < 3\n", "Foo"));
+            Assert.Null(CountAt("x := Foo < b, c > d\n", "Foo"));
+        }
+
         [Fact]
         public void AComparisonIsNoTypeArgumentList()
         {

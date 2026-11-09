@@ -24,6 +24,17 @@ namespace XSharp.LanguageService.Tests.InlayHints
             Assert.False(calls[0].IsCreation);
         }
 
+        [Theory]
+        [InlineData("VAR x := o:Foo(1)\n", "Foo")]
+        [InlineData("VAR x := o:Foo<INT>(1)\n", "Foo")]
+        [InlineData("VAR x := Box<List<INT>>{3}\n", "Box")]
+        [InlineData("VAR x := Foo<INT>(1)\n", "Foo")]
+        public void FinalCallNameSkipsTypeArguments(string text, string name)
+        {
+            var decl = Assert.Single(Declarations(text));
+            Assert.Equal(name, InlayHintComputer.FinalCallName(decl.Initializer)?.Text);
+        }
+
         [Fact]
         public void FindsConstructorCall()
         {
@@ -136,15 +147,29 @@ namespace XSharp.LanguageService.Tests.InlayHints
         {
             // in the editor the token index does not always match the position in the list; a lookup of each
             // call name in the list made the scan of a large file take seconds
-            var tokens = TestLexer.Lex(string.Concat(Enumerable.Repeat("Foo(1, 2)\n", 20000)));
+            // no fixed time limit (slow on the E-cores): four times the calls must take about four times as long,
+            // a quadratic scan takes sixteen times as long; the fastest of three runs evens out the noise
+            var small = Fastest(5000);
+            var large = Fastest(20000);
+            Assert.True(large < small * 8, $"5000 calls {small:F1} ms, 20000 calls {large:F1} ms");
+        }
+
+        private static double Fastest(int count)
+        {
+            var tokens = TestLexer.Lex(string.Concat(Enumerable.Repeat("Foo(1, 2)\n", count)));
             foreach (var token in tokens.OfType<CommonToken>())
                 token.TokenIndex = -1;
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var calls = HintCandidates.Calls(tokens);
-            watch.Stop();
-            Assert.Equal(20000, calls.Count);
-            Assert.Equal(2, calls[19999].Arguments.Count);
-            Assert.True(watch.ElapsedMilliseconds < 1000, $"{watch.ElapsedMilliseconds} ms");
+            var fastest = double.MaxValue;
+            for (int run = 0; run < 3; run++)
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var calls = HintCandidates.Calls(tokens);
+                watch.Stop();
+                Assert.Equal(count, calls.Count);
+                Assert.Equal(2, calls[count - 1].Arguments.Count);
+                fastest = System.Math.Min(fastest, watch.Elapsed.TotalMilliseconds);
+            }
+            return fastest;
         }
     }
 }

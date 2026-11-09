@@ -167,10 +167,23 @@ namespace XSharp.LanguageService.InlayHints
                 if (type == close)
                     depth++;
                 else if (type == open && --depth == 0)
-                {
-                    var name = initializer[i - 1];
-                    return name.Type == XSharpLexer.ID || XSharpLexer.IsPositionalKeyword(name.Type) ? name : null;
-                }
+                    return NameBefore(initializer, i);
+            }
+            return null;
+        }
+
+        /// <summary>The name before the list at <paramref name="open"/>, also before type arguments (<c>o:Foo&lt;INT&gt;(1)</c>).</summary>
+        private static IToken NameBefore(IList<IToken> tokens, int open)
+        {
+            for (int k = open - 1; k >= 0; k--)
+            {
+                var name = tokens[k];
+                if (k < open - 1 && tokens[k + 1].Type != XSharpLexer.LT)
+                    continue;
+                if ((name.Type == XSharpLexer.ID || XSharpLexer.IsPositionalKeyword(name.Type)) && OverloadFilter.ListAfterName(tokens, k) == open)
+                    return name;
+                if (k == open - 1 && !tokens[k].Text.EndsWith(">"))
+                    return null;
             }
             return null;
         }

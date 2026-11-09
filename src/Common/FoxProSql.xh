@@ -56,16 +56,16 @@
 #command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:SELECT> <*moreclauses*>   => ;
     __NOFOXPROSQL__ "SELECT Clause not yet available for INSERT command"`  // __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
 
-// SQL Delete, mapped to normal delete
+// SQL Delete, mapped to normal delete. DELETE - SQL always works on the whole
+// table, so the scope is ALL: without the WHERE clause every record is deleted,
+// with it every record that matches. Without ALL, DELETE FROM <table> would fall
+// into the single record DELETE IN <table> rule and delete the current record only.
+// ALL goes after the FOR clause because the scoped DELETE ... IN rule does not
+// accept it in front of FOR. _TALLY counts the rows that matched, the already
+// deleted ones included.
 #command DELETE [<*clauses*>] WHERE [<*moreclauses*>] => DELETE <clauses> FOR <moreclauses>
-#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <target> ; _TALLY := RuntimeState.Tally
-#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a> ; _TALLY := RuntimeState.Tally
-
-// Temporary: DELETE FROM <table> without WHERE deletes only the current record
-// (VFP deletes them all). Until that is fixed the command must not overwrite
-// _TALLY with a stale RuntimeState.Tally, since no DbEval() runs. Remove this
-// rule together with that fix.
-#command DELETE FROM <(a)> => DELETE IN <a>
+#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> ALL IN <target> ; _TALLY := RuntimeState.Tally
+#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> ALL IN <a> ; _TALLY := RuntimeState.Tally
 
 // Delete with Join or Subselect is not supported
 #command DELETE [<*clauses*>] <s:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>

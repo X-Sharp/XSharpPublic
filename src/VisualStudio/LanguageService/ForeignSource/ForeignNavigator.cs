@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
@@ -48,23 +49,35 @@ namespace XSharp.LanguageService.ForeignSource
                 var projectFile = ForeignProjects.FindProjectFile(assembly?.FileName);
                 if (projectFile == null)
                     return none;
-                var workspace = Workspace();
-                if (workspace == null)
-                    return none;
-                var projects = workspace.CurrentSolution.Projects
-                    .Where(p => string.Equals(p.FilePath, projectFile, StringComparison.OrdinalIgnoreCase)).ToList();
-                if (projects.Count == 0)
-                    return none;
-                var compilations = ThreadHelper.JoinableTaskFactory.Run(() => CompilationsAsync(projects));
-                var found = ForeignSymbolResolver.Resolve(compilations, key);
+                var found = FindInWorkspace(projectFile, key);
                 XSharpGotoDefinition.WriteOutputMessage($"ForeignNavigator: {projectFile} {key.MemberDocId ?? key.TypeDocId} -> {found.Count} location(s)");
                 return found;
             }
             catch (Exception ex)
             {
+                // also a Roslyn assembly that cannot be loaded (an older VS): it fails when FindInWorkspace is compiled
                 Logger.Exception(ex, "ForeignNavigator.Find failed");
                 return none;
             }
+        }
+
+        /// <summary>
+        /// All Roslyn work lives here, not in <see cref="Find"/>: when a Roslyn assembly cannot be loaded, the JIT fails
+        /// while compiling this method, which happens inside Find's try, and F12 falls back to the generated header.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static IReadOnlyList<ForeignLocation> FindInWorkspace(string projectFile, ForeignSymbolKey key)
+        {
+            var workspace = Workspace();
+            if (workspace == null)
+                return Array.Empty<ForeignLocation>();
+            var projects = workspace.CurrentSolution.Projects
+                .Where(p => string.Equals(p.FilePath, projectFile, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (projects.Count == 0)
+                return Array.Empty<ForeignLocation>();
+            var compilations = ThreadHelper.JoinableTaskFactory.Run(() => CompilationsAsync(projects));
+            // generated sources (source generators) have virtual paths that cannot be opened
+            return ForeignSymbolResolver.Resolve(compilations, key, File.Exists);
         }
 
         /// <summary>Opens the declaration in its editor (the C# or VB editor).</summary>

@@ -128,6 +128,41 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(new[] { @"C:\lib\A.cs", @"C:\lib\B.cs" }, found.Select(f => f.FilePath).OrderBy(p => p).ToArray());
         }
 
+        // a source generator's tree has a virtual path; nothing on disk can be opened there
+        private const string GeneratedPath = @"Generator\Gen\Duo.g.cs";
+
+        private static Compilation CompileWithGeneratedPart()
+        {
+            return Compile(
+                (@"C:\lib\A.cs", "namespace Lib { public partial class Duo { } }"),
+                (GeneratedPath, "namespace Lib { public partial class Duo { public int Name { get; set; } } }"));
+        }
+
+        private static bool OnDisk(string path) => path != GeneratedPath;
+
+        [Fact]
+        public void GeneratedMemberFallsBackToType()
+        {
+            var found = ForeignSymbolResolver.Resolve(new[] { CompileWithGeneratedPart() },
+                Member("T:Lib.Duo", "P:Lib.Duo.Name", "Name", 0), OnDisk);
+            Assert.Single(found);
+            Assert.Equal(@"C:\lib\A.cs", found[0].FilePath);
+        }
+
+        [Fact]
+        public void PartialTypeDropsGeneratedPart()
+        {
+            var found = ForeignSymbolResolver.Resolve(new[] { CompileWithGeneratedPart() }, Type("T:Lib.Duo"), OnDisk);
+            Assert.Single(found);
+            Assert.Equal(@"C:\lib\A.cs", found[0].FilePath);
+        }
+
+        [Fact]
+        public void NothingOnDiskGivesNothing()
+        {
+            Assert.Empty(ForeignSymbolResolver.Resolve(new[] { Compile((CratePath, CrateSource)) }, Type("T:Lib.Crate"), p => false));
+        }
+
         [Fact]
         public void UnknownTypeGivesNothing()
         {

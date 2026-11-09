@@ -17,15 +17,19 @@ namespace XSharp.LanguageService.ForeignSource
     /// </summary>
     internal static class ForeignSymbolResolver
     {
-        internal static IReadOnlyList<ForeignLocation> Resolve(IEnumerable<Compilation> compilations, ForeignSymbolKey key)
+        /// <param name="isOnDisk">
+        /// Whether a source file can be opened. Source generators produce trees with virtual paths; their locations are
+        /// skipped, and the search goes on as if the symbol had no source there (member → type → nothing). Null: all files.
+        /// </param>
+        internal static IReadOnlyList<ForeignLocation> Resolve(IEnumerable<Compilation> compilations, ForeignSymbolKey key, Func<string, bool> isOnDisk = null)
         {
             var result = new List<ForeignLocation>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var compilation in compilations)
             {
-                foreach (var symbol in Find(compilation, key))
+                foreach (var symbol in Find(compilation, key, isOnDisk))
                 {
-                    foreach (var location in symbol.Locations.Where(l => l.IsInSource))
+                    foreach (var location in symbol.Locations.Where(l => Usable(l, isOnDisk)))
                     {
                         var span = location.GetLineSpan();
                         if (!seen.Add(span.Path + "|" + span.StartLinePosition.Line))
@@ -44,8 +48,14 @@ namespace XSharp.LanguageService.ForeignSource
             return id?.Replace('/', '.').Replace('+', '.');
         }
 
-        private static IEnumerable<ISymbol> Find(Compilation compilation, ForeignSymbolKey key)
+        private static bool Usable(Location location, Func<string, bool> isOnDisk)
         {
+            return location.IsInSource && (isOnDisk == null || isOnDisk(location.SourceTree.FilePath));
+        }
+
+        private static IEnumerable<ISymbol> Find(Compilation compilation, ForeignSymbolKey key, Func<string, bool> isOnDisk)
+        {
+            List<ISymbol> InSource(IEnumerable<ISymbol> symbols) => symbols.Where(s => s.Locations.Any(l => Usable(l, isOnDisk))).ToList();
             if (key.MemberDocId != null)
             {
                 var members = InSource(DocumentationCommentId.GetSymbolsForDeclarationId(DocId(key.MemberDocId), compilation));
@@ -64,11 +74,6 @@ namespace XSharp.LanguageService.ForeignSource
                     return members;
             }
             return new[] { type };
-        }
-
-        private static List<ISymbol> InSource(IEnumerable<ISymbol> symbols)
-        {
-            return symbols.Where(s => s.Locations.Any(l => l.IsInSource)).ToList();
         }
 
         private static int ParameterCount(ISymbol symbol)

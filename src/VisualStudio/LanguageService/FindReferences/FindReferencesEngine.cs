@@ -390,7 +390,8 @@ namespace XSharp.LanguageService.FindReferences
             // a constructor is named by its keyword
             if (token.Type == XSharpLexer.CONSTRUCTOR)
                 return entity.Kind == Kind.Constructor ? entity : null;
-            if (!string.Equals(entity.Name, token.Text, StringComparison.OrdinalIgnoreCase))
+            var name = entity is IXTypeSymbol ? WithoutArity(entity.Name) : entity.Name;
+            if (!string.Equals(name, token.Text, StringComparison.OrdinalIgnoreCase))
                 return null;
             return entity;
         }
@@ -426,16 +427,26 @@ namespace XSharp.LanguageService.FindReferences
             return $"Late bound :{target.Name} / #{target.Name}";
         }
 
-        /// <summary>The name a file must contain: for a constructor (named .ctor) the name of its class.</summary>
+        /// <summary>
+        /// The name a file must contain: for a constructor (named .ctor) the name of its class; a generic type
+        /// (stored as <c>Box`1</c>) without its arity.
+        /// </summary>
         internal static string SearchName(IXSymbol target)
         {
             if (target.Kind == Kind.Constructor && target is IXMemberSymbol ctor)
             {
                 var typeName = ctor.ParentType?.Name ?? ctor.DeclaringType;
                 if (!string.IsNullOrEmpty(typeName))
-                    return typeName.Substring(typeName.LastIndexOf('.') + 1);
+                    return WithoutArity(typeName.Substring(typeName.LastIndexOf('.') + 1));
             }
-            return target.Name;
+            return target is IXTypeSymbol ? WithoutArity(target.Name) : target.Name;
+        }
+
+        /// <summary><c>Box`1</c> → <c>Box</c>: the name of a generic type as the source writes it.</summary>
+        private static string WithoutArity(string name)
+        {
+            var tick = name?.IndexOf('`') ?? -1;
+            return tick > 0 ? name.Substring(0, tick) : name;
         }
 
         /// <summary>1 based start line of an entity, comparable with IToken.Line (Range lines are 0 based).</summary>

@@ -35,6 +35,77 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         private static readonly CallResult Unknown = new CallResult { Kind = CallResultKind.Unknown };
 
         /// <summary>
+        /// The name of the call the caret is in when it is not on a name: inside the argument list
+        /// (<c>Foo(1,|2)</c>, the innermost call) or after it at the end of the statement (<c>Foo()|</c>). Null
+        /// outside a call, and inside a literal array or a creation <c>{...}</c>.
+        /// </summary>
+        internal static IToken NameAt(IList<IToken> tokens, int position)
+        {
+            if (tokens == null)
+                return null;
+            // the last token that ends before the caret
+            int last = -1;
+            for (int i = 0; i < tokens.Count && tokens[i].StartIndex < position; i++)
+            {
+                if (tokens[i].Channel == XSharpLexer.DefaultTokenChannel && tokens[i].StopIndex < position)
+                    last = i;
+            }
+            if (last < 0)
+                return null;
+            if (tokens[last].Type == XSharpLexer.RPAREN)
+            {
+                var next = Next(tokens, last);
+                if (tokens[last].StopIndex + 1 == position || next < 0 || IsEndOfStatement(tokens[next].Type))
+                    return NameBefore(tokens, OpenOfList(tokens, last));
+            }
+            int depth = 0;
+            for (int i = last; i >= 0; i--)
+            {
+                var token = tokens[i];
+                if (token.Channel != XSharpLexer.DefaultTokenChannel)
+                    continue;
+                switch (token.Type)
+                {
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RBRKT:
+                    case XSharpLexer.RCURLY:
+                        depth++;
+                        break;
+                    case XSharpLexer.LPAREN:
+                        if (depth > 0)
+                        {
+                            depth--;
+                            break;
+                        }
+                        // a parenthesised expression: look further out
+                        var name = NameBefore(tokens, i);
+                        if (name != null)
+                            return name;
+                        break;
+                    case XSharpLexer.LBRKT:
+                    case XSharpLexer.LCURLY:
+                        if (depth == 0)
+                            return null;
+                        depth--;
+                        break;
+                    case XSharpLexer.EOS:
+                    case XSharpLexer.SEMI:
+                        return null;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>The identifier directly before the '(' at <paramref name="open"/>, or null.</summary>
+        private static IToken NameBefore(IList<IToken> tokens, int open)
+        {
+            if (open < 0)
+                return null;
+            var name = Previous(tokens, open);
+            return name >= 0 && tokens[name].Type == XSharpLexer.ID ? tokens[name] : null;
+        }
+
+        /// <summary>
         /// How the call <c>name(...)</c> (with its receiver chain, <c>SELF:</c>, <c>oVar:</c>, ...) uses its result:
         /// a statement of its own, a condition (LOGIC), <c>LOCAL x := Foo() AS T</c>, <c>x := Foo()</c>,
         /// <c>RETURN Foo()</c>. Anything else, a call inside an expression or an argument, is unknown.

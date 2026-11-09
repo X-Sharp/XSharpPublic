@@ -78,7 +78,8 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 result.EnclosingPart = part;
                 ct.ThrowIfCancellationRequested();
                 var name = tokens.FirstOrDefault(t => t.Type == XSharpLexer.ID && t.Channel == XSharpLexer.DefaultTokenChannel &&
-                                                      t.StartIndex <= position && position <= t.StopIndex + 1);
+                                                      t.StartIndex <= position && position <= t.StopIndex + 1)
+                           ?? CallResult.NameAt(tokens, position);
                 var line = name != null ? name.Line - 1 : snapshot.GetLineNumberFromPosition(position);
                 var location = new XSharpSearchLocation(document, file, member, snapshot, line, name?.StartIndex ?? position, result.CurrentNamespace);
                 result.Usings = location.Usings ?? new List<string>();

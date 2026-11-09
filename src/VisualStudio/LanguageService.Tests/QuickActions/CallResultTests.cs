@@ -67,6 +67,42 @@ namespace XSharp.LanguageService.Tests.QuickActions
             Assert.Equal(CallResultKind.Return, Of("    RETURN Foo()\r\n").Kind);
         }
 
+        /// <summary>The call name for the caret at '|' in <paramref name="text"/>.</summary>
+        private static string NameAt(string text)
+        {
+            var position = text.IndexOf('|');
+            return CallResult.NameAt(TestLexer.Lex(text.Remove(position, 1)), position)?.Text;
+        }
+
+        [Theory]
+        [InlineData("    c:Test(|1, 2)\r\n", "Test")]
+        [InlineData("    c:Test(1,| 2)\r\n", "Test")]
+        [InlineData("    c:Test(1, \"a|b\")\r\n", "Test")]
+        [InlineData("    c:Test(|)\r\n", "Test")]
+        [InlineData("    c:Test()|\r\n", "Test")]
+        [InlineData("    c:Test()   |\r\n", "Test")]
+        [InlineData("    c:Test() // note|\r\n", "Test")]
+        [InlineData("    c:Test(Bar(|1))\r\n", "Bar")]
+        [InlineData("    c:Test(Bar(1) ,| 2)\r\n", "Test")]
+        [InlineData("    c:Test(Bar(1))|\r\n", "Test")]
+        [InlineData("    IF c:Test(1)|\r\n    ENDIF\r\n", "Test")]
+        public void NameAtFindsTheCallAroundTheCaret(string text, string name)
+        {
+            Assert.Equal(name, NameAt(text));
+        }
+
+        [Theory]
+        [InlineData("    x := {1,| 2}\r\n")]
+        [InlineData("    x := Foo{1,| 2}\r\n")]
+        [InlineData("    c:Test()\r\n    x := 1|\r\n")]
+        [InlineData("    c:Test()\r\n|    x := 1\r\n")]
+        [InlineData("    x := (1 +| 2)\r\n")]
+        [InlineData("    x := 1|\r\n")]
+        public void NameAtIsNullOutsideACall(string text)
+        {
+            Assert.Null(NameAt(text));
+        }
+
         [Theory]
         [InlineData("    VAR x := Foo()\r\n")]
         [InlineData("    LOCAL x := Foo()\r\n")]

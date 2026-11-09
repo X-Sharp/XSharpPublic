@@ -25,6 +25,41 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(3, CountAt("x := o:Foo(1,,3)\n", "Foo"));
         }
 
+        [Theory]
+        [InlineData("x := o:Foo(Dictionary<STRING, INT>{}, 1)\n", 2)]
+        [InlineData("x := o:Foo(Dictionary<STRING, List<INT>>{}, 1)\n", 2)]
+        [InlineData("x := o:Foo(Bar<STRING, INT>(1, 2))\n", 1)]
+        [InlineData("x := o:Foo(<INT>{1, 2}, 3)\n", 2)]
+        [InlineData("x := Foo{Dictionary<STRING, INT>{}}\n", 1)]
+        public void TypeArgumentCommasDoNotSplitArguments(string text, int expected)
+        {
+            Assert.Equal(expected, CountAt(text, "Foo"));
+        }
+
+        [Theory]
+        [InlineData("x := List<STRING>{10}\n", "List", 1)]
+        [InlineData("x := Dictionary<STRING, List<INT>>{}\n", "Dictionary", 0)]
+        [InlineData("x := o:Foo<INT>(1, 2)\n", "Foo", 2)]
+        [InlineData("x := o:Foo< INT, STRING >(1)\n", "Foo", 1)]
+        public void TypeArgumentsBetweenNameAndArguments(string text, string name, int expected)
+        {
+            Assert.Equal(expected, CountAt(text, name));
+        }
+
+        [Fact]
+        public void AComparisonAfterTheNameIsNoCall()
+        {
+            Assert.Null(CountAt("x := Foo < 3\n", "Foo"));
+            Assert.Null(CountAt("x := Foo < b, c > d\n", "Foo"));
+        }
+
+        [Fact]
+        public void AComparisonIsNoTypeArgumentList()
+        {
+            Assert.Equal(3, CountAt("x := o:Foo(a < b, c > d, e)\n", "Foo"));
+            Assert.Equal(2, CountAt("x := o:Foo(a < b, c)\n", "Foo"));
+        }
+
         [Fact]
         public void NoCallGivesNoCount()
         {
@@ -110,6 +145,18 @@ namespace XSharp.LanguageService.Tests
             var clipper = Method("Foo", CallingConvention.Clipper, ("a", "USUAL", null, ParamType.As));
             Assert.True(OverloadFilter.Accepts(clipper, 0));
             Assert.True(OverloadFilter.Accepts(clipper, 4));
+        }
+
+        [Fact]
+        public void UntypedParametersMakeAClipperMethod()
+        {
+            // VO: METHOD Open(cName, lShared) - no AS, so the parser leaves ParamType unset (0)
+            var untyped = Method("Open", CallingConvention.None, ("cName", "USUAL", null, 0), ("lShared", "USUAL", null, 0));
+            var typedUsual = Method("Open", CallingConvention.None, ("cName", "USUAL", null, ParamType.As), ("lShared", "USUAL", null, ParamType.As));
+            Assert.True(OverloadFilter.Accepts(untyped, 1));
+            Assert.True(OverloadFilter.Accepts(untyped, 3));
+            Assert.False(OverloadFilter.Accepts(typedUsual, 1));
+            Assert.False(OverloadFilter.Accepts(typedUsual, 3));
         }
 
         [Fact]

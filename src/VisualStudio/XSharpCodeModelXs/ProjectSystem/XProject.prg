@@ -1324,20 +1324,20 @@ CLASS XProject
                                     endif
                                 next
                             endif
-                            melement:UpdateLocation(xmember)
+                            LOCAL memberFile AS XFile
                             if aFiles:ContainsKey(melement:IdFile)
-                                xmember:File         := aFiles[melement:IdFile]
+                                memberFile := aFiles[melement:IdFile]
                             ELSE
                                 // the file belongs to the project of the type, not to the project that looks it up
-                                VAR memberFile := project:GetFileById(melement:IdFile)
+                                memberFile := project:GetFileById(melement:IdFile)
                                 IF memberFile == NULL
                                     memberFile := project:FindXFile(melement:FileName)
                                 ENDIF
                                 IF memberFile != NULL
                                     aFiles:Add(melement:IdFile, memberFile)
                                 ENDIF
-                                xmember:File         := memberFile
                             ENDIF
+                            melement:UpdateLocation(xmember, memberFile)
                         ELSE
                             NOP
                         ENDIF
@@ -1440,11 +1440,13 @@ CLASS XProject
                 endif
             next
         endif
-        if entities:Count == List:Count
+        if entities:Count == List:Count .and. List:Count > 0
+            // all elements come from the same file: look it up once
+            var memberFile := XSolution.FindFile(List[0]:FileName)
             FOR var i := 0 to entities:Count-1
                 var entity := (XSourceMemberSymbol) entities[i]
                 var dbres  := List[i]
-                dbres:UpdateLocation(entity)
+                dbres:UpdateLocation(entity, memberFile)
             next
         endif
         RETURN entities

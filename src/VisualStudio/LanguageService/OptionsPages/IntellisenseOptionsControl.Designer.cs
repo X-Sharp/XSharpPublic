@@ -41,6 +41,10 @@
             this.chkUseMicrosoftSQLite = new System.Windows.Forms.CheckBox();
             this.chkFindReferencesLateBound = new System.Windows.Forms.CheckBox();
             this.grpFindReferences = new System.Windows.Forms.GroupBox();
+            this.chkShowParameterHints = new System.Windows.Forms.CheckBox();
+            this.chkShowTypeHints = new System.Windows.Forms.CheckBox();
+            this.chkShowHintsWhileAltF1 = new System.Windows.Forms.CheckBox();
+            this.grpInlayHints = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
@@ -52,6 +56,7 @@
             this.grpNavigationBars.SuspendLayout();
             this.grpCompletionListTabs.SuspendLayout();
             this.grpFindReferences.SuspendLayout();
+            this.grpInlayHints.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -170,23 +175,71 @@
             this.grpFindReferences.TabStop = false;
             this.grpFindReferences.Text = "Find All References";
             //
+            // chkShowParameterHints
+            //
+            this.chkShowParameterHints.AutoSize = true;
+            this.chkShowParameterHints.Location = new System.Drawing.Point(13, 18);
+            this.chkShowParameterHints.Name = "chkShowParameterHints";
+            this.chkShowParameterHints.Size = new System.Drawing.Size(178, 17);
+            this.chkShowParameterHints.TabIndex = 0;
+            this.chkShowParameterHints.Text = "Show parameter name hints";
+            this.toolTip1.SetToolTip(this.chkShowParameterHints, "Shows the parameter name in front of arguments that do not tell what they mean: " +
+        "literals such as TRUE, NIL or 3, and Type{} constructor calls.");
+            this.chkShowParameterHints.UseVisualStyleBackColor = true;
+            //
+            // chkShowTypeHints
+            //
+            this.chkShowTypeHints.AutoSize = true;
+            this.chkShowTypeHints.Location = new System.Drawing.Point(13, 39);
+            this.chkShowTypeHints.Name = "chkShowTypeHints";
+            this.chkShowTypeHints.Size = new System.Drawing.Size(158, 17);
+            this.chkShowTypeHints.TabIndex = 1;
+            this.chkShowTypeHints.Text = "Show inferred type hints";
+            this.toolTip1.SetToolTip(this.chkShowTypeHints, "Shows the inferred type behind VAR and LOCAL IMPLIED variables. Double-click the " +
+        "hint to write the type into the code.");
+            this.chkShowTypeHints.UseVisualStyleBackColor = true;
+            //
+            // chkShowHintsWhileAltF1
+            //
+            this.chkShowHintsWhileAltF1.AutoSize = true;
+            this.chkShowHintsWhileAltF1.Location = new System.Drawing.Point(13, 60);
+            this.chkShowHintsWhileAltF1.Name = "chkShowHintsWhileAltF1";
+            this.chkShowHintsWhileAltF1.Size = new System.Drawing.Size(212, 17);
+            this.chkShowHintsWhileAltF1.TabIndex = 2;
+            this.chkShowHintsWhileAltF1.Text = "Show all hints while pressing Alt+F1";
+            this.toolTip1.SetToolTip(this.chkShowHintsWhileAltF1, "Shows the switched off hints while Alt+F1 is held down in an X# editor.");
+            this.chkShowHintsWhileAltF1.UseVisualStyleBackColor = true;
+            //
+            // grpInlayHints
+            //
+            this.grpInlayHints.Controls.Add(this.chkShowParameterHints);
+            this.grpInlayHints.Controls.Add(this.chkShowTypeHints);
+            this.grpInlayHints.Controls.Add(this.chkShowHintsWhileAltF1);
+            this.grpInlayHints.Location = new System.Drawing.Point(5, 300);
+            this.grpInlayHints.Name = "grpInlayHints";
+            this.grpInlayHints.Size = new System.Drawing.Size(373, 85);
+            this.grpInlayHints.TabIndex = 3;
+            this.grpInlayHints.TabStop = false;
+            this.grpInlayHints.Text = "Inlay Hints";
+            //
             // panel1
             //
+            this.panel1.Controls.Add(this.grpInlayHints);
             this.panel1.Controls.Add(this.grpFindReferences);
             this.panel1.Controls.Add(this.btnShowMeTheMagic);
             this.panel1.Controls.Add(this.grpNavigationBars);
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 333);
+            this.panel1.Size = new System.Drawing.Size(381, 424);
             this.panel1.TabIndex = 0;
             //
             // btnShowMeTheMagic
             //
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 300);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 391);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
-            this.btnShowMeTheMagic.TabIndex = 3;
+            this.btnShowMeTheMagic.TabIndex = 4;
             this.btnShowMeTheMagic.Text = "Open Sesame";
             this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
             this.btnShowMeTheMagic.Click += new System.EventHandler(this.btnShowMeTheMagic_Click);
@@ -243,7 +296,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(388, 344);
+            this.Size = new System.Drawing.Size(388, 435);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
@@ -251,6 +304,8 @@
             this.grpCompletionListTabs.PerformLayout();
             this.grpFindReferences.ResumeLayout(false);
             this.grpFindReferences.PerformLayout();
+            this.grpInlayHints.ResumeLayout(false);
+            this.grpInlayHints.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -272,5 +327,9 @@
         private System.Windows.Forms.CheckBox chkUseMicrosoftSQLite;
         private System.Windows.Forms.GroupBox grpFindReferences;
         private System.Windows.Forms.CheckBox chkFindReferencesLateBound;
+        private System.Windows.Forms.GroupBox grpInlayHints;
+        private System.Windows.Forms.CheckBox chkShowParameterHints;
+        private System.Windows.Forms.CheckBox chkShowTypeHints;
+        private System.Windows.Forms.CheckBox chkShowHintsWhileAltF1;
     }
 }

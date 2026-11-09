@@ -55,6 +55,15 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(new[] { "CONSTRUCTOR", "SUPER", "CONSTRUCTOR", "SELF", "foo" }, hits.Select(t => t.Text).ToArray());
         }
 
+        [Fact]
+        public void GenericCreationIsAConstructorCandidate()
+        {
+            var text = "x := Box<INT>{3, TRUE}\ny := Box < 3\nLOCAL o AS Box<STRING>\n";
+            var tokens = TestLexer.Lex(text);
+            var hits = ReferenceCandidateScanner.FindConstructorTokens(tokens, "Box");
+            Assert.Equal(new[] { text.IndexOf("Box<INT>") }, hits.Select(t => t.StartIndex).ToArray());
+        }
+
         private static string[] Holes(string text, bool allowDot = false)
         {
             return ReferenceCandidateScanner.InterpolationHoles(text, allowDot)

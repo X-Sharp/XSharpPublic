@@ -48,8 +48,9 @@ namespace XSharp.LanguageService.FindReferences
             var index = name.TokenIndex >= 0 && name.TokenIndex < tokens.Count && tokens[name.TokenIndex] == name
                 ? name.TokenIndex
                 : tokens.IndexOf(name);
-            var next = tokens.Skip(index + 1).FirstOrDefault(t => t.Channel == XSharpLexer.DefaultTokenChannel);
-            if (index < 0 || next?.Type != XSharpLexer.LCURLY)
+            // Foo{...} and Foo<T>{...}
+            var open = OverloadFilter.ListAfterName(tokens, index);
+            if (open < 0 || tokens[open].Type != XSharpLexer.LCURLY)
                 return symbols;
             var ctors = type.GetConstructors();
             return ctors.Length == 0 ? symbols : ctors.Cast<IXSymbol>().ToList();

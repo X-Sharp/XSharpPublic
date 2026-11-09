@@ -170,6 +170,20 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void GenericCreationResolvesToTheConstructors()
+        {
+            var text = "x := Shape<INT>{1}\ny := Shape<INT>.Default\n";
+            var tokens = TestLexer.Lex(text);
+            var shape = new XSourceTypeSymbol("Shape", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            shape.AddMember(ctor);
+            var creation = tokens.First(t => t.StartIndex == text.IndexOf("Shape<INT>{"));
+            var typeOnly = tokens.First(t => t.StartIndex == text.IndexOf("Shape<INT>."));
+            Assert.Equal(new IXSymbol[] { ctor }, SymbolResolver.ForCreation(new IXSymbol[] { shape }, tokens, creation));
+            Assert.Equal(new IXSymbol[] { shape }, SymbolResolver.ForCreation(new IXSymbol[] { shape }, tokens, typeOnly));
+        }
+
+        [Fact]
         public void GroupOfAMemberIsItsDeclaration()
         {
             var foo = new XSourceTypeSymbol("Foo", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
@@ -215,6 +229,29 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal("Foo", FindReferencesEngine.SearchName(ctor));
             Assert.Equal("Run", FindReferencesEngine.SearchName(run));
             Assert.Equal("Foo", FindReferencesEngine.SearchName(type));
+        }
+
+        [Fact]
+        public void SearchNameOfAGenericTypeHasNoArity()
+        {
+            // CLASS Box<T> is stored as Box`1; the source says Box
+            var type = new XSourceTypeSymbol("Box`1", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
+            var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, new TextRange(2, 1, 3, 1), new TextInterval(50, 60), "", null);
+            type.AddMember(ctor);
+            Assert.Equal("Box", FindReferencesEngine.SearchName(type));
+            Assert.Equal("Box", FindReferencesEngine.SearchName(ctor));
+        }
+
+        [Fact]
+        public void DeclaredEntityOfAGenericType()
+        {
+            var text = "CLASS Box<T>\n    x := Box<INT>{}\n";
+            var type = new XSourceTypeSymbol("Box`1", Kind.Class, Modifiers.Public, new TextRange(0, 0, 1, 0), new TextInterval(0, text.Length - 1), null, null);
+            var tokens = TestLexer.Lex(text);
+            var declaration = tokens.First(t => t.StartIndex == text.IndexOf("Box<T>"));
+            var creation = tokens.First(t => t.StartIndex == text.IndexOf("Box<INT>"));
+            Assert.Same(type, FindReferencesEngine.DeclaredEntity(new List<XSourceEntity> { type }, declaration));
+            Assert.Null(FindReferencesEngine.DeclaredEntity(new List<XSourceEntity> { type }, creation));
         }
 
         [Fact]

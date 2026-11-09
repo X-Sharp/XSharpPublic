@@ -56,29 +56,7 @@ namespace XSharp.LanguageService
                 var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();
-                // make sure that files that are included more than once because of multi targetting
-                // are deduplicated
-                IList<IXSymbol> deduped = new List<IXSymbol>();
-                HashSet<string> files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var item in result)
-                {
-                    if (item is XSourceEntity source)
-                    {
-                        var file = source.File?.FullPath;
-                        var line = source.Range.StartLine;
-                        var key = file + ":" + line.ToString();
-                        if (!files.Contains(key))
-                        {
-                            files.Add(key);
-                            deduped.Add(item);
-                        }
-                    }
-                    else
-                    {
-                        deduped.Add(item);
-                    }
-                }
-                result = deduped;
+                result = Targets(result);
                 if (result.Count == 1)
                 {
                     Goto(result[0], TextView, state);
@@ -99,6 +77,37 @@ namespace XSharp.LanguageService
             {
                 ModelWalker.Resume();
             }
+        }
+
+        /// <summary>
+        /// The symbols F12 can go to. A keyword (the caret on <c>CLASS</c>) has no definition: like nothing found, not
+        /// "Cannot navigate". Files that are included more than once because of multi targetting are deduplicated.
+        /// </summary>
+        internal static IList<IXSymbol> Targets(IList<IXSymbol> symbols)
+        {
+            IList<IXSymbol> deduped = new List<IXSymbol>();
+            HashSet<string> files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var item in symbols)
+            {
+                if (item is XKeywordSymbol)
+                    continue;
+                if (item is XSourceEntity source)
+                {
+                    var file = source.File?.FullPath;
+                    var line = source.Range.StartLine;
+                    var key = file + ":" + line.ToString();
+                    if (!files.Contains(key))
+                    {
+                        files.Add(key);
+                        deduped.Add(item);
+                    }
+                }
+                else
+                {
+                    deduped.Add(item);
+                }
+            }
+            return deduped;
         }
 
         private static void DeleteFolderRecursively(DirectoryInfo directory, bool IncludeFiles)

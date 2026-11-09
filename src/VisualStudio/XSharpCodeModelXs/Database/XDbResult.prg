@@ -75,11 +75,13 @@ END PROPERTY
 INTERNAL METHOD DebuggerDisplay() AS STRING
     RETURN SELF:TypeName + iif(String.IsNullOrEmpty(SELF:MemberName),""," "+SELF:MemberName)
 
-INTERNAL METHOD UpdateLocation(sym as XSourceMemberSymbol ) AS VOID
+// The caller passes the file: looking it up here created and read a new XFile for every member,
+// which made a lookup of a type with many members very slow.
+INTERNAL METHOD UpdateLocation(sym as XSourceMemberSymbol, file as XFile) AS VOID
     sym:Range        := SELF:TextRange
     sym:Interval     := SELF:TextInterval
     sym:XmlComments  := SELF:XmlComments
-    sym:File         := XSolution.FindFile(SELF:FileName)
+    sym:File         := file
 
 
 END CLASS

@@ -38,6 +38,9 @@ namespace XSharp.LanguageService
         public bool EnableReferenceInfoLog { get; set; }
         public bool UseMicrosoftSQLite { get; set; }
         public bool FindReferencesLateBound { get; set; }
+        public bool ShowParameterHints { get; set; }
+        public bool ShowTypeHints { get; set; }
+        public bool ShowHintsWhileAltF1 { get; set; }
 
         #endregion
         public IntellisenseOptions()
@@ -68,6 +71,9 @@ namespace XSharp.LanguageService
             EnableReferenceInfoLog = false;
             UseMicrosoftSQLite = XSettings.IsArm;
             FindReferencesLateBound = true;
+            ShowParameterHints = InlayHints.InlayHintSettings.DefaultParameters;
+            ShowTypeHints = InlayHints.InlayHintSettings.DefaultTypes;
+            ShowHintsWhileAltF1 = InlayHints.InlayHintSettings.DefaultAllWhileHeld;
          }
 
         public override void WriteToSettings()
@@ -101,6 +107,7 @@ namespace XSharp.LanguageService
             XEditorSettings.NavigationExcludeMembersFromOtherFiles = ExcludeMembersFromOtherFiles;
             Constants.WriteSetting(nameof(UseMicrosoftSQLite), UseMicrosoftSQLite ? 1 : 0);
             FindReferences.FindReferencesEngine.IncludeLateBound = FindReferencesLateBound;
+            InlayHints.InlayHintSettings.Set(ShowParameterHints, ShowTypeHints, ShowHintsWhileAltF1);
         }
 
     }

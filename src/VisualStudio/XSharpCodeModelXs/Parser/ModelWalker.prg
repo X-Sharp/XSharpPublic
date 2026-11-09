@@ -36,6 +36,8 @@ STATIC PRIVATE iProcessed AS LONG
 STATIC PRIVATE iTotal     AS LONG
 STATIC PRIVATE cProject   AS STRING
 STATIC PRIVATE _state     AS WalkerthreadState
+/// <summary>Raised on the walker thread when it has walked everything that was queued (not when it was stopped or suspended).</summary>
+STATIC PUBLIC EVENT WalkCompleted AS System.EventHandler
 
 // Methods
 
@@ -127,7 +129,8 @@ STATIC METHOD Start  AS VOID
     ENDIF
 
 STATIC METHOD Resume() AS VOID
-    ModelWalker.suspendLevel--
+    // Suspend/Resume come from several threads (UI and background lookups)
+    Interlocked.Decrement(REF suspendLevel)
 
 STATIC METHOD Stop AS VOID
     BEGIN LOCK _gate
@@ -147,7 +150,7 @@ PRIVATE STATIC METHOD IsAborted(generation AS LONG) AS LOGIC
 
 
 STATIC METHOD Suspend() AS VOID
-    ModelWalker.suspendLevel++
+    Interlocked.Increment(REF suspendLevel)
     IF (_projects:Count > 0)
         IF _projects:TryPeek(OUT VAR _)
             XSolution.SetStatusBarText("")
@@ -290,6 +293,11 @@ PRIVATE STATIC METHOD Walker(oGeneration AS OBJECT) AS VOID
             EXIT
         ENDIF
     ENDDO
+    TRY
+        WalkCompleted?:Invoke(NULL, EventArgs.Empty)
+    CATCH exception AS System.Exception
+        XSettings.Exception(exception)
+    END TRY
 
 PRIVATE STATIC METHOD UpdateProgress (fileName as STRING) AS VOID
     BEGIN LOCK _gate

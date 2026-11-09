@@ -17,6 +17,8 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
     <Reference Include="XSharp.LanguageService2022">
       <HintPath>$(XSharpArtifactsDir)2022\$(Configuration)\XSharp.LanguageService2022.dll</HintPath>
     </Reference>

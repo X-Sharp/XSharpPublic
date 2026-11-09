@@ -10,7 +10,9 @@ using XSharp.Settings;
 using XSharp.Support;
 using System.Collections;
 using System.Collections.Generic;
+using XSharp.LanguageService.FindReferences;
 using XSharp.LanguageService.ForeignSource;
+using LanguageService.SyntaxTree;
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
@@ -71,10 +73,12 @@ namespace XSharp.LanguageService
             try
             {
                 ModelWalker.Suspend();
-                var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
+                var result = TextView.GetSymbolUnderCursor(out var state, out var location, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();
                 result = Targets(result);
+                if (location != null)
+                    result = Overloads(result, location.Document?.Tokens, location.Position, id => SymbolResolver.TypeOf(location, id));
                 if (result.Count == 1)
                 {
                     Goto(result[0], TextView, state);
@@ -95,6 +99,18 @@ namespace XSharp.LanguageService
             {
                 ModelWalker.Resume();
             }
+        }
+
+        /// <summary>
+        /// At a call site, the overloads that take these arguments (count, then the types that are known), as Find
+        /// References and Go To Implementation pick them: one left means F12 jumps there. Without a call, or when the
+        /// arguments rule nothing out, all targets stay and F12 shows the list as before.
+        /// </summary>
+        internal static IList<IXSymbol> Overloads(IList<IXSymbol> targets, IList<IToken> tokens, int position, Func<IToken, string> identifierType)
+        {
+            if (targets.Count < 2 || tokens == null)
+                return targets;
+            return OverloadFilter.Filter(targets, OverloadFilter.ArgumentsAt(tokens, position), identifierType);
         }
 
         /// <summary>

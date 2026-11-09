@@ -51,7 +51,11 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
     /// <summary>The empty method generated from a call to a method that does not exist yet.</summary>
     internal static class MethodSkeleton
     {
-        internal static TextInsertion Build(string methodName, IList<CallArgument> args, TargetClass target, CodeStyle style)
+        /// <summary>
+        /// The method <c>METHOD name(args) AS returnType</c>: a VOID method ends with RETURN, any other throws
+        /// NotImplementedException.
+        /// </summary>
+        internal static TextInsertion Build(string methodName, IList<CallArgument> args, string returnType, TargetClass target, CodeStyle style)
         {
             var names = ParameterNames(args);
             var parameters = new List<string>();
@@ -60,17 +64,16 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var header = new StringBuilder();
             header.Append(target.MemberIndent).Append(style.Kw("METHOD")).Append(' ').Append(methodName)
                 .Append('(').Append(string.Join(", ", parameters)).Append(')');
-            if (!style.HasUsual)
-                header.Append(' ').Append(style.Kw("AS VOID"));
+            header.Append(' ').Append(style.Kw("AS")).Append(' ').Append(returnType);
             if (!target.HasEndClass)
                 header.Append(' ').Append(style.Kw("CLASS")).Append(' ').Append(target.Name);
             var body = target.MemberIndent + style.IndentUnit;
             var text = style.NewLine + header + style.NewLine + body;
             var caret = text.Length;
             text += style.NewLine;
-            // an untyped method returns USUAL: without /vo9 it needs its RETURN
-            if (style.HasUsual)
-                text += body + style.Kw("RETURN NIL") + style.NewLine;
+            // like C#: a method with a result throws until it is written
+            var isVoid = string.Equals(returnType, "VOID", StringComparison.OrdinalIgnoreCase);
+            text += body + (isVoid ? style.Kw("RETURN") : style.Kw("THROW") + " System.NotImplementedException{}") + style.NewLine;
             return new TextInsertion(target.InsertLine, text, caret);
         }
 

@@ -182,7 +182,15 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         protected override string PreviewText()
         {
             var style = new CodeStyle(Context.Dialect, s => XLiterals.FormatKeyword(s), "    ", "\r\n");
-            return MethodSkeleton.Build(Context.Name.Text, Context.Arguments, new TargetClass(_target.Name, true, 0, ""), style).Text;
+            return MethodSkeleton.Build(Context.Name.Text, Context.Arguments, ReturnType(style), new TargetClass(_target.Name, true, 0, ""), style).Text;
+        }
+
+        /// <summary>VOID for a call whose result is not used, the type the call site asks for, else USUAL / OBJECT.</summary>
+        private string ReturnType(CodeStyle style)
+        {
+            if (Context.ResultUnused)
+                return style.Kw("VOID");
+            return Context.ResultType ?? style.UntypedType;
         }
 
         protected override async Task InvokeAsync()
@@ -193,7 +201,7 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
             var dialect = _target.File?.Project?.Dialect ?? Context.Dialect;
             var style = StyleOf(view.TextBuffer, dialect);
             var placement = Placement(view, _target, style);
-            var insertion = MethodSkeleton.Build(Context.Name.Text, Context.Arguments, placement, style);
+            var insertion = MethodSkeleton.Build(Context.Name.Text, Context.Arguments, ReturnType(style), placement, style);
             var position = Insert(view.TextBuffer, insertion.Line, insertion.Text);
             if (position >= 0 && insertion.Caret >= 0)
                 MoveCaret(view, position + insertion.Caret);

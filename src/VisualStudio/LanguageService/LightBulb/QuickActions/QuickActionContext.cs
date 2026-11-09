@@ -45,6 +45,12 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
         internal bool IsCall { get; private set; }
         internal IList<CallArgument> Arguments { get; private set; } = new List<CallArgument>();
 
+        /// <summary>The call is a statement of its own: its result is not used.</summary>
+        internal bool ResultUnused { get; private set; }
+
+        /// <summary>The type the call site asks the result to have, or null when unknown.</summary>
+        internal string ResultType { get; private set; }
+
         internal bool CaseSensitive => Project?.ParseOptions?.CaseSensitive ?? false;
         internal XDialect Dialect => Project?.Dialect ?? XDialect.Core;
 
@@ -95,6 +101,9 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 {
                     var groups = OverloadFilter.Arguments(tokens, name) ?? new List<IList<IToken>>();
                     result.Arguments = groups.Select(g => Argument(context, g)).ToList();
+                    var use = CallResult.Of(tokens, name);
+                    result.ResultUnused = use.Kind == CallResultKind.Unused;
+                    result.ResultType = ResultTypeOf(context, member, use);
                 }
                 return result;
             }
@@ -140,6 +149,29 @@ namespace XSharp.LanguageService.Editors.LightBulb.QuickActions
                 return new CallArgument(tokens[0].Text, string.IsNullOrEmpty(type) ? null : type.GetXSharpTypeName());
             }
             return new CallArgument(null, null);
+        }
+
+        private static string ResultTypeOf(XSharpSearchLocation context, XSourceMemberSymbol member, CallResult use)
+        {
+            string type;
+            switch (use.Kind)
+            {
+                case CallResultKind.Type:
+                    return use.Type;
+                case CallResultKind.Variable:
+                    type = SymbolResolver.TypeOf(context, use.Variable);
+                    break;
+                case CallResultKind.Return:
+                    // a member without a type (VO) returns USUAL: that is the unknown case anyway
+                    type = member != null && member.IsTyped ? member.TypeName : null;
+                    break;
+                default:
+                    return null;
+            }
+            if (string.IsNullOrEmpty(type) || string.Equals(type, "VOID", StringComparison.OrdinalIgnoreCase) || type == "System.Void")
+                return null;
+            // the lookup reports System.Int32 where the source says INT
+            return type.GetXSharpTypeName();
         }
 
         private static ReceiverKind ReceiverOf(IList<IToken> tokens, int index, out IToken receiver)

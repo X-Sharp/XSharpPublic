@@ -161,6 +161,7 @@
     <Compile Include="LightBulb\QuickActions\AccessorBody.cs" />
     <Compile Include="LightBulb\QuickActions\CodeStyle.cs" />
     <Compile Include="LightBulb\QuickActions\ConvertToPropertyAction.cs" />
+    <Compile Include="LightBulb\QuickActions\CallResult.cs" />
     <Compile Include="LightBulb\QuickActions\GenerateMethodRule.cs" />
     <Compile Include="LightBulb\QuickActions\MethodSkeleton.cs" />
     <Compile Include="LightBulb\QuickActions\OverrideCandidates.cs" />

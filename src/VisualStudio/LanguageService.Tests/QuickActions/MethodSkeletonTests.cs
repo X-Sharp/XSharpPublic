@@ -17,33 +17,46 @@ namespace XSharp.LanguageService.Tests.QuickActions
         [Fact]
         public void VoClassWithEndClass()
         {
-            var result = MethodSkeleton.Build("Foo", new[] { Arg("oItem", "Customer"), Arg(null, null) },
+            var result = MethodSkeleton.Build("Foo", new[] { Arg("oItem", "Customer"), Arg(null, null) }, "VOID",
                 new TargetClass("Bar", true, 10, "    "), Style());
             Assert.Equal(10, result.Line);
-            // without /vo9 an untyped VO method needs its RETURN
-            Assert.Equal("\r\n    METHOD Foo(oItem AS Customer, p2 AS USUAL)\r\n        \r\n        RETURN NIL\r\n", result.Text);
+            Assert.Equal("\r\n    METHOD Foo(oItem AS Customer, p2 AS USUAL) AS VOID\r\n        \r\n        RETURN\r\n", result.Text);
         }
 
         [Fact]
         public void CaretGoesOnTheEmptyBodyLine()
         {
-            var result = MethodSkeleton.Build("Foo", new CallArgument[0], new TargetClass("Bar", true, 10, "    "), Style());
-            Assert.Equal("\r\n    METHOD Foo()\r\n        ".Length, result.Caret);
+            var result = MethodSkeleton.Build("Foo", new CallArgument[0], "VOID", new TargetClass("Bar", true, 10, "    "), Style());
+            Assert.Equal("\r\n    METHOD Foo() AS VOID\r\n        ".Length, result.Caret);
         }
 
         [Fact]
         public void VoStyleClassGetsClassClause()
         {
-            var result = MethodSkeleton.Build("Foo", new[] { Arg("n", "INT") }, new TargetClass("Bar", false, 20, ""), Style());
+            var result = MethodSkeleton.Build("Foo", new[] { Arg("n", "INT") }, "VOID", new TargetClass("Bar", false, 20, ""), Style());
             Assert.Equal(20, result.Line);
-            Assert.Equal("\r\nMETHOD Foo(n AS INT) CLASS Bar\r\n    \r\n    RETURN NIL\r\n", result.Text);
+            Assert.Equal("\r\nMETHOD Foo(n AS INT) AS VOID CLASS Bar\r\n    \r\n    RETURN\r\n", result.Text);
         }
 
         [Fact]
         public void CoreUsesObjectAndVoid()
         {
-            var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null) }, new TargetClass("Bar", true, 3, "    "), Style(XDialect.Core));
-            Assert.Equal("\r\n    METHOD Foo(p1 AS OBJECT) AS VOID\r\n        \r\n", result.Text);
+            var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null) }, "VOID", new TargetClass("Bar", true, 3, "    "), Style(XDialect.Core));
+            Assert.Equal("\r\n    METHOD Foo(p1 AS OBJECT) AS VOID\r\n        \r\n        RETURN\r\n", result.Text);
+        }
+
+        [Fact]
+        public void ResultTypeThrowsLikeCSharp()
+        {
+            var result = MethodSkeleton.Build("Foo", new CallArgument[0], "INT", new TargetClass("Bar", true, 3, "    "), Style());
+            Assert.Equal("\r\n    METHOD Foo() AS INT\r\n        \r\n        THROW System.NotImplementedException{}\r\n", result.Text);
+        }
+
+        [Fact]
+        public void VoidIsRecognisedInAnyCase()
+        {
+            var result = MethodSkeleton.Build("Foo", new CallArgument[0], "void", new TargetClass("Bar", true, 3, ""), Style(keyword: s => s.ToLowerInvariant()));
+            Assert.Equal("\r\nmethod Foo() as void\r\n    \r\n    return\r\n", result.Text);
         }
 
         [Theory]
@@ -64,29 +77,29 @@ namespace XSharp.LanguageService.Tests.QuickActions
         [Fact]
         public void DuplicateNamesGetSuffix()
         {
-            var result = MethodSkeleton.Build("Foo", new[] { Arg("oItem", null), Arg("oItem", null) }, new TargetClass("Bar", true, 3, ""), Style());
+            var result = MethodSkeleton.Build("Foo", new[] { Arg("oItem", null), Arg("oItem", null) }, "VOID", new TargetClass("Bar", true, 3, ""), Style());
             Assert.Contains("METHOD Foo(oItem AS USUAL, oItem2 AS USUAL)", result.Text);
         }
 
         [Fact]
         public void GeneratedNameDoesNotClashWithArgumentName()
         {
-            var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null), Arg("p1", null) }, new TargetClass("Bar", true, 3, ""), Style());
+            var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null), Arg("p1", null) }, "VOID", new TargetClass("Bar", true, 3, ""), Style());
             Assert.Contains("METHOD Foo(p1 AS USUAL, p12 AS USUAL)", result.Text);
         }
 
         [Fact]
         public void NoArguments()
         {
-            var result = MethodSkeleton.Build("Foo", new CallArgument[0], new TargetClass("Bar", true, 3, ""), Style());
-            Assert.Contains("METHOD Foo()\r\n", result.Text);
+            var result = MethodSkeleton.Build("Foo", new CallArgument[0], "VOID", new TargetClass("Bar", true, 3, ""), Style());
+            Assert.Contains("METHOD Foo() AS VOID\r\n", result.Text);
         }
 
         [Fact]
         public void KeywordCaseLower()
         {
-            var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null) }, new TargetClass("Bar", true, 3, ""), Style(keyword: s => s.ToLowerInvariant()));
-            Assert.Contains("method Foo(p1 as usual)", result.Text);
+            var result = MethodSkeleton.Build("Foo", new[] { Arg(null, null) }, "void", new TargetClass("Bar", true, 3, ""), Style(keyword: s => s.ToLowerInvariant()));
+            Assert.Contains("method Foo(p1 as usual) as void", result.Text);
         }
     }
 }

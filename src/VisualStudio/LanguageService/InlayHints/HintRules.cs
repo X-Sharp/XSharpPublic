@@ -205,7 +205,8 @@ namespace XSharp.LanguageService.InlayHints
             int i = 0;
             while (i < tokens.Count && (tokens[i].Type == XSharpLexer.ID || tokens[i].Type == XSharpLexer.DOT))
                 i++;
-            if (i == 0)
+            // Color.Red, o.Name: only IDs and dots, no constructor
+            if (i == 0 || i >= tokens.Count)
                 return false;
             if (tokens[i].Type == XSharpLexer.LT)
                 i = OverloadFilter.AfterTypeArguments(tokens, i);

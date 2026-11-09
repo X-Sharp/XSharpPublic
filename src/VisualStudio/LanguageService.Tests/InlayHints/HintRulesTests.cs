@@ -131,6 +131,9 @@ namespace XSharp.LanguageService.Tests.InlayHints
         [InlineData("(Customer) o", true)]
         [InlineData("Foo()", false)]
         [InlineData("o:Bar", false)]
+        // only IDs and dots: no constructor, and no read past the end
+        [InlineData("Encoding.UTF8", false)]
+        [InlineData("a.b.c", false)]
         public void TypeVisibleCases(string initializer, bool visible)
         {
             var decl = HintCandidates.Declarations(TestLexer.Lex("VAR x := " + initializer + "\n")).Single();

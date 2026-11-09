@@ -18,6 +18,26 @@ namespace XSharp.LanguageService.Tests.InlayHints
             Assert.Equal(shown, InlayHintSettings.Shows(option, held, allWhileHeld));
         }
 
+        [Fact]
+        public void ByDefaultHintsOnlyShowWhileAltF1IsHeld()
+        {
+            // as C#: parameter and type hints off, all hints while Alt+F1 is held down
+            var options = new IntellisenseOptions();
+            Assert.False(options.ShowParameterHints);
+            Assert.False(options.ShowTypeHints);
+            Assert.True(options.ShowHintsWhileAltF1);
+            Assert.False(InlayHintSettings.Shows(options.ShowParameterHints, false, options.ShowHintsWhileAltF1));
+            Assert.True(InlayHintSettings.Shows(options.ShowParameterHints, true, options.ShowHintsWhileAltF1));
+        }
+
+        [Fact]
+        public void TheStartValuesAreTheOptionDefaults()
+        {
+            Assert.False(InlayHintSettings.DefaultParameters);
+            Assert.False(InlayHintSettings.DefaultTypes);
+            Assert.True(InlayHintSettings.DefaultAllWhileHeld);
+        }
+
         [Theory]
         // Alt+F1 arrives as Key.System with the real key in SystemKey
         [InlineData(Key.System, Key.F1, true)]

@@ -18,10 +18,15 @@ namespace XSharp.LanguageService.InlayHints
     /// <summary>The options of Tools - Options - X# - Intellisense; open editors follow a change.</summary>
     internal static class InlayHintSettings
     {
-        internal static bool Parameters { get; private set; } = true;
-        internal static bool Types { get; private set; } = true;
+        // the defaults of the options page, as C#: no hints until Alt+F1 is held down
+        internal const bool DefaultParameters = false;
+        internal const bool DefaultTypes = false;
+        internal const bool DefaultAllWhileHeld = true;
+
+        internal static bool Parameters { get; private set; } = DefaultParameters;
+        internal static bool Types { get; private set; } = DefaultTypes;
         /// <summary>Show both kinds, also the switched off ones, while Alt+F1 is held down (as C# does).</summary>
-        internal static bool AllWhileHeld { get; private set; } = true;
+        internal static bool AllWhileHeld { get; private set; } = DefaultAllWhileHeld;
         /// <summary>Alt+F1 is held down in an X# editor. UI thread.</summary>
         internal static bool Held { get; private set; }
         internal static event Action Changed;

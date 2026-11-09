@@ -71,9 +71,9 @@ namespace XSharp.LanguageService
             EnableReferenceInfoLog = false;
             UseMicrosoftSQLite = XSettings.IsArm;
             FindReferencesLateBound = true;
-            ShowParameterHints = true;
-            ShowTypeHints = true;
-            ShowHintsWhileAltF1 = true;
+            ShowParameterHints = InlayHints.InlayHintSettings.DefaultParameters;
+            ShowTypeHints = InlayHints.InlayHintSettings.DefaultTypes;
+            ShowHintsWhileAltF1 = InlayHints.InlayHintSettings.DefaultAllWhileHeld;
          }
 
         public override void WriteToSettings()
